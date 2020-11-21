@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F812BC0BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33972BC0BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgKUQwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 11:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgKUQwg (ORCPT
+        id S1727301AbgKUQ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 11:56:09 -0500
+Received: from smtprelay0167.hostedemail.com ([216.40.44.167]:40936 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727071AbgKUQ4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 11:52:36 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2D6C0613CF;
-        Sat, 21 Nov 2020 08:52:35 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kgW7f-0006hd-5O; Sat, 21 Nov 2020 17:52:27 +0100
-Date:   Sat, 21 Nov 2020 17:52:27 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, johannes@sipsolutions.net,
-        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
-Message-ID: <20201121165227.GT15137@breakpoint.cc>
-References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
- <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
- <20201121160941.GA485907@shredder.lan>
+        Sat, 21 Nov 2020 11:56:08 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id BBB80182CED2A;
+        Sat, 21 Nov 2020 16:56:07 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2198:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3871:4321:5007:7903:10004:10400:10848:11232:11658:11914:12297:12438:12555:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21221:21451:21627:21774:30030:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: push52_240621927355
+X-Filterd-Recvd-Size: 2363
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 21 Nov 2020 16:56:06 +0000 (UTC)
+Message-ID: <d68afd4b87e2ce3fc846d8ca5ab9a401ce04344a.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: add fix option for LOGICAL_CONTINUATIONS
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 21 Nov 2020 08:56:05 -0800
+In-Reply-To: <20201121121557.23528-1-yashsri421@gmail.com>
+References: <20201121121557.23528-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121160941.GA485907@shredder.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ido Schimmel <idosch@idosch.org> wrote:
-> On Thu, Oct 29, 2020 at 05:36:19PM +0000, Aleksandr Nogikh wrote:
-> > From: Aleksandr Nogikh <nogikh@google.com>
-> > 
-> > Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> > code that is not reachable during normal system call execution. It is
-> > especially helpful for fuzzing networking subsystems, where it is
-> > common to perform packet handling in separate work queues even for the
-> > packets that originated directly from the user space.
-> > 
-> > Enable coverage-guided frame injection by adding kcov remote handle to
-> > skb extensions. Default initialization in __alloc_skb and
-> > __build_skb_around ensures that no socket buffer that was generated
-> > during a system call will be missed.
-> > 
-> > Code that is of interest and that performs packet processing should be
-> > annotated with kcov_remote_start()/kcov_remote_stop().
-> > 
-> > An alternative approach is to determine kcov_handle solely on the
-> > basis of the device/interface that received the specific socket
-> > buffer. However, in this case it would be impossible to distinguish
-> > between packets that originated during normal background network
-> > processes or were intentionally injected from the user space.
-> > 
-> > Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> > Acked-by: Willem de Bruijn <willemb@google.com>
+On Sat, 2020-11-21 at 17:45 +0530, Aditya Srivastava wrote:
+> Currently, checkpatch warns if logical continuations are placed at the
+> start of a line and not at the end of previous line.
 > 
-> [...]
+> E.g., running checkpatch on commit 3485507fc272 ("staging:
+> bcm2835-camera: Reduce length of enum names") reports:
 > 
-> > @@ -249,6 +249,9 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
-> >  
-> >  		fclones->skb2.fclone = SKB_FCLONE_CLONE;
-> >  	}
-> > +
-> > +	skb_set_kcov_handle(skb, kcov_common_handle());
+> CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
+> previous line
+> +	if (!ret
+> +	    && camera_port ==
 > 
-> Hi,
+> Provide a simple fix by adding logical operator at the end of previous
+> line and removing from current line, if both the lines are additions
+> (ie start with '+')
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3553,8 +3553,14 @@ sub process {
+>  
 > 
-> This causes skb extensions to be allocated for the allocated skb, but
-> there are instances that blindly overwrite 'skb->extensions' by invoking
-> skb_copy_header() after __alloc_skb(). For example, skb_copy(),
-> __pskb_copy_fclone() and skb_copy_expand(). This results in the skb
-> extensions being leaked [1].
+>  # check for && or || at the start of a line
+>  		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
+> -			CHK("LOGICAL_CONTINUATIONS",
+> -			    "Logical continuations should be on the previous line\n" . $hereprev);
+> +			my $operator = $1;
+> +			if (CHK("LOGICAL_CONTINUATIONS",
+> +				"Logical continuations should be on the previous line\n" . $hereprev) &&
+> +			    $fix && $prevrawline =~ /^\+/) {
+> +				# add logical operator to the previous line, remove from current line
+> +				$fixed[$fixlinenr - 1] .= " $operator";
+> +				$fixed[$fixlinenr] =~ s/\Q$operator\E\s*//;
+> +			}
 
-[..]
-> Other suggestions?
+One thing to be concerned about is a statement like
 
-Aleksandr, why was this made into an skb extension in the first place?
+	if (foo		// comment
+	    && bar)
 
-AFAIU this feature is usually always disabled at build time.
-For debug builds (test farm /debug kernel etc) its always needed.
+This should really perform the insertion at the last
+non-comment, non-whitespace char of the previous line.
 
-If thats the case this u64 should be an sk_buff member, not an
-extension.
+
