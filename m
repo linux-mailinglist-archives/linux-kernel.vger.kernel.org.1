@@ -2,121 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75452BBE98
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 12:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD312BBE9C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 12:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgKULKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 06:10:55 -0500
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:56961 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727316AbgKULKz (ORCPT
+        id S1727584AbgKULM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 06:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727464AbgKULM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 06:10:55 -0500
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 77EFD2801F633;
-        Sat, 21 Nov 2020 12:10:45 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id CFE30234848; Sat, 21 Nov 2020 12:10:50 +0100 (CET)
-Date:   Sat, 21 Nov 2020 12:10:50 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] pci: pciehp: Handle MRL interrupts to enable slot
- for hotplug.
-Message-ID: <20201121111050.GA6854@wunner.de>
-References: <20200925230138.29011-1-ashok.raj@intel.com>
- <20201119075120.GA542@wunner.de>
- <20201119220807.GB102444@otc-nc-03>
+        Sat, 21 Nov 2020 06:12:59 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9605C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 03:12:58 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id d18so12152596edt.7
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 03:12:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=P5vHvdUoWhYAs5cSrnvPwGGcOljN0xSOLxbRb4b9UYM=;
+        b=rPOhtzZjOn3wSOAQS/9+eJ5lQr3Ymg+IrcnKq1u1AWkfB9qMI1uaQxXGV0hIjKDXVu
+         2DDjyKGFaHeLIV8j0pG3M6TFawrutGSJloQNQ7JnQzFeDEPjyIq+zflwBhXX7dlmbsLe
+         A/eBvmDzqM1BUTQ50yeFcsrypSEFF/Qdq9j1/yHNhcAmAHIlXarScWPzE5lwpj+brSYg
+         ZJSEQgv+sFaohdBihZskZhJArEI7fuyS7hYhyGnlg1vZ0+2f5dbyV38qacUTdW5macfo
+         dejyPyGECZnGvRreQ0CUqBK0YV+LDQWRriRlYB2BK9fXl1YsS1bEVBBT8SEvBqRykxky
+         imyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=P5vHvdUoWhYAs5cSrnvPwGGcOljN0xSOLxbRb4b9UYM=;
+        b=NzBN6KyaeUg7mn+47E2g1YLIU4QhddWXGZYK5ToBuRFBNzBkhh6gfnzHUL/2SW+MvF
+         3RqpbNgLqjeH6dFDWrtxmC4m4mmUl4beLn5qwrjzIXtg6dLJ+XstS7z//Hol7QV28lMI
+         +8sRt+xGAAihHmW9HoErYT2IYDPEQ+OfUU6v38L8uS1LqUIlzSgybM0vmafWXgXK5/uP
+         Y21ZXpnAYGJ4j2W7mfpTpFWas290hsSElaZ0VP9L+XfsYnKCBWt/LhVkzVQ0g68X8zM8
+         K9SdzsCOJWPH1w5UcjPcKyQGExPsoupptJU4vKwsNC85m+ojEae8T9c1mTOLOwFy6dMo
+         ttTQ==
+X-Gm-Message-State: AOAM531tJZlYLrIumdPZf0DxbodOpHGfnR0Z0CyzFLljlzCPjy8xjEzX
+        QO0bz+x0lwMHriC3zKPOIsn3JTlD5uTC6dhGjflG2Q==
+X-Google-Smtp-Source: ABdhPJy6hmsTRqH7tZsib+6sa5lPVt4Kni+8dfi57Gpx8+Lpy0Bzn/YmhDib4BbRTfcgexPRZMsPS8vmgGhBSd2hs9A=
+X-Received: by 2002:aa7:df81:: with SMTP id b1mr38358069edy.365.1605957177396;
+ Sat, 21 Nov 2020 03:12:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119220807.GB102444@otc-nc-03>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201120104541.168007611@linuxfoundation.org>
+In-Reply-To: <20201120104541.168007611@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 21 Nov 2020 16:42:45 +0530
+Message-ID: <CA+G9fYuFoJqZrQJn9bqd1U9YZnr1x+2acsLYCay=99QGGjd6mQ@mail.gmail.com>
+Subject: Re: [PATCH 5.9 00/14] 5.9.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 02:08:07PM -0800, Raj, Ashok wrote:
-> On Thu, Nov 19, 2020 at 08:51:20AM +0100, Lukas Wunner wrote:
-> > If an Attention Button is present, the current behavior is to bring up
-> > the hotplug slot as soon as presence or link is detected.  We don't wait
-> > for a button press.  This is intended as a convience feature to bring up
-> > slots as quickly as possible, but the behavior can be changed if the
-> > button press and 5 second delay is preferred.
-> 
-> Looks like we still don't subscribe to PDC if ATTN is present? So you don't
-> get an event until someone presses the button to process hotplug right?
-[...]
-> Looks like we still wait for button press to process. When you don't have a
-> power control yes the DLLSC would kick in and we would process them. but if
-> you have power control, you won't turn on until the button press?
+On Fri, 20 Nov 2020 at 16:39, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.9.10 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.9.10-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Right.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-For hotplug ports without a power controller, we could in principle achieve
-the same behavior (i.e. not bring up the slot until the button is pressed)
-by not subscribing to DLLSC events as well (if an Attention Button is
-present).
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-However there are hotplug ports out there with incorrect data in the
-Slot Capabilities register:  They claim to have an Attention Button
-but in reality don't have one.  In those cases we're still able to
-bring up and down the slot right now.  Whereas if we changed the
-behavior, those hotplug ports would no longer work.  (We'd not
-bring up the slot until the button is pressed but there is no button.)
+Summary
+------------------------------------------------------------------------
 
-E.g. this bugzilla contains dmesg output for a 5.4 kernel which is able
-to bring up and down the slot correctly even though the Slot Capabilities
-register incorrectly claims to have an Attention Button as well as
-Command Complete support:
-https://bugzilla.kernel.org/show_bug.cgi?id=209283
+kernel: 5.9.10-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.9.y
+git commit: 861b379f08830cebd80999babf94973e831999c2
+git describe: v5.9.9-15-g861b379f0883
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
+y/build/v5.9.9-15-g861b379f0883
 
+No regressions (compared to build v5.9.9)
 
-> > In any case the behavior in response to an Attention Button press should
-> > be the same regardless whether an MRL is present or not.  (The spec
-> > doesn't seem to say otherwise.)
-> 
-> True, Looks like that is a Linux behavior, certainly not a spec
-> recommendation. Our validation teams tell Windows also behaves such. i.e
-> when ATTN exists button press drivers the hot-add. Linux doesn't need to
-> follow suite though. 
-> 
-> In that case do we need to subscribe to PDC even when ATTN is present?
+No fixes (compared to build v5.9.9)
 
-Hm, I'd just leave it the way it is for now if it works.
+Ran 49372 total tests in the following environments and test suites.
 
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15
+- x86
+- x86-kasan
 
-> > > +	/*
-> > > +	 * If ATTN is present and MRL is triggered
-> > > +	 * ignore the Presence Change Event.
-> > > +	 */
-> > > +	if (ATTN_BUTTN(ctrl) && (events & PCI_EXP_SLTSTA_MRLSC))
-> > > +		events &= ~PCI_EXP_SLTSTA_PDC;
-> > 
-> > An Attention Button press results in a synthesized PDC event after
-> > 5 seconds, which may get lost due to the above if-statement.
-> 
-> When its synthesized you don't get the MRLSC? So we won't nuke the PDC then
-> correct?
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-controllers-tests
+* ltp-cve-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* kunit
+* kselftest
 
-I just meant to say, pciehp_queue_pushbutton_work() will synthesize
-a PDC event after 5 seconds and with the above code snippet, if an
-MRL event happens simultaneously, that synthesized PDC event would
-be lost.  So I'd just drop the above code snippet.  I think you
-just need to subscribe to MRL events and propagate them to
-pciehp_handle_presence_or_link_change().  There, you'd bring down
-the slot if an MRL event has occurred (same as DLLSC or PDC).
-Then, check whether MRL is closed.  If so, and if presence or link
-is up, try to bring up the slot.
-
-If the MRL is open when slot or presence has gone up, the slot is not
-brought up.  But once MRL is closed, there'll be another MRL event and
-*then* the slot is brought up.
-
-Thanks,
-
-Lukas
+--=20
+Linaro LKFT
+https://lkft.linaro.org
