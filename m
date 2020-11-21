@@ -2,218 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E9E2BBCA6
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB8D2BBCA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727150AbgKUDUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 22:20:47 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54330 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726656AbgKUDUq (ORCPT
+        id S1726775AbgKUDZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 22:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgKUDZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 22:20:46 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AL3Ki8C088775;
-        Fri, 20 Nov 2020 21:20:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605928844;
-        bh=cZWcMJfvF83UzHL9FrqB5NJItZJQGjIRAPeec50W65s=;
-        h=From:To:CC:Subject:Date;
-        b=Zo6FeerUkAy9VfJFiYGjOwAt74lMzfw5tYL2NgCOx74C8LvQuz0xeSM94wXIo8E+a
-         KmfuThVHAPkp0wR2vG602OT8Uv5E0RwvKk1G+dFfGzJcqF5DWVcMSlH9IJHcV7W1ki
-         BIFUH22ys7/eYWrWf8VzQyCDwiDlg2rh/p6/MgZ0=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AL3KiAO036491
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Nov 2020 21:20:44 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
- Nov 2020 21:20:44 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 20 Nov 2020 21:20:44 -0600
-Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AL3KhVh019782;
-        Fri, 20 Nov 2020 21:20:44 -0600
-Received: from localhost ([10.250.68.46])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 0AL3KhPb056910;
-        Fri, 20 Nov 2020 21:20:43 -0600
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [PATCH] remoteproc: Add a rproc_set_firmware() API
-Date:   Fri, 20 Nov 2020 21:20:42 -0600
-Message-ID: <20201121032042.6195-1-s-anna@ti.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
+        Fri, 20 Nov 2020 22:25:33 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD56C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:25:33 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id t18so5928514plo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F4LHuwHPehTGg6C7SwMVTgSDJxeRk/wpcUvGl+GXLpg=;
+        b=U92UXwN3msyCRk7cskDKA/IK+g4HTcj7kVry+hoQSSAovr8eSvCulEoBdUImOUIKXs
+         9d3Nz45fFLcxE0prv5yNHdKzZC+Dn8ljLEb5JK/z0wNZcMFWbKnOGH2VzAxd4QkjWl9U
+         XpodiXZ5C9tCgNFZAl2VIwUbYnNe46aUilCMK4VyU94T9qd/Z6D1iHL/P+h4IazenZO7
+         V6LYITT4WulnwgX7ZjpVWsbZssu4+gc0/CcRf64YMm12LwNg2RB+bpHy5CVpsUEZzTRn
+         jms9ymXrbQM8YDDwuaENU0YeQJDQH0Qs5CXWG1Tz0XIRQophOK6ftzeGidYn7UZ5rTZr
+         2f7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=F4LHuwHPehTGg6C7SwMVTgSDJxeRk/wpcUvGl+GXLpg=;
+        b=hzC848rpkrRIiLnv5ML1VH249ZksAtPI1rRovvje1utwQEGQw9RlCR0b2fMDkF7lzp
+         Ic6p+ZH1TH4Tj3tEuB8x2ROdhkDV366ZsC5KODI378BlPa2UoGDG3t42BnU1iEVfBJf9
+         fq+tl1JM1R0ONw09eiJLV1hM9SF2xzgyXY6bhDNOgotzVNX9basn6qD13fnTvN2sfoDb
+         DjzVCBpbu54X13EjebXaWW9YY9SIyeDBlt+EuSboBfGGQWQzUhYx1efBJmbo8J+vteIX
+         2AUBxDIAd41231ChMFaxO5Mcb82KU6pe9cgMGqb0CvCvm+N4R1Cklixoc4cTwV+jp7Si
+         847g==
+X-Gm-Message-State: AOAM5316fKdQqwCBBtd29tdi715xWQwYCq71STWpkoIb/s4Lwn1tyPPf
+        mKLgLpcVhNHZ9j24k6O8Nfnh8rMonUTzag==
+X-Google-Smtp-Source: ABdhPJx3nkWlFu0uu97//0uNkR/dir2aPZDUB1x33bgenASk/eg4bD2X/6gKX3DIQiuKW8/ACRr4+w==
+X-Received: by 2002:a17:902:bd98:b029:d9:7b0:e1e5 with SMTP id q24-20020a170902bd98b02900d907b0e1e5mr16129511pls.77.1605929132538;
+        Fri, 20 Nov 2020 19:25:32 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w22sm4673768pge.25.2020.11.20.19.25.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 19:25:31 -0800 (PST)
+Date:   Fri, 20 Nov 2020 19:25:31 -0800 (PST)
+X-Google-Original-Date: Fri, 20 Nov 2020 19:25:30 PST (-0800)
+Subject:     Re: [PATCH] RISC-V: fix barrier() use in <vdso/processor.h>
+In-Reply-To: <20201117013951.7827-1-rdunlap@infradead.org>
+CC:     linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+        schwab@linux-m68k.org, akpm@linux-foundation.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>, nivedita@alum.mit.edu,
+        linux-riscv@lists.infradead.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        natechancellor@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     rdunlap@infradead.org
+Message-ID: <mhng-8c56f671-512a-45e7-9c94-fa39a80451da@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new API, rproc_set_firmware() is added to allow the remoteproc platform
-drivers and remoteproc client drivers to be able to configure a custom
-firmware name that is different from the default name used during
-remoteproc registration. This function is being introduced to provide
-a kernel-level equivalent of the current sysfs interface to remoteproc
-client drivers, and can only change firmwares when the remoteproc is
-offline. This allows some remoteproc drivers to choose different firmwares
-at runtime based on the functionality the remote processor is providing.
-The TI PRU Ethernet driver will be an example of such usage as it
-requires to use different firmwares for different supported protocols.
+On Mon, 16 Nov 2020 17:39:51 PST (-0800), rdunlap@infradead.org wrote:
+> riscv's <vdso/processor.h> uses barrier() so it should
+> #include <asm/barrier.h> to prevent build errors.
+>
+> Fixes this build error:
+>   CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
+> In file included from ./include/vdso/processor.h:10,
+>                  from ./arch/riscv/include/asm/processor.h:11,
+>                  from ./include/linux/prefetch.h:15,
+>                  from drivers/net/ethernet/emulex/benet/be_main.c:14:
+> ./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
+> ./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
+>    14 |  barrier();
+>
+> This happens with a total of 5 networking drivers -- they all use
+> <linux/prefetch.h>.
+>
+> rv64 allmodconfig now builds cleanly after this patch.
+>
+> Fixes fallout from:
+> 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
+>
+> Fixes: ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
+> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Arvind Sankar <nivedita@alum.mit.edu>
+> Cc: linux-riscv@lists.infradead.org
+> Cc: clang-built-linux@googlegroups.com
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nathan Chancellor <natechancellor@gmail.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> ---
+>  arch/riscv/include/asm/vdso/processor.h |    2 ++
+>  1 file changed, 2 insertions(+)
+>
+> --- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
+> +++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
+> @@ -4,6 +4,8 @@
+>
+>  #ifndef __ASSEMBLY__
+>
+> +#include <asm/barrier.h>
+> +
+>  static inline void cpu_relax(void)
+>  {
+>  #ifdef __riscv_muldiv
 
-Also, update the firmware_store() function used by the sysfs interface
-to reuse this function to avoid code duplication.
-
-Signed-off-by: Suman Anna <s-anna@ti.com>
----
- drivers/remoteproc/remoteproc_core.c  | 63 +++++++++++++++++++++++++++
- drivers/remoteproc/remoteproc_sysfs.c | 33 +-------------
- include/linux/remoteproc.h            |  1 +
- 3 files changed, 66 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index dab2c0f5caf0..46c2937ebea9 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1934,6 +1934,69 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
- #endif
- EXPORT_SYMBOL(rproc_get_by_phandle);
- 
-+/**
-+ * rproc_set_firmware() - assign a new firmware
-+ * @rproc: rproc handle to which the new firmware is being assigned
-+ * @fw_name: new firmware name to be assigned
-+ *
-+ * This function allows remoteproc drivers or clients to configure a custom
-+ * firmware name that is different from the default name used during remoteproc
-+ * registration. The function does not trigger a remote processor boot,
-+ * only sets the firmware name used for a subsequent boot. This function
-+ * should also be called only when the remote processor is offline.
-+ *
-+ * This allows either the userspace to configure a different name through
-+ * sysfs or a kernel-level remoteproc or a remoteproc client driver to set
-+ * a specific firmware when it is controlling the boot and shutdown of the
-+ * remote processor.
-+ *
-+ * Return: 0 on success or a negative value upon failure
-+ */
-+int rproc_set_firmware(struct rproc *rproc, const char *fw_name)
-+{
-+	struct device *dev;
-+	int ret, len;
-+	char *p;
-+
-+	if (!rproc || !fw_name)
-+		return -EINVAL;
-+
-+	dev = rproc->dev.parent;
-+
-+	ret = mutex_lock_interruptible(&rproc->lock);
-+	if (ret) {
-+		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
-+		return -EINVAL;
-+	}
-+
-+	if (rproc->state != RPROC_OFFLINE) {
-+		dev_err(dev, "can't change firmware while running\n");
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
-+	len = strcspn(fw_name, "\n");
-+	if (!len) {
-+		dev_err(dev, "can't provide empty string for firmware name\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	p = kstrndup(fw_name, len, GFP_KERNEL);
-+	if (!p) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	kfree(rproc->firmware);
-+	rproc->firmware = p;
-+
-+out:
-+	mutex_unlock(&rproc->lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL(rproc_set_firmware);
-+
- static int rproc_validate(struct rproc *rproc)
- {
- 	switch (rproc->state) {
-diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-index 3fd18a71c188..cf846caf2e1a 100644
---- a/drivers/remoteproc/remoteproc_sysfs.c
-+++ b/drivers/remoteproc/remoteproc_sysfs.c
-@@ -159,42 +159,13 @@ static ssize_t firmware_store(struct device *dev,
- 			      const char *buf, size_t count)
- {
- 	struct rproc *rproc = to_rproc(dev);
--	char *p;
--	int err, len = count;
-+	int err;
- 
- 	/* restrict sysfs operations if not allowed by remoteproc drivers */
- 	if (rproc->deny_sysfs_ops)
- 		return -EPERM;
- 
--	err = mutex_lock_interruptible(&rproc->lock);
--	if (err) {
--		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, err);
--		return -EINVAL;
--	}
--
--	if (rproc->state != RPROC_OFFLINE) {
--		dev_err(dev, "can't change firmware while running\n");
--		err = -EBUSY;
--		goto out;
--	}
--
--	len = strcspn(buf, "\n");
--	if (!len) {
--		dev_err(dev, "can't provide a NULL firmware\n");
--		err = -EINVAL;
--		goto out;
--	}
--
--	p = kstrndup(buf, len, GFP_KERNEL);
--	if (!p) {
--		err = -ENOMEM;
--		goto out;
--	}
--
--	kfree(rproc->firmware);
--	rproc->firmware = p;
--out:
--	mutex_unlock(&rproc->lock);
-+	err = rproc_set_firmware(rproc, buf);
- 
- 	return err ? err : count;
- }
-diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-index dbc3767f7d0e..6e04b99413f8 100644
---- a/include/linux/remoteproc.h
-+++ b/include/linux/remoteproc.h
-@@ -655,6 +655,7 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
- 
- int rproc_boot(struct rproc *rproc);
- void rproc_shutdown(struct rproc *rproc);
-+int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
- void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
- int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
- int rproc_coredump_add_custom_segment(struct rproc *rproc,
--- 
-2.28.0
-
+Thanks, this is on fixes.
