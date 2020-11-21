@@ -2,137 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8062BBB95
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635822BBB98
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgKUBcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 20:32:41 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:60052 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728054AbgKUBcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 20:32:41 -0500
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr9MwbrhfhyEUAA--.41443S3;
-        Sat, 21 Nov 2020 09:32:32 +0800 (CST)
-Subject: Re: [RFC PATCH] MIPS: Kconfig: Select ARCH_WANT_FRAME_POINTERS
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-References: <1605502980-31946-1-git-send-email-yangtiezhu@loongson.cn>
- <alpine.LFD.2.21.2011202202290.656242@eddie.linux-mips.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <e91a9885-78cc-b23a-d485-8f68fdfb0222@loongson.cn>
-Date:   Sat, 21 Nov 2020 09:32:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1728018AbgKUBdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 20:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728054AbgKUBdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 20:33:44 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AAAC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:33:44 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id k27so15386451ejs.10
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:33:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FEeNRSu5qgLr6ylD/0FS6ZjPn3Dywnf8ZskxIMhN6eU=;
+        b=lKBlCnoPWTQA3xcpVgLquSx4s4GyAqOWf2lxCcIggiMjdYG7OzKRNL8KqWMz7Mi/vJ
+         +/CSqa/fxKbthsBT/b1apT+QS8LZk/Pn12nNQ3dZlWvU0K/VAHCiZe2utIVkmiOeMaNb
+         GBt+SfMWNplCK+6IamzKaDFNlWHUMgJeUKJrw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FEeNRSu5qgLr6ylD/0FS6ZjPn3Dywnf8ZskxIMhN6eU=;
+        b=XHNcEbb4OZBzA+BEWX5/aIIBAJJZvrMHwYc4dOzJwTGjoYfh6fpF7BwHsUJ7JgvNFY
+         1TT45zwnYB5Srly0POZMhRaaqz0vHhmoRTZrahUSkMAGRt+HnmJUHzC6IzcJosSIcZBW
+         RCmM9mY7NBjhTrhP6go6DYVWNmbrqBMiWBZ9LZQo1epCVeylz0eIh+wb3RnUDbyNxGYb
+         rdvW2ynTKTO99QE+v3GAh2dUP5ZAsYlUI9a5AHuzujkwqmtYa3hEhyJ8LkMU9T4H0Bp6
+         pBZvrDRk0/c1LKt5/wpSLyoxMbktQq3aiWVBA1g5N5HbpM4Qtqw7Ospc39Lz3QLJwekL
+         rKSw==
+X-Gm-Message-State: AOAM532NWVC1DBkcTV1mB/ZEWgTiEcaJMa9frSkWzMVoMj+orPBwRx4g
+        qYnoiWmmZ/5sOAcvCDMhjx/+kIGVmdlyww==
+X-Google-Smtp-Source: ABdhPJzT3cA+eWJqwAFJNnoCuJflRadmA0dgTG6lMPyOuO+HepxDoOSY2LCu8+pD7rEVvqYsu9KdQw==
+X-Received: by 2002:a17:906:3958:: with SMTP id g24mr36162943eje.360.1605922422710;
+        Fri, 20 Nov 2020 17:33:42 -0800 (PST)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id 65sm1740035edj.83.2020.11.20.17.33.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 17:33:42 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id k2so12787926wrx.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:33:41 -0800 (PST)
+X-Received: by 2002:adf:f9c6:: with SMTP id w6mr18507945wrr.273.1605922421479;
+ Fri, 20 Nov 2020 17:33:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LFD.2.21.2011202202290.656242@eddie.linux-mips.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxr9MwbrhfhyEUAA--.41443S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF47Ww4xGrWDuw4kXw1DWrg_yoW5tw13pw
-        4rKws0yr4DJa4xC3WkAw4Ig34fZws5G3yY9anxKryjyw15Wr1FgrWftrW3uas7Wr1kK3Wj
-        v3s0gry0qw4qy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvq14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
-        6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVWkMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
-        ZFpf9x0JUdb18UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+References: <20201120001037.10032-1-stanimir.varbanov@linaro.org> <20201120001037.10032-2-stanimir.varbanov@linaro.org>
+In-Reply-To: <20201120001037.10032-2-stanimir.varbanov@linaro.org>
+From:   Fritz Koenig <frkoenig@chromium.org>
+Date:   Fri, 20 Nov 2020 17:33:27 -0800
+X-Gmail-Original-Message-ID: <CAMfZQbx_p9_KGxdiCsFWL1TgaiVMjmqtqmJrCer7+UaOzwDv+w@mail.gmail.com>
+Message-ID: <CAMfZQbx_p9_KGxdiCsFWL1TgaiVMjmqtqmJrCer7+UaOzwDv+w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] venus: venc: Init the session only once in queue_setup
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/2020 06:37 AM, Maciej W. Rozycki wrote:
-> On Mon, 16 Nov 2020, Tiezhu Yang wrote:
+On Thu, Nov 19, 2020 at 4:12 PM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
 >
->> Select ARCH_WANT_FRAME_POINTERS to fix the following build error under
->> CONFIG_DEBUG_ATOMIC_SLEEP:
->>
->>    CC      arch/mips/kernel/signal.o
->> {standard input}: Assembler messages:
->> {standard input}:1775: Error: Unable to parse register name $fp
->> scripts/Makefile.build:283: recipe for target 'arch/mips/kernel/signal.o' failed
->> make[2]: *** [arch/mips/kernel/signal.o] Error 1
->> scripts/Makefile.build:500: recipe for target 'arch/mips/kernel' failed
->> make[1]: *** [arch/mips/kernel] Error 2
->> Makefile:1799: recipe for target 'arch/mips' failed
->> make: *** [arch/mips] Error 2
->   Your change description does not explain to me what is going on here I am
-> afraid, and based on it I am unable to determine if it is fit for purpose.
+> Init the hfi session only once in queue_setup and also cover that
+> with inst->lock.
 >
->   It seems to me like your change papers over an issue by changing code
-> generation somehow with the kernel configuration option selected so that
-> invalid assembly is not produced anymore while invalid assembly should not
-> happen in the first place regardless of the configuration.
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/venc.c | 98 ++++++++++++++++++------
+>  1 file changed, 73 insertions(+), 25 deletions(-)
 >
->   In particular `$fp' is a standard assembly alias for `$30' aka `$s8' and
-> it is expected to work where `$30' or indeed any general-purpose register
-> would:
+> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+> index 4ecf78e30b59..3a2e449663d8 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -725,8 +725,10 @@ static int venc_init_session(struct venus_inst *inst)
+>         int ret;
 >
-> #define SYMBOLIC_REGISTER_NAMES \
-> [...]
->      {"$s8",	RTYPE_GP | 30}, \
->      {"$fp",	RTYPE_GP | 30}, \
->      {"$ra",	RTYPE_GP | 31}
+>         ret = hfi_session_init(inst, inst->fmt_cap->pixfmt);
+> -       if (ret)
+> -               return ret;
+> +       if (ret == -EINVAL)
+> +               return 0;
+> +       else if (ret)
+> +               goto deinit;
 >
-> (from gas/config/tc-mips.c) so please show us what the assembly line GAS
-> chokes on looks like in your case.
+>         ret = venus_helper_set_input_resolution(inst, inst->width,
+>                                                 inst->height);
+> @@ -762,17 +764,13 @@ static int venc_out_num_buffers(struct venus_inst *inst, unsigned int *num)
+>         struct hfi_buffer_requirements bufreq;
+>         int ret;
 >
->> Documentation/dev-tools/kgdb.rst
->> This option inserts code to into the compiled executable which saves
->> the frame information in registers or on the stack at different points
->> which allows a debugger such as gdb to more accurately construct stack
->> back traces while debugging the kernel.
->   Hmm, this is what DWARF debug information is for in the context of GDB,
-> and I certainly used to use GDB to debug standard MIPS/Linux kernels built
-> without the use of a separate frame pointer register (which there wasn't a
-> kernel configuration option for back then, though which you obviously
-> still could try to enforce with the use of `-fno-omit-frame-pointer' via
-> CFLAGS) using JTAG probes or simulation some 15 years ago.
+> -       ret = venc_init_session(inst);
+> +       ret = venus_helper_get_bufreq(inst, HFI_BUFFER_INPUT, &bufreq);
+>         if (ret)
+>                 return ret;
 >
->   And given the variable layout of the MIPS stack frame (unlike with some
-> psABIs, e.g. Power) the use of `$fp' alone does not let you reconstruct a
-> backtrace, because you cannot infer from the value of `$fp' where to
-> retrieve the value of `$ra' from.  For that you need debug information.
+> -       ret = venus_helper_get_bufreq(inst, HFI_BUFFER_INPUT, &bufreq);
+> -
+>         *num = bufreq.count_actual;
 >
->   So the information you quote seems misleading or missing the context.
+> -       hfi_session_deinit(inst);
+> -
+> -       return ret;
+> +       return 0;
+>  }
 >
->   NB hardly any MIPS software uses the frame pointer register and all is
-> debuggable regardless; the only actual use for $fp is `alloca', VLAs or
-> similar dynamic frame arrangements.
+>  static int venc_queue_setup(struct vb2_queue *q,
+> @@ -781,7 +779,7 @@ static int venc_queue_setup(struct vb2_queue *q,
+>  {
+>         struct venus_inst *inst = vb2_get_drv_priv(q);
+>         unsigned int num, min = 4;
+> -       int ret = 0;
+> +       int ret;
 >
->   So what actual problem are you trying to solve, except for the assembly
-> error, and what is your use case for `$fp' with MIPS kernel debugging?
+>         if (*num_planes) {
+>                 if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE &&
+> @@ -803,6 +801,17 @@ static int venc_queue_setup(struct vb2_queue *q,
+>                 return 0;
+>         }
+>
+> +       ret = mutex_lock_interruptible(&inst->lock);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = venc_init_session(inst);
+> +
+> +       mutex_unlock(&inst->lock);
+> +
+> +       if (ret)
+> +               return ret;
+> +
+>         switch (q->type) {
+>         case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+>                 *num_planes = inst->fmt_out->num_planes;
+> @@ -838,6 +847,54 @@ static int venc_queue_setup(struct vb2_queue *q,
+>         return ret;
+>  }
+>
+> +static int venc_buf_init(struct vb2_buffer *vb)
+> +{
+> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+> +
+> +       inst->buf_count++;
+> +
+> +       return venus_helper_vb2_buf_init(vb);
+> +}
+> +
+> +static void venc_release_session(struct venus_inst *inst)
+> +{
+> +       int ret, abort = 0;
+> +
+> +       mutex_lock(&inst->lock);
+> +
+> +       ret = hfi_session_deinit(inst);
+> +       abort = (ret && ret != -EINVAL) ? 1 : 0;
+> +
+> +       if (inst->session_error)
+> +               abort = 1;
+> +
+> +       if (abort)
+> +               hfi_session_abort(inst);
+> +
+> +       mutex_unlock(&inst->lock);
+> +
+> +       venus_pm_load_scale(inst);
+> +       INIT_LIST_HEAD(&inst->registeredbufs);
+> +       venus_pm_release_core(inst);
+> +}
+> +
+> +static void venc_buf_cleanup(struct vb2_buffer *vb)
+> +{
+> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> +       struct venus_buffer *buf = to_venus_buffer(vbuf);
+> +
+> +       mutex_lock(&inst->lock);
+> +       if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> +               if (!list_empty(&inst->registeredbufs))
+> +                       list_del_init(&buf->reg_list);
+> +       mutex_unlock(&inst->lock);
+> +
+> +       inst->buf_count--;
+> +       if (!inst->buf_count)
+> +               venc_release_session(inst);
+> +}
+> +
+>  static int venc_verify_conf(struct venus_inst *inst)
+>  {
+>         enum hfi_version ver = inst->core->res->hfi_version;
+> @@ -888,38 +945,28 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
+>         inst->sequence_cap = 0;
+>         inst->sequence_out = 0;
+>
+> -       ret = venc_init_session(inst);
+> -       if (ret)
+> -               goto bufs_done;
+> -
+>         ret = venus_pm_acquire_core(inst);
+>         if (ret)
+> -               goto deinit_sess;
+> -
+> -       ret = venc_set_properties(inst);
+> -       if (ret)
+> -               goto deinit_sess;
+> +               goto error;
+>
+>         ret = venc_verify_conf(inst);
+>         if (ret)
+> -               goto deinit_sess;
+> +               goto error;
+>
+>         ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
+>                                         inst->num_output_bufs, 0);
+>         if (ret)
+> -               goto deinit_sess;
+> +               goto error;
+>
+>         ret = venus_helper_vb2_start_streaming(inst);
+>         if (ret)
+> -               goto deinit_sess;
+> +               goto error;
+>
+>         mutex_unlock(&inst->lock);
+>
+>         return 0;
+>
+> -deinit_sess:
+> -       hfi_session_deinit(inst);
+> -bufs_done:
+> +error:
+>         venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_QUEUED);
+>         if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+>                 inst->streamon_out = 0;
+> @@ -940,7 +987,8 @@ static void venc_vb2_buf_queue(struct vb2_buffer *vb)
+>
+>  static const struct vb2_ops venc_vb2_ops = {
+>         .queue_setup = venc_queue_setup,
+> -       .buf_init = venus_helper_vb2_buf_init,
+> +       .buf_init = venc_buf_init,
+> +       .buf_cleanup = venc_buf_cleanup,
+>         .buf_prepare = venus_helper_vb2_buf_prepare,
+>         .start_streaming = venc_start_streaming,
+>         .stop_streaming = venus_helper_vb2_stop_streaming,
+> --
+> 2.17.1
+>
 
-Hi Maciej,
-
-Thank you very much for your reply and detailed explanation.
-
-The initial aim of this patch is to fix the build error.
-I found this build error used with gcc 4.9.4.
-I try it used with gcc 7.3.1 and it has no problem.
-We can use new gcc version to avoid this build error.
-
-The other commit message about config and kgdb seems no
-related with the above build error, just give more info
-to discuss.
-
-As I see it now, this RFC patch is meaningless, so please
-ignore it and thank you again.
-
-Thanks,
-Tiezhu
-
->
->    Maciej
-
+Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
