@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AEE2BBB55
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EE22BBB58
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728341AbgKUA62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:58:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727163AbgKUA62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:58:28 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63153C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=/85Vmw+gpTMW9v2I0bLohGt1WwXkc5iB9lprh8ZlXjQ=; b=MBOFltT5rMhYGUyb1hSfUnlUNw
-        ooHgK+uEeW6JYvf4PMjnv4x0LkPr8nEdaHO7ogoncxCc0TaiS8YooICRSPuI8ZsTRli5ejPRIRqmH
-        y+iM1+x89SjbjRH8eiJSeggsFFCQ88c9ABrNleZpCKos5bx0sb6Aep52YCDEqDRbna8aQMNMYpxHb
-        zSdEWhpLfZuKWY0TthfwNwQsV4aNg1/6xoGVavhJhJLeGonOvvPvqiU15vAV+eFUcBerJACkc8kkt
-        vZPJR/uchDvS063Pong6aEedSgq308rSSUWUkptTDWiFkPzRxG0hWus2hLCxmbaPrAy/pvujOpddZ
-        ILn99Ccg==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kgHEE-0004sC-7O; Sat, 21 Nov 2020 00:58:14 +0000
-Subject: Re: [PATCH] fs/stat: set attributes_mask for STATX_ATTR_DAX
-To:     XiaoLi Feng <xifeng@redhat.com>, linux-kernel@vger.kernel.org,
-        ira.weiny@intel.com, darrick.wong@oracle.com
-Cc:     Xiaoli Feng <fengxiaoli0714@gmail.com>
-References: <20201121003331.21342-1-xifeng@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <21890103-fce2-bb50-7fc2-6c6d509b982f@infradead.org>
-Date:   Fri, 20 Nov 2020 16:58:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201121003331.21342-1-xifeng@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728720AbgKUA7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:59:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728408AbgKUA7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 19:59:21 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E952723A65;
+        Sat, 21 Nov 2020 00:59:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605920361;
+        bh=77M/WPfBKgKGM1bhdEmIEogJMD8lmHt73p2vCfZoFzU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FDPP4wu/EFqI0mBcLTTyHKzcv8O+qD+hFI7EU2Ir8ThKCc3angisYr09e5rJn2kIW
+         z6QRBmGzRQqdsJiPmYo8PJBOTiRjbZca1GPJuWXKpoSY69CI0g2ecktJxBGj47KyRK
+         ld6dqbvaDxkT8U9AYx9OMWKMO9RQaHM7G8sd6gV0=
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 tip/core/rcu 1/6] srcu: Make Tiny SRCU use multi-bit grace-period counter
+Date:   Fri, 20 Nov 2020 16:59:14 -0800
+Message-Id: <20201121005919.17152-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <@@@>
+References: <@@@>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-I don't know this code, but:
+There is a need for a polling interface for SRCU grace periods.  This
+polling needs to distinguish between an SRCU instance being idle on the
+one hand or in the middle of a grace period on the other.  This commit
+therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
+a defacto boolean to a free-running counter, using the bottom bit to
+indicate that a grace period is in progress.  The second-from-bottom
+bit is thus used as the index returned by srcu_read_lock().
 
-On 11/20/20 4:33 PM, XiaoLi Feng wrote:
-> From: Xiaoli Feng <fengxiaoli0714@gmail.com>
-> 
-> keep attributes and attributes_mask are consistent for
-> STATX_ATTR_DAX.
-> ---
->  fs/stat.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/stat.c b/fs/stat.c
-> index dacecdda2e79..914a61d256b0 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -82,7 +82,7 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
->  
->  	if (IS_DAX(inode))
->  		stat->attributes |= STATX_ATTR_DAX;
-> -
-> +	stat->attributes_mask |= STATX_ATTR_DAX;
+Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+[ paulmck: Fix __srcu_read_lock() idx computation Neeraj per Upadhyay. ]
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/srcutiny.h | 4 ++--
+ kernel/rcu/srcutiny.c    | 5 +++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-Why shouldn't that be:
-
-	if (IS_DAX(inode))
-		stat->attributes_mask |= STATX_ATTR_DAX;
-
-or combine them, like this:
-
-	if (IS_DAX(inode)) {
-		stat->attributes |= STATX_ATTR_DAX;
-		stat->attributes_mask |= STATX_ATTR_DAX;
-	}
-
-
-and no need to delete that blank line.
-
->  	if (inode->i_op->getattr)
->  		return inode->i_op->getattr(path, stat, request_mask,
->  					    query_flags);
-> 
-
-thanks.
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 5a5a194..d9edb67 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -15,7 +15,7 @@
+ 
+ struct srcu_struct {
+ 	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
+-	short srcu_idx;			/* Current reader array element. */
++	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
+ 	u8 srcu_gp_running;		/* GP workqueue running? */
+ 	u8 srcu_gp_waiting;		/* GP waiting for readers? */
+ 	struct swait_queue_head srcu_wq;
+@@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+ {
+ 	int idx;
+ 
+-	idx = READ_ONCE(ssp->srcu_idx);
++	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
+ 	return idx;
+ }
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 6208c1d..5598cf6 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	ssp->srcu_cb_head = NULL;
+ 	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
+ 	local_irq_enable();
+-	idx = ssp->srcu_idx;
+-	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
++	idx = (ssp->srcu_idx & 0x2) / 2;
++	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
+ 	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
++	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 
+ 	/* Invoke the callbacks we removed above. */
+ 	while (lh) {
 -- 
-~Randy
+2.9.5
 
