@@ -2,182 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AEF2BC004
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0995E2BC00E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgKUOoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 09:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728105AbgKUOoL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 09:44:11 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C853FC061A4A;
-        Sat, 21 Nov 2020 06:44:09 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id t5so9453246qtp.2;
-        Sat, 21 Nov 2020 06:44:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=W8hY/Ql0KC3NjThrNmgRpN1eJ4DPqb/Xthh3vnaFG5Q=;
-        b=Y51JVFSBTBEljv9F+YxqarzbZ3wLYPY6lk7oI8oyDzUFfWIk4jSp0V73ggApyTsGc+
-         FPhEk4l4mqw7N0ShyeMfd+Ky+k+f/oGNY1B+dCyLJNOHmA2bue/n+ZH4Xj87ogPZWXNU
-         SW1MYEncChRiPCg/gx2bpGdghlieJYd9crcFtlXp+2GdaU8YcW3P1RfGYoBbkfkT3+ov
-         hK8AaWJv1Et9jp5vstFNTwnfLThVPR+l1g1f6293/Y76CwvJp8Pr3q+8IRYM2D6GVSZ+
-         HQw6BbOdZNgpxBVFXMlibkQGRuXXrRhE0GNOjZgPUUJvHoKD3JBs6i4fUmjfSl03eC7w
-         7Zew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W8hY/Ql0KC3NjThrNmgRpN1eJ4DPqb/Xthh3vnaFG5Q=;
-        b=OZ3GVjkmzt9dy/no0qbTTuSpY6SyRqhWRsxX1jeEXhyg2ok9ooLu9Z9Bw3C//bOlwp
-         0IUR7ccoUITVCVFcAyWHa5k8GuKX2XOrdfpiL/cbuhzvkNjaqOKvrp55WTlHREQSTwf1
-         MC09jieH2k8gAQeCvJSEz396VKn4PIjTB+i0aidu1rVdS9qio79YEnYI1vt/AYygTjl7
-         nCJJRNhWERMBvpDqCAn1S/yuWRdHFkRmGn1nBdUjKnK5Dw/vA/h7bAE7bFEBiZMqmg/J
-         4EvG44ChmQTbijz7H2i+JbJtfshvur8DQAZW5/xSicgEJULuLhsjSFuXFIwHsCOAIO9d
-         A5DQ==
-X-Gm-Message-State: AOAM533wxXDU7XApCB/tDgGGVlwTLbtsmkKsW+xjdNt//f8FKzG7VSFJ
-        snZMwzHRXp5b+/uTPeY4TJ4OwernmEU=
-X-Google-Smtp-Source: ABdhPJwb5UJ1zyYFxc8niQFhSXfXCY02AiebZG1VCk68dQyf7z4lI+isE+9s2K0ZihUTx51wPbxUAA==
-X-Received: by 2002:aed:22c5:: with SMTP id q5mr21141065qtc.234.1605969848777;
-        Sat, 21 Nov 2020 06:44:08 -0800 (PST)
-Received: from willemb.nyc.corp.google.com ([2620:0:1003:312:f693:9fff:fef4:3e8a])
-        by smtp.gmail.com with ESMTPSA id q15sm4055137qki.13.2020.11.21.06.44.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 06:44:07 -0800 (PST)
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, soheil.kdev@gmail.com,
-        willy@infradead.org, arnd@arndb.de, shuochen@google.com,
-        linux-man@vger.kernel.org, Willem de Bruijn <willemb@google.com>
-Subject: [PATCH v4 4/4] selftests/filesystems: expand epoll with epoll_pwait2
-Date:   Sat, 21 Nov 2020 09:44:00 -0500
-Message-Id: <20201121144401.3727659-5-willemdebruijn.kernel@gmail.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201121144401.3727659-1-willemdebruijn.kernel@gmail.com>
-References: <20201121144401.3727659-1-willemdebruijn.kernel@gmail.com>
+        id S1728163AbgKUOrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 09:47:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728098AbgKUOrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 09:47:45 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0D7522201;
+        Sat, 21 Nov 2020 14:47:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605970064;
+        bh=Cl4E3d2JPq+RWEtQZw6I3IJe+3MOIsFWQMC3attam+M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ASmt0X5x+fFQoqwZ6jgmyyImbqNul1uBJZPdUHLThnJSWxuViJByQLjtHTZ6ONUHp
+         Bu/yvX//4/NaOKLPGDaol+pE1WasIoemqK8ByH1FP8RU7zBfxbvX/uSThyHAGLYq2O
+         ZDkt63PLgShZPdVZ5sv89MixPBeK8VfY6CcYBo/I=
+Date:   Sat, 21 Nov 2020 14:47:39 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        groeck@chromium.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: Re: [PATCH v3 7/9] iio: cros_ec: use
+ devm_iio_triggered_buffer_setup_ext()
+Message-ID: <20201121144739.338dadb3@archlinux>
+In-Reply-To: <CA+U=Dsqsz37HD0rjQLemnkOjdLOSBXoyVbpL_8svKS732jA-Uw@mail.gmail.com>
+References: <20200929125949.69934-1-alexandru.ardelean@analog.com>
+        <20200929125949.69934-8-alexandru.ardelean@analog.com>
+        <CAHp75VerL3x7L=AeLfnT6D01a=FyY3JE4vbwNFMaJz-v=f2k9w@mail.gmail.com>
+        <CA+U=DsoKM6S+1vrhE6txB-zQLhpJE1St19D_tmHa0=bbqj-g8w@mail.gmail.com>
+        <20200929164010.75f191c3@archlinux>
+        <CA+U=Dsqsz37HD0rjQLemnkOjdLOSBXoyVbpL_8svKS732jA-Uw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemb@google.com>
+On Wed, 18 Nov 2020 12:35:16 +0200
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-Code coverage for the epoll_pwait2 syscall.
+> On Tue, Sep 29, 2020 at 6:40 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Tue, 29 Sep 2020 17:31:55 +0300
+> > Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+> >  
+> > > On Tue, Sep 29, 2020 at 4:09 PM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:  
+> > > >
+> > > > On Tue, Sep 29, 2020 at 3:55 PM Alexandru Ardelean
+> > > > <alexandru.ardelean@analog.com> wrote:
+> > > >  
+> > > > > This change switches to the new devm_iio_triggered_buffer_setup_ext()
+> > > > > function and removes the iio_buffer_set_attrs() call, for assigning the
+> > > > > HW FIFO attributes to the buffer.  
+> > > >
+> > > > Sorry, you were too fast with the version, below one nit.
+> > > >  
+> > > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > > > > ---
+> > > > >  .../common/cros_ec_sensors/cros_ec_sensors_core.c | 15 +++++++++------
+> > > > >  1 file changed, 9 insertions(+), 6 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > > > > index c62cacc04672..1eafcf04ad69 100644
+> > > > > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > > > > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > > > > @@ -353,19 +353,22 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
+> > > > >                         if (ret)
+> > > > >                                 return ret;
+> > > > >                 } else {
+> > > > > +                       const struct attribute **fifo_attrs;
+> > > > > +
+> > > > > +                       if (has_hw_fifo)
+> > > > > +                               fifo_attrs = cros_ec_sensor_fifo_attributes;
+> > > > > +                       else
+> > > > > +                               fifo_attrs = NULL;
+> > > > > +
+> > > > >                         /*
+> > > > >                          * The only way to get samples in buffer is to set a
+> > > > >                          * software trigger (systrig, hrtimer).
+> > > > >                          */
+> > > > > -                       ret = devm_iio_triggered_buffer_setup(  
+> > > >  
+> > > > > +                       ret = devm_iio_triggered_buffer_setup_ext(
+> > > > >                                         dev, indio_dev, NULL, trigger_capture,
+> > > > > -                                       NULL);
+> > > > > +                                       NULL, fifo_attrs);  
+> > > >
+> > > > Perhaps it's time to reformat a bit, i.e. move dev to the first line
+> > > > and do the rest accordingly?  
+> > >
+> > > this feels like a mix of preferences here;
+> > > for once, the patch here [as-is], is the minimal form for this change
+> > > [in terms of patch-noise];
+> > > so, some people would choose the least noisiest patch;
+> > >
+> > > also, this indentation was chosen [as-is here] from the start [for
+> > > this code block];
+> > > not sure if it was preferred; i'd suspect it was due to the old 80-col limit;
+> > >
+> > > i'd leave it as-is [for now], or defer the decision to a maintainer to
+> > > decide [either IIO or chromium];  
+> >
+> > The indenting of this whole code block is a bit too deep.
+> >
+> > Looks to me like we should flip the sense of the outer if statement
+> >
+> > if (!physical_device)
+> >         return 0;
+> >
+> > That would lead to a whole bunch of reformatting around here including
+> > picking up this.
+> >
+> > For now I can just shuffle it a bit whilst applying.
+> >
+> > This set isn't likely to make the merge window anyway now as I'd like
+> > it to sit on list a little longer just because it touches several
+> > drivers with active maintainers and I'd like time for them to sanity
+> > check.
+> >  
+> 
+> ping on this;
+> should i do a V4 for this?
+Yes, probably worth sending out again. I'd like to see a few more acks
+on the individual drivers ideally and a v4 will get this to the
+top of peoples' inboxes.
 
-epoll62: Repeat basic test epoll1, but exercising the new syscall.
-epoll63: Pass a timespec and exercise the timeout wakeup path.
+If we don't get them I won't let it block this series, but it's nice
+to try at least!
 
-Changes
-  v4:
-  - fix sys_epoll_pwait2 to take __kernel_timespec (Arnd).
-  - fix sys_epoll_pwait2 to have sigsetsize arg.
+Thanks,
 
-Signed-off-by: Willem de Bruijn <willemb@google.com>
----
- .../filesystems/epoll/epoll_wakeup_test.c     | 72 +++++++++++++++++++
- 1 file changed, 72 insertions(+)
+Jonathan
 
-diff --git a/tools/testing/selftests/filesystems/epoll/epoll_wakeup_test.c b/tools/testing/selftests/filesystems/epoll/epoll_wakeup_test.c
-index 8f82f99f7748..ad7fabd575f9 100644
---- a/tools/testing/selftests/filesystems/epoll/epoll_wakeup_test.c
-+++ b/tools/testing/selftests/filesystems/epoll/epoll_wakeup_test.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #define _GNU_SOURCE
-+#include <asm/unistd.h>
-+#include <linux/time_types.h>
- #include <poll.h>
- #include <unistd.h>
- #include <assert.h>
-@@ -21,6 +23,19 @@ struct epoll_mtcontext
- 	pthread_t waiter;
- };
- 
-+#ifndef __NR_epoll_pwait2
-+#define __NR_epoll_pwait2 -1
-+#endif
-+
-+static inline int sys_epoll_pwait2(int fd, struct epoll_event *events,
-+				   int maxevents,
-+				   const struct __kernel_timespec *timeout,
-+				   const sigset_t *sigset, size_t sigsetsize)
-+{
-+	return syscall(__NR_epoll_pwait2, fd, events, maxevents, timeout,
-+		       sigset, sigsetsize);
-+}
-+
- static void signal_handler(int signum)
- {
- }
-@@ -3377,4 +3392,61 @@ TEST(epoll61)
- 	close(ctx.evfd);
- }
- 
-+/* Equivalent to basic test epoll1, but exercising epoll_pwait2. */
-+TEST(epoll62)
-+{
-+	int efd;
-+	int sfd[2];
-+	struct epoll_event e;
-+
-+	ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sfd), 0);
-+
-+	efd = epoll_create(1);
-+	ASSERT_GE(efd, 0);
-+
-+	e.events = EPOLLIN;
-+	ASSERT_EQ(epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e), 0);
-+
-+	ASSERT_EQ(write(sfd[1], "w", 1), 1);
-+
-+	EXPECT_EQ(sys_epoll_pwait2(efd, &e, 1, NULL, NULL, 0), 1);
-+	EXPECT_EQ(sys_epoll_pwait2(efd, &e, 1, NULL, NULL, 0), 1);
-+
-+	close(efd);
-+	close(sfd[0]);
-+	close(sfd[1]);
-+}
-+
-+/* Epoll_pwait2 basic timeout test. */
-+TEST(epoll63)
-+{
-+	const int cfg_delay_ms = 10;
-+	unsigned long long tdiff;
-+	struct __kernel_timespec ts;
-+	int efd;
-+	int sfd[2];
-+	struct epoll_event e;
-+
-+	ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sfd), 0);
-+
-+	efd = epoll_create(1);
-+	ASSERT_GE(efd, 0);
-+
-+	e.events = EPOLLIN;
-+	ASSERT_EQ(epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e), 0);
-+
-+	ts.tv_sec = 0;
-+	ts.tv_nsec = cfg_delay_ms * 1000 * 1000;
-+
-+	tdiff = msecs();
-+	EXPECT_EQ(sys_epoll_pwait2(efd, &e, 1, &ts, NULL, 0), 0);
-+	tdiff = msecs() - tdiff;
-+
-+	EXPECT_GE(tdiff, cfg_delay_ms);
-+
-+	close(efd);
-+	close(sfd[0]);
-+	close(sfd[1]);
-+}
-+
- TEST_HARNESS_MAIN
--- 
-2.29.2.454.gaff20da3a2-goog
+> 
+> this is related to the multiple IIO buffer support:
+> https://lore.kernel.org/linux-iio/20201117162340.43924-1-alexandru.ardelean@analog.com/T/#t
+> 
+> it's one of the patchsets i could split away on it's own;
+> 
+> > Jonathan
+> >
+> >  
+> > >  
+> > > >  
+> > > > >                         if (ret)
+> > > > >                                 return ret;
+> > > > > -
+> > > > > -                       if (has_hw_fifo)
+> > > > > -                               iio_buffer_set_attrs(indio_dev->buffer,
+> > > > > -                                                    cros_ec_sensor_fifo_attributes);
+> > > > >                 }
+> > > > >         }
+> > > > >
+> > > > > --
+> > > > > 2.17.1
+> > > > >  
+> > > >
+> > > >
+> > > > --
+> > > > With Best Regards,
+> > > > Andy Shevchenko  
+> >  
 
