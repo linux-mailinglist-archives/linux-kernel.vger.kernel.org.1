@@ -2,144 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631702BBCF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FE52BBCFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKUE1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 23:27:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725935AbgKUE1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 23:27:01 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A70E20882;
-        Sat, 21 Nov 2020 04:27:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605932820;
-        bh=gEATBb+DQrKj2BE7dJdalbyOAhad9Yp1pFfW39/l+4o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=SaZlUOfLMXbiv5Tb1ZbtlR/U2s6OsNysQcE+mWwh+7Snildi+xYeme+Z7J4Sd67zz
-         fn49ZQ790B0SJyqlETJ7uM4Q5UvpjL6DEGowRuQHKOXdxwDXa0Gf3OUMGwrg2X7mmy
-         bxjQ9+yBvifqYW75+Bjj4KkIgNfchwTBjPCeat5Q=
-Date:   Fri, 20 Nov 2020 22:26:58 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v12 00/15] Add RCEC handling to PCI/AER
-Message-ID: <20201121042658.GA299315@bjorn-Precision-5520>
+        id S1726543AbgKUE21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 23:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726431AbgKUE20 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 23:28:26 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642D7C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:28:26 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id n12so7267540otk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:28:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RrVnhY0xrtX6cR24sK+ovHu3EWIBRCE8PhOJl9rEWDw=;
+        b=GQUkUyQRpyly/oDa3dMP5A+gQHJz2hBEmNlC83tHBJUagwei/0Ulh6kQWb95h2POhl
+         pXlNDF+SbIr9jsuaRS+DjXMJ7+1kVpugsQDRVyqIwo3CJFs04hNf3TnyTbvMPofgMzGN
+         AlqBox4+gu8wNd+wDneX5djCFxAwssnyGEriQ5RjLgtFGHqBnvN3a0pou3dsVglfbjkd
+         4y1cu10c+h/ug7w5cJ4p8uQklZeUR1yLjk19+0anTkoscq76WU+DsFzFLnd1XvailJOo
+         ByKHTpqEZNS2pvjRdTvo4jPqxwdZ0UJ4BCIFHnOcpaP5tiQtIccZYxIY+Dr63ztgHQHx
+         VR1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RrVnhY0xrtX6cR24sK+ovHu3EWIBRCE8PhOJl9rEWDw=;
+        b=beg4brknVEoXfH43R2AB7T+PluDxMnrA9n3Va5yXCvSlpdG+bx2/bP0jNo08gGxQ3Z
+         alb8zhCQ4gZwZHjvDrgp0aqiHfZdp5klpijCley/h4nde+PoP/ckfMK3foA9IY2VD10y
+         1jTq8OCLJVZXIh+YuEMyJ9StdU91iPChpv1HHAyOCx7R9WUKcCZymI6QWCgKU8z61bcW
+         /a44GTbv6y7n+n1cVAGUPbazUmGM7oPUHAZPMP9AS588QOdY8HQILkRn8Uilr8bEu9TF
+         t1Tf79gednFuqiimkwxWHl7vZKOXLRm3YxP0S2nq+0ohx3xnrPfgJrjJmVMLLEzttUEl
+         kHRw==
+X-Gm-Message-State: AOAM531VEBELodSAUZT5N6mHtb8KxzfTS5CxS42iGzpjGAfO3TiT5ONA
+        iheim7cMmIDHfcKNBKMq4OCKng==
+X-Google-Smtp-Source: ABdhPJwSyOT/wgZnmmxQndxC5aRFDY7aF/v4m9IczY3MdDxKFtfG+54j0fELNhNf6ZdclQiK/Nyi3A==
+X-Received: by 2002:a05:6830:1308:: with SMTP id p8mr14898630otq.330.1605932905627;
+        Fri, 20 Nov 2020 20:28:25 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t19sm2522035otp.51.2020.11.20.20.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 20:28:24 -0800 (PST)
+Date:   Fri, 20 Nov 2020 22:28:23 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] arm64: dts: sdm845: add oneplus 6/t devices
+Message-ID: <20201121042823.GM8532@builder.lan>
+References: <20201112161920.2671430-1-caleb@connolly.tech>
+ <20201112161920.2671430-4-caleb@connolly.tech>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121001036.8560-1-sean.v.kelley@intel.com>
+In-Reply-To: <20201112161920.2671430-4-caleb@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:10:21PM -0800, Sean V Kelley wrote:
-> Changes since v11 [1] and based on pci/master tree [2]:
-> 
-> - No functional changes. Tested with aer injection.
-> 
-> - Merge RCEC class code and extended capability patch with usage.
-> - Apply same optimization for pci_pcie_type(dev) calls in
-> drivers/pci/pcie/portdrv_pci.c and drivers/pci/pcie/aer.c.
-> (Kuppuswamy Sathyanarayanan)
-> 
-> [1] https://lore.kernel.org/linux-pci/20201117191954.1322844-1-sean.v.kelley@intel.com/
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/
-> 
-> 
-> Root Complex Event Collectors (RCEC) provide support for terminating error
-> and PME messages from Root Complex Integrated Endpoints (RCiEPs).  An RCEC
-> resides on a Bus in the Root Complex. Multiple RCECs can in fact reside on
-> a single bus. An RCEC will explicitly declare supported RCiEPs through the
-> Root Complex Endpoint Association Extended Capability.
-> 
-> (See PCIe 5.0-1, sections 1.3.2.3 (RCiEP), and 7.9.10 (RCEC Ext. Cap.))
-> 
-> The kernel lacks handling for these RCECs and the error messages received
-> from their respective associated RCiEPs. More recently, a new CPU
-> interconnect, Compute eXpress Link (CXL) depends on RCEC capabilities for
-> purposes of error messaging from CXL 1.1 supported RCiEP devices.
-> 
-> DocLink: https://www.computeexpresslink.org/
-> 
-> This use case is not limited to CXL. Existing hardware today includes
-> support for RCECs, such as the Denverton microserver product
-> family. Future hardware will be forthcoming.
-> 
-> (See Intel Document, Order number: 33061-003US)
-> 
-> So services such as AER or PME could be associated with an RCEC driver.
-> In the case of CXL, if an RCiEP (i.e., CXL 1.1 device) is associated with a
-> platform's RCEC it shall signal PME and AER error conditions through that
-> RCEC.
-> 
-> Towards the above use cases, add the missing RCEC class and extend the
-> PCIe Root Port and service drivers to allow association of RCiEPs to their
-> respective parent RCEC and facilitate handling of terminating error and PME
-> messages.
-> 
-> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #non-native/no RCEC
-> 
-> 
-> Qiuxu Zhuo (3):
->   PCI/RCEC: Bind RCEC devices to the Root Port driver
->   PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
->   PCI/AER: Add RCEC AER error injection support
-> 
-> Sean V Kelley (12):
->   AER: aer_root_reset() non-native handling
->   PCI/RCEC: Cache RCEC capabilities in pci_init_capabilities()
->   PCI/ERR: Rename reset_link() to reset_subordinates()
->   PCI/ERR: Simplify by using pci_upstream_bridge()
->   PCI/ERR: Simplify by computing pci_pcie_type() once
->   PCI/ERR: Use "bridge" for clarity in pcie_do_recovery()
->   PCI/ERR: Avoid negated conditional for clarity
->   PCI/ERR: Add pci_walk_bridge() to pcie_do_recovery()
->   PCI/ERR: Limit AER resets in pcie_do_recovery()
->   PCI/RCEC: Add pcie_link_rcec() to associate RCiEPs
->   PCI/AER: Add pcie_walk_rcec() to RCEC AER handling
->   PCI/PME: Add pcie_walk_rcec() to RCEC PME handling
-> 
->  drivers/pci/pci.h               |  29 ++++-
->  drivers/pci/pcie/Makefile       |   2 +-
->  drivers/pci/pcie/aer.c          |  89 +++++++++++----
->  drivers/pci/pcie/aer_inject.c   |   5 +-
->  drivers/pci/pcie/err.c          |  93 +++++++++++-----
->  drivers/pci/pcie/pme.c          |  16 ++-
->  drivers/pci/pcie/portdrv_core.c |   9 +-
->  drivers/pci/pcie/portdrv_pci.c  |  13 ++-
->  drivers/pci/pcie/rcec.c         | 190 ++++++++++++++++++++++++++++++++
->  drivers/pci/probe.c             |   2 +
->  include/linux/pci.h             |   5 +
->  include/linux/pci_ids.h         |   1 +
->  include/uapi/linux/pci_regs.h   |   7 ++
->  13 files changed, 393 insertions(+), 68 deletions(-)
->  create mode 100644 drivers/pci/pcie/rcec.c
+On Thu 12 Nov 10:21 CST 2020, Caleb Connolly wrote:
+[..]
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+> new file mode 100644
+> index 000000000000..4e6477f1e574
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+> @@ -0,0 +1,822 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * SDM845 OnePlus 6(T) (enchilada / fajita) common device tree source
+> + *
+> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +#include <dt-bindings/input/linux-event-codes.h>
 
-Good timing, I was just tidying up v11 :)
+Please keep these sorted alphabetically.
 
-Anyway, I applied this to pci/err for v5.11, thanks!
+> +#include "sdm845.dtsi"
+> +
+> +// Needed for some GPIO (like the volume buttons)
 
-Now I see a Tested-by from Jonathan above; this cover letter doesn't
-become part of the git history, so probably I should add that to each
-individual patch, or maybe just the relevant ones if there are some
-that it wouldn't apply to.  I'll tidy that up next week.
+This is or is going to be needed for more things, so feel free to skip
+this comment.
 
-Minor procedural things I fixed up already because I think they're a
-consequence of you building on a previous branch I published: patches
-you post shouldn't include Signed-off-by; you should add your own when
-you write the patch or are part of the delivery path, but you
-shouldn't add *mine*.  I add that when I apply them.
+> +#include "pm8998.dtsi"
+> +#include "pmi8998.dtsi"
+> +
+> +/ {
+> +
+> +	aliases {
+> +		hsuart0 = &uart6;
+> +	};
+> +
+> +	vph_pwr: vph-pwr-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vph_pwr";
+> +		regulator-min-microvolt = <3700000>;
+> +		regulator-max-microvolt = <3700000>;
+> +	};
+> +
+> +	/*
+> +	 * Apparently RPMh does not provide support for PM8998 S4 because it
+> +	 * is always-on; model it as a fixed regulator.
+> +	 */
+> +	vreg_s4a_1p8: pm8998-smps4 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vreg_s4a_1p8";
+> +
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +
+> +		vin-supply = <&vph_pwr>;
+> +	};
+> +
+> +	/*
+> +	 * The touchscreen regulator seems to be controlled somehow by a gpio.
+> +	 */
+> +	ts_1p8_supply: ts_1v8_regulator {
 
-I also removed the first Link: tags since they also look like they're
-from an older version.  You don't need to add those; I add those
-automatically so they point to the mailing list message where the
-patch was posted.
+Please don't use _ in the node name.
+
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "ts_1p8_supply";
+> +
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +
+> +		gpio = <&tlmm 88 0>;
+> +		enable-active-high;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	gpio_tristate_key: gpio-keys {
+> +		compatible = "gpio-keys";
+> +		label = "Tri-state keys";
+
+What kind of button is this?
+
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&tri_state_key_default>;
+> +
+> +		state-top {
+> +			label = "Tri-state key top";
+> +			linux,code = <KEY_MACRO1>;
+> +			interrupt-parent = <&tlmm>;
+> +			interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
+> +			debounce-interval = <500>;
+> +			linux,can-disable;
+> +		};
+> +
+> +		state-middle {
+> +			label = "Tri-state key middle";
+> +			linux,code = <KEY_MACRO2>;
+> +			interrupt-parent = <&tlmm>;
+> +			interrupts = <52 IRQ_TYPE_EDGE_FALLING>;
+> +			debounce-interval = <500>;
+> +			linux,can-disable;
+> +		};
+> +
+> +		state-bottom {
+> +			label = "Tri-state key bottom";
+> +			linux,code = <KEY_MACRO3>;
+> +			interrupt-parent = <&tlmm>;
+> +			interrupts = <126 IRQ_TYPE_EDGE_FALLING>;
+> +			debounce-interval = <500>;
+> +			linux,can-disable;
+> +		};
+> +	};
+[..]
+> +/* Reserved memory changes */
+> +/delete-node/ &rmtfs_mem;
+> +
+> +/ {
+
+You already have one top-level section higher up, please group this in
+there as well.
+
+> +	reserved-memory {
+[..]
+> +&mdss {
+
+To avoid trouble finding your way around this file in the future I would
+prefer if you sorted the nodes alphabetically.
+
+> +	status = "okay";
+> +};
+> +
+[..]
+> +&i2c12 {
+> +	status = "okay";
+> +
+> +	touchscreen: synaptics-rmi4-i2c@20 {
+
+You don't reference &touchscreen, so please omit this..
+
+Regards,
+Bjorn
