@@ -2,100 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0862BC21A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 21:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430182BC222
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 21:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728533AbgKUUqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 15:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgKUUqc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 15:46:32 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E681C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 12:46:32 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 10so14244490wml.2
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 12:46:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7wS3kdSR65IlFtOolDLVBXI5oumbFV3Gfqst8d2FUck=;
-        b=FFQgnNmMGY+sIs7hjUrr+VOpxcPKGZKuOBcUY7VdxlKcY9vGTdZhaEYPuuCbE9AzXn
-         lW6BPQfOTbX5NioUgyZDwvvm5HJSOGYig5GXshWJNG+dROLbC7T7AqMEOoCkKau+BR9a
-         gbRfizr6Rz3VIShg9KJI3LSww9ZLE0XLwUtv5tqh7h3S9wH1vkcsXWD3OqNTfk834e+D
-         e9i6NuBClCBb5NKSK4MZy+1HnOP9OnDgchHymoljOr2mNTRsfIsyyVod9kXmcguBJCRR
-         j4ZBMxZq89BQCbiuhJnQPAItcD685c5ko9H/AY0B2+H4gJz5a/LcvWPr7HokyVwtobEQ
-         dXKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7wS3kdSR65IlFtOolDLVBXI5oumbFV3Gfqst8d2FUck=;
-        b=thmLtvYEaUzKUp9BgZojwBX5K+eT0Y89tZR0dZpFmC2q3TNyve8tUCcDWAwupg/nrF
-         o9PtpiftZ4DAMrhkqqokASHGeKzFPHCKLKo7FJiIbKmT94xx53kXGlmF1lzsPkuDvN99
-         r2NqwGE6xcsU8bI1o34O694I+1xJlg2AYP+6OrwmJw8sx3jbDRgGF3myemZOtE+xQ8g9
-         ZSKgdpu26g23u4XaIYXN9wWgBl9TLyBnT/crWpvNYlw4uem5yYEvnjJDAMEybjFhTrl3
-         rm+nySnB9Y+34D2HT41PXK6dymvqM3dtVA0CruaHtZ4/W2ykv34VdiTdWv5zyzGwfJi1
-         Ok1Q==
-X-Gm-Message-State: AOAM530s2hjc7Soxl0+YxNQS2WWo4ICAEpEifER9tNGkVvbpRwJcLQMT
-        62JjPXyk3e83qOSqX99IxjM3PPCfz/M=
-X-Google-Smtp-Source: ABdhPJwkkbgYsAySxoPulG0ZVcOumh850UGp3YCgXACCkEJ8CmtCOzEcKAxgHndS+G9Acaan1AnoXQ==
-X-Received: by 2002:a1c:e442:: with SMTP id b63mr16883437wmh.10.1605991590882;
-        Sat, 21 Nov 2020 12:46:30 -0800 (PST)
-Received: from ltop.local ([2a02:a03f:b7fe:f700:dcb6:7e9c:ccbf:c450])
-        by smtp.gmail.com with ESMTPSA id h17sm12762072wrp.54.2020.11.21.12.46.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 12:46:30 -0800 (PST)
-Date:   Sat, 21 Nov 2020 21:46:26 +0100
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Jakub Jelinek <jakub@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] ilog2: Improve ilog2 for constant arguments
-Message-ID: <20201121204626.tw3jribsz326e3ag@ltop.local>
-References: <20201120125154.GB3040@hirez.programming.kicks-ass.net>
- <20201121202310.lx2iqqebal3fmmmo@ltop.local>
- <20201121202954.GW3788@tucnak>
+        id S1728549AbgKUUzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 15:55:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728402AbgKUUzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 15:55:11 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69E6920727;
+        Sat, 21 Nov 2020 20:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605992110;
+        bh=ye6Wd9VAdi/Z/6kuARgZpSXsPBJGk3MATkdNDg6IxkY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fXHmEGofGz/HeIMSJOqBOM7tCYFsPtbAG+kxBW79jR652+IMrW7Tt97wf6yVdvfCG
+         wKNQ/EJ2XSRbRDd9DVJpUVN0qX34SBblVvbsxp2CXc9FCKZkpkcw1dlnRAzcogqeD0
+         z3k5GgWXR85XxDiTRipe/By5xXWVeS2uhxFAAKr0=
+Date:   Sat, 21 Nov 2020 12:55:08 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Florian Westphal <fw@strlen.de>, Ido Schimmel <idosch@idosch.org>,
+        Aleksandr Nogikh <aleksandrnogikh@gmail.com>,
+        davem@davemloft.net, edumazet@google.com, andreyknvl@google.com,
+        dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        willemdebruijn.kernel@gmail.com,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
+Message-ID: <20201121125508.4d526dd0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <106fc65f0459bc316e89beaf6bd71e823c4c01b7.camel@sipsolutions.net>
+References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
+        <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
+        <20201121160941.GA485907@shredder.lan>
+        <20201121165227.GT15137@breakpoint.cc>
+        <20201121100636.26aaaf8a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <bcfb0fe1b207d2f4bb52f0d1ef51207f9b5587de.camel@sipsolutions.net>
+        <20201121103529.4b4acbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <106fc65f0459bc316e89beaf6bd71e823c4c01b7.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121202954.GW3788@tucnak>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 09:29:54PM +0100, Jakub Jelinek wrote:
-> On Sat, Nov 21, 2020 at 09:23:10PM +0100, Luc Van Oostenryck wrote:
-> > On Fri, Nov 20, 2020 at 01:51:54PM +0100, Peter Zijlstra wrote:
+On Sat, 21 Nov 2020 20:30:44 +0100 Johannes Berg wrote:
+> On Sat, 2020-11-21 at 10:35 -0800, Jakub Kicinski wrote:
+> > On Sat, 21 Nov 2020 19:12:21 +0100 Johannes Berg wrote:  
+> > > > So I'm leaning towards reverting the whole thing. You can attach
+> > > > kretprobes and record the information you need in BPF maps.    
 > > > 
-> > > Other option would be to change the const_ilog2 macro, though as the
-> > > description says it is meant to be used also in C constant expressions,
-> > > and while GCC will fold it to constant with constant argument even in
-> > > those, perhaps it is better to avoid using extensions in that case.
+> > > I'm not going to object to reverting it (and perhaps redoing it better
+> > > later), but I will point out that kretprobe isn't going to work, you
+> > > eventually need kcov_remote_start() to be called in strategic points
+> > > before processing the skb after it bounced through the system.
+> > > 
+> > > IOW, it's not really about serving userland, it's about enabling (and
+> > > later disabling) coverage collection for the bits of code it cares
+> > > about, mostly because collecting it for _everything_ is going to be too
+> > > slow and will mess up the data since for coverage guided fuzzing you
+> > > really need the reported coverage data to be only about the injected
+> > > fuzz data...  
 > > 
-> > Just for info, the description is outdated and Sparse is just fine with
-> > __builtin_clzll() and friends in constant expressions (since Feb 2017)
+> > All you need is make kcov_remote_start_common() be BPF-able, like 
+> > the LSM hooks are now, right? And then BPF can return whatever handle 
+> > it pleases.  
 > 
-> Why is the description outdated?  It is still an extension that not every
-> compiler might fold in constant expressions.  And, the large expressions
-> aren't really a problem in constant expressions, they will be folded there
-> to constant or error.
-> The problem the patch was trying to solve is that the large expressions are
-> a problem at least for GCC in runtime code when guarded by
-> __builtin_constant_p, because __builtin_constant_p is folded quite late
-> (intentionally so, so that more constants can be propagated into it, e.g.
-> after inlining etc.), and the large expressions might confuse inliner
-> heuristics.
+> Not sure I understand. Are you saying something should call
+> "kcov_remote_start_common()" with, say, the SKB, and leave it to a mass
+> of bpf hooks to figure out where the SKB got cloned or copied or
+> whatnot, track that in a map, and then ... no, wait, I don't really see
+> what you mean, sorry.
+> 
+> IIUC, fundamentally, you have this:
+> 
+>  - at the beginning, a task is tagged with "please collect coverage
+>    data for this handle"
 
-I was only talking about the part "Use this where *sparse* expects a true
-constant expression, e.g. for array 75 indices." and wanted to say that 
-__builtin_clzll() with a constant argument is now also expanded to a
-constant, like GCC does (it wasn't the case before 2017 and I think
-it was the main reason why const_ilog2() is written as it is).
+Write the tag into task local storage, or map indexed by PID.
 
--- Luc
+>  - this task creates an SKB, etc, and all of the code that this task
+>    executes is captured and the coverage data is reported
+
+kprobe the right places to record the skb -> handle mapping.
+
+>  - However, the SKB traverses lots of things, gets copied, cloned, or
+>    whatnot, and eventually leaves the annotated task, say for further
+>    processing in softirq context or elsewhere.
+
+Which is fine.
+
+> Now since the whole point is to see what chaos this SKB created from
+> beginning (allocation) to end (free), since it was filled with fuzzed
+> data, you now have to figure out where to pick back up when the SKB is
+> processed further.
+> 
+> This is what the infrastructure was meant to solve. But note that the
+> SKB might be further cloned etc, so in order to track it you'd have to
+> (out-of-band) figure out all the possible places where it could
+> be reallocated, any time the skb pointer could change.
+
+Ack, you have to figure out all the places anyway, the question is
+whether you put probes there or calls in the source code.
+
+Shifting the maintenance burden but also BPF is flexibility.
+
+> Then, when you know you've got interesting code on your hands, like in
+> mac80211 that was annotated in patch 3 here, you basically say
+> 
+>   "oohhh, this SKB was annotated before, let's continue capturing
+>    coverage data here"
+> 
+> (and turn it off again later by the corresponding kcov_remote_stop().
+
+Yup, the point is you can feed a raw skb pointer (and all other
+possible context you may want) to a BPF prog in kcov_remote_start() 
+and let BPF/BTF give you the handle it recorded in its maps.
+
+> So the only way I could _possibly_ see how to do this would be to
+> 
+>  * capture all possible places where the skb pointer can change
+>  * still call something like skb_get_kcov_handle() but let it call out
+>    to a BPF program to query a map or something to figure out if this
+>    SKB has a handle attached to it
+> 
+> > Or if you don't like BPF or what to KCOV BPF itself in the future you
+> > can roll your own mechanism. The point is - this should be relatively
+> > easily doable out of line...  
+> 
+> Seems pretty complicated to me though ...
+
+It is more complicated. We can go back to an skb field if this work is
+expected to yield results for mac80211. Would you mind sending a patch?
