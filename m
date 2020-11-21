@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0822BBF15
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EBB2BBF18
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgKUMyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 07:54:51 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:35719 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbgKUMyu (ORCPT
+        id S1727802AbgKUM4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 07:56:50 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45580 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727668AbgKUM4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 07:54:50 -0500
-Received: by mail-qk1-f195.google.com with SMTP id v143so11750082qkb.2;
-        Sat, 21 Nov 2020 04:54:49 -0800 (PST)
+        Sat, 21 Nov 2020 07:56:49 -0500
+Received: by mail-qk1-f196.google.com with SMTP id q5so11695714qkc.12;
+        Sat, 21 Nov 2020 04:56:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i2ejWjSwcsPIE/JaW7yGyr3QkPvl0CuFfocLUWFS4q0=;
-        b=cnAZDKY2g/earIKMognEAirAzDmdkFbvqr/OXNoQ3kz7p3J0ljojt8Jqj5IJ/W1HQB
-         YAKIb78SY/tNHvrbFiRE6jBD5dFfORVxU++10TVnTzaMEmteVLIu3r8BQqazneAyfuXP
-         rB2VENxhsMibFX/UA2K/rWUZxoWSlNZ5K2XSXj77/miUEmF9+3QW9gXaAxyr0g3dIdW1
-         9Tk/WFq6bxUIqUxW9huySl0bBfgdY9nmAZy5jL+H+7TjH9ackasmL/ErALJ5E0gaZVZg
-         fFDdVOzNRVL0jaFwGAgXYB4aSVqGx4II/epDreTBkeBZhGmXDi4kfi9o1EaH5TDakc6V
-         M9Jw==
-X-Gm-Message-State: AOAM532dMW0CONQ7qkLU/ybtou5KpDgz+52q4engPMP5XMBdVvnZAZ9T
-        BaWRf7VgElh5NzhfEYjN6A==
-X-Google-Smtp-Source: ABdhPJyI4dNE34z1SUnPBQWVLYdjgLqPkdV2CupYPMB8yoQfkzgp69+njbLGZoagfA+JOBlg9NQeBg==
-X-Received: by 2002:a37:a481:: with SMTP id n123mr20961708qke.114.1605963288811;
-        Sat, 21 Nov 2020 04:54:48 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ToElgtgxokI53Ol3P5lIooZ15Z39ALXjwMgyoo4gBOI=;
+        b=la0bdU8k87RNC8aR3GUJLY41kxJD31M6iK9KEMVVC3GySneRUi4LSrkLewq/u2GRGm
+         /x0EYXo/fO7EE4KW6rRwX/5xwmQbn3VVlqR3Fqq8hPSrZqLJpVX7/Ji4RbWPyuRd7c/E
+         KmJxZjhvPIgY3rFaN6y8mWcMfE5oNPBxRhAPr5pC4meYr6atpHbX3jGcffC3JzGlTep6
+         7EDuR3L9FXyyvwDEnnYzVCkJHBGGeOWa2L2EWxdv6FFodzte+hj3JsjJrrE0M89ha7Ir
+         3E86kx8dHcrQ4X/E4x9z+S/eS9EszESDNly1ZBchUns+YdcUfQzbvuHKhhjeYRIYAAT8
+         Fyxw==
+X-Gm-Message-State: AOAM53393Mwvy1+tcLh8CjOE4ZP7EughqFRl/o4qNMN2K7Yg0b4n/wtB
+        c8jXRawNzqR9TQCvHgkfnAAeOPXx7w==
+X-Google-Smtp-Source: ABdhPJw32SlJwXbb7W/+4G1tBXyRjdh05lyhTKZMeQ50JvIOaSn6aZJvBhb1cBsGLAX7x/7v1FPLIw==
+X-Received: by 2002:a37:a707:: with SMTP id q7mr1466240qke.5.1605963408068;
+        Sat, 21 Nov 2020 04:56:48 -0800 (PST)
 Received: from xps15 ([2607:fb90:5feb:6270:cdf7:680e:59f2:6ccd])
-        by smtp.gmail.com with ESMTPSA id s134sm4045140qke.99.2020.11.21.04.54.45
+        by smtp.gmail.com with ESMTPSA id k4sm3903561qki.2.2020.11.21.04.56.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 04:54:48 -0800 (PST)
-Received: (nullmailer pid 2081252 invoked by uid 1000);
-        Sat, 21 Nov 2020 12:54:43 -0000
-Date:   Sat, 21 Nov 2020 06:54:43 -0600
+        Sat, 21 Nov 2020 04:56:47 -0800 (PST)
+Received: (nullmailer pid 2083927 invoked by uid 1000);
+        Sat, 21 Nov 2020 12:56:42 -0000
+Date:   Sat, 21 Nov 2020 06:56:42 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Yash Shah <yash.shah@sifive.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, Jonathan.Cameron@huawei.com, wsa@kernel.org,
-        sam@ravnborg.org, sagar.kadam@sifive.com, anup@brainfault.org,
-        bp@suse.de, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sachin.ghadi@sifive.com
-Subject: Re: [PATCH 1/2] RISC-V: Update l2 cache DT documentation to add
- support for SiFive FU740
-Message-ID: <20201121125443.GA2076465@robh.at.kernel.org>
-References: <1605172274-44916-1-git-send-email-yash.shah@sifive.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-input@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v1] dt-bindings: touchscreen: add
+ touchscreen-read-duration-us and touchscreen-settling-time-us properties
+Message-ID: <20201121125642.GA2083872@robh.at.kernel.org>
+References: <20201112112048.12134-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1605172274-44916-1-git-send-email-yash.shah@sifive.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112112048.12134-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 02:41:13PM +0530, Yash Shah wrote:
-> The L2 cache controller in SiFive FU740 has 4 ECC interrupt sources as
-> compared to 3 in FU540. Update the DT documentation accordingly with
-> "compatible" and "interrupt" property changes.
+On Thu, 12 Nov 2020 12:20:48 +0100, Oleksij Rempel wrote:
+> According to the TI application bulletin [1] we deal with two generic
+> mechanisms which would affect the precision of provided input events:
 > 
-> Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> |TOUCH SCREEN SETTLING TIME
+> |
+> |When the touch  panel is pressed or touched, there are
+> |two mechanisms that will affect the voltage level at the contact point of
+> |the touch panel. These two mechanisms will cause the voltage across the
+> |touch panel to “ring” (oscillate), and then slowly settle (decay)
+> |down to a stable DC value.
+> |
+> |The two mechanisms are:
+> | 1) Mechanical bouncing caused by vibration of the top layer sheet  of
+> |    the touch  panel  when  the  panel  is  pressed.
+> |
+> | 2) Electrical  ringing  due  to  parasitic  capacitance  between the top
+> |    and bottom layer sheets of the touch panel and at the  input  of  ADS7843
+> |    that  causes  the  voltage  to  “ring”(oscillate).
+> 
+> Since both of this mechanisms are board specific and reflect the
+> mechanical, and electrical properties of end product, it is better to
+> provide a generic properties to address them.
+> 
+> The touchscreen-read-duration-us property should address 1. mechanism.
+> This effect can be triggered by device specific design. The duration ma be
+> dependent on the use case of the end device. For example a touch where
+> writing is required may have other timing requirements as the device
+> where only "buttons" should be pressed.
+> 
+> The touchscreen-settling-time-us property should address 2. mechanism
+> where the size and construction of touch screen plates affect the parasitic
+> capacitance and time needed between enabling power supply for the
+> plates, and actual usable voltage level to detect the position of touch event.
+> 
+> [1] https://www.ti.com/lit/an/sbaa036/sbaa036.pdf
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 33 +++++++++++++++++-----
->  1 file changed, 26 insertions(+), 7 deletions(-)
+>  .../bindings/input/touchscreen/touchscreen.yaml          | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> index efc0198..4873d5c 100644
-> --- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> @@ -27,6 +27,7 @@ select:
->        items:
->          - enum:
->              - sifive,fu540-c000-ccache
-> +            - sifive,fu740-c000-ccache
->  
->    required:
->      - compatible
-> @@ -34,7 +35,9 @@ select:
->  properties:
->    compatible:
->      items:
-> -      - const: sifive,fu540-c000-ccache
-> +      - enum:
-> +          - sifive,fu540-c000-ccache
-> +          - sifive,fu740-c000-ccache
->        - const: cache
->  
->    cache-block-size:
-> @@ -51,12 +54,6 @@ properties:
->  
->    cache-unified: true
->  
-> -  interrupts:
-> -    description: |
-> -      Must contain entries for DirError, DataError and DataFail signals.
-> -    minItems: 3
-> -    maxItems: 3
 
-Keep this here and just change maxItems to 4. Really, what each 
-interrupt is should be listed out as an 'items' entry.
-
-> -
->    reg:
->      maxItems: 1
->  
-> @@ -67,6 +64,28 @@ properties:
->        The reference to the reserved-memory for the L2 Loosely Integrated Memory region.
->        The reserved memory node should be defined as per the bindings in reserved-memory.txt.
->  
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: sifive,fu540-c000-ccache
-> +
-> +then:
-> +  properties:
-> +    interrupts:
-> +      description: |
-> +        Must contain entries for DirError, DataError and DataFail signals.
-> +      minItems: 3
-> +      maxItems: 3
-
-Here you just need 'maxItems: 3'.
-
-> +
-> +else:
-> +  properties:
-> +    interrupts:
-> +      description: |
-> +        Must contain entries for DirError, DirFail, DataError, DataFail signals.
-
-DirFail should be last so you keep the same indices.
-
-> +      minItems: 4
-> +      maxItems: 4
-
-And 'minItems: 4'
-
-> +
->  additionalProperties: false
->  
->  required:
-> -- 
-> 2.7.4
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
