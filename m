@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C13B2BBF44
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 14:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB4F2BBF47
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 14:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgKUNaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 08:30:03 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:37163 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727835AbgKUNaC (ORCPT
+        id S1727874AbgKUNbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 08:31:02 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:46277 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727835AbgKUNbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 08:30:02 -0500
-Received: by mail-qt1-f193.google.com with SMTP id e10so1878779qte.4;
-        Sat, 21 Nov 2020 05:30:00 -0800 (PST)
+        Sat, 21 Nov 2020 08:31:01 -0500
+Received: by mail-qt1-f194.google.com with SMTP id f15so5833166qto.13;
+        Sat, 21 Nov 2020 05:31:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LMYkpGZPQIEZX3RblcCkU4XSLIMzz4ngLSXNIvs/ag8=;
-        b=pyGpqL5PFXkrD766VviJQg/XmeKOX7Sr7pAIQTREPTrIhf/YDohcGM02aW+MjYHNOW
-         UqIBKLC1FK7HmH9X6ykTrzbAWpyJFFZWOnFwrmLJBhUGF421P+uLkuxTFDp5jZetcsgI
-         7V5YoCwnQjp0U9sG9GNT2b+4YQOiyKLTgOPckFwu5tPyMwXoDsT0B3CQBYjEUkKnKH7n
-         vf0SnM+ayD+H7t3PS9q8U6vi0kGAfDU1Klh6WQYi1odYfeSswRTgcw50c3JfHYPiD0MK
-         KHIoCZVy3vXKcXvaCnEjOKh6Kz5cpp4qR819W1SwpU2yzXAQN+u/GDE76mLpMPJ2+rIT
-         mZ0w==
-X-Gm-Message-State: AOAM531wrN2ceQOra9C1liuAZokiL5yP+9Pfw1YoWcTe0OK+UamhOaxI
-        kLmqegM1AVS9zk/dVrTdTw==
-X-Google-Smtp-Source: ABdhPJx/wQGCEQFWfBQ9eUPjaL7l5ZoIwci2QkBaFnEVkDtVziQnW/HiaxN4icHbgUFnNWX0bTuNQQ==
-X-Received: by 2002:ac8:59c5:: with SMTP id f5mr13710063qtf.192.1605965399806;
-        Sat, 21 Nov 2020 05:29:59 -0800 (PST)
+        bh=DRct7Qiz1NdHJ+XJtu4ATcXpdEh8Oy5keY5R6mGzDQs=;
+        b=YS3LUob9jUbXrs9nHQl2mQ40/VQnBNSrxLJ1gQUsfnVGg5ZSRapUJBEG9B9iqOirhf
+         ZgQbYXgHKXpeCIxxgVnfsmTsdUrnjHI1EYMMRZYnT5lQ8/2S3wjGYkxifCEapW+F7Uti
+         +YgYoKMRFf0NZbGyeMJ+ICdK3E8zc/RCYuqy7kI+eJq7eipYjzyCra1DgIBZ0D+SYnSd
+         o0iR15gDnJEi9cZP6Q8JibWnlCSPFAdshARSzzjUdPeESQeqPbBV67S41f6wbMEopcLn
+         cX+CfjbKy0h7xwlXHnD0ELFdGlgZk0f686KvBCOIoZqkUg7+mOuUa4GxhZ/uvIO1bUY5
+         nQeA==
+X-Gm-Message-State: AOAM5324YYchIZUqdxNkoF+AJFVN7Mfdw32VL7kTkJDLFH5YVB2RE1aq
+        E1UtV/f7p/C6RdTdFmJ45w==
+X-Google-Smtp-Source: ABdhPJwxUXBcSJ0PMTqXgEHiurkz3GntUDhncIYmfII33t3GmLNIS7tspLTDzp4JbRXfF8EEU9bw/g==
+X-Received: by 2002:ac8:36bc:: with SMTP id a57mr20501605qtc.193.1605965455403;
+        Sat, 21 Nov 2020 05:30:55 -0800 (PST)
 Received: from xps15 ([172.58.99.237])
-        by smtp.gmail.com with ESMTPSA id z23sm1164116qtq.66.2020.11.21.05.29.56
+        by smtp.gmail.com with ESMTPSA id 9sm4167517qkm.81.2020.11.21.05.30.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 05:29:58 -0800 (PST)
-Received: (nullmailer pid 2128208 invoked by uid 1000);
-        Sat, 21 Nov 2020 13:29:54 -0000
-Date:   Sat, 21 Nov 2020 07:29:54 -0600
+        Sat, 21 Nov 2020 05:30:54 -0800 (PST)
+Received: (nullmailer pid 2129529 invoked by uid 1000);
+        Sat, 21 Nov 2020 13:30:50 -0000
+Date:   Sat, 21 Nov 2020 07:30:50 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Cengiz Can <cengiz@kernel.wtf>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        David Airlie <airlied@linux.ie>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: fsl-imx-drm: fix example compatible string
-Message-ID: <20201121132954.GA2128113@robh.at.kernel.org>
-References: <20201113150618.417424-1-cengiz@kernel.wtf>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     john@phrozen.org, linux-clk@vger.kernel.org, sboyd@kernel.org,
+        mturquette@baylibre.com, jiaxun.yang@flygoat.com,
+        gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
+        tsbogend@alpha.franken.de, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        neil@brown.name, robh+dt@kernel.org, hackpascal@gmail.com
+Subject: Re: [PATCH v3 1/5] dt-bindings: clock: add dt binding header for
+ mt7621 clocks
+Message-ID: <20201121133050.GA2129481@robh.at.kernel.org>
+References: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
+ <20201113154632.24973-2-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113150618.417424-1-cengiz@kernel.wtf>
+In-Reply-To: <20201113154632.24973-2-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 18:06:19 +0300, Cengiz Can wrote:
-> Example `display-subsystem` has an incorrect compatible string.
+On Fri, 13 Nov 2020 16:46:28 +0100, Sergio Paracuellos wrote:
+> Adds dt binding header for 'mediatek,mt7621-clk' clocks.
 > 
-> Required properties section tells that developers should use
-> "fsl,imx-display-subsystem" as "compatible" string but the example
-> misses 'imx-' prefix.
-> 
-> Change example to have correct "compatible" string.
-> 
-> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 > ---
->  Documentation/devicetree/bindings/display/imx/fsl-imx-drm.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/dt-bindings/clock/mt7621-clk.h | 41 ++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/mt7621-clk.h
 > 
 
-Applied, thanks!
+Acked-by: Rob Herring <robh@kernel.org>
