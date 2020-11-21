@@ -2,180 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BB92BBB49
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B86402BBB54
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:00:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbgKUAvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728328AbgKUAvA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:51:00 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B9BC061A4B
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:50:59 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id p22so12732449wmg.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gNfZ0xa6JKwNNxWqj03/KjB0EjaVfS36YlA9F8Reu1w=;
-        b=j4P5Gesa95dGfyRNG4KWRAmUesbt1qCEz9MZcVyRRZef5a9//bkVESKcmemK1Qa5Mf
-         2EY2QipBVW6g9Ez/hC9CGBFw2H2k2caM6kxJ+wYI4lk8K1y7bvToESGzEOApAKO2P7Lz
-         Ncgxb38t4RITuRIkWHXNj+ySXUuvDplVn5niI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gNfZ0xa6JKwNNxWqj03/KjB0EjaVfS36YlA9F8Reu1w=;
-        b=SuWgy98+Hzhg3O89SGSwwAQPFN15LY1KjrpZDyrj8b6Utdyck/eDsywhLX4wmNtSDP
-         Le+W6AriPQm2tcg3rSjBRSho/r/jrF7nT0kUgQmZM+zKjEdRKWmJo+mD0ubiETPLkHZD
-         zw2+AUvY8Ey6Wh65JExTJi29dLquuLdK2Ex9/r4cpRGU+jFrQzyRwdbAloKsBagj+S11
-         qcbZw1I9fDm+aES0Qwi7QmruY3nPVjFpy+nUzRpwspAE1IaOXaKapn9ESmBHOabPiptd
-         bkTZoLMNV86VIOfJGm8VGu6GCHiQKlsjjgInHGbs19CznjxSYL5CoFI19bqWexj7Lh5y
-         JPdw==
-X-Gm-Message-State: AOAM530MjYrtiQPW2z/y89GFWhVDEjc8Ubes/GsP/0HlssEHvjSplwbK
-        o4NWH5s7OrjgOb4ms8GSnjB26P778CfO7L9T
-X-Google-Smtp-Source: ABdhPJwE901Pq8K1Dg2K7dhF6+5tXg1xc7YKa4Hla328PUHTL3fxH0K1hjO6sPaGQs9wHxvOjssF5Q==
-X-Received: by 2002:a1c:f20e:: with SMTP id s14mr12139150wmc.126.1605919858004;
-        Fri, 20 Nov 2020 16:50:58 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id s8sm7133607wrn.33.2020.11.20.16.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 16:50:57 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH bpf-next v2 3/3] bpf: Update LSM selftests for bpf_ima_inode_hash
-Date:   Sat, 21 Nov 2020 00:50:54 +0000
-Message-Id: <20201121005054.3467947-3-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201121005054.3467947-1-kpsingh@chromium.org>
-References: <20201121005054.3467947-1-kpsingh@chromium.org>
+        id S1728060AbgKUA6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:58:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727163AbgKUA6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 19:58:11 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39D2523A65;
+        Sat, 21 Nov 2020 00:58:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605920290;
+        bh=pa7X5LSCIRGbHalxNdy/uOANYLTxDAJNOOjXtkJXTyA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=c79DgVHRz/6UGcT2Cd/MgUZEkJJ+5bpglJSWGj2NBT7g7VVAmIPQMxxUclBR6gjxd
+         CruQ7eceZKVRt26Fj6w6pl5Kgf8fB53Wrazqoa0Qvpwl+VUJaBWhMdZWTnTZ0M5knV
+         M0ROekPqOl0+luJ3Nm8+A2yecRSX9Sm2iECsSwKM=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DA89D3522A6E; Fri, 20 Nov 2020 16:58:09 -0800 (PST)
+Date:   Fri, 20 Nov 2020 16:58:09 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 0/5] Provide SRCU polling grace-period
+ interfaces
+Message-ID: <20201121005809.GA16795@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117004017.GA7444@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
 
-- Update the IMA policy before executing the test binary (this is not an
-  override of the policy, just an append that ensures that hashes are
-  calculated on executions).
+Hello!
 
-- Call the bpf_ima_inode_hash in the bprm_committed_creds hook and check
-  if the call succeeded and a hash was calculated.
+This is V2 of the series provides a polling interface for SRCU grace periods.  The
+API is still as follows:
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- tools/testing/selftests/bpf/config            |  3 ++
- .../selftests/bpf/prog_tests/test_lsm.c       | 32 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/lsm.c       |  7 +++-
- 3 files changed, 41 insertions(+), 1 deletion(-)
+unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 2118e23ac07a..4b5764031368 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -39,3 +39,6 @@ CONFIG_BPF_JIT=y
- CONFIG_BPF_LSM=y
- CONFIG_SECURITY=y
- CONFIG_LIRC=y
-+CONFIG_IMA=y
-+CONFIG_IMA_WRITE_POLICY=y
-+CONFIG_IMA_READ_POLICY=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-index 6ab29226c99b..bcb050a296a4 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-@@ -52,6 +52,28 @@ int exec_cmd(int *monitored_pid)
- 	return -EINVAL;
- }
- 
-+#define IMA_POLICY "measure func=BPRM_CHECK"
-+
-+/* This does not override the policy, IMA policy updates are
-+ * append only, so this just ensures that "measure func=BPRM_CHECK"
-+ * is in the policy. IMA does not allow us to remove this line once
-+ * it is added.
-+ */
-+static int update_ima_policy(void)
-+{
-+	int fd, ret = 0;
-+
-+	fd = open("/sys/kernel/security/ima/policy", O_WRONLY);
-+	if (fd < 0)
-+		return -errno;
-+
-+	if (write(fd, IMA_POLICY, sizeof(IMA_POLICY)) == -1)
-+		ret = -errno;
-+
-+	close(fd);
-+	return ret;
-+}
-+
- void test_test_lsm(void)
- {
- 	struct lsm *skel = NULL;
-@@ -66,6 +88,10 @@ void test_test_lsm(void)
- 	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
- 		goto close_prog;
- 
-+	err = update_ima_policy();
-+	if (CHECK(err, "update_ima_policy", "err %d\n", err))
-+		goto close_prog;
-+
- 	err = exec_cmd(&skel->bss->monitored_pid);
- 	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
- 		goto close_prog;
-@@ -83,6 +109,12 @@ void test_test_lsm(void)
- 	CHECK(skel->bss->mprotect_count != 1, "mprotect_count",
- 	      "mprotect_count = %d\n", skel->bss->mprotect_count);
- 
-+	CHECK(skel->data->ima_hash_ret < 0, "ima_hash_ret",
-+	      "ima_hash_ret = %ld\n", skel->data->ima_hash_ret);
-+
-+	CHECK(skel->bss->ima_hash == 0, "ima_hash",
-+	      "ima_hash = %lu\n", skel->bss->ima_hash);
-+
- 	syscall(__NR_setdomainname, &buf, -2L);
- 	syscall(__NR_setdomainname, 0, -3L);
- 	syscall(__NR_setdomainname, ~0L, -4L);
-diff --git a/tools/testing/selftests/bpf/progs/lsm.c b/tools/testing/selftests/bpf/progs/lsm.c
-index ff4d343b94b5..5adc193e414d 100644
---- a/tools/testing/selftests/bpf/progs/lsm.c
-+++ b/tools/testing/selftests/bpf/progs/lsm.c
-@@ -35,6 +35,8 @@ char _license[] SEC("license") = "GPL";
- int monitored_pid = 0;
- int mprotect_count = 0;
- int bprm_count = 0;
-+long ima_hash_ret = -1;
-+u64 ima_hash = 0;
- 
- SEC("lsm/file_mprotect")
- int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
-@@ -65,8 +67,11 @@ int BPF_PROG(test_void_hook, struct linux_binprm *bprm)
- 	__u32 key = 0;
- 	__u64 *value;
- 
--	if (monitored_pid == pid)
-+	if (monitored_pid == pid) {
- 		bprm_count++;
-+		ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
-+						  &ima_hash, sizeof(ima_hash));
-+	}
- 
- 	bpf_copy_from_user(args, sizeof(args), (void *)bprm->vma->vm_mm->arg_start);
- 	bpf_copy_from_user(args, sizeof(args), (void *)bprm->mm->arg_start);
--- 
-2.29.2.454.gaff20da3a2-goog
+	Returns a "cookie" that can be thought of as a snapshot of
+	the specified SRCU instance's grace-period sequence number.
+	Also ensures that enough future grace periods happen to eventually
+	make the grace-period sequence number reach the cookie.
 
+bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
+
+	Given a cookie from start_poll_synchronize_srcu(), returns true if
+	at least one full SRCU grace period has elapsed in the meantime.
+	Given finite SRCU readers in a well-behaved kernel, the following
+	code will complete in finite time:
+
+		cookie = start_poll_synchronize_srcu(&my_srcu);
+		while (!poll_state_synchronize_srcu(&my_srcu, cookie))
+			schedule_timeout_uninterruptible(1);
+
+unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
+
+	Like start_poll_synchronize_srcu(), except that it does not start
+	any grace periods.  This means that the following code is -not-
+	guaranteed to complete:
+
+		cookie = get_state_synchronize_srcu(&my_srcu);
+		while (!poll_state_synchronize_srcu(&my_srcu, cookie))
+			schedule_timeout_uninterruptible(1);
+
+	Use this if you know that something else will be starting the
+	needed SRCU grace periods.  This might also be useful if you
+	had items that were likely to be reused before the SRCU grace
+	period elapsed, so that you avoid burning CPU on SRCU grace
+	periods that prove to be unnecessary.  Or if you don't want
+	to have more than (say) 100 SRCU grace periods per seconds,
+	in which case you might use a timer to start the grace periods.
+	Or maybe you don't bother starting the SRCU grace period until
+	some sort of emergency situation has arisen.  Or...
+
+	OK, maybe no one needs it, but rcutorture does need it, so here
+	it is anyway.
+
+The patches in this version of the series are as follows:
+
+1.	Make Tiny SRCU use multi-bit grace-period counter.
+
+2.	Provide internal interface to start a Tiny SRCU grace period.
+
+3.	Provide internal interface to start a Tree SRCU grace period.
+
+4.	Provide polling interfaces for Tiny SRCU grace periods.
+
+5.	Provide polling interfaces for Tree SRCU grace periods.
+
+6.	Document polling interfaces for Tree SRCU grace periods.
+
+Changes from v1:
+
+o	Added EXPORT_SYMBOL_GPL() to allow rcutorture testing when
+	rcutorture is built as a module.
+
+o	Applied review feedback from Neeraj Upadhyay.
+
+o	Updated RCU requirements documentation.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/RCU/Design/Requirements/Requirements.rst |   18 ++
+ include/linux/rcupdate.h                               |    2 
+ include/linux/srcu.h                                   |    3 
+ include/linux/srcutiny.h                               |    5 
+ kernel/rcu/srcutiny.c                                  |   76 ++++++++-
+ kernel/rcu/srcutree.c                                  |  133 ++++++++++++-----
+ 6 files changed, 191 insertions(+), 46 deletions(-)
