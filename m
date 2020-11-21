@@ -2,77 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6C02BBCC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65F22BBCC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727157AbgKUDn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 22:43:59 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:53432 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726200AbgKUDn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 22:43:59 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxWtD3jLhf8zMUAA--.32195S2;
-        Sat, 21 Nov 2020 11:43:53 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Sanjay R Mehta <sanju.mehta@amd.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: amd: Use devm_platform_ioremap_resource() in amd_spi_probe
-Date:   Sat, 21 Nov 2020 11:43:51 +0800
-Message-Id: <1605930231-19448-1-git-send-email-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxWtD3jLhf8zMUAA--.32195S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr45Kw15Cw17Zw17uFW8tFb_yoWkCrc_ZF
-        48Cr93Kr45trnYq34Utr1S9ryavFWqgF1F93Z0gFZYq3y5Ja1xA34Dur4DAFyDZwsxJrZ0
-        kFs3Zr4FkwnxCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbwxYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
-        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
-        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUc_-PUUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+        id S1727292AbgKUDom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 22:44:42 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:45806 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727186AbgKUDol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 22:44:41 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605930280; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=WUF9vNijxF2NrVfabfsan6qxRJo2BPnBDbY00KnZ4jg=; b=MUdTZ2aaQ8fbJsrkAlOHxCF048UfyvFDq0ImXuREiM9nOOjjmwS/AabYP6ZHxiSdhWtg7Eyo
+ J5uNuBpspmbB6Z+PnTAsvXVWDKj07CSluhL7J8kQ7XEFlvIsP/E/nQRWmynZUqMjuazNeEJf
+ 6FyeyCgbXXlQ6DrHGf+HLfbYmdU=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fb88d211b731a5d9c3511e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Nov 2020 03:44:33
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F44FC43464; Sat, 21 Nov 2020 03:44:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CCE27C433ED;
+        Sat, 21 Nov 2020 03:44:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CCE27C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v12 5/5] selftest: mhi: Add support to test MHI LOOPBACK
+ channel
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org
+References: <1605566782-38013-1-git-send-email-hemantk@codeaurora.org>
+ <1605566782-38013-6-git-send-email-hemantk@codeaurora.org>
+ <f337319e-d542-67b3-f31e-e4366d822d76@linuxfoundation.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <cfcbb987-89b9-dff2-bd88-abffb9c8cbc6@codeaurora.org>
+Date:   Fri, 20 Nov 2020 19:44:30 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <f337319e-d542-67b3-f31e-e4366d822d76@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify this function implementation by using a known wrapper function.
+Hi Shuah,
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
- drivers/spi/spi-amd.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+On 11/20/20 7:26 AM, Shuah Khan wrote:
+> On 11/16/20 3:46 PM, Hemant Kumar wrote:
+>> Loopback test opens the MHI device file node and writes
+>> a data buffer to it. MHI UCI kernel space driver copies
+>> the data and sends it to MHI uplink (Tx) LOOPBACK channel.
+>> MHI device loops back the same data to MHI downlink (Rx)
+>> LOOPBACK channel. This data is read by test application
+>> and compared against the data sent. Test passes if data
+>> buffer matches between Tx and Rx. Test application performs
+>> open(), poll(), write(), read() and close() file operations.
+>>
+>> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+>> ---
+>>   Documentation/mhi/uci.rst                          |  32 +
+>>   tools/testing/selftests/Makefile                   |   1 +
+>>   tools/testing/selftests/drivers/.gitignore         |   1 +
+>>   tools/testing/selftests/drivers/mhi/Makefile       |   8 +
+>>   tools/testing/selftests/drivers/mhi/config         |   2 +
+>>   .../testing/selftests/drivers/mhi/loopback_test.c  | 802 
+>> +++++++++++++++++++++
+>>   6 files changed, 846 insertions(+)
+>>   create mode 100644 tools/testing/selftests/drivers/mhi/Makefile
+>>   create mode 100644 tools/testing/selftests/drivers/mhi/config
+>>   create mode 100644 tools/testing/selftests/drivers/mhi/loopback_test.c
+>>
+>> diff --git a/Documentation/mhi/uci.rst b/Documentation/mhi/uci.rst
+>> index ce8740e..0a04afe 100644
+>> --- a/Documentation/mhi/uci.rst
+>> +++ b/Documentation/mhi/uci.rst
+>> @@ -79,6 +79,38 @@ MHI client driver performs read operation, same 
+>> data gets looped back to MHI
+>>   host using LOOPBACK channel 1. LOOPBACK channel is used to verify 
+>> data path
+>>   and data integrity between MHI Host and MHI device.
+> 
+> Nice.
+[..]
+>> +
+>> +enum debug_level {
+>> +    DBG_LVL_VERBOSE,
+>> +    DBG_LVL_INFO,
+>> +    DBG_LVL_ERROR,
+>> +};
+>> +
+>> +enum test_status {
+>> +    TEST_STATUS_SUCCESS,
+>> +    TEST_STATUS_ERROR,
+>> +    TEST_STATUS_NO_DEV,
+>> +};
+>> +
+> 
+> Since you are running this test as part of kselftest, please use
+> ksft errors nd returns.
+Are you suggesting to use following macros instead of test_status enum ?
+#define KSFT_PASS  0
+#define KSFT_FAIL  1
 
-diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
-index 7f62954..3cf7609 100644
---- a/drivers/spi/spi-amd.c
-+++ b/drivers/spi/spi-amd.c
-@@ -250,7 +250,6 @@ static int amd_spi_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct spi_master *master;
- 	struct amd_spi *amd_spi;
--	struct resource *res;
- 	int err = 0;
- 
- 	/* Allocate storage for spi_master and driver private data */
-@@ -261,9 +260,7 @@ static int amd_spi_probe(struct platform_device *pdev)
- 	}
- 
- 	amd_spi = spi_master_get_devdata(master);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	amd_spi->io_remap_addr = devm_ioremap_resource(&pdev->dev, res);
-+	amd_spi->io_remap_addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(amd_spi->io_remap_addr)) {
- 		err = PTR_ERR(amd_spi->io_remap_addr);
- 		dev_err(dev, "error %d ioremap of SPI registers failed\n", err);
+> 
+>> +struct lb_test_ctx {
+>> +    char dev_node[256];
+>> +    unsigned char *tx_buff;
+>> +    unsigned char *rx_buff;
+>> +    unsigned int rx_pkt_count;
+>> +    unsigned int tx_pkt_count;
+>> +    int iterations;
+>> +    bool iter_complete;
+>> +    bool comp_complete;
+>> +    bool test_complete;
+>> +    bool all_complete;
+>> +    unsigned long buff_size;
+>> +    long byte_recvd;
+>> +    long byte_sent;
+>> +};
+>> +
+>> +bool force_exit;
+>> +char write_data = 'a';
+>> +int completed_iterations;
+>> +
+>> +struct lb_test_ctx test_ctxt;
+>> +enum debug_level msg_lvl;
+>> +struct pollfd read_fd;
+>> +struct pollfd write_fd;
+>> +enum test_status mhi_test_return_value;
+>> +enum test_status tx_status;
+>> +enum test_status rx_status;
+>> +enum test_status cmp_rxtx_status;
+>> +
+>> +#define test_log(test_msg_lvl, format, ...) do { \
+>> +        if (test_msg_lvl >= msg_lvl) \
+>> +            fprintf(stderr, format, ##__VA_ARGS__); \
+>> +} while (0)
+>> +
+>> +static void loopback_test_sleep_ms(int ms)
+>> +{
+>> +    usleep(1000 * ms);
+>> +}
+>> +
+> 
+> Have you run this as part of "make kselftest" run. How does this
+> sleep work in that env.?
+Looks like kselftest runs this test application by directly executing 
+the binary, but this test application requires a valid mhi device file 
+node as a required parameter. So considering that requirement, is this 
+test application qualifies to run using kselftest ? Without a valid 
+device file node test would fail. Is there an option to run this test as 
+standalone test which can only be run when a mhi device file node is 
+present ? Having said that i tested this driver by
+directly executing it using the test binary which is compiled using
+make loopback_test under mhi dir.
+
+> Are there any cases where this test can't run and have to - those
+> cases need to be skips.
+Yes, as this test application can not run by itself it needs a valid mhi 
+device file node to write and test reads the same device node to get the 
+data back.
+So test can not be run without having a MHI device connected over a 
+transport (in my testing MHI device is connected over PCIe). Could you 
+please suggest an option to use this test application as a standalone 
+test instead of being part of kselftest?
+> 
+> thanks,
+> -- Shuah
+
+Thanks,
+Hemant
 -- 
-2.1.0
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
