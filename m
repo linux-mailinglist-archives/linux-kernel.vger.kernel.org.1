@@ -2,70 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44BD2BC087
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB452BC08D
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgKUQXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 11:23:20 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41062 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726365AbgKUQXU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 11:23:20 -0500
-X-UUID: c9ac944a3fd845ee8b6450e96da9aa93-20201122
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VbMi1WMHImE1SxNiZjVKLJQZc4OmqG02VCrT3cQlEEc=;
-        b=j9twDA628JpFJemsxszvHinXPFQtcKd8dCRj4yMbf2mjG4iKNXWn/bk5WBHXJfa1+nk7AwNMZHF6rTGApHkT3S0czrbGNzs3CBuiIf0WOTxPkYtAov2MM2xONFB5RR4wWDgerN3AwkssMjvYxksBcerLRO0cUOsqdlLKSW+qv/0=;
-X-UUID: c9ac944a3fd845ee8b6450e96da9aa93-20201122
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1844964682; Sun, 22 Nov 2020 00:23:09 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 22 Nov 2020 00:23:05 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 22 Nov 2020 00:23:05 +0800
-Message-ID: <1605975787.10232.0.camel@mtkswgap22>
-Subject: Re: [PATCH] scsi: ufs: Adjust logic in common ADAPT helper
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bean Huo <beanhuo@micron.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-Date:   Sun, 22 Nov 2020 00:23:07 +0800
-In-Reply-To: <20201121044810.507288-1-bjorn.andersson@linaro.org>
-References: <20201121044810.507288-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1726704AbgKUQZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 11:25:27 -0500
+Received: from mga07.intel.com ([134.134.136.100]:60104 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgKUQZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 11:25:25 -0500
+IronPort-SDR: b9KTDjpuEqbz/AYCLQndYThLOQQQE3+6DrSzMrc8XTZywhMU9ePbYwIyAneFm/3EDwn3z/r4rW
+ 8EZQjKPHPdAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9812"; a="235744555"
+X-IronPort-AV: E=Sophos;i="5.78,359,1599548400"; 
+   d="scan'208";a="235744555"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 08:25:25 -0800
+IronPort-SDR: +27ZHzQwkB2oCTZZOyqtZet+eiuKzK+aHmOZHux7knxxZUX2eLzoKynQ+Mj0w2CHyn/xOLa2RV
+ snyDXV/6+uGw==
+X-IronPort-AV: E=Sophos;i="5.78,359,1599548400"; 
+   d="scan'208";a="545854498"
+Received: from ichengtu-mobl1.amr.corp.intel.com (HELO [10.252.131.162]) ([10.252.131.162])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 08:25:24 -0800
+Subject: Re: [PATCH v40 00/24] Intel SGX foundations
+To:     "Dr. Greg" <greg@enjellic.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, sean.j.christopherson@intel.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201121151259.GA3948@wind.enjellic.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5ac4eccb-fcf9-eed3-fcec-b8b6bf56bb39@intel.com>
+Date:   Sat, 21 Nov 2020 08:25:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 5B95A92AAB672D92A148BD01F63A8CC1340096EC2D4807E5D0B315B5ED6BDC822000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201121151259.GA3948@wind.enjellic.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTExLTIwIGF0IDIwOjQ4IC0wODAwLCBCam9ybiBBbmRlcnNzb24gd3JvdGU6
-DQo+IFRoZSBpbnRyb2R1Y3Rpb24gb2YgdWZzaGNkX2RtZV9jb25maWd1cmVfYWRhcHQoKSByZWZh
-Y3RvcmVkIG91dA0KPiBkdXBsaWNhdGlvbiBmcm9tIHRoZSBNZWRpYXRlayBhbmQgUXVhbGNvbW0g
-ZHJpdmVycy4NCj4gDQo+IEJvdGggdGhlc2UgaW1wbGVtZW50YXRpb25zIGhhZCB0aGUgbG9naWMg
-b2Y6DQo+ICAgICBnZWFyX3R4ID09IFVGU19IU19HNCA9PiBQQV9JTklUSUFMX0FEQVBUDQo+ICAg
-ICBnZWFyX3R4ICE9IFVGU19IU19HNCA9PiBQQV9OT19BREFQVA0KPiANCj4gYnV0IG5vdyBib3Ro
-IGltcGxlbWVudGF0aW9ucyBwYXNzIFBBX0lOSVRJQUxfQURBUFQgYXMgImFkYXB0X3ZhbCIgYW5k
-IGlmDQo+IGdlYXJfdHggaXMgbm90IFVGU19IU19HNCB0aGF0IGlzIHJlcGxhY2VkIHdpdGggUEFf
-SU5JVElBTF9BREFQVC4gSW4NCj4gb3RoZXIgd29yZHMsIGl0J3MgUEFfSU5JVElBTF9BREFQVCBp
-biBib3RoIGFib3ZlIGNhc2VzLg0KPiANCj4gVGhlIHJlc3VsdCBpcyB0aGF0IGUuZy4gUXVhbGNv
-bW0gU004MTUwIGhhcyBubyBsb25nZXIgZnVuY3Rpb25hbCBVRlMsIHNvDQo+IGFkanVzdCB0aGUg
-bG9naWMgdG8gbWF0Y2ggdGhlIHByZXZpb3VzIGltcGxlbWVudGF0aW9uLg0KPiANCj4gRml4ZXM6
-IGZjODVhNzRlMjhmZSAoInNjc2k6IHVmczogUmVmYWN0b3IgQURBUFQgY29uZmlndXJhdGlvbiBm
-dW5jdGlvbiIpDQo+IFNpZ25lZC1vZmYtYnk6IEJqb3JuIEFuZGVyc3NvbiA8Ympvcm4uYW5kZXJz
-c29uQGxpbmFyby5vcmc+DQoNClRoYW5rcyBmb3IgdGhlIGZpeC4NCg0KUmV2aWV3ZWQtYnk6IFN0
-YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQo=
+On 11/21/20 7:12 AM, Dr. Greg wrote:
+>> Important Kernel Touch Points
+>> =============================
+>>
+>> This implementation is picky and will decline to work on hardware which
+>> is locked to Intel's root of trust.
+> Given that this driver is no longer locked to the Intel trust root, by
+> virtue of being restricted to run only on platforms which support
+> Flexible Launch Control, there is no longer any legitimate technical
+> reason to not expose all of the functionality of the hardware.
 
+I honestly can't understand what the point of this is, and I mean that
+on multiple levels.
+
+First of all, there's not a coherent description of the problem you're
+solving with ~700 lines of code and the treatise you wrote here instead
+of a changelog.
+
+Second, is the point here to distract folks from testing the branch in
+the tip tree?  Or, is it to show appreciation to maintainers by giving
+them more of the thing they love: code to review?
