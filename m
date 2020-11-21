@@ -2,142 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002C12BBCAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CC32BBCB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727232AbgKUDcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 22:32:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        id S1727310AbgKUDdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 22:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgKUDcM (ORCPT
+        with ESMTP id S1727257AbgKUDdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 22:32:12 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9990CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:32:11 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id d17so16249731lfq.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:32:11 -0800 (PST)
+        Fri, 20 Nov 2020 22:33:37 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488F3C061A47
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:33:37 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id t143so12870130oif.10
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:33:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=rzB/hwZ0bc7Tp0McFrRrCJiNaP6+wPpGO2CCbwua8tY=;
-        b=n+Iyt9uYj9vlwrbnJY31iYSfY3bF+CW5Gh5rK///DQ20/J04N+WfSQi5u1vkBu2+8n
-         5j6+qYLupOu3LOK3sKGwFjARyc5A9qf2U08AnPbdmA24wySo6lUyZm7kOj+E5Ah+BUSw
-         AyCHFfkvTIQSWc7lb6SRn++fm9g/OLVaCtURAxyINO1jrjSd5RWRcRayFzGzYfh5CUuT
-         VtCHqx47+FTR2vfEX0F3eTR8SnO3VlDBsW/ujkPO33CGgrAFGm7W8ImLrHHtSl5Uo1Zk
-         BxzJYexPYeFrTZwvz3cp+U0JiBbWtOjoX+OppXVo8llHzmuiCzSa2iCusL1Ja5nbQzgT
-         1Few==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0W6xG6y3F3gnH7EIvE3GOz2e53+ghrFEXWYHNYyCC5k=;
+        b=HlEY0+cjB7+t/sJ/WxoXZbOxLgtoljIwHI/fkZkk2RxCJdosMVa6DSnTr37LtGk6Bb
+         OjZ6LR3dNSX3XWhtBPj8QLofOkWEBVpKZZFE3CgVoA7LUJE3wAarNj5FXbrVy+1sclMF
+         mLNunsmTeuuh8d5pPDrcGzPLBYi7Tyb7u8vBxUX5Rt6nFHY9GzY8LxuxrdDe5u+OUTd1
+         atgrc/rxb2XI7sAyCkZbOeSn5QEXhBKmwC8yPRZurHLjkvBCJR3ScbvfdRfzMt+MnUdp
+         MErnjdA8DFBTQFfeyx9+cxLHhEdiIA8KANfu0/xMhAXKIddTaK8R5OqSACbI7T/fE9HA
+         Gm9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=rzB/hwZ0bc7Tp0McFrRrCJiNaP6+wPpGO2CCbwua8tY=;
-        b=jlimLKJvOrzPFBydwv0l9qKTFz2m55lAhYjXPBuTAr0uy3hjO6WuX8EAWAaWSC5d7A
-         ZsS+AF/E0R0ZibW8jNSbsex0aIhvSdYfkjvzGubd5EbGojk4hdubz+CVRYQNWd/bn8fP
-         MyrCiN8N7EudTpj1YD1gjJ8KjrKiRuxxdXriQ3mZQmE2VByL6euN19ObkgwXcvnkXJBb
-         2wlvx9FbbUYpJW3lHbaMiA2rJq0luT2GTo7jygSvffSsC89F95NrhuZ93XwF+hq2c77Q
-         TcoDWsi/hRTvgQdnLXAFBwnO6vUmNx3NZF+UcUdDPxMvADCdbANzKUErkU3aWD0IQ6dy
-         AbHg==
-X-Gm-Message-State: AOAM531+aV5TXUFsgflI813XoK6ME7WFEGjLTYZ+yONl/j/Ull26nmF5
-        U4oYd6iAFq0AQ4p51BIIXnO9wk2zZfAvoTfmJD0=
-X-Google-Smtp-Source: ABdhPJzciwzdoWeaNAoDTO+qPa+STxOZjmp9DHj4ek0xB57L6SH9vchlkHv9Z88NFR0R+LP999uQ3na1vA/+szkbvoE=
-X-Received: by 2002:ac2:5486:: with SMTP id t6mr9428425lfk.138.1605929530061;
- Fri, 20 Nov 2020 19:32:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0W6xG6y3F3gnH7EIvE3GOz2e53+ghrFEXWYHNYyCC5k=;
+        b=PIm8EKyKh1pO0IPH3jS4m8UyofpHpsuuCJUayLjm8bP/fw4JKFRhbtvcU4Nf+2PXsF
+         H3M8rDgfBZ4pehL0gesW7L4eozXVRgyHLx4jEYht1yX2ABaKy1PpB8JNU7A4cmBvlK4C
+         ZW6lgpnMVfQgPtKQtBs1FK9UZPrPTQuuuDocGb9JoIS4P/1+TQzaGsn/+8xF8r+cZZSx
+         46PnkRvgqJOsRbMw/u+Cvt0+HFLod42o7uQDNM2jKN8Nk3neK3CKp5EVAiql/RWtpPfp
+         /NhIPaQjHPxJxEub3tWvsfFncgiPyjZ8bJ5oPeogsA1xRcQ5IuWxjsgFMAUx7PE8OivW
+         /pxw==
+X-Gm-Message-State: AOAM532UN6gsDxF+K6+KbHex6L9k5uBl3bWP33HdY5jY9eEGRrVxvhPt
+        pNJGL2WJCvwkGXz27pNgHcitng==
+X-Google-Smtp-Source: ABdhPJwiOQVYvmMdKWveEETFJf3GhH04fnlmOXe5SgI3pZXTweYwqTTj+UxgsA+ZuGrp7SukJaUgkQ==
+X-Received: by 2002:aca:5c82:: with SMTP id q124mr8709268oib.33.1605929616617;
+        Fri, 20 Nov 2020 19:33:36 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 1sm2779466oig.16.2020.11.20.19.33.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 19:33:35 -0800 (PST)
+Date:   Fri, 20 Nov 2020 21:33:34 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: Add a rproc_set_firmware() API
+Message-ID: <20201121033334.GF9177@builder.lan>
+References: <20201121032042.6195-1-s-anna@ti.com>
 MIME-Version: 1.0
-Received: by 2002:ab3:1292:0:0:0:0:0 with HTTP; Fri, 20 Nov 2020 19:32:09
- -0800 (PST)
-Reply-To: z.raqabmohammad09@gmail.com
-From:   "Mr Mohammad Z. Raqab" <justinasanisu@gmail.com>
-Date:   Sat, 21 Nov 2020 03:32:09 +0000
-Message-ID: <CAO5W05ArxRzdvSd8MOmYHAi2Lm3ox7+VQD6GR-=ZCnZZz0QCmQ@mail.gmail.com>
-Subject: ATN:PLEASE/ I AM Mr Mohammad Z. Raqab
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121032042.6195-1-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ATN:PLEASE/ I AM Mr Mohammad Z. Raqab
-Before I introduce myself, I wish to inform you that this letter is
-not a hoax mail and I urge you to treat it serious. This letter must ,
-come to you as a big surprise, but I believe it is only a day that
-people meet and become great friends and business partners.
+On Fri 20 Nov 21:20 CST 2020, Suman Anna wrote:
 
-Please I want you to read this letter very carefully and I must
-apologize for barging this message into your mail box without any
-formal introduction due to the urgency and confidentiality of this
-business and I know that this message will come to you as a surprise.
-Please, this is not a joke and I will not like you to joke with it OK,
-With due respect to your person and much sincerity of purpose, I make
-this contact with you as I believe that you can be of great
-assistance,  to me. My name is Mr Mohammad Z. Raqab, from Burkina
-Faso, West Africa. I
-work in Bank  as telex manager, please see this as a confidential
-message and do  not reveal it to another person, and let me know
-whether you can be of assistance regarding my proposal  below because
-it is top secret.
+> A new API, rproc_set_firmware() is added to allow the remoteproc platform
+> drivers and remoteproc client drivers to be able to configure a custom
+> firmware name that is different from the default name used during
+> remoteproc registration. This function is being introduced to provide
+> a kernel-level equivalent of the current sysfs interface to remoteproc
+> client drivers, and can only change firmwares when the remoteproc is
+> offline. This allows some remoteproc drivers to choose different firmwares
+> at runtime based on the functionality the remote processor is providing.
+> The TI PRU Ethernet driver will be an example of such usage as it
+> requires to use different firmwares for different supported protocols.
+> 
+> Also, update the firmware_store() function used by the sysfs interface
+> to reuse this function to avoid code duplication.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
 
-I am about to retire from active Banking service to start a new life ,
-but I am skeptical to reveal this particular secret to a stranger.
-You must assure me that everything will be handled confidentially
-because we are not going to suffer again in life. It has been 10 years
-now that most of the greedy African Politicians used our bank to
-launder,  money overseas through the help of their Political
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-advisers.  Most of the funds which they transferred out of the shores
-of Africa were gold
-and oil money that was supposed to have been used to develop the
-continent. Their Political advisers always inflated the amounts before
-transferring to foreign accounts,  so I also used the opportunity to
-divert part of the funds hence I am aware that there is no official
-trace of
+Regards,
+Bjorn
 
-how much was transferred as all the accounts used for such  transfers
-were being closed after transfer.  I acted as the Bank Officer to most
-of the politicians and when I discovered that they
-were using me to succeed in their greedy act;  I also cleaned some of
-their banking records from the Bank files and no one cared to ask me
-because the money was too much for them to control,  They laundered
-over $5billion Dollars during the process. Before I send this message
-to you,  I have already diverted ($10.5million Dollars) to an escrow
-account belonging to no one in the bank. The bank is anxious now to
-know who the beneficiary to the funds is because
-
-they have made a lot of profits with the funds. It is more than Eight
-years now and most of the politicians are no longer using our bank to
-transfer funds overseas. The ($10.5million Dollars) has been laying
-waste in our bank and I don't want to retire from the bank without
-transferring the funds to a foreign account to enable me share the
-proceeds with the receiver (a foreigner).
-The money will be shared 60% for me and 40% for you. There is no one
-coming to ask you about the funds because I secured everything. I only
-want you to assist me by providing a reliable bank account where the
-funds can be transferred. You are not to face any difficulties or
-legal implications as I am going to handle the transfer personally. If
-you are capable of receiving the funds,  do let me know immediately to
-enable me give you a detailed
-
-information on what to do.  For me,  I have not stolen the money from
-anyone because the other people that took the whole money did not face
-any problems.  This is my chance to grab my own life opportunity but
-you must keep the details of the funds secret to avoid any leakages as
-no one in the bank knows about my plans.  Please get back to me if you
-are interested and capable to handle this project,  I shall intimate
-you on what to do when I hear from your confirmation and acceptance.
-If you are capable of being my trusted associate,do declare your
-consent to me, I am looking forward to hear from you immediately for
-further information,
-(deal) transaction.
-1)your full name.....
-2) sex.....
-3) age.....
-4) country.....
-5)occupation.....
-6) personal Mobile number.....
-7)Home &office address.....
-8)Your marital status........
-Thanks with my best regards.
-Mr Mohammad Z. Raqab,
-Bank Telex Manager
-Burkina Faso/Ouagadougou
-My PRIVATE mail, z.raqabmohammad09@gmail.com
+> ---
+>  drivers/remoteproc/remoteproc_core.c  | 63 +++++++++++++++++++++++++++
+>  drivers/remoteproc/remoteproc_sysfs.c | 33 +-------------
+>  include/linux/remoteproc.h            |  1 +
+>  3 files changed, 66 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index dab2c0f5caf0..46c2937ebea9 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1934,6 +1934,69 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
+>  #endif
+>  EXPORT_SYMBOL(rproc_get_by_phandle);
+>  
+> +/**
+> + * rproc_set_firmware() - assign a new firmware
+> + * @rproc: rproc handle to which the new firmware is being assigned
+> + * @fw_name: new firmware name to be assigned
+> + *
+> + * This function allows remoteproc drivers or clients to configure a custom
+> + * firmware name that is different from the default name used during remoteproc
+> + * registration. The function does not trigger a remote processor boot,
+> + * only sets the firmware name used for a subsequent boot. This function
+> + * should also be called only when the remote processor is offline.
+> + *
+> + * This allows either the userspace to configure a different name through
+> + * sysfs or a kernel-level remoteproc or a remoteproc client driver to set
+> + * a specific firmware when it is controlling the boot and shutdown of the
+> + * remote processor.
+> + *
+> + * Return: 0 on success or a negative value upon failure
+> + */
+> +int rproc_set_firmware(struct rproc *rproc, const char *fw_name)
+> +{
+> +	struct device *dev;
+> +	int ret, len;
+> +	char *p;
+> +
+> +	if (!rproc || !fw_name)
+> +		return -EINVAL;
+> +
+> +	dev = rproc->dev.parent;
+> +
+> +	ret = mutex_lock_interruptible(&rproc->lock);
+> +	if (ret) {
+> +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (rproc->state != RPROC_OFFLINE) {
+> +		dev_err(dev, "can't change firmware while running\n");
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	len = strcspn(fw_name, "\n");
+> +	if (!len) {
+> +		dev_err(dev, "can't provide empty string for firmware name\n");
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	p = kstrndup(fw_name, len, GFP_KERNEL);
+> +	if (!p) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	kfree(rproc->firmware);
+> +	rproc->firmware = p;
+> +
+> +out:
+> +	mutex_unlock(&rproc->lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(rproc_set_firmware);
+> +
+>  static int rproc_validate(struct rproc *rproc)
+>  {
+>  	switch (rproc->state) {
+> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> index 3fd18a71c188..cf846caf2e1a 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -159,42 +159,13 @@ static ssize_t firmware_store(struct device *dev,
+>  			      const char *buf, size_t count)
+>  {
+>  	struct rproc *rproc = to_rproc(dev);
+> -	char *p;
+> -	int err, len = count;
+> +	int err;
+>  
+>  	/* restrict sysfs operations if not allowed by remoteproc drivers */
+>  	if (rproc->deny_sysfs_ops)
+>  		return -EPERM;
+>  
+> -	err = mutex_lock_interruptible(&rproc->lock);
+> -	if (err) {
+> -		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, err);
+> -		return -EINVAL;
+> -	}
+> -
+> -	if (rproc->state != RPROC_OFFLINE) {
+> -		dev_err(dev, "can't change firmware while running\n");
+> -		err = -EBUSY;
+> -		goto out;
+> -	}
+> -
+> -	len = strcspn(buf, "\n");
+> -	if (!len) {
+> -		dev_err(dev, "can't provide a NULL firmware\n");
+> -		err = -EINVAL;
+> -		goto out;
+> -	}
+> -
+> -	p = kstrndup(buf, len, GFP_KERNEL);
+> -	if (!p) {
+> -		err = -ENOMEM;
+> -		goto out;
+> -	}
+> -
+> -	kfree(rproc->firmware);
+> -	rproc->firmware = p;
+> -out:
+> -	mutex_unlock(&rproc->lock);
+> +	err = rproc_set_firmware(rproc, buf);
+>  
+>  	return err ? err : count;
+>  }
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index dbc3767f7d0e..6e04b99413f8 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -655,6 +655,7 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
+>  
+>  int rproc_boot(struct rproc *rproc);
+>  void rproc_shutdown(struct rproc *rproc);
+> +int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
+>  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
+>  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
+>  int rproc_coredump_add_custom_segment(struct rproc *rproc,
+> -- 
+> 2.28.0
+> 
