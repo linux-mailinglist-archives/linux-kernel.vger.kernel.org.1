@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E49D2BBF88
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77DA2BBF8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgKUOOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 09:14:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52704 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727974AbgKUOOB (ORCPT
+        id S1728020AbgKUOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 09:14:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727974AbgKUOOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 09:14:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605968039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4SrNEeqWVEcvXCl0seBrseTcT0IMzwDCjOyOwZ0vCNA=;
-        b=hL7rMXDAqX/L6HsNtW9UU+MqoHY183/Vadkhr57YtbaZgUWoqbc1c+A8yLvB5LIX9MUPL3
-        gcXe+M7zoo9v+rOMugLJwlZVOIyO1LEe2StlZsKZpmQB9E3d0mptL3UdaJHeiLFTQuUcQh
-        hzfw1SxVJ8Pd3VGwzth4ohenTDkdqXM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-bgXRmFisNpCoZrNH8mhsRQ-1; Sat, 21 Nov 2020 09:13:57 -0500
-X-MC-Unique: bgXRmFisNpCoZrNH8mhsRQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60D23804741;
-        Sat, 21 Nov 2020 14:13:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B39F710016DB;
-        Sat, 21 Nov 2020 14:13:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 04/29] iov_iter: Split the iterate_and_advance() macro
-From:   David Howells <dhowells@redhat.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     dhowells@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 21 Nov 2020 14:13:53 +0000
-Message-ID: <160596803388.154728.17090770115276211012.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
-References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Sat, 21 Nov 2020 09:14:02 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18066C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 06:14:02 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id a3so13086076wmb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 06:14:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IWYFKF/mJ+HUJoPCxsHdk7pAqaDwieEIuOGknNJBkGE=;
+        b=T5kzv0DqSCFOItJlu9zICD7Mvo71KO8n2HK1FPPMevYCRmL3oFyxfWBoQ3uWLUti+f
+         zYUc6sMQvjXZKlrZZaB9hJ+tEX3Fs3JzeqzfxAZEjoJ+duUlL4VOUM79R50TS4F8OGSa
+         WWkDEMixMKiqwkbvRco+h5W+IMoW7hTI6XLM4Bt/hN7i1Fr6GGH7w4Jq+2k5KkkI78w6
+         8YlFJgB3ZTJW6RjkWOwmJETzneES9a1ANCaykUz4nXsYEVfRNk5AYgzSmClfaUK5ebpu
+         IO9NGeO5y06M+Tn+kyVwGen8IJRqa+E8qrcIJOLvXZjZEnxHO0kbNFII5yHeZCB+QUXO
+         zKnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IWYFKF/mJ+HUJoPCxsHdk7pAqaDwieEIuOGknNJBkGE=;
+        b=WO8P9fE9AUwXlEJruDanI9jBWg9cs+kgMpe+hB3EIl4KJmdPDo7MnLfhtwVV6YDpcL
+         jpamS/uefTuy4M2HqTlxgoPzrXzaqFsf3TfaID5reGuSGVyZ9+5NEw3iDjmtjld8gKSV
+         N7oS2a4nXwRBQIHvayRZ0MMLWt5jhNaELusxQfycPqyWVpysZ0yHM2V/iFnAp7CU+meW
+         Kn8/M7AFNR6m116X50V3pYC4K/EMjzniv8gRgmLFidKrZTDIY94BraAtRJ5dhqUaT86T
+         FSGSOb5mlKo2fCcG0E3Aj09aYe+4Loq3MpzN04dhq9dVchZqbug5KdGN1pHqRzAqI9aL
+         S46A==
+X-Gm-Message-State: AOAM533plJSCtQBgGJAq1ysrBTeK1yYTZaCaA+dcBp/twTZaoPTuFndx
+        wowF200D296U8We1BjQx6kYBOA==
+X-Google-Smtp-Source: ABdhPJwh+gQ2mbKXw8vN5oViDyMNpn5R8RMKiFi8GDqjtHa3AWKn3to7d/4Mu3/AdMYvKrlqx0MukA==
+X-Received: by 2002:a1c:99d3:: with SMTP id b202mr14764169wme.0.1605968040759;
+        Sat, 21 Nov 2020 06:14:00 -0800 (PST)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id q1sm1519818wrj.8.2020.11.21.06.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 06:14:00 -0800 (PST)
+Date:   Sat, 21 Nov 2020 15:13:59 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     George Cherian <george.cherian@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, masahiroy@kernel.org,
+        willemdebruijn.kernel@gmail.com, saeed@kernel.org
+Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
+ reporters for NPA
+Message-ID: <20201121141359.GE3055@nanopsycho.orion>
+References: <20201121040201.3171542-1-george.cherian@marvell.com>
+ <20201121040201.3171542-3-george.cherian@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121040201.3171542-3-george.cherian@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split the iterate_and_advance() macro into iovec, bvec, kvec and discard
-variants.  It doesn't handle pipes.
+Sat, Nov 21, 2020 at 05:02:00AM CET, george.cherian@marvell.com wrote:
+>Add health reporters for RVU NPA block.
+>NPA Health reporters handle following HW event groups
+> - GENERAL events
+> - ERROR events
+> - RAS events
+> - RVU event
+>An event counter per event is maintained in SW.
+>
+>Output:
+> # devlink health
+> pci/0002:01:00.0:
+>   reporter npa
+>     state healthy error 0 recover 0
+> # devlink  health dump show pci/0002:01:00.0 reporter npa
+> NPA_AF_GENERAL:
+>        Unmap PF Error: 0
+>        Free Disabled for NIX0 RX: 0
+>        Free Disabled for NIX0 TX: 0
+>        Free Disabled for NIX1 RX: 0
+>        Free Disabled for NIX1 TX: 0
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+This is for 2 ports if I'm not mistaken. Then you need to have this
+reporter per-port. Register ports and have reporter for each.
 
- lib/iov_iter.c |   62 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
-
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 280b5c9c9a9c..a221e7771201 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -147,6 +147,68 @@ static inline bool page_copy_sane(struct page *page, size_t offset, size_t n);
- 	}							\
- }
- 
-+#define iterate_and_advance_iovec(i, n, v, CMD) {		\
-+	if (unlikely(i->count < n))				\
-+		n = i->count;					\
-+	if (i->count) {						\
-+		size_t skip = i->iov_offset;			\
-+		const struct iovec *iov;			\
-+		struct iovec v;					\
-+		iterate_iovec(i, n, v, iov, skip, (CMD))	\
-+			if (skip == iov->iov_len) {		\
-+				iov++;				\
-+				skip = 0;			\
-+			}					\
-+		i->nr_segs -= iov - i->iov;			\
-+		i->iov = iov;					\
-+		i->count -= n;					\
-+		i->iov_offset = skip;				\
-+	}							\
-+}
-+
-+#define iterate_and_advance_bvec(i, n, v, CMD) {		\
-+	if (unlikely(i->count < n))				\
-+		n = i->count;					\
-+	if (i->count) {						\
-+		size_t skip = i->iov_offset;				\
-+		const struct bio_vec *bvec = i->bvec;			\
-+		struct bio_vec v;					\
-+		struct bvec_iter __bi;					\
-+		iterate_bvec(i, n, v, __bi, skip, (CMD))		\
-+			i->bvec = __bvec_iter_bvec(i->bvec, __bi);	\
-+		i->nr_segs -= i->bvec - bvec;				\
-+		skip = __bi.bi_bvec_done;				\
-+		i->count -= n;						\
-+		i->iov_offset = skip;					\
-+	}								\
-+}
-+
-+#define iterate_and_advance_kvec(i, n, v, CMD) {		\
-+	if (unlikely(i->count < n))				\
-+		n = i->count;					\
-+	if (i->count) {						\
-+		size_t skip = i->iov_offset;			\
-+		const struct kvec *kvec;			\
-+		struct kvec v;					\
-+		iterate_kvec(i, n, v, kvec, skip, (CMD))	\
-+			if (skip == kvec->iov_len) {		\
-+				kvec++;				\
-+				skip = 0;			\
-+			}					\
-+		i->nr_segs -= kvec - i->kvec;			\
-+		i->kvec = kvec;					\
-+		i->count -= n;					\
-+		i->iov_offset = skip;				\
-+	}							\
-+}
-+
-+#define iterate_and_advance_discard(i, n) {			\
-+	if (unlikely(i->count < n))				\
-+		n = i->count;					\
-+	i->count -= n;						\
-+	i->iov_offset += n;					\
-+}
-+
- static int copyout(void __user *to, const void *from, size_t n)
- {
- 	if (should_fail_usercopy())
-
-
+NAK.
