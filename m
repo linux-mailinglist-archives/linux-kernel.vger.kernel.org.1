@@ -2,92 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA442BC030
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 16:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3B62BC033
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 16:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgKUPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 10:16:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727874AbgKUPQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 10:16:13 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D953922226;
-        Sat, 21 Nov 2020 15:16:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605971772;
-        bh=J0NAtmLnEUd+mVUZrTSi31yGZZeF71+5jMMP1hUxojI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Hh1N8q8mpi9+5mKubsau4V9mpyEExN/ljKKqy6ooupcTHCFE50N3+wtic4UzWvxLJ
-         3L8PQ6JODlhewB2w/qXjB0joxrrnXjzkST6anCHwtGdcCKVbcrRyNIaXSa0T3PD+se
-         mCLg0CuJPlokQtM0AhFdFUMHKb0qLGMNo8h6afm8=
-Date:   Sat, 21 Nov 2020 15:16:08 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: ad7292: remove unneeded spi_set_drvdata()
-Message-ID: <20201121151608.0b16dc66@archlinux>
-In-Reply-To: <20201120142158.GA2179@smtp.gmail.com>
-References: <20201119142720.86326-1-alexandru.ardelean@analog.com>
-        <20201120142158.GA2179@smtp.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728172AbgKUPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 10:17:28 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42076 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727867AbgKUPR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 10:17:27 -0500
+Received: by mail-lf1-f68.google.com with SMTP id u18so17675319lfd.9;
+        Sat, 21 Nov 2020 07:17:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YhyylT6KFhdowDIfJnJ40q7bI+v1PdaWRmLJxQFG7pA=;
+        b=S3kEvDrwCE/i/Ta1ma7s1G1QFteFQlkJNxwJkApXFJ6VA7PPStDOFZoBqO1JRoRgHX
+         25PXGPAIr+ahNDmnxd4GpuTWTyd6uUC9w8iaNIXp//Z1Vc7cIw0HS7bqAp8CMDStc0Jo
+         EJXLHKP6e2lOb7U2QaPIBRmwH81dTWvw366X/ZjOaSY6yahmkjGcL3lZvHYFRad787R9
+         5qCSVUmHpkIAJQs5CPGhetA+NtdE4iMdKY50Iu4yq5AxhM2CJJd/qqocP6ANHhBvwuf4
+         aqLoGyejN5cOHDBWIfZyXdKx+07w751d80WEY6gT/RgZaKClehmgKs5DusT13E1OFfN1
+         GpKg==
+X-Gm-Message-State: AOAM533rmjno7LqSmt3vXu6IwNXk/OLLUBhz97SlO125r6xiCgqdNEzN
+        PQSrPdOtC9JoUqidiTBJqkb4CANE/HJEkw==
+X-Google-Smtp-Source: ABdhPJxG2SMsWy4gPbQN0ptYATRYhdlYy63rFINniGlIWK6dZehzcROeYtUq0q97YpOgpM4WDwn8yQ==
+X-Received: by 2002:a05:6512:10c9:: with SMTP id k9mr9807523lfg.40.1605971844938;
+        Sat, 21 Nov 2020 07:17:24 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id e14sm733549lfd.145.2020.11.21.07.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 07:17:23 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kgUdm-0007CG-Q7; Sat, 21 Nov 2020 16:17:31 +0100
+Date:   Sat, 21 Nov 2020 16:17:30 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Johan Hovold' <johan@kernel.org>,
+        "tiantao (H)" <tiantao6@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "afaerber@suse.de" <afaerber@suse.de>,
+        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tty: serial: replace spin_lock_irqsave by spin_lock in
+ hard IRQ
+Message-ID: <X7kviiRwuxvPxC8O@localhost>
+References: <1605776489-16283-1-git-send-email-tiantao6@hisilicon.com>
+ <X7d85DKvisjA3nYv@localhost>
+ <9ce93d7b-f769-58ed-e6bf-95c34bd0123e@huawei.com>
+ <X7e7dYlYxPDsj71G@localhost>
+ <40a52ea2273146b98b3ae3439a22d1eb@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <40a52ea2273146b98b3ae3439a22d1eb@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 11:21:58 -0300
-Marcelo Schmitt <marcelo.schmitt1@gmail.com> wrote:
-
-> LGTM.
-> Tested on raspberry pi kernel - rpi-5.9.y.
-> 
-> ad7292 was heavily based on ad7768-1. 
-> Maybe this might apply to ad7768-1 as well.
-> 
-> Reviewed-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-> Tested-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Thanks,
-
-Applied to the togreg branch of iio.git and will be pushed out as testing
-shortly for all the usual reasons.
-
-Thanks,
-
-Jonathan
-
-> 
-> On 11/19, Alexandru Ardelean wrote:
-> > This seems to have been copied from a driver that calls spi_set_drvdata()
-> > but doesn't call spi_get_drvdata().
-> > Setting a private object on the SPI device's object isn't necessary if it
-> > won't be accessed.
-> > This change removes the spi_set_drvdata() call.
+On Fri, Nov 20, 2020 at 08:00:05PM +0000, David Laight wrote:
+> From: Johan Hovold
+> > Sent: 20 November 2020 12:50
 > > 
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > ---
-> >  drivers/iio/adc/ad7292.c | 2 --
-> >  1 file changed, 2 deletions(-)
+> > On Fri, Nov 20, 2020 at 07:25:03PM +0800, tiantao (H) wrote:
+> > > 在 2020/11/20 16:23, Johan Hovold 写道:
+> > > > On Thu, Nov 19, 2020 at 05:01:29PM +0800, Tian Tao wrote:
+> > > >> The code has been in a irq-disabled context since it is hard IRQ. There
+> > > >> is no necessity to do it again.
+> > > >>
+> > > >> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> > > >> ---
+> > > >>   drivers/tty/serial/owl-uart.c | 5 ++---
+> > > >>   1 file changed, 2 insertions(+), 3 deletions(-)
+> > > >>
+> > > >> diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
+> > > >> index c149f8c3..472fdaf 100644
+> > > >> --- a/drivers/tty/serial/owl-uart.c
+> > > >> +++ b/drivers/tty/serial/owl-uart.c
+> > > >> @@ -251,10 +251,9 @@ static void owl_uart_receive_chars(struct uart_port *port)
+> > > >>   static irqreturn_t owl_uart_irq(int irq, void *dev_id)
+> > > >>   {
+> > > >>   	struct uart_port *port = dev_id;
+> > > >> -	unsigned long flags;
+> > > >>   	u32 stat;
+> > > >>
+> > > >> -	spin_lock_irqsave(&port->lock, flags);
+> > > >> +	spin_lock(&port->lock);
+> > > >
+> > > > Same thing here; this will break with forced irq threading (i.e.
+> > > > "threadirqs") since the console code can still end up being called from
+> > > > interrupt context.
 > > 
-> > diff --git a/drivers/iio/adc/ad7292.c b/drivers/iio/adc/ad7292.c
-> > index ab204e9199e9..70e33dd1c9f7 100644
-> > --- a/drivers/iio/adc/ad7292.c
-> > +++ b/drivers/iio/adc/ad7292.c
-> > @@ -276,8 +276,6 @@ static int ad7292_probe(struct spi_device *spi)
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > -	spi_set_drvdata(spi, indio_dev);
-> > -
-> >  	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
-> >  	if (!IS_ERR(st->reg)) {
-> >  		ret = regulator_enable(st->reg);
-> > -- 
-> > 2.17.1
-> >   
+> > > As the following code shows, owl_uart_irq does not run in the irq
+> > > threading context.
+> > >   ret = request_irq(port->irq, owl_uart_irq, IRQF_TRIGGER_HIGH,
+> > >                          "owl-uart", port);
+> > >          if (ret)
+> > >                  return ret;
+> > 
+> > It still runs in a thread when interrupts are forced to be threaded
+> > using the kernel parameter "threadirqs".
+> > 
+> > We just had a revert of a change like yours after lockdep reported the
+> > resulting lock inversion with forced interrupt threading.
+> > 
+> > Whether drivers should have to care about "threadirqs" is a somewhat
+> > different question. Not sure how that's even supposed to work generally
+> > unless we mass-convert drivers to spin_lock_irqsave() (or mark their
+> > interrupts IRQF_NO_THREAD).
+> 
+> Isn't that backwards?
+> 
+> You need to use the 'irqsave' variant in code that might run with
+> interrupts enabled because an interrupt might try to acquire the
+> same lock having interrupted the code that already holds the lock.
+> 
+> If interrupts run as separate threads that can never happen.
+> So in that case all code can use the non-irqsave call.
+> 
+> So either lockdep is broken or you have a different bug.
 
+Not all interrupts run as threads with "threadirqs" so the lock can
+potentially still be taken in hard IRQ context also with forced
+threading.
+
+For console drivers this can even happen for the same interrupt as the
+generic interrupt code can call printk(), and so can any other handler
+that isn't threaded (e.g. hrtimers or explicit IRQF_NO_THREAD).
+
+If a driver exposes an interface that can be called in hard IRQ context,
+it must use spin_lock_irqsave() in its interrupt handler (or use
+IRQF_NO_THREAD) because of "threadirqs".
+
+Johan
