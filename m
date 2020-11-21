@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86402BBB54
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AEE2BBB55
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgKUA6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:58:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727163AbgKUA6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:58:11 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39D2523A65;
-        Sat, 21 Nov 2020 00:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605920290;
-        bh=pa7X5LSCIRGbHalxNdy/uOANYLTxDAJNOOjXtkJXTyA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=c79DgVHRz/6UGcT2Cd/MgUZEkJJ+5bpglJSWGj2NBT7g7VVAmIPQMxxUclBR6gjxd
-         CruQ7eceZKVRt26Fj6w6pl5Kgf8fB53Wrazqoa0Qvpwl+VUJaBWhMdZWTnTZ0M5knV
-         M0ROekPqOl0+luJ3Nm8+A2yecRSX9Sm2iECsSwKM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DA89D3522A6E; Fri, 20 Nov 2020 16:58:09 -0800 (PST)
+        id S1728341AbgKUA62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727163AbgKUA62 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 19:58:28 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63153C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:58:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=/85Vmw+gpTMW9v2I0bLohGt1WwXkc5iB9lprh8ZlXjQ=; b=MBOFltT5rMhYGUyb1hSfUnlUNw
+        ooHgK+uEeW6JYvf4PMjnv4x0LkPr8nEdaHO7ogoncxCc0TaiS8YooICRSPuI8ZsTRli5ejPRIRqmH
+        y+iM1+x89SjbjRH8eiJSeggsFFCQ88c9ABrNleZpCKos5bx0sb6Aep52YCDEqDRbna8aQMNMYpxHb
+        zSdEWhpLfZuKWY0TthfwNwQsV4aNg1/6xoGVavhJhJLeGonOvvPvqiU15vAV+eFUcBerJACkc8kkt
+        vZPJR/uchDvS063Pong6aEedSgq308rSSUWUkptTDWiFkPzRxG0hWus2hLCxmbaPrAy/pvujOpddZ
+        ILn99Ccg==;
+Received: from [2601:1c0:6280:3f0::bcc4]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kgHEE-0004sC-7O; Sat, 21 Nov 2020 00:58:14 +0000
+Subject: Re: [PATCH] fs/stat: set attributes_mask for STATX_ATTR_DAX
+To:     XiaoLi Feng <xifeng@redhat.com>, linux-kernel@vger.kernel.org,
+        ira.weiny@intel.com, darrick.wong@oracle.com
+Cc:     Xiaoli Feng <fengxiaoli0714@gmail.com>
+References: <20201121003331.21342-1-xifeng@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <21890103-fce2-bb50-7fc2-6c6d509b982f@infradead.org>
 Date:   Fri, 20 Nov 2020 16:58:09 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 0/5] Provide SRCU polling grace-period
- interfaces
-Message-ID: <20201121005809.GA16795@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117004017.GA7444@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201121003331.21342-1-xifeng@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Hello!
+I don't know this code, but:
 
-This is V2 of the series provides a polling interface for SRCU grace periods.  The
-API is still as follows:
+On 11/20/20 4:33 PM, XiaoLi Feng wrote:
+> From: Xiaoli Feng <fengxiaoli0714@gmail.com>
+> 
+> keep attributes and attributes_mask are consistent for
+> STATX_ATTR_DAX.
+> ---
+>  fs/stat.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/stat.c b/fs/stat.c
+> index dacecdda2e79..914a61d256b0 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -82,7 +82,7 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
+>  
+>  	if (IS_DAX(inode))
+>  		stat->attributes |= STATX_ATTR_DAX;
+> -
+> +	stat->attributes_mask |= STATX_ATTR_DAX;
 
-unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
+Why shouldn't that be:
 
-	Returns a "cookie" that can be thought of as a snapshot of
-	the specified SRCU instance's grace-period sequence number.
-	Also ensures that enough future grace periods happen to eventually
-	make the grace-period sequence number reach the cookie.
+	if (IS_DAX(inode))
+		stat->attributes_mask |= STATX_ATTR_DAX;
 
-bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
+or combine them, like this:
 
-	Given a cookie from start_poll_synchronize_srcu(), returns true if
-	at least one full SRCU grace period has elapsed in the meantime.
-	Given finite SRCU readers in a well-behaved kernel, the following
-	code will complete in finite time:
+	if (IS_DAX(inode)) {
+		stat->attributes |= STATX_ATTR_DAX;
+		stat->attributes_mask |= STATX_ATTR_DAX;
+	}
 
-		cookie = start_poll_synchronize_srcu(&my_srcu);
-		while (!poll_state_synchronize_srcu(&my_srcu, cookie))
-			schedule_timeout_uninterruptible(1);
 
-unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
+and no need to delete that blank line.
 
-	Like start_poll_synchronize_srcu(), except that it does not start
-	any grace periods.  This means that the following code is -not-
-	guaranteed to complete:
+>  	if (inode->i_op->getattr)
+>  		return inode->i_op->getattr(path, stat, request_mask,
+>  					    query_flags);
+> 
 
-		cookie = get_state_synchronize_srcu(&my_srcu);
-		while (!poll_state_synchronize_srcu(&my_srcu, cookie))
-			schedule_timeout_uninterruptible(1);
+thanks.
+-- 
+~Randy
 
-	Use this if you know that something else will be starting the
-	needed SRCU grace periods.  This might also be useful if you
-	had items that were likely to be reused before the SRCU grace
-	period elapsed, so that you avoid burning CPU on SRCU grace
-	periods that prove to be unnecessary.  Or if you don't want
-	to have more than (say) 100 SRCU grace periods per seconds,
-	in which case you might use a timer to start the grace periods.
-	Or maybe you don't bother starting the SRCU grace period until
-	some sort of emergency situation has arisen.  Or...
-
-	OK, maybe no one needs it, but rcutorture does need it, so here
-	it is anyway.
-
-The patches in this version of the series are as follows:
-
-1.	Make Tiny SRCU use multi-bit grace-period counter.
-
-2.	Provide internal interface to start a Tiny SRCU grace period.
-
-3.	Provide internal interface to start a Tree SRCU grace period.
-
-4.	Provide polling interfaces for Tiny SRCU grace periods.
-
-5.	Provide polling interfaces for Tree SRCU grace periods.
-
-6.	Document polling interfaces for Tree SRCU grace periods.
-
-Changes from v1:
-
-o	Added EXPORT_SYMBOL_GPL() to allow rcutorture testing when
-	rcutorture is built as a module.
-
-o	Applied review feedback from Neeraj Upadhyay.
-
-o	Updated RCU requirements documentation.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/RCU/Design/Requirements/Requirements.rst |   18 ++
- include/linux/rcupdate.h                               |    2 
- include/linux/srcu.h                                   |    3 
- include/linux/srcutiny.h                               |    5 
- kernel/rcu/srcutiny.c                                  |   76 ++++++++-
- kernel/rcu/srcutree.c                                  |  133 ++++++++++++-----
- 6 files changed, 191 insertions(+), 46 deletions(-)
