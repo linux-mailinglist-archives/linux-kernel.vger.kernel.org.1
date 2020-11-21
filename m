@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39822BBA85
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDFE2BBA95
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgKUAIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgKUAIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:08:47 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17ADC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:08:45 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id a18so9442122pfl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:08:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZrI6T0ydbBGHVkvNAITM1/rIzBX4TKDzD+4JBPsjVAU=;
-        b=jdjYaxbUzlqk4snx5STJs9c411mkqGRvaAvaha/amTKXJU9fZPQWsoZ8Ed3KIQw4ja
-         mBRbalwnztTkPDbdJI5G2sIfrSCr7If5HYlFrLCJbofKQbI0ZoWG8UUmNU8xPtQqLFiR
-         RQcHeEoMBRUOZMePca3LRVAiz6fVXCeRkfjAQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZrI6T0ydbBGHVkvNAITM1/rIzBX4TKDzD+4JBPsjVAU=;
-        b=ZuUOIrSUwCLgLdQAyOJkU1lUywFu157xYZTX8WEbe4qTgr3CNSf71V77/f88ubojKv
-         DznY6/zXhTP64hTlpEnFL2YAL+NiYLmH6KLr1Xi/AfiWBvuxE+aX6DEEKVO2Uh2hsFl5
-         y7gKm4LDz/yE5U/Z8FrbG+8h8r60cB52LTGvLb6SQtdd5iGJTk2scBJcUGzmmo88AaT8
-         jkjirPQOg+tJdbR2X9sbXvCrTxuQ5vs+4EWMhE5pFWcMVc1JeuMWZviO05xNU7ng9ieG
-         6TSngDsyTr3bOxhfVt1dMhs0ff6bxfkuBphdeZgPLwpZ9TCzvLNCFMLIkwxNWBCXi9p7
-         wuJw==
-X-Gm-Message-State: AOAM530eND3J9O3QG7VTAANuleq40pzi7cG+KmTUlvlD53cTDzX48H5K
-        4lX4rtYJIYgdoNT47jCT36HhCA==
-X-Google-Smtp-Source: ABdhPJz2VCMT0GkwPGQ5DfLfgvDeslgTacR3q9aKQe4GBKPv6eKou3aGHdxLiBBAYPFreVGoa8LMSA==
-X-Received: by 2002:a62:cd0d:0:b029:18b:a1cc:a5be with SMTP id o13-20020a62cd0d0000b029018ba1cca5bemr16150890pfg.67.1605917325096;
-        Fri, 20 Nov 2020 16:08:45 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id fu5sm5201126pjb.11.2020.11.20.16.08.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 16:08:44 -0800 (PST)
-Date:   Fri, 20 Nov 2020 16:08:43 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2 1/2] kbuild: Hoist '--orphan-handling' into Kconfig
-Message-ID: <202011201607.75FA476@keescook>
-References: <20201113195553.1487659-1-natechancellor@gmail.com>
- <20201119204656.3261686-1-natechancellor@gmail.com>
+        id S1728396AbgKUAKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:10:40 -0500
+Received: from mga02.intel.com ([134.134.136.20]:34298 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727215AbgKUAKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 19:10:40 -0500
+IronPort-SDR: ZF5K6i1/I+QnGPi182sLuXLRMMxd5OSxaG89CGE/ZEkJPX5wPi+UxbTgxKBkSbwON3mBHcOVRH
+ e0al3Qt0Dg2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="158601548"
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
+   d="scan'208";a="158601548"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 16:10:39 -0800
+IronPort-SDR: W8ZgQ8qQfq/Ck1XfAsO+oAKV8wqOO9F+LyAt2albZvLWhkW0AtRKoubSzVHry0DYC6ZVt9yRqu
+ xc8mxT68qSbQ==
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
+   d="scan'208";a="369387281"
+Received: from unknown (HELO arch-ashland-svkelley.intel.com) ([10.212.171.128])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 16:10:38 -0800
+From:   Sean V Kelley <sean.v.kelley@intel.com>
+To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: [PATCH v12 00/15] Add RCEC handling to PCI/AER
+Date:   Fri, 20 Nov 2020 16:10:21 -0800
+Message-Id: <20201121001036.8560-1-sean.v.kelley@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119204656.3261686-1-natechancellor@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:46:56PM -0700, Nathan Chancellor wrote:
-> Currently, '--orphan-handling=warn' is spread out across four different
-> architectures in their respective Makefiles, which makes it a little
-> unruly to deal with in case it needs to be disabled for a specific
-> linker version (in this case, ld.lld 10.0.1).
-> 
-> To make it easier to control this, hoist this warning into Kconfig and
-> the main Makefile so that disabling it is simpler, as the warning will
-> only be enabled in a couple places (main Makefile and a couple of
-> compressed boot folders that blow away LDFLAGS_vmlinx) and making it
-> conditional is easier due to Kconfig syntax. One small additional
-> benefit of this is saving a call to ld-option on incremental builds
-> because we will have already evaluated it for CONFIG_LD_ORPHAN_WARN.
-> 
-> To keep the list of supported architectures the same, introduce
-> CONFIG_ARCH_WANT_LD_ORPHAN_WARN, which an architecture can select to
-> gain this automatically after all of the sections are specified and size
-> asserted. A special thanks to Kees Cook for the help text on this
-> config.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1187
-> Acked-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Changes since v11 [1] and based on pci/master tree [2]:
 
-Masahiro, do you want to take these to get them to Linus for v5.10? I
-can send them if you'd prefer.
+- No functional changes. Tested with aer injection.
 
--Kees
+- Merge RCEC class code and extended capability patch with usage.
+- Apply same optimization for pci_pcie_type(dev) calls in
+drivers/pci/pcie/portdrv_pci.c and drivers/pci/pcie/aer.c.
+(Kuppuswamy Sathyanarayanan)
 
--- 
-Kees Cook
+[1] https://lore.kernel.org/linux-pci/20201117191954.1322844-1-sean.v.kelley@intel.com/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/
+
+
+Root Complex Event Collectors (RCEC) provide support for terminating error
+and PME messages from Root Complex Integrated Endpoints (RCiEPs).  An RCEC
+resides on a Bus in the Root Complex. Multiple RCECs can in fact reside on
+a single bus. An RCEC will explicitly declare supported RCiEPs through the
+Root Complex Endpoint Association Extended Capability.
+
+(See PCIe 5.0-1, sections 1.3.2.3 (RCiEP), and 7.9.10 (RCEC Ext. Cap.))
+
+The kernel lacks handling for these RCECs and the error messages received
+from their respective associated RCiEPs. More recently, a new CPU
+interconnect, Compute eXpress Link (CXL) depends on RCEC capabilities for
+purposes of error messaging from CXL 1.1 supported RCiEP devices.
+
+DocLink: https://www.computeexpresslink.org/
+
+This use case is not limited to CXL. Existing hardware today includes
+support for RCECs, such as the Denverton microserver product
+family. Future hardware will be forthcoming.
+
+(See Intel Document, Order number: 33061-003US)
+
+So services such as AER or PME could be associated with an RCEC driver.
+In the case of CXL, if an RCiEP (i.e., CXL 1.1 device) is associated with a
+platform's RCEC it shall signal PME and AER error conditions through that
+RCEC.
+
+Towards the above use cases, add the missing RCEC class and extend the
+PCIe Root Port and service drivers to allow association of RCiEPs to their
+respective parent RCEC and facilitate handling of terminating error and PME
+messages.
+
+Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #non-native/no RCEC
+
+
+Qiuxu Zhuo (3):
+  PCI/RCEC: Bind RCEC devices to the Root Port driver
+  PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+  PCI/AER: Add RCEC AER error injection support
+
+Sean V Kelley (12):
+  AER: aer_root_reset() non-native handling
+  PCI/RCEC: Cache RCEC capabilities in pci_init_capabilities()
+  PCI/ERR: Rename reset_link() to reset_subordinates()
+  PCI/ERR: Simplify by using pci_upstream_bridge()
+  PCI/ERR: Simplify by computing pci_pcie_type() once
+  PCI/ERR: Use "bridge" for clarity in pcie_do_recovery()
+  PCI/ERR: Avoid negated conditional for clarity
+  PCI/ERR: Add pci_walk_bridge() to pcie_do_recovery()
+  PCI/ERR: Limit AER resets in pcie_do_recovery()
+  PCI/RCEC: Add pcie_link_rcec() to associate RCiEPs
+  PCI/AER: Add pcie_walk_rcec() to RCEC AER handling
+  PCI/PME: Add pcie_walk_rcec() to RCEC PME handling
+
+ drivers/pci/pci.h               |  29 ++++-
+ drivers/pci/pcie/Makefile       |   2 +-
+ drivers/pci/pcie/aer.c          |  89 +++++++++++----
+ drivers/pci/pcie/aer_inject.c   |   5 +-
+ drivers/pci/pcie/err.c          |  93 +++++++++++-----
+ drivers/pci/pcie/pme.c          |  16 ++-
+ drivers/pci/pcie/portdrv_core.c |   9 +-
+ drivers/pci/pcie/portdrv_pci.c  |  13 ++-
+ drivers/pci/pcie/rcec.c         | 190 ++++++++++++++++++++++++++++++++
+ drivers/pci/probe.c             |   2 +
+ include/linux/pci.h             |   5 +
+ include/linux/pci_ids.h         |   1 +
+ include/uapi/linux/pci_regs.h   |   7 ++
+ 13 files changed, 393 insertions(+), 68 deletions(-)
+ create mode 100644 drivers/pci/pcie/rcec.c
+
+--
+2.29.2
+
