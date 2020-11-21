@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE3D2BBE3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 10:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F87A2BBE40
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 10:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727314AbgKUJiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 04:38:13 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45346 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgKUJiM (ORCPT
+        id S1727358AbgKUJpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 04:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727257AbgKUJpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 04:38:12 -0500
-Date:   Sat, 21 Nov 2020 09:38:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605951489;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JMSdUI6XS0tsUduJbOS41qb9ms4EeL+JhqDmIUyDRq0=;
-        b=VIqwWEQrY/+Oeof1rC9jSqo+eq4wUsXZox0CGPwj2SFlzo5AbPeqWtGDmOKys+Moy5TPj8
-        W/Oq5BJ/Qj2+wCRuRh9RCCwwCMcJk1yh1nX+APLMNSkFl8PqUYeN9ETkiLXiOw967wFZ/p
-        0Odc+xK0i6pvULdjh9ICjmVBz1qHgzT30nxTUqZDBSzMZKrIPAa0W59qKyBhWH1gGR4a8E
-        MxXJxUpCIRsFuPoeCm3ktQ+GgHZdA2GdK73UNB/cysKtlqjiBvrGNyXDzyZg6lNg3nKQIK
-        Yr8DS+17+7YKu4DXig0afV793q2ehuGfQtwej3Dbj0e8jDFGvva95C+zX1ggmQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605951489;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JMSdUI6XS0tsUduJbOS41qb9ms4EeL+JhqDmIUyDRq0=;
-        b=4UtOABd5/oYNN+mV8cZPulhubHBvtoKp3LA/grnB0On5w6A1szmGKjoG0FFkJp2ijekCnL
-        Zaz9cbjrP1OIv7CQ==
-From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/boot/compressed/64: Use TEST %reg,%reg
- instead of CMP $0,%reg
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201029160258.139216-1-ubizjak@gmail.com>
-References: <20201029160258.139216-1-ubizjak@gmail.com>
+        Sat, 21 Nov 2020 04:45:06 -0500
+Received: from smtp-42ab.mail.infomaniak.ch (smtp-42ab.mail.infomaniak.ch [IPv6:2001:1600:3:17::42ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF9EC061A49;
+        Sat, 21 Nov 2020 01:45:06 -0800 (PST)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CdT6R6RqJzlhrhL;
+        Sat, 21 Nov 2020 10:45:03 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CdT6P5kbjzlh8TD;
+        Sat, 21 Nov 2020 10:45:01 +0100 (CET)
+Subject: Re: [PATCH v24 02/12] landlock: Add ruleset and domain management
+To:     Jann Horn <jannh@google.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201112205141.775752-1-mic@digikod.net>
+ <20201112205141.775752-3-mic@digikod.net>
+ <CAG48ez2RE6S7jKQY3iyoNRM5vV67W4S7OwJ0gmNGy+MB8F56vg@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <28499c4b-d388-7bd1-046e-a775c326e156@digikod.net>
+Date:   Sat, 21 Nov 2020 10:45:01 +0100
+User-Agent: 
 MIME-Version: 1.0
-Message-ID: <160595148786.11244.5880484462586450663.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAG48ez2RE6S7jKQY3iyoNRM5vV67W4S7OwJ0gmNGy+MB8F56vg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     ab09b58e4bdfdbcec425e54ebeaf6e209a96318f
-Gitweb:        https://git.kernel.org/tip/ab09b58e4bdfdbcec425e54ebeaf6e209a96318f
-Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Thu, 29 Oct 2020 17:02:58 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 21 Nov 2020 10:26:25 +01:00
+On 21/11/2020 08:00, Jann Horn wrote:
+> On Thu, Nov 12, 2020 at 9:51 PM Mickaël Salaün <mic@digikod.net> wrote:
+>> A Landlock ruleset is mainly a red-black tree with Landlock rules as
+>> nodes.  This enables quick update and lookup to match a requested
+>> access, e.g. to a file.  A ruleset is usable through a dedicated file
+>> descriptor (cf. following commit implementing syscalls) which enables a
+>> process to create and populate a ruleset with new rules.
+>>
+>> A domain is a ruleset tied to a set of processes.  This group of rules
+>> defines the security policy enforced on these processes and their future
+>> children.  A domain can transition to a new domain which is the
+>> intersection of all its constraints and those of a ruleset provided by
+>> the current process.  This modification only impact the current process.
+>> This means that a process can only gain more constraints (i.e. lose
+>> accesses) over time.
+>>
+>> Cc: James Morris <jmorris@namei.org>
+>> Cc: Jann Horn <jannh@google.com>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Serge E. Hallyn <serge@hallyn.com>
+>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+>> ---
+>>
+>> Changes since v23:
+>> * Always intersect access rights.  Following the filesystem change
+>>   logic, make ruleset updates more consistent by always intersecting
+>>   access rights (boolean AND) instead of combining them (boolean OR) for
+>>   the same layer.
+> 
+> This seems wrong to me. If some software e.g. builds a policy that
+> allows it to execute specific libraries and to open input files
+> specified on the command line, and the user then specifies a library
+> as an input file, this change will make that fail unless the software
+> explicitly deduplicates the rules.
+> Userspace will be forced to add extra complexity to work around this.
 
-x86/boot/compressed/64: Use TEST %reg,%reg instead of CMP $0,%reg
+That's a valid use case I didn't think about. Reverting this change is
+not an issue.
 
-Use TEST %reg,%reg which sets the zero flag in the same way as CMP
-$0,%reg, but the encoding uses one byte less.
+> 
+>>   This defensive approach could also help avoid user
+>>   space to inadvertently allow multiple access rights for the same
+>>   object (e.g.  write and execute access on a path hierarchy) instead of
+>>   dealing with such inconsistency.  This can happen when there is no
+>>   deduplication of objects (e.g. paths and underlying inodes) whereas
+>>   they get different access rights with landlock_add_rule(2).
+> 
+> I don't see why that's an issue. If userspace wants to be able to
+> access the same object in different ways for different purposes, it
+> should be able to do that, no?
+> 
+> I liked the semantics from the previous version.
+> 
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20201029160258.139216-1-ubizjak@gmail.com
----
- arch/x86/boot/compressed/head_64.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index 017de6c..e94874f 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -241,12 +241,12 @@ SYM_FUNC_START(startup_32)
- 	leal	rva(startup_64)(%ebp), %eax
- #ifdef CONFIG_EFI_MIXED
- 	movl	rva(efi32_boot_args)(%ebp), %edi
--	cmp	$0, %edi
-+	testl	%edi, %edi
- 	jz	1f
- 	leal	rva(efi64_stub_entry)(%ebp), %eax
- 	movl	rva(efi32_boot_args+4)(%ebp), %esi
- 	movl	rva(efi32_boot_args+8)(%ebp), %edx	// saved bootparams pointer
--	cmpl	$0, %edx
-+	testl	%edx, %edx
- 	jnz	1f
- 	/*
- 	 * efi_pe_entry uses MS calling convention, which requires 32 bytes of
-@@ -592,7 +592,7 @@ SYM_CODE_START(trampoline_32bit_src)
- 	movl	%eax, %cr0
- 
- 	/* Check what paging mode we want to be in after the trampoline */
--	cmpl	$0, %edx
-+	testl	%edx, %edx
- 	jz	1f
- 
- 	/* We want 5-level paging: don't touch CR3 if it already points to 5-level page tables */
-@@ -622,7 +622,7 @@ SYM_CODE_START(trampoline_32bit_src)
- 
- 	/* Enable PAE and LA57 (if required) paging modes */
- 	movl	$X86_CR4_PAE, %eax
--	cmpl	$0, %edx
-+	testl	%edx, %edx
- 	jz	1f
- 	orl	$X86_CR4_LA57, %eax
- 1:
+I agree, but the real issue is with the ruleset layers applied to the
+filesystem, cf. patch 7.
