@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D070C2BC19E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764FF2BC1A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbgKUSvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:51:54 -0500
-Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:36476 "EHLO
-        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728319AbgKUSvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:51:54 -0500
-Received: from CMGW (unknown [10.9.0.13])
-        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id 92E86175C7E
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 11:51:52 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id gXzEkRSCWi1lMgXzEkQyJJ; Sat, 21 Nov 2020 11:51:52 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.2 cv=D4A3ErZj c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10 a=nNwsprhYR40A:10
- a=evQFzbml-YQA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=G9OVi-XX-SaVrF5UqbQA:9
- a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HotaPkXnnpv3O3DIEezLBKrXxNiD0dVLa4OpYyJGbVE=; b=rXxT8kLIjYMFJ0NTHFNeIef7W8
-        nBClDWJC3f/IkYwxtWppURf5lc3RrmUJQgUD8VM4qjArsm9h1vFEYlcXubvxcOPPz9ETeScoxnigF
-        RKisfl1BNXu9PSa8gQSekgmkTdGba2v4rt+JabvcyS/pnSPMM60nZMmu/f2u31+3T6vswIjYqW7c0
-        F5CUCXX7TAtIVPGjfvY8UErrPXjjKsoBxt8pqKxF0dDtmys35Y8694DBA4I8oXgUT0nbegtxecfTC
-        za1hKfrL50JZ4Xpkt8zCVC/R2XlooYLQ6m3DJUXEBsPAEPt7Djd+Q2Ew1ZPE2MHBnSTsMkuwRTVpy
-        AJvA1LkA==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:40998 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kgXzD-003D3U-Gp; Sat, 21 Nov 2020 18:51:51 +0000
-Date:   Sat, 21 Nov 2020 10:51:51 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Eddie James <eajames@linux.ibm.com>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org
-Subject: Re: [PATCH v2 0/3] occ: Add support for P10
-Message-ID: <20201121185150.GD114144@roeck-us.net>
-References: <20201120010315.190737-1-joel@jms.id.au>
+        id S1728370AbgKUSws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:52:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727426AbgKUSws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 13:52:48 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B60FD2100A;
+        Sat, 21 Nov 2020 18:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605984767;
+        bh=IizbgpwErbJ0WdRS9sDvtFCgeiFKeREputej/1MN4aw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nBC2o99dHRLSfg8C/TWmJsLlXp0xZ3gH+YHzpGKt8myYbtsSiJCSZUuA4GJXVRcDr
+         /dRbfTrgZQ1ripWDQMG4c8nebIjm3FoiBXtApG74rJfqBJ5H2wmA54h2cv97lSllum
+         lFPyFqYCGXTVkuHBxNiFap3hOD7aHxpwvm4HD44o=
+Date:   Sat, 21 Nov 2020 18:52:43 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lars@metafoo.de>
+Subject: Re: [RFC PATCH 00/12] iio: core,buffer: add support for multiple
+ IIO buffers per IIO device
+Message-ID: <20201121185243.255d33b2@archlinux>
+In-Reply-To: <20201117162340.43924-1-alexandru.ardelean@analog.com>
+References: <20201117162340.43924-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120010315.190737-1-joel@jms.id.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kgXzD-003D3U-Gp
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:40998
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 74
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:33:12AM +1030, Joel Stanley wrote:
-> Hi Guenter, here's v2 of this series on behalf of Eddie. I made the
-> change to the compatible string that we spoke about in v2, and I'm happy
-> for these to go through the hwmon tree.
-> 
+On Tue, 17 Nov 2020 18:23:28 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-I'll be happy to do that, as soon as we get a Reviewed-by: tag for the DT
-change.
+> Continuing from:
+>   https://lore.kernel.org/linux-iio/20200517144023.6c5cb169@archlinux/
+>=20
+> This is a V2 of the initial attempt in the discussion above.
+> But it did not occur to me that I should mark it as V2 when I generated
+> the patches.
+> I've only tested [so far] that the current IIO buffer mechnism still work=
+s.
+> And decided to show this sketch patchset.
+>=20
+> This requires the ioctl() centralization mechanism, for which I sent a
+> fix earlier.
+>   https://lore.kernel.org/linux-iio/CA+U=3DDsqf3UgyM666Gg9EmehpWiucDx2P0b=
+msC9JR--JJDT_eWQ@mail.gmail.com/T/#t
+>   https://lore.kernel.org/linux-iio/20201117095154.7189-1-alexandru.ardel=
+ean@analog.com/T/#u
+>=20
+> The gist of this is that now, the first IIO buffer should work as
+> before, but all extra buffers should go through the anon inodes
+> mechanism.
+> I'd need to find a device or a way or a chip to test these extra buffers
+> stuff. But I'm confident that this current form should eventually work
+> with multiple IIO buffers per 1 IIO device and with anon inodes.
+>=20
+> Maybe I'll take some of the patches in this set separately and send them
+> individually. The problem with patchsets like this that tackle changes
+> in a framework (like IIO) is that I become unsure after the 5th-7th patch,
+> that the approach is correct. And I get even more unsure after that.
+>=20
+> I'll create some userspace code to test this a bit, but I thought I'd
+> send an RFC in the meantime.
 
-Thanks,
-Guenter
+=46rom a first read, with all the warnings you give above, this looks pretty
+good to me.   The kobj stuff is a little nasty and needs more docs
+but other than that it all looks quite pleasant and readable and was
+roughly what I was expecting from earlier discussions (which is great!).
 
-> v1: https://lore.kernel.org/linux-hwmon/20200501150833.5251-1-eajames@linux.ibm.com/
-> 
-> The OCC in the P10 has a number of differences from the P9. Add some logic to
-> handle the differences in accessing the OCC from the service processor, and
-> support the new temperature sensor type.
-> 
-> Eddie James (3):
->   dt-bindings: fsi: Add P10 OCC device documentation
->   fsi: occ: Add support for P10
->   hwmon: (occ) Add new temperature sensor type
-> 
->  .../devicetree/bindings/fsi/ibm,p9-occ.txt    |  12 +-
->  drivers/fsi/fsi-occ.c                         | 125 +++++++++++++-----
->  drivers/hwmon/occ/common.c                    |  75 +++++++++++
->  3 files changed, 172 insertions(+), 40 deletions(-)
-> 
-> -- 
-> 2.29.2
-> 
+Good work on this, looking forward to next steps.
+
+Jonathan
+
+>=20
+> Alexandru Ardelean (12):
+>   iio: core: register chardev only if needed
+>   iio: buffer: add back-ref from iio_buffer to iio_dev
+>   iio: buffer: rework buffer & scan_elements dir creation
+>   iio: buffer: add index to the first IIO buffer dir and symlink it back
+>   iio: core: split __iio_device_attr_init() to init only the attr object
+>   iio: buffer: re-route scan_elements via it's kobj_type
+>   iio: buffer: re-route core buffer attributes via it's new kobj_type
+>   iio: buffer: add helper to get the IIO device to which a buffer
+>     belongs
+>   iio: re-route all buffer attributes through new buffer kobj_type
+>   iio: core: wrap iio device & buffer into struct for character devices
+>   iio: buffer: introduce support for attaching more IIO buffers
+>   iio: buffer: add ioctl() to support opening extra buffers for IIO
+>     device
+>=20
+>  drivers/iio/accel/adxl372.c                   |  36 +-
+>  drivers/iio/accel/bmc150-accel-core.c         |  34 +-
+>  drivers/iio/adc/at91-sama5d2_adc.c            |  30 +-
+>  .../buffer/industrialio-buffer-dmaengine.c    |  13 +-
+>  .../cros_ec_sensors/cros_ec_sensors_core.c    |  30 +-
+>  .../common/hid-sensors/hid-sensor-trigger.c   |  32 +-
+>  drivers/iio/iio_core.h                        |  11 +
+>  drivers/iio/industrialio-buffer.c             | 582 ++++++++++++++----
+>  drivers/iio/industrialio-core.c               | 117 ++--
+>  include/linux/iio/buffer.h                    |   2 +
+>  include/linux/iio/buffer_impl.h               |  25 +-
+>  include/linux/iio/iio-opaque.h                |   6 +
+>  include/linux/iio/iio.h                       |   2 +-
+>  include/linux/iio/sysfs.h                     |  50 ++
+>  include/uapi/linux/iio/buffer.h               |  16 +
+>  15 files changed, 735 insertions(+), 251 deletions(-)
+>  create mode 100644 include/uapi/linux/iio/buffer.h
+>=20
+
