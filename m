@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EF12BBE81
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 11:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B9E2BBE8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 11:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727470AbgKUKiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 05:38:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727217AbgKUKiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 05:38:14 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5C7021741;
-        Sat, 21 Nov 2020 10:38:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605955093;
-        bh=LHRsop7oL9qOLL86mHb7DatSFnA4DzmekgBDuuyKNKo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WKfOHv0/nFrQQj0q/33DOdysWLFdvdWezS1dfmvuU1zdb99PMh5utmREMyhOTWXf6
-         rW9rb2pjaHpGF9p5wHImU6fWJFGIjTFGIeMYgrMmkhnH858cM3bJnnUvWjaYZhyKWr
-         tJpDvlw1R9AS8gr3n2rcEZUnS9NAIlZFUGHBmtpQ=
-Received: by mail-ot1-f43.google.com with SMTP id g19so11245896otp.13;
-        Sat, 21 Nov 2020 02:38:13 -0800 (PST)
-X-Gm-Message-State: AOAM5315q8RJCOjoO2GXgnFh7Jg9RBrGQ8QpYZ993tnn4qyp7MPzvRNI
-        4ffoWyCoa75ObSpOWyogDnSWydxMkncH3F3rWkQ=
-X-Google-Smtp-Source: ABdhPJwMEHPir/Iujn+sDlWqqSLoUPQqAVaDWMOZkEb1IBezOi33sj/6l3Pl3EE3XXpemRcat3+VBI+4c0QCpeeQOLg=
-X-Received: by 2002:a05:6830:3099:: with SMTP id f25mr4290781ots.77.1605955093050;
- Sat, 21 Nov 2020 02:38:13 -0800 (PST)
+        id S1727459AbgKUKzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 05:55:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727241AbgKUKzv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 05:55:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBC7C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 02:55:50 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605956148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BCkWsAO8HdXHPUv8yMTxZeqvlxBLR/7KyglJTpA140M=;
+        b=LvrqpzvFMxfGQrnOYU6RV8401R0k3mk35JAMQiXO+6FgKtmDIHQ6lw+iWlnc18A/zH1tA4
+        gTKCx146Zo1QGNGfohFBfZWNWAVPoSmkX/mr4cGE/m/q/6YD05hwhUFnRbXLD/lQNRnAmz
+        pqciF1Bi5Cy8EKzuic+hvFkrW5xe+Bzsd6ZPa25E4KsPKIbtzVEw2xS0mYkQGZ0eKUsHs/
+        MndscG0bgF5eZgIY+9v79ZBjC29EAk7fQ8SzrVC5linarRRmhJ+wmlOmw5dbV7h9FBH0L1
+        eJ+P2LV9ZRPWnMRT5MtQNmo9wOOXRMtGBlBRtmw2IJCursyBzyIkLjLezABmvw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605956148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BCkWsAO8HdXHPUv8yMTxZeqvlxBLR/7KyglJTpA140M=;
+        b=wLDMdlXtFR+13DEhxVJ7xMQSFCXDvvzENNBd12lIPcVYscOSugCSuX5Vqcw7N+odBzd/Kc
+        ieqmFDQVKZGA5cAg==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/2] kthread: Move prio/affinite change into the newly created thread
+In-Reply-To: <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
+References: <20201110113848.801379-1-bigeasy@linutronix.de> <20201110113848.801379-2-bigeasy@linutronix.de> <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
+Date:   Sat, 21 Nov 2020 11:55:48 +0100
+Message-ID: <87a6vbnfm3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201119182938.151155-1-Smita.KoralahalliChannabasappa@amd.com> <20201121101511.GA24020@zn.tnic>
-In-Reply-To: <20201121101511.GA24020@zn.tnic>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 21 Nov 2020 11:38:02 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEAkmKCSwKAnvWhZyo7=HdQNYFLQOzX0R+qN=WVHYd+OQ@mail.gmail.com>
-Message-ID: <CAMj1kXEAkmKCSwKAnvWhZyo7=HdQNYFLQOzX0R+qN=WVHYd+OQ@mail.gmail.com>
-Subject: Re: [PATCH v6] cper, apei, mce: Pass x86 CPER through the MCA
- handling chain
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-efi <linux-efi@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Nov 2020 at 11:15, Borislav Petkov <bp@alien8.de> wrote:
+On Tue, Nov 17 2020 at 13:45, Peter Zijlstra wrote:
+> On Tue, Nov 10, 2020 at 12:38:47PM +0100, Sebastian Andrzej Siewior wrote:
 >
-> On Thu, Nov 19, 2020 at 12:29:38PM -0600, Smita Koralahalli wrote:
-> > diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
-> > index 2531de49f56c..438ed9eff6d0 100644
-> > --- a/drivers/firmware/efi/cper-x86.c
-> > +++ b/drivers/firmware/efi/cper-x86.c
-> > @@ -2,6 +2,7 @@
-> >  // Copyright (C) 2018, Advanced Micro Devices, Inc.
-> >
-> >  #include <linux/cper.h>
-> > +#include <linux/acpi.h>
-> >
-> >  /*
-> >   * We don't need a "CPER_IA" prefix since these are all locally defined.
-> > @@ -347,9 +348,13 @@ void cper_print_proc_ia(const char *pfx, const struct cper_sec_proc_ia *proc)
-> >                              ctx_info->mm_reg_addr);
-> >               }
-> >
-> > -             printk("%sRegister Array:\n", newpfx);
-> > -             print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
-> > -                            (ctx_info + 1), ctx_info->reg_arr_size, 0);
-> > +             if (ctx_info->reg_ctx_type != CTX_TYPE_MSR ||
-> > +                 arch_apei_report_x86_error(ctx_info, proc->lapic_id)) {
-> > +                     printk("%sRegister Array:\n", newpfx);
-> > +                     print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16,
-> > +                                    groupsize, (ctx_info + 1),
-> > +                                    ctx_info->reg_arr_size, 0);
-> > +             }
-> >
-> >               ctx_info = (struct cper_ia_proc_ctx *)((long)ctx_info + size);
-> >       }
-> > --
+> Moo... yes this is certainly the easiest solution, because nouveau is a
+> horrible rats nest. But when I spoke to Greg KH about this, he suggested
+> nouveau ought to be fixed.
 >
-> Ard, ack?
->
+> Ben, I got terminally lost when trying to untangle nouvea init, is there
+> any chance this can be fixed to not hold that nvkm_device::mutex thing
+> while doing request_irq() ?
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+OTOH, creating a dependency chain vs. cpuset_rwsem and whatever lock is
+held by the caller via request_irq() or kthread_create() is not
+necessarily restricted to the nivea driver. struct device::mutex (not
+the nkvm_device::mutex) is always held when a driver is probed.
+
+The cpuset_rwsem -> mmap_lock dependency is a given, so we're one step
+away from a circular dependency vs. mmap_lock.
+
+That was my reasoning to move the stuff out into the thread context.
+
+Thanks,
+
+        tglx
+
+
+
