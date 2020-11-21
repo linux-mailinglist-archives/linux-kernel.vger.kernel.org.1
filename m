@@ -2,165 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4752BC056
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 16:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E1E2BC058
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 16:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgKUPum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 10:50:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
+        id S1728087AbgKUPuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 10:50:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727882AbgKUPul (ORCPT
+        with ESMTP id S1728005AbgKUPuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 10:50:41 -0500
+        Sat, 21 Nov 2020 10:50:44 -0500
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902A9C0613CF;
-        Sat, 21 Nov 2020 07:50:41 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id k2so14033119wrx.2;
-        Sat, 21 Nov 2020 07:50:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA790C0613CF;
+        Sat, 21 Nov 2020 07:50:42 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id m6so13971655wrg.7;
+        Sat, 21 Nov 2020 07:50:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jd3/1hRfxc7Y0whxq1qc3RnNgcKPiRRQEOenbTFn7o8=;
-        b=UaRRq3qNj2P+/jG9H9x6ZMHkVMcQDKG3Fb5afOhielDlXzdzwYtEv7jaYWvNDo9oBE
-         632GUZHFZF6M2H4CvrYS1VwIqx7UNhyjMziiNaarLVJV9o0p2AshUdiuW+hz2tEF1F7j
-         bkDYYD95K7wKUCKpjs7Qf1NGxvsrDKuWPtUsiWibv5SKU6u6ot2Ka/7buPaq9CVPVF/7
-         0JJjf0bl4y3ogkjJy4CfL6w7opgBMSHY+WFv8w8EDw3VnTpXRP43C2yBa3bzQ0wPiI1T
-         Jab0Jk/A4frfGqsYcxxYk+mgb/pHqC2aXBWjHV+Pynl6voetj/Ie9b3o8ikWAFBL960V
-         5pag==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hFEWyS5RVPcGUpN9QStio+eEKKIHGhXUMH3chmxWTAI=;
+        b=Lm0VT517zPj6Yim7Dyifi0idbHd/Q0+shr4EW29l0udSkUQ1mnrcqk6S6Eazm+BCi4
+         jdVcj6DvjgxwfaZs63s8LHE3CUwsqR2Hn2dTadzpxKNrorycmERpxWOIVi4ZsKuo/f0m
+         qCgYZQc9xehcD6OMVbo0PA94QYJa/gI3v8oRlQBB0pA5HKukMtlB2VZGCM5gVuUfpq1a
+         rvw7GIBAbbtohgf7ubRiaSsIOKD8CY8k1G+yrzVUN4+Znuv58glKezt6ES3XS0++4avm
+         E7IZIs1j9L6vVjpW1Lhu2ux7qG0wZvnOvlAiWmYydK1OuS/nKabSVBiODWUc6/RxfsMl
+         q+DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jd3/1hRfxc7Y0whxq1qc3RnNgcKPiRRQEOenbTFn7o8=;
-        b=eoK3WdYgAuE+DUfC+e59ZY8wx9rl/3I1A7tfOdVSeH4ozxCETKlqXYklpotRvhsFdr
-         dAEunYq1a+1h2IUq83J3HJ9pxHpm8rmcPlST/YTm7yOFX5CgYT3r3FeTpWYJB2FYlJ3t
-         svlLIJCgvYaijLYTHh6b61WqEpPPl2gNwU9cg3HfoKIHer+Hh/dkcvM9N2Jh/QLfWT3Y
-         oqsRRwigr85CTEgwZCLO+cBYypQLI+ww7p1dO/L+EfxVZ07H5S1KbHWQRTrLm044HVG+
-         EZQmH1cktU0ARGFT2XsXJn3W+v4j2XGaThkCLqQbr2Bg4rUEio8qJi9L1yScVEj+FQO4
-         nQ+w==
-X-Gm-Message-State: AOAM53348ga3u+hAFLoarM1cmS7ssxBIY1qrNhaop91kNNh0Cu/+f9ht
-        L61LTuWRvLLZfLOT5dnOBWc=
-X-Google-Smtp-Source: ABdhPJz0fqaV77TCFstUF9IdkyZyPzYGXTbA2hyH2EMB6jgfHhm+iKDcv3JV8BkwcztGGLyCdmCUNA==
-X-Received: by 2002:a5d:6852:: with SMTP id o18mr21570046wrw.336.1605973840346;
-        Sat, 21 Nov 2020 07:50:40 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hFEWyS5RVPcGUpN9QStio+eEKKIHGhXUMH3chmxWTAI=;
+        b=RNkHAXgp9iCGjS5ROVxUTGTsBnqFwB1iOL3+BOHPMu8EvxrNDm9zAeT8pfuDmpg20Y
+         VGiFceW7fZRW/u8V8GVn25h/QtRNVrnCV8poFpdG2gl8NT5EnkB5qcOC4ttxxGZwN92j
+         rTLhhW58+R1FYXfyFf6RFwQW4ZERW5tOizVKq+Ze5zx7VoY94iXlcqL30iRFG7E7WQAN
+         AjIb4ttiUJ1bjJqjCk8K5i0aU1RNe7O2U7/+9UewhTyl0ok443+FrOkpEb/2++a8ZLcA
+         Bfrb5ipCvZ7czBsMkd+oGNwguVlm0z0Cjt9pYeQOnz1lhNAyGe31DngqUsGKyHelFa99
+         cArQ==
+X-Gm-Message-State: AOAM530azxPzxRUJq7FqiYtN+ZqQXHudCs6o/NeZg5MQ8OKIHe2Esb19
+        lKJ6SJulmQKDAvbpeYhLMXA=
+X-Google-Smtp-Source: ABdhPJxNwrNKx7yiY521VRcz8tWddpSy577DrmPIkYw6rYHLVTiTjGvvmbL1d4+rJJhJizC1q+Z54Q==
+X-Received: by 2002:a5d:42c9:: with SMTP id t9mr21194191wrr.13.1605973841433;
+        Sat, 21 Nov 2020 07:50:41 -0800 (PST)
 Received: from localhost.localdomain (161.red-83-46-194.dynamicip.rima-tde.net. [83.46.194.161])
-        by smtp.gmail.com with ESMTPSA id n128sm7959598wmb.46.2020.11.21.07.50.38
+        by smtp.gmail.com with ESMTPSA id n128sm7959598wmb.46.2020.11.21.07.50.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 21 Nov 2020 07:50:39 -0800 (PST)
+        Sat, 21 Nov 2020 07:50:40 -0800 (PST)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     vkoul@kernel.org
 Cc:     robh+dt@kernel.org, kishon@ti.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name
-Subject: [PATCH v6 0/4] MT7621 PCIe PHY
-Date:   Sat, 21 Nov 2020 16:50:33 +0100
-Message-Id: <20201121155037.21354-1-sergio.paracuellos@gmail.com>
+        devel@driverdev.osuosl.org, neil@brown.name,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v6 1/4] dt-bindings: phy: Add binding for Mediatek MT7621 PCIe PHY
+Date:   Sat, 21 Nov 2020 16:50:34 +0100
+Message-Id: <20201121155037.21354-2-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201121155037.21354-1-sergio.paracuellos@gmail.com>
+References: <20201121155037.21354-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for the PCIe PHY found in the Mediatek
-MT7621 SoC.
+Add bindings to describe Mediatek MT7621 PCIe PHY.
 
-There is also a 'mt7621-pci' driver which is the controller part
-which is still in staging and is a client of this phy.
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/phy/mediatek,mt7621-pci-phy.yaml | 36 +++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
 
-Both drivers have been tested together in a gnubee1 board.
-
-This series are rebased on the top of linux-phy:
-commit 768a711e2d4b ("phy: samsung: phy-exynos-pcie: fix typo 'tunning'")
-
-Changes in v6:
-  - Change definition name to XTAL_MASK to fix its use in one line.
-  - Fix XTAL_MASK mask value after use it with 'FIELD_GET'.
-  - Add comment in 'mt7621_phy_rmw' about why 'regmap_write_bits'
-    cannot be used.
-  - Rebase series on the top of 'next' branch of 'linux-phy' tree.
-
-Changes in v5:
-  - PATCH 1/4: Recollect Rob's Reviewed-by of bindings.
-  - PATCH 4/4: Recollect Greg's Acked-by for removing stuff from
-    staging area.
-  - Use 'devm_platform_ioremap_resource' instead of using 
-    'platform_get_resource' and 'devm_ioremap_resource'.
-  - Make Vinod's review comments changes in [0]:
-    * Use FIELD_GET and FIELD_PREP apis and avoid multiple *_VAL and
-      *_SHIFT custom definitions.
-    * Remove phy-read and phy-write internal functions and directly
-      call regmap_read and regmap_write in 'mt7621_phy_rmw'.
-    * Change some traces from info to debug log level.
-    * Note that I have maintained 'mt7621_phy_rmw' instead of use
-      'regmap_update_bits'. This is because in order to get a reliable
-      boot registers must be written event the contained value in 
-      that register is the same. I have preferred doing in this way
-      instead of using 'regmap_update_bits_base' passing 'false' for
-      async and 'true' for the force write. If this way of using 
-      'regmap_update_bits_base' is preferred just let me know.
-
-Changes in v4:
-  - Bindings moved from txt to yaml so previous Rob's Reviewed-by
-    is not in the new patch with the yaml file.
-  - 'phy-cells' property means now if phy is dual-ported.
-  - Avoid custom 'xlate' function and properly set registers
-    when the phy is dual ported.
-  - Add use of 'builtin_platform_driver'.
-  - Added a patch including myself as maintainer in the
-    MAINTAINERS file.
-  - Add a patch removing patch from staging to make easier
-    the complete inclusion and avoid possible problems might
-    appear in 'linux-next' if the series are included.
-
-Changes in v3:
-  - Recollect Rob's Reviewed-by of bindings.
-  - Make Kishon Vijay suggested changes in v2:
-   (See https://lkml.org/lkml/2019/4/17/53)
-  - Kconfig:
-    * Add depends on COMPILE_TEST
-    * Select REGMAP_MMIO
-  - Make use of 'soc_device_attribute' and 'soc_device_match'
-  - Use regmap mmio API instead of directly 'readl' and 'writel'.
-  - Use 'platform_get_resource' instead of 'of_address_to_resource'.
-
-Changes in v2:
-  - Reorder patches to get bindings first in the series.
-  - Don't use child nodes in the device tree. Use #phy-cells=1 instead.
-  - Update driver code with new 'xlate' function for the new device tree.
-  - Minor changes in driver's macros changing some spaces to tabs.
-
-Thanks in advance for your time.
-
-Best regards,
-    Sergio Paracuellos
-
-[0]: http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2020-November/148864.html
-
-Sergio Paracuellos (4):
-  dt-bindings: phy: Add binding for Mediatek MT7621 PCIe PHY
-  phy: ralink: Add PHY driver for MT7621 PCIe PHY
-  MAINTAINERS: add MT7621 PHY PCI maintainer
-  staging: mt7621-pci-phy: remove driver from staging
-
- .../phy}/mediatek,mt7621-pci-phy.yaml         |   2 +-
- MAINTAINERS                                   |   6 +
- drivers/phy/ralink/Kconfig                    |   8 ++
- drivers/phy/ralink/Makefile                   |   1 +
- .../ralink/phy-mt7621-pci.c}                  | 115 +++++++-----------
- drivers/staging/Kconfig                       |   2 -
- drivers/staging/Makefile                      |   1 -
- drivers/staging/mt7621-pci-phy/Kconfig        |   8 --
- drivers/staging/mt7621-pci-phy/Makefile       |   2 -
- drivers/staging/mt7621-pci-phy/TODO           |   4 -
- 10 files changed, 63 insertions(+), 86 deletions(-)
- rename {drivers/staging/mt7621-pci-phy => Documentation/devicetree/bindings/phy}/mediatek,mt7621-pci-phy.yaml (92%)
- rename drivers/{staging/mt7621-pci-phy/pci-mt7621-phy.c => phy/ralink/phy-mt7621-pci.c} (76%)
- delete mode 100644 drivers/staging/mt7621-pci-phy/Kconfig
- delete mode 100644 drivers/staging/mt7621-pci-phy/Makefile
- delete mode 100644 drivers/staging/mt7621-pci-phy/TODO
-
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml b/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
+new file mode 100644
+index 000000000000..0ccaded3f245
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/phy/mediatek,mt7621-pci-phy.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Mediatek Mt7621 PCIe PHY Device Tree Bindings
++
++maintainers:
++  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
++
++properties:
++  compatible:
++    const: mediatek,mt7621-pci-phy
++
++  reg:
++    maxItems: 1
++
++  "#phy-cells":
++    const: 1
++    description: selects if the phy is dual-ported
++
++required:
++  - compatible
++  - reg
++  - "#phy-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    pcie0_phy: pcie-phy@1e149000 {
++      compatible = "mediatek,mt7621-pci-phy";
++      reg = <0x1e149000 0x0700>;
++      #phy-cells = <1>;
++    };
 -- 
 2.25.1
 
