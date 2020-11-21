@@ -2,313 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD9A2BBAF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949B52BBB0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729148AbgKUAbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:31:16 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51280 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728869AbgKUAax (ORCPT
+        id S1728492AbgKUAd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:33:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47094 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728275AbgKUAd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:30:53 -0500
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D538A20B8014;
-        Fri, 20 Nov 2020 16:30:50 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D538A20B8014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605918650;
-        bh=bs8OXSmw7i3sGKbT+mWjBVnHpAlEDRGawtmvukwZx5M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dzrMi9RVcbtmwUoa6eg4I9eCrNP6SIdagXYCIcp1DqNIHnhIehGFxu/fbMdN2zeKw
-         vZLJs04sIdrxOegXloUibjuoVU1lYwxEytIK6WwblDrTfFiZp6sQHT7vaMG3MUYF/7
-         zvDGxx0g56w63SczfwWwr2tf6GU8Q8UNjGGiUkvM=
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-To:     linux-hyperv@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        nunodasneves@linux.microsoft.com, wei.liu@kernel.org,
-        ligrassi@microsoft.com, kys@microsoft.com
-Subject: [RFC PATCH 18/18] virt/mshv: Add enlightenment bits to create partition ioctl
-Date:   Fri, 20 Nov 2020 16:30:37 -0800
-Message-Id: <1605918637-12192-19-git-send-email-nunodasneves@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
-References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+        Fri, 20 Nov 2020 19:33:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605918835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=x+2FVCoUrDqnhADckFSP/psuNV4yeinap0Vncl0UAfQ=;
+        b=JOV2WzfgyDTZPhG2ZVgC264yB611kDoDgpgjSe/76OzXOmg7fI9UjTloY+2Lv633oIW+uN
+        1mNq8jpF/UAYval/4UpXkS2Oeg4SKnVB7dfwKZ+MLK0XU+q5U4HBHJK3QT1h0OTBgWmS58
+        f6ytoDCBzcbfpezgN0vy00MtRI04ymg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-rXNqsWTFP7K37anzyHzFAA-1; Fri, 20 Nov 2020 19:33:50 -0500
+X-MC-Unique: rXNqsWTFP7K37anzyHzFAA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76E705B380;
+        Sat, 21 Nov 2020 00:33:35 +0000 (UTC)
+Received: from localhost.localdomain.com (unknown [10.66.60.98])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D936C10013C1;
+        Sat, 21 Nov 2020 00:33:33 +0000 (UTC)
+From:   XiaoLi Feng <xifeng@redhat.com>
+To:     linux-kernel@vger.kernel.org, ira.weiny@intel.com,
+        darrick.wong@oracle.com
+Cc:     Xiaoli Feng <fengxiaoli0714@gmail.com>
+Subject: [PATCH] fs/stat: set attributes_mask for STATX_ATTR_DAX
+Date:   Sat, 21 Nov 2020 08:33:31 +0800
+Message-Id: <20201121003331.21342-1-xifeng@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce hv_partition_synthetic_processor features mask to
-MSHV_CREATE_PARTITION ioctl, which can be used to enable hypervisor
-enlightenments for exo partitions.
+From: Xiaoli Feng <fengxiaoli0714@gmail.com>
 
-Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+keep attributes and attributes_mask are consistent for
+STATX_ATTR_DAX.
 ---
- Documentation/virt/mshv/api.rst         |   3 +
- arch/x86/include/uapi/asm/hyperv-tlfs.h | 125 ++++++++++++++++++++++++
- include/uapi/asm-generic/hyperv-tlfs.h  |   1 +
- include/uapi/linux/mshv.h               |   1 +
- virt/mshv/mshv_main.c                   |  57 +++++++----
- 5 files changed, 167 insertions(+), 20 deletions(-)
+ fs/stat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/virt/mshv/api.rst b/Documentation/virt/mshv/api.rst
-index 609400313b7e..afd56fff1038 100644
---- a/Documentation/virt/mshv/api.rst
-+++ b/Documentation/virt/mshv/api.rst
-@@ -167,4 +167,7 @@ The page is laid out in struct hv_vp_register_page in asm/hyperv-tlfs.h.
+diff --git a/fs/stat.c b/fs/stat.c
+index dacecdda2e79..914a61d256b0 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -82,7 +82,7 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
  
- Can be used to get/set various properties of a partition.
- 
-+Some properties can only be set at partition creation. For these, there are
-+parameters in MSHV_CREATE_PARTITION.
-+
- 
-diff --git a/arch/x86/include/uapi/asm/hyperv-tlfs.h b/arch/x86/include/uapi/asm/hyperv-tlfs.h
-index a241178567ff..65cd0d166d5b 100644
---- a/arch/x86/include/uapi/asm/hyperv-tlfs.h
-+++ b/arch/x86/include/uapi/asm/hyperv-tlfs.h
-@@ -1184,4 +1184,129 @@ struct hv_vp_register_page {
- 	__u64 instruction_emulation_hints;
- };
- 
-+#define HV_PARTITION_SYNTHETIC_PROCESSOR_FEATURES_BANKS 1
-+
-+union hv_partition_synthetic_processor_features {
-+	__u64 as_uint64[HV_PARTITION_SYNTHETIC_PROCESSOR_FEATURES_BANKS];
-+
-+	struct {
-+		/* Report a hypervisor is present. CPUID leaves
-+		 * 0x40000000 and 0x40000001 are supported.
-+		 */
-+		__u64 hypervisor_present:1;
-+
-+		/*
-+		 * Features associated with HV#1:
-+		 */
-+
-+		/* Report support for Hv1 (CPUID leaves 0x40000000 - 0x40000006). */
-+		__u64 hv1:1;
-+
-+		/* Access to HV_X64_MSR_VP_RUNTIME.
-+		 * Corresponds to access_vp_run_time_reg privilege.
-+		 */
-+		__u64 access_vp_run_time_reg:1;
-+
-+		/* Access to HV_X64_MSR_TIME_REF_COUNT.
-+		 * Corresponds to access_partition_reference_counter privilege.
-+		 */
-+		__u64 access_partition_reference_counter:1;
-+
-+		/* Access to SINT-related registers (HV_X64_MSR_SCONTROL through
-+		 * HV_X64_MSR_EOM and HV_X64_MSR_SINT0 through HV_X64_MSR_SINT15).
-+		 * Corresponds to access_synic_regs privilege.
-+		 */
-+		__u64 access_synic_regs:1;
-+
-+		/* Access to synthetic timers and associated MSRs
-+		 * (HV_X64_MSR_STIMER0_CONFIG through HV_X64_MSR_STIMER3_COUNT).
-+		 * Corresponds to access_synthetic_timer_regs privilege.
-+		 */
-+		__u64 access_synthetic_timer_regs:1;
-+
-+		/* Access to APIC MSRs (HV_X64_MSR_EOI, HV_X64_MSR_ICR and HV_X64_MSR_TPR)
-+		 * as well as the VP assist page.
-+		 * Corresponds to access_intr_ctrl_regs privilege.
-+		 */
-+		__u64 access_intr_ctrl_regs:1;
-+
-+		/* Access to registers associated with hypercalls (HV_X64_MSR_GUEST_OS_ID
-+		 * and HV_X64_MSR_HYPERCALL).
-+		 * Corresponds to access_hypercall_msrs privilege.
-+		 */
-+		__u64 access_hypercall_regs:1;
-+
-+		/* VP index can be queried. corresponds to access_vp_index privilege. */
-+		__u64 access_vp_index:1;
-+
-+		/* Access to the reference TSC. Corresponds to access_partition_reference_tsc
-+		 * privilege.
-+		 */
-+		__u64 access_partition_reference_tsc:1;
-+
-+		/* Partition has access to the guest idle reg. Corresponds to
-+		 * access_guest_idle_reg privilege.
-+		 */
-+		__u64 access_guest_idle_reg:1;
-+
-+		/* Partition has access to frequency regs. corresponds to access_frequency_regs
-+		 * privilege.
-+		 */
-+		__u64 access_frequency_regs:1;
-+
-+		__u64 reserved_z12:1; /* Reserved for access_reenlightenment_controls. */
-+		__u64 reserved_z13:1; /* Reserved for access_root_scheduler_reg. */
-+		__u64 reserved_z14:1; /* Reserved for access_tsc_invariant_controls. */
-+
-+		/* Extended GVA ranges for HvCallFlushVirtualAddressList hypercall.
-+		 * Corresponds to privilege.
-+		 */
-+		__u64 enable_extended_gva_ranges_for_flush_virtual_address_list:1;
-+
-+		__u64 reserved_z16:1; /* Reserved for access_vsm. */
-+		__u64 reserved_z17:1; /* Reserved for access_vp_registers. */
-+
-+		/* Use fast hypercall output. Corresponds to privilege. */
-+		__u64 fast_hypercall_output:1;
-+
-+		__u64 reserved_z19:1; /* Reserved for enable_extended_hypercalls. */
-+
-+		/*
-+		 * HvStartVirtualProcessor can be used to start virtual processors.
-+		 * Corresponds to privilege.
-+		 */
-+		__u64 start_virtual_processor:1;
-+
-+		__u64 reserved_z21:1; /* Reserved for Isolation. */
-+
-+		/* Synthetic timers in direct mode. */
-+		__u64 direct_synthetic_timers:1;
-+
-+		__u64 reserved_z23:1; /* Reserved for synthetic time unhalted timer */
-+
-+		/* Use extended processor masks. */
-+		__u64 extended_processor_masks:1;
-+
-+		/* HvCallFlushVirtualAddressSpace / HvCallFlushVirtualAddressList are supported. */
-+		__u64 tb_flush_hypercalls:1;
-+
-+		/* HvCallSendSyntheticClusterIpi is supported. */
-+		__u64 synthetic_cluster_ipi:1;
-+
-+		/* HvCallNotifyLongSpinWait is supported. */
-+		__u64 notify_long_spin_wait:1;
-+
-+		/* HvCallQueryNumaDistance is supported. */
-+		__u64 query_numa_distance:1;
-+
-+		/* HvCallSignalEvent is supported. Corresponds to privilege. */
-+		__u64 signal_events:1;
-+
-+		/* HvCallRetargetDeviceInterrupt is supported. */
-+		__u64 retarget_device_interrupt:1;
-+
-+		__u64 reserved:33;
-+	};
-+};
-+
- #endif
-diff --git a/include/uapi/asm-generic/hyperv-tlfs.h b/include/uapi/asm-generic/hyperv-tlfs.h
-index d1c341de34fe..5c6379a3cfd5 100644
---- a/include/uapi/asm-generic/hyperv-tlfs.h
-+++ b/include/uapi/asm-generic/hyperv-tlfs.h
-@@ -100,6 +100,7 @@ enum hv_vp_state_page_type {
- enum hv_partition_property_code {
- 	/* Privilege properties */
- 	HV_PARTITION_PROPERTY_PRIVILEGE_FLAGS				= 0x00010000,
-+	HV_PARTITION_PROPERTY_SYNTHETIC_PROC_FEATURES			= 0x00010001,
- 
- 	/* Scheduling properties */
- 	HV_PARTITION_PROPERTY_SUSPEND					= 0x00020000,
-diff --git a/include/uapi/linux/mshv.h b/include/uapi/linux/mshv.h
-index 721f5b1999d5..bf2d8c8a0a37 100644
---- a/include/uapi/linux/mshv.h
-+++ b/include/uapi/linux/mshv.h
-@@ -18,6 +18,7 @@
- struct mshv_create_partition {
- 	__u64 flags;
- 	struct hv_partition_creation_properties partition_creation_properties;
-+	union hv_partition_synthetic_processor_features synthetic_processor_features;
- };
- 
- /*
-diff --git a/virt/mshv/mshv_main.c b/virt/mshv/mshv_main.c
-index bfbadeb4f1fe..78a1e70cac96 100644
---- a/virt/mshv/mshv_main.c
-+++ b/virt/mshv/mshv_main.c
-@@ -547,6 +547,33 @@ hv_call_map_vp_state_page(u32 vp_index, u64 partition_id,
- 	return ret;
- }
- 
-+static long
-+hv_call_set_partition_property(u64 partition_id,
-+			       u64 property_code,
-+			       u64 property_value)
-+{
-+	int status;
-+	unsigned long flags;
-+	struct hv_set_partition_property *input;
-+
-+	local_irq_save(flags);
-+	input = (struct hv_set_partition_property *)(*this_cpu_ptr(
-+			hyperv_pcpu_input_arg));
-+	memset(input, 0, sizeof(*input));
-+	input->partition_id = partition_id;
-+	input->property_code = property_code;
-+	input->property_value = property_value;
-+	status = hv_do_hypercall(HVCALL_SET_PARTITION_PROPERTY,
-+				 input,
-+				 NULL) & HV_HYPERCALL_RESULT_MASK;
-+	local_irq_restore(flags);
-+
-+	if (status != HV_STATUS_SUCCESS)
-+		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
-+
-+	return -hv_status_to_errno(status);
-+}
-+
- static void
- mshv_isr(void)
- {
-@@ -1373,30 +1400,13 @@ mshv_partition_ioctl_set_property(struct mshv_partition *partition,
- 				  void __user *user_args)
- {
- 	struct mshv_partition_property args;
--	int status;
--	unsigned long flags;
--	struct hv_set_partition_property *input;
- 
- 	if (copy_from_user(&args, user_args, sizeof(args)))
- 		return -EFAULT;
- 
--	local_irq_save(flags);
--	input = (struct hv_set_partition_property *)(*this_cpu_ptr(
--			hyperv_pcpu_input_arg));
--	memset(input, 0, sizeof(*input));
--	input->partition_id = partition->id;
--	input->property_code = args.property_code;
--	input->property_value = args.property_value;
--	status = hv_do_hypercall(HVCALL_SET_PARTITION_PROPERTY, input,
--			NULL) & HV_HYPERCALL_RESULT_MASK;
--	local_irq_restore(flags);
+ 	if (IS_DAX(inode))
+ 		stat->attributes |= STATX_ATTR_DAX;
 -
--	if (status != HV_STATUS_SUCCESS) {
--		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
--		return -hv_status_to_errno(status);
--	}
--
--	return 0;
-+	return hv_call_set_partition_property(partition->id,
-+					      args.property_code,
-+					      args.property_value);
- }
- 
- static long
-@@ -1831,6 +1841,13 @@ mshv_ioctl_create_partition(void __user *user_arg)
- 	if (ret)
- 		goto put_fd;
- 
-+	ret = hv_call_set_partition_property(
-+				partition->id,
-+				HV_PARTITION_PROPERTY_SYNTHETIC_PROC_FEATURES,
-+				args.synthetic_processor_features.as_uint64[0]);
-+	if (ret)
-+		goto delete_partition;
-+
- 	ret = hv_call_initialize_partition(partition->id);
- 	if (ret)
- 		goto delete_partition;
++	stat->attributes_mask |= STATX_ATTR_DAX;
+ 	if (inode->i_op->getattr)
+ 		return inode->i_op->getattr(path, stat, request_mask,
+ 					    query_flags);
 -- 
-2.25.1
+2.18.1
 
