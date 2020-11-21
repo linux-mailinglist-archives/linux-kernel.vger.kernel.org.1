@@ -2,60 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5F62BBDC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 367E72BBDC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgKUHUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 02:20:08 -0500
-Received: from mail-m121143.qiye.163.com ([115.236.121.143]:39400 "EHLO
-        mail-m121143.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgKUHUI (ORCPT
+        id S1726454AbgKUHOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 02:14:09 -0500
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:38789 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726058AbgKUHOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 02:20:08 -0500
-X-Greylist: delayed 528 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Nov 2020 02:20:07 EST
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m121143.qiye.163.com (Hmail) with ESMTPA id D5495540163;
-        Sat, 21 Nov 2020 15:11:14 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] nfs: Only include nfs42.h when NFS_V4_2 enable
-Date:   Sat, 21 Nov 2020 15:11:09 +0800
-Message-Id: <1605942669-585-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSktLTx4ZGhkaHklKVkpNS05CT0lNTE5KTUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hOT1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mjo6Ljo4Tz8ZNwI6AVYtMDQM
-        HBcwCxFVSlVKTUtOQk9JTUxOTE1OVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKSUNCNwY+
-X-HM-Tid: 0a75e9a48668b038kuuud5495540163
+        Sat, 21 Nov 2020 02:14:09 -0500
+Received: from localhost.localdomain ([81.185.161.242])
+        by mwinf5d61 with ME
+        id uvDy2300A5E5lq903vDynZ; Sat, 21 Nov 2020 08:14:04 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Nov 2020 08:14:04 +0100
+X-ME-IP: 81.185.161.242
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     giovanni.cabiddu@intel.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, andriy.shevchenko@linux.intel.com,
+        fiona.trahe@intel.com, wojciech.ziemba@intel.com,
+        marco.chiappero@intel.com
+Cc:     qat-linux@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] crypto: qat - Use dma_set_mask_and_coherent to simplify code
+Date:   Sat, 21 Nov 2020 08:13:59 +0100
+Message-Id: <20201121071359.1320167-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate header unnecessary.
-Only include nfs42.h when NFS_V4_2 enable.
+'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+While at it, also remove some unless extra () in the 32 bits case.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- fs/nfs/nfs4proc.c | 1 -
- 1 file changed, 1 deletion(-)
+Instead of returning -EFAULT, we could also propagate the error returned
+by dma_set_mask_and_coherent()
+---
+ drivers/crypto/qat/qat_c3xxx/adf_drv.c      | 9 ++-------
+ drivers/crypto/qat/qat_c3xxxvf/adf_drv.c    | 9 ++-------
+ drivers/crypto/qat/qat_c62x/adf_drv.c       | 9 ++-------
+ drivers/crypto/qat/qat_c62xvf/adf_drv.c     | 9 ++-------
+ drivers/crypto/qat/qat_dh895xcc/adf_drv.c   | 9 ++-------
+ drivers/crypto/qat/qat_dh895xccvf/adf_drv.c | 9 ++-------
+ 6 files changed, 12 insertions(+), 42 deletions(-)
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index 9e0ca9b..a1321a5 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -67,7 +67,6 @@
- #include "nfs4idmap.h"
- #include "nfs4session.h"
- #include "fscache.h"
--#include "nfs42.h"
+diff --git a/drivers/crypto/qat/qat_c3xxx/adf_drv.c b/drivers/crypto/qat/qat_c3xxx/adf_drv.c
+index 7fb3343ae8b0..b39e06820295 100644
+--- a/drivers/crypto/qat/qat_c3xxx/adf_drv.c
++++ b/drivers/crypto/qat/qat_c3xxx/adf_drv.c
+@@ -159,17 +159,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
  
- #include "nfs4trace.h"
+ 	/* set dma identifier */
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
++		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
+ 			dev_err(&pdev->dev, "No usable DMA configuration\n");
+ 			ret = -EFAULT;
+ 			goto out_err_disable;
+-		} else {
+-			pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+ 		}
+-
+-	} else {
+-		pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+ 	}
  
+ 	if (pci_request_regions(pdev, ADF_C3XXX_DEVICE_NAME)) {
+diff --git a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
+index 1d1532e8fb6d..b1d1d12694dc 100644
+--- a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
++++ b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
+@@ -141,17 +141,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 
+ 	/* set dma identifier */
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
++		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
+ 			dev_err(&pdev->dev, "No usable DMA configuration\n");
+ 			ret = -EFAULT;
+ 			goto out_err_disable;
+-		} else {
+-			pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+ 		}
+-
+-	} else {
+-		pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+ 	}
+ 
+ 	if (pci_request_regions(pdev, ADF_C3XXXVF_DEVICE_NAME)) {
+diff --git a/drivers/crypto/qat/qat_c62x/adf_drv.c b/drivers/crypto/qat/qat_c62x/adf_drv.c
+index 1f5de442e1e6..99f6f3c7c6b0 100644
+--- a/drivers/crypto/qat/qat_c62x/adf_drv.c
++++ b/drivers/crypto/qat/qat_c62x/adf_drv.c
+@@ -159,17 +159,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 
+ 	/* set dma identifier */
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
++		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
+ 			dev_err(&pdev->dev, "No usable DMA configuration\n");
+ 			ret = -EFAULT;
+ 			goto out_err_disable;
+-		} else {
+-			pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+ 		}
+-
+-	} else {
+-		pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+ 	}
+ 
+ 	if (pci_request_regions(pdev, ADF_C62X_DEVICE_NAME)) {
+diff --git a/drivers/crypto/qat/qat_c62xvf/adf_drv.c b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
+index 04742a6d91ca..26c0b7d08636 100644
+--- a/drivers/crypto/qat/qat_c62xvf/adf_drv.c
++++ b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
+@@ -141,17 +141,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 
+ 	/* set dma identifier */
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
++		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
+ 			dev_err(&pdev->dev, "No usable DMA configuration\n");
+ 			ret = -EFAULT;
+ 			goto out_err_disable;
+-		} else {
+-			pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+ 		}
+-
+-	} else {
+-		pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+ 	}
+ 
+ 	if (pci_request_regions(pdev, ADF_C62XVF_DEVICE_NAME)) {
+diff --git a/drivers/crypto/qat/qat_dh895xcc/adf_drv.c b/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
+index a9ec4357144c..78fdbaceda85 100644
+--- a/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
++++ b/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
+@@ -159,17 +159,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 
+ 	/* set dma identifier */
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
++		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
+ 			dev_err(&pdev->dev, "No usable DMA configuration\n");
+ 			ret = -EFAULT;
+ 			goto out_err_disable;
+-		} else {
+-			pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+ 		}
+-
+-	} else {
+-		pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+ 	}
+ 
+ 	if (pci_request_regions(pdev, ADF_DH895XCC_DEVICE_NAME)) {
+diff --git a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
+index c972554a755e..9e03063c9901 100644
+--- a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
++++ b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
+@@ -141,17 +141,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 
+ 	/* set dma identifier */
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
++		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
+ 			dev_err(&pdev->dev, "No usable DMA configuration\n");
+ 			ret = -EFAULT;
+ 			goto out_err_disable;
+-		} else {
+-			pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+ 		}
+-
+-	} else {
+-		pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+ 	}
+ 
+ 	if (pci_request_regions(pdev, ADF_DH895XCCVF_DEVICE_NAME)) {
 -- 
-2.7.4
+2.27.0
 
