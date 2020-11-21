@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7DE2BC164
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C1D2BC167
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgKUSVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        id S1728150AbgKUSXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgKUSVi (ORCPT
+        with ESMTP id S1726556AbgKUSXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:21:38 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF4C061A4A
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:21:37 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id l11so18182476lfg.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:21:37 -0800 (PST)
+        Sat, 21 Nov 2020 13:23:35 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50F9C061A4B
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:23:33 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id s30so18138565lfc.4
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:23:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MXimiLJTrNupHkZvWwFLioXTRq0xyflB27lsWAkpfI4=;
-        b=OWXHkUpTUVUoKPLewahV2bn8y9YWUhTKYYqZPcYsYz/RxIyBL9VvoEJydt/4b22Nc/
-         FTt0PAtaMLOG4UkWlpyTiyFvNX9w7VTVF8V5pJRqz8mT2iV3leIIRlo5cQY61ut3NtZU
-         1FFF98JuFgYzZovWcgU3304W0AGFjzWEOXuJI=
+        bh=m7cZfFDWETupzrz1W/PA0N75+saduUeI+gk15nXI7Q0=;
+        b=dH00Lj87XUWDjVhZTS31u5fK+b2ZiXmaVewWBK/V48aWDdpvmlY8lYEZ3TsPZy+JuP
+         Piggiet9UE2qE2SNHmspoYRK7bxHTomINqVwsLJcANApC/MOgACoEjU5ZxHckGmnDp1N
+         lQ0V7X3C4QU5N8npwm/3beAXsfs54Clu8S4xY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MXimiLJTrNupHkZvWwFLioXTRq0xyflB27lsWAkpfI4=;
-        b=saVHU26iBipnDbgbrWetclMoI/XByq1ABrQlX6HExbHo0g4Hcygu3GJtqRNw6bIn0F
-         dgbOmSzQCy1YalcfkJ0aUxrMxqLDgb11oS/HE33IH2nb1mfxHXWXIbmU5z189djqx7rc
-         VkOxF8yViyrC2E7q9OLevWJk10jMey0AZE20xPISfb4i5LvQBxOfs00Q0sNwhmX1zoTz
-         nPyUNU6dKS1mxQA25zI3MedJC8YkOiIPSfXDB1vUjPgRXju1E0gcTzvn6BeD4oBRusbp
-         hSxndUntud4QQ+HhYagW1vM9deojemZT9A1/4uKYfaFLqfbwXhuH6DBX5P/gbIWNMc7Y
-         eIgQ==
-X-Gm-Message-State: AOAM533M99kCdrEOqe2JM/w30a3YUfp9PRJIYcyZCjV+foSIwpcy1fnR
-        93xdvthSXeo36bulV6Dr2JKE0AAiXGAwAw==
-X-Google-Smtp-Source: ABdhPJxU0cjZPYsWWCkWTPU1+aVdFee2+ABNcNOHgF+tc416Lwv8WA5Ot4cpj0mU20kNVIDJ5s+viA==
-X-Received: by 2002:a19:7e53:: with SMTP id z80mr11530517lfc.250.1605982895224;
-        Sat, 21 Nov 2020 10:21:35 -0800 (PST)
+        bh=m7cZfFDWETupzrz1W/PA0N75+saduUeI+gk15nXI7Q0=;
+        b=UQqDOEUZEKRNyHifN/I7W+OilMZOLPwdRAcbpTWwlF3eCDyWHuRhwnlf4I/0d6fMO5
+         Vc1V89svSobhee85Ra/chK0I5oHdEyp4mz0npmZKlZ9Bj9utrLTJuX29MRKxu0ZenGtP
+         UuPFElYxilSqjOdXLQn+a6Xz5bTlYHi5FkcA+gxSyTQhwyvxSTvbPvYH5uRBdzOh5TJX
+         fdTH0kwr/d/Ls4UBaCCI57MRrM8MoHp+MpJVYcX13m8fkd6l4YBf+RAYczNg+unLqY0i
+         /KPzylvOXAfW5XbcI3n5DkGzhFoPu3acjefQIxoWQLiq4GBsF3DobWfgUeOLb5AkhzEL
+         UG+g==
+X-Gm-Message-State: AOAM5303pdiJYBQCC04dmdIG/A5iAJ+3UVvrnmMTk/GTPFmkl4ynqxmW
+        TvGgmWDIGbJxrBs7baELeW2rXt3EbA2LZQ==
+X-Google-Smtp-Source: ABdhPJweQkJlFUUlqu3hY7mzh7E2qkWdSF3IG8+uzlZNLwDOq3KD413d6r4Om2cfGtrnsrzBVi52Pw==
+X-Received: by 2002:a05:6512:2033:: with SMTP id s19mr11042366lfs.462.1605983011722;
+        Sat, 21 Nov 2020 10:23:31 -0800 (PST)
 Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id i187sm681290lji.24.2020.11.21.10.21.34
+        by smtp.gmail.com with ESMTPSA id g22sm685654ljl.78.2020.11.21.10.23.29
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Nov 2020 10:21:34 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id u19so18129869lfr.7
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:21:34 -0800 (PST)
-X-Received: by 2002:a19:7f55:: with SMTP id a82mr11475617lfd.603.1605982893826;
- Sat, 21 Nov 2020 10:21:33 -0800 (PST)
+        Sat, 21 Nov 2020 10:23:30 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id a9so18133177lfh.2
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:23:29 -0800 (PST)
+X-Received: by 2002:a19:ae06:: with SMTP id f6mr11146486lfc.133.1605983009454;
+ Sat, 21 Nov 2020 10:23:29 -0800 (PST)
 MIME-Version: 1.0
 References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
- <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 21 Nov 2020 10:21:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
-Message-ID: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
-Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Date:   Sat, 21 Nov 2020 10:23:13 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj3p3eScaULtpCtWwS9NGFxT7dVTTC3mg1VyAyO2L5j7w@mail.gmail.com>
+Message-ID: <CAHk-=wj3p3eScaULtpCtWwS9NGFxT7dVTTC3mg1VyAyO2L5j7w@mail.gmail.com>
+Subject: Re: [PATCH 00/29] RFC: iov_iter: Switch to using an ops table
 To:     David Howells <dhowells@redhat.com>
 Cc:     Pavel Begunkov <asml.silence@gmail.com>,
         Matthew Wilcox <willy@infradead.org>,
@@ -74,37 +73,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, Nov 21, 2020 at 6:13 AM David Howells <dhowells@redhat.com> wrote:
 >
-> Switch to using a table of operations.  In a future patch the individual
-> methods will be split up by type.  For the moment, however, the ops tables
-> just jump directly to the old functions - which are now static.  Inline
-> wrappers are provided to jump through the hooks.
+> Can someone recommend a good way to benchmark this properly?  The problem
+> is that the difference this makes relative to the amount of time taken to
+> actually do I/O is tiny.
 
-So I think conceptually this is the right thing to do, but I have a
-couple of worries:
+Maybe try /dev/zero -> /dev/null to try a load where the IO itself is
+cheap. Or vmsplice to /dev/null?
 
- - do we really need all those different versions? I'm thinking
-"iter_full" versions in particular. They I think the iter_full version
-could just be wrappers that call the regular iter thing and verify the
-end result is full (and revert if not). No?
-
- - I don't like the xxx_iter_op naming - even as a temporary thing.
-
-   Please don't use "xxx" as a placeholder. It's not a great grep
-pattern, it's not really descriptive, and we've literally had issues
-with things being marked as spam when you use that. So it's about the
-worst pattern to use.
-
-   Use "anycase" - or something like that - which is descriptive and
-greps much better (ie not a single hit for that pattern in the kernel
-either before or after).
-
- - I worry a bit about the indirect call overhead and spectre v2.
-
-   So yeah, it would be good to have benchmarks to make sure this
-doesn't regress for some simple case.
-
-Other than those things, my initial reaction is "this does seem cleaner".
-
-Al?
-
-              Linus
+         Linus
