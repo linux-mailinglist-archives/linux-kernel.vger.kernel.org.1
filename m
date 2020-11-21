@@ -2,189 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E00F2BBDE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD402BBDE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgKUHs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 02:48:58 -0500
-Received: from mga12.intel.com ([192.55.52.136]:8390 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgKUHs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 02:48:58 -0500
-IronPort-SDR: Lg8zu2iRyR54uq/ZTAFeR7Y1gUqBYCfRzIgPWh3O5Oo/YD6PtmoVvwzGeWueCnsfaNmakzdCw6
- b1BVxwNYzAnA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="150844215"
-X-IronPort-AV: E=Sophos;i="5.78,358,1599548400"; 
-   d="scan'208";a="150844215"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 23:48:57 -0800
-IronPort-SDR: kHfcIjIU9LPJM87VuDbGDpA+o53mdDMfjosxsRqDC3wZFw7knjJMnLhuug7wd+WwdoxhXNWeDi
- semjazXgkLGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,358,1599548400"; 
-   d="scan'208";a="369436643"
-Received: from lkp-server01.sh.intel.com (HELO 00bc34107a07) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 20 Nov 2020 23:48:56 -0800
-Received: from kbuild by 00bc34107a07 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kgNdg-0000F4-5H; Sat, 21 Nov 2020 07:48:56 +0000
-Date:   Sat, 21 Nov 2020 15:48:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/clang-ft/for-next] BUILD SUCCESS
- d2944854e3e118b837755abf4cbdb497662001b7
-Message-ID: <5fb8c649.4hFkmu1NYI0PG2Y9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727028AbgKUHtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 02:49:25 -0500
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:47355 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726543AbgKUHtZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 02:49:25 -0500
+Received: from localhost.localdomain ([81.185.161.242])
+        by mwinf5d61 with ME
+        id uvpH2300G5E5lq903vpJPn; Sat, 21 Nov 2020 08:49:21 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Nov 2020 08:49:21 +0100
+X-ME-IP: 81.185.161.242
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        lbartosik@marvell.com, akpm@linux-foundation.org,
+        hannes@cmpxchg.org, longman@redhat.com
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] crypto: marvell/octeontx - Use dma_set_mask_and_coherent to simplify code
+Date:   Sat, 21 Nov 2020 08:49:16 +0100
+Message-Id: <20201121074916.1322898-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/clang-ft/for-next
-branch HEAD: d2944854e3e118b837755abf4cbdb497662001b7  Input: libps2 - Fix fall-through warnings for Clang
+'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 
-elapsed time: 728m
-
-configs tested: 125
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      chrp32_defconfig
-mips                           ip27_defconfig
-arm                         s3c6400_defconfig
-powerpc                    klondike_defconfig
-sh                           se7780_defconfig
-arm                             mxs_defconfig
-powerpc                     mpc83xx_defconfig
-mips                           ip32_defconfig
-arm                          badge4_defconfig
-powerpc                     tqm8540_defconfig
-sh                           se7721_defconfig
-i386                             alldefconfig
-sh                          rsk7203_defconfig
-arm                         bcm2835_defconfig
-sh                          sdk7786_defconfig
-m68k                        stmark2_defconfig
-sh                          rsk7269_defconfig
-arm                       imx_v6_v7_defconfig
-arm                            pleb_defconfig
-mips                        maltaup_defconfig
-ia64                          tiger_defconfig
-xtensa                  audio_kc705_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                         db1xxx_defconfig
-m68k                          sun3x_defconfig
-arm                         mv78xx0_defconfig
-powerpc                     mpc5200_defconfig
-arm                           corgi_defconfig
-powerpc                     powernv_defconfig
-mips                      pic32mzda_defconfig
-riscv                            allmodconfig
-arm                         hackkit_defconfig
-mips                      fuloong2e_defconfig
-arm                          simpad_defconfig
-arm                        trizeps4_defconfig
-arc                        nsimosci_defconfig
-mips                     loongson1b_defconfig
-powerpc64                           defconfig
-arc                         haps_hs_defconfig
-arm                       aspeed_g5_defconfig
-arm                      integrator_defconfig
-arm                       cns3420vb_defconfig
-arm                     am200epdkit_defconfig
-powerpc                     ppa8548_defconfig
-alpha                               defconfig
-arm                  colibri_pxa300_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                 canyonlands_defconfig
-arm                           omap1_defconfig
-ia64                      gensparse_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                 mpc836x_mds_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20201120
-x86_64               randconfig-a003-20201120
-x86_64               randconfig-a004-20201120
-x86_64               randconfig-a005-20201120
-x86_64               randconfig-a001-20201120
-x86_64               randconfig-a002-20201120
-i386                 randconfig-a004-20201120
-i386                 randconfig-a003-20201120
-i386                 randconfig-a002-20201120
-i386                 randconfig-a005-20201120
-i386                 randconfig-a001-20201120
-i386                 randconfig-a006-20201120
-i386                 randconfig-a012-20201120
-i386                 randconfig-a013-20201120
-i386                 randconfig-a011-20201120
-i386                 randconfig-a016-20201120
-i386                 randconfig-a014-20201120
-i386                 randconfig-a015-20201120
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20201120
-x86_64               randconfig-a011-20201120
-x86_64               randconfig-a014-20201120
-x86_64               randconfig-a016-20201120
-x86_64               randconfig-a012-20201120
-x86_64               randconfig-a013-20201120
-
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/crypto/marvell/octeontx/otx_cptpf_main.c | 10 ++--------
+ drivers/crypto/marvell/octeontx/otx_cptvf_main.c | 10 ++--------
+ 2 files changed, 4 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/crypto/marvell/octeontx/otx_cptpf_main.c b/drivers/crypto/marvell/octeontx/otx_cptpf_main.c
+index 34bb3063eb70..14a42559f81d 100644
+--- a/drivers/crypto/marvell/octeontx/otx_cptpf_main.c
++++ b/drivers/crypto/marvell/octeontx/otx_cptpf_main.c
+@@ -212,15 +212,9 @@ static int otx_cpt_probe(struct pci_dev *pdev,
+ 		goto err_disable_device;
+ 	}
+ 
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
+ 	if (err) {
+-		dev_err(dev, "Unable to get usable DMA configuration\n");
+-		goto err_release_regions;
+-	}
+-
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
+-	if (err) {
+-		dev_err(dev, "Unable to get 48-bit DMA for consistent allocations\n");
++		dev_err(dev, "Unable to get usable 48-bit DMA configuration\n");
+ 		goto err_release_regions;
+ 	}
+ 
+diff --git a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
+index 228fe8e47e0e..c076d0b3ad5f 100644
+--- a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
++++ b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
+@@ -804,15 +804,9 @@ static int otx_cptvf_probe(struct pci_dev *pdev,
+ 		dev_err(dev, "PCI request regions failed 0x%x\n", err);
+ 		goto disable_device;
+ 	}
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
+ 	if (err) {
+-		dev_err(dev, "Unable to get usable DMA configuration\n");
+-		goto release_regions;
+-	}
+-
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
+-	if (err) {
+-		dev_err(dev, "Unable to get 48-bit DMA for consistent allocations\n");
++		dev_err(dev, "Unable to get usable 48-bit DMA configuration\n");
+ 		goto release_regions;
+ 	}
+ 
+-- 
+2.27.0
+
