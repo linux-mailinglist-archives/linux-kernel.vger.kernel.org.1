@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AD72BC158
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE1E2BC15B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgKUSMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:12:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S1728029AbgKUSOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgKUSMa (ORCPT
+        with ESMTP id S1727159AbgKUSOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:12:30 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCC8C0613CF;
-        Sat, 21 Nov 2020 10:12:29 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kgXN0-00C6P4-DV; Sat, 21 Nov 2020 19:12:22 +0100
-Message-ID: <bcfb0fe1b207d2f4bb52f0d1ef51207f9b5587de.camel@sipsolutions.net>
-Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Jakub Kicinski <kuba@kernel.org>, Florian Westphal <fw@strlen.de>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        Aleksandr Nogikh <aleksandrnogikh@gmail.com>,
-        davem@davemloft.net, edumazet@google.com, andreyknvl@google.com,
-        dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>
-Date:   Sat, 21 Nov 2020 19:12:21 +0100
-In-Reply-To: <20201121100636.26aaaf8a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
-         <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
-         <20201121160941.GA485907@shredder.lan>
-         <20201121165227.GT15137@breakpoint.cc>
-         <20201121100636.26aaaf8a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+        Sat, 21 Nov 2020 13:14:08 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA4EC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:14:08 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id n137so973648pfd.3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:14:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=+/ZgAn65K2RfMWm1/R12+2z9h8SUdfpl5HlRWBvrjuw=;
+        b=ipeZBrltvCVVMRe3DxVaGeYIQVgjnJwR/dPqF5qt+o4olKQYYgeeOZTKGTqyJhvy4s
+         6NvLD+fgKLjcqfxy+UA3vdiTSauFu3fBV6RJ6HbTiSbjbv7Qpa4zfMIxXotH+nAV0eW+
+         H7QPjB4q1W2kMC87QZtaflCKLXCQx2ICMQaCU03+0PCpOvP6Tj2uTmVnpsGqQr1OazIN
+         vvp2xGui3bgNqQouxM9BxKwwbnZWetKpeLGd0nWQ7KgM7JXOdrmPY/GUTbXGGKV3+nkf
+         +FmINOytMGewrr2SeEzfuZ3cBOqxn1l9BSXKHULT2Bcbkw00XkqRITGC3osy9etvFNWd
+         gdiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=+/ZgAn65K2RfMWm1/R12+2z9h8SUdfpl5HlRWBvrjuw=;
+        b=Itw9t7WHGORXhh7cdqSY0BwNGOUTk3i8cpMjRQU57pf5iEWGDJNhqDOUTpuKQqOkEv
+         GDFvc0wrYHIghDPv8/UxK+BRblDH0diqyRdrHBG3L9zrrU6s677FStbWjzi8a3YkQCpM
+         JdI9PSOX4wuNoULwW1FOeBkMDZ3HJiXDib3Syi02H5b2qp9lKQPjLL2nxCi+BoSDwNK3
+         AJi2M/9AQT33OuaNG0b+K6NLbY3rD+qDVKmxx5E1Au04nXl+cjo/uZKQlHbsbuM9A9/S
+         bOph4J7N34KTu0MzGNAzFXAcB2HloFrij1cdC0KI3eRklvCw9v3OLR1nzVMV1p5uqs24
+         87gw==
+X-Gm-Message-State: AOAM533FBVhPdaxSNRPT0bLuDSlQQj62+on45nly+2QolvME7GW6J+Qk
+        /YjVEhrEVxb+NRgk7oI2cFI=
+X-Google-Smtp-Source: ABdhPJzmDqpomjK6zMP+8OPnxE+MasuFLkfHmO+4FpgGlFmBCydCw0jcgsqH7UXDwJUCke7W98J+Pw==
+X-Received: by 2002:a62:7883:0:b029:18a:e054:edf1 with SMTP id t125-20020a6278830000b029018ae054edf1mr18916039pfc.70.1605982447804;
+        Sat, 21 Nov 2020 10:14:07 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:40c:d321:ed91:20bf:333c:1bc4])
+        by smtp.googlemail.com with ESMTPSA id q19sm7311072pfh.37.2020.11.21.10.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 10:14:07 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     joe@perches.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] checkpatch: add fix option for LOGICAL_CONTINUATIONS
+Date:   Sat, 21 Nov 2020 23:43:57 +0530
+Message-Id: <20201121181357.7621-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <d68afd4b87e2ce3fc846d8ca5ab9a401ce04344a.camel@perches.com>
+References: <d68afd4b87e2ce3fc846d8ca5ab9a401ce04344a.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-21 at 10:06 -0800, Jakub Kicinski wrote:
-> On Sat, 21 Nov 2020 17:52:27 +0100 Florian Westphal wrote:
-> > Ido Schimmel <idosch@idosch.org> wrote:
-> > > Other suggestions?  
-> > 
-> > Aleksandr, why was this made into an skb extension in the first place?
-> > 
-> > AFAIU this feature is usually always disabled at build time.
-> > For debug builds (test farm /debug kernel etc) its always needed.
-> > 
-> > If thats the case this u64 should be an sk_buff member, not an
-> > extension.
-> 
-> Yeah, in hindsight I should have looked at how it's used. Not a great
-> fit for extensions. We can go back, but...
-> 
-> In general I'm not very happy at how this is going. First of all just
-> setting the handle in a couple of allocs seems to not be enough, skbs
-> get cloned, reused etc. There were also build problems caused by this
-> patch and Aleksandr & co where nowhere to be found. Now we find out
-> this causes leaks, how was that not caught by the syzbot it's supposed
-> to serve?!
+Currently, checkpatch warns if logical continuations are placed at the
+start of a line and not at the end of previous line.
 
-Heh.
+E.g., running checkpatch on commit 3485507fc272 ("staging:
+bcm2835-camera: Reduce length of enum names") reports:
 
-> So I'm leaning towards reverting the whole thing. You can attach
-> kretprobes and record the information you need in BPF maps.
+CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
+previous line
++	if (!ret
++	    && camera_port ==
 
-I'm not going to object to reverting it (and perhaps redoing it better
-later), but I will point out that kretprobe isn't going to work, you
-eventually need kcov_remote_start() to be called in strategic points
-before processing the skb after it bounced through the system.
+Provide a simple fix by adding logical operator at the end of previous
+line and removing from current line, if both the lines are additions
+(ie start with '+')
 
-IOW, it's not really about serving userland, it's about enabling (and
-later disabling) coverage collection for the bits of code it cares
-about, mostly because collecting it for _everything_ is going to be too
-slow and will mess up the data since for coverage guided fuzzing you
-really need the reported coverage data to be only about the injected
-fuzz data...
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+changes in v2: quote $operator at substitution
 
-johannes
+changes in v3: add a check for previous line ending with comment;
+If so, insert $operator at the last non-comment, non-whitespace char of the previous line
+
+ scripts/checkpatch.pl | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 5b1a5a65e69a..533c4a6bbf12 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3553,8 +3553,22 @@ sub process {
+ 
+ # check for && or || at the start of a line
+ 		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
+-			CHK("LOGICAL_CONTINUATIONS",
+-			    "Logical continuations should be on the previous line\n" . $hereprev);
++			my $operator = $1;
++			if (CHK("LOGICAL_CONTINUATIONS",
++				"Logical continuations should be on the previous line\n" . $hereprev) &&
++			    $fix && $prevrawline =~ /^\+/) {
++				# add logical operator to the previous line, remove from current line
++				# if last line ends with a comment
++				if ($prevrawline =~ /(\/\/.*)$/) {
++					my $comment = trim($1);
++					$fixed[$fixlinenr - 1] =~ s/\s*$comment//;
++					$fixed[$fixlinenr - 1] .= " $operator $comment";
++				}
++				else {
++					$fixed[$fixlinenr - 1] .= " $operator";
++				}
++				$fixed[$fixlinenr] =~ s/\Q$operator\E\s*//;
++			}
+ 		}
+ 
+ # check indentation starts on a tab stop
+-- 
+2.17.1
 
