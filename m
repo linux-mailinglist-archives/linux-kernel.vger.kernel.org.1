@@ -2,632 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D2E2BBCD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6105D2BBCDB
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727311AbgKUECg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 23:02:36 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:31350 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725906AbgKUECg (ORCPT
+        id S1727316AbgKUEDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 23:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgKUEDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 23:02:36 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AL40YoB011469;
-        Fri, 20 Nov 2020 20:02:29 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=E0FKlRAa3rban2QQEHXrhI+0I+aNS6+ZWVefBNQJPsw=;
- b=hKmyd0Nvnfyn2in8GUZy+QawaY1oaPZ3hkPNBCSp9GoXG1Z+NK5BriNkXslOcCuEWP/N
- VCP+peMwcGJSdBSJy+9UgPZ/J8gt2UEq60WCt57sDJ1rCMg/J+/Sb3H6GFUwnFfvU1Ch
- thywY+N65DhEbpWiAbYAMh78AOL67QwAAyD8Bm0A8I1Sz2EgAgqRQ52/zkNFku1OLdhl
- ibXTKq3cU6sjor4Is+xIPQa4P6PY2i10DSEB5SpasbI85nUoGpkWAxNyzqZmLjkVItGZ
- D7Rk9hhlRcgggDUUpB/7HsnJzXjnCPINb8t6g2gOaH1fUvK/cQXVl6Ro2nl03j9o1u2i pw== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 34w7nd2jte-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 20 Nov 2020 20:02:28 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Nov
- 2020 20:02:26 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Nov 2020 20:02:27 -0800
-Received: from hyd1584.caveonetworks.com (unknown [10.29.37.82])
-        by maili.marvell.com (Postfix) with ESMTP id B31D13F7048;
-        Fri, 20 Nov 2020 20:02:23 -0800 (PST)
-From:   George Cherian <george.cherian@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>,
-        <masahiroy@kernel.org>, <george.cherian@marvell.com>,
-        <willemdebruijn.kernel@gmail.com>, <saeed@kernel.org>
-Subject: [PATCHv4 net-next 3/3] octeontx2-af: Add devlink health reporters for NIX
-Date:   Sat, 21 Nov 2020 09:32:01 +0530
-Message-ID: <20201121040201.3171542-4-george.cherian@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201121040201.3171542-1-george.cherian@marvell.com>
-References: <20201121040201.3171542-1-george.cherian@marvell.com>
+        Fri, 20 Nov 2020 23:03:15 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91306C061A47
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:03:15 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id c80so12955272oib.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:03:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d+Jt7Kw8tpbR0XZRec6xgDcNSJxFLJiVa/Gv05lalew=;
+        b=V3ft2O8JeSSLMy1nZsUqp23pVt9eilwqNNaJ56mAPY3c4Px4/iFl7M1t8ww4Ilfhru
+         4Sz1i4Rdgy9ormCWbNs36UPOAAZM7DbHZDP56Qth9Nxgqw6Zn1PGQygV4M3/kQcAx7RL
+         x9+f4zU1depG3fJ1LmEFunDbPTePXby+FCOl3YdEwfmA26Edtg0MuMiYJKUnrn+1HAZE
+         3u9nXxptvpeVxQ1adajzI/rH4xBMVKsMBte1uHGXMgBTa9ACOKW6FJ1S7zuV8s4wnc5Y
+         tKeHrudxFAgkhGD4XNQxf8+DEWvQdR+3/GoAw2ZgKng94WulU1km7lCF1ejtbJk02zB9
+         xF/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d+Jt7Kw8tpbR0XZRec6xgDcNSJxFLJiVa/Gv05lalew=;
+        b=fxGvYanf7bd5E0N5JD2hKaFzYljbwFyOKESO8Jr117JZUepucLjp/q99kofEjC08Wh
+         svXWjUAEuaDwUpSO1XBFGMSmEfBTdvUQjM61DxtmGjAQD+V2LW6nNJ/P8yErLHhgeN2x
+         cCp2FNqrKbkUlz0lOZhVk8kHtW6ZGN3zAzsjrQL5SsuZYDa1ryP2qAI+hekHtjKcGnSP
+         B5nxXjL9oSt9Vb0ui0V4ebDO34d4GWkdz1eIbctTT7EJAySl8sTZ8v2alOJsHDohibPA
+         U52bw/hUHtCIFD5LLt0SPJ1U0ghiiWVcD+vYVYWLUGgPnsohimJMdLF4mIM29401Kunv
+         IgFA==
+X-Gm-Message-State: AOAM533OWM+P73wT/ZdfpLLkeXzso2g4cAV861OjLzoxQ1hfw5E0q2Y3
+        9X1TJoJ83mpUvd6evlPmrS4Olg==
+X-Google-Smtp-Source: ABdhPJxVDjWGCc5NwMV+giup5gCgzYtcJnesWwSzwDESxca8dWpFgXUfe5hC+9eX7BMITuhs6jJQIA==
+X-Received: by 2002:aca:a9c8:: with SMTP id s191mr8025691oie.11.1605931394890;
+        Fri, 20 Nov 2020 20:03:14 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o63sm2781105ooa.10.2020.11.20.20.03.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 20:03:14 -0800 (PST)
+Date:   Fri, 20 Nov 2020 22:03:12 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     agross@kernel.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v8 1/4] remoteproc: core: Add ops to enable custom
+ coredump functionality
+Message-ID: <20201121040312.GJ9177@builder.lan>
+References: <1605819935-10726-1-git-send-email-sidgup@codeaurora.org>
+ <1605819935-10726-2-git-send-email-sidgup@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-21_02:2020-11-20,2020-11-21 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605819935-10726-2-git-send-email-sidgup@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add health reporters for RVU NIX block.
-NIX Health reporter handle following HW event groups
- - GENERAL events
- - RAS events
- - RVU event
-An event counter per event is maintained in SW.
+On Thu 19 Nov 15:05 CST 2020, Siddharth Gupta wrote:
 
-Output:
- # ./devlink health
- pci/0002:01:00.0:
-   reporter npa
-     state healthy error 0 recover 0
-   reporter nix
-     state healthy error 0 recover 0
- # ./devlink  health dump show pci/0002:01:00.0 reporter nix
-  NIX_AF_GENERAL:
-         Memory Fault on NIX_AQ_INST_S read: 0
-         Memory Fault on NIX_AQ_RES_S write: 0
-         AQ Doorbell error: 0
-         Rx on unmapped PF_FUNC: 0
-         Rx multicast replication error: 0
-         Memory fault on NIX_RX_MCE_S read: 0
-         Memory fault on multicast WQE read: 0
-         Memory fault on mirror WQE read: 0
-         Memory fault on mirror pkt write: 0
-         Memory fault on multicast pkt write: 0
-   NIX_AF_RAS:
-         Poisoned data on NIX_AQ_INST_S read: 0
-         Poisoned data on NIX_AQ_RES_S write: 0
-         Poisoned data on HW context read: 0
-         Poisoned data on packet read from mirror buffer: 0
-         Poisoned data on packet read from mcast buffer: 0
-         Poisoned data on WQE read from mirror buffer: 0
-         Poisoned data on WQE read from multicast buffer: 0
-         Poisoned data on NIX_RX_MCE_S read: 0
-   NIX_AF_RVU:
-         Unmap Slot Error: 0
+> Each remoteproc might have different requirements for coredumps and might
+> want to choose the type of dumps it wants to collect. This change allows
+> remoteproc drivers to specify their own custom dump function to be executed
+> in place of rproc_coredump. If the coredump op is not specified by the
+> remoteproc driver it will be set to rproc_coredump by default.
+> 
 
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Signed-off-by: Jerin Jacob <jerinj@marvell.com>
-Signed-off-by: George Cherian <george.cherian@marvell.com>
----
- .../marvell/octeontx2/af/rvu_devlink.c        | 414 +++++++++++++++++-
- .../marvell/octeontx2/af/rvu_devlink.h        |  31 ++
- .../marvell/octeontx2/af/rvu_struct.h         |  10 +
- 3 files changed, 453 insertions(+), 2 deletions(-)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-index b7f0691d86b0..c02d0f56ae7a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-@@ -35,6 +35,131 @@ static int rvu_report_pair_end(struct devlink_fmsg *fmsg)
- 	return devlink_fmsg_pair_nest_end(fmsg);
- }
- 
-+static irqreturn_t rvu_nix_af_rvu_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu_nix_event_ctx *nix_event_context;
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu_devlink *rvu_dl = rvu_irq;
-+	struct rvu *rvu;
-+	int blkaddr;
-+	u64 intr;
-+
-+	rvu = rvu_dl->rvu;
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return IRQ_NONE;
-+
-+	nix_event_context = rvu_dl->nix_event_ctx;
-+	nix_event_count = &nix_event_context->nix_event_cnt;
-+	intr = rvu_read64(rvu, blkaddr, NIX_AF_RVU_INT);
-+	nix_event_context->nix_af_rvu_int = intr;
-+
-+	if (intr & BIT_ULL(0))
-+		nix_event_count->unmap_slot_count++;
-+
-+	/* Clear interrupts */
-+	rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT, intr);
-+	rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT_ENA_W1C, ~0ULL);
-+	devlink_health_report(rvu_dl->rvu_nix_health_reporter, "NIX_AF_RVU Error",
-+			      nix_event_context);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t rvu_nix_af_err_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu_nix_event_ctx *nix_event_context;
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu_devlink *rvu_dl = rvu_irq;
-+	struct rvu *rvu;
-+	int blkaddr;
-+	u64 intr;
-+
-+	rvu = rvu_dl->rvu;
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return IRQ_NONE;
-+
-+	nix_event_context = rvu_dl->nix_event_ctx;
-+	nix_event_count = &nix_event_context->nix_event_cnt;
-+	intr = rvu_read64(rvu, blkaddr, NIX_AF_ERR_INT);
-+	nix_event_context->nix_af_rvu_err = intr;
-+
-+	if (intr & BIT_ULL(14))
-+		nix_event_count->aq_inst_count++;
-+	if (intr & BIT_ULL(13))
-+		nix_event_count->aq_res_count++;
-+	if (intr & BIT_ULL(12))
-+		nix_event_count->aq_db_count++;
-+	if (intr & BIT_ULL(6))
-+		nix_event_count->rx_on_unmap_pf_count++;
-+	if (intr & BIT_ULL(5))
-+		nix_event_count->rx_mcast_repl_count++;
-+	if (intr & BIT_ULL(4))
-+		nix_event_count->rx_mcast_memfault_count++;
-+	if (intr & BIT_ULL(3))
-+		nix_event_count->rx_mcast_wqe_memfault_count++;
-+	if (intr & BIT_ULL(2))
-+		nix_event_count->rx_mirror_wqe_memfault_count++;
-+	if (intr & BIT_ULL(1))
-+		nix_event_count->rx_mirror_pktw_memfault_count++;
-+	if (intr & BIT_ULL(0))
-+		nix_event_count->rx_mcast_pktw_memfault_count++;
-+
-+	/* Clear interrupts */
-+	rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT, intr);
-+	rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT_ENA_W1C, ~0ULL);
-+	devlink_health_report(rvu_dl->rvu_nix_health_reporter, "NIX_AF_ERR Error",
-+			      nix_event_context);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t rvu_nix_af_ras_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu_nix_event_ctx *nix_event_context;
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu_devlink *rvu_dl = rvu_irq;
-+	struct rvu *rvu;
-+	int blkaddr;
-+	u64 intr;
-+
-+	rvu = rvu_dl->rvu;
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return IRQ_NONE;
-+
-+	nix_event_context = rvu_dl->nix_event_ctx;
-+	nix_event_count = &nix_event_context->nix_event_cnt;
-+	intr = rvu_read64(rvu, blkaddr, NIX_AF_RAS);
-+	nix_event_context->nix_af_rvu_ras = intr;
-+
-+	if (intr & BIT_ULL(34))
-+		nix_event_count->poison_aq_inst_count++;
-+	if (intr & BIT_ULL(33))
-+		nix_event_count->poison_aq_res_count++;
-+	if (intr & BIT_ULL(32))
-+		nix_event_count->poison_aq_cxt_count++;
-+	if (intr & BIT_ULL(4))
-+		nix_event_count->rx_mirror_data_poison_count++;
-+	if (intr & BIT_ULL(3))
-+		nix_event_count->rx_mcast_data_poison_count++;
-+	if (intr & BIT_ULL(2))
-+		nix_event_count->rx_mirror_wqe_poison_count++;
-+	if (intr & BIT_ULL(1))
-+		nix_event_count->rx_mcast_wqe_poison_count++;
-+	if (intr & BIT_ULL(0))
-+		nix_event_count->rx_mce_poison_count++;
-+
-+	/* Clear interrupts */
-+	rvu_write64(rvu, blkaddr, NIX_AF_RAS, intr);
-+	rvu_write64(rvu, blkaddr, NIX_AF_RAS_ENA_W1C, ~0ULL);
-+	devlink_health_report(rvu_dl->rvu_nix_health_reporter, "NIX_AF_RAS Error",
-+			      nix_event_context);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static bool rvu_common_request_irq(struct rvu *rvu, int offset,
- 				   const char *name, irq_handler_t fn)
- {
-@@ -52,6 +177,285 @@ static bool rvu_common_request_irq(struct rvu *rvu, int offset,
- 	return rvu->irq_allocated[offset];
- }
- 
-+static void rvu_nix_blk_unregister_interrupts(struct rvu *rvu,
-+					      int blkaddr)
-+{
-+	struct rvu_devlink *rvu_dl = rvu->rvu_dl;
-+	int offs, i;
-+
-+	offs = rvu_read64(rvu, blkaddr, NIX_PRIV_AF_INT_CFG) & 0x3ff;
-+	if (!offs)
-+		return;
-+
-+	rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT_ENA_W1C, ~0ULL);
-+	rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT_ENA_W1C, ~0ULL);
-+	rvu_write64(rvu, blkaddr, NIX_AF_RAS_ENA_W1C, ~0ULL);
-+
-+	if (rvu->irq_allocated[offs + NIX_AF_INT_VEC_RVU]) {
-+		free_irq(pci_irq_vector(rvu->pdev, offs + NIX_AF_INT_VEC_RVU),
-+			 rvu_dl);
-+		rvu->irq_allocated[offs + NIX_AF_INT_VEC_RVU] = false;
-+	}
-+
-+	for (i = NIX_AF_INT_VEC_AF_ERR; i < NIX_AF_INT_VEC_CNT; i++)
-+		if (rvu->irq_allocated[offs + i]) {
-+			free_irq(pci_irq_vector(rvu->pdev, offs + i), rvu_dl);
-+			rvu->irq_allocated[offs + i] = false;
-+		}
-+}
-+
-+static void rvu_nix_unregister_interrupts(struct rvu *rvu)
-+{
-+	int blkaddr = 0;
-+
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return;
-+
-+	rvu_nix_blk_unregister_interrupts(rvu, blkaddr);
-+}
-+
-+static int rvu_nix_blk_register_interrupts(struct rvu *rvu,
-+					   int blkaddr)
-+{
-+	int base;
-+	bool rc;
-+
-+	/* Get NIX AF MSIX vectors offset. */
-+	base = rvu_read64(rvu, blkaddr, NIX_PRIV_AF_INT_CFG) & 0x3ff;
-+	if (!base) {
-+		dev_warn(rvu->dev,
-+			 "Failed to get NIX%d NIX_AF_INT vector offsets\n",
-+			 blkaddr - BLKADDR_NIX0);
-+		return 0;
-+	}
-+	/* Register and enable NIX_AF_RVU_INT interrupt */
-+	rc = rvu_common_request_irq(rvu, base +  NIX_AF_INT_VEC_RVU,
-+				    "NIX_AF_RVU_INT",
-+				    rvu_nix_af_rvu_intr_handler);
-+	if (!rc)
-+		goto err;
-+	rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT_ENA_W1S, ~0ULL);
-+
-+	/* Register and enable NIX_AF_ERR_INT interrupt */
-+	rc = rvu_common_request_irq(rvu, base + NIX_AF_INT_VEC_AF_ERR,
-+				    "NIX_AF_ERR_INT",
-+				    rvu_nix_af_err_intr_handler);
-+	if (!rc)
-+		goto err;
-+	rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT_ENA_W1S, ~0ULL);
-+
-+	/* Register and enable NIX_AF_RAS interrupt */
-+	rc = rvu_common_request_irq(rvu, base + NIX_AF_INT_VEC_POISON,
-+				    "NIX_AF_RAS",
-+				    rvu_nix_af_ras_intr_handler);
-+	if (!rc)
-+		goto err;
-+	rvu_write64(rvu, blkaddr, NIX_AF_RAS_ENA_W1S, ~0ULL);
-+
-+	return 0;
-+err:
-+	rvu_nix_unregister_interrupts(rvu);
-+	return -1;
-+}
-+
-+static int rvu_nix_register_interrupts(struct rvu *rvu)
-+{
-+	int blkaddr = 0;
-+
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return blkaddr;
-+
-+	rvu_nix_blk_register_interrupts(rvu, blkaddr);
-+
-+	return 0;
-+}
-+
-+static int rvu_nix_report_show(struct devlink_fmsg *fmsg, struct rvu *rvu)
-+{
-+	struct rvu_nix_event_ctx *nix_event_context;
-+	struct rvu_nix_event_cnt *nix_event_count;
-+	struct rvu_devlink *rvu_dl = rvu->rvu_dl;
-+	int err;
-+
-+	nix_event_context = rvu_dl->nix_event_ctx;
-+	nix_event_count = &nix_event_context->nix_event_cnt;
-+	err = rvu_report_pair_start(fmsg, "NIX_AF_GENERAL");
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\tMemory Fault on NIX_AQ_INST_S read",
-+					nix_event_count->aq_inst_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory Fault on NIX_AQ_RES_S write",
-+					nix_event_count->aq_res_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tAQ Doorbell error",
-+					nix_event_count->aq_db_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tRx on unmapped PF_FUNC",
-+					nix_event_count->rx_on_unmap_pf_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tRx multicast replication error",
-+					nix_event_count->rx_mcast_repl_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on NIX_RX_MCE_S read",
-+					nix_event_count->rx_mcast_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on multicast WQE read",
-+					nix_event_count->rx_mcast_wqe_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on mirror WQE read",
-+					nix_event_count->rx_mirror_wqe_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on mirror pkt write",
-+					nix_event_count->rx_mirror_pktw_memfault_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tMemory fault on multicast pkt write",
-+					nix_event_count->rx_mcast_pktw_memfault_count);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_end(fmsg);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_start(fmsg, "NIX_AF_RAS");
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\tPoisoned data on NIX_AQ_INST_S read",
-+					nix_event_count->poison_aq_inst_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on NIX_AQ_RES_S write",
-+					nix_event_count->poison_aq_res_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on HW context read",
-+					nix_event_count->poison_aq_cxt_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on packet read from mirror buffer",
-+					nix_event_count->rx_mirror_data_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on packet read from mcast buffer",
-+					nix_event_count->rx_mcast_data_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on WQE read from mirror buffer",
-+					nix_event_count->rx_mirror_wqe_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on WQE read from multicast buffer",
-+					nix_event_count->rx_mcast_wqe_poison_count);
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\n\tPoisoned data on NIX_RX_MCE_S read",
-+					nix_event_count->rx_mce_poison_count);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_end(fmsg);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_start(fmsg, "NIX_AF_RVU");
-+	if (err)
-+		return err;
-+	err = devlink_fmsg_u64_pair_put(fmsg, "\tUnmap Slot Error",
-+					nix_event_count->unmap_slot_count);
-+	if (err)
-+		return err;
-+	err = rvu_report_pair_end(fmsg);
-+	if (err)
-+		return err;
-+	return 0;
-+}
-+
-+static int rvu_nix_reporter_dump(struct devlink_health_reporter *reporter,
-+				 struct devlink_fmsg *fmsg, void *ctx,
-+				 struct netlink_ext_ack *netlink_extack)
-+{
-+	struct rvu *rvu = devlink_health_reporter_priv(reporter);
-+
-+	return rvu_nix_report_show(fmsg, rvu);
-+}
-+
-+static int rvu_nix_reporter_recover(struct devlink_health_reporter *reporter,
-+				    void *ctx, struct netlink_ext_ack *netlink_extack)
-+{
-+	struct rvu *rvu = devlink_health_reporter_priv(reporter);
-+	struct rvu_nix_event_ctx *nix_event_ctx = ctx;
-+	int blkaddr;
-+
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return blkaddr;
-+
-+	if (nix_event_ctx->nix_af_rvu_int) {
-+		rvu_write64(rvu, blkaddr, NIX_AF_RVU_INT_ENA_W1S, ~0ULL);
-+		nix_event_ctx->nix_af_rvu_int = 0;
-+	}
-+	if (nix_event_ctx->nix_af_rvu_err) {
-+		rvu_write64(rvu, blkaddr, NIX_AF_ERR_INT_ENA_W1S, ~0ULL);
-+		nix_event_ctx->nix_af_rvu_err = 0;
-+	}
-+	if (nix_event_ctx->nix_af_rvu_ras) {
-+		rvu_write64(rvu, blkaddr, NIX_AF_RAS_ENA_W1S, ~0ULL);
-+		nix_event_ctx->nix_af_rvu_ras = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct devlink_health_reporter_ops rvu_nix_fault_reporter_ops = {
-+		.name = "hw_nix",
-+		.dump = rvu_nix_reporter_dump,
-+		.recover = rvu_nix_reporter_recover,
-+};
-+
-+static int rvu_nix_health_reporters_create(struct rvu_devlink *rvu_dl)
-+{
-+	struct devlink_health_reporter *rvu_nix_health_reporter;
-+	struct rvu_nix_event_ctx *nix_event_context;
-+	struct rvu *rvu = rvu_dl->rvu;
-+
-+	nix_event_context = kzalloc(sizeof(*nix_event_context), GFP_KERNEL);
-+	if (!nix_event_context)
-+		return -ENOMEM;
-+
-+	rvu_dl->nix_event_ctx = nix_event_context;
-+	rvu_nix_health_reporter = devlink_health_reporter_create(rvu_dl->dl,
-+								 &rvu_nix_fault_reporter_ops,
-+								 0, rvu);
-+	if (IS_ERR(rvu_nix_health_reporter)) {
-+		dev_warn(rvu->dev, "Failed to create nix reporter, err = %ld\n",
-+			 PTR_ERR(rvu_nix_health_reporter));
-+		return PTR_ERR(rvu_nix_health_reporter);
-+	}
-+
-+	rvu_dl->rvu_nix_health_reporter = rvu_nix_health_reporter;
-+	rvu_nix_register_interrupts(rvu);
-+	return 0;
-+}
-+
-+static void rvu_nix_health_reporters_destroy(struct rvu_devlink *rvu_dl)
-+{
-+	struct rvu *rvu = rvu_dl->rvu;
-+
-+	if (!rvu_dl->rvu_nix_health_reporter)
-+		return;
-+
-+	devlink_health_reporter_destroy(rvu_dl->rvu_nix_health_reporter);
-+	rvu_nix_unregister_interrupts(rvu);
-+}
-+
- static irqreturn_t rvu_npa_af_rvu_intr_handler(int irq, void *rvu_irq)
- {
- 	struct rvu_npa_event_ctx *npa_event_context;
-@@ -214,7 +618,7 @@ static irqreturn_t rvu_npa_af_ras_intr_handler(int irq, void *rvu_irq)
- 	/* Clear interrupts */
- 	rvu_write64(rvu, blkaddr, NPA_AF_RAS, intr);
- 	rvu_write64(rvu, blkaddr, NPA_AF_RAS_ENA_W1C, ~0ULL);
--	devlink_health_report(rvu_dl->rvu_npa_health_reporter, "HW NPA_AF_RAS Error reported",
-+	devlink_health_report(rvu_dl->rvu_npa_health_reporter, "NPA_AF_RAS Error",
- 			      npa_event_context);
- 	return IRQ_HANDLED;
- }
-@@ -481,9 +885,14 @@ static void rvu_npa_health_reporters_destroy(struct rvu_devlink *rvu_dl)
- static int rvu_health_reporters_create(struct rvu *rvu)
- {
- 	struct rvu_devlink *rvu_dl;
-+	int err;
- 
- 	rvu_dl = rvu->rvu_dl;
--	return rvu_npa_health_reporters_create(rvu_dl);
-+	err = rvu_npa_health_reporters_create(rvu_dl);
-+	if (err)
-+		return err;
-+
-+	return rvu_nix_health_reporters_create(rvu_dl);
- }
- 
- static void rvu_health_reporters_destroy(struct rvu *rvu)
-@@ -495,6 +904,7 @@ static void rvu_health_reporters_destroy(struct rvu *rvu)
- 
- 	rvu_dl = rvu->rvu_dl;
- 	rvu_npa_health_reporters_destroy(rvu_dl);
-+	rvu_nix_health_reporters_destroy(rvu_dl);
- }
- 
- static int rvu_devlink_info_get(struct devlink *devlink, struct devlink_info_req *req,
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
-index e04603a9952c..cfc513d945a0 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
-@@ -37,11 +37,42 @@ struct rvu_npa_event_ctx {
- 	u64 npa_af_rvu_ras;
- };
- 
-+struct rvu_nix_event_cnt {
-+	u64 unmap_slot_count;
-+	u64 aq_inst_count;
-+	u64 aq_res_count;
-+	u64 aq_db_count;
-+	u64 rx_on_unmap_pf_count;
-+	u64 rx_mcast_repl_count;
-+	u64 rx_mcast_memfault_count;
-+	u64 rx_mcast_wqe_memfault_count;
-+	u64 rx_mirror_wqe_memfault_count;
-+	u64 rx_mirror_pktw_memfault_count;
-+	u64 rx_mcast_pktw_memfault_count;
-+	u64 poison_aq_inst_count;
-+	u64 poison_aq_res_count;
-+	u64 poison_aq_cxt_count;
-+	u64 rx_mirror_data_poison_count;
-+	u64 rx_mcast_data_poison_count;
-+	u64 rx_mirror_wqe_poison_count;
-+	u64 rx_mcast_wqe_poison_count;
-+	u64 rx_mce_poison_count;
-+};
-+
-+struct rvu_nix_event_ctx {
-+	struct rvu_nix_event_cnt nix_event_cnt;
-+	u64 nix_af_rvu_int;
-+	u64 nix_af_rvu_err;
-+	u64 nix_af_rvu_ras;
-+};
-+
- struct rvu_devlink {
- 	struct devlink *dl;
- 	struct rvu *rvu;
- 	struct devlink_health_reporter *rvu_npa_health_reporter;
- 	struct rvu_npa_event_ctx *npa_event_ctx;
-+	struct devlink_health_reporter *rvu_nix_health_reporter;
-+	struct rvu_nix_event_ctx *nix_event_ctx;
- };
- 
- /* Devlink APIs */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h
-index e2153d47c373..5e15f4fc11e3 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_struct.h
-@@ -74,6 +74,16 @@ enum npa_af_int_vec_e {
- 	NPA_AF_INT_VEC_CNT	= 0x5,
- };
- 
-+/* NIX Admin function Interrupt Vector Enumeration */
-+enum nix_af_int_vec_e {
-+	NIX_AF_INT_VEC_RVU	= 0x0,
-+	NIX_AF_INT_VEC_GEN	= 0x1,
-+	NIX_AF_INT_VEC_AQ_DONE	= 0x2,
-+	NIX_AF_INT_VEC_AF_ERR	= 0x3,
-+	NIX_AF_INT_VEC_POISON	= 0x4,
-+	NIX_AF_INT_VEC_CNT	= 0x5,
-+};
-+
- /**
-  * RVU PF Interrupt Vector Enumeration
-  */
--- 
-2.25.1
+Regards,
+Bjorn
 
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 6 +++++-
+>  include/linux/remoteproc.h           | 2 ++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index dab2c0f..eba7543 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1704,7 +1704,7 @@ int rproc_trigger_recovery(struct rproc *rproc)
+>  		goto unlock_mutex;
+>  
+>  	/* generate coredump */
+> -	rproc_coredump(rproc);
+> +	rproc->ops->coredump(rproc);
+>  
+>  	/* load firmware */
+>  	ret = request_firmware(&firmware_p, rproc->firmware, dev);
+> @@ -2126,6 +2126,10 @@ static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
+>  	if (!rproc->ops)
+>  		return -ENOMEM;
+>  
+> +	/* Default to rproc_coredump if no coredump function is specified */
+> +	if (!rproc->ops->coredump)
+> +		rproc->ops->coredump = rproc_coredump;
+> +
+>  	if (rproc->ops->load)
+>  		return 0;
+>  
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 3fa3ba6..a419878 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -375,6 +375,7 @@ enum rsc_handling_status {
+>   * @get_boot_addr:	get boot address to entry point specified in firmware
+>   * @panic:	optional callback to react to system panic, core will delay
+>   *		panic at least the returned number of milliseconds
+> + * @coredump:	  collect firmware dump after the subsystem is shutdown
+>   */
+>  struct rproc_ops {
+>  	int (*prepare)(struct rproc *rproc);
+> @@ -393,6 +394,7 @@ struct rproc_ops {
+>  	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
+>  	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware *fw);
+>  	unsigned long (*panic)(struct rproc *rproc);
+> +	void (*coredump)(struct rproc *rproc);
+>  };
+>  
+>  /**
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
