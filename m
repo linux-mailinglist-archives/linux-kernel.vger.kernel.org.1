@@ -2,277 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E412BBF09
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F7D2BBF10
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgKUMre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 07:47:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727584AbgKUMrd (ORCPT
+        id S1727789AbgKUMus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 07:50:48 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38256 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727698AbgKUMur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 07:47:33 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14067C0613CF;
-        Sat, 21 Nov 2020 04:47:33 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id d9so13960604oib.3;
-        Sat, 21 Nov 2020 04:47:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FlSNWJmNWiQiTz/L3So6lTyhHOBK1+EUvQhZPXGeudI=;
-        b=mLymZ4jYEYnHEMUGmJGhbkCkm1/1qhhUhOnp9qFSCFG2Dxje5uBk1Cu74PjQWtH6b5
-         4meVf+nGBt24oxg5D64fUDpYxNPXcFJ3JWirTSlcfcbkEXHfIfA7ryvdgRH7Pg+TdZSE
-         dXaqVbw2dDru151HevP7AdbOrmVOFzpq6gwTytqG99SrZRo9HT8jxqccu5LbPFDciEjK
-         73dQt+jHxzIchZmrsV9kc/D+EIubFH/d9GrQZfH7Ef62qaz1/BCyVf0uIUsUtVCSJIBQ
-         KGgGvmw8sADN7mTwRTiaZGW1oqtzyDge51JVHpD0LL9DGy9LuVKt7/YUO+W9kh9V3uLD
-         9uiQ==
+        Sat, 21 Nov 2020 07:50:47 -0500
+Received: by mail-qt1-f193.google.com with SMTP id g17so9303414qts.5;
+        Sat, 21 Nov 2020 04:50:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FlSNWJmNWiQiTz/L3So6lTyhHOBK1+EUvQhZPXGeudI=;
-        b=IlJsAhYVnh6dci5uAWjQxR+/R1Z2bmxyxWZIc0/WtSmpuuWZBy2xE+BZLCkeqWt836
-         C1xjX3WEm59vy5V9yMeDJIABm6AS6g5B/5caaZBD/COEbnjC1HAztxhIUWtOtfSC3NNf
-         5XTCkdAubRC1zGV5kocjyQwP1fhn6BdO+Avk2o4Uud3SzuoUK1Qj77t1Vot2G9pQQOaa
-         +AJdb8gZFVjx9oguTz7+St31gzuxuPgnqq4gsxtPHlnglYf2LwgU4RKuYwWgB9+toPtN
-         dKYqx2xebdP/mG8WPxJSBB+11ju1MaBUfqVeVEPiXjcE9XYvo91WePzfj3KMSRqwQUPW
-         aQYw==
-X-Gm-Message-State: AOAM530TFlbJvMv84bhMBki/0RGBrVJRRIff736IXADAhZPmBXzzo7ij
-        n+65wrwBVRPZnYvtG6rvxScZp17rWSagzwggQTnB+k0FTJFw0Q==
-X-Google-Smtp-Source: ABdhPJwm/h9kUMFqlGm0lJmnxV9/hlp30MxHOKOag39ZoEYRMrUPlCrFLaqhGvcbUmpwSXdstBWktehEKaGSR9+lNnw=
-X-Received: by 2002:aca:a896:: with SMTP id r144mr2111725oie.154.1605962852497;
- Sat, 21 Nov 2020 04:47:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0eLODkRpKbmFULO0YO5o421ANqpWCtV3ViGaBwX9fGk=;
+        b=gnBwQqKSygvu8DVAQQ7I0rxeSbXpYigeh6Pd931g6Kdvj2bFsb1TJzgQMGfx7tXM07
+         WP/PiiVqzsaXWuAlYgu8Vx/WCu2mUXZnIJIuy+qLJPLkcGQUc7rx3yrsNoA7YXuKzbk5
+         GrKWFMC9Qf7lfHGG5kfLC2CNcck0014JCj03mcQ4RtCdmtk+2bRN0n0eVmbO+RjIv1eU
+         e7/wrBH4RSoDuGRZydFNOiXvjZzQ6wbl53YGxvhkDdcbpfWxPMjh8H2Uo1JeguEK9VpO
+         AeFys0iLs/MPAVXYMfJ36QqJMu4zPMTD1wZC0c35q27NDqtVy9xPd7RijU7K2bW2HmKr
+         83Zw==
+X-Gm-Message-State: AOAM531FwscfrZzoRucBrXyewYeZymhuEUJFrs2B2YdXrL8zzxDlQMmy
+        3p6pW2CorEok7y+4oxVnXPts8gBTrA==
+X-Google-Smtp-Source: ABdhPJyUJ7IlSagRKbzuDzYgX/hB+zYDKd2lKwox5U7luJqaS/fiFLVH8Q0NOUOK/Z3bx90u8wuJ0g==
+X-Received: by 2002:a05:622a:1cd:: with SMTP id t13mr20450545qtw.39.1605963046240;
+        Sat, 21 Nov 2020 04:50:46 -0800 (PST)
+Received: from xps15 ([2607:fb90:5feb:6270:cdf7:680e:59f2:6ccd])
+        by smtp.gmail.com with ESMTPSA id e6sm2224127qtb.57.2020.11.21.04.50.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 04:50:45 -0800 (PST)
+Received: (nullmailer pid 2076002 invoked by uid 1000);
+        Sat, 21 Nov 2020 12:50:40 -0000
+Date:   Sat, 21 Nov 2020 06:50:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
+Message-ID: <20201121125040.GA2074808@robh.at.kernel.org>
+References: <20201112083704.1173908-1-hsinyi@chromium.org>
 MIME-Version: 1.0
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch> <20201119144146.1045202-4-daniel.vetter@ffwll.ch>
-In-Reply-To: <20201119144146.1045202-4-daniel.vetter@ffwll.ch>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Sat, 21 Nov 2020 14:47:05 +0200
-Message-ID: <CAFCwf12Hrjm1La_qgrpW_E0WryiBXYzOobMMGEYsxh9kg=3_AA@mail.gmail.com>
-Subject: Re: [PATCH v6 03/17] misc/habana: Stop using frame_vector helpers
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Moti Haimovski <mhaimovski@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pawel Piskorski <ppiskorski@habana.ai>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112083704.1173908-1-hsinyi@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 4:41 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrot=
-e:
->
-> All we need are a pages array, pin_user_pages_fast can give us that
-> directly. Plus this avoids the entire raw pfn side of get_vaddr_frames.
->
-> Note that pin_user_pages_fast is a safe replacement despite the
-> seeming lack of checking for vma->vm_flasg & (VM_IO | VM_PFNMAP). Such
-> ptes are marked with pte_mkspecial (which pup_fast rejects in the
-> fastpath), and only architectures supporting that support the
-> pin_user_pages_fast fastpath.
->
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: Oded Gabbay <oded.gabbay@gmail.com>
-> Cc: Omer Shpigelman <oshpigelman@habana.ai>
-> Cc: Ofir Bitton <obitton@habana.ai>
-> Cc: Tomer Tayar <ttayar@habana.ai>
-> Cc: Moti Haimovski <mhaimovski@habana.ai>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Pawel Piskorski <ppiskorski@habana.ai>
-> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> --
-> v2: Use unpin_user_pages_dirty_lock (John)
-> v3: Update kerneldoc (Oded)
-> v6: Explain why pup_fast is safe, after discussions with John and
-> Christoph.
+On Thu, Nov 12, 2020 at 04:37:03PM +0800, Hsin-Yi Wang wrote:
+> anx7625 requires 3 power supply regulators.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > ---
->  drivers/misc/habanalabs/Kconfig             |  1 -
->  drivers/misc/habanalabs/common/habanalabs.h |  6 ++-
->  drivers/misc/habanalabs/common/memory.c     | 49 ++++++++-------------
->  3 files changed, 22 insertions(+), 34 deletions(-)
->
-> diff --git a/drivers/misc/habanalabs/Kconfig b/drivers/misc/habanalabs/Kc=
-onfig
-> index 1640340d3e62..293d79811372 100644
-> --- a/drivers/misc/habanalabs/Kconfig
-> +++ b/drivers/misc/habanalabs/Kconfig
-> @@ -6,7 +6,6 @@
->  config HABANA_AI
->         tristate "HabanaAI accelerators (habanalabs)"
->         depends on PCI && HAS_IOMEM
-> -       select FRAME_VECTOR
->         select GENERIC_ALLOCATOR
->         select HWMON
->         help
-> diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/h=
-abanalabs/common/habanalabs.h
-> index 80d4d7385ffe..272aa3f29200 100644
-> --- a/drivers/misc/habanalabs/common/habanalabs.h
-> +++ b/drivers/misc/habanalabs/common/habanalabs.h
-> @@ -921,7 +921,8 @@ struct hl_ctx_mgr {
->   * struct hl_userptr - memory mapping chunk information
->   * @vm_type: type of the VM.
->   * @job_node: linked-list node for hanging the object on the Job's list.
-> - * @vec: pointer to the frame vector.
-> + * @pages: pointer to struct page array
-> + * @npages: size of @pages array
->   * @sgt: pointer to the scatter-gather table that holds the pages.
->   * @dir: for DMA unmapping, the direction must be supplied, so save it.
->   * @debugfs_list: node in debugfs list of command submissions.
-> @@ -932,7 +933,8 @@ struct hl_ctx_mgr {
->  struct hl_userptr {
->         enum vm_type_t          vm_type; /* must be first */
->         struct list_head        job_node;
-> -       struct frame_vector     *vec;
-> +       struct page             **pages;
-> +       unsigned int            npages;
->         struct sg_table         *sgt;
->         enum dma_data_direction dir;
->         struct list_head        debugfs_list;
-> diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/haban=
-alabs/common/memory.c
-> index 84227819e4d1..0b220221873d 100644
-> --- a/drivers/misc/habanalabs/common/memory.c
-> +++ b/drivers/misc/habanalabs/common/memory.c
-> @@ -1291,45 +1291,41 @@ static int get_user_memory(struct hl_device *hdev=
-, u64 addr, u64 size,
->                 return -EFAULT;
->         }
->
-> -       userptr->vec =3D frame_vector_create(npages);
-> -       if (!userptr->vec) {
-> +       userptr->pages =3D kvmalloc_array(npages, sizeof(*userptr->pages)=
-,
-> +                                       GFP_KERNEL);
-> +       if (!userptr->pages) {
->                 dev_err(hdev->dev, "Failed to create frame vector\n");
->                 return -ENOMEM;
->         }
-Hi Daniel, sorry but missed this in my initial review.
-The error message no longer fits the code, and actually it isn't
-needed as we don't print error messages on malloc failures.
-With that fixed, this patch is:
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+>  .../display/bridge/analogix,anx7625.yaml       | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> index 60585a4fc22b..1aa08f10d894 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> @@ -34,6 +34,18 @@ properties:
+>      description: used for reset chip control, RESET_N pin B7.
+>      maxItems: 1
+>  
+> +  vdd10-supply:
+> +    description: Regulator that provides the supply 1.0V power.
+> +    maxItems: 1
+> +
+> +  vdd18-supply:
+> +    description: Regulator that provides the supply 1.8V power.
+> +    maxItems: 1
+> +
+> +  vdd33-supply:
+> +    description: Regulator that provides the supply 3.3V power.
+> +    maxItems: 1
 
->
-> -       rc =3D get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
-> -                               userptr->vec);
-> +       rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE=
-,
-> +                                userptr->pages);
->
->         if (rc !=3D npages) {
->                 dev_err(hdev->dev,
->                         "Failed to map host memory, user ptr probably wro=
-ng\n");
->                 if (rc < 0)
-> -                       goto destroy_framevec;
-> +                       goto destroy_pages;
-> +               npages =3D rc;
->                 rc =3D -EFAULT;
-> -               goto put_framevec;
-> -       }
-> -
-> -       if (frame_vector_to_pages(userptr->vec) < 0) {
-> -               dev_err(hdev->dev,
-> -                       "Failed to translate frame vector to pages\n");
-> -               rc =3D -EFAULT;
-> -               goto put_framevec;
-> +               goto put_pages;
->         }
-> +       userptr->npages =3D npages;
->
->         rc =3D sg_alloc_table_from_pages(userptr->sgt,
-> -                                       frame_vector_pages(userptr->vec),
-> -                                       npages, offset, size, GFP_ATOMIC)=
-;
-> +                                      userptr->pages,
-> +                                      npages, offset, size, GFP_ATOMIC);
->         if (rc < 0) {
->                 dev_err(hdev->dev, "failed to create SG table from pages\=
-n");
-> -               goto put_framevec;
-> +               goto put_pages;
->         }
->
->         return 0;
->
-> -put_framevec:
-> -       put_vaddr_frames(userptr->vec);
-> -destroy_framevec:
-> -       frame_vector_destroy(userptr->vec);
-> +put_pages:
-> +       unpin_user_pages(userptr->pages, npages);
-> +destroy_pages:
-> +       kvfree(userptr->pages);
->         return rc;
->  }
->
-> @@ -1415,8 +1411,6 @@ int hl_pin_host_memory(struct hl_device *hdev, u64 =
-addr, u64 size,
->   */
->  void hl_unpin_host_memory(struct hl_device *hdev, struct hl_userptr *use=
-rptr)
->  {
-> -       struct page **pages;
-> -
->         hl_debugfs_remove_userptr(hdev, userptr);
->
->         if (userptr->dma_mapped)
-> @@ -1424,15 +1418,8 @@ void hl_unpin_host_memory(struct hl_device *hdev, =
-struct hl_userptr *userptr)
->                                                         userptr->sgt->nen=
-ts,
->                                                         userptr->dir);
->
-> -       pages =3D frame_vector_pages(userptr->vec);
-> -       if (!IS_ERR(pages)) {
-> -               int i;
-> -
-> -               for (i =3D 0; i < frame_vector_count(userptr->vec); i++)
-> -                       set_page_dirty_lock(pages[i]);
-> -       }
-> -       put_vaddr_frames(userptr->vec);
-> -       frame_vector_destroy(userptr->vec);
-> +       unpin_user_pages_dirty_lock(userptr->pages, userptr->npages, true=
-);
-> +       kvfree(userptr->pages);
->
->         list_del(&userptr->job_node);
->
-> --
-> 2.29.2
->
+Supplies are always a single item, so you can drop maxItems.
+
+> +
+>    ports:
+>      type: object
+>  
+> @@ -55,6 +67,9 @@ properties:
+>  required:
+>    - compatible
+>    - reg
+> +  - vdd10-supply
+> +  - vdd18-supply
+> +  - vdd33-supply
+>    - ports
+>  
+>  additionalProperties: false
+> @@ -72,6 +87,9 @@ examples:
+>              reg = <0x58>;
+>              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+>              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
+> +            vdd10-supply = <&pp1000_mipibrdg>;
+> +            vdd18-supply = <&pp1800_mipibrdg>;
+> +            vdd33-supply = <&pp3300_mipibrdg>;
+>  
+>              ports {
+>                  #address-cells = <1>;
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
+> 
