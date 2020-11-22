@@ -2,257 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EEF2BC8C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 20:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D97C2BC8C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 20:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727412AbgKVTe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 14:34:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727307AbgKVTe1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 14:34:27 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B2EC0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 11:34:27 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id 79so13958775otc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 11:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:message-id:subject:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=I2PfFj17Ov/GEX7G4flBd22N5tZmj0BtXl931kRWchk=;
-        b=XFtI2hIRMZx7SfwacBzH2vYRgSPHdjFPqm1FL1uGwjW4VJ/A2xakRqC3G6vvwrMbIE
-         MXnP3FsFLiTDkBxcyF+xC1B2egPjNsx6XUTZQ0ak1aZ55FOORaHm4b6tr2GEleCmDVOg
-         8ntlWeRKUZ0IF9SC0xtd7qvxRWPceM9+MHZ/hziuDVjo/Mq6fAFXhBOxoDfpEYFsFL2N
-         7BpPQkPZU2YW6Cg/RvtaNMJ6qsL6NHQ0XHYnFJgWNYtMej2UhYQHeyEVxMEUTTRSWi6w
-         2Q6Ykdx/AJ1TGy3TeERIs+NouOkvHr2KtCFaNPgh7ZTo3Tqel3y7va+cRXHlYQd34FIr
-         6VWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:subject:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=I2PfFj17Ov/GEX7G4flBd22N5tZmj0BtXl931kRWchk=;
-        b=FPe6EYETjiD5bAdZZ8nlajaYjjBMDVesNdunH3uaBAGZBI/wU5NCgTOdWajcjav9Rn
-         WA9c83vbmptYtEnTKzg+jgzXFDnyveNUwWCTfLrU1bcuO/4Kl8QOqZ5ZX9JF1gyxRK6e
-         cdlrO1hBRIRT9oDH/ufGYG6dQFQNi11HtM0T3RyOzaCWiCWeG56Da5seYTzxthX2gA3x
-         z5EJrXrApNJ/C/9xURnOtFKZfx1oBJCxGdc5w08wpC0xZuVLuH8UyQzXuGcQykkRbuik
-         FwM8x3zlXfu86Y1tuhGH8O6KRPN4kdpt9n04U4Di7GGn9DH1UdHKoJ8pxxjvtEPAiseq
-         C1mA==
-X-Gm-Message-State: AOAM533/Ggk8JHkg6+uQGCMt/diVXKjCk3VLqOkRom/9nW3DivKaAef6
-        cjzWM8tuXlanuFGVEIdI/S+oid7iB7h117m7
-X-Google-Smtp-Source: ABdhPJxHDOjP4pzspt3ZVc76pkTdShzEI6DISP/OuRXxhK5wzlLEikydfZSpD65MaltEmClY87Cc9A==
-X-Received: by 2002:a9d:5186:: with SMTP id y6mr4128833otg.193.1606073665569;
-        Sun, 22 Nov 2020 11:34:25 -0800 (PST)
-Received: from fiftytwodotfive.bdrung.de (ip5b401b14.dynamic.kabel-deutschland.de. [91.64.27.20])
-        by smtp.googlemail.com with ESMTPSA id o63sm6123070ooa.10.2020.11.22.11.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 11:34:24 -0800 (PST)
-From:   Benjamin Drung <benjamin.drung@cloud.ionos.com>
-X-Google-Original-From: Benjamin Drung <bdrung@debian.org>
-Message-ID: <a443a3e8633b9be921b365764147f296d0f16f76.camel@debian.org>
-Subject: Re: PROBLEM: Broken pixel format for Elgato Cam Link 4K
-To:     Adam Goode <agoode@google.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sun, 22 Nov 2020 20:34:21 +0100
-In-Reply-To: <CAOf41N=PopZ=8_05e9WfvWkBhuN5iRq1=JJ2KqkLJE5S3-XW5A@mail.gmail.com>
-References: <5ff0fc487272a7c21f63a929bfceee1ac9b43348.camel@debian.org>
-         <CAOf41N=PopZ=8_05e9WfvWkBhuN5iRq1=JJ2KqkLJE5S3-XW5A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        id S1727460AbgKVTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 14:35:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727387AbgKVTfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 14:35:25 -0500
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B8172078E
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606073724;
+        bh=wiUe1+Lsy/9M5RMEJjLWC4PBH0ZPqRMFo8QKQIqJXKk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HEw6m2ZGhVVKdI0PFbm2Ba9r323Dtx3T8uxslrdzAS/B4qj9jLrrpHoF7suuCLwLB
+         L/Tf5GDFGNW1K7614cDeTehcTzbwsJyAecAFBap1TmdRwfsvNWSsYUh5a+5MCjeCZ7
+         exvkYnevkFRTY7E0n9+ZBp4shKBTaNJH5FizdXuI=
+Received: by mail-vk1-f173.google.com with SMTP id u16so3515070vkb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 11:35:24 -0800 (PST)
+X-Gm-Message-State: AOAM53202ztDhWT7yeMGJd/V3ym9mA7PPvxSY2OGWvTPER4+rsolm/it
+        s0MTjTNstvS/ghFO/+313oxKIQgfhWyyMEmppv2/eg==
+X-Google-Smtp-Source: ABdhPJz6GEA+NJVOn7wX+dQLLdkTSQgDfCljjld+OKOyV1AD4oN3AUkoEhET5zzrCfH4xWn/XhBEuyP6jaO2ooxsSsY=
+X-Received: by 2002:a1f:9d04:: with SMTP id g4mr18940966vke.10.1606073723553;
+ Sun, 22 Nov 2020 11:35:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200814134123.14566-1-ansuelsmth@gmail.com> <20200814134123.14566-2-ansuelsmth@gmail.com>
+In-Reply-To: <20200814134123.14566-2-ansuelsmth@gmail.com>
+From:   Amit Kucheria <amitk@kernel.org>
+Date:   Mon, 23 Nov 2020 01:05:12 +0530
+X-Gmail-Original-Message-ID: <CAHLCerPUi-wHo5WTJZZCKS3hmOTs9e+uixudDSRG4jMFukSZeg@mail.gmail.com>
+Message-ID: <CAHLCerPUi-wHo5WTJZZCKS3hmOTs9e+uixudDSRG4jMFukSZeg@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 1/8] drivers: thermal: tsens: use get_temp for tsens_valid
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, den 20.11.2020, 16:45 -0500 schrieb Adam Goode:
-> On Fri, Nov 20, 2020 at 1:52 PM Benjamin Drung
-> <benjamin.drung@cloud.ionos.com> wrote:
-> > 
-> > Hi,
-> > 
-> > I own an Elgato Cam Link 4K which is a very popular USB HDMI
-> > capture
-> > device (number one capture card by click rates on Geizhals [1]).
-> > The
-> > problem is that the video feed is distorted when using the
-> > /dev/videoX
-> > device in the browser (tested on Firefox and Chromium) for video
-> > conferencing (tested with Jitsi Meet and Google Meet). The same
-> > distortion is present when opening `v4l2:///dev/video0` with VLC.
-> > 
-> > The Elgato Cam Link 4K reports to have three different pixel
-> > formats:
-> > 
-> > ```
-> > $ v4l2-ctl -d /dev/video0 --list-formats-ext
-> > ioctl: VIDIOC_ENUM_FMT
-> >         Type: Video Capture
-> > 
-> >         [0]: 'NV12' (Y/CbCr 4:2:0)
-> >                 Size: Discrete 3840x2160
-> >                         Interval: Discrete 0.040s (25.000 fps)
-> >         [1]: 'NV12' (Y/CbCr 4:2:0)
-> >                 Size: Discrete 3840x2160
-> >                         Interval: Discrete 0.040s (25.000 fps)
-> >         [2]: 'YU12' (Planar YUV 4:2:0)
-> >                 Size: Discrete 3840x2160
-> >                         Interval: Discrete 0.040s (25.000 fps)
-> > ```
-> > 
-> > When specifying the video format 'YU12' to VLC, the video is
-> > distorted
-> > the same way as using the default video format. When specifying
-> > 'NV12'
-> > to VLC, the video feed is displayed correctly:
-> > 
-> > ```
-> > vlc v4l2:///dev/video0 --v4l2-chroma=NV12
-> > ```
-> > 
-> > In OBS, the video feed is always displayed correctly. All video
-> > formats
-> > 'Y/CbCr 4:2:0', 'Planar YUV 4:2:0', 'BGR3 (Emulated)', and 'YV12
-> > (Emulated)' combined with the color ranges 'Default', 'Partial',
-> > and
-> > 'Full' produce the same correct output.
-> > 
-> > With Linux >= 5.9 this behavior in OBS changes: The video format
-> > 'Y/CbCr 4:2:0' displays the video correctly. Switching to 'Planar
-> > YUV
-> > 4:2:0', 'BGR3 (Emulated)', or 'YV12 (Emulated)' shows the video
-> > distorted and OBS shows this error message:
-> > 
-> > ```
-> > info: v4l2-input: Pixelformat: NV12
-> > [...]
-> > libv4l2: error set_fmt gave us a different result than try_fmt!
-> > info: v4l2-input: Resolution: 3840x2160
-> > info: v4l2-input: Pixelformat: NV12
-> > ```
-> > 
-> > Changing the video format back does not have an effect until I also
-> > change the color range (does seem to be relevant what to select
-> > there).
-> > 
-> > Workaround
-> > ----------
-> > 
-> > You can create a v4l2loopback device and use ffmpeg to stream from
-> > the
-> > Cam Link 4K to the loopback device:
-> > 
-> > ```
-> > ffmpeg -f v4l2 -input_format yuv420p -video_size 3840x2160 \
-> >   -i "$camlink" -codec copy -f v4l2 "$loopdev"
-> > ```
-> > 
-> > This workaround works, but is cumbersome and burns CPU cycles.
-> > 
-> > Other reports
-> > -------------
-> > 
-> > Searching the web for "Cam Link 4K Linux" reveals many similar
-> > reports
-> > like this. Noteworthy is blog post [3] from Mike Walters who
-> > patched
-> > the Cam Link 4K firmware to report the correct video format. I am
-> > willing to debug this issue and do test, but I don't want to flash
-> > the
-> > firmware to not break the warrenty (bisides I lack the hardware for
-> > flashing).
-> > 
-> > Environment
-> > -----------
-> > 
-> > This problem is present in Ubuntu 20.04 with linux 5.4.0-54.60 and
-> > Ubuntu 20.10 with linux 5.8.0-29.31. I also tested the mainline
-> > kernels
-> > builds 5.9.8-050908.202011101634 and 5.10.0-051000rc4.202011152030
-> > from
-> > Ubuntu [2].
-> > 
-> > The Cam Link 4K shows follow entries in dmesg:
-> > 
-> > ```
-> > [    1.575753] usb 2-3: new SuperSpeed Gen 1 USB device number 2
-> > using xhci_hcd
-> > [    1.596664] usb 2-3: LPM exit latency is zeroed, disabling LPM.
-> > [    1.598557] usb 2-3: New USB device found, idVendor=0fd9,
-> > idProduct=0066, bcdDevice= 0.00
-> > [    1.598558] usb 2-3: New USB device strings: Mfr=1, Product=2,
-> > SerialNumber=4
-> > [    1.598559] usb 2-3: Product: Cam Link 4K
-> > [    1.598560] usb 2-3: Manufacturer: Elgato
-> > ```
-> > 
-> > I have another problems with 5.9.8-050908.202011101634 and 5.10.0-
-> > 051000rc4.202011152030: Chromium fail to access the video device of
-> > Cam
-> > Link 4K and the notebook integrated webcam has a too low
-> > brightness.
-> > 
-> > [1] https://geizhals.de/?cat=vidext
-> > [2] https://kernel.ubuntu.com/~kernel-ppa/mainline/
-> > [3] 
-> > https://assortedhackery.com/patching-cam-link-to-play-nicer-on-linux/
-> > 
-> > --
-> > Benjamin Drung
-> > Debian & Ubuntu Developer
-> > 
-> 
-> 
-> Hi,
-> 
-> I am running on Fedora 32 which has the fix I wrote for the buggy
-> elgato firmware. The bug in the firmware makes it impossible to
-> properly select a non-0 pixel format when following the UVC
-> negotiation protocol. This is because the firmware returns the pixel
-> format in the wrong byte of the packet. The driver was following the
-> UVC protocol but did not send the pixel format back to the v4l2
-> subsystem. It does that now.
-> 
-> I'm not surprised that other bugs are emerging now. Ultimately the
-> firmware is buggy and announces pixel formats that it then rejects.
-> If
-> I flip through the settings in OBS, I do manage to wedge the
-> interface. But most of the programs I've seen that use v4l2 are buggy
-> in this way. A reliable one is the qv4l2 test program. I've also had
-> no problems with Chromium.
-> 
-> That reverse engineering is interesting! But I think it hides the
-> real
-> problem, where the pixel format negotiation on the firmware writes
-> into the wrong byte of the packet.
+Hi Ansuel,
 
-Hi Adam,
+My apologies for being tardy in reviewing this series. Career changes...
 
-you are talking about commit ec2c23f628802317f73fab5255cc62a776bc7930
-and 8a652a17e3c005dcdae31b6c8fdf14382a29cbbe that are part of
-v5.10-rc1?
+On Fri, Aug 14, 2020 at 7:12 PM Ansuel Smith <ansuelsmth@gmail.com> wrote:
+>
+> Use the driver get_temp function instead of force to use the generic get
+> temp function. This is needed as tsens v0 version use a custom function
+> to get the real temperature.
+>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/thermal/qcom/tsens.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index 9af6f71ab640..9fe9a2b26705 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -580,7 +580,6 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>  {
+>         struct tsens_priv *priv = s->priv;
+>         int hw_id = s->hw_id;
+> -       u32 temp_idx = LAST_TEMP_0 + hw_id;
+>         u32 valid_idx = VALID_0 + hw_id;
+>         u32 valid;
+>         int ret;
+> @@ -600,9 +599,9 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>         }
+>
+>         /* Valid bit is set, OK to read the temperature */
+> -       *temp = tsens_hw_to_mC(s, temp_idx);
+> +       ret = priv->ops->get_temp(s, temp);
 
-What do you suggest to fix the issue? Should I contact Elgato
-requesting a firmware update? Can the kernel ship a quirk for the Cam
-Link 4K to workaround the firmware bug? I would be happy to try out
-patches.
+This is wrong.
 
-I tested the qv4l2 with Linux 5.10.0-051000rc4.202011152030. When using
-the default settings, it displays the video correctly, but with a
-vertical green one-pixel-wide line. The terminal prints "error" four
-times. Sadly there is no debug mode to figure out where that error
-comes from.
+.get_temp is set to get_temp_tsens_valid() for v1 and v2 platforms. So
+you've just broken all those platforms by creating a recursive loop.
 
-Selecting "YU12 (Planar YUV 4:2:0)" print the following error message
-and switches back to the previous format:
+I assume you were trying to use the common interrupt code which
+currently uses get_temp_tsens_valid()? I suggest trying to add 8960
+support to tsens_hw_to_mC().
 
-libv4l2: error set_fmt gave us a different result than try_fmt!
-
---
-Benjamin Drung
-Debian & Ubuntu Developer
-
+>
+> -       return 0;
+> +       return ret;
+>  }
+>
+>  int get_temp_common(const struct tsens_sensor *s, int *temp)
+> --
+> 2.27.0
+>
