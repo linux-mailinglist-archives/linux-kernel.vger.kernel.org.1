@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848852BC58D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 911DB2BC594
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbgKVMKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 07:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727318AbgKVMKW (ORCPT
+        id S1727681AbgKVMTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 07:19:44 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42492 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727318AbgKVMTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 07:10:22 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECC5C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 04:10:21 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id r17so15713427wrw.1
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 04:10:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ij+FO1Ox8gSWzzdMZavhh7O5RzliqX3lYoAw54WTq7w=;
-        b=RFRD+zSIatVqWJ20XFneBM86YH0I4/3d0+Y0BRdUpT669H0mSy11frrGIWBsTC3n0x
-         Hb13mWPFgGrBE78RgWl/i3OShjePYolcxQsBJO0STCnpdvZ2qRuhWP8oZhI2AFB8icXY
-         LkVDc+86s3zSJ9PtvbM4FNMAT9sKDczKBnGt1fAoo//tj2PCShqMUdshZrRnl5m0a4uO
-         h0boxG4XDd3UURUtvcrQcOSlCnzcBTOIFcpefExG6XnfkV3QpVTGP0Q+IJc8cKbT+uGE
-         ceZDNlCiYd67UYpi8BVi0qd5z/uExPyqKIGE3x02S+QBycgcNviJkV54O53nn/Mt17Mo
-         jsMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ij+FO1Ox8gSWzzdMZavhh7O5RzliqX3lYoAw54WTq7w=;
-        b=EI6kQQR2QhsVELRDlip2bWEqhvRWdMl+y3PG/wK/axSCzHZ8JBNqKl9rzGz25fz0Yr
-         Hk1qA4yk2zHilQlszMnffYm/3aNNpTqSNxWiL1hAiG65S4I1ZHjde7t8y04nGkWmS++X
-         x6EKQX1K5e5dMl2RreBgF1UhoY6GlBK6wO7j1dG5Q/hKDi6XOr1VVDnu0BvR84hnZyhv
-         Khxw3/cIl82BO6X3JQBWpqKwP4QIjdXNEjMWqIWrX91UJ+pIlrSwMkj5UHHcXiVHB08/
-         5WDQ9pM6oSZPrcqd5w8U+yE2Zu9yAYBqWbEGJIQT6Bq9AE1EYv8g7p6ZVCn7+ds1HNv+
-         S2fg==
-X-Gm-Message-State: AOAM531No9+N/z4PJoug4pxedmd0HC6lWTkPiMGf+wzglpPqI5Mey50I
-        Yos6TO+8spx8Ggs9H8c2ymB49zAuUg==
-X-Google-Smtp-Source: ABdhPJyw7soCzyO6x37pKfSBpZMC0Z0AE0cHGZdUDAakwNEMaTEcwRTkxbvkcGIumkA+QQUd8AB3Mg==
-X-Received: by 2002:adf:f304:: with SMTP id i4mr25395465wro.268.1606047020467;
-        Sun, 22 Nov 2020 04:10:20 -0800 (PST)
-Received: from localhost.localdomain ([46.53.251.228])
-        by smtp.gmail.com with ESMTPSA id t15sm10477982wmn.19.2020.11.22.04.10.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 04:10:19 -0800 (PST)
-Date:   Sun, 22 Nov 2020 15:10:18 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] driver core: cleanup kstrto*() usage
-Message-ID: <20201122121018.GA48617@localhost.localdomain>
+        Sun, 22 Nov 2020 07:19:43 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E22721C0B92; Sun, 22 Nov 2020 13:19:40 +0100 (CET)
+Date:   Sun, 22 Nov 2020 13:19:40 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap@vger.kernel.org, tony@atomide.com, sre@kernel.org,
+        nekit1000@gmail.com, mpartap@gmx.net, merlijn@wizzup.org,
+        martin_rysavy@centrum.cz, phone-devel@vger.kernel.org,
+        maemo-leste@lists.dyne.org
+Subject: Droid 4 in next-20201120: cpcap-usb-phy.0: could not initialize VBUS
+ or ID IIO:
+Message-ID: <20201122121940.GA26145@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
 Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kstrto*() functions can write result directly to target memory
-if no additional checks needs to be done.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/base/core.c |   12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Hi!
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1701,12 +1701,10 @@ ssize_t device_store_ulong(struct device *dev,
- {
- 	struct dev_ext_attribute *ea = to_ext_attr(attr);
- 	int ret;
--	unsigned long new;
- 
--	ret = kstrtoul(buf, 0, &new);
-+	ret = kstrtoul(buf, 0, (unsigned long *)ea->var);
- 	if (ret)
- 		return ret;
--	*(unsigned long *)(ea->var) = new;
- 	/* Always return full write size even if we didn't consume all */
- 	return size;
- }
-@@ -1726,16 +1724,12 @@ ssize_t device_store_int(struct device *dev,
- 			 const char *buf, size_t size)
- {
- 	struct dev_ext_attribute *ea = to_ext_attr(attr);
-+	int val;
- 	int ret;
--	long new;
- 
--	ret = kstrtol(buf, 0, &new);
-+	ret = kstrtoint(buf, 0, (int *)ea->var);
- 	if (ret)
- 		return ret;
--
--	if (new > INT_MAX || new < INT_MIN)
--		return -EINVAL;
--	*(int *)(ea->var) = new;
- 	/* Always return full write size even if we didn't consume all */
- 	return size;
- }
+I'm getting this warning during boot:
+
+[    3.413299] gpio gpiochip1: Persistence not supported for GPIO 0
+[    3.419494] cpcap-usb-phy cpcap-usb-phy.0: could not initialize VBUS or =
+ID IIO: -517
+[    3.427398] ------------[ cut here ]------------
+[    3.432067] WARNING: CPU: 0 PID: 1 at drivers/regulator/core.c:2123 _reg=
+ulator_put.part.2+0x168/0x17c
+[    3.441406] Modules linked in:
+[    3.444519] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc4-next-20=
+201120-dirty #198
+[    3.452728] Hardware name: Generic OMAP4 (Flattened Device Tree)
+[    3.458801] [<c010db44>] (unwind_backtrace) from [<c0109ec0>] (show_stac=
+k+0x10/0x14)
+[    3.466613] [<c0109ec0>] (show_stack) from [<c095561c>] (dump_stack+0xb8=
+/0xd4)
+[    3.473876] [<c095561c>] (dump_stack) from [<c0953208>] (__warn+0xa8/0xd=
+0)
+[    3.480804] [<c0953208>] (__warn) from [<c095327c>] (warn_slowpath_fmt+0=
+x4c/0x98)
+[    3.488311] [<c095327c>] (warn_slowpath_fmt) from [<c0479b90>] (_regulat=
+or_put.part.2+0x168/0x17c)
+[    3.497344] [<c0479b90>] (_regulator_put.part.2) from [<c0479bcc>] (regu=
+lator_put+0x28/0x38)
+[    3.505828] [<c0479bcc>] (regulator_put) from [<c053a86c>] (release_node=
+s+0x1a0/0x248)
+[    3.513793] [<c053a86c>] (release_nodes) from [<c05366b8>] (really_probe=
++0x104/0x3b4)
+[    3.521667] [<c05366b8>] (really_probe) from [<c0536acc>] (driver_probe_=
+device+0x58/0xb4)
+[    3.529907] [<c0536acc>] (driver_probe_device) from [<c0534b34>] (bus_fo=
+r_each_drv+0x70/0x94)
+[    3.538482] [<c0534b34>] (bus_for_each_drv) from [<c0536540>] (__device_=
+attach+0xbc/0x128)
+
+(and then cpcap does not work). Is my configuration missing something?
+
+Later I get warnings about framedone interrupt not being done (IIRC)
+=66rom HDMI audio module, and I have screen freezing in framebuffer.
+
+Any ideas?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7pXXAAKCRAw5/Bqldv6
+8v2DAJ4479P2CJHSxpGpQflJ32jkWO6TjACgqBhdPnebCowchVQfHHPwU7Y3crc=
+=IraW
+-----END PGP SIGNATURE-----
+
+--gKMricLos+KVdGMg--
