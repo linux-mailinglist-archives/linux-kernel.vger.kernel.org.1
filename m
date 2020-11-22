@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428642BFBF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 23:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3A12BFC12
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 23:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgKVWLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 17:11:01 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:51724 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgKVWK6 (ORCPT
+        id S1726293AbgKVWOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 17:14:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgKVWOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 17:10:58 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 2C52280567;
-        Sun, 22 Nov 2020 23:10:42 +0100 (CET)
-Date:   Sun, 22 Nov 2020 23:10:40 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        target-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-hwmon@vger.kernel.org, x86@kernel.org,
-        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
-        Joe Perches <joe@perches.com>, linux-integrity@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-Message-ID: <20201122221040.GD566387@ravnborg.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+        Sun, 22 Nov 2020 17:14:50 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CE1C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 14:14:50 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id k27so20611796ejs.10
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 14:14:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+yX6CsGNQbM1v0n4fLwCiOP2202vjWiqw6FCv8piRAk=;
+        b=us2dV3RbpS8hX8nmkSvdMorGnrP+/N3Ck1+adQU4aYNz/p0jUTdvXE6XBeFrQAwnKR
+         Ybz2HH4YNX4H3EyCXa8NZ+eeXQYytema0UZE3u7F51tPJrpqoleuu3rOITHYdfFJ/tXK
+         K7zM6s0YfUWlixl/yQwv8k/YxqMrIBUNTezRfjTUFtQpwAnTCaOC1xON3FThtGQjr7mf
+         IfiOmYBpxDQnGQickaPOIPk/kfqWQWbpCB0NMO+MJ7o/NlKH/j9ftGQF4+YC3QkX6Ko6
+         iOVEvUZE0PlfdV+e2C3BxVJFjeaWgxe8E8csoPfY2ijVacFZQo+aeuoSbX4zlI3U5K8e
+         yAbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+yX6CsGNQbM1v0n4fLwCiOP2202vjWiqw6FCv8piRAk=;
+        b=QCmrWdY/83ctIDXpdQJnuyxMlnWpByHOXl3oiFvBd7rKa63zWfbTT5NZKMC+hs0HB+
+         y7DOsgoFaE6QIFLMfS4TTo/M6l5IY5oUgERG3N1sfBxFnnVG/rtzhTZa+Y9xbe0o/CYb
+         XbM7xEUARroqpTgKe56FfbXsE3bq57lz2RWEcrA1/THCeo8bzc5PxT5r6GYAg2QdHXwV
+         a/+iAoWmrRLttw9aR08O8esL1HunqYj7QxmoButBwU46vkwRfwsTGsH37Rz/id1PBZLj
+         8oSaffZ+hBO2pUjyBvqnK0rfgrs8zlmle/hdDP8PUyoP0T/DrHwA0sG7br8cjQBsZAsv
+         6O1g==
+X-Gm-Message-State: AOAM5334OSBnVvJmoC6nL4pVzOhM2o6V/li2DJmYjy9EW38wb03IpvGh
+        oIOsOjA9G/NC2Lg/kcn4zz2J1+MljGgBjIGc5vc=
+X-Google-Smtp-Source: ABdhPJy91vmF6noNwrJeQlCEo3WVCRUF5EO22hfLsdERxI3CU1eXejb5kUzUiZ2iWvUkvhEnOsbcIP9ZIR//7CGL144=
+X-Received: by 2002:a17:906:bce6:: with SMTP id op6mr41182955ejb.2.1606083288744;
+ Sun, 22 Nov 2020 14:14:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8
-        a=7T594MSkF3521FIrX4wA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+References: <20201120153229.3920123-1-narmstrong@baylibre.com> <20201120153229.3920123-4-narmstrong@baylibre.com>
+In-Reply-To: <20201120153229.3920123-4-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 22 Nov 2020 23:14:37 +0100
+Message-ID: <CAFBinCDLF2bL6sQFBsNTNZV5i9u+KW01O3SqbR=riRru5d8zRQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: dts: meson-axg: add PCIe nodes
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James.
+Hi Neil,
 
-> > > If none of the 140 patches here fix a real bug, and there is no
-> > > change to machine code then it sounds to me like a W=2 kind of a
-> > > warning.
-> > 
-> > FWIW, this series has found at least one bug so far:
-> > https://lore.kernel.org/lkml/CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com/
-> 
-> 
-> Well, it's a problem in an error leg, sure, but it's not a really
-> compelling reason for a 141 patch series, is it?  All that fixing this
-> error will do is get the driver to print "oh dear there's a problem"
-> under four more conditions than it previously did.
+(I have to admit that for me the PCI(e) bindings are very complex, so
+I may be mixing up things. I am still sending this review mail because
+"you're doing it different than in meson-g12-common.dtsi")
 
-You are asking the wrong question here.
+On Fri, Nov 20, 2020 at 4:33 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+[...]
+> +               pcieA: pcie@f9800000 {
+> +                       compatible = "amlogic,axg-pcie", "snps,dw-pcie";
+> +                       reg = <0x0 0xf9800000 0x0 0x400000>,
+> +                             <0x0 0xff646000 0x0 0x2000>,
+> +                             <0x0 0xf9f00000 0x0 0x100000>;
+> +                       reg-names = "elbi", "cfg", "config";
+> +                       interrupts = <GIC_SPI 177 IRQ_TYPE_EDGE_RISING>;
+> +                       #interrupt-cells = <1>;
+> +                       interrupt-map-mask = <0 0 0 0>;
+> +                       interrupt-map = <0 0 0 0 &gic GIC_SPI 179 IRQ_TYPE_EDGE_RISING>;
+> +                       bus-range = <0x0 0xff>;
+> +                       #address-cells = <3>;
+> +                       #size-cells = <2>;
+> +                       device_type = "pci";
+> +                       ranges = <0x82000000 0 0xf9c00000 0x0 0xf9c00000 0 0x00300000>;
+only PCI IO space here, no PCI MEM space?
 
-Yuo should ask  how many hours could have been saved by all the bugs
-people have been fighting with and then fixed *before* the code
-hit the kernel at all.
+[...]
+> +               pcieB: pcie@fa000000 {
+> +                       compatible = "amlogic,axg-pcie", "snps,dw-pcie";
+> +                       reg = <0x0 0xfa000000 0x0 0x400000>,
+> +                             <0x0 0xff648000 0x0 0x2000>,
+> +                             <0x0 0xfa400000 0x0 0x100000>;
+> +                       reg-names = "elbi", "cfg", "config";
+> +                       interrupts = <GIC_SPI 167 IRQ_TYPE_EDGE_RISING>;
+> +                       #interrupt-cells = <1>;
+> +                       interrupt-map-mask = <0 0 0 0>;
+> +                       interrupt-map = <0 0 0 0 &gic GIC_SPI 169 IRQ_TYPE_EDGE_RISING>;
+> +                       bus-range = <0x0 0xff>;
+> +                       #address-cells = <3>;
+> +                       #size-cells = <2>;
+> +                       device_type = "pci";
+> +                       ranges = <0x82000000 0 0xfa500000 0x0 0xfa500000 0 0x00300000>;
+same as above: only PCI IO space here, no PCI MEM space?
 
-My personal experience is that I, more than once, have had errors
-related to a missing break in my code. So this warnings is IMO a win.
 
-And if we are only ~100 patches to have it globally enabled then it is a
-no-brainer in my book.
-
-	Sam
+Best regards,
+Martin
