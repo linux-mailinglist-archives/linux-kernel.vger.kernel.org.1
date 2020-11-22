@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8F62BC5B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D032BC5B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgKVMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 07:46:34 -0500
-Received: from correo.us.es ([193.147.175.20]:47398 "EHLO mail.us.es"
+        id S1727837AbgKVMry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 07:47:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727685AbgKVMqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 07:46:33 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 485DAA24C95
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:46:32 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3A54ADA704
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:46:32 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 1BCC6DA78E; Sun, 22 Nov 2020 13:46:32 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D8B11DA73D;
-        Sun, 22 Nov 2020 13:46:28 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 22 Nov 2020 13:46:28 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
+        id S1727646AbgKVMry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 07:47:54 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id B1EB74265A5A;
-        Sun, 22 Nov 2020 13:46:28 +0100 (CET)
-Date:   Sun, 22 Nov 2020 13:46:28 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Julian Anastasov <ja@ssi.bg>
-Cc:     Yejune Deng <yejune.deng@gmail.com>, wensong@linux-vs.org,
-        horms@verge.net.au, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipvs: replace atomic_add_return()
-Message-ID: <20201122124628.GA28719@salvia>
-References: <1605513707-7579-1-git-send-email-yejune.deng@gmail.com>
- <9cd77e1e-1c52-d647-9443-485510b4a9b1@ssi.bg>
+        by mail.kernel.org (Postfix) with ESMTPSA id A5BB22078D;
+        Sun, 22 Nov 2020 12:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606049273;
+        bh=X53NXA4jh+8pasL9eOJKbJri9ATWtPFDIOuBX04nt9M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Le6LlQtEMDJUFIOh7oHVlDEmSwD6GbIEKECrZtLCx7veOInNMX669Xvs+siCHl5p9
+         Nv3cZ9hmV+VVIAQs5vmiJNo6+zmhyPRleWNSZHNdfceX5qU+wO3SQVpngZq9Jnf+bf
+         mon9NCjzFlGFCESyLsqCLxR/PmuBJkfkCJqjK8j4=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kgomV-00ChPX-Et; Sun, 22 Nov 2020 12:47:51 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Xu Qiang <xuqiang36@huawei.com>, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de
+Cc:     rui.xiang@huawei.com
+Subject: Re: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS executes the residual commands in the queue again when the ITS wakes up from sleep mode.
+Date:   Sun, 22 Nov 2020 12:47:48 +0000
+Message-Id: <160604923575.224052.1351706430622290182.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201107104226.14282-1-xuqiang36@huawei.com>
+References: <20201107104226.14282-1-xuqiang36@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9cd77e1e-1c52-d647-9443-485510b4a9b1@ssi.bg>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: xuqiang36@huawei.com, linux-kernel@vger.kernel.org, tglx@linutronix.de, rui.xiang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:57:52PM +0200, Julian Anastasov wrote:
+On Sat, 7 Nov 2020 10:42:26 +0000, Xu Qiang wrote:
+> On my platform, ITS_FLAGS_SAVE_SUSPEND_STATE is not set,thus do nothing
+> in its suspend and resuse function.On the other hand,firmware stores
+> GITS_CTRL,GITS_CBASER,GITS_CWRITER and GITS_BASER<n> in the suspend,
+> and restores these registers in the resume. As a result, the ITS executes
+> the residual commands in the queue.
 > 
-> 	Hello,
+> Memory corruption may occur in the following scenarios:
 > 
-> On Mon, 16 Nov 2020, Yejune Deng wrote:
-> 
-> > atomic_inc_return() looks better
-> > 
-> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> 
-> 	Looks good to me for -next, thanks!
-> 
-> Acked-by: Julian Anastasov <ja@ssi.bg>
+> [...]
 
-Applied, thanks.
+Applied to irq/irqchip-next, thanks!
+
+[1/1] irqchip/gic-v3-its: Unconditionally save/restore the ITS state on suspend
+      commit: a51f7296f38f498c6f186c82ae3aa25ae10bb266
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
