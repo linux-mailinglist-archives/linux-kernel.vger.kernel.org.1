@@ -2,670 +2,526 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133632BC691
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 16:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DFC2BC696
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 16:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgKVPsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 10:48:47 -0500
-Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:44061 "EHLO
-        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727382AbgKVPsq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 10:48:46 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 1A689BA7CC637
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 08:48:44 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id grbXkFnIhh41lgrbXkK3kJ; Sun, 22 Nov 2020 08:48:44 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=FoUrAVjq c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=iyzGlLGqAAAA:8
- a=h0ABR8M4AAAA:8 a=lRFQor0vbwcgk8EDy10A:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=KUY6m_o_WN0hX3XauQzx:22 a=IAbmOp1NCR458IescZAd:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gOpNz4+cw9nujAwiex51wiFu+nd3vm45kFPg2jHnsCg=; b=D2DdBOn2Q/pTHH8Frp1vrMVHj3
-        0p+NpXu6yBCY8CZ3/o3l+d+HKncD91vUjaLq556ptFoMlA06Rl83yP1hLVGMKtFvHx+94D8/rewAQ
-        KEQq2W8KkWU3nzQaHzFBeXSoi9bX90wTPW2VjCxL49rKODJ+MIZlk9aajZ8Sg4xUJ/RDlfb2JsWSd
-        ef2AjHOQb1fzurOTkaNpAfYvxMhyEYxFTdgPMH834aejx7I2jzR9kbSCIpLW6uXGK352yeyvUuhhh
-        0YMyv/qj2f1H/nFSl6kouaB0CKnrgLey2eNQqAA30IihmQIrcuERiLp47StDQciljvoBe/0b5vvQR
-        pa2qa3og==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:45266 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kgrbX-003YAv-22; Sun, 22 Nov 2020 15:48:43 +0000
-Date:   Sun, 22 Nov 2020 07:48:42 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "xiao.ma" <max701@126.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiao.mx.ma@deltaww.com,
-        jiajia.feng@deltaww.com
-Subject: Re: [PATCH v8] hwmon:Driver for Delta power supplies Q54SJ108A2
-Message-ID: <20201122154842.GA121590@roeck-us.net>
-References: <20201109065636.4092-1-max701@126.com>
+        id S1727924AbgKVPvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 10:51:21 -0500
+Received: from mga17.intel.com ([192.55.52.151]:5101 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727728AbgKVPvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 10:51:21 -0500
+IronPort-SDR: HsCISIgTIG8EfPJiiZzDMSF/ke/oHg6uHfdenh+7QYeTiX+u9b2iPY7FT5ELb3a7AWt/ZAaHz1
+ ZFT7w8LDZuFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="151498359"
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="151498359"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 07:51:19 -0800
+IronPort-SDR: kyU4oVc9quIGvAGln2bIMx5igVeLUSXoebTJfnweQkeKtVmJvQALWAs3GVmRvQEOpYO0E00FlE
+ 9MzLVyrzMLLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="369780807"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Nov 2020 07:51:19 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 22 Nov 2020 07:51:19 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 22 Nov 2020 07:51:18 -0800
+Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
+ ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.1713.004;
+ Sun, 22 Nov 2020 07:51:18 -0800
+From:   "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
+To:     "jic23@kernel.org" <jic23@kernel.org>
+CC:     "jikos@kernel.org" <jikos@kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "Ye, Xiang" <xiang.ye@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] iio: hid-sensors: Add hinge sensor driver
+Thread-Topic: [PATCH v2 4/4] iio: hid-sensors: Add hinge sensor driver
+Thread-Index: AQHWwHFcv/WPSJF0S0qjugCaixwkeKnT75QAgADJKgCAABscgA==
+Date:   Sun, 22 Nov 2020 15:51:18 +0000
+Message-ID: <48fc6cd8b0ac0cc4c10aa1e677bdc293ad75476b.camel@intel.com>
+References: <20201119100331.2594-1-xiang.ye@intel.com>
+         <20201119100331.2594-5-xiang.ye@intel.com>
+         <20201121175629.057031af@archlinux>
+         <218c8869f799d701ddd5c22ce9524a765f43a0de.camel@intel.com>
+         <1de3727a37fe1d793b6146d9c19b101e32bb1c71.camel@intel.com>
+         <20201122141416.7f446793@archlinux>
+In-Reply-To: <20201122141416.7f446793@archlinux>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <88A5D53B9D2C5746AAFA8F5EB0CD5217@intel.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109065636.4092-1-max701@126.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kgrbX-003YAv-22
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:45266
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 22
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 08:56:36PM -1000, xiao.ma wrote:
-> From: "xiao.ma" <xiao.mx.ma@deltaww.com>
-> 
-> The driver supports Q54SJ108A2 series modules of Delta.
-> Standard attributes are in the sysfs, and other attributes are in the debugfs.
-> 
-> Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
-
-Please fix all checkpatch errors and warnings before resubmitting.
-Additional comments below.
-
-Guenter
-
-> ---
-> 
-> Notes:
->     Patch v2 changelog:
->     	Add delta.rst in Documentation/hwmon.
->     	Tristate "DELTA" in Kconfig is changed to "DELTA_POWER_SUPPLIED".
->     	Modify code: drop the excessive empty lines, correct the comment content, adjust indent, remove extra brackets.
->     Patch v3 changelog:
->     	Add delta.rst to Documentation/hwmon/index.rst.
->     	Tristate "DELTA_POWER_SUPPLES" in Kconfig is changed to "Delta Power Supplies".
->     Patch v4 changelog:
->     	Correct the spelling "Temperature" in the delta.rst.
->     	Add Write_protect when write command VOUT_OV_RESPONSE and IOUT_OC_FAULT_RESPONSE.
->     Patch v5 changelog:
->     	Add some non-standard attributes in sysfs system.
->     Patch v6 changelog:
->     	delta.c and delta.rst are renamed to q54sj108a2.c and q54sj108a2.rst.
->     	Add q54sj108a2 to index.rst.
->     	Tristate in Kconfig is changed to "Delta Power Supplies Q54SJ108A2".
->     	The non-standard attributes are added to debugfs.
->     Patch v7 changelog:
->     	Use standard fuctions bin2hex and hex2bin.
->     	The return of debugfs write is changed to count.
->     	Drop the error checking of debugfs functions.
->     	Use probe_new fuction.
->     	Remove the .remove fuction.
->     Patch v8 changelog:
->     	Use kstrtou8_from_user instead of hex2bin.
->     	Remove included head files which are not used.
->     	Done label in debugfs_read fuction is deleted.
->     	Change email to send the patch.
-> 
->  Documentation/hwmon/index.rst      |   1 +
->  Documentation/hwmon/q54sj108a2.rst |  52 ++++
->  drivers/hwmon/pmbus/Kconfig        |   9 +
->  drivers/hwmon/pmbus/Makefile       |   1 +
->  drivers/hwmon/pmbus/q54sj108a2.c   | 422 +++++++++++++++++++++++++++++
->  5 files changed, 485 insertions(+)
->  create mode 100644 Documentation/hwmon/q54sj108a2.rst
->  create mode 100755 drivers/hwmon/pmbus/q54sj108a2.c
-> 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index b797db738225..4bb680b3c7ea 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -148,6 +148,7 @@ Hardware Monitoring Kernel Drivers
->     powr1220
->     pxe1610
->     pwm-fan
-> +   q54sj108a2
->     raspberrypi-hwmon
->     sch5627
->     sch5636
-> diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
-> new file mode 100644
-> index 000000000000..a575bdfa7c18
-> --- /dev/null
-> +++ b/Documentation/hwmon/q54sj108a2.rst
-> @@ -0,0 +1,52 @@
-> +Kernel driver q54sj108a2
-> +=====================
-> +
-> +Supported chips:
-> +
-> +  * DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, Q54SJ108A2NCPG, Q54SJ108A2NCPH
-> +
-> +    Prefix: 'Q54SJ108A2'
-> +
-> +    Addresses scanned: -
-> +
-> +    Datasheet: https://filecenter.delta-china.com.cn/products/download/01/0102/datasheet/DS_Q54SJ108A2.pdf
-> +
-> +Authors:
-> +    Xiao.ma <xiao.mx.ma@deltaww.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver implements support for DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, 
-> +Q54SJ108A2NCPG, and Q54SJ108A2NCPH 1/4 Brick DC/DC Regulated Power Module 
-> +with PMBus support.
-> +
-> +The driver is a client driver to the core PMBus driver.
-> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-> +
-> +
-> +Usage Notes
-> +-----------
-> +
-> +This driver does not auto-detect devices. You will have to instantiate the
-> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> +details.
-> +
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +===================== ===== ==================================================
-> +curr1_alarm           RO    Output current alarm
-> +curr1_input           RO    Output current
-> +curr1_label           RO    'iout1'
-> +in1_alarm             RO    Input voltage alarm
-> +in1_input             RO    Input voltage
-> +in1_label             RO    'vin'
-> +in2_alarm             RO    Output voltage alarm
-> +in2_input             RO    Output voltage
-> +in2_label             RO    'vout1'
-> +temp1_alarm           RO    Temperature alarm
-> +temp1_input           RO    Chip temperature
-> +===================== ===== ==================================================
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index a25faf69fce3..01de280820ee 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -229,6 +229,15 @@ config SENSORS_PXE1610
->  	  This driver can also be built as a module. If so, the module will
->  	  be called pxe1610.
->  
-> +config SENSORS_Q54SJ108A2
-> +	tristate "Delta Power Supplies Q54SJ108A2"
-> +	help
-> +	  If you say yes here you get hardware monitoring support for Delta
-> +	  Q54SJ108A2 series Power Supplies.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called q54sj108a2.
-> +
->  config SENSORS_TPS40422
->  	tristate "TI TPS40422"
->  	help
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index 4c97ad0bd791..a50122cd455b 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -26,6 +26,7 @@ obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
->  obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
->  obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
->  obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
-> +obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
->  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
->  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
->  obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
-> diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
-> new file mode 100755
-> index 000000000000..f25a5c8c2a2b
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/q54sj108a2.c
-> @@ -0,0 +1,422 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Driver for Delta modules, Q54SJ108A2 series 1/4 Brick DC/DC
-> + * Regulated Power Module
-> + *
-> + * Copyright 2020 Delta LLC.
-> + */
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include "pmbus.h"
-> +
-> +#define STORE_DEFAULT_ALL         0x11
-> +#define ERASE_BLACKBOX_DATA       0xD1
-> +#define READ_HISTORY_EVENT_NUMBER 0xD2
-> +#define READ_HISTORY_EVENTS       0xE0
-> +#define SET_HISTORY_EVENT_OFFSET  0xE1
-> +#define PMBUS_CMD_FLASH_KEY_WRITE 0xEC
-> +
-> +enum chips {
-> +	Q54SJ108A2
-> +};
-> +
-> +enum {
-> +	Q54SJ108A2_DEBUGFS_OPERATION = 0,
-> +	Q54SJ108A2_DEBUGFS_CLEARFAULT,
-> +	Q54SJ108A2_DEBUGFS_WRITEPROTECT,
-> +	Q54SJ108A2_DEBUGFS_STOREDEFAULT,
-> +	Q54SJ108A2_DEBUGFS_VOOV_RESPONSE,
-> +	Q54SJ108A2_DEBUGFS_IOOC_RESPONSE,
-> +	Q54SJ108A2_DEBUGFS_PMBUS_VERSION,
-> +	Q54SJ108A2_DEBUGFS_MFR_ID,
-> +	Q54SJ108A2_DEBUGFS_MFR_MODEL,
-> +	Q54SJ108A2_DEBUGFS_MFR_REVISION,
-> +	Q54SJ108A2_DEBUGFS_MFR_LOCATION,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ,
-> +	Q54SJ108A2_DEBUGFS_FLASH_KEY,
-> +	Q54SJ108A2_DEBUGFS_NUM_ENTRIES
-> +};
-> +
-> +struct q54sj108a2_data {
-> +	enum chips chip;
-> +	struct i2c_client *client;
-> +
-> +	int debugfs_entries[Q54SJ108A2_DEBUGFS_NUM_ENTRIES];
-> +};
-> +
-> +#define to_psu(x, y) container_of((x), struct q54sj108a2_data, debugfs_entries[(y)])
-> +
-> +static struct pmbus_driver_info q54sj108a2_info[] = {
-> +	[Q54SJ108A2] = {
-> +		.pages = 1,
-> +
-> +		/* Source : Delta Q54SJ108A2 */
-> +		.format[PSC_TEMPERATURE] = linear,
-> +		.format[PSC_VOLTAGE_IN] = linear,
-> +		.format[PSC_CURRENT_OUT] = linear,
-> +
-> +		.func[0] = PMBUS_HAVE_VIN |
-> +		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
-> +		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-> +		PMBUS_HAVE_STATUS_INPUT,
-> +	},
-> +};
-> +
-> +static ssize_t q54sj108a2_debugfs_read(struct file *file, char __user *buf,
-> +				      size_t count, loff_t *ppos)
-> +{
-> +	int rc;
-> +	int *idxp = file->private_data;
-> +	int idx = *idxp;
-> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-> +	char data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-> +	char data_char[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-> +	char *res;
-> +
-> +	switch (idx) {
-> +	case Q54SJ108A2_DEBUGFS_OPERATION:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_OPERATION);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_WRITEPROTECT:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_WRITE_PROTECT);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_PMBUS_VERSION:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_REVISION);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_ID:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_ID, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_MODEL:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_MODEL, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_REVISION:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_REVISION, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_LOCATION:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_LOCATION, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET:
-> +		rc = i2c_smbus_read_byte_data(psu->client, READ_HISTORY_EVENT_NUMBER);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ:
-> +		rc = i2c_smbus_read_block_data(psu->client, READ_HISTORY_EVENTS, data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		res = bin2hex(data, data_char, 32);
-> +		rc = res - data;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_FLASH_KEY:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		res = bin2hex(data, data_char, 4);
-> +		rc = res - data;
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	data[rc] = '\n';
-> +	rc += 2;
-> +
-> +	return simple_read_from_buffer(buf, count, ppos, data, rc);
-> +}
-> +
-> +static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *buf,
-> +					size_t count, loff_t *ppos)
-> +{
-> +	u8 flash_key[4];
-> +	u8 dst_data;
-> +	ssize_t rc;
-> +	int *idxp = file->private_data;
-> +	int idx = *idxp;
-> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-> +
-> +	rc = i2c_smbus_write_byte_data(psu->client, PMBUS_WRITE_PROTECT, 0);
-> +	if (rc)
-> +		return rc;
-> +
-> +	switch (idx) {
-> +	case Q54SJ108A2_DEBUGFS_OPERATION:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_OPERATION, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_CLEARFAULT:
-> +		rc = i2c_smbus_write_byte(psu->client, PMBUS_CLEAR_FAULTS);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_STOREDEFAULT:
-> +		flash_key[0] = 0x7E;
-> +		flash_key[1] = 0x15;
-> +		flash_key[2] = 0xDC;
-> +		flash_key[3] = 0x42;
-> +		rc = i2c_smbus_write_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, 4, flash_key);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte(psu->client, STORE_DEFAULT_ALL);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE:
-> +		rc = i2c_smbus_write_byte(psu->client, ERASE_BLACKBOX_DATA);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, SET_HISTORY_EVENT_OFFSET, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static const struct file_operations q54sj108a2_fops = {
-> +	.llseek = noop_llseek,
-> +	.read = q54sj108a2_debugfs_read,
-> +	.write = q54sj108a2_debugfs_write,
-> +	.open = simple_open,
-> +};
-> +
-> +static const struct i2c_device_id q54sj108a2_id[] = {
-> +	{ "Q54SJ108A2", Q54SJ108A2 },
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, q54sj108a2_id);
-> +
-> +static int q54sj108a2_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
-> +	enum chips chip_id;
-> +	int ret, i;
-> +	struct dentry *debugfs;
-> +	struct dentry *q54sj108a2_dir;
-> +	struct q54sj108a2_data *psu;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_BYTE_DATA |
-> +				     I2C_FUNC_SMBUS_WORD_DATA |
-> +				     I2C_FUNC_SMBUS_BLOCK_DATA))
-> +		return -ENODEV;
-> +
-> +	if (client->dev.of_node)
-> +		chip_id = (enum chips)of_device_get_match_data(dev);
-
-As reported by 0-day, this doesn't work. It needs a cast to unsigned long,
-or a double cast, such as
-		chip_id = (enum chips)(unsigned long)of_device_get_match_data(dev);
-
-> +	else
-> +		chip_id = i2c_match_id(q54sj108a2_id, client)->driver_data;
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
-> +		return ret;
-> +	}
-> +	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/*
-> +	 * The chips support reading PMBUS_MFR_MODEL.
-> +	 */
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to read Manufacturer Model\n");
-> +		return ret;
-> +	}
-> +	if (ret != 14 || strncmp(buf, "Q54SJ108A2", 10)) {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_REVISION, buf);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to read Manufacturer Revision\n");
-> +		return ret;
-> +	}
-> +	if (ret != 4 || buf[0] != 'S') {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer Revision '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = pmbus_do_probe(client, &q54sj108a2_id[chip_id], &q54sj108a2_info[chip_id]);
-
-The parameters for this function have changed. Please rebase your patch.
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	psu = devm_kzalloc(&client->dev, sizeof(*psu), GFP_KERNEL);
-> +	if (!psu)
-> +		return 0;
-> +
-> +	psu->client = client;
-> +
-> +	debugfs = pmbus_get_debugfs_dir(client);
-> +
-> +	q54sj108a2_dir = debugfs_create_dir(client->name, debugfs);
-> +
-> +	for (i = 0; i < Q54SJ108A2_DEBUGFS_NUM_ENTRIES; ++i)
-> +		psu->debugfs_entries[i] = i;
-> +
-> +	debugfs_create_file("operation", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_OPERATION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("clear_fault", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_CLEARFAULT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("write_protect", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_WRITEPROTECT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("store_default", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_STOREDEFAULT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("vo_ov_response", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_VOOV_RESPONSE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("io_oc_response", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_IOOC_RESPONSE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("pmbus_revision", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_PMBUS_VERSION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_id", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_ID],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_model", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_MODEL],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_revision", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_REVISION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_location", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_LOCATION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_erase", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_read_offset", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_set_offset", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_read", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("flash_key", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_FLASH_KEY],
-> +			    &q54sj108a2_fops);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id q54sj108a2_of_match[] = {
-> +	{ .compatible = "delta,Q54SJ108A2", .data = (void *)Q54SJ108A2 },
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, q54sj108a2_of_match);
-> +
-> +static struct i2c_driver q54sj108a2_driver = {
-> +	.driver = {
-> +		.name = "Q54SJ108A2",
-> +		.of_match_table = q54sj108a2_of_match,
-> +	},
-> +	.probe_new = q54sj108a2_probe,
-> +	.id_table = q54sj108a2_id,
-> +};
-> +
-> +module_i2c_driver(q54sj108a2_driver);
-> +
-> +MODULE_AUTHOR("Xiao.Ma <xiao.mx.ma@deltaww.com>");
-> +MODULE_DESCRIPTION("PMBus driver for Delta Q54SJ108A2 series modules");
-> +MODULE_LICENSE("GPL");
+T24gU3VuLCAyMDIwLTExLTIyIGF0IDE0OjE0ICswMDAwLCBKb25hdGhhbiBDYW1lcm9uIHdyb3Rl
+Og0KPiBPbiBTdW4sIDIyIE5vdiAyMDIwIDAyOjE0OjE2ICswMDAwDQo+ICJQYW5kcnV2YWRhLCBT
+cmluaXZhcyIgPHNyaW5pdmFzLnBhbmRydXZhZGFAaW50ZWwuY29tPiB3cm90ZToNCj4gDQo+ID4g
+T24gU2F0LCAyMDIwLTExLTIxIGF0IDE3OjQ2IC0wODAwLCBTcmluaXZhcyBQYW5kcnV2YWRhIHdy
+b3RlOg0KPiA+ID4gT24gU2F0LCAyMDIwLTExLTIxIGF0IDE3OjU2ICswMDAwLCBKb25hdGhhbiBD
+YW1lcm9uIHdyb3RlOiAgDQo+ID4gPiA+IE9uIFRodSwgMTkgTm92IDIwMjAgMTg6MDM6MzEgKzA4
+MDANCj4gPiA+ID4gWWUgWGlhbmcgPHhpYW5nLnllQGludGVsLmNvbT4gd3JvdGU6DQo+ID4gPiA+
+ICAgDQo+ID4gPiA+ID4gVGhlIEhpbmdlIHNlbnNvciBpcyBhIGNvbW1vbiBjdXN0b20gc2Vuc29y
+IG9uIGxhcHRvcHMuIEl0DQo+ID4gPiA+ID4gY2FsY3VsYXRlcw0KPiA+ID4gPiA+IHRoZSBhbmds
+ZSBiZXR3ZWVuIHRoZSBsaWQgKHNjcmVlbikgYW5kIHRoZSBiYXNlIChrZXlib2FyZCkuDQo+ID4g
+PiA+ID4gSW4NCj4gPiA+ID4gPiBhZGRpdGlvbiwNCj4gPiA+ID4gPiBpdCBhbHNvIGV4cG9zZXMg
+c2NyZWVuIGFuZCB0aGUga2V5Ym9hcmQgYW5nZWxzIHdpdGggcmVzcGVjdA0KPiA+ID4gPiA+IHRv
+DQo+ID4gPiA+ID4gdGhlDQo+ID4gPiA+ID4gZ3JvdW5kLiBBcHBsaWNhdGlvbnMgY2FuIGVhc2ls
+eSBnZXQgbGFwdG9wJ3Mgc3RhdHVzIGluIHNwYWNlDQo+ID4gPiA+ID4gdGhyb3VnaA0KPiA+ID4g
+PiA+IHRoaXMgc2Vuc29yLCBpbiBvcmRlciB0byBkaXNwbGF5IGFwcHJvcHJpYXRlIHVzZXINCj4g
+PiA+ID4gPiBpbnRlcmZhY2UuICANCj4gPiA+ID4gDQo+ID4gPiA+IEknbSBhIGxpdHRsZSB1bmNs
+ZWFyIG9uIHdoeSB0aGUgMyBheGVzIGFyZW4ndCB0cmVhdGVkIGFzIGENCj4gPiA+ID4gc2luZ2xl
+DQo+ID4gPiA+IHNlbnNvci4NCj4gPiA+ID4gWW91IHNlZW0gdG8gYWx3YXlzIGdyYWIgdGhlIDMg
+dG9nZXRoZXIgb3IgYW0gSSBtaXNzaW5nDQo+ID4gPiA+IHNvbWV0aGluZz8NCj4gPiA+ID4gDQo+
+ID4gPiA+IFRoYXQgd2lsbCBncmVhdGx5IHNpbXBsaWZ5IHRoaW5ncyBhbmQgZ2V0IHJpZCBvZiB0
+aGUgbmVlZCB0bw0KPiA+ID4gPiBoYXZlDQo+ID4gPiA+IGEgc2hhcmVkIHRyaWdnZXIgd2l0aCB0
+aGUgcHJvYmxlbXMgdGhhdCBjYXVzZXMgaW4gdGhlIHByZXZpb3VzDQo+ID4gPiA+IHBhdGNoLiAg
+DQo+ID4gPiANCj4gPiA+IFRoZXkgYXJlIG5vdCB0aHJlZSBheGVzLCB0aGV5IGFyZSBpbmRlcGVu
+ZGVudC4gWGlhbmcgZGlkIHRyeQ0KPiA+ID4gYWRkaW5nDQo+ID4gPiB4LA0KPiA+ID4geSBhbmQg
+eiBjb21wb25lbnQgdG8gcmVwcmVzZW50IHggYXMgaGluZ2UsIHkgYXMga2V5Ym9hcmQgYW5kIHog
+YXMNCj4gPiA+IGxpZC4NCj4gPiA+IEJ1dCBJIHdhcyBub3QgY29udmluY2VkLg0KPiA+ID4gVGhl
+IHByb2JsZW0gaXMgdGhhdCB0aGVuIHdoYXQgd2lsbCBiZSBzeXNmcyBpbnRlcmZhY2U/IFRoZXkg
+YXJlDQo+ID4gPiByZWFsbHkNCj4gPiA+IGEgdGhyZWUgc2Vuc29ycy4gT3Igd2UgY3JlYXRlIG5l
+dyBpbnRlcmZhY2UgdG8gY2FsbA0KPiA+ID4gaW5fYW5nbF9yYXdfa2V5Ym9hcmQNCj4gPiA+IGlu
+X2FuZ2xfcmF3X3NjcmVlbg0KPiA+ID4gaW5fYW5nbF9yYXdfbGlkLg0KPiA+ID4gICANCj4gPiBZ
+b3Ugc2VlbSB0byBpbmRpY2F0ZSB0aGlzIGlzIHBvc3NpYmxlIG5vdyBzb21lIG5ldyAibGFiZWwi
+IHBhdGNoLg0KPiA+IElzIHRoaXMgdGhlIHBhdGNoPw0KPiA+IGNvbW1pdCAyYzNkMGM5ZmZkMjRk
+OWI0YzYyYzVkZmIyMTA0Njk1YTYxNGJlMjhjDQo+ID4gQXV0aG9yOiBQaGlsIFJlaWQgPHByZWlk
+QGVsZWN0cm9tYWcuY29tLmF1Pg0KPiA+IERhdGU6ICAgVGh1IFNlcCAxOSAyMjozNjowOCAyMDE5
+ICswODAwDQo+IA0KPiBOb3BlLCB0aGlzIG9uZSANCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9w
+dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvamljMjMvaWlvLmdpdC9jb21taXQvP2lkPTFkNGVmOWIz
+OWViZWNjYTgyNzY0MmI4ODk3ZDJkNzllYTIwMjY2ODINCj4gDQo+IFRoZSBvbmUgYWJvdmUgYWRk
+cyBhIHBlciBkZXZpY2UgbGFiZWwgd2hpY2ggd291bGRuJ3QgYmUgbXVjaCB1c2UgZm9yDQo+IHlv
+dXINCj4gY2FzZSwgYnV0IHRoaXMgb25lIGFkZHMgYSBwZXIgY2hhbm5lbCBsYWJlbC4NCj4gDQo+
+IERvbmUgdmlhIGEgcmVhZF9sYWJlbCBjYWxsYmFjay4NCj4gDQo+IEhlcmUgeW91J2Qgd2FudCB0
+byB1c2UgaW5kZXhlZCBjaGFubmVscyBzbyBzb21ldGhpbmcgbGlrZS4NCj4gDQo+IGluX2FuZ2ww
+X3Jhdw0KPiBpbl9hbmdsMV9yYXcNCj4gaW5fYW5nbDJfcmF3DQo+IA0KPiBhbmQNCj4gDQo+IGlu
+X2FuZ2wwX2xhYmVsID0ga2V5Ym9hcmQNCj4gaW5fYW5nbDFfbGFiZWwgPSBzY3JlZW4NCj4gaW5f
+YW5nbDJfbGFiZWwgPSBsaWQNCg0KVGhhbmtzIEpvbmF0aGFuLiBUaGlzIHdpbGwgbWFrZSB0aGUg
+am9iIGVhc2llci4NClhpYW5nLA0KWW91IGNhbiB1c2UgdGhpcyBtZXRob2QuIFRoZW4geW91IHdp
+bGwgbm90IG5lZWQgb3RoZXIgY2hhbmdlcyBleGNlcHQNCnBhdGNoIDEvNC4NCkFsc28gYWRkIGEg
+ZG9jdW1lbnRhdGlvbiBwYXRjaCB0byBleHBsYWluIHRoZSBtYXBwaW5nLg0KDQpUaGFua3MsDQpT
+cmluaXZhcw0KDQo+IA0KPiANCj4gDQo+ID4gSWRlYWxseSwgb25lIGlpbyBkZXZpY2UgaGVyZSBp
+cyBtdWNoIGVhc3kgdG8gbWFuYWdlIGFzIG90aGVyIEhJRA0KPiA+IHNlbnNvcnMuIElmIHdlIGNh
+biBhZGQgc29tZXRoaW5nIG90aGVyIHRoYXQgIngiLCAieSIgYW5kICJ6Ig0KPiA+IGNvbXBvbmVu
+dC4NCj4gDQo+IEFncmVlZCwgdXNpbmcgYXhlcyBtYWtlcyBubyByZWFsIHNlbnNlIGhlcmUgYW5k
+IGV4dGVuZGVkX25hbWUgaXMNCj4ganVzdCBhIG1lc3MgZnJvbSBBQkkgcG9pbnQgb2Ygdmlldy4g
+IFRyeWluZyB0byBzb2x2ZSB0aGlzIHdhcyB0aGUNCj4gcmVhc29uIHdlIGFkZGVkIHRoZSBfbGFi
+ZWwgaW50ZXJmYWNlLg0KPiANCj4gSm9uYXRoYW4NCj4gDQo+IA0KPiA+IFRoYW5rcywNCj4gPiBT
+cmluaXZhcw0KPiA+IA0KPiA+ID4gVGhhbmtzLA0KPiA+ID4gU3Jpbml2YXMNCj4gPiA+IA0KPiA+
+ID4gICANCj4gPiA+ID4gVGhhbmtzLA0KPiA+ID4gPiANCj4gPiA+ID4gSm9uYXRoYW4NCj4gPiA+
+ID4gICANCj4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBZZSBYaWFuZyA8eGlhbmcueWVAaW50ZWwu
+Y29tPg0KPiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+ICAuLi4vaGlkLXNlbnNvcnMvaGlkLXNlbnNv
+ci1hdHRyaWJ1dGVzLmMgICAgICAgfCAgIDIgKw0KPiA+ID4gPiA+ICBkcml2ZXJzL2lpby9wb3Np
+dGlvbi9LY29uZmlnICAgICAgICAgICAgICAgICAgfCAgMTYgKw0KPiA+ID4gPiA+ICBkcml2ZXJz
+L2lpby9wb3NpdGlvbi9NYWtlZmlsZSAgICAgICAgICAgICAgICAgfCAgIDMgKw0KPiA+ID4gPiA+
+ICAuLi4vaWlvL3Bvc2l0aW9uL2hpZC1zZW5zb3ItY3VzdG9tLWhpbmdlLmMgICAgfCA0MTINCj4g
+PiA+ID4gPiArKysrKysrKysrKysrKysrKysgIA0KPiA+ID4gPiANCj4gPiA+ID4gR2l2ZW4gaXQn
+cyBjdXN0b20gcHJvYmFibHkgbmVlZHMgYSBtb3JlIHNwZWNpZmljIG5hbWUuICBJIGd1ZXNzDQo+
+ID4gPiA+IGhpZC1zZW5zb3ItY3VzdG9tLWludGVsLWhpbmdlLmMgbWlnaHQgYmUgc2FmZT8NCj4g
+PiA+ID4gDQo+ID4gPiA+IFNhbWUgZm9yIG90aGVyIHBsYWNlcyB3ZSBuZWVkIG5hbWVzIGluIGhl
+cmUuDQo+ID4gPiA+ICAgDQo+ID4gPiA+ID4gIDQgZmlsZXMgY2hhbmdlZCwgNDMzIGluc2VydGlv
+bnMoKykNCj4gPiA+ID4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvaWlvL3Bvc2l0aW9u
+L2hpZC1zZW5zb3ItY3VzdG9tLQ0KPiA+ID4gPiA+IGhpbmdlLmMNCj4gPiA+ID4gPiANCj4gPiA+
+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9paW8vY29tbW9uL2hpZC1zZW5zb3JzL2hpZC1zZW5z
+b3ItDQo+ID4gPiA+ID4gYXR0cmlidXRlcy5jIA0KPiA+ID4gPiA+IGIvZHJpdmVycy9paW8vY29t
+bW9uL2hpZC1zZW5zb3JzL2hpZC1zZW5zb3ItYXR0cmlidXRlcy5jDQo+ID4gPiA+ID4gaW5kZXgg
+NDQyZmY3ODdmN2FmLi41YjgyMmE0Mjk4YTAgMTAwNjQ0DQo+ID4gPiA+ID4gLS0tIGEvZHJpdmVy
+cy9paW8vY29tbW9uL2hpZC1zZW5zb3JzL2hpZC1zZW5zb3ItYXR0cmlidXRlcy5jDQo+ID4gPiA+
+ID4gKysrIGIvZHJpdmVycy9paW8vY29tbW9uL2hpZC1zZW5zb3JzL2hpZC1zZW5zb3ItYXR0cmli
+dXRlcy5jDQo+ID4gPiA+ID4gQEAgLTcxLDYgKzcxLDggQEAgc3RhdGljIHN0cnVjdCB7DQo+ID4g
+PiA+ID4gIAl7SElEX1VTQUdFX1NFTlNPUl9URU1QRVJBVFVSRSwNCj4gPiA+ID4gPiBISURfVVNB
+R0VfU0VOU09SX1VOSVRTX0RFR1JFRVMsDQo+ID4gPiA+ID4gMTAwMCwgMH0sDQo+ID4gPiA+ID4g
+IA0KPiA+ID4gPiA+ICAJe0hJRF9VU0FHRV9TRU5TT1JfSFVNSURJVFksIDAsIDEwMDAsIDB9LA0K
+PiA+ID4gPiA+ICsJe0hJRF9VU0FHRV9TRU5TT1JfSElOR0UsIDAsIDAsIDE3NDUzMjkzfSwNCj4g
+PiA+ID4gPiArCXtISURfVVNBR0VfU0VOU09SX0hJTkdFLA0KPiA+ID4gPiA+IEhJRF9VU0FHRV9T
+RU5TT1JfVU5JVFNfREVHUkVFUywgMCwNCj4gPiA+ID4gPiAxNzQ1MzI5M30sDQo+ID4gPiA+ID4g
+IH07DQo+ID4gPiA+ID4gIA0KPiA+ID4gPiA+ICBzdGF0aWMgdm9pZCBzaW1wbGVfZGl2KGludCBk
+aXZpZGVuZCwgaW50IGRpdmlzb3IsIGludA0KPiA+ID4gPiA+ICp3aG9sZSwNCj4gPiA+ID4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9paW8vcG9zaXRpb24vS2NvbmZpZw0KPiA+ID4gPiA+IGIvZHJp
+dmVycy9paW8vcG9zaXRpb24vS2NvbmZpZw0KPiA+ID4gPiA+IGluZGV4IGVkYTY3ZjAwOGM1Yi4u
+MDM0NmY2ZjJiNDIyIDEwMDY0NA0KPiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMvaWlvL3Bvc2l0aW9u
+L0tjb25maWcNCj4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2lpby9wb3NpdGlvbi9LY29uZmlnDQo+
+ID4gPiA+ID4gQEAgLTE2LDQgKzE2LDIwIEBAIGNvbmZpZyBJUVM2MjRfUE9TDQo+ID4gPiA+ID4g
+IAkgIFRvIGNvbXBpbGUgdGhpcyBkcml2ZXIgYXMgYSBtb2R1bGUsIGNob29zZSBNIGhlcmU6DQo+
+ID4gPiA+ID4gdGhlIG1vZHVsZQ0KPiA+ID4gPiA+ICAJICB3aWxsIGJlIGNhbGxlZCBpcXM2MjQt
+cG9zLg0KPiA+ID4gPiA+ICANCj4gPiA+ID4gPiArY29uZmlnIEhJRF9TRU5TT1JfQ1VTVE9NX0hJ
+TkdFDQo+ID4gPiA+ID4gKwlkZXBlbmRzIG9uIEhJRF9TRU5TT1JfSFVCDQo+ID4gPiA+ID4gKwlz
+ZWxlY3QgSUlPX0JVRkZFUg0KPiA+ID4gPiA+ICsJc2VsZWN0IElJT19UUklHR0VSRURfQlVGRkVS
+DQo+ID4gPiA+ID4gKwlzZWxlY3QgSElEX1NFTlNPUl9JSU9fQ09NTU9ODQo+ID4gPiA+ID4gKwlz
+ZWxlY3QgSElEX1NFTlNPUl9JSU9fVFJJR0dFUg0KPiA+ID4gPiA+ICsJdHJpc3RhdGUgIkhJRCBI
+aW5nZSINCj4gPiA+ID4gPiArCWhlbHANCj4gPiA+ID4gPiArCSAgVGhpcyBzZW5zb3IgcHJlc2Vu
+dCB0aHJlZSBhbmdsZXMsIGhpbmdlIGFuZ2VsLCBzY3JlZW4NCj4gPiA+ID4gPiBhbmdsZXMNCj4g
+PiA+ID4gPiArCSAgYW5kIGtleWJvYXJkIGFuZ2xlIHJlc3BlY3QgdG8gaG9yaXpvbiAoZ3JvdW5k
+KS4NCj4gPiA+ID4gPiArCSAgU2F5IHllcyBoZXJlIHRvIGJ1aWxkIHN1cHBvcnQgZm9yIHRoZSBI
+SUQgU0VOU09SDQo+ID4gPiA+ID4gQ1VTVE9NDQo+ID4gPiA+ID4gKwkgIEhJTkdFLiAgDQo+ID4g
+PiA+IA0KPiA+ID4gPiBDYXBpdGFsaXphdGlvbiBpcyBhIGJpdCBvZGQgbG9va2luZy4gSSdkIGRy
+b3AgaXQuDQo+ID4gPiA+ICAgDQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsJICBUbyBjb21waWxl
+IHRoaXMgZHJpdmVyIGFzIGEgbW9kdWxlLCBjaG9vc2UgTSBoZXJlOg0KPiA+ID4gPiA+IHRoZQ0K
+PiA+ID4gPiA+ICsJICBtb2R1bGUgd2lsbCBiZSBjYWxsZWQgaGlkLXNlbnNvci1jdXN0b20taGlu
+Z2UuDQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICBlbmRtZW51DQo+ID4gPiA+ID4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvaWlvL3Bvc2l0aW9uL01ha2VmaWxlDQo+ID4gPiA+ID4gYi9kcml2ZXJzL2lp
+by9wb3NpdGlvbi9NYWtlZmlsZQ0KPiA+ID4gPiA+IGluZGV4IDNjYmU3YTczNDM1Mi4uN2E2MjI1
+OTc3YTAxIDEwMDY0NA0KPiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMvaWlvL3Bvc2l0aW9uL01ha2Vm
+aWxlDQo+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9paW8vcG9zaXRpb24vTWFrZWZpbGUNCj4gPiA+
+ID4gPiBAQCAtNSwzICs1LDYgQEANCj4gPiA+ID4gPiAgIyBXaGVuIGFkZGluZyBuZXcgZW50cmll
+cyBrZWVwIHRoZSBsaXN0IGluIGFscGhhYmV0aWNhbA0KPiA+ID4gPiA+IG9yZGVyDQo+ID4gPiA+
+ID4gIA0KPiA+ID4gPiA+ICBvYmotJChDT05GSUdfSVFTNjI0X1BPUykJKz0gaXFzNjI0LXBvcy5v
+DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICtvYmotJChDT05GSUdfSElEX1NFTlNPUl9DVVNUT01f
+SElOR0UpICs9IGhpZC1zZW5zb3ItY3VzdG9tLQ0KPiA+ID4gPiA+IGhpbmdlLm8gIA0KPiA+ID4g
+PiANCj4gPiA+ID4gQWxwaGFiZXRpY2FsIG9yZGVyIHByZWZlcnJlZC4NCj4gPiA+ID4gICANCj4g
+PiA+ID4gPiArY2NmbGFncy15CSs9IC1JJChzcmN0cmVlKS9kcml2ZXJzL2lpby9jb21tb24vaGlk
+LQ0KPiA+ID4gPiA+IHNlbnNvcnMgIA0KPiA+ID4gPiANCj4gPiA+ID4gV2h5Pw0KPiA+ID4gPiAg
+IA0KPiA+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lpby9wb3NpdGlvbi9oaWQtc2Vuc29y
+LWN1c3RvbS1oaW5nZS5jDQo+ID4gPiA+ID4gYi9kcml2ZXJzL2lpby9wb3NpdGlvbi9oaWQtc2Vu
+c29yLWN1c3RvbS1oaW5nZS5jDQo+ID4gPiA+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiA+
+ID4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLmE5MWIzMzNmMzZmYQ0KPiA+ID4gPiA+IC0tLSAvZGV2
+L251bGwNCj4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2lpby9wb3NpdGlvbi9oaWQtc2Vuc29yLWN1
+c3RvbS1oaW5nZS5jDQo+ID4gPiA+ID4gQEAgLTAsMCArMSw0MTIgQEANCj4gPiA+ID4gPiArLy8g
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQ0KPiA+ID4gPiA+ICsvKg0KPiA+
+ID4gPiA+ICsgKiBISUQgU2Vuc29ycyBEcml2ZXINCj4gPiA+ID4gPiArICogQ29weXJpZ2h0IChj
+KSAyMDIwLCBJbnRlbCBDb3Jwb3JhdGlvbi4NCj4gPiA+ID4gPiArICovDQo+ID4gPiA+ID4gKyNp
+bmNsdWRlIDxsaW51eC9oaWQtc2Vuc29yLWh1Yi5oPg0KPiA+ID4gPiA+ICsjaW5jbHVkZSA8bGlu
+dXgvaWlvL2J1ZmZlci5oPg0KPiA+ID4gPiA+ICsjaW5jbHVkZSA8bGludXgvaWlvL2lpby5oPg0K
+PiA+ID4gPiA+ICsjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ID4gPiA+ID4g
+Kw0KPiA+ID4gPiA+ICsjaW5jbHVkZSAiaGlkLXNlbnNvci10cmlnZ2VyLmgiDQo+ID4gPiA+ID4g
+Kw0KPiA+ID4gPiA+ICsvKiBDaGFubmVsIGRlZmluaXRpb25zICovDQo+ID4gPiA+ID4gK3N0YXRp
+YyBjb25zdCBzdHJ1Y3QgaWlvX2NoYW5fc3BlYyBoaW5nZV9jaGFubmVsc1tdID0gew0KPiA+ID4g
+PiA+ICsJeyAudHlwZSA9IElJT19BTkdMLA0KPiA+ID4gPiA+ICsJICAuaW5mb19tYXNrX3NlcGFy
+YXRlID0gQklUKElJT19DSEFOX0lORk9fUkFXKSwNCj4gPiA+ID4gPiArCSAgLmluZm9fbWFza19z
+aGFyZWRfYnlfdHlwZSA9DQo+ID4gPiA+ID4gKwkJICBCSVQoSUlPX0NIQU5fSU5GT19PRkZTRVQp
+IHwNCj4gPiA+ID4gPiBCSVQoSUlPX0NIQU5fSU5GT19TQ0FMRSkNCj4gPiA+ID4gPiArCQkgIEJJ
+VChJSU9fQ0hBTl9JTkZPX1NBTVBfRlJFUSkgfA0KPiA+ID4gPiA+IEJJVChJSU9fQ0hBTl9JTkZP
+X0hZU1RFUkVTSVMpLA0KPiA+ID4gPiA+ICsJICAuc2Nhbl90eXBlLnJlYWxiaXRzID0gMTYsDQo+
+ID4gPiA+ID4gKwkgIC5zY2FuX3R5cGUuc3RvcmFnZWJpdHMgPSAzMiwgIA0KPiA+ID4gPiANCj4g
+PiA+ID4gSXQgYSBiaXQgb2RkIHRvIHNlZSBhIHNpbmdsZSBjaGFubmVsIHRoYXQgaXMgMTYgYml0
+cyBpbnNpZGUgYQ0KPiA+ID4gPiAzMg0KPiA+ID4gPiBiaXQNCj4gPiA+ID4gd2l0aA0KPiA+ID4g
+PiBubyBzaGlmdCBvciBzaW1pbGFyLiAgV2h5IG5vdCBqdXN0IHBhY2sgaXQgaW50byAxNiBiaXRz
+Pw0KPiA+ID4gPiAgIA0KPiA+ID4gPiA+ICsJICAuc2Nhbl90eXBlLnNpZ24gPSAncycsDQo+ID4g
+PiA+ID4gKwkgIC5zY2FuX2luZGV4ID0gMCB9LA0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCUlJ
+T19DSEFOX1NPRlRfVElNRVNUQU1QKDEpDQo+ID4gPiA+ID4gK307DQo+ID4gPiA+ID4gKw0KPiA+
+ID4gPiA+ICtzdHJ1Y3QgaGluZ2Vfc3RhdGUgew0KPiA+ID4gPiA+ICsJc3RydWN0IGlpb19kZXYg
+KmluZGlvX2RldjsNCj4gPiA+ID4gPiArCXN0cnVjdCBoaWRfc2Vuc29yX2h1Yl9hdHRyaWJ1dGVf
+aW5mbyBoaW5nZTsNCj4gPiA+ID4gPiArCS8qIFJlc2VydmUgZm9yIDEgY2hhbm5lbCArIHBhZGlu
+ZyArIHRpbWVzdGFtcCAqLw0KPiA+ID4gPiA+ICsJdTMyIGhpbmdlX3ZhbFsxICsgM107ICANCj4g
+PiA+ID4gDQo+ID4gPiA+IF9fYWxpZ25lZCg4KQ0KPiA+ID4gPiANCj4gPiA+ID4gc2VlIGJlbG93
+IGZvciByZXF1aXJlbWVudHMgb24gdGhpcy4NCj4gPiA+ID4gUGVyaGFwcyBiZXR0ZXIgdG8gdXNl
+DQo+ID4gPiA+IA0KPiA+ID4gPiAJc3RydWN0IGhpbmdlX3NjYW4gew0KPiA+ID4gPiAJCXUzMiB2
+YWw7DQo+ID4gPiA+IAkJczY0IHRpbWVzdGFtcCBfX2FsaWduZWQoOCk7IC8vIE5vdGUgdGhpcyBp
+cw0KPiA+ID4gPiBuZWVkZWQgZm9yDQo+ID4gPiA+IHg4Nl8zMg0KPiA+ID4gPiAJfSBzY2FuOw0K
+PiA+ID4gPiAgIA0KPiA+ID4gPiA+ICsJaW50IHNjYWxlX3ByZV9kZWNtbDsNCj4gPiA+ID4gPiAr
+CWludCBzY2FsZV9wb3N0X2RlY21sOw0KPiA+ID4gPiA+ICsJaW50IHNjYWxlX3ByZWNpc2lvbjsN
+Cj4gPiA+ID4gPiArCWludCB2YWx1ZV9vZmZzZXQ7DQo+ID4gPiA+ID4gKwlpbnQ2NF90IHRpbWVz
+dGFtcDsNCj4gPiA+ID4gPiArCXUzMiBoaW5nZV9hZGRyZXNzOw0KPiA+ID4gPiA+ICt9Ow0KPiA+
+ID4gPiA+ICsNCj4gPiA+ID4gPiArI2RlZmluZSBJSU9fREVWX05VTSAzICANCj4gPiA+ID4gDQo+
+ID4gPiA+IFRoYXQgbmVlZHMgYSBwcmVmaXggdG8gbWFrZSBpdCBjbGVhciBpdCdzIG5vdCBhIGdl
+bmVyaWMNCj4gPiA+ID4gY29uc3RhbnQNCj4gPiA+ID4gYnV0IGlzIHNwZWNpZmljIHRvIHRoaXMg
+ZHJpdmVyLg0KPiA+ID4gPiAgIA0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArc3RydWN0IGhpbmdl
+X2dyb3VwIHsNCj4gPiA+ID4gPiArCXN0cnVjdCBoaW5nZV9zdGF0ZSAqaGdfc3RhdGVzW0lJT19E
+RVZfTlVNXTsNCj4gPiA+ID4gPiArCXN0cnVjdCBoaWRfc2Vuc29yX2h1Yl9jYWxsYmFja3MgY2Fs
+bGJhY2tzOw0KPiA+ID4gPiA+ICsJc3RydWN0IGhpZF9zZW5zb3JfY29tbW9uIGNvbW1vbl9hdHRy
+aWJ1dGVzOw0KPiA+ID4gPiA+ICt9Ow0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArc3RhdGljIHN0
+cnVjdCBoaW5nZV9ncm91cCAqaGdfZ3JvdXA7ICANCj4gPiA+ID4gDQo+ID4gPiA+IFdlIHNob3Vs
+ZG4ndCBzZWUgZ2xvYmFscyBsaWtlIHRoaXMuIFBsZWFzZSBmaWd1cmUgb3V0IGhvdyB0bw0KPiA+
+ID4gPiBhdm9pZA0KPiA+ID4gPiBpdC4NCj4gPiA+ID4gICANCj4gPiA+ID4gPiArDQo+ID4gPiA+
+ID4gKy8qIENoYW5uZWwgcmVhZF9yYXcgaGFuZGxlciAqLw0KPiA+ID4gPiA+ICtzdGF0aWMgaW50
+IGhpbmdlX3JlYWRfcmF3KHN0cnVjdCBpaW9fZGV2ICppbmRpb19kZXYsDQo+ID4gPiA+ID4gKwkJ
+CSAgc3RydWN0IGlpb19jaGFuX3NwZWMgY29uc3QgKmNoYW4sIGludA0KPiA+ID4gPiA+ICp2YWws
+DQo+ID4gPiA+ID4gaW50ICp2YWwyLA0KPiA+ID4gPiA+ICsJCQkgIGxvbmcgbWFzaykNCj4gPiA+
+ID4gPiArew0KPiA+ID4gPiA+ICsJc3RydWN0IGhpbmdlX3N0YXRlICpoZ19zdGF0ZSA9IGlpb19w
+cml2KGluZGlvX2Rldik7DQo+ID4gPiA+ID4gKwlzdHJ1Y3QgaGlkX3NlbnNvcl9odWJfZGV2aWNl
+ICpoc2RldjsNCj4gPiA+ID4gPiArCWludCByZXBvcnRfaWQgPSAtMTsNCj4gPiA+ID4gPiArCWlu
+dCByZXRfdHlwZTsNCj4gPiA+ID4gPiArCXMzMiBtaW47DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+
+ICsJaHNkZXYgPSBoZ19ncm91cC0+Y29tbW9uX2F0dHJpYnV0ZXMuaHNkZXY7DQo+ID4gPiA+ID4g
+Kw0KPiA+ID4gPiA+ICsJKnZhbCA9IDA7DQo+ID4gPiA+ID4gKwkqdmFsMiA9IDA7DQo+ID4gPiA+
+ID4gKwlzd2l0Y2ggKG1hc2spIHsNCj4gPiA+ID4gPiArCWNhc2UgSUlPX0NIQU5fSU5GT19SQVc6
+DQo+ID4gPiA+ID4gKwkJaGlkX3NlbnNvcl9wb3dlcl9zdGF0ZSgmaGdfZ3JvdXAtDQo+ID4gPiA+
+ID4gPmNvbW1vbl9hdHRyaWJ1dGVzLA0KPiA+ID4gPiA+IHRydWUpOw0KPiA+ID4gPiA+ICsJCXJl
+cG9ydF9pZCA9IGhnX3N0YXRlLT5oaW5nZS5yZXBvcnRfaWQ7DQo+ID4gPiA+ID4gKwkJbWluID0g
+aGdfc3RhdGUtPmhpbmdlLmxvZ2ljYWxfbWluaW11bTsNCj4gPiA+ID4gPiArCQlpZiAocmVwb3J0
+X2lkIDwgMCkgew0KPiA+ID4gPiA+ICsJCQkqdmFsID0gMDsNCj4gPiA+ID4gPiArCQkJaGlkX3Nl
+bnNvcl9wb3dlcl9zdGF0ZSgmaGdfZ3JvdXAtICANCj4gPiA+ID4gPiA+IGNvbW1vbl9hdHRyaWJ1
+dGVzLCAgDQo+ID4gPiA+ID4gKwkJCQkJICAgICAgIGZhbHNlKTsNCj4gPiA+ID4gPiArCQkJcmV0
+dXJuIC1FSU5WQUw7DQo+ID4gPiA+ID4gKwkJfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCQkq
+dmFsID0gc2Vuc29yX2h1Yl9pbnB1dF9hdHRyX2dldF9yYXdfdmFsdWUoDQo+ID4gPiA+ID4gKwkJ
+CWhnX2dyb3VwLT5jb21tb25fYXR0cmlidXRlcy5oc2RldiwNCj4gPiA+ID4gPiBoc2Rldi0gIA0K
+PiA+ID4gPiA+ID4gdXNhZ2UsICANCj4gPiA+ID4gPiArCQkJaGdfc3RhdGUtPmhpbmdlX2FkZHJl
+c3MsIHJlcG9ydF9pZCwNCj4gPiA+ID4gPiBTRU5TT1JfSFVCX1NZTkMsDQo+ID4gPiA+ID4gKwkJ
+CW1pbiA8IDApOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCQloaWRfc2Vuc29yX3Bvd2VyX3N0
+YXRlKCZoZ19ncm91cC0NCj4gPiA+ID4gPiA+Y29tbW9uX2F0dHJpYnV0ZXMsDQo+ID4gPiA+ID4g
+ZmFsc2UpOw0KPiA+ID4gPiA+ICsJCXJldF90eXBlID0gSUlPX1ZBTF9JTlQ7DQo+ID4gPiA+ID4g
+KwkJYnJlYWs7DQo+ID4gPiA+ID4gKwljYXNlIElJT19DSEFOX0lORk9fU0NBTEU6DQo+ID4gPiA+
+ID4gKwkJKnZhbCA9IGhnX3N0YXRlLT5zY2FsZV9wcmVfZGVjbWw7DQo+ID4gPiA+ID4gKwkJKnZh
+bDIgPSBoZ19zdGF0ZS0+c2NhbGVfcG9zdF9kZWNtbDsNCj4gPiA+ID4gPiArCQlyZXRfdHlwZSA9
+IGhnX3N0YXRlLT5zY2FsZV9wcmVjaXNpb247DQo+ID4gPiA+ID4gKwkJYnJlYWs7DQo+ID4gPiA+
+ID4gKwljYXNlIElJT19DSEFOX0lORk9fT0ZGU0VUOg0KPiA+ID4gPiA+ICsJCSp2YWwgPSBoZ19z
+dGF0ZS0+dmFsdWVfb2Zmc2V0Ow0KPiA+ID4gPiA+ICsJCXJldF90eXBlID0gSUlPX1ZBTF9JTlQ7
+DQo+ID4gPiA+ID4gKwkJYnJlYWs7DQo+ID4gPiA+ID4gKwljYXNlIElJT19DSEFOX0lORk9fU0FN
+UF9GUkVROg0KPiA+ID4gPiA+ICsJCXJldF90eXBlID0gaGlkX3NlbnNvcl9yZWFkX3NhbXBfZnJl
+cV92YWx1ZSgNCj4gPiA+ID4gPiArCQkJJmhnX2dyb3VwLT5jb21tb25fYXR0cmlidXRlcywgdmFs
+LA0KPiA+ID4gPiA+IHZhbDIpOw0KPiA+ID4gPiA+ICsJCWJyZWFrOw0KPiA+ID4gPiA+ICsJY2Fz
+ZSBJSU9fQ0hBTl9JTkZPX0hZU1RFUkVTSVM6DQo+ID4gPiA+ID4gKwkJcmV0X3R5cGUgPSBoaWRf
+c2Vuc29yX3JlYWRfcmF3X2h5c3RfdmFsdWUoDQo+ID4gPiA+ID4gKwkJCSZoZ19ncm91cC0+Y29t
+bW9uX2F0dHJpYnV0ZXMsIHZhbCwNCj4gPiA+ID4gPiB2YWwyKTsNCj4gPiA+ID4gPiArCQlicmVh
+azsNCj4gPiA+ID4gPiArCWRlZmF1bHQ6DQo+ID4gPiA+ID4gKwkJcmV0X3R5cGUgPSAtRUlOVkFM
+Ow0KPiA+ID4gPiA+ICsJCWJyZWFrOw0KPiA+ID4gPiA+ICsJfQ0KPiA+ID4gPiA+ICsNCj4gPiA+
+ID4gPiArCXJldHVybiByZXRfdHlwZTsNCj4gPiA+ID4gPiArfQ0KPiA+ID4gPiA+ICsNCj4gPiA+
+ID4gPiArLyogQ2hhbm5lbCB3cml0ZV9yYXcgaGFuZGxlciAqLw0KPiA+ID4gPiA+ICtzdGF0aWMg
+aW50IGhpbmdlX3dyaXRlX3JhdyhzdHJ1Y3QgaWlvX2RldiAqaW5kaW9fZGV2LA0KPiA+ID4gPiA+
+ICsJCQkgICBzdHJ1Y3QgaWlvX2NoYW5fc3BlYyBjb25zdCAqY2hhbiwNCj4gPiA+ID4gPiBpbnQg
+dmFsLA0KPiA+ID4gPiA+IGludCB2YWwyLA0KPiA+ID4gPiA+ICsJCQkgICBsb25nIG1hc2spDQo+
+ID4gPiA+ID4gK3sNCj4gPiA+ID4gPiArCWludCByZXQ7DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+
+ICsJc3dpdGNoIChtYXNrKSB7DQo+ID4gPiA+ID4gKwljYXNlIElJT19DSEFOX0lORk9fU0FNUF9G
+UkVROg0KPiA+ID4gPiA+ICsJCXJldCA9IGhpZF9zZW5zb3Jfd3JpdGVfc2FtcF9mcmVxX3ZhbHVl
+KA0KPiA+ID4gPiA+ICsJCQkmaGdfZ3JvdXAtPmNvbW1vbl9hdHRyaWJ1dGVzLCB2YWwsDQo+ID4g
+PiA+ID4gdmFsMik7DQo+ID4gPiA+ID4gKwkJYnJlYWs7DQo+ID4gPiA+ID4gKwljYXNlIElJT19D
+SEFOX0lORk9fSFlTVEVSRVNJUzoNCj4gPiA+ID4gPiArCQlyZXQgPSBoaWRfc2Vuc29yX3dyaXRl
+X3Jhd19oeXN0X3ZhbHVlKA0KPiA+ID4gPiA+ICsJCQkmaGdfZ3JvdXAtPmNvbW1vbl9hdHRyaWJ1
+dGVzLCB2YWwsDQo+ID4gPiA+ID4gdmFsMik7DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsJCWJy
+ZWFrOw0KPiA+ID4gPiA+ICsJZGVmYXVsdDoNCj4gPiA+ID4gPiArCQlyZXQgPSAtRUlOVkFMOw0K
+PiA+ID4gPiA+ICsJfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCXJldHVybiByZXQ7DQo+ID4g
+PiA+ID4gK30NCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgaWlv
+X2luZm8gaGluZ2VfaW5mbyA9IHsNCj4gPiA+ID4gPiArCS5yZWFkX3JhdyA9ICZoaW5nZV9yZWFk
+X3JhdywNCj4gPiA+ID4gPiArCS53cml0ZV9yYXcgPSAmaGluZ2Vfd3JpdGVfcmF3LA0KPiA+ID4g
+PiA+ICt9Ow0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArLyoNCj4gPiA+ID4gPiArICogRnVuY3Rp
+b24gdG8gcHVzaCBkYXRhIHRvIGJ1ZmZlcjsNCj4gPiA+ID4gPiArICogd3JhcHBlciBhZGRlZCBm
+b3Igc3ltbWV0cnkgd2l0aCBvdGhlciBoaWQtc2Vuc29yIGRyaXZlcnMNCj4gPiA+ID4gPiArICov
+DQo+ID4gPiA+ID4gK3N0YXRpYyB2b2lkIGhpZF9zZW5zb3JfcHVzaF9kYXRhKHN0cnVjdCBpaW9f
+ZGV2ICppbmRpb19kZXYsDQo+ID4gPiA+ID4gdm9pZA0KPiA+ID4gPiA+ICpkYXRhLCBpbnQgbGVu
+LCAgDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGlzIGRvZXNuJ3Qgc2VlbSB0byBiZSBnZW5lcmljLCBz
+byBkb24ndCBuYW1lIGl0IGFzIHN1Y2guDQo+ID4gPiA+ICAgDQo+ID4gPiA+ID4gKwkJCQkgaW50
+NjRfdCB0aW1lc3RhbXApDQo+ID4gPiA+ID4gK3sNCj4gPiA+ID4gPiArCWlpb19wdXNoX3RvX2J1
+ZmZlcnNfd2l0aF90aW1lc3RhbXAoaW5kaW9fZGV2LCBkYXRhLA0KPiA+ID4gPiA+IHRpbWVzdGFt
+cCk7ICANCj4gPiA+ID4gSSBob3BlIHRoYXQgZGF0YSBidWZmZXIgb2JleXMgdGhlIHZhcmlvdXMg
+cnVsZXMgbmVlZGVkIGJ5IChhbmQNCj4gPiA+ID4gYWRtaXR0ZWRseQ0KPiA+ID4gPiBub3QgdGhh
+dCB3ZWxsIGRvY3VtZW50ZWQpIGlpb19wdXNoX3RvX2J1ZmZlcnNfd2l0aF90aW1lc3RhbXAoKQ0K
+PiA+ID4gPiANCj4gPiA+ID4gMS4gTmVlZHMgdG8gYmUgOCBieXRlIGFsaWduZWQuDQo+ID4gPiA+
+IDIuIE5lZWRzIHRvIGhhdmUgc3BhY2UgZm9yIGFuIGFsaWduZWQgOCBieXRlIHRpbWVzdGFtcCBh
+dCB0aGUNCj4gPiA+ID4gZW5kLg0KPiA+ID4gPiAgIA0KPiA+ID4gPiA+ICt9DQo+ID4gPiA+ID4g
+Kw0KPiA+ID4gPiA+ICsvKg0KPiA+ID4gPiA+ICsgKiBDYWxsYmFjayBoYW5kbGVyIHRvIHNlbmQg
+ZXZlbnQgYWZ0ZXIgYWxsIHNhbXBsZXMgYXJlDQo+ID4gPiA+ID4gcmVjZWl2ZWQNCj4gPiA+ID4g
+PiArICogYW5kIGNhcHR1cmVkLg0KPiA+ID4gPiA+ICsgKi8NCj4gPiA+ID4gPiArc3RhdGljIGlu
+dCBoaW5nZV9wcm9jX2V2ZW50KHN0cnVjdCBoaWRfc2Vuc29yX2h1Yl9kZXZpY2UNCj4gPiA+ID4g
+PiAqaHNkZXYsDQo+ID4gPiA+ID4gKwkJCSAgICB1bnNpZ25lZCBpbnQgdXNhZ2VfaWQsIHZvaWQg
+KnByaXYpDQo+ID4gPiA+ID4gK3sNCj4gPiA+ID4gPiArCWludCBpOw0KPiA+ID4gPiA+ICsNCj4g
+PiA+ID4gPiArCWZvciAoaSA9IDA7IGkgPCBJSU9fREVWX05VTTsgKytpKSB7ICANCj4gPiA+ID4g
+SWYgd2UgcHVzaCBmb3IgYWxsIHNlbnNvcnMgdG9nZXRoZXIsIGJldHRlciB0byBoYXZlDQo+ID4g
+PiA+IHRoaXMgYXMgYSBzaW5nbGUgaWlvX2RldmljZSB3aXRoIDMgY2hhbm5lbHMuDQo+ID4gPiA+
+IA0KPiA+ID4gPiBVc2UgdGhlIGNoYW5uZWwgbGFiZWxzIChqdXN0IGFkZGVkIHRvIElJTykgdG8g
+aWRlbnRpZnkgd2hpY2ggaXMNCj4gPiA+ID4gd2hpY2guDQo+ID4gPiA+ICAgDQo+ID4gPiA+ID4g
+KwkJc3RydWN0IGhpbmdlX3N0YXRlICpoZ19zdGF0ZTsNCj4gPiA+ID4gPiArCQlzdHJ1Y3QgaWlv
+X2RldiAqaW5kaW9fZGV2Ow0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCQloZ19zdGF0ZSA9IGhn
+X2dyb3VwLT5oZ19zdGF0ZXNbaV07DQo+ID4gPiA+ID4gKwkJaW5kaW9fZGV2ID0gaGdfc3RhdGUt
+PmluZGlvX2RldjsNCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gKwkJZGV2X2RiZygmaW5kaW9fZGV2
+LT5kZXYsICIlcyB0aW1lc3RhbXA6JWxsdQ0KPiA+ID4gPiA+IHNjYW5fYnl0ZXM6JWRcbiIsDQo+
+ID4gPiA+ID4gKwkJCV9fZnVuY19fLCBoZ19zdGF0ZS0+dGltZXN0YW1wLA0KPiA+ID4gPiA+IGlu
+ZGlvX2Rldi0gIA0KPiA+ID4gPiA+ID4gc2Nhbl9ieXRlcyk7ICANCj4gPiA+ID4gPiArDQo+ID4g
+PiA+ID4gKwkJaWYgKCFoZ19zdGF0ZS0+dGltZXN0YW1wKQ0KPiA+ID4gPiA+ICsJCQloZ19zdGF0
+ZS0+dGltZXN0YW1wID0NCj4gPiA+ID4gPiBpaW9fZ2V0X3RpbWVfbnMoaW5kaW9fZGV2KTsNCj4g
+PiA+ID4gPiArDQo+ID4gPiA+ID4gKwkJaGlkX3NlbnNvcl9wdXNoX2RhdGEoaW5kaW9fZGV2LCBo
+Z19zdGF0ZS0NCj4gPiA+ID4gPiA+aGluZ2VfdmFsLA0KPiA+ID4gPiA+ICsJCQkJICAgICBzaXpl
+b2YoaGdfc3RhdGUtDQo+ID4gPiA+ID4gPmhpbmdlX3ZhbCksDQo+ID4gPiA+ID4gKwkJCQkgICAg
+IGhnX3N0YXRlLT50aW1lc3RhbXApOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCQloZ19zdGF0
+ZS0+dGltZXN0YW1wID0gMDsNCj4gPiA+ID4gPiArCX0NCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4g
+KwlyZXR1cm4gMDsNCj4gPiA+ID4gPiArfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArLyogQ2Fw
+dHVyZSBzYW1wbGVzIGluIGxvY2FsIHN0b3JhZ2UgKi8NCj4gPiA+ID4gPiArc3RhdGljIGludCBo
+aW5nZV9jYXB0dXJlX3NhbXBsZShzdHJ1Y3QgaGlkX3NlbnNvcl9odWJfZGV2aWNlDQo+ID4gPiA+
+ID4gKmhzZGV2LA0KPiA+ID4gPiA+ICsJCQkJdW5zaWduZWQgaW50IHVzYWdlX2lkLCBzaXplX3QN
+Cj4gPiA+ID4gPiByYXdfbGVuLA0KPiA+ID4gPiA+ICsJCQkJY2hhciAqcmF3X2RhdGEsIHZvaWQg
+KnByaXYpDQo+ID4gPiA+ID4gK3sNCj4gPiA+ID4gPiArCXN0cnVjdCBoaW5nZV9zdGF0ZSAqaGdf
+c3RhdGU7DQo+ID4gPiA+ID4gKwlpbnQgb2Zmc2V0Ow0KPiA+ID4gPiA+ICsJaW50IHJldCA9IC1F
+SU5WQUw7DQo+ID4gPiA+ID4gKwlpbnQgaTsNCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gKwlpZiAo
+dXNhZ2VfaWQgPT0gSElEX1VTQUdFX1NFTlNPUl9USU1FX1RJTUVTVEFNUCkgew0KPiA+ID4gPiA+
+ICsJCWZvciAoaSA9IDA7IGkgPCBJSU9fREVWX05VTTsgaSsrKQ0KPiA+ID4gPiA+ICsJCQloZ19n
+cm91cC0+aGdfc3RhdGVzW2ldLT50aW1lc3RhbXAgPSAgDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGlz
+IHJhdGhlciBpbXBsaWVzIGFsbCB0aGUgZGF0YSBpcyBjYXB0dXJlZCB0b2dldGhlci4uLiBJZiBz
+bw0KPiA+ID4gPiBzaW5nbGUNCj4gPiA+ID4gaWlvX2RldmljZSBtYXkgbWFrZSBtb3JlIHNlbnNl
+Lg0KPiA+ID4gPiAgIA0KPiA+ID4gPiA+ICsJCQkJaGlkX3NlbnNvcl9jb252ZXJ0X3RpbWVzdGFt
+cCgNCj4gPiA+ID4gPiArCQkJCQkmaGdfZ3JvdXAtDQo+ID4gPiA+ID4gPmNvbW1vbl9hdHRyaWJ1
+dGVzLA0KPiA+ID4gPiA+ICsJCQkJCSooaW50NjRfdCAqKXJhd19kYXRhKTsNCj4gPiA+ID4gPiAr
+CQlyZXR1cm4gMDsNCj4gPiA+ID4gPiArCX0NCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gKwlzd2l0
+Y2ggKHVzYWdlX2lkKSB7DQo+ID4gPiA+ID4gKwljYXNlIEhJRF9VU0FHRV9TRU5TT1JfREFUQV9G
+SUVMRF9DVVNUT01fVkFMVUVfMToNCj4gPiA+ID4gPiArCWNhc2UgSElEX1VTQUdFX1NFTlNPUl9E
+QVRBX0ZJRUxEX0NVU1RPTV9WQUxVRV8yOg0KPiA+ID4gPiA+ICsJY2FzZSBISURfVVNBR0VfU0VO
+U09SX0RBVEFfRklFTERfQ1VTVE9NX1ZBTFVFXzM6DQo+ID4gPiA+ID4gKwkJb2Zmc2V0ID0gdXNh
+Z2VfaWQgLQ0KPiA+ID4gPiA+IEhJRF9VU0FHRV9TRU5TT1JfREFUQV9GSUVMRF9DVVNUT01fVkFM
+VUVfMTsNCj4gPiA+ID4gPiArCQloZ19zdGF0ZSA9IGhnX2dyb3VwLT5oZ19zdGF0ZXNbb2Zmc2V0
+XTsNCj4gPiA+ID4gPiArCQloZ19zdGF0ZS0+aGluZ2VfdmFsWzBdID0gKih1MzIgKilyYXdfZGF0
+YTsNCj4gPiA+ID4gPiArCQlyZXQgPSAwOyAgDQo+ID4gPiA+IA0KPiA+ID4gPiAJCXJldHVybiAw
+Ow0KPiA+ID4gPiAgIA0KPiA+ID4gPiA+ICsJCWJyZWFrOw0KPiA+ID4gPiA+ICsJZGVmYXVsdDog
+IA0KPiA+ID4gPiAJCXJldHVybiAtRUlOVkFMOyAgDQo+ID4gPiA+ID4gKwkJYnJlYWs7DQo+ID4g
+PiA+ID4gKwl9DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsJcmV0dXJuIHJldDsNCj4gPiA+ID4g
+PiArfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArLyogUGFyc2UgcmVwb3J0IHdoaWNoIGlzIHNw
+ZWNpZmljIHRvIGFuIHVzYWdlIGlkICovDQo+ID4gPiA+ID4gK3N0YXRpYyBpbnQgaGluZ2VfcGFy
+c2VfcmVwb3J0KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsDQo+ID4gPiA+ID4gKwkJCSAg
+ICAgIHN0cnVjdCBoaWRfc2Vuc29yX2h1Yl9kZXZpY2UNCj4gPiA+ID4gPiAqaHNkZXYsDQo+ID4g
+PiA+ID4gKwkJCSAgICAgIHVuc2lnbmVkIGludCB1c2FnZV9pZCwgdW5zaWduZWQNCj4gPiA+ID4g
+PiBpbnQNCj4gPiA+ID4gPiBhdHRyX3VzYWdlX2lkLA0KPiA+ID4gPiA+ICsJCQkgICAgICBzdHJ1
+Y3QgaGluZ2Vfc3RhdGUgKnN0KQ0KPiA+ID4gPiA+ICt7DQo+ID4gPiA+ID4gKwlpbnQgcmV0Ow0K
+PiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCXJldCA9IHNlbnNvcl9odWJfaW5wdXRfZ2V0X2F0dHJp
+YnV0ZV9pbmZvKA0KPiA+ID4gPiA+ICsJCWhzZGV2LCBISURfSU5QVVRfUkVQT1JULCB1c2FnZV9p
+ZCwNCj4gPiA+ID4gPiBhdHRyX3VzYWdlX2lkLCAmc3QtICANCj4gPiA+ID4gPiA+IGhpbmdlKTsg
+IA0KPiA+ID4gPiA+ICsJaWYgKHJldCA8IDApDQo+ID4gPiA+ID4gKwkJcmV0dXJuIHJldDsNCj4g
+PiA+ID4gPiArDQo+ID4gPiA+ID4gKwlzdC0+aGluZ2VfYWRkcmVzcyA9IGF0dHJfdXNhZ2VfaWQ7
+DQo+ID4gPiA+ID4gKwlzdC0+c2NhbGVfcHJlY2lzaW9uID0NCj4gPiA+ID4gPiArCQloaWRfc2Vu
+c29yX2Zvcm1hdF9zY2FsZShISURfVVNBR0VfU0VOU09SX0hJTkdFLA0KPiA+ID4gPiA+ICZzdC0g
+IA0KPiA+ID4gPiA+ID4gaGluZ2UsICANCj4gPiA+ID4gPiArCQkJCQkmc3QtPnNjYWxlX3ByZV9k
+ZWNtbCwNCj4gPiA+ID4gPiArCQkJCQkmc3QtPnNjYWxlX3Bvc3RfZGVjbWwpOw0KPiA+ID4gPiA+
+ICsNCj4gPiA+ID4gPiArCS8qIFNldCBTZW5zaXRpdml0eSBmaWVsZCBpZHMsIHdoZW4gdGhlcmUg
+aXMgbm8NCj4gPiA+ID4gPiBpbmRpdmlkdWFsDQo+ID4gPiA+ID4gbW9kaWZpZXIgKi8NCj4gPiA+
+ID4gPiArCWlmIChoZ19ncm91cC0+Y29tbW9uX2F0dHJpYnV0ZXMuc2Vuc2l0aXZpdHkuaW5kZXgg
+PCAwKQ0KPiA+ID4gPiA+IHsNCj4gPiA+ID4gPiArCQlzZW5zb3JfaHViX2lucHV0X2dldF9hdHRy
+aWJ1dGVfaW5mbygNCj4gPiA+ID4gPiArCQkJaHNkZXYsIEhJRF9GRUFUVVJFX1JFUE9SVCwgdXNh
+Z2VfaWQsDQo+ID4gPiA+ID4gKwkJCUhJRF9VU0FHRV9TRU5TT1JfREFUQV9NT0RfQ0hBTkdFX1NF
+TlNJVA0KPiA+ID4gPiA+IElWSVRZX0FCDQo+ID4gPiA+ID4gUyB8DQo+ID4gPiA+ID4gKwkJCQlI
+SURfVVNBR0VfU0VOU09SX0RBVEFfRklFTERfQ1VTDQo+ID4gPiA+ID4gVE9NX1ZBTFUNCj4gPiA+
+ID4gPiBFXzEsDQo+ID4gPiA+ID4gKwkJCSZoZ19ncm91cC0NCj4gPiA+ID4gPiA+Y29tbW9uX2F0
+dHJpYnV0ZXMuc2Vuc2l0aXZpdHkpOw0KPiA+ID4gPiA+ICsJCWRldl9kYmcoJnBkZXYtPmRldiwg
+IlNlbnNpdGl2aXR5IGluZGV4OnJlcG9ydA0KPiA+ID4gPiA+ICVkOiVkXG4iLA0KPiA+ID4gPiA+
+ICsJCQloZ19ncm91cC0NCj4gPiA+ID4gPiA+Y29tbW9uX2F0dHJpYnV0ZXMuc2Vuc2l0aXZpdHku
+aW5kZXgsDQo+ID4gPiA+ID4gKwkJCWhnX2dyb3VwLSAgDQo+ID4gPiA+ID4gPiBjb21tb25fYXR0
+cmlidXRlcy5zZW5zaXRpdml0eS5yZXBvcnRfaWQpOyAgDQo+ID4gPiA+ID4gKwl9DQo+ID4gPiA+
+ID4gKw0KPiA+ID4gPiA+ICsJcmV0dXJuIHJldDsNCj4gPiA+ID4gPiArfQ0KPiA+ID4gPiA+ICsN
+Cj4gPiA+ID4gPiArLyogRnVuY3Rpb24gdG8gaW5pdGlhbGl6ZSB0aGUgcHJvY2Vzc2luZyBmb3Ig
+dXNhZ2UgaWQgKi8NCj4gPiA+ID4gPiArc3RhdGljIGludCBoaW5nZV9hZGRfaWlvX2RldmljZShz
+dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ID4gPiA+ID4gKnBkZXYsDQo+ID4gPiA+ID4gaW50DQo+
+ID4gPiA+ID4gaW5kZXgsDQo+ID4gPiA+ID4gKwkJCQljb25zdCBjaGFyICpuYW1lLCBzdHJ1Y3QN
+Cj4gPiA+ID4gPiBoaW5nZV9zdGF0ZQ0KPiA+ID4gPiA+ICoqc3QpDQo+ID4gPiA+ID4gK3sNCj4g
+PiA+ID4gPiArCXN0cnVjdCBoaWRfc2Vuc29yX2h1Yl9kZXZpY2UgKmhzZGV2ID0gcGRldi0NCj4g
+PiA+ID4gPiA+ZGV2LnBsYXRmb3JtX2RhdGE7DQo+ID4gPiA+ID4gKwlzdHJ1Y3QgaGluZ2Vfc3Rh
+dGUgKmhnX3N0YXRlOw0KPiA+ID4gPiA+ICsJc3RydWN0IGlpb19kZXYgKmluZGlvX2RldjsNCj4g
+PiA+ID4gPiArCWludCByZXQ7DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsJaW5kaW9fZGV2ID0N
+Cj4gPiA+ID4gPiArCQlkZXZtX2lpb19kZXZpY2VfYWxsb2MoJnBkZXYtPmRldiwgc2l6ZW9mKHN0
+cnVjdA0KPiA+ID4gPiA+IGhpbmdlX3N0YXRlKSk7ICANCj4gPiA+ID4gDQo+ID4gPiA+IHNpemVv
+ZiAoKmhnX3N0YXRlKSBwcmVmZXJyZWQuDQo+ID4gPiA+ICAgDQo+ID4gPiA+ID4gKwlpZiAoaW5k
+aW9fZGV2ID09IE5VTEwpDQo+ID4gPiA+ID4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ID4gPiA+ID4g
+Kw0KPiA+ID4gPiA+ICsJaGdfc3RhdGUgPSBpaW9fcHJpdihpbmRpb19kZXYpOw0KPiA+ID4gPiA+
+ICsJaGdfc3RhdGUtPmluZGlvX2RldiA9IGluZGlvX2RldjsNCj4gPiA+ID4gPiArDQo+ID4gPiA+
+ID4gKwlpbmRpb19kZXYtPm51bV9jaGFubmVscyA9IEFSUkFZX1NJWkUoaGluZ2VfY2hhbm5lbHMp
+Ow0KPiA+ID4gPiA+ICsJaW5kaW9fZGV2LT5jaGFubmVscyA9DQo+ID4gPiA+ID4gKwkJa21lbWR1
+cChoaW5nZV9jaGFubmVscywgc2l6ZW9mKGhpbmdlX2NoYW5uZWxzKSwNCj4gPiA+ID4gPiBHRlBf
+S0VSTkVMKTsgIA0KPiA+ID4gPiANCj4gPiA+ID4gSSBkb24ndCBpbW1lZGlhdGVseSBzZWUgYW55
+dGhpbmcgdGhhdCBpcyBtb2RpZnlpbmcgY2hhbm5lbHMuIEFzDQo+ID4gPiA+IHN1Y2gNCj4gPiA+
+ID4geW91DQo+ID4gPiA+IHNob3VsZCBiZSBhYmxlIGhhdmUgaXQgc2hhcmVkIGJ5IGFsbCB0aGUg
+aW5zdGFuY2VzLg0KPiA+ID4gPiAgIA0KPiA+ID4gPiA+ICsJaWYgKCFpbmRpb19kZXYtPmNoYW5u
+ZWxzKQ0KPiA+ID4gPiA+ICsJCXJldHVybiAtRU5PTUVNOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4g
+PiArCXJldCA9IGhpbmdlX3BhcnNlX3JlcG9ydCgNCj4gPiA+ID4gPiArCQlwZGV2LCBoc2Rldiwg
+aHNkZXYtPnVzYWdlLA0KPiA+ID4gPiA+ICsJCUhJRF9VU0FHRV9TRU5TT1JfREFUQV9GSUVMRF9D
+VVNUT01fVkFMVUVfMSArDQo+ID4gPiA+ID4gaW5kZXgsDQo+ID4gPiA+ID4gaGdfc3RhdGUpOw0K
+PiA+ID4gPiA+ICsJaWYgKHJldCkgew0KPiA+ID4gPiA+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwg
+ImZhaWxlZCB0byBzZXR1cA0KPiA+ID4gPiA+IGF0dHJpYnV0ZXNcbiIpOw0KPiA+ID4gPiA+ICsJ
+CWdvdG8gZXJyb3JfZnJlZV9kZXZfbWVtOw0KPiA+ID4gPiA+ICsJfQ0KPiA+ID4gPiA+ICsNCj4g
+PiA+ID4gPiArCWluZGlvX2Rldi0+ZGV2LnBhcmVudCA9ICZwZGV2LT5kZXY7DQo+ID4gPiA+ID4g
+KwlpbmRpb19kZXYtPmluZm8gPSAmaGluZ2VfaW5mbzsNCj4gPiA+ID4gPiArCWluZGlvX2Rldi0+
+bmFtZSA9IG5hbWU7DQo+ID4gPiA+ID4gKwlpbmRpb19kZXYtPm1vZGVzID0gSU5ESU9fRElSRUNU
+X01PREU7DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsJcmV0ID0gaGlkX3NlbnNvcl9zZXR1cF90
+cmlnZ2VyKGluZGlvX2RldiwgbmFtZSwNCj4gPiA+ID4gPiArCQkJCSAgICAgICAmaGdfZ3JvdXAt
+DQo+ID4gPiA+ID4gPmNvbW1vbl9hdHRyaWJ1dGVzKTsNCj4gPiA+ID4gPiArCWlmIChyZXQgPCAw
+KSB7DQo+ID4gPiA+ID4gKwkJZGV2X2VycigmcGRldi0+ZGV2LCAidHJpZ2dlciBzZXR1cCBmYWls
+ZWRcbiIpOw0KPiA+ID4gPiA+ICsJCWdvdG8gZXJyb3JfZnJlZV9kZXZfbWVtOw0KPiA+ID4gPiA+
+ICsJfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCXJldCA9IGlpb19kZXZpY2VfcmVnaXN0ZXIo
+aW5kaW9fZGV2KTsNCj4gPiA+ID4gPiArCWlmIChyZXQpIHsNCj4gPiA+ID4gPiArCQlkZXZfZXJy
+KCZwZGV2LT5kZXYsICJkZXZpY2UgcmVnaXN0ZXINCj4gPiA+ID4gPiBmYWlsZWRcbiIpOw0KPiA+
+ID4gPiA+ICsJCWdvdG8gZXJyb3JfcmVtb3ZlX3RyaWdnZXI7DQo+ID4gPiA+ID4gKwl9DQo+ID4g
+PiA+ID4gKw0KPiA+ID4gPiA+ICsJKnN0ID0gaGdfc3RhdGU7DQo+ID4gPiA+ID4gKw0KPiA+ID4g
+PiA+ICsJcmV0dXJuIHJldDsNCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gK2Vycm9yX3JlbW92ZV90
+cmlnZ2VyOg0KPiA+ID4gPiA+ICsJaGlkX3NlbnNvcl9yZW1vdmVfdHJpZ2dlcihpbmRpb19kZXYs
+ICZoZ19ncm91cC0gIA0KPiA+ID4gPiA+ID4gY29tbW9uX2F0dHJpYnV0ZXMpOyAgDQo+ID4gPiA+
+ID4gK2Vycm9yX2ZyZWVfZGV2X21lbToNCj4gPiA+ID4gPiArCWtmcmVlKGluZGlvX2Rldi0+Y2hh
+bm5lbHMpOw0KPiA+ID4gPiA+ICsJcmV0dXJuIHJldDsNCj4gPiA+ID4gPiArfQ0KPiA+ID4gPiA+
+ICsNCj4gPiA+ID4gPiArLyogRnVuY3Rpb24gdG8gZGVpbml0aWFsaXplIHRoZSBwcm9jZXNzaW5n
+IGZvciB1c2FnZSBpZCAqLw0KPiA+ID4gPiA+ICtzdGF0aWMgaW50IGhpbmdlX3JlbW92ZV9paW9f
+ZGV2aWNlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gPiA+ID4gPiAqcGRldiwNCj4gPiA+ID4g
+PiBpbnQgaW5kZXgpDQo+ID4gPiA+ID4gK3sNCj4gPiA+ID4gPiArCXN0cnVjdCBoaW5nZV9zdGF0
+ZSAqaGdfc3RhdGUgPSBoZ19ncm91cC0NCj4gPiA+ID4gPiA+aGdfc3RhdGVzW2luZGV4XTsNCj4g
+PiA+ID4gPiArCXN0cnVjdCBpaW9fZGV2ICppbmRpb19kZXYgPSBoZ19zdGF0ZS0+aW5kaW9fZGV2
+Ow0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCWlpb19kZXZpY2VfdW5yZWdpc3RlcihpbmRpb19k
+ZXYpOw0KPiA+ID4gPiA+ICsJaGlkX3NlbnNvcl9yZW1vdmVfdHJpZ2dlcihpbmRpb19kZXYsICZo
+Z19ncm91cC0gIA0KPiA+ID4gPiA+ID4gY29tbW9uX2F0dHJpYnV0ZXMpOyAgDQo+ID4gPiA+ID4g
+KwlrZnJlZShpbmRpb19kZXYtPmNoYW5uZWxzKTsNCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gKwly
+ZXR1cm4gMDsNCj4gPiA+ID4gPiArfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArc3RhdGljIGlu
+dCBoaWRfaGluZ2VfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiA+ID4g
+PiArew0KPiA+ID4gPiA+ICsJc3RydWN0IGhpbmdlX3N0YXRlICpoZ19zdGF0ZTsNCj4gPiA+ID4g
+PiArCXN0cnVjdCBoaWRfc2Vuc29yX2h1Yl9kZXZpY2UgKmhzZGV2ID0gcGRldi0NCj4gPiA+ID4g
+PiA+ZGV2LnBsYXRmb3JtX2RhdGE7DQo+ID4gPiA+ID4gKwlzdGF0aWMgY29uc3QgY2hhciAqY29u
+c3QgbmFtZXNbXSA9IHsgImhpbmdlIiwgInNjcmVlbiIsDQo+ID4gPiA+ID4gImtleWJvYXJkIiB9
+Ow0KPiA+ID4gPiA+ICsJaW50IHJldDsNCj4gPiA+ID4gPiArCWludCBpOw0KPiA+ID4gPiA+ICsN
+Cj4gPiA+ID4gPiArCWhnX2dyb3VwID0gZGV2bV9remFsbG9jKCZwZGV2LT5kZXYsIHNpemVvZihz
+dHJ1Y3QNCj4gPiA+ID4gPiBoaW5nZV9ncm91cCksDQo+ID4gPiA+ID4gKwkJCQlHRlBfS0VSTkVM
+KTsgIA0KPiA+ID4gPiANCj4gPiA+ID4gQXMgbWVudGlvbmVkIGFib3ZlLCBJJ2QgcmVhbGx5IG5v
+dCBleHBlY3QgdG8gc2VlIGEgZ2xvYmFsIGxpa2UNCj4gPiA+ID4gdGhpcy4NCj4gPiA+ID4gVGVj
+aG5pY2FsbHkgbm90aGluZyBzdG9wcyB0aGVyZSBiZWluZyBtb3JlIHRoYW4gb25lIGluc3RhbmNl
+IG9mDQo+ID4gPiA+IHRoaXMNCj4gPiA+ID4gZGV2aWNlIG9uIGEgcGxhdGZvcm0gKGV2ZW4gaWYg
+dGhhdCB3b3VsZCBiZSBhIGJpdCBvZGQpICsgaXQncw0KPiA+ID4gPiBhbG1vc3QNCj4gPiA+ID4g
+YWx3YXlzIGNsZWFuZXIgdG8gbm90IHVzZSBhIGdsb2JhbCBpbiB0aGUgZmlyc3QgcGxhY2UuDQo+
+ID4gPiA+ICAgDQo+ID4gPiA+ID4gKwlpZiAoIWhnX2dyb3VwKQ0KPiA+ID4gPiA+ICsJCXJldHVy
+biAtRU5PTUVNOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCWhnX2dyb3VwLT5jb21tb25fYXR0
+cmlidXRlcy5oc2RldiA9IGhzZGV2Ow0KPiA+ID4gPiA+ICsJaGdfZ3JvdXAtPmNvbW1vbl9hdHRy
+aWJ1dGVzLnBkZXYgPSBwZGV2Ow0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCXJldCA9IGhpZF9z
+ZW5zb3JfcGFyc2VfY29tbW9uX2F0dHJpYnV0ZXMoaHNkZXYsIGhzZGV2LQ0KPiA+ID4gPiA+ID51
+c2FnZSwNCj4gPiA+ID4gPiArCQkJCQkJICZoZ19ncm91cC0gIA0KPiA+ID4gPiA+ID4gY29tbW9u
+X2F0dHJpYnV0ZXMpOyAgDQo+ID4gPiA+ID4gKwlpZiAocmV0KSB7DQo+ID4gPiA+ID4gKwkJZGV2
+X2VycigmcGRldi0+ZGV2LCAiZmFpbGVkIHRvIHNldHVwIGNvbW1vbg0KPiA+ID4gPiA+IGF0dHJp
+YnV0ZXNcbiIpOw0KPiA+ID4gPiA+ICsJCXJldHVybiByZXQ7DQo+ID4gPiA+ID4gKwl9DQo+ID4g
+PiA+ID4gKw0KPiA+ID4gPiA+ICsJYXRvbWljX3NldCgmaGdfZ3JvdXAtPmNvbW1vbl9hdHRyaWJ1
+dGVzLmRhdGFfcmVhZHksIDApOw0KPiA+ID4gPiA+ICsJZm9yIChpID0gMDsgaSA8IElJT19ERVZf
+TlVNOyBpKyspIHsNCj4gPiA+ID4gPiArCQlyZXQgPSBoaW5nZV9hZGRfaWlvX2RldmljZShwZGV2
+LCBpLCBuYW1lc1tpXSwNCj4gPiA+ID4gPiAmaGdfc3RhdGUpOw0KPiA+ID4gPiA+ICsJCWlmIChy
+ZXQpDQo+ID4gPiA+ID4gKwkJCWdvdG8gZXJyX3Byb2JlOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4g
+PiArCQloZ19ncm91cC0+aGdfc3RhdGVzW2ldID0gaGdfc3RhdGU7DQo+ID4gPiA+ID4gKwl9DQo+
+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsJLyogdXNlIHRoZSBmaXJzdCBpaW8gZGV2aWNlIHRvIGRv
+IHRoZSBQTSAqLw0KPiA+ID4gPiA+ICsJcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwgaGdfZ3Jv
+dXAtPmhnX3N0YXRlc1swXS0NCj4gPiA+ID4gPiA+aW5kaW9fZGV2KTsNCj4gPiA+ID4gPiArDQo+
+ID4gPiA+ID4gKwloZ19ncm91cC0+Y2FsbGJhY2tzLnNlbmRfZXZlbnQgPSBoaW5nZV9wcm9jX2V2
+ZW50Ow0KPiA+ID4gPiA+ICsJaGdfZ3JvdXAtPmNhbGxiYWNrcy5jYXB0dXJlX3NhbXBsZSA9DQo+
+ID4gPiA+ID4gaGluZ2VfY2FwdHVyZV9zYW1wbGU7DQo+ID4gPiA+ID4gKwloZ19ncm91cC0+Y2Fs
+bGJhY2tzLnBkZXYgPSBwZGV2Ow0KPiA+ID4gPiA+ICsJcmV0ID0gc2Vuc29yX2h1Yl9yZWdpc3Rl
+cl9jYWxsYmFjayhoc2RldiwgaHNkZXYtPnVzYWdlLA0KPiA+ID4gPiA+ICsJCQkJCSAgICZoZ19n
+cm91cC0NCj4gPiA+ID4gPiA+Y2FsbGJhY2tzKTsNCj4gPiA+ID4gPiArCWlmIChyZXQgPCAwKQ0K
+PiA+ID4gPiA+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgImNhbGxiYWNrIHJlZyBmYWlsZWRcbiIp
+Ow0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArCXJldHVybiByZXQ7DQo+ID4gPiA+ID4gKw0KPiA+
+ID4gPiA+ICtlcnJfcHJvYmU6DQo+ID4gPiA+ID4gKwlmb3IgKGktLTsgaSA+PSAwOyBpLS0pDQo+
+ID4gPiA+ID4gKwkJaGluZ2VfcmVtb3ZlX2lpb19kZXZpY2UocGRldiwgaSk7DQo+ID4gPiA+ID4g
+Kw0KPiA+ID4gPiA+ICsJcmV0dXJuIHJldDsNCj4gPiA+ID4gPiArfQ0KPiA+ID4gPiA+ICsNCj4g
+PiA+ID4gPiArLyogRnVuY3Rpb24gdG8gZGVpbml0aWFsaXplIHRoZSBwcm9jZXNzaW5nIGZvciB1
+c2FnZSBpZCAqLw0KPiA+ID4gPiA+ICtzdGF0aWMgaW50IGhpZF9oaW5nZV9yZW1vdmUoc3RydWN0
+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiA+ID4gPiArew0KPiA+ID4gPiA+ICsJc3RydWN0
+IGhpZF9zZW5zb3JfaHViX2RldmljZSAqaHNkZXYgPSBwZGV2LQ0KPiA+ID4gPiA+ID5kZXYucGxh
+dGZvcm1fZGF0YTsNCj4gPiA+ID4gPiArCWludCBpOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiAr
+CXNlbnNvcl9odWJfcmVtb3ZlX2NhbGxiYWNrKGhzZGV2LCBoc2Rldi0+dXNhZ2UpOw0KPiA+ID4g
+PiA+ICsNCj4gPiA+ID4gPiArCWZvciAoaSA9IDA7IGkgPCBJSU9fREVWX05VTTsgaSsrKQ0KPiA+
+ID4gPiA+ICsJCWhpbmdlX3JlbW92ZV9paW9fZGV2aWNlKHBkZXYsIGkpOw0KPiA+ID4gPiA+ICsN
+Cj4gPiA+ID4gPiArCXJldHVybiAwOw0KPiA+ID4gPiA+ICt9DQo+ID4gPiA+ID4gKw0KPiA+ID4g
+PiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHBsYXRmb3JtX2RldmljZV9pZCBoaWRfaGluZ2VfaWRz
+W10gPSB7DQo+ID4gPiA+ID4gKwl7DQo+ID4gPiA+ID4gKwkJLyogRm9ybWF0OiBISUQtU0VOU09S
+LUlOVC0NCj4gPiA+ID4gPiB1c2FnZV9pZF9pbl9oZXhfbG93ZXJjYXNlICovDQo+ID4gPiA+ID4g
+KwkJLm5hbWUgPSAiSElELVNFTlNPUi1JTlQtMDIwYiIsDQo+ID4gPiA+ID4gKwl9LA0KPiA+ID4g
+PiA+ICsJeyAvKiBzZW50aW5lbCAqLyB9DQo+ID4gPiA+ID4gK307DQo+ID4gPiA+ID4gK01PRFVM
+RV9ERVZJQ0VfVEFCTEUocGxhdGZvcm0sIGhpZF9oaW5nZV9pZHMpOw0KPiA+ID4gPiA+ICsNCj4g
+PiA+ID4gPiArc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgaGlkX2hpbmdlX3BsYXRmb3Jt
+X2RyaXZlciA9IHsNCj4gPiA+ID4gPiArCS5pZF90YWJsZSA9IGhpZF9oaW5nZV9pZHMsDQo+ID4g
+PiA+ID4gKwkuZHJpdmVyID0gew0KPiA+ID4gPiA+ICsJCS5uYW1lCT0gS0JVSUxEX01PRE5BTUUs
+DQo+ID4gPiA+ID4gKwkJLnBtCT0gJmhpZF9zZW5zb3JfcG1fb3BzLA0KPiA+ID4gPiA+ICsJfSwN
+Cj4gPiA+ID4gPiArCS5wcm9iZQkJPSBoaWRfaGluZ2VfcHJvYmUsDQo+ID4gPiA+ID4gKwkucmVt
+b3ZlCQk9IGhpZF9oaW5nZV9yZW1vdmUsDQo+ID4gPiA+ID4gK307DQo+ID4gPiA+ID4gK21vZHVs
+ZV9wbGF0Zm9ybV9kcml2ZXIoaGlkX2hpbmdlX3BsYXRmb3JtX2RyaXZlcik7DQo+ID4gPiA+ID4g
+Kw0KPiA+ID4gPiA+ICtNT0RVTEVfREVTQ1JJUFRJT04oIkhJRCBTZW5zb3IgQ3VzdG9tIEhpbmdl
+Iik7DQo+ID4gPiA+ID4gK01PRFVMRV9BVVRIT1IoIlllIFhpYW5nIDx4aWFuZy55ZUBpbnRlbC5j
+b20+Iik7DQo+ID4gPiA+ID4gK01PRFVMRV9MSUNFTlNFKCJHUEwiKTsgIA0K
