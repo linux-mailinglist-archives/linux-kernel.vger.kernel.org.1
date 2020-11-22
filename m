@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C422BC6B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 17:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF862BC6C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 17:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgKVQLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 11:11:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30887 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727930AbgKVQLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 11:11:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606061463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D4o3+oRulyAmQWJaTM5GlynW0/tmbkOzx3PzhPB5iTg=;
-        b=JuTdFtHhsclSCFUt685nObhejVSN718q0xDzBI7qCmYl4/ObRaglwiPh1kkjwftUYKtjGT
-        F9V7hg+6Ged1Ypc78HlKhU8yURVG+HfY97vOU+FDQTH2+EktMkCoujoBzuPIEBmLFdUcTH
-        U0gcN5s+aBBBeO3IQtZ/9hGSdS8be9I=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-5yybf0rcPj-KBUwUF6mi0Q-1; Sun, 22 Nov 2020 11:11:00 -0500
-X-MC-Unique: 5yybf0rcPj-KBUwUF6mi0Q-1
-Received: by mail-qt1-f199.google.com with SMTP id g12so11750448qtc.15
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 08:11:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=D4o3+oRulyAmQWJaTM5GlynW0/tmbkOzx3PzhPB5iTg=;
-        b=DnpC/dkeBVBcSZNra1eHY/RMbu2lkn6coP3zKaPIFwJx67wiok3nTwUmce5SWaNANv
-         Arp1RWEw4vKJfI/MOREoFpCKyuvJNQlMg2fnfvk2ZPJj7fnGVF6yGivAof6dGgj8Uc4b
-         /YTi6NChsJk4o4RdjkWKPWrVaYQ/BHPz8OqyeKHKyc7IYSULWzzyXf4K1u9RhdDgrvV/
-         l51iTvqjwMqvnpG07mHGAzwYAtjDJPgNbSghbXMAc05lWMDFILRMmklbwje2B3EapAdq
-         on3mNJY4Dz772NdmTW2MJghuyAcV2tL5eW/jt66Gpg3UGdWN8Y9Z8kiK87CbHS2nzTUB
-         8iNQ==
-X-Gm-Message-State: AOAM531jcqZvYeZY/xxMFMRRJ/wEQptrdtYXENuswOYZ/oic0kWnZq30
-        fHsEzN2kD1Sx7xxzCBpjCPosbIn4IM0YpyDhsX16GzggS9k7JXxKpm++EVUMPshyhMgsLynBBs2
-        xgAIuiuyOpIJ/0ywgPT+Vnezg
-X-Received: by 2002:ac8:5a8c:: with SMTP id c12mr23364815qtc.97.1606061459265;
-        Sun, 22 Nov 2020 08:10:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw6JfmMkGlJyoaKx6ihYsYbDuDsWkyDwIosiC/apv5eylMrcIvHPxlHVgnFDCnun9WXh4UZ3w==
-X-Received: by 2002:ac8:5a8c:: with SMTP id c12mr23364770qtc.97.1606061458997;
-        Sun, 22 Nov 2020 08:10:58 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l3sm2779806qth.13.2020.11.22.08.10.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Nov 2020 08:10:58 -0800 (PST)
-Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     joe@perches.com, clang-built-linux@googlegroups.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, tboot-devel@lists.sourceforge.net,
-        kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-wireless@vger.kernel.org,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
-        keyrings@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, alsa-devel@alsa-project.org,
-        bpf@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-nfs@vger.kernel.org, patches@opensource.cirrus.com
-References: <20201121165058.1644182-1-trix@redhat.com>
- <20201122032304.GE4327@casper.infradead.org>
- <ddb08a27-3ca1-fb2e-d51f-4b471f1a56a3@redhat.com>
- <20201122145635.GG4327@casper.infradead.org>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <0819ce06-c462-d4df-d3d9-14931dc5aefc@redhat.com>
-Date:   Sun, 22 Nov 2020 08:10:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201122145635.GG4327@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1728039AbgKVQNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 11:13:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727740AbgKVQNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 11:13:10 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 337262076E;
+        Sun, 22 Nov 2020 16:13:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606061590;
+        bh=dw6V/TaKwc/LLl0vFroSZOeUcr5KdGMp8TY0Va3U6eg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wbPgiX/x3V2YUUKupJ7xnX2Rhc9iOJxM/GLyk+cK4iEOeT5Ptmy9eb/ApyxPkpFGq
+         p9OOSq1TI4IA8mAlrepzocox+8Bd2R7MpbAkOubJirXVInpOk4Wrfg+wCaV2hSkQFx
+         X2/1sbAUlrhQsQmBX7YKhkv/2GZ97A1aKIjl+kso=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kgrzA-00CihO-5D; Sun, 22 Nov 2020 16:13:08 +0000
+Date:   Sun, 22 Nov 2020 16:13:07 +0000
+Message-ID: <87r1olid4c.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        mark.rutland@arm.com
+Subject: Re: [PATCH 0/2] arm64: Allow the rescheduling IPI to bypass irq_enter/exit
+In-Reply-To: <87lfewnmdz.fsf@nanos.tec.linutronix.de>
+References: <20201101131430.257038-1-maz@kernel.org>
+        <87ft5q18qs.fsf@nanos.tec.linutronix.de>
+        <91cde5eeb22eb2926515dd27113c664a@kernel.org>
+        <87lfewnmdz.fsf@nanos.tec.linutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, Valentin.Schneider@arm.com, peterz@infradead.org, kernel-team@android.com, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 20 Nov 2020 14:17:12 +0000,
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-On 11/22/20 6:56 AM, Matthew Wilcox wrote:
-> On Sun, Nov 22, 2020 at 06:46:46AM -0800, Tom Rix wrote:
->> On 11/21/20 7:23 PM, Matthew Wilcox wrote:
->>> On Sat, Nov 21, 2020 at 08:50:58AM -0800, trix@redhat.com wrote:
->>>> The fixer review is
->>>> https://reviews.llvm.org/D91789
->>>>
->>>> A run over allyesconfig for x86_64 finds 62 issues, 5 are false positives.
->>>> The false positives are caused by macros passed to other macros and by
->>>> some macro expansions that did not have an extra semicolon.
->>>>
->>>> This cleans up about 1,000 of the current 10,000 -Wextra-semi-stmt
->>>> warnings in linux-next.
->>> Are any of them not false-positives?  It's all very well to enable
->>> stricter warnings, but if they don't fix any bugs, they're just churn.
->>>
->> While enabling additional warnings may be a side effect of this effort
->>
->> the primary goal is to set up a cleaning robot. After that a refactoring robot.
-> Why do we need such a thing?  Again, it sounds like more churn.
-> It's really annoying when I'm working on something important that gets
-> derailed by pointless churn.  Churn also makes it harder to backport
-> patches to earlier kernels.
+Thomas,
+
+> So with the pre 5.8 scheduler IPI we had scheduler_ipi() doing wonderful
+> things
+
+[... tons of interesting and helpful stuff ...]
+
+> Hope that clarifies it.
+
+It does in a way, as it maps some of the low-level x86 things onto
+generic concepts. It certainly outlines that we have a lot of work
+ahead of us, none of which can be expected to be a quick fix. It
+requires restructuring a lot of the low-level arm64 code (Mark has
+been toying with it for a couple of years now), and rejig it in funny
+ways to match the expectations of the core code.
+
+I haven't tried to think about 32bit ARM just yet, and we may have to
+sever the IRQ ties that exist between the two architectures if we want
+to make forward progress in a reasonable time frame. In general, it
+looks that we'll need a new interface from the generic low-level IRQ
+entry code into this new common framework.
+
+> > If arm64 has forever been broken, I'd really like to know and fix it.
+> 
+> Define broken. It kinda works with all the warts and bolts in tracing,
+> context tracking and other places. Is it entirely correct? Probably
+> not.
 >
-A refactoring example on moving to treewide, consistent use of a new api may help.
+> The scheduler IPI is trivial compared to the more interesting ones like
+> NMI, MCE, breakpoint, debug exceptions etc. We found quite some
+> interesting issues with all of that muck during our 'noinstr' chase.
 
-Consider
+Yup, point taken. However, given the complexity of the above and the
+fact that we currently have a measurable performance regression in
+5.10, I'll respin the original series with the cleanups you mentioned,
+and the added note that we *really* need to sort this.
 
-2efc459d06f1630001e3984854848a5647086232
+Thanks,
 
-sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs output
+	M.
 
-A new api for printing in the sysfs.  How do we use it treewide ?
-
-Done manually, it would be a heroic effort requiring high level maintainers pushing and likely only get partially done.
-
-If a refactoring programatic fixit is done and validated on a one subsystem, it can run on all the subsystems.
-
-The effort is a couple of weeks to write and validate the fixer, hours to run over the tree.
-
-It won't be perfect but will be better than doing it manually.
-
-Tom
-
+-- 
+Without deviation from the norm, progress is not possible.
