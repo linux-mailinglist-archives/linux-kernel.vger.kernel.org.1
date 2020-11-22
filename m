@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865632BC5EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD712BC5EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgKVN4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 08:56:19 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:55903 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgKVN4R (ORCPT
+        id S1727864AbgKVN6Q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 22 Nov 2020 08:58:16 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26796 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727766AbgKVN6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 08:56:17 -0500
-Received: by mail-io1-f71.google.com with SMTP id j10so10872248iog.22
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 05:56:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=tqgn9H/Q+B+44wovmA82s5k8ZV8xFvENoyPiymoIjZA=;
-        b=cxpABDmS1GwLgUxfmzBWOzN1Bzm3K+ochgwLi28a+bu/hJWRUqUESKhSauu3WnNzbk
-         S0Z1QpUtZiEtUBCouF3UwncMrRlScsQ/OAB4cMm9zYH++H8+Z6Tb+dDcfbJNofIuejun
-         dMn25K0bbG4j511rWFQe6ZM6Eb+NA2MNh8oNvcYHm6bHfQLWSvCu+JLa30YIbcYUYCjS
-         FCi3qQQKujAPfLVXU+xOmCqvuFNku90S5CsBBkGHQ1A3YUBEmpMe89FQYYXVTStx6E37
-         qtiZ5RdxCnzTYEZviqy6nn3PcR6cvYDa7MBqG08PBUP2ZQCu/mm11y2S435oTFo7qrs3
-         n9+A==
-X-Gm-Message-State: AOAM5301qiFnVCmdNrPnlSUyY4vd54uFPIv7ii7pRnKxExYi8LrcRVns
-        0s1CVKB99jMWmVY2f/c7qm5q/56v4uoEcGGKYtPaQNrrrV6M
-X-Google-Smtp-Source: ABdhPJzF+SimZnu+MsknGU5cgEPUP9ISd+glkW7gXVcXDGsN0zXacfH8aaScC9rXO0QgvXUu8qkPY6VdFQbhubi3UweI8yA+No7D
+        Sun, 22 Nov 2020 08:58:15 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-83-68wCZSYwMYuMi8rKowULxQ-1; Sun, 22 Nov 2020 13:58:11 +0000
+X-MC-Unique: 68wCZSYwMYuMi8rKowULxQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 22 Nov 2020 13:58:10 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 22 Nov 2020 13:58:10 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Howells' <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Thread-Topic: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Thread-Index: AQHWwNQxMI88twW4zUSLxoYAnZFgBanUKLlw
+Date:   Sun, 22 Nov 2020 13:58:10 +0000
+Message-ID: <4890290b302e480fb0d1cc66bd0d6ce9@AcuMS.aculab.com>
+References: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
+ <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+ <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+ <254318.1606051984@warthog.procyon.org.uk>
+In-Reply-To: <254318.1606051984@warthog.procyon.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b24b:: with SMTP id b72mr31049559iof.32.1606053375256;
- Sun, 22 Nov 2020 05:56:15 -0800 (PST)
-Date:   Sun, 22 Nov 2020 05:56:15 -0800
-In-Reply-To: <00000000000086205205b0fff8b2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ec2eb005b4b2704e@google.com>
-Subject: Re: general protection fault in ieee80211_chanctx_num_assigned
-From:   syzbot <syzbot+00ce7332120071df39b1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+From: David Howells
+> Sent: 22 November 2020 13:33
+> 
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> 
+> >  - I worry a bit about the indirect call overhead and spectre v2.
+> 
+> I don't know enough about how spectre v2 works to say if this would be a
+> problem for the ops-table approach, but wouldn't it also affect the chain of
+> conditional branches that we currently use, since it's branch-prediction
+> based?
 
-HEAD commit:    a349e4c6 Merge tag 'xfs-5.10-fixes-7' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=144e1e99500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=330f3436df12fd44
-dashboard link: https://syzkaller.appspot.com/bug?extid=00ce7332120071df39b1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153140a5500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179bf835500000
+The advantage of the 'chain of branches' is that it can be converted
+into a 'tree of branches' because the values are all separate bits.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+00ce7332120071df39b1@syzkaller.appspotmail.com
+So as well as putting the (expected) common one first; you can do:
+	if (likely((a & (A | B))) {
+		if (a & A) {
+			code for A;
+		} else {
+			code for B;
+	} else ...
+So get better control over the branch sequence.
+(Hopefully the compiler doesn't change the logic.
+I want a dumb compiler that (mostly) compiles what I write!)
 
-general protection fault, probably for non-canonical address 0xfbd59c0000000020: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0xdead000000000100-0xdead000000000107]
-CPU: 1 PID: 8531 Comm: syz-executor169 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ieee80211_chanctx_num_assigned+0xb1/0x140 net/mac80211/chan.c:21
-Code: a8 f6 ff ff 48 39 c5 74 3b 49 bd 00 00 00 00 00 fc ff df e8 c1 91 1b f9 48 8d bb 58 09 00 00 41 83 c4 01 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 75 68 48 8b 83 58 09 00 00 48 8d 98 a8 f6 ff ff 48
-RSP: 0018:ffffc9000169f330 EFLAGS: 00010a02
-RAX: 1bd5a00000000020 RBX: deacfffffffff7a8 RCX: ffffffff88549e6b
-RDX: ffff888011c8b480 RSI: ffffffff88549e0f RDI: dead000000000100
-RBP: ffff8880130ca720 R08: 0000000000000000 R09: ffffffff8cecb9cf
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-R13: dffffc0000000000 R14: ffff8880130ca700 R15: 0000000000000000
-FS:  000000000087d940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000006d3090 CR3: 000000001c20a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ieee80211_assign_vif_chanctx+0x7b8/0x1230 net/mac80211/chan.c:690
- __ieee80211_vif_release_channel+0x236/0x430 net/mac80211/chan.c:1557
- ieee80211_vif_release_channel+0x117/0x220 net/mac80211/chan.c:1771
- ieee80211_ibss_disconnect+0x44e/0x7b0 net/mac80211/ibss.c:735
- ieee80211_ibss_leave+0x12/0xe0 net/mac80211/ibss.c:1871
- rdev_leave_ibss net/wireless/rdev-ops.h:545 [inline]
- __cfg80211_leave_ibss+0x19a/0x4c0 net/wireless/ibss.c:212
- cfg80211_leave_ibss+0x57/0x80 net/wireless/ibss.c:230
- cfg80211_change_iface+0x855/0xef0 net/wireless/util.c:1012
- nl80211_set_interface+0x65c/0x8d0 net/wireless/nl80211.c:3789
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4429b9
-Code: e8 bc fd 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 06 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd820d0a58 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004429b9
-RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000004
-RBP: 000000000000fbef R08: 00000000004035b0 R09: 00000000004035b0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403520
-R13: 00000000004035b0 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 4cedfcb59a8efe47 ]---
-RIP: 0010:ieee80211_chanctx_num_assigned+0xb1/0x140 net/mac80211/chan.c:21
-Code: a8 f6 ff ff 48 39 c5 74 3b 49 bd 00 00 00 00 00 fc ff df e8 c1 91 1b f9 48 8d bb 58 09 00 00 41 83 c4 01 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 75 68 48 8b 83 58 09 00 00 48 8d 98 a8 f6 ff ff 48
-RSP: 0018:ffffc9000169f330 EFLAGS: 00010a02
-RAX: 1bd5a00000000020 RBX: deacfffffffff7a8 RCX: ffffffff88549e6b
-RDX: ffff888011c8b480 RSI: ffffffff88549e0f RDI: dead000000000100
-RBP: ffff8880130ca720 R08: 0000000000000000 R09: ffffffff8cecb9cf
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-R13: dffffc0000000000 R14: ffff8880130ca700 R15: 0000000000000000
-FS:  000000000087d940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007efedefa7000 CR3: 000000001c20a000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Part of the difficulty is deciding the common case.
+There'll always be a benchmark that exercises an uncommon case.
+
+Adding an indirect call does let you do things like adding
+ITER_IOVER_SINGLE and ITER_KVEC_SINGLE that are used in the
+common case of a single buffer fragment.
+That might be a measurable gain.
+
+It is also possible to optimise the common case to a direct
+call (or even inline code) and use an indirect call for
+everything else.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
