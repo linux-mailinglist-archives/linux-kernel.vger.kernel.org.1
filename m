@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207612BC2FB
+	by mail.lfdr.de (Postfix) with ESMTP id A2D232BC2FC
 	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 02:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgKVB1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 20:27:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
+        id S1727112AbgKVB16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 20:27:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbgKVB1k (ORCPT
+        with ESMTP id S1726431AbgKVB1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 20:27:40 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C4DC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:27:39 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 11so12875843qkd.5
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:27:39 -0800 (PST)
+        Sat, 21 Nov 2020 20:27:55 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BB7C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:27:54 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id z3so10158129qtw.9
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:27:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=zkfhzLVatH072ImS2wXfdLY5KZ3yNZ2TyMcG4XszjRc=;
-        b=S8G4lL4bWXUNuVDdxi2HYlItqCBEbVWI+A2GSfTeDZdYW5rk0Zp2lYC74VE56/LWvK
-         +OqLN8Q1jX+jWnKwW+qrRDBzH5qvfxSt7yHLUNdrjmfwkiUWRJTAwrKwbX1nEWu+yG/d
-         +OC10y7zkyhZ7llMlWNy0r4Wz1fX3m5EnI+1SjOLFwUpN0mg5P31pPLMIogorlKaFZX9
-         TKj+TGhqrqQGJwjzKDkeUYFzOX4YEbJ1sCBGD1fejqwwu4okR7TPQJowFlcPfbUGs0eC
-         IA8Uegkj6V2//7E1gh7xzXtY7jY3nrZ3EFgu8R60urDL0332gLoHyXK6FHy0Wqen7TVJ
-         7YwQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FnqACzEuiQyrHG8IKp45SjZxKoAtkq6AMAVZi+Et/AM=;
+        b=XAZI9f6LApDEldNxEWeuZNxP7UK9/qnN9TWiax+wGwTdTwvQfgD4g+nNV4dwjMORTt
+         zn6zEE4GgFpeY7lVWRo5wbTlLdtLDPK9IWcQqpejoV49w5Pvkz8Xh6DfSfu+gn2Pyy5C
+         jM6jjstWMXimlMiLWvtB8TYc69Glb1XyxQqGwUOLDTVeNeMw7FgQXMZOtsNpPBEsqcZY
+         rR71xczkqDJqJMgaRQm4rMa+34oo9322z01cmcjTBXKjr/wntP0oYmrr5W3vsjVD6Z6L
+         51RP5YNTOfVJQStc5YqZ4D2FcVovKmyIDGrNaDUhJEm6efN4Iao3epS5tjbEP4ebNONb
+         gz7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=zkfhzLVatH072ImS2wXfdLY5KZ3yNZ2TyMcG4XszjRc=;
-        b=mlVaOMKyH9o/YIhWDaKlZibCTuAkPeoew7EI784RZnqWM5afoXo1jYh3TfH8IyXSUf
-         BsgH+sxhblm+PEnWhNll+kuZy/g2VHDB5VZZ3TouwWaziJn96Y4q5/tkfYybAPivCykm
-         pq9CGjIJx1JsDrEubIdaprSOEDGaJ5jInJ1YjCKkP9hrow81XA1XoM2yXYtv7JgZUQSy
-         /BHPS1qk1cGlkfhqXRlPaV6fq9sUERx0tcqZnlnsHLu1J3wYVwGHn6Ruugp4vOaTbElo
-         EOPGr0CAtzN+Dco9/KXluHWk5KBBzjIpP5unpEo4drY0/fgsvPUfi0wTLGJzXC6EQ9Yf
-         KNYA==
-X-Gm-Message-State: AOAM531gCL2NA6qm5ldNpRsVguQT4CwUk5j+HCRLtDdQJaBmpNARydYP
-        8aQyycxYvBENjS1/zqJhr6jQluARDC1LAw==
-X-Google-Smtp-Source: ABdhPJyw/2Www1Vxy4n9NjI0JKPCMPpO7LWt0xOxlkkHFCOWQmJ0aI4eEpr+iP4SBu+FVMGJk6cnWA==
-X-Received: by 2002:a05:620a:80d:: with SMTP id s13mr22349285qks.133.1606008459031;
-        Sat, 21 Nov 2020 17:27:39 -0800 (PST)
-Received: from ?IPv6:2601:5c0:c200:27c6:789c:5c68:3e93:a660? ([2601:5c0:c200:27c6:789c:5c68:3e93:a660])
-        by smtp.gmail.com with ESMTPSA id c14sm5395223qko.29.2020.11.21.17.27.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 21 Nov 2020 17:27:38 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH v1] qnx4_match: do not over run the buffer
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FnqACzEuiQyrHG8IKp45SjZxKoAtkq6AMAVZi+Et/AM=;
+        b=M4VrSgIV6EEIjDd6ar0tdegf3ki+5NXkvoVz/f6wLXwELIus7OSyGJx+xEkEyUtZ7t
+         By7Pof1OIFJ1xbxbHgabnC04HCclXKuus+I/xayQksizsauHanrZe3I1/6qM+FVjIV5I
+         m639I10APSQ/9UmerinB1G+SEaBEiuErFB2CW2vJaP0DwMl+XgG/HgjSvkRjdu5fAL07
+         raqlhIEVhkm63Bupmj5Xr28oyoYBcQwLoD0vcM9qAxtNJCe2YZHV/Izrro3PYnBKmjmW
+         tba+qd59Zq40blOvYOaYLipde3RY2+Whh1ZA48bd4+x3GPMy4YYBBUvXnOU/X+dTB20q
+         AvAw==
+X-Gm-Message-State: AOAM532Hid39pj2z0DbmnESRprHOjBwnOv8C1VGx68PurSKFoo0ln/TW
+        O72boSzWHfAObQ34rXM0Ed4=
+X-Google-Smtp-Source: ABdhPJzHi3ennKTBeUD4FBMkp8DJrwW2xX2YPksyy5DkNmpxOTQil76C+x+TGlLfnPu8Yhu7C2yP5Q==
+X-Received: by 2002:aed:20c2:: with SMTP id 60mr19829271qtb.280.1606008473973;
+        Sat, 21 Nov 2020 17:27:53 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:65df:e6:bdb7:d0a7])
+        by smtp.googlemail.com with ESMTPSA id c1sm5234919qkd.74.2020.11.21.17.27.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 17:27:53 -0800 (PST)
 From:   Tong Zhang <ztong0001@gmail.com>
-In-Reply-To: <1645927.Y8UaVx19Bi@alarsen.net>
-Date:   Sat, 21 Nov 2020 20:27:37 -0500
-Cc:     linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <97DE78A8-E2D6-4780-AD77-5F679D6DE098@gmail.com>
-References: <20201120212120.2502522-1-ztong0001@gmail.com>
- <2474566.rpppqFFLNx@alarsen.net>
- <E554952E-602B-4711-BEF1-FB3398DA7225@gmail.com>
- <1645927.Y8UaVx19Bi@alarsen.net>
-To:     Anders Larsen <al@alarsen.net>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+To:     Anders Larsen <al@alarsen.net>, linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com
+Subject: [PATCH v2] qnx4_match: do not over run the buffer
+Date:   Sat, 21 Nov 2020 20:27:40 -0500
+Message-Id: <20201122012740.4814-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the clarification! This sounds good to me.
-I will send a revised patch.
-Best,
-- Tong
+the di_fname may not terminated by '\0', use strnlen to prevent buffer
+overrun
 
-> On Nov 21, 2020, at 4:57 PM, Anders Larsen <al@alarsen.net> wrote:
->=20
-> On Saturday, 2020-11-21 22:47 Tong Zhang wrote:
->>=20
->>> On Nov 21, 2020, at 4:40 PM, Anders Larsen <al@alarsen.net> wrote:
->>>=20
->>> On Friday, 2020-11-20 22:21 Tong Zhang wrote:
->>>> the di_fname may not terminated by '\0', use strnlen to prevent =
-buffer
->>>> overrun
->>>>=20
->>>> ---
->>>> fs/qnx4/namei.c | 2 +-
->>>> 1 file changed, 1 insertion(+), 1 deletion(-)
->>>>=20
->>>> diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
->>>> index 8d72221735d7..c0e79094f578 100644
->>>> --- a/fs/qnx4/namei.c
->>>> +++ b/fs/qnx4/namei.c
->>>> @@ -40,7 +40,7 @@ static int qnx4_match(int len, const char *name,
->>>> 	} else {
->>>> 		namelen =3D QNX4_SHORT_NAME_MAX;
->>>> 	}
->>>> -	thislen =3D strlen( de->di_fname );
->>>> +	thislen =3D strnlen( de->di_fname, QNX4_SHORT_NAME_MAX );
->>>=20
->>> that should be
->>> +	thislen =3D strnlen( de->di_fname, namelen );
->>> otherwise the length of a filename would always be limited to =
-QNX4_SHORT_NAME_MAX (16) characters.
->>>=20
->> Why should we put something bigger here if the size of =
-qnx4_inode_entry->di_fname is QNX4_SHORT_NAME_MAX.
->> Won=E2=80=99t that be a problem?
->=20
-> If QNX4_FILE_LINK is set in de->di_status (see line 38), 'de' actually =
-points to a struct qnx4_link_info which can hold a longer name.
-> That's the reason for the namelen massage.
-> (Please don't ask why it is not a union)
->=20
-> Cheers
-> Anders
->=20
->=20
+[  513.248784] qnx4_readdir: bread failed (3718095557)
+[  513.250880] ==================================================================
+[  513.251109] BUG: KASAN: use-after-free in strlen+0x1f/0x40
+[  513.251268] Read of size 1 at addr ffff888002700000 by task find/230
+[  513.251419]
+[  513.251677] CPU: 0 PID: 230 Comm: find Not tainted 5.10.0-rc4+ #64
+[  513.251805] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd84
+[  513.252069] Call Trace:
+[  513.252310]  dump_stack+0x7d/0xa3
+[  513.252443]  print_address_description.constprop.0+0x1e/0x220
+[  513.252572]  ? _raw_spin_lock_irqsave+0x7b/0xd0
+[  513.252681]  ? _raw_write_lock_irqsave+0xd0/0xd0
+[  513.252785]  ? strlen+0x1f/0x40
+[  513.252869]  ? strlen+0x1f/0x40
+[  513.252955]  kasan_report.cold+0x37/0x7c
+[  513.253059]  ? qnx4_block_map+0x130/0x1d0
+[  513.253152]  ? strlen+0x1f/0x40
+[  513.253237]  strlen+0x1f/0x40
+[  513.253329]  qnx4_lookup+0xab/0x220
+[  513.253431]  __lookup_slow+0x103/0x220
+[  513.253531]  ? vfs_unlink+0x2e0/0x2e0
+[  513.253626]  ? down_read+0xd8/0x190
+[  513.253721]  ? down_write_killable+0x110/0x110
+[  513.253823]  ? generic_permission+0x4c/0x240
+[  513.253929]  walk_component+0x214/0x2c0
+[  513.254035]  ? handle_dots.part.0+0x760/0x760
+[  513.254137]  ? walk_component+0x2c0/0x2c0
+[  513.254233]  ? path_init+0x546/0x6b0
+[  513.254327]  ? __kernel_text_address+0x9/0x30
+[  513.254430]  ? unwind_get_return_address+0x2a/0x40
+[  513.254538]  ? create_prof_cpu_mask+0x20/0x20
+[  513.254637]  ? arch_stack_walk+0x99/0xf0
+[  513.254736]  path_lookupat.isra.0+0xb0/0x240
+[  513.254840]  filename_lookup+0x128/0x250
+[  513.254939]  ? may_linkat+0xb0/0xb0
+[  513.255033]  ? __fput+0x199/0x3c0
+[  513.255127]  ? kasan_save_stack+0x32/0x40
+[  513.255224]  ? kasan_save_stack+0x1b/0x40
+[  513.255323]  ? kasan_unpoison_shadow+0x33/0x40
+[  513.255426]  ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+[  513.255538]  ? getname_flags+0x100/0x2a0
+[  513.255635]  vfs_statx+0xd8/0x1d0
+[  513.255728]  ? vfs_getattr+0x40/0x40
+[  513.255821]  ? lockref_put_return+0xb2/0x120
+[  513.255922]  __do_sys_newfstatat+0x7d/0xd0
+[  513.256022]  ? __ia32_sys_newlstat+0x30/0x30
+[  513.256122]  ? __kasan_slab_free+0x121/0x150
+[  513.256222]  ? rcu_segcblist_enqueue+0x72/0x80
+[  513.256333]  ? fpregs_assert_state_consistent+0x4d/0x60
+[  513.256446]  ? exit_to_user_mode_prepare+0x2d/0xf0
+[  513.256551]  ? __x64_sys_newfstatat+0x39/0x60
+[  513.256651]  do_syscall_64+0x33/0x40
+[  513.256750]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Co-Developed-by: Anders Larsen <al@alarsen.net>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+v2: The name can grow longer than QNX4_SHORT_NAME_MAX if de is a
+ QNX4_FILE_LINK type and de should points to a qnx4_link_info struct, so
+ this is safe.  We also remove redundant checks in this version.
+
+ fs/qnx4/namei.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
+index 8d72221735d7..2bcbbd7c772e 100644
+--- a/fs/qnx4/namei.c
++++ b/fs/qnx4/namei.c
+@@ -40,9 +40,7 @@ static int qnx4_match(int len, const char *name,
+ 	} else {
+ 		namelen = QNX4_SHORT_NAME_MAX;
+ 	}
+-	thislen = strlen( de->di_fname );
+-	if ( thislen > namelen )
+-		thislen = namelen;
++	thislen = strnlen( de->di_fname, namelen );
+ 	if (len != thislen) {
+ 		return 0;
+ 	}
+-- 
+2.25.1
 
