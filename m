@@ -2,74 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A812BC5AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80392BC5A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgKVMlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 07:41:22 -0500
-Received: from m12-15.163.com ([220.181.12.15]:54667 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727634AbgKVMlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 07:41:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=b8Hav6Ucjm73NF9mhy
-        msARsSWYvA0cFZJwMIjRxo4pY=; b=XVYP6t7VNSCfEs2FJnuoM7FWO4hJTjbamK
-        e0MVzfE0i3+7oPJ9BGGPTgqUMzulGu8aUHS9d9pkezXbm2ru//ExNfsOcUngQlhT
-        GLQog8FW93nA0dIjZXzovyv0tGPFBnVKwdD6RjCQnIT7Efc7/cl/zTJeZY4hzW42
-        hvzcwrEAo=
-Received: from hby-server.localdomain (unknown [27.18.76.181])
-        by smtp11 (Coremail) with SMTP id D8CowADHtCpIOLpfyZICCg--.9687S2;
-        Sun, 22 Nov 2020 18:07:04 +0800 (CST)
-From:   hby <hby2003@163.com>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hby <hby2003@163.com>
-Subject: [PATCH] drivers: Fix the Raspberry Pi debug version compile
-Date:   Sun, 22 Nov 2020 18:06:06 +0800
-Message-Id: <20201122100606.20289-1-hby2003@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: D8CowADHtCpIOLpfyZICCg--.9687S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CrW3CF18trWDGF4fZry3twb_yoW8Jw1rpa
-        nrJa4qkr1Uu3yak3y0yFsrAFyfKas7WwnFkay8u3y3uF1kAw4Fqr40gFWIkr15uFWxC3y7
-        AFWvq3sxJFsrKa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U6MKNUUUUU=
-X-Originating-IP: [27.18.76.181]
-X-CM-SenderInfo: hke1jiiqt6il2tof0z/1tbiQAjkHFSIhEeThQAAs5
+        id S1727661AbgKVMeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 07:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727424AbgKVMeO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 07:34:14 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3566C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 04:34:13 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id 64so2286008wra.11
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 04:34:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=K4oU37F+S5u2la2E8RErzVP84vjit/bUrbbraSn+LfI=;
+        b=HbxnNFczhXyX5Hvj6SSah4hmxzaoky//NmaUAyI5kze8sidoTK04TngWfa07YIzO2j
+         +AtT4qSlyZwS7XWBIk6wXcHIEAKWc8Mu7R9KWeWQh1ukvJ7Fcu4mJCQ1lcgIAqG0GPYc
+         Lv5wWhZ7BVMJwGtvg+TY7C66nfkSYKm233japPJTSX0yscNOCC+MbBvjCPKAKD26wnqS
+         KDHMoS7Cu5AtPcDCVfflmRvyzv7AF7qSTbRHCsXL5I+GEIOURQxEvAmWZk/pZJr/Remn
+         gZoBzhJt38r10F0lJxBZvie6RbUZe99EJrzwUUtOsv0+mB9AmclJEztwKgPhK/1FGzXd
+         EyNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=K4oU37F+S5u2la2E8RErzVP84vjit/bUrbbraSn+LfI=;
+        b=J4YjEHknYijVvE4fqvSl6nI2LRDdLmk/EX/KMiwe2kLxp1lSA9xpM7OjszJMWLGmDW
+         uKtuQmXP9rdDkkhkDUMPW4idqVZooq6Z1L6cnoC7ghGmURNCwQIOqjwTdvDvFWFmxqer
+         9+cnFgqNyBHN622gU1tIQQbw+954yDR/f9TD44P/apP7yslgll/xZp+fWsxP7wgWfYCA
+         FyqZdNY8BolqHSnNinteHg1gdd/6nWqPic0+FB5Kv/qIdv0fbkyHePTM8Eyt3PJWmt42
+         j0V20ZBvv6ytXk4RG8fSFSLyjtFkSYn2HNbA2NZQEiINnpNzit7FFmuIAgB1j4jflkdw
+         IgNw==
+X-Gm-Message-State: AOAM531y+qAKs1AjNz6+GgzQRYGhod0YGnkG6yn9zeXOK+E24sLd0+rs
+        hzgG+SCfmIAs4GF19OtmvBFsP6RUzg==
+X-Google-Smtp-Source: ABdhPJwpmm7iXL/znQYOwSkVzrwF2kCsBEZMhcH+I4hBZyBbIvVcGiwej/hIYajK/yUxzYWZtlnAug==
+X-Received: by 2002:adf:f2c7:: with SMTP id d7mr26251078wrp.142.1606048452668;
+        Sun, 22 Nov 2020 04:34:12 -0800 (PST)
+Received: from localhost.localdomain ([46.53.251.228])
+        by smtp.gmail.com with ESMTPSA id p21sm11107139wma.41.2020.11.22.04.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 04:34:11 -0800 (PST)
+Date:   Sun, 22 Nov 2020 15:34:10 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] lib: cleanup kstrto*() usage
+Message-ID: <20201122123410.GB92364@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-enable the DEBUG in source code, and it will compile fail,
-modify the DEBUG macro, to adapt the compile
+Use proper conversion functions.
+kstrto*() variants exist for all standard types.
 
-Signed-off-by: hby <hby2003@163.com>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
-index 4146faeed..c2eb3aa67 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
-@@ -60,7 +60,7 @@ void __brcmf_err(struct brcmf_bus *bus, const char *func, const char *fmt, ...);
- 				  ##__VA_ARGS__);			\
- 	} while (0)
- 
--#if defined(DEBUG) || defined(CONFIG_BRCM_TRACING)
-+#if defined(CONFIG_BRCM_TRACING) || defined(CONFIG_BRCMDBG)
- 
- /* For debug/tracing purposes treat info messages as errors */
- #define brcmf_info brcmf_err
-@@ -114,7 +114,7 @@ extern int brcmf_msg_level;
- 
- struct brcmf_bus;
- struct brcmf_pub;
--#ifdef DEBUG
-+#if defined(CONFIG_BRCMDBG)
- struct dentry *brcmf_debugfs_get_devdir(struct brcmf_pub *drvr);
- void brcmf_debugfs_add_entry(struct brcmf_pub *drvr, const char *fn,
- 			     int (*read_fn)(struct seq_file *seq, void *data));
--- 
-2.17.1
+ lib/test_firmware.c |    9 +++------
+ lib/test_kmod.c     |   26 ++++++++++----------------
+ 2 files changed, 13 insertions(+), 22 deletions(-)
 
-
+--- a/lib/test_firmware.c
++++ b/lib/test_firmware.c
+@@ -364,18 +364,15 @@ static ssize_t test_dev_config_show_int(char *buf, int val)
+ 
+ static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+ {
++	u8 val;
+ 	int ret;
+-	long new;
+ 
+-	ret = kstrtol(buf, 10, &new);
++	ret = kstrtou8(buf, 10, &val);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (new > U8_MAX)
+-		return -EINVAL;
+-
+ 	mutex_lock(&test_fw_mutex);
+-	*(u8 *)cfg = new;
++	*(u8 *)cfg = val;
+ 	mutex_unlock(&test_fw_mutex);
+ 
+ 	/* Always return full write size even if we didn't consume all */
+--- a/lib/test_kmod.c
++++ b/lib/test_kmod.c
+@@ -877,20 +877,17 @@ static int test_dev_config_update_uint_sync(struct kmod_test_device *test_dev,
+ 					    int (*test_sync)(struct kmod_test_device *test_dev))
+ {
+ 	int ret;
+-	unsigned long new;
++	unsigned int val;
+ 	unsigned int old_val;
+ 
+-	ret = kstrtoul(buf, 10, &new);
++	ret = kstrtouint(buf, 10, &val);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (new > UINT_MAX)
+-		return -EINVAL;
+-
+ 	mutex_lock(&test_dev->config_mutex);
+ 
+ 	old_val = *config;
+-	*(unsigned int *)config = new;
++	*(unsigned int *)config = val;
+ 
+ 	ret = test_sync(test_dev);
+ 	if (ret) {
+@@ -914,18 +911,18 @@ static int test_dev_config_update_uint_range(struct kmod_test_device *test_dev,
+ 					     unsigned int min,
+ 					     unsigned int max)
+ {
++	unsigned int val;
+ 	int ret;
+-	unsigned long new;
+ 
+-	ret = kstrtoul(buf, 10, &new);
++	ret = kstrtouint(buf, 10, &val);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (new < min || new > max)
++	if (val < min || val > max)
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&test_dev->config_mutex);
+-	*config = new;
++	*config = val;
+ 	mutex_unlock(&test_dev->config_mutex);
+ 
+ 	/* Always return full write size even if we didn't consume all */
+@@ -936,18 +933,15 @@ static int test_dev_config_update_int(struct kmod_test_device *test_dev,
+ 				      const char *buf, size_t size,
+ 				      int *config)
+ {
++	int val;
+ 	int ret;
+-	long new;
+ 
+-	ret = kstrtol(buf, 10, &new);
++	ret = kstrtoint(buf, 10, &val);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (new < INT_MIN || new > INT_MAX)
+-		return -EINVAL;
+-
+ 	mutex_lock(&test_dev->config_mutex);
+-	*config = new;
++	*config = val;
+ 	mutex_unlock(&test_dev->config_mutex);
+ 	/* Always return full write size even if we didn't consume all */
+ 	return size;
