@@ -2,90 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064982BC4C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 10:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3885E2BC4D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 10:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbgKVJzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 04:55:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
+        id S1727437AbgKVJ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 04:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727330AbgKVJza (ORCPT
+        with ESMTP id S1726741AbgKVJ4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 04:55:30 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4769EC0613CF;
-        Sun, 22 Nov 2020 01:55:30 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cf5Hy1wK7z9s1l;
-        Sun, 22 Nov 2020 20:55:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606038926;
-        bh=EpRtrEwHzliXmZ4bskXozwvzFnxRaMA90Iv/s3DePSo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ECEZ/ywYeMB7cnnkll6WntxiJCrfAWGWz+GBmyaocOXyk7Zircfy21rKwwiu9x+qg
-         zJILvAtJcf/S721bpnwitjdB76U/GMrxLQ+c6FULH4Edvgsa0jOKMgPrf2OldJ+IFi
-         BSTFqax5yESQRalcE3VDkyr0o/NKLUfz3QcN8dnjKUCZU7zFkEVQaDhsDvG4yepTke
-         a9cp3Eazstk+JbC12a9+eT8dyVbnnxrvezr1q8VsCeV3l8qaNc5t9sPBM1wcJpOKbv
-         KpRNMiVdR4jcvpOCldKUSh4iyTJ+pbTSPHVyOJzC59O4f7uiR3Ule9Wsg0NZv4GF9f
-         2TPYTwI41UzaA==
-Date:   Sun, 22 Nov 2020 20:55:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the pci tree
-Message-ID: <20201122205525.1219bfaf@canb.auug.org.au>
+        Sun, 22 Nov 2020 04:56:00 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAE6C0613CF;
+        Sun, 22 Nov 2020 01:56:00 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id w24so14480514wmi.0;
+        Sun, 22 Nov 2020 01:56:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bpB5U7WrXJG0tJp8kjkcLnHrcdFJU1d+qBzkQwW+pPM=;
+        b=Lu80P6vwEwvW9F2w1XhddQXfkTq8hQDPC4hm5ghgIRDky4J9hCiOW1RLupyoHZTs1/
+         VZQIFwgSeejs1J0TUObOjEllpw7WJU3L5xikbFYUwOmFKZQWf3Mch7BOQB7STtH8EGyf
+         QmUligNJc5ZhJjCBAA9ZE9zdL88crjxvAWPACBGFN1YPJA8bwzyr8AutKsZhT+4zmmEC
+         juxq7F93imo5AZXqc/Un7NlC2oEW701tz0P5wi/PTt1C/+Pi0uiMtEmsA1MoVN80fgU9
+         9QbQavIGsvce5a4EY86WKPnynBCRsc46/Hc8C7nvj1iz7VXi3OxFoEhQedlT5EzMgryd
+         jlpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bpB5U7WrXJG0tJp8kjkcLnHrcdFJU1d+qBzkQwW+pPM=;
+        b=sD8TZa89aD3w4Bf2qwBAtpzCX7Hfz6Dv2hYf7XtHB5TLik3ZS+jzmYVjIbXIqiYTuJ
+         6HXSNk1Wg/VBmMSn75nQRyS+FiLdC8oLL+Nz1kE09QYSFGPzJS/rA5Iart0cu98WYgDY
+         vWDKA8IMqteIfoX+Oppq/xMWTVin343HBMSBOGdXwTTgIo7hUw5hYZ6Nrl4ngBP5UN0r
+         5HJGTFZB6/SIxeShsSqzQ/LGkqUd2D5eP0ScNwr6NwWpnVkW531G1V/jlRq9+igPw0d0
+         yVT8T4D3yybEFb+SdOe93scAQiEBH/IkIRc64KRhYaQJcPMwZV94AcCmHyw0AOCtPh8k
+         qvjA==
+X-Gm-Message-State: AOAM531sfw7CLXxM46vtTpfEFRkB4K6k2xt1Gv4nbZKn54JwSx27AXC/
+        xcHabI99mXKc1Yac51L3AWxqiVtHyDSo0e7T
+X-Google-Smtp-Source: ABdhPJwgXES8EYKFuoWd64kYYSdyEqvdGoYwgz+nC/jShSbeiyeokOFNj4MLDaEFJwICZqvKkmFlXg==
+X-Received: by 2002:a1c:9a41:: with SMTP id c62mr14742374wme.15.1606038958820;
+        Sun, 22 Nov 2020 01:55:58 -0800 (PST)
+Received: from localhost.localdomain (196.red-83-40-48.dynamicip.rima-tde.net. [83.40.48.196])
+        by smtp.gmail.com with ESMTPSA id p21sm10593570wma.41.2020.11.22.01.55.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 22 Nov 2020 01:55:58 -0800 (PST)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     mturquette@baylibre.com
+Cc:     sboyd@kernel.org, robh+dt@kernel.org, john@phrozen.org,
+        tsbogend@alpha.franken.de, gregkh@linuxfoundation.org,
+        gch981213@gmail.com, hackpascal@gmail.com,
+        linux-clk@vger.kernel.org, evicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        devel@driverdev.osuosl.org, neil@brown.name
+Subject: [PATCH v4 0/6] MIPS: ralink: add CPU clock detection and clock driver for MT7621
+Date:   Sun, 22 Nov 2020 10:55:50 +0100
+Message-Id: <20201122095556.21597-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4ydlTt1gfWl=cORexYH+jtc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4ydlTt1gfWl=cORexYH+jtc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patchset ports CPU clock detection for MT7621 from OpenWrt
+and adds a complete clock plan for the mt7621 SOC.
 
-Hi all,
+The documentation for this SOC only talks about two registers
+regarding to the clocks:
+* SYSC_REG_CPLL_CLKCFG0 - provides some information about boostrapped
+refclock. PLL and dividers used for CPU and some sort of BUS (AHB?).
+* SYSC_REG_CPLL_CLKCFG1 - a banch of gates to enable/disable clocks for
+all or some ip cores. 
 
-In commit
+No documentation about a probably existent set of dividers for each ip
+core is included in the datasheets. So we cannot make anything better,
+AFAICT.
 
-  466d79c1a470 ("PCI: Fix overflow in command-line resource alignment reque=
-sts")
+Looking into driver code, and some openWRT patched there are
+another frequences which are used in some drivers (uart, sd...).
+According to all of this information the clock plan for this
+SoC is set as follows:
+ - Main top clock "xtal" from where all the rest of the world is
+   derived.
+ - CPU clock "cpu" derived from "xtal" frequencies and a bunch of
+   register reads and predividers.
+ - BUS clock "bus" derived from "cpu" and with (cpu / 4) MHz.
+ - Fixed clocks from "xtal":
+    * "50m": 50 MHz.
+    * "125m": 125 MHz.
+    * "150m": 150 MHz.
+    * "250m": 250 MHz.
+    * "270m": 270 MHz.
 
-Fixes tag
+We also have a buch of gate clocks with their parents:
+ - "hsdma": "150m"
+ - "fe": "250m"
+ - "sp_divtx": "270m"
+ - "timer": "50m"
+ - "pcm": "270m"
+ - "pio": "50m"
+ - "gdma": "bus"
+ - "nand": "125m"
+ - "i2c": "50m"
+ - "i2s": "270m"
+ - "spi": "bus"
+ - "uart1": "50m"
+ - "uart2": "50m"
+ - "uart3": "50m"
+ - "eth": "50m"
+ - "pcie0": "125m"
+ - "pcie1": "125m"
+ - "pcie2": "125m"
+ - "crypto": "250m"
+ - "shxc": "50m"
 
-  Fixes: 32a9a682bef2 ("PCI: allow assignment of memory resources with a
+There was a previous attempt of doing this here[0] but the author
+(Chuanhong Guo) did not wanted to make assumptions of a clock plan
+for the platform that time. It seems that now he has a better idea of
+how the clocks are dispossed for this SoC so he share code[1] where
+some frequencies and clock parents for the gates are coded from a
+real mediatek private clock plan.
+                                                
+I do really want this to be upstreamed so according to the comments
+in previous attempt[0] from Oleksij Rempel and the frequencies in
+code[1] I have tried to do this by myself.
 
-has these problem(s):
+All of this patches have been tested in a GNUBee PC1 resulting in a
+working platform.
 
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
+Changes in v4:
+ - Add Acked-by from Rob Herring for binding headers (PATCH 1/6).
+ - Convert bindings to not use syscon phandle and declare clock as
+   a child of the syscon node. Update device tree and binding doc
+   accordly.
+ - Make use of 'syscon_node_to_regmap' in driver code instead of
+   get this using the phandle function.
+ - Properly unregister clocks for the error path of the function
+   'mt7621_clk_init'.
+ - Include ARRAY_SIZE of fixed clocks in the 'count' to kzalloc
+   of 'clk_data'.
+ - Add new patch changing invalid vendor 'mtk' in favour of 'mediatek'
+   which is the one listed in 'vendor-prefixes.yaml'. Update mt7621 code
+   accordly. I have added this patch inside this series because clk
+   binding is referring syscon node and the string for that node was
+   with not listed vendor. Hence update and have all of this correct
+   in the same series.
 
-Please do not split Fixes tags over more than one line.
+Changes in v3:
+ - Fix compilation warnings reported by kernel test robot because of
+   ignoring return values of 'of_clk_hw_register' in functions
+   'mt7621_register_top_clocks' and 'mt7621_gate_ops_init'.
+ - Fix dts file and binding documentation 'clock-output-names'.
 
---=20
-Cheers,
-Stephen Rothwell
+Changes in v2:
+ - Remove the following patches:
+   * dt: bindings: add mt7621-pll device tree binding documentation.
+   * MIPS: ralink: add clock device providing cpu/ahb/apb clock for mt7621.
+ - Move all relevant clock code to 'drivers/clk/ralink/clk-mt7621.c' and
+   unify there previous 'mt7621-pll' and 'mt7621-clk' into a unique driver
+   and binding 'mt7621-clk'.
+ - Driver is not a platform driver anymore and now make use of 'CLK_OF_DECLARE'
+   because we need clocks available in 'plat_time_init' before setting up
+   the timer for the GIC.
+ - Use new fixed clocks as parents for different gates and deriving from 'xtal'
+   using frequencies in[1].
+ - Adapt dts file and bindings header and documentation for new changes.
+ - Change MAINTAINERS file to only contains clk-mt7621.c code and
+   mediatek,mt7621-clk.yaml file.
 
---Sig_/4ydlTt1gfWl=cORexYH+jtc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+[0]: https://www.lkml.org/lkml/2019/7/23/1044
+[1]: https://github.com/981213/linux/commit/2eca1f045e4c3db18c941135464c0d7422ad8133
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+6NY0ACgkQAVBC80lX
-0GxI0wf9EUDMk7swOT0a0Phwh3VlcdXYR18sW9mG2lO7yMfMXt1VUha+n3IXEMcr
-Nqli3+R0YT8jkt9hEVU99yAlkOdohQdWqWmXHJry2hOKHtYiVek5jdepqJJUvCAq
-ecWUzHf1wT0PK3H0k0rYTN8ux1T/nIJBWDsDqeEjKnQtHDK+Naz0QOqdpZQrYCSZ
-QF/bNexinHZvbssuQbXUYXRDOQkdwY5a/W694mGeVhJFokb+VdG5+8Uz7ZlPHaQF
-WVTTxtzklRoUy6tG7/1m9wRvWeNRx1uevYHmiYV9ZUsrIWKkl6JgwojpsWckQ9hr
-5xNVRMpFjat7P+FTDdLDo26JlQRMbQ==
-=JMk3
------END PGP SIGNATURE-----
+Sergio Paracuellos (6):
+  dt-bindings: clock: add dt binding header for mt7621 clocks
+  dt: bindings: add mt7621-clk device tree binding documentation
+  clk: ralink: add clock driver for mt7621 SoC
+  staging: mt7621-dts: make use of new 'mt7621-clk'
+  staging: mt7621-dts: use valid vendor 'mediatek' instead of invalid
+    'mtk'
+  MAINTAINERS: add MT7621 CLOCK maintainer
 
---Sig_/4ydlTt1gfWl=cORexYH+jtc--
+ .../bindings/clock/mediatek,mt7621-clk.yaml   |  67 +++
+ MAINTAINERS                                   |   6 +
+ arch/mips/ralink/mt7621.c                     |   6 +-
+ drivers/clk/Kconfig                           |   1 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/ralink/Kconfig                    |  14 +
+ drivers/clk/ralink/Makefile                   |   2 +
+ drivers/clk/ralink/clk-mt7621.c               | 434 ++++++++++++++++++
+ drivers/staging/mt7621-dts/gbpc1.dts          |  11 -
+ drivers/staging/mt7621-dts/mt7621.dtsi        |  85 ++--
+ include/dt-bindings/clock/mt7621-clk.h        |  41 ++
+ 11 files changed, 609 insertions(+), 59 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+ create mode 100644 drivers/clk/ralink/Kconfig
+ create mode 100644 drivers/clk/ralink/Makefile
+ create mode 100644 drivers/clk/ralink/clk-mt7621.c
+ create mode 100644 include/dt-bindings/clock/mt7621-clk.h
+
+-- 
+2.25.1
+
