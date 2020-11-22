@@ -2,226 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A572BC4E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 11:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A289F2BC4EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 11:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727430AbgKVKHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 05:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726741AbgKVKHc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 05:07:32 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4C1C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 02:07:32 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id k9so4322009ejc.11
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 02:07:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mTrvJBNQw+XSygUPQOq1V8aAQG3hqMkSG3RgtFsMO3g=;
-        b=ROFaBEM6CmhJcORUmzHPm2Qmt66R9DRSDIXeWoqvLRB6K1opxqQA2tKYKZ3ZB4KDjm
-         SYA6KfoRr2e49F3RUhmZjWrBl5LQpTEywvLXhhaFdsTHnxSla0Nv8d0THFX9B36D4WCf
-         c+FlGhj+AfmKUwIWg4I0I+2fhYPDRRa+s7lNSgMcxnmER7anpZAfLCCpz2Ua/PG8HLl2
-         mXE2ZVU6z6iVUZaP2EVJikcCJGxRixcxla02P2fhTtRKZjh8zKMZV0haxmNrzin/hVIA
-         CuEWXsRZ86VXOjzTJZgmQ0CxogTkG+yS8VbvgpZANLWeG12zSWjMckVIlssqmMRK2bdb
-         TO+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mTrvJBNQw+XSygUPQOq1V8aAQG3hqMkSG3RgtFsMO3g=;
-        b=c43t2TGhP+LeXGdNH3o4GkoKxm9kgFZVIc5QBtg5XkIz4cCPn+g9YSXBfHjDSH9YBl
-         an+7sprEzTGHva669SSht46Q0QA1dSiWULis0V2ivXih84TAHQjDCWmlErKwW74N2pI1
-         B9pvpVMAiiL9kUxGX1ibDRVdl1DGMLpxUFhUfiidLNwdKt3qybh30O1zVGIaqonm1twC
-         dgDftIZQM/68u/vszndOLZ0EzXERnSBLNaHognPRQaLo54DQlBMthqRZvmXNEojA2bBC
-         0HqyLvOwL0KaHD0y6UC1S6oMffgUMq5NW42KP0BbeOK7fcW91CpOBPLVo2p4oY7uz3GM
-         mQFw==
-X-Gm-Message-State: AOAM531zWraIyQOneQ875X/PD06Srou/PMe0jP7gRbk51IejZypwUFz6
-        XLnTyYuYPvXdHYPgZuyMs/I2iz9AT7MMhs5Y2SJO3g==
-X-Google-Smtp-Source: ABdhPJzwi0X2mmu0AK8D81hcVTX6644ryj3nliWnx6Yy0Y0zyBjnFo1ocg9rTxu9g296imI3hGg/SQ1ZM8xjlqqvjeE=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr1759042eju.375.1606039651047;
- Sun, 22 Nov 2020 02:07:31 -0800 (PST)
+        id S1727460AbgKVKIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 05:08:15 -0500
+Received: from ozlabs.org ([203.11.71.1]:60053 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727391AbgKVKIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 05:08:13 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cf5Zg5NMYz9s1l;
+        Sun, 22 Nov 2020 21:08:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606039691;
+        bh=KUpv1To3odVlfYu3tycoSBgGJTUnXVD5vVmS9OKND3U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=afPaUp504mGrEIqkJSwWs94WZVNqciuUO5nBcMrhNq17N333tSlVrPf0oVkljKYcd
+         gvSz3SL1bHXnEa+4StOQox+ZUeVCQsx3crRvvdGu86QNwXNkluIxSWxVDq1yIq1LQa
+         yUK4eRSoykdfjUBeZzxkn6umtIgBdeUniMTIirrhqxyovFElzcTDwUmEaNrfAH8N6a
+         E+EQ6nkcdHSCSKkLB2BU8jY3qNMR3uoRr9KcElvZ+NPE02mWVgaknHvnDCr7ew5Wf8
+         1kCEXQMRqnr417wIAS/bZoktOnu/ZWedfW44oOSKR/dkFwzzqgJqzOPyscjfxMoB28
+         TdjTAryq8JdzA==
+Date:   Sun, 22 Nov 2020 21:08:10 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the rcu tree
+Message-ID: <20201122210810.7024172e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201120104539.534424264@linuxfoundation.org>
-In-Reply-To: <20201120104539.534424264@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 22 Nov 2020 15:37:19 +0530
-Message-ID: <CA+G9fYvmgMTrQJogsLaf2Ytf=dZiLZcB94c7KrtBGENr-SAiaw@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/15] 4.4.245-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/wzmxE4k7ml=8hQBpQyM609y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 at 16:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.245 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.245-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+--Sig_/wzmxE4k7ml=8hQBpQyM609y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Commit
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+  ca3bd09a3a49 ("rcu: Allow rcu_irq_enter_check_tick() from NMI")
 
-Summary
-------------------------------------------------------------------------
+is missing a Signed-off-by from its author.
 
-kernel: 4.4.245-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 11095ab90e22ac875983239a445f6b4ad64b6e08
-git describe: v4.4.244-16-g11095ab90e22
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.244-16-g11095ab90e22
+Commit
 
-No regressions (compared to build v4.4.244)
+  00dc4fd2297c ("tools/rcutorture: Make identify_qemu_vcpus() independent o=
+f local language")
 
-No fixes (compared to build v4.4.244)
-
-
-Ran 32775 total tests in the following environments and test suites.
-
-Environments
---------------
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-tracing-tests
-* install-android-platform-tools-r2600
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.245-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.245-rc1-hikey-20201120-861
-git commit: a395e149575bc8d8ec23a677f979301bfefd8862
-git describe: 4.4.245-rc1-hikey-20201120-861
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.245-rc1-hikey-20201120-861
-
-No regressions (compared to build 4.4.244-rc1-hikey-20201117-859)
-
-No fixes (compared to build 4.4.244-rc1-hikey-20201117-859)
-
-Ran 1722 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
+is missing a Signed-off-by from its committer.
 
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+Cheers,
+Stephen Rothwell
+
+--Sig_/wzmxE4k7ml=8hQBpQyM609y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+6OIoACgkQAVBC80lX
+0GyRoAf/a/CV0wESia3kMRj3RfaM6AnYSrmlMYQLEcBIz8I+Vcq+vvUhKp4ff4TA
+5MOMp9/ySNrDb+SoefdaNMbJx+AAeif7RnP4uueCq5x39XR7lhBTELn+3tQG+bFg
+R08/3fW2vmyO1A7CgEHZdRfowSgoNShKsh/C7/6re169DGiYljhGZLk2RCMwe+oV
+uGSbkIkSgHSxcOvOqZA8oekJpC2zAhpmjEiEIsmEMbOKZfb43nwR1GpE6bNfSH/6
+6xPosSaNBI9u9h5ISS/+KD2IjVFqJ38p7ngtOKNqrOSoOA35UGDQef56Jk4Ruoey
+3Ctj8q1Vcu7moEI4gGiXKTKpD2yFnQ==
+=O6tm
+-----END PGP SIGNATURE-----
+
+--Sig_/wzmxE4k7ml=8hQBpQyM609y--
