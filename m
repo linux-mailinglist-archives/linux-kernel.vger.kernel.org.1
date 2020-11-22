@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911DB2BC594
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A812BC5AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbgKVMTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 07:19:44 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42492 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727318AbgKVMTn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 07:19:43 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E22721C0B92; Sun, 22 Nov 2020 13:19:40 +0100 (CET)
-Date:   Sun, 22 Nov 2020 13:19:40 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-omap@vger.kernel.org, tony@atomide.com, sre@kernel.org,
-        nekit1000@gmail.com, mpartap@gmx.net, merlijn@wizzup.org,
-        martin_rysavy@centrum.cz, phone-devel@vger.kernel.org,
-        maemo-leste@lists.dyne.org
-Subject: Droid 4 in next-20201120: cpcap-usb-phy.0: could not initialize VBUS
- or ID IIO:
-Message-ID: <20201122121940.GA26145@duo.ucw.cz>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727813AbgKVMlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 07:41:22 -0500
+Received: from m12-15.163.com ([220.181.12.15]:54667 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727634AbgKVMlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 07:41:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=b8Hav6Ucjm73NF9mhy
+        msARsSWYvA0cFZJwMIjRxo4pY=; b=XVYP6t7VNSCfEs2FJnuoM7FWO4hJTjbamK
+        e0MVzfE0i3+7oPJ9BGGPTgqUMzulGu8aUHS9d9pkezXbm2ru//ExNfsOcUngQlhT
+        GLQog8FW93nA0dIjZXzovyv0tGPFBnVKwdD6RjCQnIT7Efc7/cl/zTJeZY4hzW42
+        hvzcwrEAo=
+Received: from hby-server.localdomain (unknown [27.18.76.181])
+        by smtp11 (Coremail) with SMTP id D8CowADHtCpIOLpfyZICCg--.9687S2;
+        Sun, 22 Nov 2020 18:07:04 +0800 (CST)
+From:   hby <hby2003@163.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hby <hby2003@163.com>
+Subject: [PATCH] drivers: Fix the Raspberry Pi debug version compile
+Date:   Sun, 22 Nov 2020 18:06:06 +0800
+Message-Id: <20201122100606.20289-1-hby2003@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: D8CowADHtCpIOLpfyZICCg--.9687S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7CrW3CF18trWDGF4fZry3twb_yoW8Jw1rpa
+        nrJa4qkr1Uu3yak3y0yFsrAFyfKas7WwnFkay8u3y3uF1kAw4Fqr40gFWIkr15uFWxC3y7
+        AFWvq3sxJFsrKa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U6MKNUUUUU=
+X-Originating-IP: [27.18.76.181]
+X-CM-SenderInfo: hke1jiiqt6il2tof0z/1tbiQAjkHFSIhEeThQAAs5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+enable the DEBUG in source code, and it will compile fail,
+modify the DEBUG macro, to adapt the compile
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: hby <hby2003@163.com>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi!
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
+index 4146faeed..c2eb3aa67 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
+@@ -60,7 +60,7 @@ void __brcmf_err(struct brcmf_bus *bus, const char *func, const char *fmt, ...);
+ 				  ##__VA_ARGS__);			\
+ 	} while (0)
+ 
+-#if defined(DEBUG) || defined(CONFIG_BRCM_TRACING)
++#if defined(CONFIG_BRCM_TRACING) || defined(CONFIG_BRCMDBG)
+ 
+ /* For debug/tracing purposes treat info messages as errors */
+ #define brcmf_info brcmf_err
+@@ -114,7 +114,7 @@ extern int brcmf_msg_level;
+ 
+ struct brcmf_bus;
+ struct brcmf_pub;
+-#ifdef DEBUG
++#if defined(CONFIG_BRCMDBG)
+ struct dentry *brcmf_debugfs_get_devdir(struct brcmf_pub *drvr);
+ void brcmf_debugfs_add_entry(struct brcmf_pub *drvr, const char *fn,
+ 			     int (*read_fn)(struct seq_file *seq, void *data));
+-- 
+2.17.1
 
-I'm getting this warning during boot:
 
-[    3.413299] gpio gpiochip1: Persistence not supported for GPIO 0
-[    3.419494] cpcap-usb-phy cpcap-usb-phy.0: could not initialize VBUS or =
-ID IIO: -517
-[    3.427398] ------------[ cut here ]------------
-[    3.432067] WARNING: CPU: 0 PID: 1 at drivers/regulator/core.c:2123 _reg=
-ulator_put.part.2+0x168/0x17c
-[    3.441406] Modules linked in:
-[    3.444519] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc4-next-20=
-201120-dirty #198
-[    3.452728] Hardware name: Generic OMAP4 (Flattened Device Tree)
-[    3.458801] [<c010db44>] (unwind_backtrace) from [<c0109ec0>] (show_stac=
-k+0x10/0x14)
-[    3.466613] [<c0109ec0>] (show_stack) from [<c095561c>] (dump_stack+0xb8=
-/0xd4)
-[    3.473876] [<c095561c>] (dump_stack) from [<c0953208>] (__warn+0xa8/0xd=
-0)
-[    3.480804] [<c0953208>] (__warn) from [<c095327c>] (warn_slowpath_fmt+0=
-x4c/0x98)
-[    3.488311] [<c095327c>] (warn_slowpath_fmt) from [<c0479b90>] (_regulat=
-or_put.part.2+0x168/0x17c)
-[    3.497344] [<c0479b90>] (_regulator_put.part.2) from [<c0479bcc>] (regu=
-lator_put+0x28/0x38)
-[    3.505828] [<c0479bcc>] (regulator_put) from [<c053a86c>] (release_node=
-s+0x1a0/0x248)
-[    3.513793] [<c053a86c>] (release_nodes) from [<c05366b8>] (really_probe=
-+0x104/0x3b4)
-[    3.521667] [<c05366b8>] (really_probe) from [<c0536acc>] (driver_probe_=
-device+0x58/0xb4)
-[    3.529907] [<c0536acc>] (driver_probe_device) from [<c0534b34>] (bus_fo=
-r_each_drv+0x70/0x94)
-[    3.538482] [<c0534b34>] (bus_for_each_drv) from [<c0536540>] (__device_=
-attach+0xbc/0x128)
-
-(and then cpcap does not work). Is my configuration missing something?
-
-Later I get warnings about framedone interrupt not being done (IIRC)
-=66rom HDMI audio module, and I have screen freezing in framebuffer.
-
-Any ideas?
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7pXXAAKCRAw5/Bqldv6
-8v2DAJ4479P2CJHSxpGpQflJ32jkWO6TjACgqBhdPnebCowchVQfHHPwU7Y3crc=
-=IraW
------END PGP SIGNATURE-----
-
---gKMricLos+KVdGMg--
