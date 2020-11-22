@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471912BC2FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 02:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CA62BC302
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 02:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgKVBbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 20:31:44 -0500
-Received: from mga02.intel.com ([134.134.136.20]:1807 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726662AbgKVBbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 20:31:36 -0500
-IronPort-SDR: ljH3ejHLzpP8rVfL/Xm6KAmkKdas+2YrsM7UJgj1R76ISGTHJGuPZEV20m1Ix2be9C6nsCwbkR
- kE0tTp4bQuSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9812"; a="158664600"
-X-IronPort-AV: E=Sophos;i="5.78,360,1599548400"; 
-   d="scan'208";a="158664600"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 17:31:35 -0800
-IronPort-SDR: qyGWI5X6geDxp1ZRkpQOjhl4RdZlIwmS8/MqBHu146PR30+d+qahky4MosNxDl+qVYovoUcPrb
- 7DDCmMdepb0g==
-X-IronPort-AV: E=Sophos;i="5.78,360,1599548400"; 
-   d="scan'208";a="331778054"
-Received: from araj-mobl1.jf.intel.com ([10.252.131.178])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 17:31:35 -0800
-Date:   Sat, 21 Nov 2020 17:31:33 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
-        linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH 1/1] pci: pciehp: Handle MRL interrupts to enable slot
- for hotplug.
-Message-ID: <20201122013133.GA22190@araj-mobl1.jf.intel.com>
-References: <20200925230138.29011-1-ashok.raj@intel.com>
- <20201119075120.GA542@wunner.de>
- <20201119220807.GB102444@otc-nc-03>
- <20201121111050.GA6854@wunner.de>
+        id S1727027AbgKVBg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 20:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726544AbgKVBgr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 20:36:47 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9066EC0613CF;
+        Sat, 21 Nov 2020 17:36:45 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id 62so10879693pgg.12;
+        Sat, 21 Nov 2020 17:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WwAQohGmMP/UiMeBYoppGq4ywWWRc++yLHyyw6pljp0=;
+        b=ZSvFuKzJDq20yV9cD8q3f5oL2uT1IoufooJHf4S1BwoXX3+/65ELeVjWDRUC0kT/QQ
+         JwlTReGDDFOpxXbEFRhjzABXjQYme8/KQ/JXUiHSMATcUUzhfrbCQ1XQwJqZ3UcHsAnZ
+         Ezxfn8vz9fWrSdBWAv75OMy+OEnp/7Ll++a2LrwQKy/Qy4Y8gwJdwqN/IfblXCZpvvbk
+         ic5JWNtqxxt1fKMBM4XXxUWsMuNiFrJ8ZK4DfgigdJ2ZzlJ+KH2eRvTVBxfYhYWZF7QV
+         Sm6y625IuFVFQKUlNIGST6oQ8AJHLsyhSOqaXxymv97c51c7fLt+BkE4mr58RABP3jfY
+         aqGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WwAQohGmMP/UiMeBYoppGq4ywWWRc++yLHyyw6pljp0=;
+        b=lHyf/XGgYeKByuYzyeZz6WUhjcttOxrD1zKupct3QQ4KHr5YfIjPksD+hsQCiiI54Z
+         vPbS1hJO05LarYdP5kUw5exk/+tILqQDZv6fzzXmSZQOCCsJSpZ5IDd06Sge2jCS4QW5
+         3RhAvVxl+TPngcuNzVll29kTB1e1ggChUzBRx9Za2VoPLQmrGMdiYgk1NVACul0mQlpz
+         hLxOUPP8qutXWbcZbgAnvSgVDgUtK8EzqzsSE1eQDtdQ4aZszS7TSZmzOP4SzpaZrHET
+         wPNb2wPTm0SQNEJk4hDMGQ2FSYZDENPmS2wawP8A9nJ+V4Q4mbn1rmf7aCZwkDwiYia0
+         0icQ==
+X-Gm-Message-State: AOAM532SLnmBMu0bJ9WIJfSZ3/IXcwJJXVFNNktzgASLsCKVzY2DiJpJ
+        5M1s15CvOfFgqRpdr/LP38k=
+X-Google-Smtp-Source: ABdhPJyQFDu9Fztrd006rONVHW0ogMHQyAiT6BU48QCtukjh9oCOWHo1QiyagZOSIyt1pkLlZLIrZg==
+X-Received: by 2002:a62:f20e:0:b029:197:f6d8:8d4d with SMTP id m14-20020a62f20e0000b0290197f6d88d4dmr2294937pfh.58.1606009004985;
+        Sat, 21 Nov 2020 17:36:44 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id kb12sm8981106pjb.2.2020.11.21.17.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 17:36:43 -0800 (PST)
+Date:   Sat, 21 Nov 2020 17:36:40 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Tristram.Ha@microchip.com, ceggers@arri.de, kuba@kernel.org,
+        andrew@lunn.ch, robh+dt@kernel.org, vivien.didelot@gmail.com,
+        davem@davemloft.net, kurt.kanzenbach@linutronix.de,
+        george.mccollister@gmail.com, marex@denx.de,
+        helmut.grohne@intenta.de, pbarker@konsulko.com,
+        Codrin.Ciubotariu@microchip.com, Woojung.Huh@microchip.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 00/12] net: dsa: microchip: PTP support for
+ KSZ956x
+Message-ID: <20201122013640.GA997@hoboy.vegasvil.org>
+References: <20201118203013.5077-1-ceggers@arri.de>
+ <20201118234018.jltisnhjesddt6kf@skbuf>
+ <2452899.Bt8PnbAPR0@n95hx1g2>
+ <BYAPR11MB35582F880B533EB2EE0CDD1DECE00@BYAPR11MB3558.namprd11.prod.outlook.com>
+ <20201121012611.r6h5zpd32pypczg3@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121111050.GA6854@wunner.de>
-User-Agent: Mutt/1.9.1 (2017-09-22)
+In-Reply-To: <20201121012611.r6h5zpd32pypczg3@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 12:10:50PM +0100, Lukas Wunner wrote:
+On Sat, Nov 21, 2020 at 03:26:11AM +0200, Vladimir Oltean wrote:
+> On Thu, Nov 19, 2020 at 06:51:15PM +0000, Tristram.Ha@microchip.com wrote:
+> > The receive and transmit latencies are different for different connected speed.  So the
+> > driver needs to change them when the link changes.  For that reason the PTP stack
+> > should not use its own latency values as generally the application does not care about
+> > the linked speed.
 > 
-> > > > +	/*
-> > > > +	 * If ATTN is present and MRL is triggered
-> > > > +	 * ignore the Presence Change Event.
-> > > > +	 */
-> > > > +	if (ATTN_BUTTN(ctrl) && (events & PCI_EXP_SLTSTA_MRLSC))
-> > > > +		events &= ~PCI_EXP_SLTSTA_PDC;
-> > > 
-> > > An Attention Button press results in a synthesized PDC event after
-> > > 5 seconds, which may get lost due to the above if-statement.
-> > 
-> > When its synthesized you don't get the MRLSC? So we won't nuke the PDC then
-> > correct?
+> The thing is, ptp4l already has ingressLatency and egressLatency
+> settings, and I would not be surprised if those config options would get
+> extended to cover values at multiple link speeds.
 > 
-> I just meant to say, pciehp_queue_pushbutton_work() will synthesize
-> a PDC event after 5 seconds and with the above code snippet, if an
-> MRL event happens simultaneously, that synthesized PDC event would
-> be lost.  So I'd just drop the above code snippet.  I think you
-> just need to subscribe to MRL events and propagate them to
-> pciehp_handle_presence_or_link_change().  There, you'd bring down
-> the slot if an MRL event has occurred (same as DLLSC or PDC).
-> Then, check whether MRL is closed.  If so, and if presence or link
-> is up, try to bring up the slot.
-> 
-> If the MRL is open when slot or presence has gone up, the slot is not
-> brought up.  But once MRL is closed, there'll be another MRL event and
-> *then* the slot is brought up.
-> 
+> In the general case, the ksz9477 MAC could be attached to any external
+> PHY, having its own propagation delay characteristics, or any number of
+> other things that cause clock domain crossings. I'm not sure how feasible
+> it is for the kernel to abstract this away completely, and adjust
+> timestamps automatically based on any and all combinations of MAC and
+> PHY. Maybe this is just wishful thinking.
 
-Sounds good.. I'll send the update patch.
+The idea that the driver will correctly adjust time stamps according
+to link speed sounds nice in theory, but in practice it fails.  There
+is a at least one other driver that attempted this, but, surprise,
+surprise, the hard coded correction values turned out to be wrong.
+
+I think the best way would be to let user space monitor the link speed
+and apply the matching correction value.  That way, we avoid bogus,
+hard coded values in kernel space.  (This isn't implemented in
+linuxptp, but it certainly could be.)
+
+Thanks,
+Richard
