@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CA72BC850
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 19:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351562BC859
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 20:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgKVSsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 13:48:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727916AbgKVSsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 13:48:00 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E66F20760;
-        Sun, 22 Nov 2020 18:47:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606070879;
-        bh=hJX7xDdX2ZlSDFjW7BBC3VaOCIFCWXqEGMQ3o8vSc6Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HMMSZIqxiC69QxVCz3P2dL/znRI6GAEsMm4ji12YGTEpTujHAyK9022tqK/o2cyMm
-         8BE+7z/H7qk8XM3hWD6NDPF240wlScR0gaukffvk9QdwLdkD1b0w/SQ0webX4g2aS8
-         86rlkTULEl8zy0DRqjWcrcE0B7jCBbGaFJvLWcSU=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kguOz-00CjzM-C8; Sun, 22 Nov 2020 18:47:57 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Chen Baozi <chenbaozi@phytium.com.cn>,
-        Xu Qiang <xuqiang36@huawei.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] irqchip fixes for 5.10, take #2
-Date:   Sun, 22 Nov 2020 18:47:52 +0000
-Message-Id: <20201122184752.553990-1-maz@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1728069AbgKVTBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 14:01:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727888AbgKVTBI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 14:01:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34539C0613CF;
+        Sun, 22 Nov 2020 11:01:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fGB9UccTdY0+D9VrR+d9ZW2mq8OJlKvYmZDecnPFxFs=; b=AbOOghMsKGuO/MimYt9TzwXc4y
+        D23Vjq5RKRH7z0hC2d0YiVo4+BtOyeafryfipLTaUSInSm0xQpwA+pupmeVKDRHWf2qAnx91ujj5B
+        V7QZBceXHD6YFltefPvOlHokjWTpFNz/n3LHoCAprVzHCcL7m6ZoNEddAfsSYodQ6D+B3PUAnBO2e
+        WAhzAxVjN8yWBek4xAdssdfNAhpIswRu7waHRguasAtXt8sp0DlYZmbpfCv67aOrd51KtCrCja35v
+        RIdncxCIelYPqPGJ450JC3Zpnm3AO6Xoh7FCo5ikHh9guWBFbGvz7t79sGBVgSLe95XxBPlQlYOpG
+        OL4wnXLg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kguag-0005a7-KD; Sun, 22 Nov 2020 19:00:02 +0000
+Date:   Sun, 22 Nov 2020 19:00:02 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, osalvador@suse.de,
+        song.bao.hua@hisilicon.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 21/21] mm/hugetlb: Disable freeing vmemmap if struct
+ page size is not power of two
+Message-ID: <20201122190002.GH4327@casper.infradead.org>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-22-songmuchun@bytedance.com>
+ <20201120082552.GI3200@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, ardb@kernel.org, chenbaozi@phytium.com.cn, xuqiang36@huawei.com, kernel-team@android.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120082552.GI3200@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Fri, Nov 20, 2020 at 09:25:52AM +0100, Michal Hocko wrote:
+> On Fri 20-11-20 14:43:25, Muchun Song wrote:
+> > We only can free the unused vmemmap to the buddy system when the
+> > size of struct page is a power of two.
+> 
+> Can we actually have !power_of_2 struct pages?
 
-Here a couple of patches from the irqchip department: a fix for a typo
-leading to incorrect trigger information being used on the Exiu
-driver, and another for save/restore with the GICv3 ITS.
+Yes.  On x86-64, if you don't enable MEMCG, it's 56 bytes.  On SPARC64,
+if you do enable MEMCG, it's 72 bytes.  On 32-bit systems, it's
+anything from 32-44 bytes, depending on MEMCG, WANT_PAGE_VIRTUAL and
+LAST_CPUPID_NOT_IN_PAGE_FLAGS.
 
-Please pull,
-
-	M.
-
-The following changes since commit d95bdca75b3fb41bf185efe164e05aed820081a5:
-
-  irqchip/ti-sci-inta: Add support for unmapped event handling (2020-11-01 12:00:50 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.10-2
-
-for you to fetch changes up to 74cde1a53368aed4f2b4b54bf7030437f64a534b:
-
-  irqchip/gic-v3-its: Unconditionally save/restore the ITS state on suspend (2020-11-22 12:58:35 +0000)
-
-----------------------------------------------------------------
-irqchip fixes for Linux 5.10, take #2
-
-- Fix Exiu driver trigger type when using ACPI
-- Fix GICv3 ITS suspend/resume to use the in-kernel path
-  at all times, sidestepping braindead firmware support
-
-----------------------------------------------------------------
-Chen Baozi (1):
-      irqchip/exiu: Fix the index of fwspec for IRQ type
-
-Xu Qiang (1):
-      irqchip/gic-v3-its: Unconditionally save/restore the ITS state on suspend
-
- drivers/irqchip/irq-gic-v3-its.c | 16 +++-------------
- drivers/irqchip/irq-sni-exiu.c   |  2 +-
- 2 files changed, 4 insertions(+), 14 deletions(-)
