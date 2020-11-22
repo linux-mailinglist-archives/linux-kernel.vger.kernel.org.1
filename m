@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784352BC5C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EB72BC5C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgKVNNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 08:13:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726436AbgKVNNx (ORCPT
+        id S1727809AbgKVNO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 08:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgKVNO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 08:13:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606050831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2ZpaheZQd4ao1ows6/rlyuwIugzpOFEGvsgoNS41pDU=;
-        b=VW0JcAZF0e/SvQVq90HqIGUlMMewTz0LzRP4vpNHHrWUs1JK4aYc+eGL/NjSqK/Xh6dcxi
-        3y8y9BxGJwMYcY1kkeneAopUMNwMua5wGOMbFm95prf4n/25GhLS/+2g4nEpRUdFk5vWfV
-        zW/cs+eH0bbEv8L0RG5BgiDFOHLVhqM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-FjNuDw-WMWCuHrCkHSmPQg-1; Sun, 22 Nov 2020 08:13:49 -0500
-X-MC-Unique: FjNuDw-WMWCuHrCkHSmPQg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76CF68049E9;
-        Sun, 22 Nov 2020 13:13:47 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3556F5D6CF;
-        Sun, 22 Nov 2020 13:13:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix speculative status fetch going out of order wrt to
- modifications
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 22 Nov 2020 13:13:45 +0000
-Message-ID: <160605082531.252452.14708077925602709042.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Sun, 22 Nov 2020 08:14:58 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA2BC0613CF;
+        Sun, 22 Nov 2020 05:14:57 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id m6so15749847wrg.7;
+        Sun, 22 Nov 2020 05:14:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BC9OgGaPrcjflKjNMGTb8TTTnIqUxGe8XO5S8bOM7DY=;
+        b=azTxoI7R1zOXcNM3GAn8Hn+fF68R+xnC6BUGkUZsnA4qgayI5rDzihxSyVMr2WKYCv
+         u3/Md22mfXWgV7Ma+ooKu2FnClYng7XE28Doyb4pZTSpVCgKZhMVP0nIkIBKZ6/rtN/M
+         uj81Xo+QsRnA3buNoKSmMbXGCzxXeJdPwGBDaoTHE09nPqZaAhcIX9z1pB61ZYDyvbe1
+         9rGorA7CtlGrmoZXwxUDiNVbJyL/fK6yuriuuqn10ZyRDFadMijADHeMm+0zfeMt8wvm
+         cLQY0QsNDzIKpyhMsMFpAqI+aVvMPb7QBxFqeyhEBwrdw3mPbNvNeJ4Os/I0zk6Q287s
+         75jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BC9OgGaPrcjflKjNMGTb8TTTnIqUxGe8XO5S8bOM7DY=;
+        b=oMxRdmVEau9P9hYNuEA5gEa6Wta7d1Bh6o6z02WXb6cvmI2ctSHcdMgfk4tG6E72B0
+         eUbcsTJ2TvVbmRf41vxRV513Z9s+2b3ioPn6qwTf7BtHpv7/sqrkWHPMDgEAVLzawncr
+         uuhGyn+m0A2MjEDiZJrVl1nqPsy2FcImCk5cWNyLmoBKy2mIeFKKf3sKFyY1O+P+s3E8
+         Axi7VYX7viGvavA98H3wWv3F/S4r4pYsczSWM2cNe1c4vRU0VWAlQcE274agQFspiy48
+         oeDP0WyzCRgoxdA6t4nveEmnDPrVrxqCMd2MWFpsorQEUpUEyan28Vpk0yRgbJ66oaMT
+         oH4Q==
+X-Gm-Message-State: AOAM531DOlezBpahHMSnRrFGJ8BE8Xsw1sPCZOOqsnhMys83gwK3+g6Q
+        Go3hS01KVLNwBFiQO4CaHVAGb2dhPxSMOg==
+X-Google-Smtp-Source: ABdhPJxM54wQNvIbNTb4U2QZYhvbxspdFdvXkhT+oOD3aBOG58X69YDjZphN33Vo+BN/0CQctVGn4Q==
+X-Received: by 2002:adf:ed11:: with SMTP id a17mr26127888wro.197.1606050896234;
+        Sun, 22 Nov 2020 05:14:56 -0800 (PST)
+Received: from [192.168.0.160] ([170.253.49.0])
+        by smtp.gmail.com with ESMTPSA id d16sm12898183wrw.17.2020.11.22.05.14.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Nov 2020 05:14:55 -0800 (PST)
+Subject: Re: [PATCH] lseek.2: SYNOPSIS: Use correct types
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201121173054.12172-1-alx.manpages@gmail.com>
+ <87wnydblzt.fsf@mid.deneb.enyo.de>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <79a9ded9-6bf6-d202-bbe9-2f279bc3c945@gmail.com>
+Date:   Sun, 22 Nov 2020 14:14:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <87wnydblzt.fsf@mid.deneb.enyo.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doing a lookup in a directory, the afs filesystem uses a bulk status
-fetch to speculatively retrieve the statuses of up to 48 other vnodes found
-in the same directory and it will then either update extant inodes or
-create new ones - effectively doing 'lookup ahead'.
+Hi Florian,
 
-To avoid the possibility of deadlocking itself, however, the filesystem
-doesn't lock all of those inodes; rather just the directory inode is locked
-(by the VFS).  When the operation completes, afs_inode_init_from_status()
-or afs_apply_status() is called, depending on whether the inode already
-exists, to commit the new status.
+On 11/22/20 1:43 PM, Florian Weimer wrote:
+> * Alejandro Colomar:
+> 
+>> The Linux kernel uses 'unsigned int' instead of 'int' for 'fd' and
+>> 'whence'.  As glibc provides no wrapper, use the same types the
+>> kernel uses.
+> 
+> lseek is a POSIX interface, and glibc provides it.  POSIX uses int for
+> file descriptors (and the whence parameter in case of lseek).
+> 
+> The llseek system call is a different matter, that's indeed
+> Linux-specific.
+> 
 
-A case exists, however, where the speculative status fetch operation may
-straddle a modification operation on one of those vnodes.  What can then
-happen is that the speculative bulk status RPC retrieves the old status,
-and whilst that is happening, the modification happens - which returns an
-updated status, then the modification status is committed, then we attempt
-to commit the speculative status.
+Ahhh, true.  So many similar functions... :p
 
-This results in something like the following being seen in dmesg:
+Thanks,
 
-	kAFS: vnode modified {100058:861} 8->9 YFS.InlineBulkStatus
-
-showing that for vnode 861 on volume 100058, we saw YFS.InlineBulkStatus
-say that the vnode had data version 8 when we'd already recorded version 9
-due to a local modification.  This was causing the cache to be invalidated
-for that vnode when it shouldn't have been.  If it happens on a data file,
-this might lead to local changes being lost.
-
-Fix this by ignoring speculative status updates if the data version doesn't
-match the expected value.
-
-Note that it is possible to get a DV regression if a volume gets restored
-from a backup - but we should get a callback break in such a case that
-should trigger a recheck anyway.  It might be worth checking the volume
-creation time in the volsync info and, if a change is observed in that (as
-would happen on a restore), invalidate all caches associated with the
-volume.
-
-Fixes: 5cf9dd55a0ec ("afs: Prospectively look up extra files when doing a single lookup")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/afs/dir.c      |    1 +
- fs/afs/inode.c    |    8 ++++++++
- fs/afs/internal.h |    1 +
- 3 files changed, 10 insertions(+)
-
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 1bb5b9d7f0a2..9068d5578a26 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -823,6 +823,7 @@ static struct inode *afs_do_lookup(struct inode *dir, struct dentry *dentry,
- 				vp->cb_break_before = afs_calc_vnode_cb_break(vnode);
- 				vp->vnode = vnode;
- 				vp->put_vnode = true;
-+				vp->speculative = true; /* vnode not locked */
- 			}
- 		}
- 	}
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 0fe8844b4bee..b0d7b892090d 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -294,6 +294,13 @@ void afs_vnode_commit_status(struct afs_operation *op, struct afs_vnode_param *v
- 			op->flags &= ~AFS_OPERATION_DIR_CONFLICT;
- 		}
- 	} else if (vp->scb.have_status) {
-+		if (vp->dv_before + vp->dv_delta != vp->scb.status.data_version &&
-+		    vp->speculative)
-+			/* Ignore the result of a speculative bulk status fetch
-+			 * if it splits around a modification op, thereby
-+			 * appearing to regress the data version.
-+			 */
-+			goto out;
- 		afs_apply_status(op, vp);
- 		if (vp->scb.have_cb)
- 			afs_apply_callback(op, vp);
-@@ -305,6 +312,7 @@ void afs_vnode_commit_status(struct afs_operation *op, struct afs_vnode_param *v
- 		}
- 	}
- 
-+out:
- 	write_sequnlock(&vnode->cb_lock);
- 
- 	if (vp->scb.have_status)
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 14d5d75f4b6e..0d150a29e39e 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -755,6 +755,7 @@ struct afs_vnode_param {
- 	bool			update_ctime:1;	/* Need to update the ctime */
- 	bool			set_size:1;	/* Must update i_size */
- 	bool			op_unlinked:1;	/* True if file was unlinked by op */
-+	bool			speculative:1;	/* T if speculative status fetch (no vnode lock) */
- };
- 
- /*
-
-
+Alex
