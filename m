@@ -2,23 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36EB2BC52E
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 11:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E832BC533
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 11:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgKVKxv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 22 Nov 2020 05:53:51 -0500
-Received: from smtp.indutexspa.com ([92.223.155.235]:33161 "EHLO
+        id S1727716AbgKVK5r convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 22 Nov 2020 05:57:47 -0500
+Received: from smtp.indutexspa.com ([92.223.155.235]:43341 "EHLO
         ULTRA340.local" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727318AbgKVKxv (ORCPT
+        with ESMTP id S1727681AbgKVK5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 05:53:51 -0500
-X-Greylist: delayed 2047 seconds by postgrey-1.27 at vger.kernel.org; Sun, 22 Nov 2020 05:53:50 EST
+        Sun, 22 Nov 2020 05:57:46 -0500
 Received: from SERV2008.tigo.net.bo (SCZ-190-104-5-00033.tigo.bo [190.104.5.33] (may be forged))
         (authenticated bits=0)
-        by ULTRA340.local (9.0.0) with ESMTP id 0AMAYdAH031090
+        by ULTRA340.local (9.0.0) with ESMTP id 0AMAnLvK024275
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 acquisti@ULTRA340.local verify=NOT);
-        Sun, 22 Nov 2020 11:52:37 +0100
-Message-Id: <202011221052.0AMAYdAH031090@ULTRA340.local>
+        Sun, 22 Nov 2020 11:55:27 +0100
+Message-Id: <202011221055.0AMAnLvK024275@ULTRA340.local>
 Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
@@ -26,9 +25,9 @@ Content-Description: Mail message body
 Subject: RE:DONATION FOR YOU!!
 To:     Recipients <info@office.com>
 From:   "Dr. Mack John" <info@office.com>
-Date:   Sun, 22 Nov 2020 06:44:23 -0400
+Date:   Sun, 22 Nov 2020 06:47:01 -0400
 Reply-To: drmackjohn222@gmail.com
-X-Antivirus: verificato in 0.003sec su ULTRA340.local ([92.223.155.238])
+X-Antivirus: verificato in 0.001sec su ULTRA340.local ([92.223.155.238])
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
