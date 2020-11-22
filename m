@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1992BC56F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 12:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 331172BC571
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 12:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgKVLmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 06:42:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727621AbgKVLmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 06:42:38 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFDEE208D5;
-        Sun, 22 Nov 2020 11:42:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606045356;
-        bh=u9wt6zWQXqhPbLe88eGaTAtgK4qyg1Qlp00FPr9i2ZM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nK+mQGu0EYSPkK5eEbE7KgkFxchQJDFI9j74vY7HjR2B8EA0b8vtN5kQidc7Jrk+n
-         sRhmpb90J18mh2jJuZgMszn2sPDGlCl+4dyFCx6xPnXO4fgRE+g3CQ+8aoi5K0kVpJ
-         DSYMQYxJm7fLByieuEt8wAtoX5EwjbBYDOnlwkY4=
-Date:   Sun, 22 Nov 2020 12:43:14 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     devel@linuxdriverproject.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Staging/IIO driver fixes for 5.10-rc5
-Message-ID: <X7pO0mtUNsMsE9F7@kroah.com>
+        id S1727789AbgKVLot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 06:44:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727621AbgKVLos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 06:44:48 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F8BC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 03:44:48 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id t37so11500838pga.7
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 03:44:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4XdkuR1JHFqSFQIRQy3v8og91BQ7xzazW+qD0CqM6L4=;
+        b=PaDQNV49fzHSyPfcqyjr2Bn9p112tgCsAaGU671InWpP7Jb2Wl5s+2EfJMtmbfdPFc
+         I1Sun7uW6mR87hh7UUsMPYqDEcQ2uv+ta4iHNYvjwXn2MgFpuINAOHI4MeLV/WqVZ0AE
+         ogsrk2f6bzG2M67MPbe7WHXfSaniddmBzVPlQlFZcdFn5iI2TOds8voK3g6lpGAfqERQ
+         b3UrsdfaO7YGPqZ5NQtbpYRY/jNaNL/f//FVNegzccsh7pNVVLms9U3Uq6BShWaJSk08
+         mnp5pZ6fvvreBaWHPzPzLIoWcoE5xlK7E4BTCd32JfVmvdvBOLmCqSdjkPQYOLFiw296
+         PT7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4XdkuR1JHFqSFQIRQy3v8og91BQ7xzazW+qD0CqM6L4=;
+        b=G+zS9tgPndQPQWjFSjYdEsBmIFG7qhsk+zrjaKkwby0wuTOUZDE48nX93t3DPea2Hw
+         HBFyA45Syvs1y/NhAkkmLVDj7p4Y35mEt5qYj1nC65mQckW9zpUKwQrhHmjjXewJfAqF
+         LggN/GW5YZCvpi7AS9Pt9U8MLxT74RzlaD+PeQKf7QKzEgn1vrI/FsorwEseoULhodkk
+         t+ZFs7nQqAIaUtMR5FxTLNN6E7sMwBKVE62UH5L27C9jnNaNzL+KgAXRLOlMXObL9+69
+         2+PoMApO/kOW3MhrxxCmHRt/5teNCOG+Hr+oCe5+//cMOIQ6bsXtph7SYd7iFtlIsR0D
+         yh2g==
+X-Gm-Message-State: AOAM530VWnR8cWLgoDw4+BAx5KD+Vy5h26q2pQUp2V2rmnxnwynozM/P
+        llI87f9tK2z/znCaR0h0328=
+X-Google-Smtp-Source: ABdhPJygrbxbEJVF3H9xQ+uy13n3BiByaxBCJnXFiWShqcLggnB1/bILZb+GtxgQf+cPanaqL3AzLA==
+X-Received: by 2002:a62:7f4c:0:b029:198:bfe:96f6 with SMTP id a73-20020a627f4c0000b02901980bfe96f6mr550796pfd.23.1606045487428;
+        Sun, 22 Nov 2020 03:44:47 -0800 (PST)
+Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id r66sm7633564pfc.114.2020.11.22.03.44.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 03:44:46 -0800 (PST)
+Date:   Sun, 22 Nov 2020 22:44:42 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 09/32] sched/fair: Snapshot the min_vruntime of CPUs
+ on force idle
+Message-ID: <20201122114442.GD110669@balbir-desktop>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-10-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201117232003.3580179-10-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
+On Tue, Nov 17, 2020 at 06:19:39PM -0500, Joel Fernandes (Google) wrote:
+> During force-idle, we end up doing cross-cpu comparison of vruntimes
+> during pick_next_task. If we simply compare (vruntime-min_vruntime)
+> across CPUs, and if the CPUs only have 1 task each, we will always
+> end up comparing 0 with 0 and pick just one of the tasks all the time.
+> This starves the task that was not picked. To fix this, take a snapshot
+> of the min_vruntime when entering force idle and use it for comparison.
+> This min_vruntime snapshot will only be used for cross-CPU vruntime
+> comparison, and nothing else.
+> 
+> This resolves several performance issues that were seen in ChromeOS
+> audio usecase.
+> 
+> NOTE: Note, this patch will be improved in a later patch. It is just
+>       kept here as the basis for the later patch and to make rebasing
+>       easier. Further, it may make reverting the improvement easier in
+>       case the improvement causes any regression.
+>
 
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
+This seems cumbersome, is there no way to track the min_vruntime via
+rq->core->min_vruntime?
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.10-rc5
-
-for you to fetch changes up to 2dde2821b57f12fa8601d35d438b5e300fcbbe1d:
-
-  Merge tag 'iio-fixes-for-5.10a' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into staging-linus (2020-11-17 10:53:00 +0100)
-
-----------------------------------------------------------------
-Staging/IIO fixes for 5.10-rc5
-
-Here are some small Staging and IIO driver fixes for 5.10-rc5.  They
-include:
-	- IIO fixes for reported regressions and problems
-	- new device ids for IIO drivers
-	- new device id for rtl8723bs driver
-	- staging ralink driver Kconfig dependency fix
-	- staging mt7621-pci bus resource fix
-
-All of these have been in linux-next all week with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Brian O'Keefe (1):
-      staging: rtl8723bs: Add 024c:0627 to the list of SDIO device-ids
-
-David Lechner (1):
-      counter/ti-eqep: Fix regmap max_register
-
-Fabien Parent (1):
-      iio: adc: mediatek: fix unset field
-
-Fabrice Gasnier (1):
-      docs: ABI: testing: iio: stm32: remove re-introduced unsupported ABI
-
-Greg Kroah-Hartman (1):
-      Merge tag 'iio-fixes-for-5.10a' of https://git.kernel.org/.../jic23/iio into staging-linus
-
-Gwendal Grignou (1):
-      iio: cros_ec: Use default frequencies when EC returns invalid information
-
-Hans de Goede (2):
-      iio: accel: kxcjk1013: Replace is_smo8500_device with an acpi_type enum
-      iio: accel: kxcjk1013: Add support for KIOX010A ACPI DSM for setting tablet-mode
-
-Lorenzo Bianconi (1):
-      iio: imu: st_lsm6dsx: set 10ms as min shub slave timeout
-
-Necip Fazil Yildiran (2):
-      staging: ralink-gdma: fix kconfig dependency bug for DMA_RALINK
-      iio: light: fix kconfig dependency bug for VCNL4035
-
-Olivier Moysan (1):
-      iio: adc: stm32-adc: fix a regression when using dma and irq
-
-Paul Cercueil (2):
-      iio/adc: ingenic: Fix battery VREF for JZ4770 SoC
-      iio/adc: ingenic: Fix AUX/VBAT readings when touchscreen is used
-
-Sergio Paracuellos (1):
-      staging: mt7621-pci: avoid to request pci bus resources
-
- .../ABI/testing/sysfs-bus-iio-timer-stm32          | 24 ----------
- drivers/counter/ti-eqep.c                          |  4 +-
- drivers/iio/accel/kxcjk-1013.c                     | 51 +++++++++++++++++++---
- drivers/iio/adc/ingenic-adc.c                      | 34 ++++++++++++---
- drivers/iio/adc/mt6577_auxadc.c                    |  6 ++-
- drivers/iio/adc/stm32-adc-core.c                   | 41 ++++++++---------
- drivers/iio/adc/stm32-adc.c                        | 50 ++++++++++++++++++++-
- .../common/cros_ec_sensors/cros_ec_sensors_core.c  | 16 ++++---
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c       |  6 ++-
- drivers/iio/light/Kconfig                          |  1 +
- drivers/staging/mt7621-pci/pci-mt7621.c            | 15 ++-----
- drivers/staging/ralink-gdma/Kconfig                |  1 +
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c       |  1 +
- 13 files changed, 165 insertions(+), 85 deletions(-)
+Balbir Singh.
