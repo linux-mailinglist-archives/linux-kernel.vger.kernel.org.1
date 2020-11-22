@@ -2,73 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A10F2BC351
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 04:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1622BC362
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 04:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbgKVDXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 22:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        id S1727262AbgKVDZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 22:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726544AbgKVDXe (ORCPT
+        with ESMTP id S1727237AbgKVDZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 22:23:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E05C0613CF;
-        Sat, 21 Nov 2020 19:23:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=t7P1qjxLtvKyLv5lupmc5Zc5j0L3lqaoBXMlGIL9vWk=; b=BCb+FFzpwYCsAL5/GuZs0qQqU7
-        2wigu715rAloO1MXfHFDjsI/DCCkjrJ0RLz4Myz+wD98+zNWw6243kPWNzvqzMn6Tn8JVpmOuQv+x
-        7EKe3xartwVOhq4ran1ZhW92oaIukRN20h1OI3pPMusUrtae1AY4TqDUCPUPtiDgxz6eQOoVcrvcz
-        Ara6lCihfF7KrYMxKPcv522GOw1XE7kmR9pLBWd69WCJIf1380JdPIessAMMrwuE8sqCmQUL7YEHL
-        BXN0W+EBw/mKx6JrVL7roopk6K2PnHDj+T1EiV35semdke1klNMJQXZf1Gvzraa/TLsC310jvDxAq
-        zJ5cWKdw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kgfxw-0001fc-2G; Sun, 22 Nov 2020 03:23:04 +0000
-Date:   Sun, 22 Nov 2020 03:23:04 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     trix@redhat.com
-Cc:     joe@perches.com, clang-built-linux@googlegroups.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, tboot-devel@lists.sourceforge.net,
-        kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-wireless@vger.kernel.org,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
-        keyrings@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, alsa-devel@alsa-project.org,
-        bpf@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-nfs@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-Message-ID: <20201122032304.GE4327@casper.infradead.org>
-References: <20201121165058.1644182-1-trix@redhat.com>
+        Sat, 21 Nov 2020 22:25:25 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA1AC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 19:25:25 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id k3so12736913otp.12
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 19:25:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WJX+iwCNrLY6xkeYMcGsZvSc2bHXcPa6YPJqPYja4x8=;
+        b=DN1PPyz9MoRKDfIWWWgkA09mEVlXnqYAWl8vTLJXTSRJkv2ClFu2i3aMYVbZdeoqX9
+         pKLKGJ2Oc8i/zsMrza+EdthuBFm5g8R6a5Shq7pMQWJJNbJOWr1CYkZTRlU0YDfiJkWs
+         6AWHQD7LST88nPRSwwXSmtm4Dka/f7i3srcDe3mBJNkjfNSI2Vpzt2Vy7zvfFA0w4urM
+         UnNQeSy0B1tZwGBHPHDrEdxJRAJDDjtFrfLbyza30skD5tY6fjc2/ZOvryraDLB/8SzI
+         CiLFAE6uqoaD8jf3JZ2LlvmnhOMyvKvU2Nsq+nw+0RR/xJ5xBkfAZXl1IQmz+jGcezpt
+         og7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WJX+iwCNrLY6xkeYMcGsZvSc2bHXcPa6YPJqPYja4x8=;
+        b=st9D4X2qX+98E1tCHflAIkUMm6LQlIJwG9k4pVIvX7/axBw/Cz0nIsQt0u50Wbp9Yh
+         kU6+go/UlZ5G6oZL0g694ioD5XjZGohzEESXS57I96GhLeDQrQHxuTLbWpenEGsoMnVS
+         QGPYUCz30VtFDVxv2JpHPvotpZzkL7wdf8a7TouS4QlggEbEegTz8E1Uj8wdixWfKy4j
+         QzN25e5A6XQoredAcRs9DC9EjKbFmIGh6CTW3faYYII+DlDVWnX/nzOonA+BMFEZfV0B
+         UO0AsTr8N0jyOtrtB3o4qg/Sp7fvvBXkdkmUgX+H4OnHV1ACXT9KpQ+JF7X2NsSeHz/N
+         0jBw==
+X-Gm-Message-State: AOAM531VtXhqgxn+CvbH6S+HS2+N4QRryuzCUMW5OLWPaNHCMZtpTYM7
+        LjPMpXsSdy+KfBrCJn297ikO+M2k8uaWSg==
+X-Google-Smtp-Source: ABdhPJyh2XqbjHC8c5Q3FOf+1H8wzUez6/STr7DtcQ/thhx2kELdbzX0Nbb5f516o/kaKVYR5uXi0A==
+X-Received: by 2002:a9d:62c9:: with SMTP id z9mr19325119otk.18.1606015525052;
+        Sat, 21 Nov 2020 19:25:25 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s28sm4190142otd.2.2020.11.21.19.25.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 19:25:24 -0800 (PST)
+Date:   Sat, 21 Nov 2020 21:25:22 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Chris Lew <clew@codeaurora.org>
+Cc:     agross@kernel.org, sibis@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] soc: qcom: aoss: Add debugfs send entry
+Message-ID: <20201122032522.GN8532@builder.lan>
+References: <1604373541-12641-1-git-send-email-clew@codeaurora.org>
+ <1604373541-12641-2-git-send-email-clew@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121165058.1644182-1-trix@redhat.com>
+In-Reply-To: <1604373541-12641-2-git-send-email-clew@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 08:50:58AM -0800, trix@redhat.com wrote:
-> The fixer review is
-> https://reviews.llvm.org/D91789
-> 
-> A run over allyesconfig for x86_64 finds 62 issues, 5 are false positives.
-> The false positives are caused by macros passed to other macros and by
-> some macro expansions that did not have an extra semicolon.
-> 
-> This cleans up about 1,000 of the current 10,000 -Wextra-semi-stmt
-> warnings in linux-next.
+On Mon 02 Nov 21:19 CST 2020, Chris Lew wrote:
 
-Are any of them not false-positives?  It's all very well to enable
-stricter warnings, but if they don't fix any bugs, they're just churn.
+> It can be useful to control the different power states of various
+> parts of hardware for device testing. Add a debugfs node to send
+> messages through qmp to aoss for debugging and testing purposes.
+> 
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> ---
+>  drivers/soc/qcom/qcom_aoss.c | 36 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> index 8f052db1880a..2fd755d2a92d 100644
+> --- a/drivers/soc/qcom/qcom_aoss.c
+> +++ b/drivers/soc/qcom/qcom_aoss.c
+> @@ -4,6 +4,7 @@
+>   */
+>  #include <dt-bindings/power/qcom-aoss-qmp.h>
+>  #include <linux/clk-provider.h>
+> +#include <linux/debugfs.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/mailbox_client.h>
+> @@ -85,6 +86,8 @@ struct qmp {
+>  	struct clk_hw qdss_clk;
+>  	struct genpd_onecell_data pd_data;
+>  	struct qmp_cooling_device *cooling_devs;
+> +
+> +	struct dentry *debugfs_fp;
+>  };
+>  
+>  struct qmp_pd {
+> @@ -541,6 +544,34 @@ struct qmp_device *qmp_get(struct device_node *np)
+>  }
+>  EXPORT_SYMBOL_GPL(qmp_get);
+>  
+> +static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
+> +			      size_t len, loff_t *pos)
+> +{
+> +	struct qmp *qmp = file->private_data;
+> +	char buf[QMP_MSG_LEN] = {};
+> +	int ret;
+> +
+> +	if (!len || len >= QMP_MSG_LEN)
+> +		return len;
+> +
+> +	ret  = copy_from_user(buf, userstr, len);
+> +	if (ret) {
+> +		dev_err(qmp->dev, "copy from user failed, ret:%d\n", ret);
+> +		return len;
+> +	}
+> +
+> +	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
+> +	if (ret)
+> +		dev_err(qmp->dev, "debug send failed, ret:%d\n", ret);
+
+You should propagate this error to the caller, i.e. 
+
+	return ret ? ret : len;
+
+And with that the error print doesn't really add any value, so please
+drop it.
+
+> +
+> +	return len;
+> +}
+> +
+
+This will result in a compile warning when compiled without
+CONFIG_DEBUG_FS, so either mark it __maybe_unused or wrap the whole hunk
+in a #if IS_ENABLED(CONFIG_DEBUG_FS).
+
+
+PS. Feel free to resubmit this change on its own, as it can be merged
+independently from patch 1.
+
+Regards,
+Bjorn
+
+> +static const struct file_operations aoss_dbg_fops = {
+> +	.open = simple_open,
+> +	.write = aoss_dbg_write,
+> +};
+> +
+>  static int qmp_probe(struct platform_device *pdev)
+>  {
+>  	struct resource *res;
+> @@ -595,6 +626,9 @@ static int qmp_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, qmp);
+>  
+> +	qmp->debugfs_fp = debugfs_create_file("aoss_send_message", 0220, NULL,
+> +					      qmp, &aoss_dbg_fops);
+> +
+>  	return 0;
+>  
+>  err_remove_qdss_clk:
+> @@ -611,6 +645,8 @@ static int qmp_remove(struct platform_device *pdev)
+>  {
+>  	struct qmp *qmp = platform_get_drvdata(pdev);
+>  
+> +	debugfs_remove(qmp->debugfs_fp);
+> +
+>  	qmp_qdss_clk_remove(qmp);
+>  	qmp_pd_remove(qmp);
+>  	qmp_cooling_devices_remove(qmp);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
