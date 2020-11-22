@@ -2,147 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D232BC2FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 02:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471912BC2FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 02:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgKVB16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 20:27:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbgKVB1z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 20:27:55 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BB7C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:27:54 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id z3so10158129qtw.9
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:27:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FnqACzEuiQyrHG8IKp45SjZxKoAtkq6AMAVZi+Et/AM=;
-        b=XAZI9f6LApDEldNxEWeuZNxP7UK9/qnN9TWiax+wGwTdTwvQfgD4g+nNV4dwjMORTt
-         zn6zEE4GgFpeY7lVWRo5wbTlLdtLDPK9IWcQqpejoV49w5Pvkz8Xh6DfSfu+gn2Pyy5C
-         jM6jjstWMXimlMiLWvtB8TYc69Glb1XyxQqGwUOLDTVeNeMw7FgQXMZOtsNpPBEsqcZY
-         rR71xczkqDJqJMgaRQm4rMa+34oo9322z01cmcjTBXKjr/wntP0oYmrr5W3vsjVD6Z6L
-         51RP5YNTOfVJQStc5YqZ4D2FcVovKmyIDGrNaDUhJEm6efN4Iao3epS5tjbEP4ebNONb
-         gz7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FnqACzEuiQyrHG8IKp45SjZxKoAtkq6AMAVZi+Et/AM=;
-        b=M4VrSgIV6EEIjDd6ar0tdegf3ki+5NXkvoVz/f6wLXwELIus7OSyGJx+xEkEyUtZ7t
-         By7Pof1OIFJ1xbxbHgabnC04HCclXKuus+I/xayQksizsauHanrZe3I1/6qM+FVjIV5I
-         m639I10APSQ/9UmerinB1G+SEaBEiuErFB2CW2vJaP0DwMl+XgG/HgjSvkRjdu5fAL07
-         raqlhIEVhkm63Bupmj5Xr28oyoYBcQwLoD0vcM9qAxtNJCe2YZHV/Izrro3PYnBKmjmW
-         tba+qd59Zq40blOvYOaYLipde3RY2+Whh1ZA48bd4+x3GPMy4YYBBUvXnOU/X+dTB20q
-         AvAw==
-X-Gm-Message-State: AOAM532Hid39pj2z0DbmnESRprHOjBwnOv8C1VGx68PurSKFoo0ln/TW
-        O72boSzWHfAObQ34rXM0Ed4=
-X-Google-Smtp-Source: ABdhPJzHi3ennKTBeUD4FBMkp8DJrwW2xX2YPksyy5DkNmpxOTQil76C+x+TGlLfnPu8Yhu7C2yP5Q==
-X-Received: by 2002:aed:20c2:: with SMTP id 60mr19829271qtb.280.1606008473973;
-        Sat, 21 Nov 2020 17:27:53 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:65df:e6:bdb7:d0a7])
-        by smtp.googlemail.com with ESMTPSA id c1sm5234919qkd.74.2020.11.21.17.27.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 17:27:53 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Anders Larsen <al@alarsen.net>, linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH v2] qnx4_match: do not over run the buffer
-Date:   Sat, 21 Nov 2020 20:27:40 -0500
-Message-Id: <20201122012740.4814-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726768AbgKVBbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 20:31:44 -0500
+Received: from mga02.intel.com ([134.134.136.20]:1807 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726662AbgKVBbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 20:31:36 -0500
+IronPort-SDR: ljH3ejHLzpP8rVfL/Xm6KAmkKdas+2YrsM7UJgj1R76ISGTHJGuPZEV20m1Ix2be9C6nsCwbkR
+ kE0tTp4bQuSQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9812"; a="158664600"
+X-IronPort-AV: E=Sophos;i="5.78,360,1599548400"; 
+   d="scan'208";a="158664600"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 17:31:35 -0800
+IronPort-SDR: qyGWI5X6geDxp1ZRkpQOjhl4RdZlIwmS8/MqBHu146PR30+d+qahky4MosNxDl+qVYovoUcPrb
+ 7DDCmMdepb0g==
+X-IronPort-AV: E=Sophos;i="5.78,360,1599548400"; 
+   d="scan'208";a="331778054"
+Received: from araj-mobl1.jf.intel.com ([10.252.131.178])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 17:31:35 -0800
+Date:   Sat, 21 Nov 2020 17:31:33 -0800
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
+        linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH 1/1] pci: pciehp: Handle MRL interrupts to enable slot
+ for hotplug.
+Message-ID: <20201122013133.GA22190@araj-mobl1.jf.intel.com>
+References: <20200925230138.29011-1-ashok.raj@intel.com>
+ <20201119075120.GA542@wunner.de>
+ <20201119220807.GB102444@otc-nc-03>
+ <20201121111050.GA6854@wunner.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121111050.GA6854@wunner.de>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the di_fname may not terminated by '\0', use strnlen to prevent buffer
-overrun
+On Sat, Nov 21, 2020 at 12:10:50PM +0100, Lukas Wunner wrote:
+> 
+> > > > +	/*
+> > > > +	 * If ATTN is present and MRL is triggered
+> > > > +	 * ignore the Presence Change Event.
+> > > > +	 */
+> > > > +	if (ATTN_BUTTN(ctrl) && (events & PCI_EXP_SLTSTA_MRLSC))
+> > > > +		events &= ~PCI_EXP_SLTSTA_PDC;
+> > > 
+> > > An Attention Button press results in a synthesized PDC event after
+> > > 5 seconds, which may get lost due to the above if-statement.
+> > 
+> > When its synthesized you don't get the MRLSC? So we won't nuke the PDC then
+> > correct?
+> 
+> I just meant to say, pciehp_queue_pushbutton_work() will synthesize
+> a PDC event after 5 seconds and with the above code snippet, if an
+> MRL event happens simultaneously, that synthesized PDC event would
+> be lost.  So I'd just drop the above code snippet.  I think you
+> just need to subscribe to MRL events and propagate them to
+> pciehp_handle_presence_or_link_change().  There, you'd bring down
+> the slot if an MRL event has occurred (same as DLLSC or PDC).
+> Then, check whether MRL is closed.  If so, and if presence or link
+> is up, try to bring up the slot.
+> 
+> If the MRL is open when slot or presence has gone up, the slot is not
+> brought up.  But once MRL is closed, there'll be another MRL event and
+> *then* the slot is brought up.
+> 
 
-[  513.248784] qnx4_readdir: bread failed (3718095557)
-[  513.250880] ==================================================================
-[  513.251109] BUG: KASAN: use-after-free in strlen+0x1f/0x40
-[  513.251268] Read of size 1 at addr ffff888002700000 by task find/230
-[  513.251419]
-[  513.251677] CPU: 0 PID: 230 Comm: find Not tainted 5.10.0-rc4+ #64
-[  513.251805] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd84
-[  513.252069] Call Trace:
-[  513.252310]  dump_stack+0x7d/0xa3
-[  513.252443]  print_address_description.constprop.0+0x1e/0x220
-[  513.252572]  ? _raw_spin_lock_irqsave+0x7b/0xd0
-[  513.252681]  ? _raw_write_lock_irqsave+0xd0/0xd0
-[  513.252785]  ? strlen+0x1f/0x40
-[  513.252869]  ? strlen+0x1f/0x40
-[  513.252955]  kasan_report.cold+0x37/0x7c
-[  513.253059]  ? qnx4_block_map+0x130/0x1d0
-[  513.253152]  ? strlen+0x1f/0x40
-[  513.253237]  strlen+0x1f/0x40
-[  513.253329]  qnx4_lookup+0xab/0x220
-[  513.253431]  __lookup_slow+0x103/0x220
-[  513.253531]  ? vfs_unlink+0x2e0/0x2e0
-[  513.253626]  ? down_read+0xd8/0x190
-[  513.253721]  ? down_write_killable+0x110/0x110
-[  513.253823]  ? generic_permission+0x4c/0x240
-[  513.253929]  walk_component+0x214/0x2c0
-[  513.254035]  ? handle_dots.part.0+0x760/0x760
-[  513.254137]  ? walk_component+0x2c0/0x2c0
-[  513.254233]  ? path_init+0x546/0x6b0
-[  513.254327]  ? __kernel_text_address+0x9/0x30
-[  513.254430]  ? unwind_get_return_address+0x2a/0x40
-[  513.254538]  ? create_prof_cpu_mask+0x20/0x20
-[  513.254637]  ? arch_stack_walk+0x99/0xf0
-[  513.254736]  path_lookupat.isra.0+0xb0/0x240
-[  513.254840]  filename_lookup+0x128/0x250
-[  513.254939]  ? may_linkat+0xb0/0xb0
-[  513.255033]  ? __fput+0x199/0x3c0
-[  513.255127]  ? kasan_save_stack+0x32/0x40
-[  513.255224]  ? kasan_save_stack+0x1b/0x40
-[  513.255323]  ? kasan_unpoison_shadow+0x33/0x40
-[  513.255426]  ? __kasan_kmalloc.constprop.0+0xc2/0xd0
-[  513.255538]  ? getname_flags+0x100/0x2a0
-[  513.255635]  vfs_statx+0xd8/0x1d0
-[  513.255728]  ? vfs_getattr+0x40/0x40
-[  513.255821]  ? lockref_put_return+0xb2/0x120
-[  513.255922]  __do_sys_newfstatat+0x7d/0xd0
-[  513.256022]  ? __ia32_sys_newlstat+0x30/0x30
-[  513.256122]  ? __kasan_slab_free+0x121/0x150
-[  513.256222]  ? rcu_segcblist_enqueue+0x72/0x80
-[  513.256333]  ? fpregs_assert_state_consistent+0x4d/0x60
-[  513.256446]  ? exit_to_user_mode_prepare+0x2d/0xf0
-[  513.256551]  ? __x64_sys_newfstatat+0x39/0x60
-[  513.256651]  do_syscall_64+0x33/0x40
-[  513.256750]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Co-Developed-by: Anders Larsen <al@alarsen.net>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
-v2: The name can grow longer than QNX4_SHORT_NAME_MAX if de is a
- QNX4_FILE_LINK type and de should points to a qnx4_link_info struct, so
- this is safe.  We also remove redundant checks in this version.
-
- fs/qnx4/namei.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
-index 8d72221735d7..2bcbbd7c772e 100644
---- a/fs/qnx4/namei.c
-+++ b/fs/qnx4/namei.c
-@@ -40,9 +40,7 @@ static int qnx4_match(int len, const char *name,
- 	} else {
- 		namelen = QNX4_SHORT_NAME_MAX;
- 	}
--	thislen = strlen( de->di_fname );
--	if ( thislen > namelen )
--		thislen = namelen;
-+	thislen = strnlen( de->di_fname, namelen );
- 	if (len != thislen) {
- 		return 0;
- 	}
--- 
-2.25.1
-
+Sounds good.. I'll send the update patch.
