@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B41B2BC560
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 12:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E094C2BC565
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 12:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgKVLc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 06:32:57 -0500
-Received: from smtprelay0007.hostedemail.com ([216.40.44.7]:49308 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727373AbgKVLc4 (ORCPT
+        id S1727770AbgKVLec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 06:34:32 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:41695 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727373AbgKVLea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 06:32:56 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 3C55B248D;
-        Sun, 22 Nov 2020 11:32:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:4321:5007:7903:10004:10400:10848:11232:11658:11914:12297:12438:12555:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21221:21451:21627:21774:30030:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: jelly52_1906f722735c
-X-Filterd-Recvd-Size: 2531
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 22 Nov 2020 11:32:54 +0000 (UTC)
-Message-ID: <368300090d93ad66f7fb19076d076d4321a04c42.camel@perches.com>
-Subject: Re: [PATCH v5] checkpatch: add fix option for LOGICAL_CONTINUATIONS
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
+        Sun, 22 Nov 2020 06:34:30 -0500
+Received: by mail-ej1-f65.google.com with SMTP id gj5so19290809ejb.8;
+        Sun, 22 Nov 2020 03:34:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SAUpgXkhpDLUuiNrzQtVU9JDr5pPgmZOexepaOR15kM=;
+        b=JY9nQojTgARxcqUTOOVIVtE3WcxwM1Yv+36Lvb9EiSLFMX2VG8FyX1ocP55Cxigztc
+         0rSBIRolSLRhpaGZkYjbW2GhHZhUbm1Nhywc1g7v3TQNw3MrbuaOkhjTQPJayLQqeZl4
+         wxi/qpglke7NwJ8n+Tjvo7bhjajwbtAZLLAPeJWOXpxbSWqOfxBRa37MBtfY+D7J1mwn
+         gbgihabgGJqLZdNvGEJYK2s36/+S+bv+O3PZRNudzt13JD+ANzD9czafLJIRJLmk4ADp
+         6QSqny8lTWdp26srDqkzunadTWHVoSn2Ry598h9Mksp1mwn87G9Wv9e1qp86tcpoDaH2
+         rGxg==
+X-Gm-Message-State: AOAM533p7k70MkpoU8HY3ZkMGkt4uzjwxkob2YrTETpxPdN6nML++vJ0
+        Jn/ykT1VIRX5XXkpIQl+ovw=
+X-Google-Smtp-Source: ABdhPJwf2cpSra61Bq1x3wiIFVpi+/rv8Zj0QYd2SeuETiIkDycslILQ3sAb1weDhQpNpkIzxFRX7g==
+X-Received: by 2002:a17:906:35da:: with SMTP id p26mr40421111ejb.256.1606044867906;
+        Sun, 22 Nov 2020 03:34:27 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id rp28sm3481828ejb.77.2020.11.22.03.34.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 03:34:26 -0800 (PST)
+Date:   Sun, 22 Nov 2020 12:34:25 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <snawrocki@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Sun, 22 Nov 2020 03:32:53 -0800
-In-Reply-To: <20201122111025.17978-1-yashsri421@gmail.com>
-References: <1823e72eb92280d30457dda49e0a0036dee15dd3.camel@perches.com>
-         <20201122111025.17978-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: Re: [PATCH] clk: samsung: allow compile testing of Exynos, S3C64xx
+ and S5Pv210
+Message-ID: <20201122113425.GA6633@kozik-lap>
+References: <20201119164509.754851-1-krzk@kernel.org>
+ <f44c5f4f-bda4-a1c1-dc6a-dc31efa314c6@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f44c5f4f-bda4-a1c1-dc6a-dc31efa314c6@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-22 at 16:40 +0530, Aditya Srivastava wrote:
-> Currently, checkpatch warns if logical continuations are placed at the
-> start of a line and not at the end of previous line.
+On Fri, Nov 20, 2020 at 05:36:35PM +0100, Sylwester Nawrocki wrote:
+> On 11/19/20 17:45, Krzysztof Kozlowski wrote:
+> > So far all Exynos, S3C64xx and S5Pv210 clock units were selected by
+> > respective SOC/ARCH Kconfig option.  On a kernel built for selected
+> > SoCs, this allowed to build only limited set of matching clock drivers.
+> > However compile testing was not possible in such case as Makefile object
+> > depent on SOC/ARCH option.
 > 
-> E.g., running checkpatch on commit 3485507fc272 ("staging:
-> bcm2835-camera: Reduce length of enum names") reports:
+> "objects depend" or "object depends" ?
+
+"object depends"
+
 > 
-> CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
-> previous line
-> +	if (!ret
-> +	    && camera_port ==
+> > Add separate Kconfig options for each of them to be able to compile
+> > test.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski<krzk@kernel.org>
 > 
-> Provide a simple fix by adding logical operator at the end of previous
-> line and removing from current line, if both the lines are additions
-> (ie start with '+')
-
-Not quite yet.
-
-> changes in v5: improve regex for comment and line end with '$;'
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3553,8 +3553,17 @@ sub process {
->  
+> The patch look good to me, thanks.
+> Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 > 
->  # check for && or || at the start of a line
->  		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
-> -			CHK("LOGICAL_CONTINUATIONS",
-> -			    "Logical continuations should be on the previous line\n" . $hereprev);
-> +			my $operator = $1;
-> +			if (CHK("LOGICAL_CONTINUATIONS",
-> +				"Logical continuations should be on the previous line\n" . $hereprev) &&
-> +			    $fix && $prevrawline =~ /^\+/) {
-> +				# add logical operator to the previous line, remove from current line
-> +				if ($prevline =~ /[\s$;]*$/) {
+> I guess it's best now to merge it through your tree as it depends on 
+> patches already sent to arm-soc? Next time it might be better to use 
+> immutable branches right away to keep the clk changes in the clk 
+> maintainer's tree.
 
-This if is misleading as it will always match at least the EOL
+At that time I had only one clk patch so I did not put it on separate
+branch.
 
-> +					my $line_end = substr($prevrawline, $-[0]);
-> +					$fixed[$fixlinenr - 1] =~ s/\Q$line_end\E/ $operator$line_end/;
+Anyway, this does not depend on the clkout patches and only minor patch
+adjustement is needed. Cherry-pick can solve it (you would need to apply
+on next/master and then cherry pick) or I can resend you one rebased on
+linus/master.
 
-It makes it seem as if this part is only done when the test is true.
-The test is always true.
+There should be no conflicts when merging later into next or linus.
 
+I propose you should take it via clk tree.
+
+Best regards,
+Krzysztof
 
