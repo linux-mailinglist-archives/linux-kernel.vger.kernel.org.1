@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71622BFC8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 23:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65B62BFC8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 23:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgKVWpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 17:45:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgKVWpo (ORCPT
+        id S1726781AbgKVWq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 17:46:56 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:50322 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726698AbgKVWq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 17:45:44 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3139DC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 14:45:44 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id 5so7897458plj.8
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 14:45:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OdWIGTc92K23SGH+h45CfwAU+BJCGqp0BeoMZ1rGk8A=;
-        b=Z6Fm/S3V7eXuJUGZ5sbX1lgvXOrObrDIGsn9unaLCxeWisxliLoyeHJ0euahfscnk0
-         mAJJgWKdyi/E5Y3EXpOOOjdcv/P37fWdEnZZ5Wj2tXQv45nZYSfr3hTFfYquNUstxB4x
-         3nK86wzpLhihoXMjKw4z1xrUObSwMVHsNaPVz1IBOsOHhURXIOp6VFumVPe2+Y07xHoo
-         LgmMtnpXWgY1ZQ8HuWdoXlzVh9S2bWTEPXg8JD2wjQCF8RqIYNa7ckbKmwsNUxKDUrpC
-         ruDc7qtDn46KNhtV9CngsZ2+x6ivvvlWLayf00FE7jTjNLWUU9HI2LskKIxHgdDI21Dt
-         FhYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OdWIGTc92K23SGH+h45CfwAU+BJCGqp0BeoMZ1rGk8A=;
-        b=qdOvMMLBDkLrby/L+zfeTwCePEAtMw/veBffoMukkWThsNxLM6UHXFE+cNohmAyzer
-         30KSPKJ/4WuJcgsN31NvB6g03otelXnSQMXoiFu1YJM9VHvUhSj6nBrrox85nEpyVysX
-         n/HBisdm+b1u2JXOoHJc9s8v5DAwLH6VtD0LkyKZZEQrqh2v4C4c2vuchqSsn6rg7B2/
-         9yPmrvKseMIFqkxV0O7rpuLQ/JmO80R7ZXMvCeoGA3LKSXu9jI0ZHNJb5A4YDHvPMyYt
-         CYmj+iQHU4vnk2oVzd5+mHkTTqx34npzob3mUcNr5d4BvoZCTxSOZbqgVRR/MECcjgKE
-         yaBQ==
-X-Gm-Message-State: AOAM533MR1nI9r88a70Wswgv9yMVRkMsYiIYLzbUG+GFqZ2LLELh8yj5
-        ne+dOqES5MyVjoaCQ0r1+UYuuvGM2c+udU5Q
-X-Google-Smtp-Source: ABdhPJyOCdi13QjBP6bghqocwysl62lW1Z+eeElWlOe0SE/C+t2ICxOM0iBgwk3jG3ttrTGj0txu6Q==
-X-Received: by 2002:a17:902:468:b029:d5:ad3c:cf52 with SMTP id 95-20020a1709020468b02900d5ad3ccf52mr21892231ple.7.1606085143479;
-        Sun, 22 Nov 2020 14:45:43 -0800 (PST)
-Received: from localhost.localdomain ([49.207.209.223])
-        by smtp.gmail.com with ESMTPSA id v196sm9856162pfc.34.2020.11.22.14.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 14:45:42 -0800 (PST)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com
-Subject: [PATCH] misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
-Date:   Mon, 23 Nov 2020 04:15:34 +0530
-Message-Id: <20201122224534.333471-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 22 Nov 2020 17:46:56 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-184-OPkHHBZnNUaqutYdUM3CBw-1; Sun, 22 Nov 2020 22:46:52 +0000
+X-MC-Unique: OPkHHBZnNUaqutYdUM3CBw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 22 Nov 2020 22:46:51 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 22 Nov 2020 22:46:51 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Howells' <dhowells@redhat.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Thread-Topic: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Thread-Index: AQHWwBDGoGn3nOhJ3USQ5xOUKK1Ae6nUv7SQ
+Date:   Sun, 22 Nov 2020 22:46:51 +0000
+Message-ID: <4cf03398b2bb47e28d13fae4b62185f5@AcuMS.aculab.com>
+References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+ <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A kernel-infoleak was reported by syzbot, which was caused because
-dbells was left uninitialized.
-Using kzalloc() instead of kmalloc() fixes this issue.
-
-Reported-by: syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com
-Tested-by: syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
- drivers/misc/vmw_vmci/vmci_context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/misc/vmw_vmci/vmci_context.c b/drivers/misc/vmw_vmci/vmci_context.c
-index 16695366ec92..26ff49fdf0f7 100644
---- a/drivers/misc/vmw_vmci/vmci_context.c
-+++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -743,7 +743,7 @@ static int vmci_ctx_get_chkpt_doorbells(struct vmci_ctx *context,
- 			return VMCI_ERROR_MORE_DATA;
- 		}
- 
--		dbells = kmalloc(data_size, GFP_ATOMIC);
-+		dbells = kzalloc(data_size, GFP_ATOMIC);
- 		if (!dbells)
- 			return VMCI_ERROR_NO_MEM;
- 
--- 
-2.25.1
+RnJvbTogRGF2aWQgSG93ZWxscw0KPiBTZW50OiAyMSBOb3ZlbWJlciAyMDIwIDE0OjE0DQo+IA0K
+PiBTd2l0Y2ggdG8gdXNpbmcgYSB0YWJsZSBvZiBvcGVyYXRpb25zLiAgSW4gYSBmdXR1cmUgcGF0
+Y2ggdGhlIGluZGl2aWR1YWwNCj4gbWV0aG9kcyB3aWxsIGJlIHNwbGl0IHVwIGJ5IHR5cGUuICBG
+b3IgdGhlIG1vbWVudCwgaG93ZXZlciwgdGhlIG9wcyB0YWJsZXMNCj4ganVzdCBqdW1wIGRpcmVj
+dGx5IHRvIHRoZSBvbGQgZnVuY3Rpb25zIC0gd2hpY2ggYXJlIG5vdyBzdGF0aWMuICBJbmxpbmUN
+Cj4gd3JhcHBlcnMgYXJlIHByb3ZpZGVkIHRvIGp1bXAgdGhyb3VnaCB0aGUgaG9va3MuDQoNCkkg
+d2FzIHdvbmRlcmluZyBpZiB5b3UgY291bGQgdXNlIGEgYml0IG9mICdjcHAgbWFnaWMnDQpzbyB0
+aGUgdG8gY2FsbCBzaXRlcyB3b3VsZCBiZToNCglJVEVSX0NBTEwoaXRlciwgYWN0aW9uKShhcmdf
+bGlzdCk7DQoNCndoaWNoIG1pZ2h0IGV4cGFuZCB0bzoNCglpdGVyLT5hY3Rpb24oYXJnX2xpc3Qp
+Ow0KaW4gdGhlIGZ1bmN0aW9uLXRhYmxlIGNhc2UuDQpCdXQgY291bGQgYWxzbyBiZSBhbiBpZi1j
+aGFpbjoNCglpZiAoaXRlci0+dHlwZSAmIGZvbykNCgkJZm9vX2FjdGlvbihhcmdzKTsNCgllbHNl
+IC4uLg0Kd2l0aCBmb29fYWN0aW9uKCkgYmVpbmcgaW5saW5lZC4NCg0KSWYgdGhlcmUgaXMgZW5v
+dWdoIHN5bW1ldHJ5IGl0IG1pZ2h0IG1ha2UgdGhlIGNvZGUgZWFzaWVyIHRvIHJlYWQuDQpBbHRo
+b3VnaCBJJ20gbm90IHN1cmUgd2hhdCBoYXBwZW5zIHRvICdpdGVyYXRlX2FsbF9raW5kcycuDQpP
+VE9IIHRoYXQgaXMgYWxyZWFkeSB1bnJlYWRhYmxlLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJl
+ZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXlu
+ZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
