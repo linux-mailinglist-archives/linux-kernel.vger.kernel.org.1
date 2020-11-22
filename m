@@ -2,307 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6362BC90F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D6F2BC912
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727688AbgKVUFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 15:05:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbgKVUFf (ORCPT
+        id S1727584AbgKVUMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 15:12:24 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:31560 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727366AbgKVUMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 15:05:35 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26E3C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 12:05:35 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id u24so7995472vsl.9
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 12:05:35 -0800 (PST)
+        Sun, 22 Nov 2020 15:12:22 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AMKCJ3S007579;
+        Sun, 22 Nov 2020 12:12:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=MhoSPYw36XdWgNH/OaVgebsXZ3yb7RsJ0CGHdGSBhzU=;
+ b=Iq3Wz60oLo4We9XcEeZJrvL34dTLGLkhQA8zwMzg10K8dgDxs2nwek+gDkUlzdCxOtmG
+ 5e4rp/bmC2SYM1kwXBtK2Q1DoRaycUqkzKkt9RYg+4l93dBJgNAwYx2OLHlbhyU62bfS
+ wiMi5mh+x4SJHdrKn0akrDT0T5CE5A3ciyLLeGp5L68fcYkuOCzXQ0UgdX/0kMxyJSAD
+ sC/cIktDZu6n7tx7lFYLHXPxz2gZEU9BoUUh7AaIpH4jLuB12vK71fBLGV1rggrY5Eyk
+ 3zNWNwfBS1g6lrW/d8zBdmSlfEF/8CTAfO+9K2KWLeMUJHP7gqKb711wdhO3qmgN/ryH 3A== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 34y14u3ek3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 22 Nov 2020 12:12:19 -0800
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 22 Nov
+ 2020 12:12:18 -0800
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.52) by
+ SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Sun, 22 Nov 2020 12:12:17 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xo23cqSkfM/tUXSoCDklss0Q+Gt0i6TSvJBivlyDZp41P197Im5JYV+BRbweHa7E+jMEJFMZ3lJBe2tS9U7/rBAOrD7bwxf2PBq1t9RjvLts45S7n4el5SDocqUyoxwoNYPI55RbR5vtHTgTsHdZPqqr+Q2vhFxFKIOXUdIdeZoj9bEtgtodoAhHmT1jtQ3KUwA9YeH1WefcAYMn7pXaB81eQniHysVXMKg0oD/2byTrKf7AMasrl0j4V2LeujwcVWuY/O5iamYJClih67h/UBEUAvpCMs2twzNB32uLNg36JF9VyqHDWTp+w+XVQ5WYbzbPsWWXoqCRkuJHcY4DsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MhoSPYw36XdWgNH/OaVgebsXZ3yb7RsJ0CGHdGSBhzU=;
+ b=Dl1ZfCqavr86QpFekzzbfru7k0Pp/LR2p9sgpaAYHCiq6shDVQ//yAR8o2pH7cGQ6E1PA7G/pld8053RMgxFmtA6JiCG3Gz2Z8qr52Wv2FBaBTGV6qrYM95DTN5iFPt7j7zJit5W1/yriyQyVObVfRMXzChAeJ479xZcAun6F+yvzWMpZqKIrsSpXGyOzLgq3rUPAIHNPxMD3tJXIKsixy1P+0cEObGNvUgMbLY2JDLg6mhi0Uk4nOeFNFe2wPjL5kAli5NvtemC82lj/OUHCBI76Ssx4pJC0gSIStZ5rlj9j42NAg7wLhVXjmoJ7CrWqmho7nt5DLtgcZTqxMbE+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bqhVbxeK67mvyVWitdbRV+x5z6dFLvsGxFt9jpKxnD0=;
-        b=OK1hPQd26rsZBffPjxzRN9HV9GXss1Vnphm6Fl2oqd9Qziu+7ch6dtt4Ji3NneXczb
-         DioTsLhP0mrfVUcUsN7nbLc0FvL52sSkFTpYlNpg2ZTAZVUm9pkduQtm0btadIvoQXsn
-         HpyFvYTl0RtQdu36jvuqKrbxC6OXNJ+acYfhmfcq+ioYCpN94h7R6dlWgu3vse5EhPg7
-         RNPbGuXF+UgvbAyxoadfbmZ2S4/KiqANCMkdJhEDTd7EUf638kRC9a9pwassKPUl0ucu
-         rNxy5QhFm376jkWZkf/9RLHU/2/MEnAIr9SmgVJeO/ygb3C+JYrisji5JC/dy2+BZ8R6
-         gT4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bqhVbxeK67mvyVWitdbRV+x5z6dFLvsGxFt9jpKxnD0=;
-        b=L6JqxdWsp+vc/U9fiV9cvcvS/RyKALFpbgCU+xNkXRvFb41PmqA2bPNHJv/P/4Q+6B
-         ptFFepfMalR9S8o4PS0Off3NT5ETDlQb3Sab+plPKne3t0fQJ18MKkGpr4QxkbmyU2TD
-         V5R4ewka+y5L5Kn3ojwNVdcJdDuWYn44bU3Yzc7KHXm4Wm6QFAy+CCuBkR5cI+vbL4Xz
-         mRE+2qHTVzg5Q6o8JErefzeUqW3K7uq7lAGsKJL32fhyar94lOGzIwHbh5Ms5H4x7vp3
-         m3CXj+FoiocohAi9RcncTCtMOoXlSCFJ2vld5k4dAvJUoWCNpv1DBA51zGXINIwmPiIL
-         QXkQ==
-X-Gm-Message-State: AOAM532segqMk2llwduJqEkjpynWkrW5IKHWE7id3UXeD0VA9C/DobcJ
-        dGlMil+EY+v0HxPeiaU8RBRcn5iv7otsCCDAvf8Z1A==
-X-Google-Smtp-Source: ABdhPJyIFLJ85bMCYvj/91ettayOH1V58EjXivrE8WfF+1YBFSJbddTZYClbJIc/ZDQyppnesX+CPl7WRcw+ZKpDw10=
-X-Received: by 2002:a67:ce1a:: with SMTP id s26mr17518592vsl.0.1606075534004;
- Sun, 22 Nov 2020 12:05:34 -0800 (PST)
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MhoSPYw36XdWgNH/OaVgebsXZ3yb7RsJ0CGHdGSBhzU=;
+ b=LR7mx6ithz/Y4i2iHeL5dTihNxCzp3lhgXUeYWqNCAFro6J3evpLdw6rWUhK/gFmxKLvUpKSqpT6Xdv2QJdRG2mealeZUyJzk1KPZ4pd9QCHsKNzM/Fe4wJcKR4ziq9IenlFGaObL9UPY8yWPvy7rclrkrV4nVM1OjpipTt71cs=
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com (2603:10b6:208:163::15)
+ by BL0PR18MB2292.namprd18.prod.outlook.com (2603:10b6:207:45::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Sun, 22 Nov
+ 2020 20:12:15 +0000
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::ec13:dcaa:6533:c2fa]) by MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::ec13:dcaa:6533:c2fa%4]) with mapi id 15.20.3589.020; Sun, 22 Nov 2020
+ 20:12:15 +0000
+From:   Michal Kalderon <mkalderon@marvell.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [EXT] [PATCH 035/141] IB/qedr: Fix fall-through warnings for
+ Clang
+Thread-Topic: [EXT] [PATCH 035/141] IB/qedr: Fix fall-through warnings for
+ Clang
+Thread-Index: AQHWv2sCM6Hcq0b+bkOyw93+E3dG1KnUmJcA
+Date:   Sun, 22 Nov 2020 20:12:15 +0000
+Message-ID: <MN2PR18MB3182F593C7A23B42A3961208A1FD0@MN2PR18MB3182.namprd18.prod.outlook.com>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <8d7cf00ec3a4b27a895534e02077c2c9ed8a5f8e.1605896059.git.gustavoars@kernel.org>
+In-Reply-To: <8d7cf00ec3a4b27a895534e02077c2c9ed8a5f8e.1605896059.git.gustavoars@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [212.199.69.2]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aa151712-2468-45dd-ec83-08d88f22e7c2
+x-ms-traffictypediagnostic: BL0PR18MB2292:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR18MB2292355DBC9F79A2C3ACEB63A1FD0@BL0PR18MB2292.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1tEOq19RfUBWx/98EcZgDhXcIJHTvUBvzThTltyz0R11SRARaelhTzd9Dr9XvveZSUaBC2znIXu7e3u+5yfwJ00d4nlQ0lKO44EZujYsXE5IVCpb2ZftbS8cFnwu6paDUwwx+/mS+XufbqzNuMRhwyun3bnVlAjNn/MJMHq4HSOn5p6d/wJ63mrTUCYnF2atjMXF8eWB21qwGA6gJ3OwZbK9X60CmQGutmVH5C7Z2X/cBhpkwyuU5VkmEDBtJPDY7M7SpcV/fgrCqLJZ++9UF6Jgw1RjW9Zv/VC6vw+psKrFFuccBN709Rvg/X+pI+3qH9nOxERPhX5XlEC4/HRhCiHF3yey2UJZ7hbkU5GhgNRf2eANiu+H55Xz3VeJfBJK2E8lG6tLU31fSVzOc/sQ1A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR18MB3182.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39850400004)(396003)(366004)(8676002)(4326008)(71200400001)(9686003)(33656002)(83380400001)(55016002)(19627235002)(966005)(76116006)(54906003)(66476007)(7696005)(6506007)(5660300002)(8936002)(316002)(52536014)(66556008)(26005)(66946007)(86362001)(66446008)(110136005)(2906002)(186003)(64756008)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: dpffGNa63oKCZY1R2kVqUQEGRzWObQO47LVsmK4JIsSPT5nB45yrJOw/6iYR+5CesBLtv/Oqi4RM4wnZ9q3iC7giql5GpBczkIeuDscY8p6obKOrPT+eKwUrchtksaSZdtSEBraD7WPUQbfNqRbq3u9BzIixja3C9PBJ21MmSowR6E7O+9wCQwZl8+W0qhI3gYCqZlKU65ohwFoNAULmXFIPw0Q8AHpbaMEVHcOnHzOrts1cBOUpoZoNTBdpcsfsk2JXEucMs3bSeKxoAh3mOlHitZvJ6iNMuhj5SzhIVR0vSn3/KliVJbpZFAIC5ZPwvftoB2sdb7l4RcefPgDjYA6T1qDQ+q/zOauM3sD+CK/vhnyXC51l77zNzo0YpmDnPQm+S2tLm/ls4NL4HVftF5toItCvbRyVR2nPUFH71PGsyMBrZRon4NVJMXUCXpSTQR1yJgBbgAoN5EEr7oR+5zKRPDVt/knTkxzTKWBlDx4uWr9vCqYVemywUj6cypGIszZWBfsUBzQ48EoRZB+Tq7e92cMDl+/aBlKb+PRYcOoIy7bAX8XFBKZtxnC1wrBUpl+tQfl/Xkmb7rpdBBf+sQr5aAR5BYwEKwRUvlk+EUidPbUzbNypfPaiUw8of9U+5vNnVqyKcnLuriNiA6+qPXrsy8Fi+UT3+kA9+QXAqeYpD0zwCEi6c2GW6yhEnmuL010d0Juhh0FJa73udd937SXW6mSmYBPKQ31LywW/GwMlV7DywY493TPGqRCpTgeuw/dASq7B8sINsiuB8ZxgaLRYlsymZJme7INaQFmSZMRJ2cFA3weh2HRYA81mmRL7IOjbJM7jjc4BNmPOLnYcDkfaW9bJzl55LG2iLFL5kaHj3E/iPRcSqwQkEGoJjU4gUHbPiXxxg6o4WCe5Rbj7TQ==
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200814134123.14566-1-ansuelsmth@gmail.com> <20200814134123.14566-3-ansuelsmth@gmail.com>
-In-Reply-To: <20200814134123.14566-3-ansuelsmth@gmail.com>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Mon, 23 Nov 2020 01:35:22 +0530
-Message-ID: <CAHLCerMArOceCFQ1XFbsZCAnUdKVX3TVnAb502w+kxmO97bdJg@mail.gmail.com>
-Subject: Re: [RFC PATCH v6 2/8] drivers: thermal: tsens: Add VER_0 tsens version
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR18MB3182.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa151712-2468-45dd-ec83-08d88f22e7c2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Nov 2020 20:12:15.1327
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1rV4yaTKOm6YmsMOvD3lVMrYwwvGu1p08CLusv2nou8yGW2kUEHncYaAj3WX5BbkhEStkS5BKZimKLv8V1GYCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR18MB2292
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-22_13:2020-11-20,2020-11-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ansuel,
-
-See comments inline.
-
-On Fri, Aug 14, 2020 at 7:12 PM Ansuel Smith <ansuelsmth@gmail.com> wrote:
->
-> VER_0 is used to describe device based on tsens version before v0.1.
-> These device are devices based on msm8960 for example apq8064 or
-> ipq806x.
->
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> From: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Sent: Friday, November 20, 2020 8:29 PM
+>=20
+> ----------------------------------------------------------------------
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning =
+by
+> explicitly adding a break statement instead of just letting the code fall
+> through to the next case.
+>=20
+> Link: https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
+> 3A__github.com_KSPP_linux_issues_115&d=3DDwIBAg&c=3DnKjWec2b6R0mOyP
+> az7xtfQ&r=3D5_8rRZTDuAS-6X-cGRU9Fo4yjCnkS1t7T3-
+> gjL4FQng&m=3DZJjyam8OGRTmM8iCzOSDOL7dMn31Pmw3aA-
+> QOVDY8eg&s=3D4rQYW1K3xAzeRV7SRkrvaivRWz2WwEuuk0ZnjnDTA1w&e=3D
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->  drivers/thermal/qcom/tsens.c | 122 +++++++++++++++++++++++++++++++----
->  drivers/thermal/qcom/tsens.h |   7 +-
->  2 files changed, 114 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index 9fe9a2b26705..965c4799918a 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -516,6 +516,15 @@ static irqreturn_t tsens_irq_thread(int irq, void *data)
->                         dev_dbg(priv->dev, "[%u] %s: no violation:  %d\n",
->                                 hw_id, __func__, temp);
->                 }
-> +
-> +               if (tsens_version(priv) < VER_0_1) {
-> +                       /* Constraint: There is only 1 interrupt control register for all
-> +                        * 11 temperature sensor. So monitoring more than 1 sensor based
-> +                        * on interrupts will yield inconsistent result. To overcome this
-> +                        * issue we will monitor only sensor 0 which is the master sensor.
-> +                        */
-> +                       break;
-> +               }
->         }
->
->         return IRQ_HANDLED;
-> @@ -531,6 +540,13 @@ static int tsens_set_trips(void *_sensor, int low, int high)
->         int high_val, low_val, cl_high, cl_low;
->         u32 hw_id = s->hw_id;
->
-> +       if (tsens_version(priv) < VER_0_1) {
-> +               /* Pre v0.1 IP had a single register for each type of interrupt
-> +                * and thresholds
-> +                */
-> +               hw_id = 0;
-> +       }
-> +
->         dev_dbg(dev, "[%u] %s: proposed thresholds: (%d:%d)\n",
->                 hw_id, __func__, low, high);
->
-> @@ -584,18 +600,21 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
->         u32 valid;
->         int ret;
->
-> -       ret = regmap_field_read(priv->rf[valid_idx], &valid);
-> -       if (ret)
-> -               return ret;
-> -       while (!valid) {
-> -               /* Valid bit is 0 for 6 AHB clock cycles.
-> -                * At 19.2MHz, 1 AHB clock is ~60ns.
-> -                * We should enter this loop very, very rarely.
-> -                */
-> -               ndelay(400);
-> +       /* VER_0 doesn't have VALID bit */
-> +       if (tsens_version(priv) >= VER_0_1) {
->                 ret = regmap_field_read(priv->rf[valid_idx], &valid);
->                 if (ret)
->                         return ret;
-> +               while (!valid) {
-> +                       /* Valid bit is 0 for 6 AHB clock cycles.
-> +                        * At 19.2MHz, 1 AHB clock is ~60ns.
-> +                        * We should enter this loop very, very rarely.
-> +                        */
-> +                       ndelay(400);
-> +                       ret = regmap_field_read(priv->rf[valid_idx], &valid);
-> +                       if (ret)
-> +                               return ret;
-> +               }
-
-Let's revisit this after fixing patch 1.
-
-
->         }
->
->         /* Valid bit is set, OK to read the temperature */
-> @@ -763,6 +782,10 @@ int __init init_common(struct tsens_priv *priv)
->                 goto err_put_device;
->         }
->
-> +       /* VER_0 have only tm_map */
-> +       if (!priv->srot_map)
-> +               priv->srot_map = priv->tm_map;
-> +
->         if (tsens_version(priv) > VER_0_1) {
->                 for (i = VER_MAJOR; i <= VER_STEP; i++) {
->                         priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
-> @@ -781,6 +804,10 @@ int __init init_common(struct tsens_priv *priv)
->                 ret = PTR_ERR(priv->rf[TSENS_EN]);
->                 goto err_put_device;
->         }
-> +       /* in VER_0 TSENS need to be explicitly enabled */
-> +       if (tsens_version(priv) == VER_0)
-> +               regmap_field_write(priv->rf[TSENS_EN], 1);
-> +
->         ret = regmap_field_read(priv->rf[TSENS_EN], &enabled);
->         if (ret)
->                 goto err_put_device;
-> @@ -803,6 +830,61 @@ int __init init_common(struct tsens_priv *priv)
->                 goto err_put_device;
->         }
->
-> +       priv->rf[TSENS_EN] = devm_regmap_field_alloc(dev, priv->tm_map,
-> +                                                    priv->fields[TSENS_EN]);
-> +       if (IS_ERR(priv->rf[TSENS_EN])) {
-> +               ret = PTR_ERR(priv->rf[TSENS_EN]);
-> +               goto err_put_device;
-> +       }
-> +
-> +       priv->rf[TSENS_SW_RST] = devm_regmap_field_alloc(
-> +               dev, priv->tm_map, priv->fields[TSENS_EN]);
-> +       if (IS_ERR(priv->rf[TSENS_EN])) {
-> +               ret = PTR_ERR(priv->rf[TSENS_EN]);
-> +               goto err_put_device;
-> +       }
-> +
-> +       priv->rf[LOW_INT_CLEAR_0] = devm_regmap_field_alloc(
-> +               dev, priv->tm_map, priv->fields[LOW_INT_CLEAR_0]);
-> +       if (IS_ERR(priv->rf[LOW_INT_CLEAR_0])) {
-> +               ret = PTR_ERR(priv->rf[LOW_INT_CLEAR_0]);
-> +               goto err_put_device;
-> +       }
-> +
-> +       priv->rf[UP_INT_CLEAR_0] = devm_regmap_field_alloc(
-> +               dev, priv->tm_map, priv->fields[UP_INT_CLEAR_0]);
-> +       if (IS_ERR(priv->rf[UP_INT_CLEAR_0])) {
-> +               ret = PTR_ERR(priv->rf[UP_INT_CLEAR_0]);
-> +               goto err_put_device;
-> +       }
-> +
-> +       /* VER_0 require to set MIN and MAX THRESH */
-> +       if (tsens_version(priv) < VER_0_1) {
-> +               priv->rf[MIN_THRESH_0] = devm_regmap_field_alloc(
-> +                       dev, priv->tm_map, priv->fields[MIN_THRESH_0]);
-> +               if (IS_ERR(priv->rf[MIN_THRESH_0])) {
-> +                       ret = PTR_ERR(priv->rf[MIN_THRESH_0]);
-> +                       goto err_put_device;
-> +               }
-> +
-> +               priv->rf[MAX_THRESH_0] = devm_regmap_field_alloc(
-> +                       dev, priv->tm_map, priv->fields[MAX_THRESH_0]);
-> +               if (IS_ERR(priv->rf[MAX_THRESH_0])) {
-> +                       ret = PTR_ERR(priv->rf[MAX_THRESH_0]);
-> +                       goto err_put_device;
-> +               }
-> +
-> +               regmap_field_write(priv->rf[MIN_THRESH_0], 0);
-> +               regmap_field_write(priv->rf[MAX_THRESH_0], 120000);
-> +       }
-> +
-> +       priv->rf[TRDY] =
-> +               devm_regmap_field_alloc(dev, priv->tm_map, priv->fields[TRDY]);
-> +       if (IS_ERR(priv->rf[TRDY])) {
-> +               ret = PTR_ERR(priv->rf[TRDY]);
-> +               goto err_put_device;
-> +       }
-> +
->         /* This loop might need changes if enum regfield_ids is reordered */
->         for (j = LAST_TEMP_0; j <= UP_THRESH_15; j += 16) {
->                 for (i = 0; i < priv->feat->max_sensors; i++) {
-> @@ -856,7 +938,11 @@ int __init init_common(struct tsens_priv *priv)
->         }
->
->         spin_lock_init(&priv->ul_lock);
-> -       tsens_enable_irq(priv);
-> +
-> +       /* VER_0 interrupt doesn't need to be enabled */
-> +       if (tsens_version(priv) >= VER_0_1)
-> +               tsens_enable_irq(priv);
-> +
->         tsens_debug_init(op);
->
->  err_put_device:
-> @@ -952,10 +1038,18 @@ static int tsens_register_irq(struct tsens_priv *priv, char *irqname,
->                 if (irq == -ENXIO)
->                         ret = 0;
->         } else {
-> -               ret = devm_request_threaded_irq(&pdev->dev, irq,
-> -                                               NULL, thread_fn,
-> -                                               IRQF_ONESHOT,
-> -                                               dev_name(&pdev->dev), priv);
-> +               /* VER_0 interrupt is TRIGGER_RISING, VER_0_1 and up is ONESHOT */
-> +               if (tsens_version(priv) > VER_0)
-> +                       ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
-> +                                                       thread_fn, IRQF_ONESHOT,
-> +                                                       dev_name(&pdev->dev),
-> +                                                       priv);
-> +               else
-> +                       ret = devm_request_threaded_irq(&pdev->dev, irq,
-> +                                                       thread_fn, NULL,
-> +                                                       IRQF_TRIGGER_RISING,
-> +                                                       dev_name(&pdev->dev),
-> +                                                       priv);
-
-
-Just set a flag variable to ONESHOT OR TRIGGER_RISING and use that in the call.
-
->                 if (ret)
->                         dev_err(&pdev->dev, "%s: failed to get irq\n",
->                                 __func__);
-> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
-> index 59d01162c66a..f1120791737c 100644
-> --- a/drivers/thermal/qcom/tsens.h
-> +++ b/drivers/thermal/qcom/tsens.h
-> @@ -25,7 +25,8 @@ struct tsens_priv;
->
->  /* IP version numbers in ascending order */
->  enum tsens_ver {
-> -       VER_0_1 = 0,
-> +       VER_0 = 0,
-> +       VER_0_1,
->         VER_1_X,
->         VER_2_X,
->  };
-> @@ -441,6 +442,10 @@ enum regfield_ids {
->         CRIT_THRESH_14,
->         CRIT_THRESH_15,
->
-> +       /* VER_0 MIN MAX THRESH */
-> +       MIN_THRESH_0,
-> +       MAX_THRESH_0,
-> +
-
-Consider reusing LOW_THRESH_0 and UP_THRESH_0 for these?
-
->         /* WATCHDOG */
->         WDOG_BARK_STATUS,
->         WDOG_BARK_CLEAR,
+>  drivers/infiniband/hw/qedr/main.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/infiniband/hw/qedr/main.c
+> b/drivers/infiniband/hw/qedr/main.c
+> index 967641662b24..10707b451ab8 100644
+> --- a/drivers/infiniband/hw/qedr/main.c
+> +++ b/drivers/infiniband/hw/qedr/main.c
+> @@ -796,6 +796,7 @@ static void qedr_affiliated_event(void *context, u8
+> e_code, void *fw_handle)
+>  		}
+>  		xa_unlock_irqrestore(&dev->srqs, flags);
+>  		DP_NOTICE(dev, "SRQ event %d on handle %p\n", e_code,
+> srq);
+> +		break;
+>  	default:
+>  		break;
+>  	}
 > --
 > 2.27.0
->
+
+Thanks,=A0
+
+Acked-by: Michal Kalderon=A0<michal.kalderon@marvell.com>
+
+
