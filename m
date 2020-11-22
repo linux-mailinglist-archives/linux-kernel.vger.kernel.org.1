@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996A82BC60F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 012272BC616
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgKVOgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 09:36:01 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34325 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727740AbgKVOgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 09:36:00 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B06BA5804B5;
-        Sun, 22 Nov 2020 09:35:59 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 22 Nov 2020 09:35:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=nXFQXK
-        fZiozbO2A2p5WSuZcESUVebhywiKS6xDiDX6s=; b=U8PwL9v3InYmP4l5vq69A1
-        CZxjNImJAt8FcmHH040X+sqsnC9VFXehMowLP5QvqJ6QaAeHBsn5R6Bkp4obCw2o
-        d16m5A2EDJccAnmZPBPQXgs3DmjaJdvI1M9H3F/1GKgdc22RwtBU5CfvKlVsiOrT
-        NwjM3LEKZge03FGN+kDzRni8BXfMaAz1F+5ZTfGnP02QCKesSRA/EAowOPY3YLge
-        +PbFYNHfDLo8JaZKqtdGDO48z3NvNzbdoXH5bfaKEbJ2GydjTYJExheD1SsbaiIA
-        kWwsQLZorMa90gmnZ4DrF0b31xzlzODisxfPXGT0OzbFnHPjqqQqEgdWOPFtZBpw
-        ==
-X-ME-Sender: <xms:Tne6X5LrjUt_QQRuBQu2QaF245DPbWILcuOrwCe1ezXEl-Wn32BAJQ>
-    <xme:Tne6X1KVoLtWHnRUiS47OWpxNxsgOGSVZ6l7GR3mOHUlmtWnf-wEOfAhirrAIutZi
-    Iq9HJVWPA1WL5k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeggedgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
-    sehttdertddttddvnecuhfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthh
-    esihguohhstghhrdhorhhgqeenucggtffrrghtthgvrhhnpeehfeetvdeihefhhedugefh
-    udehfeeugffhgeeuleeiteeludfgvddtheehtddtffenucffohhmrghinhepkhgvrhhnvg
-    hlrdhorhhgpdhhohhpthhordhorhhgnecukfhppeekgedrvddvledrudehgedrudegjeen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughosh
-    gthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:Tne6XxuYf-TnrJ2SU1upU008v6QTwk_2IamOrxDR1KesnA-o8cGfng>
-    <xmx:Tne6X6Zxw9SRc03FJVN-9sJBIRvxHZVzZjlAC2Exd75_FKlnF-5Ukg>
-    <xmx:Tne6XwZMniS5pLq4nLKPHxMUmXzpG3figNKPesLSSTS4ZJeCitXZuw>
-    <xmx:T3e6X9Tr58szJ3NekbSv1wvau56RxxKqy-FLtKPehFiEgSkBx-slGw>
-Received: from localhost (igld-84-229-154-147.inter.net.il [84.229.154.147])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C4E043280063;
-        Sun, 22 Nov 2020 09:35:57 -0500 (EST)
-Date:   Sun, 22 Nov 2020 16:35:55 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christian Eggers <ceggers@gmx.de>,
-        Petr Machata <petrm@mellanox.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>
-Subject: Re: [PATCH net-next 2/3] mlxsw: spectrum_ptp: use PTP wide message
- type definitions
-Message-ID: <20201122143555.GA515025@shredder.lan>
-References: <20201122082636.12451-1-ceggers@arri.de>
- <20201122082636.12451-3-ceggers@arri.de>
+        id S1727772AbgKVOoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 09:44:17 -0500
+Received: from gecko.sbs.de ([194.138.37.40]:33756 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727424AbgKVOoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 09:44:16 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 0AMEhYsW031561
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 22 Nov 2020 15:43:35 +0100
+Received: from [167.87.38.29] ([167.87.38.29])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0AMEhXd4007532;
+        Sun, 22 Nov 2020 15:43:33 +0100
+Subject: Re: About regression caused by commit aea6cb99703e ("regulator:
+ resolve supply after creating regulator")
+To:     Qu Wenruo <wqu@suse.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        broonie@kernel.org
+References: <c13f1683-97c9-40b4-f740-73eaceb7c98f@suse.com>
+ <20201108171811.GB10914@qmqm.qmqm.pl>
+ <858790f6-8b22-4fe7-bb74-56904ad203bd@suse.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <cea48473-eeb1-db60-cc0d-ebf9a26aaf0c@siemens.com>
+Date:   Sun, 22 Nov 2020 15:43:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201122082636.12451-3-ceggers@arri.de>
+In-Reply-To: <858790f6-8b22-4fe7-bb74-56904ad203bd@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 09:26:35AM +0100, Christian Eggers wrote:
-> Use recently introduced PTP wide defines instead of a driver internal
-> enumeration.
+On 09.11.20 00:28, Qu Wenruo wrote:
 > 
-> Signed-off-by: Christian Eggers <ceggers@gmx.de>
-> Cc: Petr Machata <petrm@mellanox.com>
-> Cc: Jiri Pirko <jiri@nvidia.com>
-> Cc: Ido Schimmel <idosch@nvidia.com>
+> 
+> On 2020/11/9 上午1:18, Michał Mirosław wrote:
+>> On Sun, Nov 08, 2020 at 03:35:33PM +0800, Qu Wenruo wrote:
+>>> Hi Michał,
+>>>
+>>> Recently when testing v5.10-rc2, I found my RK3399 boards failed to boot
+>>> from NVME.
+>>>
+>>> It turns out that, commit aea6cb99703e ("regulator: resolve supply after
+>>> creating regulator") seems to be the cause.
+>>>
+>>> In RK3399 board, vpcie1v8 and vpcie0v9 of the pcie controller is
+>>> provided by RK808 regulator.
+>>> With that commit, now RK808 regulator fails to register:
+>>>
+>>> [    1.402500] rk808-regulator rk808-regulator: there is no dvs0 gpio
+>>> [    1.403104] rk808-regulator rk808-regulator: there is no dvs1 gpio
+>>> [    1.419856] rk808 0-001b: failed to register 12 regulator
+>>> [    1.422801] rk808-regulator: probe of rk808-regulator failed with
+>>> error -22
+>>
+>> Hi,
+>>
+>> This looks lika the problem fixed by commit cf1ad559a20d ("regulator: defer
+>> probe when trying to get voltage from unresolved supply") recently accepted
+>> to regulator tree [1]. Can you verify this?
+> 
+> Thanks, tested with that commit cherry picked to v5.10-rc2 and it solves
+> the problem.
+> 
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+We are still missing some magic fix for stable trees: On the STM32MP15x,
+things are broken since 5.4.73 now. And 5.9.y is not booting as well on
+that board. Reverting the original commit make it boot again.
 
-But:
+Linus master is fine, though, but I'm tired of bisecting. Any
+suggestions? Or is there something queued up already?
 
-1. Checkpatch complains about:
-WARNING: From:/Signed-off-by: email address mismatch: 'From: Christian Eggers <ceggers@arri.de>' != 'Signed-off-by: Christian Eggers <ceggers@gmx.de>'
+In any case: Is that board in no stable Q&A farm? It's a basic "boot
+fails" regression.
 
-2. This series does not build, which fails the CI [1][2] and also
-required me to fetch the dependencies that are currently under review
-[3]. I believe it is generally discouraged to create dependencies
-between patch sets that are under review for exactly these reasons. I
-don't know what are Jakub's preferences, but had this happened on our
-internal patchwork instance, I would just ask the author to submit
-another version with all the patches.
+Jan
 
-Anyway, I added all six patches to our regression as we have some PTP
-tests. Will let you know tomorrow.
-
-Thanks
-
-[1] https://lore.kernel.org/netdev/20201122082636.12451-1-ceggers@arri.de/T/#mcef35858585d23b72b8f75450a51618d5c5d3260
-[2] https://patchwork.hopto.org/static/nipa/389053/11923809/build_allmodconfig_warn/summary
-[3] https://patchwork.kernel.org/project/netdevbpf/cover/20201120084106.10046-1-ceggers@arri.de/
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
