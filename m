@@ -2,154 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A7C2BFC8A
+	by mail.lfdr.de (Postfix) with ESMTP id 090DF2BFC89
 	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 23:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbgKVWld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 17:41:33 -0500
-Received: from mga04.intel.com ([192.55.52.120]:3505 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbgKVWlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 17:41:31 -0500
-IronPort-SDR: ArDJ+cCUnRkvdDJ1iiV5BLEDAaK0MeGrDrO5hiR51qVAU+Po60REV4kfIokIwfuutO5g2nzukz
- U/MkZA9iYbIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="169105857"
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="169105857"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 14:41:30 -0800
-IronPort-SDR: ESw51V0hCnH2onAVFZOscV74teVLMMDcGbEmnudZlivEyGFdABXqeC3p/QpIbo7aqMVWOSHSKV
- nK70x7CDnH3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="546192981"
-Received: from lkp-server01.sh.intel.com (HELO ce8054c7261d) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 22 Nov 2020 14:41:29 -0800
-Received: from kbuild by ce8054c7261d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kgy2y-0000IJ-Rj; Sun, 22 Nov 2020 22:41:28 +0000
-Date:   Mon, 23 Nov 2020 06:40:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 9ea041b5e564b909207110a9edc04b287507756c
-Message-ID: <5fbae8dd.GuRYvPcdUo1eeljQ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727002AbgKVWla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 17:41:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbgKVWl3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 17:41:29 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF40C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 14:41:29 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id k5so1453665plt.6
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 14:41:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7qVjazRK/V3lBu7OCD/QeDeirETDO0A195L4HDxXUug=;
+        b=j4apR2DTXgWoTUUHKbRvTyxm2fy8/RpK1X0anc/b/mJO538fOTtIYzM8noBGBQRK+a
+         gbiM/SBzND8+5j08xU/8bBOfVmTkuuKigBdw5M9+YXTR/RhWtVxHvvwSEATI7O4ZVSun
+         mDCF2EfrccF2deN4jttYFY4CWNJWF0xq9HE7CgHcNXrRu66Fno9DwJnT1i89imO6UlRB
+         OATWGkEaI82219jp/Mwvh0lhSaG+FFG+ydZ3aVyH6chYOrF0TlZUMMLvhzhZiiFB9GEh
+         SG7b0K0ZPNSNfk2Dwxft372CnvqzGI4DM8GI4Gm6obtWh6JSvf3foXRVwwJxnZUuNYul
+         LgaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7qVjazRK/V3lBu7OCD/QeDeirETDO0A195L4HDxXUug=;
+        b=rI3HqN7B1aA1iW7oR41Glwt+WTV3rvGFkddKcEBCcpDN4QDXmeLsLSeQ9+C+6SW3/J
+         ui7B84DKJjrEGMKVkCPdBxHn54mFSdnTqo7xoX1YGd5129N/MT50hjgyKSxc7d4OM0KM
+         mDuIltFB7jWckpOVTh5TpuIpXbist+NUl9RP6App+Sl1BTleCObrfxyY+ih3I8fG0I7B
+         RpH7XPoeScIgRe5akw7Lcuz/3hwNMtAfsjJmlM2Br2Q6sbLKLboFN/r5bS+TeZdgfue0
+         O0in8TPToC0qf1J0CH6vMDhEBQ/PDoU6Yd8nr3sh/iFHgmWpSaSMnVvIEIkk2wCIPm5g
+         hkOA==
+X-Gm-Message-State: AOAM531HY5j5v26D5BNEh0Rda8zKUEMI5svEmgKA1VJxsDYxVZXIN5sJ
+        yLoBhoEaR7aR89KPVTNfynE=
+X-Google-Smtp-Source: ABdhPJxVDIRwLDR3XIuxvLIbD2oZDHATla0lP2eJ7QVu0LfP5AqMxN+6mEJ13NGSAFzpCCnkjw2hqQ==
+X-Received: by 2002:a17:902:ea85:b029:da:b27:396a with SMTP id x5-20020a170902ea85b02900da0b27396amr1938341plb.9.1606084888891;
+        Sun, 22 Nov 2020 14:41:28 -0800 (PST)
+Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id d68sm9280237pfd.32.2020.11.22.14.41.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 14:41:27 -0800 (PST)
+Date:   Mon, 23 Nov 2020 09:41:23 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 10/32] sched: Fix priority inversion of cookied task
+ with sibling
+Message-ID: <20201122224123.GE110669@balbir-desktop>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-11-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201117232003.3580179-11-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 9ea041b5e564b909207110a9edc04b287507756c  Merge branch 'ras/core'
+On Tue, Nov 17, 2020 at 06:19:40PM -0500, Joel Fernandes (Google) wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> The rationale is as follows. In the core-wide pick logic, even if
+> need_sync == false, we need to go look at other CPUs (non-local CPUs) to
+> see if they could be running RT.
+> 
+> Say the RQs in a particular core look like this:
+> Let CFS1 and CFS2 be 2 tagged CFS tags. Let RT1 be an untagged RT task.
+> 
+> rq0            rq1
+> CFS1 (tagged)  RT1 (not tag)
+> CFS2 (tagged)
+> 
+> Say schedule() runs on rq0. Now, it will enter the above loop and
+> pick_task(RT) will return NULL for 'p'. It will enter the above if() block
+> and see that need_sync == false and will skip RT entirely.
+> 
+> The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
+> rq0             rq1
+> CFS1            IDLE
+> 
+> When it should have selected:
+> rq0             r1
+> IDLE            RT
+> 
+> Joel saw this issue on real-world usecases in ChromeOS where an RT task
+> gets constantly force-idled and breaks RT. Lets cure it.
+> 
+> NOTE: This problem will be fixed differently in a later patch. It just
+>       kept here for reference purposes about this issue, and to make
+>       applying later patches easier.
+>
 
-elapsed time: 723m
+The changelog is hard to read, it refers to above if(), whereas there
+is no code snippet in the changelog. Also, from what I can see following
+the series, p->core_cookie is not yet set anywhere (unless I missed it),
+so fixing it in here did not make sense just reading the series.
 
-configs tested: 90
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                malta_kvm_guest_defconfig
-powerpc                 mpc8272_ads_defconfig
-c6x                        evmc6678_defconfig
-arm                           spitz_defconfig
-arm                          lpd270_defconfig
-arm                         cm_x300_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                   bluestone_defconfig
-m68k                          amiga_defconfig
-arm                        keystone_defconfig
-powerpc                 mpc8540_ads_defconfig
-c6x                                 defconfig
-arm                         palmz72_defconfig
-arm                         vf610m4_defconfig
-alpha                               defconfig
-mips                         tb0287_defconfig
-powerpc                     pseries_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201122
-i386                 randconfig-a003-20201122
-i386                 randconfig-a002-20201122
-i386                 randconfig-a005-20201122
-i386                 randconfig-a001-20201122
-i386                 randconfig-a006-20201122
-i386                 randconfig-a012-20201122
-i386                 randconfig-a013-20201122
-i386                 randconfig-a011-20201122
-i386                 randconfig-a016-20201122
-i386                 randconfig-a014-20201122
-i386                 randconfig-a015-20201122
-x86_64               randconfig-a006-20201122
-x86_64               randconfig-a003-20201122
-x86_64               randconfig-a004-20201122
-x86_64               randconfig-a005-20201122
-x86_64               randconfig-a001-20201122
-x86_64               randconfig-a002-20201122
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20201122
-x86_64               randconfig-a011-20201122
-x86_64               randconfig-a014-20201122
-x86_64               randconfig-a016-20201122
-x86_64               randconfig-a012-20201122
-x86_64               randconfig-a013-20201122
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Balbir
