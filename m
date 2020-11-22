@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AC02BC60B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996A82BC60F
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgKVOad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 09:30:33 -0500
-Received: from mail-bn8nam12on2090.outbound.protection.outlook.com ([40.107.237.90]:32608
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727634AbgKVOac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 09:30:32 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z7JOzv4fwtiwHhcj4LfgIYW1iSpB3lstNKH3uPiqafU7XsZzV3JcqvIoq74Hk6/C90tswXmCv1mQ5Y3BHzlxGw2UklbJ1+YC8ePJnrNd9EvQLfbAiKDYRUUtutTVRss95hWP+17/Mp2PvjKaXpBMgmCiq1RMK9C5Ev/JuH+L1Ls5wgLvqzClaizvOvSF2EnhShJncxxzXJq/srn42MzIkoZSKR+RocrpoXWEUereHafed/TbIkaVq79CS78UTC29ETBenDleIUA4yBdxNHiQeolS8R+f7OQyDd5RehVyy6FzCp68nKYQB7+iMdUTxwLrCq5nW+Is8tWG6UyTnEkgsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5UpxKAc1BgRlCloW1fVl5yxEIpbky9uS56DVS5mXZWs=;
- b=PLFvCad0r+aq+aKylRVx7d9bWAVYyg4UTO3dt3fgB2OolJ3cP/LUZKMhrfNKw36cnACRenBamGSt8mpYxfTicJMwYJqnZJ/upRzQmikeus2Llou416fUzUiiGrZJ1q46ATcvYyMN5Zn11pZPi7AkJTKtTwqpBN3kZbqxFjOZZtoNIHMvCeu7NvsQNmG8oEFef7uyVdEPBY3gLt3JH+IjVyC29FoksCzWP3F2UAIDI/03YRS0Ka4VRly4FKxLDwu/BZU6ELyoC94AFEtda6tvJvreoLuPtpfsm84WHVj5NIw5Itbfh3yfcmrjCWxSHa8HMMPurM7UFIV7TNf1oDOvBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=CornelisNetworks.onmicrosoft.com;
- s=selector1-CornelisNetworks-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5UpxKAc1BgRlCloW1fVl5yxEIpbky9uS56DVS5mXZWs=;
- b=V2onDL8uvXYye1R6DXRi3pYxzLD1u4lBnV053+eUbotI67GXOIS5uxB2AZd6CCegpUa0tTh+4Z71E5EzFaDAOSxWvsC+PBUWRGceSVhdGE+HdmK+tbLwe+632S/txq9IX1wSehY+W24VR7KGFS42cbflHCowMuY9xRxbfW+dICJyatR04STT7X7NssBq4UE4NTQws6hyddnbPgIzkSs4H5WCCGBdtgL9/8icHmIS8rT339fT1k0UJDd7Saf0vieBPF5MtmaJogZLeVfqX3WqJUvWqyluzAKx/puvziQK9xL4CKz0iXNwCu32JUNYYgx9uDKgBnCxBIRQCses107UEw==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from BYAPR01MB3816.prod.exchangelabs.com (2603:10b6:a02:88::20) by
- BY5PR01MB5876.prod.exchangelabs.com (2603:10b6:a03:1ce::28) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3589.20; Sun, 22 Nov 2020 14:30:30 +0000
-Received: from BYAPR01MB3816.prod.exchangelabs.com
- ([fe80::c436:2a2e:75d9:ebc6]) by BYAPR01MB3816.prod.exchangelabs.com
- ([fe80::c436:2a2e:75d9:ebc6%5]) with mapi id 15.20.3589.025; Sun, 22 Nov 2020
- 14:30:30 +0000
-Subject: Re: [PATCH 008/141] IB/hfi1: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <13cc2fe2cf8a71a778dbb3d996b07f5e5d04fd40.1605896059.git.gustavoars@kernel.org>
-From:   Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Message-ID: <e9d82266-fcef-336e-df61-22d80491d91f@cornelisnetworks.com>
-Date:   Sun, 22 Nov 2020 09:30:25 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <13cc2fe2cf8a71a778dbb3d996b07f5e5d04fd40.1605896059.git.gustavoars@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [134.134.137.73]
-X-ClientProxiedBy: SJ0PR03CA0113.namprd03.prod.outlook.com
- (2603:10b6:a03:333::28) To BYAPR01MB3816.prod.exchangelabs.com
- (2603:10b6:a02:88::20)
+        id S1727874AbgKVOgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 09:36:01 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34325 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727740AbgKVOgA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 09:36:00 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B06BA5804B5;
+        Sun, 22 Nov 2020 09:35:59 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 22 Nov 2020 09:35:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=nXFQXK
+        fZiozbO2A2p5WSuZcESUVebhywiKS6xDiDX6s=; b=U8PwL9v3InYmP4l5vq69A1
+        CZxjNImJAt8FcmHH040X+sqsnC9VFXehMowLP5QvqJ6QaAeHBsn5R6Bkp4obCw2o
+        d16m5A2EDJccAnmZPBPQXgs3DmjaJdvI1M9H3F/1GKgdc22RwtBU5CfvKlVsiOrT
+        NwjM3LEKZge03FGN+kDzRni8BXfMaAz1F+5ZTfGnP02QCKesSRA/EAowOPY3YLge
+        +PbFYNHfDLo8JaZKqtdGDO48z3NvNzbdoXH5bfaKEbJ2GydjTYJExheD1SsbaiIA
+        kWwsQLZorMa90gmnZ4DrF0b31xzlzODisxfPXGT0OzbFnHPjqqQqEgdWOPFtZBpw
+        ==
+X-ME-Sender: <xms:Tne6X5LrjUt_QQRuBQu2QaF245DPbWILcuOrwCe1ezXEl-Wn32BAJQ>
+    <xme:Tne6X1KVoLtWHnRUiS47OWpxNxsgOGSVZ6l7GR3mOHUlmtWnf-wEOfAhirrAIutZi
+    Iq9HJVWPA1WL5k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeggedgieekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthh
+    esihguohhstghhrdhorhhgqeenucggtffrrghtthgvrhhnpeehfeetvdeihefhhedugefh
+    udehfeeugffhgeeuleeiteeludfgvddtheehtddtffenucffohhmrghinhepkhgvrhhnvg
+    hlrdhorhhgpdhhohhpthhordhorhhgnecukfhppeekgedrvddvledrudehgedrudegjeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughosh
+    gthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:Tne6XxuYf-TnrJ2SU1upU008v6QTwk_2IamOrxDR1KesnA-o8cGfng>
+    <xmx:Tne6X6Zxw9SRc03FJVN-9sJBIRvxHZVzZjlAC2Exd75_FKlnF-5Ukg>
+    <xmx:Tne6XwZMniS5pLq4nLKPHxMUmXzpG3figNKPesLSSTS4ZJeCitXZuw>
+    <xmx:T3e6X9Tr58szJ3NekbSv1wvau56RxxKqy-FLtKPehFiEgSkBx-slGw>
+Received: from localhost (igld-84-229-154-147.inter.net.il [84.229.154.147])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C4E043280063;
+        Sun, 22 Nov 2020 09:35:57 -0500 (EST)
+Date:   Sun, 22 Nov 2020 16:35:55 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Christian Eggers <ceggers@gmx.de>,
+        Petr Machata <petrm@mellanox.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>
+Subject: Re: [PATCH net-next 2/3] mlxsw: spectrum_ptp: use PTP wide message
+ type definitions
+Message-ID: <20201122143555.GA515025@shredder.lan>
+References: <20201122082636.12451-1-ceggers@arri.de>
+ <20201122082636.12451-3-ceggers@arri.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [134.134.137.73] (134.134.137.73) by SJ0PR03CA0113.namprd03.prod.outlook.com (2603:10b6:a03:333::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Sun, 22 Nov 2020 14:30:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1da0d059-8a91-41af-9912-08d88ef3296a
-X-MS-TrafficTypeDiagnostic: BY5PR01MB5876:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR01MB58768E9AED8197583D09DA56F2FD0@BY5PR01MB5876.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rt6tI/tuj1wm4TTeqwAtCvql2I4HPShatT3kq1u9kL8XMNKy0QAY/LIaEvdSCZD3xhhnWaCeDkiyNuua0Wf2zqOFAiGxBg1HoD8wMqvcu8qqc6wJXov6VwvS18rIQwigA+Qz8QUFQgUWtqErFNlOUGw8+SRVZ36hZ2v01HME0TdRUjfLhXduJFMp5ceAZCuNsG0T5C3081nQcLG/aJD1hJQ526Ra+P4U6y3CLUD50m/tBvCA1jEE0ymtoEbNJ0TyMx6y9qh42JoC/dM26qsL96RoczYMXdRE2CibzJ8mV1nr6dIbMmvwdKOTrisxTekZxb9u7FlTlelD4Pn+F6/8OWgEGm14RyCoAIWXupaaFfzwfeMTLh1QbbWYB7NLlK9auAPrCZklvCzgW14VBl/6tbg0AfEfJ+x5ztx+iHevy9o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB3816.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39830400003)(136003)(376002)(346002)(83380400001)(8676002)(2906002)(5660300002)(16526019)(110136005)(53546011)(478600001)(4744005)(4326008)(86362001)(8936002)(6666004)(36756003)(316002)(186003)(26005)(16576012)(31696002)(44832011)(2616005)(956004)(52116002)(66556008)(66476007)(66946007)(6486002)(6706004)(31686004)(3940600001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 3NHzetFtpNWh6W1LchVWRkXIiuVZV12hCCAJGYHszcCzxxHyNLW19PjW3ZGCiBQPNN2GIPsj0Ch/RP0juGSbEHnGaxs5zj8+Hi6CcZo03rynAwtkEZp0/frEeqmLRp2P/YyB/KoPa3aiaw1Vxz/FUJ0iS6ql+AeIbor9D5ifKHkNifOWx4D9HtrfBfBDKp+8my0+oHke+UkKrco0h+uZ2lUE4e6LVWwr93xJByxti1Q5odbBHbnePSswBowwO+rK+N68bCE8Fyx7Vrc6XvvY04KYQGAMc5f1nlTqPuwX0Ds5DjEXxMB7/vOTQnS/q20heUafr2B5XGlFlPB4GaSkbyplMH51TtmUMxPldmcvw1c2XaGYYDP44FIhVk6wnICPQj7fMvMl+BJqghEMqJmcljvc4FpOYJl++TT7CJLuFlWmX6NGAu337DN1BJW0Y3H4ry6JYJQfw+N6EVaeVkgsgjvXgiewkVKrIIk3YeDV2IsF8IGdzAPFOx/k+wQiPe2p7SxlqTvP1uCsrSsh5t+ykJxA0B9PrDNpV6GkvSyPadpbjFOJVvWIwQrRzobkFG8OpgYm6wgjAy3u8QgdxOgu+Q4ibs9q086l5RQMKcoUQSthwUnSMYgodW+UyLSW029YQkCaH/iHlUZQhqq1GPmCzg==
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1da0d059-8a91-41af-9912-08d88ef3296a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB3816.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2020 14:30:29.7933
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Wr9H96q/2MVFI6v8pzWzkoSKMF0ZD873AEBPFjppFNyBsb3LgTUH2h37b5K1PpSluY7LfGZEmTk6NIft6tUH+wmBm1yDL+4GqkF1X0vWiDvueXCh8wgBQ8TYuNGs5cDD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR01MB5876
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201122082636.12451-3-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 22, 2020 at 09:26:35AM +0100, Christian Eggers wrote:
+> Use recently introduced PTP wide defines instead of a driver internal
+> enumeration.
+> 
+> Signed-off-by: Christian Eggers <ceggers@gmx.de>
+> Cc: Petr Machata <petrm@mellanox.com>
+> Cc: Jiri Pirko <jiri@nvidia.com>
+> Cc: Ido Schimmel <idosch@nvidia.com>
 
-On 11/20/2020 1:25 PM, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding multiple break statements instead of just
-> letting the code fall through to the next case.
->
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 
-Looks good and tested with TID rdma to cover the interlock case.
+But:
 
-Mike
+1. Checkpatch complains about:
+WARNING: From:/Signed-off-by: email address mismatch: 'From: Christian Eggers <ceggers@arri.de>' != 'Signed-off-by: Christian Eggers <ceggers@gmx.de>'
 
-Tested-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+2. This series does not build, which fails the CI [1][2] and also
+required me to fetch the dependencies that are currently under review
+[3]. I believe it is generally discouraged to create dependencies
+between patch sets that are under review for exactly these reasons. I
+don't know what are Jakub's preferences, but had this happened on our
+internal patchwork instance, I would just ask the author to submit
+another version with all the patches.
 
+Anyway, I added all six patches to our regression as we have some PTP
+tests. Will let you know tomorrow.
+
+Thanks
+
+[1] https://lore.kernel.org/netdev/20201122082636.12451-1-ceggers@arri.de/T/#mcef35858585d23b72b8f75450a51618d5c5d3260
+[2] https://patchwork.hopto.org/static/nipa/389053/11923809/build_allmodconfig_warn/summary
+[3] https://patchwork.kernel.org/project/netdevbpf/cover/20201120084106.10046-1-ceggers@arri.de/
