@@ -2,61 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0658D2BC665
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 16:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5942BC66B
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 16:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgKVPNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 10:13:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727728AbgKVPNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 10:13:15 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F47320773;
-        Sun, 22 Nov 2020 15:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606057994;
-        bh=VxOpbFCo20zTNX/fHJ9IRt1WuNySr5HXXq6vrx5fscU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=h4E8xZI/xK8GEdrGfQwOblul4PfT2/cF1cBPr7l0VgL2wY43g3ZG7+sa+51G/ZRJv
-         Gk27aySFxr/PgZmo1s+Gw3BaGve7x68b74WXpxBUknle3WqtLlkxbbMZfnlTh9bElS
-         Rqj7I6K/WyraQBiLIU8rr6WLxeXFr1ZyffKBG2AE=
-Date:   Sun, 22 Nov 2020 09:13:13 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the pci tree
-Message-ID: <20201122151313.GA390256@bjorn-Precision-5520>
+        id S1727971AbgKVPQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 10:16:07 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:39648 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727634AbgKVPQG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 10:16:06 -0500
+Received: by mail-ej1-f66.google.com with SMTP id s25so19752496ejy.6;
+        Sun, 22 Nov 2020 07:16:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m40ePb0WowbyEBeP3p9wxNvULWshRU43UNkM2KlTYek=;
+        b=G0W4HmqABjAU5CONb2mblEfAcM/9sEQ4GfnKOMLnsSP5xMRw6/CDtTnjPKrUbIgUyQ
+         Sjl24PrwBiwHC/llp+IhWyIjcgZoFPI8MFak4yS3G0+DZ/PLdZM+37ENBeWFBNREEEHR
+         z1m/sw3hrTgQeRTZ8XQI4xrhveK8JNhveBjYGpYNaCemhft6eQWCbhwjf5+waAsFvtqL
+         olylJlIUze5MCNJP3LRU4YqjN7dCPII7KGz2p7DKUhe9tQHlm4MJd7QxT6e+bj47piv/
+         xU5W2TnVj9gmfSRdxxQBCL3yog4ZmXinatcVOm1IYwyFV52jo/lTnk9gQyR4lOlH+qvy
+         sVzA==
+X-Gm-Message-State: AOAM531c0IUFuN0mxcPh5XnzekVxr1iWOqdlcf8DQSOF4AfTF+33F6dy
+        vZTa/uvyl5soWIOk3OSwdtbIkBoiCLc=
+X-Google-Smtp-Source: ABdhPJycg25qQotskeOlIwboUWBXMQDXocn+7gf+sHWwOPyDFL2dv4FyyMO9CUAJTMLfGVfNSor4Gg==
+X-Received: by 2002:a17:906:f289:: with SMTP id gu9mr10602939ejb.514.1606058164678;
+        Sun, 22 Nov 2020 07:16:04 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id f25sm3671593edr.53.2020.11.22.07.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 07:16:03 -0800 (PST)
+Date:   Sun, 22 Nov 2020 16:16:02 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linux-clk@vger.kernel.org, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, m.szyprowski@samsung.com, sboyd@kernel.org,
+        mturquette@baylibre.com, b.zolnierkie@samsung.com,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v5] clk: samsung: Prevent potential endless loop in the
+ PLL ops
+Message-ID: <20201122151602.GA5346@kozik-lap>
+References: <CGME20201120155747eucas1p248a1f0b71fbd8f329271494d7a207347@eucas1p2.samsung.com>
+ <20201120155731.26898-1-s.nawrocki@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201122205525.1219bfaf@canb.auug.org.au>
+In-Reply-To: <20201120155731.26898-1-s.nawrocki@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 08:55:25PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Fri, Nov 20, 2020 at 04:57:31PM +0100, Sylwester Nawrocki wrote:
+> The PLL status polling loops in the set_rate callbacks of some PLLs
+> have no timeout detection and may become endless loops when something
+> goes wrong with the PLL.
 > 
-> In commit
+> For some PLLs there is already the ktime API based timeout detection,
+> but it will not work in all conditions when .set_rate gets called.
+> In particular, before the clocksource is initialized or when the
+> timekeeping is suspended.
 > 
->   466d79c1a470 ("PCI: Fix overflow in command-line resource alignment requests")
+> This patch adds a common helper with the PLL status bit polling and
+> timeout detection. For conditions where the timekeeping API should not
+> be used a simple readl_relaxed/cpu_relax() busy loop is added with the
+> iterations limit derived from measurements of readl_relaxed() execution
+> time for various PLL types and Exynos SoCs variants.
 > 
-> Fixes tag
+> Actual PLL lock time depends on the P divider value, the VCO frequency
+> and a constant PLL type specific LOCK_FACTOR and can be calculated as
 > 
->   Fixes: 32a9a682bef2 ("PCI: allow assignment of memory resources with a
+>  lock_time = Pdiv * LOCK_FACTOR / VCO_freq
 > 
-> has these problem(s):
+> For the ktime API use cases a common timeout value of 20 ms is applied
+> for all the PLLs with an assumption that maximum possible value of Pdiv
+> is 64, maximum possible LOCK_FACTOR value is 3000 and minimum VCO
+> frequency is 24 MHz.
 > 
->   - Subject has leading but no trailing parentheses
->   - Subject has leading but no trailing quotes
-> 
-> Please do not split Fixes tags over more than one line.
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-Fixed, thanks!  I probably won't rebuild the "next" branch containing
-this until Monday.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
