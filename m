@@ -2,202 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408372BC90A
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6362BC90F
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbgKVUEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 15:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
+        id S1727688AbgKVUFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 15:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727297AbgKVUD7 (ORCPT
+        with ESMTP id S1727460AbgKVUFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 15:03:59 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA453C0613CF;
-        Sun, 22 Nov 2020 12:03:57 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id y24so8472350otk.3;
-        Sun, 22 Nov 2020 12:03:57 -0800 (PST)
+        Sun, 22 Nov 2020 15:05:35 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26E3C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 12:05:35 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id u24so7995472vsl.9
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 12:05:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9ej8UpWpNx+kUjy78/+aVbJoBSOM5eLbaK9OKb7VyLI=;
-        b=PwMRZESW533KneoTQK8K5CHxtXlhn3H22HZBkb4qtK4MyM9cMqlMasP8DroFVvixxO
-         3XFphc0B6iyrRdRzCQr1fHfYsWp0NSR30ztNN4aryHTe7kYjvdUY4XX487nRcdWeixbL
-         roySrRpYGCb66SBKFGgNQg/VGWuShvctoGQ6NtN/NTmxvsM87mldtEq+LxnuYBpISl+W
-         Loj4rRjkhfcbSgQ1BJ5rYOCWp7kt0J5TrtkZUtXX/pva3gxh8axTuWGit7ztLqcbNktg
-         4N2V7cvwPyn9ZKxRZ24sPUUfYRLuRzsKm0EsSPdaiVYPdlT3kW4HoVaCz4PXxKh6gmQy
-         4oGQ==
+        bh=bqhVbxeK67mvyVWitdbRV+x5z6dFLvsGxFt9jpKxnD0=;
+        b=OK1hPQd26rsZBffPjxzRN9HV9GXss1Vnphm6Fl2oqd9Qziu+7ch6dtt4Ji3NneXczb
+         DioTsLhP0mrfVUcUsN7nbLc0FvL52sSkFTpYlNpg2ZTAZVUm9pkduQtm0btadIvoQXsn
+         HpyFvYTl0RtQdu36jvuqKrbxC6OXNJ+acYfhmfcq+ioYCpN94h7R6dlWgu3vse5EhPg7
+         RNPbGuXF+UgvbAyxoadfbmZ2S4/KiqANCMkdJhEDTd7EUf638kRC9a9pwassKPUl0ucu
+         rNxy5QhFm376jkWZkf/9RLHU/2/MEnAIr9SmgVJeO/ygb3C+JYrisji5JC/dy2+BZ8R6
+         gT4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9ej8UpWpNx+kUjy78/+aVbJoBSOM5eLbaK9OKb7VyLI=;
-        b=T1vz9ei3rBtm6N++ECPyZt6YJug5jYviY9Q9tIEKwCX3lzWjIN3ZxBwjXiME2iuRu0
-         5y8Ay/gmYA1ODxHCPo6ltkpaXe8kaMXuDESdX2Qxsocmz2MPJ6jsGeu+oFtpu3lSPOit
-         6vZ2GVfbCqy2IbiuMo0uS8SEgufqDrWe6i9z5Ct8vJO3CHR3UV++mVFRurEjfl+X8PmS
-         QTNc8YC6K/0wtmRrjHiAli225Ddqd5uOfPG99OtLklUlSYv9OPv4vWsP5wiTWCyZBoiX
-         8TWB4WhaBAr2xBTJGC3YBYHZPvf+TGbqQLjiJRbIxiIfrUdlux7g4cXlUHDfLFzyEld+
-         sscw==
-X-Gm-Message-State: AOAM531noVrqwUYxuND21u7MIYICGYAKJh475pQauVVDXMbGOGtwNTC6
-        UfYorXvD1b+huRM6M6+y2hdZvwA8a3el22fRih44M/W3YCQqPQ==
-X-Google-Smtp-Source: ABdhPJxkvm+HQDwFMvLc3u9wq/xiXOZIw66duw8m4fGX2RSdBeaEx64Q4IPtWvJ29TPDPhZyhpOmXPmH4g56IxVcoxU=
-X-Received: by 2002:a05:6830:2151:: with SMTP id r17mr21434345otd.328.1606075436894;
- Sun, 22 Nov 2020 12:03:56 -0800 (PST)
+        bh=bqhVbxeK67mvyVWitdbRV+x5z6dFLvsGxFt9jpKxnD0=;
+        b=L6JqxdWsp+vc/U9fiV9cvcvS/RyKALFpbgCU+xNkXRvFb41PmqA2bPNHJv/P/4Q+6B
+         ptFFepfMalR9S8o4PS0Off3NT5ETDlQb3Sab+plPKne3t0fQJ18MKkGpr4QxkbmyU2TD
+         V5R4ewka+y5L5Kn3ojwNVdcJdDuWYn44bU3Yzc7KHXm4Wm6QFAy+CCuBkR5cI+vbL4Xz
+         mRE+2qHTVzg5Q6o8JErefzeUqW3K7uq7lAGsKJL32fhyar94lOGzIwHbh5Ms5H4x7vp3
+         m3CXj+FoiocohAi9RcncTCtMOoXlSCFJ2vld5k4dAvJUoWCNpv1DBA51zGXINIwmPiIL
+         QXkQ==
+X-Gm-Message-State: AOAM532segqMk2llwduJqEkjpynWkrW5IKHWE7id3UXeD0VA9C/DobcJ
+        dGlMil+EY+v0HxPeiaU8RBRcn5iv7otsCCDAvf8Z1A==
+X-Google-Smtp-Source: ABdhPJyIFLJ85bMCYvj/91ettayOH1V58EjXivrE8WfF+1YBFSJbddTZYClbJIc/ZDQyppnesX+CPl7WRcw+ZKpDw10=
+X-Received: by 2002:a67:ce1a:: with SMTP id s26mr17518592vsl.0.1606075534004;
+ Sun, 22 Nov 2020 12:05:34 -0800 (PST)
 MIME-Version: 1.0
-References: <CAO5W59jOWuRKizngF8vv9jb-zr_HnLC2eNxKqi3AYwg8KLwKoA@mail.gmail.com>
- <X61rce8GANHW1ysh@kroah.com> <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
- <X613chtPVIg8kquH@kroah.com> <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
- <20201112192524.GB287229@rowland.harvard.edu> <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
- <20201113163449.GB322940@rowland.harvard.edu> <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
- <20201113171658.GF322940@rowland.harvard.edu>
-In-Reply-To: <20201113171658.GF322940@rowland.harvard.edu>
-From:   John Boero <boeroboy@gmail.com>
-Date:   Sun, 22 Nov 2020 20:03:43 +0000
-Message-ID: <CAO5W59hRNB0xH1Z2cd17ckYuHp38zL366K_3AuMoH8WTZYatow@mail.gmail.com>
-Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20200814134123.14566-1-ansuelsmth@gmail.com> <20200814134123.14566-3-ansuelsmth@gmail.com>
+In-Reply-To: <20200814134123.14566-3-ansuelsmth@gmail.com>
+From:   Amit Kucheria <amit.kucheria@linaro.org>
+Date:   Mon, 23 Nov 2020 01:35:22 +0530
+Message-ID: <CAHLCerMArOceCFQ1XFbsZCAnUdKVX3TVnAb502w+kxmO97bdJg@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 2/8] drivers: thermal: tsens: Add VER_0 tsens version
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Alan
-I just spent some more time investigating and playing with different patches,
-locks, mutexes, and sleeps, and I think I see exactly what's happening now.
-I now understand why it:
-A) seems to happen randomly during uvc start_stream
-B) affects multiple device vendors
-C) has been reported in RaspberryPi and IoT threads
+Hi Ansuel,
 
-I put a trace on usb/core/hub.c:usb_disconnect to identify why the device was
-disconnecting and it seems this is a low power issue.  An idle webcam appears
-fine to usbcore but as soon as you initialize it or uvc starts a stream, it
-consumes more power, might find the cable can't supply it, and then disconnects
-via interrupt. In my case I can reproduce this consistently with a cheap USB
-extension cable, but this issue appears common to passive hubs, and IoT or SBCs
-that don't always supply clean power over USB.  My simplified patch can at least
-protect usbcore from crashing on a bad device:
+See comments inline.
 
-From 73019d79fe4fd8b2c945005f8a067f528d8056fd Mon Sep 17 00:00:00 2001
-From: jboero <boeroboy@gmail.com>
-Date: Sun, 22 Nov 2020 19:30:41 +0000
-Subject: [PATCH] USBCore NULL interface deref fix
+On Fri, Aug 14, 2020 at 7:12 PM Ansuel Smith <ansuelsmth@gmail.com> wrote:
+>
+> VER_0 is used to describe device based on tsens version before v0.1.
+> These device are devices based on msm8960 for example apq8064 or
+> ipq806x.
+>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/thermal/qcom/tsens.c | 122 +++++++++++++++++++++++++++++++----
+>  drivers/thermal/qcom/tsens.h |   7 +-
+>  2 files changed, 114 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index 9fe9a2b26705..965c4799918a 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -516,6 +516,15 @@ static irqreturn_t tsens_irq_thread(int irq, void *data)
+>                         dev_dbg(priv->dev, "[%u] %s: no violation:  %d\n",
+>                                 hw_id, __func__, temp);
+>                 }
+> +
+> +               if (tsens_version(priv) < VER_0_1) {
+> +                       /* Constraint: There is only 1 interrupt control register for all
+> +                        * 11 temperature sensor. So monitoring more than 1 sensor based
+> +                        * on interrupts will yield inconsistent result. To overcome this
+> +                        * issue we will monitor only sensor 0 which is the master sensor.
+> +                        */
+> +                       break;
+> +               }
+>         }
+>
+>         return IRQ_HANDLED;
+> @@ -531,6 +540,13 @@ static int tsens_set_trips(void *_sensor, int low, int high)
+>         int high_val, low_val, cl_high, cl_low;
+>         u32 hw_id = s->hw_id;
+>
+> +       if (tsens_version(priv) < VER_0_1) {
+> +               /* Pre v0.1 IP had a single register for each type of interrupt
+> +                * and thresholds
+> +                */
+> +               hw_id = 0;
+> +       }
+> +
+>         dev_dbg(dev, "[%u] %s: proposed thresholds: (%d:%d)\n",
+>                 hw_id, __func__, low, high);
+>
+> @@ -584,18 +600,21 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>         u32 valid;
+>         int ret;
+>
+> -       ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> -       if (ret)
+> -               return ret;
+> -       while (!valid) {
+> -               /* Valid bit is 0 for 6 AHB clock cycles.
+> -                * At 19.2MHz, 1 AHB clock is ~60ns.
+> -                * We should enter this loop very, very rarely.
+> -                */
+> -               ndelay(400);
+> +       /* VER_0 doesn't have VALID bit */
+> +       if (tsens_version(priv) >= VER_0_1) {
+>                 ret = regmap_field_read(priv->rf[valid_idx], &valid);
+>                 if (ret)
+>                         return ret;
+> +               while (!valid) {
+> +                       /* Valid bit is 0 for 6 AHB clock cycles.
+> +                        * At 19.2MHz, 1 AHB clock is ~60ns.
+> +                        * We should enter this loop very, very rarely.
+> +                        */
+> +                       ndelay(400);
+> +                       ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> +                       if (ret)
+> +                               return ret;
+> +               }
 
----
-drivers/usb/core/usb.c | 2 +-
-1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-index bafc113f2b3e..da46c84c87ce 100644
---- a/drivers/usb/core/usb.c
-+++ b/drivers/usb/core/usb.c
-@@ -278,7 +278,7 @@ struct usb_interface *usb_ifnum_to_if(const struct
-usb_device *dev,
-       if (!config)
-               return NULL;
-       for (i = 0; i < config->desc.bNumInterfaces; i++)
--               if (config->interface[i]->altsetting[0]
-+               if (config->interface[i] && config->interface[i]->altsetting[0]
-                               .desc.bInterfaceNumber == ifnum)
-                       return config->interface[i];
-
---
-2.26.2
+Let's revisit this after fixing patch 1.
 
 
+>         }
+>
+>         /* Valid bit is set, OK to read the temperature */
+> @@ -763,6 +782,10 @@ int __init init_common(struct tsens_priv *priv)
+>                 goto err_put_device;
+>         }
+>
+> +       /* VER_0 have only tm_map */
+> +       if (!priv->srot_map)
+> +               priv->srot_map = priv->tm_map;
+> +
+>         if (tsens_version(priv) > VER_0_1) {
+>                 for (i = VER_MAJOR; i <= VER_STEP; i++) {
+>                         priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
+> @@ -781,6 +804,10 @@ int __init init_common(struct tsens_priv *priv)
+>                 ret = PTR_ERR(priv->rf[TSENS_EN]);
+>                 goto err_put_device;
+>         }
+> +       /* in VER_0 TSENS need to be explicitly enabled */
+> +       if (tsens_version(priv) == VER_0)
+> +               regmap_field_write(priv->rf[TSENS_EN], 1);
+> +
+>         ret = regmap_field_read(priv->rf[TSENS_EN], &enabled);
+>         if (ret)
+>                 goto err_put_device;
+> @@ -803,6 +830,61 @@ int __init init_common(struct tsens_priv *priv)
+>                 goto err_put_device;
+>         }
+>
+> +       priv->rf[TSENS_EN] = devm_regmap_field_alloc(dev, priv->tm_map,
+> +                                                    priv->fields[TSENS_EN]);
+> +       if (IS_ERR(priv->rf[TSENS_EN])) {
+> +               ret = PTR_ERR(priv->rf[TSENS_EN]);
+> +               goto err_put_device;
+> +       }
+> +
+> +       priv->rf[TSENS_SW_RST] = devm_regmap_field_alloc(
+> +               dev, priv->tm_map, priv->fields[TSENS_EN]);
+> +       if (IS_ERR(priv->rf[TSENS_EN])) {
+> +               ret = PTR_ERR(priv->rf[TSENS_EN]);
+> +               goto err_put_device;
+> +       }
+> +
+> +       priv->rf[LOW_INT_CLEAR_0] = devm_regmap_field_alloc(
+> +               dev, priv->tm_map, priv->fields[LOW_INT_CLEAR_0]);
+> +       if (IS_ERR(priv->rf[LOW_INT_CLEAR_0])) {
+> +               ret = PTR_ERR(priv->rf[LOW_INT_CLEAR_0]);
+> +               goto err_put_device;
+> +       }
+> +
+> +       priv->rf[UP_INT_CLEAR_0] = devm_regmap_field_alloc(
+> +               dev, priv->tm_map, priv->fields[UP_INT_CLEAR_0]);
+> +       if (IS_ERR(priv->rf[UP_INT_CLEAR_0])) {
+> +               ret = PTR_ERR(priv->rf[UP_INT_CLEAR_0]);
+> +               goto err_put_device;
+> +       }
+> +
+> +       /* VER_0 require to set MIN and MAX THRESH */
+> +       if (tsens_version(priv) < VER_0_1) {
+> +               priv->rf[MIN_THRESH_0] = devm_regmap_field_alloc(
+> +                       dev, priv->tm_map, priv->fields[MIN_THRESH_0]);
+> +               if (IS_ERR(priv->rf[MIN_THRESH_0])) {
+> +                       ret = PTR_ERR(priv->rf[MIN_THRESH_0]);
+> +                       goto err_put_device;
+> +               }
+> +
+> +               priv->rf[MAX_THRESH_0] = devm_regmap_field_alloc(
+> +                       dev, priv->tm_map, priv->fields[MAX_THRESH_0]);
+> +               if (IS_ERR(priv->rf[MAX_THRESH_0])) {
+> +                       ret = PTR_ERR(priv->rf[MAX_THRESH_0]);
+> +                       goto err_put_device;
+> +               }
+> +
+> +               regmap_field_write(priv->rf[MIN_THRESH_0], 0);
+> +               regmap_field_write(priv->rf[MAX_THRESH_0], 120000);
+> +       }
+> +
+> +       priv->rf[TRDY] =
+> +               devm_regmap_field_alloc(dev, priv->tm_map, priv->fields[TRDY]);
+> +       if (IS_ERR(priv->rf[TRDY])) {
+> +               ret = PTR_ERR(priv->rf[TRDY]);
+> +               goto err_put_device;
+> +       }
+> +
+>         /* This loop might need changes if enum regfield_ids is reordered */
+>         for (j = LAST_TEMP_0; j <= UP_THRESH_15; j += 16) {
+>                 for (i = 0; i < priv->feat->max_sensors; i++) {
+> @@ -856,7 +938,11 @@ int __init init_common(struct tsens_priv *priv)
+>         }
+>
+>         spin_lock_init(&priv->ul_lock);
+> -       tsens_enable_irq(priv);
+> +
+> +       /* VER_0 interrupt doesn't need to be enabled */
+> +       if (tsens_version(priv) >= VER_0_1)
+> +               tsens_enable_irq(priv);
+> +
+>         tsens_debug_init(op);
+>
+>  err_put_device:
+> @@ -952,10 +1038,18 @@ static int tsens_register_irq(struct tsens_priv *priv, char *irqname,
+>                 if (irq == -ENXIO)
+>                         ret = 0;
+>         } else {
+> -               ret = devm_request_threaded_irq(&pdev->dev, irq,
+> -                                               NULL, thread_fn,
+> -                                               IRQF_ONESHOT,
+> -                                               dev_name(&pdev->dev), priv);
+> +               /* VER_0 interrupt is TRIGGER_RISING, VER_0_1 and up is ONESHOT */
+> +               if (tsens_version(priv) > VER_0)
+> +                       ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+> +                                                       thread_fn, IRQF_ONESHOT,
+> +                                                       dev_name(&pdev->dev),
+> +                                                       priv);
+> +               else
+> +                       ret = devm_request_threaded_irq(&pdev->dev, irq,
+> +                                                       thread_fn, NULL,
+> +                                                       IRQF_TRIGGER_RISING,
+> +                                                       dev_name(&pdev->dev),
+> +                                                       priv);
 
-This protects ongoing USB functionality including lsusb, and prevents a hang on
-reboot after error.  It doesn't help a user diagnose the error on the UVC side.
-A fix from the uvc side is a little trickier and I'd like an opinion on how
-best to handle locks in uvc_video_start_transfer. I've tried a few options
-around uvcvideo.c:1874
 
-ret = usb_set_interface(stream->dev->udev, intfnum, altsetting);
+Just set a flag variable to ONESHOT OR TRIGGER_RISING and use that in the call.
 
-I've even used multiple msleeps and checked for NULL interfaces but that feels
-like a cheap trick and I was wondering what lock solution might help best here?
+>                 if (ret)
+>                         dev_err(&pdev->dev, "%s: failed to get irq\n",
+>                                 __func__);
+> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+> index 59d01162c66a..f1120791737c 100644
+> --- a/drivers/thermal/qcom/tsens.h
+> +++ b/drivers/thermal/qcom/tsens.h
+> @@ -25,7 +25,8 @@ struct tsens_priv;
+>
+>  /* IP version numbers in ascending order */
+>  enum tsens_ver {
+> -       VER_0_1 = 0,
+> +       VER_0 = 0,
+> +       VER_0_1,
+>         VER_1_X,
+>         VER_2_X,
+>  };
+> @@ -441,6 +442,10 @@ enum regfield_ids {
+>         CRIT_THRESH_14,
+>         CRIT_THRESH_15,
+>
+> +       /* VER_0 MIN MAX THRESH */
+> +       MIN_THRESH_0,
+> +       MAX_THRESH_0,
+> +
 
-Thanks!
-John Boero
+Consider reusing LOW_THRESH_0 and UP_THRESH_0 for these?
 
-Trace:
-[ 115.872606] uvcvideo: Device requested 2688 B/frame bandwidth.
-[ 115.872610] uvcvideo: Selecting alternate setting 10 (2688 B/frame bandwidth).
-[ 115.872611] uvcvideo: jboero sleeping 5ms for race condition.
-[ 115.886305] ------------[ cut here ]------------
-[ 115.886310] jboero dev disconnecting - 200ms sleep!
-[ 115.886354] WARNING: CPU: 18 PID: 321 at drivers/usb/core/hub.c:2194
-usb_disconnect+0x25/0xb0
-[ 115.886359] Modules linked in: snd_seq_dummy snd_hrtimer rfcomm
-rc_cec nouveau vboxnetadp(OE) vboxnetflt(OE) mxm_wmi video vboxdrv(OE)
-xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_nat_tftp
-nft_objref nf_conntrack_tftp tun bridge stp llc rpcsec_gss_krb5
-auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache nft_fib_inet
-nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4
-nf_reject_ipv6 nft_reject nft_ct nft_chain_nat ip6table_nat
-ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat
-nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_raw
-iptable_security ip_set nf_tables nfnetlink ip6table_filter ip6_tables
-iptable_filter overlay cmac bnep lm75 sunrpc vfat fat squashfs loop
-intel_rapl_msr intel_rapl_common btusb btrtl snd_hda_codec_realtek
-sb_edac btbcm btintel x86_pkg_temp_thermal snd_hda_codec_generic
-snd_hda_codec_hdmi ledtrig_audio uvcvideo intel_powerclamp ucsi_ccg
-videobuf2_vmalloc snd_hda_intel coretemp dm_cache_smq videobuf2_memops
-[ 115.886422] bluetooth typec_ucsi snd_intel_dspcfg videobuf2_v4l2
-kvm_intel iTCO_wdt intel_pmc_bxt typec iTCO_vendor_support
-snd_usb_audio videobuf2_common snd_hda_codec dm_cache ecdh_generic ecc
-pktcdvd kvm dm_persistent_data snd_usbmidi_lib videodev snd_hda_core
-dm_bio_prison snd_hwdep snd_rawmidi snd_seq mc joydev irqbypass
-snd_seq_device ocrdma rapl intel_cstate ib_uverbs snd_pcm hp_wmi
-sparse_keymap intel_uncore pcspkr rfkill wmi_bmof ib_core snd_timer
-snd i2c_i801 i2c_smbus lpc_ich soundcore i2c_nvidia_gpu tpm_infineon
-binfmt_misc ip_tables amdgpu iommu_v2 gpu_sched crct10dif_pclmul
-crc32_pclmul i2c_algo_bit crc32c_intel ttm drm_kms_helper cec
-ghash_clmulni_intel serio_raw nvme drm e1000e be2net nvme_core wmi nbd
-fuse
-[ 115.886482] CPU: 18 PID: 321 Comm: kworker/18:1 Tainted: G W OE
-5.8.18-200.jboero.fc32.x86_64 #1
-[ 115.886485] Hardware name: Hewlett-Packard HP Z640 Workstation/212A,
-BIOS M60 v02.54 06/12/2020
-[ 115.886492] Workqueue: usb_hub_wq hub_event
-[ 115.886498] RIP: 0010:usb_disconnect+0x25/0xb0
-[ 115.886503] Code: 00 00 0f 1f 00 0f 1f 44 00 00 41 57 41 56 41 55 41
-54 55 53 48 89 fb 48 83 ec 20 4c 8b 27 48 c7 c7 a0 29 68 98 e8 9f 86
-78 ff <0f> 0b bf c8 00 00 00 e8 8f d7 83 ff 48 c7 c7 c0 b7 ea 98 e8 53
-c5
-[ 115.886507] RSP: 0018:ffffb96645bffd28 EFLAGS: 00010292
-[ 115.886512] RAX: 0000000000000027 RBX: ffff92eab42e9000 RCX: 0000000000000000
-[ 115.886515] RDX: ffff92eab4d38000 RSI: ffffffff9716eac5 RDI: 0000000000000246
-[ 115.886519] RBP: 0000000000000100 R08: 0000001afb5cc4e1 R09: 0000000000000027
-[ 115.886522] R10: 0000000000000000 R11: 0000000000000000 R12: ffff92eab0793000
-[ 115.886526] R13: 000000000000000e R14: ffff92eab42eab70 R15: 000000000000000e
-[ 115.886530] FS: 0000000000000000(0000) GS:ffff92eacd200000(0000)
-knlGS:0000000000000000
-[ 115.886534] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 115.886537] CR2: 00007f11514b2f40 CR3: 0000001fb95a0004 CR4: 00000000001606e0
-[ 115.886541] Call Trace:
-[ 115.886554] ? __mutex_unlock_slowpath+0x35/0x270
-[ 115.886562] hub_event+0xc0e/0x1890
-[ 115.886582] process_one_work+0x25d/0x570
-[ 115.886592] worker_thread+0x55/0x3c0
-[ 115.886598] ? process_one_work+0x570/0x570
-[ 115.886605] kthread+0x13a/0x150
-[ 115.886611] ? kthread_create_worker_on_cpu+0x40/0x40
-[ 115.886621] ret_from_fork+0x22/0x30
-[ 115.886638] irq event stamp: 11070
-[ 115.886646] hardirqs last enabled at (11069): [<ffffffff97cc66a4>]
-_raw_spin_unlock_irq+0x24/0x40
-[ 115.886651] hardirqs last disabled at (11070): [<ffffffff97cbf702>]
-__schedule+0xd2/0xa40
-[ 115.886656] softirqs last enabled at (6882): [<ffffffff9800033d>]
-__do_softirq+0x33d/0x44c
-[ 115.886661] softirqs last disabled at (6871): [<ffffffff97e010d2>]
-asm_call_irq_on_stack+0x12/0x20
-[ 115.886664] ---[ end trace d02727115f119a2f ]---
-[ 116.094920] usb 3-14: USB disconnect, device number 7
-[ 120.933639] uvcvideo: uvc_v4l2_release
+>         /* WATCHDOG */
+>         WDOG_BARK_STATUS,
+>         WDOG_BARK_CLEAR,
+> --
+> 2.27.0
+>
