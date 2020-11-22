@@ -2,45 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24882BC5AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8F62BC5B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 13:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgKVMnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 07:43:20 -0500
-Received: from albireo.enyo.de ([37.24.231.21]:52062 "EHLO albireo.enyo.de"
+        id S1727834AbgKVMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 07:46:34 -0500
+Received: from correo.us.es ([193.147.175.20]:47398 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727567AbgKVMnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 07:43:20 -0500
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kgoi6-0006xX-Nc; Sun, 22 Nov 2020 12:43:18 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1kgoi6-00018P-KM; Sun, 22 Nov 2020 13:43:18 +0100
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
+        id S1727685AbgKVMqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 07:46:33 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 485DAA24C95
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:46:32 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 3A54ADA704
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:46:32 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 1BCC6DA78E; Sun, 22 Nov 2020 13:46:32 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D8B11DA73D;
+        Sun, 22 Nov 2020 13:46:28 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Sun, 22 Nov 2020 13:46:28 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id B1EB74265A5A;
+        Sun, 22 Nov 2020 13:46:28 +0100 (CET)
+Date:   Sun, 22 Nov 2020 13:46:28 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Julian Anastasov <ja@ssi.bg>
+Cc:     Yejune Deng <yejune.deng@gmail.com>, wensong@linux-vs.org,
+        horms@verge.net.au, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lseek.2: SYNOPSIS: Use correct types
-References: <20201121173054.12172-1-alx.manpages@gmail.com>
-Date:   Sun, 22 Nov 2020 13:43:18 +0100
-In-Reply-To: <20201121173054.12172-1-alx.manpages@gmail.com> (Alejandro
-        Colomar's message of "Sat, 21 Nov 2020 18:30:56 +0100")
-Message-ID: <87wnydblzt.fsf@mid.deneb.enyo.de>
+Subject: Re: [PATCH] ipvs: replace atomic_add_return()
+Message-ID: <20201122124628.GA28719@salvia>
+References: <1605513707-7579-1-git-send-email-yejune.deng@gmail.com>
+ <9cd77e1e-1c52-d647-9443-485510b4a9b1@ssi.bg>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9cd77e1e-1c52-d647-9443-485510b4a9b1@ssi.bg>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Alejandro Colomar:
+On Tue, Nov 17, 2020 at 10:57:52PM +0200, Julian Anastasov wrote:
+> 
+> 	Hello,
+> 
+> On Mon, 16 Nov 2020, Yejune Deng wrote:
+> 
+> > atomic_inc_return() looks better
+> > 
+> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> 
+> 	Looks good to me for -next, thanks!
+> 
+> Acked-by: Julian Anastasov <ja@ssi.bg>
 
-> The Linux kernel uses 'unsigned int' instead of 'int' for 'fd' and
-> 'whence'.  As glibc provides no wrapper, use the same types the
-> kernel uses.
-
-lseek is a POSIX interface, and glibc provides it.  POSIX uses int for
-file descriptors (and the whence parameter in case of lseek).
-
-The llseek system call is a different matter, that's indeed
-Linux-specific.
+Applied, thanks.
