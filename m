@@ -2,77 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38482BC784
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 18:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE472BC78B
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 18:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgKVRjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 12:39:48 -0500
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:23384 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727934AbgKVRjr (ORCPT
+        id S1728089AbgKVRm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 12:42:58 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41810 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727567AbgKVRm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 12:39:47 -0500
-Received: from localhost.localdomain ([81.185.166.181])
-        by mwinf5d28 with ME
-        id vVfh2300G3v9GFD03Vfi75; Sun, 22 Nov 2020 18:39:43 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Nov 2020 18:39:43 +0100
-X-ME-IP: 81.185.166.181
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        gseset@codeaurora.org, mkenna@codeaurora.org,
-        slakkavalli@datto.com, gsamin@codeaurora.org,
-        pradeepc@codeaurora.org
-Cc:     ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ath11k: Fix an error handling path
-Date:   Sun, 22 Nov 2020 18:39:43 +0100
-Message-Id: <20201122173943.1366167-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Sun, 22 Nov 2020 12:42:58 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AMHgqJl071373;
+        Sun, 22 Nov 2020 11:42:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606066972;
+        bh=Vs7K0liplB0YMIyj5LAc8+c1AJgx/p9mg5YBTryXfy4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=W//HRR50R4MINWIoySDeSKkxvPj9Hf5Hq+YnObKREpQNhYi+HEAUmr2Nzt6bHAJtx
+         M2nhc4ULs6nv66B6VJFKdSnrG/DJ6B+AR/FZgML1lW7WzdxkPQZDoSew1PLjuy5TGp
+         oTQKu5jC89o7DTlOqq0JSGGWeiHecgbMJJeWXb4I=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AMHgqog048381
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 22 Nov 2020 11:42:52 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 22
+ Nov 2020 11:42:52 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 22 Nov 2020 11:42:52 -0600
+Received: from [10.250.68.46] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AMHgpwF090283;
+        Sun, 22 Nov 2020 11:42:52 -0600
+Subject: Re: [PATCH] remoteproc: Add module parameter 'auto_boot'
+To:     Paul Cercueil <paul@crapouillou.net>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>, <od@zcrc.me>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201115115056.83225-1-paul@crapouillou.net>
+ <20201120223701.GF4137289@xps15>
+ <65e4ed08-9709-533f-57bb-cb570165a461@ti.com>
+ <OJT5KQ.QDDSGNHAM2LN1@crapouillou.net>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <a07f0c50-392c-e677-bfd8-ed924127f5a8@ti.com>
+Date:   Sun, 22 Nov 2020 11:42:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <OJT5KQ.QDDSGNHAM2LN1@crapouillou.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If 'kzalloc' fails, we must return an error code.
+Hi Paul,
 
-While at it, remove a useless initialization of 'err' which could hide the
-issue.
+On 11/21/20 12:47 PM, Paul Cercueil wrote:
+> Hi Suman,
+> 
+> Le ven. 20 nov. 2020 à 17:06, Suman Anna <s-anna@ti.com> a écrit :
+>> Hi Paul,
+>>
+>> On 11/20/20 4:37 PM, Mathieu Poirier wrote:
+>>>  Hi Paul,
+>>>
+>>>  On Sun, Nov 15, 2020 at 11:50:56AM +0000, Paul Cercueil wrote:
+>>>>  Until now the remoteproc core would always default to trying to boot the
+>>>>  remote processor at startup. The various remoteproc drivers could
+>>>>  however override that setting.
+>>>>
+>>>>  Whether or not we want the remote processor to boot, really depends on
+>>>>  the nature of the processor itself - a processor built into a WiFi chip
+>>>>  will need to be booted for the WiFi hardware to be usable, for instance,
+>>>>  but a general-purpose co-processor does not have any predeterminated
+>>>>  function, and as such we cannot assume that the OS will want the
+>>>>  processor to be booted - yet alone that we have a single do-it-all
+>>>>  firmware to load.
+>>>>
+>>>
+>>>  If I understand correctly you have various remote processors that use the
+>>> same firmware
+>>>  but are serving different purposes - is this correct?
+>>>
+>>>>  Add a 'auto_boot' module parameter that instructs the remoteproc whether
+>>>>  or not it should auto-boot the remote processor, which will default to
+>>>>  "true" to respect the previous behaviour.
+>>>>
+>>>
+>>>  Given that the core can't be a module I wonder if this isn't something that
+>>>  would be better off in the specific platform driver or the device tree... 
+>>> Other
+>>>  people might have an opinion as well.
+>>
+>> I agree. Even it is a module, all it is setting up is default behavior, and
+>> doesn't buy you much. If you have one or more remoteproc drivers supporting
+>> different instances, and each one wants different behavior, you would have to
+>> customize it in the drivers anyway. ST drivers are customizing this using a DT
+>> flag.
+> 
+> Devicetree is supposed to describe the hardware, not how you're supposed to use
+> the hardware...
 
-Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/wireless/ath/ath11k/qmi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+I agree, but it sneaked in somehow. Anyway, I am not proposing that you repeat
+the same approach.
 
-diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
-index c2b165158225..99a88ca83dea 100644
---- a/drivers/net/wireless/ath/ath11k/qmi.c
-+++ b/drivers/net/wireless/ath/ath11k/qmi.c
-@@ -1585,15 +1585,17 @@ static int ath11k_qmi_fw_ind_register_send(struct ath11k_base *ab)
- 	struct qmi_wlanfw_ind_register_resp_msg_v01 *resp;
- 	struct qmi_handle *handle = &ab->qmi.handle;
- 	struct qmi_txn txn;
--	int ret = 0;
-+	int ret;
- 
- 	req = kzalloc(sizeof(*req), GFP_KERNEL);
- 	if (!req)
- 		return -ENOMEM;
- 
- 	resp = kzalloc(sizeof(*resp), GFP_KERNEL);
--	if (!resp)
-+	if (!resp) {
-+		ret = -ENOMEM;
- 		goto resp_out;
-+	}
- 
- 	req->client_id_valid = 1;
- 	req->client_id = QMI_WLANFW_CLIENT_ID;
--- 
-2.27.0
+> 
+>> Given that the individual platform drivers have to be modules, is there any
+>> issue in customizing this in your platform driver?
+> 
+> No, I can patch the platform driver instead, but to me it clearly is a core issue.
+
+So, remoteproc core is just setting up a default, and it is upto the individual
+drivers to override it. I actually have two different rproc drivers on the same
+SoC wanting different behavior for example.
+
+I do like the runtime config in general compared to a build-time Kconfig option,
+but let's say we do add this option, then you would also need every rproc driver
+to actually set this field specifically to ensure their expected behavior
+doesn't change if it is installed as false.
+
+regards
+Suman
+
+> 
+> Cheers,
+> -Paul
+> 
+>> regards
+>> Suman
+>>
+>>>
+>>>  Thanks,
+>>>  Mathieu
+>>>
+>>>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>>>  ---
+>>>>   drivers/remoteproc/remoteproc_core.c | 7 ++++++-
+>>>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>>>
+>>>>  diff --git a/drivers/remoteproc/remoteproc_core.c
+>>>> b/drivers/remoteproc/remoteproc_core.c
+>>>>  index dab2c0f5caf0..687b1bfd49db 100644
+>>>>  --- a/drivers/remoteproc/remoteproc_core.c
+>>>>  +++ b/drivers/remoteproc/remoteproc_core.c
+>>>>  @@ -44,6 +44,11 @@
+>>>>
+>>>>   #define HIGH_BITS_MASK 0xFFFFFFFF00000000ULL
+>>>>
+>>>>  +static bool auto_boot = true;
+>>>>  +module_param(auto_boot, bool, 0400);
+>>>>  +MODULE_PARM_DESC(auto_boot,
+>>>>  +         "Auto-boot the remote processor [default=true]");
+>>>>  +
+>>>>   static DEFINE_MUTEX(rproc_list_mutex);
+>>>>   static LIST_HEAD(rproc_list);
+>>>>   static struct notifier_block rproc_panic_nb;
+>>>>  @@ -2176,7 +2181,7 @@ struct rproc *rproc_alloc(struct device *dev, const
+>>>> char *name,
+>>>>           return NULL;
+>>>>
+>>>>       rproc->priv = &rproc[1];
+>>>>  -    rproc->auto_boot = true;
+>>>>  +    rproc->auto_boot = auto_boot;
+>>>>       rproc->elf_class = ELFCLASSNONE;
+>>>>       rproc->elf_machine = EM_NONE;
+>>>>
+>>>>  --
+>>>>  2.29.2
+>>>>
+>>
+> 
+> 
 
