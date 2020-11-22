@@ -2,100 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FF12BC3DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 06:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769332BC3E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 06:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgKVF2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 00:28:07 -0500
-Received: from lonlinode-sdnproxy-1.icoremail.net ([139.162.193.133]:42394
-        "HELO lonlinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1727110AbgKVF2G (ORCPT
+        id S1727330AbgKVF24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 00:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727316AbgKVF2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 00:28:06 -0500
-Received: from localhost (unknown [113.247.217.134])
-        by c1app7 (Coremail) with SMTP id BwINCgA3PQHb9rlfssnpAA--.12609S3;
-        Sun, 22 Nov 2020 13:27:55 +0800 (CST)
-Date:   Sun, 22 Nov 2020 13:27:52 +0800
-From:   Chen Baozi <chenbaozi@phytium.com.cn>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH] ACPI: Let ACPI know we support Generic Initiator
- Affinity Structures
-Message-ID: <20201122052752.GA23348@debian-gnu-linux-vm.localdomain>
+        Sun, 22 Nov 2020 00:28:55 -0500
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DBFC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 21:28:55 -0800 (PST)
+Received: by mail-oo1-xc44.google.com with SMTP id y3so3219252ooq.2
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 21:28:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Smvn2Og8/Ub9VM4XLs907h3+U6SuKbjKjd7REj91mzI=;
+        b=elk3b5dhw83Uz8QiIJEhGVU+MVJEVVXmw4/h/NUrg4P2MuH5skMGRheYUp8M2/SL07
+         wwpDRwQK+fRkTqY82n76OwASOp0ZbHhwxyX3Jf/MfhBYYK3Wl52DxQbH9qFgevezv3ld
+         BYtISWSIuPFO4pu2ZNj0R30axsmIhN7kQG1brluk0j8tZQmE9n6ZM4np74yEoE2agdUU
+         c2Sa2K+g+qyqhxZtISaDPvaJyww4K3XH66Z0xRQITTJpQ4CiUz+dlScATMoIYiwGZgr6
+         6vXB2zz2eIcWNB4/4KXOQfR5t08M/foTO3mvgYNvcXF6EJ5ofoDGbstiGM8KPsW60cGR
+         ykgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Smvn2Og8/Ub9VM4XLs907h3+U6SuKbjKjd7REj91mzI=;
+        b=o3G6VbcIKcDkmysV2diUD3MtOtcNipr5oCvvZlhc8K8ov8E9tWCMwyNl4cIaeVylPo
+         1Syr+0SlI7REEC9hdY4vU/xUq7t5P5FXfjfuPvgeTm3/K7QwY2ZlWgMAnmD4HrktJwEH
+         5ibjckhVTqazNeOYoaCkVggs2XZ2+nIc5PAb4MvpcJEDRKXX+Fjxkj2fZYtGL5bLq38b
+         q6k2G3f/8mRRscrP2rqDyhTwdvVPWxxeYCJDmFL0KtGFRU+43N8K3cycBOipZeSxivjO
+         FyKXL9RmTLjHuQKaTTNQ1a2ILaVtMA1ff6ZK8shus/PzMyOlOs5S3nFNvh/pNiIVlAl9
+         1sYw==
+X-Gm-Message-State: AOAM533Lae6WR+EtDzjIIc5lCb1mUZOsZ8yS9ETkGkFzmj84FxAUVNn0
+        /KxEvoCp5Dr09iQPdGnpAR0ITX3P5LPsvQ==
+X-Google-Smtp-Source: ABdhPJzImraQ6mqTnZUMPZ9IF6A23qLbjFj25b8h9Fcwc0nhQNLvp4d4hOlOa245Map/N65OOkLD9w==
+X-Received: by 2002:a4a:d641:: with SMTP id y1mr19498120oos.30.1606022934689;
+        Sat, 21 Nov 2020 21:28:54 -0800 (PST)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n63sm4857591oih.39.2020.11.21.21.28.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 21:28:54 -0800 (PST)
+Date:   Sat, 21 Nov 2020 23:28:52 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>, od@zcrc.me,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: Add module parameter 'auto_boot'
+Message-ID: <20201122052852.GI807@yoga>
+References: <20201115115056.83225-1-paul@crapouillou.net>
+ <20201120223701.GF4137289@xps15>
+ <P4T5KQ.W5BP830SCRPW1@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: BwINCgA3PQHb9rlfssnpAA--.12609S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw43XF4Duw15CFW5ArWrKrg_yoW8ZF47pF
-        sY9w4DCrykCaykCa4kCw4FqFy5Ja13AFyjvr9rK3yUZ34rGr1DJr4ktryUKayj9rs3JF4F
-        gFn0qr15tayDu3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc2xSY4AK67AK6r4rMxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07boxhJUUUUU=
-X-CM-SenderInfo: hfkh0updr2xqxsk13x1xpou0fpof0/1tbiDAPkP17uHyDXUAAAsc
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <P4T5KQ.W5BP830SCRPW1@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On Sat 21 Nov 12:38 CST 2020, Paul Cercueil wrote:
 
-I have found the value of OSC_SB_GENERIC_INITIATOR_SUPPORT is wrong
-when reading source code of driver/acpi/bus.c in the linux-next
-
-On Wed, Sep 30, 2020 at 10:05:44PM +0800, Jonathan Cameron wrote:
-> Until we tell ACPI that we support generic initiators, it will have
-> to operate in fall back domain mode and all _PXM entries should
-> be on existing non GI domains.
+> Hi Mathieu,
 > 
-> This patch sets the relevant OSC bit to make that happen.
+> Le ven. 20 nov. 2020 à 15:37, Mathieu Poirier <mathieu.poirier@linaro.org> a
+> écrit :
+> > Hi Paul,
+> > 
+> > On Sun, Nov 15, 2020 at 11:50:56AM +0000, Paul Cercueil wrote:
+> > >  Until now the remoteproc core would always default to trying to
+> > > boot the
+> > >  remote processor at startup. The various remoteproc drivers could
+> > >  however override that setting.
+> > > 
+> > >  Whether or not we want the remote processor to boot, really depends
+> > > on
+> > >  the nature of the processor itself - a processor built into a WiFi
+> > > chip
+> > >  will need to be booted for the WiFi hardware to be usable, for
+> > > instance,
+> > >  but a general-purpose co-processor does not have any predeterminated
+> > >  function, and as such we cannot assume that the OS will want the
+> > >  processor to be booted - yet alone that we have a single do-it-all
+> > >  firmware to load.
+> > > 
+> > 
+> > If I understand correctly you have various remote processors that use
+> > the same firmware
+> > but are serving different purposes - is this correct?
 > 
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/acpi/bus.c   | 4 ++++
->  include/linux/acpi.h | 1 +
->  2 files changed, 5 insertions(+)
+> That's the opposite actually. I have one remote processor which is
+> general-purpose, and as such userspace may or may not want it started at
+> boot time - depending on what it wants to do with it. The kernel shouldn't
+> decide itself whether or not the remote processor should be started, because
+> that's policy.
 > 
-> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-> index 54002670cb7a..113c661eb848 100644
-> --- a/drivers/acpi/bus.c
-> +++ b/drivers/acpi/bus.c
-> @@ -303,7 +303,11 @@ static void acpi_bus_osc_support(void)
->  	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_OST_SUPPORT;
->  	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PCLPI_SUPPORT;
->  
-> +#ifdef CONFIG_ARM64
-> +	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_GENERIC_INITIATOR_SUPPORT;
-> +#endif
->  #ifdef CONFIG_X86
-> +	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_GENERIC_INITIATOR_SUPPORT;
->  	if (boot_cpu_has(X86_FEATURE_HWP)) {
->  		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_CPC_SUPPORT;
->  		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_CPCV2_SUPPORT;
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index e9f6cd67943e..edbf3c4116b4 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -545,6 +545,7 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
->  #define OSC_SB_PCLPI_SUPPORT			0x00000080
->  #define OSC_SB_OSLPI_SUPPORT			0x00000100
->  #define OSC_SB_CPC_DIVERSE_HIGH_SUPPORT		0x00001000
-> +#define OSC_SB_GENERIC_INITIATOR_SUPPORT	0x00002000
+> > 
+> > >  Add a 'auto_boot' module parameter that instructs the remoteproc
+> > > whether
+> > >  or not it should auto-boot the remote processor, which will default
+> > > to
+> > >  "true" to respect the previous behaviour.
+> > > 
+> > 
+> > Given that the core can't be a module I wonder if this isn't something
+> > that
+> > would be better off in the specific platform driver or the device
+> > tree...  Other
+> > people might have an opinion as well.
+> 
+> Hardcoded in the platform driver or flagged in the device tree, doesn't
+> change the fundamental problem - it should be up to the userspace to decide
+> whether or not the remote processor should boot.
+> 
 
-Since the Generic Initiator Support is the Bit 17, it should be
-0x20000 rather than 0x2000.
+Unfortunately it depends on what you're using your remoteprocs for. And
+in a system with multiple remoteproc instances I don't think a single
+global parameter is sufficient - not even a per-driver setting is.
 
-Baozi.
+I do agree with you that there are types of systems where the decision
+to auto boot things would happen after the kernel and/or DT has been
+written.
 
+Regards,
+Bjorn
+
+> Cheers,
+> -Paul
+> 
+> > 
+> > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  ---
+> > >   drivers/remoteproc/remoteproc_core.c | 7 ++++++-
+> > >   1 file changed, 6 insertions(+), 1 deletion(-)
+> > > 
+> > >  diff --git a/drivers/remoteproc/remoteproc_core.c
+> > > b/drivers/remoteproc/remoteproc_core.c
+> > >  index dab2c0f5caf0..687b1bfd49db 100644
+> > >  --- a/drivers/remoteproc/remoteproc_core.c
+> > >  +++ b/drivers/remoteproc/remoteproc_core.c
+> > >  @@ -44,6 +44,11 @@
+> > > 
+> > >   #define HIGH_BITS_MASK 0xFFFFFFFF00000000ULL
+> > > 
+> > >  +static bool auto_boot = true;
+> > >  +module_param(auto_boot, bool, 0400);
+> > >  +MODULE_PARM_DESC(auto_boot,
+> > >  +		 "Auto-boot the remote processor [default=true]");
+> > >  +
+> > >   static DEFINE_MUTEX(rproc_list_mutex);
+> > >   static LIST_HEAD(rproc_list);
+> > >   static struct notifier_block rproc_panic_nb;
+> > >  @@ -2176,7 +2181,7 @@ struct rproc *rproc_alloc(struct device *dev,
+> > > const char *name,
+> > >   		return NULL;
+> > > 
+> > >   	rproc->priv = &rproc[1];
+> > >  -	rproc->auto_boot = true;
+> > >  +	rproc->auto_boot = auto_boot;
+> > >   	rproc->elf_class = ELFCLASSNONE;
+> > >   	rproc->elf_machine = EM_NONE;
+> > > 
+> > >  --
+> > >  2.29.2
+> > > 
+> 
+> 
