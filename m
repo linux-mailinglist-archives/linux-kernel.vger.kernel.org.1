@@ -2,118 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A336F2BFC30
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 23:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EC22BFC48
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 23:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgKVWcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 17:32:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgKVWco (ORCPT
+        id S1726854AbgKVWeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 17:34:02 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:50298 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgKVWeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 17:32:44 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93F1C0613CF;
-        Sun, 22 Nov 2020 14:32:44 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id c80so17644806oib.2;
-        Sun, 22 Nov 2020 14:32:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=xz3AjGP9Tg1tyJ2aOnoC1uR/QewegNTFrIVqLnCw6+Q=;
-        b=V+XoCaj0JS9lqwpClskQX7XEqiJpcnUhg3raB41mKRAIOH0j7s1JqmuMVnzINkw+Y9
-         6U1gXIcD+CJ59ICIZpbSgo5+t88xtZ89aCzC5ANQ2Nf4HeNBrMJvaiLVaAdKjx4taqGL
-         cwgvqFMkvJPPoDnQG0ymiTXYEjbkzkLTVOkXQ4fEuBIdTNmx9L9b0ZT8wwnTeA4JdELO
-         vdbA51hu1oTjrXDAIJzcnPz7GVd5lZAjzbqAwM9BjT3m+O13Ih/qaPCjupt+m9WmCAXB
-         mUsd8nLuWilrZQm2sDZPua79J4up14WsW8K7aa+mVHVOzdlJpvMTItPvxifvstJaeJ8D
-         ofhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=xz3AjGP9Tg1tyJ2aOnoC1uR/QewegNTFrIVqLnCw6+Q=;
-        b=okfnGOtGbC7wMzI6j1Jq29YRwUjF5Jm0W5OiHMLNjTBuYX6cvlziDLLuHPJKDL+Nqm
-         N5MjWELmdVnUz4FBDQfKh4UWDlMU2loZw5m3Kr1YORtjcHYUQLuYFaYLQo2YBYo8CGPs
-         uG8N/S2sCZhY7a6VKGIm+BeFNEr8Z4p43vhyUy6CZoK9s5EQQ3SjNbbpn8QPzmFu9SLs
-         3/cr3SdwgYdObevEg+GslsLAJlUuwXXiqI9anurzfwDPaTePsZHKgd3yVSEAAp/7RdIm
-         2VhbpGXafmxrgpQ+9QEj09qemOKIRQPE89vHHjgSKHsTm0obnh4b3HaG3t+kQJhMczpF
-         XtRw==
-X-Gm-Message-State: AOAM533Zbfb0QmnE9WgBDtK3MeJD/Q+z1ATuzAsjxsImbe3T+yLw5X89
-        F35JqAL+F8A9FHXqYBSFAfgxPiwoLq84iOa0FqnzKhTiP14=
-X-Google-Smtp-Source: ABdhPJwc0YCoO8vpqFyniYpcRUJUUJMZa2O3jH5OoxaN0/W+5NG3GKJFXVMd/J5npOqMIihgCv1CgFKUicCnWjoAx7w=
-X-Received: by 2002:a05:6808:91a:: with SMTP id w26mr13508860oih.159.1606084364053;
- Sun, 22 Nov 2020 14:32:44 -0800 (PST)
+        Sun, 22 Nov 2020 17:34:01 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A588721F21;
+        Sun, 22 Nov 2020 17:33:55 -0500 (EST)
+Date:   Mon, 23 Nov 2020 09:33:55 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Joe Perches <joe@perches.com>
+cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Tom Rix <trix@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        clang-built-linux@googlegroups.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        tboot-devel@lists.sourceforge.net, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-acpi@vger.kernel.org,
+        devel@acpica.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        netdev@vger.kernel.org, linux-media@vger.kernel.org,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
+        keyrings@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, alsa-devel@alsa-project.org,
+        bpf@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-nfs@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
+In-Reply-To: <dec07021e7fc11a02b14c98b713ae2c6e2a4ca00.camel@perches.com>
+Message-ID: <alpine.LNX.2.23.453.2011230810210.7@nippy.intranet>
+References: <20201121165058.1644182-1-trix@redhat.com>         <20201122032304.GE4327@casper.infradead.org>         <ddb08a27-3ca1-fb2e-d51f-4b471f1a56a3@redhat.com>         <20201122145635.GG4327@casper.infradead.org>         <0819ce06-c462-d4df-d3d9-14931dc5aefc@redhat.com>
+         <751803306cd957d0e7ef6a4fc3dbf12ebceaba92.camel@HansenPartnership.com> <dec07021e7fc11a02b14c98b713ae2c6e2a4ca00.camel@perches.com>
 MIME-Version: 1.0
-References: <20201121173054.12172-1-alx.manpages@gmail.com>
-In-Reply-To: <20201121173054.12172-1-alx.manpages@gmail.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Sun, 22 Nov 2020 23:32:32 +0100
-Message-ID: <CAKgNAkj5RN00d8EJF4vM1S0KPsmX6kB+pd4=HqVBwH3cQqnoSQ@mail.gmail.com>
-Subject: Re: [PATCH] lseek.2: SYNOPSIS: Use correct types
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Florian Weimer <fw@deneb.enyo.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Adding libc-alpha@ here, so someone might correct me if I make a misstep]
 
-Hello Alex,
+On Sun, 22 Nov 2020, Joe Perches wrote:
 
-On Sat, 21 Nov 2020 at 18:34, Alejandro Colomar <alx.manpages@gmail.com> wrote:
->
-> The Linux kernel uses 'unsigned int' instead of 'int'
-> for 'fd' and 'whence'.
-> As glibc provides no wrapper, use the same types the kernel uses.
+> On Sun, 2020-11-22 at 08:49 -0800, James Bottomley wrote:
+> > We can enforce sysfs_emit going forwards
+> > using tools like checkpatch
+> 
+> It's not really possible for checkpatch to find or warn about
+> sysfs uses of sprintf. checkpatch is really just a trivial
+> line-by-line parser and it has no concept of code intent.
+> 
 
-I see Florian already replied, but just to add a detail or two...
+Checkpatch does suffer from the limitations of regular expressions. But 
+that doesn't stop people from using it. Besides, Coccinelle can do 
+analyses that can't be done with regular expressions, so it's moot.
 
-In general, the manual pages explicitly note the APIs that have no
-glibc wrapper. (If not, that's a bug in the page, but I don't expect
-there are many such bugs.)
+> It just can't warn on every use of the sprintf family.
+> There are just too many perfectly valid uses.
+> 
+> > but there's no benefit and a lot of harm to
+> > be done by trying to churn the entire tree
+> 
+> Single uses of sprintf for sysfs is not really any problem.
+> 
+> But likely there are still several possible overrun sprintf/snprintf
+> paths in sysfs.  Some of them are very obscure and unlikely to be
+> found by a robot as the logic for sysfs buf uses can be fairly twisty.
+> 
 
-Looking in <unistd.h>, we have:
+Logic errors of this kind are susceptible to fuzzing, formal methods, 
+symbolic execution etc. No doubt there are other techniques that I don't 
+know about.
 
-[[
-#ifndef __USE_FILE_OFFSET64
-extern __off_t lseek (int __fd, __off_t __offset, int __whence) __THROW;
-#else
-# ifdef __REDIRECT_NTH
-extern __off64_t __REDIRECT_NTH (lseek,
-                                 (int __fd, __off64_t __offset, int __whence),
-                                 lseek64);
-# else
-#  define lseek lseek64
-# endif
-#endif
-#ifdef __USE_LARGEFILE64
-extern __off64_t lseek64 (int __fd, __off64_t __offset, int __whence)
-     __THROW;
-#endif
-]]
+> But provably correct conversions IMO _should_ be done and IMO churn 
+> considerations should generally have less importance.
+> 
 
-It looks to me like there's a prototype hiding in there. (And yes, I
-don't find it so funny to decode the macro logic either.)
+Provably equivalent conversions are provably churn. So apparently you're 
+advocating changes that are not provably equivalent.
 
-Thanks,
+These are patches for code not that's not been shown to be buggy. Code 
+which, after patching, can be shown to be free of a specific kind of 
+theoretical bug. Hardly "provably correct".
 
-Michael
+The problem is, the class of theoretical bugs that can be avoided in this 
+way is probably limitless, as is the review cost and the risk of 
+accidental regressions. And the payoff is entirely theoretical.
 
-PS By the way, be aware that the code of many wrapper functions is
-autogenerated from "syscalls.list" files in the glibc source, for
-example, sysdeps/unix/sysv/linux/syscalls.list. This isn't the case
-for lseek(), though, as far as I can see; I think the wrapper function
-is defined in sysdeps/unix/sysv/linux/lseek.c.
-
-
-
---
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Moreover, the patch review workload for skilled humans is being generated 
+by the automation, which is completely backwards: the machine is supposed 
+to be helping.
