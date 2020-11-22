@@ -2,104 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DAF2BC8BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 20:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EEF2BC8C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 20:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgKVTaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 14:30:16 -0500
-Received: from mailout04.rmx.de ([94.199.90.94]:45261 "EHLO mailout04.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727339AbgKVTaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 14:30:15 -0500
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout04.rmx.de (Postfix) with ESMTPS id 4CfL373H6dz3qvnM;
-        Sun, 22 Nov 2020 20:30:11 +0100 (CET)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4CfL305RcZz2TTLX;
-        Sun, 22 Nov 2020 20:30:04 +0100 (CET)
-Received: from n95hx1g2.localnet (192.168.54.21) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Sun, 22 Nov
- 2020 20:29:23 +0100
-From:   Christian Eggers <ceggers@arri.de>
-To:     Ido Schimmel <idosch@idosch.org>
-CC:     Richard Cochran <richardcochran@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Petr Machata <petrm@mellanox.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>
-Subject: Re: [PATCH net-next 2/3] mlxsw: spectrum_ptp: use PTP wide message type definitions
-Date:   Sun, 22 Nov 2020 20:29:22 +0100
-Message-ID: <2074851.ybSLjXPktx@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201122143555.GA515025@shredder.lan>
-References: <20201122082636.12451-1-ceggers@arri.de> <20201122082636.12451-3-ceggers@arri.de> <20201122143555.GA515025@shredder.lan>
+        id S1727412AbgKVTe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 14:34:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727307AbgKVTe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 14:34:27 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B2EC0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 11:34:27 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id 79so13958775otc.7
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 11:34:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:message-id:subject:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=I2PfFj17Ov/GEX7G4flBd22N5tZmj0BtXl931kRWchk=;
+        b=XFtI2hIRMZx7SfwacBzH2vYRgSPHdjFPqm1FL1uGwjW4VJ/A2xakRqC3G6vvwrMbIE
+         MXnP3FsFLiTDkBxcyF+xC1B2egPjNsx6XUTZQ0ak1aZ55FOORaHm4b6tr2GEleCmDVOg
+         8ntlWeRKUZ0IF9SC0xtd7qvxRWPceM9+MHZ/hziuDVjo/Mq6fAFXhBOxoDfpEYFsFL2N
+         7BpPQkPZU2YW6Cg/RvtaNMJ6qsL6NHQ0XHYnFJgWNYtMej2UhYQHeyEVxMEUTTRSWi6w
+         2Q6Ykdx/AJ1TGy3TeERIs+NouOkvHr2KtCFaNPgh7ZTo3Tqel3y7va+cRXHlYQd34FIr
+         6VWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:subject:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=I2PfFj17Ov/GEX7G4flBd22N5tZmj0BtXl931kRWchk=;
+        b=FPe6EYETjiD5bAdZZ8nlajaYjjBMDVesNdunH3uaBAGZBI/wU5NCgTOdWajcjav9Rn
+         WA9c83vbmptYtEnTKzg+jgzXFDnyveNUwWCTfLrU1bcuO/4Kl8QOqZ5ZX9JF1gyxRK6e
+         cdlrO1hBRIRT9oDH/ufGYG6dQFQNi11HtM0T3RyOzaCWiCWeG56Da5seYTzxthX2gA3x
+         z5EJrXrApNJ/C/9xURnOtFKZfx1oBJCxGdc5w08wpC0xZuVLuH8UyQzXuGcQykkRbuik
+         FwM8x3zlXfu86Y1tuhGH8O6KRPN4kdpt9n04U4Di7GGn9DH1UdHKoJ8pxxjvtEPAiseq
+         C1mA==
+X-Gm-Message-State: AOAM533/Ggk8JHkg6+uQGCMt/diVXKjCk3VLqOkRom/9nW3DivKaAef6
+        cjzWM8tuXlanuFGVEIdI/S+oid7iB7h117m7
+X-Google-Smtp-Source: ABdhPJxHDOjP4pzspt3ZVc76pkTdShzEI6DISP/OuRXxhK5wzlLEikydfZSpD65MaltEmClY87Cc9A==
+X-Received: by 2002:a9d:5186:: with SMTP id y6mr4128833otg.193.1606073665569;
+        Sun, 22 Nov 2020 11:34:25 -0800 (PST)
+Received: from fiftytwodotfive.bdrung.de (ip5b401b14.dynamic.kabel-deutschland.de. [91.64.27.20])
+        by smtp.googlemail.com with ESMTPSA id o63sm6123070ooa.10.2020.11.22.11.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 11:34:24 -0800 (PST)
+From:   Benjamin Drung <benjamin.drung@cloud.ionos.com>
+X-Google-Original-From: Benjamin Drung <bdrung@debian.org>
+Message-ID: <a443a3e8633b9be921b365764147f296d0f16f76.camel@debian.org>
+Subject: Re: PROBLEM: Broken pixel format for Elgato Cam Link 4K
+To:     Adam Goode <agoode@google.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 22 Nov 2020 20:34:21 +0100
+In-Reply-To: <CAOf41N=PopZ=8_05e9WfvWkBhuN5iRq1=JJ2KqkLJE5S3-XW5A@mail.gmail.com>
+References: <5ff0fc487272a7c21f63a929bfceee1ac9b43348.camel@debian.org>
+         <CAOf41N=PopZ=8_05e9WfvWkBhuN5iRq1=JJ2KqkLJE5S3-XW5A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.21]
-X-RMX-ID: 20201122-203004-4CfL305RcZz2TTLX-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, 22 November 2020, 15:35:55 CET, Ido Schimmel wrote:
-> On Sun, Nov 22, 2020 at 09:26:35AM +0100, Christian Eggers wrote:
-> > Use recently introduced PTP wide defines instead of a driver internal
-> > enumeration.
+Am Freitag, den 20.11.2020, 16:45 -0500 schrieb Adam Goode:
+> On Fri, Nov 20, 2020 at 1:52 PM Benjamin Drung
+> <benjamin.drung@cloud.ionos.com> wrote:
 > > 
-> > Signed-off-by: Christian Eggers <ceggers@gmx.de>
-> > Cc: Petr Machata <petrm@mellanox.com>
-> > Cc: Jiri Pirko <jiri@nvidia.com>
-> > Cc: Ido Schimmel <idosch@nvidia.com>
+> > Hi,
+> > 
+> > I own an Elgato Cam Link 4K which is a very popular USB HDMI
+> > capture
+> > device (number one capture card by click rates on Geizhals [1]).
+> > The
+> > problem is that the video feed is distorted when using the
+> > /dev/videoX
+> > device in the browser (tested on Firefox and Chromium) for video
+> > conferencing (tested with Jitsi Meet and Google Meet). The same
+> > distortion is present when opening `v4l2:///dev/video0` with VLC.
+> > 
+> > The Elgato Cam Link 4K reports to have three different pixel
+> > formats:
+> > 
+> > ```
+> > $ v4l2-ctl -d /dev/video0 --list-formats-ext
+> > ioctl: VIDIOC_ENUM_FMT
+> >         Type: Video Capture
+> > 
+> >         [0]: 'NV12' (Y/CbCr 4:2:0)
+> >                 Size: Discrete 3840x2160
+> >                         Interval: Discrete 0.040s (25.000 fps)
+> >         [1]: 'NV12' (Y/CbCr 4:2:0)
+> >                 Size: Discrete 3840x2160
+> >                         Interval: Discrete 0.040s (25.000 fps)
+> >         [2]: 'YU12' (Planar YUV 4:2:0)
+> >                 Size: Discrete 3840x2160
+> >                         Interval: Discrete 0.040s (25.000 fps)
+> > ```
+> > 
+> > When specifying the video format 'YU12' to VLC, the video is
+> > distorted
+> > the same way as using the default video format. When specifying
+> > 'NV12'
+> > to VLC, the video feed is displayed correctly:
+> > 
+> > ```
+> > vlc v4l2:///dev/video0 --v4l2-chroma=NV12
+> > ```
+> > 
+> > In OBS, the video feed is always displayed correctly. All video
+> > formats
+> > 'Y/CbCr 4:2:0', 'Planar YUV 4:2:0', 'BGR3 (Emulated)', and 'YV12
+> > (Emulated)' combined with the color ranges 'Default', 'Partial',
+> > and
+> > 'Full' produce the same correct output.
+> > 
+> > With Linux >= 5.9 this behavior in OBS changes: The video format
+> > 'Y/CbCr 4:2:0' displays the video correctly. Switching to 'Planar
+> > YUV
+> > 4:2:0', 'BGR3 (Emulated)', or 'YV12 (Emulated)' shows the video
+> > distorted and OBS shows this error message:
+> > 
+> > ```
+> > info: v4l2-input: Pixelformat: NV12
+> > [...]
+> > libv4l2: error set_fmt gave us a different result than try_fmt!
+> > info: v4l2-input: Resolution: 3840x2160
+> > info: v4l2-input: Pixelformat: NV12
+> > ```
+> > 
+> > Changing the video format back does not have an effect until I also
+> > change the color range (does seem to be relevant what to select
+> > there).
+> > 
+> > Workaround
+> > ----------
+> > 
+> > You can create a v4l2loopback device and use ffmpeg to stream from
+> > the
+> > Cam Link 4K to the loopback device:
+> > 
+> > ```
+> > ffmpeg -f v4l2 -input_format yuv420p -video_size 3840x2160 \
+> >   -i "$camlink" -codec copy -f v4l2 "$loopdev"
+> > ```
+> > 
+> > This workaround works, but is cumbersome and burns CPU cycles.
+> > 
+> > Other reports
+> > -------------
+> > 
+> > Searching the web for "Cam Link 4K Linux" reveals many similar
+> > reports
+> > like this. Noteworthy is blog post [3] from Mike Walters who
+> > patched
+> > the Cam Link 4K firmware to report the correct video format. I am
+> > willing to debug this issue and do test, but I don't want to flash
+> > the
+> > firmware to not break the warrenty (bisides I lack the hardware for
+> > flashing).
+> > 
+> > Environment
+> > -----------
+> > 
+> > This problem is present in Ubuntu 20.04 with linux 5.4.0-54.60 and
+> > Ubuntu 20.10 with linux 5.8.0-29.31. I also tested the mainline
+> > kernels
+> > builds 5.9.8-050908.202011101634 and 5.10.0-051000rc4.202011152030
+> > from
+> > Ubuntu [2].
+> > 
+> > The Cam Link 4K shows follow entries in dmesg:
+> > 
+> > ```
+> > [    1.575753] usb 2-3: new SuperSpeed Gen 1 USB device number 2
+> > using xhci_hcd
+> > [    1.596664] usb 2-3: LPM exit latency is zeroed, disabling LPM.
+> > [    1.598557] usb 2-3: New USB device found, idVendor=0fd9,
+> > idProduct=0066, bcdDevice= 0.00
+> > [    1.598558] usb 2-3: New USB device strings: Mfr=1, Product=2,
+> > SerialNumber=4
+> > [    1.598559] usb 2-3: Product: Cam Link 4K
+> > [    1.598560] usb 2-3: Manufacturer: Elgato
+> > ```
+> > 
+> > I have another problems with 5.9.8-050908.202011101634 and 5.10.0-
+> > 051000rc4.202011152030: Chromium fail to access the video device of
+> > Cam
+> > Link 4K and the notebook integrated webcam has a too low
+> > brightness.
+> > 
+> > [1] https://geizhals.de/?cat=vidext
+> > [2] https://kernel.ubuntu.com/~kernel-ppa/mainline/
+> > [3] 
+> > https://assortedhackery.com/patching-cam-link-to-play-nicer-on-linux/
+> > 
+> > --
+> > Benjamin Drung
+> > Debian & Ubuntu Developer
+> > 
 > 
-> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 > 
-> But:
+> Hi,
 > 
-> 1. Checkpatch complains about:
-> WARNING: From:/Signed-off-by: email address mismatch: 'From: Christian
-> Eggers <ceggers@arri.de>' != 'Signed-off-by: Christian Eggers
-> <ceggers@gmx.de>'
-unfortunately I changed this after running checkpatch. My intention was to 
-separate my (private) weekend work from the patches I do while I'm on the job.
-
-> 2. This series does not build, which fails the CI [1][2] and also
-> required me to fetch the dependencies that are currently under review
-> [3]. I believe it is generally discouraged to create dependencies
-> between patch sets that are under review for exactly these reasons. 
-this was also not by intention. Vladimir found some files I missed in the
-first series. As the whole first series had already been reviewed at that time,
-I wasn't sure whether I am allowed to add further patches to it. Additionally
-I didn't concern that although my local build is successful, I should wait
-until the first series is applied...
-
-> I don't know what are Jakub's preferences, but had this happened on our
-> internal patchwork instance, I would just ask the author to submit
-> another version with all the patches.
-Please let me know how I shall proceed...
-
-> Anyway, I added all six patches to our regression as we have some PTP
-> tests. Will let you know tomorrow.
+> I am running on Fedora 32 which has the fix I wrote for the buggy
+> elgato firmware. The bug in the firmware makes it impossible to
+> properly select a non-0 pixel format when following the UVC
+> negotiation protocol. This is because the firmware returns the pixel
+> format in the wrong byte of the packet. The driver was following the
+> UVC protocol but did not send the pixel format back to the v4l2
+> subsystem. It does that now.
 > 
-> Thanks
+> I'm not surprised that other bugs are emerging now. Ultimately the
+> firmware is buggy and announces pixel formats that it then rejects.
+> If
+> I flip through the settings in OBS, I do manage to wedge the
+> interface. But most of the programs I've seen that use v4l2 are buggy
+> in this way. A reliable one is the qv4l2 test program. I've also had
+> no problems with Chromium.
 > 
-> [1]
-> https://lore.kernel.org/netdev/20201122082636.12451-1-ceggers@arri.de/T/#mc
-> ef35858585d23b72b8f75450a51618d5c5d3260 [2]
-> https://patchwork.hopto.org/static/nipa/389053/11923809/build_allmodconfig_
-> warn/summary [3]
-> https://patchwork.kernel.org/project/netdevbpf/cover/20201120084106.10046-1
-> -ceggers@arri.de/
+> That reverse engineering is interesting! But I think it hides the
+> real
+> problem, where the pixel format negotiation on the firmware writes
+> into the wrong byte of the packet.
 
+Hi Adam,
 
+you are talking about commit ec2c23f628802317f73fab5255cc62a776bc7930
+and 8a652a17e3c005dcdae31b6c8fdf14382a29cbbe that are part of
+v5.10-rc1?
 
+What do you suggest to fix the issue? Should I contact Elgato
+requesting a firmware update? Can the kernel ship a quirk for the Cam
+Link 4K to workaround the firmware bug? I would be happy to try out
+patches.
+
+I tested the qv4l2 with Linux 5.10.0-051000rc4.202011152030. When using
+the default settings, it displays the video correctly, but with a
+vertical green one-pixel-wide line. The terminal prints "error" four
+times. Sadly there is no debug mode to figure out where that error
+comes from.
+
+Selecting "YU12 (Planar YUV 4:2:0)" print the following error message
+and switches back to the previous format:
+
+libv4l2: error set_fmt gave us a different result than try_fmt!
+
+--
+Benjamin Drung
+Debian & Ubuntu Developer
 
