@@ -2,199 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D092BC462
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 08:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599182BC468
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 08:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727366AbgKVHaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 02:30:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727244AbgKVHaU (ORCPT
+        id S1727329AbgKVHfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 02:35:42 -0500
+Received: from fralinode-sdnproxy-1.icoremail.net ([172.104.134.221]:39090
+        "HELO fralinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S1725978AbgKVHfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 02:30:20 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF78FC0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 23:30:19 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id v5so7908515pff.10
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 23:30:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KYx1eNdrI2dF7Hg46yl8EzwrSDaEmC+lVYIEoOmHAZg=;
-        b=MFWHJNoutPM2IP/2KjbFlh07dajFWsb4OR5iaq7tTrbrBiv1J9ipJHp7s2T+9CIqUs
-         G4Q2B02f6N6HpHvCZmvqQtAhRbHzDe2c2HX8d6nn6lyr7MFldRlwe3VFc76kEzpEFnr3
-         mR2UY7qxIURkaNtpi7Fe7OARFhB0wpuXwb9VXc6H0bou1ALOkYZ/uQGHUrupS9WLoMXf
-         5M6BxjInvATYW4fpAAuOvy+LXdyMt/KH+73/AFs47qzgS0SKPax1Ibz9IUB95OlHmniq
-         wWFiOvlDmmTkmoTGp/+lBpNToNGrirR0vKxUY6lW3s8vwZFHA4iDBaE97V8tnAi2klQb
-         mBPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KYx1eNdrI2dF7Hg46yl8EzwrSDaEmC+lVYIEoOmHAZg=;
-        b=BSvb4zxWimcR8S97yUemvkH1ELvzXaf8+IgN9kANSlvpZYkqzRMxk9HZyfwgyH4YQ5
-         3h2gso1fJJmqUTfl4Zxui6gLSJopLgtXFw6/6fDryvlaOn4x98v8ROnTN8oPSMokEIE+
-         Nh77ELfXFqDCNRIm4k0ULiDuKusTn02RjwL9Hn1hEPnQJkO5muq9AAs4SPG8R+aTHIKf
-         EryR3CdLXiv0PfIW8HdG8i45oUZHoyK5zqtA3qhNqcyUijCu0zJFQey/9eIzajdjk9dh
-         seU9kcKWYKJP4Pe0eUw+n+MgGYJPsxwTA15KrY0QmVlngJRXd2PwRVDLyJk1OL/roh9i
-         jWEg==
-X-Gm-Message-State: AOAM531CtJdyH/GyLFnD5FuO5obqXvFcdhC8ymMKfnzjvJcfG4BkRuYG
-        f7NXDHdvds3U5tcbZKUpWUCfKshEQOXdq926K2ggyg==
-X-Google-Smtp-Source: ABdhPJzwOPZM4fxIMmlJL214kfq5JIf5rNiHXammfFM4uFN7bttIzKgBVBMoHgWIZEjM9tTva2o+eVDdjfOFUivMjxk=
-X-Received: by 2002:a17:90a:ae14:: with SMTP id t20mr19309393pjq.13.1606030219110;
- Sat, 21 Nov 2020 23:30:19 -0800 (PST)
+        Sun, 22 Nov 2020 02:35:41 -0500
+Received: from localhost (unknown [113.247.217.134])
+        by c1app7 (Coremail) with SMTP id BwINCgDX3+OhFLpfN5PqAA--.13475S3;
+        Sun, 22 Nov 2020 15:34:58 +0800 (CST)
+From:   Chen Baozi <chenbaozi@phytium.com.cn>
+To:     Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [RFC PATCH v3 1/2] PCI/ACPI: Add stacked IRQ domain support to PCI Interrupt Link
+Date:   Sun, 22 Nov 2020 15:34:52 +0800
+Message-Id: <20201122073453.5758-1-chenbaozi@phytium.com.cn>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz> <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
- <20201120093912.GM3200@dhcp22.suse.cz> <eda50930-05b5-0ad9-2985-8b6328f92cec@redhat.com>
- <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
-In-Reply-To: <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sun, 22 Nov 2020 15:29:40 +0800
-Message-ID: <CAMZfGtUSc6QNTy34U5GQgFMzJ6_pcYJUFZwy4hNexrGN0f0hKA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: BwINCgDX3+OhFLpfN5PqAA--.13475S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3WFyrXr1kAFy3WFyftrWrZrb_yoWfWr1xpF
+        WfK3W7Ar48Xr4UWrs0ya1rAF1aq3W0yrW2krW5CwnaganI9ryrtF17CFy8JryYy395GF42
+        vr1qyFy8GFyDZF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvGb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxUg7KsDUUUU
+X-CM-SenderInfo: hfkh0updr2xqxsk13x1xpou0fpof0/1tbiDALkP17uHyEOYAAAs1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 1:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrot=
-e:
->
-> On 11/20/20 1:43 AM, David Hildenbrand wrote:
-> > On 20.11.20 10:39, Michal Hocko wrote:
-> >> On Fri 20-11-20 10:27:05, David Hildenbrand wrote:
-> >>> On 20.11.20 09:42, Michal Hocko wrote:
-> >>>> On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> >>>> [...]
-> >>>>
-> >>>> Thanks for improving the cover letter and providing some numbers. I =
-have
-> >>>> only glanced through the patchset because I didn't really have more =
-time
-> >>>> to dive depply into them.
-> >>>>
-> >>>> Overall it looks promissing. To summarize. I would prefer to not hav=
-e
-> >>>> the feature enablement controlled by compile time option and the ker=
-nel
-> >>>> command line option should be opt-in. I also do not like that freein=
-g
-> >>>> the pool can trigger the oom killer or even shut the system down if =
-no
-> >>>> oom victim is eligible.
-> >>>>
-> >>>> One thing that I didn't really get to think hard about is what is th=
-e
-> >>>> effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> >>>> invalid when racing with the split. How do we enforce that this won'=
-t
-> >>>> blow up?
-> >>>
-> >>> I have the same concerns - the sections are online the whole time and
-> >>> anybody with pfn_to_online_page() can grab them
-> >>>
-> >>> I think we have similar issues with memory offlining when removing th=
-e
-> >>> vmemmap, it's just very hard to trigger and we can easily protect by
-> >>> grabbing the memhotplug lock.
-> >>
-> >> I am not sure we can/want to span memory hotplug locking out to all pf=
-n
-> >> walkers. But you are right that the underlying problem is similar but
-> >> much harder to trigger because vmemmaps are only removed when the
-> >> physical memory is hotremoved and that happens very seldom. Maybe it
-> >> will happen more with virtualization usecases. But this work makes it
-> >> even more tricky. If a pfn walker races with a hotremove then it would
-> >> just blow up when accessing the unmapped physical address space. For
-> >> this feature a pfn walker would just grab a real struct page re-used f=
-or
-> >> some unpredictable use under its feet. Any failure would be silent and
-> >> hard to debug.
-> >
-> > Right, we don't want the memory hotplug locking, thus discussions regar=
-ding rcu. Luckily, for now I never saw a BUG report regarding this - maybe =
-because the time between memory offlining (offline_pages()) and memory/vmem=
-map getting removed (try_remove_memory()) is just too long. Someone would h=
-ave to sleep after pfn_to_online_page() for quite a while to trigger it.
-> >
-> >>
-> >> [...]
-> >>> To keep things easy, maybe simply never allow to free these hugetlb p=
-ages
-> >>> again for now? If they were reserved during boot and the vmemmap cond=
-ensed,
-> >>> then just let them stick around for all eternity.
-> >>
-> >> Not sure I understand. Do you propose to only free those vmemmap pages
-> >> when the pool is initialized during boot time and never allow to free
-> >> them up? That would certainly make it safer and maybe even simpler wrt
-> >> implementation.
-> >
-> > Exactly, let's keep it simple for now. I guess most use cases of this (=
-virtualization, databases, ...) will allocate hugepages during boot and nev=
-er free them.
->
-> Not sure if I agree with that last statement.  Database and virtualizatio=
-n
-> use cases from my employer allocate allocate hugetlb pages after boot.  I=
-t
-> is shortly after boot, but still not from boot/kernel command line.
->
-> Somewhat related, but not exactly addressing this issue ...
->
-> One idea discussed in a previous patch set was to disable PMD/huge page
-> mapping of vmemmap if this feature was enabled.  This would eliminate a b=
-unch
-> of the complex code doing page table manipulation.  It does not address
-> the issue of struct page pages going away which is being discussed here,
-> but it could be a way to simply the first version of this code.  If this
-> is going to be an 'opt in' feature as previously suggested, then eliminat=
-ing
-> the  PMD/huge page vmemmap mapping may be acceptable.  My guess is that
-> sysadmins would only 'opt in' if they expect most of system memory to be =
-used
-> by hugetlb pages.  We certainly have database and virtualization use case=
-s
-> where this is true.
+The ResourceSource field of an Extended Interrupt Descriptor was ignored
+when the driver is parsing _PRS method of PNP0C0F PCI Interrupt Link
+devices, which means PCI INTx would be always registered under the GSI
+domain. This patch introduces stacked IRQ domain support to PCI Interrupt
+Link devices for ACPI.
 
-Hi Mike,
+With this support, we can populate the ResourceSource field in _PRS method
+of PCI Interrupt Link devices to refer to a device object that describes
+an interrupt controller as the following examples:
 
-Yeah, I agree with you that the first version of this feature should be
-simply. I can do that (disable PMD/huge page mapping of vmemmap)
-in the next version patch. But I have another question: what the
-problem is when struct page pages go away? I have not understood
-the issues discussed here, hope you can answer for me. Thanks.
+  Device (IXIU) {
+    ...
+  }
 
-> --
-> Mike Kravetz
+  Device(LINKA) {
+    Name(_HID, EISAID("PNP0C0F"))
+    Name(_PRS, ResourceTemplate(){
+      Interrupt(ResourceProducer, Level, ActiveHigh, Exclusive,
+                0, "\\SB.IXIU") { 60 }
+    })
+    ...
+  }
 
+Signed-off-by: Chen Baozi <chenbaozi@phytium.com.cn>
+---
+ drivers/acpi/internal.h     | 12 ++++++++++++
+ drivers/acpi/irq.c          | 34 ++++++++++++++++++++--------------
+ drivers/acpi/pci_irq.c      |  8 ++++++--
+ drivers/acpi/pci_link.c     | 17 +++++++++++++++--
+ include/acpi/acpi_drivers.h |  2 +-
+ include/linux/acpi.h        | 10 ++++++++++
+ 6 files changed, 64 insertions(+), 19 deletions(-)
 
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index e3638bafb941..38ebe24bce3b 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -88,6 +88,18 @@ bool acpi_scan_is_offline(struct acpi_device *adev, bool uevent);
+ acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
+ void acpi_scan_table_handler(u32 event, void *table, void *context);
+ 
++#ifdef CONFIG_ACPI_GENERIC_GSI
++int acpi_register_irq(struct device *dev, u32 hwirq, int trigger,
++		      int polarity, struct fwnode_handle *fwnode);
++#else
++static inline
++int acpi_register_irq(struct device *dev, u32 hwirq, int trigger,
++		      int polarity, struct fwnode_handle *fwnode)
++{
++	return acpi_register_gsi(dev, hwirq, trigger, polarity);
++}
++#endif
++
+ /* --------------------------------------------------------------------------
+                      Device Node Initialization / Removal
+    -------------------------------------------------------------------------- */
+diff --git a/drivers/acpi/irq.c b/drivers/acpi/irq.c
+index e209081d644b..2fff5401c3f3 100644
+--- a/drivers/acpi/irq.c
++++ b/drivers/acpi/irq.c
+@@ -38,6 +38,24 @@ int acpi_gsi_to_irq(u32 gsi, unsigned int *irq)
+ }
+ EXPORT_SYMBOL_GPL(acpi_gsi_to_irq);
+ 
++int acpi_register_irq(struct device *dev, u32 hwirq, int trigger,
++		      int polarity, struct fwnode_handle *fwnode)
++{
++	struct irq_fwspec fwspec;
++
++	if (!fwnode) {
++		dev_warn(dev, "No registered irqchip for hwirq %d\n", hwirq);
++		return -EINVAL;
++	}
++
++	fwspec.fwnode = fwnode;
++	fwspec.param[0] = hwirq;
++	fwspec.param[1] = acpi_dev_get_irq_type(trigger, polarity);
++	fwspec.param_count = 2;
++
++	return irq_create_fwspec_mapping(&fwspec);
++}
++
+ /**
+  * acpi_register_gsi() - Map a GSI to a linux IRQ number
+  * @dev: device for which IRQ has to be mapped
+@@ -51,19 +69,7 @@ EXPORT_SYMBOL_GPL(acpi_gsi_to_irq);
+ int acpi_register_gsi(struct device *dev, u32 gsi, int trigger,
+ 		      int polarity)
+ {
+-	struct irq_fwspec fwspec;
+-
+-	if (WARN_ON(!acpi_gsi_domain_id)) {
+-		pr_warn("GSI: No registered irqchip, giving up\n");
+-		return -EINVAL;
+-	}
+-
+-	fwspec.fwnode = acpi_gsi_domain_id;
+-	fwspec.param[0] = gsi;
+-	fwspec.param[1] = acpi_dev_get_irq_type(trigger, polarity);
+-	fwspec.param_count = 2;
+-
+-	return irq_create_fwspec_mapping(&fwspec);
++	return acpi_register_irq(dev, gsi, trigger, polarity, acpi_gsi_domain_id);
+ }
+ EXPORT_SYMBOL_GPL(acpi_register_gsi);
+ 
+@@ -92,7 +98,7 @@ EXPORT_SYMBOL_GPL(acpi_unregister_gsi);
+  * Return:
+  * The referenced device fwhandle or NULL on failure
+  */
+-static struct fwnode_handle *
++struct fwnode_handle *
+ acpi_get_irq_source_fwhandle(const struct acpi_resource_source *source)
+ {
+ 	struct fwnode_handle *result;
+diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
+index 14ee631cb7cf..5cccc0f70781 100644
+--- a/drivers/acpi/pci_irq.c
++++ b/drivers/acpi/pci_irq.c
+@@ -22,6 +22,8 @@
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
+ 
++#include "internal.h"
++
+ #define PREFIX "ACPI: "
+ 
+ #define _COMPONENT		ACPI_PCI_COMPONENT
+@@ -410,6 +412,7 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
+ 	char *link = NULL;
+ 	char link_desc[16];
+ 	int rc;
++	struct fwnode_handle *rs_fwnode;
+ 
+ 	pin = dev->pin;
+ 	if (!pin) {
+@@ -438,7 +441,8 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
+ 			gsi = acpi_pci_link_allocate_irq(entry->link,
+ 							 entry->index,
+ 							 &triggering, &polarity,
+-							 &link);
++							 &link,
++							 &rs_fwnode);
+ 		else
+ 			gsi = entry->index;
+ 	} else
+@@ -462,7 +466,7 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
+ 		return 0;
+ 	}
+ 
+-	rc = acpi_register_gsi(&dev->dev, gsi, triggering, polarity);
++	rc = acpi_register_irq(&dev->dev, gsi, triggering, polarity, rs_fwnode);
+ 	if (rc < 0) {
+ 		dev_warn(&dev->dev, "PCI INT %c: failed to register GSI\n",
+ 			 pin_name(pin));
+diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
+index fb4c5632a232..2b6f6478bb30 100644
+--- a/drivers/acpi/pci_link.c
++++ b/drivers/acpi/pci_link.c
+@@ -59,6 +59,7 @@ struct acpi_pci_link_irq {
+ 	u8 resource_type;
+ 	u8 possible_count;
+ 	u32 possible[ACPI_PCI_LINK_MAX_POSSIBLE];
++	struct acpi_resource_source resource_source;
+ 	u8 initialized:1;
+ 	u8 reserved:7;
+ };
+@@ -120,6 +121,8 @@ static acpi_status acpi_pci_link_check_possible(struct acpi_resource *resource,
+ 		{
+ 			struct acpi_resource_extended_irq *p =
+ 			    &resource->data.extended_irq;
++			struct acpi_resource_source *rs =
++			    &link->irq.resource_source;
+ 			if (!p || !p->interrupt_count) {
+ 				printk(KERN_WARNING PREFIX
+ 					      "Blank _PRS EXT IRQ resource\n");
+@@ -140,6 +143,12 @@ static acpi_status acpi_pci_link_check_possible(struct acpi_resource *resource,
+ 			link->irq.triggering = p->triggering;
+ 			link->irq.polarity = p->polarity;
+ 			link->irq.resource_type = ACPI_RESOURCE_TYPE_EXTENDED_IRQ;
++			if (p->resource_source.string_length) {
++				rs->index = p->resource_source.index;
++				rs->string_length = p->resource_source.string_length;
++				rs->string_ptr = kstrdup(p->resource_source.string_ptr,
++							 GFP_KERNEL);
++			}
+ 			break;
+ 		}
+ 	default:
+@@ -326,7 +335,8 @@ static int acpi_pci_link_set(struct acpi_pci_link *link, int irq)
+ 			resource->res.data.extended_irq.shareable = ACPI_SHARED;
+ 		resource->res.data.extended_irq.interrupt_count = 1;
+ 		resource->res.data.extended_irq.interrupts[0] = irq;
+-		/* ignore resource_source, it's optional */
++		resource->res.data.extended_irq.resource_source =
++			link->irq.resource_source;
+ 		break;
+ 	default:
+ 		printk(KERN_ERR PREFIX "Invalid Resource_type %d\n", link->irq.resource_type);
+@@ -612,7 +622,7 @@ static int acpi_pci_link_allocate(struct acpi_pci_link *link)
+  * failure: return -1
+  */
+ int acpi_pci_link_allocate_irq(acpi_handle handle, int index, int *triggering,
+-			       int *polarity, char **name)
++			       int *polarity, char **name, struct fwnode_handle **rs_fwnode)
+ {
+ 	int result;
+ 	struct acpi_device *device;
+@@ -656,6 +666,9 @@ int acpi_pci_link_allocate_irq(acpi_handle handle, int index, int *triggering,
+ 		*polarity = link->irq.polarity;
+ 	if (name)
+ 		*name = acpi_device_bid(link->device);
++	if (rs_fwnode)
++		*rs_fwnode = acpi_get_irq_source_fwhandle(&link->irq.resource_source);
++
+ 	ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+ 			  "Link %s is referenced\n",
+ 			  acpi_device_bid(link->device)));
+diff --git a/include/acpi/acpi_drivers.h b/include/acpi/acpi_drivers.h
+index 5eb175933a5b..dbdcd2f51d4c 100644
+--- a/include/acpi/acpi_drivers.h
++++ b/include/acpi/acpi_drivers.h
+@@ -68,7 +68,7 @@
+ 
+ int acpi_irq_penalty_init(void);
+ int acpi_pci_link_allocate_irq(acpi_handle handle, int index, int *triggering,
+-			       int *polarity, char **name);
++			       int *polarity, char **name, struct fwnode_handle **rs_fwnode);
+ int acpi_pci_link_free_irq(acpi_handle handle);
+ 
+ /* ACPI PCI Device Binding (pci_bind.c) */
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 39263c6b52e1..b182a267fe66 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -336,6 +336,16 @@ struct irq_domain *acpi_irq_create_hierarchy(unsigned int flags,
+ 					     const struct irq_domain_ops *ops,
+ 					     void *host_data);
+ 
++#ifdef CONFIG_ACPI_GENERIC_GSI
++struct fwnode_handle *acpi_get_irq_source_fwhandle(const struct acpi_resource_source *source);
++#else
++static inline
++struct fwnode_handle *acpi_get_irq_source_fwhandle(const struct acpi_resource_source *source)
++{
++	return NULL;
++}
++#endif
++
+ #ifdef CONFIG_X86_IO_APIC
+ extern int acpi_get_override_irq(u32 gsi, int *trigger, int *polarity);
+ #else
+-- 
+2.28.0
 
---=20
-Yours,
-Muchun
