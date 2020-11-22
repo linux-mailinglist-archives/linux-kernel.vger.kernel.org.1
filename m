@@ -2,162 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981022BC91D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A09C2BC925
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727412AbgKVUYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 15:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
+        id S1727418AbgKVUaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 15:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727297AbgKVUYh (ORCPT
+        with ESMTP id S1727297AbgKVUaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 15:24:37 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51635C0613CF;
-        Sun, 22 Nov 2020 12:24:35 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 1so15465099wme.3;
-        Sun, 22 Nov 2020 12:24:35 -0800 (PST)
+        Sun, 22 Nov 2020 15:30:11 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D97DC0613CF;
+        Sun, 22 Nov 2020 12:30:11 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id u4so14725523qkk.10;
+        Sun, 22 Nov 2020 12:30:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=zgf/h76dlKVPgQTcqMTxlnGXFSKKSbDb08KBHH9xoBo=;
-        b=VzltfJvyuWhCH1eHJvXEWMGlmjh+zONHmAP0UvUoy+HBVLK9EXzuz9by9iryq8/xU9
-         2HW7T9fyAFiO54d8x8Xg5Kny48Sz4MesnFQ19mKrmm2gyVlqvm6CTsWNsWTxkcY6zU99
-         jmnuZ9S7ZJzADD6EYgrVQ+RK2FC6kCAzMpTYfHMrUdIOFSgAAk8IXf4X1LWNNMCQ7bVQ
-         XvMj05jFStMLRMe3D8tMiqh6NuCF6cO5t3Ws8Aq9Ox78WUy7T5FWaOziHKWM9/e1Qy+P
-         p2oYebV9IuP009FiGNqT92ws4rFrFiVeAATRRUjU37tpvQAlnB+kFBaLjHBXDPk8b+uG
-         R4RA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kFhanjy6cq9u6pCyJCDCCRZRA7jLll7R0Ehj4TdK5o0=;
+        b=N4ywAcKD2IvWeShu0qjc9ql+G8i0AyKLEQGeqLAX04FUo8WFkupSvGjf6I5PinnkpY
+         6KF9/k1gOcY832IArpj9f/54rNcebtRsmh9n08YwLmQ7IBG/CP7foNwWTRLJgxlX6mzr
+         Pku/98VSxlAXi9yWYKctM+f3tJkZw4PD7GZ9LPC2p6ZoxxE7QH8/5zgABnVb5DbzG9pi
+         u/y3d9WNjqhT+gldyR6dsHZyXEXAyQnISKn1cTo5MWlG8VkhpDFzuLKAExbe0VOhP61b
+         5PzZKvHVYWp9bojqZYUSAL0c1x9B1eGZZ8h+vXtfzHv/aeSconyzYn5a2mgkD7hIOFrW
+         vvBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=zgf/h76dlKVPgQTcqMTxlnGXFSKKSbDb08KBHH9xoBo=;
-        b=D29VYDQDW0/Jy9ZFVajM9lHylJDjX/ycNPvXgYIm6sEhunuk615pyPrBkuULfLCQB3
-         bDM7CcQQbExplse4TqTFxuGBrBTwh/vDV/rVCx4ZlGaiE4K7Q++MT1v9G/OHGY49BuUq
-         HS3Ci13ZkyQdwfKSY2bAk5rgyQXC/2RWHYH48mu9eO4GLLA6AZCNHEpcAJPT15NgLMAU
-         ejONLCw+hnQ39sQDa1g6wXB0NrYj/ka7FMDT4tnF3Nn5qqUYb/w/9OrNA23OkaLWEkyy
-         RcvR2DpLtVFgNnhzBU9argIfL3vE7+/rn82g+haEow9S+Z7iQgs+i8IH0B7rn5jpOuge
-         uuAA==
-X-Gm-Message-State: AOAM53190zlfVR0TaTN61qWKPn0OeMfYCi35nxj9rsA0nuCITmbWG+dp
-        j/PcfHDdJoH71pkXq4o9G70GhE1KG/E=
-X-Google-Smtp-Source: ABdhPJxxIzWPXTyWP7/Ecz4yr0bglQDdci+MeVNy7xvG6LJS1XESLEuvB5SvTv7c24GkdflY/8Mjvw==
-X-Received: by 2002:a1c:f20e:: with SMTP id s14mr19850209wmc.126.1606076672547;
-        Sun, 22 Nov 2020 12:24:32 -0800 (PST)
-Received: from [192.168.0.48] (HSI-KBW-046-005-005-111.hsi8.kabel-badenwuerttemberg.de. [46.5.5.111])
-        by smtp.gmail.com with ESMTPSA id k1sm14787310wrp.23.2020.11.22.12.24.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 22 Nov 2020 12:24:31 -0800 (PST)
-From:   Edward Shishkin <edward.shishkin@gmail.com>
-Subject: Reiser5 Logical Volume Management - Updates
-To:     ReiserFS development mailing list 
-        <reiserfs-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>
-Message-ID: <ccc9ded7-ab36-ca36-99a7-21138e1c7ceb@gmail.com>
-Date:   Sun, 22 Nov 2020 21:24:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kFhanjy6cq9u6pCyJCDCCRZRA7jLll7R0Ehj4TdK5o0=;
+        b=JkoNsjfpOBcdq1S+iZkbE8O2casdx+WQ0B2zwmqSRzUyyzueR7BxgMlN9ad/9HbvIG
+         z5P1t5LE7woK6nqgMilIIq11EtH3Lb/xG5HqG+nJcJnacOuOuo3ZGWj3m7Q43dRHJNpL
+         O8V4YkjzyPhSQzLXWMynRaHVVMECqfoOSZMDcFgnYwlCAnZoA18Q21xQbhbOsrf/GiL7
+         PW9P/ohqpRiFvjSMRwc28y85SY1SVyvoQuuN+ISLhF5nu048K/2hGg2wtuPZAMidbEle
+         hd8vrsvhUzoOAAZU4aZzFjPFJFPedEKMJ4FoejOiJ6O7QoYA52zu3Duv9mVJi2a3+Ibq
+         ACug==
+X-Gm-Message-State: AOAM530HdmE6IDz3mDRoK7/fKgb4gpStTpgMO3iu9sdhlNeTpk+c1kRq
+        ekR+q0hc3/I5AkXYZtDkWoU=
+X-Google-Smtp-Source: ABdhPJzq54eLjNm5Ffz3tvoJrUF/q/GsxjpylgX1f2FqFwqX4injx0UeWHvV3YrXi1CDe/3CrnEYaQ==
+X-Received: by 2002:a37:5103:: with SMTP id f3mr6622004qkb.460.1606077010337;
+        Sun, 22 Nov 2020 12:30:10 -0800 (PST)
+Received: from localhost.localdomain (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id p73sm7446522qka.79.2020.11.22.12.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 12:30:09 -0800 (PST)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: [PATCH v6 0/5] Introduce the Counter character device interface
+Date:   Sun, 22 Nov 2020 15:29:51 -0500
+Message-Id: <cover.1606075915.git.vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-           Reiser5 Logical Volume Management - Updates
+Changes in v6:
+ - Consolidated the value member of struct counter_event down to a
+   single u64; u64 should be capable of representing all component
+   values
+ - Removed extension width sysfs attributes; no longer needed when value
+   is always u64
+ - Implemented COUNTER_COMPONENT_DUMMY to allow timestamp grabs without
+   component data reads
+ - Implemented events_config() callback; called during
+   COUNTER_CLEAR_WATCHES_IOCTL and COUNTER_LOAD_WATCHES_IOCTL in order
+   to allow devices a chance to adjust (enable/disable IRQ, etc.) for
+   the new events configuration requested by the user
+ - Simplified example code in Documentation by removing confusing use of
+   poll() call
+ - Removed redundant ida_simple_remove() from counter_register()
+ - Renamed devm_counter_unreg() to devm_counter_unregister()
+ - Renamed functions in counter-sysfs.c to be clearer
+ - Fixed miscellaneous typos throughout files
+ - Added more kernel doc comments; I've left some defines without
+   comments if they seemed obvious -- but please let me know if further
+   documentation is needed
+ - Refactored quad8_irq_handler() to use WARN_ONCE() instead of
+   returning on error; this should prevent interrupts from entering an
+   endless loop
+ - General refactoring and additional comments for clarity
+ - Returns EOPNOTSUPP instead of EFAULT now if a Counter watch is added
+   for unsupported component
+ - Renamed COUNTER_SET_WATCH_IOCTL TO COUNTER_ADD_WATCH_IOCTL to make
+   the use clear
+ - Reimplemented the parent and id members of struct counter_component
+   as __u8 instead of __u64; it's unlikely we'll ever have a device that
+   supports more than 255 components
+ - Reimplement __u64 variables in include/uapi/linux/counter.h as
+   __aligned_u64 to prevent 32-bit vs 64-bit alignment issues
+ - Fixed return value bug in counter_comp_u8_store(); enums set to a
+   value with index > 0 should now work correctly
+ - Fixed spectre issues in counter-chrdev.c
+ - Removed redundant get_device() call from counter_register()
+ - Moved put_device() to after the events_list is freed lest we leak
+   memory
 
+I'm skipping the introduction blurb because it was just a rehashing of
+information included in the documentation patches within this patchset.
+Instead I will focus this cover letter on discussions about this
+patchset and the userspace interface implications.
 
-I am happy to inform, that Logical Volumes stuff has become more
-stable. Also we introduce the following changes, which make logical
-volumes administration more flexible and simple:
+1. Should standard Counter component data types be defined as u8 or u32?
 
+   Many standard Counter component types such COUNTER_COMP_SIGNAL_LEVEL
+   have standard values defined (e.g. COUNTER_SIGNAL_LEVEL_LOW and
+   COUNTER_SIGNAL_LEVEL_HIGH). These values are currently handled by the
+   Counter subsystem code as u8 data types.
 
-                  1. No balancing by default
+   If u32 is used for these values instead, C enum structures could be
+   used by driver authors to implicitly cast these values via the driver
+   callback parameters.
 
+   This question is primarily addressed to David Lechner. I'm somewhat
+   confused about how this setup would look in device drivers. I've gone
+   ahead and refactored the code to support u32 enums, and pushed it to
+   a separate branch on my repository called counter_chrdev_v6_u32_enum:
+   https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v6_u32_enum
 
-Now all volume operations except brick removal don't invoke balancing
-by default. Instead, they mark volume as "unbalanced". To complete any
-operation with balancing specify option -B (--with-balance), or run
-volume.reiser4(8) utility with the option -b (--balance) later.
+   Please check it out and let me know what you think. Is this the
+   support you had in mind? I'm curious to see an example of how would
+   your driver callback functions would look in this case. Is everything
+   works out fine, then I'll submit this branch as v7 of this patchset.
 
-This allows to speed up more than one operations over logical volume
-being performed at once. For example, if you want to add more than one
-brick to your volume at once, first add all the bricks, then run
-balancing. There is no need to balance a volume between the addition
-operations.
+2. How should we handle "raw" timestamps?
 
+   Ahmad Fatoum brought up the possibility of returning "raw" timestamps
+   similar to what the network stack offers (see the network stack
+   SOF_TIMESTAMPING_{RAW,SYS}_HARDWARE support).
 
-                    2. Removal completion
+   I'm not very familiar with the networking stack code, but if I
+   understand correctly the SOF_TIMESTAMPING_RAW_HARDWARE timestamps are
+   values returned from the device. If so, I suspect we would be able to
+   support these "raw" timestamps by defining them as Counter Extensions
+   and returning them in struct counter_event elements similar to the
+   other Extension values.
 
+William Breathitt Gray (5):
+  counter: Internalize sysfs interface code
+  docs: counter: Update to reflect sysfs internalization
+  counter: Add character device interface
+  docs: counter: Document character device interface
+  counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
 
-Operation of brick removal always includes balancing procedure as its
-part. This procedure moves out all data block from the brick to be
-removed to remaining bricks of the volume. Thus, brick removal is
-usually a long operation, which may be interrupted for various reasons
-In such cases the volume is automatically marked with an "incomplete
-removal" flag.
+ Documentation/ABI/testing/sysfs-bus-counter   |   18 +-
+ .../ABI/testing/sysfs-bus-counter-104-quad-8  |   32 +
+ Documentation/driver-api/generic-counter.rst  |  411 ++++-
+ .../userspace-api/ioctl/ioctl-number.rst      |    1 +
+ MAINTAINERS                                   |    2 +-
+ drivers/counter/104-quad-8.c                  |  778 +++++----
+ drivers/counter/Kconfig                       |    6 +-
+ drivers/counter/Makefile                      |    1 +
+ drivers/counter/counter-chrdev.c              |  476 ++++++
+ drivers/counter/counter-chrdev.h              |   16 +
+ drivers/counter/counter-core.c                |  183 ++
+ drivers/counter/counter-sysfs.c               |  806 +++++++++
+ drivers/counter/counter-sysfs.h               |   13 +
+ drivers/counter/counter.c                     | 1496 -----------------
+ drivers/counter/ftm-quaddec.c                 |   60 +-
+ drivers/counter/microchip-tcb-capture.c       |  114 +-
+ drivers/counter/stm32-lptimer-cnt.c           |  175 +-
+ drivers/counter/stm32-timer-cnt.c             |  145 +-
+ drivers/counter/ti-eqep.c                     |  224 +--
+ include/linux/counter.h                       |  676 ++++----
+ include/linux/counter_enum.h                  |   45 -
+ include/uapi/linux/counter.h                  |  105 ++
+ 22 files changed, 3094 insertions(+), 2689 deletions(-)
+ create mode 100644 drivers/counter/counter-chrdev.c
+ create mode 100644 drivers/counter/counter-chrdev.h
+ create mode 100644 drivers/counter/counter-core.c
+ create mode 100644 drivers/counter/counter-sysfs.c
+ create mode 100644 drivers/counter/counter-sysfs.h
+ delete mode 100644 drivers/counter/counter.c
+ delete mode 100644 include/linux/counter_enum.h
+ create mode 100644 include/uapi/linux/counter.h
 
-It is not allowed to perform essential volume operations on a volume
-marked as "with incomplete removal": first, user should complete
-removal by running volume.reiser4 utility with option
--R (--finish-removal). Otherwise, the operation will return error
-(-EBUSY).
+-- 
+2.29.2
 
-There is no other restrictions: you are allowed to add a brick to
-unbalanced volume, and even remove a brick from an unbalanced volume
-(assuming it is not incomplete removal).
-
-Comment. "--finish-removal" is a temporary option. In the future the
-file system will detect incomplete removal and automatically perform
-removal completion by itself.
-
-
-                3. Balancing is always defined
-
-
-Operation of volume balancing (regardless of its balanced status) is
-always defined, and can be launched at any moment. If the volume is
-balanced, then the balancing procedure just scans the volume without
-any useful work.
-
-It is allowed to run more than one balancing threads on the same
-volume, however currently it will be inefficient: other threads will
-be always going after the single leader without doing useful work.
-Efficient volume balancing by many threads (true parallelism) is not a
-trivial task. We estimate its complexity as 2/5.
-
-
-          4. Restore regular distribution on the volume
-
-
-Custom (defined by user) file migration can break fairness of data
-distribution among the bricks. To restore regular (fair) distribution
-on the volume, run volume.reiser4 utility with the option -S
-(--restore-regular). It launches a balancing procedure, which performs
-mandatory data migration of all files (including the ones marked as
-"immobile") in accordance with regular distribution policy on the
-volume. Moreover, when the balancing procedure encounters a file
-marked as "immobile", its "immobile" flag is cleared up.
-
-
-                         5. How to test
-
-
-The new functionality is available starting with the kernel patch
-reiser4-for-linux-5.10-rc3 and reiser4progs-2.0.4 (Software Framework
-Release number of both is 5.1.3).
-
-Links for download:
-
-https://sourceforge.net/projects/reiser4/files/v5-unstable/kernel/
-https://sourceforge.net/projects/reiser4/files/v5-unstable/progs/
-
-Find updated documentation on getting started with logical volumes:
-
-https://reiser4.wiki.kernel.org/index.php/Logical_Volumes_Administration
-https://reiser4.wiki.kernel.org/index.php/Proxy_Device_Administration
-https://reiser4.wiki.kernel.org/index.php/Transparent_File_Migration
-
-Also see manual pages for volume.reiser4(8) utility.
