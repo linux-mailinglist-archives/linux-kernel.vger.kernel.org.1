@@ -2,51 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15FD2BC992
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 22:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E502F2BC99D
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 22:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgKVVfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 16:35:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36224 "EHLO mail.kernel.org"
+        id S1726313AbgKVVpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 16:45:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgKVVfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 16:35:12 -0500
-Subject: Re: [GIT pull] sched/urgent for v5.10-rc5
+        id S1725782AbgKVVpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 16:45:10 -0500
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEBF020789
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:45:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606080912;
-        bh=zOdn3lc4gsysEGzd5cKeC9s21yNo8GsTJmHbjOKseNA=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ys546Nbi+GTKmQ8AnOFZAUrgZp/cWVz8dUEBLBUNgzXdqkiGcEZDK7FCtIMsDLMV3
-         WQlBaCpMUDqfft1Jx0lamJ9wdWoY3zo7tAYAwWJN8iuYuIuH4qsBwvDOyILw9BRTfl
-         7J6E+sPf3gN+ngAqnCgjWq8eclxMOl+oKrGSwYrw=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <160605644542.9003.12382410127919559065.tglx@nanos>
-References: <160605644301.9003.16302947389602369819.tglx@nanos> <160605644542.9003.12382410127919559065.tglx@nanos>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <160605644542.9003.12382410127919559065.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-11-22
-X-PR-Tracked-Commit-Id: 2279f540ea7d05f22d2f0c4224319330228586bc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f4b936f5d6fd0625a78a7b4b92e98739a2bdb6f7
-Message-Id: <160608091251.6067.11472237888931261505.pr-tracker-bot@kernel.org>
-Date:   Sun, 22 Nov 2020 21:35:12 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        s=default; t=1606081510;
+        bh=j8kQr1sqydOsvjEY9shLB0wmUrzUic9iCe1dNmPahV0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1ywLGw0S6Iag6+okOvBgPfWDSIRAX+z1ZSr78Si08frRCT6wlTaFGPbwKtciUr39i
+         O4G4Y6EDiAcTMD7bLatQqayiaSxXNnDjjohYDNfE1OGhJGilgriL+1Ok0nRavMxdql
+         /HYOzGZTzKTS4GqAkezXaMALXqruwPPbUTcCQfII=
+Received: by mail-wm1-f48.google.com with SMTP id a3so15568446wmb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:45:09 -0800 (PST)
+X-Gm-Message-State: AOAM530pnjjhyKCqmkJP24uuC9JSuzQNdxa/JDM5ne2Ab52JFmKwXsDZ
+        rRGjZn8FecKUS+S1amCTSwGscVfh6j+Ia6RcE9fytA==
+X-Google-Smtp-Source: ABdhPJwifakpgwUVTLbeDBYdoVmnAfRpiEVwGa2XrrCKUuyY/SYxT6I31Kv43oa6WFJkbjZ+4GFZn5n4pemXbXWt+C8=
+X-Received: by 2002:a1c:2781:: with SMTP id n123mr3937832wmn.49.1606081506352;
+ Sun, 22 Nov 2020 13:45:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20201120114630.13552-1-jgross@suse.com> <20201120114630.13552-6-jgross@suse.com>
+ <20201120115943.GD3021@hirez.programming.kicks-ass.net> <eb05e878-6334-8d19-496b-6572df67fc56@suse.com>
+In-Reply-To: <eb05e878-6334-8d19-496b-6572df67fc56@suse.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 22 Nov 2020 13:44:53 -0800
+X-Gmail-Original-Message-ID: <CALCETrXOGhXoOJpzhAMqD7iibi09WzbGk9SWVH7JzA=d5uarWA@mail.gmail.com>
+Message-ID: <CALCETrXOGhXoOJpzhAMqD7iibi09WzbGk9SWVH7JzA=d5uarWA@mail.gmail.com>
+Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use popf
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "VMware, Inc." <pv-drivers@vmware.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andrew Lutomirski <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 22 Nov 2020 14:47:25 -0000:
+On Sat, Nov 21, 2020 at 10:55 PM J=C3=BCrgen Gro=C3=9F <jgross@suse.com> wr=
+ote:
+>
+> On 20.11.20 12:59, Peter Zijlstra wrote:
+> > On Fri, Nov 20, 2020 at 12:46:23PM +0100, Juergen Gross wrote:
+> >> +static __always_inline void arch_local_irq_restore(unsigned long flag=
+s)
+> >> +{
+> >> +    if (!arch_irqs_disabled_flags(flags))
+> >> +            arch_local_irq_enable();
+> >> +}
+> >
+> > If someone were to write horrible code like:
+> >
+> >       local_irq_disable();
+> >       local_irq_save(flags);
+> >       local_irq_enable();
+> >       local_irq_restore(flags);
+> >
+> > we'd be up some creek without a paddle... now I don't _think_ we have
+> > genius code like that, but I'd feel saver if we can haz an assertion in
+> > there somewhere...
+> >
+> > Maybe something like:
+> >
+> > #ifdef CONFIG_DEBUG_ENTRY // for lack of something saner
+> >       WARN_ON_ONCE((arch_local_save_flags() ^ flags) & X86_EFLAGS_IF);
+> > #endif
+> >
+> > At the end?
+>
+> I'd like to, but using WARN_ON_ONCE() in include/asm/irqflags.h sounds
+> like a perfect receipt for include dependency hell.
+>
+> We could use a plain asm("ud2") instead.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-11-22
+How about out-of-lining it:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f4b936f5d6fd0625a78a7b4b92e98739a2bdb6f7
+#ifdef CONFIG_DEBUG_ENTRY
+extern void warn_bogus_irqrestore();
+#endif
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+static __always_inline void arch_local_irq_restore(unsigned long flags)
+{
+       if (!arch_irqs_disabled_flags(flags)) {
+               arch_local_irq_enable();
+       } else {
+#ifdef CONFIG_DEBUG_ENTRY
+               if (unlikely(arch_local_irq_save() & X86_EFLAGS_IF))
+                    warn_bogus_irqrestore();
+#endif
+}
