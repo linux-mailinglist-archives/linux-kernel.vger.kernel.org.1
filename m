@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31062BC917
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AAD2BC91A
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 21:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbgKVUPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 15:15:12 -0500
-Received: from correo.us.es ([193.147.175.20]:37380 "EHLO mail.us.es"
+        id S1727620AbgKVUTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 15:19:14 -0500
+Received: from foss.arm.com ([217.140.110.172]:41454 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727366AbgKVUPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 15:15:11 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id A5095DA720
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:15:08 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 91FEDDA704
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:15:08 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 875B5DA73F; Sun, 22 Nov 2020 21:15:08 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5154FDA73D;
-        Sun, 22 Nov 2020 21:15:06 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 22 Nov 2020 21:15:06 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 2FD6B41FF201;
-        Sun, 22 Nov 2020 21:15:06 +0100 (CET)
-Date:   Sun, 22 Nov 2020 21:15:05 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org, fw@strlen.de,
-        razor@blackwall.org, jeremy@azazel.net, tobias@waldekranz.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next,v5 0/9] netfilter: flowtable bridge and vlan
- enhancements
-Message-ID: <20201122201505.GA31257@salvia>
-References: <20201122102605.2342-1-alobakin@pm.me>
- <20201122145108.2640-1-alobakin@pm.me>
+        id S1727307AbgKVUTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 15:19:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC22A101E;
+        Sun, 22 Nov 2020 12:19:12 -0800 (PST)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ECC533F71F;
+        Sun, 22 Nov 2020 12:19:09 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org,
+        bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
+        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
+        linux@rasmusvillemoes.dk,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Alex Shi <alex.shi@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>
+Subject: [PATCH] notifier: Make atomic_notifiers use raw_spinlock
+Date:   Sun, 22 Nov 2020 20:19:04 +0000
+Message-Id: <20201122201904.30940-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201122145108.2640-1-alobakin@pm.me>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 02:51:18PM +0000, Alexander Lobakin wrote:
-> From: Pablo Neira Ayuso <pablo@netfilter.org>
-> Date: Sun, 22 Nov 2020 12:42:19 +0100
-> 
-> > On Sun, Nov 22, 2020 at 10:26:16AM +0000, Alexander Lobakin wrote:
-> >> From: Pablo Neira Ayuso <pablo@netfilter.org>
-> >> Date: Fri, 20 Nov 2020 13:49:12 +0100
-> > [...]
-> >>> Something like this:
-> >>>
-> >>>                        fast path
-> >>>                 .------------------------.
-> >>>                /                          \
-> >>>                |           IP forwarding   |
-> >>>                |          /             \  .
-> >>>                |       br0               eth0
-> >>>                .       / \
-> >>>                -- veth1  veth2
-> >>>                    .
-> >>>                    .
-> >>>                    .
-> >>>                  eth0
-> >>>            ab:cd:ef:ab:cd:ef
-> >>>                   VM
-> >>
-> >> I'm concerned about bypassing vlan and bridge's .ndo_start_xmit() in
-> >> case of this shortcut. We'll have incomplete netdevice Tx stats for
-> >> these two, as it gets updated inside this callbacks.
-> >
-> > TX device stats are being updated accordingly.
-> >
-> > # ip netns exec nsr1 ip -s link
-> > 1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
-> >     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-> >     RX: bytes  packets  errors  dropped overrun mcast   
-> >     0          0        0       0       0       0       
-> >     TX: bytes  packets  errors  dropped carrier collsns 
-> >     0          0        0       0       0       0       
-> > 2: veth0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
-> >     link/ether 82:0d:f3:b5:59:5d brd ff:ff:ff:ff:ff:ff link-netns ns1
-> >     RX: bytes  packets  errors  dropped overrun mcast   
-> >     213290848248 4869765  0       0       0       0       
-> >     TX: bytes  packets  errors  dropped carrier collsns 
-> >     315346667  4777953  0       0       0       0       
-> > 3: veth1@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
-> >     link/ether 4a:81:2d:9a:02:88 brd ff:ff:ff:ff:ff:ff link-netns ns2
-> >     RX: bytes  packets  errors  dropped overrun mcast   
-> >     315337919  4777833  0       0       0       0       
-> >     TX: bytes  packets  errors  dropped carrier collsns 
-> >     213290844826 4869708  0       0       0       0       
-> > 4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
-> >     link/ether 82:0d:f3:b5:59:5d brd ff:ff:ff:ff:ff:ff
-> >     RX: bytes  packets  errors  dropped overrun mcast   
-> >     4101       73       0       0       0       0       
-> >     TX: bytes  packets  errors  dropped carrier collsns 
-> >     5256       74       0       0       0       0       
-> 
-> Aren't these counters very low for br0, despite that br0 is an
-> intermediate point of traffic flow?
+Booting a recent PREEMPT_RT kernel (v5.10-rc3-rt7-rebase) on my arm64 Juno
+leads to the idle task blocking on an RT sleeping spinlock down some
+notifier path:
 
-Most packets follow the flowtable fast path, which is bypassing the
-br0 device. Bumping br0 stats would be misleading, it would make the
-user think that the packets follow the classic bridge layer path,
-while they do not. The flowtable have counters itself to allow the
-user to collect stats regarding the packets that follow the fastpath.
+  [    1.809101] BUG: scheduling while atomic: swapper/5/0/0x00000002
+  [    1.809116] Modules linked in:
+  [    1.809123] Preemption disabled at:
+  [    1.809125] secondary_start_kernel (arch/arm64/kernel/smp.c:227)
+  [    1.809146] CPU: 5 PID: 0 Comm: swapper/5 Tainted: G        W         5.10.0-rc3-rt7 #168
+  [    1.809153] Hardware name: ARM Juno development board (r0) (DT)
+  [    1.809158] Call trace:
+  [    1.809160] dump_backtrace (arch/arm64/kernel/stacktrace.c:100 (discriminator 1))
+  [    1.809170] show_stack (arch/arm64/kernel/stacktrace.c:198)
+  [    1.809178] dump_stack (lib/dump_stack.c:122)
+  [    1.809188] __schedule_bug (kernel/sched/core.c:4886)
+  [    1.809197] __schedule (./arch/arm64/include/asm/preempt.h:18 kernel/sched/core.c:4913 kernel/sched/core.c:5040)
+  [    1.809204] preempt_schedule_lock (kernel/sched/core.c:5365 (discriminator 1))
+  [    1.809210] rt_spin_lock_slowlock_locked (kernel/locking/rtmutex.c:1072)
+  [    1.809217] rt_spin_lock_slowlock (kernel/locking/rtmutex.c:1110)
+  [    1.809224] rt_spin_lock (./include/linux/rcupdate.h:647 kernel/locking/rtmutex.c:1139)
+  [    1.809231] atomic_notifier_call_chain_robust (kernel/notifier.c:71 kernel/notifier.c:118 kernel/notifier.c:186)
+  [    1.809240] cpu_pm_enter (kernel/cpu_pm.c:39 kernel/cpu_pm.c:93)
+  [    1.809249] psci_enter_idle_state (drivers/cpuidle/cpuidle-psci.c:52 drivers/cpuidle/cpuidle-psci.c:129)
+  [    1.809258] cpuidle_enter_state (drivers/cpuidle/cpuidle.c:238)
+  [    1.809267] cpuidle_enter (drivers/cpuidle/cpuidle.c:353)
+  [    1.809275] do_idle (kernel/sched/idle.c:132 kernel/sched/idle.c:213 kernel/sched/idle.c:273)
+  [    1.809282] cpu_startup_entry (kernel/sched/idle.c:368 (discriminator 1))
+  [    1.809288] secondary_start_kernel (arch/arm64/kernel/smp.c:273)
+
+Two points worth noting:
+
+1) That this is conceptually the same issue as pointed out in:
+   313c8c16ee62 ("PM / CPU: replace raw_notifier with atomic_notifier")
+2) Only the _robust() variant of atomic_notifier callchains suffer from
+   this
+
+AFAICT only the cpu_pm_notifier_chain really needs to be changed, but
+singling it out would mean introducing a new (truly) non-blocking API. At
+the same time, callers that are fine with any blocking within the call
+chain should use blocking notifiers, so patching up all atomic_notifier's
+doesn't seem *too* crazy to me.
+
+Fixes: 70d932985757 ("notifier: Fix broken error handling pattern")
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ include/linux/notifier.h |  6 +++---
+ kernel/notifier.c        | 12 ++++++------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/notifier.h b/include/linux/notifier.h
+index 2fb373a5c1ed..723bc2df6388 100644
+--- a/include/linux/notifier.h
++++ b/include/linux/notifier.h
+@@ -58,7 +58,7 @@ struct notifier_block {
+ };
+ 
+ struct atomic_notifier_head {
+-	spinlock_t lock;
++	raw_spinlock_t lock;
+ 	struct notifier_block __rcu *head;
+ };
+ 
+@@ -78,7 +78,7 @@ struct srcu_notifier_head {
+ };
+ 
+ #define ATOMIC_INIT_NOTIFIER_HEAD(name) do {	\
+-		spin_lock_init(&(name)->lock);	\
++		raw_spin_lock_init(&(name)->lock);	\
+ 		(name)->head = NULL;		\
+ 	} while (0)
+ #define BLOCKING_INIT_NOTIFIER_HEAD(name) do {	\
+@@ -95,7 +95,7 @@ extern void srcu_init_notifier_head(struct srcu_notifier_head *nh);
+ 		cleanup_srcu_struct(&(name)->srcu);
+ 
+ #define ATOMIC_NOTIFIER_INIT(name) {				\
+-		.lock = __SPIN_LOCK_UNLOCKED(name.lock),	\
++		.lock = __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
+ 		.head = NULL }
+ #define BLOCKING_NOTIFIER_INIT(name) {				\
+ 		.rwsem = __RWSEM_INITIALIZER((name).rwsem),	\
+diff --git a/kernel/notifier.c b/kernel/notifier.c
+index 1b019cbca594..c20782f07643 100644
+--- a/kernel/notifier.c
++++ b/kernel/notifier.c
+@@ -142,9 +142,9 @@ int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	spin_lock_irqsave(&nh->lock, flags);
++	raw_spin_lock_irqsave(&nh->lock, flags);
+ 	ret = notifier_chain_register(&nh->head, n);
+-	spin_unlock_irqrestore(&nh->lock, flags);
++	raw_spin_unlock_irqrestore(&nh->lock, flags);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(atomic_notifier_chain_register);
+@@ -164,9 +164,9 @@ int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	spin_lock_irqsave(&nh->lock, flags);
++	raw_spin_lock_irqsave(&nh->lock, flags);
+ 	ret = notifier_chain_unregister(&nh->head, n);
+-	spin_unlock_irqrestore(&nh->lock, flags);
++	raw_spin_unlock_irqrestore(&nh->lock, flags);
+ 	synchronize_rcu();
+ 	return ret;
+ }
+@@ -182,9 +182,9 @@ int atomic_notifier_call_chain_robust(struct atomic_notifier_head *nh,
+ 	 * Musn't use RCU; because then the notifier list can
+ 	 * change between the up and down traversal.
+ 	 */
+-	spin_lock_irqsave(&nh->lock, flags);
++	raw_spin_lock_irqsave(&nh->lock, flags);
+ 	ret = notifier_call_chain_robust(&nh->head, val_up, val_down, v);
+-	spin_unlock_irqrestore(&nh->lock, flags);
++	raw_spin_unlock_irqrestore(&nh->lock, flags);
+ 
+ 	return ret;
+ }
+-- 
+2.27.0
+
