@@ -2,148 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2EE2BC2E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 01:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6622BC2ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 02:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgKVA6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 19:58:48 -0500
-Received: from gproxy5-pub.mail.unifiedlayer.com ([67.222.38.55]:57295 "EHLO
-        gproxy5-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726544AbgKVA6s (ORCPT
+        id S1727051AbgKVBCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 20:02:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbgKVBC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 19:58:48 -0500
-Received: from CMGW (unknown [10.9.0.13])
-        by gproxy5.mail.unifiedlayer.com (Postfix) with ESMTP id AF54F140528
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:58:45 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id gdiHkSOTZi1lMgdiHkRsDG; Sat, 21 Nov 2020 17:58:45 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.2 cv=D4A3ErZj c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=8nJEP1OIZ-IA:10 a=nNwsprhYR40A:10
- a=evQFzbml-YQA:10 a=iH7RfIX4AAAA:20 a=VwQbUJbxAAAA:8 a=_jlGtV7tAAAA:8
- a=45O7cDBGXuf8goJbQyUA:9 a=wPNLvfGTeEIA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=S/pOiXpWjEsaacuWigI3ywSsIkJVWsK1kqJYF6zuk3M=; b=g2jetLwoW4PYEjEn9CpkWgiaPc
-        iCUWhOmPnIUPYyZZo0Iow57mdl8eb6tctDL0pFYDoITownskWcYkYHxqimlup695qieQdi90gTWfw
-        wubhKNygP59vPinwKUQbN/mgpSYu2Uad2WTaszHML3W45Yp5CXn9iu9c+f5iB9AbKC5bI40m3CbJc
-        0W3L7SYmGVC/LZ4aLt4cM+oTnKLh2TsjvLsZ/Ta7rdfrqbk+TgodsXj/HXpsGNALTuO3wKqQ5mDKL
-        GVAv5K3Z/8eWwPQX9o/dVTG3g9wgoPjLdOwAOtcKfDDpeXF8Kq9Z/6aLQ6isYOSSorizVwWEaqcxB
-        vTwfjMXQ==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:41844 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kgdiG-0018bJ-MI; Sun, 22 Nov 2020 00:58:44 +0000
-Date:   Sat, 21 Nov 2020 16:58:43 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Marius Zachmann <mail@mariuszachmann.de>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 086/141] hwmon: (corsair-cpro) Fix fall-through warnings
- for Clang
-Message-ID: <20201122005843.GA120539@roeck-us.net>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <be5c59f9bc4bac8c968bbd7443d08eaaf8a28ef8.1605896060.git.gustavoars@kernel.org>
- <20201121185010.GB114144@roeck-us.net>
- <7456d8ffa0e980e52964c539081228dff4627ae3.camel@perches.com>
+        Sat, 21 Nov 2020 20:02:29 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EC9C061A4B
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:02:28 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id gj5so18267011ejb.8
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 17:02:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K9oj1jZNjwyubHbEqnynv/Se7vgMAMWMdAYmcz95zz4=;
+        b=gl5hVqbvJq6lGDv65VLLiqYwVVAm7B6II0IjXvMyOIrz+3IEyepw7gAW8PJjwh6EWH
+         rAE63Vkk5piYgj1aF6EuSNhUVZXT5367JFsQm1+XuX3FOUPZ8xTZUUSbncx0M33JRfDU
+         vQfKgKTc9ApnZ5kGFQLD/ICX8UYq+LRLSQd2rS+fXDXSGZtnb4uOsPNUVpjX51E2O9hC
+         ooCOZi9K4UnJ1OjYY19DRHqQ/vEG5E/+juICcTKi5ay5uDX1rQPX+eeAYtiWxWcBGIOY
+         J89iSrgf0gTCXFVtNYfyKzueS5eslYawQ5k538XhMAHXdZ3fTi0nu9dn1VJA9dGEyyJC
+         aOTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K9oj1jZNjwyubHbEqnynv/Se7vgMAMWMdAYmcz95zz4=;
+        b=kcgDcLV5zMLnwvugh4iIkdL90B7+GYdw3KcD6nGrZy6u457778DzGhgikSFZnNbqt9
+         fRbZ2GV7aN8vg/JWdOSkRrnvHYrM932Fj6zSP2376GO2NxsqYuvoQs/hVWtcRSBaHd4B
+         hi2Ywc2oL5UZ5lAgCwrY+AGhPYJTCZa6K1KMGUcSoFcXi/pXxb5kD2W4FwxmueenmaXR
+         oXsUqRcE6Zb4BoyAEKlyFPwVDMXtte2JSoQpxwLT1Chgj1z5DRcKXCNqUToHv5JzPWXy
+         YRMWyRUmZV6wU7CZkQhMm4ytWQRBLyc0z+4F2G77HL76jO3rWKzzTiDr9ULSU9FauiYM
+         HwjA==
+X-Gm-Message-State: AOAM531nUmCK3Uw3dQxfCU8Nf22UckIrzIdCzgkIWxSVBxHsYFrlI/AR
+        V2d3Yn/MOhMOLFqTjlP32vsXe+NI6uSPDTIk3HLSkg==
+X-Google-Smtp-Source: ABdhPJwtHhPutwaLggyGRigreNs+Yh/IGc/u3dvhTaCjpSNNitrzRtnUzEaROcW0wXLe6/ECG/ujJxHoUFAXGP6U7ok=
+X-Received: by 2002:a17:906:1945:: with SMTP id b5mr38468149eje.388.1606006947375;
+ Sat, 21 Nov 2020 17:02:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7456d8ffa0e980e52964c539081228dff4627ae3.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kgdiG-0018bJ-MI
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:41844
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 2
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+References: <cover.1513038011.git.digetx@gmail.com> <3d565db80f8dccafd14224924305243b37b75a07.1513038011.git.digetx@gmail.com>
+In-Reply-To: <3d565db80f8dccafd14224924305243b37b75a07.1513038011.git.digetx@gmail.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Sat, 21 Nov 2020 22:02:15 -0300
+Message-ID: <CAAEAJfBZD0u6MDxcp3See-agzyCSJS7dKpwK28LMJwPvE9DLtQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] staging: media: Introduce NVIDIA Tegra video
+ decoder driver
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devel@driverdev.osuosl.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 12:00:30PM -0800, Joe Perches wrote:
-> On Sat, 2020-11-21 at 10:50 -0800, Guenter Roeck wrote:
-> > On Fri, Nov 20, 2020 at 12:36:04PM -0600, Gustavo A. R. Silva wrote:
-> > > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > > by explicitly adding a break statement instead of letting the code fall
-> > > through to the next case.
-> > > 
-> > > Link: https://github.com/KSPP/linux/issues/115
-> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > 
-> > Acked-by: Guenter Roeck <linux@roeck-us.net>
-> []
-> > > diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> []
-> > > @@ -310,6 +310,7 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
-> > >  		default:
-> > >  			break;
-> > >  		}
-> > > +		break;
-> 
-> The
-> 		default:
-> 			break;
-> 
-> bit above (but not below as it's a switch on an enum) could also be deleted no?
-> 
+Hi Dmitry,
 
-I prefer to keep it the way it is to indicate that the default case was not
-forgotten (unless that is against coding style).
-
-Guenter
-
-> > >  	default:
-> > >  		break;
-> > >  	}
-> 
+On Mon, 11 Dec 2017 at 21:27, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> NVIDIA Tegra20/30/114/124/132 SoC's have video decoder engine that
+> supports standard set of video formats like H.264 / MPEG-4 / WMV / VC1.
+>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  drivers/hwmon/corsair-cpro.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> index 591929ec217a..580173fca0f6 100644
-> --- a/drivers/hwmon/corsair-cpro.c
-> +++ b/drivers/hwmon/corsair-cpro.c
-> @@ -299,17 +299,14 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
->  		switch (attr) {
->  		case hwmon_pwm_input:
->  			return set_pwm(ccp, channel, val);
-> -		default:
-> -			break;
->  		}
->  		break;
->  	case hwmon_fan:
->  		switch (attr) {
->  		case hwmon_fan_target:
->  			return set_target(ccp, channel, val);
-> -		default:
-> -			break;
->  		}
-> +		break;
->  	default:
->  		break;
->  	}
-> 
-> 
+>  MAINTAINERS                                 |    9 +
+>  drivers/staging/media/Kconfig               |    2 +
+>  drivers/staging/media/Makefile              |    1 +
+>  drivers/staging/media/tegra-vde/Kconfig     |    7 +
+>  drivers/staging/media/tegra-vde/Makefile    |    1 +
+>  drivers/staging/media/tegra-vde/TODO        |    4 +
+>  drivers/staging/media/tegra-vde/tegra-vde.c | 1213 +++++++++++++++++++++++++++
+>  drivers/staging/media/tegra-vde/uapi.h      |   78 ++
+>  8 files changed, 1315 insertions(+)
+>  create mode 100644 drivers/staging/media/tegra-vde/Kconfig
+>  create mode 100644 drivers/staging/media/tegra-vde/Makefile
+>  create mode 100644 drivers/staging/media/tegra-vde/TODO
+>  create mode 100644 drivers/staging/media/tegra-vde/tegra-vde.c
+>  create mode 100644 drivers/staging/media/tegra-vde/uapi.h
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7d195739f892..7f7c24949a06 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8706,6 +8706,15 @@ T:       git git://linuxtv.org/media_tree.git
+>  S:     Maintained
+>  F:     drivers/media/dvb-frontends/stv6111*
+>
+> +MEDIA DRIVERS FOR NVIDIA TEGRA - VDE
+> +M:     Dmitry Osipenko <digetx@gmail.com>
+> +L:     linux-media@vger.kernel.org
+> +L:     linux-tegra@vger.kernel.org
+> +T:     git git://linuxtv.org/media_tree.git
+> +S:     Maintained
+> +F:     Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
+> +F:     drivers/staging/media/tegra-vde/
+> +
+>  MEDIA INPUT INFRASTRUCTURE (V4L/DVB)
+>  M:     Mauro Carvalho Chehab <mchehab@s-opensource.com>
+>  M:     Mauro Carvalho Chehab <mchehab@kernel.org>
+> diff --git a/drivers/staging/media/Kconfig b/drivers/staging/media/Kconfig
+> index 3a09140700e6..227437f22acf 100644
+> --- a/drivers/staging/media/Kconfig
+> +++ b/drivers/staging/media/Kconfig
+> @@ -31,4 +31,6 @@ source "drivers/staging/media/imx/Kconfig"
+>
+>  source "drivers/staging/media/omap4iss/Kconfig"
+>
+> +source "drivers/staging/media/tegra-vde/Kconfig"
+> +
+>  endif
+> diff --git a/drivers/staging/media/Makefile b/drivers/staging/media/Makefile
+> index f25327163c67..59a47f69884f 100644
+> --- a/drivers/staging/media/Makefile
+> +++ b/drivers/staging/media/Makefile
+> @@ -5,3 +5,4 @@ obj-$(CONFIG_VIDEO_IMX_MEDIA)   += imx/
+>  obj-$(CONFIG_VIDEO_DM365_VPFE) += davinci_vpfe/
+>  obj-$(CONFIG_VIDEO_OMAP4)      += omap4iss/
+>  obj-$(CONFIG_INTEL_ATOMISP)     += atomisp/
+> +obj-$(CONFIG_TEGRA_VDE)                += tegra-vde/
+> diff --git a/drivers/staging/media/tegra-vde/Kconfig b/drivers/staging/media/tegra-vde/Kconfig
+> new file mode 100644
+> index 000000000000..ec3ddddebdaa
+> --- /dev/null
+> +++ b/drivers/staging/media/tegra-vde/Kconfig
+> @@ -0,0 +1,7 @@
+> +config TEGRA_VDE
+> +       tristate "NVIDIA Tegra Video Decoder Engine driver"
+> +       depends on ARCH_TEGRA || COMPILE_TEST
+> +       select SRAM
+> +       help
+> +           Say Y here to enable support for the NVIDIA Tegra video decoder
+> +           driver.
+> diff --git a/drivers/staging/media/tegra-vde/Makefile b/drivers/staging/media/tegra-vde/Makefile
+> new file mode 100644
+> index 000000000000..444c1d62daa1
+> --- /dev/null
+> +++ b/drivers/staging/media/tegra-vde/Makefile
+> @@ -0,0 +1 @@
+> +obj-$(CONFIG_TEGRA_VDE)        += tegra-vde.o
+> diff --git a/drivers/staging/media/tegra-vde/TODO b/drivers/staging/media/tegra-vde/TODO
+> new file mode 100644
+> index 000000000000..31aaa3e66d80
+> --- /dev/null
+> +++ b/drivers/staging/media/tegra-vde/TODO
+> @@ -0,0 +1,4 @@
+> +TODO:
+> +       - Implement V4L2 API once it gains support for stateless decoders.
+> +
+> +Contact: Dmitry Osipenko <digetx@gmail.com>
+
+The API for H264 stateless decoding is ready.
+See https://lkml.org/lkml/2020/11/18/795.
+
+One minor comment below.
+
+> diff --git a/drivers/staging/media/tegra-vde/uapi.h b/drivers/staging/media/tegra-vde/uapi.h
+> new file mode 100644
+> index 000000000000..a50c7bcae057
+> --- /dev/null
+> +++ b/drivers/staging/media/tegra-vde/uapi.h
+> @@ -0,0 +1,78 @@
+> +/*
+> + * Copyright (C) 2016-2017 Dmitry Osipenko <digetx@gmail.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version
+> + * 2 of the License, or (at your option) any later version.
+> + */
+> +
+> +#ifndef _UAPI_TEGRA_VDE_H_
+> +#define _UAPI_TEGRA_VDE_H_
+> +
+> +#include <linux/types.h>
+> +#include <asm/ioctl.h>
+> +
+> +#define FLAG_B_FRAME           (1 << 0)
+> +#define FLAG_REFERENCE         (1 << 1)
+> +
+> +struct tegra_vde_h264_frame {
+> +       __s32 y_fd;
+> +       __s32 cb_fd;
+> +       __s32 cr_fd;
+> +       __s32 aux_fd;
+> +       __u32 y_offset;
+> +       __u32 cb_offset;
+> +       __u32 cr_offset;
+> +       __u32 aux_offset;
+> +       __u32 frame_num;
+> +       __u32 flags;
+> +
+> +       __u32 reserved;
+> +} __attribute__((packed));
+> +
+> +struct tegra_vde_h264_decoder_ctx {
+> +       __s32 bitstream_data_fd;
+> +       __u32 bitstream_data_offset;
+> +
+> +       __u64 dpb_frames_ptr;
+> +       __u8  dpb_frames_nb;
+> +       __u8  dpb_ref_frames_with_earlier_poc_nb;
+> +
+> +       // SPS
+> +       __u8  baseline_profile;
+> +       __u8  level_idc;
+> +       __u8  log2_max_pic_order_cnt_lsb;
+> +       __u8  log2_max_frame_num;
+> +       __u8  pic_order_cnt_type;
+> +       __u8  direct_8x8_inference_flag;
+> +       __u8  pic_width_in_mbs;
+> +       __u8  pic_height_in_mbs;
+> +
+> +       // PPS
+> +       __u8  pic_init_qp;
+> +       __u8  deblocking_filter_control_present_flag;
+> +       __u8  constrained_intra_pred_flag;
+> +       __u8  chroma_qp_index_offset;
+> +       __u8  pic_order_present_flag;
+> +
+
+This seems to be bottom_field_pic_order_in_frame_present_flag,
+as there is no "pic_order_present_flag" syntax element.
+
+Thanks,
+Ezequiel
