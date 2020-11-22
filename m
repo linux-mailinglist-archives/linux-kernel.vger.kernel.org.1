@@ -2,126 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0F42BC5D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96C32BC5D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgKVNdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 08:33:12 -0500
-Received: from mail-40140.protonmail.ch ([185.70.40.140]:56799 "EHLO
-        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727702AbgKVNdM (ORCPT
+        id S1727873AbgKVNdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 08:33:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727817AbgKVNdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 08:33:12 -0500
-Date:   Sun, 22 Nov 2020 13:33:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1606051989;
-        bh=NGfLf+2/UDS8HyaW78yoZusoy/lNepZl6zp7GO3POq4=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=exdWE6k68YH+uJsIPhr9xzHVoeeJFakjTYw+VEh0P1Zp5BXi1sXFKc+UeRl5C5/gO
-         w+dR8PmwIfa6FL9auxAEL44O+BTn4W9uWn2p05dkOIG592LOoXcHLkymrDI3lTJ6D1
-         eHljNVUH7UVGRqOFjQNC1kgJaGPd4lAr8SFbGfa8=
-To:     Coiby Xu <coiby.xu@gmail.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v3] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
-Message-ID: <xsbDy_74QEfC8byvpA0nIjI0onndA3wuiLm2Iattq-8TLPy28kMq7GKhkfrfzqdBAQfp_w5CTCCJ8XjFmegtZqP58xioheh7OHV7Bam33aQ=@protonmail.com>
-In-Reply-To: <20201122101525.j265hvj6lqgbtfi2@Rk>
-References: <20201021134931.462560-1-coiby.xu@gmail.com> <qo0Y8DqV6mbQsSFabOaqRoxYhKdYCZPjqYuF811CTdPXRFFXpx7sNXYcW9OGI5PMyclgsTjI7Xj3Du3v4hYQVBWGJl3t0t8XSbTKE9uOJ2E=@protonmail.com> <20201122101525.j265hvj6lqgbtfi2@Rk>
+        Sun, 22 Nov 2020 08:33:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606051993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lnPf0qqP5JlhbpeDaQweU3dHG38zjWq/RJM2h9qX9nk=;
+        b=GWERhRBH/+dG1OatJBcPmNkGouYC/T7pfwjb2l1LWr6CWIas3uB1uzuD1+h8DRYIw6ob5W
+        E7Vn7hwOWhZ9GsffLhDmIHFNjPxkVdDioZBu+tniYOY3mpdnmHHV7cyP1PWUdiuoKMt4K5
+        F9RNpa80F1faApglPwcWeD5BOzs5ngE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-Z1FtuahSPYu6b0Cj1_fiog-1; Sun, 22 Nov 2020 08:33:09 -0500
+X-MC-Unique: Z1FtuahSPYu6b0Cj1_fiog-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63AB0809DC3;
+        Sun, 22 Nov 2020 13:33:07 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B97710016F7;
+        Sun, 22 Nov 2020 13:33:05 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
+References: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com> <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk> <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <254317.1606051984.1@warthog.procyon.org.uk>
+Date:   Sun, 22 Nov 2020 13:33:04 +0000
+Message-ID: <254318.1606051984@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
+>  - I worry a bit about the indirect call overhead and spectre v2.
 
-2020. november 22., vas=C3=A1rnap 11:15 keltez=C3=A9ssel, Coiby Xu =C3=
-=ADrta:
+I don't know enough about how spectre v2 works to say if this would be a
+problem for the ops-table approach, but wouldn't it also affect the chain of
+conditional branches that we currently use, since it's branch-prediction
+based?
 
-> [...]
-> >> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
-> >> +{
-> >> +=09struct gpio_chip *gc =3D irq_data_get_irq_chip_data(&irq_desc->irq=
-_data);
-> >> +
-> >> +=09return gc->get(gc, irq_desc->irq_data.hwirq);
-> >> +}
-> [...]
-> >> +=09ssize_t=09status =3D get_gpio_pin_state(irq_desc);
-> >
-> >`get_gpio_pin_state()` returns an `int`, so I am not sure why `ssize_t` =
-is used here.
-> >
->
-> I used `ssize_t` because I found gpiolib-sysfs.c uses `ssize_t`
->
->      // drivers/gpio/gpiolib-sysfs.c
->      static ssize_t value_show(struct device *dev,
->      =09=09struct device_attribute *attr, char *buf)
->      {
->      =09struct gpiod_data *data =3D dev_get_drvdata(dev);
->      =09struct gpio_desc *desc =3D data->desc;
->      =09ssize_t=09=09=09status;
->
->      =09mutex_lock(&data->mutex);
->
->      =09status =3D gpiod_get_value_cansleep(desc);
->          ...
->      =09return status;
->      }
->
-> According to the book Advanced Programming in the UNIX Environment by
-> W. Richard Stevens,
->      With the 1990 POSIX.1 standard, the primitive system data type
->      ssize_t was introduced to provide the signed return value...
->
-> So ssize_t is fairly common, for example, the read and write syscall
-> return a value of type ssize_t. But I haven't found out why ssize_t is
-> better int.
-> >
+David
 
-Sorry if I wasn't clear, what prompted me to ask that question is the follo=
-wing:
-`gc->get()` returns `int`, `get_gpio_pin_state()` returns `int`, yet you st=
-ill
-save the return value of `get_gpio_pin_state()` into a variable with type
-`ssize_t` for no apparent reason. In the example you cited, `ssize_t` is us=
-ed
-because the show() callback of a sysfs attribute must return `ssize_t`, but=
- here,
-`interrupt_line_active()` returns `bool`, so I don't see any advantage over=
- a
-plain `int`. Anyways, I believe either one is fine, I just found it odd.
-
-
-> >> +
-> >> +=09if (status < 0) {
-> >> +=09=09dev_warn(&client->dev,
-> >> +=09=09=09 "Failed to get GPIO Interrupt line status for %s",
-> >> +=09=09=09 client->name);
-> >
-> >I think it's possible that the kernel message buffer is flooded with the=
-se
-> >messages, which is not optimal in my opinion.
-> >
-> Thank you! Replaced with dev_dbg in v4.
-> [...]
-
-Have you looked at `dev_{warn,dbg,...}_ratelimited()`?
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
