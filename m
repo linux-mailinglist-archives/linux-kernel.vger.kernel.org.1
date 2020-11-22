@@ -2,71 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96C32BC5D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE4C2BC5DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgKVNdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 08:33:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53139 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727817AbgKVNdO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 08:33:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606051993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lnPf0qqP5JlhbpeDaQweU3dHG38zjWq/RJM2h9qX9nk=;
-        b=GWERhRBH/+dG1OatJBcPmNkGouYC/T7pfwjb2l1LWr6CWIas3uB1uzuD1+h8DRYIw6ob5W
-        E7Vn7hwOWhZ9GsffLhDmIHFNjPxkVdDioZBu+tniYOY3mpdnmHHV7cyP1PWUdiuoKMt4K5
-        F9RNpa80F1faApglPwcWeD5BOzs5ngE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-557-Z1FtuahSPYu6b0Cj1_fiog-1; Sun, 22 Nov 2020 08:33:09 -0500
-X-MC-Unique: Z1FtuahSPYu6b0Cj1_fiog-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727807AbgKVNi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 08:38:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727646AbgKVNi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 08:38:57 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63AB0809DC3;
-        Sun, 22 Nov 2020 13:33:07 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B97710016F7;
-        Sun, 22 Nov 2020 13:33:05 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
-References: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com> <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk> <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, Pavel Begunkov <asml.silence@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <254317.1606051984.1@warthog.procyon.org.uk>
-Date:   Sun, 22 Nov 2020 13:33:04 +0000
-Message-ID: <254318.1606051984@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B7F92076E;
+        Sun, 22 Nov 2020 13:38:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606052336;
+        bh=Lv5DzjMq8Mlus4xbHuVC7Ai+4Y/6Rbn2W4UWbEa0T/I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ST2EMlBWWxsJDC+UePmnrz6G6StDpsWFW6QQEtB+7yJlHbrTeEW585rakSCgWBr1n
+         yj7j6h50cOVNT09J27TP3L0qHzkUY33fx1/FxF6QdtUXBJItQhOYCnKIYjvtTLIt4M
+         CfI6FxNpuWi1/67VOKezd/qZ+22ZxIpchrgPORUQ=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kgpZu-00Chhl-D6; Sun, 22 Nov 2020 13:38:54 +0000
+Date:   Sun, 22 Nov 2020 13:38:53 +0000
+Message-ID: <87sg91ik9e.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>, <linuxarm@huawei.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+In-Reply-To: <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+        <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+        <874klmqu2r.fsf@nanos.tec.linutronix.de>
+        <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
+        <87lfexp6am.fsf@nanos.tec.linutronix.de>
+        <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
+        <873615oy8a.fsf@nanos.tec.linutronix.de>
+        <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: john.garry@huawei.com, tglx@linutronix.de, gregkh@linuxfoundation.org, rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com, linuxarm@huawei.com, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Fri, 20 Nov 2020 11:52:09 +0000,
+John Garry <john.garry@huawei.com> wrote:
+> 
+> Hi Thomas,
+> 
+> >> Just mentioning a couple of things here, which could be a clue to what
+> >> is going on:
+> >> - the device is behind mbigen secondary irq controller
+> >> - the flow in the LLDD is to allocate all 128 interrupts during probe,
+> >> but we only register handlers for a subset with device managed API
+> > Right, but if the driver is removed then the interrupts should be
+> > deallocated, right?
+> > 
+> 
+> When removing the driver we just call free_irq(), which removes the
+> handler and disables the interrupt.
+> 
+> But about the irq_desc, this is created when the mapping is created in
+> irq_create_fwspec_mapping(), and I don't see this being torn down in
+> the driver removal, so persistent in that regard.
 
->  - I worry a bit about the indirect call overhead and spectre v2.
+If the irq_descs are created via the platform_get_irq() calls in
+platform_get_irqs_affinity(), I'd expect some equivalent helper to
+tear things down as a result, calling irq_dispose_mapping() behind the
+scenes.
 
-I don't know enough about how spectre v2 works to say if this would be a
-problem for the ops-table approach, but wouldn't it also affect the chain of
-conditional branches that we currently use, since it's branch-prediction
-based?
+> So for pci msi I can see that we free the irq_desc in
+> pci_disable_msi() -> free_msi_irqs() -> msi_domain_free_irqs() ...
+> 
+> So what I am missing here?
 
-David
+I'm not sure the paths are strictly equivalent. On the PCI side, we
+can have something that completely driver agnostic, as it is all
+architectural. In your case, only the endpoint driver knows about what
+happens, and needs to free things accordingly.
 
+Finally, there is the issue in your driver that everything is
+requested using devm_request_irq, which cannot play nicely with an
+explicit irq_desc teardown. You'll probably need to provide the
+equivalent devm helpers for your driver to safely be taken down.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
