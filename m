@@ -2,135 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57ADA2BC63B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBFB2BC63E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgKVOt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 09:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728028AbgKVOt0 (ORCPT
+        id S1728056AbgKVOvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 09:51:32 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:44661 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727795AbgKVOva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 09:49:26 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04936C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 06:49:26 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id a15so14483843edy.1
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 06:49:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LGSv+zaXag5bhul/n9vAaILaF4/C2Vq/pib9rWiVqdI=;
-        b=cQ8IvQoMl4tgBQPIgz8T3aEV3/bSlcLoSFZI+ehIw/5IVA1jHdd1QAajE5BbDXZU4g
-         Cpo2LDBWUub9OB/QDsIt+1HZqXYBsOm4xnspae8b4+f7wplItrWZNL6qUQRTNoRxbQKu
-         LSA/gam/9dXsaTz1KXd63aMQInMU3Bejl5lOF4a76LZ0EMjhW0M4HmwwQj9F9JB9KVyc
-         Q8BXrB+RxsGQPkgrL3/ARvtI9tIoei6ijCHBP0Z7aICiLmHFrUiRxjzEDKnhZ4mb56eU
-         Z2QB5AO0IwXuZJad+p7AFcLWoOy2OhcTckQ3y2nxiDfkEeHrsObJKLvfOs4cfUzDNUyP
-         YZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LGSv+zaXag5bhul/n9vAaILaF4/C2Vq/pib9rWiVqdI=;
-        b=pIJQq01Z0metfFoFsb4h1MePMkG625R2jJOwnL6KQVP7a0ie7ScahnnhbmtkiNtxXR
-         wDldSSYh/K0Won1zHCSgy4JaI7SD7jzEcsfc4WQCLudtujjObSU+2PnrpVqiilDHXhqh
-         7btNYZz9Hec56aPdEto31BKMzkFwBFamsoCnwOIevwQgzoVyda/HjxbtiHjWtdfvILey
-         G2Tw6xIM9N67lcI8yKzaQG+wVpTx6gXJxrQ5u85us7DN0nfltniD6z/zERwwFARFPCJB
-         H+yp3lwtXyIQ21b+v0MibcR9NuJWdaUTP4VOlvmnin1WQxyWoSJ6HBn23qpi9rOxfa4L
-         mGkg==
-X-Gm-Message-State: AOAM533RdgbphSeOGsfrlBIrdwlcnt86NGbuHaVqEqa6NmIY5OchP6xV
-        CnVQnYQFIkmfvOYdb93U3QkjOA==
-X-Google-Smtp-Source: ABdhPJyNNX6HJM4vvTmYVCILFgg+3NQhUwFMDW2ZA+3bcbujvwDDydmwxveVPATBPZeBDM8qh6AFaA==
-X-Received: by 2002:a50:950e:: with SMTP id u14mr42735701eda.260.1606056564785;
-        Sun, 22 Nov 2020 06:49:24 -0800 (PST)
-Received: from [192.168.1.9] (hst-208-222.medicom.bg. [84.238.208.222])
-        by smtp.googlemail.com with ESMTPSA id aq15sm3658002ejc.70.2020.11.22.06.49.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Nov 2020 06:49:24 -0800 (PST)
-Subject: Re: [PATCH 3/3] media: hfi_venus: Request interrupt for sync cmds
-To:     Fritz Koenig <frkoenig@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-References: <20201120001037.10032-1-stanimir.varbanov@linaro.org>
- <20201120001037.10032-4-stanimir.varbanov@linaro.org>
- <CAMfZQbwjCNjeWJYt8A4Zrq5yABB0bDnOrg41JjDP=MZF86TOjQ@mail.gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <493867b4-4106-9167-a361-09737b06a8b7@linaro.org>
-Date:   Sun, 22 Nov 2020 16:49:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 22 Nov 2020 09:51:30 -0500
+Date:   Sun, 22 Nov 2020 14:51:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1606056687; bh=VKTi2TdWNmni+nfDPo4i0OtqRh+E2ou4umPgwKFqw7g=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=X2o/z0sO+7JWaMGhDuRp0/0PywWsdFM3N9qQgXUg8SvW5UsMJi/6shwRGz2ODJjEB
+         cDSX6v0NkSqVAmB5gaVLafR0d996Ix+00UG3vItjyJztyBbVdxuxo+5ILZ1s4HEqvC
+         G1lL21oXKHkob9tYlSyVwUIVyyyRHqbC2/fvQH1mTsZcu4IaPIUa9K77bClZriLsvw
+         dQxEhobM34vsenJuebxcIS4/1gvfSjoOMQ1oQcjMqd4n9fDI5DC6ylmy/yDMLn4p3N
+         QQUeaAlwwJYADlbApLXtdWMxEtaDRHwaYDuDZa9PlpRFq+WpNOehmgAdX1QoQ9pcuo
+         s7vbAkZs3BoGg==
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org, fw@strlen.de,
+        razor@blackwall.org, jeremy@azazel.net, tobias@waldekranz.com,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net-next,v5 0/9] netfilter: flowtable bridge and vlan enhancements
+Message-ID: <20201122145108.2640-1-alobakin@pm.me>
+In-Reply-To: <20201122102605.2342-1-alobakin@pm.me>
+References: <20201122102605.2342-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <CAMfZQbwjCNjeWJYt8A4Zrq5yABB0bDnOrg41JjDP=MZF86TOjQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Sun, 22 Nov 2020 12:42:19 +0100
 
+> On Sun, Nov 22, 2020 at 10:26:16AM +0000, Alexander Lobakin wrote:
+>> From: Pablo Neira Ayuso <pablo@netfilter.org>
+>> Date: Fri, 20 Nov 2020 13:49:12 +0100
+> [...]
+>>> Something like this:
+>>>
+>>>                        fast path
+>>>                 .------------------------.
+>>>                /                          \
+>>>                |           IP forwarding   |
+>>>                |          /             \  .
+>>>                |       br0               eth0
+>>>                .       / \
+>>>                -- veth1  veth2
+>>>                    .
+>>>                    .
+>>>                    .
+>>>                  eth0
+>>>            ab:cd:ef:ab:cd:ef
+>>>                   VM
+>>
+>> I'm concerned about bypassing vlan and bridge's .ndo_start_xmit() in
+>> case of this shortcut. We'll have incomplete netdevice Tx stats for
+>> these two, as it gets updated inside this callbacks.
+>
+> TX device stats are being updated accordingly.
+>
+> # ip netns exec nsr1 ip -s link
+> 1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group defa=
+ult qlen 1000
+>     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+>     RX: bytes  packets  errors  dropped overrun mcast  =20
+>     0          0        0       0       0       0      =20
+>     TX: bytes  packets  errors  dropped carrier collsns=20
+>     0          0        0       0       0       0      =20
+> 2: veth0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue st=
+ate UP mode DEFAULT group default qlen 1000
+>     link/ether 82:0d:f3:b5:59:5d brd ff:ff:ff:ff:ff:ff link-netns ns1
+>     RX: bytes  packets  errors  dropped overrun mcast  =20
+>     213290848248 4869765  0       0       0       0      =20
+>     TX: bytes  packets  errors  dropped carrier collsns=20
+>     315346667  4777953  0       0       0       0      =20
+> 3: veth1@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue st=
+ate UP mode DEFAULT group default qlen 1000
+>     link/ether 4a:81:2d:9a:02:88 brd ff:ff:ff:ff:ff:ff link-netns ns2
+>     RX: bytes  packets  errors  dropped overrun mcast  =20
+>     315337919  4777833  0       0       0       0      =20
+>     TX: bytes  packets  errors  dropped carrier collsns=20
+>     213290844826 4869708  0       0       0       0      =20
+> 4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP=
+ mode DEFAULT group default qlen 1000
+>     link/ether 82:0d:f3:b5:59:5d brd ff:ff:ff:ff:ff:ff
+>     RX: bytes  packets  errors  dropped overrun mcast  =20
+>     4101       73       0       0       0       0      =20
+>     TX: bytes  packets  errors  dropped carrier collsns=20
+>     5256       74       0       0       0       0      =20
 
-On 11/21/20 3:02 AM, Fritz Koenig wrote:
-> On Thu, Nov 19, 2020 at 4:12 PM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
->>
->> From: Vikash Garodia <vgarodia@codeaurora.org>
->>
->> For synchronous commands, update the message queue variable.
->> This would inform video firmware to raise interrupt on host
->> CPU whenever there is a response for such commands.
->>
->> Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  drivers/media/platform/qcom/venus/hfi_venus.c | 74 ++++++++++---------
->>  1 file changed, 41 insertions(+), 33 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
->> index 4be4a75ddcb6..b8fdb464ba9c 100644
->> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
->> +++ b/drivers/media/platform/qcom/venus/hfi_venus.c
->> @@ -372,7 +372,7 @@ static void venus_soft_int(struct venus_hfi_device *hdev)
->>  }
->>
->>  static int venus_iface_cmdq_write_nolock(struct venus_hfi_device *hdev,
->> -                                        void *pkt)
->> +                                        void *pkt, bool sync)
->>  {
->>         struct device *dev = hdev->core->dev;
->>         struct hfi_pkt_hdr *cmd_packet;
->> @@ -397,15 +397,23 @@ static int venus_iface_cmdq_write_nolock(struct venus_hfi_device *hdev,
->>         if (rx_req)
->>                 venus_soft_int(hdev);
->>
->> +       /* Inform video firmware to raise interrupt for synchronous commands */
->> +       queue = &hdev->queues[IFACEQ_MSG_IDX];
-> 
-> I don't think there is any reason to scope queue outside of  the sync
-> block below.
+Aren't these counters very low for br0, despite that br0 is an
+intermediate point of traffic flow?
 
-OK. I'll move into the 'if' statment.
+> 5: veth0.10@veth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noque=
+ue master br0 state UP mode DEFAULT group default qlen 1000
+>     link/ether 82:0d:f3:b5:59:5d brd ff:ff:ff:ff:ff:ff
+>     RX: bytes  packets  errors  dropped overrun mcast  =20
+>     4101       73       0       0       0       62     =20
+>     TX: bytes  packets  errors  dropped carrier collsns=20
+>     315342363  4777893  0       0       0       0      =20
 
-> 
->>
->> +       if (sync) {
->> +               queue->qhdr->rx_req = 1;
->> +               /* ensure rx_req is updated in memory */
->> +               wmb();
->> +       }
->> +
->>         return 0;
->>  }
->>
-<cut>
-
--- 
--- 
-regards,
-Stan
