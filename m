@@ -2,173 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219B42BC846
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 19:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5C62BC84F
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 19:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgKVSmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 13:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727795AbgKVSmX (ORCPT
+        id S1728062AbgKVSrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 13:47:45 -0500
+Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:38216 "EHLO
+        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727972AbgKVSrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 13:42:23 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BEEC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 10:42:23 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id d17so15792573ion.4
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 10:42:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UOiIGOgu38ijX99g4kc5PywAvhubzlIGo2W55MlBzwI=;
-        b=jFyT5zI5/5VK/u6I/ZcJmbttkJxXr49IaB0KvWoPS1VegFssTW9GmF1+vMYzd3srlp
-         9PQRd8hnCYCbEdgZPH57kr36GXsYl2fME3c7vwvIpYN7scbCfIMDuwWG52BPolHxDAid
-         fxL4yUcYZQjRcHOeMGxqEWuzSECVblUzDCqZO0mNgkqZQdZWWyiHv0nUBkIbTQNCadKt
-         dYBqY68itQtt6AoUSOpB/Ue7VJIIdj3ToFiKZKek3VcVj6mQkxq7GCKYef5U+Io37Ij2
-         6w/06M7/s8tRoA8PINiNwERVHDgvrpTD78ykV5mMKc3TRYl3od2N4MFqpq2h9BqYbvhu
-         9C6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UOiIGOgu38ijX99g4kc5PywAvhubzlIGo2W55MlBzwI=;
-        b=lhXboVr9yQZIf+to9juA+dcjPXfXb5SPPmrvd0Ijt6vAO59oJW5OhgvN9m8Yc5ervo
-         dSyC/c3Qf+qBKpHYZ7byPhS0s/fKicdMiGsl98xT5X9OoJAtRjWTJpXmJCWQgHVy1t9e
-         SfhfgYiTWdxIVJ8XyCexKCemRD2xH7eMo72B0sLYh/zcKMoivse5bBbvZ0hvHXhle3NF
-         xrr+nuembki4hrYMfr42Xbp4PHpx1HxL1lWsk1JF8MFZgZuzDMoPtA3CjUGsyqVu3zig
-         Puq5j4i54X1hEbzu0e3uJUX4ngaJwXuEH15alH7ZG9swiLGSjeriyWUMDAzzssTGBGc5
-         LNfw==
-X-Gm-Message-State: AOAM530QMO36aRtOq2sWvxW3tCAChvYw/2zoA9KDoh+fWfwHVJWFblKb
-        1uVReerb6xMk/L7hLXySe4abwtF3hxScQzXuivJ/T4SFsDkB4Q==
-X-Google-Smtp-Source: ABdhPJzslcMs52aGLZt17HcelrQB1uSpRbD5h8kvnWcvBFTSCr1Qf6njV1Y4aNFyqoT9yKpIEFvYHxnN7WickfeGcsU=
-X-Received: by 2002:a05:6602:1492:: with SMTP id a18mr8722808iow.124.1606070542825;
- Sun, 22 Nov 2020 10:42:22 -0800 (PST)
+        Sun, 22 Nov 2020 13:47:45 -0500
+Received: from cmgw14.unifiedlayer.com (unknown [10.9.0.14])
+        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id B9609175BA8
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 11:47:41 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id guOjkW2bcwNNlguOjkjRFR; Sun, 22 Nov 2020 11:47:41 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=BoezP7f5 c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
+ a=_jlGtV7tAAAA:8 a=jtbBNqsHAAAA:8 a=DPgDxNo4V5PxLIsSBKsA:9
+ a=CjuIK1q_8ugA:10:nop_charset_2 a=nlm17XC03S6CtCLSeiRr:22
+ a=RWaeYqt-Cn-VcsFsiLGo:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KuU95b05VNKUjdDIi+AV2fuN9ZDA+T6+yXdu2cyNEEM=; b=NHArIPCy8HHpHn4MsiwYIm8xhv
+        2KPYCx0V/BqvTChSpN9NdkceM4STLNrfqtebk2rOuDlA9P/Mgv2A56DPSkJuPUUm3iBmTxUD4XsHy
+        cx6MB5lHOirrQ/tbrWw5ATEPIa0zbn1ietFy0TPjrU25dVpB+nXZ9rQLmrUNspT2YprrwEIcK7ufP
+        JKO3xhq3G1pyMlqfjCC7fy2pOvahEPp2/JQvwPidmdehFziNxnnM3r/jpj+i9DpEuU30I/4DoDyVX
+        k2mi2r3zyYcOk7yM0I0HElsbQzaT82SFmczRH8UyrE5mkG3lyXxI32Ua/mS+vU1S0IsKZxD7koc1H
+        R+A7Jl9w==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:45998 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kguOi-000GL8-Lv; Sun, 22 Nov 2020 18:47:40 +0000
+Date:   Sun, 22 Nov 2020 10:47:40 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     rentao.bupt@gmail.com
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        taoren@fb.com, mikechoi@fb.com
+Subject: Re: [PATCH v3 2/2] docs: hwmon: Document max127 driver
+Message-ID: <20201122184740.GA69899@roeck-us.net>
+References: <20201119175324.22472-1-rentao.bupt@gmail.com>
+ <20201119175324.22472-3-rentao.bupt@gmail.com>
 MIME-Version: 1.0
-References: <CAAObsKCP+ve2ZdXQk62aTo70G9i9Vo17dh6k-fcY23NC=EYZxg@mail.gmail.com>
- <CAJiuCcf3YYvAjyPwn8XK-56_YJ4dxQFAUOpL0nEQ8fnED5u8rQ@mail.gmail.com>
-In-Reply-To: <CAJiuCcf3YYvAjyPwn8XK-56_YJ4dxQFAUOpL0nEQ8fnED5u8rQ@mail.gmail.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Sun, 22 Nov 2020 19:42:11 +0100
-Message-ID: <CAJiuCcd1XkDJanizAgSuPW1ExMO1Zo7SF8gsdxpmeXuYkRUQfg@mail.gmail.com>
-Subject: Re: devfreq and panfrost on Allwinner H6
-To:     Tomeu Vizoso <tomeu@tomeuvizoso.net>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119175324.22472-3-rentao.bupt@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kguOi-000GL8-Lv
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:45998
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 20
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Tomeu,
+On Thu, Nov 19, 2020 at 09:53:24AM -0800, rentao.bupt@gmail.com wrote:
+> From: Tao Ren <rentao.bupt@gmail.com>
+> 
+> Add documentation for the max127 hardware monitoring driver.
+> 
+> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 
-On Wed, 7 Oct 2020 at 19:49, Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>=
- wrote:
->
-> Hi Tomeu,
->
-> On Wed, 7 Oct 2020 at 10:58, Tomeu Vizoso <tomeu@tomeuvizoso.net> wrote:
-> >
-> > Hi Cl=C3=A9ment,
-> >
-> > Have just noticed that my Pine H64 board hangs when I try to set the
-> > performance governor for the GPU devfreq.
-> >
-> > Is this a known bug?
-> Yes it is.
->
-> I try to summarize everything in this message:
-> https://lkml.org/lkml/2020/8/3/153
+For my reference:
 
-Finally got it working with Jernej's help by setting a fixed frequency
-to the GPU PLL.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-https://github.com/clementperon/linux/commits/h6_gpu_devfreq
+Guenter
 
-# glmark2-es2-drm --off-screen
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-    glmark2 2020.04
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-    OpenGL Information
-    GL_VENDOR:     Panfrost
-    GL_RENDERER:   Mali T720 (Panfrost)
-    GL_VERSION:    OpenGL ES 3.0 Mesa 20.2.2
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-[build] use-vbo=3Dfalse: FPS: 182 FrameTime: 5.495 ms
-[build] use-vbo=3Dtrue: FPS: 528 FrameTime: 1.894 ms
-[texture] texture-filter=3Dnearest: FPS: 604 FrameTime: 1.656 ms
-[texture] texture-filter=3Dlinear: FPS: 599 FrameTime: 1.669 ms
-[texture] texture-filter=3Dmipmap: FPS: 581 FrameTime: 1.721 ms
-[shading] shading=3Dgouraud: FPS: 418 FrameTime: 2.392 ms
-[shading] shading=3Dblinn-phong-inf: FPS: 386 FrameTime: 2.591 ms
-[shading] shading=3Dphong: FPS: 325 FrameTime: 3.077 ms
-[shading] shading=3Dcel: FPS: 308 FrameTime: 3.247 ms
-[bump] bump-render=3Dhigh-poly: FPS: 214 FrameTime: 4.673 ms
-[bump] bump-render=3Dnormals: FPS: 518 FrameTime: 1.931 ms
-[bump] bump-render=3Dheight: FPS: 501 FrameTime: 1.996 ms
-[effect2d] kernel=3D0,1,0;1,-4,1;0,1,0;: FPS: 295 FrameTime: 3.390 ms
-[effect2d] kernel=3D1,1,1,1,1;1,1,1,1,1;1,1,1,1,1;: FPS: 82 FrameTime: 12.1=
-95 ms
-[pulsar] light=3Dfalse:quads=3D5:texture=3Dfalse: FPS: 507 FrameTime: 1.972=
- ms
-[desktop] blur-radius=3D5:effect=3Dblur:passes=3D1:separable=3Dtrue:windows=
-=3D4:
-FPS: 46 FrameTime: 21.739 ms
-[desktop] effect=3Dshadow:windows=3D4: FPS: 172 FrameTime: 5.814 ms
-[buffer] columns=3D200:interleave=3Dfalse:update-dispersion=3D0.9:update-fr=
-action=3D0.5:update-method=3Dmap:
-FPS: 34 FrameTime: 29.412 ms
-[buffer] columns=3D200:interleave=3Dfalse:update-dispersion=3D0.9:update-fr=
-action=3D0.5:update-method=3Dsubdata:
-FPS: 33 FrameTime: 30.303 ms
-[buffer] columns=3D200:interleave=3Dtrue:update-dispersion=3D0.9:update-fra=
-ction=3D0.5:update-method=3Dmap:
-FPS: 40 FrameTime: 25.000 ms
-[ideas] speed=3Dduration: FPS: 66 FrameTime: 15.152 ms
-[jellyfish] <default>: FPS: 158 FrameTime: 6.329 ms
-[terrain] <default>: FPS: 12 FrameTime: 83.333 ms
-[shadow] <default>: FPS: 211 FrameTime: 4.739 ms
-[refract] <default>: FPS: 45 FrameTime: 22.222 ms
-[conditionals] fragment-steps=3D0:vertex-steps=3D0: FPS: 654 FrameTime: 1.5=
-29 ms
-[conditionals] fragment-steps=3D5:vertex-steps=3D0: FPS: 296 FrameTime: 3.3=
-78 ms
-[conditionals] fragment-steps=3D0:vertex-steps=3D5: FPS: 645 FrameTime: 1.5=
-50 ms
-[function] fragment-complexity=3Dlow:fragment-steps=3D5: FPS: 468
-FrameTime: 2.137 ms
-[function] fragment-complexity=3Dmedium:fragment-steps=3D5: FPS: 289
-FrameTime: 3.460 ms
-[loop] fragment-loop=3Dfalse:fragment-steps=3D5:vertex-steps=3D5: FPS: 459
-FrameTime: 2.179 ms
-[loop] fragment-steps=3D5:fragment-uniform=3Dfalse:vertex-steps=3D5: FPS:
-460 FrameTime: 2.174 ms
-[loop] fragment-steps=3D5:fragment-uniform=3Dtrue:vertex-steps=3D5: FPS: 21=
-8
-FrameTime: 4.587 ms
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-                                  glmark2 Score: 313
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-
-Regards,
-Clement
-
->
-> Clement
->
-> >
-> > Thanks,
-> >
-> > Tomeu
+> ---
+>  Changes in v3:
+>    - no code change. xdp maintainers were removed from to/cc list.
+>  Changes in v2:
+>    - add more description for min/max sysfs nodes.
+>    - convert values from volt to millivolt in the document.
+> 
+>  Documentation/hwmon/index.rst  |  1 +
+>  Documentation/hwmon/max127.rst | 45 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 46 insertions(+)
+>  create mode 100644 Documentation/hwmon/max127.rst
+> 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 408760d13813..0a07b6000c20 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -111,6 +111,7 @@ Hardware Monitoring Kernel Drivers
+>     ltc4245
+>     ltc4260
+>     ltc4261
+> +   max127
+>     max16064
+>     max16065
+>     max1619
+> diff --git a/Documentation/hwmon/max127.rst b/Documentation/hwmon/max127.rst
+> new file mode 100644
+> index 000000000000..dc192dd9c37c
+> --- /dev/null
+> +++ b/Documentation/hwmon/max127.rst
+> @@ -0,0 +1,45 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Kernel driver max127
+> +====================
+> +
+> +Author:
+> +
+> +  * Tao Ren <rentao.bupt@gmail.com>
+> +
+> +Supported chips:
+> +
+> +  * Maxim MAX127
+> +
+> +    Prefix: 'max127'
+> +
+> +    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX127-MAX128.pdf
+> +
+> +Description
+> +-----------
+> +
+> +The MAX127 is a multirange, 12-bit data acquisition system (DAS) providing
+> +8 analog input channels that are independently software programmable for
+> +a variety of ranges. The available ranges are {0,5V}, {0,10V}, {-5,5V}
+> +and {-10,10V}.
+> +
+> +The MAX127 features a 2-wire, I2C-compatible serial interface that allows
+> +communication among multiple devices using SDA and SCL lines.
+> +
+> +Sysfs interface
+> +---------------
+> +
+> +  ============== ==============================================================
+> +  in[0-7]_input  The input voltage (in mV) of the corresponding channel.
+> +		 RO
+> +
+> +  in[0-7]_min    The lower input limit (in mV) for the corresponding channel.
+> +		 ADC range and LSB will be updated when the limit is changed.
+> +		 For the MAX127, it will be adjusted to -10000, -5000, or 0.
+> +		 RW
+> +
+> +  in[0-7]_max    The higher input limit (in mV) for the corresponding channel.
+> +		 ADC range and LSB will be updated when the limit is changed.
+> +		 For the MAX127, it will be adjusted to 0, 5000, or 10000.
+> +		 RW
+> +  ============== ==============================================================
