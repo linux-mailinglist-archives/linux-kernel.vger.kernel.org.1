@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C081B2BC477
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 08:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14D22BC47B
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 09:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727339AbgKVHym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 02:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727307AbgKVHyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 02:54:41 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DFEC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 23:54:41 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id v92so12951758ybi.4
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 23:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cmv8Raua+1tSKqWDryWdApjoa82BkHH+3G4jECAsXHY=;
-        b=ED9ZI38GM/y7HDpqvSCnHe7tcnjJBEwtQEWHzA1E4fmp26kYAJuZCcY5loygQ0Vw2b
-         I9Rx1LfdG6Xzs/BUmw4dSQzNYuZyCyHbTb80hVACjZAIjlggQ33hjjYme4u/mFppXG/S
-         GLNGkZDk+VFlOnxLNi4l3NDKnrclj5eqhRD4z0GUs5dbLY136oaoVN4SKSdn4XD/zA7k
-         rMH44mXzrKDZboFuiwQHfpoeQEQe1jHsuNTXkJ3DJ+ArfjB5DA5TaPFzsPKhbI9G3d8s
-         Uyfs0bN2fbLADGO7/dV5W5rO/KMdyLcq6tuexmFsmTnyG7Ci2xHGPe1+o6A20d8jWB9X
-         q2iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cmv8Raua+1tSKqWDryWdApjoa82BkHH+3G4jECAsXHY=;
-        b=PZtld0rTKv8LvMTIeAKCzV9ONx10cragCST5HskaTsC4K+GLCrRuYwdjm/ei5Dzn/W
-         6ynku6oJXOYfrwW6SIDafXeSTTOGYBk1WgF9sflTdAoXV8ZMt8NxGIlNFsUExlEQwQc7
-         K+DTVxbcUOXe7m0An6YfxH5Z7P2xkHRWbuZerSj+nc+mcJPRxKHO0Yeja7BMHv8oICij
-         fo++/BOcEsqdaquaUiCsU/DTc0iegvA3jmjlz8TwWpziYorkGRmI9435ypDmTg2RTcBJ
-         M80dCmNzKRemHJndwIHcAm3U3dx2BMLtDsOAGGKE7SLkdaFXZC7I0y+oufYUpO/Qo5Mb
-         A2Jg==
-X-Gm-Message-State: AOAM532kGhqEWIf/pHwun26nc9eno20iIM2I5QQ0sgWJVHFAbpD744Xz
-        /uX050MTb+BR42KeNyxTBaONL/3tmk4IzlAM51Ia4A==
-X-Google-Smtp-Source: ABdhPJyTrwkMPtEGxDAoEJwLclEl0SxjaSUTnkOaZ1BxWHJtYAl5yWfKV62ygcu2t61UEO4J7OTAcGncmare4c9rjuU=
-X-Received: by 2002:a25:2f51:: with SMTP id v78mr36598790ybv.235.1606031680454;
- Sat, 21 Nov 2020 23:54:40 -0800 (PST)
+        id S1727307AbgKVIAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 03:00:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726461AbgKVIAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 03:00:14 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1BDE208B3;
+        Sun, 22 Nov 2020 08:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606032011;
+        bh=5nGQjY4uD/TbgJNXxHcVpqpVIu40OtUsHmB86TH07xM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jdnxMe200K+7CTqyW7AeInXsbWAw9lZM4jemnTgRL8szWwdmF4kAe9ZRpkorWM3xX
+         JhZvFHHdhi5XNucw5r2KpNovmL98WuW28BeVj7miFdSjOs2kwpuX50NLwvFU1nOEbF
+         MgOcBbgziES7sBeCFAZUKm1KrfPr8ihkLVplDfPo=
+Date:   Sun, 22 Nov 2020 09:00:06 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Axtens <dja@axtens.net>, Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/15] 4.4.245-rc1 review
+Message-ID: <X7oahkxvsgCgDtrG@kroah.com>
+References: <20201120104539.534424264@linuxfoundation.org>
+ <20201121182903.GB111877@roeck-us.net>
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org> <7c424191001cafdc7abd060790ecfcccdf3dd3ae.1605896059.git.gustavoars@kernel.org>
-In-Reply-To: <7c424191001cafdc7abd060790ecfcccdf3dd3ae.1605896059.git.gustavoars@kernel.org>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Sun, 22 Nov 2020 09:54:29 +0200
-Message-ID: <CAOtvUMeLZXChtoEUNyy=hwHQDqqncUX5V_=JSH3YaiVNLyTcHw@mail.gmail.com>
-Subject: Re: [PATCH 075/141] crypto: ccree - Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201121182903.GB111877@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 8:34 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding multiple break statements instead of
-> letting the code fall through to the next case.
->
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/crypto/ccree/cc_cipher.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_c=
-ipher.c
-> index dafa6577a845..cdfee501fbd9 100644
-> --- a/drivers/crypto/ccree/cc_cipher.c
-> +++ b/drivers/crypto/ccree/cc_cipher.c
-> @@ -97,6 +97,7 @@ static int validate_keys_sizes(struct cc_cipher_ctx *ct=
-x_p, u32 size)
->         case S_DIN_to_SM4:
->                 if (size =3D=3D SM4_KEY_SIZE)
->                         return 0;
-> +               break;
->         default:
->                 break;
->         }
-> @@ -139,9 +140,11 @@ static int validate_data_size(struct cc_cipher_ctx *=
-ctx_p,
->                 case DRV_CIPHER_CBC:
->                         if (IS_ALIGNED(size, SM4_BLOCK_SIZE))
->                                 return 0;
-> +                       break;
->                 default:
->                         break;
->                 }
-> +               break;
->         default:
->                 break;
->         }
-> --
-> 2.27.0
->
+On Sat, Nov 21, 2020 at 10:29:03AM -0800, Guenter Roeck wrote:
+> On Fri, Nov 20, 2020 at 12:02:58PM +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.4.245 release.
+> > There are 15 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
+> > Anything received after that time might be too late.
+> > 
+> Build results:
+> 	total: 165 pass: 164 fail: 1
+> Failed builds:
+> 	powerpc:ppc64e_defconfig
+> Qemu test results:
+> 	total: 328 pass: 323 fail: 5
+> Failed tests:
+> 	ppc64:ppce500:corenet64_smp_defconfig:e5500:initrd
+> 	ppc64:ppce500:corenet64_smp_defconfig:e5500:nvme:rootfs
+> 	ppc64:ppce500:corenet64_smp_defconfig:e5500:sdhci:mmc:rootfs
+> 	ppc64:ppce500:corenet64_smp_defconfig:e5500:scsi[53C895A]:rootfs
+> 	ppc64:ppce500:corenet64_smp_defconfig:e5500:sata-sii3112:rootfs	
+> 
+> Failure in all cases is:
+> 
+> In file included from arch/powerpc/kernel/ppc_ksyms.c:10:0:
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:11:29: error: redefinition of ‘allow_user_access’
+>  static __always_inline void allow_user_access(void __user *to, const void __user *from,
+>                              ^~~~~~~~~~~~~~~~~
+> In file included from arch/powerpc/include/asm/uaccess.h:12:0,
+>                  from arch/powerpc/kernel/ppc_ksyms.c:8:
+> arch/powerpc/include/asm/kup.h:12:20: note: previous definition of ‘allow_user_access’ was here
+>  static inline void allow_user_access(void __user *to, const void __user *from,
+>                     ^~~~~~~~~~~~~~~~~
+> In file included from arch/powerpc/kernel/ppc_ksyms.c:10:0:
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:16:20: error: redefinition of ‘prevent_user_access’
+>  static inline void prevent_user_access(void __user *to, const void __user *from,
+>                     ^~~~~~~~~~~~~~~~~~~
+> In file included from arch/powerpc/include/asm/uaccess.h:12:0,
+>                  from arch/powerpc/kernel/ppc_ksyms.c:8:
+> arch/powerpc/include/asm/kup.h:14:20: note: previous definition of ‘prevent_user_access’ was here
+>  static inline void prevent_user_access(void __user *to, const void __user *from,
+>                     ^~~~~~~~~~~~~~~~~~~
+> 
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Acked-by: Gilad Ben-Yossef <gilad@benyossef.com>
+Thanks for testing these.
 
-Thanks,
-Gilad
+Daniel, looks like your patches broke some configurations on powerpc as
+shown above.  Care to send a fix-up patch for these?
 
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
+thanks,
 
-values of =CE=B2 will give rise to dom!
+greg k-h
