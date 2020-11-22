@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7238C2BFBD6
+	by mail.lfdr.de (Postfix) with ESMTP id DF9772BFBD8
 	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 22:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgKVVyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 16:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
+        id S1726742AbgKVVzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 16:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKVVys (ORCPT
+        with ESMTP id S1726472AbgKVVzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 16:54:48 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0115C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:54:46 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id oq3so20607999ejb.7
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:54:46 -0800 (PST)
+        Sun, 22 Nov 2020 16:55:37 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708D4C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:55:37 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id k27so20574174ejs.10
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:55:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:sender:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=holMzMixu6L4mPkY4KLX0AXrH3B7KLU6Q1+gVZ1hbDo=;
-        b=ncFpySwlyDClcG8BDcCu57cQfMMG9BL6+ElukbcYWHSJP2pZ3apEd103fJlmJ1s3Pv
-         RdgoNAePWgAZx7FfwXIz10yCH3jaFnTDjPQzS6Fcv2wfNMKmJ/gdgu3TpKFlQVxpaYxH
-         Fl1VSJr2ECSWGL0eO8u1Cf4d5rfLXOmpIgpupRXff+V7lNnhYoUvJ7EV1t4TqUQqQU6n
-         hjHi+EXyygl8x4AKGiBVaS51N6ayuJLIPLJfNxeMEu6QnRwW6j6G9Q1cJIpmdPPqIRDH
-         A4k9eXUEH6qeMgJZnavuowl+l0iRCECGgXia6THd5VMh5Sla23uZpNZiJhiP6Wfqpyun
-         ZPdg==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qqpYjQ+PGcW1Zliu3zVha2yXOh9qnCs6d+1tFYlWvLU=;
+        b=uE21F2TZwzmZhDf0EemaAvk72giHQLQxLBtQ2A/hZnlQqR5DMpduIfsviX6XWQVIA5
+         U5LSC3z1gM8HZG7xhsix6+fNlUI0bqxysI6jCSI1hpKqwnsTBfl7A3ZGuPCNRgh7EWZe
+         6Of91QefiL69x275vggcx92vCTwZRpOlVp3BElKBHbufVQ9/wAkpg0SNYgZO7pHqhlCT
+         ywHm/hw7ep5sXEV6SIDtre/iOQIOJoLjw9YFnFDEn89R4x9QOxj5GFMtmI3MvanN61+h
+         aQP9wlVxelNJpCuZi3VyRNIjZbB77I7hN7fX+dHNJOiUFGu7VH9ztYddDsMTFu4uadpM
+         9ibg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:sender:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=holMzMixu6L4mPkY4KLX0AXrH3B7KLU6Q1+gVZ1hbDo=;
-        b=ejga6nhzWQUPLSoSewLPd315hc1ixdy3S6taETUpUk9y6kXB6bEfXW9ywRGu1iZDWD
-         4RzmLPBv1ZUAzgbkLGn4TCu638LpCJoW63osGR4VenOJNxF1L8bElVyVluVuX756sqoN
-         gc3FKbLstJQAFfoLi2qDx0ogi9QUYWmqcTkD3ZzNlFPDupUx+O7fU/7eJzbrcZaw8I8y
-         5nJw5K6NSLl+IGl4oUrKcd5sQY+EpzEbIeTbSvSXtW8O8dfz/7xFHiSZIYojC08S/8wC
-         z7YroPFIKduk7nTSjlP2llqss2wxa5LIw2DxNPYCh1D5D6ZxkzmXgjOHwy7sWtlj5ThU
-         ybEA==
-X-Gm-Message-State: AOAM5317pTdUyRvirosGYjH6nQLOzRnpxuolXJPMmadyk4N7ryyARBbG
-        oKTeeiPf5uSq67jfYGmcQg0qilEa4kk=
-X-Google-Smtp-Source: ABdhPJyJjimy7q82zhkgE2DBBUnZHD32MzO2w4bdyJdxFjpfgLIo0naT4xafklsC8vMitMn1Ck8uKA==
-X-Received: by 2002:a17:906:c357:: with SMTP id ci23mr40126205ejb.311.1606082085561;
-        Sun, 22 Nov 2020 13:54:45 -0800 (PST)
-Received: from [192.168.43.48] ([197.210.35.67])
-        by smtp.gmail.com with ESMTPSA id i19sm3978482ejz.71.2020.11.22.13.54.39
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sun, 22 Nov 2020 13:54:45 -0800 (PST)
-Message-ID: <5fbade25.1c69fb81.9b3f2.105d@mx.google.com>
-Sender: Lena Torres <ad482289@gmail.com>
-From:   Adelina Zeuki <anglicaramose@gmail.com>
-X-Google-Original-From: "Adelina Zeuki" <  adelinazeuki@gmail.comm >
-Content-Type: text/plain; charset="iso-8859-1"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qqpYjQ+PGcW1Zliu3zVha2yXOh9qnCs6d+1tFYlWvLU=;
+        b=bEZhwggK0jQKKnMZizplcs8Z30hlX04uJAkukhoszFSrqQmyUNDvNCEYlTMIykdAQs
+         IK9egTjGgc6/fswq6pXNq6S6RNgzErOx0Xlrg5UTmhGkPquexDXSXIdC1juBJ4ekTpsM
+         Yf0NS0LbwDZAhFJzVrE9zuaKfQlxYrhnNR/NneoHxa+gXlryPZ1h61WG2+H9sva72S8j
+         tl12Kaaan6s4gWqDSai/E/RblBQNqpFfAZnXqdsFdVgOmevw0P3OGe1oxLGKsQoJWNON
+         Kk8vKhagQGBkwXYzgkiUt2CMGoRsrSYhiNUtcGOGlRiun/B3hbYgnJNRKAZzUBtZxKOL
+         +LkA==
+X-Gm-Message-State: AOAM531OiaFVjAFFzTR0j7dJsnODqr2joMjTmFnVAcRv2RtG0BZtX0Fa
+        nFgril3XMYLp9dZy3LajaVJ+IEAXShpU3XK4SnI=
+X-Google-Smtp-Source: ABdhPJy07kQh16653VIqzljjoXbLIp850Rh1tftCY9BRp2/rmpFyyXpHdiUQt6F0suidLiAtWc23f3ZkqdKyNV2NFoQ=
+X-Received: by 2002:a17:906:ca93:: with SMTP id js19mr43561460ejb.537.1606082136168;
+ Sun, 22 Nov 2020 13:55:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Hello !!
-To:     Recipients <adelinazeuki@gmail.comm>
-Date:   Sun, 22 Nov 2020 21:54:31 +0000
-Reply-To: adelinazeuki@gmail.com
+References: <1605666995-16462-1-git-send-email-yejune.deng@gmail.com>
+In-Reply-To: <1605666995-16462-1-git-send-email-yejune.deng@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 22 Nov 2020 22:55:25 +0100
+Message-ID: <CAFBinCAoFHknq8guq2JmweBvpeXgFh5dzSOeHBaaCJAD=OODHw@mail.gmail.com>
+Subject: Re: [PATCH] phy: amlogic: replace devm_reset_control_array_get()
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     kishon@ti.com, vkoul@kernel.org, khilman@baylibre.com,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        p.zabel@pengutronix.de, lorenzo.pieralisi@arm.com,
+        repk@triplefau.lt, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi dear,
-
-Can i talk with you ?
+On Wed, Nov 18, 2020 at 3:36 AM Yejune Deng <yejune.deng@gmail.com> wrote:
+>
+> devm_reset_control_array_get_exclusive() looks more readable
+>
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
