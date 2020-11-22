@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF82A2BC2D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 01:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D642BC2E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 01:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgKVASG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 19:18:06 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:33152 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726398AbgKVASG (ORCPT
+        id S1726959AbgKVAs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 19:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726398AbgKVAs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 19:18:06 -0500
-Received: by mail-pl1-f196.google.com with SMTP id t18so6958081plo.0;
-        Sat, 21 Nov 2020 16:18:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x0pPjDLS6VLvuxC5onraIQ2o57wzPveKWzsW70aJDNY=;
-        b=dtVnyd2I+1pImf6aNLVXglkoaUnG6yQXhn2t71Kutjvy8Cou3mAZ+y7wnu5+/Z73kp
-         HIoNAezem67P+NTulJClNK5yrpLFrYBExQa/xniFmmRpEZMqMqPQWazbxuJvgJXbTmA6
-         MBWCvNN7dZnWX4YYdz2z0lie/Bx14Qb/Bm8TKbvm+C8BZUhttOxXyjZ3hKQUP2hYv9+D
-         RDMRUy/9SxWp/9VuULvJMNdPchAyRfrzEWL9FDpH7x9+bJ754v6dVbQZoEFBXGMse/Es
-         XmVxkD4LqwPtCeZtfFiVJesPaHQhwzurlLpT8vW4Fb/OFu9mkx5TMfaFEiyl7tH71sBp
-         sVyg==
-X-Gm-Message-State: AOAM532ceskVlKuIAMvebq5JkC4tm1yZUBgOLSz9b0j3877jh/XPwfvW
-        8skF0KXV8tY6Xt70E4Y3pSo=
-X-Google-Smtp-Source: ABdhPJwKnZ8ZFeHwlGIoZfe1NPZ41lvSD2uuhy9D/l189s3q4blm4nu2KaQ+A3uh2n3Fw0lM8lyZjw==
-X-Received: by 2002:a17:902:b717:b029:d9:e816:fd0b with SMTP id d23-20020a170902b717b02900d9e816fd0bmr7902956pls.50.1606004291693;
-        Sat, 21 Nov 2020 16:18:11 -0800 (PST)
-Received: from localhost (c-73-235-149-126.hsd1.ca.comcast.net. [73.235.149.126])
-        by smtp.gmail.com with ESMTPSA id v1sm8918721pjs.16.2020.11.21.16.18.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 16:18:11 -0800 (PST)
-Date:   Sat, 21 Nov 2020 16:18:10 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: Re: [PATCH v2] drivers: fpga: Specify HAS_IOMEM dependency for
- FPGA_DFL
-Message-ID: <X7muQm+0089dbLS9@archbook>
-References: <20201120234648.4050910-1-davidgow@google.com>
+        Sat, 21 Nov 2020 19:48:59 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2969C0613CF;
+        Sat, 21 Nov 2020 16:48:58 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 2183B1F45C12
+Message-ID: <36568623119c57a6d5253300ad937aeb708f4ec8.camel@collabora.com>
+Subject: Re: [PATCH v3 07/13] media: controls: Validate H264 stateless
+ controls
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Date:   Sat, 21 Nov 2020 21:48:48 -0300
+In-Reply-To: <ce737ae7-053d-1171-1c03-5ff1efb5ea8c@xs4all.nl>
+References: <20201118184700.331213-1-ezequiel@collabora.com>
+         <20201118184700.331213-8-ezequiel@collabora.com>
+         <ce737ae7-053d-1171-1c03-5ff1efb5ea8c@xs4all.nl>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120234648.4050910-1-davidgow@google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 03:46:48PM -0800, David Gow wrote:
-> Because dfl.c uses the 'devm_ioremap', 'devm_iounmap',
-> 'devm_ioremap_resource', and 'devm_platform_ioremap_resource'
-> functions, it should depend on HAS_IOMEM.
+On Fri, 2020-11-20 at 10:30 +0100, Hans Verkuil wrote:
+> On 18/11/2020 19:46, Ezequiel Garcia wrote:
+> > Check that all the fields that correspond or are related
+> > to a H264 specification syntax element have legal values.
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > ---
+> >  drivers/media/v4l2-core/v4l2-ctrls.c | 83 ++++++++++++++++++++++++++++
+> >  1 file changed, 83 insertions(+)
+> > 
+[..]
+> >  	case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
+> >  		p_h264_dec_params = p;
+> >  
+> > +		if (p_h264_dec_params->nal_ref_idc > 3)
+> > +			return -EINVAL;
+> >  		for (i = 0; i < V4L2_H264_NUM_DPB_ENTRIES; i++) {
+> >  			struct v4l2_h264_dpb_entry *dpb_entry =
+> >  				&p_h264_dec_params->dpb[i];
+> > 
 > 
-> This fixes make allyesconfig under UML (ARCH=um), which doesn't provide
-> HAS_IOMEM.
-> 
-> Fixes: 89eb35e810a8 ("fpga: dfl: map feature mmio resources in their own feature drivers")
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
-> 
-> Changes since v1:
-> ( https://lore.kernel.org/linux-fpga/20201119082209.3598354-1-davidgow@google.com/ )
-> - Add Fixes tag
-> 
->  drivers/fpga/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index 7cd5a29fc437..5645226ca3ce 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -142,6 +142,7 @@ config FPGA_DFL
->  	tristate "FPGA Device Feature List (DFL) support"
->  	select FPGA_BRIDGE
->  	select FPGA_REGION
-> +	depends on HAS_IOMEM
->  	help
->  	  Device Feature List (DFL) defines a feature list structure that
->  	  creates a linked list of feature headers within the MMIO space
-> -- 
-> 2.29.2.454.gaff20da3a2-goog
+> General question: I don't see anything in std_init_compound() for these
+> controls. Is initializing these compound controls to 0 enough to make them
+> pass std_validate_compound()? It probably is, otherwise you'd see errors
+> in the compliance test, I guess.
+> guess.
 > 
 
-Applied to for-5.10,
+Indeed. You can see all the checks are for fields to not
+exceed some maximum value.
 
-I fixed up your commit message (dropped the drivers:)
+This is common in H264/HEVC: you'll see  spread of _minusN
+syntax. This is so to make zero-valued syntax common,
+which in turns creates more redundancy, and make headers
+more compressed.
 
-- Moritz
+Thanks,
+Ezequiel
+
