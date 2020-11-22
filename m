@@ -2,105 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F75A2BC68B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 16:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D962BC686
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 16:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgKVPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 10:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727924AbgKVPjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 10:39:10 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3897EC0613D3;
-        Sun, 22 Nov 2020 07:39:10 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id lv15so13952045ejb.12;
-        Sun, 22 Nov 2020 07:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fl28dO735aCAhko0B6RL7SyZGlL+dtaEdr7rVCrHNgQ=;
-        b=rPLfAxEfQrMaZWxlGBBQ5d77LNndT6OVQI8MQ2T6907z53C9QoVTKOPOFsmL4yC2JW
-         36wJA7mxNcfbneKzsAqdpifGDGflHREGS2wnjXY4y+noVa17TU09bkb1/5bjIUHCpeDo
-         BztYKy35vV3e+DDGG38CSWfnkDaogGcnAttQ20IRJKGOkG2qFlVSCw3SYBLqd/Esz3uy
-         HOokYMbQI94IaNxVk/4L7hQhSbepslrv1vpfo9BGZfsoappahdARgR6uA7ccqgNZkWkj
-         l5Joo5IHrLaOWvzNLkCvGpA0xM8IJiq2T8OsTs4fJXzxuRrt7Iq33AKxdF1J+cxwtOnW
-         8aWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fl28dO735aCAhko0B6RL7SyZGlL+dtaEdr7rVCrHNgQ=;
-        b=XAxFAr8V2/6aHZlPfqer70Fd7490sYPQch986SCZC39jkCoHUwT+rap82CJ5jN0AZS
-         nKUty2HzWNe/cFBFPnUvLpWm5C2EgQeZOqziOmY4kbCNAAh5nxhlCXRrIKr8JqvE8wkA
-         f43Dp9R+wPPSYwZiRIyM5gbdnzlcldF8hshPEcAjP3KvFZTaK1oo8VG1Ai00IaC/hYSP
-         XnepPxU6AS7z6/Hh6CZqUWFe6Ey/o/jYl0yidLxSsFR1q0m1zgO7fvmxKwMqAirZXNZN
-         zcqhDQDXc0o7G/KcXujbviCQOyd+nUYRaV9cQ0MvwdQE67y4BYMH9YlnlwrV5NwDUnAv
-         D+Dw==
-X-Gm-Message-State: AOAM533W9hzmvNauTpQa+Bey95SEq1gkMcl3f3t9zyeCyIrQo/sTrRyp
-        n9q/fQvx/W5nnQT1YXfM4oL4CR9mPLbPcg==
-X-Google-Smtp-Source: ABdhPJzReAQ2abZZjO+qZieauY3jPn1AV5BGddQdRsAaDLI8owcy622mYph2MO6f7bQjG6vikUT4oQ==
-X-Received: by 2002:a17:906:1c87:: with SMTP id g7mr35785480ejh.37.1606059549013;
-        Sun, 22 Nov 2020 07:39:09 -0800 (PST)
-Received: from localhost.localdomain (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
-        by smtp.gmail.com with ESMTPSA id q19sm3693742ejz.90.2020.11.22.07.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 07:39:08 -0800 (PST)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Omar Sandoval <osandov@osandov.com>
+        id S1727881AbgKVPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 10:38:06 -0500
+Received: from mga04.intel.com ([192.55.52.120]:1743 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727317AbgKVPiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 10:38:06 -0500
+IronPort-SDR: MerRfNhLMcfjLIUHJnGgi9A7DS3fid+1jQsltxybvVSFtvV4MGybiY+T1cKZKwQA3fqc9zP91z
+ pbAXVnNExY7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="169084445"
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="169084445"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 07:38:06 -0800
+IronPort-SDR: pU/D3UOZqvU8L4FtN+vZ2B4AyUK+XpYo0PS2rDMBNVSJ8d2v8TX15cqKxOp1AqsEHBK1lRApsy
+ 8oLSq4bTge2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="361150665"
+Received: from lkp-server01.sh.intel.com (HELO ce8054c7261d) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Nov 2020 07:38:05 -0800
+Received: from kbuild by ce8054c7261d with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kgrRE-0000Ar-Ge; Sun, 22 Nov 2020 15:38:04 +0000
+Date:   Sun, 22 Nov 2020 23:37:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] sbitmap: simplify wrap check
-Date:   Sun, 22 Nov 2020 15:35:48 +0000
-Message-Id: <120b9b0870719675c91764822016597bdfa3ee15.1606058975.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1606058975.git.asml.silence@gmail.com>
-References: <cover.1606058975.git.asml.silence@gmail.com>
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ bd5fc4f66b3e1df8fe9fb7756f408dedd4495877
+Message-ID: <5fba85d7.zf/iOiQW0JCKFi+c%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__sbitmap_get_word() doesn't warp if it's starting from the beginning
-(i.e. initial hint is 0). Instead of stashing the original hint just set
-@wrap accordingly.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: bd5fc4f66b3e1df8fe9fb7756f408dedd4495877  rcu: Record kvfree_call_rcu() call stack for KASAN
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+elapsed time: 1282m
+
+configs tested: 101
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                          axs101_defconfig
+arm                       aspeed_g5_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                      cm5200_defconfig
+powerpc                    ge_imp3a_defconfig
+nios2                         10m50_defconfig
+arm                         s3c6400_defconfig
+powerpc                  storcenter_defconfig
+arm                          lpd270_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                    amigaone_defconfig
+mips                         mpc30x_defconfig
+sh                           sh2007_defconfig
+mips                      maltaaprp_defconfig
+arm                         cm_x300_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                   bluestone_defconfig
+m68k                          amiga_defconfig
+arm                        keystone_defconfig
+mips                     cu1830-neo_defconfig
+sh                           se7712_defconfig
+arm                       cns3420vb_defconfig
+m68k                             allmodconfig
+mips                        nlm_xlp_defconfig
+sh                          rsk7203_defconfig
+sh                          polaris_defconfig
+powerpc                     ep8248e_defconfig
+arm                      footbridge_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201122
+i386                 randconfig-a003-20201122
+i386                 randconfig-a002-20201122
+i386                 randconfig-a005-20201122
+i386                 randconfig-a001-20201122
+i386                 randconfig-a006-20201122
+x86_64               randconfig-a006-20201122
+x86_64               randconfig-a003-20201122
+x86_64               randconfig-a004-20201122
+x86_64               randconfig-a005-20201122
+x86_64               randconfig-a001-20201122
+x86_64               randconfig-a002-20201122
+i386                 randconfig-a012-20201122
+i386                 randconfig-a013-20201122
+i386                 randconfig-a011-20201122
+i386                 randconfig-a016-20201122
+i386                 randconfig-a014-20201122
+i386                 randconfig-a015-20201122
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20201122
+x86_64               randconfig-a011-20201122
+x86_64               randconfig-a014-20201122
+x86_64               randconfig-a016-20201122
+x86_64               randconfig-a012-20201122
+x86_64               randconfig-a013-20201122
+
 ---
- lib/sbitmap.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/lib/sbitmap.c b/lib/sbitmap.c
-index c18b518a16ba..d693d9213ceb 100644
---- a/lib/sbitmap.c
-+++ b/lib/sbitmap.c
-@@ -97,9 +97,11 @@ EXPORT_SYMBOL_GPL(sbitmap_resize);
- static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
- 			      unsigned int hint, bool wrap)
- {
--	unsigned int orig_hint = hint;
- 	int nr;
- 
-+	/* don't wrap if starting from 0 */
-+	wrap = wrap && hint;
-+
- 	while (1) {
- 		nr = find_next_zero_bit(word, depth, hint);
- 		if (unlikely(nr >= depth)) {
-@@ -108,8 +110,8 @@ static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
- 			 * offset to 0 in a failure case, so start from 0 to
- 			 * exhaust the map.
- 			 */
--			if (orig_hint && hint && wrap) {
--				hint = orig_hint = 0;
-+			if (hint && wrap) {
-+				hint = 0;
- 				continue;
- 			}
- 			return -1;
--- 
-2.24.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
