@@ -2,90 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651322BC5C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784352BC5C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 14:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbgKVNNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 08:13:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgKVNNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 08:13:10 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727769AbgKVNNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 08:13:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49685 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726436AbgKVNNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 08:13:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606050831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2ZpaheZQd4ao1ows6/rlyuwIugzpOFEGvsgoNS41pDU=;
+        b=VW0JcAZF0e/SvQVq90HqIGUlMMewTz0LzRP4vpNHHrWUs1JK4aYc+eGL/NjSqK/Xh6dcxi
+        3y8y9BxGJwMYcY1kkeneAopUMNwMua5wGOMbFm95prf4n/25GhLS/+2g4nEpRUdFk5vWfV
+        zW/cs+eH0bbEv8L0RG5BgiDFOHLVhqM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-FjNuDw-WMWCuHrCkHSmPQg-1; Sun, 22 Nov 2020 08:13:49 -0500
+X-MC-Unique: FjNuDw-WMWCuHrCkHSmPQg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEE5A20724;
-        Sun, 22 Nov 2020 13:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606050790;
-        bh=TjQ8YDqQM6PWcMTGEeeBPCud8rCB1HrhNYqg0vnG+qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tS642YVi4bL5YLam4oXfNr2AXnFJqWbXaNv+E1cyO3Bchqe0R6lYTpj8GZViEK5eN
-         gHj74pvPqj/YVHgEPtFxhJL2vP1KB0xoaX0xVA79MarKDR3SbePLncvwsXffd/NoJU
-         oux/NAKCQv1QssX5Ng+F5vtlhUPGC0BgRzla0oZA=
-Date:   Sun, 22 Nov 2020 15:13:03 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH] Documentation/admin-guide: mark memmap parameter is
- supported by a few architectures
-Message-ID: <20201122131303.GF8537@kernel.org>
-References: <20201118014145.29596-1-song.bao.hua@hisilicon.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76CF68049E9;
+        Sun, 22 Nov 2020 13:13:47 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3556F5D6CF;
+        Sun, 22 Nov 2020 13:13:46 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix speculative status fetch going out of order wrt to
+ modifications
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 22 Nov 2020 13:13:45 +0000
+Message-ID: <160605082531.252452.14708077925602709042.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201118014145.29596-1-song.bao.hua@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 02:41:45PM +1300, Barry Song wrote:
-> early_param memmap is only implemented on X86, MIPS and XTENSA. To avoid
-> wasting users’ time on trying this on platform like ARM, mark it clearly.
-> 
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+When doing a lookup in a directory, the afs filesystem uses a bulk status
+fetch to speculatively retrieve the statuses of up to 48 other vnodes found
+in the same directory and it will then either update extant inodes or
+create new ones - effectively doing 'lookup ahead'.
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+To avoid the possibility of deadlocking itself, however, the filesystem
+doesn't lock all of those inodes; rather just the directory inode is locked
+(by the VFS).  When the operation completes, afs_inode_init_from_status()
+or afs_apply_status() is called, depending on whether the inode already
+exists, to commit the new status.
 
-> ---
->  * the background was that I spent one hour on using memmap on arm64, only
->    to find memmap= is not implemented on most architectures;
-> 
->  Documentation/admin-guide/kernel-parameters.rst | 1 +
->  Documentation/admin-guide/kernel-parameters.txt | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> index 6d421694d98e..06fb1b4aa849 100644
-> --- a/Documentation/admin-guide/kernel-parameters.rst
-> +++ b/Documentation/admin-guide/kernel-parameters.rst
-> @@ -172,6 +172,7 @@ parameter is applicable::
->  	X86	Either 32-bit or 64-bit x86 (same as X86-32+X86-64)
->  	X86_UV	SGI UV support is enabled.
->  	XEN	Xen support is enabled
-> +	XTENSA	xtensa architecture is enabled.
->  
->  In addition, the following text indicates that the option::
->  
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 526d65d8573a..8bdbc555f221 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -2709,7 +2709,7 @@
->  			option description.
->  
->  	memmap=nn[KMG]@ss[KMG]
-> -			[KNL] Force usage of a specific region of memory.
-> +			[KNL, X86, MIPS, XTENSA] Force usage of a specific region of memory.
->  			Region of memory to be used is from ss to ss+nn.
->  			If @ss[KMG] is omitted, it is equivalent to mem=nn[KMG],
->  			which limits max address to nn[KMG].
-> -- 
-> 2.25.1
-> 
+A case exists, however, where the speculative status fetch operation may
+straddle a modification operation on one of those vnodes.  What can then
+happen is that the speculative bulk status RPC retrieves the old status,
+and whilst that is happening, the modification happens - which returns an
+updated status, then the modification status is committed, then we attempt
+to commit the speculative status.
 
--- 
-Sincerely yours,
-Mike.
+This results in something like the following being seen in dmesg:
+
+	kAFS: vnode modified {100058:861} 8->9 YFS.InlineBulkStatus
+
+showing that for vnode 861 on volume 100058, we saw YFS.InlineBulkStatus
+say that the vnode had data version 8 when we'd already recorded version 9
+due to a local modification.  This was causing the cache to be invalidated
+for that vnode when it shouldn't have been.  If it happens on a data file,
+this might lead to local changes being lost.
+
+Fix this by ignoring speculative status updates if the data version doesn't
+match the expected value.
+
+Note that it is possible to get a DV regression if a volume gets restored
+from a backup - but we should get a callback break in such a case that
+should trigger a recheck anyway.  It might be worth checking the volume
+creation time in the volsync info and, if a change is observed in that (as
+would happen on a restore), invalidate all caches associated with the
+volume.
+
+Fixes: 5cf9dd55a0ec ("afs: Prospectively look up extra files when doing a single lookup")
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+
+ fs/afs/dir.c      |    1 +
+ fs/afs/inode.c    |    8 ++++++++
+ fs/afs/internal.h |    1 +
+ 3 files changed, 10 insertions(+)
+
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 1bb5b9d7f0a2..9068d5578a26 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -823,6 +823,7 @@ static struct inode *afs_do_lookup(struct inode *dir, struct dentry *dentry,
+ 				vp->cb_break_before = afs_calc_vnode_cb_break(vnode);
+ 				vp->vnode = vnode;
+ 				vp->put_vnode = true;
++				vp->speculative = true; /* vnode not locked */
+ 			}
+ 		}
+ 	}
+diff --git a/fs/afs/inode.c b/fs/afs/inode.c
+index 0fe8844b4bee..b0d7b892090d 100644
+--- a/fs/afs/inode.c
++++ b/fs/afs/inode.c
+@@ -294,6 +294,13 @@ void afs_vnode_commit_status(struct afs_operation *op, struct afs_vnode_param *v
+ 			op->flags &= ~AFS_OPERATION_DIR_CONFLICT;
+ 		}
+ 	} else if (vp->scb.have_status) {
++		if (vp->dv_before + vp->dv_delta != vp->scb.status.data_version &&
++		    vp->speculative)
++			/* Ignore the result of a speculative bulk status fetch
++			 * if it splits around a modification op, thereby
++			 * appearing to regress the data version.
++			 */
++			goto out;
+ 		afs_apply_status(op, vp);
+ 		if (vp->scb.have_cb)
+ 			afs_apply_callback(op, vp);
+@@ -305,6 +312,7 @@ void afs_vnode_commit_status(struct afs_operation *op, struct afs_vnode_param *v
+ 		}
+ 	}
+ 
++out:
+ 	write_sequnlock(&vnode->cb_lock);
+ 
+ 	if (vp->scb.have_status)
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index 14d5d75f4b6e..0d150a29e39e 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -755,6 +755,7 @@ struct afs_vnode_param {
+ 	bool			update_ctime:1;	/* Need to update the ctime */
+ 	bool			set_size:1;	/* Must update i_size */
+ 	bool			op_unlinked:1;	/* True if file was unlinked by op */
++	bool			speculative:1;	/* T if speculative status fetch (no vnode lock) */
+ };
+ 
+ /*
+
+
