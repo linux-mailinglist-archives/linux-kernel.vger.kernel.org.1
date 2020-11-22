@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C372BFCF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 00:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 801102BFCF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 00:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgKVX1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 18:27:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44184 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725932AbgKVX1u (ORCPT
+        id S1726520AbgKVX2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 18:28:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgKVX23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 18:27:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606087669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mNNvh4+ZNz+ew6BBBK6Oip3bqR9Ii11RceNdZ0HAyvc=;
-        b=NxawDSdxp0astJANpkL37rf02mHjNui8XKizTK7nGlMZ8qYO70We3J5+Urwq5lbF3szZLr
-        TXhrPffxlmu18EXWxzCIXm/eG+GTttZ4uRLnUFEbExDvNveETVU5HnqWi32cv65UkpGWwc
-        dCAOgPtkdB9OzKks13ikoHgsszs4aVw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-SOwf2cSyPPyvhS0YQbDf_g-1; Sun, 22 Nov 2020 18:27:47 -0500
-X-MC-Unique: SOwf2cSyPPyvhS0YQbDf_g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B55301005D71;
-        Sun, 22 Nov 2020 23:27:45 +0000 (UTC)
-Received: from krava (unknown [10.40.192.91])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9BDEE60BF3;
-        Sun, 22 Nov 2020 23:27:43 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 00:27:42 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org
-Subject: Re: [RFC 1/2] perf: support build BPF skeletons with perf
-Message-ID: <20201122232742.GB1902740@krava>
-References: <20201119045046.1491106-1-songliubraving@fb.com>
- <20201119045046.1491106-2-songliubraving@fb.com>
+        Sun, 22 Nov 2020 18:28:29 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D459C0613CF;
+        Sun, 22 Nov 2020 15:28:29 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id r18so1290480ljc.2;
+        Sun, 22 Nov 2020 15:28:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LVFqQG5dG4GZg0Kc9IoCepCnKwyPNk47zha609XpanE=;
+        b=ZQa/2JUS3yzRm2s3YxwBJ0tIYGvBrhbD8o3TnKiEAr/OfIupDYsciZiWKg1vE9pb1k
+         mcjnPBsdiOUoDUhV2bYS0iAhbBQsWHEkP980Jo5sI4gg9Em/FRuIWEcK+3YusQ7MttqS
+         /Eu3id/HtyApiaTcR0IEtYFNcBcY12GMLx2KJQGJ1L+IdBTdzhprr4WT4W1lyc9cIciB
+         ZAjECv3a5/ONrae7XeVX0/pK3bLKnzvy8r5VLku8HhBqD821DRL8rCeMBpebBlVO/h3f
+         SYAskcFkVGOUxtAzPjY6rmSgt/HpnCAzeEPiW/ssimqnic+1Y1sJVcffRP5fndTJpN2w
+         M4ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LVFqQG5dG4GZg0Kc9IoCepCnKwyPNk47zha609XpanE=;
+        b=HTbskJ4G5s1FfqoEgNgnzz1jql9cFic0q6x3vx3vV8DiYfw7Io9z8IjWYR+bU2sK05
+         Xwhvr+Ld8KXULoOgrP4rU3u7X4Vv7SKVZUIIP/sFD+O/Kjp2hhkYYTMBUsRWOmHTjuLb
+         sUlJfiHymKZtWsMQ2OrylirOEfUNy0jdsP6USZSPYEEJT6xCIOl5lJCNE305+CEgwZ0o
+         cGry6r1f5yicaqVFkiXwWuwrYdtasGDIydgXgP93j0ZOwM2QhziQpttlKBIuyYEUKzIT
+         paQxqbhzoRLM20DYFXSMhZvGkIAhJ3BhRsN9IJ6LfJ8+zxdZu2QZtuUwPXkHqGH6Ta8s
+         CUxA==
+X-Gm-Message-State: AOAM532P8xEyh9xvatHGrbSkkW+Wj9nF4jNnAoc0WLjzr/NBORaX0iWp
+        UK3MF/V5w22gkR3CyMjKKCM=
+X-Google-Smtp-Source: ABdhPJxwmPjztSrnB2ikumYx/tylI79fqB1E3+sgTg7eiizsFVNFDit9ng5bBJypmWWFX9shJz5D1Q==
+X-Received: by 2002:a2e:9005:: with SMTP id h5mr2546385ljg.25.1606087706559;
+        Sun, 22 Nov 2020 15:28:26 -0800 (PST)
+Received: from localhost.localdomain (h-158-174-22-6.NA.cust.bahnhof.se. [158.174.22.6])
+        by smtp.gmail.com with ESMTPSA id 186sm1179175lfb.176.2020.11.22.15.28.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 15:28:25 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] soc: qcom: pdr: Constify static qmi structs
+Date:   Mon, 23 Nov 2020 00:28:18 +0100
+Message-Id: <20201122232818.32072-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119045046.1491106-2-songliubraving@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 08:50:45PM -0800, Song Liu wrote:
+Their only usage is to pass their address to qmi_handle_init() which
+accepts const pointers to both qmi_ops and qmi_msg_handler. Make them
+const to allow the compiler to put them in read-only memory.
 
-SNIP
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/soc/qcom/pdr_interface.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
->  # of all feature tests
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index ce8516e4de34f..1c2c0f4badd85 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -619,6 +619,13 @@ ifndef NO_LIBBPF
->      msg := $(warning BPF API too old. Please install recent kernel headers. BPF support in 'perf record' is disabled.)
->      NO_LIBBPF := 1
->    endif
-> +
-> +  ifndef NO_BPF_SKEL
-> +    ifeq ($(feature-clang-bpf-co-re), 1)
-> +      BUILD_BPF_SKEL := 1
-> +      $(call detected,CONFIG_PERF_BPF_SKEL)
-> +    endif
-> +  endif
->  endif
->  
->  dwarf-post-unwind := 1
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 7ce3f2e8b9c74..9a9fc71e2ffa4 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -126,6 +126,8 @@ include ../scripts/utilities.mak
->  #
->  # Define NO_LIBDEBUGINFOD if you do not want support debuginfod
->  #
-> +# Define NO_BPF_SKEL if you do not want build BPF skeletons
-
-we will need to make this the other way round and disable it
-by default before we figure out al lthe dependencies,
-my build's failing on:
-
-	[jolsa@krava perf]$ make JOBS=1
-	  BUILD:   Doing 'make -j1' parallel build
-	  CC       /home/jolsa/kernel/linux-perf/tools/perf/util/bpf_skel/.tmp/prog.o
-	  CLANG    /home/jolsa/kernel/linux-perf/tools/perf/util/bpf_skel/.tmp/pid_iter.bpf.o
-	In file included from skeleton/pid_iter.bpf.c:4:
-	In file included from /home/jolsa/kernel/linux-perf/tools/lib/bpf/bpf_helpers.h:11:
-	/home/jolsa/kernel/linux-perf/tools/lib/bpf/bpf_helper_defs.h:3560:57: warning: declaration of 'struct bpf_redir_neigh' will not be visible outside of this function [-Wvisibility]
-	static long (*bpf_redirect_neigh)(__u32 ifindex, struct bpf_redir_neigh *params, int plen, __u64 flags) = (void *) 152;
-								^
-	skeleton/pid_iter.bpf.c:35:48: error: no member named 'id' in 'struct bpf_link'
-			return BPF_CORE_READ((struct bpf_link *)ent, id);
-			       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-	/home/jolsa/kernel/linux-perf/tools/lib/bpf/bpf_core_read.h:339:18: note: expanded from macro 'BPF_CORE_READ'
-			___type((src), a, ##__VA_ARGS__) __r;                       \
-	...
-
-
-jirka
+diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_interface.c
+index 088dc99f77f3..d6e2d061b20f 100644
+--- a/drivers/soc/qcom/pdr_interface.c
++++ b/drivers/soc/qcom/pdr_interface.c
+@@ -110,7 +110,7 @@ static void pdr_locator_del_server(struct qmi_handle *qmi,
+ 	pdr->locator_addr.sq_port = 0;
+ }
+ 
+-static struct qmi_ops pdr_locator_ops = {
++static const struct qmi_ops pdr_locator_ops = {
+ 	.new_server = pdr_locator_new_server,
+ 	.del_server = pdr_locator_del_server,
+ };
+@@ -238,7 +238,7 @@ static void pdr_notifier_del_server(struct qmi_handle *qmi,
+ 	mutex_unlock(&pdr->list_lock);
+ }
+ 
+-static struct qmi_ops pdr_notifier_ops = {
++static const struct qmi_ops pdr_notifier_ops = {
+ 	.new_server = pdr_notifier_new_server,
+ 	.del_server = pdr_notifier_del_server,
+ };
+@@ -343,7 +343,7 @@ static void pdr_indication_cb(struct qmi_handle *qmi,
+ 	queue_work(pdr->indack_wq, &pdr->indack_work);
+ }
+ 
+-static struct qmi_msg_handler qmi_indication_handler[] = {
++static const struct qmi_msg_handler qmi_indication_handler[] = {
+ 	{
+ 		.type = QMI_INDICATION,
+ 		.msg_id = SERVREG_STATE_UPDATED_IND_ID,
+-- 
+2.29.2
 
