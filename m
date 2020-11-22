@@ -2,174 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDC92BC984
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 22:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E1A2BC986
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 22:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgKVVPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 16:15:17 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50470 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727641AbgKVVPQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 16:15:16 -0500
-Received: by mail-il1-f198.google.com with SMTP id f66so12316814ilh.17
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 13:15:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yJWwjk1Piypmqo9o82HYljTzCBhZ9P+450z1i8RHVz8=;
-        b=ZfHV6Hsj/sP7sOo/wh2tOsa3jEjQyhl8ioqJFgB3eVRbH0wwr7t/IoQ4BWMABV33N7
-         xj6osSKdlt1QdrsC/Lo1LPFJ+kLxIpVta32iqGlv9u1w8IiskibDVAM3n5znAjhkubxK
-         6YrA4U9vy9HQyX/19YY82PaxcwkWSMwH3RCX680jMrUIoI47DztwyMgNVVAN+9I1qqf2
-         bZD4MXP+4SLIzWsdgtPPg8vWBGI78H4VM+AHm21wfgWqJY1eYZBzeYoCfJwCJmoKHx5o
-         sIxPiuLLQDGJIANkIbA4oT6YMgsENF04qnmm8lFn9Jp2AUO3wSx2+9CpeGa01Sm1f8JP
-         U1Rw==
-X-Gm-Message-State: AOAM53397tOfFhEsGTvfCnKiRt6SPsVa7oMhqS0YafPCI9JBijfHnyKC
-        llPZbcAXCFvvyxEoX/rGpdbtn1JKdUVBWFK29COSH7A/Xt23
-X-Google-Smtp-Source: ABdhPJzT8U2Hlry26PAIypjMJMx1UPsnm4dzvbXNesERc/Q2SRumBOSG00i0rbbQ3tcmrFPYBQOEAmt4ysx8AH5wbfX8WgNPXW3u
+        id S1726131AbgKVVSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 16:18:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725831AbgKVVSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 16:18:23 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAED220782;
+        Sun, 22 Nov 2020 21:18:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606079902;
+        bh=bMqEt5m/bNHW93aVOLs03laH0dJyIoDEIpyy+jtqs3U=;
+        h=Date:From:To:cc:Subject:From;
+        b=JboIWs5qV+zphpmuP3RHi6OJWy2nWglBvfKA2Bupjqx6OiBImgP7lYERWhfwRIlPm
+         7RafZlFpHH0NHaJFwhr86Mva7L0MwwpsOr4qOVFmEMWFz+5Q/E4Y2A3tOkZaXTfXGq
+         a0s+2T+T/ML/FlknqA6pGOsqNdhZZQK/jE8kqUMU=
+Date:   Sun, 22 Nov 2020 22:18:19 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] HID fixes
+Message-ID: <nycvar.YFH.7.76.2011222208190.6877@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-X-Received: by 2002:a02:9589:: with SMTP id b9mr26872534jai.39.1606079715472;
- Sun, 22 Nov 2020 13:15:15 -0800 (PST)
-Date:   Sun, 22 Nov 2020 13:15:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ebfc4605b4b892b2@google.com>
-Subject: possible deadlock in freeze_super
-From:   syzbot <syzbot+f60646ed0fee22ac695d@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Linus,
 
-syzbot found the following issue on:
+please pull from
 
-HEAD commit:    a349e4c6 Merge tag 'xfs-5.10-fixes-7' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16158d71500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6867674f76eceeb6
-dashboard link: https://syzkaller.appspot.com/bug?extid=f60646ed0fee22ac695d
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f60646ed0fee22ac695d@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.10.0-rc4-syzkaller #0 Not tainted
-------------------------------------------------------
-kworker/0:1H/2986 is trying to acquire lock:
-ffff88801cdca0e0 (&type->s_umount_key#83){+.+.}-{3:3}, at: freeze_super+0x41/0x330 fs/super.c:1716
-
-but task is already holding lock:
-ffffc90001b2fda8 ((work_completion)(&(&gl->gl_work)->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
-
-which lock already depends on the new lock.
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
 
 
-the existing dependency chain (in reverse order) is:
+to receive HID subsystem fixes; namely:
 
--> #2 ((work_completion)(&(&gl->gl_work)->work)){+.+.}-{0:0}:
-       process_one_work+0x8a2/0x15a0 kernel/workqueue.c:2248
-       worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
-       kthread+0x3af/0x4a0 kernel/kthread.c:292
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+=====
+- Various functionality / regression fixes for Logitech devices from Hans 
+  de Goede
+- Fix for (recently added) GPIO support in mcp2221 driver from Lars 
+  Povlsen
+- Power management handling fix/quirk in i2c-hid driver for certain BIOSes 
+  that have strange aproach to power-cycle from Hans de Goede
+- a few device ID additions and device-specific quirks
+=====
 
--> #1 ((wq_completion)glock_workqueue){+.+.}-{0:0}:
-       flush_workqueue+0x110/0x13e0 kernel/workqueue.c:2783
-       gfs2_gl_hash_clear+0xad/0x270 fs/gfs2/glock.c:1987
-       gfs2_put_super+0x44b/0x680 fs/gfs2/super.c:740
-       generic_shutdown_super+0x144/0x370 fs/super.c:464
-       kill_block_super+0x97/0xf0 fs/super.c:1446
-       gfs2_kill_sb+0x104/0x160 fs/gfs2/ops_fstype.c:1662
-       deactivate_locked_super+0x94/0x160 fs/super.c:335
-       deactivate_super+0xad/0xd0 fs/super.c:366
-       cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
-       task_work_run+0xdd/0x190 kernel/task_work.c:151
-       tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
-       exit_to_user_mode_prepare+0x17e/0x1a0 kernel/entry/common.c:191
-       syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Thanks.
 
--> #0 (&type->s_umount_key#83){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:2866 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2991 [inline]
-       validate_chain kernel/locking/lockdep.c:3606 [inline]
-       __lock_acquire+0x2ca6/0x5c00 kernel/locking/lockdep.c:4830
-       lock_acquire kernel/locking/lockdep.c:5435 [inline]
-       lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
-       down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
-       freeze_super+0x41/0x330 fs/super.c:1716
-       freeze_go_sync+0x193/0x2c0 fs/gfs2/glops.c:587
-       do_xmote+0x2ff/0xbc0 fs/gfs2/glock.c:616
-       run_queue+0x323/0x680 fs/gfs2/glock.c:753
-       glock_work_func+0xff/0x3f0 fs/gfs2/glock.c:926
-       process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
-       worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
-       kthread+0x3af/0x4a0 kernel/kthread.c:292
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+----------------------------------------------------------------
+Chris Ye (1):
+      HID: add HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE for Gamevice devices
 
-other info that might help us debug this:
+Frank Yang (1):
+      HID: cypress: Support Varmilo Keyboards' media hotkeys
 
-Chain exists of:
-  &type->s_umount_key#83 --> (wq_completion)glock_workqueue --> (work_completion)(&(&gl->gl_work)->work)
+Hans de Goede (7):
+      HID: ite: Replace ABS_MISC 120/121 events with touchpad on/off keypresses
+      HID: i2c-hid: Put ACPI enumerated devices in D3 on shutdown
+      HID: logitech-dj: Handle quad/bluetooth keyboards with a builtin trackpad
+      HID: logitech-hidpp: Add HIDPP_CONSUMER_VENDOR_KEYS quirk for the Dinovo Edge
+      HID: Add Logitech Dinovo Edge battery quirk
+      HID: logitech-dj: Fix an error in mse_bluetooth_descriptor
+      HID: logitech-dj: Fix Dinovo Mini when paired with a MX5x00 receiver
 
- Possible unsafe locking scenario:
+Harry Cutts (1):
+      HID: logitech-hidpp: Add PID for MX Anywhere 2
 
-       CPU0                    CPU1
-       ----                    ----
-  lock((work_completion)(&(&gl->gl_work)->work));
-                               lock((wq_completion)glock_workqueue);
-                               lock((work_completion)(&(&gl->gl_work)->work));
-  lock(&type->s_umount_key#83);
+Jiri Kosina (1):
+      HID: add support for Sega Saturn
 
- *** DEADLOCK ***
+Lars Povlsen (1):
+      HID: mcp2221: Fix GPIO output handling
 
-2 locks held by kworker/0:1H/2986:
- #0: ffff888016d03938 ((wq_completion)glock_workqueue){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888016d03938 ((wq_completion)glock_workqueue){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888016d03938 ((wq_completion)glock_workqueue){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888016d03938 ((wq_completion)glock_workqueue){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888016d03938 ((wq_completion)glock_workqueue){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888016d03938 ((wq_completion)glock_workqueue){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc90001b2fda8 ((work_completion)(&(&gl->gl_work)->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+Martijn van de Streek (1):
+      HID: uclogic: Add ID for Trust Flex Design Tablet
 
-stack backtrace:
-CPU: 0 PID: 2986 Comm: kworker/0:1H Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: glock_workqueue glock_work_func
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2115
- check_prev_add kernel/locking/lockdep.c:2866 [inline]
- check_prevs_add kernel/locking/lockdep.c:2991 [inline]
- validate_chain kernel/locking/lockdep.c:3606 [inline]
- __lock_acquire+0x2ca6/0x5c00 kernel/locking/lockdep.c:4830
- lock_acquire kernel/locking/lockdep.c:5435 [inline]
- lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
- down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
- freeze_super+0x41/0x330 fs/super.c:1716
- freeze_go_sync+0x193/0x2c0 fs/gfs2/glops.c:587
- do_xmote+0x2ff/0xbc0 fs/gfs2/glock.c:616
- run_queue+0x323/0x680 fs/gfs2/glock.c:753
- glock_work_func+0xff/0x3f0 fs/gfs2/glock.c:926
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Pablo Ceballos (1):
+      HID: hid-sensor-hub: Fix issue with devices with no report ID
 
+ drivers/hid/hid-cypress.c          | 44 +++++++++++++++++++++++----
+ drivers/hid/hid-ids.h              |  9 ++++++
+ drivers/hid/hid-input.c            |  3 ++
+ drivers/hid/hid-ite.c              | 61 +++++++++++++++++++++++++++++++++++++-
+ drivers/hid/hid-logitech-dj.c      | 22 +++++++++++++-
+ drivers/hid/hid-logitech-hidpp.c   | 32 ++++++++++++++++++++
+ drivers/hid/hid-mcp2221.c          | 48 ++++++++++++++++++++++++------
+ drivers/hid/hid-quirks.c           |  5 ++++
+ drivers/hid/hid-sensor-hub.c       |  3 +-
+ drivers/hid/hid-uclogic-core.c     |  2 ++
+ drivers/hid/hid-uclogic-params.c   |  2 ++
+ drivers/hid/i2c-hid/i2c-hid-core.c |  9 ++++++
+ 12 files changed, 223 insertions(+), 17 deletions(-)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+Jiri Kosina
+SUSE Labs
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
