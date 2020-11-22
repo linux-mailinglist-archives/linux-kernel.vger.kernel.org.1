@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADB52BC381
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 05:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44E62BC384
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 05:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbgKVEKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 23:10:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727184AbgKVEKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 23:10:34 -0500
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB5E820885
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 04:10:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606018234;
-        bh=aIUERRo+D3LJ1e3a38WHT/KcLgeR55ggVW4a+W2H/ac=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UTKsWK7ethrWz7p0NHZy89h4gnmhgVI2C90fJNI0jdlbjs5z3qajIvn6aiKnXsrJc
-         lnBI/f7hVxaiTdGRpdHKjcrhQGDwruka4Izo0iV4TsJ1d1v6T7aNGtqQ087nqJEz4n
-         oSkozLL22iz8ovbkfihb/19OmioGteZ57smJ0w1Y=
-Received: by mail-wm1-f46.google.com with SMTP id s13so14108789wmh.4
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 20:10:33 -0800 (PST)
-X-Gm-Message-State: AOAM533W/oqagvEY1K1O70N+5qqKj0vFKeOiMcsEAuUW7mAko8Sh9wsy
-        8GnWqAoRHPjEMfvGDLorV9gCurbOL5LkYIcfNUCKpg==
-X-Google-Smtp-Source: ABdhPJxlpOwzJoFxMqFLKTm7fhwah9wqGhXLGX+C0bhrFGpecaO68yaNmHMgKiHI+MdXGy44VW9EWOMmwf6PnTdgv+w=
-X-Received: by 2002:a1c:2781:: with SMTP id n123mr427726wmn.49.1606018232467;
- Sat, 21 Nov 2020 20:10:32 -0800 (PST)
+        id S1727263AbgKVELC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 23:11:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727237AbgKVELB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 23:11:01 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCFAC061A4A
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 20:11:00 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id 11so258625oty.9
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 20:11:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z5iasv0Tn+EAgqcCTW+28/WJrxDWlSK3B7pN57OlmRg=;
+        b=b5l7i4HfOFDcEGL1OPYUNQ49HaBHuvNwRdgP5IA11zLsYWI8Z/0MbyawwNBcqip2aj
+         Ytf2nfhNU07LE2CZpq9wyXUhDmj9l0+IfqPwXxq5jRmB9bczfpdo93BsvE9NQp/ZLpSW
+         Lk6fu0CvGnI3Vrg4crRAZ3F7qz/xEhZYpVeP8b01ClIvb+w7bQyaPNBfJFCHG84oOs+Y
+         ZaIljSE9jW9/lqMMxdEqPUn1MASCAcwl40/dUy7k69vZCXYhUi1s/DcgRirkm6SkysAK
+         kwX8KPtJFwts0J1sf/ykuAqAFJCsT/BuuYOj8c54NX/IOB8npe6QYT99WivdjsW7lRHg
+         Q16g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z5iasv0Tn+EAgqcCTW+28/WJrxDWlSK3B7pN57OlmRg=;
+        b=o22rBZ5ivSc5JqUVhCUOVCiEwpqMO4FXGOFPtdqvEttd2XYk/9DhTQ+3DGmwPV7zDY
+         mHLF0w+qCk0Xyvp4rlHKus3UCSSdKRZpjtOPjt5WqaiehkdxZeHsyVk9C3joQMHC6j+Z
+         NRNuSa5QTh/d6Kz3XMC5NsxNeod+2DNECuSUx4gxl63Aywmn+eQjHTreGqITM+lGx6ph
+         +DNkjs5C8b2gVmH6BRYJJD736jF+nHKz2UYavUYnaHJtJrBGfvUPVRySh1trZE0dJMv6
+         p0biwk6yb1XPCL9WHaD4gWc4G0WWn+b9YSVhK7+JJCrpzdL/fwkrzB8PrqPuw7CUFUcN
+         DTlA==
+X-Gm-Message-State: AOAM533YsJHDmQIdIcXkRyJHcdC9x92P2PXfq/dlGMMgTvExFYgHgIVl
+        1thiFiHWHr5VjwnpNayXd6CFaw==
+X-Google-Smtp-Source: ABdhPJz8F5yoRLWdQiuXZgXwodrkuPDhzHULObQCiPwxXX5bRQuDSrqRaao+RiP2JtvjvAjUvy4jsA==
+X-Received: by 2002:a9d:7855:: with SMTP id c21mr11213697otm.218.1606018259837;
+        Sat, 21 Nov 2020 20:10:59 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l184sm4720513oih.27.2020.11.21.20.10.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 20:10:59 -0800 (PST)
+Date:   Sat, 21 Nov 2020 22:10:57 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, kishon@ti.com, vkoul@kernel.org,
+        robh@kernel.org, svarbanov@mm-sol.com, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org,
+        truong@codeaurora.org
+Subject: Re: [PATCH v5 3/5] dt-bindings: pci: qcom: Document PCIe bindings
+ for SM8250 SoC
+Message-ID: <20201122041057.GC95182@builder.lan>
+References: <20201027170033.8475-1-manivannan.sadhasivam@linaro.org>
+ <20201027170033.8475-4-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-References: <20201120202426.18009-1-rick.p.edgecombe@intel.com> <20201120202426.18009-2-rick.p.edgecombe@intel.com>
-In-Reply-To: <20201120202426.18009-2-rick.p.edgecombe@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 21 Nov 2020 20:10:16 -0800
-X-Gmail-Original-Message-ID: <CALCETrUjpdSGg0T8vehkXszDJKx5AS0BHP9qFRsakPABzPM2GA@mail.gmail.com>
-Message-ID: <CALCETrUjpdSGg0T8vehkXszDJKx5AS0BHP9qFRsakPABzPM2GA@mail.gmail.com>
-Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Weiny Ira <ira.weiny@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027170033.8475-4-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:30 PM Rick Edgecombe
-<rick.p.edgecombe@intel.com> wrote:
->
-> In order to allow for future arch specific optimizations for vmalloc
-> permissions, first add an implementation of a new interface that will
-> work cross arch by using the existing set_memory_() functions.
->
-> When allocating some memory that will be RO, for example it should be used
-> like:
->
-> /* Reserve va */
-> struct perm_allocation *alloc = perm_alloc(vstart, vend, page_cnt, PERM_R);
+On Tue 27 Oct 12:00 CDT 2020, Manivannan Sadhasivam wrote:
 
-I'm sure I could reverse-engineer this from the code, but:
+> Document the PCIe DT bindings for SM8250 SoC. The PCIe IP is similar to
+> the one used on SDM845, hence just add the compatible along with the
+> optional "atu" register region.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Where do vstart and vend come from?  Does perm_alloc() allocate memory
-or just virtual addresses?  Is the caller expected to call vmalloc()?
-How does one free this thing?
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-> unsigned long ro = (unsigned long)perm_alloc_address(alloc);
->
-> /* Write to writable address */
-> strcpy((char *)perm_writable_addr(alloc, ro), "Some data to be RO");
-> /* Signal that writing is done and mapping should be live */
-> perm_writable_finish(alloc);
-> /* Print from RO address */
-> printk("Read only data is: %s\n", (char *)ro);
->
+> ---
+>  Documentation/devicetree/bindings/pci/qcom,pcie.txt | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.txt b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+> index 02bc81bb8b2d..3b55310390a0 100644
+> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+> @@ -13,6 +13,7 @@
+>  			- "qcom,pcie-ipq8074" for ipq8074
+>  			- "qcom,pcie-qcs404" for qcs404
+>  			- "qcom,pcie-sdm845" for sdm845
+> +			- "qcom,pcie-sm8250" for sm8250
+>  
+>  - reg:
+>  	Usage: required
+> @@ -27,6 +28,7 @@
+>  			- "dbi"	   DesignWare PCIe registers
+>  			- "elbi"   External local bus interface registers
+>  			- "config" PCIe configuration space
+> +			- "atu"    ATU address space (optional)
+>  
+>  - device_type:
+>  	Usage: required
+> @@ -131,7 +133,7 @@
+>  			- "slave_bus"	AXI Slave clock
+>  
+>  -clock-names:
+> -	Usage: required for sdm845
+> +	Usage: required for sdm845 and sm8250
+>  	Value type: <stringlist>
+>  	Definition: Should contain the following entries
+>  			- "aux"		Auxiliary clock
+> @@ -206,7 +208,7 @@
+>  			- "ahb"			AHB reset
+>  
+>  - reset-names:
+> -	Usage: required for sdm845
+> +	Usage: required for sdm845 and sm8250
+>  	Value type: <stringlist>
+>  	Definition: Should contain the following entries
+>  			- "pci"			PCIe core reset
+> -- 
+> 2.17.1
+> 
