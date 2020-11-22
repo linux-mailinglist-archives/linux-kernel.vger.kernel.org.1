@@ -2,149 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767722BC53B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 12:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D09E2BC541
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 12:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727688AbgKVLB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 06:01:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48804 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727360AbgKVLB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 06:01:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 79C96ABE4;
-        Sun, 22 Nov 2020 11:01:55 +0000 (UTC)
-Date:   Sun, 22 Nov 2020 12:01:55 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] efi/urgent for v5.10-rc5
-Message-ID: <20201122110155.GB20595@zn.tnic>
+        id S1727719AbgKVLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 06:07:16 -0500
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:43646 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727360AbgKVLHP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 06:07:15 -0500
+Received: by mail-ej1-f67.google.com with SMTP id k27so19188186ejs.10;
+        Sun, 22 Nov 2020 03:07:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7nL5vldHVk+TCSj72rQnEoC/jas4L51w1DvQQNmn4zA=;
+        b=Oq845lR0VjIaynXJbjQw2jTQjAWprzXK16LOptkVDcOpXN2rD0WLJYEMZczkkBdgOY
+         ZvnN2NAggDFyX4aKXuKtQQOL7d//FDy+u4O3w+i3+NbU1S34vmMmI9ebV9FmZezHPOzL
+         A3Vn72iBvINPlxbRnI0pQB/ExMgJOYaM69XVu3jg6mHzlE4VEPG7HmFiTNC8A5f3j0fQ
+         L6hKgOtYfSDMHjJVYtKyDKtO/waCU3QsGreeRvJz0BHYcwNr8NJYsPWYWR2+6DOeX7cC
+         o1a4nVB/7qqIl4fHI4z+jNrYO4KGi9mZmEgupKD4yh7BfaWCK5QrPXFAmhnRPXoI8oc+
+         JJVg==
+X-Gm-Message-State: AOAM530Z74T8/dte77SXhtJuR3PgMIZG7iHNknaIZca9Gbav4bL6soXG
+        UNn8EDPC0t2pqYaWuARQe8uNWH+68cs=
+X-Google-Smtp-Source: ABdhPJzqsQLj9qbzj7FFuDuHTc+bpHEFaIDlnY5oK0pfsSNMjB8U6JC2O5gSJa2FOkPMaOY2Z8VUPg==
+X-Received: by 2002:a17:906:5cb:: with SMTP id t11mr12849903ejt.295.1606043233154;
+        Sun, 22 Nov 2020 03:07:13 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id q15sm3446644edt.95.2020.11.22.03.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 03:07:11 -0800 (PST)
+Date:   Sun, 22 Nov 2020 12:07:10 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] memory: tegra: Complete tegra210_swgroups
+Message-ID: <20201122110710.GA5415@kozik-lap>
+References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
+ <20201008003746.25659-6-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201008003746.25659-6-nicoleotsuka@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Oct 07, 2020 at 05:37:46PM -0700, Nicolin Chen wrote:
+> According to Tegra X1 TRM, there are missing swgroups in the
+> tegra210_swgroups list. So this patch adds them to the list.
+> 
+> Note that the TEGRA_SWGROUP_GPU (in list) should be actually
+> TEGRA_SWGROUP_GPUB (in TRM), yet TEGRA_SWGROUP_GPU (in TRM)
+> is not being used -- only TEGRA_SWGROUP_GPUB (in TRM) is. So
+> this patch does not add TEGRA_SWGROUP_GPU (in TRM) and keeps
+> TEGRA_SWGROUP_GPU (in list) as it is.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>  drivers/memory/tegra/tegra210.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 
-please pull the (forwarded) EFI urgent fixes for -rc5.
+Thanks, applied.
 
-Thx.
+Best regards,
+Krzysztof
 
---
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/efi-urgent-for-v5.10-rc3
-
-for you to fetch changes up to c2fe61d8be491ff8188edaf22e838f819999146b:
-
-  efi/x86: Free efi_pgd with free_pages() (2020-11-10 19:18:11 +0100)
-
-----------------------------------------------------------------
-Couple of EFI fixes for v5.10:
-- fix memory leak in efivarfs driver
-- fix HYP mode issue in 32-bit ARM version of the EFI stub when built in
-  Thumb2 mode
-- avoid leaking EFI pgd pages on allocation failure
-
-----------------------------------------------------------------
-Ard Biesheuvel (1):
-      efi/arm: set HSCTLR Thumb2 bit correctly for HVC calls from HYP
-
-Arvind Sankar (1):
-      efi/x86: Free efi_pgd with free_pages()
-
-Vamshi K Sthambamkadi (1):
-      efivarfs: fix memory leak in efivarfs_create()
-
- arch/arm/boot/compressed/head.S |  3 +++
- arch/x86/platform/efi/efi_64.c  | 24 +++++++++++++-----------
- fs/efivarfs/super.c             |  1 +
- 3 files changed, 17 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-index 2e04ec5b5446..caa27322a0ab 100644
---- a/arch/arm/boot/compressed/head.S
-+++ b/arch/arm/boot/compressed/head.S
-@@ -1472,6 +1472,9 @@ ENTRY(efi_enter_kernel)
- 		@ issued from HYP mode take us to the correct handler code. We
- 		@ will disable the MMU before jumping to the kernel proper.
- 		@
-+ ARM(		bic	r1, r1, #(1 << 30)	) @ clear HSCTLR.TE
-+ THUMB(		orr	r1, r1, #(1 << 30)	) @ set HSCTLR.TE
-+		mcr	p15, 4, r1, c1, c0, 0
- 		adr	r0, __hyp_reentry_vectors
- 		mcr	p15, 4, r0, c12, c0, 0	@ set HYP vector base (HVBAR)
- 		isb
-diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-index 8f5759df7776..e1e8d4e3a213 100644
---- a/arch/x86/platform/efi/efi_64.c
-+++ b/arch/x86/platform/efi/efi_64.c
-@@ -78,28 +78,30 @@ int __init efi_alloc_page_tables(void)
- 	gfp_mask = GFP_KERNEL | __GFP_ZERO;
- 	efi_pgd = (pgd_t *)__get_free_pages(gfp_mask, PGD_ALLOCATION_ORDER);
- 	if (!efi_pgd)
--		return -ENOMEM;
-+		goto fail;
- 
- 	pgd = efi_pgd + pgd_index(EFI_VA_END);
- 	p4d = p4d_alloc(&init_mm, pgd, EFI_VA_END);
--	if (!p4d) {
--		free_page((unsigned long)efi_pgd);
--		return -ENOMEM;
--	}
-+	if (!p4d)
-+		goto free_pgd;
- 
- 	pud = pud_alloc(&init_mm, p4d, EFI_VA_END);
--	if (!pud) {
--		if (pgtable_l5_enabled())
--			free_page((unsigned long) pgd_page_vaddr(*pgd));
--		free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
--		return -ENOMEM;
--	}
-+	if (!pud)
-+		goto free_p4d;
- 
- 	efi_mm.pgd = efi_pgd;
- 	mm_init_cpumask(&efi_mm);
- 	init_new_context(NULL, &efi_mm);
- 
- 	return 0;
-+
-+free_p4d:
-+	if (pgtable_l5_enabled())
-+		free_page((unsigned long)pgd_page_vaddr(*pgd));
-+free_pgd:
-+	free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
-+fail:
-+	return -ENOMEM;
- }
- 
- /*
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index 15880a68faad..f943fd0b0699 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -21,6 +21,7 @@ LIST_HEAD(efivarfs_list);
- static void efivarfs_evict_inode(struct inode *inode)
- {
- 	clear_inode(inode);
-+	kfree(inode->i_private);
- }
- 
- static const struct super_operations efivarfs_ops = {
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
