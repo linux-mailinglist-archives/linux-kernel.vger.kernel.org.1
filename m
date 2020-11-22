@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012272BC616
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:44:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591CF2BC61E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Nov 2020 15:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgKVOoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 09:44:17 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:33756 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727424AbgKVOoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 09:44:16 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 0AMEhYsW031561
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 22 Nov 2020 15:43:35 +0100
-Received: from [167.87.38.29] ([167.87.38.29])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0AMEhXd4007532;
-        Sun, 22 Nov 2020 15:43:33 +0100
-Subject: Re: About regression caused by commit aea6cb99703e ("regulator:
- resolve supply after creating regulator")
-To:     Qu Wenruo <wqu@suse.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        broonie@kernel.org
-References: <c13f1683-97c9-40b4-f740-73eaceb7c98f@suse.com>
- <20201108171811.GB10914@qmqm.qmqm.pl>
- <858790f6-8b22-4fe7-bb74-56904ad203bd@suse.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <cea48473-eeb1-db60-cc0d-ebf9a26aaf0c@siemens.com>
-Date:   Sun, 22 Nov 2020 15:43:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727927AbgKVOrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 09:47:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48666 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727838AbgKVOq5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 09:46:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606056415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=apju6gP6XSpkYwp4WdL57a/nFAvNI/QCKhQkuBxc3S8=;
+        b=D1/B/CrALkIoiNNpjZS9SQ0ZzxsAxc7PZQSyfqjaQX/jwNTJ79Po/X0SD8Q5DeadA7yKUA
+        TOJgFReH+YcxpuvMm2YKi8KVnvLZm5248MYGjj0QI3IlfOiDkQDeCzOMIb/iMyBWbwfXGa
+        3V/4Ne6N4ebcJs1wV65H/uyZE3a+T/0=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-cpDXEFYAMJS8rbgYrSuD4A-1; Sun, 22 Nov 2020 09:46:52 -0500
+X-MC-Unique: cpDXEFYAMJS8rbgYrSuD4A-1
+Received: by mail-qt1-f200.google.com with SMTP id 100so11659118qtf.14
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 06:46:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=apju6gP6XSpkYwp4WdL57a/nFAvNI/QCKhQkuBxc3S8=;
+        b=OBWDa7W4rXBYsx1NUsWYg9jn8wmqg28uw8MF0503WkfCveoC/EZyih/Clz0Szkpz6t
+         fabAX+gBtHaVIW+vHW3ajSqdBBPhh5oTv5KI1F+JgVwxTsuP5LjmpE8AqRJLDXUD3g6X
+         vMLT+VPGZuNiRuMqUfDYh6THVAaPHRCRUDy6VDlqs9bN/Z1hsny5KZ4fKLcqb8DI9Dhq
+         RgaONB0+itGNP6AxAcjwYptThH6Z21EGMyqXjPAgDbEfESmA8A0cTRNTtrq0xKsqFWAy
+         ePWHdUNZLUMhFbtKq0bYDAlDsoaJ4e6Bw+5DHVB1n3DaqJdCV44X2dmS7quMDeFRiTdV
+         1F0A==
+X-Gm-Message-State: AOAM53258/mWhfSOGMWIb5G7wco8ZAbda1G15cXs2XuG0Zc7jcs1IjrR
+        JlUdBXwXh2Wq6TtlyFGc3PvVlzQ/igQJBRMXN+rbBD2dFpq3UaWg+Z8HGkKbb9lZPJznKhZpLpp
+        E37KS904Vo2bVgzW3rKlLRQb3
+X-Received: by 2002:ad4:476b:: with SMTP id d11mr26026191qvx.57.1606056412431;
+        Sun, 22 Nov 2020 06:46:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyPQ8vJIBgyJxmgPlUVzOaStXFRaD0Z+d8VDmnR7kdLyNkvwByAGPov006wc7+pJBCcgj+/zw==
+X-Received: by 2002:ad4:476b:: with SMTP id d11mr26026152qvx.57.1606056412222;
+        Sun, 22 Nov 2020 06:46:52 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x72sm6888242qkb.90.2020.11.22.06.46.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Nov 2020 06:46:51 -0800 (PST)
+Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     joe@perches.com, clang-built-linux@googlegroups.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, tboot-devel@lists.sourceforge.net,
+        kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-wireless@vger.kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
+        keyrings@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, alsa-devel@alsa-project.org,
+        bpf@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-nfs@vger.kernel.org, patches@opensource.cirrus.com
+References: <20201121165058.1644182-1-trix@redhat.com>
+ <20201122032304.GE4327@casper.infradead.org>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ddb08a27-3ca1-fb2e-d51f-4b471f1a56a3@redhat.com>
+Date:   Sun, 22 Nov 2020 06:46:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <858790f6-8b22-4fe7-bb74-56904ad203bd@suse.com>
+In-Reply-To: <20201122032304.GE4327@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.11.20 00:28, Qu Wenruo wrote:
-> 
-> 
-> On 2020/11/9 上午1:18, Michał Mirosław wrote:
->> On Sun, Nov 08, 2020 at 03:35:33PM +0800, Qu Wenruo wrote:
->>> Hi Michał,
->>>
->>> Recently when testing v5.10-rc2, I found my RK3399 boards failed to boot
->>> from NVME.
->>>
->>> It turns out that, commit aea6cb99703e ("regulator: resolve supply after
->>> creating regulator") seems to be the cause.
->>>
->>> In RK3399 board, vpcie1v8 and vpcie0v9 of the pcie controller is
->>> provided by RK808 regulator.
->>> With that commit, now RK808 regulator fails to register:
->>>
->>> [    1.402500] rk808-regulator rk808-regulator: there is no dvs0 gpio
->>> [    1.403104] rk808-regulator rk808-regulator: there is no dvs1 gpio
->>> [    1.419856] rk808 0-001b: failed to register 12 regulator
->>> [    1.422801] rk808-regulator: probe of rk808-regulator failed with
->>> error -22
+
+On 11/21/20 7:23 PM, Matthew Wilcox wrote:
+> On Sat, Nov 21, 2020 at 08:50:58AM -0800, trix@redhat.com wrote:
+>> The fixer review is
+>> https://reviews.llvm.org/D91789
 >>
->> Hi,
+>> A run over allyesconfig for x86_64 finds 62 issues, 5 are false positives.
+>> The false positives are caused by macros passed to other macros and by
+>> some macro expansions that did not have an extra semicolon.
 >>
->> This looks lika the problem fixed by commit cf1ad559a20d ("regulator: defer
->> probe when trying to get voltage from unresolved supply") recently accepted
->> to regulator tree [1]. Can you verify this?
-> 
-> Thanks, tested with that commit cherry picked to v5.10-rc2 and it solves
-> the problem.
-> 
+>> This cleans up about 1,000 of the current 10,000 -Wextra-semi-stmt
+>> warnings in linux-next.
+> Are any of them not false-positives?  It's all very well to enable
+> stricter warnings, but if they don't fix any bugs, they're just churn.
+>
+While enabling additional warnings may be a side effect of this effort
 
-We are still missing some magic fix for stable trees: On the STM32MP15x,
-things are broken since 5.4.73 now. And 5.9.y is not booting as well on
-that board. Reverting the original commit make it boot again.
+the primary goal is to set up a cleaning robot. After that a refactoring robot.
 
-Linus master is fine, though, but I'm tired of bisecting. Any
-suggestions? Or is there something queued up already?
+Tom
 
-In any case: Is that board in no stable Q&A farm? It's a basic "boot
-fails" regression.
-
-Jan
-
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
