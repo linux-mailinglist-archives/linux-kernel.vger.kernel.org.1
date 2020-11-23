@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7162C07B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C222C07A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733093AbgKWMne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:43:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54896 "EHLO mail.kernel.org"
+        id S1732996AbgKWMm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:42:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732753AbgKWMlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:41:51 -0500
+        id S1732800AbgKWMl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:41:57 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E21EF20888;
-        Mon, 23 Nov 2020 12:41:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42C7C2065E;
+        Mon, 23 Nov 2020 12:41:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135310;
-        bh=6H6KG8txNKgnXHNj3Ey5OpYJ13zYZsJJLJPC37mIlEk=;
+        s=korg; t=1606135316;
+        bh=Um/R/6yDgni+DjozbWiHu0ugZVsECtlKbsWk1osqHLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dKSO2CLNmCC/m1Z8fu4wuOimpRfZ7s71YZDtamsaaQ2rlnW0EuqKzvmtRSuDmgfWs
-         EqgNNktYT5yQRRNeZ/Ge5o/jTOUFfIV/obv3x1aKDCybE8MfGMEKT4kqYgR44o3Pjk
-         T/7PrP17R7WacJOiNtXn1U4v6qNgATphO6Pukqnw=
+        b=Tw/f27jLI3KtfD4ilVv63c2CRAeLNQzZjRoexmYi2vGukal3UHHOyl6670RIod+Nn
+         9rZCkWliw8a4sVSA6ws75kq+nWh0IvxOsSpOr21WoHpI5b+LgPlpRm8Xhu/O8Mr90M
+         kuIuX8P/FhW6eMhbO+13jnDvfgQ/pHLRfNi9IEFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Alex Elder <elder@linaro.org>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 023/252] net: ipa: lock when freeing transaction
-Date:   Mon, 23 Nov 2020 13:19:33 +0100
-Message-Id: <20201123121836.716621324@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 025/252] netlabel: fix an uninitialized warning in netlbl_unlabel_staticlist()
+Date:   Mon, 23 Nov 2020 13:19:35 +0100
+Message-Id: <20201123121836.812765945@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -42,93 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Paul Moore <paul@paul-moore.com>
 
-[ Upstream commit 064c9c32b17ca9b36f95eba32ee790dbbebd9a5f ]
+[ Upstream commit 1ba86d4366e023d96df3dbe415eea7f1dc08c303 ]
 
-Transactions sit on one of several lists, depending on their state
-(allocated, pending, complete, or polled).  A spinlock protects
-against concurrent access when transactions are moved between these
-lists.
+Static checking revealed that a previous fix to
+netlbl_unlabel_staticlist() leaves a stack variable uninitialized,
+this patches fixes that.
 
-Transactions are also reference counted.  A newly-allocated
-transaction has an initial count of 1; a transaction is released in
-gsi_trans_free() only if its decremented reference count reaches 0.
-Releasing a transaction includes removing it from the polled (or if
-unused, allocated) list, so the spinlock is acquired when we release
-a transaction.
-
-The reference count is used to allow a caller to synchronously wait
-for a committed transaction to complete.  In this case, the waiter
-takes an extra reference to the transaction *before* committing it
-(so it won't be freed), and releases its reference (calls
-gsi_trans_free()) when it is done with it.
-
-Similarly, gsi_channel_update() takes an extra reference to ensure a
-transaction isn't released before the function is done operating on
-it.  Until the transaction is moved to the completed list (by this
-function) it won't be freed, so this reference is taken "safely."
-
-But in the quiesce path, we want to wait for the "last" transaction,
-which we find in the completed or polled list.  Transactions on
-these lists can be freed at any time, so we (try to) prevent that
-by taking the reference while holding the spinlock.
-
-Currently gsi_trans_free() decrements a transaction's reference
-count unconditionally, acquiring the lock to remove the transaction
-from its list *only* when the count reaches 0.  This does not
-protect the quiesce path, which depends on the lock to ensure its
-extra reference prevents release of the transaction.
-
-Fix this by only dropping the last reference to a transaction
-in gsi_trans_free() while holding the spinlock.
-
-Fixes: 9dd441e4ed575 ("soc: qcom: ipa: GSI transactions")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
-Link: https://lore.kernel.org/r/20201114182017.28270-1-elder@linaro.org
+Fixes: 866358ec331f ("netlabel: fix our progress tracking in netlbl_unlabel_staticlist()")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Link: https://lore.kernel.org/r/160530304068.15651.18355773009751195447.stgit@sifl
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ipa/gsi_trans.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ net/netlabel/netlabel_unlabeled.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ipa/gsi_trans.c
-+++ b/drivers/net/ipa/gsi_trans.c
-@@ -363,22 +363,31 @@ struct gsi_trans *gsi_channel_trans_allo
- 	return trans;
- }
- 
--/* Free a previously-allocated transaction (used only in case of error) */
-+/* Free a previously-allocated transaction */
- void gsi_trans_free(struct gsi_trans *trans)
- {
-+	refcount_t *refcount = &trans->refcount;
- 	struct gsi_trans_info *trans_info;
-+	bool last;
- 
--	if (!refcount_dec_and_test(&trans->refcount))
-+	/* We must hold the lock to release the last reference */
-+	if (refcount_dec_not_one(refcount))
- 		return;
- 
- 	trans_info = &trans->gsi->channel[trans->channel_id].trans_info;
- 
- 	spin_lock_bh(&trans_info->spinlock);
- 
--	list_del(&trans->links);
-+	/* Reference might have been added before we got the lock */
-+	last = refcount_dec_and_test(refcount);
-+	if (last)
-+		list_del(&trans->links);
- 
- 	spin_unlock_bh(&trans_info->spinlock);
- 
-+	if (!last)
-+		return;
-+
- 	ipa_gsi_trans_release(trans);
- 
- 	/* Releasing the reserved TREs implicitly frees the sgl[] and
+--- a/net/netlabel/netlabel_unlabeled.c
++++ b/net/netlabel/netlabel_unlabeled.c
+@@ -1167,7 +1167,7 @@ static int netlbl_unlabel_staticlist(str
+ 	u32 skip_bkt = cb->args[0];
+ 	u32 skip_chain = cb->args[1];
+ 	u32 skip_addr4 = cb->args[2];
+-	u32 iter_bkt, iter_chain, iter_addr4 = 0, iter_addr6 = 0;
++	u32 iter_bkt, iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0;
+ 	struct netlbl_unlhsh_iface *iface;
+ 	struct list_head *iter_list;
+ 	struct netlbl_af4list *addr4;
 
 
