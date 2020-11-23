@@ -2,147 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B8D2C03A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052AE2C03A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgKWKt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:49:26 -0500
-Received: from relay5.mymailcheap.com ([159.100.248.207]:47983 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725907AbgKWKtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:49:23 -0500
-Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.102])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 5BFD6260EB;
-        Mon, 23 Nov 2020 10:49:20 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 4FBC13F1C5;
-        Mon, 23 Nov 2020 10:49:18 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 355132A3E1;
-        Mon, 23 Nov 2020 05:49:18 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1606128558;
-        bh=Ie7rzoJQCjwB5Or+bKi9/xV3Pf6HEUgwzJivbfNLlEY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UlnRBCp+NUvxtnU3k9XFOAH1sDiBBmInfyUUbBw5vYmFC40N/F44gJgKeKuQHgvT9
-         4/lgcVHVgJiKOqYTI0A8nHNsJRmFwa3RFdFbtkYqmvym+NmNjyBFkyGf+NyzYGIOLA
-         biQJ7U1hKvX1/E139kwhlm8GHmOVp9fJITKkiolI=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id CiMMwUKtPOFK; Mon, 23 Nov 2020 05:49:14 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        id S1728795AbgKWKt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:49:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728523AbgKWKt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:49:27 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Mon, 23 Nov 2020 05:49:14 -0500 (EST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 5AD40400C1;
-        Mon, 23 Nov 2020 10:49:13 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="Gsi8kQTc";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [192.168.1.203] (unknown [183.157.63.183])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id D21A7400C1;
-        Mon, 23 Nov 2020 10:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1606128544;
-        bh=Ie7rzoJQCjwB5Or+bKi9/xV3Pf6HEUgwzJivbfNLlEY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Gsi8kQTcfNik76wElxof20Ymx/GUnnjGakbU074HlMUcxR3WrIZnGHh4l+rSlVuE4
-         mXY8T/XRXITh9FFAmMqMCXlReAWuvyQwVDPQfhkN0OccpJR/XnVuWMSejCUl0oERUD
-         +t2q6BWiwyEahZoCYKKm219hG66HKa8rOBWULhBE=
-Subject: Re: [PATCH 2/3] MIPS: Loongson64: DTS: Add SPI support to LS3A
-To:     Qing Zhang <zhangqing@loongson.cn>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-References: <1606123148-315-1-git-send-email-zhangqing@loongson.cn>
- <1606123148-315-2-git-send-email-zhangqing@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <7e878d14-37b2-769e-400a-548a846943fe@flygoat.com>
-Date:   Mon, 23 Nov 2020 18:48:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E85F20721;
+        Mon, 23 Nov 2020 10:49:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606128565;
+        bh=FVXXoRtxeNSHeXC+MN7Fmb60y4SrrZ1lu3dPmXQA4V0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GZiTm1uizupDL2CKQ2nO6GOQBW7NrtZuOYT8myiVKZU4qg1AtN46rvO47OtuhmkFu
+         4ViSzyeuCTau501Xr3H/6oArwCEOIDsSLeGKEhubGdrq2G0AM0Q1+YvQDdrLAOzwjG
+         9oc8TcdPJYxO5j6fEZ2iZFKl2girgr8TzfWmNqb8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kh9PP-00Ct2d-3n; Mon, 23 Nov 2020 10:49:23 +0000
 MIME-Version: 1.0
-In-Reply-To: <1606123148-315-2-git-send-email-zhangqing@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 5AD40400C1
-X-Spamd-Result: default: False [1.40 / 10.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RECEIVED_SPAMHAUS_PBL(0.00)[183.157.63.183:received];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 10:49:23 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
+        Andre.Przywara@arm.com, steven.price@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+Subject: Re: [PATCH v15 7/9] ptp: arm/arm64: Enable ptp_kvm for arm/arm64
+In-Reply-To: <20201111062211.33144-8-jianyong.wu@arm.com>
+References: <20201111062211.33144-1-jianyong.wu@arm.com>
+ <20201111062211.33144-8-jianyong.wu@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7bd3a66253ca4b7adbe2294eb598a23f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-11-11 06:22, Jianyong Wu wrote:
+> Currently, there is no mechanism to keep time sync between guest and 
+> host
+> in arm/arm64 virtualization environment. Time in guest will drift 
+> compared
+> with host after boot up as they may both use third party time sources
+> to correct their time respectively. The time deviation will be in order
+> of milliseconds. But in some scenarios,like in cloud envirenment, we 
+> ask
 
-ÔÚ 2020/11/23 17:19, Qing Zhang Ð´µÀ:
-> The LS3A SPI module is now supported, enable it.
->
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+environment
+
+> for higher time precision.
+> 
+> kvm ptp clock, which chooses the host clock source as a reference
+> clock to sync time between guest and host, has been adopted by x86
+> which takes the time sync order from milliseconds to nanoseconds.
+> 
+> This patch enables kvm ptp clock for arm/arm64 and improves clock sync 
+> precison
+
+precision
+
+> significantly.
+> 
+> Test result comparisons between with kvm ptp clock and without it in 
+> arm/arm64
+> are as follows. This test derived from the result of command 'chronyc
+> sources'. we should take more care of the last sample column which 
+> shows
+> the offset between the local clock and the source at the last 
+> measurement.
+> 
+> no kvm ptp in guest:
+> MS Name/IP address   Stratum Poll Reach LastRx Last sample
+> ========================================================================
+> ^* dns1.synet.edu.cn      2   6   377    13  +1040us[+1581us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    21  +1040us[+1581us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    29  +1040us[+1581us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    37  +1040us[+1581us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    45  +1040us[+1581us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    53  +1040us[+1581us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    61  +1040us[+1581us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377     4   -130us[ +796us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    12   -130us[ +796us] +/-   
+> 21ms
+> ^* dns1.synet.edu.cn      2   6   377    20   -130us[ +796us] +/-   
+> 21ms
+> 
+> in host:
+> MS Name/IP address   Stratum Poll Reach LastRx Last sample
+> ========================================================================
+> ^* 120.25.115.20          2   7   377    72   -470us[ -603us] +/-   
+> 18ms
+> ^* 120.25.115.20          2   7   377    92   -470us[ -603us] +/-   
+> 18ms
+> ^* 120.25.115.20          2   7   377   112   -470us[ -603us] +/-   
+> 18ms
+> ^* 120.25.115.20          2   7   377     2   +872ns[-6808ns] +/-   
+> 17ms
+> ^* 120.25.115.20          2   7   377    22   +872ns[-6808ns] +/-   
+> 17ms
+> ^* 120.25.115.20          2   7   377    43   +872ns[-6808ns] +/-   
+> 17ms
+> ^* 120.25.115.20          2   7   377    63   +872ns[-6808ns] +/-   
+> 17ms
+> ^* 120.25.115.20          2   7   377    83   +872ns[-6808ns] +/-   
+> 17ms
+> ^* 120.25.115.20          2   7   377   103   +872ns[-6808ns] +/-   
+> 17ms
+> ^* 120.25.115.20          2   7   377   123   +872ns[-6808ns] +/-   
+> 17ms
+> 
+> The dns1.synet.edu.cn is the network reference clock for guest and
+> 120.25.115.20 is the network reference clock for host. we can't get the
+> clock error between guest and host directly, but a roughly estimated 
+> value
+> will be in order of hundreds of us to ms.
+> 
+> with kvm ptp in guest:
+> chrony has been disabled in host to remove the disturb by network 
+> clock.
+> 
+> MS Name/IP address         Stratum Poll Reach LastRx Last sample
+> ========================================================================
+> * PHC0                    0   3   377     8     -7ns[   +1ns] +/-    
+> 3ns
+> * PHC0                    0   3   377     8     +1ns[  +16ns] +/-    
+> 3ns
+> * PHC0                    0   3   377     6     -4ns[   -0ns] +/-    
+> 6ns
+> * PHC0                    0   3   377     6     -8ns[  -12ns] +/-    
+> 5ns
+> * PHC0                    0   3   377     5     +2ns[   +4ns] +/-    
+> 4ns
+> * PHC0                    0   3   377    13     +2ns[   +4ns] +/-    
+> 4ns
+> * PHC0                    0   3   377    12     -4ns[   -6ns] +/-    
+> 4ns
+> * PHC0                    0   3   377    11     -8ns[  -11ns] +/-    
+> 6ns
+> * PHC0                    0   3   377    10    -14ns[  -20ns] +/-    
+> 4ns
+> * PHC0                    0   3   377     8     +4ns[   +5ns] +/-    
+> 4ns
+> 
+> The PHC0 is the ptp clock which choose the host clock as its source
+> clock. So we can see that the clock difference between host and guest
+> is in order of ns.
+> 
+> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
 > ---
->   arch/mips/boot/dts/loongson/loongson64c-package.dtsi | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-> diff --git a/arch/mips/boot/dts/loongson/loongson64c-package.dtsi b/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
-> index 5bb876a..2025c5a 100644
-> --- a/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
-> +++ b/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
-> @@ -60,5 +60,12 @@
->   			interrupt-parent = <&liointc>;
->   			no-loopback-test;
->   		};
+>  drivers/clocksource/arm_arch_timer.c | 28 ++++++++++++++++++
+>  drivers/ptp/Kconfig                  |  2 +-
+>  drivers/ptp/Makefile                 |  1 +
+>  drivers/ptp/ptp_kvm_arm.c            | 44 ++++++++++++++++++++++++++++
+>  4 files changed, 74 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/ptp/ptp_kvm_arm.c
+> 
+> diff --git a/drivers/clocksource/arm_arch_timer.c
+> b/drivers/clocksource/arm_arch_timer.c
+> index d55acffb0b90..b33c5a663d30 100644
+> --- a/drivers/clocksource/arm_arch_timer.c
+> +++ b/drivers/clocksource/arm_arch_timer.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/sched/clock.h>
+>  #include <linux/sched_clock.h>
+>  #include <linux/acpi.h>
+> +#include <linux/arm-smccc.h>
+> 
+>  #include <asm/arch_timer.h>
+>  #include <asm/virt.h>
+> @@ -1650,3 +1651,30 @@ static int __init arch_timer_acpi_init(struct
+> acpi_table_header *table)
+>  }
+>  TIMER_ACPI_DECLARE(arch_timer, ACPI_SIG_GTDT, arch_timer_acpi_init);
+>  #endif
 > +
-> +                spi: spi@1fe00220 {
-> +                        compatible = "loongson,loongson-spi";
+> +int kvm_arch_ptp_get_crosststamp(u64 *cycle, struct timespec64 *ts,
+> +			      struct clocksource **cs)
+> +{
+> +	struct arm_smccc_res hvc_res;
+> +	ktime_t ktime;
+> +	u32 ptp_counter;
+> +
+> +	if (arch_timer_uses_ppi == ARCH_TIMER_VIRT_PPI)
+> +		ptp_counter = ARM_PTP_VIRT_COUNTER;
+> +	else
+> +		ptp_counter = ARM_PTP_PHY_COUNTER;
+> +
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_PTP_FUNC_ID,
+> +			     ptp_counter, &hvc_res);
+> +
+> +	if ((int)(hvc_res.a0) < 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	ktime = (u64)hvc_res.a0 << 32 | hvc_res.a1;
+> +	*ts = ktime_to_timespec64(ktime);
+> +	*cycle = (u64)hvc_res.a2 << 32 | hvc_res.a3;
 
-You have to add dt schema document..
+Endianness.
 
-Also I'd sugguest you to name it as loongson,pci-spi to avoid collision.
+> +	*cs = &clocksource_counter;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_arch_ptp_get_crosststamp);
+> diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
+> index 942f72d8151d..677c7f696b70 100644
+> --- a/drivers/ptp/Kconfig
+> +++ b/drivers/ptp/Kconfig
+> @@ -106,7 +106,7 @@ config PTP_1588_CLOCK_PCH
+>  config PTP_1588_CLOCK_KVM
+>  	tristate "KVM virtual PTP clock"
+>  	depends on PTP_1588_CLOCK
+> -	depends on KVM_GUEST && X86
+> +	depends on KVM_GUEST && X86 || (HAVE_ARM_SMCCC_DISCOVERY && 
+> ARM_ARCH_TIMER)
+>  	default y
+>  	help
+>  	  This driver adds support for using kvm infrastructure as a PTP
+> diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
+> index 699a4e4d19c2..9fa5ede44b2b 100644
+> --- a/drivers/ptp/Makefile
+> +++ b/drivers/ptp/Makefile
+> @@ -5,6 +5,7 @@
+> 
+>  ptp-y					:= ptp_clock.o ptp_chardev.o ptp_sysfs.o
+>  ptp_kvm-$(CONFIG_X86)			:= ptp_kvm_x86.o ptp_kvm_common.o
+> +ptp_kvm-$(CONFIG_HAVE_ARM_SMCCC)	:= ptp_kvm_arm.o ptp_kvm_common.o
+>  obj-$(CONFIG_PTP_1588_CLOCK)		+= ptp.o
+>  obj-$(CONFIG_PTP_1588_CLOCK_DTE)	+= ptp_dte.o
+>  obj-$(CONFIG_PTP_1588_CLOCK_INES)	+= ptp_ines.o
+> diff --git a/drivers/ptp/ptp_kvm_arm.c b/drivers/ptp/ptp_kvm_arm.c
+> new file mode 100644
+> index 000000000000..2212827c0384
+> --- /dev/null
+> +++ b/drivers/ptp/ptp_kvm_arm.c
+> @@ -0,0 +1,44 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + *  Virtual PTP 1588 clock for use with KVM guests
+> + *  Copyright (C) 2019 ARM Ltd.
+> + *  All Rights Reserved
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/err.h>
+> +#include <asm/hypervisor.h>
+> +#include <linux/module.h>
+> +#include <linux/psci.h>
+> +#include <linux/arm-smccc.h>
+> +#include <linux/timecounter.h>
+> +#include <linux/sched/clock.h>
+> +#include <asm/arch_timer.h>
+> +#include <asm/hypervisor.h>
+> +
+> +int kvm_arch_ptp_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = kvm_arm_hyp_service_available(ARM_SMCCC_KVM_FUNC_KVM_PTP);
+> +	if (ret <= 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	return 0;
+> +}
+> +
+> +int kvm_arch_ptp_get_clock(struct timespec64 *ts)
+> +{
+> +	ktime_t ktime;
+> +	struct arm_smccc_res hvc_res;
+> +
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_PTP_FUNC_ID,
+> +			     ARM_PTP_NONE_COUNTER, &hvc_res);
 
-Loongson-1 MCUs do have MMIO SPI controller with similiar register layout.
+I really don't see the need to use a non-architectural counter ID.
+Using the virtual counter ID should just be fine, and shouldn't
+lead to any issue.
 
-Thanks
+Am I missing something?
 
-- Jiaxun
+> +	if ((int)(hvc_res.a0) < 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	ktime = (u64)hvc_res.a0 << 32 | hvc_res.a1;
 
-> +                        reg=<0 0x1fe00220 0x11>;
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +               };
->   	};
->   };
+Endianness.
+
+> +	*ts = ktime_to_timespec64(ktime);
+> +
+> +	return 0;
+> +}
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
