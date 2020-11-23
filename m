@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259C02C071E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731AB2C05E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731968AbgKWMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:37:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49714 "EHLO mail.kernel.org"
+        id S1729986AbgKWMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:25:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731929AbgKWMha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:37:30 -0500
+        id S1729950AbgKWMZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:25:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F6DE2065E;
-        Mon, 23 Nov 2020 12:37:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD9982076E;
+        Mon, 23 Nov 2020 12:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135050;
-        bh=LZXv1ktnG9CtImniUHN+1Oy0mabgErgup2s3uEAfvbQ=;
+        s=korg; t=1606134312;
+        bh=sILKl3o46a+a+JPYNYqx5q4sVE3AIvqnWN3Klwi2CMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i80FYXhsv2GkeS2ZQCr99jQNZCZi/1mFhVtlJjsaxULmiUsfqeMB523dbH1xwK1NC
-         Edsapq1mkR4iLF3NdK4bwohCbtePpZdxsHnVOSgxC3wLppr8JLUfGIrWkqT8Y2NonO
-         NAix+2wdEuEm+E8GlXqWlbUd3MqI8t1EBfBTeJrQ=
+        b=DfBoRDRcTRU2nB6zHpCEI4L0GRxVmCBRdxQnf8ZbFUZIztmI4iTvId4wr46qFViyL
+         WESMKaxE7A1JEnSfmJtMHmbv1FDQMKssjD9rRD5DLp5lfSxURJcdoBR0SQOX44NoDH
+         lilpMZzQyxFSDEhD7fxmG2ioWSW6FFnXaohMODpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wu Bo <wubo.oduw@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/158] can: m_can: m_can_handle_state_change(): fix state change
-Date:   Mon, 23 Nov 2020 13:21:53 +0100
-Message-Id: <20201123121824.036101790@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 08/47] net: Have netpoll bring-up DSA management interface
+Date:   Mon, 23 Nov 2020 13:21:54 +0100
+Message-Id: <20201123121805.951642379@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo.oduw@gmail.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit cd0d83eab2e0c26fe87a10debfedbb23901853c1 ]
+[ Upstream commit 1532b9778478577152201adbafa7738b1e844868 ]
 
-m_can_handle_state_change() is called with the new_state as an argument.
+DSA network devices rely on having their DSA management interface up and
+running otherwise their ndo_open() will return -ENETDOWN. Without doing
+this it would not be possible to use DSA devices as netconsole when
+configured on the command line. These devices also do not utilize the
+upper/lower linking so the check about the netpoll device having upper
+is not going to be a problem.
 
-In the switch statements for CAN_STATE_ERROR_ACTIVE, the comment and the
-following code indicate that a CAN_STATE_ERROR_WARNING is handled.
+The solution adopted here is identical to the one done for
+net/ipv4/ipconfig.c with 728c02089a0e ("net: ipv4: handle DSA enabled
+master network devices"), with the network namespace scope being
+restricted to that of the process configuring netpoll.
 
-This patch fixes this problem by changing the case to CAN_STATE_ERROR_WARNING.
-
-Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
-Link: http://lore.kernel.org/r/20200129022330.21248-2-wubo.oduw@gmail.com
-Cc: Dan Murphy <dmurphy@ti.com>
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 04ff53f96a93 ("net: dsa: Add netconsole support")
+Tested-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201117035236.22658-1-f.fainelli@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/m_can/m_can.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/netpoll.c |   22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 562c8317e3aa8..20f025b4f6d4c 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -664,7 +664,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	unsigned int ecr;
+--- a/net/core/netpoll.c
++++ b/net/core/netpoll.c
+@@ -28,6 +28,7 @@
+ #include <linux/slab.h>
+ #include <linux/export.h>
+ #include <linux/if_vlan.h>
++#include <net/dsa.h>
+ #include <net/tcp.h>
+ #include <net/udp.h>
+ #include <net/addrconf.h>
+@@ -661,15 +662,15 @@ EXPORT_SYMBOL_GPL(__netpoll_setup);
  
- 	switch (new_state) {
--	case CAN_STATE_ERROR_ACTIVE:
-+	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		cdev->can.can_stats.error_warning++;
- 		cdev->can.state = CAN_STATE_ERROR_WARNING;
-@@ -693,7 +693,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	__m_can_get_berr_counter(dev, &bec);
+ int netpoll_setup(struct netpoll *np)
+ {
+-	struct net_device *ndev = NULL;
++	struct net_device *ndev = NULL, *dev = NULL;
++	struct net *net = current->nsproxy->net_ns;
+ 	struct in_device *in_dev;
+ 	int err;
  
- 	switch (new_state) {
--	case CAN_STATE_ERROR_ACTIVE:
-+	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		cf->can_id |= CAN_ERR_CRTL;
- 		cf->data[1] = (bec.txerr > bec.rxerr) ?
--- 
-2.27.0
-
+ 	rtnl_lock();
+-	if (np->dev_name[0]) {
+-		struct net *net = current->nsproxy->net_ns;
++	if (np->dev_name[0])
+ 		ndev = __dev_get_by_name(net, np->dev_name);
+-	}
++
+ 	if (!ndev) {
+ 		np_err(np, "%s doesn't exist, aborting\n", np->dev_name);
+ 		err = -ENODEV;
+@@ -677,6 +678,19 @@ int netpoll_setup(struct netpoll *np)
+ 	}
+ 	dev_hold(ndev);
+ 
++	/* bring up DSA management network devices up first */
++	for_each_netdev(net, dev) {
++		if (!netdev_uses_dsa(dev))
++			continue;
++
++		err = dev_change_flags(dev, dev->flags | IFF_UP);
++		if (err < 0) {
++			np_err(np, "%s failed to open %s\n",
++			       np->dev_name, dev->name);
++			goto put;
++		}
++	}
++
+ 	if (netdev_master_upper_dev_get(ndev)) {
+ 		np_err(np, "%s is a slave device, aborting\n", np->dev_name);
+ 		err = -EBUSY;
 
 
