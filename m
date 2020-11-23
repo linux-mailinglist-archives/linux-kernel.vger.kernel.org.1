@@ -2,139 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1092C0C23
+	by mail.lfdr.de (Postfix) with ESMTP id DBBD92C0C24
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388016AbgKWNq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:46:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387672AbgKWNqZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:46:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20704C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:46:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eqo+5xtEEChY6Yq+NrnAD5DS1fVhv2fF+uY8pMNKUoY=; b=dx9rZZeX0w2VnNC6liFUcqYbpV
-        RYhMYe6HKsbb0o5u3CtMpp6Ds+78K9FaZjZ7GduiKaOo7Z4EwaZrLQHCS00a9dm4HKSmVeb4xG27U
-        2Lmgf2w3x0FhXGXPKf9muzRdy6wq2VuD1uctE5roHoD50cHFexzskejYSUQh1+PICEIkGVz6aPFtY
-        ctC7UVrSaUIQNUQQKx0YdJMEt75L9lu8R8SUW1n8aoiGEAk6YA5j5geOT809XCFH+CERxwQWgYW0C
-        dmO/wQ5msYZW3Ni8m0qotGCz3v98X8xAe17YaZwbFu8JZzwpOp2+6Gk52y3dzLw0SxyBplLjvleWK
-        38aJJ/jw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khCAd-0005vj-9x; Mon, 23 Nov 2020 13:46:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S2388228AbgKWNrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:47:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387562AbgKWNrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:47:12 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5797F3069B1;
-        Mon, 23 Nov 2020 14:46:18 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 427C7210782E4; Mon, 23 Nov 2020 14:46:18 +0100 (CET)
-Date:   Mon, 23 Nov 2020 14:46:18 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8103E206F1;
+        Mon, 23 Nov 2020 13:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606139231;
+        bh=80Rr48NihEeoN1SyHrOo/D+OnblcJZRgbQGwWtnsfX4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mi0OYwccnn2+NkOQIx3xnpCOr9lsqwjEIp3ELOufhIw5KhxHH3OIpvEMsqAsumuD5
+         ZAku4nEPbrYRvW8qbZCvw+w1Rb+j0P7X0dGRoyNIXk2l37GjegzO7b7ErZdt9I4gF/
+         azpRn9+K3f/XOtNGjaZpnuFS1aE4FWYZzCt0RXr8=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khCBR-00Cxpa-FP; Mon, 23 Nov 2020 13:47:09 +0000
+Date:   Mon, 23 Nov 2020 13:47:08 +0000
+Message-ID: <87o8jo5go3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, svens@linux.ibm.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] intel_idle: Fix intel_idle() vs tracing
-Message-ID: <20201123134618.GL3021@hirez.programming.kicks-ass.net>
-References: <20201120114145.197714127@infradead.org>
- <20201120114925.652731270@infradead.org>
- <CAJZ5v0hhSO36-m-otWp0vqWNNZFiDWPX-xxK-ninRr2d==QOWA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hhSO36-m-otWp0vqWNNZFiDWPX-xxK-ninRr2d==QOWA@mail.gmail.com>
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 02/24] psci: Accessor for configured PSCI function IDs
+In-Reply-To: <20201116204318.63987-3-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-3-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 11:26:39AM +0100, Rafael J. Wysocki wrote:
-> On Fri, Nov 20, 2020 at 12:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > cpuidle->enter() callbacks should not call into tracing because RCU
-> > has already been disabled. Instead of doing the broadcast thing
-> > itself, simply advertise to the cpuidle core that those states stop
-> > the timer.
-> >
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  drivers/idle/intel_idle.c |   37 ++++++++++++++++++++-----------------
-> >  1 file changed, 20 insertions(+), 17 deletions(-)
-> >
-> > --- a/drivers/idle/intel_idle.c
-> > +++ b/drivers/idle/intel_idle.c
-> > @@ -126,26 +126,9 @@ static __cpuidle int intel_idle(struct c
-> >         struct cpuidle_state *state = &drv->states[index];
-> >         unsigned long eax = flg2MWAIT(state->flags);
-> >         unsigned long ecx = 1; /* break on interrupt flag */
-> > -       bool tick;
-> > -
-> > -       if (!static_cpu_has(X86_FEATURE_ARAT)) {
-> > -               /*
-> > -                * Switch over to one-shot tick broadcast if the target C-state
-> > -                * is deeper than C1.
-> > -                */
-> > -               if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK) {
-> > -                       tick = true;
-> > -                       tick_broadcast_enter();
-> > -               } else {
-> > -                       tick = false;
-> > -               }
-> > -       }
-> >
-> >         mwait_idle_with_hints(eax, ecx);
-> >
-> > -       if (!static_cpu_has(X86_FEATURE_ARAT) && tick)
-> > -               tick_broadcast_exit();
-> > -
-> >         return index;
-> >  }
-> >
-> > @@ -1460,6 +1443,23 @@ static bool __init intel_idle_verify_cst
-> >         return true;
-> >  }
-> >
-> > +static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
-> > +{
-> > +       unsigned long eax = flg2MWAIT(state->flags);
-> > +
-> > +       if (boot_cpu_has(X86_FEATURE_ARAT))
-> > +               return false;
-> > +
-> > +       /*
-> > +        * Switch over to one-shot tick broadcast if the target C-state
-> > +        * is deeper than C1.
-> > +        */
-> > +       if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK)
-> > +               return true;
-> > +
-> > +       return false;
-> > +}
-> > +
-> >  static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
-> >  {
-> >         int cstate;
-> > @@ -1507,6 +1507,9 @@ static void __init intel_idle_init_cstat
-> >                      !(cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_ALWAYS_ENABLE)))
-> >                         drv->states[drv->state_count].flags |= CPUIDLE_FLAG_OFF;
-> >
-> > +               if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
-> > +                       drv->states[drv->state_count].flags |= CPUIDLE_FLAG_TIMER_STOP;
-> > +
-> >                 drv->state_count++;
-> >         }
+On Mon, 16 Nov 2020 20:42:56 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
 > 
-> This doesn't cover the ACPI case AFAICS.
+> Function IDs used by PSCI are configurable for v0.1 via DT/APCI. If the
+> host is using PSCI v0.1, KVM's host PSCI proxy needs to use the same IDs.
+> Expose the array holding the information with a read-only accessor.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  drivers/firmware/psci/psci.c | 14 ++++++--------
+>  include/linux/psci.h         | 10 ++++++++++
+>  2 files changed, 16 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+> index 213c68418a65..d835f3d8b121 100644
+> --- a/drivers/firmware/psci/psci.c
+> +++ b/drivers/firmware/psci/psci.c
+> @@ -58,16 +58,14 @@ typedef unsigned long (psci_fn)(unsigned long, unsigned long,
+>  				unsigned long, unsigned long);
+>  static psci_fn *invoke_psci_fn;
+>  
+> -enum psci_function {
+> -	PSCI_FN_CPU_SUSPEND,
+> -	PSCI_FN_CPU_ON,
+> -	PSCI_FN_CPU_OFF,
+> -	PSCI_FN_MIGRATE,
+> -	PSCI_FN_MAX,
+> -};
+> -
+>  static u32 psci_function_id[PSCI_FN_MAX];
+>  
+> +u32 psci_get_function_id(enum psci_function fn)
+> +{
+> +	WARN_ON(fn >= PSCI_FN_MAX);
 
-aa6b43d57f99 ("ACPI: processor: Use CPUIDLE_FLAG_TIMER_STOP")
+If we are going to warn on something that is out of bounds, maybe we
+shouldn't perform the access at all? And maybe check for lower bound
+as well?
 
-did that, no?
+> +	return psci_function_id[fn];
+> +}
+> +
+>  #define PSCI_0_2_POWER_STATE_MASK		\
+>  				(PSCI_0_2_POWER_STATE_ID_MASK | \
+>  				PSCI_0_2_POWER_STATE_TYPE_MASK | \
+> diff --git a/include/linux/psci.h b/include/linux/psci.h
+> index 2a1bfb890e58..5b49a5c82d6f 100644
+> --- a/include/linux/psci.h
+> +++ b/include/linux/psci.h
+> @@ -21,6 +21,16 @@ bool psci_power_state_is_valid(u32 state);
+>  int psci_set_osi_mode(bool enable);
+>  bool psci_has_osi_support(void);
+>  
+> +enum psci_function {
+> +	PSCI_FN_CPU_SUSPEND,
+> +	PSCI_FN_CPU_ON,
+> +	PSCI_FN_CPU_OFF,
+> +	PSCI_FN_MIGRATE,
+> +	PSCI_FN_MAX,
+> +};
+> +
+> +u32 psci_get_function_id(enum psci_function fn);
+> +
+>  struct psci_operations {
+>  	u32 (*get_version)(void);
+>  	int (*cpu_suspend)(u32 state, unsigned long entry_point);
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
