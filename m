@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98AD2C16F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FAF2C16FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730642AbgKWUjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:39:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
+        id S1730732AbgKWUky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:40:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730929AbgKWUjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:39:14 -0500
+        id S1728826AbgKWUky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 15:40:54 -0500
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCB5A2075A;
-        Mon, 23 Nov 2020 20:39:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC74E204FD;
+        Mon, 23 Nov 2020 20:40:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606163954;
-        bh=fXQ4kN1fuSAB93w2X+YhBILhqVMOtBEUFEyMF7r+PeA=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=lMxGtfJCzFcPLYicvJCUEje3aujstAcVr4HgOJ5HgBWmKm0H8ujxueD3zp6YH6K+i
-         /KDZxICOrncrcaZz5xVyVo2x4acFYcgEJk5ocF5U2uO0f6tXfTRrcZFfKvfEuzBwam
-         PdBfdeHnxLqHHaPhCwJ9rG7z+4lFCdKWgv87u3zc=
-Date:   Mon, 23 Nov 2020 20:38:51 +0000
+        s=default; t=1606164053;
+        bh=l4oI3EJf9twL417qKLDDDLHkuxNIhLOKXfN3lkF6Kxg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dI6Y/FEBhMomP9yXJDZL18c5N1fJUnSufmLsfsEErCEx1I73uujBVn+VmR2nTBil2
+         7st2qM1JoV+aEr2XQJCNbg/JTowpnkJOkAAUW5m9jaxq8C/w1ZUMTqrjWm7inA4kgh
+         US9uOR3tP2rC+WdSErFnKjZ9+DgugTP0ToQkJ/y8=
+Date:   Mon, 23 Nov 2020 20:40:30 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     devicetree@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     lukasz.luba@arm.com, f.fainelli@gmail.com, sudeep.holla@arm.com,
-        vincent.guittot@linaro.org, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, souvik.chakravarty@arm.com,
-        robh@kernel.org, etienne.carriere@linaro.org,
-        satyakim@qti.qualcomm.com
-In-Reply-To: <20201119191051.46363-1-cristian.marussi@arm.com>
-References: <20201119191051.46363-1-cristian.marussi@arm.com>
-Subject: Re: [PATCH v6 0/5] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
-Message-Id: <160616392670.21180.3656165882434093831.b4-ty@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/4] ASoC: meson: depend on COMMON_CLK to fix compile
+ tests
+Message-ID: <20201123204030.GA21709@sirena.org.uk>
+References: <20201116175133.402553-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
+In-Reply-To: <20201116175133.402553-1-krzk@kernel.org>
+X-Cookie: Will stain.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 19:10:46 +0000, Cristian Marussi wrote:
-> this series introduces the support for the new SCMI Voltage Domain Protocol
-> defined by the upcoming SCMIv3.0 specification, whose BETA release is
-> available at [1].
-> 
-> Afterwards, a new generic SCMI Regulator driver is developed on top of the
-> new SCMI VD Protocol.
-> 
-> [...]
 
-Applied to
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+On Mon, Nov 16, 2020 at 06:51:30PM +0100, Krzysztof Kozlowski wrote:
+> The Meson SoC sound drivers use Common Clock Framework thus they cannot
+> be built on platforms without it (e.g. compile test on MIPS with RALINK
+> and SOC_RT305X):
 
-Thanks!
+This doesn't apply against current code, please check and resend.
 
-[1/1] regulator: core: add of_match_full_name boolean flag
-      commit: e7095c35abfc5a5d566941a87434c0fd5ffb570f
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-----BEGIN PGP SIGNATURE-----
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+8Hj0ACgkQJNaLcl1U
+h9BQUQf/Zb+qnudCOxcpsy60ses8As7w+FYZS80ubduXvGWgILbXemT1oMzbNgmK
+OBkiqTnFNc6tff+PV8KL223IYl0NE87wbj+TZtPLS2kwcmLzGYN5Nk6tOJ/BqNaL
+NZGwQweuvCXNOZgVaqRuCp2am79NZzjniDlGELtbcdX1bnrbKQqrpfl+OQYOXBxs
+u/xwWXzpd63eM4B4tN8a4S3TsUzJvuypdWshYHELUV5vsxSCXp1NWiire0N1SPO7
+bnkqkZUg10ymAq75x5OE6laeMbsDfwWnS9tRnOJxnN4H8oTMcmzxTQiFD0922P0s
+w0Jrqx6xOb9ZoR7U22kR1FHwhkpH8Q==
+=Zs8x
+-----END PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--OXfL5xGRrasGEqWY--
