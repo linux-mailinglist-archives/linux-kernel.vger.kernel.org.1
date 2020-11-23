@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E682C0AE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0672C0B3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730752AbgKWMal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:30:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41402 "EHLO mail.kernel.org"
+        id S2388667AbgKWNVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:21:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730260AbgKWMaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:35 -0500
+        id S1731890AbgKWMhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6ACD221F7;
-        Mon, 23 Nov 2020 12:30:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1507120857;
+        Mon, 23 Nov 2020 12:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134634;
-        bh=/MUdipLcb4JkvDppPS27UAP/oB9I9J9uiNiR54nSO1g=;
+        s=korg; t=1606135039;
+        bh=nh956R47692KydtrTYbpmpPSYC0xWiPlsnKQJrF2P3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zaxcQydZApjPWuI0ZbK/I2qiLaHv84E1+8iiYBG+fURcmuixzBaSl4AlKj1ukfKeJ
-         DTeivLJ7T+Myvxiiku7CyGgY/2BQzz/DTKjBOmap59GGm4X4R/bDeU1upIADUXwp6A
-         9eBSrTnMy4DkhUbSw4XikKD88YWGJqNyqFdPsWUA=
+        b=Y+Ca7wJH1No2dBRRd2lMlTEe2H79ySIKS7P+8TRSHPnywVhR0NgGXESDr72fM566v
+         eAzwZh26qocBVUXy5g4VQ2aFZMN1G6lJe/Aju0Ez07mKEWwrWCXqO3Yh/ljn+TNVkm
+         XuGP/ihAFVWgXJLbwrSs6iD64biDkQbqLVOmiyq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hongwu Su <hongwus@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>, Can Guo <cang@codeaurora.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/91] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt caused by ufshcd_hold()
-Date:   Mon, 23 Nov 2020 13:21:48 +0100
-Message-Id: <20201123121810.692132832@linuxfoundation.org>
+Subject: [PATCH 5.4 082/158] can: tcan4x5x: replace depends on REGMAP_SPI with depends on SPI
+Date:   Mon, 23 Nov 2020 13:21:50 +0100
+Message-Id: <20201123121823.888544974@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Can Guo <cang@codeaurora.org>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-[ Upstream commit da3fecb0040324c08f1587e5bff1f15f36be1872 ]
+[ Upstream commit 3fcce133f0d9a50d3a23f8e2bc950197b4e03900 ]
 
-The scsi_block_reqs_cnt increased in ufshcd_hold() is supposed to be
-decreased back in ufshcd_ungate_work() in a paired way. However, if
-specific ufshcd_hold/release sequences are met, it is possible that
-scsi_block_reqs_cnt is increased twice but only one ungate work is
-queued. To make sure scsi_block_reqs_cnt is handled by ufshcd_hold() and
-ufshcd_ungate_work() in a paired way, increase it only if queue_work()
-returns true.
+regmap is a library function that gets selected by drivers that need it. No
+driver modules should depend on it. Instead depends on SPI and select
+REGMAP_SPI. Depending on REGMAP_SPI makes this driver only build if another
+driver already selected REGMAP_SPI, as the symbol can't be selected through the
+menu kernel configuration.
 
-Link: https://lore.kernel.org/r/1604384682-15837-2-git-send-email-cang@codeaurora.org
-Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Link: http://lore.kernel.org/r/20200413141013.506613-1-enric.balletbo@collabora.com
+Reviewed-by: Dan Murphy <dmurphy@ti.com>
+Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/m_can/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index b2cbdd01ab10b..a63119c35fde8 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1592,12 +1592,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
- 		 * work and to enable clocks.
- 		 */
- 	case CLKS_OFF:
--		ufshcd_scsi_block_requests(hba);
- 		hba->clk_gating.state = REQ_CLKS_ON;
- 		trace_ufshcd_clk_gating(dev_name(hba->dev),
- 					hba->clk_gating.state);
--		queue_work(hba->clk_gating.clk_gating_workq,
--			   &hba->clk_gating.ungate_work);
-+		if (queue_work(hba->clk_gating.clk_gating_workq,
-+			       &hba->clk_gating.ungate_work))
-+			ufshcd_scsi_block_requests(hba);
- 		/*
- 		 * fall through to check if we should wait for this
- 		 * work to be done or not.
+diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
+index 1ff0b7fe81d6a..c10932a7f1fe3 100644
+--- a/drivers/net/can/m_can/Kconfig
++++ b/drivers/net/can/m_can/Kconfig
+@@ -16,7 +16,8 @@ config CAN_M_CAN_PLATFORM
+ 
+ config CAN_M_CAN_TCAN4X5X
+ 	depends on CAN_M_CAN
+-	depends on REGMAP_SPI
++	depends on SPI
++	select REGMAP_SPI
+ 	tristate "TCAN4X5X M_CAN device"
+ 	---help---
+ 	  Say Y here if you want support for Texas Instruments TCAN4x5x
 -- 
 2.27.0
 
