@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653992BFF57
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1BB2BFF5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725998AbgKWFQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 00:16:33 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:51052 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgKWFQd (ORCPT
+        id S1726609AbgKWFS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 00:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgKWFS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 00:16:33 -0500
-Date:   Mon, 23 Nov 2020 05:16:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1606108588;
-        bh=zwjY45w135FchEXy16tCPE5ojoc2C0C5VAy+SVMkTnw=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=Hp2khR/atczvRCPH0NQUbB6WiM4e7jDQnJmvLE1xXQrVOgReqMk1EL3KxcdvDacvO
-         CQc8Ntkf79E81ceChiCzEXL3X9sVuV1Ka9cxt+uBq26PSW0qaCfzkwLm+pJlmZsWNB
-         vkDvokzygrNNWEde9RqDaGEbTlDBoinQI5SvXUmk=
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH v2] arm64: dts: sdm845: Add iommus property to qup
-Message-ID: <3ba39a64-122b-ebe9-04b3-3a23478334a4@connolly.tech>
+        Mon, 23 Nov 2020 00:18:59 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BD3C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:18:58 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id v12so13784684pfm.13
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:18:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pGllVt0YAWrAraB8o/xsjy9zl5s/HURFJ1GGpWvqVCI=;
+        b=H/oQgJaRPzytu+MBgdw2N1oiKsUVlMAQEuLGRg9i6SMRnIhZ6qzxe983pgihLY+CsZ
+         KDhviQ1Z3qoGei9PSflECA7dQo/4+hvkffHmgAUX7nVgpXrE1pY32UlFecFnSRhZNkuZ
+         8vOtmuXOPpJWQP0RpiIC0ldsWhaZ804W40C9imN0n5yksNCavpq0pxAqTVwvKCw+MACC
+         TopDUs/MUQcwZmTrtHF8M2lx0hdfN6J1Ngqt9VcDL5ZfBgfPmeg5M2uoxjv+2b13yepW
+         THgwcaauX8jv0rBTlDSeOAyQCQRKpXy1YNt5R8tjO22yfRRqUFobOP1jR8Z2UV84QowU
+         i0Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pGllVt0YAWrAraB8o/xsjy9zl5s/HURFJ1GGpWvqVCI=;
+        b=nVBPUQ03WgkhgVtX3d4xhkF2JD2sZnaksY6Eht9ZrQ76epw70PqDc+skuuSTKm/QTX
+         2RZkjrIYzsx9qvdOivvwG8jnQnCboAK5eYxbMgDT0smmUJjdhkRVee8hL54V0S2D3hIt
+         uoeJCf3pyX3txfilw8AdsOe9a2puM/9lnJ0ZqPqFIzu1nilFL/l+fJqhGp6KnEqwbvSS
+         OAz9UdgKYknOJl3BIebVYASV5Wbp3vzpkv2EZAYwwFrRc5ZcEIC7MJnrI0GFYckcjv8B
+         8QHnR1cvV10HuEpzPQHX16M0ZCeSUop0Ep8areP/Knh+dFKvfZLp3OmJ4f7/HW3oVo4s
+         4vnw==
+X-Gm-Message-State: AOAM5333xqLhMCQuSytptzPaMOhDO3zAgovfjJueXJPILcWioOzLWs+3
+        q7K6NOJDJdaSAgWNJfFIxb0=
+X-Google-Smtp-Source: ABdhPJyiNdSj5OIIge3kyGIXOgYbubbctnlcgBQqTDktGnqvwdRL50nZQgcezMWuZY5QHoIWtX4wpQ==
+X-Received: by 2002:a17:90a:cb0c:: with SMTP id z12mr8812952pjt.60.1606108738106;
+        Sun, 22 Nov 2020 21:18:58 -0800 (PST)
+Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id e14sm9298893pga.61.2020.11.22.21.18.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 21:18:56 -0800 (PST)
+Date:   Mon, 23 Nov 2020 16:18:53 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 17/32] arch/x86: Add a new TIF flag for untrusted
+ tasks
+Message-ID: <20201123051853.GH110669@balbir-desktop>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-18-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117232003.3580179-18-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-22 03:41, Bjorn Andersson wrote:
-> From: Stephen Boyd <swboyd@chromium.org>
->
-> The SMMU that sits in front of the QUP needs to be programmed properly
-> so that the i2c geni driver can allocate DMA descriptors. Failure to do
-> this leads to faults when using devices such as an i2c touchscreen where
-> the transaction is larger than 32 bytes and we use a DMA buffer.
->
-> arm-smmu 15000000.iommu: Unexpected global fault, this could be serious
-> arm-smmu 15000000.iommu:         GFSR 0x00000002, GFSYNR0 0x00000002, GFS=
-YNR1 0x000006c0, GFSYNR2 0x00000000
->
-> Add the right SID and mask so this works.
->
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> [bjorn: Define for second QUP as well, be more specific in sdm845.dtsi]
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Tue, Nov 17, 2020 at 06:19:47PM -0500, Joel Fernandes (Google) wrote:
+> Add a new TIF flag to indicate whether the kernel needs to be careful
+> and take additional steps to mitigate micro-architectural issues during
+> entry into user or guest mode.
+> 
+> This new flag will be used by the series to determine if waiting is
+> needed or not, during exit to user or guest mode.
+> 
+> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> Reviewed-by: Aubrey Li <aubrey.intel@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->   arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 2 ++
->   arch/arm64/boot/dts/qcom/sdm845.dtsi       | 2 ++
->   2 files changed, 4 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot=
-/dts/qcom/sdm845-cheza.dtsi
-> index 39f23cdcbd02..216a74f0057c 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-> @@ -653,10 +653,12 @@ &pm8998_pwrkey {
->  =20
->   &qupv3_id_0 {
->   =09status =3D "okay";
-> +=09iommus =3D <&apps_smmu 0x0 0x3>;
->   };
->  =20
->   &qupv3_id_1 {
->   =09status =3D "okay";
-> +=09iommus =3D <&apps_smmu 0x6c0 0x3>;
->   };
->  =20
->   &sdhc_2 {
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/q=
-com/sdm845.dtsi
-> index 6465a6653ad9..d6b7b1bfa202 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -1120,6 +1120,7 @@ qupv3_id_0: geniqup@8c0000 {
->   =09=09=09clock-names =3D "m-ahb", "s-ahb";
->   =09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
->   =09=09=09=09 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
-> +=09=09=09iommus =3D <&apps_smmu 0x3 0x0>;
->   =09=09=09#address-cells =3D <2>;
->   =09=09=09#size-cells =3D <2>;
->   =09=09=09ranges;
-> @@ -1460,6 +1461,7 @@ qupv3_id_1: geniqup@ac0000 {
->   =09=09=09clock-names =3D "m-ahb", "s-ahb";
->   =09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
->   =09=09=09=09 <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
-> +=09=09=09iommus =3D <&apps_smmu 0x6c3 0x0>;
->   =09=09=09#address-cells =3D <2>;
->   =09=09=09#size-cells =3D <2>;
->   =09=09=09ranges;
 
-Tested-By: Caleb Connolly <caleb@connolly.tech>
-
-Works on the OnePlus 6.
-
-
+Acked-by: Balbir Singh <bsingharora@gmail.com>
