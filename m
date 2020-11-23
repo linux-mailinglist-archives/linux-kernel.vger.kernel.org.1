@@ -2,198 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E333B2C166B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A1A2C1676
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387802AbgKWURd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:17:33 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18767 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387772AbgKWURY (ORCPT
+        id S1730858AbgKWUU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:20:26 -0500
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:40016 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729666AbgKWUUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:17:24 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbc18d50000>; Mon, 23 Nov 2020 12:17:25 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov
- 2020 20:17:24 +0000
-Received: from skomatineni-linux.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Mon, 23 Nov 2020 20:17:23 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <robh+dt@kernel.org>
-CC:     <pchandru@nvidia.com>, <devicetree@vger.kernel.org>,
-        <linux-ide@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 6/6] ata: ahci_tegra: Add AHCI support for Tegra186
-Date:   Mon, 23 Nov 2020 12:17:25 -0800
-Message-ID: <1606162645-22326-7-git-send-email-skomatineni@nvidia.com>
+        Mon, 23 Nov 2020 15:20:25 -0500
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0ANKGuI2005994;
+        Mon, 23 Nov 2020 15:20:23 -0500
+Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
+        by pbmsgap02.intersil.com with ESMTP id 34xwxksbad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 15:20:23 -0500
+Received: from pbmxdp02.intersil.corp (132.158.200.223) by
+ pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Mon, 23 Nov 2020 15:20:22 -0500
+Received: from localhost (132.158.202.109) by pbmxdp02.intersil.corp
+ (132.158.200.223) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 23 Nov 2020 15:20:21 -0500
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH v2 net] ptp: clockmatrix: bug fix for idtcm_strverscmp
+Date:   Mon, 23 Nov 2020 15:20:06 -0500
+Message-ID: <1606162806-14589-1-git-send-email-min.li.xe@renesas.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606162645-22326-1-git-send-email-skomatineni@nvidia.com>
-References: <1606162645-22326-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+X-TM-AS-MML: disable
 MIME-Version: 1.0
 Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606162645; bh=bqvYhM4gfczmD1UkOCBSQi6kCpayixLg2a8u43aYS8U=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=FHZPdjZ84by4HdXtwgk5Lr5yBT3/sA4zHoUMvk22MvFk17s5t7Ar5SitfedtyOtgO
-         lHrGjobBWNSV74rd8cEqYmzjYLdY5289JE1gwe77shWA0zyc4bZp+o8/Dloo6ggJqh
-         8Xzn9TD0E9jy+cIoz4kIUM3d4mS+ilqT0OgX1/OU6Diaf0AXWEqN4DYY+JzuT7/TfZ
-         f68BlUWy4jk6gTQ6Q4XO8f3oVfXtqlcNu3SB8Q9sutN77pQXR+XKSgn2/YFo+xvsch
-         vhOStQ2Xw8GZHMjyqOQ4SJhZrpEdUAfTs+vCmtcManh33eiTltxV9diXSJkNb3WYAS
-         HHCVK/3OrxcCA==
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_17:2020-11-23,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 mlxlogscore=833 adultscore=0
+ spamscore=0 suspectscore=4 bulkscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011230130
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for AHCI-compliant Serial ATA controller
-on Tegra186 SoC.
+From: Min Li <min.li.xe@renesas.com>
 
-Tegra186 does not have sata-oob reset.
-Tegra186 SATA_NVOOB register filed COMMA_CNT position and width are
-different compared to Tegra210 and prior.
+Feed kstrtou8 with NULL terminated string.
 
-So, this patch adds a flag has_sata_oob_rst and tegra_ahci_regs to
-SoC specific strcuture tegra_ahci_soc and updated their implementation
-accordingly.
+Changes since v1:
+-Use strscpy instead of strncpy for safety.
 
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Min Li <min.li.xe@renesas.com>
 ---
- drivers/ata/ahci_tegra.c | 60 +++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 47 insertions(+), 13 deletions(-)
+ drivers/ptp/ptp_clockmatrix.c | 60 ++++++++++++++++++++++++++++++-------------
+ tools/bpf/example             | 12 +++++++++
+ tools/bpf/novlan              |  7 +++++
+ 3 files changed, 61 insertions(+), 18 deletions(-)
+ create mode 100644 tools/bpf/example
+ create mode 100644 tools/bpf/novlan
 
-diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-index cb55ebc1..56612af 100644
---- a/drivers/ata/ahci_tegra.c
-+++ b/drivers/ata/ahci_tegra.c
-@@ -59,8 +59,6 @@
- #define T_SATA0_CFG_PHY_1_PAD_PLL_IDDQ_EN		BIT(22)
+diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+index e020faf..d4e434b 100644
+--- a/drivers/ptp/ptp_clockmatrix.c
++++ b/drivers/ptp/ptp_clockmatrix.c
+@@ -103,42 +103,66 @@ static int timespec_to_char_array(struct timespec64 const *ts,
+ 	return 0;
+ }
  
- #define T_SATA0_NVOOB                                   0x114
--#define T_SATA0_NVOOB_COMMA_CNT_MASK                    (0xff << 16)
--#define T_SATA0_NVOOB_COMMA_CNT                         (0x07 << 16)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK          (0x3 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_MODE               (0x1 << 24)
- #define T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK        (0x3 << 26)
-@@ -154,11 +152,18 @@ struct tegra_ahci_ops {
- 	int (*init)(struct ahci_host_priv *hpriv);
- };
- 
-+struct tegra_ahci_regs {
-+	unsigned int nvoob_comma_cnt_mask;
-+	unsigned int nvoob_comma_cnt_val;
-+};
+-static int idtcm_strverscmp(const char *ver1, const char *ver2)
++static int idtcm_strverscmp(const char *version1, const char *version2)
+ {
+ 	u8 num1;
+ 	u8 num2;
+ 	int result = 0;
++	char ver1[16];
++	char ver2[16];
++	char *cur1;
++	char *cur2;
++	char *next1;
++	char *next2;
 +
- struct tegra_ahci_soc {
- 	const char *const		*supply_names;
- 	u32				num_supplies;
- 	bool				supports_devslp;
-+	bool				has_sata_oob_rst;
- 	const struct tegra_ahci_ops	*ops;
-+	const struct tegra_ahci_regs	*regs;
- };
++	if (strscpy(ver1, version1, 16) < 0 ||
++	    strscpy(ver2, version2, 16) < 0)
++		return -1;
++	cur1 = ver1;
++	cur2 = ver2;
  
- struct tegra_ahci_priv {
-@@ -240,11 +245,13 @@ static int tegra_ahci_power_on(struct ahci_host_priv *hpriv)
- 	if (ret)
- 		return ret;
- 
--	ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
--						tegra->sata_clk,
--						tegra->sata_rst);
--	if (ret)
--		goto disable_regulators;
-+	if (!tegra->pdev->dev.pm_domain) {
-+		ret = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_SATA,
-+							tegra->sata_clk,
-+							tegra->sata_rst);
-+		if (ret)
-+			goto disable_regulators;
-+	}
- 
- 	reset_control_assert(tegra->sata_oob_rst);
- 	reset_control_assert(tegra->sata_cold_rst);
-@@ -330,10 +337,10 @@ static int tegra_ahci_controller_init(struct ahci_host_priv *hpriv)
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA_CFG_PHY_0);
- 
- 	val = readl(tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
--	val &= ~(T_SATA0_NVOOB_COMMA_CNT_MASK |
-+	val &= ~(tegra->soc->regs->nvoob_comma_cnt_mask |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH_MASK |
- 		 T_SATA0_NVOOB_SQUELCH_FILTER_MODE_MASK);
--	val |= (T_SATA0_NVOOB_COMMA_CNT |
-+	val |= (tegra->soc->regs->nvoob_comma_cnt_val |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_LENGTH |
- 		T_SATA0_NVOOB_SQUELCH_FILTER_MODE);
- 	writel(val, tegra->sata_regs + SCFG_OFFSET + T_SATA0_NVOOB);
-@@ -449,15 +456,35 @@ static const struct tegra_ahci_ops tegra124_ahci_ops = {
- 	.init = tegra124_ahci_init,
- };
- 
-+static const struct tegra_ahci_regs tegra124_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(30, 28),
-+	.nvoob_comma_cnt_val = (7 << 28),
-+};
+ 	/* loop through each level of the version string */
+ 	while (result == 0) {
++		next1 = strchr(cur1, '.');
++		next2 = strchr(cur2, '.');
 +
- static const struct tegra_ahci_soc tegra124_ahci_soc = {
- 	.supply_names = tegra124_supply_names,
- 	.num_supplies = ARRAY_SIZE(tegra124_supply_names),
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
- 	.ops = &tegra124_ahci_ops,
-+	.regs = &tegra124_ahci_regs,
- };
- 
- static const struct tegra_ahci_soc tegra210_ahci_soc = {
- 	.supports_devslp = false,
-+	.has_sata_oob_rst = true,
-+	.regs = &tegra124_ahci_regs,
-+};
-+
-+static const struct tegra_ahci_regs tegra186_ahci_regs = {
-+	.nvoob_comma_cnt_mask = GENMASK(23, 16),
-+	.nvoob_comma_cnt_val = (7 << 16),
-+};
-+
-+static const struct tegra_ahci_soc tegra186_ahci_soc = {
-+	.supports_devslp = false,
-+	.has_sata_oob_rst = false,
-+	.regs = &tegra186_ahci_regs,
- };
- 
- static const struct of_device_id tegra_ahci_of_match[] = {
-@@ -469,6 +496,10 @@ static const struct of_device_id tegra_ahci_of_match[] = {
- 		.compatible = "nvidia,tegra210-ahci",
- 		.data = &tegra210_ahci_soc
- 	},
-+	{
-+		.compatible = "nvidia,tegra186-ahci",
-+		.data = &tegra186_ahci_soc
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, tegra_ahci_of_match);
-@@ -518,10 +549,13 @@ static int tegra_ahci_probe(struct platform_device *pdev)
- 		return PTR_ERR(tegra->sata_rst);
- 	}
- 
--	tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev, "sata-oob");
--	if (IS_ERR(tegra->sata_oob_rst)) {
--		dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
--		return PTR_ERR(tegra->sata_oob_rst);
-+	if (tegra->soc->has_sata_oob_rst) {
-+		tegra->sata_oob_rst = devm_reset_control_get(&pdev->dev,
-+							     "sata-oob");
-+		if (IS_ERR(tegra->sata_oob_rst)) {
-+			dev_err(&pdev->dev, "Failed to get sata-oob reset\n");
-+			return PTR_ERR(tegra->sata_oob_rst);
++		/* kstrtou8 could fail for dot */
++		if (next1) {
++			*next1 = '\0';
++			next1++;
 +		}
- 	}
++
++		if (next2) {
++			*next2 = '\0';
++			next2++;
++		}
++
+ 		/* extract leading version numbers */
+-		if (kstrtou8(ver1, 10, &num1) < 0)
++		if (kstrtou8(cur1, 10, &num1) < 0)
+ 			return -1;
  
- 	tegra->sata_cold_rst = devm_reset_control_get(&pdev->dev, "sata-cold");
+-		if (kstrtou8(ver2, 10, &num2) < 0)
++		if (kstrtou8(cur2, 10, &num2) < 0)
+ 			return -1;
+ 
+ 		/* if numbers differ, then set the result */
+ 		if (num1 < num2)
++			return -1;
++		if (num1 > num2)
++			return 1;
++
++		/* if numbers are the same, go to next level */
++		if (!next1 && !next2)
++			break;
++		else if (!next1) {
+ 			result = -1;
+-		else if (num1 > num2)
++		} else if (!next2) {
+ 			result = 1;
+-		else {
+-			/* if numbers are the same, go to next level */
+-			ver1 = strchr(ver1, '.');
+-			ver2 = strchr(ver2, '.');
+-			if (!ver1 && !ver2)
+-				break;
+-			else if (!ver1)
+-				result = -1;
+-			else if (!ver2)
+-				result = 1;
+-			else {
+-				ver1++;
+-				ver2++;
+-			}
++		} else {
++			cur1 = next1;
++			cur2 = next2;
+ 		}
+ 	}
++
+ 	return result;
+ }
+ 
+diff --git a/tools/bpf/example b/tools/bpf/example
+new file mode 100644
+index 0000000..a0ac81f
+--- /dev/null
++++ b/tools/bpf/example
+@@ -0,0 +1,12 @@
++  ldh [12]
++  jne #0x8100, nonvlan
++  ldh [16]
++  jne #0x88f7, bad
++  ldb [18]
++  ja test
++  nonvlan: jne #0x88f7, bad
++  ldb [14]
++  test: and #0x8
++  jeq #0, bad
++  good: ret #1500
++  bad: ret #0
+diff --git a/tools/bpf/novlan b/tools/bpf/novlan
+new file mode 100644
+index 0000000..fe35288
+--- /dev/null
++++ b/tools/bpf/novlan
+@@ -0,0 +1,7 @@
++  ldh [12]
++  jne #0x88f7, bad
++  ldb [14]
++  and #0x8
++  jeq #0, bad
++  good: ret #1500
++  bad: ret #0
 -- 
 2.7.4
 
