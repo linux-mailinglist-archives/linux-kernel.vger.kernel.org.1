@@ -2,192 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271112BFE0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 02:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC3D2BFE04
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 02:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgKWBX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 20:23:59 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:29644 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgKWBX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 20:23:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606094638; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=WVW8SEFhmmTXHu0CNeD1oWMm387GTbxMvfMsPgLO/r4=;
- b=oVasAtZ6Tin430LsxwXTPiRsPjK+o1+ZNJCO9zChD2A5Jpf8znWHlho8cak+oMNiROIClnBf
- zC9xBZa8joYPwHtOd5KW2B9+QAJ1+wypppnG7GA6ZDPWa9dZm7j1WARFFJ8Lyqn3mZv6YREL
- 2UEEKXYqTQT625R/tt4Ctfynogs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fbb0f2c77b63cdb34464b03 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 01:23:56
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BD894C43466; Mon, 23 Nov 2020 01:23:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 16917C433ED;
-        Mon, 23 Nov 2020 01:23:54 +0000 (UTC)
+        id S1726839AbgKWBRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 20:17:03 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:61970 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgKWBRC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 20:17:02 -0500
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201123011700epoutp010beb4359c3e898b777cc38ede7130011~J-i8MenZo2195721957epoutp01-
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 01:17:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201123011700epoutp010beb4359c3e898b777cc38ede7130011~J-i8MenZo2195721957epoutp01-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1606094220;
+        bh=zVzTnuyKE3DO2//uowBhMsWnup1z0a7x1hwyk7fg5zg=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Aps6gfjyPJ2Q9prFEC5A2XDcfvIjNEaobfUnrat1AZ90L+MbwbRBMZvHFpkKivCwS
+         zNFijCDn53fj96kkISoQ00K8uLuu3E3R4MiuUkqzsVfa6sray9oJl7J2or91SDr1aR
+         sc36Xg+SqyQO73RCLGGMxhLEf9tfXbLSlCxqHrsQ=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201123011659epcas1p1f73f65b6aba279f2b7958c17ccf58dd8~J-i7sOpua0596505965epcas1p1L;
+        Mon, 23 Nov 2020 01:16:59 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4CfTlF1lw6zMqYkb; Mon, 23 Nov
+        2020 01:16:57 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        47.4A.63458.18D0BBF5; Mon, 23 Nov 2020 10:16:49 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201123011649epcas1p4824e4ed9cdcb96e74606da954f783edb~J-ix9TPv02005820058epcas1p4n;
+        Mon, 23 Nov 2020 01:16:49 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201123011649epsmtrp1720f6cfb9eb188fce3ea745a6eefd8b2~J-ix8Os7O1181211812epsmtrp1Z;
+        Mon, 23 Nov 2020 01:16:49 +0000 (GMT)
+X-AuditID: b6c32a36-6c9ff7000000f7e2-18-5fbb0d81f8fc
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9F.D5.13470.18D0BBF5; Mon, 23 Nov 2020 10:16:49 +0900 (KST)
+Received: from [10.113.221.211] (unknown [10.113.221.211]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201123011648epsmtip2c593d73923d4ce98001aae700522ba1f~J-ixpnLIB0813908139epsmtip2R;
+        Mon, 23 Nov 2020 01:16:48 +0000 (GMT)
+Subject: Re: [PATCH 1/2] drm/exynos: depend on COMMON_CLK to fix compile
+ tests
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Paul Cercueil <paul@crapouillou.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+From:   Inki Dae <inki.dae@samsung.com>
+Message-ID: <5447e15e-d5a9-9d09-d6d1-6f9dff8cc142@samsung.com>
+Date:   Mon, 23 Nov 2020 10:24:23 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 09:23:53 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH RFC v2 1/1] scsi: pm: Leave runtime PM status alone during
- system resume/thaw/restore
-In-Reply-To: <20201120163524.GB619708@rowland.harvard.edu>
-References: <1605861443-11459-1-git-send-email-cang@codeaurora.org>
- <20201120163524.GB619708@rowland.harvard.edu>
-Message-ID: <ff2975f88cc452d134b8bf24c55bec09@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20201116175301.402787-1-krzk@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKJsWRmVeSWpSXmKPExsWy7bCmnm4j7+54g0uflS16z51ksvi/bSKz
+        xZWv79ksXty7yGJx/vwGdouzTW/YLTY9vsZqcXnXHDaLGef3MVm8an7EZtG/+BKLxYzJL9kc
+        eDxWX2pn89j7bQGLx+I9L5k8Nq3qZPPY/u0Bq8f97uNMHpuX1Hv0bVnF6PF5k1wAZ1S2TUZq
+        YkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QyUoKZYk5pUCh
+        gMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAssCveLE3OLSvHS95PxcK0MDAyNToMKE7IzlB9pZ
+        Ck5yVTS+3c/cwHibo4uRk0NCwESi+c9y9i5GLg4hgR2MEg1vJzJCOJ8YJWbtOMUK4XxjlPi/
+        9io7TMudY5ugEnsZJR62r2SBcN4zSrzbfp6ti5GDQ1ggQKLpqxBIg4jAAmaJbxudQWxmAVWJ
+        13vfMoHYbED2xBX32UBsXgE7iR1NPWALWIDiezubWEBsUYEIiePdk9khagQlTs58AhbnFDCT
+        WPXvAiPETHGJW0/mM0HY8hLNW2czg9wjIXCGQ2LuyW42iKtdJL6+nwZlC0u8Or4F6hspiZf9
+        bewQDc2MEhNnnGaCcDoYJe4+vs4CUWUssX/pZCaQz5gFNCXW79KHCCtK7Pw9F+oKPol3X3tY
+        QUokBHglOtqEIEqUJI5dvMEIYUtIXFgyEeoGD4nZNz+xTWBUnIXkt1lI/pmF5J9ZCIsXMLKs
+        YhRLLSjOTU8tNiwwQo7uTYzg9KxltoNx0tsPeocYmTgYDzFKcDArifC2yu2MF+JNSaysSi3K
+        jy8qzUktPsRoCgzticxSosn5wAyRVxJvaGpkbGxsYWJoZmpoqCTO+0e7I15IID2xJDU7NbUg
+        tQimj4mDU6qByWmy+CUdtT08pzxuF5w4ctlvrZnX8as6Vja/vjQySX6yn8zXGq4xobz62jWP
+        mkKds9vqGBodwh60/bvBkmOTI3DjxPrFaTsbEv5avhQO0Iq+O2/BCrVl6/L0lO6fY5h4duFx
+        1w+CB/+YODnbqK97Pv1iWtbsGFu5332GqWEXtpaXvNxibfzvun4625mV51aoK2wXmlR396GG
+        tN3Rh+faf65/cT7oh/7a13XRhk0J0rw7n4U+kVnq8nCJGOunOTWJX67ki97JnV9VvPPZwYYQ
+        V07vP3eYTv0vT37K7xMbrt95lO9L4i3b6n+xPccK0pZPez/1muOb/uAfjdOdeqOT8+bkd3hn
+        +Dcbbjtpw/TjjhJLcUaioRZzUXEiAHIgVz1YBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsWy7bCSvG4j7+54g1ebmC16z51ksvi/bSKz
+        xZWv79ksXty7yGJx/vwGdouzTW/YLTY9vsZqcXnXHDaLGef3MVm8an7EZtG/+BKLxYzJL9kc
+        eDxWX2pn89j7bQGLx+I9L5k8Nq3qZPPY/u0Bq8f97uNMHpuX1Hv0bVnF6PF5k1wAZxSXTUpq
+        TmZZapG+XQJXxvID7SwFJ7kqGt/uZ25gvM3RxcjJISFgInHn2CbWLkYuDiGB3YwS67ffY+li
+        5ABKSEhs2coBYQpLHD5cDFHyllHiz7JeZpC4sICfxOYlDiBxEYFFzBIfrzxhApnJLKAq8Xrv
+        WyaIhk5GibtXn7CAJNiAEhNX3GcDsXkF7CR2NPWwg9gsQPG9nU1gNaICERIt9/+wQ9QISpyc
+        CdHLKWAmserfBUaIBeoSf+ZdYoawxSVuPZkPtVheonnrbOYJjEKzkLTPQtIyC0nLLCQtCxhZ
+        VjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBEejluYOxu2rPugdYmTiYDzEKMHBrCTC
+        2yq3M16INyWxsiq1KD++qDQntfgQozQHi5I4743ChXFCAumJJanZqakFqUUwWSYOTqkGpqNa
+        82y05hyecO4Ek+c9ho0/Km1Zn74OX2D03ek+69uVGzvXZn9qX68u4SIf+SPBTLNavOn0QWW+
+        g+EcovvKpXr6HgbE5uluumkaz/Fp4eNXf9dwCH5+4af25yijyMy/Nz5IWIvM3bcnijchwSDw
+        bo70zc/TXmlPEfTcWPPA3nnxcV+J7NfiYXOYI0RPsQVOXlidsFXQ9uhu+bJ9p/qWmi09cnm9
+        ycam+6t6M0/MTt99JiBgfvGE2eeZla79mbrmTRXPkfdRfKejPpXd3rlg+btKy0obxtgj2x99
+        5PmllSxzMk1iq9jB3Z9Wzk29n7e/7/fWJq9trM3BlUKGJva5bnsyeq693cSUHbyk5aP4/1Yl
+        luKMREMt5qLiRAAjRKH+NQMAAA==
+X-CMS-MailID: 20201123011649epcas1p4824e4ed9cdcb96e74606da954f783edb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201116175410epcas1p1c0dbe17b850b30baa05d768fbdc74f5d
+References: <CGME20201116175410epcas1p1c0dbe17b850b30baa05d768fbdc74f5d@epcas1p1.samsung.com>
+        <20201116175301.402787-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alan,
+HI Krzysztof,
 
-On 2020-11-21 00:35, Alan Stern wrote:
-> On Fri, Nov 20, 2020 at 12:37:22AM -0800, Can Guo wrote:
->> Runtime resume is handled by runtime PM framework, no need to forcibly
->> set runtime PM status to RPM_ACTIVE during system resume/thaw/restore.
+20. 11. 17. 오전 2:53에 Krzysztof Kozlowski 이(가) 쓴 글:
+> The Exynos DRM uses Common Clock Framework thus it cannot be built on
+> platforms without it (e.g. compile test on MIPS with RALINK and
+> SOC_RT305X):
 > 
-> Sorry, I don't understand this explanation at all.
+>     /usr/bin/mips-linux-gnu-ld: drivers/gpu/drm/exynos/exynos_mixer.o: in function `mixer_bind':
+>     exynos_mixer.c:(.text+0x958): undefined reference to `clk_set_parent'
 > 
-> Sure, runtime resume is handled by the runtime PM framework.  But this
-> patch changes the code for system resume, which is completely 
-> different.
-> 
-> Following a system resume, the hardware will be at full power.  We 
-> don't
-> want the kernel to think that the device is still in runtime suspend;
-> otherwise is would never put the device back into low-power mode.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-How about adding below lines to the patch?
-
-diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
-index 908f27f..7ebe582 100644
---- a/drivers/scsi/scsi_pm.c
-+++ b/drivers/scsi/scsi_pm.c
-@@ -75,9 +75,11 @@ static int scsi_dev_type_resume(struct device *dev,
-         const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : 
-NULL;
-         int err = 0;
-
--       err = cb(dev, pm);
--       scsi_device_resume(to_scsi_device(dev));
--       dev_dbg(dev, "scsi resume: %d\n", err);
-+       if (pm_runtime_active(dev)) {
-+               err = cb(dev, pm);
-+               scsi_device_resume(to_scsi_device(dev));
-+               dev_dbg(dev, "scsi resume: %d\n", err);
-+       }
-
-         return err;
-  }
-
-Whenever a device is accessed, the issuer or somewhere in the path
-should do something like pm_runtime_get_sync (e.g. in sg_open()) or
-pm_runtime_resume() (e.g. in blk_queue_enter()), in either sync or
-async way. After the job (read/write/ioctl or whatever) is done,
-either a pm_runtime_put_sync() or auto runtime suspend puts the device
-back into runtime suspended/low-power mode. Since the func
-scsi_bus_suspend_common() does nothing if device is already in runtime
-suspended mode, scsi_dev_type_resume() should only resume the device
-if it is runtime active.
+Picked it up.
 
 Thanks,
+Inki Dae
 
-Can Guo.
-
-> Alan Stern
+> ---
+>  drivers/gpu/drm/exynos/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
->> Cc: Stanley Chu <stanley.chu@mediatek.com>
->> Cc: Bart Van Assche <bvanassche@acm.org>
->> Cc: Alan Stern <stern@rowland.harvard.edu>
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->> 
->> Changes since v1:
->> - Incorporated Bart's comments
->> 
->> ---
->>  drivers/scsi/scsi_pm.c | 24 +-----------------------
->>  1 file changed, 1 insertion(+), 23 deletions(-)
->> 
->> diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
->> index 3717eea..908f27f 100644
->> --- a/drivers/scsi/scsi_pm.c
->> +++ b/drivers/scsi/scsi_pm.c
->> @@ -79,25 +79,6 @@ static int scsi_dev_type_resume(struct device *dev,
->>  	scsi_device_resume(to_scsi_device(dev));
->>  	dev_dbg(dev, "scsi resume: %d\n", err);
->> 
->> -	if (err == 0) {
->> -		pm_runtime_disable(dev);
->> -		err = pm_runtime_set_active(dev);
->> -		pm_runtime_enable(dev);
->> -
->> -		/*
->> -		 * Forcibly set runtime PM status of request queue to "active"
->> -		 * to make sure we can again get requests from the queue
->> -		 * (see also blk_pm_peek_request()).
->> -		 *
->> -		 * The resume hook will correct runtime PM status of the disk.
->> -		 */
->> -		if (!err && scsi_is_sdev_device(dev)) {
->> -			struct scsi_device *sdev = to_scsi_device(dev);
->> -
->> -			blk_set_runtime_active(sdev->request_queue);
->> -		}
->> -	}
->> -
->>  	return err;
->>  }
->> 
->> @@ -165,11 +146,8 @@ static int scsi_bus_resume_common(struct device 
->> *dev,
->>  		 */
->>  		if (strncmp(scsi_scan_type, "async", 5) != 0)
->>  			async_synchronize_full_domain(&scsi_sd_pm_domain);
->> -	} else {
->> -		pm_runtime_disable(dev);
->> -		pm_runtime_set_active(dev);
->> -		pm_runtime_enable(dev);
->>  	}
->> +
->>  	return 0;
->>  }
->> 
->> --
->> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
->> Linux Foundation Collaborative Project.
->> 
+> diff --git a/drivers/gpu/drm/exynos/Kconfig b/drivers/gpu/drm/exynos/Kconfig
+> index 6417f374b923..951d5f708e92 100644
+> --- a/drivers/gpu/drm/exynos/Kconfig
+> +++ b/drivers/gpu/drm/exynos/Kconfig
+> @@ -1,7 +1,8 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  config DRM_EXYNOS
+>  	tristate "DRM Support for Samsung SoC Exynos Series"
+> -	depends on OF && DRM && (ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || ARCH_MULTIPLATFORM || COMPILE_TEST)
+> +	depends on OF && DRM && COMMON_CLK
+> +	depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || ARCH_MULTIPLATFORM || COMPILE_TEST
+>  	depends on MMU
+>  	select DRM_KMS_HELPER
+>  	select VIDEOMODE_HELPERS
+> 
