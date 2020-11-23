@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299562C0DBC
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD4D2C0DBD
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389212AbgKWOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:32:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48212 "EHLO mail.kernel.org"
+        id S2389231AbgKWOcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:32:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729794AbgKWOcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:32:11 -0500
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729794AbgKWOcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:32:24 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E43820782
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:32:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E1292083E;
+        Mon, 23 Nov 2020 14:32:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606141930;
-        bh=ftNKqa+bYDhqF4CMFphNHzMCzHAOisKpwk67ZYS6ZgM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=z33v22hdW4YxiwW6UEgw0GvvELco7HO5D74BE8TiqvAF2YrPjUDKYmmLTSTjzEXzQ
-         v6Qi2fTyU9w/KjIUEQPP7wzuYXaF7LpZ++7dBhNBNaz6XK+BswUidtVXm9Oslh+sSJ
-         xFTJAgH+Rq7jFYAWobff4/qdOjMk7bGHLg9i3vfg=
-Received: by mail-ed1-f54.google.com with SMTP id cf17so13739315edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:32:10 -0800 (PST)
-X-Gm-Message-State: AOAM532/bKULqpFjIVmqnp4sZIZj0kd6lpXN3fLfCt3HyW59Ab0xJVZo
-        mhJu4YWj75htYHXMDaJwZEypbjpIK3Srr15kKg==
-X-Google-Smtp-Source: ABdhPJyS2K7No/Iy7mVbNPsYoEYSje2gRGMO/P9wTkTu5AgIlPqa/VzyGgZFr00oj+Lye5y2SIpkBeoCVwE63Mb7TOk=
-X-Received: by 2002:a50:f742:: with SMTP id j2mr39321499edn.72.1606141928430;
- Mon, 23 Nov 2020 06:32:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-29-lee.jones@linaro.org>
-In-Reply-To: <20201112190039.2785914-29-lee.jones@linaro.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 23 Nov 2020 22:31:56 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__Q39YMUGLtrBi0p+kedU5xSHv0dUKz2NA3ajR17Fe-4A@mail.gmail.com>
-Message-ID: <CAAOTY__Q39YMUGLtrBi0p+kedU5xSHv0dUKz2NA3ajR17Fe-4A@mail.gmail.com>
-Subject: Re: [PATCH 28/30] drm/mediatek/mtk_disp_color: Fix formatting and
- provide missing member description
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        s=default; t=1606141943;
+        bh=lDofIwi2BtW6n3G9yyz3mKUtQ/dbkrPPmWz16CrGPi0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GpZ/3A6VL9vrcXWbAJ7FguzGnep2k7UBr7K5iTyCQKc76oA3A9XrwGdRmKY+lRWuE
+         Xf1jUB6+kgy8MCtw871AyjjXzjtXYFD3ZyRwIx8Y9y4TVuGYloOGFcTcl4dOeevuVd
+         1wpFK4aJvsTBHW6U3613MGfSfdmVVXrMGx2MUh8I=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khCtB-00CyXO-Bu; Mon, 23 Nov 2020 14:32:21 +0000
+Date:   Mon, 23 Nov 2020 14:32:20 +0000
+Message-ID: <87k0uc5ekr.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 07/24] kvm: arm64: Refactor handle_trap to use a switch
+In-Reply-To: <20201116204318.63987-8-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-8-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Lee:
+On Mon, 16 Nov 2020 20:43:01 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
+> 
+> Small refactor so that nVHE's handle_trap uses a switch on the Exception
+> Class value of ESR_EL2 in preparation for adding a handler of SMC32/64.
 
-Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8813=E6=97=
-=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=883:01=E5=AF=AB=E9=81=93=EF=BC=9A
+nit: SMC32 seems to be a leftover from the previous version.
+
 >
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function paramete=
-r or member 'ddp_comp' not described in 'mtk_disp_color'
->  drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function paramete=
-r or member 'crtc' not described in 'mtk_disp_color'
->  drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function paramete=
-r or member 'data' not described in 'mtk_disp_color'
->
-
-Applied to mediatek-drm-next [1], thanks.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mediatek@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 > ---
->  drivers/gpu/drm/mediatek/mtk_disp_color.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/=
-mediatek/mtk_disp_color.c
-> index 3ae9c810845bb..a788ff95ed6e4 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
-> @@ -30,8 +30,9 @@ struct mtk_disp_color_data {
->
->  /**
->   * struct mtk_disp_color - DISP_COLOR driver structure
-> - * @ddp_comp - structure containing type enum and hardware resources
-> - * @crtc - associated crtc to report irq events to
-> + * @ddp_comp: structure containing type enum and hardware resources
-> + * @crtc: associated crtc to report irq events to
-> + * @data: platform colour driver data
->   */
->  struct mtk_disp_color {
->         struct mtk_ddp_comp                     ddp_comp;
-> --
-> 2.25.1
->
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> index 411b0f652417..19332c20fcde 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> @@ -16,9 +16,9 @@
+>  
+>  DEFINE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
+>  
+> -static void handle_host_hcall(unsigned long func_id,
+> -			      struct kvm_cpu_context *host_ctxt)
+> +static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
+>  {
+> +	unsigned long func_id = host_ctxt->regs.regs[0];
+>  	unsigned long ret = 0;
+>  
+>  	switch (func_id) {
+> @@ -109,11 +109,12 @@ static void handle_host_hcall(unsigned long func_id,
+>  void handle_trap(struct kvm_cpu_context *host_ctxt)
+>  {
+>  	u64 esr = read_sysreg_el2(SYS_ESR);
+> -	unsigned long func_id;
+>  
+> -	if (ESR_ELx_EC(esr) != ESR_ELx_EC_HVC64)
+> +	switch (ESR_ELx_EC(esr)) {
+> +	case ESR_ELx_EC_HVC64:
+> +		handle_host_hcall(host_ctxt);
+> +		break;
+> +	default:
+>  		hyp_panic();
+> -
+> -	func_id = host_ctxt->regs.regs[0];
+> -	handle_host_hcall(func_id, host_ctxt);
+> +	}
+>  }
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
