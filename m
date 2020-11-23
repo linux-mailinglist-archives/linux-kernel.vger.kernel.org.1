@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD852C00E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400C52C00EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgKWHwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 02:52:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
+        id S1727058AbgKWHyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 02:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgKWHwV (ORCPT
+        with ESMTP id S1726163AbgKWHyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:52:21 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CA3C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:52:20 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 1so16309492wme.3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:52:20 -0800 (PST)
+        Mon, 23 Nov 2020 02:54:38 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C60DC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:54:38 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id 23so17572931wrc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:54:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6FLxwuUTQc6cRh7lRrVMYXIgZfDzgJlYaSbkXy3g/G0=;
-        b=ZwDgkPu7A90VXGwTQrYGNLGC8EibbIz5MiBElK4SpSSeRwZqUdZV/UU/TXWv0BSv3x
-         uBQwNJVFFiUNIdmm4QPWfgLgnN1KinzIzib5xXFpqYGwZYfg+NY64ngDfoDs8Tg6U5E8
-         kn3NSkHK5ltZ1Q0T0fUvuOeoso2I2DDA8uX1dmiNjwe4lwSG36giUE1QAp07raUSXElg
-         cLIRaILUg6hUoBIXi0F86H58rZ0pGONBa4SFsOgw2o5H201H1bWGVaw42+9l5Z3ikA+E
-         PVdJKEuupWpNmuzGbjKfM7vw68fbcBpgVRAOI7fGWMuv0UH4YeMbDTSshZ55tjyMQYZt
-         yc5Q==
+        bh=Ssyp6RlTZrHQ6t2h57nYO8M/yhZ11G6fNbpH9SLeVPg=;
+        b=scnod+G2VIdf6DEHMzS+If3CIQvFEX0hi5tQohy6KL/QnqI0bX54k/LExUaJW+Q3Mh
+         Vsg/8Tz+z4HUVh+2AFDV/2R2jD7Ab58/Pw5xiGTzcu47G86wHR6sH+F3BMjzHOu3c0gZ
+         zNtweQC3t1Z9Xo+PFlObigvlmQb7K6lZWTo/c3AeQDM3Pkp9DNypSzvNYFlgnK/IiENM
+         oqlajmv0zJI9Jw0orTX5WupaSKmpAy2GgNvYDZmGB82kixax5cF7QTVvUq4BYMgE6H/X
+         vBTaJwE2RfYZ1zx2jMXcLMobKS0a51G2fJd6Yoo104hNvwLin3RqRFFYMvFmtrTQeSes
+         pg/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=6FLxwuUTQc6cRh7lRrVMYXIgZfDzgJlYaSbkXy3g/G0=;
-        b=mgQp4mNHv22/ExIcY6OreqaomhZOMm502a5/cDa0VSavbstB6VgDR9R8yjPYEm7JFT
-         da5EEoh1Bre3VktBx174o7fPqqy9sGTqMFJnk9rr9sNa0y5OFdoxHiNhJQYu9Z6mQS1X
-         Q6kB+qePGzgEAUc+Py8W6IhkDDhBrgThHptOoDQBokCGnX8Y35TSQUcyhRtcsppRrTiA
-         57sta6VNTEMeMYugtA9uRIOOaOERxzscLJr7NpvRpeoHrSADu+vAuu4RDYpt0OgkBZ+n
-         vkr3N/DoXeB7ghvvfZS/2CQXiWo7l4/4jZVTk4WGTUB/CykAut8dXSb9n6DAfdZCFzAh
-         /Ipw==
-X-Gm-Message-State: AOAM530WiCiDlNYb+PeMXRW/L/Em7kRZcBVtREciknG13fZEWiHjgEWd
-        ZsuHHsK66hNfw9MwJyZj9QiZuBaqTM3VDpUf
-X-Google-Smtp-Source: ABdhPJzNZm7iinub3G6SGd3Kj1uOQQlZOW9ivFVGKglqtiB9VzNFMYSmP1ViO+1gwYF8fZwwk3N43A==
-X-Received: by 2002:a1c:1982:: with SMTP id 124mr21866556wmz.74.1606117938228;
-        Sun, 22 Nov 2020 23:52:18 -0800 (PST)
+        bh=Ssyp6RlTZrHQ6t2h57nYO8M/yhZ11G6fNbpH9SLeVPg=;
+        b=ru6LURGxEhOG8wzEWbWxgquQY2SbbUsGMtsX3b6Dqfdt/MNchL8ISgzAh/4UHD5yvq
+         7d4YLobHAhaTarEBZRqxDsFYcktmZU/jauQtMyra/by5uJQxRl9qCwIfeLjms9S+/7+G
+         FBHrPuQI5QF8TXmlAoT4OtS+C/pWkq1FN2oojPYVsd0Qij8Gd0LIUfvzVs2N5n8b1aLI
+         hphL7Yue1RKu4ve7VlAEd4WWm1BG3rrJFXjKnWSk2qtthOml34vmNlHfUnqty8/7EF3r
+         7X2CiVeCyo5j1a436Zb6mnL/6Zk+D6AL/fSvrXIdkEhmb4Z+qeJZlUdoBLZR8uzHF4er
+         xvfQ==
+X-Gm-Message-State: AOAM533NeURy3kmQCzW/IxcoEslvoDl8XVQqnhQ/0mo6hkDWhyRo9LOw
+        RnIzEUhnytPzqcr9E4IXdvL/Xw==
+X-Google-Smtp-Source: ABdhPJyYcd5uvtAn0PbofoEM4D/cJPzeClSAtcP9mVc70gCsTQI1p7IVw5TXOFwa5af3X+hmsIcydA==
+X-Received: by 2002:a5d:544e:: with SMTP id w14mr9317272wrv.227.1606118077109;
+        Sun, 22 Nov 2020 23:54:37 -0800 (PST)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:9541:d2fd:3a68:67ae? ([2a01:e35:2ec0:82b0:9541:d2fd:3a68:67ae])
-        by smtp.gmail.com with ESMTPSA id f20sm14494858wmc.26.2020.11.22.23.52.16
+        by smtp.gmail.com with ESMTPSA id m3sm19406323wrv.6.2020.11.22.23.54.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Nov 2020 23:52:17 -0800 (PST)
-Subject: Re: [PATCH 0/4] arm64: dts: meson-axg-s400: add support for USB and
- PCIe
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+        Sun, 22 Nov 2020 23:54:36 -0800 (PST)
+Subject: Re: [PATCH 3/4] arm64: dts: meson-axg: add PCIe nodes
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20201120153229.3920123-1-narmstrong@baylibre.com>
- <160589952950.11499.15261993036625823660.b4-ty@baylibre.com>
- <7hwnyfstg3.fsf@baylibre.com>
+ <20201120153229.3920123-4-narmstrong@baylibre.com>
+ <CAFBinCDLF2bL6sQFBsNTNZV5i9u+KW01O3SqbR=riRru5d8zRQ@mail.gmail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -109,12 +108,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <c1070a70-b3f1-d771-d04d-d981c7ea7928@baylibre.com>
-Date:   Mon, 23 Nov 2020 08:52:16 +0100
+Message-ID: <874f476d-3927-8944-14b7-0abe0b798a53@baylibre.com>
+Date:   Mon, 23 Nov 2020 08:54:35 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <7hwnyfstg3.fsf@baylibre.com>
+In-Reply-To: <CAFBinCDLF2bL6sQFBsNTNZV5i9u+KW01O3SqbR=riRru5d8zRQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -122,42 +121,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2020 20:45, Kevin Hilman wrote:
-> Kevin Hilman <khilman@baylibre.com> writes:
+On 22/11/2020 23:14, Martin Blumenstingl wrote:
+> Hi Neil,
 > 
->> On Fri, 20 Nov 2020 16:32:25 +0100, Neil Armstrong wrote:
->>> This adds the USB and PCIe to AXG, and enables USB & the two M.2 PCIe ports on the S400 board.
->>>
->>> Dependencies:
->>> - Patch 1, 2, 4: None
->>> - Patch 3: [1] arm64: dts: meson-axg-s400: add support for Power Controller & MIPI-DSI PHY
->>>
->>> [1] https://lore.kernel.org/r/20201120152131.3918814-1-narmstrong@baylibre.com
->>>
->>> [...]
->>
->> Applied, thanks!
->>
->> [1/4] arm64: dts: meson-axg: add USB nodes
->>       commit: ca91acde9a9858a20522abbb2c79c6883ef9bc73
->> [2/4] arm64: dts: meson-axg-s400: enable USB OTG
->>       commit: 160f1630878e11668336fded29eeb0fe82fb3faf
->> [3/4] arm64: dts: meson-axg: add PCIe nodes
->>       commit: 9bfc5abed67ae7dcc837dd8f6d61396d1cc9ac2b
->> [4/4] arm64: dts: meson-axg-s400: enable PCIe M.2 Key E slots
->>       commit: eee685ef92d8cbabb2a61c45fe7d976c3ebc9b1e
+> (I have to admit that for me the PCI(e) bindings are very complex, so
+> I may be mixing up things. I am still sending this review mail because
+> "you're doing it different than in meson-g12-common.dtsi")
 > 
-> FYI... these commit IDs are no longer accurate.  I relized that the USB
-> patches were already in my fixes branch, so needed a rebase.  I fixed
-> everything up locally, but the commit IDs are no longer the same as
-> above.
+> On Fri, Nov 20, 2020 at 4:33 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+> [...]
+>> +               pcieA: pcie@f9800000 {
+>> +                       compatible = "amlogic,axg-pcie", "snps,dw-pcie";
+>> +                       reg = <0x0 0xf9800000 0x0 0x400000>,
+>> +                             <0x0 0xff646000 0x0 0x2000>,
+>> +                             <0x0 0xf9f00000 0x0 0x100000>;
+>> +                       reg-names = "elbi", "cfg", "config";
+>> +                       interrupts = <GIC_SPI 177 IRQ_TYPE_EDGE_RISING>;
+>> +                       #interrupt-cells = <1>;
+>> +                       interrupt-map-mask = <0 0 0 0>;
+>> +                       interrupt-map = <0 0 0 0 &gic GIC_SPI 179 IRQ_TYPE_EDGE_RISING>;
+>> +                       bus-range = <0x0 0xff>;
+>> +                       #address-cells = <3>;
+>> +                       #size-cells = <2>;
+>> +                       device_type = "pci";
+>> +                       ranges = <0x82000000 0 0xf9c00000 0x0 0xf9c00000 0 0x00300000>;
+> only PCI IO space here, no PCI MEM space?
 
-Oops it's my fault, i forgot they were merged on -rc2.
 
-thx,
+I know, I tried to add IO & MEM space like g12, but it doesn't work.
+
+
+> 
+> [...]
+>> +               pcieB: pcie@fa000000 {
+>> +                       compatible = "amlogic,axg-pcie", "snps,dw-pcie";
+>> +                       reg = <0x0 0xfa000000 0x0 0x400000>,
+>> +                             <0x0 0xff648000 0x0 0x2000>,
+>> +                             <0x0 0xfa400000 0x0 0x100000>;
+>> +                       reg-names = "elbi", "cfg", "config";
+>> +                       interrupts = <GIC_SPI 167 IRQ_TYPE_EDGE_RISING>;
+>> +                       #interrupt-cells = <1>;
+>> +                       interrupt-map-mask = <0 0 0 0>;
+>> +                       interrupt-map = <0 0 0 0 &gic GIC_SPI 169 IRQ_TYPE_EDGE_RISING>;
+>> +                       bus-range = <0x0 0xff>;
+>> +                       #address-cells = <3>;
+>> +                       #size-cells = <2>;
+>> +                       device_type = "pci";
+>> +                       ranges = <0x82000000 0 0xfa500000 0x0 0xfa500000 0 0x00300000>;
+> same as above: only PCI IO space here, no PCI MEM space?
+
+Same,
+
+I suspect they configured the two instance differently.
+Anyway I managed to used an NVMe and a PCIe XHCI controller on each port successfully.
+
+Since I'm a PCIe nOOb, I don't know...
+
 Neil
 
 > 
-> Kevin
+> 
+> Best regards,
+> Martin
 > 
 
