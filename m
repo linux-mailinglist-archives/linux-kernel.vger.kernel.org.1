@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A892C07CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CF42C07D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733213AbgKWMoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:44:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56470 "EHLO mail.kernel.org"
+        id S1733233AbgKWMob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:44:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733056AbgKWMnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:43:19 -0500
+        id S1733064AbgKWMnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:43:22 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 152B620732;
-        Mon, 23 Nov 2020 12:43:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 840572078E;
+        Mon, 23 Nov 2020 12:43:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135399;
-        bh=zb0Ime6XI530MGXlEJNwNAMm6EzzeWNku9TaSwKyjMI=;
+        s=korg; t=1606135402;
+        bh=rHyctRfZhyusAX1YcbUnm/XQFHRH3I2TLqDIyDvESXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ucRashszdArwrUEwQlKlAWJaAHyGqJnIosiidfV8RpsQv03O6ZQUFUqIuwJN6LEQg
-         ug8jpayNA8jQ3InoL0xzaBoQ+k1Doi6DcefyR6ZkXtLmXbYzbvuH7weK/aLQHjWUos
-         lpL3Rvq8+0lrwzP8sIWoAkd38XwKWHxlLlcTfCsI=
+        b=OuBUzg8UZ2V4AajCUCKaJaoElhXxdnSt34hJY5pbWABsG7w5DMFGehh0Wb7gcrBN1
+         aA3aHJ7HlWSsHX6LUH3k8noYMQ1+xvnmrXuWU+asaagCCsFBirBBNU2eLT11Qt3K+n
+         KRhWD9fwG6txqOf6i6RH2/ZrPfF1Hpl1xxt1U5E0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Oded Gabbay <ogabbay@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 055/252] tools, bpftool: Avoid array index warnings.
-Date:   Mon, 23 Nov 2020 13:20:05 +0100
-Message-Id: <20201123121838.246582620@linuxfoundation.org>
+Subject: [PATCH 5.9 056/252] habanalabs/gaudi: mask WDT error in QMAN
+Date:   Mon, 23 Nov 2020 13:20:06 +0100
+Message-Id: <20201123121838.295017374@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -45,44 +42,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Oded Gabbay <ogabbay@kernel.org>
 
-[ Upstream commit 1e6f5dcc1b9ec9068f5d38331cec38b35498edf5 ]
+[ Upstream commit f83f3a31b2972ddc907fbb286c6446dd9db6e198 ]
 
-The bpf_caps array is shorter without CAP_BPF, avoid out of bounds reads
-if this isn't defined. Working around this avoids -Wno-array-bounds with
-clang.
+This interrupt cause is not relevant because of how the user use the
+QMAN arbitration mechanism. We must mask it as the log explodes with it.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Tobias Klauser <tklauser@distanz.ch>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20201027233646.3434896-1-irogers@google.com
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/feature.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/misc/habanalabs/include/gaudi/gaudi_masks.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index a43a6f10b564c..359960a8f1def 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -843,9 +843,14 @@ static int handle_perms(void)
- 		else
- 			p_err("missing %s%s%s%s%s%s%s%srequired for full feature probing; run as root or use 'unprivileged'",
- 			      capability_msg(bpf_caps, 0),
-+#ifdef CAP_BPF
- 			      capability_msg(bpf_caps, 1),
- 			      capability_msg(bpf_caps, 2),
--			      capability_msg(bpf_caps, 3));
-+			      capability_msg(bpf_caps, 3)
-+#else
-+				"", "", "", "", "", ""
-+#endif /* CAP_BPF */
-+				);
- 		goto exit_free;
- 	}
+diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
+index 3510c42d24e31..b734b650fccf7 100644
+--- a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
++++ b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
+@@ -452,7 +452,6 @@ enum axi_id {
  
+ #define QM_ARB_ERR_MSG_EN_MASK		(\
+ 					QM_ARB_ERR_MSG_EN_CHOISE_OVF_MASK |\
+-					QM_ARB_ERR_MSG_EN_CHOISE_WDT_MASK |\
+ 					QM_ARB_ERR_MSG_EN_AXI_LBW_ERR_MASK)
+ 
+ #define PCIE_AUX_FLR_CTRL_HW_CTRL_MASK                               0x1
 -- 
 2.27.0
 
