@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED862C18F6
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF922C18F5
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387840AbgKWWwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2387869AbgKWWwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 23 Nov 2020 17:52:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387548AbgKWWvw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:51:52 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107BAC0613CF;
-        Mon, 23 Nov 2020 14:51:52 -0800 (PST)
-Date:   Mon, 23 Nov 2020 22:51:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606171910;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8rgZjFVGbZTiySQP0d1p5lzAg0pPMaZFpFfq78h8Rg=;
-        b=xNMBYCDl5kO2Ge6w8diK/WWd4PF2iwuTdWeXCJKPkvSlKt4MvD8mVV/Q9hD/65sGu7P9kX
-        61eYm1IewpmFUIMPrzRbcZ5WHq8xCdaYveWwobTEZ+9gYpVv9SPoVplZZaTaObZJ3xMESg
-        6uaNL4Tf5CuHbkKRHMy0q5VW7DMXx59TBl6cQeKQxQgkvgVptlmF43i/+Jn+gHxsDQQM+s
-        gN+L2woZ07fH0agT1Hmx0UOlECsXSU4G9SkIpGpJyptvArlGU+ZM4zNaQeqaYB2PFTuHgb
-        A1rpsyPK01+FG79ycYbeVzjLIULp2VHUwcCkzM1qRCcya7/c8frJWPNgACbkEg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606171910;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8rgZjFVGbZTiySQP0d1p5lzAg0pPMaZFpFfq78h8Rg=;
-        b=ukztMMG9yyh1wKcRZlDKTTB3LTuFIkudQzHe2F343NupfxXOrYC/qC5BO1McxjotvBa2po
-        d13/ytZbrFR8wFDQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] parisc: Remove bogus __IRQ_STAT macro
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201113141732.680780121@linutronix.de>
-References: <20201113141732.680780121@linutronix.de>
+Received: from mail.kernel.org ([198.145.29.99]:51202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387623AbgKWWwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:52:31 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC152206D8;
+        Mon, 23 Nov 2020 22:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606171951;
+        bh=kuDyYfFAzKwYCzre6viwIkFybY6f6EhC4LYo07GXriI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mZUQ1x+Y0l//U0HqEsAC9TuQjVO3tF2E+PYXIGJvtJ9WxDt6TgFZUsLqO99dSdk8F
+         xtUvn+iVUSvsDf3FOxwzPVCP4BAeqHXDjp6LySP+7G/xJE231xl9OrLD4kTCZpZN4t
+         zsf/b+R10BAenQQFXaxiZdbbMiIsVHfnosiBJ7HE=
+Date:   Tue, 24 Nov 2020 00:52:26 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 131/141] tpm: Fix fall-through warnings for Clang
+Message-ID: <20201123225226.GA17124@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <1804f48dac434541dc60ada5eefcb86f74905671.1605896060.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Message-ID: <160617190975.11115.3653204687525543664.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1804f48dac434541dc60ada5eefcb86f74905671.1605896060.git.gustavoars@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Fri, Nov 20, 2020 at 12:40:14PM -0600, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/char/tpm/eventlog/tpm1.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/char/tpm/eventlog/tpm1.c b/drivers/char/tpm/eventlog/tpm1.c
+> index 2c96977ad080..8aa9057601d6 100644
+> --- a/drivers/char/tpm/eventlog/tpm1.c
+> +++ b/drivers/char/tpm/eventlog/tpm1.c
+> @@ -210,6 +210,7 @@ static int get_event_name(char *dest, struct tcpa_event *event,
+>  		default:
+>  			break;
+>  		}
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> -- 
+> 2.27.0
+> 
+> 
 
-Commit-ID:     9f112156f8da016df2dcbe77108e5b070aa58992
-Gitweb:        https://git.kernel.org/tip/9f112156f8da016df2dcbe77108e5b070aa58992
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 13 Nov 2020 15:02:08 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 23 Nov 2020 10:31:05 +01:00
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
 
-parisc: Remove bogus __IRQ_STAT macro
+Who is picking these patches?
 
-This is a leftover from a historical array based implementation and unused.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Link: https://lore.kernel.org/r/20201113141732.680780121@linutronix.de
-
----
- arch/parisc/include/asm/hardirq.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
-index 7f70395..fad29aa 100644
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -32,7 +32,6 @@ typedef struct {
- DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
- 
- #define __ARCH_IRQ_STAT
--#define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
- #define inc_irq_stat(member)	this_cpu_inc(irq_stat.member)
- #define __inc_irq_stat(member)	__this_cpu_inc(irq_stat.member)
- #define ack_bad_irq(irq) WARN(1, "unexpected IRQ trap at vector %02x\n", irq)
+/Jarkko
