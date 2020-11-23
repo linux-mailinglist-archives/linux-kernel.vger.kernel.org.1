@@ -2,126 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DB12C1856
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1532C1858
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730654AbgKWWYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728161AbgKWWYD (ORCPT
+        id S1731151AbgKWWYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:24:12 -0500
+Received: from smtprelay0199.hostedemail.com ([216.40.44.199]:34174 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728161AbgKWWYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:24:03 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCC6C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:24:03 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id v21so15604559pgi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:24:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=sYmwP8t7TxHJ62xKzIUva7lVBCpyFaPUSVAcVVKAMoc=;
-        b=aOqJMx++sC+xT7/75CuI3FlV95QEjv3cRGoU1BWcQeShqdvzjNc2247deUlkdkBiMI
-         T6aLg5cjgySA5tL2TsTbeL1s+TZI1N8mSgTln4ta865ol7ARUbNv1KhJ5k2vZFyT+P8m
-         /fJbrBQXyLZBnkYrl9cgwJFVasnGS9EimQjWlhV7eoJ5tIh0xEYNFe6D2NFOmLVoLewO
-         gKM4RZZwvgHOOPcVRL/sR+WiE3TqPrNC4KylQKYWssg5Ng38C6mjUwAeIrcPedHqSAPo
-         RWKlGf40b80K7i3Vwza1VCY/kQxHwoaFCZgsiJNCzck/qbbp/MUBi5ygVeESoSXursQZ
-         LY1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=sYmwP8t7TxHJ62xKzIUva7lVBCpyFaPUSVAcVVKAMoc=;
-        b=hk7+nxe7pnBJ2997GVGraWO3wpX2tyITSaFpkflRihUSkfP+5xQjrKlQSBQTJJt0ay
-         1qqq5dO27RlPs9UPzJhHWDY6wwUoFpXR3vzd5YWMW8hcxZYkF4pMd8NqhE5k3LhKfhLV
-         A1kwhzM+vNLKcZXHaMA+MG6W0upNF8ytGYwSOkDuERYpjHtSdaVzxcVUXhu5iYoJKSDn
-         x6gIfG6vkdD0pZXqAFdBA8SHLuvxn5bz92FOtBfl4TZ3KNBDoFUrNQDJutdlm6IXV6NJ
-         InaDbp5bOUCvrGqhkoSHOr11xAczmFFUvW/wljLtvwhyu5C9au/+8SMH0/SZZITcujBY
-         rdMg==
-X-Gm-Message-State: AOAM531gr469Dk8sSOf7BB2lKo42jps6L9NRcN1CX1NiILxNoHLUChN7
-        xYzgNT+2GmC2MqVc9Egs0aw6l6ToJZ3Qxw==
-X-Google-Smtp-Source: ABdhPJyu9Uo9CrcFwMhgI4t9O9QAE3zTseSTSA2FM03Uq9woUurMxRBsbIeTJdDmDSwKdP+xMoWIQQ==
-X-Received: by 2002:a17:90a:ee8c:: with SMTP id i12mr1182810pjz.204.1606170242542;
-        Mon, 23 Nov 2020 14:24:02 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id ge21sm416029pjb.5.2020.11.23.14.24.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 14:24:01 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>, Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: [PATCH v2] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies to avoid build error
-Date:   Mon, 23 Nov 2020 22:23:59 +0000
-Message-Id: <20201123222359.103822-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Mon, 23 Nov 2020 17:24:11 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 3C1C0100E7B43;
+        Mon, 23 Nov 2020 22:24:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:966:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2196:2198:2199:2200:2393:2553:2559:2562:2731:2828:3138:3139:3140:3141:3142:3355:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4385:4559:4605:5007:6119:6120:7514:7809:7903:10004:10400:10848:11026:11232:11657:11658:11914:12043:12295:12296:12297:12438:12555:12679:12681:12740:12760:12895:12986:13095:13161:13181:13229:13439:14181:14659:14721:21080:21324:21433:21451:21611:21627:21939:21990:30012:30046:30054:30055:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:87,LUA_SUMMARY:none
+X-HE-Tag: skin07_30012d527369
+X-Filterd-Recvd-Size: 4485
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 23 Nov 2020 22:24:08 +0000 (UTC)
+Message-ID: <afd4d5199527b33c4c428090b8a3d360b9565549.camel@perches.com>
+Subject: [RFC PATCH] Add a new "Frozen" status to MAINTAINERS subsystem
+ entries
+From:   Joe Perches <joe@perches.com>
+To:     Sam Ravnborg <sam@ravnborg.org>, Bernard Zhao <bernard@vivo.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Date:   Mon, 23 Nov 2020 14:24:07 -0800
+In-Reply-To: <20201123214208.GB675342@ravnborg.org>
+References: <20201119072957.108941-1-bernard@vivo.com>
+         <20201123214208.GB675342@ravnborg.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test robot reported the following build error:
+On Mon, 2020-11-23 at 22:42 +0100, Sam Ravnborg wrote:
+> For this old driver we should try to limit patches to bug fixing and
+> infrastructure updates.
 
-All errors (new ones prefixed by >>):
+It might be useful to add a new "S:" entry type to these old drivers
+as supported/maintained/obsolete may not really be appropriate.
 
-   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
-   qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
-   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
-   qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
-   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
->> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
-   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
-   qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
+How about something like "S: Frozen" and checkpatch could emit a
+message similar to the one for unnecessary changes to obsolete code?
 
-Which is due to REGULATOR_QCOM_RPMH depending on
-QCOM_RPMH || COMPILE_TEST. The problem is that QOM_RPMH can now
-be a module, which in that case requires REGULATOR_QCOM_RPMH=m
-to build.
+So using the below would emit:
 
-However, if COMPILE_TEST is enabled, REGULATOR_QCOM_RPMH can be
-set to =y while QCOM_RPMH=m which will cause build failures.
+$ ./scripts/checkpatch.pl -f drivers/gpu/drm/via/via_dma.c
+WARNING: drivers/gpu/drm/via/via_dma.c is marked as 'frozen' in the MAINTAINERS hierarchy.  No unnecessary modifications please.
 
-The fix here is to add (QCOM_RPMH=n && COMPILE_TEST) to the
-dependency.
+Maybe like the below (and fyi there's no additional git lookup overhead as
+the initial obsolete check already caches the git result).
 
-Feedback would be appreciated!
-
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rajendra Nayak <rnayak@codeaurora.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Stephen Boyd <swboyd@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
-v2: Switch dependency logic as suggested by MarkB
----
- drivers/regulator/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS           | 10 +++++++++-
+ scripts/checkpatch.pl | 11 +++++++----
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 020a00d6696b..481c7b10133b 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -843,7 +843,7 @@ config REGULATOR_QCOM_RPM
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5f10105cac6f..6374d29180b8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -88,7 +88,10 @@ Descriptions of section entries and preferred order
+ 	   Supported:	Someone is actually paid to look after this.
+ 	   Maintained:	Someone actually looks after it.
+ 	   Odd Fixes:	It has a maintainer but they don't have time to do
+-			much other than throw the odd patch in. See below..
++			much other than throw the odd patch in.
++	   Frozen:	Old code that should not be modified unless changes
++			are to correct actual defects or API infrastructure.
++			Cleanup/style changes are not generally accepted.
+ 	   Orphan:	No current maintainer [but maybe you could take the
+ 			role as you write your new code].
+ 	   Obsolete:	Old code. Something tagged obsolete generally means
+@@ -5718,6 +5721,11 @@ S:	Supported
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	drivers/gpu/drm/udl/
  
- config REGULATOR_QCOM_RPMH
- 	tristate "Qualcomm Technologies, Inc. RPMh regulator driver"
--	depends on QCOM_RPMH || COMPILE_TEST
-+	depends on QCOM_RPMH || (QCOM_RPMH=n && COMPILE_TEST)
- 	help
- 	  This driver supports control of PMIC regulators via the RPMh hardware
- 	  block found on Qualcomm Technologies Inc. SoCs.  RPMh regulator
--- 
-2.17.1
++DRM DRIVER FOR VIA
++L:	dri-devel@lists.freedesktop.org
++S:	Frozen
++F:	drivers/gpu/drm/via/
++
+ DRM DRIVER FOR VIRTUAL KERNEL MODESETTING (VKMS)
+ M:	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+ M:	Melissa Wen <melissa.srw@gmail.com>
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fdfd5ec09be6..79321cbfb761 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -902,8 +902,8 @@ sub seed_camelcase_file {
+ 
+ our %maintained_status = ();
+ 
+-sub is_maintained_obsolete {
+-	my ($filename) = @_;
++sub is_maintained {
++	my ($filename, $test) = @_;
+ 
+ 	return 0 if (!$tree || !(-e "$root/scripts/get_maintainer.pl"));
+ 
+@@ -911,7 +911,7 @@ sub is_maintained_obsolete {
+ 		$maintained_status{$filename} = `perl $root/scripts/get_maintainer.pl --status --nom --nol --nogit --nogit-fallback -f $filename 2>&1`;
+ 	}
+ 
+-	return $maintained_status{$filename} =~ /obsolete/i;
++	return $maintained_status{$filename} =~ /$test/i;
+ }
+ 
+ sub is_SPDX_License_valid {
+@@ -2633,9 +2633,12 @@ sub process {
+ 		}
+ 
+ 		if ($found_file) {
+-			if (is_maintained_obsolete($realfile)) {
++			if (is_maintained($realfile, "obsolete")) {
+ 				WARN("OBSOLETE",
+ 				     "$realfile is marked as 'obsolete' in the MAINTAINERS hierarchy.  No unnecessary modifications please.\n");
++			} elsif (is_maintained($realfile, "frozen")) {
++				WARN("FROZEN",
++				     "$realfile is marked as 'frozen' in the MAINTAINERS hierarchy.  No unnecessary modifications please.\n");
+ 			}
+ 			if ($realfile =~ m@^(?:drivers/net/|net/|drivers/staging/)@) {
+ 				$check = 1;
+
 
