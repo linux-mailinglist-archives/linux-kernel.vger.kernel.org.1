@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BDB2C0325
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF292C032A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbgKWKVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S1727918AbgKWKWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:22:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgKWKVx (ORCPT
+        with ESMTP id S1727984AbgKWKWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:21:53 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F7BC061A4E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:21:53 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id z5so2408691ejp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:21:53 -0800 (PST)
+        Mon, 23 Nov 2020 05:22:06 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE2EC061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:22:06 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id c198so15468486wmd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:22:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=KicNkypOIaNLZNofAMT0/dbRVfdiQb0EG7yDuWE5ulA=;
-        b=TDVt/xqwo7FGjOiB50CURiRd4zX8Glpc/xzed4IR3D50NS0EqlijbKWHNsEmT9A92f
-         opeYzaDlby6Pgpezpy0Z6eYOPQW6ipaIAyEAtip0SZR01YDtd+SICLsxoZ+9krn8s+et
-         lULt1gHvEOthv2285g8UdKxZGn8PuitA3T+FAGLQ/qKxFihLT0OrTedRRYXRz8VblfZD
-         a1sXohEAJiNhEPF+raDuSX6Ta4nQGnI6siEeVnxshXZXFTiwE+mIarl4EbBFaSYp4ZqT
-         zvmMqJJexFfo+5+oFHJeofxyxcmA2hqWZAvCeahk9touSv1o0xYBPyhqFNpgNP0LgZcR
-         CU2Q==
+        bh=m2/dM0fiZFFaVmOHUldEXcGmQWn8Jr9SAh0wPU5gbj0=;
+        b=xdilp649Fuj21dkVTPgC3MH7YkEUop9b7ELDJZc7oLaFgQVfEAODOZBiZL+nzQ9F3z
+         AYi6UKfT37LQaYld5fvNCn5PhejTzrgzma+Z+8elyjCVU3q0E2eDBktqxpmCEn5bD8Mo
+         e3YSS6if3Zfv1O7hX1k2vpEgiDfgpnacHQo/ut+b6vKU4OWgal3iPf1iT2BkKgKI8I7I
+         PNbRIC8mrdMyvKX1HRzbHaoQSM2DaBVUJ3Ymjhy4HuPy7n2eNhnyNnv+BefIowc5MEMM
+         xNjGiIyRhlaJmFbvXkvXZeLtrxnjAPbuPdvwuQbucW8Jc6Qcs49B5eC+bYK9hf2V+923
+         hl0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KicNkypOIaNLZNofAMT0/dbRVfdiQb0EG7yDuWE5ulA=;
-        b=QozWg9lCTzpRcKLD2jO8hJNKT5vb5N8r8tRf1ah1pjwAPdheHUaVvrPlMg6dNNa3Jx
-         K0jlHL2NhqEOdIRNPHvwPqQZULt44z80m9TvHhWi4FAkCvInTKCYwGjAs30XiJLke7CE
-         aLjjGtAMOah5zT5LpYxrx/TK2kAGW7hE+iIXOMG5aoy8ua9oDRtQ9PR6mfF0AdMDWkF6
-         lxrcl5RROsJz29fKpsocz0GiBqergwedzhcyD4PiUBzmhjaMrSVYbwsfxKU/i3e2nxxd
-         kKTRxxj6pXsOmFgGw22cFQzwfQQxw+dxLFusDJd4mywUWIpezR/OoW8cEjJwRvU/uKYz
-         QR6g==
-X-Gm-Message-State: AOAM531SRsaT5cL2oRk+DNveEv68tMtUcTaEb6k+KGTtpUpJZwUzRqt8
-        KRplzb90P3B39VfaLvT6RPYTiQ==
-X-Google-Smtp-Source: ABdhPJxFSYMYi0puK0drxRNruUpOKNZHKEgE3EPEQ608H69x9iUkj+1IRAw3SWeiVlPLVEVUtEhq+A==
-X-Received: by 2002:a17:906:8058:: with SMTP id x24mr44772875ejw.272.1606126911958;
-        Mon, 23 Nov 2020 02:21:51 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:acac:b2ef:c7d:fd8a])
-        by smtp.gmail.com with ESMTPSA id k3sm4725861ejd.36.2020.11.23.02.21.50
+        bh=m2/dM0fiZFFaVmOHUldEXcGmQWn8Jr9SAh0wPU5gbj0=;
+        b=FMY0UITwBHJyno6lr7pOFo7ZbyUdVmcZ/DP7HPIlEgQTCOEJFE9c63j3hYOd1EXpO0
+         Wgb7QMPbnaKvos1+NQgAmLg/s7i6YdJmd+RB+l+e/SD5SiNq4kt8p3JXOAXXerMMrscB
+         kqYEaif0jeV6FMQVjmG9xGgdZAeUGihlUeYXQYrMGmorsmgAIGyUwl39WwVsWwR1rtW2
+         OGqzSjylu37vqOwq153AtHFm6mJyzVMiEA1Temk4hXqyyfRoQtbXU8rCWRzlJTkhJ+qr
+         R2baIjDqZ2y+RxyOqsjTrdYIjLnFI/PpnymzotOuVlZuXG0otvyaT7owgO8DjRPkLRD7
+         MtFw==
+X-Gm-Message-State: AOAM531iIfg4D+z2clPyFQ9Ck+d1T2FM/TI7zwJwvFJnRL6kooTPP2XP
+        erXrrZiS3svmzIX+WLJiFOIiWQ==
+X-Google-Smtp-Source: ABdhPJzyrmOIreek1BO7giUW6mMgGaKdm3OWuSiLTdj1g05sySw3/UiLj72O1cLUNvTTRF6x26sAEQ==
+X-Received: by 2002:a1c:1c3:: with SMTP id 186mr22816096wmb.39.1606126925037;
+        Mon, 23 Nov 2020 02:22:05 -0800 (PST)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id d15sm19893678wrx.93.2020.11.23.02.22.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 02:21:51 -0800 (PST)
-Date:   Mon, 23 Nov 2020 10:21:49 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v7 15/17] KVM: arm64: disable LTO for the nVHE directory
-Message-ID: <20201123102149.ogl642tw234qod62@google.com>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <20201118220731.925424-16-samitolvanen@google.com>
+        Mon, 23 Nov 2020 02:22:04 -0800 (PST)
+Date:   Mon, 23 Nov 2020 11:22:03 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     George Cherian <gcherian@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+        "saeed@kernel.org" <saeed@kernel.org>
+Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
+ reporters for NPA
+Message-ID: <20201123102203.GH3055@nanopsycho.orion>
+References: <BYAPR18MB2679FA2CCEBC4E921C3E078DC5FC0@BYAPR18MB2679.namprd18.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118220731.925424-16-samitolvanen@google.com>
+In-Reply-To: <BYAPR18MB2679FA2CCEBC4E921C3E078DC5FC0@BYAPR18MB2679.namprd18.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Sami,
+Mon, Nov 23, 2020 at 03:49:06AM CET, gcherian@marvell.com wrote:
+>
+>
+>> -----Original Message-----
+>> From: Jiri Pirko <jiri@resnulli.us>
+>> Sent: Saturday, November 21, 2020 7:44 PM
+>> To: George Cherian <gcherian@marvell.com>
+>> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> kuba@kernel.org; davem@davemloft.net; Sunil Kovvuri Goutham
+>> <sgoutham@marvell.com>; Linu Cherian <lcherian@marvell.com>;
+>> Geethasowjanya Akula <gakula@marvell.com>; masahiroy@kernel.org;
+>> willemdebruijn.kernel@gmail.com; saeed@kernel.org
+>> Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
+>> reporters for NPA
+>> 
+>> Sat, Nov 21, 2020 at 05:02:00AM CET, george.cherian@marvell.com wrote:
+>> >Add health reporters for RVU NPA block.
+>> >NPA Health reporters handle following HW event groups
+>> > - GENERAL events
+>> > - ERROR events
+>> > - RAS events
+>> > - RVU event
+>> >An event counter per event is maintained in SW.
+>> >
+>> >Output:
+>> > # devlink health
+>> > pci/0002:01:00.0:
+>> >   reporter npa
+>> >     state healthy error 0 recover 0
+>> > # devlink  health dump show pci/0002:01:00.0 reporter npa
+>> > NPA_AF_GENERAL:
+>> >        Unmap PF Error: 0
+>> >        Free Disabled for NIX0 RX: 0
+>> >        Free Disabled for NIX0 TX: 0
+>> >        Free Disabled for NIX1 RX: 0
+>> >        Free Disabled for NIX1 TX: 0
+>> 
+>> This is for 2 ports if I'm not mistaken. Then you need to have this reporter
+>> per-port. Register ports and have reporter for each.
+>> 
+>No, these are not port specific reports.
+>NIX is the Network Interface Controller co-processor block.
+>There are (max of) 2 such co-processor blocks per SoC.
 
-On Wed, Nov 18, 2020 at 02:07:29PM -0800, Sami Tolvanen wrote:
-> We use objcopy to manipulate ELF binaries for the nVHE code,
-> which fails with LTO as the compiler produces LLVM bitcode
-> instead. Disable LTO for this code to allow objcopy to be used.
+Ah. I see. In that case, could you please structure the json
+differently. Don't concatenate the number with the string. Instead of
+that, please have 2 subtrees, one for each NIX.
 
-We now partially link the nVHE code (generating machine code) before objcopy,
-so I think you should be able to drop this patch now. Tried building your
-branch without it, ran a couple of unit tests and all seems fine.
 
-David
+>
+>Moreover, this is an NPA (Network Pool/Buffer Allocator co- processor) reporter.
+>This tells whether a free or alloc operation is skipped due to the configurations set by
+>other co-processor blocks (NIX,SSO,TIM etc).
+>
+>https://www.kernel.org/doc/html/latest/networking/device_drivers/ethernet/marvell/octeontx2.html
+>> NAK.
