@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666C32C0B35
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FFA2C0BF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388895AbgKWNVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:21:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51154 "EHLO mail.kernel.org"
+        id S1732867AbgKWNdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:33:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732120AbgKWMik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:38:40 -0500
+        id S1730017AbgKWMZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:25:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14E312065E;
-        Mon, 23 Nov 2020 12:38:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36F0C2076E;
+        Mon, 23 Nov 2020 12:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135120;
-        bh=2FsW2JYiM5WYfvtAH7r0oJxW60XfTiC3NmMqGW7LjtM=;
+        s=korg; t=1606134334;
+        bh=9TNSILEiZYYklOtuCxbobqHGVG427ZMFU/vmbkl3gqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ywxc6yqZRDTPzxLSsUqSWIrTmVZJt8/X+vGbId8Ob4AODN27uxZ9eYC/uoENSe3K
-         1jpI55mtWdOVcOvcd0uuXrop1QsaPhQc1LYcbe7xlQeigSRkoVLq1SpTiN+/BxdYsy
-         VSJF3MosgriZ+WxBeVWsnFwTk0bCaWqOODPfOZmk=
+        b=zxLUe7lMivdlRl/B7V3OHdQ/3TqQgyy+1zm82iNFtsPjpBS7sBsTi1snFY4ePkFke
+         1JkGZGXfbp+Zui+41E9IdbwFABfCaykXO1Wb5zuVxx45wcJ0L2xGNodIptgZ3j9kaZ
+         Kw9B1li1sPN7JXpyYfHh+sdQYodma/B0BTiRPJYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 111/158] efi/x86: Free efi_pgd with free_pages()
-Date:   Mon, 23 Nov 2020 13:22:19 +0100
-Message-Id: <20201123121825.295716679@linuxfoundation.org>
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Axtens <dja@axtens.net>
+Subject: [PATCH 4.9 34/47] powerpc/uaccess-flush: fix missing includes in kup-radix.h
+Date:   Mon, 23 Nov 2020 13:22:20 +0100
+Message-Id: <20201123121807.210505651@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,83 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Daniel Axtens <dja@axtens.net>
 
-[ Upstream commit c2fe61d8be491ff8188edaf22e838f819999146b ]
+Guenter reports a build failure on cell_defconfig and maple_defconfg:
 
-Commit
+In file included from arch/powerpc/include/asm/kup.h:10:0,
+		 from arch/powerpc/include/asm/uaccess.h:12,
+		 from arch/powerpc/lib/checksum_wrappers.c:24:
+arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
+ DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
+ ^~~~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
+arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
+arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
+arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
+  if (static_branch_unlikely(&uaccess_flush_key))
+      ^~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean
+‘do_uaccess_flush’?
+  if (static_branch_unlikely(&uaccess_flush_key))
+			      ^~~~~~~~~~~~~~~~~
+			      do_uaccess_flush
+arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
+cc1: all warnings being treated as errors
 
-  d9e9a6418065 ("x86/mm/pti: Allocate a separate user PGD")
+This is because I failed to include linux/jump_label.h in kup-radix.h. Include it.
 
-changed the PGD allocation to allocate PGD_ALLOCATION_ORDER pages, so in
-the error path it should be freed using free_pages() rather than
-free_page().
-
-Commit
-
-    06ace26f4e6f ("x86/efi: Free efi_pgd with free_pages()")
-
-fixed one instance of this, but missed another.
-
-Move the freeing out-of-line to avoid code duplication and fix this bug.
-
-Fixes: d9e9a6418065 ("x86/mm/pti: Allocate a separate user PGD")
-Link: https://lore.kernel.org/r/20201110163919.1134431-1-nivedita@alum.mit.edu
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/platform/efi/efi_64.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ arch/powerpc/include/asm/book3s/64/kup-radix.h |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-index e39c930cfbd1e..5283978181103 100644
---- a/arch/x86/platform/efi/efi_64.c
-+++ b/arch/x86/platform/efi/efi_64.c
-@@ -217,28 +217,30 @@ int __init efi_alloc_page_tables(void)
- 	gfp_mask = GFP_KERNEL | __GFP_ZERO;
- 	efi_pgd = (pgd_t *)__get_free_pages(gfp_mask, PGD_ALLOCATION_ORDER);
- 	if (!efi_pgd)
--		return -ENOMEM;
-+		goto fail;
+--- a/arch/powerpc/include/asm/book3s/64/kup-radix.h
++++ b/arch/powerpc/include/asm/book3s/64/kup-radix.h
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef _ASM_POWERPC_BOOK3S_64_KUP_RADIX_H
+ #define _ASM_POWERPC_BOOK3S_64_KUP_RADIX_H
++#include <linux/jump_label.h>
  
- 	pgd = efi_pgd + pgd_index(EFI_VA_END);
- 	p4d = p4d_alloc(&init_mm, pgd, EFI_VA_END);
--	if (!p4d) {
--		free_page((unsigned long)efi_pgd);
--		return -ENOMEM;
--	}
-+	if (!p4d)
-+		goto free_pgd;
+ DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
  
- 	pud = pud_alloc(&init_mm, p4d, EFI_VA_END);
--	if (!pud) {
--		if (pgtable_l5_enabled())
--			free_page((unsigned long) pgd_page_vaddr(*pgd));
--		free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
--		return -ENOMEM;
--	}
-+	if (!pud)
-+		goto free_p4d;
- 
- 	efi_mm.pgd = efi_pgd;
- 	mm_init_cpumask(&efi_mm);
- 	init_new_context(NULL, &efi_mm);
- 
- 	return 0;
-+
-+free_p4d:
-+	if (pgtable_l5_enabled())
-+		free_page((unsigned long)pgd_page_vaddr(*pgd));
-+free_pgd:
-+	free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
-+fail:
-+	return -ENOMEM;
- }
- 
- /*
--- 
-2.27.0
-
 
 
