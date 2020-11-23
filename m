@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EAA2C15EC
+	by mail.lfdr.de (Postfix) with ESMTP id 47A322C15EB
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731459AbgKWUJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S1731411AbgKWUJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:09:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731324AbgKWUJ3 (ORCPT
+        with ESMTP id S1731374AbgKWUJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:09:29 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ABFC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:29 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id e15so103452wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:29 -0800 (PST)
+        Mon, 23 Nov 2020 15:09:31 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F652C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:31 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id w8so24710179ybj.14
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=utlsD1mw0rorOhWh+9V4hpftFWJXg/4VW/2wSqx9Lr0=;
-        b=QghR/2kE9NUz+UPTow/wMUK0um+zciJOn8LYNh3m83vv2prNKjgOeCPk4o4OzDFfUk
-         CDPF0kEnLqcTUfY37m+bkl3Ny3288a3tiAdC2F7W06efThDosRzBdZz+pDjVem5ZuSlR
-         rNn1C6/CJZMBawDF1MijFLVam73dmNA76LXTZ2mIU3OnYtNLgumIatnfm8RqCCelv0Oa
-         XizxZDb2eZZ3kifWxGXqU0uSdCzIrxzopGomlNemoCq5eGHS1cZOSiKyVc1sa5QO4Unr
-         DUUK1pBv305/WqN+WZlppX+12kYK14wV05lTeq98GH2CAdlGedCLvLc8zUgflk+DNM3I
-         jKkw==
+        bh=vnZk23A1hkByjQlL/Jowfu6pOB5axCxl0nNATXG6I/s=;
+        b=Bnb8vGsj+uBu1NiG43YXYtRo6IHMEtrhfCmhJayDtfNIiETn/hQ8oa2GfXRlUmlrF9
+         ZLJPF3ogHC2tjeqnPwyw+i6EfPpO/U62ZfbQRuSs2+Pvd56xo4k+ay4knVPc4gShW9uU
+         tu9KogljqxWykOyfzCSFsKjtXGTsekcmJvs4xCpA1brQW86d44IpNBgDHPK5vLHND9pY
+         OBj3BCewboWLvj33rcb+/cY8wx2TFgtXPa+zmg+gey1Grkk5FCMJ7DYWBWoPex5dpIW6
+         AMt7faOfqlo6QTxu2b2yPnZu+NcfElTRxXYYuHjIVk5GXrGfN8JYuUBGPGsQAsD2KoHH
+         me+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=utlsD1mw0rorOhWh+9V4hpftFWJXg/4VW/2wSqx9Lr0=;
-        b=c0ZMWk3zaMKOBUp1x/rYsOIMpXWKX03L5c1Hlz5WKr2Qw5msevJ56mEnocHlenYKtX
-         J4HTyP9y4ld3ac65F0xgjlB+G2K9a+s44r/DGEcyyc+SwwOuOX/0T2Wwk0Z32vRiffKM
-         60uD8ybmuvHwajFVbV622AzibGmnJwqck59zd44nwTxijNiVwrqmc5CqbF9oMfNl35i/
-         gG39VVFJ2qgLLpsp/95Y2V5Ik/YVkYrKo7GyiXM7w36vwVwMb2KZQ+GcKRIunBGwWqGM
-         RBREdyN8wpN8zZseWLnjGXEnc7oblbrYSORK29d7B92DE3pZlNhQanWdCAa/0F0D/fF8
-         8z3g==
-X-Gm-Message-State: AOAM5315IgVOAn0Ima3Sm1LzHXehtFRATsKHKkaffO1N2NsZuTYaIeq7
-        kzPrPsInfYXojloV0qhmXNp9Bcyzks26NtJU
-X-Google-Smtp-Source: ABdhPJzgONaFTZU/h3JPqsgZz6R2sgr3ZA9iJYvpwZvYvUFgReYxzWPEWMFsJd+B8VTgu3nwC5HgaPBLZj2SDWUW
+        bh=vnZk23A1hkByjQlL/Jowfu6pOB5axCxl0nNATXG6I/s=;
+        b=Cf+zjWR5KgQZxea+/fQjO2mWqgFsSX+LNodxNxmuysNx7sbeJ0I6ECY4l2i1W65XUy
+         nwh3qse3ARKxdkYrChdty1amWeA2lU+AsqdV9LY5PBc0LKQ/TpjopokBRRD8BJdqELoP
+         u47+Uni6uCxZb3b44qpy8b1KHLwHTVqGvWr5rolVwWvkmci4fyZKuC9qO+ddlED0LzZ5
+         kBJBFxVNAt0y7y1PXnbXC5IA5y3vYei+PqppnguVeZOkMreHavTkAvdbtjUeQaSjNGU1
+         774KHiB1DWsdGHokwdI2Fvp7CjT2H8MmzZtyMGG71IwnYvxo18VaG69qT5I5krPp5isp
+         9VHw==
+X-Gm-Message-State: AOAM5322i+GNtnWoLOAZGhRjBNTho59shhuBkldTpF4N1lI8cFiP1Tdq
+        VPd06noOhT+1mFC12H/LumziehQufl3TwZIQ
+X-Google-Smtp-Source: ABdhPJxiE0/zul085LjGuj2Tqye0cfqi7NIjzwx4wpof9kbF3apSnDQiQg+qv1iIvnd12NahDQi7cKz3gMiYck+5
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c84a:: with SMTP id
- c10mr612311wml.44.1606162168044; Mon, 23 Nov 2020 12:09:28 -0800 (PST)
-Date:   Mon, 23 Nov 2020 21:07:50 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a25:786:: with SMTP id
+ 128mr1448326ybh.19.1606162170465; Mon, 23 Nov 2020 12:09:30 -0800 (PST)
+Date:   Mon, 23 Nov 2020 21:07:51 +0100
 In-Reply-To: <cover.1606161801.git.andreyknvl@google.com>
-Message-Id: <9073d4e973747a6f78d5bdd7ebe17f290d087096.1606161801.git.andreyknvl@google.com>
+Message-Id: <ad31529b073e22840b7a2246172c2b67747ed7c4.1606161801.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1606161801.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH mm v11 26/42] arm64: mte: Reset the page tag in page->flags
+Subject: [PATCH mm v11 27/42] arm64: mte: Add in-kernel tag fault handler
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -75,108 +75,140 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-The hardware tag-based KASAN for compatibility with the other modes
-stores the tag associated to a page in page->flags.
-Due to this the kernel faults on access when it allocates a page with an
-initial tag and the user changes the tags.
+Add the implementation of the in-kernel fault handler.
 
-Reset the tag associated by the kernel to a page in all the meaningful
-places to prevent kernel faults on access.
+When a tag fault happens on a kernel address:
+* MTE is disabled on the current CPU,
+* the execution continues.
 
-Note: An alternative to this approach could be to modify page_to_virt().
-This though could end up being racy, in fact if a CPU checks the
-PG_mte_tagged bit and decides that the page is not tagged but another
-CPU maps the same with PROT_MTE and becomes tagged the subsequent kernel
-access would fail.
+When a tag fault happens on a user address:
+* the kernel executes do_bad_area() and panics.
+
+The tag fault handler for kernel addresses is currently empty and will be
+filled in by a future commit.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
-Change-Id: I8451d438bb63364de2a3e68041e3a27866921d4e
+Change-Id: I9b8aa79567f7c45f4d6a1290efcf34567e620717
 ---
- arch/arm64/kernel/hibernate.c | 5 +++++
- arch/arm64/kernel/mte.c       | 9 +++++++++
- arch/arm64/mm/copypage.c      | 9 +++++++++
- arch/arm64/mm/mteswap.c       | 9 +++++++++
- 4 files changed, 32 insertions(+)
+ arch/arm64/include/asm/uaccess.h | 23 ++++++++++++++++
+ arch/arm64/mm/fault.c            | 45 ++++++++++++++++++++++++++++++++
+ 2 files changed, 68 insertions(+)
 
-diff --git a/arch/arm64/kernel/hibernate.c b/arch/arm64/kernel/hibernate.c
-index 42003774d261..9c9f47e9f7f4 100644
---- a/arch/arm64/kernel/hibernate.c
-+++ b/arch/arm64/kernel/hibernate.c
-@@ -371,6 +371,11 @@ static void swsusp_mte_restore_tags(void)
- 		unsigned long pfn = xa_state.xa_index;
- 		struct page *page = pfn_to_online_page(pfn);
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 385a189f7d39..d841a560fae7 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -200,13 +200,36 @@ do {									\
+ 				CONFIG_ARM64_PAN));			\
+ } while (0)
  
-+		/*
-+		 * It is not required to invoke page_kasan_tag_reset(page)
-+		 * at this point since the tags stored in page->flags are
-+		 * already restored.
-+		 */
- 		mte_restore_page_tags(page_address(page), tags);
- 
- 		mte_free_tag_storage(tags);
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 8f99c65837fd..86d554ce98b6 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -34,6 +34,15 @@ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
- 			return;
- 	}
- 
-+	page_kasan_tag_reset(page);
-+	/*
-+	 * We need smp_wmb() in between setting the flags and clearing the
-+	 * tags because if another thread reads page->flags and builds a
-+	 * tagged address out of it, there is an actual dependency to the
-+	 * memory access, but on the current thread we do not guarantee that
-+	 * the new page->flags are visible before the tags were updated.
-+	 */
-+	smp_wmb();
- 	mte_clear_page_tags(page_address(page));
++/*
++ * The Tag Check Flag (TCF) mode for MTE is per EL, hence TCF0
++ * affects EL0 and TCF affects EL1 irrespective of which TTBR is
++ * used.
++ * The kernel accesses TTBR0 usually with LDTR/STTR instructions
++ * when UAO is available, so these would act as EL0 accesses using
++ * TCF0.
++ * However futex.h code uses exclusives which would be executed as
++ * EL1, this can potentially cause a tag check fault even if the
++ * user disables TCF0.
++ *
++ * To address the problem we set the PSTATE.TCO bit in uaccess_enable()
++ * and reset it in uaccess_disable().
++ *
++ * The Tag check override (TCO) bit disables temporarily the tag checking
++ * preventing the issue.
++ */
+ static inline void uaccess_disable(void)
+ {
++	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(0),
++				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
++
+ 	__uaccess_disable(ARM64_HAS_PAN);
  }
  
-diff --git a/arch/arm64/mm/copypage.c b/arch/arm64/mm/copypage.c
-index 70a71f38b6a9..b5447e53cd73 100644
---- a/arch/arm64/mm/copypage.c
-+++ b/arch/arm64/mm/copypage.c
-@@ -23,6 +23,15 @@ void copy_highpage(struct page *to, struct page *from)
- 
- 	if (system_supports_mte() && test_bit(PG_mte_tagged, &from->flags)) {
- 		set_bit(PG_mte_tagged, &to->flags);
-+		page_kasan_tag_reset(to);
-+		/*
-+		 * We need smp_wmb() in between setting the flags and clearing the
-+		 * tags because if another thread reads page->flags and builds a
-+		 * tagged address out of it, there is an actual dependency to the
-+		 * memory access, but on the current thread we do not guarantee that
-+		 * the new page->flags are visible before the tags were updated.
-+		 */
-+		smp_wmb();
- 		mte_copy_page_tags(kto, kfrom);
- 	}
+ static inline void uaccess_enable(void)
+ {
++	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(1),
++				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
++
+ 	__uaccess_enable(ARM64_HAS_PAN);
  }
-diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
-index c52c1847079c..7c4ef56265ee 100644
---- a/arch/arm64/mm/mteswap.c
-+++ b/arch/arm64/mm/mteswap.c
-@@ -53,6 +53,15 @@ bool mte_restore_tags(swp_entry_t entry, struct page *page)
- 	if (!tags)
- 		return false;
  
-+	page_kasan_tag_reset(page);
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 183d1e6dd9e0..1e4b9353c68a 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -34,6 +34,7 @@
+ #include <asm/debug-monitors.h>
+ #include <asm/esr.h>
+ #include <asm/kprobes.h>
++#include <asm/mte.h>
+ #include <asm/processor.h>
+ #include <asm/sysreg.h>
+ #include <asm/system_misc.h>
+@@ -297,6 +298,44 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
+ 	do_exit(SIGKILL);
+ }
+ 
++static void report_tag_fault(unsigned long addr, unsigned int esr,
++			     struct pt_regs *regs)
++{
++}
++
++static void do_tag_recovery(unsigned long addr, unsigned int esr,
++			   struct pt_regs *regs)
++{
++	static bool reported;
++
++	if (!READ_ONCE(reported)) {
++		report_tag_fault(addr, esr, regs);
++		WRITE_ONCE(reported, true);
++	}
++
 +	/*
-+	 * We need smp_wmb() in between setting the flags and clearing the
-+	 * tags because if another thread reads page->flags and builds a
-+	 * tagged address out of it, there is an actual dependency to the
-+	 * memory access, but on the current thread we do not guarantee that
-+	 * the new page->flags are visible before the tags were updated.
++	 * Disable MTE Tag Checking on the local CPU for the current EL.
++	 * It will be done lazily on the other CPUs when they will hit a
++	 * tag fault.
 +	 */
-+	smp_wmb();
- 	mte_restore_page_tags(page_address(page), tags);
++	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_NONE);
++	isb();
++}
++
++static bool is_el1_mte_sync_tag_check_fault(unsigned int esr)
++{
++	unsigned int ec = ESR_ELx_EC(esr);
++	unsigned int fsc = esr & ESR_ELx_FSC;
++
++	if (ec != ESR_ELx_EC_DABT_CUR)
++		return false;
++
++	if (fsc == ESR_ELx_FSC_MTE)
++		return true;
++
++	return false;
++}
++
+ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+ 			      struct pt_regs *regs)
+ {
+@@ -313,6 +352,12 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+ 	    "Ignoring spurious kernel translation fault at virtual address %016lx\n", addr))
+ 		return;
  
- 	return true;
++	if (is_el1_mte_sync_tag_check_fault(esr)) {
++		do_tag_recovery(addr, esr, regs);
++
++		return;
++	}
++
+ 	if (is_el1_permission_fault(addr, esr, regs)) {
+ 		if (esr & ESR_ELx_WNR)
+ 			msg = "write to read-only memory";
 -- 
 2.29.2.454.gaff20da3a2-goog
 
