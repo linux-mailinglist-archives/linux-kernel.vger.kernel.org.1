@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1057F2C0108
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 661BA2C010B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbgKWIB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 03:01:28 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:37760 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgKWIB2 (ORCPT
+        id S1727983AbgKWICl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 03:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727781AbgKWICk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 03:01:28 -0500
-Received: by mail-ej1-f66.google.com with SMTP id z5so1857023ejp.4;
-        Mon, 23 Nov 2020 00:01:26 -0800 (PST)
+        Mon, 23 Nov 2020 03:02:40 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E302C061A4E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 00:02:40 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c66so14181725pfa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 00:02:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LjW5kf1b1Fcrz9tIggA1cpzx5YJFFwp+TEs9UtQIZsw=;
+        b=PsvMXAcoEQ4hU0UZyLqO+PoN3PXrPBxWC79QMPfmg/GeikUA+SP8/ijNRw21dSTXiJ
+         xNPNUGCNDUPwI6ifrInTqzcWJKex5iemykaV2fHR+J5/zcJTfvCdDZCgfwNA4YMJg1k0
+         pnW3LHjw4DSuK+4v91P6GJ270fMdQtRMW5csIIxjxrv0croy/8qu2J0TkgMk3qbqE4O+
+         Urs14aeqs+PCcTeQPCDHwqqTnM9TUgBa+NlQongfRf9g7OD17aGWB8RxYwznDsxCxu5Z
+         UJqU6o2Q7MvZRsBqPFfMaRzBB8oji3PoIckEUKR84XfDUAyhPSjqi4OR+g4Hd6uwP5B0
+         Yg2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NclaCJHXiBfJ0Rpl5FSpxC/w5EINjItcyb1F1x5YFWQ=;
-        b=aKtJ2dbr4J4fzDan8g9hMdZrh1qzzX66WF27YdEWC3aneSBsjnZHuuXB0OObDQaheE
-         MKof8BFU7gCHqfQYYqfjlhkOyoJfZMkaAtSUlcLCsRBmamziu6O4z0P/qgAZf4jb7Hj0
-         5sW4q49/7EqcZ8+qL0lH2k3S3lFxpY+B9xGULH97XOzHgHyoCptvBskdVvJcbKhreqCH
-         msmZ3CX8gpauZGVwwguI/n1qluHYO9ZhKS/ubfrv7EvjiGrsB/foH+2o8esuTMqJ/FDK
-         9quqWp7uSG6nK8/sR9atIxsMYIxGohYWIwX6TlvhSzoCHq29Ul1CS2UdtImSmg7+x9dP
-         eAbQ==
-X-Gm-Message-State: AOAM531zLzOqlwwoRY6AKad7DDQ75rFp/UeVxM8OKxnjsaITH7Yu/m0n
-        g/HrU+elRA4nURs7VJgZPWVEpDZ3xOc=
-X-Google-Smtp-Source: ABdhPJxsrf7uRQesS+TQY5uPAJFd1MmlLT1cbPz+Ppl65azwyzxj2pEdLkjsnapnixfNYkjMu0oeVg==
-X-Received: by 2002:a17:906:831a:: with SMTP id j26mr43630906ejx.450.1606118486218;
-        Mon, 23 Nov 2020 00:01:26 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y12sm4453869ejj.95.2020.11.23.00.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 00:01:25 -0800 (PST)
-Date:   Mon, 23 Nov 2020 09:01:23 +0100
-From:   "krzk@kernel.org" <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon@samsung.com>
-Cc:     "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: nfc: s3fwrn5: Support a
- UART interface
-Message-ID: <20201123080123.GA5656@kozik-lap>
-References: <CGME20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
- <20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LjW5kf1b1Fcrz9tIggA1cpzx5YJFFwp+TEs9UtQIZsw=;
+        b=dera2wL/3fsEH7BRPvX4hZNuVYr5Ax+tJV1ceqOl3/2/ebsG9JTqleBrUG/P7ktisj
+         HfuMUO0d9W61Qp/QCmq4jP2s8eaqzHQw925O/6nach4GywdtXAWGSKrqQ0+poyHcRTIG
+         m1Fu51CCvtsX172SM/JqRUVOdyIH5PXD3ak6XDUzEHclZ8AAj1tezH8WLa2IQBko2yze
+         4KQVW8Jmy+9poh2nojcdQaJAwV6+jAdfx0+XaAZFu1+lkGQcmYdhEdMvijICRHiAugSY
+         sMWkxIiT/o0Bq4MEj7tEr4Ie32MIaB4adJaGGZmuGYLGTv2hpBk/wDWRKkBZVXOg29/l
+         kqLw==
+X-Gm-Message-State: AOAM530xH/LWN5ie0gvmNmMqhNODuEnqK4iuPolRPI1tPbizrlrrkwdc
+        R8ZAxtzORY1dC6sAtd0hWbq6I2+c5iFIna4L+ZCP6w==
+X-Google-Smtp-Source: ABdhPJz4q3i27WpndCtivA4jdkLBmsJFiWT7v+RK+RF8zB1bKuJ/sddH4D73BQja9ZIobFqLizBVKi+BNz073q7oDn8=
+X-Received: by 2002:aa7:8105:0:b029:18e:c8d9:2c24 with SMTP id
+ b5-20020aa781050000b029018ec8d92c24mr23947117pfi.49.1606118559844; Mon, 23
+ Nov 2020 00:02:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-14-songmuchun@bytedance.com> <20201120081638.GD3200@dhcp22.suse.cz>
+ <CAMZfGtX3DUJggAzz_06Z2atHPknkCir6a49a983TsWOHt5ZQUQ@mail.gmail.com> <20201123074804.GC27488@dhcp22.suse.cz>
+In-Reply-To: <20201123074804.GC27488@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 23 Nov 2020 16:01:59 +0800
+Message-ID: <CAMZfGtVvubZLuzYDC3x605jSSFO+JTk4xU0BVMwxmo26tOdHBg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 13/21] mm/hugetlb: Use PG_slab to
+ indicate split pmd
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:55:26PM +0900, Bongsu Jeon wrote:
-> Since S3FWRN82 NFC Chip, The UART interface can be used.
-> S3FWRN82 supports I2C and UART interface.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> ---
->  .../bindings/net/nfc/samsung,s3fwrn5.yaml     | 28 +++++++++++++++++--
->  1 file changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> index cb0b8a560282..37b3e5ae5681 100644
-> --- a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> +++ b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> @@ -13,6 +13,7 @@ maintainers:
->  properties:
->    compatible:
->      const: samsung,s3fwrn5-i2c
-> +    const: samsung,s3fwrn82-uart
+On Mon, Nov 23, 2020 at 3:48 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 20-11-20 17:30:27, Muchun Song wrote:
+> > On Fri, Nov 20, 2020 at 4:16 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 20-11-20 14:43:17, Muchun Song wrote:
+> > > > When we allocate hugetlb page from buddy, we may need split huge pmd
+> > > > to pte. When we free the hugetlb page, we can merge pte to pmd. So
+> > > > we need to distinguish whether the previous pmd has been split. The
+> > > > page table is not allocated from slab. So we can reuse the PG_slab
+> > > > to indicate that the pmd has been split.
+> > >
+> > > PageSlab is used outside of the slab allocator proper and that code
+> > > might get confused by this AFAICS.
+> >
+> > I got your concerns. Maybe we can use PG_private instead of the
+> > PG_slab.
+>
+> Reusing a page flag arbitrarily is not that easy. Hugetlb pages have a
+> lot of spare room in struct page so I would rather use something else.
 
-This does not work, you need to use enum. Did you run at least
-dt_bindings_check?
+This page is the PMD page table of vmemmap, not the vmemmap page
+of HugeTLB. And the page table does not use PG_private. Maybe it is
+enough. Thanks.
 
-The compatible should be just "samsung,s3fwrn82". I think it was a
-mistake in the first s3fwrn5 submission to add a interface to
-compatible.
+> --
+> Michal Hocko
+> SUSE Labs
 
->  
->    en-gpios:
->      maxItems: 1
-> @@ -47,10 +48,19 @@ additionalProperties: false
->  required:
->    - compatible
->    - en-gpios
-> -  - interrupts
-> -  - reg
->    - wake-gpios
->  
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: samsung,s3fwrn5-i2c
-> +    then:
-> +      required:
-> +        - interrupts
-> +        - reg
-> +
->  examples:
->    - |
->      #include <dt-bindings/gpio/gpio.h>
-> @@ -71,3 +81,17 @@ examples:
->              wake-gpios = <&gpj0 2 GPIO_ACTIVE_HIGH>;
->          };
->      };
-> +  # UART example on Raspberry Pi
-> +  - |
-> +    &uart0 {
-> +        status = "okay";
-> +
-> +        s3fwrn82_uart {
 
-Just "bluetooth" to follow Devicetree specification.
 
-Best regards,
-Krzysztof
+-- 
+Yours,
+Muchun
