@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2152C17B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 030042C17BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731044AbgKWVch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        id S1731064AbgKWVdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:33:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729668AbgKWVch (ORCPT
+        with ESMTP id S1729668AbgKWVdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:32:37 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D63C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:32:35 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id 79so17335943otc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YGEsthVs3B3hpcPO96gKAE8/Tbhb2GtyiWxG6X0ff1A=;
-        b=Hpdo+ZH+YbPMZk6AoVaNen/HS0pbiAnyzzkjyUMDAcgyXzkn17RwhboNFC1Dl8NkpW
-         +bukjwN0ku9yq9YXueExtfVSuyO5AjDgKIPgNV/QlqHkjFywNHjsEbYVSVoyKmRg3kyu
-         4UWB2tXO8sSnZAyP3KJO5Wuh7KyuZM/KpWJ8g38FSkNiSwIeyhUMk0gYjNIzSntIP3MP
-         jb9v7nuwsVanx3tqDSPJINnpmJtMRwxxsz6VGrnDeqaP8C8RJLQ4WbCRs2jmwh2zUxB4
-         PJnTiufVA+R99AE/CGY8MUfYb/KvpC6f2I3gLogxSALE+tOjYnG48KBDWTIXfeMecaIG
-         5/8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YGEsthVs3B3hpcPO96gKAE8/Tbhb2GtyiWxG6X0ff1A=;
-        b=fgPkaxAe5JSKfFbOZZzy1gJgXfYnSvEjrP5uzez2FnhUCG+QrDCSC13HUmJ3luEeRx
-         4pd2qxXfyMOVuDf3ZkDTAlWutIipDpm3iDiV46h//lOV9xhuSk0CmLY1011lDw6mXLyM
-         fdPqnpeKOCNVRwL3D1yG7a3mihk8qKTijNEf7ET/ZinWk/tbT7681ntvgwiwOOcklES4
-         I5LuPsU7EzVt80wsA5LPYLZioHC1UOzmb+YRSqCFKmMCbWfcPNf7Bx9BL5/rqPdJElri
-         0gCTLlt7oX/M+NK8UtU7mrc3zz1dgtN5YXx/Cv7qjckq80SpaCwqcX/XFmNEUGKxfXjX
-         5odQ==
-X-Gm-Message-State: AOAM530h5k73fdshnwNrS0TyWze9Slr7DfaMduEvYTeRVm+8UKG3JRd9
-        z70fMoiN8MooA8SJlqDHeFEN4jQ13obUeZTA0CltFQ==
-X-Google-Smtp-Source: ABdhPJydhGbdKp6iLz07GpoW+34/30MyOBfwhaN0lC6Yh83oFAC8Rqv47taP4eKZjQyKSDVmE1UQYTtKAzCLfSuJhIY=
-X-Received: by 2002:a9d:851:: with SMTP id 75mr1132645oty.102.1606167155091;
- Mon, 23 Nov 2020 13:32:35 -0800 (PST)
+        Mon, 23 Nov 2020 16:33:18 -0500
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3B9C0613CF;
+        Mon, 23 Nov 2020 13:33:17 -0800 (PST)
+Received: from fencepost.gnu.org ([2001:470:142:3::e]:55794)
+        by eggs.gnu.org with esmtp (Exim 4.90_1)
+        (envelope-from <ebrahim@gnu.org>)
+        id 1khJSV-00011M-MX; Mon, 23 Nov 2020 16:33:15 -0500
+Received: from ebrahim by fencepost.gnu.org with local (Exim 4.82)
+        (envelope-from <ebrahim@gnu.org>)
+        id 1khJSU-0008TR-7W; Mon, 23 Nov 2020 16:33:15 -0500
+Date:   Mon, 23 Nov 2020 16:33:14 -0500
+From:   Ebrahim Byagowi <ebrahim@gnu.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] gconfig: avoid use of hard coded colors for rows
+Message-ID: <20201123213314.GA25149@gnu.org>
 MIME-Version: 1.0
-References: <20201121063302.84090-1-john.stultz@linaro.org> <e860242d-9024-0f68-9b83-ef4938fc17d8@codeaurora.org>
-In-Reply-To: <e860242d-9024-0f68-9b83-ef4938fc17d8@codeaurora.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 23 Nov 2020 13:32:23 -0800
-Message-ID: <CALAqxLU0e=DtZ8UkJPojDEuAw8UAzKW2-jPqQ426FRzSJLLkrw@mail.gmail.com>
-Subject: Re: [PATCH] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies
- to avoid build error
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 8:55 AM Maulik Shah <mkshah@codeaurora.org> wrote:
-> On 11/21/2020 12:03 PM, John Stultz wrote:
-> > The kernel test robot reported the following build error:
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
-> >     qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
-> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
-> >     qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
-> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
-> >>> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
-> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
-> >     qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
-> >
-> > Which is due to REGULATOR_QCOM_RPMH depending on
-> > QCOM_RPMH || COMPILE_TEST. The problem is that QOM_RPMH can now
-> > be a module, which in that case requires REGULATOR_QCOM_RPMH=m
-> > to build.
-> >
-> > However, if COMPILE_TEST is enabled, REGULATOR_QCOM_RPMH can be
-> > set to =y while REGULATOR_QCOM_RPMH=m which will cause build
-> > failures.
-> Seems typo here, you mean to say, REGULATOR_QCOM_RPMH can be set to =y
-> while QCOM_RPMH=m....
+This makes the tool to avoids use of hard coded colors for
+options rows by using theme provided theme provided colors
+to fix issue of rows being not readable when system theme
+is set to a dark theme.
 
-Ah, yes, thanks for catching that. I'll fix it up.
+Signed-off-by: Ebrahim Byagowi <ebrahim@gnu.org>
+---
+ scripts/kconfig/gconf.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-> > The easy fix here is to remove COMPILE_TEST.
->
-> As config QCOM_RPMH also has COMPILE_TEST, i don't see why it should be
-> removed from REGULATOR_QCOM_RPMH.
->
-> Can REGULATOR_QCOM_RPMH have depends on ARCH_QCOM set similar to
-> QCOM_RPMH? As test bot reported build errors on other ARCH with
-> regulatore driver of QCOM arch.
+diff --git a/scripts/kconfig/gconf.c b/scripts/kconfig/gconf.c
+index 5527482c3..b96570c28 100644
+--- a/scripts/kconfig/gconf.c
++++ b/scripts/kconfig/gconf.c
+@@ -49,6 +49,8 @@ GtkWidget *back_btn = NULL;
+ GtkWidget *save_btn = NULL;
+ GtkWidget *save_menu_item = NULL;
+ 
++GtkStyle *style;
++
+ GtkTextTag *tag1, *tag2;
+ GdkColor color;
+ 
+@@ -109,7 +111,7 @@ static const char *dbg_sym_flags(int val)
+ #endif
+ 
+ static void replace_button_icon(GladeXML *xml, GdkDrawable *window,
+-				GtkStyle *style, gchar *btn_name, gchar **xpm)
++				gchar *btn_name, gchar **xpm)
+ {
+ 	GdkPixmap *pixmap;
+ 	GdkBitmap *mask;
+@@ -132,7 +134,6 @@ static void init_main_window(const gchar *glade_file)
+ 	GladeXML *xml;
+ 	GtkWidget *widget;
+ 	GtkTextBuffer *txtbuf;
+-	GtkStyle *style;
+ 
+ 	xml = glade_xml_new(glade_file, "window1", NULL);
+ 	if (!xml)
+@@ -168,11 +169,11 @@ static void init_main_window(const gchar *glade_file)
+ 	style = gtk_widget_get_style(main_wnd);
+ 	widget = glade_xml_get_widget(xml, "toolbar1");
+ 
+-	replace_button_icon(xml, main_wnd->window, style,
++	replace_button_icon(xml, main_wnd->window,
+ 			    "button4", (gchar **) xpm_single_view);
+-	replace_button_icon(xml, main_wnd->window, style,
++	replace_button_icon(xml, main_wnd->window,
+ 			    "button5", (gchar **) xpm_split_view);
+-	replace_button_icon(xml, main_wnd->window, style,
++	replace_button_icon(xml, main_wnd->window,
+ 			    "button6", (gchar **) xpm_tree_view);
+ 
+ 	txtbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_w));
+@@ -1052,13 +1053,15 @@ static gchar **fill_row(struct menu *menu)
+ 	    g_strdup_printf("%s %s", menu_get_prompt(menu),
+ 			    sym && !sym_has_value(sym) ? "(NEW)" : "");
+ 
++	GdkColor *color;
+ 	if (opt_mode == OPT_ALL && !menu_is_visible(menu))
+-		row[COL_COLOR] = g_strdup("DarkGray");
++		color = &style->text[GTK_STATE_INSENSITIVE];
+ 	else if (opt_mode == OPT_PROMPT &&
+ 			menu_has_prompt(menu) && !menu_is_visible(menu))
+-		row[COL_COLOR] = g_strdup("DarkGray");
++		color = &style->text[GTK_STATE_INSENSITIVE];
+ 	else
+-		row[COL_COLOR] = g_strdup("Black");
++		color = &style->text[GTK_STATE_NORMAL];
++	row[COL_COLOR] = gdk_color_to_string(color);
+ 
+ 	ptype = menu->prompt ? menu->prompt->type : P_UNKNOWN;
+ 	switch (ptype) {
+-- 
+2.29.2
 
-I think Mark's suggestion of "|| (QCOM_RPMH=n && COMPILE_TEST)" is
-probably better, as you could still trigger the build issue with a
-ARCH_QCOM and compile test.  But I appreciate the suggestion!
-
-Thanks so much for the review!
--john
