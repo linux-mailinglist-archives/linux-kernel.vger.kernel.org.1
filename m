@@ -2,125 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5852C192B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AC52C192D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388150AbgKWXD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 18:03:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgKWXD7 (ORCPT
+        id S1731072AbgKWXFf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 18:05:35 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:33718 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726325AbgKWXFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:03:59 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C422EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:03:58 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id m9so19927473iox.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:03:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WJDR7q4xZx9dSoLzieIGiWyC6I1HarpZQYL3DEjKNzY=;
-        b=X9fPdSLiQwi3gnTRdk9SYUai8we5jG1eFdz6ooUJOj1os3Vv1+e82I21OisQ1flfLV
-         /PSC0QnyL9vQMBlXEzXhI+ecs4zHHrjihBBp0n7Im3BebTkW3MEnYO0BS6perBRHHlcX
-         zzpfHpwwC+QOYx4/3x5krzY1rA9yAJJt+I1fwx/fu0igbCk0TO8srvBfmIsJ1TnLGp0d
-         vvT+v3np4CTh02gUfgHe1lmR/GNa3dUSD8o1VD0oregn6S2IS7YCtC6WSxxHDAql/Go2
-         dD9N4HzvROaYPi6s0nppjGknGrnGH37Ok+9lBAXY2RdJlozPYOy0CAmHqCv7W1horwsc
-         RIGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WJDR7q4xZx9dSoLzieIGiWyC6I1HarpZQYL3DEjKNzY=;
-        b=lJpQsvn14rPbFUqJSB5FH+nBgbOka6wqWMflyrjqcxzSCruXgy1ha5oh6kcJZlSVbL
-         L7ovAvS6EeVA4MZGqCSoyRZ7NeipSJP7Mh+gPI4Q28ZYjIXUXQcIAaMPyV/+kb1lUvWi
-         lWfHswZzXSw9YY69gITbyCoDAhr4Fk+aivZNFY3Hz0nSERMxLpiazxjAjO8xbRQzqaUP
-         tQPP+rBJ36S9ypHpK+BafmgKpMQlLcSQ97m46xYDluGZ8wjib9SR5lvLYspLa/4o+jZi
-         Nx3hN7YUQziBiQHVPsuUMbJSzI9I7H9T41fVWho4MqjIg9LG5BX/OfUIu1ny64JBDFOv
-         AUWg==
-X-Gm-Message-State: AOAM531ag0iPg0Rk4KnckNZtH2IMGiB0vOsnEBzXj/z1YuLMqLlfxpLt
-        ctfb1i5t+ucfnBQUoJLdhtMfh5H8EptqmxNxF00=
-X-Google-Smtp-Source: ABdhPJzgcswkbY0gMNO8Q2hi6FpyLEqKmba7x60uymw9kr1D5eTLIDYdt/+//qV+YctOJWoHdTjNy1QiuyMvTnFyZjM=
-X-Received: by 2002:a5d:8ad6:: with SMTP id e22mr1757787iot.154.1606172638121;
- Mon, 23 Nov 2020 15:03:58 -0800 (PST)
+        Mon, 23 Nov 2020 18:05:32 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-0EQz5wEhORSTAO1KykoujQ-1; Mon, 23 Nov 2020 18:05:22 -0500
+X-MC-Unique: 0EQz5wEhORSTAO1KykoujQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCE4B8145E6;
+        Mon, 23 Nov 2020 23:05:19 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.195.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 284675D9CA;
+        Mon, 23 Nov 2020 23:05:12 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     "Frank Ch . Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCHv3 00/25] perf: Add mmap2 build id support
+Date:   Tue, 24 Nov 2020 00:04:47 +0100
+Message-Id: <20201123230512.2097312-1-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <20201123031751.36811-1-daeho43@gmail.com> <20201123184647.GA3694916@gmail.com>
-In-Reply-To: <20201123184647.GA3694916@gmail.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Tue, 24 Nov 2020 08:03:47 +0900
-Message-ID: <CACOAw_yCXj6UAgkAaggaDhPQ0B=y_6pKG54CFL4W8eWhjZA9+A@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 1/2] f2fs: add compress_mode mount option
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jaegeuk,
+hi,
+adding the support to have buildid stored in mmap2 event,
+so we can bypass the final perf record hunt on build ids.
 
-Got it.
+This patchset allows perf to record build ID in mmap2 event,
+and adds perf tooling to store/download binaries to .debug
+cache based on these build IDs.
 
-Eric,
+Note that the build id retrieval code is stolen from bpf
+code, where it's been used (together with file offsets)
+to replace IPs in user space stack traces. It's now added
+under lib directory.
 
-Yep.
+v3 changes:
+  - added acks
+  - removed forgotten debug code [Arnaldo]
+  - fixed readlink termination [Ian]
+  - fixed doc for --debuginfod=URLs [Ian]
+  - adopted kernel's memchr_inv function and used
+    it in build_id__is_defined function [Arnaldo]
 
-2020=EB=85=84 11=EC=9B=94 24=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 3:46, =
-Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Mon, Nov 23, 2020 at 12:17:50PM +0900, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> >
-> > We will add a new "compress_mode" mount option to control file
-> > compression mode. This supports "fs-based" and "user-based".
-> > In "fs-based" mode (default), f2fs does automatic compression on
-> > the compression enabled files. In "user-based" mode, f2fs disables
-> > the automaic compression and gives the user discretion of choosing
-> > the target file and the timing. It means the user can do manual
-> > compression/decompression on the compression enabled files using ioctls=
-.
-> >
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > ---
-> >  Documentation/filesystems/f2fs.rst |  7 +++++++
-> >  fs/f2fs/data.c                     | 10 +++++-----
-> >  fs/f2fs/f2fs.h                     | 30 ++++++++++++++++++++++++++++++
-> >  fs/f2fs/segment.c                  |  2 +-
-> >  fs/f2fs/super.c                    | 23 +++++++++++++++++++++++
-> >  5 files changed, 66 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesys=
-tems/f2fs.rst
-> > index b8ee761c9922..0679c53d5012 100644
-> > --- a/Documentation/filesystems/f2fs.rst
-> > +++ b/Documentation/filesystems/f2fs.rst
-> > @@ -260,6 +260,13 @@ compress_extension=3D%s     Support adding specifi=
-ed extension, so that f2fs can enab
-> >                        For other files, we can still enable compression=
- via ioctl.
-> >                        Note that, there is one reserved special extensi=
-on '*', it
-> >                        can be set to enable compression for all files.
-> > +compress_mode=3D%s      Control file compression mode. This supports "=
-fs-based" and
-> > +                      "user-based". In "fs-based" mode (default), f2fs=
- does
-> > +                      automatic compression on the compression enabled=
- files.
-> > +                      In "user-based" mode, f2fs disables the automaic=
- compression
-> > +                      and gives the user discretion of choosing the ta=
-rget file and
-> > +                      the timing. The user can do manual compression/d=
-ecompression
-> > +                      on the compression enabled files using ioctls.
->
-> Please clarify in the documentation what it means for compression-enabled=
- files
-> to not be compressed.  It is not obvious.
->
-> - Eric
+On recording server:
+
+  - on the recording server we can run record with --buildid-mmap
+    option to store build ids in mmap2 events:
+
+    # perf record --buildid-mmap
+    ^C[ perf record: Woken up 2 times to write data ]
+    [ perf record: Captured and wrote 0.836 MB perf.data ]
+
+  - it stores nothing to ~/.debug cache:
+
+    # find ~/.debug
+    find: ‘/root/.debug’: No such file or directory
+
+  - and still reports properly:
+
+    # perf report --stdio
+    ...
+    99.82%  swapper          [kernel.kallsyms]  [k] native_safe_halt
+     0.03%  swapper          [kernel.kallsyms]  [k] finish_task_switch
+     0.02%  swapper          [kernel.kallsyms]  [k] __softirqentry_text_start
+     0.01%  kcompactd0       [kernel.kallsyms]  [k] _raw_spin_unlock_irqrestore
+     0.01%  ksoftirqd/6      [kernel.kallsyms]  [k] slab_free_freelist_hook
+     0.01%  kworker/17:1H-x  [kernel.kallsyms]  [k] slab_free_freelist_hook
+
+  - display used/hit build ids:
+
+    # perf buildid-list | head -5
+    5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
+    589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+
+  - store build id binaries into build id cache:
+
+    # perf buildid-cache -a perf.data
+    OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
+    OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+    # find ~/.debug | head -5
+    /root/.debug
+    /root/.debug/proc
+    /root/.debug/proc/kcore
+    /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7
+    /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7/kallsyms
+
+  - run debuginfod daemon to provide binaries to another server (below)
+    (the initialization could take some time)
+
+    # debuginfod -F /
+
+
+On another server:
+
+  - copy perf.data from 'record' server and run:
+
+    $ find ~/.debug/
+    find: ‘/home/jolsa/.debug/’: No such file or directory
+
+    $ perf buildid-list | head -5
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+
+  - report does not show anything (kernel build id does not match):
+
+   $ perf report --stdio
+   ...
+    76.73%  swapper          [kernel.kallsyms]    [k] 0xffffffff81aa8ebe
+     1.89%  find             [kernel.kallsyms]    [k] 0xffffffff810f2167
+     0.93%  sshd             [kernel.kallsyms]    [k] 0xffffffff8153380c
+     0.83%  swapper          [kernel.kallsyms]    [k] 0xffffffff81104b0b
+     0.71%  kworker/u40:2-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
+     0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
+     0.64%  find             [kernel.kallsyms]    [k] 0xffffffff81a9ba0a
+     0.63%  find             [kernel.kallsyms]    [k] 0xffffffff81aa93b0
+
+  - add build ids does not work, because existing binaries (on another server)
+    have different build ids:
+
+    $ perf buildid-cache -a perf.data 
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    FAIL 5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    FAIL 5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    FAIL 589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    FAIL 94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    FAIL 559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    FAIL 40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    FAIL a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    FAIL e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    FAIL 9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+  - add build ids with debuginfod setup pointing to record server:
+
+    $ perf buildid-cache -a perf.data --debuginfod http://192.168.122.174:8002
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    OK   5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+  - and report works:
+
+    $ perf report --stdio
+    ...
+    76.73%  swapper          [kernel.kallsyms]    [k] native_safe_halt
+     1.91%  find             [kernel.kallsyms]    [k] queue_work_on
+     0.93%  sshd             [kernel.kallsyms]    [k] iowrite16
+     0.83%  swapper          [kernel.kallsyms]    [k] finish_task_switch
+     0.72%  kworker/u40:2-e  [kernel.kallsyms]    [k] process_one_work
+     0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] process_one_work
+     0.64%  find             [kernel.kallsyms]    [k] syscall_enter_from_user_mode
+     0.63%  find             [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore
+
+  - because we have the data in build id cache:
+
+    $ find ~/.debug | head -10
+    .../.debug
+    .../.debug/home
+    .../.debug/home/jolsa
+    .../.debug/home/jolsa/.cache
+    .../.debug/home/jolsa/.cache/debuginfod_client
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/elf
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/debug
+
+
+Available also in:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/build_id
+
+thanks,
+jirka
+
+
+Cc: Frank Ch. Eigler <fche@redhat.com>
+Cc: Mark Wielaard <mjw@redhat.com>
+---
+Jiri Olsa (25):
+      bpf: Move stack_map_get_build_id into lib
+      bpf: Add size arg to build_id_parse function
+      perf: Add build id data in mmap2 event
+      tools headers uapi: Sync tools/include/uapi/linux/perf_event.h
+      tools lib: Adopt memchr_inv() from kernel
+      perf tools: Do not swap mmap2 fields in case it contains build id
+      perf tools: Add build_id__is_defined function
+      perf tools: Add filename__decompress function
+      perf tools: Add support to read build id from compressed elf
+      perf tools: Add check for existing link in buildid dir
+      perf tools: Use struct extra_kernel_map in machine__process_kernel_mmap_event
+      perf tools: Try to load vmlinux from buildid database
+      perf tools: Store build id from mmap2 events
+      perf tools: Allow mmap2 event to synthesize kernel image
+      perf tools: Allow mmap2 event to synthesize modules
+      perf tools: Synthesize build id for kernel/modules/tasks
+      perf tools: Add support to display build id for mmap2 events
+      perf tools: Use machine__for_each_dso in perf_session__cache_build_ids
+      perf tools: Add __perf_session__cache_build_ids function
+      perf tools: Add is_perf_data function
+      perf tools: Add build_id_cache__add function
+      perf buildid-cache: Add support to add build ids from perf data
+      perf buildid-cache: Add --debuginfod option
+      perf buildid-list: Add support for mmap2's buildid events
+      perf record: Add --buildid-mmap option to enable mmap's build id
+
+ include/linux/buildid.h                           |  12 +++++
+ include/uapi/linux/perf_event.h                   |  42 +++++++++++++++---
+ kernel/bpf/stackmap.c                             | 143 ++---------------------------------------------------------
+ kernel/events/core.c                              |  32 ++++++++++++--
+ lib/Makefile                                      |   3 +-
+ lib/buildid.c                                     | 149 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/include/linux/string.h                      |   1 +
+ tools/include/uapi/linux/perf_event.h             |  42 +++++++++++++++---
+ tools/lib/perf/include/perf/event.h               |  18 ++++++--
+ tools/lib/string.c                                |  58 ++++++++++++++++++++++++
+ tools/perf/Documentation/perf-buildid-cache.txt   |  18 +++++++-
+ tools/perf/Documentation/perf-config.txt          |  10 ++++-
+ tools/perf/Documentation/perf-record.txt          |   3 ++
+ tools/perf/builtin-buildid-cache.c                | 243 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ tools/perf/builtin-buildid-list.c                 |   3 ++
+ tools/perf/builtin-record.c                       |  20 +++++++++
+ tools/perf/tests/shell/trace+probe_vfs_getname.sh |   2 +-
+ tools/perf/util/build-id.c                        | 127 ++++++++++++++++++++++++++++++++++-------------------
+ tools/perf/util/build-id.h                        |   8 ++++
+ tools/perf/util/data.c                            |  19 ++++++++
+ tools/perf/util/data.h                            |   1 +
+ tools/perf/util/dso.c                             |  31 ++++++++-----
+ tools/perf/util/dso.h                             |   2 +
+ tools/perf/util/event.c                           |  41 ++++++++++++-----
+ tools/perf/util/evsel.c                           |  10 +++--
+ tools/perf/util/machine.c                         |  80 ++++++++++++++++++++-------------
+ tools/perf/util/map.c                             |   8 +++-
+ tools/perf/util/map.h                             |   3 +-
+ tools/perf/util/perf_api_probe.c                  |  10 +++++
+ tools/perf/util/perf_api_probe.h                  |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c         |   2 +
+ tools/perf/util/probe-event.c                     |   6 +--
+ tools/perf/util/record.h                          |   1 +
+ tools/perf/util/session.c                         |  11 +++--
+ tools/perf/util/symbol-elf.c                      |  37 +++++++++++++++-
+ tools/perf/util/symbol.c                          |  16 +++++++
+ tools/perf/util/symbol_conf.h                     |   3 +-
+ tools/perf/util/synthetic-events.c                | 121 +++++++++++++++++++++++++++++++++++++-------------
+ 38 files changed, 1026 insertions(+), 311 deletions(-)
+ create mode 100644 include/linux/buildid.h
+ create mode 100644 lib/buildid.c
+
