@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9453F2C0AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E682C0AE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730314AbgKWM1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:27:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37572 "EHLO mail.kernel.org"
+        id S1730752AbgKWMal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730308AbgKWM1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:30 -0500
+        id S1730260AbgKWMaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:35 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A1C420888;
-        Mon, 23 Nov 2020 12:27:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6ACD221F7;
+        Mon, 23 Nov 2020 12:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134449;
-        bh=bvJOhSxgWar3+h+GrQTGBdx1KFwP/r4gC7sLgSRsrI8=;
+        s=korg; t=1606134634;
+        bh=/MUdipLcb4JkvDppPS27UAP/oB9I9J9uiNiR54nSO1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B0coLJdhXH7Xf62Q1lSxzNjW8xkx6kHaZYQ/7lefU8La5JeLXv+1lh6Oz1rDyJi0R
-         Br9tBV80lyHouJkUUjAjfeMKvrVw57ksUEMybNdpDbqjToi3JXUJ3rg9Hm5vw4orQM
-         4QLjnxoNheMAz0MlGoNp5L8nM1YphL1AlkT/LsU0=
+        b=zaxcQydZApjPWuI0ZbK/I2qiLaHv84E1+8iiYBG+fURcmuixzBaSl4AlKj1ukfKeJ
+         DTeivLJ7T+Myvxiiku7CyGgY/2BQzz/DTKjBOmap59GGm4X4R/bDeU1upIADUXwp6A
+         9eBSrTnMy4DkhUbSw4XikKD88YWGJqNyqFdPsWUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Yulevich <denisyu@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 06/60] mlxsw: core: Use variable timeout for EMAD retries
+        stable@vger.kernel.org, Hongwu Su <hongwus@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>, Can Guo <cang@codeaurora.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 28/91] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt caused by ufshcd_hold()
 Date:   Mon, 23 Nov 2020 13:21:48 +0100
-Message-Id: <20201123121805.349935900@linuxfoundation.org>
+Message-Id: <20201123121810.692132832@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Can Guo <cang@codeaurora.org>
 
-[ Upstream commit 1f492eab67bced119a0ac7db75ef2047e29a30c6 ]
+[ Upstream commit da3fecb0040324c08f1587e5bff1f15f36be1872 ]
 
-The driver sends Ethernet Management Datagram (EMAD) packets to the
-device for configuration purposes and waits for up to 200ms for a reply.
-A request is retried up to 5 times.
+The scsi_block_reqs_cnt increased in ufshcd_hold() is supposed to be
+decreased back in ufshcd_ungate_work() in a paired way. However, if
+specific ufshcd_hold/release sequences are met, it is possible that
+scsi_block_reqs_cnt is increased twice but only one ungate work is
+queued. To make sure scsi_block_reqs_cnt is handled by ufshcd_hold() and
+ufshcd_ungate_work() in a paired way, increase it only if queue_work()
+returns true.
 
-When the system is under heavy load, replies are not always processed in
-time and EMAD transactions fail.
-
-Make the process more robust to such delays by using exponential
-backoff. First wait for up to 200ms, then retransmit and wait for up to
-400ms and so on.
-
-Fixes: caf7297e7ab5 ("mlxsw: core: Introduce support for asynchronous EMAD register access")
-Reported-by: Denis Yulevich <denisyu@nvidia.com>
-Tested-by: Denis Yulevich <denisyu@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/1604384682-15837-2-git-send-email-cang@codeaurora.org
+Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/core.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
-@@ -471,7 +471,8 @@ static void mlxsw_emad_trans_timeout_sch
- 	if (trans->core->fw_flash_in_progress)
- 		timeout = msecs_to_jiffies(MLXSW_EMAD_TIMEOUT_DURING_FW_FLASH_MS);
- 
--	queue_delayed_work(trans->core->emad_wq, &trans->timeout_dw, timeout);
-+	queue_delayed_work(trans->core->emad_wq, &trans->timeout_dw,
-+			   timeout << trans->retries);
- }
- 
- static int mlxsw_emad_transmit(struct mlxsw_core *mlxsw_core,
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b2cbdd01ab10b..a63119c35fde8 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1592,12 +1592,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
+ 		 * work and to enable clocks.
+ 		 */
+ 	case CLKS_OFF:
+-		ufshcd_scsi_block_requests(hba);
+ 		hba->clk_gating.state = REQ_CLKS_ON;
+ 		trace_ufshcd_clk_gating(dev_name(hba->dev),
+ 					hba->clk_gating.state);
+-		queue_work(hba->clk_gating.clk_gating_workq,
+-			   &hba->clk_gating.ungate_work);
++		if (queue_work(hba->clk_gating.clk_gating_workq,
++			       &hba->clk_gating.ungate_work))
++			ufshcd_scsi_block_requests(hba);
+ 		/*
+ 		 * fall through to check if we should wait for this
+ 		 * work to be done or not.
+-- 
+2.27.0
+
 
 
