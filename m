@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212342C0BB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FF62C0BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729814AbgKWN3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:29:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39410 "EHLO mail.kernel.org"
+        id S2389220AbgKWN2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:28:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730529AbgKWM27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:59 -0500
+        id S1730860AbgKWMbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:31:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A4D220728;
-        Mon, 23 Nov 2020 12:28:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 041C320857;
+        Mon, 23 Nov 2020 12:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134538;
-        bh=frCVka9YuGqxr2RrDANFnW8tkhiq/VbNt2PTcU9GSGs=;
+        s=korg; t=1606134690;
+        bh=JebXyaG8AOx3e6mcFoy7vDXsbNBvHFjpRgy9hjHiqfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oVYWN0rb73jIECa6qB6AswUd341TO/WVOSR2msXks/78Zdi9TeFk7r2qdaSTutn2y
-         P4gCjCA+dgGSbQFXlCHbCEsbhG8NCRnzWVXwKjpsvLo8WTAWZy2CooQaBLIijX7E3z
-         Hji69cKs/R4knE5j3+VISqNnkZ+8rxVghNptIIuc=
+        b=CDWfUG4J9yfpXuJZKH+epAetQ+DNDU2y/gghE1E+FLvNbdtKvApHfCJd7P1HTDsXN
+         Q+nPgoFTh5BXo4bYwpCV1lvTGxxSZy6l1Os4h4fZimoa+vx5dVZyXgFXMjkUxEhLl9
+         IeAbChI/YaRkqHyeJg3BDN07pgtVJFabbqvDb0X8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org,
+        syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 25/60] MIPS: export has_transparent_hugepage() for modules
-Date:   Mon, 23 Nov 2020 13:22:07 +0100
-Message-Id: <20201123121806.241846338@linuxfoundation.org>
+Subject: [PATCH 4.19 48/91] can: af_can: prevent potential access of uninitialized member in can_rcv()
+Date:   Mon, 23 Nov 2020 13:22:08 +0100
+Message-Id: <20201123121811.653964670@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,45 +45,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-[ Upstream commit 31b4d8e172f614adc53ddecb4b6b2f6411a49b84 ]
+[ Upstream commit c8c958a58fc67f353289986850a0edf553435702 ]
 
-MIPS should export its local version of "has_transparent_hugepage"
-so that loadable modules (dax) can use it.
+In can_rcv(), cfd->len is uninitialized when skb->len = 0, and this
+uninitialized cfd->len is accessed nonetheless by pr_warn_once().
 
-Fixes this build error:
-ERROR: modpost: "has_transparent_hugepage" [drivers/dax/dax.ko] undefined!
+Fix this uninitialized variable access by checking cfd->len's validity
+condition (cfd->len > CAN_MAX_DLEN) separately after the skb->len's
+condition is checked, and appropriately modify the log messages that
+are generated as well.
+In case either of the required conditions fail, the skb is freed and
+NET_RX_DROP is returned, same as before.
 
-Fixes: fd8cfd300019 ("arch: fix has_transparent_hugepage()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: linux-nvdimm@lists.01.org
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: 8cb68751c115 ("can: af_can: can_rcv(): replace WARN_ONCE by pr_warn_once")
+Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
+Tested-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Link: https://lore.kernel.org/r/20201103213906.24219-2-anant.thazhemadam@gmail.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/mm/tlb-r4k.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/can/af_can.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
-index 0596505770dba..11985399c4695 100644
---- a/arch/mips/mm/tlb-r4k.c
-+++ b/arch/mips/mm/tlb-r4k.c
-@@ -424,6 +424,7 @@ int has_transparent_hugepage(void)
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 04132b0b5d360..1201846dc07e3 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -722,16 +722,25 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
+ {
+ 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 
+-	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU ||
+-		     cfd->len > CAN_MAX_DLEN)) {
+-		pr_warn_once("PF_CAN: dropped non conform CAN skbuf: dev type %d, len %d, datalen %d\n",
++	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU)) {
++		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
++			     dev->type, skb->len);
++		goto free_skb;
++	}
++
++	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
++	if (unlikely(cfd->len > CAN_MAX_DLEN)) {
++		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d, datalen %d\n",
+ 			     dev->type, skb->len, cfd->len);
+-		kfree_skb(skb);
+-		return NET_RX_DROP;
++		goto free_skb;
  	}
- 	return mask == PM_HUGE_MASK;
+ 
+ 	can_receive(skb, dev);
+ 	return NET_RX_SUCCESS;
++
++free_skb:
++	kfree_skb(skb);
++	return NET_RX_DROP;
  }
-+EXPORT_SYMBOL(has_transparent_hugepage);
  
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
- 
+ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
 -- 
 2.27.0
 
