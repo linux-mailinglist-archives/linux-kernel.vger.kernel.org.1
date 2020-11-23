@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D482C0614
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89972C074E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgKWM1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:27:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37084 "EHLO mail.kernel.org"
+        id S1732299AbgKWMji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730264AbgKWM1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:15 -0500
+        id S1732189AbgKWMjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:08 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 854872076E;
-        Mon, 23 Nov 2020 12:27:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22D042065E;
+        Mon, 23 Nov 2020 12:39:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134434;
-        bh=GREe4+dIe5+PgkEen7fAPcgRYBz5qrxYPEAp7Km37kM=;
+        s=korg; t=1606135148;
+        bh=PLnBiQZaP5+2vKe4PZ3YtGxZ5gwfrefsH5lvYP4jUlY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JwnnrGUg/fFj3XbAysfRJld3SltSatQ1LY+Nq4KCms0A1n+8mPxmEz2F9rEQ2KBzH
-         REdAHJsxgYL/3hKbquKH8pfOCRBF510XUveIW8JHP01gIITn14iDmZE7vEbg3wwTTm
-         AMxhX1yDvx4ihyX7oGbecxKpWFzQYWBuMphdFYAQ=
+        b=YSkuHZd8P9uTDycYaYtBRZSpyLCQagkn/p/FmzirKZwMCLG7zNJcRxp8PYrZbVsMR
+         OOML2F6HZpBkujbz7pfPtf6fFnHjtz9oO98wve1v+fR0LqOg1JV9Ids2uKw/COANgY
+         yKTd2IU++NAvMoKWtpBpnlAjXa/4lm6n9PKcJqGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filip Moc <dev@moc6.cz>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 18/60] net: usb: qmi_wwan: Set DTR quirk for MR400
+        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 092/158] net/mlx5: E-Switch, Fail mlx5_esw_modify_vport_rate if qos disabled
 Date:   Mon, 23 Nov 2020 13:22:00 +0100
-Message-Id: <20201123121805.900880334@linuxfoundation.org>
+Message-Id: <20201123121824.369548870@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,31 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filip Moc <dev@moc6.cz>
+From: Eli Cohen <elic@nvidia.com>
 
-[ Upstream commit df8d85d8c69d6837817e54dcb73c84a8b5a13877 ]
+[ Upstream commit 5b8631c7b21ca8bc039f0bc030048973b039e0d2 ]
 
-LTE module MR400 embedded in TL-MR6400 v4 requires DTR to be set.
+Avoid calling mlx5_esw_modify_vport_rate() if qos is not enabled and
+avoid unnecessary syndrome messages from firmware.
 
-Signed-off-by: Filip Moc <dev@moc6.cz>
-Acked-by: Bjørn Mork <bjorn@mork.no>
-Link: https://lore.kernel.org/r/20201117173631.GA550981@moc6.cz
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: fcb64c0f5640 ("net/mlx5: E-Switch, add ingress rate support")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/qmi_wwan.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1029,7 +1029,7 @@ static const struct usb_device_id produc
- 	{QMI_FIXED_INTF(0x05c6, 0x9011, 4)},
- 	{QMI_FIXED_INTF(0x05c6, 0x9021, 1)},
- 	{QMI_FIXED_INTF(0x05c6, 0x9022, 2)},
--	{QMI_FIXED_INTF(0x05c6, 0x9025, 4)},	/* Alcatel-sbell ASB TL131 TDD LTE  (China Mobile) */
-+	{QMI_QUIRK_SET_DTR(0x05c6, 0x9025, 4)},	/* Alcatel-sbell ASB TL131 TDD LTE (China Mobile) */
- 	{QMI_FIXED_INTF(0x05c6, 0x9026, 3)},
- 	{QMI_FIXED_INTF(0x05c6, 0x902e, 5)},
- 	{QMI_FIXED_INTF(0x05c6, 0x9031, 5)},
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+index d2d407ebe6872..009d383d83f4b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+@@ -1592,6 +1592,10 @@ int mlx5_esw_modify_vport_rate(struct mlx5_eswitch *esw, u16 vport_num,
+ 	struct mlx5_vport *vport;
+ 
+ 	vport = mlx5_eswitch_get_vport(esw, vport_num);
++
++	if (!vport->qos.enabled)
++		return -EOPNOTSUPP;
++
+ 	MLX5_SET(scheduling_context, ctx, max_average_bw, rate_mbps);
+ 
+ 	return mlx5_modify_scheduling_element_cmd(esw->dev,
+-- 
+2.27.0
+
 
 
