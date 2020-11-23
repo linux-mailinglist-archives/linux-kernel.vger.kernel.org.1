@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584972C189E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3832C187A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732804AbgKWWlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:41:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730558AbgKWWlB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:41:01 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9814CC0613CF;
-        Mon, 23 Nov 2020 14:41:01 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f17so7082971pge.6;
-        Mon, 23 Nov 2020 14:41:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=klkgzjgfmJINdSFUpH5xMPShhHFpqLaKwqqvdz16jMA=;
-        b=qCB8I+EjW5CVtXeRxXHgJUiMzJtzER5ujZ5KGKRWXb7Qp79Q7dXZ2b6qxmxMUsl4LL
-         pkOQS5xnC2UO5n5UqnyS/VolF4AjKHYH8mA1kLED9rra3eJVKzYNslSU+YECoYxTCs0L
-         j/LDk9rTENMlb4SVW4vdqi+H8bc4P14FozNPcOr/FYLDJ7K5sA5uAWnTTrn1k7uc3W4B
-         KMiZKGnjglDaff9IK688XdYme4141zIl942h82fx7Ydk15ylWU/TD+HnY6OdOrlyi+zb
-         CM2WrkjatAxf/BKTZ6yoIjXTGZHfVUtGu5yfF9FDObJZv2Z2EbHK7OXTm4eNww1BMdVF
-         JOfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=klkgzjgfmJINdSFUpH5xMPShhHFpqLaKwqqvdz16jMA=;
-        b=qWGnt8pR2NgYtN6jjXNnRbTO+mGrfQW2OV8fcduA1x06sIMqvx0mqqNm2o8yjlmFt4
-         YMuFhmlLcrYM6ej+1waHoAqCh0bNtiI4ZTSIzjQApyO+htSzCNTU/kxqrgJdpmNfGp/R
-         3brUOS6a+HMZP66o3GuWWLQtP+m2PjuUAYwJPu7iKQ6Elk2fRrkSapbXfqubMRq6PtHi
-         mRRE4ICQZUXACqZBubKyjaemjI0y6xNWZF2/kk4eUBCYI1Dhlxw9gtRRzX2Ril4Q7HdQ
-         oG6gTTJTXo4Bpx4enByxNw2algRlY/WHPkSk1F3ce8hw+APt7qFxvHQ7by7ff/2mMrGD
-         z3Jg==
-X-Gm-Message-State: AOAM532o3NbCIL/vckhUgp7u7S6IX0p4r6AdWA8xRVvefyaH0MnfnSNs
-        b5q/+CYpi10ZcZwhl5fgrOU=
-X-Google-Smtp-Source: ABdhPJxOj5mD/XLIpT/wWiurOiQ6L/9IGLGz7CkzT82ZNIV67krBG7lU1+0vSY5zg0BllbjHbZZbjw==
-X-Received: by 2002:a17:90a:7f93:: with SMTP id m19mr1220499pjl.61.1606171261036;
-        Mon, 23 Nov 2020 14:41:01 -0800 (PST)
-Received: from guptapadev.amr ([192.55.54.42])
-        by smtp.gmail.com with ESMTPSA id ge21sm437935pjb.5.2020.11.23.14.40.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 14:41:00 -0800 (PST)
-Date:   Mon, 23 Nov 2020 14:33:33 -0800
-From:   Pawan Gupta <writetopawan@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH] pinctrl: core: Fix unused variable build warnings
-Message-ID: <d1a71663e96239ced28509980ea484cadc10c80a.1606170299.git.writetopawan@gmail.com>
+        id S1732472AbgKWWeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:34:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730198AbgKWWeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:34:03 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2ED11206B7;
+        Mon, 23 Nov 2020 22:34:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606170842;
+        bh=EfAu8mvkAKJtvXGIKHOfxbFORCHbR6lzt8aMQ7RnXjc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l8w9dZ7t3FWKznc9S49rhn6NIXGz/p8IffABwKwfF5DIVGHepFHkRsjILerUwnVIw
+         7A19bC/zDe/oZI2iD7jpUSOXivrfRImr/95RG1uEdmCD06Y8c1w77fJo14EJvcDwnd
+         1REafM5KBMc7EBEBzmURh2A3U7dV0omHi5n2ALxI=
+Date:   Mon, 23 Nov 2020 22:33:56 +0000
+From:   Will Deacon <will@kernel.org>
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Edgar Merger <Edgar.Merger@emerson.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>
+Subject: Re: [PATCH] PCI: Mark AMD Raven iGPU ATS as broken
+Message-ID: <20201123223356.GC12069@willie-the-truck>
+References: <20201123134410.10648-1-will@kernel.org>
+ <MN2PR12MB4488308D26DB50C18EA3BE0FF7FC0@MN2PR12MB4488.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <MN2PR12MB4488308D26DB50C18EA3BE0FF7FC0@MN2PR12MB4488.namprd12.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs
-file") added build warnings when CONFIG_GPIOLIB=n. Offcourse the kernel
-fails to build when warnings are treated as errors. Below is the error
-message:
+On Mon, Nov 23, 2020 at 09:04:14PM +0000, Deucher, Alexander wrote:
+> [AMD Public Use]
+> 
+> > -----Original Message-----
+> > From: Will Deacon <will@kernel.org>
+> > Sent: Monday, November 23, 2020 8:44 AM
+> > To: linux-kernel@vger.kernel.org
+> > Cc: linux-pci@vger.kernel.org; iommu@lists.linux-foundation.org; Will
+> > Deacon <will@kernel.org>; Bjorn Helgaas <bhelgaas@google.com>;
+> > Deucher, Alexander <Alexander.Deucher@amd.com>; Edgar Merger
+> > <Edgar.Merger@emerson.com>; Joerg Roedel <jroedel@suse.de>
+> > Subject: [PATCH] PCI: Mark AMD Raven iGPU ATS as broken
+> > 
+> > Edgar Merger reports that the AMD Raven GPU does not work reliably on his
+> > system when the IOMMU is enabled:
+> > 
+> >   | [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx timeout,
+> > signaled seq=1, emitted seq=3
+> >   | [...]
+> >   | amdgpu 0000:0b:00.0: GPU reset begin!
+> >   | AMD-Vi: Completion-Wait loop timed out
+> >   | iommu ivhd0: AMD-Vi: Event logged [IOTLB_INV_TIMEOUT
+> > device=0b:00.0 address=0x38edc0970]
+> > 
+> > This is indicative of a hardware/platform configuration issue so, since
+> > disabling ATS has been shown to resolve the problem, add a quirk to match
+> > this particular device while Edgar follows-up with AMD for more information.
+> > 
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Reported-by: Edgar Merger <Edgar.Merger@emerson.com>
+> > Suggested-by: Joerg Roedel <jroedel@suse.de>
+> > Link:
+> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.
+> > kernel.org%2Flinux-
+> > iommu%2FMWHPR10MB1310F042A30661D4158520B589FC0%40MWHPR10M
+> > B1310.namprd10.prod.outlook.com&amp;data=04%7C01%7Calexander.deuc
+> > her%40amd.com%7C1a883fe14d0c408e7d9508d88fb5df4e%7C3dd8961fe488
+> > 4e608e11a82d994e183d%7C0%7C0%7C637417358593629699%7CUnknown%7
+> > CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwi
+> > LCJXVCI6Mn0%3D%7C1000&amp;sdata=TMgKldWzsX8XZ0l7q3%2BszDWXQJJ
+> > LOUfX5oGaoLN8n%2B8%3D&amp;reserved=0
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> > 
+> > Hi all,
+> > 
+> > Since Joerg is away at the moment, I'm posting this to try to make some
+> > progress with the thread in the Link: tag.
+> 
+> + Felix
+> 
+> What system is this?  Can you provide more details?  Does a sbios update
+> fix this?  Disabling ATS for all Ravens will break GPU compute for a lot
+> of people.  I'd prefer to just black list this particular system (e.g.,
+> just SSIDs or revision) if possible.
 
-  $ make CFLAGS_KERNEL+=-Werror
+Cheers, Alex. I'll have to defer to Edgar for the details, as my
+understanding from the original thread over at:
 
-  drivers/pinctrl/core.c: In function ‘pinctrl_pins_show’:
-  drivers/pinctrl/core.c:1607:20: error: unused variable ‘chip’ [-Werror=unused-variable]
-   1607 |  struct gpio_chip *chip;
-        |                    ^~~~
-  drivers/pinctrl/core.c:1606:15: error: unused variable ‘gpio_num’ [-Werror=unused-variable]
-   1606 |  unsigned int gpio_num;
-        |               ^~~~~~~~
-  drivers/pinctrl/core.c:1605:29: error: unused variable ‘range’ [-Werror=unused-variable]
-   1605 |  struct pinctrl_gpio_range *range;
-        |                             ^~~~~
-  cc1: all warnings being treated as errors
+https://lore.kernel.org/linux-iommu/MWHPR10MB1310CDB6829DDCF5EA84A14689150@MWHPR10MB1310.namprd10.prod.outlook.com/
 
-These variables are only used inside #ifdef CONFIG_GPIOLIB, fix the
-build warnings by wrapping the definition inside the config.
+is that this is a board developed by his company.
 
-Fixes: f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
-Signed-off-by: Pawan Gupta <writetopawan@gmail.com>
----
- drivers/pinctrl/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Edgar -- please can you answer Alex's questions?
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 3663d87f51a0..1bb371a5cf8d 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1602,10 +1602,11 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
- 	struct pinctrl_dev *pctldev = s->private;
- 	const struct pinctrl_ops *ops = pctldev->desc->pctlops;
- 	unsigned i, pin;
-+#ifdef CONFIG_GPIOLIB
- 	struct pinctrl_gpio_range *range;
- 	unsigned int gpio_num;
- 	struct gpio_chip *chip;
--
-+#endif
- 	seq_printf(s, "registered pins: %d\n", pctldev->desc->npins);
- 
- 	mutex_lock(&pctldev->mutex);
--- 
-2.21.3
-
+Will
