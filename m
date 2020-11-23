@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5F72C0751
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487E92C0648
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732321AbgKWMjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:39:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52246 "EHLO mail.kernel.org"
+        id S1730610AbgKWM3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:29:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732163AbgKWMjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:39:36 -0500
+        id S1730593AbgKWM33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:29:29 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B54D920857;
-        Mon, 23 Nov 2020 12:39:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EA7420781;
+        Mon, 23 Nov 2020 12:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135176;
-        bh=1b0Aao5rEShUAKqxO8dzn14MSNbOZz2LQvNYSXrlzeg=;
+        s=korg; t=1606134566;
+        bh=DoUrGNENtK2xPC80298SmksnySDye6Bqr8dnb4i0WN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RQuzIfLU50N3/WVQD6FZ4mnrwSUtdwkmIbb6+DGhBu/KEpwejdTeo9RFQyE+jgSpM
-         RnRfUdPPSEuHnJhBUClK6KdLXQ9tt5EcPFSL679pUfiFQMki7DfTVnYmvCuNVZuo4o
-         zXuFf+tQSov1fc5l/8RGaISKQvL3FM6na0Yk2UKk=
+        b=JfmvA0NemEzSItKHZKVWvD5G5t47qC+qd5VgObfX9Q5kqv6klsvcRz0zoZ5sWFqCJ
+         rI0ip2JNdHaMO7UAEVIXj2egdEdVyr3rMEwVItTN9MggMU2/OfulouzuwvFrGIIc6d
+         h+izz4GHukWq7izXflbUbqB0dwLIibXJGj8pbVPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabien Parent <fparent@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 132/158] iio: adc: mediatek: fix unset field
-Date:   Mon, 23 Nov 2020 13:22:40 +0100
-Message-Id: <20201123121826.295492447@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.14 59/60] s390/dasd: fix null pointer dereference for ERP requests
+Date:   Mon, 23 Nov 2020 13:22:41 +0100
+Message-Id: <20201123121807.905897115@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabien Parent <fparent@baylibre.com>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 15207a92e019803d62687455d8aa2ff9eb3dc82c upstream.
+commit 6f117cb854a44a79898d844e6ae3fd23bd94e786 upstream.
 
-dev_comp field is used in a couple of places but it is never set. This
-results in kernel oops when dereferencing a NULL pointer. Set the
-`dev_comp` field correctly in the probe function.
+When requeueing all requests on the device request queue to the blocklayer
+we might get to an ERP (error recovery) request that is a copy of an
+original CQR.
 
-Fixes: 6d97024dce23 ("iio: adc: mediatek: mt6577-auxadc, add mt6765 support")
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201018194644.3366846-1-fparent@baylibre.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Those requests do not have blocklayer request information or a pointer to
+the dasd_queue set. When trying to access those data it will lead to a
+null pointer dereference in dasd_requeue_all_requests().
+
+Fix by checking if the request is an ERP request that can simply be
+ignored. The blocklayer request will be requeued by the original CQR that
+is on the device queue right behind the ERP request.
+
+Fixes: 9487cfd3430d ("s390/dasd: fix handling of internal requests")
+Cc: <stable@vger.kernel.org> #4.16
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/mt6577_auxadc.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/s390/block/dasd.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/iio/adc/mt6577_auxadc.c
-+++ b/drivers/iio/adc/mt6577_auxadc.c
-@@ -9,9 +9,9 @@
- #include <linux/err.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/iopoll.h>
- #include <linux/io.h>
- #include <linux/iio/iio.h>
-@@ -279,6 +279,8 @@ static int mt6577_auxadc_probe(struct pl
- 		goto err_disable_clk;
- 	}
+--- a/drivers/s390/block/dasd.c
++++ b/drivers/s390/block/dasd.c
+@@ -2891,6 +2891,12 @@ static int _dasd_requeue_request(struct
  
-+	adc_dev->dev_comp = device_get_match_data(&pdev->dev);
-+
- 	mutex_init(&adc_dev->lock);
- 
- 	mt6577_auxadc_mod_reg(adc_dev->reg_base + MT6577_AUXADC_MISC,
+ 	if (!block)
+ 		return -EINVAL;
++	/*
++	 * If the request is an ERP request there is nothing to requeue.
++	 * This will be done with the remaining original request.
++	 */
++	if (cqr->refers)
++		return 0;
+ 	spin_lock_irq(&cqr->dq->lock);
+ 	req = (struct request *) cqr->callback_data;
+ 	blk_mq_requeue_request(req, false);
 
 
