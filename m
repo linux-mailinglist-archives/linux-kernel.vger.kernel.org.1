@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FA82C0A24
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBF32C0A1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732978AbgKWMmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:42:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54946 "EHLO mail.kernel.org"
+        id S1733023AbgKWMnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:43:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732775AbgKWMlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:41:55 -0500
+        id S1732848AbgKWMmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:42:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EB992065E;
-        Mon, 23 Nov 2020 12:41:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2A472076E;
+        Mon, 23 Nov 2020 12:42:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135314;
-        bh=h7/Xx0WvMMsdZKjUT9fOgCQnebkFs0C7WZHTgd+ngwA=;
+        s=korg; t=1606135322;
+        bh=FrrAXXlY6fD0MJcGSoVVLCiFldJ308iU+B44mvC6FxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yrMZARUqW6ex1eqcWGYLeljfORwV66PKokibTZ2rZHFDWijeZiRPO4U6O+a9Rmo2A
-         cbYBfK1ewE2qYMS1igkIZ3iFzyCXV4/v7p8KScE3lK5BJ1kHMju1NqPpXrTfeBK1Rl
-         zY1DDElUZ1UQQk9uYRY7UiM3NJjX5GPIFbWtzWCY=
+        b=T2dYj9r64rYLwT0R3MOlApR/nfJQZup4Jsq0xZh14ink4BKp5EgGIvr9HjISGkIwl
+         Ru+TlxhKClztVsP8LNctZ3NljPULEWQWQnwgyZ4yNsVhgBwc5nE3SH8q4jNI5Jtgv2
+         K4jlfTnQiNmTDAhePn5fzUZk0DNLxqSbMp3mprIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 024/252] netlabel: fix our progress tracking in netlbl_unlabel_staticlist()
-Date:   Mon, 23 Nov 2020 13:19:34 +0100
-Message-Id: <20201123121836.764577872@linuxfoundation.org>
+Subject: [PATCH 5.9 027/252] net/mlx4_core: Fix init_hca fields offset
+Date:   Mon, 23 Nov 2020 13:19:37 +0100
+Message-Id: <20201123121836.907767860@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -42,89 +45,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit 866358ec331f8faa394995fb4b511af1db0247c8 ]
+[ Upstream commit 6d9c8d15af0ef20a66a0b432cac0d08319920602 ]
 
-The current NetLabel code doesn't correctly keep track of the netlink
-dump state in some cases, in particular when multiple interfaces with
-large configurations are loaded.  The problem manifests itself by not
-reporting the full configuration to userspace, even though it is
-loaded and active in the kernel.  This patch fixes this by ensuring
-that the dump state is properly reset when necessary inside the
-netlbl_unlabel_staticlist() function.
+Slave function read the following capabilities from the wrong offset:
+1. log_mc_entry_sz
+2. fs_log_entry_sz
+3. log_mc_hash_sz
 
-Fixes: 8cc44579d1bd ("NetLabel: Introduce static network labels for unlabeled connections")
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Link: https://lore.kernel.org/r/160484450633.3752.16512718263560813473.stgit@sifl
+Fix that by adjusting these capabilities offset to match firmware
+layout.
+
+Due to the wrong offset read, the following issues might occur:
+1+2. Negative value reported at max_mcast_qp_attach.
+3. Driver to init FW with multicast hash size of zero.
+
+Fixes: a40ded604365 ("net/mlx4_core: Add masking for a few queries on HCA caps")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Eran Ben Elisha <eranbe@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Link: https://lore.kernel.org/r/20201118081922.553-1-tariqt@nvidia.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netlabel/netlabel_unlabeled.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/fw.c |    6 +++---
+ drivers/net/ethernet/mellanox/mlx4/fw.h |    4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/net/netlabel/netlabel_unlabeled.c
-+++ b/net/netlabel/netlabel_unlabeled.c
-@@ -1166,12 +1166,13 @@ static int netlbl_unlabel_staticlist(str
- 	struct netlbl_unlhsh_walk_arg cb_arg;
- 	u32 skip_bkt = cb->args[0];
- 	u32 skip_chain = cb->args[1];
--	u32 iter_bkt;
--	u32 iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0;
-+	u32 skip_addr4 = cb->args[2];
-+	u32 iter_bkt, iter_chain, iter_addr4 = 0, iter_addr6 = 0;
- 	struct netlbl_unlhsh_iface *iface;
- 	struct list_head *iter_list;
- 	struct netlbl_af4list *addr4;
- #if IS_ENABLED(CONFIG_IPV6)
-+	u32 skip_addr6 = cb->args[3];
- 	struct netlbl_af6list *addr6;
- #endif
- 
-@@ -1182,7 +1183,7 @@ static int netlbl_unlabel_staticlist(str
- 	rcu_read_lock();
- 	for (iter_bkt = skip_bkt;
- 	     iter_bkt < rcu_dereference(netlbl_unlhsh)->size;
--	     iter_bkt++, iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0) {
-+	     iter_bkt++) {
- 		iter_list = &rcu_dereference(netlbl_unlhsh)->tbl[iter_bkt];
- 		list_for_each_entry_rcu(iface, iter_list, list) {
- 			if (!iface->valid ||
-@@ -1190,7 +1191,7 @@ static int netlbl_unlabel_staticlist(str
- 				continue;
- 			netlbl_af4list_foreach_rcu(addr4,
- 						   &iface->addr4_list) {
--				if (iter_addr4++ < cb->args[2])
-+				if (iter_addr4++ < skip_addr4)
- 					continue;
- 				if (netlbl_unlabel_staticlist_gen(
- 					      NLBL_UNLABEL_C_STATICLIST,
-@@ -1203,10 +1204,12 @@ static int netlbl_unlabel_staticlist(str
- 					goto unlabel_staticlist_return;
- 				}
- 			}
-+			iter_addr4 = 0;
-+			skip_addr4 = 0;
- #if IS_ENABLED(CONFIG_IPV6)
- 			netlbl_af6list_foreach_rcu(addr6,
- 						   &iface->addr6_list) {
--				if (iter_addr6++ < cb->args[3])
-+				if (iter_addr6++ < skip_addr6)
- 					continue;
- 				if (netlbl_unlabel_staticlist_gen(
- 					      NLBL_UNLABEL_C_STATICLIST,
-@@ -1219,8 +1222,12 @@ static int netlbl_unlabel_staticlist(str
- 					goto unlabel_staticlist_return;
- 				}
- 			}
-+			iter_addr6 = 0;
-+			skip_addr6 = 0;
- #endif /* IPv6 */
- 		}
-+		iter_chain = 0;
-+		skip_chain = 0;
- 	}
- 
- unlabel_staticlist_return:
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -1864,8 +1864,8 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev,
+ #define	 INIT_HCA_LOG_RD_OFFSET		 (INIT_HCA_QPC_OFFSET + 0x77)
+ #define INIT_HCA_MCAST_OFFSET		 0x0c0
+ #define	 INIT_HCA_MC_BASE_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x00)
+-#define	 INIT_HCA_LOG_MC_ENTRY_SZ_OFFSET (INIT_HCA_MCAST_OFFSET + 0x12)
+-#define	 INIT_HCA_LOG_MC_HASH_SZ_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x16)
++#define	 INIT_HCA_LOG_MC_ENTRY_SZ_OFFSET (INIT_HCA_MCAST_OFFSET + 0x13)
++#define	 INIT_HCA_LOG_MC_HASH_SZ_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x17)
+ #define  INIT_HCA_UC_STEERING_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x18)
+ #define	 INIT_HCA_LOG_MC_TABLE_SZ_OFFSET (INIT_HCA_MCAST_OFFSET + 0x1b)
+ #define  INIT_HCA_DEVICE_MANAGED_FLOW_STEERING_EN	0x6
+@@ -1873,7 +1873,7 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev,
+ #define  INIT_HCA_DRIVER_VERSION_SZ       0x40
+ #define  INIT_HCA_FS_PARAM_OFFSET         0x1d0
+ #define  INIT_HCA_FS_BASE_OFFSET          (INIT_HCA_FS_PARAM_OFFSET + 0x00)
+-#define  INIT_HCA_FS_LOG_ENTRY_SZ_OFFSET  (INIT_HCA_FS_PARAM_OFFSET + 0x12)
++#define  INIT_HCA_FS_LOG_ENTRY_SZ_OFFSET  (INIT_HCA_FS_PARAM_OFFSET + 0x13)
+ #define  INIT_HCA_FS_A0_OFFSET		  (INIT_HCA_FS_PARAM_OFFSET + 0x18)
+ #define  INIT_HCA_FS_LOG_TABLE_SZ_OFFSET  (INIT_HCA_FS_PARAM_OFFSET + 0x1b)
+ #define  INIT_HCA_FS_ETH_BITS_OFFSET      (INIT_HCA_FS_PARAM_OFFSET + 0x21)
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.h
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.h
+@@ -182,8 +182,8 @@ struct mlx4_init_hca_param {
+ 	u64 cmpt_base;
+ 	u64 mtt_base;
+ 	u64 global_caps;
+-	u16 log_mc_entry_sz;
+-	u16 log_mc_hash_sz;
++	u8 log_mc_entry_sz;
++	u8 log_mc_hash_sz;
+ 	u16 hca_core_clock; /* Internal Clock Frequency (in MHz) */
+ 	u8  log_num_qps;
+ 	u8  log_num_srqs;
 
 
