@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25372C10B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03822C10B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390094AbgKWQde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730635AbgKWQci (ORCPT
+        id S2390061AbgKWQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:33:22 -0500
+Received: from mail-40140.protonmail.ch ([185.70.40.140]:23456 "EHLO
+        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390029AbgKWQcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:32:38 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8238C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:32:36 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id d18so17746059edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:32:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PEbsa5HntcIdBOrGyUXi03wOc7HPqT6OCL9AKHl623g=;
-        b=JcEmEqmZ5YVK3pKO04CD9oQmQCLnELQLzua8f5fXbSIiJnbSxM1z/pJlUKmuvdrff6
-         stFtRiKKcVo+tzBS2B+a0SPwL0Vizlvm8sKbSv8tqJcb3iVYLg557b9ZVNGpZlh1+Pmr
-         kRVtCqShkcbuNliqdPmADaMb1KQr2MEPncsHK5QB3G+qH110ElyaG10C7ZRvZm+KE8Nd
-         TfjZyeq3+gmJis6cKNWZ/N6mqrWENXzdHRxmfvKI+4mnBdFP0mW78bFvsirFFTgH5o01
-         6K6PcEQWA6Tongd41DiZaj5w5lpGxcDvg1jYwfT8pIPM2HyUD1m1ewAnXWMgh+63NcsP
-         l9Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PEbsa5HntcIdBOrGyUXi03wOc7HPqT6OCL9AKHl623g=;
-        b=SQjngnA+miIyl4gtuX4RjgYN7G5m8zftPw8+e8EI7tcG6SHICLz9QfOE/tGcFHVT/M
-         HJokc2fE8921+VsWJoOJQcLKzAYDExmmuLmSyeSindIIk0q0x2RTHzflW9jDCdzQNoS6
-         wC02/Xgxg6AYpmqStQ880Sge9gXBlHuTGWyeMO9Xxy4bOXiGCjGW2TJGfFIBt0mcQ9lJ
-         ygdvKNKwTVsF4ZAbxtgaXa+SEgwV9gHecYScYvcpom9vWLlji4ar05XGUt4LujgSVqjM
-         7gUMZC7veQKTs3Wm5gctLD1Ehr6zpjFuL8YluxqITClesqA/61sMz7sH7zlAy1hkZrPn
-         bFjg==
-X-Gm-Message-State: AOAM530guJL+VoLByT/c7tKdpAKPn3XhzftboeAR+i17iywmN4fIgoOO
-        BaG2kRWvb+ytCoql3JIi7tIhnYmTIfXeVQhefwPw+xhKoPQrAQ==
-X-Google-Smtp-Source: ABdhPJyOWUtbV4XCremShmwksPGxuhOH2vLBSCgXGmGwoVIAY4yigU44H7ddoM3DsgNMnPRHPbGaTG1z2Gf3RGlI1RA=
-X-Received: by 2002:a05:6402:1777:: with SMTP id da23mr38863edb.116.1606149155388;
- Mon, 23 Nov 2020 08:32:35 -0800 (PST)
+        Mon, 23 Nov 2020 11:32:53 -0500
+Date:   Mon, 23 Nov 2020 16:32:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1606149171;
+        bh=1OgKSLrOLrx4rcpdrxHRjSAEiZ/HKQ6P5WUtosWkqYE=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=hBHo2n7I9YQ9rdnnTyD6ot70VSuQ5JOy6OdbbL5v6CmBTOSsLQ/Kz4OC+GlEW6N59
+         U640d6Jx9w5e9cIsEkzP4T+Qf6ohVGn/kl2aKCtA/9KZCY8/5oUATwi2KSWnBK3QAh
+         yNZ8jv+zsYlw7IyW89Vc0aOzyjuJBtMOLYzxJgcM=
+To:     Coiby Xu <coiby.xu@gmail.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v3] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
+Message-ID: <1FeR4cJ-m2i5GGyb68drDocoWP-yJ47BeKKEi2IkYbkppLFRCQPTQT4D6xqVCQcmUIjIsoe9HXhwycxxt5XxtsESO6w4uVMzISa987s_T-U=@protonmail.com>
+In-Reply-To: <20201123143613.zzrm3wgm4m6ngvrz@Rk>
+References: <20201021134931.462560-1-coiby.xu@gmail.com> <qo0Y8DqV6mbQsSFabOaqRoxYhKdYCZPjqYuF811CTdPXRFFXpx7sNXYcW9OGI5PMyclgsTjI7Xj3Du3v4hYQVBWGJl3t0t8XSbTKE9uOJ2E=@protonmail.com> <20201122101525.j265hvj6lqgbtfi2@Rk> <xsbDy_74QEfC8byvpA0nIjI0onndA3wuiLm2Iattq-8TLPy28kMq7GKhkfrfzqdBAQfp_w5CTCCJ8XjFmegtZqP58xioheh7OHV7Bam33aQ=@protonmail.com> <20201123143613.zzrm3wgm4m6ngvrz@Rk>
 MIME-Version: 1.0
-References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
- <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
-In-Reply-To: <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Mon, 23 Nov 2020 11:31:59 -0500
-Message-ID: <CA+CK2bBuEhH7cSEZUKTYE_g9mw_rwEG-v1Jk4BL6WuLWK824Aw@mail.gmail.com>
-Subject: Re: Pinning ZONE_MOVABLE pages
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Makes sense, as this means no userspace change.
->
-> > 2. Add an internal move_pages_zone() similar to move_pages() syscall
-> > but instead of migrating to a different NUMA node, migrate pages from
-> > ZONE_MOVABLE to another zone.
-> > Call move_pages_zone() on demand prior to pinning pages from
-> > vfio_pin_map_dma() for instance.
->
-> As others already said, migrating away before the longterm pin should be
-> the solution. IIRC it was one of the goals of long term pinning api
-> proposed long time ago by Peter Ziljstra I think? The implementation
-> that was merged relatively recently doesn't do that (yet?) for all
-> movable pages, just CMA, but it could.
+> [...]
+> >> >> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
+> >> >> +{
+> >> >> +=09struct gpio_chip *gc =3D irq_data_get_irq_chip_data(&irq_desc->=
+irq_data);
+> >> >> +
+> >> >> +=09return gc->get(gc, irq_desc->irq_data.hwirq);
+> >> >> +}
+> >> [...]
+> >> >> +=09ssize_t=09status =3D get_gpio_pin_state(irq_desc);
+> >> >
+> >> >`get_gpio_pin_state()` returns an `int`, so I am not sure why `ssize_=
+t` is used here.
+> >> >
+> >>
+> >> I used `ssize_t` because I found gpiolib-sysfs.c uses `ssize_t`
+> >>
+> >>      // drivers/gpio/gpiolib-sysfs.c
+> >>      static ssize_t value_show(struct device *dev,
+> >>      =09=09struct device_attribute *attr, char *buf)
+> >>      {
+> >>      =09struct gpiod_data *data =3D dev_get_drvdata(dev);
+> >>      =09struct gpio_desc *desc =3D data->desc;
+> >>      =09ssize_t=09=09=09status;
+> >>
+> >>      =09mutex_lock(&data->mutex);
+> >>
+> >>      =09status =3D gpiod_get_value_cansleep(desc);
+> >>          ...
+> >>      =09return status;
+> >>      }
+> >>
+> >> According to the book Advanced Programming in the UNIX Environment by
+> >> W. Richard Stevens,
+> >>      With the 1990 POSIX.1 standard, the primitive system data type
+> >>      ssize_t was introduced to provide the signed return value...
+> >>
+> >> So ssize_t is fairly common, for example, the read and write syscall
+> >> return a value of type ssize_t. But I haven't found out why ssize_t is
+> >> better int.
+> >> >
+> >
+> >Sorry if I wasn't clear, what prompted me to ask that question is the fo=
+llowing:
+> >`gc->get()` returns `int`, `get_gpio_pin_state()` returns `int`, yet you=
+ still
+> >save the return value of `get_gpio_pin_state()` into a variable with typ=
+e
+> >`ssize_t` for no apparent reason. In the example you cited, `ssize_t` is=
+ used
+> >because the show() callback of a sysfs attribute must return `ssize_t`, =
+but here,
+> >`interrupt_line_active()` returns `bool`, so I don't see any advantage o=
+ver a
+> >plain `int`. Anyways, I believe either one is fine, I just found it odd.
+> >
+> I don't understand why "the show() callback of a sysfs attribute
+> must return `ssize_t`" instead of int. Do you think the rationale
+> behind it is the same for this case? If yes, using "ssize_t" for
+> status could be justified.
+> [...]
 
-From what I can tell, CMA is not solving exactly this problem. It
-migrates pages from CMA before pinning, but it migrates them to
-ZONE_MOVABLE. Also, we still need to take care of the fault scenario.
+Because it was decided that way, `ssize_t` is a better choice for that purp=
+ose
+than plain `int`. You can see it in include/linux/device.h, that both the
+show() and store() methods must return `ssize_t`.
 
->
-> > 3. Perhaps, it also makes sense to add madvise() flag, to allocate
-> > pages from non-movable zone. When a user application knows that it
-> > will do DMA mapping, and pin pages for a long time, the memory that it
-> > allocates should never be migrated or hot-removed, so make sure that
-> > it comes from the appropriate place.
-> > The benefit of adding madvise() flag is that we won't have to deal
-> > with slow page migration during pin time, but the disadvantage is that
-> > we would need to change the user interface.
->
-> It's best if we avoid involving userspace until it's shown that's it's
-> insufficient.
+What I'm arguing here, is that there is no reason to use `ssize_t` in this =
+case.
+Because `get_gpio_pin_state()` returns `int`. So when you do
+```
+ssize_t status =3D get_gpio_pin_state(...);
+```
+then the return value of `get_gpio_pin_state()` (which is an `int`), will b=
+e
+converted to an `ssize_t`, and saved into `status`. I'm arguing that that i=
+s
+unnecessary and a plain `int` would work perfectly well in this case. Anywa=
+ys,
+both work fine, I just found the unnecessary use of `ssize_t` here odd.
 
-Agree.
 
-Thank you,
-Pasha
+Regards,
+Barnab=C3=A1s P=C5=91cze
