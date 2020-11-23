@@ -2,97 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A16D2C055A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486922C0561
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbgKWMRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:17:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30966 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726529AbgKWMRJ (ORCPT
+        id S1729388AbgKWMTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729270AbgKWMTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:17:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606133828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSa6axA8acXlN/nHzWzCr89Oo5Z355MEuIWkDZmMlas=;
-        b=Tz653FyfTnDjBoLsc/aAESJ5AzbrMifWYsujGFpquFrKizF5V+QoSMUpg9XEhqOySYM71g
-        MMeo7/mx3qhmSR9S+hc5PP0blr65DavMGOH8nupLfNXZYVMfG973L+KMv9drBm213+DPJo
-        Yod5eI1/lb3ycRRh8oZH1FqPBKASusM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-OjmxZbq0PEacCG4qpdCK8w-1; Mon, 23 Nov 2020 07:16:20 -0500
-X-MC-Unique: OjmxZbq0PEacCG4qpdCK8w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBE4A8AEA40;
-        Mon, 23 Nov 2020 12:16:17 +0000 (UTC)
-Received: from work-vm (ovpn-114-158.ams2.redhat.com [10.36.114.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CC31B5D9CC;
-        Mon, 23 Nov 2020 12:16:13 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 12:16:11 +0000
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Peter Maydell <peter.maydell@linaro.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-Message-ID: <20201123121611.GG3022@work-vm>
-References: <20201119153901.53705-1-steven.price@arm.com>
- <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
+        Mon, 23 Nov 2020 07:19:20 -0500
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13540C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:19:19 -0800 (PST)
+Received: by mail-vk1-xa44.google.com with SMTP id i62so3882463vkb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:19:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0RaSE7DvnDulS9t4LpaUCUe2jf4h9KhFfKphwvJM8JQ=;
+        b=w93F2dWxrnvK+FvAXB/n/udbfrv+JwAJ1uQ0QWYZVmiY7b+/3Tx3My5vmdW6U+554C
+         ltaXft4sBLXQ/v2Eg6sLqwaQp9MDSKawB7LhdCrembme+GSL1mzvq2UukApuB38WUkUl
+         X53RzEnOSc1Y3vsEQolhQa2GaxFf7+DyM6d0s+hYuOWlh6qbwHoOPMFoEP22LSVG15ID
+         MrbS3vdJC9Kh7wnm3qubz1fBngI2Z2Dzm38fopmUieFGv6OCjnoSjc7tTvDthLj5ZHpr
+         PJitVRSn4MJvtAeTw59kcycHkpl88CJ2cqmCMn6cQShjfnIlzrRsC/WNgOvGuInxk1jT
+         avwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0RaSE7DvnDulS9t4LpaUCUe2jf4h9KhFfKphwvJM8JQ=;
+        b=gHAvrn58Zr0rMJE70+qpE3m7NWh4f2/yFNmXIw6ucfr8g44HFd7tOV7ghUNUQwzjq+
+         g7EgahEyFBxd+LWVZjXVWI1pbmT3A+81WIGAz+CGYM9CfF9Pv6X0fvZUtt8gI96iQ0yt
+         qpAgCkbUvPmNZYPR+39nAxvLWZqvlSCE81EUyYF+IayaLXu8+XySHmvkhDYmOV7tfZpM
+         taJTABdLXKyvNJJ5PKBcEiMrkIe7H2PDeNSB3AJPy82MUIyDLSq2/UYj4gzoGfu25Gso
+         /lujxMJYvMaP+Cio+uhauJXl1dLk9AWz4pHbxgOoO22Iga+nAEMSUfiRoPydvOZN91w5
+         xGgw==
+X-Gm-Message-State: AOAM531mr/W4y1dx3UINSLb5Uw40ZCCQGdGnsRmF2R6H7Fw+HTyFSwfT
+        d8w0iHPKCQbbn8fLa+U6lzXE4+NwdJ4C9joPA6kw2g==
+X-Google-Smtp-Source: ABdhPJx/P1YTN6dBnh8JsnFk0CFqI0kBe/rayDpT35PtlocwK9Vtroch+dxh8vMau2/bddJMSJIRbiFSAOunSP5QVEU=
+X-Received: by 2002:a1f:2cd4:: with SMTP id s203mr20145788vks.6.1606133955691;
+ Mon, 23 Nov 2020 04:19:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201112062422.32212-1-bbudiredla@marvell.com>
+ <20201112062422.32212-2-bbudiredla@marvell.com> <CAPDyKFqZij1_aZZs3EeEuNob37WsGYN+6N52H2N0nTzM427j3g@mail.gmail.com>
+ <CY4PR1801MB20705DF5A12318AB80EDBD45DEFC0@CY4PR1801MB2070.namprd18.prod.outlook.com>
+In-Reply-To: <CY4PR1801MB20705DF5A12318AB80EDBD45DEFC0@CY4PR1801MB2070.namprd18.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 23 Nov 2020 13:18:38 +0100
+Message-ID: <CAPDyKFqBWEdAzz0hjk7LhqX1D8qmOomHSS=Be+_vU=upxMr0aA@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v1 1/2] mmc: Support kmsg dumper based on pstore/blk
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Maydell (peter.maydell@linaro.org) wrote:
-> On Thu, 19 Nov 2020 at 15:39, Steven Price <steven.price@arm.com> wrote:
-> > This series adds support for Arm's Memory Tagging Extension (MTE) to
-> > KVM, allowing KVM guests to make use of it. This builds on the existing
-> > user space support already in v5.10-rc1, see [1] for an overview.
-> 
-> > The change to require the VMM to map all guest memory PROT_MTE is
-> > significant as it means that the VMM has to deal with the MTE tags even
-> > if it doesn't care about them (e.g. for virtual devices or if the VMM
-> > doesn't support migration). Also unfortunately because the VMM can
-> > change the memory layout at any time the check for PROT_MTE/VM_MTE has
-> > to be done very late (at the point of faulting pages into stage 2).
-> 
-> I'm a bit dubious about requring the VMM to map the guest memory
-> PROT_MTE unless somebody's done at least a sketch of the design
-> for how this would work on the QEMU side. Currently QEMU just
-> assumes the guest memory is guest memory and it can access it
-> without special precautions...
+[...]
 
-Although that is also changing because of the encrypted/protected memory
-in things like SEV.
+> >
+> >As I said above, I would like to avoid host specific deployments from be=
+ing
+> >needed. Is there a way we can avoid this?
+> >
+>
+> I don't see an alternative.
 
-Dave
+Well, if not, can you please explain why?
 
-> thanks
-> -- PMM
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+[...]
 
+> >> +
+> >> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name)
+> >> +{
+> >> +       struct mmcpstore_context *cxt =3D &oops_cxt;
+> >> +       struct pstore_blk_config *conf =3D &cxt->conf;
+> >> +       struct pstore_device_info *dev =3D &cxt->dev;
+> >> +       struct block_device *bdev;
+> >> +       struct mmc_command *stop;
+> >> +       struct mmc_command *cmd;
+> >> +       struct mmc_request *mrq;
+> >> +       struct mmc_data *data;
+> >> +       int ret;
+> >> +
+> >> +       if (!conf->device[0])
+> >> +               return;
+> >> +
+> >> +       /* Multiple backend devices not allowed */
+> >> +       if (cxt->dev_name[0])
+> >> +               return;
+> >> +
+> >> +       bdev =3D  mmcpstore_open_backend(conf->device);
+> >> +       if (IS_ERR(bdev)) {
+> >> +               pr_err("%s failed to open with %ld\n",
+> >> +                               conf->device, PTR_ERR(bdev));
+> >> +               return;
+> >> +       }
+> >> +
+> >> +       bdevname(bdev, cxt->dev_name);
+> >> +       cxt->partno =3D bdev->bd_part->partno;
+> >> +       mmcpstore_close_backend(bdev);
+> >> +
+> >> +       if (strncmp(cxt->dev_name, disk_name, strlen(disk_name)))
+> >> +               return;
+> >> +
+> >> +       cxt->start_sect =3D mmc_blk_get_part(card, cxt->partno, &cxt->=
+size);
+> >> +       if (!cxt->start_sect) {
+> >> +               pr_err("Non-existent partition %d selected\n", cxt->pa=
+rtno);
+> >> +               return;
+> >> +       }
+> >> +
+> >> +       /* Check for host mmc panic write polling function definitions=
+ */
+> >> +       if (!card->host->ops->req_cleanup_pending ||
+> >> +                       !card->host->ops->req_completion_poll)
+> >> +               return;
+> >> +
+> >> +       cxt->card =3D card;
+> >> +
+> >> +       cxt->sub =3D kmalloc(conf->kmsg_size, GFP_KERNEL);
+> >> +       if (!cxt->sub)
+> >> +               goto out;
+> >> +
+> >> +       mrq =3D kzalloc(sizeof(struct mmc_request), GFP_KERNEL);
+> >> +       if (!mrq)
+> >> +               goto free_sub;
+> >> +
+> >> +       cmd =3D kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
+> >> +       if (!cmd)
+> >> +               goto free_mrq;
+> >> +
+> >> +       stop =3D kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
+> >> +       if (!stop)
+> >> +               goto free_cmd;
+> >> +
+> >> +       data =3D kzalloc(sizeof(struct mmc_data), GFP_KERNEL);
+> >> +       if (!data)
+> >> +               goto free_stop;
+> >> +
+> >> +       mrq->cmd =3D cmd;
+> >> +       mrq->data =3D data;
+> >> +       mrq->stop =3D stop;
+> >> +       cxt->mrq =3D mrq;
+> >> +
+> >> +       dev->total_size =3D cxt->size;
+> >> +       dev->flags =3D PSTORE_FLAGS_DMESG;
+> >> +       dev->read =3D mmcpstore_read;
+> >> +       dev->write =3D mmcpstore_write;
+> >> +       dev->erase =3D NULL;
+> >> +       dev->panic_write =3D mmcpstore_panic_write;
+> >> +
+> >> +       ret =3D register_pstore_device(&cxt->dev);
+> >
+> >By looking at all of the code above, lots are duplicated from the mmc bl=
+ock
+> >device implementation. Isn't there a way to make the pstore block device=
+ to
+> >push a request through the regular blk-mq path instead?
+> >
+> The regular path has pre, post processing=E2=80=99s and locking semantics=
+ that
+> are not suitable for panic write scenario. Further, the locking mechanism=
+s are
+> implemented in host drivers. This is preferred to quickly complete the wr=
+ite
+> before the kernel dies.
+
+I am sorry, but this doesn't make sense to me.
+
+When it comes to complete the data write, the regular block I/O path
+is supposed to be optimized. If there is a problem with this path,
+then we should fix it, rather than adding a new path along the side
+(unless there are very good reasons not to).
+
+>
+> >That said, I wonder why you don't call register_pstore_blk(), as I thoug=
+ht that
+> >was the interface to be used for regular block devices, no?
+> >
+> register_pstore_blk() is for arbitrary block devices for which best effor=
+t is not defined.
+
+Exactly why isn't "best effort" good enough for mmc?
+
+As there are no other users of register_pstore_blk(), it makes me
+wonder, when it should be used then?
+
+[...]
+
+> >> +
+> >> +static void __exit mmcpstore_exit(void) {
+> >> +       struct mmcpstore_context *cxt =3D &oops_cxt;
+> >> +
+> >> +       unregister_pstore_device(&cxt->dev);
+> >> +       kfree(cxt->mrq->data);
+> >> +       kfree(cxt->mrq->stop);
+> >> +       kfree(cxt->mrq->cmd);
+> >> +       kfree(cxt->mrq);
+> >> +       kfree(cxt->sub);
+> >> +       cxt->card =3D NULL;
+> >
+> >Can we do this via mmc_blk_remove() instead?
+> >
+> The unregisters here are related to mmcpstore, nothing specific to card.
+
+I am not sure I understand. If a card is removed, which has been
+registered for pstore - then what should we do?
+
+At least, it looks like a card removal will trigger a life cycle issue
+for the allocated data structures. No?
+
+[...]
+
+Kind regards
+Uffe
