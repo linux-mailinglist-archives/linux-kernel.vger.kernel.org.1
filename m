@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497DF2C0622
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351BC2C0624
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730400AbgKWM2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37972 "EHLO mail.kernel.org"
+        id S1730404AbgKWM2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:28:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730390AbgKWM2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:01 -0500
+        id S1730392AbgKWM2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:28:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1E2F20728;
-        Mon, 23 Nov 2020 12:27:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF6A420888;
+        Mon, 23 Nov 2020 12:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134479;
-        bh=YxspgIcfsGSxpHBOzsNLR95d45ufnwb0/diUX2ysqO8=;
+        s=korg; t=1606134482;
+        bh=B/eNGlAHvi5dC+mgfYnFNNUWf9A5JS+agK/HNgpTLEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yLJ0BAD9LrRpBx/LUQYQayXR2LJBRhdSij9F6vjiVfj435dQAO7V0dEqZiALTA8x7
-         Dy2cZaqQYZSY64zYX10DQ1Ze+W6OCpDEXdLFnbyWeI711UFwrWbVASvKT8ML03XLZM
-         zkqIs+0ZNnH6ZLQvey8BjyhjEOby32XeVCFgEUps=
+        b=CHz+jdt1Ea5vs3VLpuGeXUln8AobG6fTfQwY8O/6RUd+sVCPFOkd5Fuf2O1uCbErc
+         RemL5sK55vfwncDD7/o6Sn6S8dOFeNsGsSUoNzQS4UY6aX6DJ/CNkTVToaTMbJ/Jd/
+         coflTngms9Mr6vwUwhhnEe49Zobct9vXGJVJRJTI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wu Bo <wubo.oduw@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 35/60] can: m_can: m_can_handle_state_change(): fix state change
-Date:   Mon, 23 Nov 2020 13:22:17 +0100
-Message-Id: <20201123121806.741802085@linuxfoundation.org>
+Subject: [PATCH 4.14 36/60] ASoC: qcom: lpass-platform: Fix memory leak
+Date:   Mon, 23 Nov 2020 13:22:18 +0100
+Message-Id: <20201123121806.793993057@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
 References: <20201123121805.028396732@linuxfoundation.org>
@@ -44,49 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo.oduw@gmail.com>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-[ Upstream commit cd0d83eab2e0c26fe87a10debfedbb23901853c1 ]
+[ Upstream commit bd6327fda2f3ded85b69b3c3125c99aaa51c7881 ]
 
-m_can_handle_state_change() is called with the new_state as an argument.
+lpass_pcm_data is not freed in error paths. Free it in
+error paths to avoid memory leak.
 
-In the switch statements for CAN_STATE_ERROR_ACTIVE, the comment and the
-following code indicate that a CAN_STATE_ERROR_WARNING is handled.
-
-This patch fixes this problem by changing the case to CAN_STATE_ERROR_WARNING.
-
-Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
-Link: http://lore.kernel.org/r/20200129022330.21248-2-wubo.oduw@gmail.com
-Cc: Dan Murphy <dmurphy@ti.com>
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Link: https://lore.kernel.org/r/1605416210-14530-1-git-send-email-srivasam@codeaurora.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/lpass-platform.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index ebad93ac8f118..680ee8345211f 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -671,7 +671,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	unsigned int ecr;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index b8f8cb906d805..35c49fc9602b6 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -80,8 +80,10 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
+ 	else
+ 		dma_ch = 0;
  
- 	switch (new_state) {
--	case CAN_STATE_ERROR_ACTIVE:
-+	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		priv->can.can_stats.error_warning++;
- 		priv->can.state = CAN_STATE_ERROR_WARNING;
-@@ -700,7 +700,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	__m_can_get_berr_counter(dev, &bec);
+-	if (dma_ch < 0)
++	if (dma_ch < 0) {
++		kfree(data);
+ 		return dma_ch;
++	}
  
- 	switch (new_state) {
--	case CAN_STATE_ERROR_ACTIVE:
-+	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		cf->can_id |= CAN_ERR_CRTL;
- 		cf->data[1] = (bec.txerr > bec.rxerr) ?
+ 	drvdata->substream[dma_ch] = substream;
+ 
+@@ -102,6 +104,7 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
+ 	ret = snd_pcm_hw_constraint_integer(runtime,
+ 			SNDRV_PCM_HW_PARAM_PERIODS);
+ 	if (ret < 0) {
++		kfree(data);
+ 		dev_err(soc_runtime->dev, "setting constraints failed: %d\n",
+ 			ret);
+ 		return -EINVAL;
 -- 
 2.27.0
 
