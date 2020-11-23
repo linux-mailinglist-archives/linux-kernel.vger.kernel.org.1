@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EA22C16F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D98AD2C16F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730437AbgKWUjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:39:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46416 "EHLO mail.kernel.org"
+        id S1730642AbgKWUjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:39:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727847AbgKWUjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:39:04 -0500
+        id S1730929AbgKWUjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 15:39:14 -0500
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D34620721;
-        Mon, 23 Nov 2020 20:39:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCB5A2075A;
+        Mon, 23 Nov 2020 20:39:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606163943;
-        bh=tkAsjlRH2HuuhR8vmGPp7i9n4IBY/yYjedNX3O0GBWc=;
+        s=default; t=1606163954;
+        bh=fXQ4kN1fuSAB93w2X+YhBILhqVMOtBEUFEyMF7r+PeA=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=cDp47rsTXsD0Zxg1b/NsKf4lt7RpderIZ8vEEF8LAZ/nAR/0mX69QF205d2zkKrt6
-         3vVajqui2HbJsZC/07W/zA6na//Z6rL/akH9ipLZlV+MubFknfBW9YGRXE7PqxndCU
-         BfE02ZLtAdkDwsNlGi5YF4eq580KbUBy4R3Xw/QE=
-Date:   Mon, 23 Nov 2020 20:38:40 +0000
+        b=lMxGtfJCzFcPLYicvJCUEje3aujstAcVr4HgOJ5HgBWmKm0H8ujxueD3zp6YH6K+i
+         /KDZxICOrncrcaZz5xVyVo2x4acFYcgEJk5ocF5U2uO0f6tXfTRrcZFfKvfEuzBwam
+         PdBfdeHnxLqHHaPhCwJ9rG7z+4lFCdKWgv87u3zc=
+Date:   Mon, 23 Nov 2020 20:38:51 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     robh+dt@kernel.org, rohitkr@codeaurora.org, plai@codeaurora.org,
-        linux-kernel@vger.kernel.org, perex@perex.cz,
-        bgoswami@codeaurora.org,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        tiwai@suse.com, lgirdwood@gmail.com,
-        srinivas.kandagatla@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-In-Reply-To: <1606148273-17325-1-git-send-email-srivasam@codeaurora.org>
-References: <1606148273-17325-1-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH] Asoc: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state
-Message-Id: <160616391558.20973.7389509283379786250.b4-ty@kernel.org>
+To:     devicetree@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     lukasz.luba@arm.com, f.fainelli@gmail.com, sudeep.holla@arm.com,
+        vincent.guittot@linaro.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, souvik.chakravarty@arm.com,
+        robh@kernel.org, etienne.carriere@linaro.org,
+        satyakim@qti.qualcomm.com
+In-Reply-To: <20201119191051.46363-1-cristian.marussi@arm.com>
+References: <20201119191051.46363-1-cristian.marussi@arm.com>
+Subject: Re: [PATCH v6 0/5] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
+Message-Id: <160616392670.21180.3656165882434093831.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,24 +44,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 21:47:53 +0530, Srinivasa Rao Mandadapu wrote:
-> Fix enabling BCLK and LRCLK only when LPAIF is invalid state and
-> bit clock in enable state.
-> In device suspend/resume scenario LPAIF is going to reset state.
-> which is causing LRCLK disable and BCLK enable.
-> Avoid such inconsitency by removing unnecessary cpu dai prepare API,
-> which is doing LRCLK enable, and by maintaining BLCK  state information.
+On Thu, 19 Nov 2020 19:10:46 +0000, Cristian Marussi wrote:
+> this series introduces the support for the new SCMI Voltage Domain Protocol
+> defined by the upcoming SCMIv3.0 specification, whose BETA release is
+> available at [1].
+> 
+> Afterwards, a new generic SCMI Regulator driver is developed on top of the
+> new SCMI VD Protocol.
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state
-      commit: b1824968221ccc498625750d8c49cf0d7d39a4de
+[1/1] regulator: core: add of_match_full_name boolean flag
+      commit: e7095c35abfc5a5d566941a87434c0fd5ffb570f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
