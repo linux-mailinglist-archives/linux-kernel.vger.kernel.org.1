@@ -2,318 +2,707 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587FB2C0475
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF222C044F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgKWLVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 06:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
+        id S1728965AbgKWLTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728899AbgKWLTm (ORCPT
+        with ESMTP id S1728924AbgKWLTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:19:42 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD93C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:42 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id u12so18262041wrt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:41 -0800 (PST)
+        Mon, 23 Nov 2020 06:19:44 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A974C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:43 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s8so18164835wrw.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FCouInRUErRLohKUWgZ5Rh5LGuUuX53SkzhdYyO1Qd0=;
-        b=WITwZARmzl597oEYyJmeZtf/keRxKZyhTRuWl1mJR4gcvc8Z6HR6kWimUTc8NeVl2P
-         dg/AUfJrtW1uCMrPRzSENfLDfQEyk8XZ6SGAmKMuxmFaJQJm5/6xNl/fsKPFoID0ZSjF
-         npNOQ7GumEsDb2tI+GL2YC4/1jPxhic8iiWDKmLtnEZn5zejduqkH7XTfKQOVnmBFxrA
-         p7aRY4hduVmhmwQTSOSBKFvzGhZE7ESKJmfmBjbmVUZBxs/058qFR92RJy8seJeedXk+
-         mNYLKHoVnB5NyUN8MP8GaXzvIWJ+I2bIvC79FcXHl/ajfJXM2YbR98Wxk8SVkRs3hSVP
-         E+3g==
+        bh=SGWlNEh3PyNq4sIhvrp3Meeg05Tjr4JevFu1RmFxOmM=;
+        b=UzHbNIDyFwraiKdDndWzYZaXu0JmMHo98Mz4Ttg7rKotSo479DnVjYEl8lKLXhId26
+         mC5b3LcakHcoVCq6R6ePCiStbolrDhuuiXPe2ux559Go8FYjzK1DfUDXNukwKc3v1Lx8
+         p5Dihp0pD83QMXMZ0NOVDFwArhG+56Xuq5RZuJqX6n9J3BldCEFWW+7LrsdYQwjll8cT
+         knTP0sTVGF84UywL2iKAFEZrGAFlUFlUJeGnOplxo7COpM5NWfKB4JmOsXi5j9DoUAG+
+         g9ldcIpm7yLfgAe3zEJiTN13qWX09x5iLoEX97LDGKZ3SHO2cYmVZWU05YIKlfusI2bF
+         M8bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FCouInRUErRLohKUWgZ5Rh5LGuUuX53SkzhdYyO1Qd0=;
-        b=nS/6c3NYu6a5Q8oKzYzQGKycI3DYNs0h0QToCtiPHqxG/CHaSvl4/E23mDM7ZZ9HyZ
-         n94oeOHZAwfozx+7uxQnhgbcSbQxRDFhG3xWIGXequUCvT57KEFJExdkjfWvygWQZwoC
-         5IKYeLcgvPRhfMwcxOB4iZgagrAUNClVS9D542KOTgP4s2VNOfQlLQSOkWVwGZYst3bd
-         01RgKXgn6Xzeo8LBrazxJQ0t8As8L30KHayJDTky+DskHuvgvx4SYohBoF8XrFcGSFwx
-         O/2AK3mFgPd37kJAiMS8otpFU3N28wJ2whMZWpATpMbvcZrH05kopdke3uaZ11ZvVDXG
-         UQLg==
-X-Gm-Message-State: AOAM531aNCGUqwgDyvE0oRjDWycukXmeHkWVQN/RDVVvkIvrul24LTDV
-        /OpRPz9X4Zl3r/NBPaprxe1BgA==
-X-Google-Smtp-Source: ABdhPJwRB/ivJcm9IasBeFeTCCH9XybuGLjGQUptEZrDvk/mQPa3TaDOEuCyEpAykvJXnNNQRSiIcA==
-X-Received: by 2002:adf:9cc6:: with SMTP id h6mr30900317wre.341.1606130380725;
-        Mon, 23 Nov 2020 03:19:40 -0800 (PST)
+        bh=SGWlNEh3PyNq4sIhvrp3Meeg05Tjr4JevFu1RmFxOmM=;
+        b=KRBVFhiiUybFnUoNFJ4G/Z/KLx6/cPhcUl11X1vuXUiQqbQsP4lPluoy6oWLTmpW9X
+         qw7LdW28wXCi2vHC+a4vZv/rKjzJN0a3k+bzRA3EyTHj8SijPLe42c/BU3aB7IU9jrNt
+         GiMkc3cuXJZJ2tN6aJILNTxrtvK9t0SnobDpDw1kz1oeW/vFCsQ9vb/3tF1s7caUCeQU
+         rVN+IxFE85cOzqldbJBAkSsbRBgCkucBpaCsU/ptcoOgANWHc/Nqi6STB4uEm7/BMGj/
+         /ZzCnZO4fxS7KoSIjHy8cjCwpk6wZ44Wwv8Ssbws1O310csnI60Z4lbdIXu/IkFrPNdV
+         p2cA==
+X-Gm-Message-State: AOAM533MCL0YK2e7zuB8hyGbZDPh4kEECR2n19FG6bMrGQXWjJopMSaK
+        EzQFIGUCkifCXNrr5PI0Y/wETQ==
+X-Google-Smtp-Source: ABdhPJymQBPUgwo7jNLjw/1Dq+lMPW1/5UkcHmmInrzOU+PQ5NBQmoT+V1CsJ/ft6sl0LaZtgQgj4Q==
+X-Received: by 2002:adf:82c7:: with SMTP id 65mr29782206wrc.384.1606130381856;
+        Mon, 23 Nov 2020 03:19:41 -0800 (PST)
 Received: from dell.default ([91.110.221.218])
-        by smtp.gmail.com with ESMTPSA id n9sm16317290wmd.4.2020.11.23.03.19.39
+        by smtp.gmail.com with ESMTPSA id n9sm16317290wmd.4.2020.11.23.03.19.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 03:19:40 -0800 (PST)
+        Mon, 23 Nov 2020 03:19:41 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Subject: [PATCH 14/40] drm/msm/disp/dpu1/dpu_hw_catalog: Move definitions to the only place they are used
-Date:   Mon, 23 Nov 2020 11:18:53 +0000
-Message-Id: <20201123111919.233376-15-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Subject: [PATCH 15/40] drm/nouveau/nvkm/subdev/bios/init: Demote obvious abuse of kernel-doc
+Date:   Mon, 23 Nov 2020 11:18:54 +0000
+Message-Id: <20201123111919.233376-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201123111919.233376-1-lee.jones@linaro.org>
 References: <20201123111919.233376-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These tables are not large or overbearing, so moving them into the
-source file seems like the right thing to do.  The alternative is to
-use __maybe_unused, which is undesirable.
-
 Fixes the following W=1 kernel build warning(s):
 
- In file included from drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c:11:
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h:7:23: warning: ‘qcom_compressed_supported_formats’ defined but not used [-Wunused-const-variable=]
- 7 | static const uint32_t qcom_compressed_supported_formats[] = {
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h:48:23: warning: ‘plane_formats_yuv’ defined but not used [-Wunused-const-variable=]
- 48 | static const uint32_t plane_formats_yuv[] = {
- | ^~~~~~~~~~~~~~~~~
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h:17:23: warning: ‘plane_formats’ defined but not used [-Wunused-const-variable=]
- 17 | static const uint32_t plane_formats[] = {
- | ^~~~~~~~~~~~~
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:584: warning: Function parameter or member 'init' not described in 'init_reserved'
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:611: warning: Function parameter or member 'init' not described in 'init_done'
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:622: warning: Function parameter or member 'init' not described in 'init_io_restrict_prog'
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:659: warning: Function parameter or member 'init' not described in 'init_repeat'
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:685: warning: Function parameter or member 'init' not described in 'init_io_restrict_pll'
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:725: warning: Function parameter or member 'init' not described in 'init_end_repeat'
 
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Sean Paul <sean@poorly.run>
+NB: Trimmed for brevity (lots of these!)
+
+Cc: Ben Skeggs <bskeggs@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-arm-msm@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: freedreno@lists.freedesktop.org
+Cc: nouveau@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 74 +++++++++++++++-
- .../drm/msm/disp/dpu1/dpu_hw_catalog_format.h | 88 -------------------
- drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c     | 11 ++-
- 3 files changed, 83 insertions(+), 90 deletions(-)
- delete mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h
+ .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   | 136 +++++++++---------
+ 1 file changed, 68 insertions(+), 68 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-index a7004f18523b0..9ed6d0c6cd9b2 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-@@ -8,7 +8,6 @@
- #include <linux/platform_device.h>
- #include "dpu_hw_mdss.h"
- #include "dpu_hw_catalog.h"
--#include "dpu_hw_catalog_format.h"
- #include "dpu_kms.h"
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
+index 9de74f41dcd2a..68e35219cf757 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
+@@ -575,7 +575,7 @@ init_tmds_reg(struct nvbios_init *init, u8 tmds)
+  * init opcode handlers
+  *****************************************************************************/
  
- #define VIG_MASK \
-@@ -62,6 +61,79 @@
- 
- #define STRCAT(X, Y) (X Y)
- 
-+static const uint32_t plane_formats[] = {
-+	DRM_FORMAT_ARGB8888,
-+	DRM_FORMAT_ABGR8888,
-+	DRM_FORMAT_RGBA8888,
-+	DRM_FORMAT_BGRA8888,
-+	DRM_FORMAT_XRGB8888,
-+	DRM_FORMAT_RGBX8888,
-+	DRM_FORMAT_BGRX8888,
-+	DRM_FORMAT_XBGR8888,
-+	DRM_FORMAT_RGB888,
-+	DRM_FORMAT_BGR888,
-+	DRM_FORMAT_RGB565,
-+	DRM_FORMAT_BGR565,
-+	DRM_FORMAT_ARGB1555,
-+	DRM_FORMAT_ABGR1555,
-+	DRM_FORMAT_RGBA5551,
-+	DRM_FORMAT_BGRA5551,
-+	DRM_FORMAT_XRGB1555,
-+	DRM_FORMAT_XBGR1555,
-+	DRM_FORMAT_RGBX5551,
-+	DRM_FORMAT_BGRX5551,
-+	DRM_FORMAT_ARGB4444,
-+	DRM_FORMAT_ABGR4444,
-+	DRM_FORMAT_RGBA4444,
-+	DRM_FORMAT_BGRA4444,
-+	DRM_FORMAT_XRGB4444,
-+	DRM_FORMAT_XBGR4444,
-+	DRM_FORMAT_RGBX4444,
-+	DRM_FORMAT_BGRX4444,
-+};
-+
-+static const uint32_t plane_formats_yuv[] = {
-+	DRM_FORMAT_ARGB8888,
-+	DRM_FORMAT_ABGR8888,
-+	DRM_FORMAT_RGBA8888,
-+	DRM_FORMAT_BGRX8888,
-+	DRM_FORMAT_BGRA8888,
-+	DRM_FORMAT_XRGB8888,
-+	DRM_FORMAT_XBGR8888,
-+	DRM_FORMAT_RGBX8888,
-+	DRM_FORMAT_RGB888,
-+	DRM_FORMAT_BGR888,
-+	DRM_FORMAT_RGB565,
-+	DRM_FORMAT_BGR565,
-+	DRM_FORMAT_ARGB1555,
-+	DRM_FORMAT_ABGR1555,
-+	DRM_FORMAT_RGBA5551,
-+	DRM_FORMAT_BGRA5551,
-+	DRM_FORMAT_XRGB1555,
-+	DRM_FORMAT_XBGR1555,
-+	DRM_FORMAT_RGBX5551,
-+	DRM_FORMAT_BGRX5551,
-+	DRM_FORMAT_ARGB4444,
-+	DRM_FORMAT_ABGR4444,
-+	DRM_FORMAT_RGBA4444,
-+	DRM_FORMAT_BGRA4444,
-+	DRM_FORMAT_XRGB4444,
-+	DRM_FORMAT_XBGR4444,
-+	DRM_FORMAT_RGBX4444,
-+	DRM_FORMAT_BGRX4444,
-+
-+	DRM_FORMAT_NV12,
-+	DRM_FORMAT_NV21,
-+	DRM_FORMAT_NV16,
-+	DRM_FORMAT_NV61,
-+	DRM_FORMAT_VYUY,
-+	DRM_FORMAT_UYVY,
-+	DRM_FORMAT_YUYV,
-+	DRM_FORMAT_YVYU,
-+	DRM_FORMAT_YUV420,
-+	DRM_FORMAT_YVU420,
-+};
-+
- /*************************************************************
-  * DPU sub blocks config
-  *************************************************************/
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h
-deleted file mode 100644
-index 3766f0fd0bf08..0000000000000
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h
-+++ /dev/null
-@@ -1,88 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/* Copyright (c) 2015-2018, The Linux Foundation. All rights reserved.
-- */
--
--#include "dpu_hw_mdss.h"
--
--static const uint32_t qcom_compressed_supported_formats[] = {
--	DRM_FORMAT_ABGR8888,
--	DRM_FORMAT_ARGB8888,
--	DRM_FORMAT_XBGR8888,
--	DRM_FORMAT_XRGB8888,
--	DRM_FORMAT_BGR565,
--
--	DRM_FORMAT_NV12,
--};
--
--static const uint32_t plane_formats[] = {
--	DRM_FORMAT_ARGB8888,
--	DRM_FORMAT_ABGR8888,
--	DRM_FORMAT_RGBA8888,
--	DRM_FORMAT_BGRA8888,
--	DRM_FORMAT_XRGB8888,
--	DRM_FORMAT_RGBX8888,
--	DRM_FORMAT_BGRX8888,
--	DRM_FORMAT_XBGR8888,
--	DRM_FORMAT_RGB888,
--	DRM_FORMAT_BGR888,
--	DRM_FORMAT_RGB565,
--	DRM_FORMAT_BGR565,
--	DRM_FORMAT_ARGB1555,
--	DRM_FORMAT_ABGR1555,
--	DRM_FORMAT_RGBA5551,
--	DRM_FORMAT_BGRA5551,
--	DRM_FORMAT_XRGB1555,
--	DRM_FORMAT_XBGR1555,
--	DRM_FORMAT_RGBX5551,
--	DRM_FORMAT_BGRX5551,
--	DRM_FORMAT_ARGB4444,
--	DRM_FORMAT_ABGR4444,
--	DRM_FORMAT_RGBA4444,
--	DRM_FORMAT_BGRA4444,
--	DRM_FORMAT_XRGB4444,
--	DRM_FORMAT_XBGR4444,
--	DRM_FORMAT_RGBX4444,
--	DRM_FORMAT_BGRX4444,
--};
--
--static const uint32_t plane_formats_yuv[] = {
--	DRM_FORMAT_ARGB8888,
--	DRM_FORMAT_ABGR8888,
--	DRM_FORMAT_RGBA8888,
--	DRM_FORMAT_BGRX8888,
--	DRM_FORMAT_BGRA8888,
--	DRM_FORMAT_XRGB8888,
--	DRM_FORMAT_XBGR8888,
--	DRM_FORMAT_RGBX8888,
--	DRM_FORMAT_RGB888,
--	DRM_FORMAT_BGR888,
--	DRM_FORMAT_RGB565,
--	DRM_FORMAT_BGR565,
--	DRM_FORMAT_ARGB1555,
--	DRM_FORMAT_ABGR1555,
--	DRM_FORMAT_RGBA5551,
--	DRM_FORMAT_BGRA5551,
--	DRM_FORMAT_XRGB1555,
--	DRM_FORMAT_XBGR1555,
--	DRM_FORMAT_RGBX5551,
--	DRM_FORMAT_BGRX5551,
--	DRM_FORMAT_ARGB4444,
--	DRM_FORMAT_ABGR4444,
--	DRM_FORMAT_RGBA4444,
--	DRM_FORMAT_BGRA4444,
--	DRM_FORMAT_XRGB4444,
--	DRM_FORMAT_XBGR4444,
--	DRM_FORMAT_RGBX4444,
--	DRM_FORMAT_BGRX4444,
--
--	DRM_FORMAT_NV12,
--	DRM_FORMAT_NV21,
--	DRM_FORMAT_NV16,
--	DRM_FORMAT_NV61,
--	DRM_FORMAT_VYUY,
--	DRM_FORMAT_UYVY,
--	DRM_FORMAT_YUYV,
--	DRM_FORMAT_YVYU,
--	DRM_FORMAT_YUV420,
--	DRM_FORMAT_YVU420,
--};
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-index 7ea90d25a3b69..c0b1d77369e53 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-@@ -19,7 +19,6 @@
- #include "dpu_kms.h"
- #include "dpu_formats.h"
- #include "dpu_hw_sspp.h"
--#include "dpu_hw_catalog_format.h"
- #include "dpu_trace.h"
- #include "dpu_crtc.h"
- #include "dpu_vbif.h"
-@@ -63,6 +62,16 @@ enum {
- 
- #define DEFAULT_REFRESH_RATE	60
- 
-+static const uint32_t qcom_compressed_supported_formats[] = {
-+	DRM_FORMAT_ABGR8888,
-+	DRM_FORMAT_ARGB8888,
-+	DRM_FORMAT_XBGR8888,
-+	DRM_FORMAT_XRGB8888,
-+	DRM_FORMAT_BGR565,
-+
-+	DRM_FORMAT_NV12,
-+};
-+
- /**
-  * enum dpu_plane_qos - Different qos configurations for each pipe
+-/**
++/*
+  * init_reserved - stub for various unknown/unused single-byte opcodes
   *
+  */
+@@ -602,7 +602,7 @@ init_reserved(struct nvbios_init *init)
+ 	init->offset += length;
+ }
+ 
+-/**
++/*
+  * INIT_DONE - opcode 0x71
+  *
+  */
+@@ -613,7 +613,7 @@ init_done(struct nvbios_init *init)
+ 	init->offset = 0x0000;
+ }
+ 
+-/**
++/*
+  * INIT_IO_RESTRICT_PROG - opcode 0x32
+  *
+  */
+@@ -650,7 +650,7 @@ init_io_restrict_prog(struct nvbios_init *init)
+ 	trace("}]\n");
+ }
+ 
+-/**
++/*
+  * INIT_REPEAT - opcode 0x33
+  *
+  */
+@@ -676,7 +676,7 @@ init_repeat(struct nvbios_init *init)
+ 	init->repeat = repeat;
+ }
+ 
+-/**
++/*
+  * INIT_IO_RESTRICT_PLL - opcode 0x34
+  *
+  */
+@@ -716,7 +716,7 @@ init_io_restrict_pll(struct nvbios_init *init)
+ 	trace("}]\n");
+ }
+ 
+-/**
++/*
+  * INIT_END_REPEAT - opcode 0x36
+  *
+  */
+@@ -732,7 +732,7 @@ init_end_repeat(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_COPY - opcode 0x37
+  *
+  */
+@@ -759,7 +759,7 @@ init_copy(struct nvbios_init *init)
+ 	init_wrvgai(init, port, index, data);
+ }
+ 
+-/**
++/*
+  * INIT_NOT - opcode 0x38
+  *
+  */
+@@ -771,7 +771,7 @@ init_not(struct nvbios_init *init)
+ 	init_exec_inv(init);
+ }
+ 
+-/**
++/*
+  * INIT_IO_FLAG_CONDITION - opcode 0x39
+  *
+  */
+@@ -788,7 +788,7 @@ init_io_flag_condition(struct nvbios_init *init)
+ 		init_exec_set(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_GENERIC_CONDITION - opcode 0x3a
+  *
+  */
+@@ -840,7 +840,7 @@ init_generic_condition(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_IO_MASK_OR - opcode 0x3b
+  *
+  */
+@@ -859,7 +859,7 @@ init_io_mask_or(struct nvbios_init *init)
+ 	init_wrvgai(init, 0x03d4, index, data &= ~(1 << or));
+ }
+ 
+-/**
++/*
+  * INIT_IO_OR - opcode 0x3c
+  *
+  */
+@@ -878,7 +878,7 @@ init_io_or(struct nvbios_init *init)
+ 	init_wrvgai(init, 0x03d4, index, data | (1 << or));
+ }
+ 
+-/**
++/*
+  * INIT_ANDN_REG - opcode 0x47
+  *
+  */
+@@ -895,7 +895,7 @@ init_andn_reg(struct nvbios_init *init)
+ 	init_mask(init, reg, mask, 0);
+ }
+ 
+-/**
++/*
+  * INIT_OR_REG - opcode 0x48
+  *
+  */
+@@ -912,7 +912,7 @@ init_or_reg(struct nvbios_init *init)
+ 	init_mask(init, reg, 0, mask);
+ }
+ 
+-/**
++/*
+  * INIT_INDEX_ADDRESS_LATCHED - opcode 0x49
+  *
+  */
+@@ -942,7 +942,7 @@ init_idx_addr_latched(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_IO_RESTRICT_PLL2 - opcode 0x4a
+  *
+  */
+@@ -977,7 +977,7 @@ init_io_restrict_pll2(struct nvbios_init *init)
+ 	trace("}]\n");
+ }
+ 
+-/**
++/*
+  * INIT_PLL2 - opcode 0x4b
+  *
+  */
+@@ -994,7 +994,7 @@ init_pll2(struct nvbios_init *init)
+ 	init_prog_pll(init, reg, freq);
+ }
+ 
+-/**
++/*
+  * INIT_I2C_BYTE - opcode 0x4c
+  *
+  */
+@@ -1025,7 +1025,7 @@ init_i2c_byte(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_ZM_I2C_BYTE - opcode 0x4d
+  *
+  */
+@@ -1051,7 +1051,7 @@ init_zm_i2c_byte(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_ZM_I2C - opcode 0x4e
+  *
+  */
+@@ -1085,7 +1085,7 @@ init_zm_i2c(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_TMDS - opcode 0x4f
+  *
+  */
+@@ -1111,7 +1111,7 @@ init_tmds(struct nvbios_init *init)
+ 	init_wr32(init, reg + 0, addr);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_TMDS_GROUP - opcode 0x50
+  *
+  */
+@@ -1138,7 +1138,7 @@ init_zm_tmds_group(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_CR_INDEX_ADDRESS_LATCHED - opcode 0x51
+  *
+  */
+@@ -1168,7 +1168,7 @@ init_cr_idx_adr_latch(struct nvbios_init *init)
+ 	init_wrvgai(init, 0x03d4, addr0, save0);
+ }
+ 
+-/**
++/*
+  * INIT_CR - opcode 0x52
+  *
+  */
+@@ -1188,7 +1188,7 @@ init_cr(struct nvbios_init *init)
+ 	init_wrvgai(init, 0x03d4, addr, val | data);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_CR - opcode 0x53
+  *
+  */
+@@ -1205,7 +1205,7 @@ init_zm_cr(struct nvbios_init *init)
+ 	init_wrvgai(init, 0x03d4, addr, data);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_CR_GROUP - opcode 0x54
+  *
+  */
+@@ -1229,7 +1229,7 @@ init_zm_cr_group(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_CONDITION_TIME - opcode 0x56
+  *
+  */
+@@ -1256,7 +1256,7 @@ init_condition_time(struct nvbios_init *init)
+ 	init_exec_set(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_LTIME - opcode 0x57
+  *
+  */
+@@ -1273,7 +1273,7 @@ init_ltime(struct nvbios_init *init)
+ 		mdelay(msec);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_REG_SEQUENCE - opcode 0x58
+  *
+  */
+@@ -1298,7 +1298,7 @@ init_zm_reg_sequence(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_PLL_INDIRECT - opcode 0x59
+  *
+  */
+@@ -1317,7 +1317,7 @@ init_pll_indirect(struct nvbios_init *init)
+ 	init_prog_pll(init, reg, freq);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_REG_INDIRECT - opcode 0x5a
+  *
+  */
+@@ -1336,7 +1336,7 @@ init_zm_reg_indirect(struct nvbios_init *init)
+ 	init_wr32(init, addr, data);
+ }
+ 
+-/**
++/*
+  * INIT_SUB_DIRECT - opcode 0x5b
+  *
+  */
+@@ -1362,7 +1362,7 @@ init_sub_direct(struct nvbios_init *init)
+ 	init->offset += 3;
+ }
+ 
+-/**
++/*
+  * INIT_JUMP - opcode 0x5c
+  *
+  */
+@@ -1380,7 +1380,7 @@ init_jump(struct nvbios_init *init)
+ 		init->offset += 3;
+ }
+ 
+-/**
++/*
+  * INIT_I2C_IF - opcode 0x5e
+  *
+  */
+@@ -1407,7 +1407,7 @@ init_i2c_if(struct nvbios_init *init)
+ 	init_exec_force(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_COPY_NV_REG - opcode 0x5f
+  *
+  */
+@@ -1433,7 +1433,7 @@ init_copy_nv_reg(struct nvbios_init *init)
+ 	init_mask(init, dreg, ~dmask, (data & smask) ^ sxor);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_INDEX_IO - opcode 0x62
+  *
+  */
+@@ -1451,7 +1451,7 @@ init_zm_index_io(struct nvbios_init *init)
+ 	init_wrvgai(init, port, index, data);
+ }
+ 
+-/**
++/*
+  * INIT_COMPUTE_MEM - opcode 0x63
+  *
+  */
+@@ -1469,7 +1469,7 @@ init_compute_mem(struct nvbios_init *init)
+ 	init_exec_force(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_RESET - opcode 0x65
+  *
+  */
+@@ -1496,7 +1496,7 @@ init_reset(struct nvbios_init *init)
+ 	init_exec_force(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_CONFIGURE_MEM - opcode 0x66
+  *
+  */
+@@ -1555,7 +1555,7 @@ init_configure_mem(struct nvbios_init *init)
+ 	init_exec_force(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_CONFIGURE_CLK - opcode 0x67
+  *
+  */
+@@ -1589,7 +1589,7 @@ init_configure_clk(struct nvbios_init *init)
+ 	init_exec_force(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_CONFIGURE_PREINIT - opcode 0x68
+  *
+  */
+@@ -1615,7 +1615,7 @@ init_configure_preinit(struct nvbios_init *init)
+ 	init_exec_force(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_IO - opcode 0x69
+  *
+  */
+@@ -1655,7 +1655,7 @@ init_io(struct nvbios_init *init)
+ 	init_wrport(init, port, data | value);
+ }
+ 
+-/**
++/*
+  * INIT_SUB - opcode 0x6b
+  *
+  */
+@@ -1682,7 +1682,7 @@ init_sub(struct nvbios_init *init)
+ 	init->offset += 2;
+ }
+ 
+-/**
++/*
+  * INIT_RAM_CONDITION - opcode 0x6d
+  *
+  */
+@@ -1701,7 +1701,7 @@ init_ram_condition(struct nvbios_init *init)
+ 		init_exec_set(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_NV_REG - opcode 0x6e
+  *
+  */
+@@ -1719,7 +1719,7 @@ init_nv_reg(struct nvbios_init *init)
+ 	init_mask(init, reg, ~mask, data);
+ }
+ 
+-/**
++/*
+  * INIT_MACRO - opcode 0x6f
+  *
+  */
+@@ -1743,7 +1743,7 @@ init_macro(struct nvbios_init *init)
+ 	init->offset += 2;
+ }
+ 
+-/**
++/*
+  * INIT_RESUME - opcode 0x72
+  *
+  */
+@@ -1755,7 +1755,7 @@ init_resume(struct nvbios_init *init)
+ 	init_exec_set(init, true);
+ }
+ 
+-/**
++/*
+  * INIT_STRAP_CONDITION - opcode 0x73
+  *
+  */
+@@ -1773,7 +1773,7 @@ init_strap_condition(struct nvbios_init *init)
+ 		init_exec_set(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_TIME - opcode 0x74
+  *
+  */
+@@ -1794,7 +1794,7 @@ init_time(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_CONDITION - opcode 0x75
+  *
+  */
+@@ -1811,7 +1811,7 @@ init_condition(struct nvbios_init *init)
+ 		init_exec_set(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_IO_CONDITION - opcode 0x76
+  *
+  */
+@@ -1828,7 +1828,7 @@ init_io_condition(struct nvbios_init *init)
+ 		init_exec_set(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_REG16 - opcode 0x77
+  *
+  */
+@@ -1845,7 +1845,7 @@ init_zm_reg16(struct nvbios_init *init)
+ 	init_wr32(init, addr, data);
+ }
+ 
+-/**
++/*
+  * INIT_INDEX_IO - opcode 0x78
+  *
+  */
+@@ -1867,7 +1867,7 @@ init_index_io(struct nvbios_init *init)
+ 	init_wrvgai(init, port, index, data | value);
+ }
+ 
+-/**
++/*
+  * INIT_PLL - opcode 0x79
+  *
+  */
+@@ -1884,7 +1884,7 @@ init_pll(struct nvbios_init *init)
+ 	init_prog_pll(init, reg, freq);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_REG - opcode 0x7a
+  *
+  */
+@@ -1904,7 +1904,7 @@ init_zm_reg(struct nvbios_init *init)
+ 	init_wr32(init, addr, data);
+ }
+ 
+-/**
++/*
+  * INIT_RAM_RESTRICT_PLL - opcde 0x87
+  *
+  */
+@@ -1934,7 +1934,7 @@ init_ram_restrict_pll(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_RESET_BEGUN - opcode 0x8c
+  *
+  */
+@@ -1945,7 +1945,7 @@ init_reset_begun(struct nvbios_init *init)
+ 	init->offset += 1;
+ }
+ 
+-/**
++/*
+  * INIT_RESET_END - opcode 0x8d
+  *
+  */
+@@ -1956,7 +1956,7 @@ init_reset_end(struct nvbios_init *init)
+ 	init->offset += 1;
+ }
+ 
+-/**
++/*
+  * INIT_GPIO - opcode 0x8e
+  *
+  */
+@@ -1972,7 +1972,7 @@ init_gpio(struct nvbios_init *init)
+ 		nvkm_gpio_reset(gpio, DCB_GPIO_UNUSED);
+ }
+ 
+-/**
++/*
+  * INIT_RAM_RESTRICT_ZM_GROUP - opcode 0x8f
+  *
+  */
+@@ -2010,7 +2010,7 @@ init_ram_restrict_zm_reg_group(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_COPY_ZM_REG - opcode 0x90
+  *
+  */
+@@ -2027,7 +2027,7 @@ init_copy_zm_reg(struct nvbios_init *init)
+ 	init_wr32(init, dreg, init_rd32(init, sreg));
+ }
+ 
+-/**
++/*
+  * INIT_ZM_REG_GROUP - opcode 0x91
+  *
+  */
+@@ -2049,7 +2049,7 @@ init_zm_reg_group(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_XLAT - opcode 0x96
+  *
+  */
+@@ -2077,7 +2077,7 @@ init_xlat(struct nvbios_init *init)
+ 	init_mask(init, daddr, ~dmask, data);
+ }
+ 
+-/**
++/*
+  * INIT_ZM_MASK_ADD - opcode 0x97
+  *
+  */
+@@ -2098,7 +2098,7 @@ init_zm_mask_add(struct nvbios_init *init)
+ 	init_wr32(init, addr, data);
+ }
+ 
+-/**
++/*
+  * INIT_AUXCH - opcode 0x98
+  *
+  */
+@@ -2122,7 +2122,7 @@ init_auxch(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_AUXCH - opcode 0x99
+  *
+  */
+@@ -2144,7 +2144,7 @@ init_zm_auxch(struct nvbios_init *init)
+ 	}
+ }
+ 
+-/**
++/*
+  * INIT_I2C_LONG_IF - opcode 0x9a
+  *
+  */
+@@ -2183,7 +2183,7 @@ init_i2c_long_if(struct nvbios_init *init)
+ 	init_exec_set(init, false);
+ }
+ 
+-/**
++/*
+  * INIT_GPIO_NE - opcode 0xa9
+  *
+  */
 -- 
 2.25.1
 
