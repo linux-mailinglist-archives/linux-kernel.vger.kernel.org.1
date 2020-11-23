@@ -2,156 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600102C03E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E91AC2C03E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728598AbgKWLOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 06:14:35 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:6538 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgKWLOe (ORCPT
+        id S1728264AbgKWLOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:14:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38644 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726529AbgKWLOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:14:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606130074; x=1637666074;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=knfos+BqzH4dlo+fODl7yedIW3k3ViBBu3PBL+ng7bw=;
-  b=PwY2tcUhaQb2ssFueb1uCxVgjVVXBXbSkt2N7MaFT1kt+WF/74xv7CCT
-   iMQk0/oCRdm3ajMk905yrmzKmFCGpS7DkrZ8P2qHoaGl0I6fuPEA8UE21
-   zTnocCra3qpAolF+CEZoMDklmFtPxULA773VepeANmqsMFznTbQFfp+P9
-   c3HXZpMfUdzjkHz6c9m6Tp2Cl6k62pznQGlweGvjm7cddotvAsse4Ep+b
-   nzxMyjraqTmhFfujQRxFAU4cNwPdI671sLHnGCL/filaEwi+KLWLKozSP
-   YHbII2JAomeFphpAaz3hIGS/ZzlTmrVzZvcdxyAAK2rD+UbdTjCsRnN/f
-   g==;
-IronPort-SDR: /eekxxeuBa1IVo708k88MVQpPGekvM5vyIxrHB/2lJDG7EfQO3s0J2iEAItQ4wo/j30G4I1D0k
- 2e7ojic+9xaY/Ou0wQufhDYf+rKec+4AisKMhDDq9hCT5bLGT5ibdB5MCIK9ATXsUJBENZ1iGl
- pl5i1elFijIHxFGIKxWl1yX3W6I4Y5xAuUBMvVQuIWnRUhf8JWMzYRYrmmLscs8LZZO43OW7DL
- +R8yzlIVorszjHvUNFJ/P2+3Xj59iO50ESoXE6lduo+R36ResBSXW4iVoSo6C0hiPlviFY4wun
- pl4=
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="34683043"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2020 04:14:32 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 23 Nov 2020 04:14:32 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 23 Nov 2020 04:14:30 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@nvidia.com>, <roopa@nvidia.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next] bridge: mrp: Implement LC mode for MRP
-Date:   Mon, 23 Nov 2020 12:14:01 +0100
-Message-ID: <20201123111401.136952-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 23 Nov 2020 06:14:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606130070;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P5lml5vZHauiXQibHImb0/7U2VYF7jHEppen3GS3U/U=;
+        b=UArDClm3bbQIwvqvbQQFE5Cv4a+nbpQJ4QO3HCVh6dA6PeqBVhe3jpcKbObAsmusFnW/Jq
+        2vtxcD6cjCJgEWWVD7OId7sIeOuiosI1xLPNVRrhE75xgU3vgXDEvviMpSSm/ZmOHMy+bN
+        Jr6dNE5zgdRQ8ROx4dhu4oPyfUx/Ky0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-55-9Ijj66mtOfeY6n0Ul4XQVQ-1; Mon, 23 Nov 2020 06:14:26 -0500
+X-MC-Unique: 9Ijj66mtOfeY6n0Ul4XQVQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAA8B106F6EC;
+        Mon, 23 Nov 2020 11:14:24 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E4BE660C04;
+        Mon, 23 Nov 2020 11:14:22 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <516984.1606127474@warthog.procyon.org.uk>
+References: <516984.1606127474@warthog.procyon.org.uk> <20201123080506.GA30578@infradead.org> <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk> <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     dhowells@redhat.com, Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <519189.1606130062.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 23 Nov 2020 11:14:22 +0000
+Message-ID: <519190.1606130062@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend MRP to support LC mode(link check) for the interconnect port.
-This applies only to the interconnect ring.
+David Howells <dhowells@redhat.com> wrote:
 
-Opposite to RC mode(ring check) the LC mode is using CFM frames to
-detect when the link goes up or down and based on that the userspace
-will need to react.
-One advantage of the LC mode over RC mode is that there will be fewer
-frames in the normal rings. Because RC mode generates InTest on all
-ports while LC mode sends CFM frame only on the interconnect port.
+> I tried three different sets of patches: none, just the first (which add=
+s the
+> jump table without getting rid of the conditional branches), and all of =
+them.
 
-All 4 nodes part of the interconnect ring needs to have the same mode.
-And it is not possible to have running LC and RC mode at the same time
-on a node.
+And, I forgot to mention, I ran each test four times and then interleaved =
+the
+result lines for that set.
 
-Whenever the MIM starts it needs to detect the status of the other 3
-nodes in the interconnect ring so it would send a frame called
-InLinkStatus, on which the clients needs to reply with their link
-status.
-
-This patch adds the frame header for the frame InLinkStatus and
-extends existing rules on how to forward this frame.
-
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- include/uapi/linux/mrp_bridge.h |  7 +++++++
- net/bridge/br_mrp.c             | 18 +++++++++++++++---
- 2 files changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/include/uapi/linux/mrp_bridge.h b/include/uapi/linux/mrp_bridge.h
-index 6aeb13ef0b1e..450f6941a5a1 100644
---- a/include/uapi/linux/mrp_bridge.h
-+++ b/include/uapi/linux/mrp_bridge.h
-@@ -61,6 +61,7 @@ enum br_mrp_tlv_header_type {
- 	BR_MRP_TLV_HEADER_IN_TOPO = 0x7,
- 	BR_MRP_TLV_HEADER_IN_LINK_DOWN = 0x8,
- 	BR_MRP_TLV_HEADER_IN_LINK_UP = 0x9,
-+	BR_MRP_TLV_HEADER_IN_LINK_STATUS = 0xa,
- 	BR_MRP_TLV_HEADER_OPTION = 0x7f,
- };
- 
-@@ -156,4 +157,10 @@ struct br_mrp_in_link_hdr {
- 	__be16 interval;
- };
- 
-+struct br_mrp_in_link_status_hdr {
-+	__u8 sa[ETH_ALEN];
-+	__be16 port_role;
-+	__be16 id;
-+};
-+
- #endif
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index bb12fbf9aaf2..cec2c4e4561d 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -858,7 +858,8 @@ static bool br_mrp_in_frame(struct sk_buff *skb)
- 	if (hdr->type == BR_MRP_TLV_HEADER_IN_TEST ||
- 	    hdr->type == BR_MRP_TLV_HEADER_IN_TOPO ||
- 	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_DOWN ||
--	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_UP)
-+	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_UP ||
-+	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_STATUS)
- 		return true;
- 
- 	return false;
-@@ -1126,9 +1127,9 @@ static int br_mrp_rcv(struct net_bridge_port *p,
- 						goto no_forward;
- 				}
- 			} else {
--				/* MIM should forward IntLinkChange and
-+				/* MIM should forward IntLinkChange/Status and
- 				 * IntTopoChange between ring ports but MIM
--				 * should not forward IntLinkChange and
-+				 * should not forward IntLinkChange/Status and
- 				 * IntTopoChange if the frame was received at
- 				 * the interconnect port
- 				 */
-@@ -1155,6 +1156,17 @@ static int br_mrp_rcv(struct net_bridge_port *p,
- 			     in_type == BR_MRP_TLV_HEADER_IN_LINK_DOWN))
- 				goto forward;
- 
-+			/* MIC should forward IntLinkStatus frames only to
-+			 * interconnect port if it was received on a ring port.
-+			 * If it is received on interconnect port then, it
-+			 * should be forward on both ring ports
-+			 */
-+			if (br_mrp_is_ring_port(p_port, s_port, p) &&
-+			    in_type == BR_MRP_TLV_HEADER_IN_LINK_STATUS) {
-+				p_dst = NULL;
-+				s_dst = NULL;
-+			}
-+
- 			/* Should forward the InTopo frames only between the
- 			 * ring ports
- 			 */
--- 
-2.27.0
+David
 
