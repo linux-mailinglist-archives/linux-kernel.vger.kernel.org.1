@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B1B2C1105
+	by mail.lfdr.de (Postfix) with ESMTP id 67EC62C1104
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389987AbgKWQqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2390186AbgKWQqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 23 Nov 2020 11:46:03 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37142 "EHLO
+Received: from Galois.linutronix.de ([193.142.43.55]:37138 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387509AbgKWQqC (ORCPT
+        with ESMTP id S1732619AbgKWQqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 11:46:02 -0500
 Date:   Mon, 23 Nov 2020 16:45:58 -0000
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ogLvqf0Bj+toXu2RJnRnKoGi8YkpKVwa8dItBgaBt0s=;
-        b=VOK+uSMRaOQm6tAmhHYFOz/hE/tQaqgYlcJRYAYRfLUd8IjuxtEE0ATbwdCny5FKmn5Dh/
-        Ld1u83i47yFXyvYLFVlLEbXdVjQ2XMU+EF9amxFgvErm5IXcgaVDRSg7qmOHylCRTxG9fE
-        W/HsYwTuK/VsopPtz8IaX5hvZ1NbNIL7QGZP8SGADF3BN3Lpo8UbUofoT72anoWAr4Plir
-        czacpJmH8LrIkrb3H/T16fj7/1Fc1QzRTlm59VVrpavpVxymUvU1bQwi8X+uhF79Ml+Ez5
-        +g0G0+vY5MW+l1Ia+/+3tR2bWVMhGV3wYSolq6+BISNXDRG22Ib+5aTqh1d5gw==
+        bh=ZOX8YwaSLawXSjvsYuYoFNcv/GPcarqIZsqpXK67kKo=;
+        b=yfrPcHYK/XdVp4TvIA7g1Bh3LuvLn1eomSOBMmjuAni6H+51uowxlzS1Zs6S5kDgOmHKqE
+        fuUG0kRg53rtmZ5WrAovyVQeHki/qqvU3f1LMq6OTWkCfJbqct2LAFoDnSvUK4nJ8JINEC
+        5PHUOAqmJUV2yL2bGIZPMmgLT0t/cL7OsTqOPnytmfyFTQYywEexgeXcA1VlTrMPb+lCx9
+        /59VS+yCU3jvMUysE+0lMP02bHYi7mBPk/NiwQ/woagl+YsOJXII+rLpaVMbp2qaEJd3es
+        lAQ+lRKTlr3SIbIx5pH0L94M9i/7G61H4wO7NRSqeCFUDPPzcnvSWAEQTGJZ6Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606149960;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ogLvqf0Bj+toXu2RJnRnKoGi8YkpKVwa8dItBgaBt0s=;
-        b=pEKe16x3ji2a/Q74X1cZd1GzSjh/NlK0u7wOTXiTWFkKLHu036XKKY/p6X8HuQSKUxpcqo
-        c6zYh0h8U1EUf2AA==
-From:   "irqchip-bot for Chen Baozi" <tip-bot2@linutronix.de>
+        bh=ZOX8YwaSLawXSjvsYuYoFNcv/GPcarqIZsqpXK67kKo=;
+        b=TGrmbijsw0ax3qGyaiWoLzwUlK5h9eaF2WEJoXkhvC/Jy/Tkk/z0hOIKtdz4mfbqU0UkPq
+        051ac+J6yYuVDjAQ==
+From:   "irqchip-bot for Xu Qiang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/exiu: Fix the index of fwspec for
- IRQ type
-Cc:     Chen Baozi <chenbaozi@phytium.com.cn>,
-        Marc Zyngier <maz@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, stable@vger.kernel.org,
+Subject: [irqchip: irq/irqchip-next] irqchip/gic-v3-its: Unconditionally
+ save/restore the ITS state on suspend
+Cc:     Xu Qiang <xuqiang36@huawei.com>, Marc Zyngier <maz@kernel.org>,
         tglx@linutronix.de
-In-Reply-To: <20201117032015.11805-1-cbz@baozis.org>
-References: <20201117032015.11805-1-cbz@baozis.org>
+In-Reply-To: <20201107104226.14282-1-xuqiang36@huawei.com>
+References: <20201107104226.14282-1-xuqiang36@huawei.com>
 MIME-Version: 1.0
-Message-ID: <160614995899.11115.18133033549355488513.tip-bot2@tip-bot2>
+Message-ID: <160614995821.11115.16304362379538101182.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,38 +59,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     d001e41e1b15716e9b759df5ef00510699f85282
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/d001e41e1b15716e9b759df5ef00510699f85282
-Author:        Chen Baozi <chenbaozi@phytium.com.cn>
-AuthorDate:    Tue, 17 Nov 2020 11:20:15 +08:00
+Commit-ID:     74cde1a53368aed4f2b4b54bf7030437f64a534b
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/74cde1a53368aed4f2b4b54bf7030437f64a534b
+Author:        Xu Qiang <xuqiang36@huawei.com>
+AuthorDate:    Sat, 07 Nov 2020 10:42:26 
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 22 Nov 2020 10:27:23 
+CommitterDate: Sun, 22 Nov 2020 12:58:35 
 
-irqchip/exiu: Fix the index of fwspec for IRQ type
+irqchip/gic-v3-its: Unconditionally save/restore the ITS state on suspend
 
-Since fwspec->param_count of ACPI node is two, the index of IRQ type
-in fwspec->param[] should be 1 rather than 2.
+On systems without HW-based collections (i.e. anything except GIC-500),
+we rely on firmware to perform the ITS save/restore. This doesn't
+really work, as although FW can properly save everything, it cannot
+fully restore the state of the command queue (the read-side is reset
+to the head of the queue). This results in the ITS consuming previously
+processed commands, potentially corrupting the state.
 
-Fixes: 3d090a36c8c8 ("irqchip/exiu: Implement ACPI support")
-Signed-off-by: Chen Baozi <chenbaozi@phytium.com.cn>
+Instead, let's always save the ITS state on suspend, disabling it in the
+process, and restore the full state on resume. This saves us from broken
+FW as long as it doesn't enable the ITS by itself (for which we can't do
+anything).
+
+This amounts to simply dropping the ITS_FLAGS_SAVE_SUSPEND_STATE.
+
+Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
+[maz: added warning on resume, rewrote commit message]
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Link: https://lore.kernel.org/r/20201117032015.11805-1-cbz@baozis.org
-Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201107104226.14282-1-xuqiang36@huawei.com
 ---
- drivers/irqchip/irq-sni-exiu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/irq-gic-v3-its.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/irqchip/irq-sni-exiu.c b/drivers/irqchip/irq-sni-exiu.c
-index 1d02762..abd011f 100644
---- a/drivers/irqchip/irq-sni-exiu.c
-+++ b/drivers/irqchip/irq-sni-exiu.c
-@@ -136,7 +136,7 @@ static int exiu_domain_translate(struct irq_domain *domain,
- 		if (fwspec->param_count != 2)
- 			return -EINVAL;
- 		*hwirq = fwspec->param[0];
--		*type = fwspec->param[2] & IRQ_TYPE_SENSE_MASK;
-+		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
- 	}
- 	return 0;
- }
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 0418071..0598c5c 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -42,7 +42,6 @@
+ #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
+ #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
+ #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
+-#define ITS_FLAGS_SAVE_SUSPEND_STATE		(1ULL << 3)
+ 
+ #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
+ #define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
+@@ -4741,9 +4740,6 @@ static int its_save_disable(void)
+ 	list_for_each_entry(its, &its_nodes, entry) {
+ 		void __iomem *base;
+ 
+-		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+-			continue;
+-
+ 		base = its->base;
+ 		its->ctlr_save = readl_relaxed(base + GITS_CTLR);
+ 		err = its_force_quiescent(base);
+@@ -4762,9 +4758,6 @@ err:
+ 		list_for_each_entry_continue_reverse(its, &its_nodes, entry) {
+ 			void __iomem *base;
+ 
+-			if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+-				continue;
+-
+ 			base = its->base;
+ 			writel_relaxed(its->ctlr_save, base + GITS_CTLR);
+ 		}
+@@ -4784,9 +4777,6 @@ static void its_restore_enable(void)
+ 		void __iomem *base;
+ 		int i;
+ 
+-		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+-			continue;
+-
+ 		base = its->base;
+ 
+ 		/*
+@@ -4794,7 +4784,10 @@ static void its_restore_enable(void)
+ 		 * don't restore it since writing to CBASER or BASER<n>
+ 		 * registers is undefined according to the GIC v3 ITS
+ 		 * Specification.
++		 *
++		 * Firmware resuming with the ITS enabled is terminally broken.
+ 		 */
++		WARN_ON(readl_relaxed(base + GITS_CTLR) & GITS_CTLR_ENABLE);
+ 		ret = its_force_quiescent(base);
+ 		if (ret) {
+ 			pr_err("ITS@%pa: failed to quiesce on resume: %d\n",
+@@ -5074,9 +5067,6 @@ static int __init its_probe_one(struct resource *res,
+ 		ctlr |= GITS_CTLR_ImDe;
+ 	writel_relaxed(ctlr, its->base + GITS_CTLR);
+ 
+-	if (GITS_TYPER_HCC(typer))
+-		its->flags |= ITS_FLAGS_SAVE_SUSPEND_STATE;
+-
+ 	err = its_init_domain(handle, its);
+ 	if (err)
+ 		goto out_free_tables;
