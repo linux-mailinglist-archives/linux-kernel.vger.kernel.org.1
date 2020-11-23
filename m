@@ -2,81 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0272C1759
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE0E2C175C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730857AbgKWVIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:08:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35333 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730528AbgKWVII (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:08:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606165687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JgitgtgcGISLoMc82FoNi/Rf5APfZkhmz4liERzOLZQ=;
-        b=GTis/9Qd8g9hIkBvC+aBWxbM8xiOJjXl3MBYl929erYUjbaCwVwhFAQy2fLUnIV0n9J4KK
-        eBiQUgc3YfVCGBc3CnQxZxtTjxQj/bIKBJB84Dc8qFWkJEUIzZNXIc36f5bYi+Yw4lkiCQ
-        haTkNyGPIo5XFnM0IDBSBkOtht9S5qg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-d7GEwBrOPm6YGEZ70a0RsQ-1; Mon, 23 Nov 2020 16:08:04 -0500
-X-MC-Unique: d7GEwBrOPm6YGEZ70a0RsQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728887AbgKWVKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:10:13 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:43194 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726270AbgKWVKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 16:10:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606165812; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Nm9BEOZ5tiTsuXja+bIt51N7aLpyrz2R8XTJmsYaLQM=;
+ b=ugHxsMVfMZYXVtktRw5fFR85rLwLZfY99mPCiS7DIl1PexsBXhVjQBNtJw3OFJ8Z+tEoLTf2
+ VeG6wyXzhjmsnC4ak3DmN/Cwtn1MzYHvlWa7sPb7fP0Rh79n9rh7M3ErhZHsoHE3a29jJm+u
+ lwX3OHPfLSnpps88ybQq3d3ptlc=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fbc252de9b7088622c06a31 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 21:10:05
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D7479C433C6; Mon, 23 Nov 2020 21:10:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51FDA5212;
-        Mon, 23 Nov 2020 21:08:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FC355C1BB;
-        Mon, 23 Nov 2020 21:08:02 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <d0d1edf746b8f50ca8897478a5e76a006e5d36ed.camel@perches.com>
-References: <d0d1edf746b8f50ca8897478a5e76a006e5d36ed.camel@perches.com> <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk> <160616230898.830164.7298470680786861832.stgit@warthog.procyon.org.uk>
-To:     Joe Perches <joe@perches.com>
-Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 15/17] rxrpc: Organise connection security to use a union
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0879C433ED;
+        Mon, 23 Nov 2020 21:10:03 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <832868.1606165681.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 23 Nov 2020 21:08:01 +0000
-Message-ID: <832869.1606165681@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 13:10:03 -0800
+From:   abhinavk@codeaurora.org
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+Subject: Re: [Freedreno] [PATCH 18/40] drm/msm/disp/dpu1/dpu_encoder: Fix a
+ few parameter/member formatting issues
+In-Reply-To: <20201123111919.233376-19-lee.jones@linaro.org>
+References: <20201123111919.233376-1-lee.jones@linaro.org>
+ <20201123111919.233376-19-lee.jones@linaro.org>
+Message-ID: <df03422ed2b9bb2addd5af02348916bf@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches <joe@perches.com> wrote:
-
-> It seems no other follow-on patch in the series uses this nameless union=
-.
-
-There will be a follow on series.  Either this:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
-/?h=3Drxrpc-rxgk
-
-
-or this:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
-/?h=3Dcrypto-krb5
-
-Depending on whether I pull the kerberos bits out into the crypto/ directo=
-ry
-so that it can be shared with sunrpc and maybe cifs.  Discussions are ongo=
-ing
-on that.
-
-David
-
+On 2020-11-23 03:18, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:207: warning: Function
+> parameter or member 'cur_slave' not described in 'dpu_encoder_virt'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:207: warning: Function
+> parameter or member 'hw_pp' not described in 'dpu_encoder_virt'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:207: warning: Function
+> parameter or member 'intfs_swapped' not described in
+> 'dpu_encoder_virt'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:1445: warning: Function
+> parameter or member 'drm_enc' not described in
+> '_dpu_encoder_trigger_flush'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:1445: warning: Function
+> parameter or member 'phys' not described in
+> '_dpu_encoder_trigger_flush'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:1445: warning: Function
+> parameter or member 'extra_flush_bits' not described in
+> '_dpu_encoder_trigger_flush'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:1481: warning: Function
+> parameter or member 'phys' not described in
+> '_dpu_encoder_trigger_start'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:1564: warning: Function
+> parameter or member 'dpu_enc' not described in
+> '_dpu_encoder_kickoff_phys'
+> 
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 289bfb6f1861c..288e95ee8e1d5 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -132,9 +132,10 @@ enum dpu_enc_rc_states {
+>   * @phys_encs:		Container of physical encoders managed.
+>   * @cur_master:		Pointer to the current master in this mode. 
+> Optimization
+>   *			Only valid after enable. Cleared as disable.
+> - * @hw_pp		Handle to the pingpong blocks used for the display. No.
+> + * @cur_slave:		As above but for the slave encoder.
+> + * @hw_pp:		Handle to the pingpong blocks used for the display. No.
+>   *			pingpong blocks can be different than num_phys_encs.
+> - * @intfs_swapped	Whether or not the phys_enc interfaces have been 
+> swapped
+> + * @intfs_swapped:	Whether or not the phys_enc interfaces have been 
+> swapped
+>   *			for partial update right-only cases, such as pingpong
+>   *			split where virtual pingpong does not generate IRQs
+>   * @crtc:		Pointer to the currently assigned crtc. Normally you
+> @@ -1436,9 +1437,9 @@ static void dpu_encoder_off_work(struct 
+> work_struct *work)
+> 
+>  /**
+>   * _dpu_encoder_trigger_flush - trigger flush for a physical encoder
+> - * drm_enc: Pointer to drm encoder structure
+> - * phys: Pointer to physical encoder structure
+> - * extra_flush_bits: Additional bit mask to include in flush trigger
+> + * @drm_enc: Pointer to drm encoder structure
+> + * @phys: Pointer to physical encoder structure
+> + * @extra_flush_bits: Additional bit mask to include in flush trigger
+>   */
+>  static void _dpu_encoder_trigger_flush(struct drm_encoder *drm_enc,
+>  		struct dpu_encoder_phys *phys, uint32_t extra_flush_bits)
+> @@ -1475,7 +1476,7 @@ static void _dpu_encoder_trigger_flush(struct
+> drm_encoder *drm_enc,
+> 
+>  /**
+>   * _dpu_encoder_trigger_start - trigger start for a physical encoder
+> - * phys: Pointer to physical encoder structure
+> + * @phys: Pointer to physical encoder structure
+>   */
+>  static void _dpu_encoder_trigger_start(struct dpu_encoder_phys *phys)
+>  {
+> @@ -1558,7 +1559,7 @@ static void dpu_encoder_helper_hw_reset(struct
+> dpu_encoder_phys *phys_enc)
+>   *	encoder rather than the individual physical ones in order to handle
+>   *	use cases that require visibility into multiple physical encoders 
+> at
+>   *	a time.
+> - * dpu_enc: Pointer to virtual encoder structure
+> + * @dpu_enc: Pointer to virtual encoder structure
+>   */
+>  static void _dpu_encoder_kickoff_phys(struct dpu_encoder_virt 
+> *dpu_enc)
+>  {
