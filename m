@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8B62C008C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 223C02C008E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgKWHS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 02:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S1727688AbgKWHTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 02:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726921AbgKWHS2 (ORCPT
+        with ESMTP id S1726330AbgKWHTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:18:28 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45845C061A4D
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:18:28 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id f12so3564797oto.10
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:18:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sfKjG2GvoDhQiB7EpkscGKZ+97rkBF/pnq0LhdxYBSQ=;
-        b=Nhi41X2pbTeawhTkWHetJJ8SzZ7jdWhXuzFPECnPqfmjT2n5H0aJE/I9Fhz5WpkOTi
-         U1f2uuCWR5MWR2ZUnRWcMSrmka1wwVzu4a6pwiYKsFabNZqQNgXJiJtVdQg6fBKG/ojv
-         wQoiop9+kZRRADXjWOAF/gd5OO+gMdZdnWewS7O9jsEwzxEuyzSYSbmjWGXuCLu3smeQ
-         aS/po47CbgOhCG5PUD2dzUI/mjZVLQVhLYtj9N8+Ga+eh9ixBzz4dcx2Roiqpt4QI0Al
-         kmDFP01bTVN1xbUdqzWFwfsEyaL8LjqdkSyLMg1fWWx/9PneRe4zhP1jMIaBy3BPBPMv
-         92TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sfKjG2GvoDhQiB7EpkscGKZ+97rkBF/pnq0LhdxYBSQ=;
-        b=CTIRnaRIvAvuxd8NG4IpSbUZu25t7pzqxvksZHzBPDTFOp93qUSF1Adj8gUe3plV91
-         pL+pJwoVtEbgUMGNvIH3wWzTC8pwUA6yNDmpjYJH3zE4YXF0PMJFF8nLnmAg+ZXMrHCl
-         5kzMmXgHP+ojJiOoOJ7YDL7/lh7UrpGoy0Q8HIkJWP3/PKb0xGPMmY27huzTMu7oORPO
-         /w5Yak9gLoZsEYp/mF4QeX5aPK0Vj26H8lx2nVHQgBTYWGJABAhHIXBRcZvdmCU68IdU
-         G0C8LPy4MDgFpE/c78iRcXExtO+N4e0P3fpWfcsZBKy/LS8UouBbj7Pw9y37EnXWTFsu
-         mh8g==
-X-Gm-Message-State: AOAM532BYcmRBs7JQ8vCLElqV50VX5REoDcxZx7DvS8QtGXWEe9NwTgt
-        FvxPtSM3zgMRbz4//0Y1RhE6JFukI1feCEPjQQYTRA==
-X-Google-Smtp-Source: ABdhPJweIoXhEjpbvXwglI32aXPOWNF6IbolZiWACHGNa+GuXDBW2FXTa0dak0WYveQO8IuYFPBrvHcq4162/Q4SUIA=
-X-Received: by 2002:a9d:6f8f:: with SMTP id h15mr22428460otq.166.1606115907677;
- Sun, 22 Nov 2020 23:18:27 -0800 (PST)
+        Mon, 23 Nov 2020 02:19:45 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C482AC0613CF;
+        Sun, 22 Nov 2020 23:19:44 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cfdnk4X1Nz9sRR;
+        Mon, 23 Nov 2020 18:19:28 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606115981;
+        bh=5aWq4/5oCgtrxSInVEjfuJ5H6MgIcybqOoCCNa8qOwA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=T9JF6YilggbcQY8JHr4Q0Uj2Yh27jouU6WT/E+qtpmU/XvMMnTPSl++J3H2guhIW0
+         3UjVzmDUGBvkZ86yb++PPemGIcxkHXgni1HgNs4GnRdBRiAnqrRc/yCzvWZa42musM
+         SCeUn7v0b2nA46aS2EWj9sFymTcJya+nFJVy38Lv3AXHuj7bWG17HZmD94W5I2X/Fb
+         cRC6Dl8tsiHHVFNV7Jddjjjfy9CkGdk+gauDY3f5yMREYUwla9XL5J19lAaZ69AHDM
+         WAgwhY2WPCyxa0sJXLFUSrq9oE9fXWmyPkKRn8X5CI/FGHPnvpQCNYH9/1AVth2NJJ
+         MyrvsIjFxhITg==
+Date:   Mon, 23 Nov 2020 18:19:22 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>, Jarkko Sakkinen <jarkko@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the tip tree
+Message-ID: <20201123181922.0c009406@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201111100608.108842-5-zong.li@sifive.com> <mhng-738e4a27-9751-4937-b3ed-efdcdce56f0c@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-738e4a27-9751-4937-b3ed-efdcdce56f0c@palmerdabbelt-glaptop1>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Mon, 23 Nov 2020 15:18:17 +0800
-Message-ID: <CANXhq0rQtgVNoDJ7DLFcBRwru1H5+4_0LoANCVcGMaB2LmCOMA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] clk: sifive: Fix the wrong bit field shift
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Pragnesh Patel <pragnesh.patel@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/4FMpJZLd1GGbJP_/T+3_/dY";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 9:29 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> On Wed, 11 Nov 2020 02:06:08 PST (-0800), zong.li@sifive.com wrote:
-> > The clk enable bit should be 31 instead of 24.
-> >
-> > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > Reported-by: Pragnesh Patel <pragnesh.patel@sifive.com>
-> > ---
-> >  drivers/clk/sifive/sifive-prci.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/clk/sifive/sifive-prci.h b/drivers/clk/sifive/sifive-prci.h
-> > index 802fc8fb9c09..da7be9103d4d 100644
-> > --- a/drivers/clk/sifive/sifive-prci.h
-> > +++ b/drivers/clk/sifive/sifive-prci.h
-> > @@ -59,7 +59,7 @@
-> >
-> >  /* DDRPLLCFG1 */
-> >  #define PRCI_DDRPLLCFG1_OFFSET               0x10
-> > -#define PRCI_DDRPLLCFG1_CKE_SHIFT    24
-> > +#define PRCI_DDRPLLCFG1_CKE_SHIFT    31
-> >  #define PRCI_DDRPLLCFG1_CKE_MASK     (0x1 << PRCI_DDRPLLCFG1_CKE_SHIFT)
-> >
-> >  /* GEMGXLPLLCFG0 */
-> > @@ -81,7 +81,7 @@
-> >
-> >  /* GEMGXLPLLCFG1 */
-> >  #define PRCI_GEMGXLPLLCFG1_OFFSET    0x20
-> > -#define RCI_GEMGXLPLLCFG1_CKE_SHIFT  24
-> > +#define RCI_GEMGXLPLLCFG1_CKE_SHIFT  31
-> >  #define PRCI_GEMGXLPLLCFG1_CKE_MASK  (0x1 << PRCI_GEMGXLPLLCFG1_CKE_SHIFT)
-> >
-> >  /* CORECLKSEL */
->
-> Section 7.3 of v1.0 of the FU540 manual says that bit 24 contains the PLL clock
-> enable for both of these.  I don't know if that's accurate, but if it is then I
-> believe this would break the FU540.  Don't have one to test on, though.
+--Sig_/4FMpJZLd1GGbJP_/T+3_/dY
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yes, the manual seems to be wrong and should be corrected. It doesn't
-break the FU540 yet because we don't use these fields in s-mode Linux
-driver, we set them in m-mode FSBL/U-boot-SPL bootloader during boot
-time, and the implementation of FSBL and U-boot-SPL both are correct.
-The following link is the U-boot SPL source:
+Hi all,
 
-https://github.com/u-boot/u-boot/blob/da09b99ea572cec9a114872e480b798db11f9c6e/drivers/clk/sifive/fu540-prci.c#L128
+After merging the tip tree, today's linux-next build (htmldocs) produced
+these warnings:
+
+arch/x86/kernel/cpu/sgx/ioctl.c:666: warning: Function parameter or member =
+'encl' not described in 'sgx_ioc_enclave_provision'
+arch/x86/kernel/cpu/sgx/ioctl.c:666: warning: Excess function parameter 'en=
+clave' description in 'sgx_ioc_enclave_provision'
+
+Introduced by commit
+
+  c82c61865024 ("x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/4FMpJZLd1GGbJP_/T+3_/dY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+7YnoACgkQAVBC80lX
+0GwEQgf/dB57ZwMZTakfV1oqE5rCSHWeqzP5khBWw0zmzQfyMlhFKJIZDOZr7gez
+6i2Hu74C2mD+Fsf6V9wTDzAPmIuOgasbB8SbXj0W4wi1gn9AqEiPp2ATSKumN4q1
++jOGTkp6k7zjfvyHs+jfRT9oE3l7cZw/WehIvWaouN3H6P7IpyvLRZkpFPkgiDFU
+PgUW+HuaVWNGymdCiZpFMLOoFk+thpdjzpqxOLO4x3/HtUNQloYw0EUPZMJsLXCK
+oiu+72oWJjYw5FoGXUQcsbXGzINqlYST6Y8ae59eGXd+Y6Ct7OCv6FDy4aGyPyHA
+Ik0PRLf01nU+7hd0kOH/yMmqn4ZUJQ==
+=6VVK
+-----END PGP SIGNATURE-----
+
+--Sig_/4FMpJZLd1GGbJP_/T+3_/dY--
