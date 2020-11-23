@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7D12C17FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EF62C17FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731978AbgKWVtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:49:20 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38586 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgKWVtT (ORCPT
+        id S1732031AbgKWVuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:50:02 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:41724 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730809AbgKWVuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:49:19 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606168157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VWoabT64+bllfkSbYbuvYXig8GKR3JUjvD1l7ZSAJwA=;
-        b=PxgsNoRMH0Rr40VpLK8D0PqVJ9cHiuyB2SsXzszyFbnoizn58KGi+0mK/WB+PboPf/X+/7
-        BhFlCNONiTSk90MBVfZEMOTUwdAojjEu1i+kigRRy8HSZ7RPWvPEXumE+ktFeDn6jOkPlj
-        x8c7UfVbC/8oDEEHkLHJ3YxIjjunA8Um7Hbz3hLwam3fgcHdv8RAiQ3AlHdLgZbHG1FnO1
-        6vBA8xxRONKWYZ7HCwlk2y6J6vrwZ2q4TXyruQ1qHo9VMCusWXYHjzNJmK9G2kzUngpZew
-        n3RqR3zLeaaZdYWevvQ5zxv0c6x8Tv8O5PYMXtVUWrBxhFZCYFdqRkgoQiBk4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606168157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VWoabT64+bllfkSbYbuvYXig8GKR3JUjvD1l7ZSAJwA=;
-        b=ieiCQJI+UzpNGa8RZqgGRzoedOkaUxVXJKdL7QdFPi4aTYRb1pLu8vBwVEUPqSm5p5F4mW
-        Tp16jMSfqR6mIGBw==
-To:     Alex Belits <abelits@marvell.com>,
-        "nitesh\@redhat.com" <nitesh@redhat.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>
-Cc:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "trix\@redhat.com" <trix@redhat.com>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas\@arm.com" <catalin.marinas@arm.com>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx\@redhat.com" <peterx@redhat.com>,
-        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti\@redhat.com" <mtosatti@redhat.com>,
-        "will\@kernel.org" <will@kernel.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "leon\@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld\@redhat.com" <pauld@redhat.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 2/9] task_isolation: vmstat: add vmstat_idle function
-In-Reply-To: <6ac7143e5038614e3950636456cef67b5bc0c9e4.camel@marvell.com>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com> <6ac7143e5038614e3950636456cef67b5bc0c9e4.camel@marvell.com>
-Date:   Mon, 23 Nov 2020 22:49:17 +0100
-Message-ID: <87blfnn3qa.fsf@nanos.tec.linutronix.de>
+        Mon, 23 Nov 2020 16:50:02 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id B5DC820051;
+        Mon, 23 Nov 2020 22:49:59 +0100 (CET)
+Date:   Mon, 23 Nov 2020 22:49:58 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] drm/panel: st7703: Use dev_err_probe
+Message-ID: <20201123214958.GD675342@ravnborg.org>
+References: <cover.1605688147.git.agx@sigxcpu.org>
+ <36405038d93eb148f3e8ed8e5ea70de8e87afd78.1605688147.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <36405038d93eb148f3e8ed8e5ea70de8e87afd78.1605688147.git.agx@sigxcpu.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=8nJEP1OIZ-IA:10 a=ze386MxoAAAA:8 a=KKAkSRfTAAAA:8
+        a=rHKuKkdvJC2CxiFwilcA:9 a=wPNLvfGTeEIA:10 a=iBZjaW-pnkserzjvUTHh:22
+        a=cvBusfyB2V15izCimMoJ:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23 2020 at 17:56, Alex Belits wrote:
-> This function checks to see if a vmstat worker is not running,
-> and the vmstat diffs don't require an update.  The function is
-> called from the task-isolation code to see if we need to
-> actually do some work to quiet vmstat.
+On Wed, Nov 18, 2020 at 09:29:48AM +0100, Guido Günther wrote:
+> Less code and easier probe deferral debugging.
+> 
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-A changelog has to explain _WHY_ this change is necessary and not _WHAT_
-the patch is doing.
+Nice.
 
-Thanks,
+I hope someone comes around and update all panel drivers to use
+dev_err_probe. It is simpler and better than the current code.
+And it will fix a lot of drivers that are noisy during deferral.
 
-        tglx
+	Sam
