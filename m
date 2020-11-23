@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000252C0FCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E792C0FD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389897AbgKWQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S2389908AbgKWQHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389888AbgKWQHi (ORCPT
+        with ESMTP id S2389899AbgKWQHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:07:38 -0500
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4A5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:07:38 -0800 (PST)
-Received: by mail-vk1-xa43.google.com with SMTP id a4so572342vko.11
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:07:38 -0800 (PST)
+        Mon, 23 Nov 2020 11:07:47 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEFFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:07:45 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id l22so9396043vsa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O/ItqqpCB3WwrW1C+GCf4NN2Kjg8Qry/xoQUCv8LM1Y=;
-        b=Vu16UjmbO6sNa5108slHIduaE+yjbGtAc5ye7fxBJdvq7YygR0atRT57IkCM1X31+W
-         UUgiwq2aSFoFNzraUyzdqbwX8hu/fONCC6hXIeUo2tKabgHbyllDl5GZCKAda3EDH79N
-         Sxz/RslEJC7ZoEx5jpq1sTKXMJqn+pP2LeEKE4aZpdh5WE1o9n4Ju7m/Zpxuhjlqmpz6
-         sjeKBWZaKjxfh6ogWeSrHa+0N/ex2uJMz4wwi6UIzBlwI46NpSZgzY4PwGa8Vh5cz7ue
-         hnVoluFIbrAf2b0aY3dn74xoWNW4TFSK6ZHnThlMJuxyA1ynf97QfEm/rQ+ExtTj6/3n
-         HYaA==
+         :cc:content-transfer-encoding;
+        bh=neKh8lc/wWos/iNaP8WSL7zrCvHB4dIxwGX7kKDy85c=;
+        b=X4/ndsvPJR55zi/T+mrVut+IzMdLDitkajGBydN3gJteOBSqBgcIuZH9mF45Y67vaq
+         1gKccgOB62Z9XgsNCq/Ay2OvAOrOR6s/TcaHSuDNO7brAhgYvEHfd84S30mfqLArc4/E
+         8C+43j7OMYCOe0x+Au0GlRkL1kjSgSej0a7T6LCa2VKXxLW0CufbYDiblEGpC+VMIDqu
+         aejy2CYw9dx+irfcuMvUp2sC3aSknWuGzIJ8FhqUUrc7he4sltOqHUDmdPap8OuF1Eid
+         OpQwUzTZkaYjTbZ6U3ocwwE2jfCfJTLvV47TlnvZeG81gCuC8yb7BeVwfs3ismfeKx3k
+         jBxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O/ItqqpCB3WwrW1C+GCf4NN2Kjg8Qry/xoQUCv8LM1Y=;
-        b=Ng4RrXDF44LfT8xXCp1c93h2+VNv6o1GKGYkbDOX2lQeK094VXbfBXHE2hyA+Y4f10
-         Orj9rCDj4pSOsDt2vc/pfZ+M92JMZIc5qFmqdhbiVaZ+Gd7N6Irohcek8xmmUuRQ4kuL
-         vgGg9gkoFb2fa0H51mdfCR5b3J7XuRL5BAGeVKeXw2iKbZ00RQdJHspFCvoXub2HhU45
-         wz7UEvSn04f5DFoaBUwgj7zPwx1VLHfRIzSBqvl2LWurdX+M5NsJemLWuBz1QU5kfyYX
-         WZT3hiedIAAig6EjXQ9mAbt5avWn1EhPbW3krRY65I4lByyhru8u9SloDovtrAG09mCz
-         SdrA==
-X-Gm-Message-State: AOAM530j3EDLrmW0oUmLiMYYdcl7DK7bFFkAi9SO/HA2GPHw+5lXz2Og
-        uAbCGWXPiWSyD4epL+V7zIhITDsPtpzIdjABZbVs6Q==
-X-Google-Smtp-Source: ABdhPJyWnEErE/SiDA8LVPRNMejQR2+57MiKFEIdwOr/gU4OcMsQt0L5pBWLI+QK+wC55RYqTPUdmE3EersH0WdAUv4=
-X-Received: by 2002:a1f:2cd4:: with SMTP id s203mr524230vks.6.1606147657783;
- Mon, 23 Nov 2020 08:07:37 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=neKh8lc/wWos/iNaP8WSL7zrCvHB4dIxwGX7kKDy85c=;
+        b=FA2+4mfp+H9GA85LmUGCGpJrEAm4SOofb222Yp2EMh9Gk3p9OjRDi1kQrKFMb5AzFj
+         6Mg+7sRn79jjF/LY5BDog9oE73SUxbq5r/8pSQBIPB/fZZg/7rlLZSZZ8xwLj4/FccFQ
+         2eaI6KbxXOPX3NWAYKz3U12//icNQ6i+b3cLErn9BVXTVYY2yU8/EVEewiixxkY3iF+4
+         iGFFTdPEuzmYWf7XzJ62Ws3cWTxBN5DLXX8vkGClhZAiM0JCUWXyZcDyap7yy5SlpuJ8
+         nHS8U6tQtp2gjOAevQ8zU51QsjZyGeLAvTmRcgxGHHYqac/TsJBd7cIFB0SL2fpL+4fA
+         FkuA==
+X-Gm-Message-State: AOAM533ruvceninMbQMDHWawl/3G6EqHy0UErO32VS4DLG72GecDE4h3
+        JmjsGSRX6/e35ucoCQ8PhRiWHi3uUw30nqjntFcKQHYZu604TQ==
+X-Google-Smtp-Source: ABdhPJzFbhfleAS+9gkcRzDUsZi7EZdlN+F5L/n8QkIAsP4Pj4lw3JGZlZwy+vVUWrPBZ8jTWJW+IeLLgwIS3Iosfqw=
+X-Received: by 2002:a67:ce8e:: with SMTP id c14mr375404vse.42.1606147662757;
+ Mon, 23 Nov 2020 08:07:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118120120.24908-1-muhammad.husaini.zulkifli@intel.com> <20201118120120.24908-2-muhammad.husaini.zulkifli@intel.com>
-In-Reply-To: <20201118120120.24908-2-muhammad.husaini.zulkifli@intel.com>
+References: <20201120162344.485921-1-krzk@kernel.org>
+In-Reply-To: <20201120162344.485921-1-krzk@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 23 Nov 2020 17:07:01 +0100
-Message-ID: <CAPDyKFp6ws4SKwBXF36CQ2-PiaJtETXupqRsPMCLyUvc9Ho7Kg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mmc: sdhci-of-arasan: Fix clock registration fail
- for Keem Bay SOC
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Date:   Mon, 23 Nov 2020 17:07:06 +0100
+Message-ID: <CAPDyKFoqpmSWh5-m0m_XB14w7w5RLCYZmYSkuNv1pCiQgYKWVQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mmc: sdhci-sprd: drop of_match_ptr from of_device_id table
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 at 05:01, <muhammad.husaini.zulkifli@intel.com> wrote:
+On Fri, 20 Nov 2020 at 17:23, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> The driver can match only via the DT table so the table should be always
+> used and the of_match_ptr does not have any sense (this also allows ACPI
+> matching via PRP0001, even though it is not relevant here).  This fixes
+> compile warning (!CONFIG_OF on x86_64):
 >
-> Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations handling")
-> introduces platform specific SDHCI clock operation. Each platform should
-> specify clock operations handlers.
+>     drivers/mmc/host/sdhci-sprd.c:723:34: warning:
+>         =E2=80=98sdhci_sprd_of_match=E2=80=99 defined but not used [-Wunu=
+sed-const-variable=3D]
 >
-> Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations handling")
-> and Commit 36c6aadaae86 ("mmc: sdhci-of-arasan: Add support for Intel Keem Bay")
-> are merged about the same time. When doing rebasing during the upstream process,
-> Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations handling")
-> was not included. This will result in sd clock registration failure for
-> Keem Bay SOC Devices as clock operations handlers are not defined.
->
-> This patch declares the clock operation for Keem Bay SOC Devices.
-> Add clk_ops for SD, EMMC and SDIO operations.
->
-> Fixes: 36c6aadaae86 ("mmc: sdhci-of-arasan: Add support for Intel Keem Bay")
->
-> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Applied for fixes and by adding a stable tag, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
->  drivers/mmc/host/sdhci-of-arasan.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/mmc/host/sdhci-sprd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-> index 829ccef87426..012d52e1abee 100644
-> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> @@ -1199,16 +1199,19 @@ static struct sdhci_arasan_of_data sdhci_arasan_versal_data = {
->  static struct sdhci_arasan_of_data intel_keembay_emmc_data = {
->         .soc_ctl_map = &intel_keembay_soc_ctl_map,
->         .pdata = &sdhci_keembay_emmc_pdata,
-> +       .clk_ops = &arasan_clk_ops,
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.=
+c
+> index 58109c5b53e2..f85171edabeb 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -788,7 +788,7 @@ static struct platform_driver sdhci_sprd_driver =3D {
+>         .driver =3D {
+>                 .name =3D "sdhci_sprd_r11",
+>                 .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+> -               .of_match_table =3D of_match_ptr(sdhci_sprd_of_match),
+> +               .of_match_table =3D sdhci_sprd_of_match,
+>                 .pm =3D &sdhci_sprd_pm_ops,
+>         },
 >  };
->
->  static struct sdhci_arasan_of_data intel_keembay_sd_data = {
->         .soc_ctl_map = &intel_keembay_soc_ctl_map,
->         .pdata = &sdhci_keembay_sd_pdata,
-> +       .clk_ops = &arasan_clk_ops,
->  };
->
->  static struct sdhci_arasan_of_data intel_keembay_sdio_data = {
->         .soc_ctl_map = &intel_keembay_soc_ctl_map,
->         .pdata = &sdhci_keembay_sdio_pdata,
-> +       .clk_ops = &arasan_clk_ops,
->  };
->
->  static const struct of_device_id sdhci_arasan_of_match[] = {
 > --
-> 2.17.1
+> 2.25.1
 >
