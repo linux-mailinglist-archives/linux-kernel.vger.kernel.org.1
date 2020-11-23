@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027512C068B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5662C073B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbgKWMcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:32:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42826 "EHLO mail.kernel.org"
+        id S1732125AbgKWMip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:38:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730889AbgKWMbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:31:39 -0500
+        id S1732071AbgKWMiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:38:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81B522076E;
-        Mon, 23 Nov 2020 12:31:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45A9620888;
+        Mon, 23 Nov 2020 12:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134699;
-        bh=B0HIVhOOFgPqMRT5qB5gRrANqaf0nGkWUCvrnaJBgVg=;
+        s=korg; t=1606135094;
+        bh=WEx00jfl0w7WAFmhjq18LKjOtYIfeZ6kyBaWuxStlBI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+/mf+ksN2cDc6fDHHCIFDJVFuYTP0Wu93kxnigaVZ8PIbze5gw7sCcn9RhIx3Jmo
-         rRhsmxCKE90d2UUXx0p83oc7wkM4bD6vT+zqzbnIoXG1zFdNdwAckbZf/EXyOKl+Ae
-         rxjUtvYX7G0UGxZH95z+bCLDVUewN3Obx1qaTqDc=
+        b=vXpmgs9tRP3Kk4kooICBcehhKbjmnHGBJs9tNmmDEnBfnw7f1C/+/welf03TNOFyc
+         WB+FCLO3f9dnBfNI0k+xNs74vomsu/JpXi4b8I+KcQnD4nff6bAmZRIiTvim2AvHMQ
+         uDiwBtpLkXuBkG7s01RGfO2RUW4/9e4+n6LBrfIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 51/91] can: ti_hecc: Fix memleak in ti_hecc_probe
+Subject: [PATCH 5.4 103/158] xfs: return corresponding errcode if xfs_initialize_perag() fail
 Date:   Mon, 23 Nov 2020 13:22:11 +0100
-Message-Id: <20201123121811.803791718@linuxfoundation.org>
+Message-Id: <20201123121824.904549934@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 7968c7c79d3be8987feb8021f0c46e6866831408 ]
+[ Upstream commit 595189c25c28a55523354336bf24453242c81c15 ]
 
-In the error handling, we should goto the probe_exit_candev
-to free ndev to prevent memory leak.
+In xfs_initialize_perag(), if kmem_zalloc(), xfs_buf_hash_init(), or
+radix_tree_preload() failed, the returned value 'error' is not set
+accordingly.
 
-Fixes: dabf54dd1c63 ("can: ti_hecc: Convert TI HECC driver to DT only driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201114111708.3465543-1-zhangqilong3@huawei.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Reported-as-fixing: 8b26c5825e02 ("xfs: handle ENOMEM correctly during initialisation of perag structures")
+Fixes: 9b2471797942 ("xfs: cache unlinked pointers in an rhashtable")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/ti_hecc.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ fs/xfs/xfs_mount.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index db6ea936dc3fc..81a3fdd5e0103 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -903,7 +903,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv->base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(priv->base)) {
- 		dev_err(&pdev->dev, "hecc ioremap failed\n");
--		return PTR_ERR(priv->base);
-+		err = PTR_ERR(priv->base);
-+		goto probe_exit_candev;
- 	}
+diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
+index ba5b6f3b2b88a..5a0ce0c2c4bbd 100644
+--- a/fs/xfs/xfs_mount.c
++++ b/fs/xfs/xfs_mount.c
+@@ -195,21 +195,26 @@ xfs_initialize_perag(
+ 		}
  
- 	/* handle hecc-ram memory */
-@@ -916,7 +917,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(priv->hecc_ram)) {
- 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
--		return PTR_ERR(priv->hecc_ram);
-+		err = PTR_ERR(priv->hecc_ram);
-+		goto probe_exit_candev;
- 	}
- 
- 	/* handle mbx memory */
-@@ -929,13 +931,14 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(priv->mbx)) {
- 		dev_err(&pdev->dev, "mbx ioremap failed\n");
--		return PTR_ERR(priv->mbx);
-+		err = PTR_ERR(priv->mbx);
-+		goto probe_exit_candev;
- 	}
- 
- 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (!irq) {
- 		dev_err(&pdev->dev, "No irq resource\n");
--		goto probe_exit;
-+		goto probe_exit_candev;
- 	}
- 
- 	priv->ndev = ndev;
-@@ -988,7 +991,7 @@ probe_exit_clk:
- 	clk_put(priv->clk);
- probe_exit_candev:
- 	free_candev(ndev);
--probe_exit:
+ 		pag = kmem_zalloc(sizeof(*pag), KM_MAYFAIL);
+-		if (!pag)
++		if (!pag) {
++			error = -ENOMEM;
+ 			goto out_unwind_new_pags;
++		}
+ 		pag->pag_agno = index;
+ 		pag->pag_mount = mp;
+ 		spin_lock_init(&pag->pag_ici_lock);
+ 		mutex_init(&pag->pag_ici_reclaim_lock);
+ 		INIT_RADIX_TREE(&pag->pag_ici_root, GFP_ATOMIC);
+-		if (xfs_buf_hash_init(pag))
 +
- 	return err;
- }
++		error = xfs_buf_hash_init(pag);
++		if (error)
+ 			goto out_free_pag;
+ 		init_waitqueue_head(&pag->pagb_wait);
+ 		spin_lock_init(&pag->pagb_lock);
+ 		pag->pagb_count = 0;
+ 		pag->pagb_tree = RB_ROOT;
  
+-		if (radix_tree_preload(GFP_NOFS))
++		error = radix_tree_preload(GFP_NOFS);
++		if (error)
+ 			goto out_hash_destroy;
+ 
+ 		spin_lock(&mp->m_perag_lock);
 -- 
 2.27.0
 
