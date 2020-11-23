@@ -2,179 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C502C108D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25372C10B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390007AbgKWQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        id S2390094AbgKWQde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:33:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730953AbgKWQbg (ORCPT
+        with ESMTP id S1730635AbgKWQci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:31:36 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C8FC0613CF;
-        Mon, 23 Nov 2020 08:31:35 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7AB3012808F4;
-        Mon, 23 Nov 2020 08:31:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1606149095;
-        bh=+IhPqZ/v6VfDyyXzj4lMu9axEsbedJZyqBpFfwsfG+g=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=taYTQdLWt1uKXwIt/3Ve/mEupTdq+Wcpdv+UXp5WQMTWxY34l98m0qHLcdAiwuo2t
-         gwBg46qri78QHRql74q8THMzP+7WPx9XqttvrPch20gBcYUMT4pLXQarcLhIoin1Gp
-         Z+ziweydBKwdaV8ZmrW12X55c5G6vUR8Kiznotik=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a5HoKkemyWLj; Mon, 23 Nov 2020 08:31:35 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 9FAA112808A8;
-        Mon, 23 Nov 2020 08:31:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1606149095;
-        bh=+IhPqZ/v6VfDyyXzj4lMu9axEsbedJZyqBpFfwsfG+g=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=taYTQdLWt1uKXwIt/3Ve/mEupTdq+Wcpdv+UXp5WQMTWxY34l98m0qHLcdAiwuo2t
-         gwBg46qri78QHRql74q8THMzP+7WPx9XqttvrPch20gBcYUMT4pLXQarcLhIoin1Gp
-         Z+ziweydBKwdaV8ZmrW12X55c5G6vUR8Kiznotik=
-Message-ID: <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Joe Perches <joe@perches.com>, Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        x86@kernel.org, linux-nfs@vger.kernel.org,
-        GR-Linux-NIC-Dev@marvell.com, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
-        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Date:   Mon, 23 Nov 2020 08:31:30 -0800
-In-Reply-To: <20201123130348.GA3119@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
-         <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <202011201129.B13FDB3C@keescook>
-         <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <202011220816.8B6591A@keescook>
-         <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
-         <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
-         <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
-         <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
-         <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
-         <20201123130348.GA3119@embeddedor>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Mon, 23 Nov 2020 11:32:38 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8238C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:32:36 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id d18so17746059edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:32:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PEbsa5HntcIdBOrGyUXi03wOc7HPqT6OCL9AKHl623g=;
+        b=JcEmEqmZ5YVK3pKO04CD9oQmQCLnELQLzua8f5fXbSIiJnbSxM1z/pJlUKmuvdrff6
+         stFtRiKKcVo+tzBS2B+a0SPwL0Vizlvm8sKbSv8tqJcb3iVYLg557b9ZVNGpZlh1+Pmr
+         kRVtCqShkcbuNliqdPmADaMb1KQr2MEPncsHK5QB3G+qH110ElyaG10C7ZRvZm+KE8Nd
+         TfjZyeq3+gmJis6cKNWZ/N6mqrWENXzdHRxmfvKI+4mnBdFP0mW78bFvsirFFTgH5o01
+         6K6PcEQWA6Tongd41DiZaj5w5lpGxcDvg1jYwfT8pIPM2HyUD1m1ewAnXWMgh+63NcsP
+         l9Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PEbsa5HntcIdBOrGyUXi03wOc7HPqT6OCL9AKHl623g=;
+        b=SQjngnA+miIyl4gtuX4RjgYN7G5m8zftPw8+e8EI7tcG6SHICLz9QfOE/tGcFHVT/M
+         HJokc2fE8921+VsWJoOJQcLKzAYDExmmuLmSyeSindIIk0q0x2RTHzflW9jDCdzQNoS6
+         wC02/Xgxg6AYpmqStQ880Sge9gXBlHuTGWyeMO9Xxy4bOXiGCjGW2TJGfFIBt0mcQ9lJ
+         ygdvKNKwTVsF4ZAbxtgaXa+SEgwV9gHecYScYvcpom9vWLlji4ar05XGUt4LujgSVqjM
+         7gUMZC7veQKTs3Wm5gctLD1Ehr6zpjFuL8YluxqITClesqA/61sMz7sH7zlAy1hkZrPn
+         bFjg==
+X-Gm-Message-State: AOAM530guJL+VoLByT/c7tKdpAKPn3XhzftboeAR+i17iywmN4fIgoOO
+        BaG2kRWvb+ytCoql3JIi7tIhnYmTIfXeVQhefwPw+xhKoPQrAQ==
+X-Google-Smtp-Source: ABdhPJyOWUtbV4XCremShmwksPGxuhOH2vLBSCgXGmGwoVIAY4yigU44H7ddoM3DsgNMnPRHPbGaTG1z2Gf3RGlI1RA=
+X-Received: by 2002:a05:6402:1777:: with SMTP id da23mr38863edb.116.1606149155388;
+ Mon, 23 Nov 2020 08:32:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
+ <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
+In-Reply-To: <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 23 Nov 2020 11:31:59 -0500
+Message-ID: <CA+CK2bBuEhH7cSEZUKTYE_g9mw_rwEG-v1Jk4BL6WuLWK824Aw@mail.gmail.com>
+Subject: Re: Pinning ZONE_MOVABLE pages
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-23 at 07:03 -0600, Gustavo A. R. Silva wrote:
-> On Sun, Nov 22, 2020 at 11:53:55AM -0800, James Bottomley wrote:
-> > On Sun, 2020-11-22 at 11:22 -0800, Joe Perches wrote:
-> > > On Sun, 2020-11-22 at 11:12 -0800, James Bottomley wrote:
-> > > > On Sun, 2020-11-22 at 10:25 -0800, Joe Perches wrote:
-> > > > > On Sun, 2020-11-22 at 10:21 -0800, James Bottomley wrote:
-> > > > > > Please tell me our reward for all this effort isn't a
-> > > > > > single missing error print.
-> > > > > 
-> > > > > There were quite literally dozens of logical defects found
-> > > > > by the fallthrough additions.  Very few were logging only.
-> > > > 
-> > > > So can you give us the best examples (or indeed all of them if
-> > > > someone is keeping score)?  hopefully this isn't a US election
-> > > > situation ...
-> > > 
-> > > Gustavo?  Are you running for congress now?
-> > > 
-> > > https://lwn.net/Articles/794944/
-> > 
-> > That's 21 reported fixes of which about 50% seem to produce no
-> > change in code behaviour at all, a quarter seem to have no user
-> > visible effect with the remaining quarter producing unexpected
-> > errors on obscure configuration parameters, which is why no-one
-> > really noticed them before.
-> 
-> The really important point here is the number of bugs this has
-> prevented and will prevent in the future. See an example of this,
-> below:
-> 
-> https://lore.kernel.org/linux-iio/20190813135802.GB27392@kroah.com/
+> Makes sense, as this means no userspace change.
+>
+> > 2. Add an internal move_pages_zone() similar to move_pages() syscall
+> > but instead of migrating to a different NUMA node, migrate pages from
+> > ZONE_MOVABLE to another zone.
+> > Call move_pages_zone() on demand prior to pinning pages from
+> > vfio_pin_map_dma() for instance.
+>
+> As others already said, migrating away before the longterm pin should be
+> the solution. IIRC it was one of the goals of long term pinning api
+> proposed long time ago by Peter Ziljstra I think? The implementation
+> that was merged relatively recently doesn't do that (yet?) for all
+> movable pages, just CMA, but it could.
 
-I think this falls into the same category as the other six bugs: it
-changes the output/input for parameters but no-one has really noticed,
-usually because the command is obscure or the bias effect is minor.
+From what I can tell, CMA is not solving exactly this problem. It
+migrates pages from CMA before pinning, but it migrates them to
+ZONE_MOVABLE. Also, we still need to take care of the fault scenario.
 
-> This work is still relevant, even if the total number of issues/bugs
-> we find in the process is zero (which is not the case).
+>
+> > 3. Perhaps, it also makes sense to add madvise() flag, to allocate
+> > pages from non-movable zone. When a user application knows that it
+> > will do DMA mapping, and pin pages for a long time, the memory that it
+> > allocates should never be migrated or hot-removed, so make sure that
+> > it comes from the appropriate place.
+> > The benefit of adding madvise() flag is that we won't have to deal
+> > with slow page migration during pin time, but the disadvantage is that
+> > we would need to change the user interface.
+>
+> It's best if we avoid involving userspace until it's shown that's it's
+> insufficient.
 
-Really, no ... something which produces no improvement has no value at
-all ... we really shouldn't be wasting maintainer time with it because
-it has a cost to merge.  I'm not sure we understand where the balance
-lies in value vs cost to merge but I am confident in the zero value
-case.
+Agree.
 
-> "The sucky thing about doing hard work to deploy hardening is that
-> the result is totally invisible by definition (things not happening)
-> [..]"
-> - Dmitry Vyukov
-
-Really, no.  Something that can't be measured at all doesn't exist.
-
-And actually hardening is one of those things you can measure (which I
-do have to admit isn't true for everything in the security space) ...
-it's number of exploitable bugs found before you did it vs number of
-exploitable bugs found after you did it.  Usually hardening eliminates
-a class of bug, so the way I've measured hardening before is to go
-through the CVE list for the last couple of years for product X, find
-all the bugs that are of the class we're looking to eliminate and say
-if we had hardened X against this class of bug we'd have eliminated Y%
-of the exploits.  It can be quite impressive if Y is a suitably big
-number.
-
-James
-
-
+Thank you,
+Pasha
