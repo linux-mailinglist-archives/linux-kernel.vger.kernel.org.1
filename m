@@ -2,256 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EC62C0BCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D60E22C0ADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389297AbgKWNbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
+        id S1730740AbgKWMaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729604AbgKWM1d (ORCPT
+        with ESMTP id S1730715AbgKWMaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:33 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D059C0613CF;
-        Mon, 23 Nov 2020 04:27:33 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id m9so17894688iox.10;
-        Mon, 23 Nov 2020 04:27:33 -0800 (PST)
+        Mon, 23 Nov 2020 07:30:18 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2E6C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:30:18 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id o144so15766824ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:30:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2DaTE6ucAwKHboKQ477UK1JxZudD+u75fJNWS41TfPw=;
-        b=F8vooV+64b1R6XdaPNScWiXqMPAgTfFvuB+eXgf85IVPVeBa5IIJAqPN1i5L2rigGg
-         rgFAIssk2nqKCZTWm6jXWklhaEaoxWw0GjxrZ/5XH5C1K2f6HLoLwCDf9jAzrIw4rCXH
-         X/JsovH5CyfEgYFwUj2Tv5Hy0pYuzAFljAgcFSM2jEeoFFmRvCoxMHKlpdCYR4AytYvM
-         YU+PcojjSFzFXMNM6FeiBjuQoRrc7E8s6ImBOWXJOY1F/QGbCYOevlqv7APh/XZHsKk1
-         O729sXHwTBrxh+0sp6QW0XG1Kj+wz0ZCa0v/lAlzh1WlXyCLBdZbZaCwuf8OKHPaRlPT
-         HE4A==
+        bh=RktsD0CPRruiXqUdBpuftqUscZZRDieT6qGFGubMkAw=;
+        b=wyZIPxLr8uXMI/LvXgjy8a7p4+YR2Mss//CR8/zKtcZe2HwB7CyQuXYi4KSuFYxxXB
+         nzyMKCj+pGKf6v+tHMiTtCupLxq5NF19Kq73prgdRGTZmhBYix+FZzBaK7If1Lsq6cgN
+         1cyLnOIcZfSnUkOid/FpW7LsxxviClYNY1SEUyn3bnSEz5njKszaUAnLM9Wquaiaf4nj
+         wTw6OxVte65U1FbYoVt9zNjWIz5LgZEN6fl8foVO6VUnWCoO/lnR+s+Rj5eB7oWR3YlQ
+         4s1VPpFXLaxebrkwJP932K/5opC+Np7+pq+lYR9uL2ViDPSF7A1PUAibj9rAlAAJa//O
+         1gxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2DaTE6ucAwKHboKQ477UK1JxZudD+u75fJNWS41TfPw=;
-        b=NKSoBW+2qZMFvzQFg44fgXU19uTMUTCusmHmX+HqC6Z+R9gPRwpMq5tCMHzRYUnai/
-         QZRSOzVgqrtEGX8Jl7n8bZU9ee66S5r00/x89PvRgKcWnX9VDxOUJgr3BG2IoyLvWaaP
-         MAuP2MBiIV2uT/+gdZJkwjQBtmAzNb2G9TKN1zU1dcfMtOuN7XLYlsnVBJSjPofYBBRh
-         ROVsRU0Qp6nwhVOBQ2s1F8nv+2tj89dE4rQS9CLggLqgcxUQ57vkP3Eg98OX3I2pAhDM
-         H3jvBUERH0imN5kzrJIav9DBajumDIcEkamHEfXd00n27/gLrM69WinrfNlx2rQNwpva
-         ESFA==
-X-Gm-Message-State: AOAM53141HopHmCPgaGV2+kkqz7AFK4ADxdhrWQXa1yS+9Y/NRM++2V3
-        T2QLH4H+rilCvrvF1cAdBMvz5RpkfEDXN2aowDl35tBa
-X-Google-Smtp-Source: ABdhPJynvcUZ7VF87TSywMORtIsedhvH9bTiHIn3h9krTL3CaRMAamRLFQAHW9xFK4ALmizxDsGPCOFuvu4Cz4Gzl88=
-X-Received: by 2002:a6b:fa1a:: with SMTP id p26mr33849205ioh.70.1606134452097;
- Mon, 23 Nov 2020 04:27:32 -0800 (PST)
+        bh=RktsD0CPRruiXqUdBpuftqUscZZRDieT6qGFGubMkAw=;
+        b=n0QbAuBh3ezMF3motIhoG0ybbVWEZbC9IAH1VwquOvhP9xrmYU0FzvczanpomCPwmI
+         ThzXEVgIFl7qf+mBEK/3hoU6Xg9TFjN5LTyxX3LGBJSQcWdu47z6y2P1UdEHvu9VnR1e
+         Hl81F8RCiJ9EuhKd5p0O/i5TBxUDl18BsT7WqXE01LERVnOGC9/wBubRzgFul2T4INbG
+         a5U6fSPqNEIkU3HkFBe5I8FbVW/ah/zyjm+IzXkTAn52CVHD4b4nJGSL3iSUrTh9/uDr
+         lJI92l2FJfVqPSejAlNLqu+VM/EQ4WX6bAQZNgFG7Upyu1yo5OxRa3L2IkYipJnDtn4H
+         CGSQ==
+X-Gm-Message-State: AOAM532e8rGmTTf4sPfDl2PZOY7IoCcG/zhO5OJ4pZ6c+OYeWDx9pq1t
+        0r/7uGYhSakIS3iYoysaz5SKWf+bRnT7HuTxVUfIfw==
+X-Google-Smtp-Source: ABdhPJxGV9ajyo7weUN6KmvtjtrVucPBvdCmyNlmd5p78yIQGCidKGKBv1+/2+wgFVHWzoYz/i9TmcvXmL64dT5sXkU=
+X-Received: by 2002:a25:26d3:: with SMTP id m202mr34277382ybm.504.1606134617766;
+ Mon, 23 Nov 2020 04:30:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20201117162340.43924-1-alexandru.ardelean@analog.com>
- <20201117162340.43924-12-alexandru.ardelean@analog.com> <20201121184445.12ec2d92@archlinux>
-In-Reply-To: <20201121184445.12ec2d92@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 23 Nov 2020 14:27:20 +0200
-Message-ID: <CA+U=DspJg4039Jf60DO00gr0Eegp8j5dUx=R4hinL5B+Vix-Fw@mail.gmail.com>
-Subject: Re: [RFC PATCH 11/12] iio: buffer: introduce support for attaching
- more IIO buffers
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
+References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
+ <20201114051715.GA23685@codeaurora.org> <CAJ9a7ViiZHi92Wr1uurb0B_nE4SmeHmbMChutaS++=FxcC8DTw@mail.gmail.com>
+ <aa859d04-8ccf-cb4b-9ae4-524ab7c8451f@arm.com>
+In-Reply-To: <aa859d04-8ccf-cb4b-9ae4-524ab7c8451f@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 23 Nov 2020 12:30:07 +0000
+Message-ID: <CAJ9a7VhEmBWtasznUSwKm=pEtB2z-4k27X-hs9kZU8kz0bREjg@mail.gmail.com>
+Subject: Re: [RFC 00/11] arm64: coresight: Enable ETE and TRBE
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Tingwei Zhang <tingweiz@codeaurora.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 8:46 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Tue, 17 Nov 2020 18:23:39 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > With this change, calling iio_device_attach_buffer() will actually attach
-> > more buffers.
-> > Right now this doesn't do any validation of whether a buffer is attached
-> > twice; maybe that can be added later (if needed). Attaching a buffer more
-> > than once should yield noticeably bad results.
-> >
-> > The first buffer is the legacy buffer, so a reference is kept to it.
-> >
-> > At this point, accessing the data for the extra buffers (that are added
-> > after the first one) isn't possible yet.
-> >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> A couple of minor things in here..
->
-> Jonathan
->
-> > ---
-> >  drivers/iio/industrialio-buffer.c | 58 +++++++++++++++++++++++++------
-> >  include/linux/iio/buffer_impl.h   |  3 ++
-> >  include/linux/iio/iio-opaque.h    |  4 +++
-> >  3 files changed, 54 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> > index c83cec89eddf..daa68822cea7 100644
-> > --- a/drivers/iio/industrialio-buffer.c
-> > +++ b/drivers/iio/industrialio-buffer.c
-> > @@ -1513,6 +1513,7 @@ static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer);
-> >
-> >  int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> >  {
-> > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> >       struct iio_buffer *buffer = indio_dev->buffer;
-> >       const struct iio_chan_spec *channels;
-> >       int i, ret;
-> > @@ -1529,15 +1530,18 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> >       if (!buffer)
-> >               return 0;
-> >
-> > -     ret = __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev, 0);
-> > -     if (ret)
-> > -             return ret;
-> > +     for (i = 0; i < iio_dev_opaque->attached_buffers_cnt; i++) {
-> > +             buffer = iio_dev_opaque->attached_buffers[i];
-> > +             ret = __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev, i);
-> > +             if (ret)
-> > +                     goto error_unwind_sysfs_and_mask;
-> > +     }
-> >
-> >       ret = sysfs_create_link(&indio_dev->dev.kobj,
-> >                               &indio_dev->buffer->buffer_dir,
-> >                               "buffer");
-> >       if (ret)
-> > -             goto error_free_sysfs_and_mask;
-> > +             goto error_unwind_sysfs_and_mask;
-> >
-> >       ret = sysfs_create_link(&indio_dev->dev.kobj,
-> >                               &indio_dev->buffer->scan_el_dir,
-> > @@ -1549,8 +1553,14 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> >
-> >  error_remove_buffer_dir_link:
-> >       sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
-> > -error_free_sysfs_and_mask:
-> > -     __iio_buffer_free_sysfs_and_mask(buffer);
-> > +     i = iio_dev_opaque->attached_buffers_cnt - 1;
->
-> Perhaps just use a counter variable that is only for this then you won't need
-> to set it again in this error path.
+Hi Anshuman,
 
-Ack.
+On Mon, 23 Nov 2020 at 03:40, Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+>
+> Hello Mike,
+>
+> On 11/16/20 8:30 PM, Mike Leach wrote:
+> > Hi Anshuman,
+> >
+> > I've not looked in detail at this set yet, but having skimmed through
+> > it  I do have an initial question about the handling of wrapped data
+> > buffers.
+> >
+> > With the ETR/ETB we found an issue with the way perf concatenated data
+> > captured from the hardware buffer into a single contiguous data
+> > block. The issue occurs when a wrapped buffer appears after another
+> > buffer in the data file. In a typical session perf would stop trace
+> > and copy the hardware buffer multiple times into the auxtrace buffer.
+>
+> The hardware buffer and perf aux trace buffer are the same for TRBE and
+> hence there is no actual copy involved. Trace data gets pushed into the
+> user space via perf_aux_output_end() either via etm_event_stop() or via
+> the IRQ handler i.e arm_trbe_irq_handler(). Data transfer to user space
+> happens via updates to perf aux buffer indices i.e head, tail, wake up.
+> But logically, they will appear as a stream of records to the user space
+> while parsing perf.data file.
+>
+
+Understood - I suspected this would use direct write to the aux trace
+buffer, but the principle is the same. TRBE determines the location of
+data in the buffer so even without a copy, it is possible to get
+multiple TRBE "buffers" in the auxbuffer as the TRBE is stopped and
+restarted. The later copy to userspace is independent of this.
+
+> >
+> > e.g.
+> >
+> > For ETR/ETB we have a fixed length hardware data buffer - and no way
+> > of detecting buffer wraps using interrupts as the tracing is in
+> > progress.
+>
+> TRBE has an interrupt. Hence there will be an opportunity to insert any
+> additional packets if required to demarcate pre and post IRQ trace data
+> streams.
+>
+> >
+> > If the buffer is not full at the point that perf transfers it then the
+> > data will look like this:-
+> > 1) <async><synced trace data>
+> > easy to decode, we can see the async at the start of the data - which
+> > would be the async issued at the start of trace.
+>
+> Just curious, what makes the tracer to generate the <async> trace packet.
+> Is there an explicit instruction or that is how the tracer starts when
+> enabled ?
+
+ETM / ETE will generate an async at the start of trace, and then
+periodically afterwards.
 
 >
-> > +error_unwind_sysfs_and_mask:
-> > +     for (; i >= 0; i--) {
-> > +             buffer = iio_dev_opaque->attached_buffers[i];
-> > +             __iio_buffer_free_sysfs_and_mask(buffer);
-> > +     }
-> > +     kfree(iio_dev_opaque->attached_buffers);
-> > +     iio_dev_opaque->attached_buffers = NULL;
-> >       return ret;
-> >  }
 > >
-> > @@ -1568,7 +1578,9 @@ static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> > If the buffer wraps we see this:-
 > >
-> >  void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> >  {
-> > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> >       struct iio_buffer *buffer = indio_dev->buffer;
-> > +     int i;
+> > 2) <unsynced trace data><async><synced trace data>
 > >
-> >       if (!buffer)
-> >               return;
-> > @@ -1576,7 +1588,13 @@ void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> >       sysfs_remove_link(&indio_dev->dev.kobj, "scan_elements");
-> >       sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
-> >
-> > -     __iio_buffer_free_sysfs_and_mask(buffer);
-> > +     for (i = iio_dev_opaque->attached_buffers_cnt - 1; i >= 0; i--) {
-> > +             buffer = iio_dev_opaque->attached_buffers[i];
-> > +             __iio_buffer_free_sysfs_and_mask(buffer);
-> > +     }
-> > +
-> > +     kfree(iio_dev_opaque->attached_buffers);
-> > +     iio_dev_opaque->attached_buffers = NULL;
-> >  }
-> >
-> >  /**
-> > @@ -1709,14 +1727,32 @@ EXPORT_SYMBOL_GPL(iio_buffer_get_iio_dev);
-> >   * @buffer: The buffer to attach to the device
-> >   *
-> >   * This function attaches a buffer to a IIO device. The buffer stays attached to
-> > - * the device until the device is freed. The function should only be called at
-> > - * most once per device.
-> > + * the device until the device is freed. For legacy reasons, the first attached
-> > + * buffer will also be assigned to 'indio_dev->buffer'.
-> >   */
-> >  void iio_device_attach_buffer(struct iio_dev *indio_dev,
-> >                             struct iio_buffer *buffer)
-> >  {
-> > -     indio_dev->buffer = iio_buffer_get(buffer);
-> > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> > +     struct iio_buffer **new, **old = iio_dev_opaque->attached_buffers;
-> > +     unsigned int cnt = iio_dev_opaque->attached_buffers_cnt;
-> > +
-> > +     cnt++;
-> > +
-> > +     new = krealloc(old, sizeof(*new) * cnt, GFP_KERNEL);
-> > +     if (!new) {
-> > +             kfree(old);
+> > Again no real issue, the decoder will skip to the async and trace from
+> > there - we lose the unsynced data.
 >
-> Need a comment on why freeing old makes sense.
+> Could you please elaborate more on the difference between sync and async
+> trace data ?
+>
 
-Hmm, maybe here I'd need to change this a bit.
-I'm seeing a few potential issues.
+The decoder will start reading trace from the start of the buffer.
+Unsynced trace is trace data that appears before the first async
+packet. We cannot decode this as we do not know where the packet
+boundaries are.
+Synced trace is any data after the first async packet - the async
+enables us to determine where the packet boundaries are so we can now
+determine the packets and decode the trace.
+
+For an unwrapped buffer, we always see the first async that the ETE
+generated when the trace generation was started. In a wrapped buffer
+we search till we find an async generated as part of the periodic
+async packets.
+
+> >
+> > Now the problem occurs when multiple transfers of data occur. We can
+> > see the following appearing as contiguous trace in the auxtrace
+> > buffer:-
+> >
+> > 3) < async><synced trace data><unsynced trace data><async><synced trace data>
+>
+> So there is an wrap around event between <synced trace data> and
+> <unsynced trace data> ? Are there any other situations where this
+> might happen ?
+
+Not that I am aware of.
 
 >
-> > +             return;
-> > +     }
-> > +     iio_dev_opaque->attached_buffers = new;
-> > +
-> > +     /* first buffer is legacy; attach it to the IIO device directly */
-> > +     if (!indio_dev->buffer)
-> > +             indio_dev->buffer = iio_buffer_get(buffer);
-> > +
-> > +     buffer->indio_dev = indio_dev;
 > >
-> > -     indio_dev->buffer->indio_dev = indio_dev;
-> > +     iio_dev_opaque->attached_buffers[cnt - 1] = buffer;
-> > +     iio_dev_opaque->attached_buffers_cnt = cnt;
-> >  }
-> >  EXPORT_SYMBOL_GPL(iio_device_attach_buffer);
-> > diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-> > index 77e169e51434..e25d26a7f601 100644
-> > --- a/include/linux/iio/buffer_impl.h
-> > +++ b/include/linux/iio/buffer_impl.h
-> > @@ -124,6 +124,9 @@ struct iio_buffer {
-> >       /* @demux_bounce: Buffer for doing gather from incoming scan. */
-> >       void *demux_bounce;
-> >
-> > +     /* @attached_entry: Entry in the devices list of buffers attached by the driver. */
-> > +     struct list_head attached_entry;
-> > +
-> >       /* @buffer_list: Entry in the devices list of current buffers. */
-> >       struct list_head buffer_list;
-> >
-> > diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
-> > index 07c5a8e52ca8..1db0ea09520e 100644
-> > --- a/include/linux/iio/iio-opaque.h
-> > +++ b/include/linux/iio/iio-opaque.h
-> > @@ -7,6 +7,8 @@
-> >   * struct iio_dev_opaque - industrial I/O device opaque information
-> >   * @indio_dev:                       public industrial I/O device information
-> >   * @event_interface:         event chrdevs associated with interrupt lines
-> > + * @attached_buffers:                array of buffers statically attached by the driver
-> > + * @attached_buffers_cnt:    number of buffers in the array of statically attached buffers
-> >   * @buffer_list:             list of all buffers currently attached
-> >   * @channel_attr_list:               keep track of automatically created channel
-> >   *                           attributes
-> > @@ -20,6 +22,8 @@
-> >  struct iio_dev_opaque {
-> >       struct iio_dev                  indio_dev;
-> >       struct iio_event_interface      *event_interface;
-> > +     struct iio_buffer               **attached_buffers;
-> > +     unsigned int                    attached_buffers_cnt;
-> >       struct list_head                buffer_list;
-> >       struct list_head                channel_attr_list;
-> >       struct attribute_group          chan_attr_group;
+> > Now the decoder cannot spot the point that the synced data from the
+> > first capture ends, and the unsynced data from the second capture
+> > begins.
 >
+> Got it.
+>
+> > This means it will continue to decode into the unsynced data - which
+> > will result in incorrect trace / outright errors. To get round this
+> > for ETR/ETB the driver will insert barrier packets into the datafile
+> > if a wrap event is detected.
+>
+> But you mentioned there are on IRQs on ETR/ETB. So how the wrap event
+> is even detected ?
+
+A bit in the status register tells us the buffer is full - i.e. the
+write pointer has wrapped around to the location it started at.
+We cannot tell how far, or if multiple wraps have occurred, just that
+the event has occurred.
+
+>
+> >
+> > 4) <async><synced trace data><barrier><unsynced trace
+> > data><async><synced trace data>
+> >
+> > This <barrier> has the effect of resetting the decoder into the
+> > unsynced state so that the invalid trace is not decoded. This is a
+> > workaround we have to do to handle the limitations of the ETR / ETB
+> > trace hardware.
+> Got it.
+>
+> >
+> > For TRBE we do have interrupts, so it should be possible to prevent
+> > the buffer wrapping in most cases - but I did see in the code that
+> > there are handlers for the TRBE buffer wrap management event. Are
+> > there other factors in play that will prevent data pattern 3) from
+> > appearing in the auxtrace buffer ?
+>
+> On TRBE, the buffer wrapping cannot happen without generating an IRQ. I
+> would assume that ETE will then start again with an <async> data packet
+> first when the handler returns.
+
+This would only occur if the ETE was stopped and flushed prior to the
+wrap event. Does this happen? I am assuming that the sink is
+independent from the ETE, as ETM are from ETR.
+
+> Otherwise we might also have to insert
+> a similar barrier packet for the user space tool to reset. As trace data
+> should not get lost during an wrap event,
+
+My understanding is that if a wrap has even occurred, then data is already lost.
+
+
+> ETE should complete the packet
+> after the handler returns, hence aux buffer should still have logically
+> contiguous stream of <synced trace data> to decode. I am not sure right
+> now, but will look into this.
+>
+
+So you are relying on backpressure to stop ETE emitting packets? This
+could result in trace being lost due to overflow if the IRQ is not
+handled sufficiently quickly/.
+
+Regards
+
+Mike
+
+> - Anshuman
+
+
+--
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
