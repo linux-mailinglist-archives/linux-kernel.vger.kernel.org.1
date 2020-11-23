@@ -2,156 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C8E2C03C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CB22C03C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgKWK6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:58:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43186 "EHLO mail.kernel.org"
+        id S1728231AbgKWLA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:00:26 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50167 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbgKWK6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:58:15 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726901AbgKWLA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 06:00:26 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5037920781;
-        Mon, 23 Nov 2020 10:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606129094;
-        bh=/peUmxWwoiuoRZHOUT3CLjXhVSf0z9ZqsFQuW9bn+lU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ggZdStaRDcuClrAZIfESIxlWj27QHDRXUH+C/KbP+gjBJzkGUQ8cNmRBUUeSjPG6F
-         K0qxnr2bzC3wS96VFks2K8I9SDy/jjGygPJY1Sjq0CYXMD8ayNzkFsFPaxMX6wUYaT
-         oae+rHW3jiJs5Cclmn17vL0aVsm3Yjijau6Kl0KA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kh9Xw-00CtAH-3h; Mon, 23 Nov 2020 10:58:12 +0000
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CfkhP4B1Dz9sRR;
+        Mon, 23 Nov 2020 22:00:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1606129222;
+        bh=WHbv/n/zvKljNMxbSr7BFAIxV2SZS7coVExrPbNTHTA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=dMgscjRQOsWUveZOjqAndgnfi/FBu263K0v2S0JAt2yM+3OsewrQSvKTxPm6WDSlT
+         VpgAaiBwjKdQ5S7ywhelFs0PPx8F9l+DyWPXyPqgrJa6+cMl717s1FxVsecdpNKH1U
+         N6J06GiUqNBJHNJnlsX+kdFkv/fCyszAisj0X/5qUmVzlIXXeU+IF7ezUkt9lLJC7b
+         hkYnnzhnkMc6kAbYon7FLfTa6OHa9W9z7zS8QrM20oFdiXHqZka4h6Fxwf3ifcMNZU
+         UBaBahCof7WZIEKVcTdGVT3KezC7NiuaoMOIzWSqpBQg7WIsN2d1K4kaZRG58lHArI
+         KGAPbPb3vL78w==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Namhyung Kim <namhyung@kernel.org>,
+        "Liang\, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Gabriel Marin <gmx@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU events
+In-Reply-To: <CAM9d7chbQE=zkqYsNFMv+uWEYWdXcGD=fNYT_R2ondwR5zVvaQ@mail.gmail.com>
+References: <20201106212935.28943-1-kan.liang@linux.intel.com> <20201109095235.GC2594@hirez.programming.kicks-ass.net> <20201109110405.GN2651@hirez.programming.kicks-ass.net> <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com> <20201111162509.GW2611@hirez.programming.kicks-ass.net> <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com> <CAM9d7cjwFp9JBqs1Ga9n1ojbez9chZLvmOgFv1EE4KDhAa9ryA@mail.gmail.com> <CAM9d7chbQE=zkqYsNFMv+uWEYWdXcGD=fNYT_R2ondwR5zVvaQ@mail.gmail.com>
+Date:   Mon, 23 Nov 2020 22:00:17 +1100
+Message-ID: <87a6v81gou.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 10:58:07 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jianyong Wu <jianyong.wu@arm.com>
-Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
-        tglx@linutronix.de, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, richardcochran@gmail.com,
-        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
-        Andre.Przywara@arm.com, steven.price@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
-Subject: Re: [PATCH v15 8/9] doc: add ptp_kvm introduction for arm64 support
-In-Reply-To: <20201111062211.33144-9-jianyong.wu@arm.com>
-References: <20201111062211.33144-1-jianyong.wu@arm.com>
- <20201111062211.33144-9-jianyong.wu@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <38fad448a3a465e4c35994ce61f4d8dd@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-11 06:22, Jianyong Wu wrote:
-> PTP_KVM implementation depends on hypercall using SMCCC. So we
-> introduce a new SMCCC service ID. This doc explains how does the
-> ID define and how does PTP_KVM works on arm/arm64.
-> 
-> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
-> ---
->  Documentation/virt/kvm/api.rst         |  9 +++++++
->  Documentation/virt/kvm/arm/index.rst   |  1 +
->  Documentation/virt/kvm/arm/ptp_kvm.rst | 29 +++++++++++++++++++++
->  Documentation/virt/kvm/timekeeping.rst | 35 ++++++++++++++++++++++++++
->  4 files changed, 74 insertions(+)
->  create mode 100644 Documentation/virt/kvm/arm/ptp_kvm.rst
-> 
-> diff --git a/Documentation/virt/kvm/api.rst 
-> b/Documentation/virt/kvm/api.rst
-> index 36d5f1f3c6dd..9843dbcbf770 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6391,3 +6391,12 @@ When enabled, KVM will disable paravirtual
-> features provided to the
->  guest according to the bits in the KVM_CPUID_FEATURES CPUID leaf
->  (0x40000001). Otherwise, a guest may use the paravirtual features
->  regardless of what has actually been exposed through the CPUID leaf.
-> +
-> +8.27 KVM_CAP_PTP_KVM
-> +--------------------
-> +
-> +:Architectures: arm64
-> +
-> +This capability indicates that KVM virtual PTP service is supported in 
-> host.
-> +It must company with the implementation of KVM virtual PTP service in 
-> host
-> +so VMM can probe if there is the service in host by checking this 
-> capability.
-> diff --git a/Documentation/virt/kvm/arm/index.rst
-> b/Documentation/virt/kvm/arm/index.rst
-> index 3e2b2aba90fc..78a9b670aafe 100644
-> --- a/Documentation/virt/kvm/arm/index.rst
-> +++ b/Documentation/virt/kvm/arm/index.rst
-> @@ -10,3 +10,4 @@ ARM
->     hyp-abi
->     psci
->     pvtime
-> +   ptp_kvm
-> diff --git a/Documentation/virt/kvm/arm/ptp_kvm.rst
-> b/Documentation/virt/kvm/arm/ptp_kvm.rst
-> new file mode 100644
-> index 000000000000..bb1e6cfefe44
-> --- /dev/null
-> +++ b/Documentation/virt/kvm/arm/ptp_kvm.rst
-> @@ -0,0 +1,29 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +PTP_KVM support for arm/arm64
-> +=============================
-> +
-> +PTP_KVM is used for time sync between guest and host in a high 
-> precision.
-> +It needs to get the wall time and counter value from the host and
-> transfer these
-> +to guest via hypercall service. So one more hypercall service has been 
-> added.
-> +
-> +This new SMCCC hypercall is defined as:
-> +
-> +* ARM_SMCCC_HYP_KVM_PTP_FUNC_ID: 0x86000001
-> +
-> +As both 32 and 64-bits ptp_kvm client should be supported, we choose
-> SMC32/HVC32
-> +calling convention.
-> +
-> +ARM_SMCCC_HYP_KVM_PTP_FUNC_ID:
-> +
-> +    =============    ==========    ==========
-> +    Function ID:     (uint32)      0x86000001
-> +    Arguments:	     (uint32)      ARM_PTP_PHY_COUNTER(1) or
-> ARM_PTP_VIRT_COUNTER(0)
-> +                                   which indicate acquiring physical 
-> counter or
-> +                                   virtual counter respectively.
-> +    return value:    (uint32)      NOT_SUPPORTED(-1) or val0 and val1 
-> represent
-> +                                   wall clock time and val2 and val3 
-> represent
-> +                                   counter cycle.
+Namhyung Kim <namhyung@kernel.org> writes:
+> Hi Peter and Kan,
+>
+> (Adding PPC folks)
+>
+> On Tue, Nov 17, 2020 at 2:01 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>>
+>> Hello,
+>>
+>> On Thu, Nov 12, 2020 at 4:54 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>> >
+>> >
+>> >
+>> > On 11/11/2020 11:25 AM, Peter Zijlstra wrote:
+>> > > On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
+>> > >
+>> > >> - When the large PEBS was introduced (9c964efa4330), the sched_task() should
+>> > >> be invoked to flush the PEBS buffer in each context switch. However, The
+>> > >> perf_sched_events in account_event() is not updated accordingly. The
+>> > >> perf_event_task_sched_* never be invoked for a pure per-CPU context. Only
+>> > >> per-task event works.
+>> > >>     At that time, the perf_pmu_sched_task() is outside of
+>> > >> perf_event_context_sched_in/out. It means that perf has to double
+>> > >> perf_pmu_disable() for per-task event.
+>> > >
+>> > >> - The patch 1 tries to fix broken per-CPU events. The CPU context cannot be
+>> > >> retrieved from the task->perf_event_ctxp. So it has to be tracked in the
+>> > >> sched_cb_list. Yes, the code is very similar to the original codes, but it
+>> > >> is actually the new code for per-CPU events. The optimization for per-task
+>> > >> events is still kept.
+>> > >>    For the case, which has both a CPU context and a task context, yes, the
+>> > >> __perf_pmu_sched_task() in this patch is not invoked. Because the
+>> > >> sched_task() only need to be invoked once in a context switch. The
+>> > >> sched_task() will be eventually invoked in the task context.
+>> > >
+>> > > The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB and
+>> > > only set that for large pebs. Are you sure the other users (Intel LBR
+>> > > and PowerPC BHRB) don't need it?
+>> >
+>> > I didn't set it for LBR, because the perf_sched_events is always enabled
+>> > for LBR. But, yes, we should explicitly set the PERF_ATTACH_SCHED_CB
+>> > for LBR.
+>> >
+>> >         if (has_branch_stack(event))
+>> >                 inc = true;
+>> >
+>> > >
+>> > > If they indeed do not require the pmu::sched_task() callback for CPU
+>> > > events, then I still think the whole perf_sched_cb_{inc,dec}() interface
+>> >
+>> > No, LBR requires the pmu::sched_task() callback for CPU events.
+>> >
+>> > Now, The LBR registers have to be reset in sched in even for CPU events.
+>> >
+>> > To fix the shorter LBR callstack issue for CPU events, we also need to
+>> > save/restore LBRs in pmu::sched_task().
+>> > https://lore.kernel.org/lkml/1578495789-95006-4-git-send-email-kan.liang@linux.intel.com/
+>> >
+>> > > is confusing at best.
+>> > >
+>> > > Can't we do something like this instead?
+>> > >
+>> > I think the below patch may have two issues.
+>> > - PERF_ATTACH_SCHED_CB is required for LBR (maybe PowerPC BHRB as well) now.
+>> > - We may disable the large PEBS later if not all PEBS events support
+>> > large PEBS. The PMU need a way to notify the generic code to decrease
+>> > the nr_sched_task.
+>>
+>> Any updates on this?  I've reviewed and tested Kan's patches
+>> and they all look good.
+>>
+>> Maybe we can talk to PPC folks to confirm the BHRB case?
+>
+> Can we move this forward?  I saw patch 3/3 also adds PERF_ATTACH_SCHED_CB
+> for PowerPC too.  But it'd be nice if ppc folks can confirm the change.
 
-This needs a lot more description:
+Sorry I've read the whole thread, but I'm still not entirely sure I
+understand the question.
 
-- Which word contains what part of the data (upper/lower part of the 
-64bit data)
-- The endianness of the data returned
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+cheers
