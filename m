@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0712C0B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C282C0B6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389079AbgKWNYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:24:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45036 "EHLO mail.kernel.org"
+        id S2389073AbgKWNYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:24:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730549AbgKWMdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:33:45 -0500
+        id S1731277AbgKWMdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:33:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5805720888;
-        Mon, 23 Nov 2020 12:33:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D116520888;
+        Mon, 23 Nov 2020 12:33:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134824;
-        bh=lYUHFsfMSCvVN1o385q1QZefOqjlrdDMMZNDJSIOhaE=;
+        s=korg; t=1606134833;
+        bh=WBAvjVB0ZU3IAXX2vBAN67JB9f8nQYR74PsalvQo9PU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p5HxP0zi21e/kjp/W+Z6FG9N82ha5U1vmJw3u5UNHDQUG13gCn5aWLRVVOphuO0ZI
-         Anbkh2SCXtiwD7DdvPlzK0l4Hss4NIxqEQaVJmjOTP8OSqWpC+/WMdXZz1AdMkdtep
-         RGaBV1jme4nKKr2NA1bu9nPe5/V9vFTDDwrLFvGk=
+        b=eYXTYNlQfXE0o6FZ6dRYYoZpQ+ZcZn595q42aBLk6XJ1Yzb7fLRXbIFO+uuTtwkoX
+         xp9Jf0uhnsfh93sNWbzm50TSky826IMRbXeAt6kaMVOTaOO7nRO9YAI200NFRia0K9
+         bx7YyNroGG9FWVPVhyUOb6gumOdh3fhCNhk2Zfrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 4.19 73/91] efivarfs: fix memory leak in efivarfs_create()
-Date:   Mon, 23 Nov 2020 13:22:33 +0100
-Message-Id: <20201123121812.868073417@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 76/91] iio: accel: kxcjk1013: Replace is_smo8500_device with an acpi_type enum
+Date:   Mon, 23 Nov 2020 13:22:36 +0100
+Message-Id: <20201123121813.018064320@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
 References: <20201123121809.285416732@linuxfoundation.org>
@@ -43,49 +43,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit fe5186cf12e30facfe261e9be6c7904a170bd822 upstream.
+commit 11e94f28c3de35d5ad1ac6a242a5b30f4378991a upstream.
 
-kmemleak report:
-  unreferenced object 0xffff9b8915fcb000 (size 4096):
-  comm "efivarfs.sh", pid 2360, jiffies 4294920096 (age 48.264s)
-  hex dump (first 32 bytes):
-    2d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -...............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000cc4d897c>] kmem_cache_alloc_trace+0x155/0x4b0
-    [<000000007d1dfa72>] efivarfs_create+0x6e/0x1a0
-    [<00000000e6ee18fc>] path_openat+0xe4b/0x1120
-    [<000000000ad0414f>] do_filp_open+0x91/0x100
-    [<00000000ce93a198>] do_sys_openat2+0x20c/0x2d0
-    [<000000002a91be6d>] do_sys_open+0x46/0x80
-    [<000000000a854999>] __x64_sys_openat+0x20/0x30
-    [<00000000c50d89c9>] do_syscall_64+0x38/0x90
-    [<00000000cecd6b5f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Replace the boolean is_smo8500_device variable with an acpi_type enum.
 
-In efivarfs_create(), inode->i_private is setup with efivar_entry
-object which is never freed.
+For now this can be either ACPI_GENERIC or ACPI_SMO8500, this is a
+preparation patch for adding special handling for the KIOX010A ACPI HID,
+which will add a ACPI_KIOX010A acpi_type to the introduced enum.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Link: https://lore.kernel.org/r/20201023115429.GA2479@cosmos
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+For stable as needed as precursor for next patch.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: 7f6232e69539 ("iio: accel: kxcjk1013: Add KIOX010A ACPI Hardware-ID")
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201110133835.129080-2-hdegoede@redhat.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/efivarfs/super.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/accel/kxcjk-1013.c |   15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -23,6 +23,7 @@ LIST_HEAD(efivarfs_list);
- static void efivarfs_evict_inode(struct inode *inode)
- {
- 	clear_inode(inode);
-+	kfree(inode->i_private);
- }
+--- a/drivers/iio/accel/kxcjk-1013.c
++++ b/drivers/iio/accel/kxcjk-1013.c
+@@ -134,6 +134,11 @@ enum kx_chipset {
+ 	KX_MAX_CHIPS /* this must be last */
+ };
  
- static const struct super_operations efivarfs_ops = {
++enum kx_acpi_type {
++	ACPI_GENERIC,
++	ACPI_SMO8500,
++};
++
+ struct kxcjk1013_data {
+ 	struct i2c_client *client;
+ 	struct iio_trigger *dready_trig;
+@@ -150,7 +155,7 @@ struct kxcjk1013_data {
+ 	bool motion_trigger_on;
+ 	int64_t timestamp;
+ 	enum kx_chipset chipset;
+-	bool is_smo8500_device;
++	enum kx_acpi_type acpi_type;
+ };
+ 
+ enum kxcjk1013_axis {
+@@ -1241,7 +1246,7 @@ static irqreturn_t kxcjk1013_data_rdy_tr
+ 
+ static const char *kxcjk1013_match_acpi_device(struct device *dev,
+ 					       enum kx_chipset *chipset,
+-					       bool *is_smo8500_device)
++					       enum kx_acpi_type *acpi_type)
+ {
+ 	const struct acpi_device_id *id;
+ 
+@@ -1250,7 +1255,7 @@ static const char *kxcjk1013_match_acpi_
+ 		return NULL;
+ 
+ 	if (strcmp(id->id, "SMO8500") == 0)
+-		*is_smo8500_device = true;
++		*acpi_type = ACPI_SMO8500;
+ 
+ 	*chipset = (enum kx_chipset)id->driver_data;
+ 
+@@ -1286,7 +1291,7 @@ static int kxcjk1013_probe(struct i2c_cl
+ 	} else if (ACPI_HANDLE(&client->dev)) {
+ 		name = kxcjk1013_match_acpi_device(&client->dev,
+ 						   &data->chipset,
+-						   &data->is_smo8500_device);
++						   &data->acpi_type);
+ 	} else
+ 		return -ENODEV;
+ 
+@@ -1304,7 +1309,7 @@ static int kxcjk1013_probe(struct i2c_cl
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->info = &kxcjk1013_info;
+ 
+-	if (client->irq > 0 && !data->is_smo8500_device) {
++	if (client->irq > 0 && data->acpi_type != ACPI_SMO8500) {
+ 		ret = devm_request_threaded_irq(&client->dev, client->irq,
+ 						kxcjk1013_data_rdy_trig_poll,
+ 						kxcjk1013_event_handler,
 
 
