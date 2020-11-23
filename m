@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C362C0816
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CAB2C0A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731643AbgKWMp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:45:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57464 "EHLO mail.kernel.org"
+        id S2387968AbgKWNPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:15:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733185AbgKWMoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:44:11 -0500
+        id S1733210AbgKWMoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:44:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 500B320857;
-        Mon, 23 Nov 2020 12:44:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01946208C3;
+        Mon, 23 Nov 2020 12:44:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135450;
-        bh=51+6+uPww+RmJBsPsYhNpnC8ORVfQ015jaj6oYZgpvs=;
+        s=korg; t=1606135461;
+        bh=GFngvZlCCkdakne/1GK39sREPmtwgAIQPPaTVAjHOls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XYL3H9EJ7WcDOOmhLWR+kd0T3ce7XKtjKkI/y3I0Lm9Igpsz7lPccVu5pGcvFiCTi
-         TcK1NeXsCKu4lmhE6BZWQPAdke0c31DO3ztpf2hOFs6sdxDYbThzI+CMFD0yStD2Og
-         DaUt70/463Bw3q+OK6Ff16fLs+l8kaBlxx8VBdZQ=
+        b=NdCVTFtQfQRXAAft3h3T5cEJHmBgRurkRNGvPIWHoBcbz8ZlKCfSI4pAcv/k76jvY
+         hjMxEPsPZ76gwuae+ES2JNloZ1qa1263aQbF3iRP0WFgHF+rZSYGwDf7KZlyjsb0a0
+         0qaIcUqbu8QyroKrYyyOjRo7+jj/gJ2T7dQI+d00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 072/252] arm64: kpti: Add KRYO2XX gold/silver CPU cores to kpti safelist
-Date:   Mon, 23 Nov 2020 13:20:22 +0100
-Message-Id: <20201123121839.064537782@linuxfoundation.org>
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chen-Yu Tsai <wens@csie.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 075/252] arm64: dts: allwinner: beelink-gs1: Enable both RGMII RX/TX delay
+Date:   Mon, 23 Nov 2020 13:20:25 +0100
+Message-Id: <20201123121839.214493666@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -43,35 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konrad.dybcio@somainline.org>
+From: Clément Péron <peron.clem@gmail.com>
 
-[ Upstream commit e3dd11a9f2521cecbcf30c2fd17ecc5a445dfb94 ]
+[ Upstream commit 97a38c1c213b162aa577299de698f39c18ba696b ]
 
-QCOM KRYO2XX gold (big) silver (LITTLE) CPU cores are based on
-Cortex-A73 and Cortex-A53 respectively and are meltdown safe,
-hence add them to kpti_safe_list[].
+Before the commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
+delay config"), the software overwrite for RX/TX delays of the RTL8211e
+were not working properly and the Beelink GS1 had both RX/TX delay of RGMII
+interface set using pull-up on the TXDLY and RXDLY pins.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Link: https://lore.kernel.org/r/20201104232218.198800-3-konrad.dybcio@somainline.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Now that these delays are working properly they overwrite the HW
+config and set this to 'rgmii' meaning no delay on both RX/TX.
+This makes the ethernet of this board not working anymore.
+
+Set the phy-mode to 'rgmii-id' meaning RGMII with RX/TX delays
+in the device-tree to keep the correct configuration.
+
+Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 board")
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Link: https://lore.kernel.org/r/20201018172409.1754775-1-peron.clem@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/cpufeature.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 6424584be01e6..9d0e4afdc8caa 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1333,6 +1333,8 @@ static bool unmap_kernel_at_el0(const struct arm64_cpu_capabilities *entry,
- 		MIDR_ALL_VERSIONS(MIDR_CORTEX_A73),
- 		MIDR_ALL_VERSIONS(MIDR_HISI_TSV110),
- 		MIDR_ALL_VERSIONS(MIDR_NVIDIA_CARMEL),
-+		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_2XX_GOLD),
-+		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_2XX_SILVER),
- 		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_3XX_SILVER),
- 		MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_4XX_SILVER),
- 		{ /* sentinel */ }
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+index 3f7ceeb1a767a..7c9dbde645b52 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+@@ -97,7 +97,7 @@
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&ext_rgmii_pins>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	phy-supply = <&reg_aldo2>;
+ 	status = "okay";
 -- 
 2.27.0
 
