@@ -2,169 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E482C0E42
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 856E32C0E47
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388947AbgKWOyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:54:55 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:41540 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732043AbgKWOyy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:54:54 -0500
-Received: by mail-oi1-f195.google.com with SMTP id m13so19921323oih.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:54:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GdDzxvC81GM8ysJ3lhFnaqueUFlqQjeIhTfbA5tb7kc=;
-        b=TyZ5jwN+2p3Cc+0YxeEeKIq/Si1kQ3x+MCjuxIVYHW5chRmoxlfjoQPp1nLG1A9BL0
-         HRG3xgiuemDMfRlvUn0l3nO01Mg8fMWpxHsw5EjaKGEtL00OVfitcg2u1pqe9CPPw/uN
-         4dTHEWrQ+DKersI8nDRWr6y+VEbKKFDYkyDdRM7S0LRbH5WdyFnff7bRzUmF+mkp+9/1
-         y+5Z/4v9ShP+HifrX14DyfYYJE6cKnRd0GFwl+uWzqw/RQF1PqSMegL/lyTW6jfeilQp
-         mHAXfUgAyZwugvcTEwvtaykje7Mn//khgYvBs25i3qr2NC3qIfir+cHlqkHXmoQHYRFY
-         EHTg==
-X-Gm-Message-State: AOAM533wtYsUc85BwwxFYAJnUvz/gClM6p1Q0xe6xWi1NQU0qdCcOjf3
-        0KmOHUntG26W2jTMX6YkFJaCsZAZ7nxEaZeFncM=
-X-Google-Smtp-Source: ABdhPJxZr/YjE6PkD0NoI8ZRmVL6w1sEKs3Or8fNr/NjsUD2m3jSb/FO4kE/ertuB12FG44O6Tqdx09VWrEcfES8vqM=
-X-Received: by 2002:aca:da02:: with SMTP id r2mr10469083oig.157.1606143294240;
- Mon, 23 Nov 2020 06:54:54 -0800 (PST)
+        id S2389173AbgKWO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:56:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727444AbgKWO4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:56:11 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7620420658;
+        Mon, 23 Nov 2020 14:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606143370;
+        bh=XUm8OV+H1ot7qmV/No9ou5eqPJW8U55vgkCpuzquesU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XLvhjSzxb01JFT7bTsyemJ7VwGR2FQh0Nx3EVYr/RQNdLEZjSTfutOLl8yWkJJgCt
+         UToUSkVFwohasfZMWNu27JglVMGGXy7IZMRv5AE5wbWHTia9HHBzGvPSErzFRQsnqF
+         wuOwImNxJG+mc9eUYs8IbGnTbO+hjgsAOQRhDKb8=
+Date:   Mon, 23 Nov 2020 14:56:06 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        joro@8bytes.org, Jon.Grimm@amd.com, bp@suse.de
+Subject: Re: [PATCH v2] iommu/amd: Enforce 4k mapping for certain IOMMU data
+ structures
+Message-ID: <20201123145605.GA11033@willie-the-truck>
+References: <20201105145832.3065-1-suravee.suthikulpanit@amd.com>
+ <c189684a-27e5-c0c2-1629-063b9fb16957@amd.com>
+ <35c6f7d8-f889-8c3c-2e01-1a9226babf0a@amd.com>
 MIME-Version: 1.0
-References: <20201120114145.197714127@infradead.org> <20201120114925.652731270@infradead.org>
- <CAJZ5v0hhSO36-m-otWp0vqWNNZFiDWPX-xxK-ninRr2d==QOWA@mail.gmail.com>
- <20201123134618.GL3021@hirez.programming.kicks-ass.net> <CAJZ5v0invgyZ50AHZmbOBYkgvM2uAqqE+t_mvD=ZCxac_gAtUQ@mail.gmail.com>
- <20201123143510.GR3021@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201123143510.GR3021@hirez.programming.kicks-ass.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 23 Nov 2020 15:54:43 +0100
-Message-ID: <CAJZ5v0grKGsyLo70KBTsiBgyuh_mVJf+Jh-aLabJHVnONtX0-A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] intel_idle: Fix intel_idle() vs tracing
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, svens@linux.ibm.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <35c6f7d8-f889-8c3c-2e01-1a9226babf0a@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 3:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Nov 23, 2020 at 02:54:47PM +0100, Rafael J. Wysocki wrote:
->
-> > intel_idle_init_cstates_acpi() needs to be updated too as it doesn't
-> > pick up the flags automatically.
->
-> Ooh, it has two different state init routines :-/, sorry I missed that.
-> See below.
->
-> > It looks like CPUIDLE_FLAG_RCU_IDLE needs to be copied too.
->
-> I might need more clue again; processor_idle() needs this because it
-> calls into ACPI (acpi_idle_enter_bm()) for that BM crud. I didn't find
-> anything like that here.
->
->
-> ---
-> Subject: intel_idle: Fix intel_idle() vs tracing
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Fri Nov 20 11:28:35 CET 2020
->
-> cpuidle->enter() callbacks should not call into tracing because RCU
-> has already been disabled. Instead of doing the broadcast thing
-> itself, simply advertise to the cpuidle core that those states stop
-> the timer.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On Thu, Nov 19, 2020 at 10:19:01PM -0600, Brijesh Singh wrote:
+> On 11/19/20 8:30 PM, Suravee Suthikulpanit wrote:
+> > On 11/18/20 5:57 AM, Will Deacon wrote:
+> > > I think I'm missing something here. set_memory_4k() will break the
+> > kernel
+> > > linear mapping up into page granular mappings, but the IOMMU isn't
+> > using
+> > > that mapping, right?
+> >
+> > That's correct. This does not affect the IOMMU, but it affects the PSP
+> > FW.
+> >
+> > > It's just using the physical address returned by
+> > iommu_virt_to_phys(), so why does it matter?
+> > >
+> > > Just be nice to capture some of this rationale in the log,
+> > especially as
+> > > I'm not familiar with this device.
+> >
+> > According to the AMD SEV-SNP white paper
+> > (https://www.amd.com/system/files/TechDocs/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf),
+> > the Reverse Map Table (RMP) contains one entry for every 4K page of
+> > DRAM that may be used by the VM. In this case, the pages allocated by
+> > the IOMMU driver are added as 4K entries in the RMP table by the
+> > SEV-SNP FW.
+> >
+> > During the page table walk, the RMP checks if the page is owned by the
+> > hypervisor. Without calling set_memory_4k() to break the mapping up
+> > into 4K pages, pages could end up being part of large mapping (e.g. 2M
+> > page), in which the page access would be denied and result in #PF.
+> 
+> 
+> Since the page is added as a 4K page in the RMP table by the SEV-SNP FW,
+> so we need to split the physmap to ensure that this page will be access
+> with a 4K mapping from the x86. If the page is part of large page then
+> write access will cause a RMP violation (i.e #PF), this is because SNP
+> hardware enforce that the CPU page level walk must match with page-level
+> programmed in the RMP table.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Got it; thanks.
 
-with a very minor nit below.
+> > >> Fixes: commit c69d89aff393 ("iommu/amd: Use 4K page for completion
+> > wait write-back semaphore")
+> > >
+> > > I couldn't figure out how that commit could cause this problem.
+> > Please can
+> > > you explain that to me?
+> >
+> > Hope this helps clarify. If so, I'll update the commit log and send
+> > out V3.
 
-> ---
->  drivers/idle/intel_idle.c |   40 +++++++++++++++++++++++-----------------
->  1 file changed, 23 insertions(+), 17 deletions(-)
->
-> --- a/drivers/idle/intel_idle.c
-> +++ b/drivers/idle/intel_idle.c
-> @@ -126,26 +126,9 @@ static __cpuidle int intel_idle(struct c
->         struct cpuidle_state *state = &drv->states[index];
->         unsigned long eax = flg2MWAIT(state->flags);
->         unsigned long ecx = 1; /* break on interrupt flag */
-> -       bool tick;
-> -
-> -       if (!static_cpu_has(X86_FEATURE_ARAT)) {
-> -               /*
-> -                * Switch over to one-shot tick broadcast if the target C-state
-> -                * is deeper than C1.
-> -                */
-> -               if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK) {
-> -                       tick = true;
-> -                       tick_broadcast_enter();
-> -               } else {
-> -                       tick = false;
-> -               }
-> -       }
->
->         mwait_idle_with_hints(eax, ecx);
->
-> -       if (!static_cpu_has(X86_FEATURE_ARAT) && tick)
-> -               tick_broadcast_exit();
-> -
->         return index;
->  }
->
-> @@ -1227,6 +1210,23 @@ static bool __init intel_idle_acpi_cst_e
->         return false;
->  }
->
-> +static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
-> +{
-> +       unsigned long eax = flg2MWAIT(state->flags);
-> +
-> +       if (boot_cpu_has(X86_FEATURE_ARAT))
-> +               return false;
-> +
-> +       /*
-> +        * Switch over to one-shot tick broadcast if the target C-state
-> +        * is deeper than C1.
-> +        */
-> +       if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK)
-> +               return true;
-> +
-> +       return false;
+Cheers. No need for a v2, as I've queued this up with a Link: tag.
 
-The above can be written as
-
-return !!((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK);
-
-> +}
-> +
->  static void __init intel_idle_init_cstates_acpi(struct cpuidle_driver *drv)
->  {
->         int cstate, limit = min_t(int, CPUIDLE_STATE_MAX, acpi_state_table.count);
-> @@ -1269,6 +1269,9 @@ static void __init intel_idle_init_cstat
->                 if (disabled_states_mask & BIT(cstate))
->                         state->flags |= CPUIDLE_FLAG_OFF;
->
-> +               if (intel_idle_state_needs_timer_stop(state))
-> +                       state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-> +
->                 state->enter = intel_idle;
->                 state->enter_s2idle = intel_idle_s2idle;
->         }
-> @@ -1507,6 +1510,9 @@ static void __init intel_idle_init_cstat
->                      !(cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_ALWAYS_ENABLE)))
->                         drv->states[drv->state_count].flags |= CPUIDLE_FLAG_OFF;
->
-> +               if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
-> +                       drv->states[drv->state_count].flags |= CPUIDLE_FLAG_TIMER_STOP;
-> +
->                 drv->state_count++;
->         }
->
+Will
