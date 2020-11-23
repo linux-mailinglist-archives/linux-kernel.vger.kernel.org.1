@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF3B2C0AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332422C0BC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730079AbgKWMZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:25:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35394 "EHLO mail.kernel.org"
+        id S1731181AbgKWNa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:30:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730047AbgKWMZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:25:46 -0500
+        id S1730420AbgKWM2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:28:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DF8C20857;
-        Mon, 23 Nov 2020 12:25:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C2B520728;
+        Mon, 23 Nov 2020 12:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134346;
-        bh=lYUHFsfMSCvVN1o385q1QZefOqjlrdDMMZNDJSIOhaE=;
+        s=korg; t=1606134504;
+        bh=L/h4vsPPUbjtzv4YMMjlE4Iof+2S9Fnn0gy83opF4fA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k8YgFSO4vTBDt0HAbTk3g9U34lSHtANS7B06LzGBxfyHrEgyYIzzaoAaO6+r8LwYS
-         FAAa0zkBr/QffL/0Is4al6lwXkNYzdfhCYB7Pfx1vhUPRQG867+B1y9YfPDaZVyIwC
-         E9Fg0wfk/zJfMkK9UupoY7hrUb3/VcHOBsEJ86Wo=
+        b=BywI6hhUAYhMSi74mFk1t9vw3avdxTEL/qhzmCVwAg7guOtYnTYnuO7yhBCvW/r+U
+         B4qJmKU1q1wljUyAF1ThUujjkxPWPMSoyo2dshl0MlSx7mCzFTn5KNIbh1g5D/WQ7o
+         Bf4QENKvb/k/kdoPk5gv4mlkQjdu28snwwvp2j3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 4.9 38/47] efivarfs: fix memory leak in efivarfs_create()
-Date:   Mon, 23 Nov 2020 13:22:24 +0100
-Message-Id: <20201123121807.399007267@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 43/60] ALSA: ctl: fix error path at adding user-defined element set
+Date:   Mon, 23 Nov 2020 13:22:25 +0100
+Message-Id: <20201123121807.132747398@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit fe5186cf12e30facfe261e9be6c7904a170bd822 upstream.
+commit 95a793c3bc75cf888e0e641d656e7d080f487d8b upstream.
 
-kmemleak report:
-  unreferenced object 0xffff9b8915fcb000 (size 4096):
-  comm "efivarfs.sh", pid 2360, jiffies 4294920096 (age 48.264s)
-  hex dump (first 32 bytes):
-    2d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -...............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000cc4d897c>] kmem_cache_alloc_trace+0x155/0x4b0
-    [<000000007d1dfa72>] efivarfs_create+0x6e/0x1a0
-    [<00000000e6ee18fc>] path_openat+0xe4b/0x1120
-    [<000000000ad0414f>] do_filp_open+0x91/0x100
-    [<00000000ce93a198>] do_sys_openat2+0x20c/0x2d0
-    [<000000002a91be6d>] do_sys_open+0x46/0x80
-    [<000000000a854999>] __x64_sys_openat+0x20/0x30
-    [<00000000c50d89c9>] do_syscall_64+0x38/0x90
-    [<00000000cecd6b5f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+When processing request to add/replace user-defined element set, check
+of given element identifier and decision of numeric identifier is done
+in "__snd_ctl_add_replace()" helper function. When the result of check
+is wrong, the helper function returns error code. The error code shall
+be returned to userspace application.
 
-In efivarfs_create(), inode->i_private is setup with efivar_entry
-object which is never freed.
+Current implementation includes bug to return zero to userspace application
+regardless of the result. This commit fixes the bug.
 
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Link: https://lore.kernel.org/r/20201023115429.GA2479@cosmos
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: e1a7bfe38079 ("ALSA: control: Fix race between adding and removing a user element")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20201113092043.16148-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/efivarfs/super.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/core/control.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -23,6 +23,7 @@ LIST_HEAD(efivarfs_list);
- static void efivarfs_evict_inode(struct inode *inode)
- {
- 	clear_inode(inode);
-+	kfree(inode->i_private);
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1387,7 +1387,7 @@ static int snd_ctl_elem_add(struct snd_c
+ 
+  unlock:
+ 	up_write(&card->controls_rwsem);
+-	return 0;
++	return err;
  }
  
- static const struct super_operations efivarfs_ops = {
+ static int snd_ctl_elem_add_user(struct snd_ctl_file *file,
 
 
