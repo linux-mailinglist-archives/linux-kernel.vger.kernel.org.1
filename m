@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5AB2C0375
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7122C0377
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgKWKht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:37:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:41140 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgKWKht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:37:49 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CA70101E;
-        Mon, 23 Nov 2020 02:37:48 -0800 (PST)
-Received: from usa.arm.com (unknown [10.57.54.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CACF43F70D;
-        Mon, 23 Nov 2020 02:37:46 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     ALKML <linux-arm-kernel@lists.infradead.org>,
-        Mark Brown <broonie@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [GIT PULL] firmware: arm_scmi: SCMI voltage domain support for v5.11
-Date:   Mon, 23 Nov 2020 10:37:41 +0000
-Message-Id: <20201123103741.19148-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728654AbgKWKi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:38:29 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3872 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727444AbgKWKi3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:38:29 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbb91270000>; Mon, 23 Nov 2020 02:38:31 -0800
+Received: from [10.26.72.66] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov
+ 2020 10:38:26 +0000
+Subject: Re: [PATCH v5 0/6] Tegra210 audio graph card
+To:     Sameer Pujar <spujar@nvidia.com>, <broonie@kernel.org>,
+        <robh+dt@kernel.org>, <thierry.reding@gmail.com>
+CC:     <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>
+References: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <bbf5c039-faab-618b-7b3c-8991bb75d4a0@nvidia.com>
+Date:   Mon, 23 Nov 2020 10:38:24 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606127911; bh=rja4mFvPtVCeH4UELYSy3t07Yo+UPDvUCyzzCQixKww=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=X1usOJU0UqprKtf9SA4DFxYJrh+6K9X8SYt/mat5kG4dSMka4gKP49pcyT+p8VgMd
+         C+RHSlT9DCECut9i25KXabM0IxvutDNtWbugyunFjn0LqQlhgoJXa+ta3UkfzVm4XO
+         XEF+/6ueRwEjEcEWdzXXOOej6W5Qgd80k5W+UWwjNrurK3OhrJJ+i87dEmtGhT7pfr
+         E1wGOeL9KWUjTZkz1tKSi1j9C8Eyvq1PfaSQ83Ks9XxpXcJ52QNV0EZAf5zjx8aI5D
+         ntYZjtEFwhHiXVgiCJxXImRFz5M4DgFwlR6ST45KR+i02u0QRE2bwMHBRBHVs2/CQf
+         KiJk20Zt8/N0Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
 
-As discussed here is the pull request for SCMI firmware part for regulator
-support. Please pull !
+On 11/11/2020 18:34, Sameer Pujar wrote:
+> This series adds audio graph based sound card support for Tegra210
+> platforms like Jetson-TX1 an Jetson-Nano. The following preparatory
+> audio graph enhancement series is already merged.
+>  * https://patchwork.kernel.org/project/alsa-devel/list/?series=375629&state=*
+> 
+> Following are the summary of changes:
+>  * Add graph/audio-graph based schemas or schema updates for Tegra210
+>    component and machine drivers.
+>  * Add Tegra audio graph machine driver.
+>  * Add required DT support for Jetson-TX1/Nano.
+> 
+> This work is based on earlier discussion of DPCM usage for Tegra
+> and simple card driver updates.
+>  * https://lkml.org/lkml/2020/4/30/519
+>  * https://lkml.org/lkml/2020/6/27/4
+> 
+> This series has dependency over following graph and audio-graph series.
+>  * http://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201102203656.220187-2-robh@kernel.org/
+>  * https://patchwork.kernel.org/project/alsa-devel/list/?series=382009&state=*
 
-Regards,
-Sudeep
 
--->8
+Only one minor comment, but this looks good to me. Otherwise for the
+series ...
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
 
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
+Cheers
+Jon
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git tags/scmi-voltage-5.11
-
-for you to fetch changes up to ec88381936954a146f260a21bf8466ca07e5c71e:
-
-  firmware: arm_scmi: Add support to enumerated SCMI voltage domain device (2020-11-20 14:55:48 +0000)
-
-----------------------------------------------------------------
-SCMI voltage domain management protocol support for v5.11
-
-SCMI v3.0 voltage domain protocol support to discover the voltage levels
-supported by the domains and to set/get the configuration and voltage
-level of any given domain.
-
-----------------------------------------------------------------
-Cristian Marussi (3):
-      dt-bindings: arm: Add support for SCMI Regulators
-      firmware: arm_scmi: Add voltage domain management protocol support
-      firmware: arm_scmi: Add support to enumerated SCMI voltage domain device
-
- Documentation/devicetree/bindings/arm/arm,scmi.txt |  43 +++
- drivers/firmware/arm_scmi/Makefile                 |   2 +-
- drivers/firmware/arm_scmi/common.h                 |   1 +
- drivers/firmware/arm_scmi/driver.c                 |   3 +
- drivers/firmware/arm_scmi/voltage.c                | 380 +++++++++++++++++++++
- include/linux/scmi_protocol.h                      |  64 ++++
- 6 files changed, 492 insertions(+), 1 deletion(-)
- create mode 100644 drivers/firmware/arm_scmi/voltage.c
+-- 
+nvpublic
