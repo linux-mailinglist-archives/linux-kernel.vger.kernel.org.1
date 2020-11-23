@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF962C0521
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F842C0525
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgKWL7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 06:59:02 -0500
-Received: from goliath.siemens.de ([192.35.17.28]:50941 "EHLO
-        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgKWL7B (ORCPT
+        id S1729304AbgKWL7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:59:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729298AbgKWL7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:59:01 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 0ANBwmC2002773
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Nov 2020 12:58:48 +0100
-Received: from [167.87.38.29] ([167.87.38.29])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0ANBwkeJ030438;
-        Mon, 23 Nov 2020 12:58:46 +0100
-Subject: Re: [PATCH v5 0/7] gpio: exar: refactor the driver
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Laight <David.Laight@aculab.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20201116104242.19907-1-brgl@bgdev.pl>
- <CAMRc=Mdkr+65Nu7ddjtMHTbedpNf22w1bE97vipKSdXBYm8=fw@mail.gmail.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <86bf5fda-eeb5-5cb2-901f-a887af7584f6@siemens.com>
-Date:   Mon, 23 Nov 2020 12:58:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 23 Nov 2020 06:59:14 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CDCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:59:13 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cfm0D1R5lz9sRR;
+        Mon, 23 Nov 2020 22:59:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606132749;
+        bh=C/02EMvW4o+WQSdThZBP7+ma8iXHpAXlIFsLEtjz06Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mfrjUAIFLQRg6Aj5Z9BjAisGK9DzYOlvkvNXTKvyOZIT0yLFqdYk5Z9aw8q3UZnvS
+         uHLaFp++oe0OxVCaMl9svrAyB6Vd+KB21yY1fIgizLP6A7OqkkE5PAurJQNXjbznOr
+         +yrxORNwjhPut7r4kqQKKfGFxAj2TqtRskwpAlHZkIZYuTsmJlVUm616c6A691W1DH
+         b8RQl06XPPR6LJtdiUSUZtn2E0Fo9nRLUWQ9egRkJPi8ibdpNyH1sX7cP1Bl8POpue
+         67/2aev2YLPgkJNb3kpaWWqKTrTLSiSb9P9jCtKhqQoebGVhUhMSNiFYBEJIxyRMUR
+         qBzO46/N/qqMQ==
+Date:   Mon, 23 Nov 2020 22:59:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: at91 git tree in linux-next
+Message-ID: <20201123225906.7cd6d14e@canb.auug.org.au>
+In-Reply-To: <CAMuHMdUkQqJ_+8xy3q7tjCXCU4cZsnT7EOHtfTDroc4Ke0yPrw@mail.gmail.com>
+References: <551A9FAC.2010203@atmel.com>
+        <f15a82c8-5960-34ea-e7fc-dffdfdd369c6@microchip.com>
+        <20180823093045.00e751b0@canb.auug.org.au>
+        <CAMuHMdUkQqJ_+8xy3q7tjCXCU4cZsnT7EOHtfTDroc4Ke0yPrw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMRc=Mdkr+65Nu7ddjtMHTbedpNf22w1bE97vipKSdXBYm8=fw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/DvmE2Rgt16brmASEAq52yA+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.20 12:38, Bartosz Golaszewski wrote:
-> On Mon, Nov 16, 2020 at 11:42 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>
->> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>
->> I just wanted to convert the driver to using simpler IDA API but ended up
->> quickly converting it to using regmap. Unfortunately I don't have the HW
->> to test it so marking the patches that introduce functional change as RFT
->> and Cc'ing the original author.
->>
-> 
-> Hi Jan!
-> 
-> Could you give this last version a final spin before I merge it?
-> 
+--Sig_/DvmE2Rgt16brmASEAq52yA+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[   14.250117] exar_serial 0000:02:00.0: enabling device (0000 -> 0002)
-[   14.336622] 0000:02:00.0: ttyS2 at MMIO 0x90000000 (irq = 44, base_baud = 7812500) is a XR17V35X
-[   14.391588] 0000:02:00.0: ttyS3 at MMIO 0x90000400 (irq = 44, base_baud = 7812500) is a XR17V35X
-[   19.250510] gpio_exar: probe of gpio_exar.1.auto failed with error -22
+Hi Geert,
 
-That's "new"...
+On Mon, 23 Nov 2020 11:44:17 +0100 Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+>
+> How is this working?
+>=20
+> From next-20201123:
+>=20
+>     Merging at91/at91-next (0698efbb33ef Merge branches 'at91-soc',
+> 'at91-dt' and 'at91-defconfig' into at91-next)
+>=20
+> which is indeed a recent commit, while Next/Trees has the wrong repo
+> (linux-at91.git instead of linux.git):
 
-Jan
+That is what happens when you store the (supposedly) same information
+in 2 places :-(  I have fixed the incorrect one.
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+Thanks for letting me know.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/DvmE2Rgt16brmASEAq52yA+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+7pAoACgkQAVBC80lX
+0GyJRAf/V/bhAYt+kbgrjswsfnSdam/Is8x0+KRy/IxG4qUvvsjGMM1sZRiC8cLj
+EkjTiQH0bEXNHxq2R6vHVidcmZ/z6Gez08Ra8bRmdhGu7CFraRB43LU6yRYd+UWY
+7SnDhWQP3jE1qMK1s2X/2cKJkmC7PW4e4ciG4TUjagyRexKb4wR+80P+jHZG/xqx
+by//TMGl9buOy0X7woWmmc/onM3hZBJt6JQ8A++DyP7gSCw0CsDpfxxqqyF3+WGd
+99EIZtXI5+qq+E8COHiQx1dI37ZZjlYAhE4mWejr/9lRjUOIJ0jzadwobX9FTghD
+lUMaFwNVAbcreWnNA8iV0e8s/CNe2w==
+=2oEC
+-----END PGP SIGNATURE-----
+
+--Sig_/DvmE2Rgt16brmASEAq52yA+--
