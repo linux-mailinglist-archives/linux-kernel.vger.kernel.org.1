@@ -2,94 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D4C2C0E63
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77FE2C0E66
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389320AbgKWPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:03:53 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:33888 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729244AbgKWPDw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:03:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606143832; x=1637679832;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=/qmxyOtIe7horPzTCQwNVyF3JoEv2WeaHlm/AqMmYtk=;
-  b=2GVy7oG3TkGc/1ICT5j+/+sP7GKWpcAMjWul4ffFGnClzMOnJgWglEpA
-   htd/K59BbEUt+RU/7IWlIfVqU4LrqGX/i+SirRZlZb25DWJtywO1tSHHc
-   FlNPcYCnAtXpWTennuxcCevSQuvqf0XCdvza+QMvOmt0nBRzJsBD8Xut9
-   sLChNheR/iqX+2Pn7rAIMjCSolCR9Bfr6RC/B3A59O4Bh7OYlewFDF1Uo
-   W1bmtTlNhn9uJt8JInvxj/8GJNmaMHFRpIgsW2tm3ZMufQEfKBbCKE9AW
-   L1Thx9pvxSVhm50b1T0Sc0U/rNfF02blLsZZ6ARxOKqeclrcU0WrLdlk5
-   w==;
-IronPort-SDR: mBBlxo1O2RmDMvGsTK1573NN3Xrk+HfBzhDpcJ13b/dGRCtFTvb0bIJUiTpNcrERK0qqig8p4S
- A3LCoI9LogZgI7K3HlabJbNocpWQS1XLxHJ9TKk0YxWmyRIbZ7lcenpP+rl90jofVFElzcWG1N
- QB13zFrOQH7+hInM6jGcYoQ4jBkewFVIsrNbnOsu+GcwRLRGdrq1+jKpC+KBLlMQOGjiqoYY1o
- 0r0MVniKbSld4hci9caTgJX98vGcpIpP05jd8yPJYJYfK16UWwG4lT6ZLNTA0boEpCkVlEGJan
- kB4=
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="99503650"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2020 08:03:52 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 23 Nov 2020 08:03:51 -0700
-Received: from soft-dev10.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Mon, 23 Nov 2020 08:03:49 -0700
-References: <20201113145151.68900-1-lars.povlsen@microchip.com> <20201113145151.68900-4-lars.povlsen@microchip.com> <CACRpkdaYHTTXC2gEgtCvDk9N8AqWeUyFSXyWp2aiEd97hk55fA@mail.gmail.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v10 3/3] arm64: dts: sparx5: Add SGPIO devices
-In-Reply-To: <CACRpkdaYHTTXC2gEgtCvDk9N8AqWeUyFSXyWp2aiEd97hk55fA@mail.gmail.com>
-Date:   Mon, 23 Nov 2020 16:03:43 +0100
-Message-ID: <87r1ok3yk0.fsf@microchip.com>
+        id S2389328AbgKWPEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:04:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40654 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729244AbgKWPEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:04:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F119DAF0D;
+        Mon, 23 Nov 2020 15:04:10 +0000 (UTC)
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com,
+        John Hubbard <jhubbard@nvidia.com>
+References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: Pinning ZONE_MOVABLE pages
+Message-ID: <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
+Date:   Mon, 23 Nov 2020 16:04:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++CC John Hubbard
 
-Linus Walleij writes:
+On 11/20/20 9:27 PM, Pavel Tatashin wrote:
+> Recently, I encountered a hang that is happening during memory hot
+> remove operation. It turns out that the hang is caused by pinned user
+> pages in ZONE_MOVABLE.
+> 
+> Kernel expects that all pages in ZONE_MOVABLE can be migrated, but
+> this is not the case if a user applications such as through dpdk
+> libraries pinned them via vfio dma map. Kernel keeps trying to
+> hot-remove them, but refcnt never gets to zero, so we are looping
+> until the hardware watchdog kicks in.
+> 
+> We cannot do dma unmaps before hot-remove, because hot-remove is a
+> slow operation, and we have thousands for network flows handled by
+> dpdk that we just cannot suspend for the duration of hot-remove
+> operation.
+> 
+> The solution is for dpdk to allocate pages from a zone below
+> ZONE_MOVAVLE, i.e. ZONE_NORMAL/ZONE_HIGHMEM, but this is not possible.
+> There is no user interface that we have that allows applications to
+> select what zone the memory should come from.
+> 
+> I've spoken with Stephen Hemminger, and he said that DPDK is moving in
+> the direction of using transparent huge pages instead of HugeTLBs,
+> which means that we need to allow at least anonymous, and anonymous
+> transparent huge pages to come from non-movable zones on demand.
+> 
+> Here is what I am proposing:
+> 1. Add a new flag that is passed through pin_user_pages_* down to
+> fault handlers, and allow the fault handler to allocate from a
+> non-movable zone.
+> 
+> Sample function stacks through which this info needs to be passed is this:
+> 
+> pin_user_pages_remote(gup_flags)
+>   __get_user_pages_remote(gup_flags)
+>    __gup_longterm_locked(gup_flags)
+>     __get_user_pages_locked(gup_flags)
+>      __get_user_pages(gup_flags)
+>       faultin_page(gup_flags)
+>        Convert gup_flags into fault_flags
+>        handle_mm_fault(fault_flags)
+> 
+>  From handle_mm_fault(), the stack diverges into various faults,
+> examples include:
+> 
+> Transparent Huge Page
+> handle_mm_fault(fault_flags)
+> __handle_mm_fault(fault_flags)
+> Create: struct vm_fault vmf, use fault_flags to specify correct gfp_mask
+> create_huge_pmd(vmf);
+> do_huge_pmd_anonymous_page(vmf);
+> mm_get_huge_zero_page(vma->vm_mm); -> flag is lost, so flag from
+> vmf.gfp_mask should be passed as well.
+> 
+> There are several other similar paths in a transparent huge page, also
+> there is a named path where allocation is based on filesystems, and
+> the flag should be honored there as well, but it does not have to be
+> added at the same time.
+> 
+> Regular Pages
+> handle_mm_fault(fault_flags)
+> __handle_mm_fault(fault_flags)
+> Create: struct vm_fault vmf, use fault_flags to specify correct gfp_mask
+> handle_pte_fault(vmf)
+> do_anonymous_page(vmf);
+> page = alloc_zeroed_user_highpage_movable(vma, vmf->address); ->
+> replace change this call according to gfp_mask.
+> 
+> The above only take care of the case if user application faults on the
+> page during pinning time, but there are also cases where pages already
+> exist.
 
-> On Fri, Nov 13, 2020 at 3:52 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
->> This adds SGPIO devices for the Sparx5 SoC and configures it for the
->> applicable reference boards.
->>
->> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Please funnel this patch through the SoC tree for this machine.
+Makes sense, as this means no userspace change.
 
-ACK!
+> 2. Add an internal move_pages_zone() similar to move_pages() syscall
+> but instead of migrating to a different NUMA node, migrate pages from
+> ZONE_MOVABLE to another zone.
+> Call move_pages_zone() on demand prior to pinning pages from
+> vfio_pin_map_dma() for instance.
 
-Thanks,
+As others already said, migrating away before the longterm pin should be 
+the solution. IIRC it was one of the goals of long term pinning api 
+proposed long time ago by Peter Ziljstra I think? The implementation 
+that was merged relatively recently doesn't do that (yet?) for all 
+movable pages, just CMA, but it could.
 
----Lars
+> 3. Perhaps, it also makes sense to add madvise() flag, to allocate
+> pages from non-movable zone. When a user application knows that it
+> will do DMA mapping, and pin pages for a long time, the memory that it
+> allocates should never be migrated or hot-removed, so make sure that
+> it comes from the appropriate place.
+> The benefit of adding madvise() flag is that we won't have to deal
+> with slow page migration during pin time, but the disadvantage is that
+> we would need to change the user interface.
 
->
-> Yours,
-> Linus Walleij
+It's best if we avoid involving userspace until it's shown that's it's 
+insufficient.
 
+> Before I start working on the above approaches, I would like to get an
+> opinion from the community on an appropriate path forward for this
+> problem. If what I described sounds reasonable, or if there are other
+> ideas on how to address the problem that I am seeing.
+> 
+> Thank you,
+> Pasha
+> 
 
--- 
-Lars Povlsen,
-Microchip
