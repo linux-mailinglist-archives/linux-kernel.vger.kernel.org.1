@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C142C0BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C8F2C0BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389243AbgKWN3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:29:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40532 "EHLO mail.kernel.org"
+        id S2389237AbgKWN3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:29:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729814AbgKWM35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:29:57 -0500
+        id S1730688AbgKWMaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDEFA20781;
-        Mon, 23 Nov 2020 12:29:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B15C72076E;
+        Mon, 23 Nov 2020 12:30:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134595;
-        bh=rAcPQE4Pyb89krisL2VuBtbaVMFIUWmxdljlRMhVbjY=;
+        s=korg; t=1606134606;
+        bh=ypVaa8GIVzheOHMEkSpiqcP2KUC1bK82v7aPamTlqoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xUhDfMeDzvmHUNC2Zf/o3B+rTUAfGyW2WEqQZ4eCJIHK08bzhlD9KRS6bcMc/hUJ0
-         m3M4bXG+GRMNjTZemFiwoofmkX8or0GOKfK7TUZsMKG30cE52UNL+NsN0B8VsZnMFT
-         5INcWF/OF3Fmya6eycq6sLszfX4/nySPBrI+y7vA=
+        b=UbzVm/lE1RbbtB7MppSdpv3R7lM1IX7BUsVWWPzEvwwO/SeP1PLoNMarvInTnhVUk
+         ABGCJi7Uiv6igms9gCtAH8fbXWF/pCGHoFumjrLlfvnsvrwHoyEVgUmCBmPXN5UKG/
+         E4e1vlSkB3vUdFVTEkccoVUqLovC9xcie5t2FM2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        =?UTF-8?q?Michal=20Kalderon=C2=A0?= <michal.kalderon@marvell.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 15/91] net/mlx4_core: Fix init_hca fields offset
-Date:   Mon, 23 Nov 2020 13:21:35 +0100
-Message-Id: <20201123121810.045221651@linuxfoundation.org>
+Subject: [PATCH 4.19 19/91] qed: fix error return code in qed_iwarp_ll2_start()
+Date:   Mon, 23 Nov 2020 13:21:39 +0100
+Message-Id: <20201123121810.240509992@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
 References: <20201123121809.285416732@linuxfoundation.org>
@@ -45,69 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 6d9c8d15af0ef20a66a0b432cac0d08319920602 ]
+[ Upstream commit cb47d16ea21045c66eebbf5ed792e74a8537e27a ]
 
-Slave function read the following capabilities from the wrong offset:
-1. log_mc_entry_sz
-2. fs_log_entry_sz
-3. log_mc_hash_sz
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fix that by adjusting these capabilities offset to match firmware
-layout.
-
-Due to the wrong offset read, the following issues might occur:
-1+2. Negative value reported at max_mcast_qp_attach.
-3. Driver to init FW with multicast hash size of zero.
-
-Fixes: a40ded604365 ("net/mlx4_core: Add masking for a few queries on HCA caps")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Eran Ben Elisha <eranbe@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Link: https://lore.kernel.org/r/20201118081922.553-1-tariqt@nvidia.com
+Fixes: 469981b17a4f ("qed: Add unaligned and packed packet processing")
+Fixes: fcb39f6c10b2 ("qed: Add mpa buffer descriptors for storing and processing mpa fpdus")
+Fixes: 1e28eaad07ea ("qed: Add iWARP support for fpdu spanned over more than two tcp packets")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
+Link: https://lore.kernel.org/r/1605532033-27373-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/fw.c |    6 +++---
- drivers/net/ethernet/mellanox/mlx4/fw.h |    4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_iwarp.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx4/fw.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
-@@ -1861,8 +1861,8 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev,
- #define	 INIT_HCA_LOG_RD_OFFSET		 (INIT_HCA_QPC_OFFSET + 0x77)
- #define INIT_HCA_MCAST_OFFSET		 0x0c0
- #define	 INIT_HCA_MC_BASE_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x00)
--#define	 INIT_HCA_LOG_MC_ENTRY_SZ_OFFSET (INIT_HCA_MCAST_OFFSET + 0x12)
--#define	 INIT_HCA_LOG_MC_HASH_SZ_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x16)
-+#define	 INIT_HCA_LOG_MC_ENTRY_SZ_OFFSET (INIT_HCA_MCAST_OFFSET + 0x13)
-+#define	 INIT_HCA_LOG_MC_HASH_SZ_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x17)
- #define  INIT_HCA_UC_STEERING_OFFSET	 (INIT_HCA_MCAST_OFFSET + 0x18)
- #define	 INIT_HCA_LOG_MC_TABLE_SZ_OFFSET (INIT_HCA_MCAST_OFFSET + 0x1b)
- #define  INIT_HCA_DEVICE_MANAGED_FLOW_STEERING_EN	0x6
-@@ -1870,7 +1870,7 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev,
- #define  INIT_HCA_DRIVER_VERSION_SZ       0x40
- #define  INIT_HCA_FS_PARAM_OFFSET         0x1d0
- #define  INIT_HCA_FS_BASE_OFFSET          (INIT_HCA_FS_PARAM_OFFSET + 0x00)
--#define  INIT_HCA_FS_LOG_ENTRY_SZ_OFFSET  (INIT_HCA_FS_PARAM_OFFSET + 0x12)
-+#define  INIT_HCA_FS_LOG_ENTRY_SZ_OFFSET  (INIT_HCA_FS_PARAM_OFFSET + 0x13)
- #define  INIT_HCA_FS_A0_OFFSET		  (INIT_HCA_FS_PARAM_OFFSET + 0x18)
- #define  INIT_HCA_FS_LOG_TABLE_SZ_OFFSET  (INIT_HCA_FS_PARAM_OFFSET + 0x1b)
- #define  INIT_HCA_FS_ETH_BITS_OFFSET      (INIT_HCA_FS_PARAM_OFFSET + 0x21)
---- a/drivers/net/ethernet/mellanox/mlx4/fw.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.h
-@@ -182,8 +182,8 @@ struct mlx4_init_hca_param {
- 	u64 cmpt_base;
- 	u64 mtt_base;
- 	u64 global_caps;
--	u16 log_mc_entry_sz;
--	u16 log_mc_hash_sz;
-+	u8 log_mc_entry_sz;
-+	u8 log_mc_hash_sz;
- 	u16 hca_core_clock; /* Internal Clock Frequency (in MHz) */
- 	u8  log_num_qps;
- 	u8  log_num_srqs;
+--- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
+@@ -2737,14 +2737,18 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_h
+ 	iwarp_info->partial_fpdus = kcalloc((u16)p_hwfn->p_rdma_info->num_qps,
+ 					    sizeof(*iwarp_info->partial_fpdus),
+ 					    GFP_KERNEL);
+-	if (!iwarp_info->partial_fpdus)
++	if (!iwarp_info->partial_fpdus) {
++		rc = -ENOMEM;
+ 		goto err;
++	}
+ 
+ 	iwarp_info->max_num_partial_fpdus = (u16)p_hwfn->p_rdma_info->num_qps;
+ 
+ 	iwarp_info->mpa_intermediate_buf = kzalloc(buff_size, GFP_KERNEL);
+-	if (!iwarp_info->mpa_intermediate_buf)
++	if (!iwarp_info->mpa_intermediate_buf) {
++		rc = -ENOMEM;
+ 		goto err;
++	}
+ 
+ 	/* The mpa_bufs array serves for pending RX packets received on the
+ 	 * mpa ll2 that don't have place on the tx ring and require later
+@@ -2754,8 +2758,10 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_h
+ 	iwarp_info->mpa_bufs = kcalloc(data.input.rx_num_desc,
+ 				       sizeof(*iwarp_info->mpa_bufs),
+ 				       GFP_KERNEL);
+-	if (!iwarp_info->mpa_bufs)
++	if (!iwarp_info->mpa_bufs) {
++		rc = -ENOMEM;
+ 		goto err;
++	}
+ 
+ 	INIT_LIST_HEAD(&iwarp_info->mpa_buf_pending_list);
+ 	INIT_LIST_HEAD(&iwarp_info->mpa_buf_list);
 
 
