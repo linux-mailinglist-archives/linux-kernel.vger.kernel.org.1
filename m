@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C912C001E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCFE2C0022
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727388AbgKWGcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 01:32:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57194 "EHLO
+        id S1727459AbgKWGdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 01:33:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKWGcN (ORCPT
+        with ESMTP id S1725287AbgKWGdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 01:32:13 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F6AC061A4C
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:32:13 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a65so16182188wme.1
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:32:13 -0800 (PST)
+        Mon, 23 Nov 2020 01:33:13 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D317C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:33:11 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 64so4019652wra.11
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:33:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=cvoVqwP9FE52rvFYms7Y+WcvtyD/16/j90QsV7N1aWk=;
-        b=xbRF9fS5clfnIPpqfycFtmWKqkeQgkcTHmz41tiQsJghMhZkvIdgBAPvw0T3BXSA4I
-         wV3Q/ntGbWkU8zpZ9heYLLMcLsHqFKKmSqoBnzkvBSDGoNJA91LlKYGzEP25u3NQF3QB
-         AivQoi1x7qkh9O1LRv+4sWnBn4SvV5o/8m90JmW7oA9ZLgw8PTzUp2epvQbGiBciQtVq
-         1nBVi64/QS2RAHBg5pyr15f/p7i1uqIms5dwWdfDdU25n9vNbp299oBH2IqkkTO0cDx1
-         UJC3P8LeWo+IqZuJLsQ8UpHhv+M2yxn7CD9mgGWviZO1w7WI2U/islls/qAJUAon2DrE
-         J/9w==
+        bh=bA6PxX8QLzsGPO0mHBN+3Dtvap+C8KIb1Z8Udw0nO2Q=;
+        b=dWLZqofKsdhEgABif3Bioetz8qih1qcB80fqacMhJo3qbRlmgvkSjpf6KfOnapZooC
+         XkowLImJFECW49B/96Na1+iiQILiX339zOB9wPpVpQDC5DBYTsboBByQ1HfKYJg+o8LD
+         CkaxrP/J0mgb7TYTF9Aan+MwAfRu68XJ9cQoEHzUwvGpVq5MyCkZyM9MgstYMeZifXda
+         +PdO08Q3Q2Qvy82Z4zlD1IjzS2e3VdNmCF+McBtr1esqW5YHW7rBOO3khdGd5lbZvwo7
+         pgkiLIGXoUHWGa/z6YUu2svO38+07/OlvlO0gIhuv9cmtUJgH/moRnI83yALB50jIUGw
+         Ufiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cvoVqwP9FE52rvFYms7Y+WcvtyD/16/j90QsV7N1aWk=;
-        b=JAUgRxQRgTslthrAHgt7FrTwEK+mRA246F3LKVkj58CceKwKHsCXjcqsJ4moePqDIG
-         HvLmmtOhrB6zL5thzi0MUwV3Cag9AEmC13cpeI5ZyfJ3vpKxoVuc6U7CYrifAqwNJONG
-         FwX+RyI96arUML5LOVmwi95jR1X5rIi7Mfa2fu4HkTNFBjOuSW24s39NuFYSEdvnskXg
-         fGuufe42UuMxE/c8UPqk8O+gTkX3zsseRmj6ryW+VUJZGc/VzY02K1Eaq9Xiyn1635Xk
-         7fe+FI3hzi/I6230yLO7QD6OQt5IzfI8KfFJWWP+mFoBCrS0MJ953n6KbHnSjGfd7UKC
-         R+vA==
-X-Gm-Message-State: AOAM531I7QlvFvjQJRqmELijnGQtPIiSw6YwtTPo+N9V98OVAlgwVxaY
-        5t0GEGn24ocH8bJLx7h6w+jGLQ==
-X-Google-Smtp-Source: ABdhPJwTKWks2V4u6Zzj4GGmt0mUu9p9zEiVEx7S7M5Igkq/WpJwqdS3vmhU4wIkWy4oSAnhkJUiDg==
-X-Received: by 2002:a1c:9901:: with SMTP id b1mr21807743wme.18.1606113131688;
-        Sun, 22 Nov 2020 22:32:11 -0800 (PST)
+        bh=bA6PxX8QLzsGPO0mHBN+3Dtvap+C8KIb1Z8Udw0nO2Q=;
+        b=OLmEvaZqV+gV1V5/nZ2ebaQpZqkYTjnLdUVt1/2IWGy4H2nSgiwI5GuDmuMOP7L1qd
+         VqRCOUP8dPK/RSLaMUfuLJazUEzTa2BVzb5mH//roPrJ2xgQNX2wyNflyL6rJVQMhq09
+         ScikHNLpdsD6n3oSwu3SMVmdxCHR3iezHspUqycteXqC0FAuxyVn1A0bjmDPluAlPcJL
+         63ivoDGaa1V4dVhv/J/S+i9QbaQ7oVmGoj8RbN60rN944DIEGuXVI7WnqIqeGeaN3OAU
+         65yaIoTRwHG0fglx5ro/8X+AqRE3NEzaf/3YJx5rm3+GWVwqDDFONxJdpUHDzQAiReE5
+         EDBw==
+X-Gm-Message-State: AOAM5316J+Md+srMj4puJcw3rNnqn+8q9fgyFpofvsQwMc7PYuQsl4s+
+        72kzTkR/bxVGb6BQoVmJhFc+yw==
+X-Google-Smtp-Source: ABdhPJxj3l+5ygzvJnGvao/pLWVRCcUon/irO3mlsfmWiGjI66Lp7ac+52xe4O+T97k2/Htaikrpsg==
+X-Received: by 2002:adf:f24a:: with SMTP id b10mr29509390wrp.352.1606113190342;
+        Sun, 22 Nov 2020 22:33:10 -0800 (PST)
 Received: from MacBook-Pro.local ([212.45.64.13])
-        by smtp.googlemail.com with ESMTPSA id a144sm15756349wmd.47.2020.11.22.22.32.09
+        by smtp.googlemail.com with ESMTPSA id l23sm11165881wmh.40.2020.11.22.22.33.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Nov 2020 22:32:10 -0800 (PST)
-Subject: Re: [PATCH v10 03/19] memory: tegra30: Support interconnect framework
+        Sun, 22 Nov 2020 22:33:09 -0800 (PST)
+Subject: Re: [PATCH v10 06/19] memory: tegra124: Support interconnect
+ framework
 To:     Dmitry Osipenko <digetx@gmail.com>,
         Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -67,12 +68,12 @@ To:     Dmitry Osipenko <digetx@gmail.com>,
 Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 References: <20201123002723.28463-1-digetx@gmail.com>
- <20201123002723.28463-4-digetx@gmail.com>
+ <20201123002723.28463-7-digetx@gmail.com>
 From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <109bc617-f7d9-8635-3db1-3f4869b32f4d@linaro.org>
-Date:   Mon, 23 Nov 2020 08:32:09 +0200
+Message-ID: <8871a6d3-23da-01e2-18b6-b0dcd4df1a54@linaro.org>
+Date:   Mon, 23 Nov 2020 08:33:08 +0200
 MIME-Version: 1.0
-In-Reply-To: <20201123002723.28463-4-digetx@gmail.com>
+In-Reply-To: <20201123002723.28463-7-digetx@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -80,27 +81,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
 On 23.11.20 2:27, Dmitry Osipenko wrote:
 > Now Internal and External memory controllers are memory interconnection
 > providers. This allows us to use interconnect API for tuning of memory
-> configuration. EMC driver now supports OPPs and DVFS. MC driver now
-> supports tuning of memory arbitration latency, which needs to be done
-> for ISO memory clients, like a Display client for example.
+> configuration. EMC driver now supports OPPs and DVFS.
 > 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
 > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
 Acked-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-Thank you for the continuous work on this patchset!
-
-BR,
+Thanks,
 Georgi
 
 > ---
->   drivers/memory/tegra/Kconfig       |   1 +
->   drivers/memory/tegra/tegra30-emc.c | 344 +++++++++++++++++++++++++++--
->   drivers/memory/tegra/tegra30.c     | 173 ++++++++++++++-
->   3 files changed, 496 insertions(+), 22 deletions(-)
+>   drivers/memory/tegra/Kconfig        |   1 +
+>   drivers/memory/tegra/tegra124-emc.c | 320 +++++++++++++++++++++++++++-
+>   drivers/memory/tegra/tegra124.c     |  82 ++++++-
+>   3 files changed, 391 insertions(+), 12 deletions(-)
