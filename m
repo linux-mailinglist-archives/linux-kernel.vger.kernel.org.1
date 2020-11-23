@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550AE2C09F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225E72C0812
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730926AbgKWMpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:45:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56952 "EHLO mail.kernel.org"
+        id S1730952AbgKWMpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:45:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733124AbgKWMnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:43:45 -0500
+        id S1732615AbgKWMnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:43:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02CCA2078E;
-        Mon, 23 Nov 2020 12:43:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 590632078E;
+        Mon, 23 Nov 2020 12:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135424;
-        bh=rEJjTXKFIbJw1crVMURY0MUHunOV/OSzLjtn+W4dNSo=;
+        s=korg; t=1606135433;
+        bh=w7VnWskPvaV6tzVCHJZWzM2nqZnQFY5pXxE3yIS/zU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gH791+o2UK9F+LxZkNIiV/4JKOOzB1osMcEUb56xIIMeEX76/djkCfOMbE3MGqvC9
-         18j1itAnV7qcwxzEr++tQFAZhnOKZcDn2Gpbw0rbOxvGt6T4D4qGfILbtz38ASGU2A
-         04rzK5FJEB8OVurjj7DC8R1lusi5r3Ba2iTiTgIk=
+        b=svaqK08sPGUdF27y07K3kRJgV9TBZwwstjQampC+HT0MBGfRVZXCjABH0tNivMtWI
+         mX49Euf8ijm/yurpBMzzI53ygCyB0biyCt4W8VJMjeOuNHgOGyMYm803fmp19Ljk4Q
+         mNPMVxfg8HgsoWS0hMZGSKk6yax59iZ4SOrwq7Ho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 064/252] arm64: psci: Avoid printing in cpu_psci_cpu_die()
-Date:   Mon, 23 Nov 2020 13:20:14 +0100
-Message-Id: <20201123121838.678632567@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
+        Christopher Obbard <chris.obbard@collabora.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH 5.9 066/252] um: Call pgtable_pmd_page_dtor() in __pmd_free_tlb()
+Date:   Mon, 23 Nov 2020 13:20:16 +0100
+Message-Id: <20201123121838.775181156@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -44,48 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Richard Weinberger <richard@nod.at>
 
-[ Upstream commit 891deb87585017d526b67b59c15d38755b900fea ]
+[ Upstream commit 9a5085b3fad5d5d6019a3d160cdd70357d35c8b1 ]
 
-cpu_psci_cpu_die() is called in the context of the dying CPU, which
-will no longer be online or tracked by RCU. It is therefore not generally
-safe to call printk() if the PSCI "cpu off" request fails, so remove the
-pr_crit() invocation.
+Commit b2b29d6d0119 ("mm: account PMD tables like PTE tables") uncovered
+a bug in uml, we forgot to call the destructor.
+While we are here, give x a sane name.
 
-Cc: Qian Cai <cai@redhat.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20201106103602.9849-2-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Reported-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Co-developed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Tested-by: Christopher Obbard <chris.obbard@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/psci.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/um/include/asm/pgalloc.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
-index 43ae4e0c968f6..62d2bda7adb80 100644
---- a/arch/arm64/kernel/psci.c
-+++ b/arch/arm64/kernel/psci.c
-@@ -66,7 +66,6 @@ static int cpu_psci_cpu_disable(unsigned int cpu)
+diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
+index 5393e13e07e0a..2bbf28cf3aa92 100644
+--- a/arch/um/include/asm/pgalloc.h
++++ b/arch/um/include/asm/pgalloc.h
+@@ -33,7 +33,13 @@ do {							\
+ } while (0)
  
- static void cpu_psci_cpu_die(unsigned int cpu)
- {
--	int ret;
- 	/*
- 	 * There are no known implementations of PSCI actually using the
- 	 * power state field, pass a sensible default for now.
-@@ -74,9 +73,7 @@ static void cpu_psci_cpu_die(unsigned int cpu)
- 	u32 state = PSCI_POWER_STATE_TYPE_POWER_DOWN <<
- 		    PSCI_0_2_POWER_STATE_TYPE_SHIFT;
+ #ifdef CONFIG_3_LEVEL_PGTABLES
+-#define __pmd_free_tlb(tlb,x, address)   tlb_remove_page((tlb),virt_to_page(x))
++
++#define __pmd_free_tlb(tlb, pmd, address)		\
++do {							\
++	pgtable_pmd_page_dtor(virt_to_page(pmd));	\
++	tlb_remove_page((tlb),virt_to_page(pmd));	\
++} while (0)						\
++
+ #endif
  
--	ret = psci_ops.cpu_off(state);
--
--	pr_crit("unable to power off CPU%u (%d)\n", cpu, ret);
-+	psci_ops.cpu_off(state);
- }
- 
- static int cpu_psci_cpu_kill(unsigned int cpu)
+ #endif
 -- 
 2.27.0
 
