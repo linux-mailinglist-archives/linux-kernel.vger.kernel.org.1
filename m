@@ -2,511 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8F82BFFB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 573742BFFB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgKWFrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 00:47:12 -0500
-Received: from mga12.intel.com ([192.55.52.136]:6907 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726802AbgKWFrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 00:47:12 -0500
-IronPort-SDR: rObQ4AdAraEh25eVTIlI2lXbuyD4iwLG3JyTuCg3RBYw1VFu9WFAjZDuGLoEZXBNdirwigsky2
- xtvHfqXPd1jA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="150967901"
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="y'?h'?c'?scan'208";a="150967901"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 21:47:11 -0800
-IronPort-SDR: YSLZiFJ/xXqUbDqLmZ1IEPRro1vCQ34HT/CmdZvlQ1cV/j4vnpty2JrCdSjFyRIvrQ/5BCBdPg
- vLP1mbkoXY3A==
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="y'?h'?c'?scan'208";a="535983619"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 21:47:11 -0800
-Date:   Sun, 22 Nov 2020 21:46:58 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] perf metric: Don't compute unused events.
-Message-ID: <20201123054658.GF894261@tassilo.jf.intel.com>
-References: <20201121031119.3554769-1-irogers@google.com>
- <20201121031119.3554769-6-irogers@google.com>
+        id S1727916AbgKWFrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 00:47:18 -0500
+Received: from smtprelay0166.hostedemail.com ([216.40.44.166]:51520 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726802AbgKWFrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 00:47:17 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 0BAAB182CF665;
+        Mon, 23 Nov 2020 05:47:16 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2198:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3873:4321:5007:7514:7903:10004:10400:10848:11232:11658:11914:12297:12438:12555:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21221:21451:21627:21740:21774:30030:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: room91_1714d1927363
+X-Filterd-Recvd-Size: 2627
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 23 Nov 2020 05:47:15 +0000 (UTC)
+Message-ID: <afaa79a6d86a4184878595ced3f2de1a92a4058c.camel@perches.com>
+Subject: Re: [PATCH v6] checkpatch: add fix option for LOGICAL_CONTINUATIONS
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 22 Nov 2020 21:47:13 -0800
+In-Reply-To: <20201122125908.22212-1-yashsri421@gmail.com>
+References: <368300090d93ad66f7fb19076d076d4321a04c42.camel@perches.com>
+         <20201122125908.22212-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="jI8keyz6grp/JLjh"
-Content-Disposition: inline
-In-Reply-To: <20201121031119.3554769-6-irogers@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 2020-11-22 at 18:29 +0530, Aditya Srivastava wrote:
+> Currently, checkpatch warns if logical continuations are placed at the
+> start of a line and not at the end of previous line.
+> 
+> E.g., running checkpatch on commit 3485507fc272 ("staging:
+> bcm2835-camera: Reduce length of enum names") reports:
+> 
+> CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
+> previous line
+> +	if (!ret
+> +	    && camera_port ==
+> 
+> Provide a simple fix by inserting logical operator at the last
+> non-comment, non-whitespace char of the previous line and removing from
+> current line, if both the lines are additions(ie start with '+')
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3553,8 +3553,16 @@ sub process {
+>  
+> 
+>  # check for && or || at the start of a line
+>  		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
+> -			CHK("LOGICAL_CONTINUATIONS",
+> -			    "Logical continuations should be on the previous line\n" . $hereprev);
+> +			my $operator = $1;
+> +			if (CHK("LOGICAL_CONTINUATIONS",
+> +				"Logical continuations should be on the previous line\n" . $hereprev) &&
+> +			    $fix && $prevrawline =~ /^\+/) {
+> +				# insert logical operator at last non-comment, non-whitepsace char on previous line
+> +				$prevline =~ /[\s$;]*$/;
+> +				my $line_end = substr($prevrawline, $-[0]);
+> +				$fixed[$fixlinenr - 1] =~ s/\Q$line_end\E/ $operator$line_end/;
+
+This doesn't work when the same leading whitespace and trailing whitespace
+characters exist.
+
+You need to use something like:
+
+				$fixed[$fixlinenr - 1] =~ s/\Q$line_end\E$/ $operator$line_end/;
+
+(note the $ after \E to use EOL)
 
---jI8keyz6grp/JLjh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-> +| expr '|' expr
-> +{
-> +	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
-> +		assert($1.ids == NULL);
-> +		assert($3.ids == NULL);
-> +		$$.val = (long)$1.val | (long)$3.val;
-> +		$$.ids = NULL;
-> +	} else {
-> +		/*
-> +		 * LHS or RHS needs to be computed from event IDs, consequently
-> +		 * so does this expression. Set val to NAN to show that the set
-> +		 * of all values is possible, the events are the union of those
-> +		 * on the LHS and RHS.
-> +		 */
-> +		$$.val = NAN;
-> +		$$.ids = ids__union($1.ids, $3.ids);
-> +	}
-
-
-Sorry, still not a fan of the having this nan code all over. It's just ugly.
-
-If you don't want to do the syntax change to still do it in one pass,
-and given building an AST would be a little complicated.
-
-The original parser I based this code on actually had a byte code version too
-(see attachment). With that one the lazy evaluation could be done on the byte code
-level. Originally I didn't include it because it wasn't really
-needed for perf, but presumably if we want to do more complicated
-things it might be useful. 
-
-In theory it could speed up performance slightly when an expression needs
-to be computed multiple times in interval mode.
-
--Andi
-
---jI8keyz6grp/JLjh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="code.c"
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
-
-#include "code.h"
-#include "sym.h"
-#include "error.h"
-
-static unsigned char *bufs;
-static unsigned bufl;
-static unsigned char *bufp;
-
-static void overflow(void)
-{
-	yyerror("expression exceeds execution buffer");
-}
-
-void put_op(enum ops op)
-{
-	if (bufp >= bufs + bufl)
-		overflow();
-	*bufp++ = op;
-}
-
-void put_long(enum ops op, long arg)
-{
-	if (bufp + sizeof(long) + 1 >= bufs + bufl)
-		overflow();
-	*bufp++ = op;
-	memcpy(bufp, &arg, sizeof(long));
-	bufp += sizeof(long);
-}
-
-void put_ptr(enum ops op, void * arg)
-{
-	if (bufp + sizeof(void *) + 1 >= bufs + bufl)
-		overflow();
-	*bufp++ = op;
-	memcpy(bufp, &arg, sizeof(void *));
-	bufp += sizeof(void *);
-}
-
-void start_def(struct symbol *s)
-{
-	if (!s->undef)
-		yyerror("symbol %s redefined", s->name);
-}
-
-void end_def(struct symbol *s)
-{
-	int len;
-
-	put_op(OP_RET);
-	len = bufp - bufs;
-	s->code = malloc(len);
-	memcpy(s->code, bufs, len);
-	bufp = bufs;
-	s->undef = 0;
-}
-
-static void execerror(char const *msg)
-{
-	fprintf(stderr, "expression execution error: %s\n", msg);
-	exit(1);
-}
-
-#define STACKSIZE 16
-#define CSTACKSIZE 16
-
-long execute(unsigned char *bufp)
-{
-	static void *target[] = {
-		[OP_END]    = &&end,
-		[OP_EVENT]  = NULL,
-		[OP_NUMBER] = &&number,
-		[OP_PLUS]   = &&plus,
-		[OP_MINUS]  = &&minus,
-		[OP_MUL]    = &&mul,
-		[OP_DIV]    = &&div,
-		[OP_MOD]    = &&mod,
-		[OP_NEGATE] = &&negate,
-		[OP_CALL]   = &&call,
-		[OP_RET]    = &&ret,
-		[OP_XOR]    = &&xor,
-		[OP_OR]     = &&or,
-		[OP_NOT]    = &&not,
-		[OP_AND]    = &&and,
-		[OP_SHL]    = &&shl,
-		[OP_SHR]    = &&shr,
-	};
-	long a, b;
-	long stack[STACKSIZE];
-	int stackp = 0;
-	unsigned char *callstack[CSTACKSIZE];
-	int callstackp = 0;
-
-#define getop(x) memcpy(&(x), bufp, sizeof(x)); bufp += sizeof(x)
-#define push(x)  stack[stackp++] = (x)
-#define pop()    stack[--stackp]
-#define next()   goto *target[(int)*bufp++]
-
-	next();
-
-number:
-	if (stackp == STACKSIZE)
-		execerror("expression stack overflow");
-	getop(a);
-	push(a);
-	next();
-
-#define OP(op) \
-	b = pop();	\
-	a = pop();	\
-	push(a op b);	\
-	next()
-
-plus:	OP(+);
-minus:	OP(-);
-mul:	OP(*);
-
-div:
-	b = pop();
-	if (b == 0)
-		execerror("division by 0");
-	a = pop();
-	push(a / b);
-	next();
-
-mod:
-	b = pop();
-	if (b == 0)
-		execerror("modulo by 0");
-	a = pop();
-	push(a % b);
-	next();
-
-negate:
-	a = pop();
-	push(-a);
-	next();
-
-and:	OP(&);
-or:	OP(|);
-xor:	OP(^);
-shl:	OP(<<);
-shr:	OP(>>);
-
-not:
-	a = pop();
-	push(~a);
-	next();
-
-call:   {
-		struct symbol *s;
-		getop(s);
-		if (callstackp == CSTACKSIZE)
-			execerror("call stack overflow");
-		callstack[callstackp++] = bufp;
-		bufp = s->code;
-		next();
-	}
-
-ret:
-	bufp = callstack[--callstackp];
-	next();
-
-end:
-	assert(bufp == bufs || stackp == 1);
-	assert(callstackp == 0);
-	return stack[0];
-}
-
-#undef next
-#undef push
-#undef pop
-#undef getop
-
-void code_init(unsigned char *buf, unsigned len)
-{
-	bufs = buf;
-	bufp = buf;
-	bufl = len;
-}
-
---jI8keyz6grp/JLjh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="code.h"
-
-
-enum ops {
-	OP_END,
-	OP_EVENT,
-	OP_NUMBER,
-	OP_PLUS, OP_MINUS,
-	OP_MUL, OP_DIV, OP_MOD,
-	OP_NEGATE,
-	OP_CALL, OP_RET,
-	OP_OR, OP_AND, OP_XOR, OP_NOT,
-	OP_SHL, OP_SHR,
-};
-
-struct symbol;
-void put_op(enum ops op);
-void put_long(enum ops op, long arg);
-void put_ptr(enum ops op, void *arg);
-void code_init(unsigned char *buf, unsigned bufl);
-void start_def(struct symbol *s);
-void end_def(struct symbol *s);
-long execute(unsigned char *bufp);
-
---jI8keyz6grp/JLjh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="expr.y"
-
-%{
-// notebook:
-// need unsigned operators?
-// don't exit on errors
-// don't require expr after defs
-// text description for defs
-// hash
-#include "sym.h"
-#include "code.h"
-#include "error.h"
-%}
-
-%union {
-	long num;
-	struct symbol *sym;
-}
-
-%token DEF
-%token <num> EVENT // XXX own type
-%token <num> NUMBER
-%token <sym> SYMBOL
-%left '|'
-%left '^'
-%left '&'
-%left SHL SHR
-%left '-' '+'
-%left '*' '/' '%'
-%left NEG NOT
-
-%{
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <errno.h>
-
-static int yylex(void);
-static unsigned char buf[1024];
-static char symname[128];
-%}
-
-%%
-
-def_and_expr: def_list expr ;
-
-def_list: def_list definition
-	|
-	;
-
-definition: DEF SYMBOL { start_def($2); } '=' expr ';' { end_def($2); }
-	;
-
-expr:     EVENT			{ put_long(OP_EVENT, $1); }
-	| NUMBER		{ put_long(OP_NUMBER, $1); }
-	| SYMBOL		{ if ($1->undef) 
-				     yyerror("undefined symbol %s", $1->name);
-				  put_long(OP_CALL, (long)$1); }
-	| expr '|' expr		{ put_op(OP_OR); }
-	| expr '&' expr		{ put_op(OP_AND); }
-	| expr '^' expr		{ put_op(OP_XOR); }
-	| expr SHL expr		{ put_op(OP_SHL); }
-	| expr SHR expr		{ put_op(OP_SHR); }
-	| '~' expr %prec NOT	{ put_op(OP_NOT); }
-	| expr '+' expr		{ put_op(OP_PLUS); }
-	| expr '-' expr		{ put_op(OP_MINUS); }
-	| expr '*' expr		{ put_op(OP_MUL); }
-	| expr '/' expr		{ put_op(OP_DIV); }
-	| expr '%' expr		{ put_op(OP_MOD); }
-	| '-' expr %prec NEG	{ put_op(OP_NEGATE); }
-	| '(' expr ')'
-	;
-
-%%
-
-#define SYMHASHSZ 1
-struct symbol *slist[SYMHASHSZ];
-
-static int symhash(char *s)
-{
-	return 0; // XXX
-}
-
-static struct symbol *getsymbol(char *name)
-{
-	struct symbol *s;
-	int h = symhash(name);
-	for (s = slist[h]; s; s = s->next)
-		if (!strcmp(s->name, name))
-			return s;
-	s = malloc(sizeof(struct symbol));
-	s->name = strdup(name);
-	s->undef = 1;
-	s->next = slist[h];
-	slist[h] = s;
-	return s;
-}
-
-static long number(int c)
-{
-	char buf[32];
-	char *endp;
-	long num;
-	int i;
-
-	i = 0;
-	do {
-		if (i == sizeof buf - 1)
-			yyerror("number too long");
-		buf[i++] = c;
-		c = getchar();
-	} while (isdigit(c) || c == 'x');
-	if (c != EOF)
-		ungetc(c, stdin);
-	buf[i++] = 0;
-	errno = 0;
-	num = strtol(buf, &endp, 0);
-	if (errno == ERANGE)
-		yyerror("number over/underflow");
-	if (endp == buf)
-		yyerror("cannot parse number");
-	return num;
-}
-
-static int symbol(int c)
-{
-	int i = 0;
-
-	do {
-		if (i >= sizeof(symname))
-			yyerror("symbol too long");
-		symname[i++] = c;
-		c = getchar();
-	} while (isalpha(c) || isdigit(c) || c == '.' || c == '_');
-	if (c != EOF)
-		ungetc(c, stdin);
-	symname[i] = 0;
-	if (!strcasecmp(symname, "def"))
-		return DEF;
-	yylval.sym = getsymbol(symname);
-	return SYMBOL;
-}
-
-static int yylex(void)
-{
-	int c, c1;
-
-	for (;;) {
-		c = getchar();
-		if (c == EOF)
-			return 0;
-		switch (c) {
-		case '\n':
-			yylineno++;
-			continue;
-		case ' ': case '\t': case '\r':
-			continue;
-		case '0' ... '9':
-			yylval.num = number(c);
-			return NUMBER;
-		case '+': case '-': case '*': case '/': case '%':
-		case '(': case ')': case '=': case ';':
-		case '^': case '&': case '|': case '~':
-			return c;
-		case '<':
-		case '>':
-			c1 = getchar();
-			if (c1 == c)
-				return c == '<' ? SHL : SHR;
-			break;
-		case 'A'...'Z':
-		case 'a'...'z':
-		case '_':
-			return symbol(c);
-		case '#':
-			do {
-				c = getchar();
-			} while (c != '\n' && c != EOF);
-			continue;
-		}
-
-		yyerror("unknown character '%c'", c);
-	}
-}
-
-int main(void)
-{
-	code_init(buf, sizeof buf);
-	yyparse();
-	put_op(OP_END);
-	printf("%ld\n", execute(buf));
-	return 0;
-}
-
---jI8keyz6grp/JLjh--
