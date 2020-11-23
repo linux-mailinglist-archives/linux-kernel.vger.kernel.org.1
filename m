@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9122C0652
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A5F2C065F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730117AbgKWM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:29:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
+        id S1730184AbgKWMaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730615AbgKWM3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:29:39 -0500
+        id S1729463AbgKWMaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAFDD2076E;
-        Mon, 23 Nov 2020 12:29:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57A4B208C3;
+        Mon, 23 Nov 2020 12:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134577;
-        bh=N+6/AxSR7d/JMxdSO1626shlY+dXERHa/WwSQepdL3g=;
+        s=korg; t=1606134612;
+        bh=oZDLj9l2yBLIC6hTfRyl2HIOnDTy2SLGywKsfrd3pNo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xe5w9bLOqAPgAstjSoCGY/lptkMPzVymt7aZuIVAEmTTOkxQkhdwdOuby7YKonzy/
-         vNFeQ7kGcTw9idQI4VA84U5y9jV5KrFVSPF+GQRmUgi/LO7g47+7vWTzAGy8wb5oYL
-         5LboxIaFoPB/K/fnor7a/8uA1AxId5Sk0XRv80VE=
+        b=yTvpO+w8KOysEnP5Th8ORgBjrerjea5VmtmLS2QcBaOGqaRynYGtNM0fEo5OK/nti
+         mNjZMKzv44tomIT4gDmXZCNRdyD/iAgGVEn84IAKZkNlRLlC3CJzoV08AZlkV0D29X
+         31i8eHLVZk2kF4HrEROeNMnjDXEG1jFX+ndcWxWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chas Williams <3chas3@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 02/91] atm: nicstar: Unmap DMA on send error
-Date:   Mon, 23 Nov 2020 13:21:22 +0100
-Message-Id: <20201123121809.413379627@linuxfoundation.org>
+Subject: [PATCH 4.19 03/91] bnxt_en: read EEPROM A2h address using page 0
+Date:   Mon, 23 Nov 2020 13:21:23 +0100
+Message-Id: <20201123121809.462289617@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
 References: <20201123121809.285416732@linuxfoundation.org>
@@ -43,35 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Edwin Peer <edwin.peer@broadcom.com>
 
-[ Upstream commit 6dceaa9f56e22d0f9b4c4ad2ed9e04e315ce7fe5 ]
+[ Upstream commit 4260330b32b14330cfe427d568ac5f5b29b5be3d ]
 
-The `skb' is mapped for DMA in ns_send() but does not unmap DMA in case
-push_scqe() fails to submit the `skb'. The memory of the `skb' is
-released so only the DMA mapping is leaking.
+The module eeprom address range returned by bnxt_get_module_eeprom()
+should be 256 bytes of A0h address space, the lower half of the A2h
+address space, and page 0 for the upper half of the A2h address space.
 
-Unmap the DMA mapping in case push_scqe() failed.
+Fix the firmware call by passing page_number 0 for the A2h slave address
+space.
 
-Fixes: 864a3ff635fa7 ("atm: [nicstar] remove virt_to_bus() and support 64-bit platforms")
-Cc: Chas Williams <3chas3@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Fixes: 42ee18fe4ca2 ("bnxt_en: Add Support for ETHTOOL_GMODULEINFO and ETHTOOL_GMODULEEEPRO")
+Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/atm/nicstar.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/atm/nicstar.c
-+++ b/drivers/atm/nicstar.c
-@@ -1705,6 +1705,8 @@ static int ns_send(struct atm_vcc *vcc,
- 
- 	if (push_scqe(card, vc, scq, &scqe, skb) != 0) {
- 		atomic_inc(&vcc->stats->tx_err);
-+		dma_unmap_single(&card->pcidev->dev, NS_PRV_DMA(skb), skb->len,
-+				 DMA_TO_DEVICE);
- 		dev_kfree_skb_any(skb);
- 		return -EIO;
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+@@ -2300,7 +2300,7 @@ static int bnxt_get_module_eeprom(struct
+ 	/* Read A2 portion of the EEPROM */
+ 	if (length) {
+ 		start -= ETH_MODULE_SFF_8436_LEN;
+-		rc = bnxt_read_sfp_module_eeprom_info(bp, I2C_DEV_ADDR_A2, 1,
++		rc = bnxt_read_sfp_module_eeprom_info(bp, I2C_DEV_ADDR_A2, 0,
+ 						      start, length, data);
  	}
+ 	return rc;
 
 
