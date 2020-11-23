@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9188B2C17F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF212C17F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbgKWVsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:48:04 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38558 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730108AbgKWVsE (ORCPT
+        id S1731951AbgKWVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:48:34 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:41600 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729522AbgKWVsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:48:04 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606168081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w1uCKrC/JVnFefj87bZYqeaIDv0yyNdd4LhM7mGuDJM=;
-        b=YcNnH80Owhk67icq+BuAaMvftswTwmhM+6euUdaRP7WH3T+rzPpJstyMnAnylH/NUwzqUo
-        ZQrS0RmAPYvBjjLnr4LpGTm8v0sSlD18iq5nCw2lZx3WXOpAS63Tp+BfZtPdNM1BD34108
-        VYnzKJh/bF9SujydFoFCIzQwqCgIgfLg4x+BX4gNkGtjk3nOeaPEpSeeJw6e9WybLoupX3
-        m5NVmypPWg1ykY9tZ+MmwxOcGBWUa2LBVQwce5TSLeeJ5Ny1hRHS4DTFHrKRmCX+TsDn+4
-        cq1ml6AdNowL6NbKTl1jWudmP4lGWwmBUrYSykWVmMgRuDWnvIQdK+hmUDGWGA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606168081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w1uCKrC/JVnFefj87bZYqeaIDv0yyNdd4LhM7mGuDJM=;
-        b=mMt/hU8u/OTPxDuQKILiP1HhdRxZ4zvs1L8KKoZmzhLl6g612jVzcISf+J/GJPD6Y6RT8s
-        rYLoGs+JkPIjWpCA==
-To:     Alex Belits <abelits@marvell.com>,
-        "nitesh\@redhat.com" <nitesh@redhat.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>
-Cc:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "trix\@redhat.com" <trix@redhat.com>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas\@arm.com" <catalin.marinas@arm.com>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx\@redhat.com" <peterx@redhat.com>,
-        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti\@redhat.com" <mtosatti@redhat.com>,
-        "will\@kernel.org" <will@kernel.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "leon\@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld\@redhat.com" <pauld@redhat.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 1/9] task_isolation: vmstat: add quiet_vmstat_sync function
-In-Reply-To: <0e07e5bf6f65dc89d263683c81b4a19bcc6d4b60.camel@marvell.com>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com> <0e07e5bf6f65dc89d263683c81b4a19bcc6d4b60.camel@marvell.com>
-Date:   Mon, 23 Nov 2020 22:48:01 +0100
-Message-ID: <87eekjn3se.fsf@nanos.tec.linutronix.de>
+        Mon, 23 Nov 2020 16:48:33 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id E532B20051;
+        Mon, 23 Nov 2020 22:48:27 +0100 (CET)
+Date:   Mon, 23 Nov 2020 22:48:26 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] drm/panel: mantix and st7703 fixes and additions
+Message-ID: <20201123214826.GC675342@ravnborg.org>
+References: <cover.1605688147.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1605688147.git.agx@sigxcpu.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=8nJEP1OIZ-IA:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=7gkXJVJtAAAA:8
+        a=meuEgf7b1xA4w4DmhCUA:9 a=wPNLvfGTeEIA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=E9Po1WZjFZOl8hwRPBS3:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex,
+Hi Guido,
 
-On Mon, Nov 23 2020 at 17:56, Alex Belits wrote:
+On Wed, Nov 18, 2020 at 09:29:47AM +0100, Guido Günther wrote:
+> This adds new panel type to the mantix driver as found on the Librem 5 and
+> fixes a glitch in the init sequence (affecting both panels). The fix is at the
+> start of the series to make backporting simpler.
+> It also adds a patch to make st7703 use dev_err_probe().
+> 
+> changes from v1
+> - as per review comments by Linus Walleij
+>   - fix alphabetical ordering in Documentation/devicetree/bindings/vendor-prefixes.yaml
+>     https://lore.kernel.org/dri-devel/CACRpkdao_TMcpRsdK=7K5fNKJse0Bqwk58iWu0xsXdDNdcffVA@mail.gmail.com/
+>   - add reviewed by to all except 5/6, thanks
+> 
+> Guido Günther (6):
+>   drm/panel: st7703: Use dev_err_probe
+>   drm/panel: mantix: Tweak init sequence
+>   drm/panel: mantix: Allow to specify default mode for different panels
+>   drm/panel: mantix: Support panel from Shenzhen Yashi Changhua
+>     Intelligent Technology Co
+>   dt-bindings: vendor-prefixes: Add ys vendor prefix
+The above are all:
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-why are you insisting on adding 'task_isolation: ' as prefix to every
-single patch? That's wrong as I explained before.
-
-The prefix denotes the affected subsystem and 'task_isolation' is _NOT_
-a subsystem. It's the project name you are using but the affected code
-belongs to the memory management subsystem and if you run
-
- git log mm/vmstat.c
-
-you might get a hint what the proper prefix is, i.e. 'mm/vmstat: '
-
-> In commit f01f17d3705b ("mm, vmstat: make quiet_vmstat lighter")
-> the quiet_vmstat() function became asynchronous, in the sense that
-> the vmstat work was still scheduled to run on the core when the
-> function returned.  For task isolation, we need a synchronous
-
-This changelog is useless because how should someone not familiar with
-the term 'task isolation' figure out what that means?
-
-It's not the reviewers job to figure that out. Again: Go read and adhere
-to Documentation/process/*
-
-Aside of that your patches are CR/LF inflicted. Please fix your work
-flow and tools.
-
-Thanks,
-
-        tglx
+>   dt-binding: display: mantix: Add compatible for panel from YS
+Please fix the subjects to read "dt-bindings" - just to be consistent.
+With that:
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
 
-
+	Sam
