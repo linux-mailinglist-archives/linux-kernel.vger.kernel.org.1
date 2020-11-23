@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09F72C05B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B462C05A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729866AbgKWMYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:24:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
+        id S1729760AbgKWMYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:24:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729847AbgKWMYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:24:42 -0500
+        id S1729361AbgKWMYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:24:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29B5E20728;
-        Mon, 23 Nov 2020 12:24:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B91AF208FE;
+        Mon, 23 Nov 2020 12:24:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134281;
-        bh=3/8Oqa9fZr1BV8DjKGyJGYz3rBD2hBXeacN6NR9H2SE=;
+        s=korg; t=1606134244;
+        bh=zAGFwI+/cRpJDwLyxUtzSYE4+l+MOqPG7UIOWrt+1CU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=11+T69zSDBAcVi1mv7SW1k3ome5NnKrkwb3L9XcjI2nF5RKxOeIDI1yilOYS5Mxrx
-         VSp0kccffQTU82WZduFzmq8x2jLXC7bDSdbu4SydbkfsPxoDf4Xy55hUp9GY+EYhhc
-         9i7O6XxcxVHsc+QcdAZ+G/8m3evlZUX6Gcb31VVw=
+        b=QJmGqrj/At+Lsa+pVaTjRvVjK9+1Ie8pou41t9gQH/FzrVz/rZ+pA7t89+qnwx2xO
+         ZdJNDreUOApWOZZqW3q/7SASS+f1c9jMMQFORGYZ2tLDSSVrvJ9YAaCHL6TaKUDD9z
+         ATp87e9B4o6AyFs45ZYDiIC++Oa1ikzchJlF8eZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filip Moc <dev@moc6.cz>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 15/47] net: usb: qmi_wwan: Set DTR quirk for MR400
+        stable@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>,
+        linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 15/38] MIPS: Fix BUILD_ROLLBACK_PROLOGUE for microMIPS
 Date:   Mon, 23 Nov 2020 13:22:01 +0100
-Message-Id: <20201123121806.278599214@linuxfoundation.org>
+Message-Id: <20201123121805.043491918@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
+References: <20201123121804.306030358@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,31 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filip Moc <dev@moc6.cz>
+From: Paul Burton <paul.burton@imgtec.com>
 
-[ Upstream commit df8d85d8c69d6837817e54dcb73c84a8b5a13877 ]
+[ Upstream commit 1eefcbc89cf3a8e252e5aeb25825594699b47360 ]
 
-LTE module MR400 embedded in TL-MR6400 v4 requires DTR to be set.
+When the kernel is built for microMIPS, branches targets need to be
+known to be microMIPS code in order to result in bit 0 of the PC being
+set. The branch target in the BUILD_ROLLBACK_PROLOGUE macro was simply
+the end of the macro, which may be pointing at padding rather than at
+code. This results in recent enough GNU linkers complaining like so:
 
-Signed-off-by: Filip Moc <dev@moc6.cz>
-Acked-by: Bjørn Mork <bjorn@mork.no>
-Link: https://lore.kernel.org/r/20201117173631.GA550981@moc6.cz
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    mips-img-linux-gnu-ld: arch/mips/built-in.o: .text+0x3e3c: Unsupported branch between ISA modes.
+    mips-img-linux-gnu-ld: final link failed: Bad value
+    Makefile:936: recipe for target 'vmlinux' failed
+    make: *** [vmlinux] Error 1
+
+Fix this by changing the branch target to be the start of the
+appropriate handler, skipping over any padding.
+
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Patchwork: https://patchwork.linux-mips.org/patch/14019/
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/qmi_wwan.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/genex.S | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -705,7 +705,7 @@ static const struct usb_device_id produc
- 	{QMI_FIXED_INTF(0x05c6, 0x9011, 4)},
- 	{QMI_FIXED_INTF(0x05c6, 0x9021, 1)},
- 	{QMI_FIXED_INTF(0x05c6, 0x9022, 2)},
--	{QMI_FIXED_INTF(0x05c6, 0x9025, 4)},	/* Alcatel-sbell ASB TL131 TDD LTE  (China Mobile) */
-+	{QMI_QUIRK_SET_DTR(0x05c6, 0x9025, 4)},	/* Alcatel-sbell ASB TL131 TDD LTE (China Mobile) */
- 	{QMI_FIXED_INTF(0x05c6, 0x9026, 3)},
- 	{QMI_FIXED_INTF(0x05c6, 0x902e, 5)},
- 	{QMI_FIXED_INTF(0x05c6, 0x9031, 5)},
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index 7ffd158de76e5..1b837d6f73deb 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -142,9 +142,8 @@ LEAF(__r4k_wait)
+ 	PTR_LA	k1, __r4k_wait
+ 	ori	k0, 0x1f	/* 32 byte rollback region */
+ 	xori	k0, 0x1f
+-	bne	k0, k1, 9f
++	bne	k0, k1, \handler
+ 	MTC0	k0, CP0_EPC
+-9:
+ 	.set pop
+ 	.endm
+ 
+-- 
+2.27.0
+
 
 
