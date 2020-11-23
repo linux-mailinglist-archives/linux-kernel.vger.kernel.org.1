@@ -2,204 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8252C08D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D962C0A2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388237AbgKWNBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:01:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732770AbgKWMwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:52:38 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B7F720857;
-        Mon, 23 Nov 2020 12:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135940;
-        bh=OJjwu/yigqlChK9gpRJKnwbSNfvik6IGvvwWfLZKDXo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D27zt3rNP7EsNibvSK05cNVlHV71n5L4tnvCedT6eElloCfNVI0wXiwRH+kJ3tBh9
-         ZAF0LG6fuqIQnHC6nThmLcCXROLhRTAoLspovmsSsXIupGawHpv8rNMEqOxNYtTbaO
-         sJdj+z4E39amyCcuCSmAQ8/ybeK+lDmwNVs/6j+s=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.9 252/252] mm/userfaultfd: do not access vma->vm_mm after calling handle_userfault()
-Date:   Mon, 23 Nov 2020 13:23:22 +0100
-Message-Id: <20201123121847.753094550@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
-References: <20201123121835.580259631@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1732919AbgKWMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:42:26 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:43184 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732672AbgKWMld (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:41:33 -0500
+Received: by mail-ej1-f66.google.com with SMTP id k27so23019875ejs.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:41:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GPrtMY6OwrhTMTFZ3taFyOwaPYmLyv2VpU7rochRReg=;
+        b=tgerCVLPHOfUQV3YAj2fSde0sukRBuKXBc4KJpilGrmOGy2gW+QM/M/iydu7SRQnKa
+         WvHVExDti7CDRAIsCdTeVKkvC6IFPkyP8qxjyNIBI0H4tl9RCVYRAlC5nM9i76xH/pa3
+         1fgQFBBfkkCP+Y7ONVVRrb/xUlm901+Q0pDTu16GZ8eW9v+Gy93Eo03AFpUAKufu7UZG
+         NIiuSuA47o7Mtgu9Dq4nUxi92uGhpg4BWrD6uoq1k/fItjKL14Pl+RWNIk3NyPn2SvZ3
+         dZsUFomiC7RX9DxQL4NNIHCkJjIo4CkBWhgxLE2CnurJwY/mf9mwP1OR5nAzv1eWvJqf
+         uD8A==
+X-Gm-Message-State: AOAM533lTWpg8Ozfo2eimpszh3yRy3sFreNirxMQ57ZElBe2rac2GaQB
+        bc2KSnlpeyJzaEduQ0PGwr0=
+X-Google-Smtp-Source: ABdhPJweTjHhkqFH1VFPyqJ/7+x5kCjNmVPNdbpMvAkswnuUiZsYEq13Ali5w0h7nyDPSgAbrxkeog==
+X-Received: by 2002:a17:906:f8c5:: with SMTP id lh5mr46230675ejb.77.1606135291740;
+        Mon, 23 Nov 2020 04:41:31 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id y15sm4946855eds.56.2020.11.23.04.41.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 04:41:30 -0800 (PST)
+Date:   Mon, 23 Nov 2020 13:41:29 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
+ table
+Message-ID: <20201123124129.GA170000@kozik-lap>
+References: <20201120161653.445521-1-krzk@kernel.org>
+ <20201120165202.GG6751@sirena.org.uk>
+ <20201120194245.GA2925@kozik-lap>
+ <20201120200429.GJ6751@sirena.org.uk>
+ <20201122105813.GA3780@kozik-lap>
+ <20201123104832.GY4077@smile.fi.intel.com>
+ <20201123123731.GA6322@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201123123731.GA6322@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+On Mon, Nov 23, 2020 at 12:37:31PM +0000, Mark Brown wrote:
+> On Mon, Nov 23, 2020 at 12:48:32PM +0200, Andy Shevchenko wrote:
+> > On Sun, Nov 22, 2020 at 11:59:20AM +0100, Krzysztof Kozlowski wrote:
+> > > On Fri, Nov 20, 2020 at 08:04:29PM +0000, Mark Brown wrote:
+> 
+> > > > Surely if that's the desired outcome the fix is to change the definition
+> > > > of of_match_ptr() such that it leaves the reference with CONFIG_ACPI,
+> > > > perhaps hidden behind a config option for PRP0001?  That seems better
+> > > > than going through the entire tree like this.
+> 
+> > > That could be indeed an easier way to achieve this.
+> 
+> > ...easier and wrong in my opinion. Not all drivers need that.
+> > What the point to touch it in the driver which is OF-only?
+> > (For IP which will quite unlikely to be present in ACPI world)
+> > Or if the device will get the correct ACPI ID?
+> 
+> That feels like something that should be done with Kconfig dependencies
+> like a direct OF dependency (possibly a !PRP0001 dependency?) for the
+> driver or possibly with having a variant of_match_ptr() for things that
+> really don't want to support PRP0001.  Just removing all the use of
+> of_match_ptr() is both noisy and confusing in that it looks like it's
+> creating issues to fix, it makes it hard to understand when and why one
+> should use the macro.
 
-commit bfe8cc1db02ab243c62780f17fc57f65bde0afe1 upstream.
+For the OF-only drivers (without other ID table), there is no point to
+use the macro. Driver can bind only with DT, so what is the point of
+of_match_ptr? To skip the OF table when building without OF? Driver
+won't be usable at all in such case. So maybe for compile testing?
+There is no need to remove OF table for simple build tests.
 
-Alexander reported a syzkaller / KASAN finding on s390, see below for
-complete output.
-
-In do_huge_pmd_anonymous_page(), the pre-allocated pagetable will be
-freed in some cases.  In the case of userfaultfd_missing(), this will
-happen after calling handle_userfault(), which might have released the
-mmap_lock.  Therefore, the following pte_free(vma->vm_mm, pgtable) will
-access an unstable vma->vm_mm, which could have been freed or re-used
-already.
-
-For all architectures other than s390 this will go w/o any negative
-impact, because pte_free() simply frees the page and ignores the
-passed-in mm.  The implementation for SPARC32 would also access
-mm->page_table_lock for pte_free(), but there is no THP support in
-SPARC32, so the buggy code path will not be used there.
-
-For s390, the mm->context.pgtable_list is being used to maintain the 2K
-pagetable fragments, and operating on an already freed or even re-used
-mm could result in various more or less subtle bugs due to list /
-pagetable corruption.
-
-Fix this by calling pte_free() before handle_userfault(), similar to how
-it is already done in __do_huge_pmd_anonymous_page() for the WRITE /
-non-huge_zero_page case.
-
-Commit 6b251fc96cf2c ("userfaultfd: call handle_userfault() for
-userfaultfd_missing() faults") actually introduced both, the
-do_huge_pmd_anonymous_page() and also __do_huge_pmd_anonymous_page()
-changes wrt to calling handle_userfault(), but only in the latter case
-it put the pte_free() before calling handle_userfault().
-
-  BUG: KASAN: use-after-free in do_huge_pmd_anonymous_page+0xcda/0xd90 mm/huge_memory.c:744
-  Read of size 8 at addr 00000000962d6988 by task syz-executor.0/9334
-
-  CPU: 1 PID: 9334 Comm: syz-executor.0 Not tainted 5.10.0-rc1-syzkaller-07083-g4c9720875573 #0
-  Hardware name: IBM 3906 M04 701 (KVM/Linux)
-  Call Trace:
-    do_huge_pmd_anonymous_page+0xcda/0xd90 mm/huge_memory.c:744
-    create_huge_pmd mm/memory.c:4256 [inline]
-    __handle_mm_fault+0xe6e/0x1068 mm/memory.c:4480
-    handle_mm_fault+0x288/0x748 mm/memory.c:4607
-    do_exception+0x394/0xae0 arch/s390/mm/fault.c:479
-    do_dat_exception+0x34/0x80 arch/s390/mm/fault.c:567
-    pgm_check_handler+0x1da/0x22c arch/s390/kernel/entry.S:706
-    copy_from_user_mvcos arch/s390/lib/uaccess.c:111 [inline]
-    raw_copy_from_user+0x3a/0x88 arch/s390/lib/uaccess.c:174
-    _copy_from_user+0x48/0xa8 lib/usercopy.c:16
-    copy_from_user include/linux/uaccess.h:192 [inline]
-    __do_sys_sigaltstack kernel/signal.c:4064 [inline]
-    __s390x_sys_sigaltstack+0xc8/0x240 kernel/signal.c:4060
-    system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
-
-  Allocated by task 9334:
-    slab_alloc_node mm/slub.c:2891 [inline]
-    slab_alloc mm/slub.c:2899 [inline]
-    kmem_cache_alloc+0x118/0x348 mm/slub.c:2904
-    vm_area_dup+0x9c/0x2b8 kernel/fork.c:356
-    __split_vma+0xba/0x560 mm/mmap.c:2742
-    split_vma+0xca/0x108 mm/mmap.c:2800
-    mlock_fixup+0x4ae/0x600 mm/mlock.c:550
-    apply_vma_lock_flags+0x2c6/0x398 mm/mlock.c:619
-    do_mlock+0x1aa/0x718 mm/mlock.c:711
-    __do_sys_mlock2 mm/mlock.c:738 [inline]
-    __s390x_sys_mlock2+0x86/0xa8 mm/mlock.c:728
-    system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
-
-  Freed by task 9333:
-    slab_free mm/slub.c:3142 [inline]
-    kmem_cache_free+0x7c/0x4b8 mm/slub.c:3158
-    __vma_adjust+0x7b2/0x2508 mm/mmap.c:960
-    vma_merge+0x87e/0xce0 mm/mmap.c:1209
-    userfaultfd_release+0x412/0x6b8 fs/userfaultfd.c:868
-    __fput+0x22c/0x7a8 fs/file_table.c:281
-    task_work_run+0x200/0x320 kernel/task_work.c:151
-    tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-    do_notify_resume+0x100/0x148 arch/s390/kernel/signal.c:538
-    system_call+0xe6/0x28c arch/s390/kernel/entry.S:416
-
-  The buggy address belongs to the object at 00000000962d6948 which belongs to the cache vm_area_struct of size 200
-  The buggy address is located 64 bytes inside of 200-byte region [00000000962d6948, 00000000962d6a10)
-  The buggy address belongs to the page: page:00000000313a09fe refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x962d6 flags: 0x3ffff00000000200(slab)
-  raw: 3ffff00000000200 000040000257e080 0000000c0000000c 000000008020ba00
-  raw: 0000000000000000 000f001e00000000 ffffffff00000001 0000000096959501
-  page dumped because: kasan: bad access detected
-  page->mem_cgroup:0000000096959501
-
-  Memory state around the buggy address:
-   00000000962d6880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   00000000962d6900: 00 fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb
-  >00000000962d6980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                        ^
-   00000000962d6a00: fb fb fc fc fc fc fc fc fc fc 00 00 00 00 00 00
-   00000000962d6a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  ==================================================================
-
-Fixes: 6b251fc96cf2c ("userfaultfd: call handle_userfault() for userfaultfd_missing() faults")
-Reported-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: <stable@vger.kernel.org>	[4.3+]
-Link: https://lkml.kernel.org/r/20201110190329.11920-1-gerald.schaefer@linux.ibm.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- mm/huge_memory.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -710,7 +710,6 @@ vm_fault_t do_huge_pmd_anonymous_page(st
- 			transparent_hugepage_use_zero_page()) {
- 		pgtable_t pgtable;
- 		struct page *zero_page;
--		bool set;
- 		vm_fault_t ret;
- 		pgtable = pte_alloc_one(vma->vm_mm);
- 		if (unlikely(!pgtable))
-@@ -723,25 +722,25 @@ vm_fault_t do_huge_pmd_anonymous_page(st
- 		}
- 		vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
- 		ret = 0;
--		set = false;
- 		if (pmd_none(*vmf->pmd)) {
- 			ret = check_stable_address_space(vma->vm_mm);
- 			if (ret) {
- 				spin_unlock(vmf->ptl);
-+				pte_free(vma->vm_mm, pgtable);
- 			} else if (userfaultfd_missing(vma)) {
- 				spin_unlock(vmf->ptl);
-+				pte_free(vma->vm_mm, pgtable);
- 				ret = handle_userfault(vmf, VM_UFFD_MISSING);
- 				VM_BUG_ON(ret & VM_FAULT_FALLBACK);
- 			} else {
- 				set_huge_zero_page(pgtable, vma->vm_mm, vma,
- 						   haddr, vmf->pmd, zero_page);
- 				spin_unlock(vmf->ptl);
--				set = true;
- 			}
--		} else
-+		} else {
- 			spin_unlock(vmf->ptl);
--		if (!set)
- 			pte_free(vma->vm_mm, pgtable);
-+		}
- 		return ret;
- 	}
- 	gfp = alloc_hugepage_direct_gfpmask(vma);
-
+Best regards,
+Krzysztof
 
