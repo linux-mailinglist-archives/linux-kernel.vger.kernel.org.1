@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CF42C07D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF282C07D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733233AbgKWMob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:44:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56496 "EHLO mail.kernel.org"
+        id S1730811AbgKWMoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:44:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733064AbgKWMnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:43:22 -0500
+        id S1732939AbgKWMnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:43:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 840572078E;
-        Mon, 23 Nov 2020 12:43:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5577C2076E;
+        Mon, 23 Nov 2020 12:43:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135402;
-        bh=rHyctRfZhyusAX1YcbUnm/XQFHRH3I2TLqDIyDvESXU=;
+        s=korg; t=1606135404;
+        bh=TYmOUFx1wB5HO2cWnT7UCvQQ/O6u8B3krnauYye4MmM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OuBUzg8UZ2V4AajCUCKaJaoElhXxdnSt34hJY5pbWABsG7w5DMFGehh0Wb7gcrBN1
-         aA3aHJ7HlWSsHX6LUH3k8noYMQ1+xvnmrXuWU+asaagCCsFBirBBNU2eLT11Qt3K+n
-         KRhWD9fwG6txqOf6i6RH2/ZrPfF1Hpl1xxt1U5E0=
+        b=nzEdeCrygPvi4hFIiYWKER0RvCSGsx/92MJPQ9TG4cfAFLNEDcp7ZISRexkly+3fi
+         BVY4MbIy77NK/xajKtHtEOMPrJVpDu/UJ5X0Mm9cSP0QYKsl+D0bS7QuTS+gSxbTBm
+         fRyWAOUsGqFc3jAs7NNRhF366W8uphC7D0GV+2fM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 056/252] habanalabs/gaudi: mask WDT error in QMAN
-Date:   Mon, 23 Nov 2020 13:20:06 +0100
-Message-Id: <20201123121838.295017374@linuxfoundation.org>
+Subject: [PATCH 5.9 057/252] pinctrl: rockchip: enable gpio pclk for rockchip_gpio_to_irq
+Date:   Mon, 23 Nov 2020 13:20:07 +0100
+Message-Id: <20201123121838.343210627@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -42,31 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oded Gabbay <ogabbay@kernel.org>
+From: Jianqun Xu <jay.xu@rock-chips.com>
 
-[ Upstream commit f83f3a31b2972ddc907fbb286c6446dd9db6e198 ]
+[ Upstream commit 63fbf8013b2f6430754526ef9594f229c7219b1f ]
 
-This interrupt cause is not relevant because of how the user use the
-QMAN arbitration mechanism. We must mask it as the log explodes with it.
+There need to enable pclk_gpio when do irq_create_mapping, since it will
+do access to gpio controller.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Reviewed-by: Kever Yang<kever.yang@rock-chips.com>
+Link: https://lore.kernel.org/r/20201013063731.3618-3-jay.xu@rock-chips.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/include/gaudi/gaudi_masks.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/pinctrl/pinctrl-rockchip.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
-index 3510c42d24e31..b734b650fccf7 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
-@@ -452,7 +452,6 @@ enum axi_id {
+diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+index 0401c1da79dd0..7b398ed2113e8 100644
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -3155,7 +3155,9 @@ static int rockchip_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
+ 	if (!bank->domain)
+ 		return -ENXIO;
  
- #define QM_ARB_ERR_MSG_EN_MASK		(\
- 					QM_ARB_ERR_MSG_EN_CHOISE_OVF_MASK |\
--					QM_ARB_ERR_MSG_EN_CHOISE_WDT_MASK |\
- 					QM_ARB_ERR_MSG_EN_AXI_LBW_ERR_MASK)
++	clk_enable(bank->clk);
+ 	virq = irq_create_mapping(bank->domain, offset);
++	clk_disable(bank->clk);
  
- #define PCIE_AUX_FLR_CTRL_HW_CTRL_MASK                               0x1
+ 	return (virq) ? : -ENXIO;
+ }
 -- 
 2.27.0
 
