@@ -2,90 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04A22BFDFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 02:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 271112BFE0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 02:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgKWBN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 20:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgKWBN4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 20:13:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334C1C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 17:13:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=EH8qXWN4Y4VrU8+zuuCH0RGfzxSOU1QsRFTP+2lfbsI=; b=ZQHETsRNaV5CFoPSkJ8gL5K5PC
-        WKUfm7x7VvtCTHr0e4MHUnbfy+4AOiKDEDadp9dFXtswx9yHcrqAccSo6f2CTc3aDYzlYse72ZuN/
-        wezs6rlZApON2236lr49bE8NargqPP/vOPEISwYYzwrSRlIwA5F02hlzLZsKGNllH7msJlPKwwb9Q
-        zA7bBhZUbFIwgJtdM3WD8d96Bz0JQRwhCfx7GeUaW3fDC/Xo4ODIEC6oyuagqB4F/simHotkgkIV8
-        ORVmAlvPMcqODaMVMFCTn1j6A1uLx8Alu6irmfH0+x/+IZLnyZ3ILi52yAyucrz2q/cShPWXLvcIg
-        +CGKn99A==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kh0QS-00019e-2C; Mon, 23 Nov 2020 01:13:52 +0000
-Subject: Re: undefined reference to `start_isolate_page_range'
-To:     kernel test robot <lkp@intel.com>, Michal Simek <monstr@monstr.eu>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <202011210906.WVDfrAtS-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4860e097-f90e-fdf6-454f-514e4a7c3c68@infradead.org>
-Date:   Sun, 22 Nov 2020 17:13:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726740AbgKWBX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 20:23:59 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:29644 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726302AbgKWBX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 20:23:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606094638; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WVW8SEFhmmTXHu0CNeD1oWMm387GTbxMvfMsPgLO/r4=;
+ b=oVasAtZ6Tin430LsxwXTPiRsPjK+o1+ZNJCO9zChD2A5Jpf8znWHlho8cak+oMNiROIClnBf
+ zC9xBZa8joYPwHtOd5KW2B9+QAJ1+wypppnG7GA6ZDPWa9dZm7j1WARFFJ8Lyqn3mZv6YREL
+ 2UEEKXYqTQT625R/tt4Ctfynogs=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fbb0f2c77b63cdb34464b03 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 01:23:56
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BD894C43466; Mon, 23 Nov 2020 01:23:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 16917C433ED;
+        Mon, 23 Nov 2020 01:23:54 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <202011210906.WVDfrAtS-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 09:23:53 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH RFC v2 1/1] scsi: pm: Leave runtime PM status alone during
+ system resume/thaw/restore
+In-Reply-To: <20201120163524.GB619708@rowland.harvard.edu>
+References: <1605861443-11459-1-git-send-email-cang@codeaurora.org>
+ <20201120163524.GB619708@rowland.harvard.edu>
+Message-ID: <ff2975f88cc452d134b8bf24c55bec09@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 5:26 PM, kernel test robot wrote:
-> Hi Michal,
-> 
-> FYI, the error/warning still remains.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   4ccf7a01e805f04defd423fb410f47a13af76399
-> commit: 2602276d3d3811b1a48c48113042cd75fcbfc27d microblaze: Wire CMA allocator
-> date:   10 months ago
-> config: microblaze-randconfig-s031-20201121 (attached as .config)
-> compiler: microblaze-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-134-gb59dbdaf-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2602276d3d3811b1a48c48113042cd75fcbfc27d
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 2602276d3d3811b1a48c48113042cd75fcbfc27d
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=microblaze 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    microblaze-linux-ld: mm/page_alloc.o: in function `alloc_contig_range':
->>> (.text+0xa1fc): undefined reference to `start_isolate_page_range'
->>> microblaze-linux-ld: (.text+0xa40c): undefined reference to `test_pages_isolated'
->>> microblaze-linux-ld: (.text+0xa47c): undefined reference to `undo_isolate_page_range'
+Hi Alan,
 
+On 2020-11-21 00:35, Alan Stern wrote:
+> On Fri, Nov 20, 2020 at 12:37:22AM -0800, Can Guo wrote:
+>> Runtime resume is handled by runtime PM framework, no need to forcibly
+>> set runtime PM status to RPM_ACTIVE during system resume/thaw/restore.
+> 
+> Sorry, I don't understand this explanation at all.
+> 
+> Sure, runtime resume is handled by the runtime PM framework.  But this
+> patch changes the code for system resume, which is completely 
+> different.
+> 
+> Following a system resume, the hardware will be at full power.  We 
+> don't
+> want the kernel to think that the device is still in runtime suspend;
+> otherwise is would never put the device back into low-power mode.
 
-FTR:  This is a Kconfig problem in drivers/gpu/drm/aspeed/Kconfig
-and it is fixed in linux-next and drm-misc-next.
+How about adding below lines to the patch?
 
-https://lore.kernel.org/dri-devel/20201011230131.4922-1-rdunlap@infradead.org/
+diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
+index 908f27f..7ebe582 100644
+--- a/drivers/scsi/scsi_pm.c
++++ b/drivers/scsi/scsi_pm.c
+@@ -75,9 +75,11 @@ static int scsi_dev_type_resume(struct device *dev,
+         const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : 
+NULL;
+         int err = 0;
 
--- 
-~Randy
+-       err = cb(dev, pm);
+-       scsi_device_resume(to_scsi_device(dev));
+-       dev_dbg(dev, "scsi resume: %d\n", err);
++       if (pm_runtime_active(dev)) {
++               err = cb(dev, pm);
++               scsi_device_resume(to_scsi_device(dev));
++               dev_dbg(dev, "scsi resume: %d\n", err);
++       }
 
+         return err;
+  }
+
+Whenever a device is accessed, the issuer or somewhere in the path
+should do something like pm_runtime_get_sync (e.g. in sg_open()) or
+pm_runtime_resume() (e.g. in blk_queue_enter()), in either sync or
+async way. After the job (read/write/ioctl or whatever) is done,
+either a pm_runtime_put_sync() or auto runtime suspend puts the device
+back into runtime suspended/low-power mode. Since the func
+scsi_bus_suspend_common() does nothing if device is already in runtime
+suspended mode, scsi_dev_type_resume() should only resume the device
+if it is runtime active.
+
+Thanks,
+
+Can Guo.
+
+> Alan Stern
+> 
+>> Cc: Stanley Chu <stanley.chu@mediatek.com>
+>> Cc: Bart Van Assche <bvanassche@acm.org>
+>> Cc: Alan Stern <stern@rowland.harvard.edu>
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>> 
+>> Changes since v1:
+>> - Incorporated Bart's comments
+>> 
+>> ---
+>>  drivers/scsi/scsi_pm.c | 24 +-----------------------
+>>  1 file changed, 1 insertion(+), 23 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
+>> index 3717eea..908f27f 100644
+>> --- a/drivers/scsi/scsi_pm.c
+>> +++ b/drivers/scsi/scsi_pm.c
+>> @@ -79,25 +79,6 @@ static int scsi_dev_type_resume(struct device *dev,
+>>  	scsi_device_resume(to_scsi_device(dev));
+>>  	dev_dbg(dev, "scsi resume: %d\n", err);
+>> 
+>> -	if (err == 0) {
+>> -		pm_runtime_disable(dev);
+>> -		err = pm_runtime_set_active(dev);
+>> -		pm_runtime_enable(dev);
+>> -
+>> -		/*
+>> -		 * Forcibly set runtime PM status of request queue to "active"
+>> -		 * to make sure we can again get requests from the queue
+>> -		 * (see also blk_pm_peek_request()).
+>> -		 *
+>> -		 * The resume hook will correct runtime PM status of the disk.
+>> -		 */
+>> -		if (!err && scsi_is_sdev_device(dev)) {
+>> -			struct scsi_device *sdev = to_scsi_device(dev);
+>> -
+>> -			blk_set_runtime_active(sdev->request_queue);
+>> -		}
+>> -	}
+>> -
+>>  	return err;
+>>  }
+>> 
+>> @@ -165,11 +146,8 @@ static int scsi_bus_resume_common(struct device 
+>> *dev,
+>>  		 */
+>>  		if (strncmp(scsi_scan_type, "async", 5) != 0)
+>>  			async_synchronize_full_domain(&scsi_sd_pm_domain);
+>> -	} else {
+>> -		pm_runtime_disable(dev);
+>> -		pm_runtime_set_active(dev);
+>> -		pm_runtime_enable(dev);
+>>  	}
+>> +
+>>  	return 0;
+>>  }
+>> 
+>> --
+>> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
+>> Linux Foundation Collaborative Project.
+>> 
