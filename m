@@ -2,188 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1813D2C13CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496E02C13C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390886AbgKWSmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:42:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387696AbgKWSmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:42:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3745320658;
-        Mon, 23 Nov 2020 18:42:29 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 13:42:27 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
- allocations
-Message-ID: <20201123134227.6df443db@gandalf.local.home>
-In-Reply-To: <20201123112812.19e918b3@gandalf.local.home>
-References: <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
-        <20201112161439.GA2989297@elver.google.com>
-        <20201112175406.GF3249@paulmck-ThinkPad-P72>
-        <20201113175754.GA6273@paulmck-ThinkPad-P72>
-        <20201117105236.GA1964407@elver.google.com>
-        <20201117182915.GM1437@paulmck-ThinkPad-P72>
-        <20201118225621.GA1770130@elver.google.com>
-        <20201118233841.GS1437@paulmck-ThinkPad-P72>
-        <20201119125357.GA2084963@elver.google.com>
-        <20201120142734.75af5cd6@gandalf.local.home>
-        <20201123152720.GA2177956@elver.google.com>
-        <20201123112812.19e918b3@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390874AbgKWSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:41:54 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57872 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730928AbgKWSlx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:41:53 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANIZFTd082282;
+        Mon, 23 Nov 2020 18:41:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=TBRod9DMYmZtaGtcFOBny/67g1rpeUEvFkWSLiuvxw4=;
+ b=lk9qkZ4eKX/vCffjQ/rAJ+IFXqtGsFmvf5jxkwOQ/oND7Z8VIEuTUXH9Fp2obP6DIX9x
+ YpQy4LwcSV32WyS88YttX97m3z0DjIsCNkdYyM9Tpso+sViSR8mb6hrEH375ozXnT0Fr
+ nM+PL7/vhTNS0/1+HZcqBKamkoYU/CUB1zjoNUb9W4tNHixO1cSfTXNRhcEAJ6xzBqP0
+ 38Y4dcHOucoRe9ZAy2SO3yfjUS3SDs7F17crXp4Lezbbs1UktwKUH+AdKCNTWNwcyc0S
+ 2EV6TUaEZigkJzfafYFLSIv517Y9dYTMssQwL8aPBEk8mr2xpQSm78LEqG6yBC3TZhtm bg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 34xtaqj98q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 23 Nov 2020 18:41:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANIZdwj020081;
+        Mon, 23 Nov 2020 18:41:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34yx8ht5hc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Nov 2020 18:41:32 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ANIfU1P024224;
+        Mon, 23 Nov 2020 18:41:30 GMT
+Received: from char.us.oracle.com (/10.152.32.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 23 Nov 2020 10:41:30 -0800
+Received: by char.us.oracle.com (Postfix, from userid 1000)
+        id CB7E46A00A8; Mon, 23 Nov 2020 13:43:27 -0500 (EST)
+Date:   Mon, 23 Nov 2020 13:43:27 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, hch@lst.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
+        dave.hansen@linux-intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
+        Thomas.Lendacky@amd.com, jon.grimm@amd.com, rientjes@google.com
+Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201123184327.GA22269@char.us.oracle.com>
+References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
+ <20201123170647.GE15044@zn.tnic>
+ <20201123175632.GA21539@char.us.oracle.com>
+ <20201123180215.GG15044@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123180215.GG15044@zn.tnic>
+User-Agent: Mutt/1.9.1 (2017-09-22)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011230122
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011230122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 11:28:12 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> I noticed:
+On Mon, Nov 23, 2020 at 07:02:15PM +0100, Borislav Petkov wrote:
+> On Mon, Nov 23, 2020 at 12:56:32PM -0500, Konrad Rzeszutek Wilk wrote:
+> > This is not going to work for TDX. I think having a registration
+> > to SWIOTLB to have this function would be better going forward.
+> > 
+> > As in there will be a swiotlb_register_adjuster() which AMD SEV
+> > code can call at start, also TDX can do it (and other platforms).
 > 
+> Oh do tell. It doesn't need to adjust size?
+
+I am assuming that TDX is going to have the same exact issue that 
+AMD SEV will have.
+
+Are you recommending to have an unified x86 specific callback
+where we check if it:
+
+ - CPUID_AMD_SEV or CPUID_INTEL_TDX is set, and
+ - No vIOMMU present, then we adjust the size?
+
 > 
-> [  237.650900] enabling event benchmark_event
+> -- 
+> Regards/Gruss,
+>     Boris.
 > 
-> In both traces. Could you disable CONFIG_TRACEPOINT_BENCHMARK and see if
-> the issue goes away. That event kicks off a thread that spins in a tight
-> loop for some time and could possibly cause some issues.
-> 
-> It still shouldn't break things, we can narrow it down if it is the culprit.
-
-[ Added Thomas  ]
-
-And that's just one issue. I don't think that has anything to do with the
-other one:
-
-[ 1614.162007] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-[ 1614.168625]  (detected by 0, t=3752 jiffies, g=3529, q=1)
-[ 1614.170825] rcu: All QSes seen, last rcu_preempt kthread activity 242 (4295293115-4295292873), jiffies_till_next_fqs=1, root ->qsmask 0x0
-[ 1614.194272] 
-[ 1614.196673] ================================
-[ 1614.199738] WARNING: inconsistent lock state
-[ 1614.203056] 5.10.0-rc4-next-20201119-00004-g77838ee21ff6-dirty #21 Not tainted
-[ 1614.207012] --------------------------------
-[ 1614.210125] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-[ 1614.213832] swapper/0/1 [HC0[0]:SC0[0]:HE0:SE1] takes:
-[ 1614.217288] ffffd942547f47d8 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x7c0/0x17a0
-[ 1614.225496] {IN-HARDIRQ-W} state was registered at:
-[ 1614.229031]   __lock_acquire+0xae8/0x1ac8
-[ 1614.232203]   lock_acquire+0x268/0x508
-[ 1614.235254]   _raw_spin_lock_irqsave+0x78/0x14c
-[ 1614.238547]   rcu_sched_clock_irq+0x7c0/0x17a0
-[ 1614.241757]   update_process_times+0x6c/0xb8
-[ 1614.244950]   tick_sched_handle.isra.0+0x58/0x88
-[ 1614.248225]   tick_sched_timer+0x68/0xe0
-[ 1614.251304]   __hrtimer_run_queues+0x288/0x730
-[ 1614.254516]   hrtimer_interrupt+0x114/0x288
-[ 1614.257650]   arch_timer_handler_virt+0x50/0x70
-[ 1614.260922]   handle_percpu_devid_irq+0x104/0x4c0
-[ 1614.264236]   generic_handle_irq+0x54/0x78
-[ 1614.267385]   __handle_domain_irq+0xac/0x130
-[ 1614.270585]   gic_handle_irq+0x70/0x108
-[ 1614.273633]   el1_irq+0xc0/0x180
-[ 1614.276526]   rcu_irq_exit_irqson+0x40/0x78
-[ 1614.279704]   trace_preempt_on+0x144/0x1a0
-[ 1614.282834]   preempt_schedule_common+0xf8/0x1a8
-[ 1614.286126]   preempt_schedule+0x38/0x40
-[ 1614.289240]   __mutex_lock+0x608/0x8e8
-[ 1614.292302]   mutex_lock_nested+0x3c/0x58
-[ 1614.295450]   static_key_enable_cpuslocked+0x7c/0xf8
-[ 1614.298828]   static_key_enable+0x2c/0x40
-[ 1614.301961]   tracepoint_probe_register_prio+0x284/0x3a0
-[ 1614.305464]   tracepoint_probe_register+0x40/0x58
-[ 1614.308776]   trace_event_reg+0xe8/0x150
-[ 1614.311852]   __ftrace_event_enable_disable+0x2e8/0x608
-[ 1614.315351]   __ftrace_set_clr_event_nolock+0x160/0x1d8
-[ 1614.318809]   __ftrace_set_clr_event+0x60/0x90
-[ 1614.322061]   event_trace_self_tests+0x64/0x12c
-[ 1614.325335]   event_trace_self_tests_init+0x88/0xa8
-[ 1614.328758]   do_one_initcall+0xa4/0x500
-[ 1614.331860]   kernel_init_freeable+0x344/0x3c4
-[ 1614.335110]   kernel_init+0x20/0x16c
-[ 1614.338102]   ret_from_fork+0x10/0x34
-[ 1614.341057] irq event stamp: 3206302
-[ 1614.344123] hardirqs last  enabled at (3206301): [<ffffd9425238da04>] rcu_irq_exit_irqson+0x64/0x78
-[ 1614.348697] hardirqs last disabled at (3206302): [<ffffd942522123c0>] el1_irq+0x80/0x180
-[ 1614.353013] softirqs last  enabled at (3204216): [<ffffd94252210b80>] __do_softirq+0x630/0x6b4
-[ 1614.357509] softirqs last disabled at (3204191): [<ffffd942522c623c>] irq_exit+0x1cc/0x1e0
-[ 1614.361737] 
-[ 1614.361737] other info that might help us debug this:
-[ 1614.365566]  Possible unsafe locking scenario:
-[ 1614.365566] 
-[ 1614.369128]        CPU0
-[ 1614.371747]        ----
-[ 1614.374282]   lock(rcu_node_0);
-[ 1614.378818]   <Interrupt>
-[ 1614.381394]     lock(rcu_node_0);
-[ 1614.385997] 
-[ 1614.385997]  *** DEADLOCK ***
-[ 1614.385997] 
-[ 1614.389613] 5 locks held by swapper/0/1:
-[ 1614.392655]  #0: ffffd9425480e940 (event_mutex){+.+.}-{3:3}, at: __ftrace_set_clr_event+0x48/0x90
-[ 1614.401701]  #1: ffffd9425480a530 (tracepoints_mutex){+.+.}-{3:3}, at: tracepoint_probe_register_prio+0x48/0x3a0
-[ 1614.410973]  #2: ffffd9425476abf0 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_enable+0x24/0x40
-[ 1614.419858]  #3: ffffd94254816348 (jump_label_mutex){+.+.}-{3:3}, at: static_key_enable_cpuslocked+0x7c/0xf8
-[ 1614.429049]  #4: ffffd942547f47d8 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x7c0/0x17a0
-[ 1614.438029] 
-[ 1614.438029] stack backtrace:
-[ 1614.441436] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc4-next-20201119-00004-g77838ee21ff6-dirty #21
-[ 1614.446149] Hardware name: linux,dummy-virt (DT)
-[ 1614.449621] Call trace:
-[ 1614.452337]  dump_backtrace+0x0/0x240
-[ 1614.455372]  show_stack+0x34/0x88
-[ 1614.458306]  dump_stack+0x140/0x1bc
-[ 1614.461258]  print_usage_bug+0x2a0/0x2f0
-[ 1614.464399]  mark_lock.part.0+0x438/0x4e8
-[ 1614.467528]  mark_held_locks+0x54/0x90
-[ 1614.470576]  lockdep_hardirqs_on_prepare+0xe0/0x290
-[ 1614.473935]  trace_hardirqs_on+0x90/0x370
-[ 1614.477045]  el1_irq+0xdc/0x180
-[ 1614.479934]  rcu_irq_exit_irqson+0x40/0x78
-[ 1614.483093]  trace_preempt_on+0x144/0x1a0
-[ 1614.486211]  preempt_schedule_common+0xf8/0x1a8
-[ 1614.489479]  preempt_schedule+0x38/0x40
-[ 1614.492544]  __mutex_lock+0x608/0x8e8
-
-
-The above has:
-
- preempt_schedule_common() {
-   trace_preempt_on() {
-     <interrupt>
-	el1_irq:
-	   handle_arch_irq {
-	      irq_enter();
-	      [..]
-	      irq_exit();
-	   }
-	   bl trace_hardirqs_on
-
-
-I wonder if the lockdep logic got confused on ARM64 by the rework done to
-lockdep and tracing with respect to irq entry / exit.
-
-Or maybe there's an rcu_node leak lock that happened somewhere?
-
--- Steve
+> https://people.kernel.org/tglx/notes-about-netiquette
