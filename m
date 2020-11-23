@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDE62C022C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D562C023E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727622AbgKWJT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 04:19:26 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:34756 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726802AbgKWJTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:19:25 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD9OMfrtfB3wVAA--.43428S4;
-        Mon, 23 Nov 2020 17:19:11 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 3/3] MIPS: Loongson: Enable Loongson SPI in loongson3_defconfig
-Date:   Mon, 23 Nov 2020 17:19:08 +0800
-Message-Id: <1606123148-315-3-git-send-email-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1606123148-315-1-git-send-email-zhangqing@loongson.cn>
-References: <1606123148-315-1-git-send-email-zhangqing@loongson.cn>
-X-CM-TRANSID: AQAAf9DxD9OMfrtfB3wVAA--.43428S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw4UXFW7trW7Gw1DuryDWrg_yoWxuFX_Ja
-        y7Kw1kWr4rJryxuFWxZw4rWrWDCa4UW3Z5CF17tr1fXaya9rnxtFWDAFW8G3W5uasF9FWf
-        ZaykJasF9F1xtjkaLaAFLSUrUUUU1b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbmkYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE
-        c7CjxVAFwI0_GcCE3s1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
-        xVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxV
-        A2Y2ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-        6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-        0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU02-e5UUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+        id S1726186AbgKWJ02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:26:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:38040 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725275AbgKWJ02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 04:26:28 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 80117101E;
+        Mon, 23 Nov 2020 01:26:27 -0800 (PST)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9398C3F70D;
+        Mon, 23 Nov 2020 01:26:25 -0800 (PST)
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: Re: [RFC] Documentation/scheduler/schedutil.txt
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        patrick.bellasi@matbug.net, lenb@kernel.org,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com,
+        ionela.voinescu@arm.com, qperret@google.com,
+        viresh.kumar@linaro.org
+References: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
+Message-ID: <31ab5111-8cea-3a95-823e-f3a84476f7d6@arm.com>
+Date:   Mon, 23 Nov 2020 10:26:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is now supported, enable for Loongson systems.
+On 20/11/2020 08:55, Peter Zijlstra wrote:
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
- arch/mips/configs/loongson3_defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+[...]
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 38a817e..3f88e6c 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -271,6 +271,9 @@ CONFIG_HW_RANDOM=y
- CONFIG_RAW_DRIVER=m
- CONFIG_I2C_CHARDEV=y
- CONFIG_I2C_PIIX4=y
-+CONFIG_SPI=y
-+CONFIG_SPI_MASTER=y
-+CONFIG_SPI_LOONGSON=y
- CONFIG_GPIO_LOONGSON=y
- CONFIG_SENSORS_LM75=m
- CONFIG_SENSORS_LM93=m
--- 
-2.1.0
+> PELT (Per Entity Load Tracking)
+> -------------------------------
 
+[...]
+
+> Using this we track 2 key metrics: 'running' and 'runnable'. 'Running'
+> reflects the time an entity spends on the CPU, while 'runnable' reflects the
+> time an entity spends on the runqueue. When there is only a single task these
+> two metrics are the same, but once there is contention for the CPU 'running'
+> will decrease to reflect the fraction of time each task spends on the CPU
+> while 'runnable' will increase to reflect the amount of contention.
+
+People might find it confusing to map 'running and 'runnable' into the 3
+PELT signals (load_avg, runnable_avg and util_avg) being used in the
+scheduler ... with load_avg being 'runnable' and 'weight' based.
+
+> For more detail see: kernel/sched/pelt.c
+> 
+> 
+> Frequency- / Heterogeneous Invariance
+> -------------------------------------
+
+We call 'Heterogeneous Invariance' CPU invariance in chapter 2.3
+Documentation/scheduler/sched-capacity.rst.
+
+[...]
+
+> For more detail see:
+> 
+>  - kernel/sched/pelt.h:update_rq_clock_pelt()
+>  - arch/x86/kernel/smpboot.c:"APERF/MPERF frequency ratio computation."
+
+drivers/base/arch_topology.c:"f_cur/f_max ratio computation".
+
+> UTIL_EST / UTIL_EST_FASTUP
+> --------------------------
+
+[...]
+
+>   util_est := \Sum_t max( t_running, t_util_est_ewma )
+> 
+> For more detail see: kernel/sched/fair.h:util_est_dequeue()
+
+s/fair.h/fair.c
+
+> UCLAMP
+> ------
+> 
+> It is possible to set effective u_min and u_max clamps on each task; the
+
+s/on each task/on each CFS or RT task
+
+[...]
