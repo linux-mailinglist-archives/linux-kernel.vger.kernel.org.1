@@ -2,46 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707F02C0723
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A67302C067B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732009AbgKWMht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:37:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49986 "EHLO mail.kernel.org"
+        id S1730364AbgKWMbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:31:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731987AbgKWMhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:37:43 -0500
+        id S1730825AbgKWMbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:31:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B62BC22203;
-        Mon, 23 Nov 2020 12:37:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB5F020781;
+        Mon, 23 Nov 2020 12:31:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135063;
-        bh=CNiP+4Hj3vw6UmF5OummcB34I0ZbFbNNqimg2SA/Qck=;
+        s=korg; t=1606134671;
+        bh=xlLfugiOHGGKEEAfOJDqFe3YxwH0PwHIuzYn3TTu5Lw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PbYyFxYx9zsF9B7BazhOEw5ZmzNUEg4LHSgHjn/D/1zs2tg84HMNVKljwA+Pxvi7F
-         uuK1nnGcUBLz8TeSK30E2PfHXdFGXQq4dH8EEq9qAX20/8lO/Hj/lpJdAFSLx0DPVp
-         Frg3dgdHs0n6cV+wsvdbInhJ6MK49xAQ5ADobgTA=
+        b=fmZ2P48rqwTBqyCsTnm7JmTw6ltDyuUQl7DG07kYRutJcLpGRZd2eB+RdHQ4f8lRI
+         1U9tpxAxptRyZvvcu1W1jkZujFIEWM7JrOzP0kJz0EtEbb4S0yz6dOEdBNs01bUgAf
+         aVBWx2bIOgTA9GTmf+PP6h289dJSGM8xDM985Pi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 061/158] MIPS: export has_transparent_hugepage() for modules
-Date:   Mon, 23 Nov 2020 13:21:29 +0100
-Message-Id: <20201123121822.882979950@linuxfoundation.org>
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 10/91] net: bridge: add missing counters to ndo_get_stats64 callback
+Date:   Mon, 23 Nov 2020 13:21:30 +0100
+Message-Id: <20201123121809.801456175@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,47 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 31b4d8e172f614adc53ddecb4b6b2f6411a49b84 ]
+[ Upstream commit 7a30ecc9237681bb125cbd30eee92bef7e86293d ]
 
-MIPS should export its local version of "has_transparent_hugepage"
-so that loadable modules (dax) can use it.
+In br_forward.c and br_input.c fields dev->stats.tx_dropped and
+dev->stats.multicast are populated, but they are ignored in
+ndo_get_stats64.
 
-Fixes this build error:
-ERROR: modpost: "has_transparent_hugepage" [drivers/dax/dax.ko] undefined!
-
-Fixes: fd8cfd300019 ("arch: fix has_transparent_hugepage()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: linux-nvdimm@lists.01.org
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 28172739f0a2 ("net: fix 64 bit counters on 32 bit arches")
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/58ea9963-77ad-a7cf-8dfd-fc95ab95f606@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/mm/tlb-r4k.c | 1 +
+ net/bridge/br_device.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
-index c13e46ced4252..60046445122b3 100644
---- a/arch/mips/mm/tlb-r4k.c
-+++ b/arch/mips/mm/tlb-r4k.c
-@@ -437,6 +437,7 @@ int has_transparent_hugepage(void)
+--- a/net/bridge/br_device.c
++++ b/net/bridge/br_device.c
+@@ -215,6 +215,7 @@ static void br_get_stats64(struct net_de
+ 		sum.rx_packets += tmp.rx_packets;
  	}
- 	return mask == PM_HUGE_MASK;
- }
-+EXPORT_SYMBOL(has_transparent_hugepage);
  
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
- 
--- 
-2.27.0
-
++	netdev_stats_to_stats64(stats, &dev->stats);
+ 	stats->tx_bytes   = sum.tx_bytes;
+ 	stats->tx_packets = sum.tx_packets;
+ 	stats->rx_bytes   = sum.rx_bytes;
 
 
