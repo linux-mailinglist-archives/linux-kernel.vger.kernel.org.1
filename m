@@ -2,91 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954E42C07A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F34A2C0608
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732969AbgKWMmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:42:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732607AbgKWMlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:41:06 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45B3E20732;
-        Mon, 23 Nov 2020 12:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135265;
-        bh=0hvS3SBApzgsAyvRK+olxZamNr3ivgLb6WJc8oClCv4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hpBTK4eMF3YGlOtIpVVJenQZWRrMTfAoIxsFvsdyeMfFdjhABamlikU8DzGx/ELC+
-         RaI+VRe2dKC2pC4OhCRfHX9t72RHAUIOemD2J3TC2p1GXVGJTJQSFDRmi1AoKDjGNQ
-         +3oB++BV+l91vBiW3ZiafY5R587Jlu4Z8MfKUp60=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH 5.4 158/158] sched/fair: Fix overutilized update in enqueue_task_fair()
-Date:   Mon, 23 Nov 2020 13:23:06 +0100
-Message-Id: <20201123121827.556725409@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1730196AbgKWM0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:26:45 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8569 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730182AbgKWM0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:26:43 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CfmbQ5z2NzLsR5;
+        Mon, 23 Nov 2020 20:26:10 +0800 (CST)
+Received: from [127.0.0.1] (10.74.185.4) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 23 Nov 2020
+ 20:26:25 +0800
+Subject: Re: [PATCH v4] ACPI / APEI: do memory failure on the physical address
+ reported by ARM processor error section
+To:     <james.morse@arm.com>, <rafael@kernel.org>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>, <tony.luck@intel.com>, <bp@alien8.de>,
+        <akpm@linux-foundation.org>, <jroedel@suse.de>,
+        <peterz@infradead.org>
+References: <1603877835-30970-1-git-send-email-tanxiaofei@huawei.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <5FBBAA71.3090101@huawei.com>
+Date:   Mon, 23 Nov 2020 20:26:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1603877835-30970-1-git-send-email-tanxiaofei@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.74.185.4]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Perret <qperret@google.com>
+Hi James，
+Please help to review this new version, thank you very much.
 
-commit 8e1ac4299a6e8726de42310d9c1379f188140c71 upstream.
+On 2020/10/28 17:37, Xiaofei Tan wrote:
+> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+> synchronise with APEI's irq work") applied, do_sea() return directly
+> for user-mode if apei_claim_sea() handled any error record. Therefore,
+> each error record reported by the user-mode SEA must be effectively
+> processed in APEI GHES driver.
+> 
+> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
+> Error Section, as it has nothing to do with SEA). It is not enough.
+> Because ARM Processor Error could also be used for SEA in some hardware
+> platforms, such as Kunpeng9xx series. We can't ask them to switch to
+> use Memory Error Section for two reasons:
+> 1)The server was delivered to customers, and it will introduce
+> compatibility issue.
+> 2)It make sense to use ARM Processor Error Section. Because either
+> cache or memory errors could generate SEA when consumed by a processor.
+> 
+> Do memory failure handling for ARM Processor Error Section just like
+> for Memory Error Section.
+> 
+> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> ---
+> Changes since v3:
+> - Print unhandled error following James Morse's advice.
+> 
+> Changes since v2:
+> - Updated commit log
+> ---
+>  drivers/acpi/apei/ghes.c | 70 ++++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 53 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index 99df00f..b9cbd33 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+>  	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+>  }
+>  
+> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+> -				       int sev)
+> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+>  {
+>  	unsigned long pfn;
+> -	int flags = -1;
+> -	int sec_sev = ghes_severity(gdata->error_severity);
+> -	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+>  
+>  	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+>  		return false;
+>  
+> -	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+> -		return false;
+> -
+> -	pfn = mem_err->physical_addr >> PAGE_SHIFT;
+> +	pfn = PHYS_PFN(physical_addr);
+>  	if (!pfn_valid(pfn)) {
+>  		pr_warn_ratelimited(FW_WARN GHES_PFX
+>  		"Invalid address in generic error data: %#llx\n",
+> -		mem_err->physical_addr);
+> +		physical_addr);
+>  		return false;
+>  	}
+>  
+> +	memory_failure_queue(pfn, flags);
+> +	return true;
+> +}
+> +
+> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+> +				       int sev)
+> +{
+> +	int flags = -1;
+> +	int sec_sev = ghes_severity(gdata->error_severity);
+> +	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+> +
+> +	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+> +		return false;
+> +
+>  	/* iff following two events can be handled properly by now */
+>  	if (sec_sev == GHES_SEV_CORRECTED &&
+>  	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+> @@ -470,14 +477,45 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+>  	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+>  		flags = 0;
+>  
+> -	if (flags != -1) {
+> -		memory_failure_queue(pfn, flags);
+> -		return true;
+> -	}
+> +	if (flags != -1)
+> +		return ghes_do_memory_failure(mem_err->physical_addr, flags);
+>  
+>  	return false;
+>  }
+>  
+> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
+> +{
+> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+> +	struct cper_arm_err_info *err_info;
+> +	bool queued = false;
+> +	int sec_sev, i;
+> +
+> +	log_arm_hw_error(err);
+> +
+> +	sec_sev = ghes_severity(gdata->error_severity);
+> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
+> +		return false;
+> +
+> +	err_info = (struct cper_arm_err_info *) (err + 1);
+> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
+> +		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
+> +		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
+> +
+> +		if (!is_cache || !has_pa) {
+> +			pr_warn_ratelimited(FW_WARN GHES_PFX
+> +			"Unhandled processor error type %s\n",
+> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
+> +			cper_proc_error_type_strs[err_info->type] : "unknown error");
+> +			continue;
+> +		}
+> +
+> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
+> +			queued = true;
+> +	}
+> +
+> +	return queued;
+> +}
+> +
+>  /*
+>   * PCIe AER errors need to be sent to the AER driver for reporting and
+>   * recovery. The GHES severities map to the following AER severities and
+> @@ -605,9 +643,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+>  			ghes_handle_aer(gdata);
+>  		}
+>  		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+> -			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+> -
+> -			log_arm_hw_error(err);
+> +			queued = ghes_handle_arm_hw_error(gdata, sev);
+>  		} else {
+>  			void *err = acpi_hest_get_payload(gdata);
+>  
+> 
 
-enqueue_task_fair() attempts to skip the overutilized update for new
-tasks as their util_avg is not accurate yet. However, the flag we check
-to do so is overwritten earlier on in the function, which makes the
-condition pretty much a nop.
-
-Fix this by saving the flag early on.
-
-Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point indicator")
-Reported-by: Rick Yiu <rickyiu@google.com>
-Signed-off-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20201112111201.2081902-1-qperret@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- kernel/sched/fair.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5228,6 +5228,7 @@ enqueue_task_fair(struct rq *rq, struct
- 	struct cfs_rq *cfs_rq;
- 	struct sched_entity *se = &p->se;
- 	int idle_h_nr_running = task_has_idle_policy(p);
-+	int task_new = !(flags & ENQUEUE_WAKEUP);
- 
- 	/*
- 	 * The code below (indirectly) updates schedutil which looks at
-@@ -5299,7 +5300,7 @@ enqueue_throttle:
- 		 * into account, but that is not straightforward to implement,
- 		 * and the following generally works well enough in practice.
- 		 */
--		if (flags & ENQUEUE_WAKEUP)
-+		if (!task_new)
- 			update_overutilized_status(rq);
- 
- 	}
-
+-- 
+ thanks
+tanxiaofei
 
