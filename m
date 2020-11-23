@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5402C06C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4F12C06CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731353AbgKWMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:34:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45912 "EHLO mail.kernel.org"
+        id S1731380AbgKWMec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:34:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729972AbgKWMeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:34:19 -0500
+        id S1731352AbgKWMeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:34:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E506920857;
-        Mon, 23 Nov 2020 12:34:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFCBD2076E;
+        Mon, 23 Nov 2020 12:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134858;
-        bh=X7IQTV06GLMc7S6Z3Guj6ByADsUUblVu0PjW5khw4Sg=;
+        s=korg; t=1606134863;
+        bh=I3kkkj9+FZ0SUHAyrZ9elToQ9fT6LuXdNRXthBVpCWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F9SY+XDcPnjGsYZXGTcl7OD01MiuNsuqwDJi9FQKuRhpw3Df/oTqY0Ls937sLUeqP
-         YperxYqXVmuH5YSmSYSXITjYEBFKCD17V+FJnbMGDqXxiTGVGKopf+pTwZf8KFC46O
-         b5x+MryQ3X3Fnh8fZ9tIXKjYsH8FpHqla+r9B6L8=
+        b=Lc8vBb4SGkK8FcDshhImgAew0tcGiPxQqdVu0jwsML/sQZAa3tkru4b5eOUa+dpTI
+         OH2X//YiVuZ9i+Sg7g/j/OkWKxekov06w6WgUNrYNKobW3qJEBLjasVw+1QmE7f/7d
+         GL4aYNUGuzZjaY0ep0pugvtr5JJST+rkVktdX4KQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 016/158] netlabel: fix our progress tracking in netlbl_unlabel_staticlist()
-Date:   Mon, 23 Nov 2020 13:20:44 +0100
-Message-Id: <20201123121820.719867109@linuxfoundation.org>
+Subject: [PATCH 5.4 018/158] net: lantiq: Wait for the GPHY firmware to be ready
+Date:   Mon, 23 Nov 2020 13:20:46 +0100
+Message-Id: <20201123121820.815161016@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -42,89 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit 866358ec331f8faa394995fb4b511af1db0247c8 ]
+[ Upstream commit 2a1828e378c1b5ba1ff283ed8f8c5cc37bb391dc ]
 
-The current NetLabel code doesn't correctly keep track of the netlink
-dump state in some cases, in particular when multiple interfaces with
-large configurations are loaded.  The problem manifests itself by not
-reporting the full configuration to userspace, even though it is
-loaded and active in the kernel.  This patch fixes this by ensuring
-that the dump state is properly reset when necessary inside the
-netlbl_unlabel_staticlist() function.
+A user reports (slightly shortened from the original message):
+  libphy: lantiq,xrx200-mdio: probed
+  mdio_bus 1e108000.switch-mii: MDIO device at address 17 is missing.
+  gswip 1e108000.switch lan: no phy at 2
+  gswip 1e108000.switch lan: failed to connect to port 2: -19
+  lantiq,xrx200-net 1e10b308.eth eth0: error -19 setting up slave phy
 
-Fixes: 8cc44579d1bd ("NetLabel: Introduce static network labels for unlabeled connections")
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Link: https://lore.kernel.org/r/160484450633.3752.16512718263560813473.stgit@sifl
+This is a single-port board using the internal Fast Ethernet PHY. The
+user reports that switching to PHY scanning instead of configuring the
+PHY within device-tree works around this issue.
+
+The documentation for the standalone variant of the PHY11G (which is
+probably very similar to what is used inside the xRX200 SoCs but having
+the firmware burnt onto that standalone chip in the factory) states that
+the PHY needs 300ms to be ready for MDIO communication after releasing
+the reset.
+
+Add a 300ms delay after initializing all GPHYs to ensure that the GPHY
+firmware had enough time to initialize and to appear on the MDIO bus.
+Unfortunately there is no (known) documentation on what the minimum time
+to wait after releasing the reset on an internal PHY so play safe and
+take the one for the external variant. Only wait after the last GPHY
+firmware is loaded to not slow down the initialization too much (
+xRX200 has two GPHYs but newer SoCs have at least three GPHYs).
+
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201115165757.552641-1-martin.blumenstingl@googlemail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netlabel/netlabel_unlabeled.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/net/dsa/lantiq_gswip.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/net/netlabel/netlabel_unlabeled.c
-+++ b/net/netlabel/netlabel_unlabeled.c
-@@ -1165,12 +1165,13 @@ static int netlbl_unlabel_staticlist(str
- 	struct netlbl_unlhsh_walk_arg cb_arg;
- 	u32 skip_bkt = cb->args[0];
- 	u32 skip_chain = cb->args[1];
--	u32 iter_bkt;
--	u32 iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0;
-+	u32 skip_addr4 = cb->args[2];
-+	u32 iter_bkt, iter_chain, iter_addr4 = 0, iter_addr6 = 0;
- 	struct netlbl_unlhsh_iface *iface;
- 	struct list_head *iter_list;
- 	struct netlbl_af4list *addr4;
- #if IS_ENABLED(CONFIG_IPV6)
-+	u32 skip_addr6 = cb->args[3];
- 	struct netlbl_af6list *addr6;
- #endif
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -26,6 +26,7 @@
+  */
  
-@@ -1181,7 +1182,7 @@ static int netlbl_unlabel_staticlist(str
- 	rcu_read_lock();
- 	for (iter_bkt = skip_bkt;
- 	     iter_bkt < rcu_dereference(netlbl_unlhsh)->size;
--	     iter_bkt++, iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0) {
-+	     iter_bkt++) {
- 		iter_list = &rcu_dereference(netlbl_unlhsh)->tbl[iter_bkt];
- 		list_for_each_entry_rcu(iface, iter_list, list) {
- 			if (!iface->valid ||
-@@ -1189,7 +1190,7 @@ static int netlbl_unlabel_staticlist(str
- 				continue;
- 			netlbl_af4list_foreach_rcu(addr4,
- 						   &iface->addr4_list) {
--				if (iter_addr4++ < cb->args[2])
-+				if (iter_addr4++ < skip_addr4)
- 					continue;
- 				if (netlbl_unlabel_staticlist_gen(
- 					      NLBL_UNLABEL_C_STATICLIST,
-@@ -1202,10 +1203,12 @@ static int netlbl_unlabel_staticlist(str
- 					goto unlabel_staticlist_return;
- 				}
- 			}
-+			iter_addr4 = 0;
-+			skip_addr4 = 0;
- #if IS_ENABLED(CONFIG_IPV6)
- 			netlbl_af6list_foreach_rcu(addr6,
- 						   &iface->addr6_list) {
--				if (iter_addr6++ < cb->args[3])
-+				if (iter_addr6++ < skip_addr6)
- 					continue;
- 				if (netlbl_unlabel_staticlist_gen(
- 					      NLBL_UNLABEL_C_STATICLIST,
-@@ -1218,8 +1221,12 @@ static int netlbl_unlabel_staticlist(str
- 					goto unlabel_staticlist_return;
- 				}
- 			}
-+			iter_addr6 = 0;
-+			skip_addr6 = 0;
- #endif /* IPv6 */
- 		}
-+		iter_chain = 0;
-+		skip_chain = 0;
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/etherdevice.h>
+ #include <linux/firmware.h>
+ #include <linux/if_bridge.h>
+@@ -1818,6 +1819,16 @@ static int gswip_gphy_fw_list(struct gsw
+ 		i++;
  	}
  
- unlabel_staticlist_return:
++	/* The standalone PHY11G requires 300ms to be fully
++	 * initialized and ready for any MDIO communication after being
++	 * taken out of reset. For the SoC-internal GPHY variant there
++	 * is no (known) documentation for the minimum time after a
++	 * reset. Use the same value as for the standalone variant as
++	 * some users have reported internal PHYs not being detected
++	 * without any delay.
++	 */
++	msleep(300);
++
+ 	return 0;
+ 
+ remove_gphy:
 
 
