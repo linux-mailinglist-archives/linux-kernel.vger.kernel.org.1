@@ -2,236 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872492C1794
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E8D2C17A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730958AbgKWVUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:20:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730374AbgKWVUC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:20:02 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D654C061A4F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:20:01 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id v14so3657904lfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:20:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=D4j9ipcYfkgbYW3IfC3r3VIMquqoN+L6cwpP+cS0BfI=;
-        b=fbC4IE3Ma5k4BEntewlv8v44ErN69EIIdl+LZnfvxK31fInFQJfwmWF2sg7nACKjA9
-         I6b6ZNKtoWl64a5fVPHAmoBsBsZ6nToMj+Obly0NP8Ez97fTOJgdkj7137/mnilNhpEh
-         BqN/AIpYIzPy50MtZSNUjDDXyHutg+qwuyV4uGBbMumFfpKVEfROV/wlL9zO6wHExM4K
-         moZZ3tIvtcR81IIWpQIx6JoA2Jqcw0URh9PDkR4MFHcyap+48kzcU5s1UCS3OtJ7ukUf
-         tIaKNvwoxdNVe3mpc7VFjd4B+mci1IQXbzUjkulToK+KErFEffmZ/hPOqt64fX6Z14DN
-         s4EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=D4j9ipcYfkgbYW3IfC3r3VIMquqoN+L6cwpP+cS0BfI=;
-        b=TOQb86bo7m38JH/5tVTf3kXstP0cbSIYg24DQPyx1cpH6fdlVC6mQZWEK5nXjvxEQs
-         J0tI6GODAtdwBg4m9YKm97F/q+2vFiN3SSFEYxz3cdd8a33MOIAc6s9EEgBk+QQDVZBg
-         PMR2KyT09i5Z+pzhSR7JiHq+L6XYlQT08Tuw/QvyfR4qFFEcFqAzyf4VE2NwzoqNI9Lk
-         bb53z/g/4Qz/5K8QAuuCMrrck2FjnS63WR96+HGrZFWvwB7bDxDjw72sCfvKL584CZJs
-         A/kLWNtNzS1c0c9KY8bOmldyTlauVWG0jPikrwdGdMZqY/KFcAZOBCU5BuQS4w0vGx1K
-         EXfw==
-X-Gm-Message-State: AOAM532nxxq67FHNxB7v0tesY2cq15SWB/GPD1GFjDNNIPDbbX42Vnfu
-        nf3s88R1Xd6qfHglvZAgu3/jRrktiOJmZeF+N2vQfg==
-X-Google-Smtp-Source: ABdhPJyZNIPvvHuqqE5lpIUT0dScn3UUr49Bfga2lpEazQCiXcQJAC/sc7oZqgLOpkGR6U56kkuVO/8yEnsIFrrECV4=
-X-Received: by 2002:ac2:5a49:: with SMTP id r9mr381970lfn.381.1606166399488;
- Mon, 23 Nov 2020 13:19:59 -0800 (PST)
+        id S1730414AbgKWVXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:23:34 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:17978 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726270AbgKWVXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 16:23:33 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606166612; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lQpDYY+11TFASEzr4WpQgNQgUN6/TRcIX2t5gwzRE4U=;
+ b=nGrRI7PBCWIA/fHSqEEiDj/994lwfNsqOzKeO2heIgPmhXPZWNxV7I4gnChBQYueGyobsvDT
+ /Uln/vYA4ZWzqX+k03mr3g/G3tthy5stN2qdaK9zhjXcVuBT4LAVDPB+oO3rEEsm7YQ9OAco
+ fPL8oj/pGcx/lKdHcXU2UUDc/EY=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fbc284e7ef0a8d84323d385 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 21:23:26
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7E17BC43464; Mon, 23 Nov 2020 21:23:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49900C433C6;
+        Mon, 23 Nov 2020 21:23:25 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201112205141.775752-1-mic@digikod.net> <20201112205141.775752-8-mic@digikod.net>
- <CAG48ez3HA63CX852LLDFCcNyzRGwAr3x_cvA1-t8tgDxfF1dOQ@mail.gmail.com>
- <1d524ea9-85eb-049c-2156-05cad6d6fcfd@digikod.net> <CAG48ez2cmsrZbUEmQmzPQugJikkvfs_MWmMizxmoyspCeXAXRQ@mail.gmail.com>
- <7831e55d-34ef-cf74-3d47-15e2e1edf96c@digikod.net>
-In-Reply-To: <7831e55d-34ef-cf74-3d47-15e2e1edf96c@digikod.net>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 23 Nov 2020 22:19:32 +0100
-Message-ID: <CAG48ez2V-eSH2+HL9zrYYD4QMpP4a5y8=mTQtk20PB0wUz_4Tw@mail.gmail.com>
-Subject: Re: [PATCH v24 07/12] landlock: Support filesystem access-control
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 23 Nov 2020 13:23:25 -0800
+From:   abhinavk@codeaurora.org
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: Re: [PATCH 14/40] drm/msm/disp/dpu1/dpu_hw_catalog: Move definitions
+ to the only place they are used
+In-Reply-To: <20201123111919.233376-15-lee.jones@linaro.org>
+References: <20201123111919.233376-1-lee.jones@linaro.org>
+ <20201123111919.233376-15-lee.jones@linaro.org>
+Message-ID: <56afb74961dab35946922ec5fed91502@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:16 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>=
- wrote:
-> On 23/11/2020 20:44, Jann Horn wrote:
-> > On Sat, Nov 21, 2020 at 11:06 AM Micka=C3=ABl Sala=C3=BCn <mic@digikod.=
-net> wrote:
-> >> On 21/11/2020 08:00, Jann Horn wrote:
-> >>> On Thu, Nov 12, 2020 at 9:52 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod=
-.net> wrote:
-> >>>> Thanks to the Landlock objects and ruleset, it is possible to identi=
-fy
-> >>>> inodes according to a process's domain.  To enable an unprivileged
-> >>>> process to express a file hierarchy, it first needs to open a direct=
-ory
-> >>>> (or a file) and pass this file descriptor to the kernel through
-> >>>> landlock_add_rule(2).  When checking if a file access request is
-> >>>> allowed, we walk from the requested dentry to the real root, followi=
-ng
-> >>>> the different mount layers.  The access to each "tagged" inodes are
-> >>>> collected according to their rule layer level, and ANDed to create
-> >>>> access to the requested file hierarchy.  This makes possible to iden=
-tify
-> >>>> a lot of files without tagging every inodes nor modifying the
-> >>>> filesystem, while still following the view and understanding the use=
-r
-> >>>> has from the filesystem.
-> >>>>
-> >>>> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does no=
-t
-> >>>> keep the same struct inodes for the same inodes whereas these inodes=
- are
-> >>>> in use.
-> >>>>
-> >>>> This commit adds a minimal set of supported filesystem access-contro=
-l
-> >>>> which doesn't enable to restrict all file-related actions.  This is =
-the
-> >>>> result of multiple discussions to minimize the code of Landlock to e=
-ase
-> >>>> review.  Thanks to the Landlock design, extending this access-contro=
-l
-> >>>> without breaking user space will not be a problem.  Moreover, seccom=
-p
-> >>>> filters can be used to restrict the use of syscall families which ma=
-y
-> >>>> not be currently handled by Landlock.
-> >>>>
-> >>>> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> >>>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> >>>> Cc: James Morris <jmorris@namei.org>
-> >>>> Cc: Jann Horn <jannh@google.com>
-> >>>> Cc: Jeff Dike <jdike@addtoit.com>
-> >>>> Cc: Kees Cook <keescook@chromium.org>
-> >>>> Cc: Richard Weinberger <richard@nod.at>
-> >>>> Cc: Serge E. Hallyn <serge@hallyn.com>
-> >>>> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> >>>> ---
-> >>>>
-> >>>> Changes since v23:
-> >>>> * Enforce deterministic interleaved path rules.  To have consistent
-> >>>>   layered rules, granting access to a path implies that all accesses
-> >>>>   tied to inodes, from the requested file to the real root, must be
-> >>>>   checked.  Otherwise, stacked rules may result to overzealous
-> >>>>   restrictions.  By excluding the ability to add exceptions in the s=
-ame
-> >>>>   layer (e.g. /a allowed, /a/b denied, and /a/b/c allowed), we get
-> >>>>   deterministic interleaved path rules.  This removes an optimizatio=
-n
-> >>>
-> >>> I don't understand the "deterministic interleaved path rules" part.
-> >>
-> >> I explain bellow.
-> >>
-> >>>
-> >>>
-> >>> What if I have a policy like this?
-> >>>
-> >>> /home/user READ
-> >>> /home/user/Downloads READ+WRITE
-> >>>
-> >>> That's a reasonable policy, right?
-> >>
-> >> Definitely, I forgot this, thanks for the outside perspective!
-> >>
-> >>>
-> >>> If I then try to open /home/user/Downloads/foo in WRITE mode, the loo=
-p
-> >>> will first check against the READ+WRITE rule for /home/user, that
-> >>> check will pass, and then it will check against the READ rule for /,
-> >>> which will deny the access, right? That seems bad.
-> >>
-> >> Yes that was the intent.
-> >>
-> >>>
-> >>>
-> >>> The v22 code ensured that for each layer, the most specific rule (the
-> >>> first we encounter on the walk) always wins, right? What's the proble=
-m
-> >>> with that?
-> >>
-> >> This can be explained with the interleaved_masked_accesses test:
-> >> https://github.com/landlock-lsm/linux/blob/landlock-v24/tools/testing/=
-selftests/landlock/fs_test.c#L647
-> >>
-> >> In this case there is 4 stacked layers:
-> >> layer 1: allows s1d1/s1d2/s1d3/file1
-> >> layer 2: allows s1d1/s1d2/s1d3
-> >>          denies s1d1/s1d2
-> >> layer 3: allows s1d1
-> >> layer 4: allows s1d1/s1d2
-> >>
-> >> In the v23, access to file1 would be allowed until layer 3, but layer =
-4
-> >> would merge a new rule for the s1d2 inode. Because we don't record whe=
-re
-> >> exactly the access come from, we can't tell that layer 2 allowed acces=
-s
-> >> thanks to s1d3 and that its s1d2 rule was ignored. I think this behavi=
-or
-> >> doesn't make sense from the user point of view.
-> >
-> > Aah, I think I'm starting to understand the issue now. Basically, with
-> > the current UAPI, the semantics have to be "an access is permitted if,
-> > for each policy layer, at least one rule encountered on the pathwalk
-> > permits the access; rules that deny the access are irrelevant". And if
-> > it turns out that someone needs to be able to deny access to specific
-> > inodes, we'll have to extend struct landlock_path_beneath_attr.
->
-> Right, I'll add this to the documentation (aligned with the new
-> implementation).
->
-> >
-> > That reminds me... if we do need to make such a change in the future,
-> > it would be easier in terms of UAPI compatibility if
-> > landlock_add_rule() used copy_struct_from_user(), which is designed to
-> > create backwards and forwards compatibility with other version of UAPI
-> > headers. So adding that now might save us some headaches later.
->
-> I used copy_struct_from_user() before v21, but Arnd wasn't a fan of
-> having type and size arguments, so we simplified the UAPI in the v21 by
-> removing the size argument. The type argument is enough to extend the
-> structure, but indeed, we lose the forward compatibility. Relying on one
-> syscall per rule type seems too much, though.
-
-You have a point there, I guess having a type argument is enough. (And
-if userspace tries to load a ruleset with "deny" rules that isn't
-supported by the current kernel, userspace will have to deal with that
-in some way anyway.)
-
-So thinking about it more, I guess the current version is probably
-actually fine, too.
+On 2020-11-23 03:18, Lee Jones wrote:
+> These tables are not large or overbearing, so moving them into the
+> source file seems like the right thing to do.  The alternative is to
+> use __maybe_unused, which is undesirable.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  In file included from 
+> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c:11:
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h:7:23: warning:
+> ‘qcom_compressed_supported_formats’ defined but not used
+> [-Wunused-const-variable=]
+>  7 | static const uint32_t qcom_compressed_supported_formats[] = {
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h:48:23: warning:
+> ‘plane_formats_yuv’ defined but not used [-Wunused-const-variable=]
+>  48 | static const uint32_t plane_formats_yuv[] = {
+>  | ^~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h:17:23: warning:
+> ‘plane_formats’ defined but not used [-Wunused-const-variable=]
+>  17 | static const uint32_t plane_formats[] = {
+>  | ^~~~~~~~~~~~~
+> 
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+I think this is reasonable,
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 74 +++++++++++++++-
+>  .../drm/msm/disp/dpu1/dpu_hw_catalog_format.h | 88 -------------------
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c     | 11 ++-
+>  3 files changed, 83 insertions(+), 90 deletions(-)
+>  delete mode 100644 
+> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> index a7004f18523b0..9ed6d0c6cd9b2 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> @@ -8,7 +8,6 @@
+>  #include <linux/platform_device.h>
+>  #include "dpu_hw_mdss.h"
+>  #include "dpu_hw_catalog.h"
+> -#include "dpu_hw_catalog_format.h"
+>  #include "dpu_kms.h"
+> 
+>  #define VIG_MASK \
+> @@ -62,6 +61,79 @@
+> 
+>  #define STRCAT(X, Y) (X Y)
+> 
+> +static const uint32_t plane_formats[] = {
+> +	DRM_FORMAT_ARGB8888,
+> +	DRM_FORMAT_ABGR8888,
+> +	DRM_FORMAT_RGBA8888,
+> +	DRM_FORMAT_BGRA8888,
+> +	DRM_FORMAT_XRGB8888,
+> +	DRM_FORMAT_RGBX8888,
+> +	DRM_FORMAT_BGRX8888,
+> +	DRM_FORMAT_XBGR8888,
+> +	DRM_FORMAT_RGB888,
+> +	DRM_FORMAT_BGR888,
+> +	DRM_FORMAT_RGB565,
+> +	DRM_FORMAT_BGR565,
+> +	DRM_FORMAT_ARGB1555,
+> +	DRM_FORMAT_ABGR1555,
+> +	DRM_FORMAT_RGBA5551,
+> +	DRM_FORMAT_BGRA5551,
+> +	DRM_FORMAT_XRGB1555,
+> +	DRM_FORMAT_XBGR1555,
+> +	DRM_FORMAT_RGBX5551,
+> +	DRM_FORMAT_BGRX5551,
+> +	DRM_FORMAT_ARGB4444,
+> +	DRM_FORMAT_ABGR4444,
+> +	DRM_FORMAT_RGBA4444,
+> +	DRM_FORMAT_BGRA4444,
+> +	DRM_FORMAT_XRGB4444,
+> +	DRM_FORMAT_XBGR4444,
+> +	DRM_FORMAT_RGBX4444,
+> +	DRM_FORMAT_BGRX4444,
+> +};
+> +
+> +static const uint32_t plane_formats_yuv[] = {
+> +	DRM_FORMAT_ARGB8888,
+> +	DRM_FORMAT_ABGR8888,
+> +	DRM_FORMAT_RGBA8888,
+> +	DRM_FORMAT_BGRX8888,
+> +	DRM_FORMAT_BGRA8888,
+> +	DRM_FORMAT_XRGB8888,
+> +	DRM_FORMAT_XBGR8888,
+> +	DRM_FORMAT_RGBX8888,
+> +	DRM_FORMAT_RGB888,
+> +	DRM_FORMAT_BGR888,
+> +	DRM_FORMAT_RGB565,
+> +	DRM_FORMAT_BGR565,
+> +	DRM_FORMAT_ARGB1555,
+> +	DRM_FORMAT_ABGR1555,
+> +	DRM_FORMAT_RGBA5551,
+> +	DRM_FORMAT_BGRA5551,
+> +	DRM_FORMAT_XRGB1555,
+> +	DRM_FORMAT_XBGR1555,
+> +	DRM_FORMAT_RGBX5551,
+> +	DRM_FORMAT_BGRX5551,
+> +	DRM_FORMAT_ARGB4444,
+> +	DRM_FORMAT_ABGR4444,
+> +	DRM_FORMAT_RGBA4444,
+> +	DRM_FORMAT_BGRA4444,
+> +	DRM_FORMAT_XRGB4444,
+> +	DRM_FORMAT_XBGR4444,
+> +	DRM_FORMAT_RGBX4444,
+> +	DRM_FORMAT_BGRX4444,
+> +
+> +	DRM_FORMAT_NV12,
+> +	DRM_FORMAT_NV21,
+> +	DRM_FORMAT_NV16,
+> +	DRM_FORMAT_NV61,
+> +	DRM_FORMAT_VYUY,
+> +	DRM_FORMAT_UYVY,
+> +	DRM_FORMAT_YUYV,
+> +	DRM_FORMAT_YVYU,
+> +	DRM_FORMAT_YUV420,
+> +	DRM_FORMAT_YVU420,
+> +};
+> +
+>  /*************************************************************
+>   * DPU sub blocks config
+>   *************************************************************/
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h
+> deleted file mode 100644
+> index 3766f0fd0bf08..0000000000000
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog_format.h
+> +++ /dev/null
+> @@ -1,88 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0-only */
+> -/* Copyright (c) 2015-2018, The Linux Foundation. All rights reserved.
+> - */
+> -
+> -#include "dpu_hw_mdss.h"
+> -
+> -static const uint32_t qcom_compressed_supported_formats[] = {
+> -	DRM_FORMAT_ABGR8888,
+> -	DRM_FORMAT_ARGB8888,
+> -	DRM_FORMAT_XBGR8888,
+> -	DRM_FORMAT_XRGB8888,
+> -	DRM_FORMAT_BGR565,
+> -
+> -	DRM_FORMAT_NV12,
+> -};
+> -
+> -static const uint32_t plane_formats[] = {
+> -	DRM_FORMAT_ARGB8888,
+> -	DRM_FORMAT_ABGR8888,
+> -	DRM_FORMAT_RGBA8888,
+> -	DRM_FORMAT_BGRA8888,
+> -	DRM_FORMAT_XRGB8888,
+> -	DRM_FORMAT_RGBX8888,
+> -	DRM_FORMAT_BGRX8888,
+> -	DRM_FORMAT_XBGR8888,
+> -	DRM_FORMAT_RGB888,
+> -	DRM_FORMAT_BGR888,
+> -	DRM_FORMAT_RGB565,
+> -	DRM_FORMAT_BGR565,
+> -	DRM_FORMAT_ARGB1555,
+> -	DRM_FORMAT_ABGR1555,
+> -	DRM_FORMAT_RGBA5551,
+> -	DRM_FORMAT_BGRA5551,
+> -	DRM_FORMAT_XRGB1555,
+> -	DRM_FORMAT_XBGR1555,
+> -	DRM_FORMAT_RGBX5551,
+> -	DRM_FORMAT_BGRX5551,
+> -	DRM_FORMAT_ARGB4444,
+> -	DRM_FORMAT_ABGR4444,
+> -	DRM_FORMAT_RGBA4444,
+> -	DRM_FORMAT_BGRA4444,
+> -	DRM_FORMAT_XRGB4444,
+> -	DRM_FORMAT_XBGR4444,
+> -	DRM_FORMAT_RGBX4444,
+> -	DRM_FORMAT_BGRX4444,
+> -};
+> -
+> -static const uint32_t plane_formats_yuv[] = {
+> -	DRM_FORMAT_ARGB8888,
+> -	DRM_FORMAT_ABGR8888,
+> -	DRM_FORMAT_RGBA8888,
+> -	DRM_FORMAT_BGRX8888,
+> -	DRM_FORMAT_BGRA8888,
+> -	DRM_FORMAT_XRGB8888,
+> -	DRM_FORMAT_XBGR8888,
+> -	DRM_FORMAT_RGBX8888,
+> -	DRM_FORMAT_RGB888,
+> -	DRM_FORMAT_BGR888,
+> -	DRM_FORMAT_RGB565,
+> -	DRM_FORMAT_BGR565,
+> -	DRM_FORMAT_ARGB1555,
+> -	DRM_FORMAT_ABGR1555,
+> -	DRM_FORMAT_RGBA5551,
+> -	DRM_FORMAT_BGRA5551,
+> -	DRM_FORMAT_XRGB1555,
+> -	DRM_FORMAT_XBGR1555,
+> -	DRM_FORMAT_RGBX5551,
+> -	DRM_FORMAT_BGRX5551,
+> -	DRM_FORMAT_ARGB4444,
+> -	DRM_FORMAT_ABGR4444,
+> -	DRM_FORMAT_RGBA4444,
+> -	DRM_FORMAT_BGRA4444,
+> -	DRM_FORMAT_XRGB4444,
+> -	DRM_FORMAT_XBGR4444,
+> -	DRM_FORMAT_RGBX4444,
+> -	DRM_FORMAT_BGRX4444,
+> -
+> -	DRM_FORMAT_NV12,
+> -	DRM_FORMAT_NV21,
+> -	DRM_FORMAT_NV16,
+> -	DRM_FORMAT_NV61,
+> -	DRM_FORMAT_VYUY,
+> -	DRM_FORMAT_UYVY,
+> -	DRM_FORMAT_YUYV,
+> -	DRM_FORMAT_YVYU,
+> -	DRM_FORMAT_YUV420,
+> -	DRM_FORMAT_YVU420,
+> -};
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> index 7ea90d25a3b69..c0b1d77369e53 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> @@ -19,7 +19,6 @@
+>  #include "dpu_kms.h"
+>  #include "dpu_formats.h"
+>  #include "dpu_hw_sspp.h"
+> -#include "dpu_hw_catalog_format.h"
+>  #include "dpu_trace.h"
+>  #include "dpu_crtc.h"
+>  #include "dpu_vbif.h"
+> @@ -63,6 +62,16 @@ enum {
+> 
+>  #define DEFAULT_REFRESH_RATE	60
+> 
+> +static const uint32_t qcom_compressed_supported_formats[] = {
+> +	DRM_FORMAT_ABGR8888,
+> +	DRM_FORMAT_ARGB8888,
+> +	DRM_FORMAT_XBGR8888,
+> +	DRM_FORMAT_XRGB8888,
+> +	DRM_FORMAT_BGR565,
+> +
+> +	DRM_FORMAT_NV12,
+> +};
+> +
+>  /**
+>   * enum dpu_plane_qos - Different qos configurations for each pipe
+>   *
