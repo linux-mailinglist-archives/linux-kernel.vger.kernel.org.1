@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF64C2C0C1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59DB2C0C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732300AbgKWNom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:44:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
+        id S1733272AbgKWNos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:44:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730068AbgKWNol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:44:41 -0500
-Received: from localhost (unknown [176.167.152.233])
+        id S1733009AbgKWNor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:44:47 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B2AF206F1;
-        Mon, 23 Nov 2020 13:44:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF43320729;
+        Mon, 23 Nov 2020 13:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606139080;
-        bh=P9zQbHB28E6VtYusUFpATLlB1aKLlAxQSqrq/mCm4FA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K+ehFd6USfbS/TljS1tg/RC+MNXIQxsXIXc+xVORBRpWK5OMZqRunsbCJWvMXQuor
-         KDFJIax5mc0aaPeN/c15BVFH2tuZnwaXqQ1i+BgXEeLu1OjJBSAHJ+u0CKbLSlD45Q
-         2GlZcY3RVfb4H4uRcAcxIKt0VrsnKIWLDUKKugBA=
-Date:   Mon, 23 Nov 2020 14:44:37 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
+        s=default; t=1606139086;
+        bh=/PwbI2azxdOOPyORsfavbiNovbcboiR/bBOFvrmG+KA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=al1bRH4DG5NZGMxwVysWnXLnEekLczyJ4QYzkOD2tCTquLnO7xrA/Vd3n7xMepZMu
+         qr/oD5VaOydPneTWxRqrL0GNRnIEBwplZrrRFmrN8mOTKrNHEYXEpObyTiuOfKBLhB
+         K9Yc3FNN+C2MMlx2K1Wr1wcQAJpW1NPxSbt0Npko=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khC96-00Cxm6-HH; Mon, 23 Nov 2020 13:44:44 +0000
+Date:   Mon, 23 Nov 2020 13:44:38 +0000
+Message-ID: <87pn445gs9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT
- aware
-Message-ID: <20201123134437.GA95787@lothringen>
-References: <20201113140207.499353218@linutronix.de>
- <20201113141734.324061522@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113141734.324061522@linutronix.de>
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 00/24] Opt-in always-on nVHE hypervisor
+In-Reply-To: <20201116204318.63987-1-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, lorenzo.pieralisi@arm.com, sudeep.holla@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
-> +void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
-> +{
-> +	bool preempt_on = preemptible();
-> +	unsigned long flags;
-> +	u32 pending;
-> +	int curcnt;
-> +
-> +	WARN_ON_ONCE(in_irq());
-> +	lockdep_assert_irqs_enabled();
-> +
-> +	local_irq_save(flags);
-> +	curcnt = this_cpu_read(softirq_ctrl.cnt);
-> +
-> +	/*
-> +	 * If this is not reenabling soft interrupts, no point in trying to
-> +	 * run pending ones.
-> +	 */
-> +	if (curcnt != cnt)
-> +		goto out;
-> +
-> +	pending = local_softirq_pending();
-> +	if (!pending || ksoftirqd_running(pending))
-> +		goto out;
-> +
-> +	/*
-> +	 * If this was called from non preemptible context, wake up the
-> +	 * softirq daemon.
-> +	 */
-> +	if (!preempt_on) {
-> +		wakeup_softirqd();
-> +		goto out;
-> +	}
-> +
-> +	/*
-> +	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
-> +	 * in_serving_softirq() become true.
-> +	 */
-> +	cnt = SOFTIRQ_OFFSET;
-> +	__local_bh_enable(cnt, false);
+On Mon, 16 Nov 2020 20:42:54 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
+> 
+> As we progress towards being able to keep guest state private to the
+> host running nVHE hypervisor, this series allows the hypervisor to
+> install itself on newly booted CPUs before the host is allowed to run
+> on them.
+> 
+> All functionality described below is opt-in, guarded by an early param
+> 'kvm-arm.protected'. Future patches specific to the new "protected" mode
+> should be hidden behind the same param.
+> 
+> The hypervisor starts trapping host SMCs and intercepting host's PSCI
+> CPU_ON/SUSPEND calls. It replaces the host's entry point with its own,
+> initializes the EL2 state of the new CPU and installs the nVHE hyp vector
+> before ERETing to the host's entry point.
+> 
+> The kernel checks new cores' features against the finalized system
+> capabilities. To avoid the need to move this code/data to EL2, the
+> implementation only allows to boot cores that were online at the time of
+> KVM initialization and therefore had been checked already.
+> 
+> Other PSCI SMCs are forwarded to EL3, though only the known set of SMCs
+> implemented in the kernel is allowed. Non-PSCI SMCs are also forwarded
+> to EL3. Future changes will need to ensure the safety of all SMCs wrt.
+> private guests.
+> 
+> The host is still allowed to reset EL2 back to the stub vector, eg. for
+> hibernation or kexec, but will not disable nVHE when there are no VMs.
+> 
+> Tested on Rock Pi 4b, based on 5.10-rc4.
 
-But then you enter __do_softirq() with softirq_count() == SOFTIRQ_OFFSET.
-__do_softirq() calls softirq_handle_begin() which then sets it back to SOFTIRQ_DISABLE_OFFSET...
+Adding Lorenzo and Sudeep for the PSCI side of things.
 
-> +	__do_softirq();
-> +
-> +out:
-> +	__local_bh_enable(cnt, preempt_on);
+Thanks,
 
-You escape from there with a correct preempt_count() but still the softirq executes
-under SOFTIRQ_DISABLE_OFFSET and not SOFTIRQ_OFFSET, making in_serving_softirq() false.
+	M.
 
-> +	local_irq_restore(flags);
-> +}
-> +EXPORT_SYMBOL(__local_bh_enable_ip);
-
-Thanks.
+-- 
+Without deviation from the norm, progress is not possible.
