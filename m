@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03A12C0BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652EC2C0B1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732044AbgKWNdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:33:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35344 "EHLO mail.kernel.org"
+        id S1732254AbgKWMj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730040AbgKWMZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:25:45 -0500
+        id S1732148AbgKWMi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:38:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA11C208C3;
-        Mon, 23 Nov 2020 12:25:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B88920732;
+        Mon, 23 Nov 2020 12:38:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134343;
-        bh=beepN1enpIkIqzm43BzJnt/q7Dpf/K7nNG/A2pLSkbo=;
+        s=korg; t=1606135134;
+        bh=S8qnBqdIWsjGrOzv3NoC7r6Vj3YqVQD4bARnwBc9ugI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0dolPQ8HoJ8FRjKrYrKf8j/MV8ecOpbKtQYTSmcqkGPVle3vybMTETD/iDZv/pv7H
-         vZAoPTB2fk4LeXDQPWOrTk74SPPTf4rH7FsmCkgbq6N+ghtSuiden5EfTykndGFbHR
-         FWMXffydJDCu7UkEDl/aHluXLWw2py+AdPZ76nbA=
+        b=pHNLca9G+QUia5i83SWiNHYn5YE250jCSEthbRGkz1UVU/vilfsj83uJOUM1WtHQB
+         5zatLIBAmGZ2fYqJRO6GxEKqR7S12pE888/oK2B9nP+lINdiRJzdqjkFSP64DcWt0o
+         SvP4k3vfl0ESSHJj3lJlZ9W1r2c6Iu0Vvh4hMdyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Fugang Duan <fugang.duan@nxp.com>
-Subject: [PATCH 4.9 37/47] tty: serial: imx: keep console clocks always on
-Date:   Mon, 23 Nov 2020 13:22:23 +0100
-Message-Id: <20201123121807.348822035@linuxfoundation.org>
+        =?UTF-8?q?=E7=A7=A6=E4=B8=96=E6=9D=BE?= <qinshisong1205@gmail.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: [PATCH 5.4 116/158] speakup: Do not let the line discipline be used several times
+Date:   Mon, 23 Nov 2020 13:22:24 +0100
+Message-Id: <20201123121825.536879124@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-commit e67c139c488e84e7eae6c333231e791f0e89b3fb upstream.
+commit d4122754442799187d5d537a9c039a49a67e57f1 upstream.
 
-For below code, there has chance to cause deadlock in SMP system:
-Thread 1:
-clk_enable_lock();
-pr_info("debug message");
-clk_enable_unlock();
+Speakup has only one speakup_tty variable to store the tty it is managing. This
+makes sense since its codebase currently assumes that there is only one user who
+controls the screen reading.
 
-Thread 2:
-imx_uart_console_write()
-	clk_enable()
-		clk_enable_lock();
+That however means that we have to forbid using the line discipline several
+times, otherwise the second closure would try to free a NULL ldisc_data, leading to
 
-Thread 1:
-Acuired clk enable_lock -> printk -> console_trylock_spinning
-Thread 2:
-console_unlock() -> imx_uart_console_write -> clk_disable -> Acquite clk enable_lock
+general protection fault: 0000 [#1] SMP KASAN PTI
+RIP: 0010:spk_ttyio_ldisc_close+0x2c/0x60
+Call Trace:
+ tty_ldisc_release+0xa2/0x340
+ tty_release_struct+0x17/0xd0
+ tty_release+0x9d9/0xcc0
+ __fput+0x231/0x740
+ task_work_run+0x12c/0x1a0
+ do_exit+0x9b5/0x2230
+ ? release_task+0x1240/0x1240
+ ? __do_page_fault+0x562/0xa30
+ do_group_exit+0xd5/0x2a0
+ __x64_sys_exit_group+0x35/0x40
+ do_syscall_64+0x89/0x2b0
+ ? page_fault+0x8/0x30
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-So the patch is to keep console port clocks always on like
-other console drivers.
-
-Fixes: 1cf93e0d5488 ("serial: imx: remove the uart_console() check")
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Link: https://lore.kernel.org/r/20201111025136.29818-1-fugang.duan@nxp.com
-Cc: stable <stable@vger.kernel.org>
-[fix up build warning - gregkh]
+Cc: stable@vger.kernel.org
+Reported-by: 秦世松 <qinshisong1205@gmail.com>
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Tested-by: Shisong Qin <qinshisong1205@gmail.com>
+Link: https://lore.kernel.org/r/20201110183541.fzgnlwhjpgqzjeth@function
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/imx.c |   20 +++-----------------
- 1 file changed, 3 insertions(+), 17 deletions(-)
+ drivers/staging/speakup/spk_ttyio.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -1787,16 +1787,6 @@ imx_console_write(struct console *co, co
- 	unsigned int ucr1;
- 	unsigned long flags = 0;
- 	int locked = 1;
--	int retval;
--
--	retval = clk_enable(sport->clk_per);
--	if (retval)
--		return;
--	retval = clk_enable(sport->clk_ipg);
--	if (retval) {
--		clk_disable(sport->clk_per);
--		return;
--	}
+--- a/drivers/staging/speakup/spk_ttyio.c
++++ b/drivers/staging/speakup/spk_ttyio.c
+@@ -49,15 +49,25 @@ static int spk_ttyio_ldisc_open(struct t
  
- 	if (sport->port.sysrq)
- 		locked = 0;
-@@ -1832,9 +1822,6 @@ imx_console_write(struct console *co, co
+ 	if (!tty->ops->write)
+ 		return -EOPNOTSUPP;
++
++	mutex_lock(&speakup_tty_mutex);
++	if (speakup_tty) {
++		mutex_unlock(&speakup_tty_mutex);
++		return -EBUSY;
++	}
+ 	speakup_tty = tty;
  
- 	if (locked)
- 		spin_unlock_irqrestore(&sport->port.lock, flags);
--
--	clk_disable(sport->clk_ipg);
--	clk_disable(sport->clk_per);
+ 	ldisc_data = kmalloc(sizeof(struct spk_ldisc_data), GFP_KERNEL);
+-	if (!ldisc_data)
++	if (!ldisc_data) {
++		speakup_tty = NULL;
++		mutex_unlock(&speakup_tty_mutex);
+ 		return -ENOMEM;
++	}
+ 
+ 	init_completion(&ldisc_data->completion);
+ 	ldisc_data->buf_free = true;
+ 	speakup_tty->disc_data = ldisc_data;
++	mutex_unlock(&speakup_tty_mutex);
+ 
+ 	return 0;
  }
- 
- /*
-@@ -1935,15 +1922,14 @@ imx_console_setup(struct console *co, ch
- 
- 	retval = uart_set_options(&sport->port, co, baud, parity, bits, flow);
- 
--	clk_disable(sport->clk_ipg);
- 	if (retval) {
--		clk_unprepare(sport->clk_ipg);
-+		clk_disable_unprepare(sport->clk_ipg);
- 		goto error_console;
- 	}
- 
--	retval = clk_prepare(sport->clk_per);
-+	retval = clk_prepare_enable(sport->clk_per);
- 	if (retval)
--		clk_unprepare(sport->clk_ipg);
-+		clk_disable_unprepare(sport->clk_ipg);
- 
- error_console:
- 	return retval;
 
 
