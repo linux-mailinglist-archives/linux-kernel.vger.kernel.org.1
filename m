@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F582C070D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7142C0671
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731869AbgKWMhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:37:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
+        id S1730803AbgKWMa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731836AbgKWMg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:36:57 -0500
+        id S1730784AbgKWMax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FA982076E;
-        Mon, 23 Nov 2020 12:36:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 086B820781;
+        Mon, 23 Nov 2020 12:30:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135015;
-        bh=l+U/pgZyv/TlLmRp7fGnOCMyT6QEnPtpJoTIhE0t2vI=;
+        s=korg; t=1606134653;
+        bh=RNDdpvsr4AnaQ92wC0CyQ0rGz2EMONacs4D4j72Ur+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rwvdnTdwwfhJMukxaC93V4NqYBa+OkYsC+IMsdftRKV3XrtZD2daZdqavPeoJh7J8
-         7rjOyiF8s00POEzJZGI618wvtr0/jjACR0c6IjkTPdzXKDVLhjV9CXm1Rl9Eidbodn
-         DYfaUJJey1mxpsKR5eypfeyIbDKLZJXc/kSAt/ng=
+        b=AV6Pl/awyqQllf7+v2zFLWIq58OUmbS9TC37np9zGSCl0JPpA2zh6x38v8/hffaOb
+         D9O82NqdYUS707t6KwODmttJyuQlUm9yphtHfzhUiapJcI2aDzw1vPqteDSJybKpZS
+         d/vjmxVxaWaTIAqUDww2j4mwQ0kSowxucePLNu/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 056/158] ARM: dts: sun8i: a83t: Enable both RGMII RX/TX delay on Ethernet PHY
-Date:   Mon, 23 Nov 2020 13:21:24 +0100
-Message-Id: <20201123121822.638190516@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 05/91] inet_diag: Fix error path to cancel the meseage in inet_req_diag_fill()
+Date:   Mon, 23 Nov 2020 13:21:25 +0100
+Message-Id: <20201123121809.560228074@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 57dbe558457bf4042169bc1f334e3b53a8480a1c ]
+[ Upstream commit e33de7c5317e2827b2ba6fd120a505e9eb727b05 ]
 
-The Ethernet PHY on the Bananapi M3 and Cubietruck Plus have the RX
-and TX delays enabled on the PHY, using pull-ups on the RXDLY and
-TXDLY pins.
+nlmsg_cancel() needs to be called in the error path of
+inet_req_diag_fill to cancel the message.
 
-Fix the phy-mode description to correct reflect this so that the
-implementation doesn't reconfigure the delays incorrectly. This
-happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-rx/tx delay config").
-
-Fixes: 039359948a4b ("ARM: dts: sun8i: a83t: Enable Ethernet on two boards")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201024162515.30032-6-wens@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d545caca827b ("net: inet: diag: expose the socket mark to privileged processes.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20201116082018.16496-1-wanghai38@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts     | 2 +-
- arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/inet_diag.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-index 9d34eabba1213..431f70234d364 100644
---- a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-+++ b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-@@ -131,7 +131,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_sw>;
- 	phy-handle = <&rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	allwinner,rx-delay-ps = <700>;
- 	allwinner,tx-delay-ps = <700>;
- 	status = "okay";
-diff --git a/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts b/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts
-index d9be511f054f0..d8326a5c681d4 100644
---- a/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts
-+++ b/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts
-@@ -183,7 +183,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_dldo4>;
- 	phy-handle = <&rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+--- a/net/ipv4/inet_diag.c
++++ b/net/ipv4/inet_diag.c
+@@ -392,8 +392,10 @@ static int inet_req_diag_fill(struct soc
+ 	r->idiag_inode	= 0;
  
--- 
-2.27.0
-
+ 	if (net_admin && nla_put_u32(skb, INET_DIAG_MARK,
+-				     inet_rsk(reqsk)->ir_mark))
++				     inet_rsk(reqsk)->ir_mark)) {
++		nlmsg_cancel(skb, nlh);
+ 		return -EMSGSIZE;
++	}
+ 
+ 	nlmsg_end(skb, nlh);
+ 	return 0;
 
 
