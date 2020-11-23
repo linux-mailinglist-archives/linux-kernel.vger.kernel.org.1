@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E493A2C0294
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA9F2C0295
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgKWJxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 04:53:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:39082 "EHLO foss.arm.com"
+        id S1728181AbgKWJx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:53:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39848 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725843AbgKWJxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:53:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EDF18101E;
-        Mon, 23 Nov 2020 01:53:17 -0800 (PST)
-Received: from red-moon.arm.com (unknown [10.57.62.101])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D8EA23F70D;
-        Mon, 23 Nov 2020 01:53:14 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-samsung-soc@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-pci@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v4 0/5] Add DW PCIe support for Exynos5433 SoCs
-Date:   Mon, 23 Nov 2020 09:53:08 +0000
-Message-Id: <160612514814.21459.9917651424181472858.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20201113170139.29956-1-m.szyprowski@samsung.com>
-References: <CGME20201113170156eucas1p176314e4076c593d1f2e68159be880f86@eucas1p1.samsung.com> <20201113170139.29956-1-m.szyprowski@samsung.com>
+        id S1725843AbgKWJx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 04:53:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606125205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CWE9aaL7FjNx6siMu72tnDhc+74qhGXlXrHv8loEhJ4=;
+        b=CVCNLFZ6aKFK5I6KC9QU4Me1iCyHVXhYXQWzq8xKVvC5EHQwiZLTnDQZ9JH8k+Kh0JRIwR
+        mLW9RyomXe4ZzQ12LNHmEshYiXQiP0ssnLzl3wrA63p9PHeRVwaru2K5DPhy73fikSAH0y
+        0/UEfsLuw3qcjfh5fRnDrBhDDLqHNbk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 97614AC24;
+        Mon, 23 Nov 2020 09:53:25 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 10:53:24 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Printk specifiers for __user pointers
+Message-ID: <X7uGlDg88bI6zebS@alley>
+References: <20201120164412.GD619708@rowland.harvard.edu>
+ <20201120134242.6cae9e72@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120134242.6cae9e72@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 18:01:34 +0100, Marek Szyprowski wrote:
-> This patchset is a resurrection of the DW PCIe support for the Exynos5433
-> SoCs posted long time ago here: https://lkml.org/lkml/2016/12/26/6 and
-> later here: https://lkml.org/lkml/2017/12/21/296 .
+On Fri 2020-11-20 13:42:42, Steven Rostedt wrote:
+> On Fri, 20 Nov 2020 11:44:12 -0500
+> Alan Stern <stern@rowland.harvard.edu> wrote:
 > 
-> In meantime the support for the Exynos5440 SoCs has been completely
-> dropped from mainline kernel, as those SoCs never reached the market. The
-> PCIe driver for Exynos5440 variant however has not been removed yet. This
-> patchset simply reworks it to support the Exynos5433 variant. The lack of
-> the need to support both variants significantly simplifies the driver
-> code.
+> > To the VSPRINTF maintainers:
+> > 
+> > Documentation/core-api/printk-formats.rst lists a large number of format 
+> > specifiers for pointers of various sorts.  Yet as far as I can see, 
+> > there is no specifier meant for use with __user pointers.
+> > 
+> > The security implications of printing the true, unmangled value of a 
+> > __user pointer are minimal, since doing so does not leak any kernel 
+> > information.  So %px would work, but tools like checkpatch.pl don't like 
+> > it.
+
+Just to be sure as I am not a security expert. Is there really that
+big difference in the risk? The following scenarios come to my mind:
+
+1. The address would show a well defined location in the userspace
+   application? Could it be used to attack the application?
+
+2. The address shows a location that is being accessed by kernel.
+   Could not it be used to pass a value that might be used to attack
+   kernel?
+
+
+> > Should a new specifier be added?  If not, should we simply use %px?
 > 
-> [...]
+> There's currently no user of '%pu' (although there is a '%pus'. Perhaps we
+> should have a '%pux'?
+> 
+> I would even state that if it is used, that if makes sure that the value is
+> indeed a user space pointer (goes through the same checks as accessing user
+> space), before its printed, otherwise it shows "(fault)" or something.
 
-Applied to pci/dwc, thanks!
+I have mixed feelings about this.
 
-[1/5] dt-bindings: PCI: exynos: drop samsung,exynos5440-pcie binding
-      https://git.kernel.org/lpieralisi/pci/c/83fbffcd13
-[2/5] dt-bindings: PCI: exynos: add the samsung,exynos-pcie binding
-      https://git.kernel.org/lpieralisi/pci/c/eea23e4a00
-[3/5] dt-bindings: phy: exynos: add the samsung,exynos-pcie-phy binding
-      https://git.kernel.org/lpieralisi/pci/c/a7b4dba9a7
-[4/5] phy: samsung: phy-exynos-pcie: rework driver to support Exynos5433 PCIe PHY
-      https://git.kernel.org/lpieralisi/pci/c/46bc965df0
-[5/5] PCI: dwc: exynos: Rework the driver to support Exynos5433 variant
-      https://git.kernel.org/lpieralisi/pci/c/f0a6743028
+One one hand, it might make sense to mark locations where userspace
+address is printed. We could easily decide how to print them (hash or
+value) and we could check that it is really from a userspace one.
 
-Thanks,
-Lorenzo
+But I have few concerns:
+
+1. The existing "%pus" has a kind of opposite meaning. It says what
+   address space should be used when the kernel and userspace address
+   space is overlapping.
+
+2. There is the history with "%pk". It did not work because people did
+   not use it.
+
+3. I am not sure about the output when the address is not from
+   userspace. Printing ("fault") is not much helpful. Printing
+   hashed value might be confusing. Well, I am still not sure
+   that it is really safe to print real userspace addresses
+   by default.
+
+Best Regards,
+Petr
