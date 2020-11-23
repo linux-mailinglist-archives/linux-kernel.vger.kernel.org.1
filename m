@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591832C0DC3
+	by mail.lfdr.de (Postfix) with ESMTP id C79BA2C0DC4
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731601AbgKWOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        id S1731648AbgKWOeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:34:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729535AbgKWOeK (ORCPT
+        with ESMTP id S1729535AbgKWOeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:34:10 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE81C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:34:09 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s8so18773987wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:34:09 -0800 (PST)
+        Mon, 23 Nov 2020 09:34:11 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E655BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:34:10 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id g14so3610141wrm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:34:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TzQ+MW1sRozBpQLbt6oHDRl3TR3+0qJeZOJ2PqKNVPw=;
-        b=ebqRsCRRJtSqC0s8ZL2x/5Y5ZYIzJbs6cCAuKXzUsIQQ0yhEmJAMtzifwtORq7Bh52
-         vFrpZXjEbkT6cESUTBbw2j+xoobJBL7lS1on/hkz0JxU8wK1PxEtM7dazwFXPlXY4Pwz
-         rW0m4PXhi2ZXqijZ0tCzI8ZGmiuM7sCMUzKVOwj3eeejmNwHP/8ASIg5m2TZt9I9OYSL
-         okHUwxQczORqPLyDiEHRFg9muHtwPFIzgRyL/H2NB9AP2t1ovyDkpIu/kMIUHRfs48Vs
-         UJ+7qOMSaGx7kNeHqtnc3+Auz7R/8YxLiiYK7jb3e1zuv6plSnLjulgb5Yl5VjfWQmO8
-         QQCw==
+        bh=N1gL9iG9VNNQODcQ4bqy/3MjLCHTiEErerOPbbpGmaw=;
+        b=sMPr04EyF5S8Qx34VNvHLBDDSBvG1qC05Pf8Ln7nmActrfePfdMJSshFZg2Eb5K0eQ
+         cgRpHdi+7tRLYIy/fkIT+0BTZsQbbEyqRL2cpMJwNA0t/hrWKnYIkRVB4SGTAWGeZ9ke
+         ic0EBZLMGim01KZYdtH3os5CGnJ06nAo+a7xGSL2QqMRAfgj4XUVCaWxnVOIAfJkEn+1
+         Q9U3nsCbe5HvrjLTev0xTQK4ECRq68nq9ZfD717hEBy8elFsLYw08DkE+QL+RKVqOYtm
+         yyEwQ6FeWnN9On+OK6hwnKF3SSTp2YVONb+151iL2pIpLi5+CwChggCUc6xySf2qMVUl
+         jyUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TzQ+MW1sRozBpQLbt6oHDRl3TR3+0qJeZOJ2PqKNVPw=;
-        b=dj6tcqOEP5L0Yu+lvd2WyF0QrP3ja3/5Frt4HNABC6BilHBV+ticBPXB8pDhh2L6aJ
-         MZJajABmyaDD3RlZZO5KphntBAbWM30p79Nvbk5kA9j+I6Unc+BpgIHdsJQHAF9vgNHS
-         Hy66vD3aDCfHdmBAQYyjFn27z8gvDP1HP5ypsY7Ofi6ZqefG+NOEdFkgI3IFOPV4l2ZA
-         wq8wDslfBV+ONrdqHgBIhH+kFkuRde7UqxJQJkG46nFbNlSJcvjP12veWhyLJkgnXcw8
-         qSelNZvHXjei2yui3bf3ujD9DlJVfzmZrm4NDo8fp1oGigz37KCVU/BiBfgC0NYDHZ50
-         IGQw==
-X-Gm-Message-State: AOAM530Hay9WE8zEVeXRVzioKAXAJOFXjpS4lxdkFKvOIL2XXzMkaLHi
-        q5fsgBiNzTLRgBALGDZ0TM4g7g==
-X-Google-Smtp-Source: ABdhPJwehKyk0RMzN+JwyVjbkvxBf9siWp85cfodX5MrKLYB3qY3Up0iA83EJiLEjiVbMg4MOy6T9A==
-X-Received: by 2002:adf:c147:: with SMTP id w7mr33954942wre.60.1606142047701;
-        Mon, 23 Nov 2020 06:34:07 -0800 (PST)
+        bh=N1gL9iG9VNNQODcQ4bqy/3MjLCHTiEErerOPbbpGmaw=;
+        b=aI4wwVFBrPzIKTghcRzC0jNBJ0fjnMC7UNwHqElvIGrjS60hdLPlUT8SOCY0BJALfk
+         6gMD8HZ0XdF1dXO+V2mbgQrwqZSgdgB5KqpU3M+JhlUuFIpea7mVgCJNt9SBaUk6rHmZ
+         hm84apWQENn/upusdGLISV8Qy5N/nP8Znosv8MWV41+8I65P0aXEkxPAin6UTDbdPYMt
+         VyGjbM2GYNAHBRTXqnpeHitaHaGVYr2ilgdhJsYkvZHEaFudSkQGlGYAco2eQNTxDzUB
+         jgYq8Tacm7djyJOoCkwAkfUH7itQYr8EqVFAPzcqfMY8p/2P2L/k1Ru66RjfoRLvDzc+
+         6lLw==
+X-Gm-Message-State: AOAM533LKTfshNRQziAXm5OWYMY7xlT7mMj9yJg5KE/t9sMkR0Z5iypV
+        XOv6ogVRH91KSc21Fr5AeUWI2Q==
+X-Google-Smtp-Source: ABdhPJxihrxawGEH0Ao7tnStlBwVolzE1Ui5ROmtavEmsY4HvTT5ctYDAl/EWAkxb53Qe1bkxa1Uww==
+X-Received: by 2002:adf:fe48:: with SMTP id m8mr7959840wrs.89.1606142049297;
+        Mon, 23 Nov 2020 06:34:09 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:9541:d2fd:3a68:67ae])
-        by smtp.gmail.com with ESMTPSA id h2sm18126723wme.45.2020.11.23.06.34.06
+        by smtp.gmail.com with ESMTPSA id h2sm18126723wme.45.2020.11.23.06.34.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 06:34:07 -0800 (PST)
+        Mon, 23 Nov 2020 06:34:08 -0800 (PST)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     sam@ravnborg.org
 Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 1/2] dt-bindings: panel-simple-dsi: add Khadas TS050 panel bindings
-Date:   Mon, 23 Nov 2020 15:33:53 +0100
-Message-Id: <20201123143354.295844-2-narmstrong@baylibre.com>
+Subject: [PATCH 2/2] drm: panel: add Khadas TS050 panel driver
+Date:   Mon, 23 Nov 2020 15:33:54 +0100
+Message-Id: <20201123143354.295844-3-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201123143354.295844-1-narmstrong@baylibre.com>
 References: <20201123143354.295844-1-narmstrong@baylibre.com>
@@ -66,27 +66,938 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This add the bindings for the Khadas TS050 1080x1920 5" LCD DSI panel designed to work
+This add support for the Khadas TS050 1080x1920 5" LCD DSI panel designed to work
 with the Khadas Edge-V, Captain, VIM3 and VIM3L Single Board Computers.
+It provides a MIPI DSI interface to the host, a built-in LED backlight
+and touch controller.
+
+The init values was taken from the vendor source tree, comments were added to the
+know values but most of the init table is undocumented.
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- .../devicetree/bindings/display/panel/panel-simple-dsi.yaml     | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/panel/Kconfig              |  11 +
+ drivers/gpu/drm/panel/Makefile             |   1 +
+ drivers/gpu/drm/panel/panel-khadas-ts050.c | 876 +++++++++++++++++++++
+ 3 files changed, 888 insertions(+)
+ create mode 100644 drivers/gpu/drm/panel/panel-khadas-ts050.c
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-index 72e4b6d4d5e1..fbd71669248f 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-@@ -35,6 +35,8 @@ properties:
-       - boe,tv080wum-nl0
-         # Innolux P079ZCA 7.85" 768x1024 TFT LCD panel
-       - innolux,p079zca
-+        # Khadas TS050 5" 1080x1920 LCD panel
-+      - khadas,ts050
-         # Kingdisplay KD097D04 9.7" 1536x2048 TFT LCD panel
-       - kingdisplay,kd097d04
-         # LG ACX467AKM-7 4.95" 1080×1920 LCD Panel
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index b4e021ea30f9..8fec45b2ce02 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -145,6 +145,17 @@ config DRM_PANEL_JDI_LT070ME05000
+ 	  The panel has a 1200(RGB)×1920 (WUXGA) resolution and uses
+ 	  24 bit per pixel.
+ 
++config DRM_PANEL_KHADAS_TS050
++	tristate "Khadas TS050 panel"
++	depends on OF
++	depends on DRM_MIPI_DSI
++	depends on BACKLIGHT_CLASS_DEVICE
++	help
++	  Say Y here if you want to enable support for Khadas TS050 TFT-LCD
++	  panel module. The panel has a 1080x1920 resolution and uses
++	  24 bit RGB per pixel. It provides a MIPI DSI interface to
++	  the host, a built-in LED backlight and touch controller.
++
+ config DRM_PANEL_KINGDISPLAY_KD097D04
+ 	tristate "Kingdisplay kd097d04 panel"
+ 	depends on OF
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+index ebbf488c7eac..03496695e03f 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
+ obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
+ obj-$(CONFIG_DRM_PANEL_INNOLUX_P079ZCA) += panel-innolux-p079zca.o
+ obj-$(CONFIG_DRM_PANEL_JDI_LT070ME05000) += panel-jdi-lt070me05000.o
++obj-$(CONFIG_DRM_PANEL_KHADAS_TS050) += panel-khadas-ts050.o
+ obj-$(CONFIG_DRM_PANEL_KINGDISPLAY_KD097D04) += panel-kingdisplay-kd097d04.o
+ obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK050H3146W) += panel-leadtek-ltk050h3146w.o
+ obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK500HD1829) += panel-leadtek-ltk500hd1829.o
+diff --git a/drivers/gpu/drm/panel/panel-khadas-ts050.c b/drivers/gpu/drm/panel/panel-khadas-ts050.c
+new file mode 100644
+index 000000000000..856fcad69306
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-khadas-ts050.c
+@@ -0,0 +1,876 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020 BayLibre, SAS
++ * Author: Neil Armstrong <narmstrong@baylibre.com>
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/regulator/consumer.h>
++
++#include <video/mipi_display.h>
++
++#include <drm/drm_crtc.h>
++#include <drm/drm_device.h>
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_modes.h>
++#include <drm/drm_panel.h>
++#include <drm/drm_print.h>
++
++struct khadas_ts050_panel {
++	struct drm_panel base;
++	struct mipi_dsi_device *link;
++
++	struct regulator *supply;
++	struct gpio_desc *reset_gpio;
++	struct gpio_desc *enable_gpio;
++
++	bool prepared;
++	bool enabled;
++};
++
++struct khadas_ts050_panel_cmd {
++	u8 cmd;
++	u8 data;
++};
++
++/* Only the CMD1 User Command set is documented */
++static const struct khadas_ts050_panel_cmd init_code[] = {
++	/* Select Unknown CMD Page (Undocumented) */
++	{0xff, 0xee},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	{0x1f, 0x45},
++	{0x24, 0x4f},
++	{0x38, 0xc8},
++	{0x39, 0x27},
++	{0x1e, 0x77},
++	{0x1d, 0x0f},
++	{0x7e, 0x71},
++	{0x7c, 0x03},
++	{0xff, 0x00},
++	{0xfb, 0x01},
++	{0x35, 0x01},
++	/* Select CMD2 Page0 (Undocumented) */
++	{0xff, 0x01},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	{0x00, 0x01},
++	{0x01, 0x55},
++	{0x02, 0x40},
++	{0x05, 0x40},
++	{0x06, 0x4a},
++	{0x07, 0x24},
++	{0x08, 0x0c},
++	{0x0b, 0x7d},
++	{0x0c, 0x7d},
++	{0x0e, 0xb0},
++	{0x0f, 0xae},
++	{0x11, 0x10},
++	{0x12, 0x10},
++	{0x13, 0x03},
++	{0x14, 0x4a},
++	{0x15, 0x12},
++	{0x16, 0x12},
++	{0x18, 0x00},
++	{0x19, 0x77},
++	{0x1a, 0x55},
++	{0x1b, 0x13},
++	{0x1c, 0x00},
++	{0x1d, 0x00},
++	{0x1e, 0x13},
++	{0x1f, 0x00},
++	{0x23, 0x00},
++	{0x24, 0x00},
++	{0x25, 0x00},
++	{0x26, 0x00},
++	{0x27, 0x00},
++	{0x28, 0x00},
++	{0x35, 0x00},
++	{0x66, 0x00},
++	{0x58, 0x82},
++	{0x59, 0x02},
++	{0x5a, 0x02},
++	{0x5b, 0x02},
++	{0x5c, 0x82},
++	{0x5d, 0x82},
++	{0x5e, 0x02},
++	{0x5f, 0x02},
++	{0x72, 0x31},
++	/* Select CMD2 Page4 (Undocumented) */
++	{0xff, 0x05},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	{0x00, 0x01},
++	{0x01, 0x0b},
++	{0x02, 0x0c},
++	{0x03, 0x09},
++	{0x04, 0x0a},
++	{0x05, 0x00},
++	{0x06, 0x0f},
++	{0x07, 0x10},
++	{0x08, 0x00},
++	{0x09, 0x00},
++	{0x0a, 0x00},
++	{0x0b, 0x00},
++	{0x0c, 0x00},
++	{0x0d, 0x13},
++	{0x0e, 0x15},
++	{0x0f, 0x17},
++	{0x10, 0x01},
++	{0x11, 0x0b},
++	{0x12, 0x0c},
++	{0x13, 0x09},
++	{0x14, 0x0a},
++	{0x15, 0x00},
++	{0x16, 0x0f},
++	{0x17, 0x10},
++	{0x18, 0x00},
++	{0x19, 0x00},
++	{0x1a, 0x00},
++	{0x1b, 0x00},
++	{0x1c, 0x00},
++	{0x1d, 0x13},
++	{0x1e, 0x15},
++	{0x1f, 0x17},
++	{0x20, 0x00},
++	{0x21, 0x03},
++	{0x22, 0x01},
++	{0x23, 0x40},
++	{0x24, 0x40},
++	{0x25, 0xed},
++	{0x29, 0x58},
++	{0x2a, 0x12},
++	{0x2b, 0x01},
++	{0x4b, 0x06},
++	{0x4c, 0x11},
++	{0x4d, 0x20},
++	{0x4e, 0x02},
++	{0x4f, 0x02},
++	{0x50, 0x20},
++	{0x51, 0x61},
++	{0x52, 0x01},
++	{0x53, 0x63},
++	{0x54, 0x77},
++	{0x55, 0xed},
++	{0x5b, 0x00},
++	{0x5c, 0x00},
++	{0x5d, 0x00},
++	{0x5e, 0x00},
++	{0x5f, 0x15},
++	{0x60, 0x75},
++	{0x61, 0x00},
++	{0x62, 0x00},
++	{0x63, 0x00},
++	{0x64, 0x00},
++	{0x65, 0x00},
++	{0x66, 0x00},
++	{0x67, 0x00},
++	{0x68, 0x04},
++	{0x69, 0x00},
++	{0x6a, 0x00},
++	{0x6c, 0x40},
++	{0x75, 0x01},
++	{0x76, 0x01},
++	{0x7a, 0x80},
++	{0x7b, 0xa3},
++	{0x7c, 0xd8},
++	{0x7d, 0x60},
++	{0x7f, 0x15},
++	{0x80, 0x81},
++	{0x83, 0x05},
++	{0x93, 0x08},
++	{0x94, 0x10},
++	{0x8a, 0x00},
++	{0x9b, 0x0f},
++	{0xea, 0xff},
++	{0xec, 0x00},
++	/* Select CMD2 Page0 (Undocumented) */
++	{0xff, 0x01},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	{0x75, 0x00},
++	{0x76, 0xdf},
++	{0x77, 0x00},
++	{0x78, 0xe4},
++	{0x79, 0x00},
++	{0x7a, 0xed},
++	{0x7b, 0x00},
++	{0x7c, 0xf6},
++	{0x7d, 0x00},
++	{0x7e, 0xff},
++	{0x7f, 0x01},
++	{0x80, 0x07},
++	{0x81, 0x01},
++	{0x82, 0x10},
++	{0x83, 0x01},
++	{0x84, 0x18},
++	{0x85, 0x01},
++	{0x86, 0x20},
++	{0x87, 0x01},
++	{0x88, 0x3d},
++	{0x89, 0x01},
++	{0x8a, 0x56},
++	{0x8b, 0x01},
++	{0x8c, 0x84},
++	{0x8d, 0x01},
++	{0x8e, 0xab},
++	{0x8f, 0x01},
++	{0x90, 0xec},
++	{0x91, 0x02},
++	{0x92, 0x22},
++	{0x93, 0x02},
++	{0x94, 0x23},
++	{0x95, 0x02},
++	{0x96, 0x55},
++	{0x97, 0x02},
++	{0x98, 0x8b},
++	{0x99, 0x02},
++	{0x9a, 0xaf},
++	{0x9b, 0x02},
++	{0x9c, 0xdf},
++	{0x9d, 0x03},
++	{0x9e, 0x01},
++	{0x9f, 0x03},
++	{0xa0, 0x2c},
++	{0xa2, 0x03},
++	{0xa3, 0x39},
++	{0xa4, 0x03},
++	{0xa5, 0x47},
++	{0xa6, 0x03},
++	{0xa7, 0x56},
++	{0xa9, 0x03},
++	{0xaa, 0x66},
++	{0xab, 0x03},
++	{0xac, 0x76},
++	{0xad, 0x03},
++	{0xae, 0x85},
++	{0xaf, 0x03},
++	{0xb0, 0x90},
++	{0xb1, 0x03},
++	{0xb2, 0xcb},
++	{0xb3, 0x00},
++	{0xb4, 0xdf},
++	{0xb5, 0x00},
++	{0xb6, 0xe4},
++	{0xb7, 0x00},
++	{0xb8, 0xed},
++	{0xb9, 0x00},
++	{0xba, 0xf6},
++	{0xbb, 0x00},
++	{0xbc, 0xff},
++	{0xbd, 0x01},
++	{0xbe, 0x07},
++	{0xbf, 0x01},
++	{0xc0, 0x10},
++	{0xc1, 0x01},
++	{0xc2, 0x18},
++	{0xc3, 0x01},
++	{0xc4, 0x20},
++	{0xc5, 0x01},
++	{0xc6, 0x3d},
++	{0xc7, 0x01},
++	{0xc8, 0x56},
++	{0xc9, 0x01},
++	{0xca, 0x84},
++	{0xcb, 0x01},
++	{0xcc, 0xab},
++	{0xcd, 0x01},
++	{0xce, 0xec},
++	{0xcf, 0x02},
++	{0xd0, 0x22},
++	{0xd1, 0x02},
++	{0xd2, 0x23},
++	{0xd3, 0x02},
++	{0xd4, 0x55},
++	{0xd5, 0x02},
++	{0xd6, 0x8b},
++	{0xd7, 0x02},
++	{0xd8, 0xaf},
++	{0xd9, 0x02},
++	{0xda, 0xdf},
++	{0xdb, 0x03},
++	{0xdc, 0x01},
++	{0xdd, 0x03},
++	{0xde, 0x2c},
++	{0xdf, 0x03},
++	{0xe0, 0x39},
++	{0xe1, 0x03},
++	{0xe2, 0x47},
++	{0xe3, 0x03},
++	{0xe4, 0x56},
++	{0xe5, 0x03},
++	{0xe6, 0x66},
++	{0xe7, 0x03},
++	{0xe8, 0x76},
++	{0xe9, 0x03},
++	{0xea, 0x85},
++	{0xeb, 0x03},
++	{0xec, 0x90},
++	{0xed, 0x03},
++	{0xee, 0xcb},
++	{0xef, 0x00},
++	{0xf0, 0xbb},
++	{0xf1, 0x00},
++	{0xf2, 0xc0},
++	{0xf3, 0x00},
++	{0xf4, 0xcc},
++	{0xf5, 0x00},
++	{0xf6, 0xd6},
++	{0xf7, 0x00},
++	{0xf8, 0xe1},
++	{0xf9, 0x00},
++	{0xfa, 0xea},
++	/* Select CMD2 Page2 (Undocumented) */
++	{0xff, 0x02},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	{0x00, 0x00},
++	{0x01, 0xf4},
++	{0x02, 0x00},
++	{0x03, 0xef},
++	{0x04, 0x01},
++	{0x05, 0x07},
++	{0x06, 0x01},
++	{0x07, 0x28},
++	{0x08, 0x01},
++	{0x09, 0x44},
++	{0x0a, 0x01},
++	{0x0b, 0x76},
++	{0x0c, 0x01},
++	{0x0d, 0xa0},
++	{0x0e, 0x01},
++	{0x0f, 0xe7},
++	{0x10, 0x02},
++	{0x11, 0x1f},
++	{0x12, 0x02},
++	{0x13, 0x22},
++	{0x14, 0x02},
++	{0x15, 0x54},
++	{0x16, 0x02},
++	{0x17, 0x8b},
++	{0x18, 0x02},
++	{0x19, 0xaf},
++	{0x1a, 0x02},
++	{0x1b, 0xe0},
++	{0x1c, 0x03},
++	{0x1d, 0x01},
++	{0x1e, 0x03},
++	{0x1f, 0x2d},
++	{0x20, 0x03},
++	{0x21, 0x39},
++	{0x22, 0x03},
++	{0x23, 0x47},
++	{0x24, 0x03},
++	{0x25, 0x57},
++	{0x26, 0x03},
++	{0x27, 0x65},
++	{0x28, 0x03},
++	{0x29, 0x77},
++	{0x2a, 0x03},
++	{0x2b, 0x85},
++	{0x2d, 0x03},
++	{0x2f, 0x8f},
++	{0x30, 0x03},
++	{0x31, 0xcb},
++	{0x32, 0x00},
++	{0x33, 0xbb},
++	{0x34, 0x00},
++	{0x35, 0xc0},
++	{0x36, 0x00},
++	{0x37, 0xcc},
++	{0x38, 0x00},
++	{0x39, 0xd6},
++	{0x3a, 0x00},
++	{0x3b, 0xe1},
++	{0x3d, 0x00},
++	{0x3f, 0xea},
++	{0x40, 0x00},
++	{0x41, 0xf4},
++	{0x42, 0x00},
++	{0x43, 0xfe},
++	{0x44, 0x01},
++	{0x45, 0x07},
++	{0x46, 0x01},
++	{0x47, 0x28},
++	{0x48, 0x01},
++	{0x49, 0x44},
++	{0x4a, 0x01},
++	{0x4b, 0x76},
++	{0x4c, 0x01},
++	{0x4d, 0xa0},
++	{0x4e, 0x01},
++	{0x4f, 0xe7},
++	{0x50, 0x02},
++	{0x51, 0x1f},
++	{0x52, 0x02},
++	{0x53, 0x22},
++	{0x54, 0x02},
++	{0x55, 0x54},
++	{0x56, 0x02},
++	{0x58, 0x8b},
++	{0x59, 0x02},
++	{0x5a, 0xaf},
++	{0x5b, 0x02},
++	{0x5c, 0xe0},
++	{0x5d, 0x03},
++	{0x5e, 0x01},
++	{0x5f, 0x03},
++	{0x60, 0x2d},
++	{0x61, 0x03},
++	{0x62, 0x39},
++	{0x63, 0x03},
++	{0x64, 0x47},
++	{0x65, 0x03},
++	{0x66, 0x57},
++	{0x67, 0x03},
++	{0x68, 0x65},
++	{0x69, 0x03},
++	{0x6a, 0x77},
++	{0x6b, 0x03},
++	{0x6c, 0x85},
++	{0x6d, 0x03},
++	{0x6e, 0x8f},
++	{0x6f, 0x03},
++	{0x70, 0xcb},
++	{0x71, 0x00},
++	{0x72, 0x00},
++	{0x73, 0x00},
++	{0x74, 0x21},
++	{0x75, 0x00},
++	{0x76, 0x4c},
++	{0x77, 0x00},
++	{0x78, 0x6b},
++	{0x79, 0x00},
++	{0x7a, 0x85},
++	{0x7b, 0x00},
++	{0x7c, 0x9a},
++	{0x7d, 0x00},
++	{0x7e, 0xad},
++	{0x7f, 0x00},
++	{0x80, 0xbe},
++	{0x81, 0x00},
++	{0x82, 0xcd},
++	{0x83, 0x01},
++	{0x84, 0x01},
++	{0x85, 0x01},
++	{0x86, 0x29},
++	{0x87, 0x01},
++	{0x88, 0x68},
++	{0x89, 0x01},
++	{0x8a, 0x98},
++	{0x8b, 0x01},
++	{0x8c, 0xe5},
++	{0x8d, 0x02},
++	{0x8e, 0x1e},
++	{0x8f, 0x02},
++	{0x90, 0x30},
++	{0x91, 0x02},
++	{0x92, 0x52},
++	{0x93, 0x02},
++	{0x94, 0x88},
++	{0x95, 0x02},
++	{0x96, 0xaa},
++	{0x97, 0x02},
++	{0x98, 0xd7},
++	{0x99, 0x02},
++	{0x9a, 0xf7},
++	{0x9b, 0x03},
++	{0x9c, 0x21},
++	{0x9d, 0x03},
++	{0x9e, 0x2e},
++	{0x9f, 0x03},
++	{0xa0, 0x3d},
++	{0xa2, 0x03},
++	{0xa3, 0x4c},
++	{0xa4, 0x03},
++	{0xa5, 0x5e},
++	{0xa6, 0x03},
++	{0xa7, 0x71},
++	{0xa9, 0x03},
++	{0xaa, 0x86},
++	{0xab, 0x03},
++	{0xac, 0x94},
++	{0xad, 0x03},
++	{0xae, 0xfa},
++	{0xaf, 0x00},
++	{0xb0, 0x00},
++	{0xb1, 0x00},
++	{0xb2, 0x21},
++	{0xb3, 0x00},
++	{0xb4, 0x4c},
++	{0xb5, 0x00},
++	{0xb6, 0x6b},
++	{0xb7, 0x00},
++	{0xb8, 0x85},
++	{0xb9, 0x00},
++	{0xba, 0x9a},
++	{0xbb, 0x00},
++	{0xbc, 0xad},
++	{0xbd, 0x00},
++	{0xbe, 0xbe},
++	{0xbf, 0x00},
++	{0xc0, 0xcd},
++	{0xc1, 0x01},
++	{0xc2, 0x01},
++	{0xc3, 0x01},
++	{0xc4, 0x29},
++	{0xc5, 0x01},
++	{0xc6, 0x68},
++	{0xc7, 0x01},
++	{0xc8, 0x98},
++	{0xc9, 0x01},
++	{0xca, 0xe5},
++	{0xcb, 0x02},
++	{0xcc, 0x1e},
++	{0xcd, 0x02},
++	{0xce, 0x20},
++	{0xcf, 0x02},
++	{0xd0, 0x52},
++	{0xd1, 0x02},
++	{0xd2, 0x88},
++	{0xd3, 0x02},
++	{0xd4, 0xaa},
++	{0xd5, 0x02},
++	{0xd6, 0xd7},
++	{0xd7, 0x02},
++	{0xd8, 0xf7},
++	{0xd9, 0x03},
++	{0xda, 0x21},
++	{0xdb, 0x03},
++	{0xdc, 0x2e},
++	{0xdd, 0x03},
++	{0xde, 0x3d},
++	{0xdf, 0x03},
++	{0xe0, 0x4c},
++	{0xe1, 0x03},
++	{0xe2, 0x5e},
++	{0xe3, 0x03},
++	{0xe4, 0x71},
++	{0xe5, 0x03},
++	{0xe6, 0x86},
++	{0xe7, 0x03},
++	{0xe8, 0x94},
++	{0xe9, 0x03},
++	{0xea, 0xfa},
++	/* Select CMD2 Page0 (Undocumented) */
++	{0xff, 0x01},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	/* Select CMD2 Page1 (Undocumented) */
++	{0xff, 0x02},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	/* Select CMD2 Page3 (Undocumented) */
++	{0xff, 0x04},
++	/* Reload CMD1: Don't reload default value to register */
++	{0xfb, 0x01},
++	/* Select CMD1 */
++	{0xff, 0x00},
++	{0xd3, 0x05}, /* RGBMIPICTRL: VSYNC back porch = 5 */
++	{0xd4, 0x04}, /* RGBMIPICTRL: VSYNC front porch = 4 */
++};
++
++static inline
++struct khadas_ts050_panel *to_khadas_ts050_panel(struct drm_panel *panel)
++{
++	return container_of(panel, struct khadas_ts050_panel, base);
++}
++
++static int khadas_ts050_panel_prepare(struct drm_panel *panel)
++{
++	struct khadas_ts050_panel *khadas_ts050 = to_khadas_ts050_panel(panel);
++	int err, regulator_err;
++	unsigned int i;
++
++	if (khadas_ts050->prepared)
++		return 0;
++
++	gpiod_set_value_cansleep(khadas_ts050->enable_gpio, 0);
++
++	err = regulator_enable(khadas_ts050->supply);
++	if (err < 0)
++		return err;
++
++	gpiod_set_value_cansleep(khadas_ts050->enable_gpio, 1);
++
++	msleep(60);
++
++	gpiod_set_value_cansleep(khadas_ts050->reset_gpio, 1);
++
++	usleep_range(10000, 11000);
++
++	gpiod_set_value_cansleep(khadas_ts050->reset_gpio, 0);
++
++	/* Select CMD2 page 4 (Undocumented) */
++	mipi_dsi_dcs_write(khadas_ts050->link, 0xff, (u8[]){ 0x05 }, 1);
++
++	/* Reload CMD1: Don't reload default value to register */
++	mipi_dsi_dcs_write(khadas_ts050->link, 0xfb, (u8[]){ 0x01 }, 1);
++
++	mipi_dsi_dcs_write(khadas_ts050->link, 0xc5, (u8[]){ 0x01 }, 1);
++
++	msleep(100);
++
++	for (i = 0; i < ARRAY_SIZE(init_code); i++) {
++		err = mipi_dsi_dcs_write(khadas_ts050->link,
++					 init_code[i].cmd,
++					 &init_code[i].data, 1);
++		if (err < 0) {
++			dev_err(panel->dev, "failed write cmds: %d\n", err);
++			goto poweroff;
++		}
++	}
++
++	err = mipi_dsi_dcs_exit_sleep_mode(khadas_ts050->link);
++	if (err < 0) {
++		dev_err(panel->dev, "failed to exit sleep mode: %d\n", err);
++		goto poweroff;
++	}
++
++	msleep(120);
++
++	/* Select CMD1 */
++	mipi_dsi_dcs_write(khadas_ts050->link, 0xff, (u8[]){ 0x00 }, 1);
++
++	err = mipi_dsi_dcs_set_tear_on(khadas_ts050->link,
++				       MIPI_DSI_DCS_TEAR_MODE_VBLANK);
++	if (err < 0) {
++		dev_err(panel->dev, "failed to set tear on: %d\n", err);
++		goto poweroff;
++	}
++
++
++	err = mipi_dsi_dcs_set_display_on(khadas_ts050->link);
++	if (err < 0) {
++		dev_err(panel->dev, "failed to set display on: %d\n", err);
++		goto poweroff;
++	}
++
++	usleep_range(10000, 11000);
++
++	khadas_ts050->prepared = true;
++
++	return 0;
++
++poweroff:
++	gpiod_set_value_cansleep(khadas_ts050->enable_gpio, 0);
++
++	regulator_err = regulator_disable(khadas_ts050->supply);
++	if (regulator_err)
++		dev_err(panel->dev, "failed to disable regulator: %d\n", regulator_err);
++
++	return err;
++}
++
++static int khadas_ts050_panel_unprepare(struct drm_panel *panel)
++{
++	struct khadas_ts050_panel *khadas_ts050 = to_khadas_ts050_panel(panel);
++	int err;
++
++	if (!khadas_ts050->prepared)
++		return 0;
++
++	err = mipi_dsi_dcs_enter_sleep_mode(khadas_ts050->link);
++	if (err < 0) {
++		dev_err(panel->dev, "failed to enter sleep mode: %d\n", err);
++		return err;
++	}
++
++	msleep(150);
++
++	gpiod_set_value_cansleep(khadas_ts050->enable_gpio, 0);
++
++	err = regulator_disable(khadas_ts050->supply);
++	if (err < 0)
++		return err;
++
++	khadas_ts050->prepared = false;
++
++	return 0;
++}
++
++static int khadas_ts050_panel_enable(struct drm_panel *panel)
++{
++	struct khadas_ts050_panel *khadas_ts050 = to_khadas_ts050_panel(panel);
++
++	if (khadas_ts050->enabled)
++		return 0;
++
++	khadas_ts050->enabled = true;
++
++	return 0;
++}
++
++static int khadas_ts050_panel_disable(struct drm_panel *panel)
++{
++	struct khadas_ts050_panel *khadas_ts050 = to_khadas_ts050_panel(panel);
++	int err;
++
++	if (!khadas_ts050->enabled)
++		return 0;
++
++	err = mipi_dsi_dcs_set_display_off(khadas_ts050->link);
++	if (err < 0)
++		dev_err(panel->dev, "failed to set display off: %d\n", err);
++
++	usleep_range(10000, 11000);
++
++	khadas_ts050->enabled = false;
++
++	return 0;
++}
++
++static const struct drm_display_mode default_mode = {
++	.clock = 120000,
++	.hdisplay = 1088,
++	.hsync_start = 1088 + 104,
++	.hsync_end = 1088 + 104 + 4,
++	.htotal = 1088 + 104 + 4 + 127,
++	.vdisplay = 1920,
++	.vsync_start = 1920 + 4,
++	.vsync_end = 1920 + 4 + 2,
++	.vtotal = 1920 + 4 + 2 + 3,
++	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
++};
++
++static int khadas_ts050_panel_get_modes(struct drm_panel *panel,
++				       struct drm_connector *connector)
++{
++	struct drm_display_mode *mode;
++
++	mode = drm_mode_duplicate(connector->dev, &default_mode);
++	if (!mode) {
++		dev_err(panel->dev, "failed to add mode %ux%u@%u\n",
++			default_mode.hdisplay, default_mode.vdisplay,
++			drm_mode_vrefresh(&default_mode));
++		return -ENOMEM;
++	}
++
++	drm_mode_set_name(mode);
++
++	drm_mode_probed_add(connector, mode);
++
++	connector->display_info.width_mm = 64;
++	connector->display_info.height_mm = 118;
++	connector->display_info.bpc = 8;
++
++	return 1;
++}
++
++static const struct drm_panel_funcs khadas_ts050_panel_funcs = {
++	.prepare = khadas_ts050_panel_prepare,
++	.unprepare = khadas_ts050_panel_unprepare,
++	.enable = khadas_ts050_panel_enable,
++	.disable = khadas_ts050_panel_disable,
++	.get_modes = khadas_ts050_panel_get_modes,
++};
++
++static const struct of_device_id khadas_ts050_of_match[] = {
++	{ .compatible = "khadas,ts050", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, khadas_ts050_of_match);
++
++static int khadas_ts050_panel_add(struct khadas_ts050_panel *khadas_ts050)
++{
++	struct device *dev = &khadas_ts050->link->dev;
++	int err;
++
++	khadas_ts050->supply = devm_regulator_get(dev, "power");
++	if (IS_ERR(khadas_ts050->supply))
++		return PTR_ERR(khadas_ts050->supply);
++
++	khadas_ts050->reset_gpio = devm_gpiod_get(dev, "reset",
++						   GPIOD_OUT_LOW);
++	if (IS_ERR(khadas_ts050->reset_gpio)) {
++		err = PTR_ERR(khadas_ts050->reset_gpio);
++		dev_dbg(dev, "failed to get reset gpio: %d\n", err);
++		return err;
++	}
++
++	khadas_ts050->enable_gpio = devm_gpiod_get(dev, "enable",
++						   GPIOD_OUT_HIGH);
++	if (IS_ERR(khadas_ts050->enable_gpio)) {
++		err = PTR_ERR(khadas_ts050->enable_gpio);
++		dev_dbg(dev, "failed to get enable gpio: %d\n", err);
++		return err;
++	}
++
++	drm_panel_init(&khadas_ts050->base, &khadas_ts050->link->dev,
++		       &khadas_ts050_panel_funcs, DRM_MODE_CONNECTOR_DSI);
++
++	err = drm_panel_of_backlight(&khadas_ts050->base);
++	if (err)
++		return err;
++
++	drm_panel_add(&khadas_ts050->base);
++
++	return 0;
++}
++
++static int khadas_ts050_panel_probe(struct mipi_dsi_device *dsi)
++{
++	struct khadas_ts050_panel *khadas_ts050;
++	int err;
++
++	dsi->lanes = 4;
++	dsi->format = MIPI_DSI_FMT_RGB888;
++	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
++			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
++
++	khadas_ts050 = devm_kzalloc(&dsi->dev, sizeof(*khadas_ts050),
++				    GFP_KERNEL);
++	if (!khadas_ts050)
++		return -ENOMEM;
++
++	mipi_dsi_set_drvdata(dsi, khadas_ts050);
++	khadas_ts050->link = dsi;
++
++	err = khadas_ts050_panel_add(khadas_ts050);
++	if (err < 0)
++		return err;
++
++	return mipi_dsi_attach(dsi);
++}
++
++static int khadas_ts050_panel_remove(struct mipi_dsi_device *dsi)
++{
++	struct khadas_ts050_panel *khadas_ts050 = mipi_dsi_get_drvdata(dsi);
++	int err;
++
++	err = mipi_dsi_detach(dsi);
++	if (err < 0)
++		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n", err);
++
++	drm_panel_remove(&khadas_ts050->base);
++	drm_panel_disable(&khadas_ts050->base);
++	drm_panel_unprepare(&khadas_ts050->base);
++
++	return 0;
++}
++
++static void khadas_ts050_panel_shutdown(struct mipi_dsi_device *dsi)
++{
++	struct khadas_ts050_panel *khadas_ts050 = mipi_dsi_get_drvdata(dsi);
++
++	drm_panel_disable(&khadas_ts050->base);
++	drm_panel_unprepare(&khadas_ts050->base);
++}
++
++static struct mipi_dsi_driver khadas_ts050_panel_driver = {
++	.driver = {
++		.name = "panel-khadas-ts050",
++		.of_match_table = khadas_ts050_of_match,
++	},
++	.probe = khadas_ts050_panel_probe,
++	.remove = khadas_ts050_panel_remove,
++	.shutdown = khadas_ts050_panel_shutdown,
++};
++module_mipi_dsi_driver(khadas_ts050_panel_driver);
++
++MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
++MODULE_DESCRIPTION("Khadas TS050 panel driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.25.1
 
