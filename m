@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428882C17C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B3A2C17C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgKWVfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:35:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730682AbgKWVfW (ORCPT
+        id S1731265AbgKWVhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:37:08 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:57362 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730466AbgKWVhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:35:22 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD03C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:35:21 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id h19so4736582otr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:35:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RHVbsPxojr7q71RsaVfmSVzc2bYiMeerz5PMqJgnAgU=;
-        b=bZveYD92i3H57xbj9rb3OdOGmkuce42ysMSC8ggdUOmgnKiOo0mC0i2iwIDz6ia94w
-         DW7LE2WD90xLiDB7mMvFZO+BuPAkPFa4+vrr9RWmjbM07X9P3knutRw+t/4gnsrW+vUO
-         MxoiIEMwQTq77a0wVl3C/6KC+xJtNrNBln58EMpoZKa2TKvbH4bErvgX97csluF8aVrP
-         hmgiPvltvzNnksgdMLCPAFVXib8aU1IkXe9I3VZTwgxzAuX9rCrbi/5yV04vK+M16AKy
-         EtWODMZqpMcSxqmJv+g298pcnBn6Jnj/CnS1neNO67QAu9cPLoMH6t0BVlB0oeEvR0D7
-         3C6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RHVbsPxojr7q71RsaVfmSVzc2bYiMeerz5PMqJgnAgU=;
-        b=tCp85XeO3OMnNLH42wtTTHIfeAE40R8CKKx+GUomgXWEtEB6QDlffVUMyoNY1rcl1e
-         +1Zu+06zmQHa20FEXaIGvbSDRweDfwjIxVIGagZE7U5Z18noVyolG2K5bYQHYzUw5Qti
-         sM6hFr88DLXv1MT8RA0uC1NC/26XIY87U1FuR1Fy9xtxjPk0JQeAmDhhLNQn555bBE/Q
-         vXXMkkeq+mRLFzfUPcaGNMsWTh94apwNh0T4skmyidGRjyraQ5QovWItZHoXKVHlSiwV
-         Gflcboc5jhBKYt1SZdkqPi0yqW5KyELlhZT40p6ONPQRo25o+ZBoBC1DMtK6yMpXRsSc
-         GJJA==
-X-Gm-Message-State: AOAM533E6qAedB0Vt9f/5XfjjiY0Co0IXVC4QQftdvUkdAOcX0sPDZie
-        1hnli1UgweAvth9HEjvii+8s3MA/543jJ0HosOV2cQ==
-X-Google-Smtp-Source: ABdhPJxBqyZnJhY6xj1OfzZtV3azrOD1zzjunErm0HAXDVGbZZwrm5R8XrYVWiMrwMBdaPyzsevyCqOoR29g/tMYX7A=
-X-Received: by 2002:a9d:851:: with SMTP id 75mr1142123oty.102.1606167321100;
- Mon, 23 Nov 2020 13:35:21 -0800 (PST)
+        Mon, 23 Nov 2020 16:37:08 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id D38B658B8C4;
+        Tue, 24 Nov 2020 08:37:03 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1khJWA-00EJp0-PA; Tue, 24 Nov 2020 08:37:02 +1100
+Date:   Tue, 24 Nov 2020 08:37:02 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     XiaoLi Feng <xifeng@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, ira.weiny@intel.com,
+        Xiaoli Feng <fengxiaoli0714@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] fs/stat: set attributes_mask for STATX_ATTR_DAX
+Message-ID: <20201123213702.GV7391@dread.disaster.area>
+References: <20201121003331.21342-1-xifeng@redhat.com>
+ <21890103-fce2-bb50-7fc2-6c6d509b982f@infradead.org>
+ <20201121011516.GD3837269@magnolia>
 MIME-Version: 1.0
-References: <20201121063302.84090-1-john.stultz@linaro.org> <20201123183659.GP6322@sirena.org.uk>
-In-Reply-To: <20201123183659.GP6322@sirena.org.uk>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 23 Nov 2020 13:35:09 -0800
-Message-ID: <CALAqxLW9AF3h0ZxSc8VHU8DbBvYjDsL=Kn53qXC9YCc78ypG0g@mail.gmail.com>
-Subject: Re: [PATCH] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies
- to avoid build error
-To:     Mark Brown <broonie@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121011516.GD3837269@magnolia>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=nNwsprhYR40A:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
+        a=zd7GPZmn2bw0TrGjmFEA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:37 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Sat, Nov 21, 2020 at 06:33:02AM +0000, John Stultz wrote:
->
-> >  config REGULATOR_QCOM_RPMH
-> >       tristate "Qualcomm Technologies, Inc. RPMh regulator driver"
-> > -     depends on QCOM_RPMH || COMPILE_TEST
-> > +     depends on QCOM_RPMH
->
-> QCOM_RPMH || (QCOM_RPMH=n && COMPILE_TEST)
-> should do the trick IIRC.
+On Fri, Nov 20, 2020 at 06:03:18PM -0800, Darrick J. Wong wrote:
+> [Adding fsdevel to cc since this is a filesystems question]
+> 
+> On Fri, Nov 20, 2020 at 04:58:09PM -0800, Randy Dunlap wrote:
+> > Hi,
+> > 
+> > I don't know this code, but:
+> > 
+> > On 11/20/20 4:33 PM, XiaoLi Feng wrote:
+> > > From: Xiaoli Feng <fengxiaoli0714@gmail.com>
+> > > 
+> > > keep attributes and attributes_mask are consistent for
+> > > STATX_ATTR_DAX.
+> > > ---
+> > >  fs/stat.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/stat.c b/fs/stat.c
+> > > index dacecdda2e79..914a61d256b0 100644
+> > > --- a/fs/stat.c
+> > > +++ b/fs/stat.c
+> > > @@ -82,7 +82,7 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
+> > >  
+> > >  	if (IS_DAX(inode))
+> > >  		stat->attributes |= STATX_ATTR_DAX;
+> > > -
+> > > +	stat->attributes_mask |= STATX_ATTR_DAX;
+> > 
+> > Why shouldn't that be:
+> > 
+> > 	if (IS_DAX(inode))
+> > 		stat->attributes_mask |= STATX_ATTR_DAX;
+> > 
+> > or combine them, like this:
+> > 
+> > 	if (IS_DAX(inode)) {
+> > 		stat->attributes |= STATX_ATTR_DAX;
+> > 		stat->attributes_mask |= STATX_ATTR_DAX;
+> > 	}
+> > 
+> > 
+> > and no need to delete that blank line.
+> 
+> Some filesystems could support DAX but not have it enabled for this
+> particular file, so this won't work.
+> 
+> General question: should filesystems that are /capable/ of DAX signal
+> this by setting the DAX bit in the attributes mask?
 
-Sounds good. I'll resend shortly.
+I think so, yes. It could be set if the right bit on the inode is
+set, but it currently isn't so the bit in the mask is set but the
+bit in the attributes is not. i.e "DAX is valid status bit, but it
+is not set for this file".
 
-thanks
--john
+> Or is this a VFS
+> feature and hence here is the appropriate place to be setting the mask?
+
+Well, in the end it's a filesystem feature bit because the
+filesystem policy that decides whether DAX is used or not. e.g. if
+the block device is not DAX capable or dax=never mount option is
+set, we should not ever set STATX_ATTR_DAX in statx for either the
+attributes or attributes_mask field because the filesystem is not
+DAX capable. And given that we have filesystems with multiple block
+devices that can have different DAX capabilities, I think this
+statx() attr state (and mask) really has to come from the
+filesystem, not VFS...
+
+> Extra question: should we only set this in the attributes mask if
+> CONFIG_FS_DAX=y ?
+
+IMO, yes, because it will always be false on CONFIG_FS_DAX=n and so
+it may well as not be emitted as a supported bit in the mask.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
