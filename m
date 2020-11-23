@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC562C164A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AB72C1655
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732783AbgKWUPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:15:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
+        id S2387516AbgKWUPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731725AbgKWUPN (ORCPT
+        with ESMTP id S1731687AbgKWUPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:15:13 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FB3C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:15:13 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id 7so14363836qtw.23
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:15:13 -0800 (PST)
+        Mon, 23 Nov 2020 15:15:15 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E77C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:15:15 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id g17so6453362qtr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:15:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=+ebVro8WhZiLU99JJsnZ41QIjsbf3l1QeUgTEZT5fwM=;
-        b=nMsy4P1zBhnUlJ7LXW5vgMe9VAoz/CbtlFUKrJKF1+LyFx3nO8IGDWAzkq6sCI3cyX
-         37cZ0AyhoIpiVPMTMdyIP8+n8+BQA57PTXiQxaqv1coMlGKSDmL5G0Bzu1IswwgHYRIF
-         WL3uJIRxFuTlY8/s2i4hCvE/6Vy8uBi6lCrsVkIn8eAz6q3j1YzY9iX/JW8uCtCQyoOv
-         2fgfUu3tA1ooA7GWCT/E5nVFskmr0ABKzjIcPB/jQauVJM9VZ8rbHjYRd8eAchmaVMRZ
-         kRtz9MnoLJ+37V9QrBxh8/aA/B7kZ8Cwx1WSfgMSxOgxMX4E7RLZx4vULPLNgYjMi0p6
-         nheA==
+        bh=NLiVUxn9nGZzjemtf3cQRZI6tHXp7YKQ8dqUNAbFdqU=;
+        b=sEEd+SR5E0QujIT6LdTNMkP8lvByK/biZ74au0Czx9ejMJ7eteUUr04ivXsXnZo0g+
+         ATjcA39S/TY8d8NJxKDXQ1milDVgJmFjdelMKmd3E+kadIQWJxzBS/HP4OQn/3jV53EX
+         zbtTSa1kT/UkktYPQ1CYBza1aMMLQSg3uRWLqRuPvi8Iq0z26TFAB3ZXNeF1Mu+LBYeo
+         iAHQizMKbfGB75rv0K24dDQV7pzlIuD8FAttvqmJn27tLVdR7ewFAbw6w0P0VPS6I0vX
+         dyjKhQWaiOUXrKBzq1gX3WWhDNtOnk2CyVHfR21g9XT+kNzCmuYSC4AQuXtmhHH+46yn
+         Gylw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=+ebVro8WhZiLU99JJsnZ41QIjsbf3l1QeUgTEZT5fwM=;
-        b=TBOGdselV6e3/P+zA2wpFokxGSHivux0IT7hnDOYPYGvItmyHxlrsRjxTKnQ9nqmqB
-         N+alxEQHXlTYqd3IsVc0KxvChVbBdmt2+R0KM4Y3j1Aq0jjQcmAPnZrwSwMNg+iRHvbH
-         cojaPwfaEW9dmpfzdqp7ewGDO9pEgfxlNd977W6CUdqEzVAI4PHa4+fcVoyco6ol+Dg/
-         DgQNl6fXiaABWPS3gTmJClhfG2XWfcYJrwXQYyVGgYQC4MWXg6FgN3xMKXP+JxUtqED4
-         vBehkJFlWIn6hCfIGVGygaGu7g/QxeBJfplF3jaO9a6e2NYwgHCRCz49OqoaaKWQOWB9
-         Xp1A==
-X-Gm-Message-State: AOAM5302VVKgiBpPBAoGKxDN7GpihPs3UZ5r5y4IfTiKKcW/VhCpra3B
-        L79LJj7PNoE9T1CqMhtFaHUG6VhT/2KiogLi
-X-Google-Smtp-Source: ABdhPJz/EIT+p1GLjg2l1/jdNIDDxtLmLPSNqnUlEbXUIzj7/CSWJSG0+2TpsAC2+guYEI2P9bEmzgTPMtEAhQTQ
+        bh=NLiVUxn9nGZzjemtf3cQRZI6tHXp7YKQ8dqUNAbFdqU=;
+        b=hcKD+ipEdch7AQGn4+ZHIcPJVVVjPmqjFBjWI/ukP/Ygw42uEYzsoJ435dglQI+ZRz
+         uXoaMUGzf16UiNSWkWYa+w6vraSztHYbd69oRrVpKYWnNMxnDkXxrl//u4s+ZGrz4qtp
+         +WvS9BfU+JfS5TIeoArZqwUcyrPtONKIAMPnHgcAX1uAsndkKpg1pFIScpEjng+umi0G
+         zf8xgR8LugpHGG7GLDMjppMvZNRub739j9Z5Zuc28057YFp5QXDCxGHThVJYQXBXMTM8
+         cJ7u3swBFQylD4vtKL1kcGYjvvh0uSBT4dWA91BdpsJICZ48BcUMMPvS3m2szjXLkb7s
+         JFkA==
+X-Gm-Message-State: AOAM530/3Vd7DUl70Q9xd17RfEZ7IcDomom16CNNv46QH8TvRI+oltx5
+        0e1fWXLHCSpNOcJgaZ8WygIaqcluI1MDD9Rh
+X-Google-Smtp-Source: ABdhPJxOc7uK81qXmguJVdi7tYU8ToxOxicUm1j1rL9VWGPliVVPXjfCwHBWb4jXxW7bR846SidQKgv2RVKPCxk+
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6214:aab:: with SMTP id
- ew11mr1176833qvb.4.1606162512301; Mon, 23 Nov 2020 12:15:12 -0800 (PST)
-Date:   Mon, 23 Nov 2020 21:14:38 +0100
+ (user=andreyknvl job=sendgmr) by 2002:ad4:4a8a:: with SMTP id
+ h10mr1086459qvx.55.1606162514671; Mon, 23 Nov 2020 12:15:14 -0800 (PST)
+Date:   Mon, 23 Nov 2020 21:14:39 +0100
 In-Reply-To: <cover.1606162397.git.andreyknvl@google.com>
-Message-Id: <be438471690e351e1d792e6bb432e8c03ccb15d3.1606162397.git.andreyknvl@google.com>
+Message-Id: <131a6694a978a9a8b150187e539eecc8bcbf759b.1606162397.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1606162397.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH mm v4 08/19] kasan: inline random_tag for HW_TAGS
+Subject: [PATCH mm v4 09/19] kasan: open-code kasan_unpoison_slab
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -73,91 +73,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using random_tag() currently results in a function call. Move its
-definition to mm/kasan/kasan.h and turn it into a static inline function
-for hardware tag-based mode to avoid uneeded function calls.
+There's the external annotation kasan_unpoison_slab() that is currently
+defined as static inline and uses kasan_unpoison_range(). Open-code this
+function in mempool.c. Otherwise with an upcoming change this function
+will result in an unnecessary function call.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Link: https://linux-review.googlesource.com/id/Iac5b2faf9a912900e16cca6834d621f5d4abf427
+Link: https://linux-review.googlesource.com/id/Ia7c8b659f79209935cbaab3913bf7f082cc43a0e
 ---
- mm/kasan/hw_tags.c |  5 -----
- mm/kasan/kasan.h   | 31 ++++++++++++++-----------------
- 2 files changed, 14 insertions(+), 22 deletions(-)
+ include/linux/kasan.h | 6 ------
+ mm/mempool.c          | 2 +-
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index a34476764f1d..3cdd87d189f6 100644
---- a/mm/kasan/hw_tags.c
-+++ b/mm/kasan/hw_tags.c
-@@ -51,11 +51,6 @@ void unpoison_range(const void *address, size_t size)
- 			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 1594177f86bb..872bf145ddde 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -106,11 +106,6 @@ struct kasan_cache {
+ 	int free_meta_offset;
+ };
+ 
+-size_t __ksize(const void *);
+-static inline void kasan_unpoison_slab(const void *ptr)
+-{
+-	kasan_unpoison_range(ptr, __ksize(ptr));
+-}
+ size_t kasan_metadata_size(struct kmem_cache *cache);
+ 
+ bool kasan_save_enable_multi_shot(void);
+@@ -166,7 +161,6 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
+ 	return false;
  }
  
--u8 random_tag(void)
--{
--	return hw_get_random_tag();
--}
--
- bool check_invalid_free(void *addr)
+-static inline void kasan_unpoison_slab(const void *ptr) { }
+ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+ 
+ #endif /* CONFIG_KASAN */
+diff --git a/mm/mempool.c b/mm/mempool.c
+index f473cdddaff0..583a9865b181 100644
+--- a/mm/mempool.c
++++ b/mm/mempool.c
+@@ -112,7 +112,7 @@ static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
+ static void kasan_unpoison_element(mempool_t *pool, void *element)
  {
- 	u8 ptr_tag = get_tag(addr);
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 5e8cd2080369..7876a2547b7d 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -190,6 +190,12 @@ static inline bool addr_has_metadata(const void *addr)
- 
- #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
- 
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-+void print_tags(u8 addr_tag, const void *addr);
-+#else
-+static inline void print_tags(u8 addr_tag, const void *addr) { }
-+#endif
-+
- bool check_invalid_free(void *addr);
- 
- void *find_first_bad_addr(void *addr, size_t size);
-@@ -225,23 +231,6 @@ static inline void quarantine_reduce(void) { }
- static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
- #endif
- 
--#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
--
--void print_tags(u8 addr_tag, const void *addr);
--
--u8 random_tag(void);
--
--#else
--
--static inline void print_tags(u8 addr_tag, const void *addr) { }
--
--static inline u8 random_tag(void)
--{
--	return 0;
--}
--
--#endif
--
- #ifndef arch_kasan_set_tag
- static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- {
-@@ -281,6 +270,14 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- 
- #endif /* CONFIG_KASAN_HW_TAGS */
- 
-+#ifdef CONFIG_KASAN_SW_TAGS
-+u8 random_tag(void);
-+#elif defined(CONFIG_KASAN_HW_TAGS)
-+static inline u8 random_tag(void) { return hw_get_random_tag(); }
-+#else
-+static inline u8 random_tag(void) { return 0; }
-+#endif
-+
- /*
-  * Exported functions for interfaces called from assembly or from generated
-  * code. Declarations here to avoid warning about missing declarations.
+ 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+-		kasan_unpoison_slab(element);
++		kasan_unpoison_range(element, __ksize(element));
+ 	else if (pool->alloc == mempool_alloc_pages)
+ 		kasan_alloc_pages(element, (unsigned long)pool->pool_data);
+ }
 -- 
 2.29.2.454.gaff20da3a2-goog
 
