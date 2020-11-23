@@ -2,109 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FC92C11F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC4D2C11F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390289AbgKWRaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730399AbgKWRaL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:30:11 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC55BC0613CF;
-        Mon, 23 Nov 2020 09:30:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=+n9i9tL/XgZYnHTbCrgihSYQKPtV9aa5qeJPtl96feU=; b=GAwYE8MfGMdZHxTUgeLNypn3X
-        jU/KEpqq2rNd7Owy/IEi9qASrORvEph9WgK6OWsy6c/Sc0UlFUgWLNp8IuKHCpgsVKT57HWMqiVrG
-        JZDh9DDrJL3LJtiMPD80vK8gF2BdZuJNu3g4DAYUesrzoihNUshtGmrhw7kScs3bYKu/l3dFaygKF
-        7pD8exxWX8vmJ2OMR0AAnQhXmqJ5lAeH0q8lec1vEe5Sm7wicJzfyrhqpVkulFGLHGeIS6WuVQaYo
-        gPcPINBvJCvvVyUAzrhN94oJPkJyz2gIJCxykbOV0GdPBVpmZyWKQbAEMMIOU2qyt5alLXBRWOUlF
-        bt70fEn0Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35150)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1khFfD-0006N9-US; Mon, 23 Nov 2020 17:30:07 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1khFfB-0006VA-5Q; Mon, 23 Nov 2020 17:30:05 +0000
-Date:   Mon, 23 Nov 2020 17:30:05 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>
-Subject: Re: [EXT] Re: [PATCH v1] net: mvpp2: divide fifo for dts-active
- ports only
-Message-ID: <20201123173005.GY1551@shell.armlinux.org.uk>
-References: <1606143160-25589-1-git-send-email-stefanc@marvell.com>
- <20201123151049.GV1551@shell.armlinux.org.uk>
- <CO6PR18MB3873522226E3F9A608371289B0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
- <20201123153332.GW1551@shell.armlinux.org.uk>
- <CO6PR18MB3873B4205ECAF2383F9539CCB0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
- <20201123155148.GX1551@shell.armlinux.org.uk>
- <CO6PR18MB3873FC445787E395CCB710E4B0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO6PR18MB3873FC445787E395CCB710E4B0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        id S2390302AbgKWRaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:30:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730399AbgKWRaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:30:18 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD76E20758;
+        Mon, 23 Nov 2020 17:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606152618;
+        bh=oz9JmIWa3XvZOAzCbCMICe2nj2WJ7qbp9Ua7W1eEYYc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dyDnD2a0fu0SnFH9Caat93EMmFaB9b4qWf64Zh4wx7cGpP39t3pQS0MdiqJEyOz0b
+         7xT9bl5rfjXtO1H+SZob50e7UFUmV+TQVsM1BShiutxjA2cbnAAo8+TnB7sPMIFWa2
+         2p8CrxT6zuyljZtaQk0r0w6wYhsNtjk6HcvFC7Qw=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khFfL-00D18Q-JR; Mon, 23 Nov 2020 17:30:15 +0000
+Date:   Mon, 23 Nov 2020 17:30:14 +0000
+Message-ID: <87eekk56c9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 21/24] kvm: arm64: Add kvm-arm.protected early kernel parameter
+In-Reply-To: <20201116204318.63987-22-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-22-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:03:00PM +0000, Stefan Chulski wrote:
-> > -----Original Message-----
-> > From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-> > Sent: Monday, November 23, 2020 5:52 PM
-> > To: Stefan Chulski <stefanc@marvell.com>
-> > Cc: netdev@vger.kernel.org; thomas.petazzoni@bootlin.com;
-> > davem@davemloft.net; Nadav Haklai <nadavh@marvell.com>; Yan Markman
-> > <ymarkman@marvell.com>; linux-kernel@vger.kernel.org; kuba@kernel.org;
-> > mw@semihalf.com; andrew@lunn.ch
-> > Subject: Re: [EXT] Re: [PATCH v1] net: mvpp2: divide fifo for dts-active ports
-> > only
-> > 
-> > On Mon, Nov 23, 2020 at 03:44:05PM +0000, Stefan Chulski wrote:
-> > > Yes, but this allocation exists also in current code.
-> > > From HW point of view(MAC and PPv2) maximum supported speed in CP110:
-> > > port 0 - 10G, port 1 - 2.5G, port 2 - 2.5G.
-> > > in CP115: port 0 - 10G, port 1 - 5G, port 2 - 2.5G.
-> > >
-> > > So this allocation looks correct at least for CP115.
-> > > Problem that we cannot reallocate FIFO during runtime, after specific speed
-> > negotiation.
-> > 
-> > We could do much better. DT has a "max-speed" property for ethernet
-> > controllers. If we have that property, then I think we should use that to
-> > determine the initialisation time FIFO allocation.
-> > 
-> > As I say, on Macchiatobin, the allocations we end up with are just crazy when
-> > you consider the port speeds that the hardware supports.
-> > Maybe that should be done as a follow-on patch - but I think it needs to be
-> > done.
+On Mon, 16 Nov 2020 20:43:15 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
 > 
-> I agree with you. We can use "max-speed" for better FIFO allocations.
-> I plan to upstream more fixes from the "Marvell" devel branch then I can prepare this patch.
-> So you OK with this patch and then follow-on improvement?
+> Add an early parameter that allows users to opt into protected KVM mode
+> when using the nVHE hypervisor. In this mode, guest state will be kept
+> private from the host. This will primarily involve enabling stage-2
+> address translation for the host, restricting DMA to host memory, and
+> filtering host SMCs.
+> 
+> Capability ARM64_PROTECTED_KVM is set if the param is passed, CONFIG_KVM
+> is enabled and the kernel was not booted with VHE.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/cpucaps.h |  3 ++-
+>  arch/arm64/include/asm/virt.h    |  8 ++++++++
+>  arch/arm64/kernel/cpufeature.c   | 29 +++++++++++++++++++++++++++++
+>  arch/arm64/kvm/arm.c             | 10 +++++++++-
+>  4 files changed, 48 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpucaps.h
+> index e7d98997c09c..ac075f70b2e4 100644
+> --- a/arch/arm64/include/asm/cpucaps.h
+> +++ b/arch/arm64/include/asm/cpucaps.h
+> @@ -66,7 +66,8 @@
+>  #define ARM64_HAS_TLB_RANGE			56
+>  #define ARM64_MTE				57
+>  #define ARM64_WORKAROUND_1508412		58
+> +#define ARM64_PROTECTED_KVM			59
+>  
+> -#define ARM64_NCAPS				59
+> +#define ARM64_NCAPS				60
+>  
+>  #endif /* __ASM_CPUCAPS_H */
+> diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
+> index 6069be50baf9..2fde1186b962 100644
+> --- a/arch/arm64/include/asm/virt.h
+> +++ b/arch/arm64/include/asm/virt.h
+> @@ -97,6 +97,14 @@ static __always_inline bool has_vhe(void)
+>  		return cpus_have_final_cap(ARM64_HAS_VIRT_HOST_EXTN);
+>  }
+>  
+> +static __always_inline bool is_protected_kvm_enabled(void)
+> +{
+> +	if (is_vhe_hyp_code())
+> +		return false;
+> +	else
+> +		return cpus_have_final_cap(ARM64_PROTECTED_KVM);
+> +}
+> +
+>  #endif /* __ASSEMBLY__ */
+>  
+>  #endif /* ! __ASM__VIRT_H */
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 6f36c4f62f69..dd5bc0f0cf0d 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -1709,6 +1709,29 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
+>  }
+>  #endif /* CONFIG_ARM64_MTE */
+>  
+> +#ifdef CONFIG_KVM
+> +static bool enable_protected_kvm;
+> +
+> +static bool has_protected_kvm(const struct arm64_cpu_capabilities *entry, int __unused)
+> +{
+> +	if (!enable_protected_kvm)
+> +		return false;
+> +
+> +	if (is_kernel_in_hyp_mode()) {
+> +		pr_warn("Protected KVM not available with VHE\n");
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static int __init early_protected_kvm_cfg(char *buf)
+> +{
+> +	return strtobool(buf, &enable_protected_kvm);
+> +}
+> +early_param("kvm-arm.protected", early_protected_kvm_cfg);
 
-Yes - but I would like to see the commit description say that this
-results in no change the situation where all three ports are in use.
+Please add some documentation to
+Documentation/admin-guide/kernel-parameters.txt.
+
+> +#endif /* CONFIG_KVM */
+> +
+>  /* Internal helper functions to match cpu capability type */
+>  static bool
+>  cpucap_late_cpu_optional(const struct arm64_cpu_capabilities *cap)
+> @@ -1822,6 +1845,12 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
+>  		.field_pos = ID_AA64PFR0_EL1_SHIFT,
+>  		.min_field_value = ID_AA64PFR0_EL1_32BIT_64BIT,
+>  	},
+> +	{
+> +		.desc = "Protected KVM",
+> +		.capability = ARM64_PROTECTED_KVM,
+> +		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
+> +		.matches = has_protected_kvm,
+> +	},
+>  #endif
+>  	{
+>  		.desc = "Kernel page table isolation (KPTI)",
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index c76a8e5bd19c..49d2474f2a80 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1796,6 +1796,12 @@ int kvm_arch_init(void *opaque)
+>  		return -ENODEV;
+>  	}
+>  
+> +	/* The PROTECTED_KVM cap should not have been enabled for VHE. */
+> +	if (in_hyp_mode && is_protected_kvm_enabled()) {
+> +		kvm_pr_unimpl("VHE protected mode unsupported, not initializing\n");
+> +		return -ENODEV;
+
+How can this happen? Don't we already take care of this?
+
+> +	}
+> +
+>  	if (cpus_have_final_cap(ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE) ||
+>  	    cpus_have_final_cap(ARM64_WORKAROUND_1508412))
+>  		kvm_info("Guests without required CPU erratum workarounds can deadlock system!\n" \
+> @@ -1827,7 +1833,9 @@ int kvm_arch_init(void *opaque)
+>  	if (err)
+>  		goto out_hyp;
+>  
+> -	if (in_hyp_mode)
+> +	if (is_protected_kvm_enabled())
+> +		kvm_info("Protected nVHE mode initialized successfully\n");
+> +	else if (in_hyp_mode)
+>  		kvm_info("VHE mode initialized successfully\n");
+>  	else
+>  		kvm_info("Hyp mode initialized successfully\n");
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
+
+Thanks,
+
+	M.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Without deviation from the norm, progress is not possible.
