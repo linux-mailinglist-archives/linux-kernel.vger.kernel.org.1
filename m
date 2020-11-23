@@ -2,388 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD56E2C00F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948CF2C00F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgKWH5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 02:57:05 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:58560 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbgKWH5E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:57:04 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201123075702epoutp0325389a9d1bc29a2bf0c88949f47ad795~KFAORNRni0825608256epoutp035
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:57:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201123075702epoutp0325389a9d1bc29a2bf0c88949f47ad795~KFAORNRni0825608256epoutp035
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1606118222;
-        bh=h7j3pGKTr+iZaSuLe5ARKR58MH3db2jp2Hf76uc6KoY=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=UV3HtczWGUixWaD4nGLUkC2wgxMh1BnxBe23uHW6g2/coEo2l/QvH3bL3dkaQvUQQ
-         THVKVSn5KizD75SOG5P/ioxFATcwjH/0Qd+OvmX40MTzkedg5zJShDeEc6JzX2gdKb
-         ZhO05IpUivfK7e3CE6rGoguRlgJVA+029cGbbNPc=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20201123075702epcas2p477d559fb81fcb32a54f6d496588d20eb~KFAN3giLa0709607096epcas2p4r;
-        Mon, 23 Nov 2020 07:57:02 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.188]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Cffcr2GXlzMqYl8; Mon, 23 Nov
-        2020 07:57:00 +0000 (GMT)
-X-AuditID: b6c32a45-337ff7000001297d-1f-5fbb6b4af633
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F0.36.10621.A4B6BBF5; Mon, 23 Nov 2020 16:56:58 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH net-next 2/2] net: nfc: s3fwrn5: Support a UART interface
-Reply-To: bongsu.jeon@samsung.com
-Sender: Bongsu Jeon <bongsu.jeon@samsung.com>
-From:   Bongsu Jeon <bongsu.jeon@samsung.com>
-To:     "krzk@kernel.org" <krzk@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93@epcms2p5>
-Date:   Mon, 23 Nov 2020 16:56:58 +0900
-X-CMS-MailID: 20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMKsWRmVeSWpSXmKPExsWy7bCmqa5X9u54g3WT+C3On9/AbnFhWx+r
-        xeVdc9gs5mzYzG5xbIGYA6vHplWdbB7ds/+xeHzeJBfAHJVjk5GamJJapJCal5yfkpmXbqvk
-        HRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuWmQO0UUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCR
-        X1xiq5RakJJTYGhYoFecmFtcmpeul5yfa2VoYGBkClSZkJNxu2E+c8E8+4qvX74yNzBuNeli
-        5OSQEDCRmDx/LnsXIxeHkMAORoml7z4zdjFycPAKCEr83SEMYgoLeEqcPyUNUi4koCjxv+Mc
-        G4gtLKAr8eLvUTCbTUBbYu3RRiYQW0TAR2LhjgVMICOZBVYzSkycs4oVYhevxIz2pywQtrTE
-        9uVbGSFsDYkfy3qZIWxRiZur37LD2O+PzYeqEZFovXcWqkZQ4sHP3VBxSYm3++aB3S8h0M4o
-        cf7nDzYIZwajxKnNf6E69CUWn1sBdh6vgK/E2T1LwDawCKhKfF29iQmixkXi0/QTYNcxC8hL
-        bH87hxnke2YBTYn1u/RBTAkBZYkjt6Aq+CQ6Dv9lh/lrx7wnUFNUJXqbvzDB/Dh5dgvUnR4S
-        v1cuZ4EEYqDE1L4uxgmMCrMQIT0Lyd5ZCHsXMDKvYhRLLSjOTU8tNiowRI7cTYzg1KfluoNx
-        8tsPeocYmTgYDzFKcDArifC2yu2MF+JNSaysSi3Kjy8qzUktPsRoCvTxRGYp0eR8YPLNK4k3
-        NDUyMzOwNLUwNTOyUBLnDV3ZFy8kkJ5YkpqdmlqQWgTTx8TBKdXA1CKQ9p3n/fElLlk/Mv+Y
-        iKc2XtnPEOWT9oCtZxpX11Mla/m9bX77ui4pLde5rVgzp18/74mtu8nWFxNaZ+y/pZ7Sv/DR
-        r/RIka/qcctYrk3/L3b21exwkce/FqUcOBou38Ny3UM6+07Sh8+JOTzLyl9s3vj8wbrMtpeR
-        d7TnHpGcptB65d3lCdZZe+9cF5tdr7lN54pSgs9BN7MrN46f/SZ+61D8naV7OIQWaD1uOWQX
-        q7lg2+m1z5l2Tp67KvqR8UypuAs8K6RDri49rqnVZ7bTWNohznV6bfeLuws+rTz0pjoqcda0
-        5HnxjKbsc8qLalkY0pYwB/F9WP/M86mRTvYONrFSoXsv+u9KHbznqazEUpyRaKjFXFScCABV
-        Yf00BgQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93
-References: <CGME20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93@epcms2p5>
+        id S1726891AbgKWH6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 02:58:40 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:19686 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgKWH6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 02:58:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606118319; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=nJ5OnoAx/fC20E6YT2rnGuLn7tNdq6SkijU63iSx5Vo=; b=qS4BXVMhPiysywgg6N+mEiD+mGNnN8gdDU8A9AkMcBshd7LmV3v398LtX9nKuOYMYTAHCAr0
+ lz+d8PCWhXGl0dTr1rf0H9vaEdNZvUOuIBTFFJaetVh9VkDAohtUN0s37pRFojr/TE9/JD1z
+ 98D3yRVbB1av9bEWwW8I/GarguQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fbb6baefa67d9becf5b5aaa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 07:58:38
+ GMT
+Sender: tingweiz=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D6731C43461; Mon, 23 Nov 2020 07:58:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 54731C433C6;
+        Mon, 23 Nov 2020 07:58:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 54731C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingweiz@codeaurora.org
+Date:   Mon, 23 Nov 2020 15:58:27 +0800
+From:   Tingwei Zhang <tingweiz@codeaurora.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, anshuman.khandual@arm.com,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        jonathan.zhouwen@huawei.com, mike.leach@linaro.org
+Subject: Re: [PATCH v4 20/25] coresight: etm4x: Detect system instructions
+ support
+Message-ID: <20201123075827.GA18352@codeaurora.org>
+References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+ <20201119164547.2982871-21-suzuki.poulose@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119164547.2982871-21-suzuki.poulose@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since S3FWRN82 NFC Chip, The UART interface can be used.
-S3FWRN82 uses NCI protocol and supports I2C and UART interface.
+Hi Suzuki,
 
-Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
----
- drivers/nfc/s3fwrn5/Kconfig  |  12 ++
- drivers/nfc/s3fwrn5/Makefile |   2 +
- drivers/nfc/s3fwrn5/uart.c   | 250 +++++++++++++++++++++++++++++++++++
- 3 files changed, 264 insertions(+)
- create mode 100644 drivers/nfc/s3fwrn5/uart.c
+On Fri, Nov 20, 2020 at 12:45:42AM +0800, Suzuki K Poulose wrote:
+> ETM v4.4 onwards adds support for system instruction access
+> to the ETM. Detect the support on an ETM and switch to using the
+> mode when available.
+> 
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  .../coresight/coresight-etm4x-core.c          | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
+> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 7ac0a185c146..5cbea9c27f58 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -684,6 +684,37 @@ static const struct coresight_ops etm4_cs_ops = {
+>  	.source_ops	= &etm4_source_ops,
+>  };
+> 
+> +static inline bool cpu_supports_sysreg_trace(void)
+> +{
+> +	u64 dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
+> +
+> +	return ((dfr0 >> ID_AA64DFR0_TRACEVER_SHIFT) & 0xfUL) > 0;
+> +}
+> +
+> +static bool etm4_init_sysreg_access(struct etmv4_drvdata *drvdata,
+> +				    struct csdev_access *csa)
+> +{
+> +	u32 devarch;
+> +
+> +	if (!cpu_supports_sysreg_trace())
+> +		return false;
+> +
+> +	/*
+> +	 * ETMs implementing sysreg access must implement TRCDEVARCH.
+> +	 */
+> +	devarch = read_etm4x_sysreg_const_offset(TRCDEVARCH);
+> +	if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH)
 
-diff --git a/drivers/nfc/s3fwrn5/Kconfig b/drivers/nfc/s3fwrn5/Kconfig
-index 3f8b6da58280..6f88737769e1 100644
---- a/drivers/nfc/s3fwrn5/Kconfig
-+++ b/drivers/nfc/s3fwrn5/Kconfig
-@@ -20,3 +20,15 @@ config NFC_S3FWRN5_I2C
- 	  To compile this driver as a module, choose m here. The module will
- 	  be called s3fwrn5_i2c.ko.
- 	  Say N if unsure.
-+
-+config NFC_S3FWRN82_UART
-+	tristate "Samsung S3FWRN82 UART support"
-+	depends on NFC_NCI && SERIAL_DEV_BUS
-+	select NFC_S3FWRN5
-+	help
-+	  This module adds support for a UART interface to the S3FWRN82 chip.
-+	  Select this if your platform is using the UART bus.
-+
-+	  To compile this driver as a module, choose m here. The module will
-+	  be called s3fwrn82_uart.ko.
-+	  Say N if unsure.
-diff --git a/drivers/nfc/s3fwrn5/Makefile b/drivers/nfc/s3fwrn5/Makefile
-index d0ffa35f50e8..d1902102060b 100644
---- a/drivers/nfc/s3fwrn5/Makefile
-+++ b/drivers/nfc/s3fwrn5/Makefile
-@@ -5,6 +5,8 @@
- 
- s3fwrn5-objs = core.o firmware.o nci.o
- s3fwrn5_i2c-objs = i2c.o
-+s3fwrn82_uart-objs = uart.o
- 
- obj-$(CONFIG_NFC_S3FWRN5) += s3fwrn5.o
- obj-$(CONFIG_NFC_S3FWRN5_I2C) += s3fwrn5_i2c.o
-+obj-$(CONFIG_NFC_S3FWRN82_UART) += s3fwrn82_uart.o
-diff --git a/drivers/nfc/s3fwrn5/uart.c b/drivers/nfc/s3fwrn5/uart.c
-new file mode 100644
-index 000000000000..b3c36a5b28d3
---- /dev/null
-+++ b/drivers/nfc/s3fwrn5/uart.c
-@@ -0,0 +1,250 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * UART Link Layer for S3FWRN82 NCI based Driver
-+ *
-+ * Copyright (C) 2020 Samsung Electronics
-+ * Author: Bongsu Jeon <bongsu.jeon@samsung.com>
-+ * All rights reserved.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/nfc.h>
-+#include <linux/netdevice.h>
-+#include <linux/of.h>
-+#include <linux/serdev.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+
-+#include "s3fwrn5.h"
-+
-+#define S3FWRN82_UART_DRIVER_NAME "s3fwrn82_uart"
-+#define S3FWRN82_NCI_HEADER 3
-+#define S3FWRN82_NCI_IDX 2
-+#define S3FWRN82_EN_WAIT_TIME 20
-+#define NCI_SKB_BUFF_LEN 258
-+
-+struct s3fwrn82_uart_phy {
-+	struct serdev_device *ser_dev;
-+	struct nci_dev *ndev;
-+	struct sk_buff *recv_skb;
-+
-+	unsigned int gpio_en;
-+	unsigned int gpio_fw_wake;
-+
-+	/* mutex is used to synchronize */
-+	struct mutex mutex;
-+	enum s3fwrn5_mode mode;
-+};
-+
-+static void s3fwrn82_uart_set_wake(void *phy_id, bool wake)
-+{
-+	struct s3fwrn82_uart_phy *phy = phy_id;
-+
-+	mutex_lock(&phy->mutex);
-+	gpio_set_value(phy->gpio_fw_wake, wake);
-+	msleep(S3FWRN82_EN_WAIT_TIME);
-+	mutex_unlock(&phy->mutex);
-+}
-+
-+static void s3fwrn82_uart_set_mode(void *phy_id, enum s3fwrn5_mode mode)
-+{
-+	struct s3fwrn82_uart_phy *phy = phy_id;
-+
-+	mutex_lock(&phy->mutex);
-+	if (phy->mode == mode)
-+		goto out;
-+	phy->mode = mode;
-+	gpio_set_value(phy->gpio_en, 1);
-+	gpio_set_value(phy->gpio_fw_wake, 0);
-+	if (mode == S3FWRN5_MODE_FW)
-+		gpio_set_value(phy->gpio_fw_wake, 1);
-+	if (mode != S3FWRN5_MODE_COLD) {
-+		msleep(S3FWRN82_EN_WAIT_TIME);
-+		gpio_set_value(phy->gpio_en, 0);
-+		msleep(S3FWRN82_EN_WAIT_TIME);
-+	}
-+out:
-+	mutex_unlock(&phy->mutex);
-+}
-+
-+static enum s3fwrn5_mode s3fwrn82_uart_get_mode(void *phy_id)
-+{
-+	struct s3fwrn82_uart_phy *phy = phy_id;
-+	enum s3fwrn5_mode mode;
-+
-+	mutex_lock(&phy->mutex);
-+	mode = phy->mode;
-+	mutex_unlock(&phy->mutex);
-+	return mode;
-+}
-+
-+static int s3fwrn82_uart_write(void *phy_id, struct sk_buff *out)
-+{
-+	struct s3fwrn82_uart_phy *phy = phy_id;
-+	int err;
-+
-+	err = serdev_device_write(phy->ser_dev,
-+				  out->data, out->len,
-+				  MAX_SCHEDULE_TIMEOUT);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static const struct s3fwrn5_phy_ops uart_phy_ops = {
-+	.set_wake = s3fwrn82_uart_set_wake,
-+	.set_mode = s3fwrn82_uart_set_mode,
-+	.get_mode = s3fwrn82_uart_get_mode,
-+	.write = s3fwrn82_uart_write,
-+};
-+
-+static int s3fwrn82_uart_read(struct serdev_device *serdev,
-+			      const unsigned char *data,
-+			      size_t count)
-+{
-+	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-+	size_t i;
-+
-+	for (i = 0; i < count; i++) {
-+		skb_put_u8(phy->recv_skb, *data++);
-+
-+		if (phy->recv_skb->len < S3FWRN82_NCI_HEADER)
-+			continue;
-+
-+		if ((phy->recv_skb->len - S3FWRN82_NCI_HEADER)
-+				< phy->recv_skb->data[S3FWRN82_NCI_IDX])
-+			continue;
-+
-+		s3fwrn5_recv_frame(phy->ndev, phy->recv_skb, phy->mode);
-+		phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-+		if (!phy->recv_skb)
-+			return 0;
-+	}
-+
-+	return i;
-+}
-+
-+static struct serdev_device_ops s3fwrn82_serdev_ops = {
-+	.receive_buf = s3fwrn82_uart_read,
-+	.write_wakeup = serdev_device_write_wakeup,
-+};
-+
-+static const struct of_device_id s3fwrn82_uart_of_match[] = {
-+	{ .compatible = "samsung,s3fwrn82-uart", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, s3fwrn82_uart_of_match);
-+
-+static int s3fwrn82_uart_parse_dt(struct serdev_device *serdev)
-+{
-+	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-+	struct device_node *np = serdev->dev.of_node;
-+
-+	if (!np)
-+		return -ENODEV;
-+
-+	phy->gpio_en = of_get_named_gpio(np, "en-gpios", 0);
-+	if (!gpio_is_valid(phy->gpio_en))
-+		return -ENODEV;
-+
-+	phy->gpio_fw_wake = of_get_named_gpio(np, "wake-gpios", 0);
-+	if (!gpio_is_valid(phy->gpio_fw_wake))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static int s3fwrn82_uart_probe(struct serdev_device *serdev)
-+{
-+	struct s3fwrn82_uart_phy *phy;
-+	int ret = -ENOMEM;
-+
-+	phy = devm_kzalloc(&serdev->dev, sizeof(*phy), GFP_KERNEL);
-+	if (!phy)
-+		goto err_exit;
-+
-+	phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-+	if (!phy->recv_skb)
-+		goto err_free;
-+
-+	mutex_init(&phy->mutex);
-+	phy->mode = S3FWRN5_MODE_COLD;
-+
-+	phy->ser_dev = serdev;
-+	serdev_device_set_drvdata(serdev, phy);
-+	serdev_device_set_client_ops(serdev, &s3fwrn82_serdev_ops);
-+	ret = serdev_device_open(serdev);
-+	if (ret) {
-+		dev_err(&serdev->dev, "Unable to open device\n");
-+		goto err_skb;
-+	}
-+
-+	ret = serdev_device_set_baudrate(serdev, 115200);
-+	if (ret != 115200) {
-+		ret = -EINVAL;
-+		goto err_serdev;
-+	}
-+
-+	serdev_device_set_flow_control(serdev, false);
-+
-+	ret = s3fwrn82_uart_parse_dt(serdev);
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	ret = devm_gpio_request_one(&phy->ser_dev->dev,
-+				    phy->gpio_en,
-+				    GPIOF_OUT_INIT_HIGH,
-+				    "s3fwrn82_en");
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	ret = devm_gpio_request_one(&phy->ser_dev->dev,
-+				    phy->gpio_fw_wake,
-+				    GPIOF_OUT_INIT_LOW,
-+				    "s3fwrn82_fw_wake");
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	ret = s3fwrn5_probe(&phy->ndev, phy, &phy->ser_dev->dev, &uart_phy_ops);
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	return ret;
-+
-+err_serdev:
-+	serdev_device_close(serdev);
-+err_skb:
-+	kfree_skb(phy->recv_skb);
-+err_free:
-+	kfree(phy);
-+err_exit:
-+	return ret;
-+}
-+
-+static void s3fwrn82_uart_remove(struct serdev_device *serdev)
-+{
-+	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-+
-+	s3fwrn5_remove(phy->ndev);
-+	serdev_device_close(serdev);
-+	kfree_skb(phy->recv_skb);
-+	kfree(phy);
-+}
-+
-+static struct serdev_device_driver s3fwrn82_uart_driver = {
-+	.probe = s3fwrn82_uart_probe,
-+	.remove = s3fwrn82_uart_remove,
-+	.driver = {
-+		.name = S3FWRN82_UART_DRIVER_NAME,
-+		.of_match_table = of_match_ptr(s3fwrn82_uart_of_match),
-+	},
-+};
-+
-+module_serdev_device_driver(s3fwrn82_uart_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("UART driver for Samsung NFC");
-+MODULE_AUTHOR("Bongsu Jeon <bongsu.jeon@samsung.com>");
--- 
-2.17.1
+Is this driver suppose to work on ETM 5.0/ETE trace unit before ETE driver
+is ready?
 
+Thanks,
+Tingwei
+
+> +		return false;
+> +	*csa = (struct csdev_access) {
+> +		.io_mem	= false,
+> +		.read	= etm4x_sysreg_read,
+> +		.write	= etm4x_sysreg_write,
+> +	};
+> +
+> +	drvdata->arch = etm_devarch_to_arch(devarch);
+> +	return true;
+> +}
+> +
+>  static bool etm4_init_iomem_access(struct etmv4_drvdata *drvdata,
+>  				   struct csdev_access *csa)
+>  {
+> @@ -714,9 +745,17 @@ static bool etm4_init_iomem_access(struct etmv4_drvdata 
+> *drvdata,
+>  static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+>  				   struct csdev_access *csa)
+>  {
+> +	/*
+> +	 * Always choose the memory mapped io, if there is
+> +	 * a memory map to prevent sysreg access on broken
+> +	 * systems.
+> +	 */
+>  	if (drvdata->base)
+>  		return etm4_init_iomem_access(drvdata, csa);
+> 
+> +	if (etm4_init_sysreg_access(drvdata, csa))
+> +		return true;
+> +
+>  	return false;
+>  }
+> 
+> -- 
+> 2.24.1
+> 
+> _______________________________________________
+> CoreSight mailing list
+> CoreSight@lists.linaro.org
+> https://lists.linaro.org/mailman/listinfo/coresight
