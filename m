@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5152C03A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B8D2C03A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgKWKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:47:33 -0500
-Received: from mga11.intel.com ([192.55.52.93]:12772 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728523AbgKWKrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:47:32 -0500
-IronPort-SDR: qiKvsgjyIHlJvlc+QUb5VV5XvgKb4M3Pam0DjaBrrJc/MTFb7BNQzQ6RBpzB4FYIKdGobXyS1q
- AB5X+x8jOxgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="168231271"
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="168231271"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 02:47:32 -0800
-IronPort-SDR: LfCAwxo4F4lVV9uPanZd01eRoxiOe650zTpb1q8P5GTEj11B2+EglGZ6JL4EGO8guQ+SPx0DxF
- xUo9YGhZy0ng==
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="312842482"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 02:47:30 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kh9Oa-0097y3-2s; Mon, 23 Nov 2020 12:48:32 +0200
-Date:   Mon, 23 Nov 2020 12:48:32 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201123104832.GY4077@smile.fi.intel.com>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120165202.GG6751@sirena.org.uk>
- <20201120194245.GA2925@kozik-lap>
- <20201120200429.GJ6751@sirena.org.uk>
- <20201122105813.GA3780@kozik-lap>
+        id S1728643AbgKWKt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:49:26 -0500
+Received: from relay5.mymailcheap.com ([159.100.248.207]:47983 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725907AbgKWKtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:49:23 -0500
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.102])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 5BFD6260EB;
+        Mon, 23 Nov 2020 10:49:20 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 4FBC13F1C5;
+        Mon, 23 Nov 2020 10:49:18 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 355132A3E1;
+        Mon, 23 Nov 2020 05:49:18 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1606128558;
+        bh=Ie7rzoJQCjwB5Or+bKi9/xV3Pf6HEUgwzJivbfNLlEY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UlnRBCp+NUvxtnU3k9XFOAH1sDiBBmInfyUUbBw5vYmFC40N/F44gJgKeKuQHgvT9
+         4/lgcVHVgJiKOqYTI0A8nHNsJRmFwa3RFdFbtkYqmvym+NmNjyBFkyGf+NyzYGIOLA
+         biQJ7U1hKvX1/E139kwhlm8GHmOVp9fJITKkiolI=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CiMMwUKtPOFK; Mon, 23 Nov 2020 05:49:14 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Mon, 23 Nov 2020 05:49:14 -0500 (EST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 5AD40400C1;
+        Mon, 23 Nov 2020 10:49:13 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="Gsi8kQTc";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [192.168.1.203] (unknown [183.157.63.183])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id D21A7400C1;
+        Mon, 23 Nov 2020 10:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1606128544;
+        bh=Ie7rzoJQCjwB5Or+bKi9/xV3Pf6HEUgwzJivbfNLlEY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Gsi8kQTcfNik76wElxof20Ymx/GUnnjGakbU074HlMUcxR3WrIZnGHh4l+rSlVuE4
+         mXY8T/XRXITh9FFAmMqMCXlReAWuvyQwVDPQfhkN0OccpJR/XnVuWMSejCUl0oERUD
+         +t2q6BWiwyEahZoCYKKm219hG66HKa8rOBWULhBE=
+Subject: Re: [PATCH 2/3] MIPS: Loongson64: DTS: Add SPI support to LS3A
+To:     Qing Zhang <zhangqing@loongson.cn>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+References: <1606123148-315-1-git-send-email-zhangqing@loongson.cn>
+ <1606123148-315-2-git-send-email-zhangqing@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <7e878d14-37b2-769e-400a-548a846943fe@flygoat.com>
+Date:   Mon, 23 Nov 2020 18:48:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201122105813.GA3780@kozik-lap>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1606123148-315-2-git-send-email-zhangqing@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5AD40400C1
+X-Spamd-Result: default: False [1.40 / 10.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         RECEIVED_SPAMHAUS_PBL(0.00)[183.157.63.183:received];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 11:59:20AM +0100, Krzysztof Kozlowski wrote:
-> On Fri, Nov 20, 2020 at 08:04:29PM +0000, Mark Brown wrote:
-> > On Fri, Nov 20, 2020 at 08:42:45PM +0100, Krzysztof Kozlowski wrote:
-> > > On Fri, Nov 20, 2020 at 04:56:34PM +0000, Mark Brown wrote:
-> > 
-> > > > It would be better to fix these by annotating the table as potentially
-> > > > unused, if nothing else it means if someone wants to add ACPI support
-> > > > (or it just works on their ACPI system with the plain old I2C ID) then
-> > > > they don't need to revert this change.
-> > 
-> > > The point is after this patch - removal of of_match_ptr() - they will
-> > > already support the ACPI matching through the PRP0001.
-> > 
-> > > Keeping of_match_ptr() and maybe_unused will prevent any ACPI re-usage
-> > > unless explicit ACPI table is added
-> > 
-> > Surely if that's the desired outcome the fix is to change the definition
-> > of of_match_ptr() such that it leaves the reference with CONFIG_ACPI,
-> > perhaps hidden behind a config option for PRP0001?  That seems better
-> > than going through the entire tree like this.
-> 
-> That could be indeed an easier way to achieve this.
 
-...easier and wrong in my opinion. Not all drivers need that.
-What the point to touch it in the driver which is OF-only?
-(For IP which will quite unlikely to be present in ACPI world)
-Or if the device will get the correct ACPI ID?
+ÔÚ 2020/11/23 17:19, Qing Zhang Ð´µÀ:
+> The LS3A SPI module is now supported, enable it.
+>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>   arch/mips/boot/dts/loongson/loongson64c-package.dtsi | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/mips/boot/dts/loongson/loongson64c-package.dtsi b/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
+> index 5bb876a..2025c5a 100644
+> --- a/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
+> +++ b/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
+> @@ -60,5 +60,12 @@
+>   			interrupt-parent = <&liointc>;
+>   			no-loopback-test;
+>   		};
+> +
+> +                spi: spi@1fe00220 {
+> +                        compatible = "loongson,loongson-spi";
 
-> +Cc Andy, Rafael,
+You have to add dt schema document..
 
-I guess Rafael can correct me or others.
+Also I'd sugguest you to name it as loongson,pci-spi to avoid collision.
 
-> I saw you were doing similar way as I did here [1] for the 698fffc2705c
-> ("rtc: ds1307: Drop of_match_ptr and CONFIG_OF protections") with the
-> same reasoning as mine ("These prevent use of this driver with ACPI via
-> PRP0001.").
+Loongson-1 MCUs do have MMIO SPI controller with similiar register layout.
 
-The above is a device which can be connected to any system, including
-ACPI-based one. The patch has been cooked to have some means to make
-it usable on such systems (because previous patch removes wrong ACPI IDs).
+Thanks
 
-> Do you have thoughts on Mark's proposal above (to change the
-> of_match_ptr())?
-> 
-> [1] https://lore.kernel.org/lkml/20201120161653.445521-1-krzk@kernel.org/
+- Jiaxun
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> +                        reg=<0 0x1fe00220 0x11>;
+> +                        #address-cells = <1>;
+> +                        #size-cells = <0>;
+> +               };
+>   	};
+>   };
