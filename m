@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EF92C1938
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3102C1939
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388041AbgKWXGN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 18:06:13 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:50926 "EHLO
+        id S2388201AbgKWXGZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 18:06:25 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:37248 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387710AbgKWXGL (ORCPT
+        by vger.kernel.org with ESMTP id S2387710AbgKWXGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:06:11 -0500
+        Mon, 23 Nov 2020 18:06:14 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-Y-pkFb_ZPiyLomuZlSzkFQ-1; Mon, 23 Nov 2020 18:06:05 -0500
-X-MC-Unique: Y-pkFb_ZPiyLomuZlSzkFQ-1
+ us-mta-554--PWcgXWBMSmlEKSwXP2Ctw-1; Mon, 23 Nov 2020 18:06:09 -0500
+X-MC-Unique: -PWcgXWBMSmlEKSwXP2Ctw-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E235081CBE5;
-        Mon, 23 Nov 2020 23:06:02 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 445149A222;
+        Mon, 23 Nov 2020 23:06:06 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.195.242])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 309875D9CA;
-        Mon, 23 Nov 2020 23:05:58 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 476305D9CA;
+        Mon, 23 Nov 2020 23:06:03 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
+Cc:     lkml <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -35,13 +34,14 @@ Cc:     Ian Rogers <irogers@google.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Michael Petlan <mpetlan@redhat.com>,
         Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 11/25] perf tools: Use struct extra_kernel_map in machine__process_kernel_mmap_event
-Date:   Tue, 24 Nov 2020 00:04:58 +0100
-Message-Id: <20201123230512.2097312-12-jolsa@kernel.org>
+Subject: [PATCH 12/25] perf tools: Try to load vmlinux from buildid database
+Date:   Tue, 24 Nov 2020 00:04:59 +0100
+Message-Id: <20201123230512.2097312-13-jolsa@kernel.org>
 In-Reply-To: <20201123230512.2097312-1-jolsa@kernel.org>
 References: <20201123230512.2097312-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,151 +56,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using struct extra_kernel_map in machine__process_kernel_mmap_event,
-to pass mmap details. This way we can used single function for all 3
-mmap versions.
+Currently we don't check on kernel's vmlinux the same way as
+we do for normal binaries, but we either look for kallsyms
+file in build id database or check on known vmlinux locations
+(plus some other optional paths).
 
-Acked-by: Ian Rogers <irogers@google.com>
+This patch adds the check for standard build id binary location,
+so we are ready once we start to store it there from debuginfod
+in following changes.
+
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/machine.c | 62 +++++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 29 deletions(-)
+ tools/perf/util/build-id.c | 13 ++++++++++---
+ tools/perf/util/build-id.h |  2 ++
+ tools/perf/util/symbol.c   | 16 ++++++++++++++++
+ 3 files changed, 28 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 15385ea00190..1ae32a81639c 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -1581,32 +1581,25 @@ static bool machine__uses_kcore(struct machine *machine)
+diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+index 4a391f13f40d..1fd58703c2d4 100644
+--- a/tools/perf/util/build-id.c
++++ b/tools/perf/util/build-id.c
+@@ -261,10 +261,9 @@ static const char *build_id_cache__basename(bool is_kallsyms, bool is_vdso,
+ 	    "debug" : "elf"));
  }
  
- static bool perf_event__is_extra_kernel_mmap(struct machine *machine,
--					     union perf_event *event)
-+					     struct extra_kernel_map *xm)
+-char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
+-			     bool is_debug)
++char *__dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
++			       bool is_debug, bool is_kallsyms)
  {
- 	return machine__is(machine, "x86_64") &&
--	       is_entry_trampoline(event->mmap.filename);
-+	       is_entry_trampoline(xm->name);
+-	bool is_kallsyms = dso__is_kallsyms((struct dso *)dso);
+ 	bool is_vdso = dso__is_vdso((struct dso *)dso);
+ 	char sbuild_id[SBUILD_ID_SIZE];
+ 	char *linkname;
+@@ -293,6 +292,14 @@ char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
+ 	return bf;
  }
  
- static int machine__process_extra_kernel_map(struct machine *machine,
--					     union perf_event *event)
-+					     struct extra_kernel_map *xm)
- {
- 	struct dso *kernel = machine__kernel_dso(machine);
--	struct extra_kernel_map xm = {
--		.start = event->mmap.start,
--		.end   = event->mmap.start + event->mmap.len,
--		.pgoff = event->mmap.pgoff,
--	};
++char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
++			     bool is_debug)
++{
++	bool is_kallsyms = dso__is_kallsyms((struct dso *)dso);
++
++	return __dso__build_id_filename(dso, bf, size, is_debug, is_kallsyms);
++}
++
+ #define dsos__for_each_with_build_id(pos, head)	\
+ 	list_for_each_entry(pos, head, node)	\
+ 		if (!pos->has_build_id)		\
+diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
+index d53415feaf69..f1a2f67df6e4 100644
+--- a/tools/perf/util/build-id.h
++++ b/tools/perf/util/build-id.h
+@@ -29,6 +29,8 @@ char *build_id_cache__kallsyms_path(const char *sbuild_id, char *bf,
  
- 	if (kernel == NULL)
- 		return -1;
+ char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
+ 			     bool is_debug);
++char *__dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
++			       bool is_debug, bool is_kallsyms);
  
--	strlcpy(xm.name, event->mmap.filename, KMAP_NAME_LEN);
--
--	return machine__create_extra_kernel_map(machine, kernel, &xm);
-+	return machine__create_extra_kernel_map(machine, kernel, xm);
- }
- 
- static int machine__process_kernel_mmap_event(struct machine *machine,
--					      union perf_event *event)
-+					      struct extra_kernel_map *xm)
- {
- 	struct map *map;
- 	enum dso_space_type dso_space;
-@@ -1621,20 +1614,18 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
- 	else
- 		dso_space = DSO_SPACE__KERNEL_GUEST;
- 
--	is_kernel_mmap = memcmp(event->mmap.filename,
--				machine->mmap_name,
-+	is_kernel_mmap = memcmp(xm->name, machine->mmap_name,
- 				strlen(machine->mmap_name) - 1) == 0;
--	if (event->mmap.filename[0] == '/' ||
--	    (!is_kernel_mmap && event->mmap.filename[0] == '[')) {
--		map = machine__addnew_module_map(machine, event->mmap.start,
--						 event->mmap.filename);
-+	if (xm->name[0] == '/' ||
-+	    (!is_kernel_mmap && xm->name[0] == '[')) {
-+		map = machine__addnew_module_map(machine, xm->start,
-+						 xm->name);
- 		if (map == NULL)
- 			goto out_problem;
- 
--		map->end = map->start + event->mmap.len;
-+		map->end = map->start + xm->end - xm->start;
- 	} else if (is_kernel_mmap) {
--		const char *symbol_name = (event->mmap.filename +
--				strlen(machine->mmap_name));
-+		const char *symbol_name = (xm->name + strlen(machine->mmap_name));
- 		/*
- 		 * Should be there already, from the build-id table in
- 		 * the header.
-@@ -1688,18 +1679,17 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
- 		if (strstr(kernel->long_name, "vmlinux"))
- 			dso__set_short_name(kernel, "[kernel.vmlinux]", false);
- 
--		machine__update_kernel_mmap(machine, event->mmap.start,
--					 event->mmap.start + event->mmap.len);
-+		machine__update_kernel_mmap(machine, xm->start, xm->end);
- 
- 		/*
- 		 * Avoid using a zero address (kptr_restrict) for the ref reloc
- 		 * symbol. Effectively having zero here means that at record
- 		 * time /proc/sys/kernel/kptr_restrict was non zero.
- 		 */
--		if (event->mmap.pgoff != 0) {
-+		if (xm->pgoff != 0) {
- 			map__set_kallsyms_ref_reloc_sym(machine->vmlinux_map,
- 							symbol_name,
--							event->mmap.pgoff);
-+							xm->pgoff);
- 		}
- 
- 		if (machine__is_default_guest(machine)) {
-@@ -1708,8 +1698,8 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
- 			 */
- 			dso__load(kernel, machine__kernel_map(machine));
- 		}
--	} else if (perf_event__is_extra_kernel_mmap(machine, event)) {
--		return machine__process_extra_kernel_map(machine, event);
-+	} else if (perf_event__is_extra_kernel_mmap(machine, xm)) {
-+		return machine__process_extra_kernel_map(machine, xm);
+ int build_id__mark_dso_hit(struct perf_tool *tool, union perf_event *event,
+ 			   struct perf_sample *sample, struct evsel *evsel,
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index 0d14abdf3d72..64a039cbba1b 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -2189,6 +2189,8 @@ static int dso__load_kernel_sym(struct dso *dso, struct map *map)
+ 	int err;
+ 	const char *kallsyms_filename = NULL;
+ 	char *kallsyms_allocated_filename = NULL;
++	char *filename = NULL;
++
+ 	/*
+ 	 * Step 1: if the user specified a kallsyms or vmlinux filename, use
+ 	 * it and only it, reporting errors to the user if it cannot be used.
+@@ -2213,6 +2215,20 @@ static int dso__load_kernel_sym(struct dso *dso, struct map *map)
+ 		return dso__load_vmlinux(dso, map, symbol_conf.vmlinux_name, false);
  	}
- 	return 0;
- out_problem:
-@@ -1735,7 +1725,14 @@ int machine__process_mmap2_event(struct machine *machine,
  
- 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
- 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
--		ret = machine__process_kernel_mmap_event(machine, event);
-+		struct extra_kernel_map xm = {
-+			.start = event->mmap2.start,
-+			.end   = event->mmap2.start + event->mmap2.len,
-+			.pgoff = event->mmap2.pgoff,
-+		};
++	/*
++	 * Before checking on common vmlinux locations, check if it's
++	 * stored as standard build id binary (not kallsyms) under
++	 * .debug cache.
++	 */
++	if (!symbol_conf.ignore_vmlinux_buildid)
++		filename = __dso__build_id_filename(dso, NULL, 0, false, false);
++	if (filename != NULL) {
++		err = dso__load_vmlinux(dso, map, filename, true);
++		if (err > 0)
++			return err;
++		free(filename);
++	}
 +
-+		strlcpy(xm.name, event->mmap2.filename, KMAP_NAME_LEN);
-+		ret = machine__process_kernel_mmap_event(machine, &xm);
- 		if (ret < 0)
- 			goto out_problem;
- 		return 0;
-@@ -1785,7 +1782,14 @@ int machine__process_mmap_event(struct machine *machine, union perf_event *event
- 
- 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
- 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
--		ret = machine__process_kernel_mmap_event(machine, event);
-+		struct extra_kernel_map xm = {
-+			.start = event->mmap.start,
-+			.end   = event->mmap.start + event->mmap.len,
-+			.pgoff = event->mmap.pgoff,
-+		};
-+
-+		strlcpy(xm.name, event->mmap.filename, KMAP_NAME_LEN);
-+		ret = machine__process_kernel_mmap_event(machine, &xm);
- 		if (ret < 0)
- 			goto out_problem;
- 		return 0;
+ 	if (!symbol_conf.ignore_vmlinux && vmlinux_path != NULL) {
+ 		err = dso__load_vmlinux_path(dso, map);
+ 		if (err > 0)
 -- 
 2.26.2
 
