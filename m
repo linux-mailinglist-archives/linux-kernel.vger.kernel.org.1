@@ -2,134 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1802C0CA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CDC2C0CAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbgKWOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:01:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729372AbgKWOBB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:01:01 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB03C0613CF;
-        Mon, 23 Nov 2020 06:01:01 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id 18so8872786pli.13;
-        Mon, 23 Nov 2020 06:01:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kTzAwGnKctQP6f8k4mc+aVTNiIF28i6q0wCQZdb9TIQ=;
-        b=hzVDgoB/C4oCV5aKdslaJu2N+g9Q9d002IloasUd8GbE1Jvmm8w+D0sl07Jmw8TvqS
-         OMaWK4JoIe+9TvZ7w1XaH1c2zUubPwwrCVGmovVqE73YdvCQm14BsFI9QFhdtHYKEtZn
-         SvXZzykNEljNWrRwwbtQANRdla2V6JiguVQo/7/TNUOMDimtbhXlgtJZzBbL7ECrEkGh
-         Vf7NDk3Ldsbt+q4JAhhI9l7NqTcb33LwRvl0O4fPThQCuvZ+2mQMs4pQW/8uDTUv7r7N
-         DIcJIdd2dz6Jl96XLJ5bCRa7J0fezcdIowEsdtElYAtIWkfHz+pGsDYtIeo49CUMo2NE
-         8y1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kTzAwGnKctQP6f8k4mc+aVTNiIF28i6q0wCQZdb9TIQ=;
-        b=jZD4l2J0orwhxCqGubMUxRcgn7vKSSkzsGn33yUkxeGcNIMBOgYQzs8mYSdjaNGi4v
-         i8g7uhC1wtX6kXMEXRWK2izKgBow8WJEYh2haJT3JldZ0pZxkE8aeUehnoFJP6NSay/n
-         mRje9k4GgRcikJ/hgZAzQMnSQBd++xrOr/WVCyWwJItbPwTzPWg0S6jZJ0ULj3blA6p2
-         5QTJtVWjnms0OKy5veWlNdtr9VNe+kZvNNN9Yi2jf2A+h4L94mnaZlR/y8cB9XVU1OTs
-         s4Kw+Zq7JZBFuq9GbnBqxLfdE5VmInyDMk5uGku6ecyqUEco6/fYdxh1eqYX2Ah6N6+J
-         XPkg==
-X-Gm-Message-State: AOAM530iwW6uOG0ivoYZeD5xs5fYiTdNDYbOgWdzwqFmWMexmr9ZkCOb
-        KfEnIWrTa1jSk4xW18QnZrEOSzbhHGt4HXvkClU=
-X-Google-Smtp-Source: ABdhPJyS/m04iepzH+/zdL9XmL9/ST3WynYaUHAn8JSvsCr4+x4OX4zGjTvC/SwXSb6JSirwmHKC6ozm3+5dFIzXT40=
-X-Received: by 2002:a17:902:bd02:b029:da:8fd:af6b with SMTP id
- p2-20020a170902bd02b02900da08fdaf6bmr4870343pls.7.1606140059409; Mon, 23 Nov
- 2020 06:00:59 -0800 (PST)
+        id S1729600AbgKWOC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:02:29 -0500
+Received: from mga01.intel.com ([192.55.52.88]:63525 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729204AbgKWOC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:02:28 -0500
+IronPort-SDR: spnnYeEfuRWBDUI0LG+hBh9748dyY9Zs2gJNM7YnxnqcRx20TbQegzJHHEXIbtEESMCFqmtWAe
+ OX8PXQLYzRaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="189883334"
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="189883334"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 06:01:59 -0800
+IronPort-SDR: 0nGuZgGGDoe7uPQJ22Okwy+Lh8nH5FrzV4XYEELZXE3Cv1uGGQx5C7lOIdkUmsxvBNMDH8uww7
+ NOERVTa4lQKg==
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="478118454"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 06:01:55 -0800
+Received: by lahna (sSMTP sendmail emulation); Mon, 23 Nov 2020 16:01:51 +0200
+Date:   Mon, 23 Nov 2020 16:01:51 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: How to enable auto-suspend by default
+Message-ID: <20201123140151.GH2495@lahna.fi.intel.com>
+References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+ <X6p6ubTOoMPUPPXi@kroah.com>
+ <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <20201110172517.GC2495@lahna.fi.intel.com>
+ <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
+ <20201111143143.GV2495@lahna.fi.intel.com>
+ <30aa8c96-1809-8c5f-2305-5e39fbeba434@redhat.com>
 MIME-Version: 1.0
-References: <3306b4d8-8689-b0e7-3f6d-c3ad873b7093@intel.com> <cover.1605686678.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <cover.1605686678.git.xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 23 Nov 2020 15:00:48 +0100
-Message-ID: <CAJ8uoz0hEiXFY9q_HJmfuY4vpf-DYH_gnDPvRhFpnc6OcQbj_Q@mail.gmail.com>
-Subject: Re: [PATCH 0/3] xsk: fix for xsk_poll writeable
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30aa8c96-1809-8c5f-2305-5e39fbeba434@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 9:25 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> I tried to combine cq available and tx writeable, but I found it very difficult.
-> Sometimes we pay attention to the status of "available" for both, but sometimes,
-> we may only pay attention to one, such as tx writeable, because we can use the
-> item of fq to write to tx. And this kind of demand may be constantly changing,
-> and it may be necessary to set it every time before entering xsk_poll, so
-> setsockopt is not very convenient. I feel even more that using a new event may
-> be a better solution, such as EPOLLPRI, I think it can be used here, after all,
-> xsk should not have OOB data ^_^.
->
-> However, two other problems were discovered during the test:
->
-> * The mask returned by datagram_poll always contains EPOLLOUT
-> * It is not particularly reasonable to return EPOLLOUT based on tx not full
->
-> After fixing these two problems, I found that when the process is awakened by
-> EPOLLOUT, the process can always get the item from cq.
->
-> Because the number of packets that the network card can send at a time is
-> actually limited, suppose this value is "nic_num". Once the number of
-> consumed items in the tx queue is greater than nic_num, this means that there
-> must also be new recycled items in the cq queue from nic.
->
-> In this way, as long as the tx configured by the user is larger, we won't have
-> the situation that tx is already in the writeable state but cannot get the item
-> from cq.
+On Mon, Nov 23, 2020 at 02:54:19PM +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 11/11/20 3:31 PM, Mika Westerberg wrote:
+> > On Wed, Nov 11, 2020 at 12:27:32PM +0100, Hans de Goede wrote:
+> >> Hi,
+> >>
+> >> On 11/10/20 6:25 PM, Mika Westerberg wrote:
+> >>> On Tue, Nov 10, 2020 at 04:02:33PM +0000, Limonciello, Mario wrote:
+> >>>>>
+> >>>>> On Tue, Nov 10, 2020 at 11:57:07AM +0100, Bastien Nocera wrote:
+> >>>>>> Hey,
+> >>>>>>
+> >>>>>> systemd has been shipping this script to enable auto-suspend on a
+> >>>>>> number of USB and PCI devices:
+> >>>>>>
+> >>>>> https://github.com/systemd/systemd/blob/master/tools/chromiumos/gen_autosuspen
+> >>>>> d_rules.py
+> >>>>>>
+> >>>>>> The problem here is twofold. First, the list of devices is updated from
+> >>>>>> ChromeOS, and the original list obviously won't be updated by ChromeOS
+> >>>>>> developers unless a device listed exists in a ChromeBook computer,
+> >>>>>> which means a number of devices that do support autosuspend aren't
+> >>>>>> listed.
+> >>>>>>
+> >>>>>> The other problem is that this list needs to exist at all, and that it
+> >>>>>> doesn't seem possible for device driver developers (at various levels
+> >>>>>> of the stack) to opt-in to auto-suspend when all the variants of the
+> >>>>>> device (or at least detectable ones) support auto-suspend.
+> >>>>>
+> >>>>> A driver can say they support autosuspend today, but I think you are
+> >>>>> concerned about the devices that are controlled by class-compliant
+> >>>>> drivers, right?  And for those, no, we can't do this in the kernel as
+> >>>>> there are just too many broken devices out there.
+> >>>>>
+> >>>>
+> >>>> I guess what Bastien is getting at is for newer devices supported by class
+> >>>> drivers rather than having to store an allowlist in udev rules, can we set
+> >>>> the allowlist in the kernel instead.  Then distributions that either don't
+> >>>> use systemd or don't regularly update udev rules from systemd can take
+> >>>> advantage of better defaults on modern hardware.
+> >>>>
+> >>>> The one item that stood out to me in that rules file was 8086:a0ed.
+> >>>> It's listed as "Volteer XHCI", but that same device ID is actually present
+> >>>> in an XPS 9310 in front of me as well and used by the xhci-pci kernel module.
+> >>>>
+> >>>> Given we're effectively ending up with the combination of runtime PM turned
+> >>>> on by udev rules, do we need something like this for that ID:
+> >>>>
+> >>>> https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400d8a
+> >>>>
+> >>>> @Mika Westerberg should 8086:a0ed be quirked like the TCSS xHCI too?
+> >>>
+> >>> I think this one is the TGL PCH xHCI. The quirk currently for xHCI
+> >>> controllers that are part of the TCSS (Type-C SubSystem) where it is
+> >>> important to put all devices into low power mode whenever possible,
+> >>> otherwise it keeps the whole block on.
+> >>
+> >> Note that there are currently some IDs missing from the xHCIs which
+> >> are part of the TCSS too. At least the id for the xHCI in the thunderbolt
+> >> controller on the Lenovo T14 gen 1 is missing. I started a discussion
+> >> about extending the kernel quirk list for this vs switching to hwdb
+> >> a while a go:
+> >>
+> >> https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-cf8960651086@redhat.com/
+> >>
+> >> The conclusion back then was to switch to hwdb, but I never got around to this.
+> > 
+> > The reason I've added these to the xHCI driver is that it works even if
+> > you are running some really small userspace (like busybox). Also for the
+> > xHCI in TCSS we know for sure that it fully supports D3cold.
+> > 
+> > (The one you refer above is actually mistake from my side as I never
+> >  tested Alpine Ridge LP controller which I think this is).
+> 
+> Ok, so I'll submit a patch adding the 15c1 product-id for the
+> INTEL_ALPINE_RIDGE_LP_2C_XHCI controller to the list of ids for which we
+> set the XHCI_DEFAULT_PM_RUNTIME_ALLOW quirk. To fix the much too high
+> idle-power consumption problem on devices with this Alpine Ridge variant.
 
-I think the overall approach of tying this into poll() instead of
-setsockopt() is the right way to go. But we need a more robust
-solution. Your patch #3 also breaks backwards compatibility and that
-is not allowed. Could you please post some simple code example of what
-it is you would like to do in user space? So you would like to wake up
-when there are entries in the cq that can be retrieved and the reason
-you would like to do this is that you then know you can put some more
-entries into the Tx ring and they will get sent as there now are free
-slots in the cq. Correct me if wrong. Would an event that wakes you up
-when there is both space in the Tx ring and space in the cq work? Is
-there a case in which we would like to be woken up when only the Tx
-ring is non-full? Maybe there are as it might be beneficial to fill
-the Tx and while doing that some entries in the cq has been completed
-and away the packets go. But it would be great if you could post some
-simple example code, does not need to compile or anything. Can be
-pseudo code.
-
-It would also be good to know if your goal is max throughput, max
-burst size, or something else.
-
-Thanks: Magnus
-
-
-> Xuan Zhuo (3):
->   xsk: replace datagram_poll by sock_poll_wait
->   xsk: change the tx writeable condition
->   xsk: set tx/rx the min entries
->
->  include/uapi/linux/if_xdp.h |  2 ++
->  net/xdp/xsk.c               | 26 ++++++++++++++++++++++----
->  net/xdp/xsk_queue.h         |  6 ++++++
->  3 files changed, 30 insertions(+), 4 deletions(-)
->
-> --
-> 1.8.3.1
->
+Thanks!
