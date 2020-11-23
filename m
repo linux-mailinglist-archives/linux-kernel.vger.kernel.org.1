@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E382C0629
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 557122C05DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgKWM2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38590 "EHLO mail.kernel.org"
+        id S1729906AbgKWMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:24:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730420AbgKWM2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:15 -0500
+        id S1729885AbgKWMYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:24:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47110208FE;
-        Mon, 23 Nov 2020 12:28:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 961082076E;
+        Mon, 23 Nov 2020 12:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134493;
-        bh=0A66eNDJ2aZU+lf9L5muAqnCOkTKeAP0usRGZ3A0xHs=;
+        s=korg; t=1606134290;
+        bh=28der0o3osmfHOe5VzWj6q5t8fn5Cit52Ac1/oyRZ6U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KKRxQyaKvEB1DvuPYvdNvfkFTENlgNLzKPjl/Zsxf6+48lXs+wy+A9QFvOnRDAnSo
-         GCXhfn6qnBnEhi5Eg60Dnrg6Br52mJYmEEXFFyGmb0O4/1JIhkiIaGi5qu0jcr4tiJ
-         7cFbQ1ZXIfIbgz8HvB1zLZREAHL5L1WqoC00rl0M=
+        b=rYfwbA9Zk/tWILmsNd4wM+KjzGYt7eU2/VLWI0yYgJpOwVe/3UcCk+wwe28CVYtqx
+         X244u9T0FYxwzaVGVJ3ssqIbdDnNYXKtsOsvBTJgc+mdzfVQz2E8shbuaRoNWO+5vP
+         mK3QiSFpz4dJZ+QK8/KUlogd1lOoS2wocEFRtqqw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 22/60] arm64: psci: Avoid printing in cpu_psci_cpu_die()
+        stable@vger.kernel.org, Denis Yulevich <denisyu@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 18/47] mlxsw: core: Use variable timeout for EMAD retries
 Date:   Mon, 23 Nov 2020 13:22:04 +0100
-Message-Id: <20201123121806.095701099@linuxfoundation.org>
+Message-Id: <20201123121806.416945556@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit 891deb87585017d526b67b59c15d38755b900fea ]
+[ Upstream commit 1f492eab67bced119a0ac7db75ef2047e29a30c6 ]
 
-cpu_psci_cpu_die() is called in the context of the dying CPU, which
-will no longer be online or tracked by RCU. It is therefore not generally
-safe to call printk() if the PSCI "cpu off" request fails, so remove the
-pr_crit() invocation.
+The driver sends Ethernet Management Datagram (EMAD) packets to the
+device for configuration purposes and waits for up to 200ms for a reply.
+A request is retried up to 5 times.
 
-Cc: Qian Cai <cai@redhat.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20201106103602.9849-2-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+When the system is under heavy load, replies are not always processed in
+time and EMAD transactions fail.
+
+Make the process more robust to such delays by using exponential
+backoff. First wait for up to 200ms, then retransmit and wait for up to
+400ms and so on.
+
+Fixes: caf7297e7ab5 ("mlxsw: core: Introduce support for asynchronous EMAD register access")
+Reported-by: Denis Yulevich <denisyu@nvidia.com>
+Tested-by: Denis Yulevich <denisyu@nvidia.com>
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/psci.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
-index 3856d51c645b5..3ebb2a56e5f7b 100644
---- a/arch/arm64/kernel/psci.c
-+++ b/arch/arm64/kernel/psci.c
-@@ -69,7 +69,6 @@ static int cpu_psci_cpu_disable(unsigned int cpu)
- 
- static void cpu_psci_cpu_die(unsigned int cpu)
+--- a/drivers/net/ethernet/mellanox/mlxsw/core.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
+@@ -436,7 +436,7 @@ static void mlxsw_emad_trans_timeout_sch
  {
--	int ret;
- 	/*
- 	 * There are no known implementations of PSCI actually using the
- 	 * power state field, pass a sensible default for now.
-@@ -77,9 +76,7 @@ static void cpu_psci_cpu_die(unsigned int cpu)
- 	u32 state = PSCI_POWER_STATE_TYPE_POWER_DOWN <<
- 		    PSCI_0_2_POWER_STATE_TYPE_SHIFT;
+ 	unsigned long timeout = msecs_to_jiffies(MLXSW_EMAD_TIMEOUT_MS);
  
--	ret = psci_ops.cpu_off(state);
--
--	pr_crit("unable to power off CPU%u (%d)\n", cpu, ret);
-+	psci_ops.cpu_off(state);
+-	mlxsw_core_schedule_dw(&trans->timeout_dw, timeout);
++	mlxsw_core_schedule_dw(&trans->timeout_dw, timeout << trans->retries);
  }
  
- static int cpu_psci_cpu_kill(unsigned int cpu)
--- 
-2.27.0
-
+ static int mlxsw_emad_transmit(struct mlxsw_core *mlxsw_core,
 
 
