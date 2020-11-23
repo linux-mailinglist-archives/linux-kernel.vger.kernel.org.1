@@ -2,100 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624FC2C116A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96762C116E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390213AbgKWRDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:03:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41061 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729815AbgKWRDe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:03:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606151013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KQjlYGpM0Jo472SEJajFJgHSfKbcvhfoBX2kIE5oOZw=;
-        b=Kl2olBC/nZy6j67FGXVFOzru/6A9ULxpAjfjn1abRsudJHIlY4DB1eCWWE+ae7k0KCCb3Q
-        XY/ejexk5JT/BXz0tIJQ7L+pgfke2BThtx7IJ122+bus0xg65cqMUx+mPmanaTAfz4tFQo
-        iBhkn1b3PzfUXxQJ60VH6Xn3o1D5tP8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-WuQ-qpwTOPqDoVFfXdXKkw-1; Mon, 23 Nov 2020 12:03:31 -0500
-X-MC-Unique: WuQ-qpwTOPqDoVFfXdXKkw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2390222AbgKWREL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:04:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733094AbgKWREK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:04:10 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3055805BF6;
-        Mon, 23 Nov 2020 17:03:28 +0000 (UTC)
-Received: from gondolin (ovpn-113-104.ams2.redhat.com [10.36.113.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3909A5C1C4;
-        Mon, 23 Nov 2020 17:03:19 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 18:03:16 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v11 05/14] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-Message-ID: <20201123180316.79273751.cohuck@redhat.com>
-In-Reply-To: <20201114004722.76c999e0.pasic@linux.ibm.com>
-References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
-        <20201022171209.19494-6-akrowiak@linux.ibm.com>
-        <20201027142711.1b57825e.pasic@linux.ibm.com>
-        <6a5feb16-46b5-9dca-7e85-7d344b0ffa24@linux.ibm.com>
-        <20201114004722.76c999e0.pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-MIME-Version: 1.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A26F206E3;
+        Mon, 23 Nov 2020 17:04:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606151049;
+        bh=r4V1ThDYR76fi27iugRZfMAo3Bt7mGi4iBzqmhKjBy8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bmsNlCPbWSpowHB8DZmG94lxphzKhmL4+x85PrgOges8lRP+DhxxvP8rD1uSFcJgE
+         Hqd34Rb1iwdyQIpaJ9Suh8mA5dPwor+LJKACmkcW+QoykupLC5Q1FvzynUfHSdU3Xh
+         AwjH8E+A7o00Xesjign1N8rlxwguMLDDYIVL4sXk=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khFG3-00D0n3-4k; Mon, 23 Nov 2020 17:04:07 +0000
+Date:   Mon, 23 Nov 2020 17:04:04 +0000
+Message-ID: <87h7pg57jv.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 19/24] kvm: arm64: Intercept host's PSCI_CPU_ON SMCs
+In-Reply-To: <20201116204318.63987-20-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-20-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Nov 2020 00:47:22 +0100
-Halil Pasic <pasic@linux.ibm.com> wrote:
-
-> On Fri, 13 Nov 2020 12:14:22 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> [..]
-> > >>   }
-> > >>   
-> > >> +#define MDEV_SHARING_ERR "Userspace may not re-assign queue %02lx.%04lx " \
-> > >> +			 "already assigned to %s"
-> > >> +
-> > >> +static void vfio_ap_mdev_log_sharing_err(const char *mdev_name,
-> > >> +					 unsigned long *apm,
-> > >> +					 unsigned long *aqm)
-> > >> +{
-> > >> +	unsigned long apid, apqi;
-> > >> +
-> > >> +	for_each_set_bit_inv(apid, apm, AP_DEVICES)
-> > >> +		for_each_set_bit_inv(apqi, aqm, AP_DOMAINS)
-> > >> +			pr_err(MDEV_SHARING_ERR, apid, apqi, mdev_name);  
-> > > Isn't error rather severe for this? For my taste even warning would be
-> > > severe for this.  
-> > 
-> > The user only sees a EADDRINUSE returned from the sysfs interface,
-> > so Conny asked if I could log a message to indicate which APQNs are
-> > in use by which mdev. I can change this to an info message, but it
-> > will be missed if the log level is set higher. Maybe Conny can put in
-> > her two cents here since she asked for this.
-> >   
+On Mon, 16 Nov 2020 20:43:13 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
 > 
-> I'm looking forward to Conny's opinion. :)
+> Add a handler of the CPU_ON PSCI call from host. When invoked, it looks
+> up the logical CPU ID corresponding to the provided MPIDR and populates
+> the state struct of the target CPU with the provided x0, pc. It then
+> calls CPU_ON itself, with an entry point in hyp that initializes EL2
+> state before returning ERET to the provided PC in EL1.
+> 
+> There is a simple atomic lock around the reset state struct. If it is
+> already locked, CPU_ON will return PENDING_ON error code.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_asm.h     |   8 ++-
+>  arch/arm64/kvm/arm.c                 |   1 +
+>  arch/arm64/kvm/hyp/nvhe/psci-relay.c | 104 +++++++++++++++++++++++++++
+>  3 files changed, 110 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> index 109867fb76f6..2e36ba4be748 100644
+> --- a/arch/arm64/include/asm/kvm_asm.h
+> +++ b/arch/arm64/include/asm/kvm_asm.h
+> @@ -175,9 +175,11 @@ struct kvm_s2_mmu;
+>  DECLARE_KVM_NVHE_SYM(__kvm_hyp_init);
+>  DECLARE_KVM_NVHE_SYM(__kvm_hyp_host_vector);
+>  DECLARE_KVM_HYP_SYM(__kvm_hyp_vector);
+> -#define __kvm_hyp_init		CHOOSE_NVHE_SYM(__kvm_hyp_init)
+> -#define __kvm_hyp_host_vector	CHOOSE_NVHE_SYM(__kvm_hyp_host_vector)
+> -#define __kvm_hyp_vector	CHOOSE_HYP_SYM(__kvm_hyp_vector)
+> +DECLARE_KVM_NVHE_SYM(__kvm_hyp_psci_cpu_entry);
+> +#define __kvm_hyp_init			CHOOSE_NVHE_SYM(__kvm_hyp_init)
+> +#define __kvm_hyp_host_vector		CHOOSE_NVHE_SYM(__kvm_hyp_host_vector)
+> +#define __kvm_hyp_vector		CHOOSE_HYP_SYM(__kvm_hyp_vector)
+> +#define __kvm_hyp_psci_cpu_entry	CHOOSE_NVHE_SYM(__kvm_hyp_psci_cpu_entry)
+>  
+>  extern unsigned long kvm_arm_hyp_percpu_base[NR_CPUS];
+>  DECLARE_KVM_NVHE_SYM(__per_cpu_start);
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 7d2270eeecfb..c76a8e5bd19c 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1365,6 +1365,7 @@ static void cpu_init_hyp_mode(void)
+>  
+>  	params->vector_hyp_va = (unsigned long)kern_hyp_va(kvm_ksym_ref(__kvm_hyp_host_vector));
+>  	params->stack_hyp_va = kern_hyp_va(__this_cpu_read(kvm_arm_hyp_stack_page) + PAGE_SIZE);
+> +	params->entry_hyp_va = (unsigned long)kern_hyp_va(kvm_ksym_ref(__kvm_hyp_psci_cpu_entry));
 
-(only just saw this; -ETOOMANYEMAILS)
+It feels really odd to use a per-CPU variable to keep track of
+something that is essentially a constant. Why can't we just have an
+assembly version of __kimg_hyp_va() and use that to compute the branch
+target directly in __kvm_hyp_cpu_entry()? __kvm_hyp_host_vector is
+another one.
 
-It is probably not an error in the sense of "things are broken, this
-cannot work"; but I'd consider this at least a warning "this does not
-work as you intended".
+>  	params->pgd_pa = kvm_mmu_get_httbr();
+>  
+>  	/*
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> index 7542de8bd679..2daf52b59846 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> @@ -9,10 +9,15 @@
+>  #include <asm/kvm_mmu.h>
+>  #include <kvm/arm_hypercalls.h>
+>  #include <linux/arm-smccc.h>
+> +#include <linux/kvm_host.h>
+>  #include <linux/psci.h>
+>  #include <kvm/arm_psci.h>
+>  #include <uapi/linux/psci.h>
+>  
+> +#define INVALID_CPU_ID UINT_MAX
+> +
+> +extern char __kvm_hyp_cpu_entry[];
+> +
+>  /* Config options set by the host. */
+>  u32 __ro_after_init kvm_host_psci_version = PSCI_VERSION(0, 0);
+>  u32 __ro_after_init kvm_host_psci_function_id[PSCI_FN_MAX];
+> @@ -20,6 +25,14 @@ s64 __ro_after_init hyp_physvirt_offset;
+>  
+>  #define __hyp_pa(x) ((phys_addr_t)((x)) + hyp_physvirt_offset)
+>  
+> +struct kvm_host_psci_state {
+> +	atomic_t pending_on;
+> +	unsigned long pc;
+> +	unsigned long r0;
+> +};
+> +
+> +static DEFINE_PER_CPU(struct kvm_host_psci_state, kvm_host_psci_state);
+> +
+>  static u64 get_psci_func_id(struct kvm_cpu_context *host_ctxt)
+>  {
+>  	return host_ctxt->regs.regs[0];
+> @@ -76,10 +89,99 @@ static __noreturn unsigned long psci_forward_noreturn(struct kvm_cpu_context *ho
+>  	hyp_panic(); /* unreachable */
+>  }
+>  
+> +static unsigned int find_cpu_id(u64 mpidr)
+> +{
+> +	int i;
 
+nit: unsigned int?
+
+> +
+> +	if (mpidr != INVALID_HWID) {
+
+This is a little ugly on the side [(c) FZ], and deserves a comment
+("Reject MPIDRs matching the init value of the __cpu_logical_map[]
+array"?).
+
+Also, I personally prefer a construct that reduces the nesting:
+
+	if (mpidr == INVALID_HWID)
+		return INVALID_CPU_ID;
+
+> +		for (i = 0; i < NR_CPUS; i++) {
+> +			if (cpu_logical_map(i) == mpidr)
+> +				return i;
+> +		}
+> +	}
+> +
+> +	return INVALID_CPU_ID;
+> +}
+> +
+> +static bool try_acquire_reset_state(struct kvm_host_psci_state *cpu_state,
+> +				    unsigned long pc, unsigned long r0)
+> +{
+> +	if (atomic_cmpxchg_acquire(&cpu_state->pending_on, 0, 1) != 0)
+
+What guarantees that this cmpxchg is inlined here? Also, having some
+names for 0 and 1 would be nice.
+
+> +		return false;
+> +
+> +	cpu_state->pc = pc;
+> +	cpu_state->r0 = r0;
+> +	wmb();
+> +
+> +	return true;
+> +}
+> +
+> +static void release_reset_state(struct kvm_host_psci_state *cpu_state)
+> +{
+> +	atomic_set_release(&cpu_state->pending_on, 0);
+> +}
+> +
+> +static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
+> +{
+> +	u64 mpidr = host_ctxt->regs.regs[1];
+> +	unsigned long pc = host_ctxt->regs.regs[2];
+> +	unsigned long r0 = host_ctxt->regs.regs[3];
+> +	unsigned int cpu_id;
+> +	struct kvm_host_psci_state *cpu_state;
+> +	struct kvm_nvhe_init_params *cpu_params;
+> +	int ret;
+> +
+> +	/*
+> +	 * Find the logical CPU ID for the given MPIDR. The search set is
+> +	 * the set of CPUs that were online at the point of KVM initialization.
+> +	 * Booting other CPUs is rejected because their cpufeatures were not
+> +	 * checked against the finalized capabilities. This could be relaxed
+> +	 * by doing the feature checks in hyp.
+> +	 */
+> +	cpu_id = find_cpu_id(mpidr);
+> +	if (cpu_id == INVALID_CPU_ID)
+> +		return PSCI_RET_INVALID_PARAMS;
+> +
+> +	cpu_state = per_cpu_ptr(&kvm_host_psci_state, cpu_id);
+> +	cpu_params = per_cpu_ptr(&kvm_init_params, cpu_id);
+> +
+> +	if (!try_acquire_reset_state(cpu_state, pc, r0))
+> +		return PSCI_RET_ALREADY_ON;
+> +
+> +	ret = psci_call(func_id, mpidr,
+> +			__hyp_pa(hyp_symbol_addr(__kvm_hyp_cpu_entry)),
+> +			__hyp_pa(cpu_params));
+> +
+> +	/*
+> +	 * If CPU_ON was successful, the reset state will be released in
+> +	 * kvm_host_psci_cpu_entry().
+> +	 */
+> +	if (ret != PSCI_RET_SUCCESS)
+> +		release_reset_state(cpu_state);
+> +	return ret;
+> +}
+> +
+> +void __noreturn __host_enter(struct kvm_cpu_context *host_ctxt);
+> +
+> +asmlinkage void __noreturn __kvm_hyp_psci_cpu_entry(void)
+> +{
+> +	struct kvm_host_psci_state *cpu_state = this_cpu_ptr(&kvm_host_psci_state);
+> +	struct kvm_cpu_context *host_ctxt = &this_cpu_ptr(&kvm_host_data)->host_ctxt;
+> +
+> +	host_ctxt->regs.regs[0] = cpu_state->r0;
+> +	write_sysreg_el2(cpu_state->pc, SYS_ELR);
+> +
+> +	release_reset_state(cpu_state);
+> +
+> +	__host_enter(host_ctxt);
+> +}
+> +
+>  static unsigned long psci_0_1_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
+>  {
+>  	if (func_id == kvm_host_psci_function_id[PSCI_FN_CPU_OFF])
+>  		return psci_forward(host_ctxt);
+> +	else if (func_id == kvm_host_psci_function_id[PSCI_FN_CPU_ON])
+> +		return psci_cpu_on(func_id, host_ctxt);
+>  	else if (func_id == kvm_host_psci_function_id[PSCI_FN_MIGRATE])
+>  		return psci_forward(host_ctxt);
+>  	else
+> @@ -100,6 +202,8 @@ static unsigned long psci_0_2_handler(u64 func_id, struct kvm_cpu_context *host_
+>  	case PSCI_0_2_FN_SYSTEM_RESET:
+>  		psci_forward_noreturn(host_ctxt);
+>  		unreachable();
+> +	case PSCI_0_2_FN64_CPU_ON:
+> +		return psci_cpu_on(func_id, host_ctxt);
+>  	default:
+>  		return PSCI_RET_NOT_SUPPORTED;
+>  	}
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
