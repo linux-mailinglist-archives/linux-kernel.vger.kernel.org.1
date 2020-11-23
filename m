@@ -2,92 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090DC2C083A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA972C09B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387443AbgKWMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387411AbgKWMps (ORCPT
+        id S2387446AbgKWNKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:10:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45461 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732792AbgKWMrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:45:48 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35831C0613CF;
-        Mon, 23 Nov 2020 04:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D/+uQXuYCHVJTryMNhtIQ0wirxLovQ10MM/7dftfXjA=; b=eeEoYa3psy1tQ0tTz+3MV500iq
-        llvX2Sq8XRxLgLc4WkoFbfknD5IuMj5jxeQbAoExJ8GueJ5c7jbEdBYzy4ZAv5TgoNvzjoYcaAJE2
-        NY3ZUBdJMTt+QbgdfbWC0Blm/oZq+tJsp7r6NZhWe6bK11IlKbXjWJCKokcbLb6f0r0ZWuw98vK33
-        /NgveDC9KrZI+yM1PMYnsRCLpwGDyj5/6DHqZ7Skbu8j1mhFfbLHoFlwy5JPoK7PbBKu1/LoDzr5h
-        M35LHR3GTV8EJpVz41HDlLhuiX/y/RVJPHyPje9sA5X1J9Nwv4d+N89FUyEUsROJ6Ktf+W7q8/u/m
-        6jp0E+bQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khBDV-0000hM-8q; Mon, 23 Nov 2020 12:45:13 +0000
-Date:   Mon, 23 Nov 2020 12:45:13 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-Message-ID: <20201123124513.GI4327@casper.infradead.org>
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz>
- <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
- <20201120131129.GO3200@dhcp22.suse.cz>
- <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
- <20201123074046.GB27488@dhcp22.suse.cz>
- <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
- <20201123094344.GG27488@dhcp22.suse.cz>
- <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
- <20201123104258.GJ27488@dhcp22.suse.cz>
+        Mon, 23 Nov 2020 07:47:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606135615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=evJ57IeWGORpeQJY5HEMAH5Lc0ZFA9EW90lm963OgUY=;
+        b=SvVAx04Fw6BT7gIjdU10yj5hiqnkE3p0NoOfLJg1NpXafOg/cstjOLFiGWiQiwqR2rz+/S
+        Dmh/iBscOvQMsBWPJPmwGC2kUCjXqADVzGDPybEUtwqVip2EESB82GzwNiGrTGEpR0Sbdi
+        0CtRyohvlCT/i98PpPZ2+mgIj4FAUIw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-136-JMQImIRdO7O1J9383Hb6AA-1; Mon, 23 Nov 2020 07:46:54 -0500
+X-MC-Unique: JMQImIRdO7O1J9383Hb6AA-1
+Received: by mail-ed1-f70.google.com with SMTP id l24so6513293edt.16
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:46:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=evJ57IeWGORpeQJY5HEMAH5Lc0ZFA9EW90lm963OgUY=;
+        b=ceperNF1Zx7i4Guj7G/fjABVAlflb9M7AB7oD2RpPM36wFTyNnKItSv/TWiWxp0r5B
+         Otnxf9/2nmLwsgXQpUn/vDfRlXqOO2811oyM4BzOm8EBHoVVBR8Tl4IcHkXRcez/ow5v
+         5vW8Q4JOma37OD25BwzV/xH2Y2897HwghnysUmKRUj+NylBH0UXGFLCfB8eAbTfTpOml
+         aRDGo29HQynL7cwZWKw9epgQULcvxNpkDvv02jgF6ulfmFnAS4bTpgIuUpej3CUGg8b7
+         Ia9REGvAf+POPM+oBhBKS9bxAcA0oDHkZudJIzSvyD3MbBi4kfFatA1gQgOcPiqSnHOt
+         qUmg==
+X-Gm-Message-State: AOAM532+9/YS8viov66OcQxSbAUyUxBXP701LjYf7T5WZtvr4mpQ8rY8
+        wqaWRaklntLuqP8KU5cKyc+fIgx0vwOs1QcJJ/2cInOpjmCwfmQvqEfYOrFBArR+PnYa/wpI/dw
+        X/CVFphg5FhWY7rjhu4GzYyA5
+X-Received: by 2002:a17:906:a458:: with SMTP id cb24mr15795810ejb.321.1606135612113;
+        Mon, 23 Nov 2020 04:46:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwh+3rNPb9WWpPngWZDk/0DfRV8Zc6jyCrePzz41XOpactTff8NpGKOGFXcG3/HAarwv6HSLQ==
+X-Received: by 2002:a17:906:a458:: with SMTP id cb24mr15795799ejb.321.1606135611922;
+        Mon, 23 Nov 2020 04:46:51 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id u13sm4897248ejz.74.2020.11.23.04.46.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 04:46:51 -0800 (PST)
+Subject: Re: [PATCH 1/1] pinctrl: add IRQF_EARLY_RESUME flags with gpio irq
+ for elan touchpad.
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        caizhaopeng@uniontech.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhangyueqian <zhangyueqian@uniontech.com>,
+        Zhangshuang <zhangshuang@uniontech.com>,
+        Hualet Wang <wangyaohua@uniontech.com>,
+        Zhanglei <zhanglei@uniontech.com>
+References: <20200424091201.568-1-caizhaopeng@uniontech.com>
+ <20201112135221.GC4077@smile.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1e67c040-2aff-65bd-188a-bacf9a7fd7c4@redhat.com>
+Date:   Mon, 23 Nov 2020 13:46:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123104258.GJ27488@dhcp22.suse.cz>
+In-Reply-To: <20201112135221.GC4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 11:42:58AM +0100, Michal Hocko wrote:
-> On Mon 23-11-20 18:36:33, Muchun Song wrote:
-> > > No I really mean that pfn_to_page will give you a struct page pointer
-> > > from pages which you release from the vmemmap page tables. Those pages
-> > > might get reused as soon sa they are freed to the page allocator.
-> > 
-> > We will remap vmemmap pages 2-7 (virtual addresses) to page
-> > frame 1. And then we free page frame 2-7 to the buddy allocator.
-> 
-> And this doesn't really happen in an atomic fashion from the pfn walker
-> POV, right? So it is very well possible that 
-> 
-> struct page *page = pfn_to_page();
-> // remapping happens here
-> // page content is no longer valid because its backing memory can be
-> // reused for whatever purpose.
+Hi,
 
-pfn_to_page() returns you a virtual address.  That virtual address
-remains a valid pointer to exactly the same contents, it's just that
-the page tables change to point to a different struct page which has
-the same compound_head().
+On 11/12/20 2:52 PM, Andy Shevchenko wrote:
+> 
+> +Cc: Hans.
+> 
+> I can't speak for AMD, but I think it may be useful for Intel pin control.
+> However, I didn't check what may be the side effects of this change and neither
+> contributor answered to my comments...
+
+AFAICT setting IRQF_EARLY_RESUME causes it to not be resumed during
+normal IRQ resuming, but earlier during the syscore_resume() call.
+
+There are 2 problems with this:
+
+1. When using S3 suspend syscore_resume() runs before any device
+suspend handlers, so any state restoring which the GPIO controller's
+resume handler is doing has not been done yet. While esp. after
+S3 suspend the restoring may be important (s2idle suspend should
+not touch the GPIO registers contents).
+
+2. When using S2idle suspend syscore_resume() *never* runs, and
+IRQs marked with IRQF_EARLY_RESUME are skipped during the normal
+IRQ resume phase, so these IRQs will never be resumed.
+
+Also IRQF_EARLY_RESUME is used almost no where:
+
+[hans@x1 linux]$ ack -l IRQF_EARLY_RESUME drivers
+drivers/xen/events/events_base.c
+drivers/rtc/rtc-sc27xx.c
+drivers/mfd/twl4030-irq.c
+
+Which is probably why we have not yet hit the s2idle issue with it.
+
+So this all in all seems like a bad idea, and we need to better root
+cause the issue with these Elan touchpads and fix the actual issue.
+
+Regards,
+
+Hans
+
+
+
+
+> 
+> So, just heads up.
+> 
+> On Fri, Apr 24, 2020 at 05:12:01PM +0800, caizhaopeng@uniontech.com wrote:
+>> From: Caicai <caizhaopeng@uniontech.com>
+>>
+>> I had tested two Notebook machines, the Intel i5(or amd ryzen)
+>> with elan touchpad, and there's a probability that the touchpad
+>> won't work after going to the S3/S4 to wake up, that it would
+>> appear no more than 15 times. I found that there's no interrupt
+>> to check for /proc/interrupt. It was found that the gpio
+>> interrupt of i2c was also not on top. By adding the gpio
+>> interrupt flags with IRQF_EARLY_RESUME, now the touchpad tested
+>> 200 + times works well.
+>>
+>> Signed-off-by: Caicai <caizhaopeng@uniontech.com>
+>> ---
+>>  drivers/pinctrl/intel/pinctrl-intel.c | 2 +-
+>>  drivers/pinctrl/pinctrl-amd.c         | 2 +-
+>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+>> index 8fb6c9668c37..a350dade6aa0 100644
+>> --- a/drivers/pinctrl/intel/pinctrl-intel.c
+>> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
+>> @@ -1189,7 +1189,7 @@ static int intel_gpio_probe(struct intel_pinctrl *pctrl, int irq)
+>>  	 * controllers share the same interrupt line.
+>>  	 */
+>>  	ret = devm_request_irq(pctrl->dev, irq, intel_gpio_irq,
+>> -			       IRQF_SHARED | IRQF_NO_THREAD,
+>> +			       IRQF_SHARED | IRQF_NO_THREAD | IRQF_EARLY_RESUME,
+>>  			       dev_name(pctrl->dev), pctrl);
+>>  	if (ret) {
+>>  		dev_err(pctrl->dev, "failed to request interrupt\n");
+>> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+>> index 977792654e01..70c37f4da2b1 100644
+>> --- a/drivers/pinctrl/pinctrl-amd.c
+>> +++ b/drivers/pinctrl/pinctrl-amd.c
+>> @@ -937,7 +937,7 @@ static int amd_gpio_probe(struct platform_device *pdev)
+>>  	}
+>>  
+>>  	ret = devm_request_irq(&pdev->dev, irq_base, amd_gpio_irq_handler,
+>> -			       IRQF_SHARED, KBUILD_MODNAME, gpio_dev);
+>> +			       IRQF_SHARED | IRQF_EARLY_RESUME | IRQF_NO_THREAD, KBUILD_MODNAME, gpio_dev);
+>>  	if (ret)
+>>  		goto out2;
+>>  
+>> -- 
+>> 2.20.1
+>>
+>>
+>>
+> 
+
