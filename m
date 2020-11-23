@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F192C0CB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC132C0CB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730197AbgKWODz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:03:55 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:17520 "EHLO z5.mailgun.us"
+        id S1729987AbgKWODf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:03:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729204AbgKWODz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:03:55 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606140234; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GMDPBCCMonm9madELgXD+35QPE+dhBMWpkpv8t4h7ZA=; b=k5ktkvWdU98jXksASkC571QgqoOWgxGTmQTWN7QDDBKbPXxcTG/TUlhfoC0DSMkaQiaBHRMz
- o9VFbxUJy927OVWnMG77PAUFViLOwzJw/rASbYkRj1jjk/EG5TJZZGnVOaP9iu2XaGXNS551
- pP743baMHHNcddL4mvYNX9nKvr4=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fbbc1471b731a5d9c1996fd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 14:03:51
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EF37EC43464; Mon, 23 Nov 2020 14:03:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1729204AbgKWODf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:03:35 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 11605C433C6;
-        Mon, 23 Nov 2020 14:03:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 11605C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, david@redhat.com, mhocko@suse.com,
-        linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm: memory_hotplug: put migration failure information under DEBUG_VM
-Date:   Mon, 23 Nov 2020 19:33:16 +0530
-Message-Id: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 47F2B2075A;
+        Mon, 23 Nov 2020 14:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606140214;
+        bh=RzgILadYdEd3PlSUUMcqcJb6KA8AWxsdQs514YcE3H4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0nU0nRHlW82jyYk/FyfXA2oaAOdF/nnrr6wsnFI9AlIbSKV3bJO3J1i/AcslTpNyu
+         t3BrSuwKMKpiCnY9hbm4ykngDLZc27RfVYt307hEz+mgD3+ZUwlUQ93W6Mub1DO1xw
+         PsL+TbRRjwEXasXnsa6BBaA6miSA0SIo1XIPrQ7Y=
+Date:   Mon, 23 Nov 2020 14:03:28 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Ashok Raj <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>
+Subject: Re: [PATCH v9 1/4] iommu: Move def_domain type check for untrusted
+ device into core
+Message-ID: <20201123140328.GA10730@willie-the-truck>
+References: <20201121135620.3496419-1-baolu.lu@linux.intel.com>
+ <20201121135620.3496419-2-baolu.lu@linux.intel.com>
+ <20201123120449.GB10233@willie-the-truck>
+ <5f6f0d5e-0cfc-2274-b186-180f50b8b1df@linux.intel.com>
+ <20201123130335.GD10233@willie-the-truck>
+ <c75c2981-11bd-74c0-289b-c2eb198bb5ab@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c75c2981-11bd-74c0-289b-c2eb198bb5ab@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the pages are failed to get isolate or migrate, the page owner
-information along with page info is dumped. If there are continuous
-failures in migration(say page is pinned) or isolation, the log buffer
-is simply getting flooded with the page owner information. As most of
-the times page info is sufficient to know the causes for failures of
-migration or isolation, place the page owner information under DEBUG_VM.
+On Mon, Nov 23, 2020 at 09:54:49PM +0800, Lu Baolu wrote:
+> Hi Will,
+> 
+> On 2020/11/23 21:03, Will Deacon wrote:
+> > Hi Baolu,
+> > 
+> > On Mon, Nov 23, 2020 at 08:55:17PM +0800, Lu Baolu wrote:
+> > > On 2020/11/23 20:04, Will Deacon wrote:
+> > > > On Sat, Nov 21, 2020 at 09:56:17PM +0800, Lu Baolu wrote:
+> > > > > @@ -1645,13 +1655,10 @@ struct __group_domain_type {
+> > > > >    static int probe_get_default_domain_type(struct device *dev, void *data)
+> > > > >    {
+> > > > > -	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> > > > >    	struct __group_domain_type *gtype = data;
+> > > > >    	unsigned int type = 0;
+> > > > > -	if (ops->def_domain_type)
+> > > > > -		type = ops->def_domain_type(dev);
+> > > > > -
+> > > > > +	type = iommu_get_mandatory_def_domain_type(dev);
+> > > > 
+> > > > afaict, this code is only called from probe_alloc_default_domain(), which
+> > > > has:
+> > > > 
+> > > >           /* Ask for default domain requirements of all devices in the group */
+> > > >           __iommu_group_for_each_dev(group, &gtype,
+> > > >                                      probe_get_default_domain_type);
+> > > > 
+> > > >           if (!gtype.type)
+> > > >                   gtype.type = iommu_def_domain_type;
+> > > > 
+> > > > so is there actually a need to introduce the new
+> > > > iommu_get_mandatory_def_domain_type() function, given that a type of 0
+> > > > always ends up resolving to the default domain type?
+> > > 
+> > > Another consumer of this helper is in the next patch:
+> > > 
+> > > +	dev_def_dom = iommu_get_mandatory_def_domain_type(dev);
+> > > +
+> > > +	/* Check if user requested domain is supported by the device or not */
+> > > +	if (!type) {
+> > > +		/*
+> > > +		 * If the user hasn't requested any specific type of domain and
+> > > +		 * if the device supports both the domains, then default to the
+> > > +		 * domain the device was booted with
+> > > +		 */
+> > > +		type = iommu_get_def_domain_type(dev);
+> > > +	} else if (dev_def_dom && type != dev_def_dom) {
+> > > +		dev_err_ratelimited(prev_dev, "Device cannot be in %s domain\n",
+> > > +				    iommu_domain_type_str(type));
+> > > +		ret = -EINVAL;
+> > > +		goto out;
+> > > +	}
+> > > 
+> > > I also added the untrusted device check in
+> > > iommu_get_mandatory_def_domain_type(), so that we don't need to care
+> > > about this in multiple places.
+> > 
+> > I see, but isn't this also setting the default domain type in the case that
+> > it gets back a type of 0? I think it would be nice to avoid having both
+> > iommu_get_mandatory_def_domain_type() and iommu_get_def_domain_type() of we
+> > can, as it's really not clear which one to use when and what is meant by
+> > "mandatory" imo.
+> 
+> Yes, agreed. I will remove iommu_get_mandatory_def_domain_type() and
+> keep iommu_get_def_domain_type() as the only helper in the next version.
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- mm/memory_hotplug.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Great, thanks!
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 63b2e46..f48f30d 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1326,7 +1326,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 
- 		} else {
- 			pr_warn("failed to isolate pfn %lx\n", pfn);
--			dump_page(page, "isolation failed");
-+			__dump_page(page, "isolation failed");
-+#if defined(CONFIG_DEBUG_VM)
-+			dump_page_owner(page);
-+#endif
- 		}
- 		put_page(page);
- 	}
-@@ -1357,7 +1360,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 			list_for_each_entry(page, &source, lru) {
- 				pr_warn("migrating pfn %lx failed ret:%d ",
- 				       page_to_pfn(page), ret);
--				dump_page(page, "migration failure");
-+				__dump_page(page, "migration failure");
-+#if defined(CONFIG_DEBUG_VM)
-+				dump_page_owner(page);
-+#endif
- 			}
- 			putback_movable_pages(&source);
- 		}
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+Will
