@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023F22C136B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300722C1372
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbgKWSeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728868AbgKWSeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:34:22 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51855C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:34:21 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id b144so3404438qkc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:34:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1u1sy4wI1CG6DZFHVu5ifgXp/o8YW2xyOy2wIPWsfUg=;
-        b=gih3TBU2ie34aPD8GCBnr1hlEWJpANCJd1L/9e5q6wM6g+ySzsAsQAkZeX5ov0bm8w
-         KMqGD2zqx81lskimJnNbWmiTfCUUH6V6jfRnz+RYqcsGIDgL+0BgOk+8BQ3zc2dgAbkX
-         rm2QbI1sEI16WUkwm4BhRtfJkKA3OWLu9si/MKlfvUaXUekcsf3+iI++DV3ZhOfCd59z
-         C8P60qh9BjLwDE4nOsf4L3CDrVjlYUdZ9vFSnY+7pMSSeEqky1SG/4txkpavUjNXUQZS
-         iubB+g078hid8l+LWwEwpfH7l5JQjzSnu65jBT+60rf46aLEzD5Kf5G8050vlyTy+aBi
-         EccA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1u1sy4wI1CG6DZFHVu5ifgXp/o8YW2xyOy2wIPWsfUg=;
-        b=uBfnr3116iVW8zfEj5oo76AGhV7Npdbi8r7wPhoki3jDbONjm/eO8zGHCSvXPHo6Ot
-         tzW/uP05gsO4kiJOdlgdYVSe03qPoYnQAe702II09cLl5PkunqQLj0gfwHs9aBpmeiKa
-         jV0GiSOld4uJbboAwrrfgj/uyHwj29bNUTPQQ0+mNZOM66mETDrxIEjofEAYfzpqLpIN
-         LVTXsD3Og7tvEO2Kv+dPKX//7l/OFg6WJJqGxm102ti4UE08ICmL4WG9HSvBvQItBbBs
-         MQjh2LWPcOdIYTHCA21vpV/IhQyiNZL/fu+GFTwV/sWUcw1pA+SFVknD/VMcjmSlQFM4
-         WgvQ==
-X-Gm-Message-State: AOAM532M1ETWgaALrmnz1py0t6i0n4ggdGxgt0r7gJ7UG38Yf+t0pSP2
-        +3vFlhB/AIXjgQZGkYeL3Anhnw==
-X-Google-Smtp-Source: ABdhPJxC7o5Vri3XQELAZq9SSztQKpp5Dk2Ag9BZU5OCfm9BfrhI8Xz3WzsV/EejngMWbFSZKb34oQ==
-X-Received: by 2002:a37:45c6:: with SMTP id s189mr813608qka.472.1606156460610;
-        Mon, 23 Nov 2020 10:34:20 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id x21sm4956921qtb.14.2020.11.23.10.34.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 10:34:19 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1khGfK-0001k7-Mn; Mon, 23 Nov 2020 14:34:18 -0400
-Date:   Mon, 23 Nov 2020 14:34:18 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Subject: Re: Pinning ZONE_MOVABLE pages
-Message-ID: <20201123183418.GB5487@ziepe.ca>
-References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
- <20201123090129.GD27488@dhcp22.suse.cz>
- <CA+CK2bCD8_x5cBUOksAzat_O4G8-PoLp378zN1mxKMcmyV8dAw@mail.gmail.com>
- <20201123171502.GX244516@ziepe.ca>
- <CA+CK2bDx1Q5QWw=hXMs=OWwCSVrFu-xizY8YOR_MqLsvMAZm0Q@mail.gmail.com>
+        id S1729694AbgKWSgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:36:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729140AbgKWSgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:36:01 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5DA12078E;
+        Mon, 23 Nov 2020 18:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606156560;
+        bh=FZugMw/Hog6jEeQy+QszK3Ewi0gPdbcIiChWPVuppDo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rJRxc3FThC4AXXQDGd4ySKR1IZkIlI7DzUiFQldSiKAjLI2HAtTPmK5MPZKOrorz3
+         x1Zh1MdqtAPgOUgE9Ho3vR7dQq6ZnDBqCFbwg77D/fnnUal1k6Max/JTL8kr9GuTdx
+         Ot2iTXuZ80JCwSsItHl9ALlh1HQ7kpo2oU0A8L04=
+Date:   Mon, 23 Nov 2020 18:35:55 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 6/6] mm: proc: Avoid fullmm flush for young/dirty bit
+ toggling
+Message-ID: <20201123183554.GC11688@willie-the-truck>
+References: <20201120143557.6715-1-will@kernel.org>
+ <20201120143557.6715-7-will@kernel.org>
+ <20201120204005.GC1303870@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bDx1Q5QWw=hXMs=OWwCSVrFu-xizY8YOR_MqLsvMAZm0Q@mail.gmail.com>
+In-Reply-To: <20201120204005.GC1303870@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 12:54:16PM -0500, Pavel Tatashin wrote:
-> > I agree with the other emails, ZONE_MOVABLE needs to be reconciled
-> > with FOLL_LONGTERM - most likely by preventing ZONE_MOVABLE pages from
-> > being returned. This will need migration like CMA does and the point
-> > about faulting is only an optimization to prevent fault then immediate
-> > migration.
+On Fri, Nov 20, 2020 at 01:40:05PM -0700, Yu Zhao wrote:
+> On Fri, Nov 20, 2020 at 02:35:57PM +0000, Will Deacon wrote:
+> > clear_refs_write() uses the 'fullmm' API for invalidating TLBs after
+> > updating the page-tables for the current mm. However, since the mm is not
+> > being freed, this can result in stale TLB entries on architectures which
+> > elide 'fullmm' invalidation.
+> > 
+> > Ensure that TLB invalidation is performed after updating soft-dirty
+> > entries via clear_refs_write() by using the non-fullmm API to MMU gather.
+> > 
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> >  fs/proc/task_mmu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > index a76d339b5754..316af047f1aa 100644
+> > --- a/fs/proc/task_mmu.c
+> > +++ b/fs/proc/task_mmu.c
+> > @@ -1238,7 +1238,7 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
+> >  			count = -EINTR;
+> >  			goto out_mm;
+> >  		}
+> > -		tlb_gather_mmu_fullmm(&tlb, mm);
+> > +		tlb_gather_mmu(&tlb, mm, 0, TASK_SIZE);
 > 
-> That is right, as the first step we could just do fault and immediate
-> migration, which is silly, but still better than what we have now.
+> Let's assume my reply to patch 4 is wrong, and therefore we still need
+> tlb_gather/finish_mmu() here. But then wouldn't this change deprive
+> architectures other than ARM the opportunity to optimize based on the
+> fact it's a full-mm flush?
 
-I was looking at this CMA code lately and would love to see a
-cleaner/faster implementation.
+Only for the soft-dirty case, but I think TLB invalidation is required
+there because we are write-protecting the entries and I don't see any
+mechanism to handle lazy invalidation for that (compared with the aging
+case, which is handled via pte_accessible()).
 
-If you really understand how this works maybe it is an opportunity to
-make it all work better.
+Furthermore, If we decide that we can relax the TLB invalidation
+requirements here, then I'd much rather than was done deliberately, rather
+than as an accidental side-effect of another commit (since I think the
+current behaviour was a consequence of 7a30df49f63a).
 
-Jason
+> It seems to me ARM's interpretation of tlb->fullmm is a special case,
+> not the other way around.
+
+Although I agree that this is subtle and error-prone (which is why I'm
+trying to make the API more explicit here), it _is_ documented clearly
+in asm-generic/tlb.h:
+
+ *  - mmu_gather::fullmm
+ *
+ *    A flag set by tlb_gather_mmu() to indicate we're going to free
+ *    the entire mm; this allows a number of optimizations.
+ *
+ *    - We can ignore tlb_{start,end}_vma(); because we don't
+ *      care about ranges. Everything will be shot down.
+ *
+ *    - (RISC) architectures that use ASIDs can cycle to a new ASID
+ *      and delay the invalidation until ASID space runs out.
+
+Will
