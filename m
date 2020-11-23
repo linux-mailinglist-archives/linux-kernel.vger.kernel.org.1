@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E87D2C071A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C792C05E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731948AbgKWMhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:37:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49692 "EHLO mail.kernel.org"
+        id S1729974AbgKWMZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:25:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731933AbgKWMh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:37:27 -0500
+        id S1729940AbgKWMZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:25:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE25520721;
-        Mon, 23 Nov 2020 12:37:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08E3520857;
+        Mon, 23 Nov 2020 12:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135047;
-        bh=lZvBpeRjlI/VW97KSB7IlHBYVy1l46kdMCQZECCsG1U=;
+        s=korg; t=1606134309;
+        bh=vEveepjJECq8Q7QmV4F3VjVF9TjNSLIX4IXXka6cj1Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KnCWxDFI/rYwj1N3CmS4PMgx3nriXPikDROS0YolJLwqkFV+GeuB1mUd9NH3kWjtJ
-         8mcGKOVycdsfiX5m21JxbZsBmeIuuGoXq7pAwc0QQjRaF3cajvtD81IQCIuD10tIMU
-         dWHK6rrKX5rPzNeLt3GM0dr6nt5m6Qo61OpPOcjI=
+        b=Oz61t1Pb9LCYaoSc04y9px8bG66faNfm76MxqtXp7vwJDMPdwrvHWmlT+KN9TIePH
+         SI/2PInEyuPmc/EFmMNKJIj4txzF/Vuuhoq6Dq3k/qIu2qR1Mi6+cc7/LbBc9hFKXa
+         uORHhkbg6EZQgDvCiLBw593cP1tf8Fna/wyUnqrw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 084/158] can: tcan4x5x: tcan4x5x_can_remove(): fix order of deregistration
-Date:   Mon, 23 Nov 2020 13:21:52 +0100
-Message-Id: <20201123121823.987303756@linuxfoundation.org>
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 07/47] net: bridge: add missing counters to ndo_get_stats64 callback
+Date:   Mon, 23 Nov 2020 13:21:53 +0100
+Message-Id: <20201123121805.904214183@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit c81d0b6ca665477c761f227807010762630b089f ]
+[ Upstream commit 7a30ecc9237681bb125cbd30eee92bef7e86293d ]
 
-Change the order in tcan4x5x_can_remove() to be the exact inverse of
-tcan4x5x_can_probe(). First m_can_class_unregister(), then power down the
-device.
+In br_forward.c and br_input.c fields dev->stats.tx_dropped and
+dev->stats.multicast are populated, but they are ignored in
+ndo_get_stats64.
 
-Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
-Cc: Dan Murphy <dmurphy@ti.com>
-Link: http://lore.kernel.org/r/20201019154233.1262589-10-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 28172739f0a2 ("net: fix 64 bit counters on 32 bit arches")
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/58ea9963-77ad-a7cf-8dfd-fc95ab95f606@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/m_can/tcan4x5x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/bridge/br_device.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index 11c223a534887..681bb861de05e 100644
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -501,10 +501,10 @@ static int tcan4x5x_can_remove(struct spi_device *spi)
- {
- 	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
+--- a/net/bridge/br_device.c
++++ b/net/bridge/br_device.c
+@@ -177,6 +177,7 @@ static struct rtnl_link_stats64 *br_get_
+ 		sum.rx_packets += tmp.rx_packets;
+ 	}
  
--	tcan4x5x_power_enable(priv->power, 0);
--
- 	m_can_class_unregister(priv->mcan_dev);
- 
-+	tcan4x5x_power_enable(priv->power, 0);
-+
- 	return 0;
- }
- 
--- 
-2.27.0
-
++	netdev_stats_to_stats64(stats, &dev->stats);
+ 	stats->tx_bytes   = sum.tx_bytes;
+ 	stats->tx_packets = sum.tx_packets;
+ 	stats->rx_bytes   = sum.rx_bytes;
 
 
