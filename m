@@ -2,91 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918692C11F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BF72C11FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390337AbgKWRac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:30:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730399AbgKWRac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:30:32 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B93420756;
-        Mon, 23 Nov 2020 17:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606152631;
-        bh=jZAyf44XEJ63YGzntuI9QS9uCCqjwsUWpemYZO6K/j0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mzPbjJyR3S1ljEHznqiVrGFIQL/DdLsBKTX3+U4jClP0SaqKnA1h6ryZ8b2lfoQUz
-         JxotMk8lfJUnr3W1fhISc1DIJWGoVX/pTjNVUeiwdEve9+CL1jcpdYLjxQKJYsTqBz
-         llWOrIZ9DcIAqyOfeLqMdvGd1UsdmhNKvvacA5Dk=
-Date:   Mon, 23 Nov 2020 17:30:08 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, sudeep.holla@arm.com,
-        lukasz.luba@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, robh@kernel.org,
-        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
-        f.fainelli@gmail.com, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com
-Subject: Re: [PATCH v6 4/5] dt-bindings: arm: add support for SCMI Regulators
-Message-ID: <20201123173008.GK6322@sirena.org.uk>
-References: <20201119191051.46363-1-cristian.marussi@arm.com>
- <20201119191051.46363-5-cristian.marussi@arm.com>
+        id S2390356AbgKWRbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:31:18 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:44925 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730399AbgKWRbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:31:17 -0500
+Received: by mail-io1-f72.google.com with SMTP id p12so13383512ioj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:31:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=p06mNsn62UzYbRGqsC6k1rWTPNotjmZgU3HzwqNYA9c=;
+        b=I7+fecU+4vVMN1VREeMiWXvM2xiJlwpHx/pi8NzR01CcuI9l8hQbxXCdAUyph8Iq9e
+         GVqqc8nx7JDTs0M8ooQujZsPtVFGEqalUP2UdSmzvqBFikVEMY/+kT42yxvkpuBVpi1F
+         KTK4aVOqTdabiURKoBJ4rU38jdxxVDU8+XOvK9PA/kwjpm2GpbmgXGFXLu6l0qjoeWoF
+         xmyWW8b3dWHY+52T0KfvnX4BX0HavMQll52I4ZWMFd+3WG28dpCTDWrHnG+vgxBDAiP4
+         lziart0rnHyw9W64jPMZ/IADKe2+J4m3k/XiiVww0/KefAvfsKwifz4ZJMvRyTF84Mvq
+         DyUg==
+X-Gm-Message-State: AOAM531slwdd7Tv/4D+U660J1eszoWYtOBLAcgO9cmyfSBuIWLkX2vyv
+        GhbNsz5Ple7Ap7gYa5MGbKQJvi0acmVhMH83pNGEHbFOfBe4
+X-Google-Smtp-Source: ABdhPJwGHghLPmVCAsZYpQebAewIJWlH+DfzNLEnKt6Vvz1+IoacryC4wBZD/HsCCQrvc8CJj3PmuikKrR2xMi8wIjtrG9WyLe6/
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/0P/MvzTfyTu5j9Q"
-Content-Disposition: inline
-In-Reply-To: <20201119191051.46363-5-cristian.marussi@arm.com>
-X-Cookie: Dry clean only.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a05:6638:58a:: with SMTP id a10mr529969jar.51.1606152676379;
+ Mon, 23 Nov 2020 09:31:16 -0800 (PST)
+Date:   Mon, 23 Nov 2020 09:31:16 -0800
+In-Reply-To: <0000000000007bf88805a445f729@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bb145805b4c98ff2@google.com>
+Subject: Re: memory leak in inet_create (2)
+From:   syzbot <syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
---/0P/MvzTfyTu5j9Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+HEAD commit:    418baf2c Linux 5.10-rc5
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=161c84ed500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5524c10373633a9c
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb7ba8dd62c3cb6e3c78
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1514cfa3500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a52fc1500000
 
-On Thu, Nov 19, 2020 at 07:10:50PM +0000, Cristian Marussi wrote:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com
 
-> +This binding uses the common regulator binding[6] but, due to SCMI abstractions,
-> +supports only a subset of its properties as specified below amongst Optional
-> +properties.
+executing program
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810e85adc0 (size 1728):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+  backtrace:
+    [<00000000cb2829d9>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1660
+    [<0000000023bd8ef8>] sk_alloc+0x30/0x3f0 net/core/sock.c:1720
+    [<00000000a4a7ed0a>] inet_create net/ipv4/af_inet.c:322 [inline]
+    [<00000000a4a7ed0a>] inet_create+0x16a/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> +Required properties:
-> + - reg : shall identify an existent SCMI Voltage Domain.
+BUG: memory leak
+unreferenced object 0xffff88810fec3c80 (size 768):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 32 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 c0 72 a0 0e 81 88 ff ff  .........r......
+  backtrace:
+    [<00000000681cd6ae>] sock_alloc_inode+0x18/0x90 net/socket.c:253
+    [<00000000fa9d2004>] alloc_inode+0x27/0x100 fs/inode.c:234
+    [<00000000f3a018c7>] new_inode_pseudo+0x13/0x70 fs/inode.c:930
+    [<00000000549f715a>] sock_alloc+0x18/0x90 net/socket.c:573
+    [<00000000a044e0d4>] __sock_create+0xb8/0x2b0 net/socket.c:1391
+    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
+    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
+    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
+    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
+    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
+    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> +Optional properties:
-> + - regulator-name
-> + - regulator-min-microvolt / regulator-max-microvolt
-> + - regulator-always-on / regulator-boot-on
-> + - regulator-max-step-microvolt
-> + - regulator-coupled-with / regulator-coupled-max-spread
+BUG: memory leak
+unreferenced object 0xffff88810de87bb8 (size 24):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 24 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000bea9ec8c>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
+    [<00000000bea9ec8c>] lsm_inode_alloc security/security.c:589 [inline]
+    [<00000000bea9ec8c>] security_inode_alloc+0x2a/0xb0 security/security.c:972
+    [<00000000543365c5>] inode_init_always+0x10c/0x250 fs/inode.c:171
+    [<000000004da5c777>] alloc_inode+0x44/0x100 fs/inode.c:241
+    [<00000000f3a018c7>] new_inode_pseudo+0x13/0x70 fs/inode.c:930
+    [<00000000549f715a>] sock_alloc+0x18/0x90 net/socket.c:573
+    [<00000000a044e0d4>] __sock_create+0xb8/0x2b0 net/socket.c:1391
+    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
+    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
+    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
+    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
+    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
+    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Please send a followup patch removing this stuff about only specific
-properties being supported, that's just asking for bitrot and is equally
-true for most regulator drivers - people shouldn't have to do do an
-audit of every single regulator driver to add a generic feature.
+BUG: memory leak
+unreferenced object 0xffff88810ea072c0 (size 2208):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+  backtrace:
+    [<00000000cb2829d9>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1660
+    [<0000000023bd8ef8>] sk_alloc+0x30/0x3f0 net/core/sock.c:1720
+    [<00000000a4a7ed0a>] inet_create net/ipv4/af_inet.c:322 [inline]
+    [<00000000a4a7ed0a>] inet_create+0x16a/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
+    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
+    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
+    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
+    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
+    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
---/0P/MvzTfyTu5j9Q
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+78Z8ACgkQJNaLcl1U
-h9BL2Qf/TbykoE9PqJE+toHFuAdOeziZcfji79JoqyXjCRXfFqkAldGCKFr5XeEa
-QAUG+FKLLWSRcckC6qHkDJ9fC+aKeudUlkGA1cZ7PNq65AJ5z+BoPQptOxcICH/7
-QM08KDCSSS1X0bhaAosqwDHx/N93Svqy6AekVf/gKAN1GvQv0EaGTVpWHSiFpNkX
-+2/QLCXehqa61xMrx8hzTmSGmNFuih5DOYlkDueIu1N1VhWmJ7PNNhb3STWDOw62
-hZ0afLS+NihPL6dD2cNcGcW2sgK66cxtWKBlMVXnm9Pq7yt71tUyN8qH/vs2ckd8
-O+pVojSjx/fIoCmL2hdd/eBRjpvrkg==
-=wP12
------END PGP SIGNATURE-----
-
---/0P/MvzTfyTu5j9Q--
