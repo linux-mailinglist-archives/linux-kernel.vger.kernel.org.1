@@ -2,112 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8972C02F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9792C02FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgKWKFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:05:19 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:42503 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728315AbgKWKFS (ORCPT
+        id S1728474AbgKWKFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:05:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728082AbgKWKFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:05:18 -0500
-Received: by mail-il1-f197.google.com with SMTP id t14so13366596ilg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:05:17 -0800 (PST)
+        Mon, 23 Nov 2020 05:05:42 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082E0C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:05:42 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id u18so22891666lfd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:05:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=182dmj/ueGzj8cYQzuBccpt7VjfMiU1AgaSHoNYB1SY=;
+        b=GG1HC88lwkCOrdydDXwTbh9NsYayrXI/ijtWs2VbgS2t5KTVGd+hwkbh4N+u0sHlp4
+         1C9Vpp/nA32r7GsCcSIKdgXz5UPRbRSVeLneGXJPJZtBkoVGVPUe0Jx7UKo4z6LVW17j
+         whBQH1VkFTjdPs4hNmU4CP0CyAA7izZpp0OmcxjuUPEZgV1PCrpy7SMay9UmHk9XdYnb
+         ludllqEzK+6rQaaZUAYRQnZfVm20lHu49cTD9Ex5Js5t2CXusKREenIdoCg13biCbNyI
+         w/+r9Ej82dlXH/yR5McyqdVKjif/FSLjsqUmrFo2usILY0ZpYNoFwJ8tbln/tUvNY8IS
+         AS1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=zBgwzi68qzrXdjI3v6aoG522nFgE68o6wE8yIJVg79k=;
-        b=JvCuxKvhc+JEXPe8KFzsL8I+sY+J5dyUYKOJpVIZivazNXV5cn70LDjV0h3B58kk+n
-         ggCaOyNNYiHO7pR9s+lSPyccELLZpp9IJGM3zXZ1riHriI2Svd4GpPzK8YBRUBiLUEae
-         PdZxfTVutBj8bL0kII8ky5L3psyTn1v5AFLO60yZPpkJIdZHPipaUTiwI7WeaFbAer2w
-         uEeZr9Tdnl3uZ3crBxowiLpJgwZ3wkpQ6jl61Uc5DGXsBS2/pNiqQk1CERi8+Wbhp5Qu
-         b/VDNr0sCy/reuGUmohtF5PwVQoHcYp9evy7+Y/5RU76orW1n5Xa9G2BIT/xsLQq4fQN
-         Yscw==
-X-Gm-Message-State: AOAM533/molsGiEq21XGQsetTgtX41ePQcHXCJlOj5zyK6T7MM/aGPYy
-        lbn9uIgbGaXGSF0qydazcGqfU4rQM8PHUr8V488VcJU2fi6O
-X-Google-Smtp-Source: ABdhPJy/m127PjSfJZCUQU/mwsLeNdRiRvVWiuIaQd1AajQ0eMm2H7W/z3v1a9fEx16vH1FVCnPRPmMkV8o3l0I68CN8QhiikeaB
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=182dmj/ueGzj8cYQzuBccpt7VjfMiU1AgaSHoNYB1SY=;
+        b=bffCBWDBQ4KHmLCmeFgw93bNITxtBBgCBo0C7PMear67MFLT3NLWZnhEAW+mWY4unC
+         IYCRogmY6N/gB8S7xgAkY1Uy/CoPwoYwNJm8L8ZlqvKQf14+PDXA0rC4Y6xlrBdrJbon
+         A6+3l+fcAc+Q74DnJdtnO23mqhZ+X/ZP0gFh84Uzh3SwDpbX2mE9FVE9OAdG/BDsFyvh
+         ES9cJQufOMmAZglC0YGoTR72dgujUsq3p0k3MtG93MWNbswAUsvfoV9DMgCg8UL42/q+
+         L3sW2yzWApKwHrz7k4vshgjU76LYifrRsyyt158sGGtxgIhM7u+StFHTV5p0jFRYDVQI
+         o0tg==
+X-Gm-Message-State: AOAM532oyJKflQFmcQzO67i2aKQYxzCRoJQjWUPTEDPxSr/9z6hlIjgv
+        8tIKf57sEuWPhglSsqvkk8w+qkLizeJxLLVLPvzRrg==
+X-Google-Smtp-Source: ABdhPJyoYY9AaaLxsys+XBzfmK7phHJRQwsNo54zf0hW53JImpLoF+Xvf40l8L/0iISJ7jjM2ySb0paN2dwhXGe0JxM=
+X-Received: by 2002:a19:c191:: with SMTP id r139mr14372705lff.258.1606125940438;
+ Mon, 23 Nov 2020 02:05:40 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:b146:: with SMTP id s6mr29551471jah.10.1606125917639;
- Mon, 23 Nov 2020 02:05:17 -0800 (PST)
-Date:   Mon, 23 Nov 2020 02:05:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c91a4805b4c354d5@google.com>
-Subject: WARNING in nbd_config_put
-From:   syzbot <syzbot+547e604b2b1c65869d7f@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        syzkaller-bugs@googlegroups.com
+References: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
+ <20201120085653.GA3092@hirez.programming.kicks-ass.net> <66650f6a-0a95-706f-58cc-3cd241e30dda@arm.com>
+In-Reply-To: <66650f6a-0a95-706f-58cc-3cd241e30dda@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 23 Nov 2020 11:05:28 +0100
+Message-ID: <CAKfTPtBtiweSfErgQ3ZVw9HB2Q7b=V4uoGS2dbaqY1KNz6kUhA@mail.gmail.com>
+Subject: Re: [RFC] Documentation/scheduler/schedutil.txt
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 23 Nov 2020 at 10:30, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 20/11/2020 09:56, Peter Zijlstra wrote:
+> > On Fri, Nov 20, 2020 at 08:55:27AM +0100, Peter Zijlstra wrote:
+> >>  - In saturated scenarios task movement will cause some transient dips,
+> >>    suppose we have a CPU saturated with 4 tasks, then when we migrate a task
+> >>    to an idle CPU, the old CPU will have a 'running' value of 0.75 while the
+> >>    new CPU will gain 0.25. This is inevitable and time progression will
+> >>    correct this. XXX do we still guarantee f_max due to no idle-time?
+> >
+> > Do we want something like this? Is the 1.5 threshold sane? (it's been too
+> > long since I looked at actual numbers here)
+>
+> Did some tests on a big.little system:
+>
+>  (1) rt-app workload on big CPU:
+>
+>  - task0-3 (runtime/period=4000us/16000us, started with
+>    4000us delay to each other) run on CPU1
+>  - then task3 migrates to CPU2 and runs there for 64ms
+>  - then task2 migrates to CPU2 too and both tasks run there
+>    for another 64ms
+>
+> ...
+>     task3-3-1684  [001]  3982.798729: sched_pelt_cfs:       cpu=1 path=/ load=232890 runnable=3260 util=1011
+> migration/1-14    [001]  3982.798756: sched_migrate_task:   comm=task3-3 pid=1684 prio=101 orig_cpu=1 dest_cpu=2*
+> migration/1-14    [001]  3982.798767: sched_pelt_cfs:       cpu=1 path=/ load=161374 runnable=2263 util=*700* <-- util dip !!!
+>     task1-1-1682  [001]  3982.799802: sched_pelt_cfs:       cpu=1 path=/ load=160988 runnable=2257 util=706
+> ...
+>     task2-2-1683  [001]  3982.849123: sched_pelt_cfs:       cpu=1 path=/ load=161124 runnable=2284 util=904
+>     task2-2-1683  [001]  3982.851960: sched_pelt_cfs:       cpu=1 path=/ load=160130 runnable=2271 util=911
+> migration/1-14    [001]  3982.851984: sched_migrate_task:   comm=task2-2 pid=1683 prio=101 orig_cpu=1 dest_cpu=2**
+> migration/1-14    [001]  3982.851995: sched_pelt_cfs:       cpu=1 path=/ load=88672 runnable=*1257* util=512 <-- runnable below 1536
+>     task1-1-1682  [001]  3982.852983: sched_pelt_cfs:       cpu=1 path=/ load=88321 runnable=1252 util=521
+> ...
+>
+>
+> *  task1,2,3 remain on CPU1 and still have to catch up, no idle
+>    time on CPU1
+>
+> ** task 1,2 remain on CPU1, there is idle time on CPU1!
+>
+>
+> (2) rt-app workload on LITTLE CPU (orig cpu_capacity: 446)
+>
+>  - task0-3 (runtime/period=1742us/16000us, started with
+>    4000us delay to each other) run on CPU4
+>  - then task3 migrates to CPU5 and runs there for 64ms
+>  - then task2 migrates to CPU5 too and both tasks run there
+>    for another 64ms
+>
+> ...
+>     task1-1-1777  [004]   789.443015: sched_pelt_cfs:       cpu=4 path=/ load=234718 runnable=3018 util=976
+> migration/4-29    [004]   789.444718: sched_migrate_task:   comm=task3-3 pid=1779 prio=101 orig_cpu=4 dest_cpu=5*
+> migration/4-29    [004]   789.444739: sched_pelt_cfs:       cpu=4 path=/ load=163543 runnable=2114 util=*778* <--util dip !!!
+>     task2-2-1778  [004]   789.447013: sched_pelt_cfs:       cpu=4 path=/ load=163392 runnable=2120 util=777
+> ...
+>     task1-1-1777  [004]   789.507012: sched_pelt_cfs:       cpu=4 path=/ load=164482 runnable=2223 util=879
+> migration/4-29    [004]   789.508023: sched_migrate_task:   comm=task2-2 pid=1778 prio=101 orig_cpu=4 dest_cpu=5**
+> migration/4-29    [004]   789.508044: sched_pelt_cfs:       cpu=4 path=/ load=94099 runnable=*1264* util=611 <-- runnable below 1536
+>     task0-0-1776  [004]   789.511011: sched_pelt_cfs:       cpu=4 path=/ load=93898 runnable=1264 util=622
+> ...
+>
+> *  task1,2,3 remain on CPU1 and still have to catch up, no idle
+>    time on CPU1
+>
+> ** task 1,2 remain on CPU1, no idle time on CPU1 yet.
+>
+> So for the big CPU, there is idle time and for the LITTLE there
+> isn't with runnable below the threshold.
 
-syzbot found the following issue on:
+I'm not sure to catch what you want to highlight with your tests ?
 
-HEAD commit:    27bba9c5 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ffd94d500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e7f3c831f4536ec1
-dashboard link: https://syzkaller.appspot.com/bug?extid=547e604b2b1c65869d7f
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+547e604b2b1c65869d7f@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 27869 at kernel/workqueue.c:4396 destroy_workqueue.cold+0x5/0x71 kernel/workqueue.c:4396
-Modules linked in:
-CPU: 3 PID: 27869 Comm: syz-executor.3 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:destroy_workqueue.cold+0x5/0x71 kernel/workqueue.c:4396
-Code: 00 90 4a 89 f7 f1 89 c6 e8 01 80 00 00 c6 44 24 37 01 e9 a1 a7 9b f8 48 c7 c7 80 f1 00 8b e8 9a f4 04 f9 eb c2 e8 63 76 c3 f8 <0f> 0b 48 c7 c6 00 95 4a 89 48 c7 c7 40 90 4a 89 49 8d 96 60 01 00
-RSP: 0018:ffffc900009f7a30 EFLAGS: 00010046
-RAX: 0000000000040000 RBX: 0000000000000002 RCX: ffffc90023698000
-RDX: 0000000000040000 RSI: ffffffff88acb97d RDI: 0000000000000005
-RBP: 000000000000000f R08: 0000000000000001 R09: 0000000000000003
-R10: 0000000000000001 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff888024e1dc00 R14: ffff88801270a000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff88802cf00000(0063) knlGS:00000000f5524b40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000001991fe8 CR3: 000000001216e000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nbd_config_put+0x3d3/0x870 drivers/block/nbd.c:1231
- nbd_release+0x103/0x190 drivers/block/nbd.c:1523
- __blkdev_put+0x642/0x890 fs/block_dev.c:1782
- blkdev_close+0x8c/0xb0 fs/block_dev.c:1851
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:151
- get_signal+0xd89/0x1f00 kernel/signal.c:2562
- arch_do_signal+0x82/0x2390 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x100/0x1a0 kernel/entry/common.c:191
- syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
- __do_fast_syscall_32+0x62/0x80 arch/x86/entry/common.c:138
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f6c549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000f55240bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-RAX: fffffffffffffe00 RBX: 0000000000000003 RCX: 000000000000ab03
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> As Quentin pointed out, sugov_cpu_is_busy() (only implemented on
+> 'single') tries to do something similar.
+>
+> I assume that 'another utilization metric' mentioned in commit
+> b7eaf1aab9f8 ("cpufreq: schedutil: Avoid reducing frequency of
+> busy CPUs prematurely") is rq->cfs.avg.runnable_avg.
