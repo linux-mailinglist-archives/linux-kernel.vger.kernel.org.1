@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDF62C092C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953462C092A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388432AbgKWNEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:04:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35506 "EHLO mail.kernel.org"
+        id S2388192AbgKWNEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:04:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731784AbgKWMvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:51:03 -0500
+        id S2387614AbgKWMvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:51:04 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E283120857;
-        Mon, 23 Nov 2020 12:50:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEFA6204EF;
+        Mon, 23 Nov 2020 12:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135860;
-        bh=wmsH9Jol7uf6ve/fT/xaXiPtiVNo8a6u7Aw4v2ekE6w=;
+        s=korg; t=1606135863;
+        bh=DyV3NMrTf54fo09w7VNMgr1zyAz6enWWvzekMq9V1QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f6pMEV/0g6svbO2mCheekV3bN9JMOoh0cjMk5j9yEIYgcGQ0b1XMa4dlklDD4qmdW
-         VdOvr0oecyNc3oA5Ar6zh9gmOlnRVtFDXmD4W4rxizUEXWp8phlVTg2AVXdN9Qb8Xa
-         NfoPoiAKlqJjzM/Yeerc4wv7YLgdMWnF6FRCxLBQ=
+        b=qt1E2jMVY2/0+TjcZykeoCLaVh0/COWvX/csTVdPxWbZmT2HQJ00lX9NoILpOI6wC
+         nLDoSOEVX3jAiXfaW2YqK0Kn152HVKPG7LziNm9hP4qAuREn7kmZhebrOWm04Wdfom
+         CyonkjQRFLpjfrmLxxue61vVRX6RcOhX5HoyacLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.9 222/252] regulator: pfuze100: limit pfuze-support-disable-sw to pfuze{100,200}
-Date:   Mon, 23 Nov 2020 13:22:52 +0100
-Message-Id: <20201123121846.285461461@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Mark Brown <broonie@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: [PATCH 5.9 223/252] regulator: fix memory leak with repeated set_machine_constraints()
+Date:   Mon, 23 Nov 2020 13:22:53 +0100
+Message-Id: <20201123121846.334515356@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -42,48 +44,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit 365ec8b61689bd64d6a61e129e0319bf71336407 upstream.
+commit 57a6ad482af256b2a13de14194fb8f67c1a65f10 upstream.
 
-Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
-variants.
-When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
-pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
-instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
+Fixed commit introduced a possible second call to
+set_machine_constraints() and that allocates memory for
+rdev->constraints. Move the allocation to the caller so
+it's easier to manage and done once.
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Fixes: 6f1cf5257acc ("regualtor: pfuze100: correct sw1a/sw2 on pfuze3000")
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201110174113.2066534-1-sean@geanix.com
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
+Link: https://lore.kernel.org/r/78c3d4016cebc08d441aad18cb924b4e4d9cf9df.1605226675.git.mirq-linux@rere.qmqm.pl
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/regulator/pfuze100-regulator.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/regulator/core.c |   29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
---- a/drivers/regulator/pfuze100-regulator.c
-+++ b/drivers/regulator/pfuze100-regulator.c
-@@ -836,11 +836,14 @@ static int pfuze100_regulator_probe(stru
- 		 * the switched regulator till yet.
- 		 */
- 		if (pfuze_chip->flags & PFUZE_FLAG_DISABLE_SW) {
--			if (pfuze_chip->regulator_descs[i].sw_reg) {
--				desc->ops = &pfuze100_sw_disable_regulator_ops;
--				desc->enable_val = 0x8;
--				desc->disable_val = 0x0;
--				desc->enable_time = 500;
-+			if (pfuze_chip->chip_id == PFUZE100 ||
-+				pfuze_chip->chip_id == PFUZE200) {
-+				if (pfuze_chip->regulator_descs[i].sw_reg) {
-+					desc->ops = &pfuze100_sw_disable_regulator_ops;
-+					desc->enable_val = 0x8;
-+					desc->disable_val = 0x0;
-+					desc->enable_time = 500;
-+				}
- 			}
- 		}
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1280,7 +1280,6 @@ static int _regulator_do_enable(struct r
+ /**
+  * set_machine_constraints - sets regulator constraints
+  * @rdev: regulator source
+- * @constraints: constraints to apply
+  *
+  * Allows platform initialisation code to define and constrain
+  * regulator circuits e.g. valid voltage/current ranges, etc.  NOTE:
+@@ -1288,21 +1287,11 @@ static int _regulator_do_enable(struct r
+  * regulator operations to proceed i.e. set_voltage, set_current_limit,
+  * set_mode.
+  */
+-static int set_machine_constraints(struct regulator_dev *rdev,
+-	const struct regulation_constraints *constraints)
++static int set_machine_constraints(struct regulator_dev *rdev)
+ {
+ 	int ret = 0;
+ 	const struct regulator_ops *ops = rdev->desc->ops;
  
+-	if (constraints)
+-		rdev->constraints = kmemdup(constraints, sizeof(*constraints),
+-					    GFP_KERNEL);
+-	else
+-		rdev->constraints = kzalloc(sizeof(*constraints),
+-					    GFP_KERNEL);
+-	if (!rdev->constraints)
+-		return -ENOMEM;
+-
+ 	ret = machine_constraints_voltage(rdev, rdev->constraints);
+ 	if (ret != 0)
+ 		return ret;
+@@ -5112,7 +5101,6 @@ struct regulator_dev *
+ regulator_register(const struct regulator_desc *regulator_desc,
+ 		   const struct regulator_config *cfg)
+ {
+-	const struct regulation_constraints *constraints = NULL;
+ 	const struct regulator_init_data *init_data;
+ 	struct regulator_config *config = NULL;
+ 	static atomic_t regulator_no = ATOMIC_INIT(-1);
+@@ -5251,14 +5239,23 @@ regulator_register(const struct regulato
+ 
+ 	/* set regulator constraints */
+ 	if (init_data)
+-		constraints = &init_data->constraints;
++		rdev->constraints = kmemdup(&init_data->constraints,
++					    sizeof(*rdev->constraints),
++					    GFP_KERNEL);
++	else
++		rdev->constraints = kzalloc(sizeof(*rdev->constraints),
++					    GFP_KERNEL);
++	if (!rdev->constraints) {
++		ret = -ENOMEM;
++		goto wash;
++	}
+ 
+ 	if (init_data && init_data->supply_regulator)
+ 		rdev->supply_name = init_data->supply_regulator;
+ 	else if (regulator_desc->supply_name)
+ 		rdev->supply_name = regulator_desc->supply_name;
+ 
+-	ret = set_machine_constraints(rdev, constraints);
++	ret = set_machine_constraints(rdev);
+ 	if (ret == -EPROBE_DEFER) {
+ 		/* Regulator might be in bypass mode and so needs its supply
+ 		 * to set the constraints */
+@@ -5267,7 +5264,7 @@ regulator_register(const struct regulato
+ 		 * that is just being created */
+ 		ret = regulator_resolve_supply(rdev);
+ 		if (!ret)
+-			ret = set_machine_constraints(rdev, constraints);
++			ret = set_machine_constraints(rdev);
+ 		else
+ 			rdev_dbg(rdev, "unable to resolve supply early: %pe\n",
+ 				 ERR_PTR(ret));
 
 
