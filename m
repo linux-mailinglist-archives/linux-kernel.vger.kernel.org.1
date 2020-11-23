@@ -2,99 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E877B2C196B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF1B2C196E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgKWX1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 18:27:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726869AbgKWX1P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:27:15 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7FCC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:27:15 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id u18so26194461lfd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:27:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=62XXjbqYUttKDW7QLVDAz8ebJiWeeruFyFjZc2ME1MQ=;
-        b=eX0mkSa1IFEx1Crtlq1/XCIc1OeZ/ffiR47s6E2/QiJ6KQVAo4QDhR/CmRczTzALSK
-         AvBhlG7pHxY37bFoOnG4De2MWtFKN6YYb5n0cmzEAvkvMrZT7Y8GSRNbi5Pd1zmSDUSe
-         MINajG2ZA/qu63TeYlE4kOUf44JaUsAagJlFe8e38VBgFoe0Wvza4f0Ta1fz0MXxvXxn
-         4mhJZsihP/KqiY7hqK9CzV+jocAdFhFZGrc9sgMvkuY2uL3cC07Y89kp8HQlK5zn4lcC
-         XqFo1mD9yU8DAQYg6K7uzbTS8e+Xu9lyFBG+maKcVeDLegCY7VzcdDzOCOL8qKJXem+I
-         c4cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=62XXjbqYUttKDW7QLVDAz8ebJiWeeruFyFjZc2ME1MQ=;
-        b=YRIFwzNrcTYvka5FaZISPPwjHAf0Q4UvERL/3aiiPb0BV6UIPFWmAWVbCwYGTORhvP
-         fBXEDDUWVjRTQGjBzDjQ4FVZloQtmH/dCISiHknkJLPdByU7+EgiGQsjJnGddL8e+PBo
-         f48up+m75pl3mR9mcQSGQTf7wOFbfJseR2J6DAR+oEP2IFuyZpwFS3B6dGsMEKoNMl1G
-         0PqGz5iz/qsHfGfq0zs32Rlc4BVfXOxukfbFvzFsKrIgNsXACiv97qvJG92TYCHT+nNU
-         fvcVAPUtS9TAR0O2YZbqq55TiFJ5aTQ4ggr5TWkqKZRtMMqiuhOcNJC5rIwwyEfaQJMt
-         O5fA==
-X-Gm-Message-State: AOAM5300DZfAK0RAk8yLPSJftig7KvUpOoc0CjO3QiCBeL+0yo6EvJ0A
-        95rYhGvb6/Rkn7ejoVIbvWCQgbwTNrA2e5QPXclP6A==
-X-Google-Smtp-Source: ABdhPJzGfZCTZBEIZEGFV1gxU2z+T+t5mQtOQkhNOceO/OEzRLYH3IFCYdCd4+jCQ8prtZXhlNnogj9okxaTGvZNiFE=
-X-Received: by 2002:a19:740c:: with SMTP id v12mr522681lfe.502.1606174033954;
- Mon, 23 Nov 2020 15:27:13 -0800 (PST)
+        id S1726970AbgKWX2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 18:28:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726504AbgKWX2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 18:28:41 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E57420717;
+        Mon, 23 Nov 2020 23:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606174120;
+        bh=JHs4MSzAK1ZX65YT7L9fzKBfEx1vBIrxlceB3sOS6Pk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=mavAID2rxjJndYya+YPEcOqHSFopIh5w4222E+LMb9DNuyNsNon+IV2G4CbokJVmO
+         L0Mre2fX4TbgPba5jjF2ZJlEDztwvGUX7s99IZ+EAoxY25vrOR0X1gKDFYcnooBfMD
+         GvZxrK4je2E/4WX/ChUWCHVxZkq46yqOEy6p8T9A=
+Date:   Mon, 23 Nov 2020 17:28:38 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v12 10/15] PCI/ERR: Limit AER resets in pcie_do_recovery()
+Message-ID: <20201123232838.GA498923@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <735253bd-5500-2b8d-c98d-99bddb0617ce@web.de>
-In-Reply-To: <735253bd-5500-2b8d-c98d-99bddb0617ce@web.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 24 Nov 2020 00:27:02 +0100
-Message-ID: <CACRpkdb4+av1sDrQHYXYeyKemnm2a9PFGQbu++UHEe6sspRACQ@mail.gmail.com>
-Subject: Re: [Regression]: Commit 74d905d2 breaks the touchpad and touchscreen
- of Google Chromebook "samus"
-To:     Andre <andre.muller@web.de>
-Cc:     Nick Dyer <nick.dyer@itdev.co.uk>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "George G. Davis" <george_davis@mentor.com>,
-        Jiada Wang <jiada_wang@mentor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121001036.8560-11-sean.v.kelley@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 9:18 AM Andre <andre.muller@web.de> wrote:
+On Fri, Nov 20, 2020 at 04:10:31PM -0800, Sean V Kelley wrote:
+> In some cases a bridge may not exist as the hardware controlling may be
+> handled only by firmware and so is not visible to the OS. This scenario is
+> also possible in future use cases involving non-native use of RCECs by
+> firmware.
+> 
+> Explicitly apply conditional logic around these resets by limiting them to
+> Root Ports and Downstream Ports.
 
-> commit 74d905d2: Input: atmel_mxt_ts - only read messages in
-> mxt_acquire_irq() when necessary
->
-> breaks the touchpad and touchscreen of the 2015 Chromebook Pixel "Samus".
+Can you help me understand this?  The subject says "Limit AER resets"
+and here you say "limit them to RPs and DPs", but it's not completely
+obvious how the resets are being limited, i.e., the patch doesn't add
+anything like:
 
-This commit also breaks the touchscreen on the Samsung GT-I9070
-mobile phone. All interrupts stop appearing. If I revert the patch
-I get interrupts.
+ +  if (type == PCI_EXP_TYPE_ROOT_PORT ||
+ +      type == PCI_EXP_TYPE_DOWNSTREAM)
+      reset_subordinates(bridge);
 
-dmesg after this commit:
+It *does* add checks around pcie_clear_device_status(), but that also
+includes RC_EC.  And that's not a reset, so I don't think that's
+explicitly mentioned in the commit log.
 
-$ dmesg |grep mxt
-[    1.967816] atmel_mxt_ts 3-004a: Family: 129 Variant: 1 Firmware
-V1.0.AA Objects: 18
-[    1.975815] atmel_mxt_ts 3-004a: Enabling RETRIGEN workaround
-[    1.982398] atmel_mxt_ts 3-004a: Direct firmware load for
-maxtouch.cfg failed with error -2
-[    1.992252] atmel_mxt_ts 3-004a: Touchscreen size X479Y799
+Also see the question below.
 
-dmesg with commit reverted:
-$ dmesg |grep mxt
-[    1.967831] atmel_mxt_ts 3-004a: Family: 129 Variant: 1 Firmware
-V1.0.AA Objects: 18
-[    1.984195] atmel_mxt_ts 3-004a: Direct firmware load for
-maxtouch.cfg failed with error -2
-[    2.007399] atmel_mxt_ts 3-004a: Touchscreen size X479Y799
+> Link: https://lore.kernel.org/r/20201002184735.1229220-8-seanvk.dev@oregontracks.org
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+>  drivers/pci/pcie/err.c | 31 +++++++++++++++++++++++++------
+>  1 file changed, 25 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 8b53aecdb43d..7883c9791562 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -148,13 +148,17 @@ static int report_resume(struct pci_dev *dev, void *data)
+>  
+>  /**
+>   * pci_walk_bridge - walk bridges potentially AER affected
+> - * @bridge:	bridge which may be a Port
+> + * @bridge:	bridge which may be a Port, an RCEC with associated RCiEPs,
+> + *		or an RCiEP associated with an RCEC
+>   * @cb:		callback to be called for each device found
+>   * @userdata:	arbitrary pointer to be passed to callback
+>   *
+>   * If the device provided is a bridge, walk the subordinate bus, including
+>   * any bridged devices on buses under this bus.  Call the provided callback
+>   * on each device found.
+> + *
+> + * If the device provided has no subordinate bus, call the callback on the
+> + * device itself.
+>   */
+>  static void pci_walk_bridge(struct pci_dev *bridge,
+>  			    int (*cb)(struct pci_dev *, void *),
+> @@ -162,6 +166,8 @@ static void pci_walk_bridge(struct pci_dev *bridge,
+>  {
+>  	if (bridge->subordinate)
+>  		pci_walk_bus(bridge->subordinate, cb, userdata);
+> +	else
+> +		cb(bridge, userdata);
+>  }
+>  
+>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> @@ -174,10 +180,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  
+>  	/*
+>  	 * Error recovery runs on all subordinates of the bridge.  If the
+> -	 * bridge detected the error, it is cleared at the end.
+> +	 * bridge detected the error, it is cleared at the end.  For RCiEPs
+> +	 * we should reset just the RCiEP itself.
+>  	 */
+>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    type == PCI_EXP_TYPE_DOWNSTREAM)
+> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> +	    type == PCI_EXP_TYPE_RC_EC ||
+> +	    type == PCI_EXP_TYPE_RC_END)
+>  		bridge = dev;
+>  	else
+>  		bridge = pci_upstream_bridge(dev);
+> @@ -185,6 +194,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	pci_dbg(bridge, "broadcast error_detected message\n");
+>  	if (state == pci_channel_io_frozen) {
+>  		pci_walk_bridge(bridge, report_frozen_detected, &status);
+> +		if (type == PCI_EXP_TYPE_RC_END) {
+> +			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
+> +			status = PCI_ERS_RESULT_NONE;
+> +			goto failed;
+> +		}
+> +
+>  		status = reset_subordinates(bridge);
+>  		if (status != PCI_ERS_RESULT_RECOVERED) {
+>  			pci_warn(bridge, "subordinate device reset failed\n");
+> @@ -217,9 +232,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	pci_dbg(bridge, "broadcast resume message\n");
+>  	pci_walk_bridge(bridge, report_resume, &status);
+>  
+> -	if (pcie_aer_is_native(bridge))
+> -		pcie_clear_device_status(bridge);
+> -	pci_aer_clear_nonfatal_status(bridge);
+> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> +	    type == PCI_EXP_TYPE_RC_EC) {
+> +		if (pcie_aer_is_native(bridge))
+> +			pcie_clear_device_status(bridge);
+> +		pci_aer_clear_nonfatal_status(bridge);
 
-And I get interrupts.
+This is hard to understand because "type" is from "dev", but "bridge"
+is not necessarily the same device.  Should it be this?
 
-Tell me if I need to test some more approaches.
+  type = pci_pcie_type(bridge);
+  if (type == PCI_EXP_TYPE_ROOT_PORT ||
+      ...)
 
-Yours,
-Linus Walleij
+> +	}
+>  	pci_info(bridge, "device recovery successful\n");
+>  	return status;
+>  
+> -- 
+> 2.29.2
+> 
