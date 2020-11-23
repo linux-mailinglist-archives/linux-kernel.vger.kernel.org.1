@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D7D2C067E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E29A2C0727
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730853AbgKWMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:31:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42110 "EHLO mail.kernel.org"
+        id S1732039AbgKWMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:38:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730834AbgKWMbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:31:14 -0500
+        id S1732012AbgKWMhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DDB820728;
-        Mon, 23 Nov 2020 12:31:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2D062065E;
+        Mon, 23 Nov 2020 12:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134674;
-        bh=/HOmZJjee+Umd/rtcD6KTjsut/JQ7cP3EzaAh1Vt1RI=;
+        s=korg; t=1606135071;
+        bh=boYBi/MoHz3VIGwXIwsALWk0NADMnPwx7dClD6CBqp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A1yHfxJ4lZunyBC8RFPDKcbiNNVfKaqeE//k+xQjkqvLoDFgEHhxxF9ZM4yCXYJ+a
-         LtojQTt/i+saQcYkHkznf3HJ5dH1geb19siOv2iNwVbS/XEj/cTfBP06D2wWXztFE2
-         vwam/A2c68WeiRmheEFlvm55P1aFq7S1woE5vxC8=
+        b=bLi1E0KGrN95tS9S3gl0MRjQHI8Npjnkg1+u6IISvNxHsABz5f0OP8x0USU9E5kdi
+         AmaPTQjEe3TolsQfn3j1dtJ1MdAabHSB/wOrOQ5r3e/5wx5vz12LJj/WuYdk0Ug5+e
+         nUDUF4TjDwEb7VHgHB5ZUalSMzxZKvj6Dt86bTCY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 01/91] ah6: fix error return code in ah6_input()
-Date:   Mon, 23 Nov 2020 13:21:21 +0100
-Message-Id: <20201123121809.364368880@linuxfoundation.org>
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 054/158] ARM: dts: sun7i: bananapi-m1-plus: Enable RGMII RX/TX delay on Ethernet PHY
+Date:   Mon, 23 Nov 2020 13:21:22 +0100
+Message-Id: <20201123121822.542052275@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,34 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit a5ebcbdf34b65fcc07f38eaf2d60563b42619a59 ]
+[ Upstream commit f94f78bd93f567c022f594589dbeecdf59931365 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+The Ethernet PHY on the Bananapi M1+ has the RX and TX delays
+enabled on the PHY, using pull-ups on the RXDLY and TXDLY pins.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Link: https://lore.kernel.org/r/1605581105-35295-1-git-send-email-zhangchangzhong@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix the phy-mode description to correct reflect this so that the
+implementation doesn't reconfigure the delays incorrectly. This
+happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+rx/tx delay config").
+
+Fixes: 04c85ecad32a ("ARM: dts: sun7i: Add dts file for Bananapi M1 Plus board")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Link: https://lore.kernel.org/r/20201024162515.30032-4-wens@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ah6.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/sun7i-a20-bananapi-m1-plus.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv6/ah6.c
-+++ b/net/ipv6/ah6.c
-@@ -600,7 +600,8 @@ static int ah6_input(struct xfrm_state *
- 	memcpy(auth_data, ah->auth_data, ahp->icv_trunc_len);
- 	memset(ah->auth_data, 0, ahp->icv_trunc_len);
- 
--	if (ipv6_clear_mutable_options(ip6h, hdr_len, XFRM_POLICY_IN))
-+	err = ipv6_clear_mutable_options(ip6h, hdr_len, XFRM_POLICY_IN);
-+	if (err)
- 		goto out_free;
- 
- 	ip6h->priority    = 0;
+diff --git a/arch/arm/boot/dts/sun7i-a20-bananapi-m1-plus.dts b/arch/arm/boot/dts/sun7i-a20-bananapi-m1-plus.dts
+index 32d5d45a35c03..8945dbb114a2a 100644
+--- a/arch/arm/boot/dts/sun7i-a20-bananapi-m1-plus.dts
++++ b/arch/arm/boot/dts/sun7i-a20-bananapi-m1-plus.dts
+@@ -130,7 +130,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&gmac_rgmii_pins>;
+ 	phy-handle = <&phy1>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	status = "okay";
+ };
+-- 
+2.27.0
+
 
 
