@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9252C1486
+	by mail.lfdr.de (Postfix) with ESMTP id C049B2C1487
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730208AbgKWTcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 14:32:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729595AbgKWTcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:32:46 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9DEC061A4E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:32:46 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id cq7so18328722edb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:32:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=idsRRDFvrWEUfaaQ200ZYJgjiqOU5xE6TXnIcThRzMQ=;
-        b=Wdyrvrbq+IrLnf9+ZOGO2vv3x+WxFZt2TN+CQ7V+X/sc1SgfxFUTxMH2c873wyRSSg
-         59zThKnuOc8hD7N+HFZl1x3lslngFnEKOw+2Ao8MvCSvDxnldO9FFtQjtcsOUeB5C6b/
-         Xtj7n7HVpB+fPnessaIv7NA3MYqUNnTK0ZMTQROtRByevKOz5juT8oTyx+Nwtv4R1ewd
-         OOgDVqpnjp+08EdQjAxPR8VrfSkArZKscR3jRL5wQYVW00iVXEH1bb0LyfTnkHVBwWdZ
-         9m7G3zJ2pDqtCNgFiMw8eRldmF/zXyDcDcAlTy2/EP0GniOHMA5gCJBP2neKHA7KVkR9
-         ksQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=idsRRDFvrWEUfaaQ200ZYJgjiqOU5xE6TXnIcThRzMQ=;
-        b=uIsOUGaWrdEjUfasVyG4paXolV4C/r4FRJK2lpoKUSBeZhMyYPjkspyfR++mO2DUVj
-         C3TGsmGgHvbavULgjV/Kc+f1VDyBZb8ro8kWh63XBN0kfbSFoQ26ZjgPKiVdff3Mk1YJ
-         Vto+ry6WzBEfDKJ/YeaGrAFk67lSRIa95+Zyx6xycJBJg9mugY7TmIdlrvVL+vA90cpD
-         kHlLVKN9YAtVXNU4SlmajlzoQc6Mr6GfH2Ktj+F9RWBpFXd6Z+Gb5kjdirA+Y4IKa1xL
-         2js2TMFw7eLygKcHNruDgf/4n4RTBs8AfIHCK0kMYlLpeJK0LrBRbs6DQq+vPSLhWdyu
-         Pk6A==
-X-Gm-Message-State: AOAM531Ur67lK3t9EAbXKTZeyea95EcItdpbp6KeHbPpHMo8hIYlUln0
-        uJxzh/qHOpnG0CM4PJ/+LR5j4hzjZF0ydP0HATUZCA==
-X-Google-Smtp-Source: ABdhPJzG6sgIo04MhiGORxtweJtY7Ith2jiGAwGdEG1XvFP+atMBFpBYF8qTDnkKNX7f8mwgWSvRhCZrpVeQDso7ILQ=
-X-Received: by 2002:a50:fe02:: with SMTP id f2mr716870edt.97.1606159965112;
- Mon, 23 Nov 2020 11:32:45 -0800 (PST)
-MIME-Version: 1.0
-References: <CAPcyv4j+zbns+WhnxWXCdoxa=QN40BFXUpmb=04q36H1sX-aBw@mail.gmail.com>
- <20201117002321.GA1344659@bjorn-Precision-5520> <20201123192029.pmmy6ygts5fclz7b@intel.com>
-In-Reply-To: <20201123192029.pmmy6ygts5fclz7b@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 23 Nov 2020 11:32:33 -0800
-Message-ID: <CAPcyv4jJpvLErK8vBW-D2ZQASU0iJqFLRr7yDXB0kfGPrmi6xw@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/9] cxl/mem: Map memory device registers
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-cxl@vger.kernel.org,
+        id S1730498AbgKWTcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 14:32:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:38780 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729595AbgKWTcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 14:32:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97DE4101E;
+        Mon, 23 Nov 2020 11:32:50 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.27.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDCC93F71F;
+        Mon, 23 Nov 2020 11:32:46 -0800 (PST)
+Date:   Mon, 23 Nov 2020 19:32:41 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
+ kfence: Avoid stalling...)
+Message-ID: <20201123193241.GA45639@C02TD0UTHF1T.local>
+References: <20201118233841.GS1437@paulmck-ThinkPad-P72>
+ <20201119125357.GA2084963@elver.google.com>
+ <20201119151409.GU1437@paulmck-ThinkPad-P72>
+ <20201119170259.GA2134472@elver.google.com>
+ <20201119184854.GY1437@paulmck-ThinkPad-P72>
+ <20201119193819.GA2601289@elver.google.com>
+ <20201119213512.GB1437@paulmck-ThinkPad-P72>
+ <20201119225352.GA5251@willie-the-truck>
+ <20201120103031.GB2328@C02TD0UTHF1T.local>
+ <20201120140332.GA3120165@elver.google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120140332.GA3120165@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 11:20 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
-[..]
-> > -ENXIO is fine with me.  I just don't see it as often so I don't
-> > really know what it is.
-> >
-> > Bjorn
->
-> Dan, Bjorn, I did a fairly randomized look at various probe functions and ENODEV
-> seems to be more common. My sort of historical use has been
-> - ENODEV: General, couldn't establish device presence
-> - ENXIO: Device was there but something is totally misconfigured
-> - E*: A matching errno for exactly what went wrong
->
-> My question though is, would it be useful to propagate the error up through
-> probe?
+On Fri, Nov 20, 2020 at 03:03:32PM +0100, Marco Elver wrote:
+> On Fri, Nov 20, 2020 at 10:30AM +0000, Mark Rutland wrote:
+> > On Thu, Nov 19, 2020 at 10:53:53PM +0000, Will Deacon wrote:
+> > > FWIW, arm64 is known broken wrt lockdep and irq tracing atm. Mark has been
+> > > looking at that and I think he is close to having something workable.
+> > > 
+> > > Mark -- is there anything Marco and Paul can try out?
+> > 
+> > I initially traced some issues back to commit:
+> > 
+> >   044d0d6de9f50192 ("lockdep: Only trace IRQ edges")
+> > 
+> > ... and that change of semantic could cause us to miss edges in some
+> > cases, but IIUC mostly where we haven't done the right thing in
+> > exception entry/return.
+> > 
+> > I don't think my patches address this case yet, but my WIP (currently
+> > just fixing user<->kernel transitions) is at:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/irq-fixes
+> > 
+> > I'm looking into the kernel<->kernel transitions now, and I know that we
+> > mess up RCU management for a small window around arch_cpu_idle, but it's
+> > not immediately clear to me if either of those cases could cause this
+> > report.
+> 
+> Thank you -- I tried your irq-fixes, however that didn't seem to fix the
+> problem (still get warnings and then a panic). :-/
 
-The error from probe becomes the modprobe exit code, or the write to
-the 'bind' attribute errno. So, it's a choice between "No such device
-or address", or "No such device". The "or address" mention makes a
-small bit more sense to me since the device is obviously present as it
-is visible in lspci, but either error code clearly indicates a driver
-problem so ENODEV is fine.
+I've just updated that branch with a new version which I hope covers
+kernel<->kernel transitions too. If you get a chance, would you mind
+giving that a spin?
 
-For the other error codes I think it would be confusing to return
-something like EINVAL from probe as that would be mistaken as an
-invalid argument to the modprobe without stracing to see that it came
-from the result of a sysfs write
+The HEAD commit should be:
+
+  a51334f033f8ee88 ("HACK: check IRQ tracing has RCU watching")
+
+Otherwise, I intend to clean that up and post it tomorrow (without the
+additional debug hacks). I've thrown my local Syzkaller instance at it
+in the mean time (and if I get the chance tomrrow I'll try to get
+rcutorture setup), and the only report I'm seeing so far looks genuine:
+
+| BUG: sleeping function called from invalid context in sta_info_move_state
+
+... as that was reported on x86 too, per:
+
+https://syzkaller.appspot.com/bug?id=6c7899acf008be2ddcddb46a2567c2153193632a
+
+Thanks,
+Mark.
