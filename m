@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377372C11F2
+	by mail.lfdr.de (Postfix) with ESMTP id A4FC92C11F3
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390207AbgKWR3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:29:34 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:46629 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732550AbgKWR3d (ORCPT
+        id S2390289AbgKWRaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730399AbgKWRaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:29:33 -0500
-Received: by mail-ot1-f65.google.com with SMTP id g19so16624752otp.13;
-        Mon, 23 Nov 2020 09:29:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MoCeEEiueC0eR8W6StxQJoPExuC6/siWsRoZTafjIyI=;
-        b=gEmbGd9RdqBlGr1MpZKSITy0Z85G0uLV4twSLvjX1dUWpp/3nzIV9uB1mKKpaJdtUt
-         1MNFaglYMR4pW7YoXjDextg3Hu01wTjfEGJP1Ru1LiDF2IW0xd/JG89ny0OKB79T1O0t
-         aB76xW65qCwrOo1oPqiAclsB1ueUL6UPpnZzOGtGb+3NmbRiGhGETxMwi33RdGBkcmwS
-         pSb31L/zf+bqZ57KV7hP/+kkcIoM4QDzRflITfzyxBhrP4LJtJiQ8IEpubU4ysRRDoNf
-         yOTLkxueVJcl4k6sqGWiHmZm3iiatoASw5zUZpBiHysCUrbxx9lhoeKcgDwsonCz9ieg
-         u7xQ==
-X-Gm-Message-State: AOAM5335UWlXT0Dnu+yFbynb2mp/P3W8M6spJFaIz0DbXbtQR0OMAT+T
-        f0BWeG67nRjGJX4C9lqStblupKxspqeoyAEUqul0WEu8lf8=
-X-Google-Smtp-Source: ABdhPJw/yFt2dWd5eFWPjrtWq7pjj9ia5WwgIgvpiT9nOh7AO8qdhxhzJVekziR1ACaxNwRKhV0xl4O6yHV/POCI+r4=
-X-Received: by 2002:a9d:16f:: with SMTP id 102mr321122otu.206.1606152572974;
- Mon, 23 Nov 2020 09:29:32 -0800 (PST)
+        Mon, 23 Nov 2020 12:30:11 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC55BC0613CF;
+        Mon, 23 Nov 2020 09:30:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=+n9i9tL/XgZYnHTbCrgihSYQKPtV9aa5qeJPtl96feU=; b=GAwYE8MfGMdZHxTUgeLNypn3X
+        jU/KEpqq2rNd7Owy/IEi9qASrORvEph9WgK6OWsy6c/Sc0UlFUgWLNp8IuKHCpgsVKT57HWMqiVrG
+        JZDh9DDrJL3LJtiMPD80vK8gF2BdZuJNu3g4DAYUesrzoihNUshtGmrhw7kScs3bYKu/l3dFaygKF
+        7pD8exxWX8vmJ2OMR0AAnQhXmqJ5lAeH0q8lec1vEe5Sm7wicJzfyrhqpVkulFGLHGeIS6WuVQaYo
+        gPcPINBvJCvvVyUAzrhN94oJPkJyz2gIJCxykbOV0GdPBVpmZyWKQbAEMMIOU2qyt5alLXBRWOUlF
+        bt70fEn0Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35150)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1khFfD-0006N9-US; Mon, 23 Nov 2020 17:30:07 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1khFfB-0006VA-5Q; Mon, 23 Nov 2020 17:30:05 +0000
+Date:   Mon, 23 Nov 2020 17:30:05 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+Subject: Re: [EXT] Re: [PATCH v1] net: mvpp2: divide fifo for dts-active
+ ports only
+Message-ID: <20201123173005.GY1551@shell.armlinux.org.uk>
+References: <1606143160-25589-1-git-send-email-stefanc@marvell.com>
+ <20201123151049.GV1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873522226E3F9A608371289B0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
+ <20201123153332.GW1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873B4205ECAF2383F9539CCB0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
+ <20201123155148.GX1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873FC445787E395CCB710E4B0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-References: <20201117134759.26797-1-lukasz.luba@arm.com>
-In-Reply-To: <20201117134759.26797-1-lukasz.luba@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 23 Nov 2020 18:29:22 +0100
-Message-ID: <CAJZ5v0hQNoi24RkwoU_SNuieUcN6+_0w6=0eBw7ZV55uWT=x+A@mail.gmail.com>
-Subject: Re: [PATCH v2] powercap: Adjust printing the constraint name with new line
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO6PR18MB3873FC445787E395CCB710E4B0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 2:48 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> The constrain name has limit of size 30, which sometimes might be hit.
-> When this happens the new line might get lost. Prevent this and set the
-> max limit for name string length equal 29. This would result is proper
-> string clamping (when needed) and storing '\n' at index 29 and '\0' at 30,
-> so similarly as desired originally.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
-> Hi Rafael,
->
-> It is based on top of you current pm/linux-next branch.
->
-> Change log:
-> v2:
-> - switched to sprintf() with "%.*s\n" pattern
-> v1 [1]
->
-> Regards,
-> Lukasz
->
-> [1] https://lore.kernel.org/linux-pm/20201109172452.6923-1-lukasz.luba@arm.com/
->
->
->  drivers/powercap/powercap_sys.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/powercap/powercap_sys.c b/drivers/powercap/powercap_sys.c
-> index 3f0b8e2ef3d4..f0654a932b37 100644
-> --- a/drivers/powercap/powercap_sys.c
-> +++ b/drivers/powercap/powercap_sys.c
-> @@ -170,9 +170,8 @@ static ssize_t show_constraint_name(struct device *dev,
->         if (pconst && pconst->ops && pconst->ops->get_name) {
->                 name = pconst->ops->get_name(power_zone, id);
->                 if (name) {
-> -                       snprintf(buf, POWERCAP_CONSTRAINT_NAME_LEN,
-> -                                                               "%s\n", name);
-> -                       buf[POWERCAP_CONSTRAINT_NAME_LEN] = '\0';
-> +                       sprintf(buf, "%.*s\n", POWERCAP_CONSTRAINT_NAME_LEN - 1,
-> +                               name);
->                         len = strlen(buf);
->                 }
->         }
-> --
+On Mon, Nov 23, 2020 at 04:03:00PM +0000, Stefan Chulski wrote:
+> > -----Original Message-----
+> > From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+> > Sent: Monday, November 23, 2020 5:52 PM
+> > To: Stefan Chulski <stefanc@marvell.com>
+> > Cc: netdev@vger.kernel.org; thomas.petazzoni@bootlin.com;
+> > davem@davemloft.net; Nadav Haklai <nadavh@marvell.com>; Yan Markman
+> > <ymarkman@marvell.com>; linux-kernel@vger.kernel.org; kuba@kernel.org;
+> > mw@semihalf.com; andrew@lunn.ch
+> > Subject: Re: [EXT] Re: [PATCH v1] net: mvpp2: divide fifo for dts-active ports
+> > only
+> > 
+> > On Mon, Nov 23, 2020 at 03:44:05PM +0000, Stefan Chulski wrote:
+> > > Yes, but this allocation exists also in current code.
+> > > From HW point of view(MAC and PPv2) maximum supported speed in CP110:
+> > > port 0 - 10G, port 1 - 2.5G, port 2 - 2.5G.
+> > > in CP115: port 0 - 10G, port 1 - 5G, port 2 - 2.5G.
+> > >
+> > > So this allocation looks correct at least for CP115.
+> > > Problem that we cannot reallocate FIFO during runtime, after specific speed
+> > negotiation.
+> > 
+> > We could do much better. DT has a "max-speed" property for ethernet
+> > controllers. If we have that property, then I think we should use that to
+> > determine the initialisation time FIFO allocation.
+> > 
+> > As I say, on Macchiatobin, the allocations we end up with are just crazy when
+> > you consider the port speeds that the hardware supports.
+> > Maybe that should be done as a follow-on patch - but I think it needs to be
+> > done.
+> 
+> I agree with you. We can use "max-speed" for better FIFO allocations.
+> I plan to upstream more fixes from the "Marvell" devel branch then I can prepare this patch.
+> So you OK with this patch and then follow-on improvement?
 
-Applied as 5.11 material, thanks!
+Yes - but I would like to see the commit description say that this
+results in no change the situation where all three ports are in use.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
