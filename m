@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A344D2C18FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709862C1903
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387926AbgKWWyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:54:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52032 "EHLO mail.kernel.org"
+        id S2387968AbgKWWzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:55:24 -0500
+Received: from mga11.intel.com ([192.55.52.93]:14836 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730934AbgKWWyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:54:36 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2E32206D8;
-        Mon, 23 Nov 2020 22:54:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606172075;
-        bh=3xeuRllFdKbVkuvJ2rjHsYqvTLpWBewG4Alj5QKFZ1w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mcZg+7L4M9iEZ3LUalRC87VtpTcU0Z/tIUkcD08sQ4eeqBdxhWTnIfRucVjiuK8mv
-         lpIvfU/Ne0wT0xPkyhDMXmyrIyeRPo0qk9d27hVfHXzxoEj3J0weFGPBcIGIabejTA
-         6wtJEW4WrpRz6I72B3n6caLNkDzEdC4KWX4OVWS8=
-Date:   Mon, 23 Nov 2020 16:54:49 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 060/141] habanalabs: Fix fall-through warnings for Clang
-Message-ID: <20201123225449.GQ21644@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <34c177585dfd5c6dc3e101ec8f11e4733b7fd11a.1605896059.git.gustavoars@kernel.org>
- <CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com>
+        id S2387934AbgKWWzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:55:14 -0500
+IronPort-SDR: qj3gTLg1WW1DGjHUrhcpsT6qQm2ZuYe9G2QWQOFFzgOqFfkpX9TJQLMJLp1NYptTUxwHUu240m
+ lRz6M5G8TE6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="168348219"
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="168348219"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 14:55:10 -0800
+IronPort-SDR: sINrrY2GOCALc3Zhd6FPs0Dnm1638t4PbO26AGV6AsajeMHLhZvMNuThVukLQ4FkN8e4UIajq9
+ KW8C5UtRCbrg==
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="546591122"
+Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.57.186])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 14:55:03 -0800
+Date:   Mon, 23 Nov 2020 14:55:02 -0800
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     Huazhong Tan <tanhuazhong@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>, <kuba@kernel.org>
+Subject: Re: [PATCH V4 net-next 0/4] net: hns3: updates for -next
+Message-ID: <20201123145502.00001e2a@intel.com>
+In-Reply-To: <1605514854-11205-1-git-send-email-tanhuazhong@huawei.com>
+References: <1605514854-11205-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 02:34:23PM +0200, Oded Gabbay wrote:
-> On Fri, Nov 20, 2020 at 8:33 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > by explicitly adding a fallthrough pseudo-keyword instead of letting the
-> > code fall through to the next case.
-> >
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> >  drivers/misc/habanalabs/gaudi/gaudi.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-> > index 2519a34e25b7..eab4c0dc65c5 100644
-> > --- a/drivers/misc/habanalabs/gaudi/gaudi.c
-> > +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-> > @@ -5436,6 +5436,7 @@ static void gaudi_handle_ecc_event(struct hl_device *hdev, u16 event_type,
-> >                 params.num_memories = 33;
-> >                 params.derr = true;
-> >                 params.disable_clock_gating = true;
-> > +               fallthrough;
-> >         default:
-> >                 return;
-> >         }
-> > --
-> > 2.27.0
-> >
-> Hi Gustavo,
-> So this is actually an error in the code, there shouldn't be a
-> fallthrough there.
-> So NAK for this patch, I'll have to send a fix for that.
-> Thanks for catching this :)
+Huazhong Tan wrote:
 
-Awesome. Glad this helped to catch a bug. :)
+> There are several updates relating to the interrupt coalesce for
+> the HNS3 ethernet driver.
+> 
+> #1 adds support for QL(quantity limiting, interrupt coalesce
+>    based on the frame quantity).
+> #2 queries the maximum value of GL from the firmware instead of
+>    a fixed value in code.
+> #3 adds support for 1us unit GL(gap limiting, interrupt coalesce
+>    based on the gap time).
+> #4 renames gl_adapt_enable in struct hns3_enet_coalesce to fit
+>    its new usage.
+> 
+> change log:
+> V4 - remove #5~#10 from this series, which needs more discussion.
+> V3 - fix a typo error in #1 reported by Jakub Kicinski.
+>      rewrite #9 commit log.
+>      remove #11 from this series.
+> V2 - reorder #2 & #3 to fix compiler error.
+>      fix some checkpatch warnings in #10 & #11.
 
-Thanks
---
-Gustavo
+
+For the series:
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
