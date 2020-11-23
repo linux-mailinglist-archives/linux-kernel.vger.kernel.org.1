@@ -2,166 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA27B2C199A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BA52C199D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgKWXvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 18:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        id S1727925AbgKWXve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 18:51:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727757AbgKWXvG (ORCPT
+        with ESMTP id S1727832AbgKWXvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:51:06 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EC0C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:51:04 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id j35so865980qtb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:51:04 -0800 (PST)
+        Mon, 23 Nov 2020 18:51:33 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2D7C061A4E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:51:32 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id t18so9711679plo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:51:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=53LKNClv9WjrnexN7IY+lrSioJLLdaMg3EsJwltsJf8=;
-        b=hy5xhvJu5L5VyPRBqml9A5kdcttMKgO7iuIOoRVScRVfZmPyHgoAqyMgHN/NUvsBzu
-         ZCYGkJzvgbDYyVfmzDPrv+D+P+YcqzvrmRRaVHs8lbGmP2Z7CRvG/eMLP+09kQuCCKG7
-         0EjhnQnPbm6UW/04mLvLMVmUsChAgZVcoRR0mSoUCI8/JXVFDhDWDZR0NnzzJE9MESoz
-         J/TwrFSNBgpVgLjdktEUpq6ROQhjyX8IBKNCGYxBrtmAFROfVMdSnbpEHz1XHnwCWUg5
-         YA8+CZEB+FrgNVOQQuEPjMV0rP3SosIKsJDGRJfvgRmHodTNd5uht+joL34xulomXDzY
-         9vfA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UV/nZZrePgNsVsnUwzIiVsLaX4Wcl0fK6m4Dkdlmi2w=;
+        b=MC2mAdtwfrujeT3Rzj+J1Vz1/MgHGvBRFDHLgAAuLXNK12/QN+/JJ6a+2NKdTdMGFI
+         l9q4rH47BnetHbl2OmCLSCx5KH+Y7sN9iIVio1g63fzCeTpRAkZrIg7m5j7aJjxbXJjX
+         eV1CJvOv3OyFwvWIikwu/0qd99gNceU2DOMNRgJQg9Pyfmr3JrZSZEQv145IMbXAUjh3
+         qhepsJaNJBGG/apcnrAsb7k7EcFh+d4R0wG+d2pcgaPD6oV4hs25CnPkTZF/tQp+VcxW
+         s0OVOyNsWzWcv/0/ExJKd539WkLosErgu6d8PaaSkpABiV/vfo0P1NiJazsBs/7M59Dp
+         kV/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=53LKNClv9WjrnexN7IY+lrSioJLLdaMg3EsJwltsJf8=;
-        b=OZdxLFWTIQWrQA14+rX0nFEaa2BlGAn6qHcacl4VzeJFn6BBgXZK2hiArVTLZf1bWp
-         Th/geD668cvVwxK10YscM9TEH+N2ZrNfOCz1PzyFmip1yGBHzu6c1Udfzth8kqk6cT+G
-         hY47lGYH1ed25knjEsZ8hxKcGAG8SLn0YE8u8GQ8+8+Y1qal+FH2OViKhZuCW/cqe8ZC
-         Q1Nxc0t9NNcX2fpQsMAD6G7S8ALIZpsB8RXyax6knL5MhASKNy1qHYZzTqFszXh35nh/
-         o71SZZzdXKD0bKVwFTRtrjdo6CQ070S+nFJyRuFTJRD1HX7jQH5jZFXzGHU5tqPoE8Pz
-         h5Bg==
-X-Gm-Message-State: AOAM531cHaec+DSX7ecP18I75rFE8U9+x/nNCGEjIPprRNBNlQ8T8ept
-        MORgFOO8wTo6BgCoWj2Qa/AW2dwu4coqMK//
-X-Google-Smtp-Source: ABdhPJwAzb5p6/dyrldQv2YE5KAOiyY3OZm0ny4lqJSKRMz0MO2v8vqB79+o3WSlE6TXrIjJC4qLiDkVZJhCW3dL
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6214:924:: with SMTP id
- dk4mr2031501qvb.19.1606175463697; Mon, 23 Nov 2020 15:51:03 -0800 (PST)
-Date:   Tue, 24 Nov 2020 00:50:52 +0100
-Message-Id: <f8114050f8d65aa0bc801318b1db532d9f432447.1606175386.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v4] kcov, usbip: collect coverage from vhci_rx_loop
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UV/nZZrePgNsVsnUwzIiVsLaX4Wcl0fK6m4Dkdlmi2w=;
+        b=Mta5YHP8az8t2CJ+RyUBNftdA5kIA+nF/1gg5n2hQyyH1KqMkV3dglZ5TLDzvqFul7
+         xCokkbqsxGWqI4hJKmsix66D/zwfdIZwFi4j+BufW7ulko9gZLkAXPRbLTqWAyWQ2dbM
+         EcNfAvoGpcYXQSzqAGI0Oaj0umz2Gi4feqx+jzznq8K/q7BlzyW7RvBDOPBIy8UpnEkx
+         P7RJjxpV1zwptlAFXLqfQ9ODecnww+C/d4mdWOXiHs8rAKyFD8TOK8mgJk9GMVzrqoMj
+         L5iYSKw2DA0HWAfJgzNSXClb5ExNybV2uBaP3NDX8Eq91ugR8ysDG7yE0jkgS52a9VAi
+         GK1Q==
+X-Gm-Message-State: AOAM530wrVKQxF11ajmLMSMRAMJ3+gekq6/ra4XwjY7jtb09rX+uScgy
+        vkb6BrcUfJdAMEH0Sy1yMBADNhW8PDw5fg==
+X-Google-Smtp-Source: ABdhPJyO/tmuPEX+b/4FobF45cypSgebCzLdG+hLISsqgl+s/cdNXAA7RMfYM4UqR+tFIe0Q3sCUBg==
+X-Received: by 2002:a17:902:b408:b029:d6:d1e2:e1be with SMTP id x8-20020a170902b408b02900d6d1e2e1bemr1568994plr.34.1606175492304;
+        Mon, 23 Nov 2020 15:51:32 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id t36sm11928633pfg.55.2020.11.23.15.51.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 15:51:31 -0800 (PST)
+Date:   Mon, 23 Nov 2020 16:51:29 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] remoteproc: k3-r5: Adjust TCM sizes in Split-mode on
+ J7200 SoCs
+Message-ID: <20201123235129.GA529235@xps15>
+References: <20201119010531.21083-1-s-anna@ti.com>
+ <20201119010531.21083-4-s-anna@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119010531.21083-4-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nazime Hande Harputluoglu <handeharputlu@google.com>
+Good afternoon Suman,
 
-Add kcov_remote_start()/kcov_remote_stop() annotations to the
-vhci_rx_loop() function, which is responsible for parsing USB/IP packets
-coming into USB/IP client.
+On Wed, Nov 18, 2020 at 07:05:31PM -0600, Suman Anna wrote:
+> The J7200 SoCs have a revised R5FSS IP that adds a unique feature w.r.t
+> TCM sizing. Each R5F core in a cluster typically has 32 KB each of ATCM
+> and BTCM, with only the Core0 TCMs usable in LockStep mode. This revised
+> IP however doubles the total available TCM in LockStep mode by making the
+> Core1 TCM visible immediately after the corresponding Core0 TCM.
+> 
+> The R5F DT nodes on the J7200 SoCs define double (64 KB) the normal TCM
+> size (32 KB) for R5F Core0 for each of ATCM and BTCM to represent the
+> above. This increased TCM memory is only usable in LockStep-mode, and
+> has to be adjusted to the normal 32 KB size in Split mode. Enhance the
+> TI K3 R5F remoteproc for this logic through a new function. The adjustment
+> is a no-op on prior SoCs and relies on the correct DTS node sizes in
+> LockStep-mode on applicable SoCs.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+>  drivers/remoteproc/ti_k3_r5_remoteproc.c | 43 ++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+> index 66a32dcdd7d0..62b5a4c29456 100644
+> --- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
+> +++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+> @@ -71,9 +71,11 @@ enum cluster_mode {
+>  
+>  /**
+>   * struct k3_r5_soc_data - match data to handle SoC variations
+> + * @tcm_is_double: flag to denote the larger unified TCMs in certain modes
+>   * @tcm_ecc_autoinit: flag to denote the auto-initialization of TCMs for ECC
+>   */
+>  struct k3_r5_soc_data {
+> +	bool tcm_is_double;
+>  	bool tcm_ecc_autoinit;
+>  };
+>  
+> @@ -886,6 +888,43 @@ static void k3_r5_reserved_mem_exit(struct k3_r5_rproc *kproc)
+>  	of_reserved_mem_device_release(kproc->dev);
+>  }
+>  
+> +/*
+> + * Each R5F core within a typical R5FSS instance has a total of 64 KB of TCMs,
+> + * split equally into two 32 KB banks between ATCM and BTCM. The TCMs from both
+> + * cores are usable in Split-mode, but only the Core0 TCMs can be used in
+> + * LockStep-mode. The newer revisions of the R5FSS IP maximizes these TCMs by
+> + * leveraging the Core1 TCMs as well in certain modes where they would have
+> + * otherwise been unusable (Eg: LockStep-mode on J7200 SoCs). This is done by
+> + * making a Core1 TCM visible immediately after the corresponding Core0 TCM.
+> + * The SoC memory map uses the larger 64 KB sizes for the Core0 TCMs, and the
+> + * dts representation reflects this increased size on supported SoCs. The Core0
+> + * TCM sizes therefore have to be adjusted to only half the original size in
+> + * Split mode.
+> + */
+> +static void k3_r5_adjust_tcm_sizes(struct k3_r5_rproc *kproc)
+> +{
+> +	struct k3_r5_cluster *cluster = kproc->cluster;
+> +	struct k3_r5_core *core = kproc->core;
+> +	struct device *cdev = core->dev;
+> +	struct k3_r5_core *core0;
+> +
+> +	if (cluster->mode == CLUSTER_MODE_LOCKSTEP ||
+> +	    !cluster->soc_data->tcm_is_double)
+> +		return;
 
-Since vhci_rx_loop() threads are spawned per vhci_hcd device instance, the
-common kcov handle is used for kcov_remote_start()/stop() annotations
-(see Documentation/dev-tools/kcov.rst for details). As the result kcov
-can now be used to collect coverage from vhci_rx_loop() threads.
+Shouldn't this be:
 
-Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
-Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
+	if (cluster->mode == CLUSTER_MODE_SPLIT ||
+	    !cluster->soc_data->tcm_is_double)
+		return;
 
-Changes in v4:
-- Add USB/IP specific wrappers around kcov functions to avoid having a lot
-  of ifdef CONFIG_KCOV in the USB/IP code.
+If am wrong then I'm pretty sure other people will be confused and a comment is
+warranted. 
 
----
- drivers/usb/usbip/usbip_common.h | 29 +++++++++++++++++++++++++++++
- drivers/usb/usbip/vhci_rx.c      |  2 ++
- drivers/usb/usbip/vhci_sysfs.c   |  1 +
- 3 files changed, 32 insertions(+)
+> +
+> +	core0 = list_first_entry(&cluster->cores, struct k3_r5_core, elem);
+> +	if (core == core0) {
+> +		WARN_ON(core->mem[0].size != SZ_64K);
+> +		WARN_ON(core->mem[1].size != SZ_64K);
+> +
+> +		core->mem[0].size /= 2;
+> +		core->mem[1].size /= 2;
+> +
+> +		dev_dbg(cdev, "adjusted TCM sizes, ATCM = 0x%zx BTCM = 0x%zx\n",
+> +			core->mem[0].size, core->mem[1].size);
+> +	}
+> +}
+> +
+>  static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
+>  {
+>  	struct k3_r5_cluster *cluster = platform_get_drvdata(pdev);
+> @@ -933,6 +972,8 @@ static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
+>  			goto err_config;
+>  		}
+>  
+> +		k3_r5_adjust_tcm_sizes(kproc);
+> +
+>  		ret = k3_r5_reserved_mem_init(kproc);
+>  		if (ret) {
+>  			dev_err(dev, "reserved memory init failed, ret = %d\n",
+> @@ -1407,10 +1448,12 @@ static int k3_r5_probe(struct platform_device *pdev)
+>  }
+>  
+>  static const struct k3_r5_soc_data am65_j721e_soc_data = {
+> +	.tcm_is_double = false,
+>  	.tcm_ecc_autoinit = false,
+>  };
+>  
+>  static const struct k3_r5_soc_data j7200_soc_data = {
+> +	.tcm_is_double = true,
+>  	.tcm_ecc_autoinit = true,
 
-diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
-index 8be857a4fa13..d60ce17d3dd2 100644
---- a/drivers/usb/usbip/usbip_common.h
-+++ b/drivers/usb/usbip/usbip_common.h
-@@ -277,6 +277,10 @@ struct usbip_device {
- 		void (*reset)(struct usbip_device *);
- 		void (*unusable)(struct usbip_device *);
- 	} eh_ops;
-+
-+#ifdef CONFIG_KCOV
-+	u64 kcov_handle;
-+#endif
- };
- 
- #define kthread_get_run(threadfn, data, namefmt, ...)			   \
-@@ -337,4 +341,29 @@ static inline int interface_to_devnum(struct usb_interface *interface)
- 	return udev->devnum;
- }
- 
-+#ifdef CONFIG_KCOV
-+
-+static inline void usbip_kcov_handle_init(struct usbip_device *ud)
-+{
-+	ud->kcov_handle = kcov_common_handle();
-+}
-+
-+static inline void usbip_kcov_remote_start(struct usbip_device *ud)
-+{
-+	kcov_remote_start_common(ud->kcov_handle);
-+}
-+
-+static inline void usbip_kcov_remote_stop(void)
-+{
-+	kcov_remote_stop();
-+}
-+
-+#else /* CONFIG_KCOV */
-+
-+static inline void usbip_kcov_handle_init(struct usbip_device *ud) { }
-+static inline void usbip_kcov_remote_start(struct usbip_device *ud) { }
-+static inline void usbip_kcov_remote_stop(void) { }
-+
-+#endif /* CONFIG_KCOV */
-+
- #endif /* __USBIP_COMMON_H */
-diff --git a/drivers/usb/usbip/vhci_rx.c b/drivers/usb/usbip/vhci_rx.c
-index 266024cbb64f..7f2d1c241559 100644
---- a/drivers/usb/usbip/vhci_rx.c
-+++ b/drivers/usb/usbip/vhci_rx.c
-@@ -261,7 +261,9 @@ int vhci_rx_loop(void *data)
- 		if (usbip_event_happened(ud))
- 			break;
- 
-+		usbip_kcov_remote_start(ud);
- 		vhci_rx_pdu(ud);
-+		usbip_kcov_remote_stop();
- 	}
- 
- 	return 0;
-diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
-index be37aec250c2..96e5371dc335 100644
---- a/drivers/usb/usbip/vhci_sysfs.c
-+++ b/drivers/usb/usbip/vhci_sysfs.c
-@@ -383,6 +383,7 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
- 	vdev->ud.sockfd     = sockfd;
- 	vdev->ud.tcp_socket = socket;
- 	vdev->ud.status     = VDEV_ST_NOTASSIGNED;
-+	usbip_kcov_handle_init(&vdev->ud);
- 
- 	spin_unlock(&vdev->ud.lock);
- 	spin_unlock_irqrestore(&vhci->lock, flags);
--- 
-2.29.2.454.gaff20da3a2-goog
+With the above and for the set:
 
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  };
+>  
+> -- 
+> 2.28.0
+> 
