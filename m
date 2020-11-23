@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C972C062F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5886D2C0770
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730463AbgKWM2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38764 "EHLO mail.kernel.org"
+        id S1732581AbgKWMk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:40:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730452AbgKWM2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:31 -0500
+        id S1732550AbgKWMkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:40:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFE8F2076E;
-        Mon, 23 Nov 2020 12:28:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41E062065E;
+        Mon, 23 Nov 2020 12:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134510;
-        bh=vSruAxY45h4v4NHsXZtfGUyn0t+C1ZpAHiCwq84W9OA=;
+        s=korg; t=1606135249;
+        bh=fO5bVAN3f1jN4OJmAipPGyqebLeCsbC9KfMvGfCXEZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CJwkndF+6fhuSsQbMmsgb5YHM8A3rNYacAe0U3d4r/NSBnxYgbaP0/YRm39elL1lq
-         FKobiuJ/Ps7ETD3SC+wA9fMmIfTSbeJUTjYRzD7UpcPARotSSsgC0JYfQcfHDy0T7v
-         kDC3cOhBIrKspeKF8jqJ7grVZjwdS9SFw+3lF/us=
+        b=npUHZSk++62V4vY7QT0ZG1cuKSDw9fGz/Jeslt94n6ErQezrTn5RLq5KNS+5zGEbg
+         U6jCr09xJHrYp6iCF2MkwbjxCFprBFSyZxuK40dMVeJA1ZJdHYYfXRC3K4KQBEcikc
+         /ClC9Pxm3Skp7LbIY7r/ARBRMl/kyTGUaYM3ZfxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Fugang Duan <fugang.duan@nxp.com>
-Subject: [PATCH 4.14 45/60] tty: serial: imx: keep console clocks always on
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 119/158] ALSA: ctl: fix error path at adding user-defined element set
 Date:   Mon, 23 Nov 2020 13:22:27 +0100
-Message-Id: <20201123121807.226743073@linuxfoundation.org>
+Message-Id: <20201123121825.682956654@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit e67c139c488e84e7eae6c333231e791f0e89b3fb upstream.
+commit 95a793c3bc75cf888e0e641d656e7d080f487d8b upstream.
 
-For below code, there has chance to cause deadlock in SMP system:
-Thread 1:
-clk_enable_lock();
-pr_info("debug message");
-clk_enable_unlock();
+When processing request to add/replace user-defined element set, check
+of given element identifier and decision of numeric identifier is done
+in "__snd_ctl_add_replace()" helper function. When the result of check
+is wrong, the helper function returns error code. The error code shall
+be returned to userspace application.
 
-Thread 2:
-imx_uart_console_write()
-	clk_enable()
-		clk_enable_lock();
+Current implementation includes bug to return zero to userspace application
+regardless of the result. This commit fixes the bug.
 
-Thread 1:
-Acuired clk enable_lock -> printk -> console_trylock_spinning
-Thread 2:
-console_unlock() -> imx_uart_console_write -> clk_disable -> Acquite clk enable_lock
-
-So the patch is to keep console port clocks always on like
-other console drivers.
-
-Fixes: 1cf93e0d5488 ("serial: imx: remove the uart_console() check")
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Link: https://lore.kernel.org/r/20201111025136.29818-1-fugang.duan@nxp.com
-Cc: stable <stable@vger.kernel.org>
-[fix up build warning - gregkh]
+Cc: <stable@vger.kernel.org>
+Fixes: e1a7bfe38079 ("ALSA: control: Fix race between adding and removing a user element")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20201113092043.16148-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/imx.c |   20 +++-----------------
- 1 file changed, 3 insertions(+), 17 deletions(-)
+ sound/core/control.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -1879,16 +1879,6 @@ imx_console_write(struct console *co, co
- 	unsigned int ucr1;
- 	unsigned long flags = 0;
- 	int locked = 1;
--	int retval;
--
--	retval = clk_enable(sport->clk_per);
--	if (retval)
--		return;
--	retval = clk_enable(sport->clk_ipg);
--	if (retval) {
--		clk_disable(sport->clk_per);
--		return;
--	}
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1350,7 +1350,7 @@ static int snd_ctl_elem_add(struct snd_c
  
- 	if (sport->port.sysrq)
- 		locked = 0;
-@@ -1924,9 +1914,6 @@ imx_console_write(struct console *co, co
- 
- 	if (locked)
- 		spin_unlock_irqrestore(&sport->port.lock, flags);
--
--	clk_disable(sport->clk_ipg);
--	clk_disable(sport->clk_per);
+  unlock:
+ 	up_write(&card->controls_rwsem);
+-	return 0;
++	return err;
  }
  
- /*
-@@ -2027,15 +2014,14 @@ imx_console_setup(struct console *co, ch
- 
- 	retval = uart_set_options(&sport->port, co, baud, parity, bits, flow);
- 
--	clk_disable(sport->clk_ipg);
- 	if (retval) {
--		clk_unprepare(sport->clk_ipg);
-+		clk_disable_unprepare(sport->clk_ipg);
- 		goto error_console;
- 	}
- 
--	retval = clk_prepare(sport->clk_per);
-+	retval = clk_prepare_enable(sport->clk_per);
- 	if (retval)
--		clk_unprepare(sport->clk_ipg);
-+		clk_disable_unprepare(sport->clk_ipg);
- 
- error_console:
- 	return retval;
+ static int snd_ctl_elem_add_user(struct snd_ctl_file *file,
 
 
