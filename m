@@ -2,275 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F61D2C15FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6BC2C1604
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731566AbgKWUKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:10:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731841AbgKWUKJ (ORCPT
+        id S1731873AbgKWUKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:10:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55854 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731861AbgKWUKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:10:09 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6402DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:10:08 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id c131so162693wma.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:10:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=hF9TK0RyS1YTrryY1Q/xCWNy21LxBIwj2x5LKL9MrUU=;
-        b=WN2+Wdix/39+GFO9+0U6Q3dLj/ysrOAB1p9FGiVD/Ghgi6qjBcCZYZqUt1XQye4BLd
-         HS0FAWeOM2DPN8/3LTxv9pKmW9JIBCpzG1YEnO9AsmRjblQmaNL8cpxl+vsh62hHfqFM
-         e9ZxtHclwXU20zFb61QYrEkql+MDYiINm1KqV/k18Z9jPeHCIvqc4J+KfrGwjwxibzfo
-         Gzk/Wb3nVVJJ6bZoaYgggWwUEdBqUU25+zvcFPUlQIo6uQ2eUiiepA06j0eYV+O5eEut
-         QNmrqV5BGdTFufPqqb8AdnDR05t+JCYL9PwjQaeoY7Kgd+SmkioJTgEi9AXyJLkwd46Z
-         DZYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=hF9TK0RyS1YTrryY1Q/xCWNy21LxBIwj2x5LKL9MrUU=;
-        b=UgJ+BWHhc1S3h/itPeCT/GwU/GmDu3ZcmYs5mR4gT+tg3hhCxTqY1XwvdeR61qvHtg
-         xEMdrAZSlrIcQxn8jn/im4JlsS2xik9LXs8Z2nSE9+s5vQdIvl82q2ub5cJKiMZQiDRp
-         QxLs8KbsX7deCGqVAQmF8FS3s3j3rbfHe31F8d9VCSOEgCM5P5A4Rburt6ysukKnSkOP
-         JqquKWj3YoTt2hdmVfXAZEJFgz4yvyYrV/u/LWKRfy6k3U9ysGvcEefLKYy7TNB250YP
-         g8cGwc++WBqys/r4J5gRab/8z32rvAjxyBSLuSwb1868zFov+c18m5fUY+pNeOXruKxy
-         egpg==
-X-Gm-Message-State: AOAM530BQ+QGkN1b4HN4N319LcrmHtdQn/QRwqWUsZOwJLOQQPn6Mm3T
-        fBH1Zm+mxzHcxaZ76PZULvptaw2P4RwYh9CG
-X-Google-Smtp-Source: ABdhPJy3aGsj5bSuKdabZhsMP/+HzZedjMK1Cq2aizzINVoUPxqX3shRLy/rcVKPoad7EW5PlA6r3fb2idgNxqoH
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:791a:: with SMTP id
- l26mr202416wme.1.1606162206684; Mon, 23 Nov 2020 12:10:06 -0800 (PST)
-Date:   Mon, 23 Nov 2020 21:08:06 +0100
-In-Reply-To: <cover.1606161801.git.andreyknvl@google.com>
-Message-Id: <b51a165426e906e7ec8a68d806ef3f8cd92581a6.1606161801.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1606161801.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH mm v11 42/42] kselftest/arm64: Check GCR_EL1 after context switch
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 23 Nov 2020 15:10:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606162209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hcuDNvyq84AB97TqWEefdqqDKsupl/7+ST0mbyjcurA=;
+        b=cwetzx6Tk77hcmumub+oZ5c6outfIlxrAEQt8Ayky3QiM5zmKtoqCofU2vKSp5Md6pDwxO
+        OrpGBdD8L2HeYKhFEtzUBWjwkM0A+4v9o14J9D0H7kBt+97hM5D+axuOCEuipJRJA1PaRl
+        3SvZnfGilGoP6tjfNYfYO4ybXH0UHyo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-a9xFkh4uPvKDrXOGeoz3eg-1; Mon, 23 Nov 2020 15:10:06 -0500
+X-MC-Unique: a9xFkh4uPvKDrXOGeoz3eg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9EEE18C89CD;
+        Mon, 23 Nov 2020 20:10:05 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DBB1F100164C;
+        Mon, 23 Nov 2020 20:10:04 +0000 (UTC)
+Subject: [PATCH net 00/17] rxrpc: Prelude to gssapi support
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 23 Nov 2020 20:10:04 +0000
+Message-ID: <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-This test is specific to MTE and verifies that the GCR_EL1 register
-is context switched correctly.
 
-It spawns 1024 processes and each process spawns 5 threads. Each thread
-writes a random setting of GCR_EL1 through the prctl() system call and
-reads it back verifying that it is the same. If the values are not the
-same it reports a failure.
+Here are some patches that do some reorganisation of the security class
+handling in rxrpc to allow implementation of the RxGK security class that
+will allow AF_RXRPC to use GSSAPI-negotiated tokens and better crypto.  The
+RxGK security class is not included in this patchset.
 
-Note: The test has been extended to verify that even SYNC and ASYNC mode
-setting is preserved correctly over context switching.
+It does the following things:
 
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+ (1) Add a keyrings patch to provide the original key description, as
+     provided to add_key(), to the payload preparser so that it can
+     interpret the content on that basis.  Unfortunately, the rxrpc_s key
+     type wasn't written to interpret its payload as anything other than a
+     string of bytes comprising a key, but for RxGK, more information is
+     required as multiple Kerberos enctypes are supported.
+
+ (2) Remove the rxk5 security class key parsing.  The rxk5 class never got
+     rolled out in OpenAFS and got replaced with rxgk.
+
+ (3) Support the creation of rxrpc keys with multiple tokens of different
+     types.  If some types are not supported, the ENOPKG error is
+     suppressed if at least one other token's type is supported.
+
+ (4) Punt the handling of server keys (rxrpc_s type) to the appropriate
+     security class.
+
+ (5) Organise the security bits in the rxrpc_connection struct into a
+     union to make it easier to override for other classes.
+
+ (6) Move some bits from core code into rxkad that won't be appropriate to
+     rxgk.
+
+The patches are tagged here:
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+	rxrpc-next-20201123
+
+and can also be found on the following branch:
+
+	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=rxrpc-next
+
+David
 ---
-Change-Id: Ia917684a2b8e5f29e705ca5cbf360b010df6f61e
----
- tools/testing/selftests/arm64/mte/Makefile    |   2 +-
- .../arm64/mte/check_gcr_el1_cswitch.c         | 155 ++++++++++++++++++
- 2 files changed, 156 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c
+David Howells (17):
+      keys: Provide the original description to the key preparser
+      rxrpc: Remove the rxk5 security class as it's now defunct
+      rxrpc: List the held token types in the key description in /proc/keys
+      rxrpc: Support keys with multiple authentication tokens
+      rxrpc: Don't retain the server key in the connection
+      rxrpc: Split the server key type (rxrpc_s) into its own file
+      rxrpc: Hand server key parsing off to the security class
+      rxrpc: Don't leak the service-side session key to userspace
+      rxrpc: Allow security classes to give more info on server keys
+      rxrpc: Make the parsing of xdr payloads more coherent
+      rxrpc: Ignore unknown tokens in key payload unless no known tokens
+      rxrpc: Fix example key name in a comment
+      rxrpc: Merge prime_packet_security into init_connection_security
+      rxrpc: Don't reserve security header in Tx DATA skbuff
+      rxrpc: Organise connection security to use a union
+      rxrpc: rxkad: Don't use pskb_pull() to advance through the response packet
+      rxrpc: Ask the security class how much space to allow in a packet
 
-diff --git a/tools/testing/selftests/arm64/mte/Makefile b/tools/testing/selftests/arm64/mte/Makefile
-index 2480226dfe57..0b3af552632a 100644
---- a/tools/testing/selftests/arm64/mte/Makefile
-+++ b/tools/testing/selftests/arm64/mte/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- # Copyright (C) 2020 ARM Limited
- 
--CFLAGS += -std=gnu99 -I.
-+CFLAGS += -std=gnu99 -I. -lpthread
- SRCS := $(filter-out mte_common_util.c,$(wildcard *.c))
- PROGS := $(patsubst %.c,%,$(SRCS))
- 
-diff --git a/tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c b/tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c
-new file mode 100644
-index 000000000000..de5066aca097
---- /dev/null
-+++ b/tools/testing/selftests/arm64/mte/check_gcr_el1_cswitch.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2020 ARM Limited
-+
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <pthread.h>
-+#include <stdint.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <time.h>
-+#include <unistd.h>
-+#include <sys/auxv.h>
-+#include <sys/mman.h>
-+#include <sys/prctl.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+
-+#include "kselftest.h"
-+#include "mte_common_util.h"
-+
-+#define PR_SET_TAGGED_ADDR_CTRL 55
-+#define PR_GET_TAGGED_ADDR_CTRL 56
-+# define PR_TAGGED_ADDR_ENABLE  (1UL << 0)
-+# define PR_MTE_TCF_SHIFT	1
-+# define PR_MTE_TCF_NONE	(0UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TCF_SYNC	(1UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TCF_ASYNC	(2UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TCF_MASK	(3UL << PR_MTE_TCF_SHIFT)
-+# define PR_MTE_TAG_SHIFT	3
-+# define PR_MTE_TAG_MASK	(0xffffUL << PR_MTE_TAG_SHIFT)
-+
-+#include "mte_def.h"
-+
-+#define NUM_ITERATIONS		1024
-+#define MAX_THREADS		5
-+#define THREAD_ITERATIONS	1000
-+
-+void *execute_thread(void *x)
-+{
-+	pid_t pid = *((pid_t *)x);
-+	pid_t tid = gettid();
-+	uint64_t prctl_tag_mask;
-+	uint64_t prctl_set;
-+	uint64_t prctl_get;
-+	uint64_t prctl_tcf;
-+
-+	srand(time(NULL) ^ (pid << 16) ^ (tid << 16));
-+
-+	prctl_tag_mask = rand() & 0xffff;
-+
-+	if (prctl_tag_mask % 2)
-+		prctl_tcf = PR_MTE_TCF_SYNC;
-+	else
-+		prctl_tcf = PR_MTE_TCF_ASYNC;
-+
-+	prctl_set = PR_TAGGED_ADDR_ENABLE | prctl_tcf | (prctl_tag_mask << PR_MTE_TAG_SHIFT);
-+
-+	for (int j = 0; j < THREAD_ITERATIONS; j++) {
-+		if (prctl(PR_SET_TAGGED_ADDR_CTRL, prctl_set, 0, 0, 0)) {
-+			perror("prctl() failed");
-+			goto fail;
-+		}
-+
-+		prctl_get = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0);
-+
-+		if (prctl_set != prctl_get) {
-+			ksft_print_msg("Error: prctl_set: 0x%lx != prctl_get: 0x%lx\n",
-+						prctl_set, prctl_get);
-+			goto fail;
-+		}
-+	}
-+
-+	return (void *)KSFT_PASS;
-+
-+fail:
-+	return (void *)KSFT_FAIL;
-+}
-+
-+int execute_test(pid_t pid)
-+{
-+	pthread_t thread_id[MAX_THREADS];
-+	int thread_data[MAX_THREADS];
-+
-+	for (int i = 0; i < MAX_THREADS; i++)
-+		pthread_create(&thread_id[i], NULL,
-+			       execute_thread, (void *)&pid);
-+
-+	for (int i = 0; i < MAX_THREADS; i++)
-+		pthread_join(thread_id[i], (void *)&thread_data[i]);
-+
-+	for (int i = 0; i < MAX_THREADS; i++)
-+		if (thread_data[i] == KSFT_FAIL)
-+			return KSFT_FAIL;
-+
-+	return KSFT_PASS;
-+}
-+
-+int mte_gcr_fork_test(void)
-+{
-+	pid_t pid;
-+	int results[NUM_ITERATIONS];
-+	pid_t cpid;
-+	int res;
-+
-+	for (int i = 0; i < NUM_ITERATIONS; i++) {
-+		pid = fork();
-+
-+		if (pid < 0)
-+			return KSFT_FAIL;
-+
-+		if (pid == 0) {
-+			cpid = getpid();
-+
-+			res = execute_test(cpid);
-+
-+			exit(res);
-+		}
-+	}
-+
-+	for (int i = 0; i < NUM_ITERATIONS; i++) {
-+		wait(&res);
-+
-+		if (WIFEXITED(res))
-+			results[i] = WEXITSTATUS(res);
-+		else
-+			--i;
-+	}
-+
-+	for (int i = 0; i < NUM_ITERATIONS; i++)
-+		if (results[i] == KSFT_FAIL)
-+			return KSFT_FAIL;
-+
-+	return KSFT_PASS;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int err;
-+
-+	err = mte_default_setup();
-+	if (err)
-+		return err;
-+
-+	ksft_set_plan(1);
-+
-+	evaluate_test(mte_gcr_fork_test(),
-+		"Verify that GCR_EL1 is set correctly on context switch\n");
-+
-+	mte_restore_setup();
-+	ksft_print_cnts();
-+
-+	return ksft_get_fail_cnt() == 0 ? KSFT_PASS : KSFT_FAIL;
-+}
-+
--- 
-2.29.2.454.gaff20da3a2-goog
+
+ include/keys/rxrpc-type.h |  56 +---
+ net/rxrpc/Makefile        |   1 +
+ net/rxrpc/ar-internal.h   |  63 ++--
+ net/rxrpc/call_accept.c   |  14 +-
+ net/rxrpc/conn_client.c   |   6 -
+ net/rxrpc/conn_event.c    |   8 +-
+ net/rxrpc/conn_object.c   |   2 -
+ net/rxrpc/conn_service.c  |   2 -
+ net/rxrpc/insecure.c      |  19 +-
+ net/rxrpc/key.c           | 658 ++++----------------------------------
+ net/rxrpc/rxkad.c         | 256 ++++++++++-----
+ net/rxrpc/security.c      |  98 ++++--
+ net/rxrpc/sendmsg.c       |  45 +--
+ net/rxrpc/server_key.c    | 143 +++++++++
+ 14 files changed, 519 insertions(+), 852 deletions(-)
+ create mode 100644 net/rxrpc/server_key.c
+
 
