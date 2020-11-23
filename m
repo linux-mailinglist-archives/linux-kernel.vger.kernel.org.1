@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195532C0BD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687E62C0AB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731864AbgKWNbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:31:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36894 "EHLO mail.kernel.org"
+        id S1729996AbgKWMZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:25:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730229AbgKWM05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:57 -0500
+        id S1729959AbgKWMZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:25:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C28A720728;
-        Mon, 23 Nov 2020 12:26:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93A802076E;
+        Mon, 23 Nov 2020 12:25:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134417;
-        bh=Q1TdgDXmY1kSWooOCJWJqG1UQDpxrak7pKjGdM5pMiY=;
+        s=korg; t=1606134315;
+        bh=xxIG4K1nh1XeCmCuWiYrpl+6cMWyFasS2EvxgBLY4Jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YlHj9THH3yiC3wxuTqnEjw0twAj0GHweQX6D3tGM+7MTQnnTT+03uJniQ/e2Ce1Hu
-         sfmZS8pcA20gOGkdJMU6MioDZs+p2nBWeiFlZ0yCjYoeV1vBMLt9EbEIOzEsCk8Uh+
-         h+ppesZBZhz3P6W/D80sUdhtPwwVe3QeS5H7VTCE=
+        b=znYhLX/7gHtAPtNdaAmfqPed3+vcNOAJG27AOEu4znNlD7+a0e81FIFXePVK11DFq
+         WYfrJjt0TFwehQNl2V0UHBeA32FH9bn1b/nE4qJpy87w/M0ejm7adQVMblQCBxq4j5
+         x3jZjclTlCZnWbuupmmrHykeWFRkbQXFehvvyd2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jamorris@linux.microsoft.com>,
+        stable@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 12/60] netlabel: fix an uninitialized warning in netlbl_unlabel_staticlist()
-Date:   Mon, 23 Nov 2020 13:21:54 +0100
-Message-Id: <20201123121805.625855988@linuxfoundation.org>
+Subject: [PATCH 4.9 09/47] netlabel: fix our progress tracking in netlbl_unlabel_staticlist()
+Date:   Mon, 23 Nov 2020 13:21:55 +0100
+Message-Id: <20201123121806.003190480@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,33 +44,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Moore <paul@paul-moore.com>
 
-[ Upstream commit 1ba86d4366e023d96df3dbe415eea7f1dc08c303 ]
+[ Upstream commit 866358ec331f8faa394995fb4b511af1db0247c8 ]
 
-Static checking revealed that a previous fix to
-netlbl_unlabel_staticlist() leaves a stack variable uninitialized,
-this patches fixes that.
+The current NetLabel code doesn't correctly keep track of the netlink
+dump state in some cases, in particular when multiple interfaces with
+large configurations are loaded.  The problem manifests itself by not
+reporting the full configuration to userspace, even though it is
+loaded and active in the kernel.  This patch fixes this by ensuring
+that the dump state is properly reset when necessary inside the
+netlbl_unlabel_staticlist() function.
 
-Fixes: 866358ec331f ("netlabel: fix our progress tracking in netlbl_unlabel_staticlist()")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 8cc44579d1bd ("NetLabel: Introduce static network labels for unlabeled connections")
 Signed-off-by: Paul Moore <paul@paul-moore.com>
-Reviewed-by: James Morris <jamorris@linux.microsoft.com>
-Link: https://lore.kernel.org/r/160530304068.15651.18355773009751195447.stgit@sifl
+Link: https://lore.kernel.org/r/160484450633.3752.16512718263560813473.stgit@sifl
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netlabel/netlabel_unlabeled.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netlabel/netlabel_unlabeled.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
 --- a/net/netlabel/netlabel_unlabeled.c
 +++ b/net/netlabel/netlabel_unlabeled.c
-@@ -1180,7 +1180,7 @@ static int netlbl_unlabel_staticlist(str
+@@ -1185,12 +1185,13 @@ static int netlbl_unlabel_staticlist(str
+ 	struct netlbl_unlhsh_walk_arg cb_arg;
  	u32 skip_bkt = cb->args[0];
  	u32 skip_chain = cb->args[1];
- 	u32 skip_addr4 = cb->args[2];
--	u32 iter_bkt, iter_chain, iter_addr4 = 0, iter_addr6 = 0;
-+	u32 iter_bkt, iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0;
+-	u32 iter_bkt;
+-	u32 iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0;
++	u32 skip_addr4 = cb->args[2];
++	u32 iter_bkt, iter_chain, iter_addr4 = 0, iter_addr6 = 0;
  	struct netlbl_unlhsh_iface *iface;
  	struct list_head *iter_list;
  	struct netlbl_af4list *addr4;
+ #if IS_ENABLED(CONFIG_IPV6)
++	u32 skip_addr6 = cb->args[3];
+ 	struct netlbl_af6list *addr6;
+ #endif
+ 
+@@ -1201,7 +1202,7 @@ static int netlbl_unlabel_staticlist(str
+ 	rcu_read_lock();
+ 	for (iter_bkt = skip_bkt;
+ 	     iter_bkt < rcu_dereference(netlbl_unlhsh)->size;
+-	     iter_bkt++, iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0) {
++	     iter_bkt++) {
+ 		iter_list = &rcu_dereference(netlbl_unlhsh)->tbl[iter_bkt];
+ 		list_for_each_entry_rcu(iface, iter_list, list) {
+ 			if (!iface->valid ||
+@@ -1209,7 +1210,7 @@ static int netlbl_unlabel_staticlist(str
+ 				continue;
+ 			netlbl_af4list_foreach_rcu(addr4,
+ 						   &iface->addr4_list) {
+-				if (iter_addr4++ < cb->args[2])
++				if (iter_addr4++ < skip_addr4)
+ 					continue;
+ 				if (netlbl_unlabel_staticlist_gen(
+ 					      NLBL_UNLABEL_C_STATICLIST,
+@@ -1222,10 +1223,12 @@ static int netlbl_unlabel_staticlist(str
+ 					goto unlabel_staticlist_return;
+ 				}
+ 			}
++			iter_addr4 = 0;
++			skip_addr4 = 0;
+ #if IS_ENABLED(CONFIG_IPV6)
+ 			netlbl_af6list_foreach_rcu(addr6,
+ 						   &iface->addr6_list) {
+-				if (iter_addr6++ < cb->args[3])
++				if (iter_addr6++ < skip_addr6)
+ 					continue;
+ 				if (netlbl_unlabel_staticlist_gen(
+ 					      NLBL_UNLABEL_C_STATICLIST,
+@@ -1238,8 +1241,12 @@ static int netlbl_unlabel_staticlist(str
+ 					goto unlabel_staticlist_return;
+ 				}
+ 			}
++			iter_addr6 = 0;
++			skip_addr6 = 0;
+ #endif /* IPv6 */
+ 		}
++		iter_chain = 0;
++		skip_chain = 0;
+ 	}
+ 
+ unlabel_staticlist_return:
 
 
