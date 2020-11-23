@@ -2,81 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E262BFE40
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 03:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08D32BFE7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgKWCtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 21:49:13 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:48846 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgKWCtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 21:49:12 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 504EE20023B;
-        Mon, 23 Nov 2020 03:49:10 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4D3B12000C5;
-        Mon, 23 Nov 2020 03:49:07 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 28100402A2;
-        Mon, 23 Nov 2020 03:49:03 +0100 (CET)
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     Han Xu <han.xu@nxp.com>, Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ran Wang <ran.wang_1@nxp.com>
-Subject: [PATCH] spi: spi-nxp-fspi: fix fspi panic by unexpected interrupts
-Date:   Mon, 23 Nov 2020 10:57:15 +0800
-Message-Id: <20201123025715.14635-1-ran.wang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726875AbgKWDAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 22:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgKWDAV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 22:00:21 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3B0C0613CF;
+        Sun, 22 Nov 2020 19:00:19 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id f16so14588430otl.11;
+        Sun, 22 Nov 2020 19:00:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=X6ea8y+7o1VS2+hJJcwmIepII7pozzGa349DC5946o4=;
+        b=O0bCyjkQ/bAlyYl/p3JN/CYCEM/L/vJ4GpfrG23A/z6KykNoJ0gli/NpFZQfNj+czP
+         i0o0sQFjZ8RE/zL1dwgb1guZ56q5RD8nsTO0UvvMq751OO8OiGxqJGmY3SonCTQ5Lspn
+         XYg6yJmsGkLWVLETDQprpFj4DNoJABK7ArAqKLW42zHl+xnpn/Bu7Jl4x/N17ilhzZwe
+         +WJgrpCpIVAxxg+jOcLHmFvQ0OGa4ag0BSPCNfNWxztnDy2ZR3/vPrbEta1KIF+CuicY
+         PhU93xVocYP8DlMNsSHS63hBpQhFIk79H4pGuTgLP9A/oooIGopj4i/hhUNDRA4Fq3V/
+         WVuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=X6ea8y+7o1VS2+hJJcwmIepII7pozzGa349DC5946o4=;
+        b=k4d8fmP/N+La4DkcKvKmm/I+ezxXIDTqE0ZEvOTTIlyZ819a4GF53Apgg8OEtexh4k
+         SpEsLWLiY/MJlHrj++lm6AfhGPPQodteBOmsFR+KSsNzgw8hxvb/qO2G5YVILtcka65f
+         US8CHqGyIwXCXRebh5Ibl2gEkSrgDJSyUvImn0z3MRk4aZlVnY4iEWm3xFRZHR0Yvg8X
+         zOPuQPqOeBaV7njBj7p/PBlYEazKlHedywPEm/jYQ/GNo+a+fo368gRj784VIafudM8o
+         WnOBvvkMe0yGBoAW4Bs+uIQAueltJmszGvjpBc6PmcOlRMwpWS2s/lYSrDl/Yf5KHQpR
+         QS1g==
+X-Gm-Message-State: AOAM530zh/xr9oxP31c2PVOphuzLvpu8LprlLOSUCUDh3PCWSsxHUHoM
+        iFVVe5HxtHdGlRe0rpcbfaBuMsF9kCCtgs2S8Yc=
+X-Google-Smtp-Source: ABdhPJxZjezUseMBEoGgj0Bb6+2zeayiCYTxLMkNBbkr2KfxEZ23lfObPxA14lZP64GdkYiIRfDnVIR4/Qm0SWsI+Vc=
+X-Received: by 2002:a9d:6c99:: with SMTP id c25mr22787464otr.327.1606100418882;
+ Sun, 22 Nov 2020 19:00:18 -0800 (PST)
+MIME-Version: 1.0
+References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
+ <20201118213712.GA22371@amd> <6068b1e3-a4c8-6c7d-d33d-f2238e905e43@gmail.com>
+ <20201119215721.GA5337@amd> <0700c32d-643b-fedb-06f0-21547b18205d@gmail.com>
+In-Reply-To: <0700c32d-643b-fedb-06f0-21547b18205d@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Mon, 23 Nov 2020 11:00:09 +0800
+Message-ID: <CAE+NS363BpytNGZzfZHLa7KLKL8gjGj14oNvRi3oaH9KT79REg@mail.gmail.com>
+Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT definitions
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given the case that bootloader(such as UEFI)'s FSPI driver might not
-handle all interrupts before loading kernel, those legacy interrupts
-would assert immidiately once kernel's FSPI driver enable them. Further,
-if it was FSPI_INTR_IPCMDDONE, the irq handler nxp_fspi_irq_handler()
-would call complete(&f->c) to notify others. However, f->c might not be
-initialized yet at that time, then cause kernel panic.
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=
+=9C=8820=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=886:26=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> On 11/19/20 10:57 PM, Pavel Machek wrote:
+> > On Thu 2020-11-19 22:03:14, Jacek Anaszewski wrote:
+> >> Hi Pavel, Gene,
+> >>
+> >> On 11/18/20 10:37 PM, Pavel Machek wrote:
+> >>> Hi!
+> >>>
+> >>>> From: Gene Chen <gene_chen@richtek.com>
+> >>>>
+> >>>> Add LED_COLOR_ID_MOONLIGHT definitions
+> >>>
+> >>> Why is moonlight a color? Camera flashes are usually white, no?
+> >>>
+> >>> At least it needs a comment...
+> >>
+> >> That's my fault, In fact I should have asked about adding
+> >> LED_FUNCTION_MOONLIGHT, it was evidently too late for me that evening.=
+..
+> >
+> > Aha, that makes more sense.
+> >
+> > But please let's call it "torch" if we do that, as that is already
+> > used in kernel sources... and probably in the interface, too:
+>
+> I'd say that torch is something different that moonlight,
+> but we would need more input from Gene to learn more about
+> the nature of light emitted by ML LED on his device.
+>
+> Please note that torch is usually meant as the other mode of
+> flash LED (sometimes it is called "movie mode"), which is already
+> handled by brightness file of LED class flash device (i.e. its LED class
+> subset), and which also maps to v4l2-flash TORCH mode.
+>
 
-Of cause, we should fix this issue within bootloader. But it would be
-better to have this pacth to make dirver more robust (by clearing all
-interrupt status bits before enabling interrupts).
+It's used to front camera fill light.
+More brightness than screen backlight, and more soft light than flash.
+I think LED_ID_COLOR_WHITE is okay.
 
-Suggested-by: Han Xu <han.xu@nxp.com>
-Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
----
- drivers/spi/spi-nxp-fspi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-index 0d41406..ab90356 100644
---- a/drivers/spi/spi-nxp-fspi.c
-+++ b/drivers/spi/spi-nxp-fspi.c
-@@ -1001,6 +1001,7 @@ static int nxp_fspi_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct nxp_fspi *f;
- 	int ret;
-+	u32 reg;
- 
- 	ctlr = spi_alloc_master(&pdev->dev, sizeof(*f));
- 	if (!ctlr)
-@@ -1032,6 +1033,12 @@ static int nxp_fspi_probe(struct platform_device *pdev)
- 		goto err_put_ctrl;
- 	}
- 
-+	/* Clear potential interrupts */
-+	reg = fspi_readl(f, f->iobase + FSPI_INTR);
-+	if (reg)
-+		fspi_writel(f, reg, f->iobase + FSPI_INTR);
-+
-+
- 	/* find the resources - controller memory mapped space */
- 	if (is_acpi_node(f->dev->fwnode))
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--- 
-2.7.4
-
+> > ./arch/arm/mach-pxa/ezx.c:                      .name =3D "a910::torch"=
+,
+> >
+> > Best regards,
+> >                                                       Pavel
+> >
+>
+> --
+> Best regards,
+> Jacek Anaszewski
