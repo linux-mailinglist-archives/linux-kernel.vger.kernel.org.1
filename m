@@ -2,177 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7377A2C035C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 516EF2C0362
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728538AbgKWKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:32:49 -0500
-Received: from mail-eopbgr760053.outbound.protection.outlook.com ([40.107.76.53]:15842
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726416AbgKWKcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:32:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cz8G1RvioP2kw1MDCl9hwjLCfjK20fwHL5FdL8554oKz4xEcxZxVu3ShKWaWLUaVslnqB/21GDoaH/q0yCWCfJHwZNf9POJxUL4NyGQnan1r911zslm1jEuwzIycMxZHchJpQ7szuVRx2ean8fUY+9WIUtCujpNObG+YhuBCw2kKkoYariz/wwkOknD4z8Vw77OmJxfhFJUvu1PbyDyO4pNvT45kzFblzPasVbkjhn44iRC8GhqkJYJ3pXD9dl74lfi5cN9J3sWm6DQzlQpC7P7LWwLPuKOy0+0dQjQsWae9YSziYlc7+tENcdYVRHbs85yZtPBRj5NqpNdJohblgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/v3RabOWkB62RDyacqMafWyOZB5vX0udc7dbs95u1DY=;
- b=ezx8u22/WtHwdKozsNXuejjtd8DVxmLrmXVVmUV4GNYBKOevAWtR/vAJuCRxS2pzXuV2TFoxBtSLDwM0qG5sh3Tjj2YuDv42ImuwTSbUyrINL1aKK1luGgHU5bj05ash3tHkqDVEptzO9RXIPQrQViVMr6rm0xptCRGvJMmeVySSNdJizH5Dsbi4KropvNTZioq5Fd232Wy8XFTeVwVBj2kWN7P/NyI++o19GOoglaGh49g2Ad4IMFRKjmAJgVNJq9v64kj2vWmCl7ElX1X14n+zQ/BFrngVzk07AgWPG0YdT9z0pzd/12I+w5cb2obbh7i53xm9TbegAZRapuCYUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
- dkim=pass header.d=openfive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/v3RabOWkB62RDyacqMafWyOZB5vX0udc7dbs95u1DY=;
- b=nPIHEHNB4IG7K4TNUgcRABjrlwuTBONKfZ6GxJja4nVXij6K4dZpDiVZnaCaaNf3b+5NYxcoSq2Lhiat1pcNinF84WcVssy+B74M7CutxlcGz9C7qWeroHnEXRLNGp+UiRPDIn5ymcTuxWfZ3kWs099OitnvGj9ooz3ziRI02oo=
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com (2603:10b6:a03:1d1::19)
- by BY5PR13MB3394.namprd13.prod.outlook.com (2603:10b6:a03:1a8::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.18; Mon, 23 Nov
- 2020 10:32:44 +0000
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::7c13:1ac6:9f2a:5eae]) by BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::7c13:1ac6:9f2a:5eae%7]) with mapi id 15.20.3611.020; Mon, 23 Nov 2020
- 10:32:44 +0000
-From:   Yash Shah <yash.shah@openfive.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "sam@ravnborg.org" <sam@ravnborg.org>,
-        Sagar Kadam <sagar.kadam@openfive.com>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "bp@suse.de" <bp@suse.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sachin Ghadi <sachin.ghadi@openfive.com>
-Subject: RE: [PATCH 1/2] RISC-V: Update l2 cache DT documentation to add
- support for SiFive FU740
-Thread-Topic: [PATCH 1/2] RISC-V: Update l2 cache DT documentation to add
- support for SiFive FU740
-Thread-Index: AQHWuNPXeVMTcgdvxUGkk0ItZFlleKnSmU6AgAL3WiA=
-Date:   Mon, 23 Nov 2020 10:32:43 +0000
-Message-ID: <BY5PR13MB445328314FB3521DE257C57782FC0@BY5PR13MB4453.namprd13.prod.outlook.com>
-References: <1605172274-44916-1-git-send-email-yash.shah@sifive.com>
- <20201121125443.GA2076465@robh.at.kernel.org>
-In-Reply-To: <20201121125443.GA2076465@robh.at.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=openfive.com;
-x-originating-ip: [103.109.13.228]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a068c750-338b-4660-95ed-08d88f9b1ce9
-x-ms-traffictypediagnostic: BY5PR13MB3394:
-x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR13MB33940F47281CCB671301EB4882FC0@BY5PR13MB3394.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OSdNfK0z+PbgBPRGtF1dPyZWJKjU2ZwrD3pmiQhOXQUzDcm0adDGKmF6QId8jiyVusfr9AbX3iL5I9Z+bG0bWcYzUGRbTi4N+Zok/7gVo7MmsF6n+x6MmI8//EVuCdsQzQHRazFGkjkHeYjFn+cVnUeDyhyRi258eu+7La9ZcG34QaapVAngXsY2odV9X5OaCepAQ8zDBsnCGF5G+PHLColVjSKRM4YQ/9cbwdIeSDpCedzsPASrVes6kSvAokH+AM/TjWGjDZk41diHTy7nOdf/v43l+wVQqLn/e4Xh8J+uuJ4oe5CiSot98lTzqU63mG1boI/8L2KbPPD9VSC6UQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR13MB4453.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(136003)(376002)(346002)(39840400004)(366004)(396003)(8936002)(6916009)(86362001)(76116006)(15650500001)(83380400001)(2906002)(66946007)(8676002)(316002)(54906003)(186003)(53546011)(6506007)(44832011)(7416002)(71200400001)(33656002)(7696005)(5660300002)(55016002)(26005)(4326008)(52536014)(478600001)(107886003)(9686003)(64756008)(66446008)(66556008)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: mHrDVxY/NtmgyGRYMQDn3RFNBFo27SBgHB576Bv8uS9bI5ERYc1tlKz6KfEl9edBc5V6wulCR1E5NC2yLl6I8Czg/QEShk33pybWN6UGYN47nCSqnDrKuYDFyRo+AoeVIOM7xEAFuuao2l4gT155gTwYcLiGVjK0iI2u33LV8ViC2tpJCC0ErYUcYm2F4tHZFIEAGcC/qyv/oh4rnDMD3liHL9lKkEk8htP+chYaCrf7NahtWp6LGHQVlBmJIOfk8nts4SnVwqbyAnoiEbVtJlgRE6tpVWgTFEjMiGVTqIZ19MP8OJc8LRNCLkZV9KlGbvh2+lJ5RmNlZmEMSYr3ukQ+9rPGcetsXFShKzA20j3LVUObGY2i17yb+kDjZTv/cPIrD7lQ+PA/Oz9zN4145e01wBS9TJbDeOcFanEbFyha28XXb9/ea6zmeOVPWLYcnYHLZXnUY4OEltpMJ0eUuY14rbqn+Nbh29mhdpGHAwEibswgkGwZ4WIYQYS10iQzyRZBodFDqmHtnnakN5km9TGHvxCPPJ5F/YyjHQ2KLtrMhna41EHzkW0zjddbl4u63zMqCO0oo4494TK7Nx9Eo2WyqUu8gjE6Kya7qx3huK2TWUq+Da9pUZTiTjzg7jxMYwuVApJ5qv+pcGUo2i/s9YL1zHGhVyb2i/o0Itj0HTqtg4xOJfUJaRBlYqHPmSX9PC6fNKjcLBbDnXUoINKuahlP9+l6kL5VmC/VpXHZCUPK5Iprh/Qj0GJEBrLpy/gfWnpeseBztKG/4kzgsd0r8JwXsrP+X2f3cQI7BxuFycen3d6tHY7l+Od9cOWzqmE/U1MkRxUCkG/H4iqhbvr721RMOLCMvAXB9QC6z/o+MmbkkDF20Mq+g7smAsOyUSjcJZ9PMVYsp9UCP7UxIapsmw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728469AbgKWKel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:34:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728062AbgKWKel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:34:41 -0500
+X-Greylist: delayed 131823 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Nov 2020 02:34:40 PST
+Received: from mail.alarsen.net (joe.alarsen.net [IPv6:2a01:4f8:191:10e8:1::fe])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FA6C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:34:40 -0800 (PST)
+Received: from oscar.alarsen.net (unknown [IPv6:2001:470:1f0b:246:3498:84b8:7f41:65f])
+        by joe.alarsen.net (Postfix) with ESMTPS id 390C32B81DD6;
+        Mon, 23 Nov 2020 11:34:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alarsen.net; s=joe;
+        t=1606127676; bh=5UB9gRi58YkHAOOWjzB9D1YFAVo+0c+fLBzMcSZK4U8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QNKUunmlzlzNV4NcVdTNxs63JDsbZramNjylAouJz6OB3/4kfkuavMIcsupl9imaS
+         xl/r06AgNhWNDQ6eX2KUMYe5ri5Bw+uv3Yszes+3wdozsEBG/4/y/4J1YyBoUrTlZ8
+         RevcyYx/tmZQQA44DMKlmbQfBWlw5X5qkSboAXbY=
+Received: by oscar.alarsen.net (Postfix, from userid 1000)
+        id 2A1B327C0CAF; Mon, 23 Nov 2020 11:34:36 +0100 (CET)
+From:   Anders Larsen <al@alarsen.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tong Zhang <ztong0001@gmail.com>
+Subject: [PATCH v2] qnx4_match: do not over run the buffer
+Date:   Mon, 23 Nov 2020 11:34:36 +0100
+Message-Id: <20201123103436.7056-1-al@alarsen.net>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201122012740.4814-1-ztong0001@gmail.com>
+References: <20201122012740.4814-1-ztong0001@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: openfive.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR13MB4453.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a068c750-338b-4660-95ed-08d88f9b1ce9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 10:32:43.9901
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XJnFEo+GU8ieWGz6zRm4L6Tu4cjHQsrxLrIg1jE16qn4mxqapzglP/HMN8acpUmamk5N32sv2QPAnt9mkzjWVg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR13MB3394
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: 21 November 2020 18:25
-> To: Yash Shah <yash.shah@openfive.com>
-> Cc: Paul Walmsley ( Sifive) <paul.walmsley@sifive.com>;
-> palmer@dabbelt.com; aou@eecs.berkeley.edu;
-> Jonathan.Cameron@huawei.com; wsa@kernel.org; sam@ravnborg.org;
-> Sagar Kadam <sagar.kadam@openfive.com>; anup@brainfault.org;
-> bp@suse.de; devicetree@vger.kernel.org; linux-riscv@lists.infradead.org;
-> linux-kernel@vger.kernel.org; Sachin Ghadi <sachin.ghadi@openfive.com>
-> Subject: Re: [PATCH 1/2] RISC-V: Update l2 cache DT documentation to add
-> support for SiFive FU740
->=20
-> [External Email] Do not click links or attachments unless you recognize t=
-he
-> sender and know the content is safe
->=20
-> On Thu, Nov 12, 2020 at 02:41:13PM +0530, Yash Shah wrote:
-> > The L2 cache controller in SiFive FU740 has 4 ECC interrupt sources as
-> > compared to 3 in FU540. Update the DT documentation accordingly with
-> > "compatible" and "interrupt" property changes.
-> >
-> > Signed-off-by: Yash Shah <yash.shah@sifive.com>
-> > ---
-> >  .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 33
-> > +++++++++++++++++-----
-> >  1 file changed, 26 insertions(+), 7 deletions(-)
-> >
-> > diff --git
-> > a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> > b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> > index efc0198..4873d5c 100644
-> > --- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> > +++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+From: Tong Zhang <ztong0001@gmail.com>
 
-<...>
+the di_fname may not terminated by '\0', use strnlen to prevent buffer
+overrun
 
-> > @@ -51,12 +54,6 @@ properties:
-> >
-> >    cache-unified: true
-> >
-> > -  interrupts:
-> > -    description: |
-> > -      Must contain entries for DirError, DataError and DataFail signal=
-s.
-> > -    minItems: 3
-> > -    maxItems: 3
->=20
-> Keep this here and just change maxItems to 4. Really, what each interrupt=
- is
-> should be listed out as an 'items' entry.
->=20
+[  513.248784] qnx4_readdir: bread failed (3718095557)
+[  513.250880] ==================================================================
+[  513.251109] BUG: KASAN: use-after-free in strlen+0x1f/0x40
+[  513.251268] Read of size 1 at addr ffff888002700000 by task find/230
+[  513.251419]
+[  513.251677] CPU: 0 PID: 230 Comm: find Not tainted 5.10.0-rc4+ #64
+[  513.251805] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd84
+[  513.252069] Call Trace:
+[  513.252310]  dump_stack+0x7d/0xa3
+[  513.252443]  print_address_description.constprop.0+0x1e/0x220
+[  513.252572]  ? _raw_spin_lock_irqsave+0x7b/0xd0
+[  513.252681]  ? _raw_write_lock_irqsave+0xd0/0xd0
+[  513.252785]  ? strlen+0x1f/0x40
+[  513.252869]  ? strlen+0x1f/0x40
+[  513.252955]  kasan_report.cold+0x37/0x7c
+[  513.253059]  ? qnx4_block_map+0x130/0x1d0
+[  513.253152]  ? strlen+0x1f/0x40
+[  513.253237]  strlen+0x1f/0x40
+[  513.253329]  qnx4_lookup+0xab/0x220
+[  513.253431]  __lookup_slow+0x103/0x220
+[  513.253531]  ? vfs_unlink+0x2e0/0x2e0
+[  513.253626]  ? down_read+0xd8/0x190
+[  513.253721]  ? down_write_killable+0x110/0x110
+[  513.253823]  ? generic_permission+0x4c/0x240
+[  513.253929]  walk_component+0x214/0x2c0
+[  513.254035]  ? handle_dots.part.0+0x760/0x760
+[  513.254137]  ? walk_component+0x2c0/0x2c0
+[  513.254233]  ? path_init+0x546/0x6b0
+[  513.254327]  ? __kernel_text_address+0x9/0x30
+[  513.254430]  ? unwind_get_return_address+0x2a/0x40
+[  513.254538]  ? create_prof_cpu_mask+0x20/0x20
+[  513.254637]  ? arch_stack_walk+0x99/0xf0
+[  513.254736]  path_lookupat.isra.0+0xb0/0x240
+[  513.254840]  filename_lookup+0x128/0x250
+[  513.254939]  ? may_linkat+0xb0/0xb0
+[  513.255033]  ? __fput+0x199/0x3c0
+[  513.255127]  ? kasan_save_stack+0x32/0x40
+[  513.255224]  ? kasan_save_stack+0x1b/0x40
+[  513.255323]  ? kasan_unpoison_shadow+0x33/0x40
+[  513.255426]  ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+[  513.255538]  ? getname_flags+0x100/0x2a0
+[  513.255635]  vfs_statx+0xd8/0x1d0
+[  513.255728]  ? vfs_getattr+0x40/0x40
+[  513.255821]  ? lockref_put_return+0xb2/0x120
+[  513.255922]  __do_sys_newfstatat+0x7d/0xd0
+[  513.256022]  ? __ia32_sys_newlstat+0x30/0x30
+[  513.256122]  ? __kasan_slab_free+0x121/0x150
+[  513.256222]  ? rcu_segcblist_enqueue+0x72/0x80
+[  513.256333]  ? fpregs_assert_state_consistent+0x4d/0x60
+[  513.256446]  ? exit_to_user_mode_prepare+0x2d/0xf0
+[  513.256551]  ? __x64_sys_newfstatat+0x39/0x60
+[  513.256651]  do_syscall_64+0x33/0x40
+[  513.256750]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Sure will send a v2 with the above modifications.
+Co-Developed-by: Anders Larsen <al@alarsen.net>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Anders Larsen <al@alarsen.net>
+---
+v2: The name can grow longer than QNX4_SHORT_NAME_MAX if de is a
+ QNX4_FILE_LINK type and de should points to a qnx4_link_info struct, so
+ this is safe.  We also remove redundant checks in this version.
 
-<...>
+ fs/qnx4/namei.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
->=20
-> > +
-> > +else:
-> > +  properties:
-> > +    interrupts:
-> > +      description: |
-> > +        Must contain entries for DirError, DirFail, DataError, DataFai=
-l signals.
->=20
-> DirFail should be last so you keep the same indices.
-
-Actually, the interrupts have been numbered like that in FU740 SoCs and the=
- driver expects the interrupts to be in this order.
-I will keep the same order for v2 as well. Let me know if you still disagre=
-e.
-
-Thanks for your review.
-
-- Yash
-
+diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
+index 8d72221735d7..2bcbbd7c772e 100644
+--- a/fs/qnx4/namei.c
++++ b/fs/qnx4/namei.c
+@@ -40,9 +40,7 @@ static int qnx4_match(int len, const char *name,
+ 	} else {
+ 		namelen = QNX4_SHORT_NAME_MAX;
+ 	}
+-	thislen = strlen( de->di_fname );
+-	if ( thislen > namelen )
+-		thislen = namelen;
++	thislen = strnlen( de->di_fname, namelen );
+ 	if (len != thislen) {
+ 		return 0;
+ 	}
+-- 
+2.29.2
 
