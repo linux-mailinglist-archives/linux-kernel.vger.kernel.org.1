@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B142C0CB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F192C0CB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729915AbgKWOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:02:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729204AbgKWOC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:02:56 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EB8C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:02:55 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id p19so13221996wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:02:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8MbLOzoiGt8qOrDnUA/zH8u0u0zSMC0gXKfi559DqVA=;
-        b=ltVKPu+mf3w4cnT/dnxBHhtwTdvH5234a5m0Aas+h+d2O+deloN4yvQEqWA5jdgL7J
-         BBwCdHTKDne3rtZS0479aN3cO3cK+qHE6RJeFtQD88SABrLknnTJIWPt7vFegoL9JAMW
-         tfJ66juRzDAMcoPc3Q0qet+A+HXN7V++y5x4xM2kc9zgzhx3h6U57HdwASSxRI5xat96
-         BhPR4KyhD3Do/OEx1hLna61IZUxVJpjCstJkxu9okbRxbT/18JE9VgsD6QeRJo/OjI6z
-         GfIEjP7OFlskU0BPW9s0Lm8eEjmI5XyUFsIp0EVclLPkh5UQlfPxKshKoo9TN39JqMei
-         EP8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8MbLOzoiGt8qOrDnUA/zH8u0u0zSMC0gXKfi559DqVA=;
-        b=DbVNvBzlZexGboTuDF9hJb+WnzDfNtBUmJoD/zTjZ4vgwt06COz5JE6eW3nvBoOrQK
-         DcinnASFgrY7uTm8ShMIH78gdMffh36kFNe72Ysw4S7ZaaQvNiqevwhyAN5q2SMzWo3Z
-         1rSQcwbncTdGic918/eqFtjA4KaCHyD6j7OQByYCcg0RI2O9ttHDT/V8OkyAgcVxhxXh
-         JPnAaioOrEMfa+1DLM5UetkXMx+UtPrYviWcDGIX6+KKjdOglvGT877Z3Y9Al0C9wUDK
-         dQ2coeKkSrdrwVIm/nlMXE6/IjLCuxawaLoYtaFbVSt8r6IoYqtx5wj/Emq3GzM506Tm
-         BnwQ==
-X-Gm-Message-State: AOAM5303ivNx9LKzChM/waldDTYHNGnimw7aIE7fW/plVp4kHKpz4xej
-        5XQyDMQLJX5WQp/lo79BfkbCZg==
-X-Google-Smtp-Source: ABdhPJxjgLyk9Fulttys1g8vPl1CXFrXrd8EhtH74rQmWAECciCrmgsHxN+h0I4wxVN09sd5aywgVA==
-X-Received: by 2002:a7b:c24b:: with SMTP id b11mr23203780wmj.109.1606140174472;
-        Mon, 23 Nov 2020 06:02:54 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id x13sm8390719wmj.48.2020.11.23.06.02.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 06:02:54 -0800 (PST)
-Date:   Mon, 23 Nov 2020 14:02:50 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>, kernel-team@android.com,
-        android-kvm@google.com
-Subject: Re: [RFC PATCH 09/27] KVM: arm64: Allow using kvm_nvhe_sym() in hyp
- code
-Message-ID: <20201123140250.GB490744@google.com>
-References: <20201117181607.1761516-1-qperret@google.com>
- <20201117181607.1761516-10-qperret@google.com>
- <20201123125723.4mnodg3tnal4q4v2@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123125723.4mnodg3tnal4q4v2@google.com>
+        id S1730197AbgKWODz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:03:55 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:17520 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729204AbgKWODz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:03:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606140234; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=GMDPBCCMonm9madELgXD+35QPE+dhBMWpkpv8t4h7ZA=; b=k5ktkvWdU98jXksASkC571QgqoOWgxGTmQTWN7QDDBKbPXxcTG/TUlhfoC0DSMkaQiaBHRMz
+ o9VFbxUJy927OVWnMG77PAUFViLOwzJw/rASbYkRj1jjk/EG5TJZZGnVOaP9iu2XaGXNS551
+ pP743baMHHNcddL4mvYNX9nKvr4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fbbc1471b731a5d9c1996fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 14:03:51
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EF37EC43464; Mon, 23 Nov 2020 14:03:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 11605C433C6;
+        Mon, 23 Nov 2020 14:03:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 11605C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     akpm@linux-foundation.org, david@redhat.com, mhocko@suse.com,
+        linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH] mm: memory_hotplug: put migration failure information under DEBUG_VM
+Date:   Mon, 23 Nov 2020 19:33:16 +0530
+Message-Id: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 23 Nov 2020 at 12:57:23 (+0000), David Brazdil wrote:
-> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> > index 882eb383bd75..391cf6753a13 100644
-> > --- a/arch/arm64/kvm/arm.c
-> > +++ b/arch/arm64/kvm/arm.c
-> > @@ -1369,7 +1369,7 @@ static void cpu_prepare_hyp_mode(int cpu)
-> >  
-> >  	params->vector_hyp_va = kern_hyp_va((unsigned long)kvm_ksym_ref(__kvm_hyp_host_vector));
-> >  	params->stack_hyp_va = kern_hyp_va(per_cpu(kvm_arm_hyp_stack_page, cpu) + PAGE_SIZE);
-> > -	params->entry_hyp_va = kern_hyp_va((unsigned long)kvm_ksym_ref(__kvm_hyp_psci_cpu_entry));
-> > +	params->entry_hyp_va = kern_hyp_va((unsigned long)kvm_ksym_ref_nvhe(__kvm_hyp_psci_cpu_entry));
-> 
-> Why is this change needed?
+When the pages are failed to get isolate or migrate, the page owner
+information along with page info is dumped. If there are continuous
+failures in migration(say page is pinned) or isolation, the log buffer
+is simply getting flooded with the page owner information. As most of
+the times page info is sufficient to know the causes for failures of
+migration or isolation, place the page owner information under DEBUG_VM.
 
-You mean this line specifically or the whole __kvm_hyp_psci_cpu_entry
-thing?
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
+ mm/memory_hotplug.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-For the latter, it is to avoid having the compiler complain about
-__kvm_hyp_psci_cpu_entry being re-defined as a different symbol. If
-there is a better way to solve this problem I'm happy to change it -- I
-must admit I got a little confused with the namespacing along the way.
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 63b2e46..f48f30d 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1326,7 +1326,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+ 
+ 		} else {
+ 			pr_warn("failed to isolate pfn %lx\n", pfn);
+-			dump_page(page, "isolation failed");
++			__dump_page(page, "isolation failed");
++#if defined(CONFIG_DEBUG_VM)
++			dump_page_owner(page);
++#endif
+ 		}
+ 		put_page(page);
+ 	}
+@@ -1357,7 +1360,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+ 			list_for_each_entry(page, &source, lru) {
+ 				pr_warn("migrating pfn %lx failed ret:%d ",
+ 				       page_to_pfn(page), ret);
+-				dump_page(page, "migration failure");
++				__dump_page(page, "migration failure");
++#if defined(CONFIG_DEBUG_VM)
++				dump_page_owner(page);
++#endif
+ 			}
+ 			putback_movable_pages(&source);
+ 		}
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
-Thanks,
-Quentin
