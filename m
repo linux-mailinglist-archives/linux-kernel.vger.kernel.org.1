@@ -2,293 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F7D2C03BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C8E2C03C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgKWKz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgKWKz6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:55:58 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF16C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:55:58 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id g19so15459074otp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:55:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dAaII84HcEXvbNnxDSLxHAH0+A0aTsvl9gY1tLGjitA=;
-        b=u9OdSH8/A0gwoY9Zp72hxARskG+k/xWPCFPPnekC1ftQBMBE3PMoJsjJCHyV+SqI/s
-         JeOsSvWTrpdPFaEbCadkDjXXuHbKumLaCgmWJB/EDqL+kHQwmCDR/NfBpvmw8Iz0cq0s
-         ZyL8RfhMY8yi/AOQokmbwGEoDgleZ+07GhQlQmFbesCSjbf+vFfz+xsngppSgufZ0Y9C
-         bHvWyXrYir9R2F+HXr3ZhTAmvLwlbb4DJD0ynzhzO8A97UVzCZ1G4yoFX38Y8uXIhy6e
-         w7bPzcZ40eHS6fAqnKXRL8HnuL2kc+VbjbVIUhDxbxALOu82FyP8TcoCLju3BIIUbSwq
-         xyPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dAaII84HcEXvbNnxDSLxHAH0+A0aTsvl9gY1tLGjitA=;
-        b=FzyHRNEin15mwcWC0O/klM2OZn9R2ZlHNONjAy/1VrVJGxpB20U8mHnDDWt+xKGDdo
-         ZY+CD1ZQNnnspz2o2FY6NCO3GxLu5dmRkdFXQZfHcA7dRegPe1DB8xElFqJXXJTqoRw0
-         zbNm+txnXk7VAva1n2t1ThQbMmyLr4g1yz0/wU8vrslu38j/aSW2LtZ8ysL1D0dg7RvQ
-         1hslPq6jjIkFg6N3XUGEoxSisVEcru/iSMAQKuzVOwusWmPo5xEhv8HXAXwWBtK4QHqF
-         Y74K7jw2WTdxedaAFIraLTfmEdH/HMvWahT30uYEwRuD+6df9X6NkzpcSfPpLeqE3B7J
-         415A==
-X-Gm-Message-State: AOAM532SC+uz4WyPNBrvWk4VMReNLuVW6ItqCx2lwZBzqFU3uDUfv/Wc
-        5z+RgrVXcpcRM6P9qFGiXi8YEiiS+VUegICvjaHpnQ==
-X-Google-Smtp-Source: ABdhPJwRt9ZTExdG3bTGNmtLDlC7Bo8D2sx0n1oualDFMvNUtVyUQdSRJK5olUqVyqT+fdvVmIdmSzl4mhaczHMK7zo=
-X-Received: by 2002:a05:6830:1e08:: with SMTP id s8mr1944890otr.144.1606128957173;
- Mon, 23 Nov 2020 02:55:57 -0800 (PST)
+        id S1728171AbgKWK6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:58:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726289AbgKWK6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:58:15 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5037920781;
+        Mon, 23 Nov 2020 10:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606129094;
+        bh=/peUmxWwoiuoRZHOUT3CLjXhVSf0z9ZqsFQuW9bn+lU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ggZdStaRDcuClrAZIfESIxlWj27QHDRXUH+C/KbP+gjBJzkGUQ8cNmRBUUeSjPG6F
+         K0qxnr2bzC3wS96VFks2K8I9SDy/jjGygPJY1Sjq0CYXMD8ayNzkFsFPaxMX6wUYaT
+         oae+rHW3jiJs5Cclmn17vL0aVsm3Yjijau6Kl0KA=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kh9Xw-00CtAH-3h; Mon, 23 Nov 2020 10:58:12 +0000
 MIME-Version: 1.0
-References: <20201117181607.1761516-1-qperret@google.com> <20201117181607.1761516-14-qperret@google.com>
-In-Reply-To: <20201117181607.1761516-14-qperret@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 23 Nov 2020 10:55:20 +0000
-Message-ID: <CA+EHjTwebfoJLpure-mHNzCnmLwnNEi6yh66OLFGrhH_+ysExA@mail.gmail.com>
-Subject: Re: [RFC PATCH 13/27] KVM: arm64: Enable access to sanitized CPU
- features at EL2
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>, kernel-team@android.com,
-        Android KVM <android-kvm@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 10:58:07 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
+        Andre.Przywara@arm.com, steven.price@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+Subject: Re: [PATCH v15 8/9] doc: add ptp_kvm introduction for arm64 support
+In-Reply-To: <20201111062211.33144-9-jianyong.wu@arm.com>
+References: <20201111062211.33144-1-jianyong.wu@arm.com>
+ <20201111062211.33144-9-jianyong.wu@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <38fad448a3a465e4c35994ce61f4d8dd@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
-
-On Tue, Nov 17, 2020 at 6:16 PM 'Quentin Perret' via kernel-team
-<kernel-team@android.com> wrote:
->
-> Introduce the infrastructure in KVM enabling to copy CPU feature
-> registers into EL2-owned data-structures, to allow reading sanitised
-> values directly at EL2 in nVHE.
->
-> Given that only a subset of these features are being read by the
-> hypervisor, the ones that need to be copied are to be listed under
-> <asm/kvm_cpufeature.h> together with the name of the nVHE variable that
-> will hold the copy.
->
-> While at it, introduce the first user of this infrastructure by
-> implementing __flush_dcache_area at EL2, which needs
-> arm64_ftr_reg_ctrel0.
->
-> Signed-off-by: Quentin Perret <qperret@google.com>
+On 2020-11-11 06:22, Jianyong Wu wrote:
+> PTP_KVM implementation depends on hypercall using SMCCC. So we
+> introduce a new SMCCC service ID. This doc explains how does the
+> ID define and how does PTP_KVM works on arm/arm64.
+> 
+> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
 > ---
->  arch/arm64/include/asm/cpufeature.h     |  1 +
->  arch/arm64/include/asm/kvm_cpufeature.h | 17 ++++++++++++++
->  arch/arm64/kernel/cpufeature.c          | 12 ++++++++++
->  arch/arm64/kernel/image-vars.h          |  2 ++
->  arch/arm64/kvm/arm.c                    | 31 +++++++++++++++++++++++++
->  arch/arm64/kvm/hyp/nvhe/Makefile        |  3 ++-
->  arch/arm64/kvm/hyp/nvhe/cache.S         | 13 +++++++++++
->  arch/arm64/kvm/hyp/nvhe/cpufeature.c    |  8 +++++++
->  8 files changed, 86 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/include/asm/kvm_cpufeature.h
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/cache.S
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/cpufeature.c
->
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index da250e4741bd..3dfbd76fb647 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -600,6 +600,7 @@ void __init setup_cpu_features(void);
->  void check_local_cpu_capabilities(void);
->
->  u64 read_sanitised_ftr_reg(u32 id);
-> +int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst);
->
->  static inline bool cpu_supports_mixed_endian_el0(void)
->  {
-> diff --git a/arch/arm64/include/asm/kvm_cpufeature.h b/arch/arm64/include/asm/kvm_cpufeature.h
+>  Documentation/virt/kvm/api.rst         |  9 +++++++
+>  Documentation/virt/kvm/arm/index.rst   |  1 +
+>  Documentation/virt/kvm/arm/ptp_kvm.rst | 29 +++++++++++++++++++++
+>  Documentation/virt/kvm/timekeeping.rst | 35 ++++++++++++++++++++++++++
+>  4 files changed, 74 insertions(+)
+>  create mode 100644 Documentation/virt/kvm/arm/ptp_kvm.rst
+> 
+> diff --git a/Documentation/virt/kvm/api.rst 
+> b/Documentation/virt/kvm/api.rst
+> index 36d5f1f3c6dd..9843dbcbf770 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6391,3 +6391,12 @@ When enabled, KVM will disable paravirtual
+> features provided to the
+>  guest according to the bits in the KVM_CPUID_FEATURES CPUID leaf
+>  (0x40000001). Otherwise, a guest may use the paravirtual features
+>  regardless of what has actually been exposed through the CPUID leaf.
+> +
+> +8.27 KVM_CAP_PTP_KVM
+> +--------------------
+> +
+> +:Architectures: arm64
+> +
+> +This capability indicates that KVM virtual PTP service is supported in 
+> host.
+> +It must company with the implementation of KVM virtual PTP service in 
+> host
+> +so VMM can probe if there is the service in host by checking this 
+> capability.
+> diff --git a/Documentation/virt/kvm/arm/index.rst
+> b/Documentation/virt/kvm/arm/index.rst
+> index 3e2b2aba90fc..78a9b670aafe 100644
+> --- a/Documentation/virt/kvm/arm/index.rst
+> +++ b/Documentation/virt/kvm/arm/index.rst
+> @@ -10,3 +10,4 @@ ARM
+>     hyp-abi
+>     psci
+>     pvtime
+> +   ptp_kvm
+> diff --git a/Documentation/virt/kvm/arm/ptp_kvm.rst
+> b/Documentation/virt/kvm/arm/ptp_kvm.rst
 > new file mode 100644
-> index 000000000000..d34f85cba358
+> index 000000000000..bb1e6cfefe44
 > --- /dev/null
-> +++ b/arch/arm64/include/asm/kvm_cpufeature.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2020 - Google LLC
-> + * Author: Quentin Perret <qperret@google.com>
-> + */
+> +++ b/Documentation/virt/kvm/arm/ptp_kvm.rst
+> @@ -0,0 +1,29 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +PTP_KVM support for arm/arm64
+> +=============================
+> +
+> +PTP_KVM is used for time sync between guest and host in a high 
+> precision.
+> +It needs to get the wall time and counter value from the host and
+> transfer these
+> +to guest via hypercall service. So one more hypercall service has been 
+> added.
+> +
+> +This new SMCCC hypercall is defined as:
+> +
+> +* ARM_SMCCC_HYP_KVM_PTP_FUNC_ID: 0x86000001
+> +
+> +As both 32 and 64-bits ptp_kvm client should be supported, we choose
+> SMC32/HVC32
+> +calling convention.
+> +
+> +ARM_SMCCC_HYP_KVM_PTP_FUNC_ID:
+> +
+> +    =============    ==========    ==========
+> +    Function ID:     (uint32)      0x86000001
+> +    Arguments:	     (uint32)      ARM_PTP_PHY_COUNTER(1) or
+> ARM_PTP_VIRT_COUNTER(0)
+> +                                   which indicate acquiring physical 
+> counter or
+> +                                   virtual counter respectively.
+> +    return value:    (uint32)      NOT_SUPPORTED(-1) or val0 and val1 
+> represent
+> +                                   wall clock time and val2 and val3 
+> represent
+> +                                   counter cycle.
 
-Missing include guard.
+This needs a lot more description:
 
+- Which word contains what part of the data (upper/lower part of the 
+64bit data)
+- The endianness of the data returned
 
-> +
-> +#include <asm/cpufeature.h>
-> +
-> +#ifndef KVM_HYP_CPU_FTR_REG
-> +#if defined(__KVM_NVHE_HYPERVISOR__)
-> +#define KVM_HYP_CPU_FTR_REG(id, name) extern struct arm64_ftr_reg name;
-> +#else
-> +#define KVM_HYP_CPU_FTR_REG(id, name) DECLARE_KVM_NVHE_SYM(name);
-> +#endif
-> +#endif
-> +
-> +KVM_HYP_CPU_FTR_REG(SYS_CTR_EL0, arm64_ftr_reg_ctrel0)
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index dd5bc0f0cf0d..3bc86d1423f8 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1116,6 +1116,18 @@ u64 read_sanitised_ftr_reg(u32 id)
->  }
->  EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
->
-> +int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst)
-> +{
-> +       struct arm64_ftr_reg *regp = get_arm64_ftr_reg(id);
-> +
-> +       if (!regp)
-> +               return -EINVAL;
-> +
-> +       memcpy(dst, regp, sizeof(*regp));
-> +
-> +       return 0;
-> +}
-> +
->  #define read_sysreg_case(r)    \
->         case r:         return read_sysreg_s(r)
->
-> diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-> index dd8ccc9efb6a..c35d768672eb 100644
-> --- a/arch/arm64/kernel/image-vars.h
-> +++ b/arch/arm64/kernel/image-vars.h
-> @@ -116,6 +116,8 @@ __kvm_nvhe___memcpy                 = __kvm_nvhe___pi_memcpy;
->  __kvm_nvhe___memset                    = __kvm_nvhe___pi_memset;
->  #endif
->
-> +_kvm_nvhe___flush_dcache_area          = __kvm_nvhe___pi___flush_dcache_area;
-> +
->  #endif /* CONFIG_KVM */
->
->  #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 391cf6753a13..c7f8fca97202 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -34,6 +34,7 @@
->  #include <asm/virt.h>
->  #include <asm/kvm_arm.h>
->  #include <asm/kvm_asm.h>
-> +#include <asm/kvm_cpufeature.h>
->  #include <asm/kvm_mmu.h>
->  #include <asm/kvm_emulate.h>
->  #include <asm/sections.h>
-> @@ -1636,6 +1637,29 @@ static void teardown_hyp_mode(void)
->         }
->  }
->
-> +#undef KVM_HYP_CPU_FTR_REG
-> +#define KVM_HYP_CPU_FTR_REG(id, name) \
-> +       { .sys_id = id, .dst = (struct arm64_ftr_reg *)&kvm_nvhe_sym(name) },
-> +static const struct __ftr_reg_copy_entry {
-> +       u32                     sys_id;
-> +       struct arm64_ftr_reg    *dst;
-> +} hyp_ftr_regs[] = {
-> +       #include <asm/kvm_cpufeature.h>
-> +};
-> +
-> +static int copy_cpu_ftr_regs(void)
-> +{
-> +       int i, ret;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(hyp_ftr_regs); i++) {
-> +               ret = copy_ftr_reg(hyp_ftr_regs[i].sys_id, hyp_ftr_regs[i].dst);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  /**
->   * Inits Hyp-mode on all online CPUs
->   */
-> @@ -1644,6 +1668,13 @@ static int init_hyp_mode(void)
->         int cpu;
->         int err = 0;
->
-> +       /*
-> +        * Copy the required CPU feature register in their EL2 counterpart
-> +        */
-> +       err = copy_cpu_ftr_regs();
-> +       if (err)
-> +               return err;
-> +
->         /*
->          * Allocate Hyp PGD and setup Hyp identity mapping
->          */
-> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-> index 9e5eacfec6ec..72cfe53f106f 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
-> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-> @@ -10,7 +10,8 @@ lib-objs := clear_page.o copy_page.o memcpy.o memset.o
->  lib-objs := $(addprefix ../../../lib/, $(lib-objs))
->
->  obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
-> -        hyp-main.o hyp-smp.o psci-relay.o early_alloc.o stub.o page_alloc.o
-> +        hyp-main.o hyp-smp.o psci-relay.o early_alloc.o stub.o page_alloc.o \
-> +        cache.o cpufeature.o
->  obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
->          ../fpsimd.o ../hyp-entry.o ../exception.o
->  obj-y += $(lib-objs)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/cache.S b/arch/arm64/kvm/hyp/nvhe/cache.S
-> new file mode 100644
-> index 000000000000..36cef6915428
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/nvhe/cache.S
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Code copied from arch/arm64/mm/cache.S.
-> + */
-> +
-> +#include <linux/linkage.h>
-> +#include <asm/assembler.h>
-> +#include <asm/alternative.h>
-> +
-> +SYM_FUNC_START_PI(__flush_dcache_area)
-> +       dcache_by_line_op civac, sy, x0, x1, x2, x3
-> +       ret
-> +SYM_FUNC_END_PI(__flush_dcache_area)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/cpufeature.c b/arch/arm64/kvm/hyp/nvhe/cpufeature.c
-> new file mode 100644
-> index 000000000000..a887508f996f
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/nvhe/cpufeature.c
-> @@ -0,0 +1,8 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 - Google LLC
-> + * Author: Quentin Perret <qperret@google.com>
-> + */
-> +
-> +#define KVM_HYP_CPU_FTR_REG(id, name) struct arm64_ftr_reg name;
-> +#include <asm/kvm_cpufeature.h>
-> --
-> 2.29.2.299.gdc1121823c-goog
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
-
-/fuad
+         M.
+-- 
+Jazz is not dead. It just smells funny...
