@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4160B2C034D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17942C0350
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728598AbgKWK26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:28:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728548AbgKWK24 (ORCPT
+        id S1728609AbgKWK3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:29:39 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:39040 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgKWK3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:28:56 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51523C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:28:56 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id p6so6254563plr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:28:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=O0ThdxcJNO6zV2BphVWbiZgpVdrlhVR1MlXKPXk6EbI=;
-        b=Ddt6tz3jFBvHqbvtkEjGa7L62ThxISp2m8mvGVC+V1ccsa8/1Ot5o77bK78xEnPc0J
-         MH+t7qj5sfeU+eSLEx/bduYC1u6HCIpk1dzUPdVsFVLBc9GHQbjj6XWxYZNYEBYb8rPB
-         Pn8qhkZviZe2uOs3RGXTL0Qn15Uj/YBzZyn6etVgszZjSwAelMmM5Y9cPXeWQLynyXgo
-         mPeAQ/PyvMXJoMBd88T/Pd5Luhyg75lWegpDVhZuorfXkssRLWqEoYvkE0riB1N9K31U
-         VNJuwlKXFyjWMKcvzzc5dscMTaq2nbpZeZEZAwjz+pQT+C8Gl/p1s528maryBgipn02N
-         p4eA==
+        Mon, 23 Nov 2020 05:29:38 -0500
+Received: by mail-oi1-f193.google.com with SMTP id f11so19163621oij.6;
+        Mon, 23 Nov 2020 02:29:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=O0ThdxcJNO6zV2BphVWbiZgpVdrlhVR1MlXKPXk6EbI=;
-        b=K/1nzA70AV2vHCdi1HCPdVefxpnzfu4hOb6c6O/A1wxb2ixJq61Tx4lH2pSZcvarv6
-         YJnK7Hwg58Wo6rL++BA+AHOaIKJY8Vx4llJhTlBeUYBevfF1E+S0CnXp6mq346jQ74It
-         od3a15O4XwIZgexJV21qsHHGdsgkAATwCXU9ZYTb7FOUy24T11hnc7vCgCSD6xZibqzZ
-         3h2uMbIiSQ7H/W9maWfqyAkJ5/dJPYR+HXQqqohzHAq1NB82tmGwsH9MB7KmE4QLT0x6
-         B/ZF/G5WPwBC5LufAXDEi8dgHISalPOeAHFLGbcL8boAXfuFE8/2OJVSaAYvwwFUNh4e
-         A9pg==
-X-Gm-Message-State: AOAM530O1qBNB/pVA2fguuHmh76u9mCfSnfcIZbrzCItLcmXKXsXtAfg
-        vBzxuBJHfAkD1Rvrb8XjW8TQKA==
-X-Google-Smtp-Source: ABdhPJx5Okx2LQszu8quy1RjI/nmR2bxDLBqR3NRA4lVEd2Xmc3JlWdZObGlJnsZ/N141rt3QbbTLw==
-X-Received: by 2002:a17:902:8ec4:b029:d7:eb0d:84c0 with SMTP id x4-20020a1709028ec4b02900d7eb0d84c0mr22751917plo.23.1606127335664;
-        Mon, 23 Nov 2020 02:28:55 -0800 (PST)
-Received: from localhost.localdomain ([49.207.198.226])
-        by smtp.gmail.com with ESMTPSA id s18sm11907655pfc.5.2020.11.23.02.28.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 23 Nov 2020 02:28:55 -0800 (PST)
-From:   Amit Pundir <amit.pundir@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Konrad Dybcio <konradybcio@gmail.com>, Joel S <jo@jsfamily.in>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, phone-devel@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] ath10k: qmi: Skip host capability request for Xiaomi Poco F1
-Date:   Mon, 23 Nov 2020 15:58:49 +0530
-Message-Id: <1606127329-6942-1-git-send-email-amit.pundir@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GcVbJeViwjjngoPcvsp+G36iPtj3YiLKTqOwNHU7Q8A=;
+        b=VvE5RCLQKwedoSOjL6X1hGJq/1xkL28ggqZTF85aRs4nj0AaVzE2ynuhmQ5z9m3bbt
+         fzy3ulpufY+/deePYrDaREDflotraTnrqnjtoj8UcS5uQLysX3+kaqUJRsEcNUg5gvJs
+         4tpu07kitDn3w4tQZ/jUtbZo4jJR+1hUfnCEfNdrlWJWU0+X9reYWyGphF68IwZfZBCi
+         F1IuTuTz/FL5gRrUGgAoYZrYkoILJO28va4Lv50WqHTc5uOUF7vj7HJP4Pl4YdaVzuU8
+         O0pMmCnd6ffN23U74+JaUraR8E1rs6QAEGYG1x9IZ8mcJMGc6lGyYiz9uNJUl6yI2nGT
+         BGjw==
+X-Gm-Message-State: AOAM532IiVvnW5AOd4Z7D05unnImU5hyqMl7LebYoTcBgTPlI/oBtmA8
+        9Y06mn+X+Zs8ITH+efrM1CMVDn6I2pMczfiDFQU=
+X-Google-Smtp-Source: ABdhPJwCEzumdWzXpdWdcv7sOWeMlusEI6Tw9t/k9j5O5PQGadD7Jsv4C/7J9P81xS20ZaCTTJ8KTJqt1mPHAUbCZpc=
+X-Received: by 2002:aca:f15:: with SMTP id 21mr3245999oip.71.1606127377753;
+ Mon, 23 Nov 2020 02:29:37 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1605770951.git.viresh.kumar@linaro.org> <a04646d277f1c93b248346db61c369cb8e7c2d02.1605770951.git.viresh.kumar@linaro.org>
+ <CAJZ5v0jViXY56t5LZ-UzTuzA=tq306P0YHwGheoUk+YyTri1xg@mail.gmail.com> <20201123100455.ulpoje32hhrmskou@vireshk-i7>
+In-Reply-To: <20201123100455.ulpoje32hhrmskou@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 23 Nov 2020 11:29:26 +0100
+Message-ID: <CAJZ5v0gXOfTrEeu=HEeC6=JowbcaC+cdDsDyc40s1SdQJas2LQ@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] sched/core: Rename and move schedutil_cpu_util()
+ to core.c
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
-phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
-message in ath10k_qmi_host_cap_send_sync(), but we can still
-bring up WiFi services successfully on AOSP if we ignore it.
+On Mon, Nov 23, 2020 at 11:05 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 19-11-20, 13:30, Rafael J. Wysocki wrote:
+> > On Thu, Nov 19, 2020 at 8:38 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > There is nothing schedutil specific in schedutil_cpu_util(), move it to
+> > > core.c and rename it to sched_cpu_util(), so it can be used from other
+> > > parts of the kernel as well.
+> >
+> > The patch does more than this, though.
+> >
+> > I would do that in two patches: (1) move the function as is and (2)
+> > rename it and rearrange the users.
+>
+> Sure.
+>
+> > >  static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
+> > >  {
+> > > -       struct rq *rq = cpu_rq(sg_cpu->cpu);
+> > > -       unsigned long util = cpu_util_cfs(rq);
+> > > -       unsigned long max = arch_scale_cpu_capacity(sg_cpu->cpu);
+> > > -
+> > > -       sg_cpu->max = max;
+> > > -       sg_cpu->bw_dl = cpu_bw_dl(rq);
+> > > +       sg_cpu->max = arch_scale_cpu_capacity(sg_cpu->cpu);
+> > > +       sg_cpu->bw_dl = cpu_bw_dl(cpu_rq(sg_cpu->cpu));
+> > >
+> > > -       return schedutil_cpu_util(sg_cpu->cpu, util, max, FREQUENCY_UTIL, NULL);
+> > > +       return sched_cpu_util(sg_cpu->cpu, FREQUENCY_UTIL, sg_cpu->max);
+> >
+> > I don't see much value in using this wrapper here TBH and it
+> > introduces an otherwise redundant cpu_rq() computation.
+>
+> You want to call effective_cpu_util() here instead, right ?
 
-We suspect either the host cap is not implemented or there
-may be firmware specific issues. Firmware version is
-QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
-
-qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
-quirk, then the host capability request does get accepted,
-but we run into fatal "msa info req rejected" error and
-WiFi interface doesn't come up.
-
-Attempts are being made to debug the failure reasons but no
-luck so far. Hence this device specific workaround instead
-of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
-Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
-linux-firmware project but it didn't help and neither did
-building board-2.bin file from stock bdwlan* files.
-
-This workaround will be removed once we have a viable fix.
-Thanks to postmarketOS guys for catching this.
-
-Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
----
-We dropped this workaround last time in the favor of
-a generic dts quirk to skip host cap check. But that
-is under under discussion for a while now,
-https://lkml.org/lkml/2020/9/25/1119, so resending
-this short term workaround for the time being.
-
-v2: ath10k-check complained about a too long line last
-    time, so moved the comment to a new line.
-    
- drivers/net/wireless/ath/ath10k/qmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index ae6b1f402adf..1c58b0ff1d29 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -653,7 +653,9 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
- 
- 	/* older FW didn't support this request, which is not fatal */
- 	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
--	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
-+	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
-+	    /* Xiaomi Poco F1 workaround */
-+	    !of_machine_is_compatible("xiaomi,beryllium")) {
- 		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
- 		ret = -EINVAL;
- 		goto out;
--- 
-2.7.4
-
+Right.
