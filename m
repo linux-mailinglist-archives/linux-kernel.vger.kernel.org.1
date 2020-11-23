@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2332C0E6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 785102C0E6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389341AbgKWPFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:05:04 -0500
-Received: from m9785.mail.qiye.163.com ([220.181.97.85]:54133 "EHLO
-        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729602AbgKWPFE (ORCPT
+        id S2389352AbgKWPGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:06:06 -0500
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:34145 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729602AbgKWPGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:05:04 -0500
-Received: from localhost (unknown [1.203.100.158])
-        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id 23F5D5C16B8;
-        Mon, 23 Nov 2020 23:04:53 +0800 (CST)
-Date:   Mon, 23 Nov 2020 23:04:52 +0800
-From:   WANG Chao <chao.wang@ucloud.cn>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
-Message-ID: <20201123150452.GA68187@MacBook-Pro-2>
-References: <20201103054425.59251-1-chao.wang@ucloud.cn>
- <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
+        Mon, 23 Nov 2020 10:06:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606143964; x=1637679964;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=SZKdsVisH2xj8OOk97XoqM3QGAQYL5iB0nFf752OqB4=;
+  b=XTq788LlY8yaeKfm2OK0O9PnGilQJU0uEytMVyVmGdE3rQFWTgH0ai26
+   WENqBtGxqwC9ux0NvuTfJwkwbAXiKyte3Ny2LwkaBkfRJG80+P8a2usRh
+   cxY8O1/+ErFdyR7zFWf4c/tda4Xl3j/4TChtbTZu13Zv1Y3FSnvoq65rU
+   JzGajJUlRSzhnUE1tgreqR0ChJhKS1qaxXj9zw3E9BJs/Cmy21x+U8Diw
+   D35ny5W+yZAgWNQMxzpViZXew/jVCVsGrr4E/eclncwbeuTRXDMAqKzlA
+   Nv0ZXMAj2AzGQH09JfiWIc+yqg+DGkgxqSTTlQhRi0+Y1SPx1BAupH+6R
+   g==;
+IronPort-SDR: +ouTkoeXgtdlGkMSfeQmxvFgWWu9hWP9NpkSCwbXthlatuhCXvUxS+z+s+wGVy5h9wFukO6cLs
+ yjxHQGNW1g0AvShb1SWodoac6ghYVXBexR15HxdyQRhuUteGYmABL7/Ki9LEGYVWOTfIDVs0/I
+ dHI7R6UXBOSThWhFmEyUGoP9lZsG5xfNVxte3MVuEr6bdgPNhi2GOg7RhzzfkZiDhqKIC2FKLo
+ 9xlp5qHb4mAZdiTQkv1IiGHjZTNyB+AJZXkvTOTo6HR82mZzbsaSFBmOURL0e/ANiIV8iqfrR3
+ /f0=
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="99504032"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2020 08:06:04 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 23 Nov 2020 08:06:03 -0700
+Received: from soft-dev10.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Mon, 23 Nov 2020 08:06:01 -0700
+References: <20201113145151.68900-1-lars.povlsen@microchip.com> <CACRpkdZAc2yKFpngBHCdxjFBpc0XCVAYWyEERMSHX+7sL7Fgrg@mail.gmail.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v10 0/3] Adding support for Microchip/Microsemi serial GPIO controller
+In-Reply-To: <CACRpkdZAc2yKFpngBHCdxjFBpc0XCVAYWyEERMSHX+7sL7Fgrg@mail.gmail.com>
+Date:   Mon, 23 Nov 2020 16:05:56 +0100
+Message-ID: <87pn443ygb.fsf@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZSEtJQ0tKQ0oeS0JIVkpNS01KT0hDQkhJS0xVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mj46FTo4Nz0xLjJRHjM8NzoT
-        TThPCzJVSlVKTUtNSk9IQ0JISE1DVTMWGhIXVRgTGhRVDBoVHDsOGBcUDh9VGBVFWVdZEgtZQVlK
-        VUlLSFVKS0tVSk5DWVdZCAFZQUhPQ0o3Bg++
-X-HM-Tid: 0a75f5a2de9f2087kuqy23f5d5c16b8
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/20 at 02:23P, Masahiro Yamada wrote:
-> On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
-> >
-> > extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
-> > ("kbuild: do not create built-in objects for external module builds").
-> >
-> > This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
-> > and 'make M=...' to build livepatch patch module.
-> >
-> > Add extra-y to targets-for-modules so that such kind of build works
-> > properly.
-> >
-> > Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
-> > ---
-> >  scripts/Makefile.build | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> > index ae647379b579..0113a042d643 100644
-> > --- a/scripts/Makefile.build
-> > +++ b/scripts/Makefile.build
-> > @@ -86,7 +86,7 @@ ifdef need-builtin
-> >  targets-for-builtin += $(obj)/built-in.a
-> >  endif
-> >
-> > -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> > +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> >
-> >  ifdef need-modorder
-> >  targets-for-modules += $(obj)/modules.order
-> > --
-> > 2.29.1
-> >
-> 
-> NACK.
-> 
-> Please fix your Makefile.
-> 
-> Hint:
-> https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
-> 
-> 
-> Probably what you should use is 'targets'.
 
-I tried with 'targets' and 'always-y'. Both doesn't work for me.
+Linus Walleij writes:
 
-I narraw it down to the following example:
+> On Fri, Nov 13, 2020 at 3:52 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>
+>> The series add support for the serial GPIO controller used by
+>> Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
+>>
+>> v10 changes - anniversary edition (from Andy):
+>>  - Fixed "Author" comment
+>>  - Added missing "break;" in default switch case
+>>  - Return -EINVAL when requesting pin disabled in bitstream
+>>  - Change bank consistency check to return -ERANGE if failed (-EINVAL
+>>    previously)
+>
+> Patches 1 & 2 applied to the GPIO tree!
 
-cat > Makefile << _EOF_
-obj-m += foo.o
+Excellent!
 
-ldflags-y += -T $(src)/kpatch.lds
-always-y += kpatch.lds
+>
+> Patch 3 needs to go to the SoC tree.
+>
 
-foo-objs += bar.o
+I'll forward this in a PR for Arnd.
 
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
-clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
-_EOF_
+> Thanks for your hard work!
 
-Take a look into scripts/Makefile.build:488:
+Thank you to both you and Any for good comments.
 
-__build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
-	 $(if $(KBUILD_MODULES), $(targets-for-modules)) \
-	 $(subdir-ym) $(always-y)
-	@:
+---Lars
 
-'always-y' is built after 'targets-for-modules'. This makes
-'targets-for-modules' fails because kpatch.lds isn't there.
+>
+> Yours,
+> Linus Walleij
 
-For 'targets', in case of OOT, does not seem to be useful.
 
-What change do you suggest to make to fix this kind of Makefile?
-
-Thanks,
-WANG Chao
+-- 
+Lars Povlsen,
+Microchip
