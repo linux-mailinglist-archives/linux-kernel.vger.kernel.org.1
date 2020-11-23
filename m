@@ -2,206 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C60F2C184A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1902C184E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732373AbgKWWNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:13:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
+        id S1730229AbgKWWSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:18:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728895AbgKWWNy (ORCPT
+        with ESMTP id S1726325AbgKWWSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:13:54 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4837C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:13:54 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id r1so19774308iob.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:13:54 -0800 (PST)
+        Mon, 23 Nov 2020 17:18:13 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA0CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:18:11 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id f3so12056979plb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:18:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YbOBzNVExiH64clQRI32BJmv9D/fQUmJHwb5YfTyaEc=;
-        b=shaloUoNGlZyIAlKhS4E08L6THzCDtAQOmdPCBHKFHm3dZGLZJeqZ7B500HxM2BPgF
-         hdV0c7KN0kg0IIc3E4TWeOn6nkixjiXx5H8l+jp1hnUPWnlLphDVAeHAGcnZRBNUhZWC
-         X0x3Rv0G4cpfb2dZE3DXkW48wW4IJy2dFqWbTqOUmFHITmEKypc4f1eVqGMGBTmRgoSS
-         F1rvVOrycEtsQ9Ob4SaMUj8HdqHhAwn1/sP2CC3+qIAxu3rss9vDeA/o9B9R78sFl8Uw
-         epsQT6BOCw4jpFkPvW1fJ7sBFKAW+ls2kKuzKhdcF00pq+30RYpykwliz1cBLV5kfKs6
-         hhig==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=YXylx3GCNHyHYBMQqsysdmzOVSsOtZin9cWyUbZGeSg=;
+        b=B2IBeB19zTfs1xYaSNHLZDMsX3f0wvPupU1x6jQPo5zn0gD36JBXuYQIEFhSNZxQVc
+         C+cutJyz7ixR0Zct99A8r8T+So46A9nmiDQAiQPQ5yQjyxNdxDFUrysbVUSvhoni3QWw
+         qUNVsxjAQfDFmPr/HsEzGJYkQnVTRasJjwEaq22nHHkqnYRTLt+shTBNv1s7AsybXR/Q
+         824VelCSQrO4ugrRqHUlEk05gL3618qDH7DQJgTrPp+XFCkLDAXfPJGZuCyUvB/ENZaN
+         2sVT81n9zsSeivwzCcBMIGwGmXPrm13GhQHUsNjzlDceRfzYvC0buQx2dzAsdSmshJuR
+         IjXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YbOBzNVExiH64clQRI32BJmv9D/fQUmJHwb5YfTyaEc=;
-        b=VmvXT0e5ifF8zIzJEZHHdhboiyv4rWfR9dNK1TAZPyW/sCa992SV4tSMWW8lnxjvB3
-         8xRhgutCSoDky9p29mNNNTKuFLFZ61T/nP5PomtoIAooiK4RypfspeIrnoevf30DwV8+
-         r7cjqCVl8uXVuXSIkQBDDA3Li/ich4gbWRJwGdJrubhk6v2EfSruQ1NO57x5UxCULWEp
-         g+VL0Ig1bj+ZSL34e78AYXq/fEPBzseqwHOPMyRsuias2bf0xcUf0LtxlqNEQEPmYuu9
-         3LaVRH3MxGYsx1KOa2Pwfqkf6uOB8P2duSz9VrGeEx5xmqbfo0ZiI/puLgPCKFcfe/XQ
-         8ZLQ==
-X-Gm-Message-State: AOAM531iyyg5dML8GmrpiA1DG1+pcFVccxRMDukkHdz/+wAH9tRIpk1N
-        yDzlqN5nZQ4Kq/FtAqhwd36eIlqv5XUCacFRqpSdeA==
-X-Google-Smtp-Source: ABdhPJwp+twyRELPjRee3jPv4vD6OTveZtl1e0GPwaKoFaW8Av/s71zgKaTh9U9wb3Tj+JOgvS04hUZ6tDmVNRryW8I=
-X-Received: by 2002:a6b:750c:: with SMTP id l12mr1568590ioh.57.1606169633317;
- Mon, 23 Nov 2020 14:13:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20201102213656.2700500-1-dlatypov@google.com> <CAFd5g45GK-sQY-nXcOORoJNu_0JGPY1veZd8PuM0MDtGtDRHSg@mail.gmail.com>
-In-Reply-To: <CAFd5g45GK-sQY-nXcOORoJNu_0JGPY1veZd8PuM0MDtGtDRHSg@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Mon, 23 Nov 2020 14:13:41 -0800
-Message-ID: <CAGS_qxp0zz_J759YR20FFwepffwPQmK-nYmuzb7B_C+kYpJmGg@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: provide guidance for testing many inputs
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=YXylx3GCNHyHYBMQqsysdmzOVSsOtZin9cWyUbZGeSg=;
+        b=dqpCsT1ZjmfcN8SBUFyy5J5rJPEUesRv1xTZgwASBQTNKZVWjTRDFmmfAzpExdmCE7
+         lsz0DZl3NmV/WB6G7STcuGQxqJKT1PdSQ4FFTrf3tIjJ+qEW5MK+ipJTBBxUalD3+Wxt
+         xYNsxjj6CxojBBq4hgTKBVMKUqxAndbiKHc8StOo4uE5pE5gN55bFbFmR2Jw/bGeTYij
+         q6xo7I61fh8XBSRpNlaQpn6BZ376OyDYx2vd8QHrLbwcTNoX5jR+Lg1rGQih8S8d/UXj
+         TByFBoaZGEnP44elPCkcrTRNc6pibNeY7eMj492e37TgTuB/PlsK1TOKRZfh10cBKuSk
+         2ROg==
+X-Gm-Message-State: AOAM531uNIUgPwv3iYC0uYwlufZF610d2yX3O/34mGDlwN/aKs+6Y4yO
+        aqh90ov6Aco5bIOkCpzMPnDyhXJ7Sg==
+X-Google-Smtp-Source: ABdhPJwaHIC5Agde+mPQGxwaVJCi4Ya+RC1h3w/HtrSv/HBYs4qc50kEx9QHD7poWbsARQ0erwEZDcV4cA==
+Sender: "jxgao via sendgmr" <jxgao@jxgao.kir.corp.google.com>
+X-Received: from jxgao.kir.corp.google.com ([2620:0:1008:11:3e52:82ff:fe62:cb61])
+ (user=jxgao job=sendgmr) by 2002:a17:90a:5b07:: with SMTP id
+ o7mr1213160pji.58.1606169891131; Mon, 23 Nov 2020 14:18:11 -0800 (PST)
+Date:   Mon, 23 Nov 2020 14:18:07 -0800
+Message-Id: <20201123221807.3344263-1-jxgao@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH] [PATCH] Adding offset keeping option when mapping data via SWIOTLB.
+From:   Jianxiong Gao <jxgao@google.com>
+To:     kbusch@kernel.org
+Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        konrad.wilk@oracle.com, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Jianxiong Gao <jxgao@google.com>,
+        David Rientjes <rientjes@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:32 AM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> On Mon, Nov 2, 2020 at 1:37 PM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > usage.rst goes into a detailed about faking out classes, but currently
-> > lacks wording about how one might idiomatically test a range of inputs.
-> >
-> > Give an example of how one might test a hash function via macros/helper
-> > funcs and a table-driven test and very briefly discuss pros and cons.
-> >
-> > Also highlight the KUNIT_EXPECT_*_MSG() variants (that aren't mentioned
-> > elsewhere [1]) which are particularly useful in these situations.
-> >
-> > It is also criminally underused at the moment, only appearing in 2
-> > tests (both written by people involved in KUnit).
-> >
-> > [1] not even on
-> > https://www.kernel.org/doc/html/latest/dev-tools/kunit/api/test.html
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
->
-> Aside from the minor comment I made below, I like the patch; it is a
-> definite improvement, but I think the test you wrote that ultimately
-> led to this documentation fix had more information in it than this
-> documentation. I think it only contains the pattern that you outlined
-> here, but I think it does include some other best practices. Maybe we
-> should add some more documentation patches with more code examples in
-> the future?
->
-> Anyway, like I said, I think this patch in and of itself looks pretty good.
->
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
->
-> > ---
-> >  Documentation/dev-tools/kunit/usage.rst | 66 +++++++++++++++++++++++++
-> >  1 file changed, 66 insertions(+)
-> >
-> > diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-> > index 62142a47488c..317390df2b96 100644
-> > --- a/Documentation/dev-tools/kunit/usage.rst
-> > +++ b/Documentation/dev-tools/kunit/usage.rst
-> > @@ -451,6 +451,72 @@ We can now use it to test ``struct eeprom_buffer``:
-> >                 destroy_eeprom_buffer(ctx->eeprom_buffer);
-> >         }
-> >
-> > +Testing various inputs
-> > +----------------------
->
-> Since this, by my count, the second test pattern that we are
-> introducing here, could we maybe call that out with a subheading or a
-> new section or something? It would be nice if we could sort of build
-> up a cookbook of testing patterns.
+NVMe driver and other applications may depend on the data offset
+to operate correctly. Currently when unaligned data is mapped via
+SWIOTLB, the data is mapped as slab aligned with the SWIOTLB. When
+booting with --swiotlb=force option and using NVMe as interface,
+running mkfs.xfs on Rhel fails because of the unalignment issue.
+This patch adds an option to make sure the mapped data preserves
+its offset of the orginal addrss. Tested on latest kernel that
+this patch fixes the issue.
 
-Good point, I noticed now the "Organization of this document" section
-would need to be updated.
-Perhaps something like
+Signed-off-by: Jianxiong Gao <jxgao@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+---
+ drivers/nvme/host/pci.c     |  3 ++-
+ include/linux/dma-mapping.h |  8 ++++++++
+ kernel/dma/swiotlb.c        | 13 +++++++++++++
+ 3 files changed, 23 insertions(+), 1 deletion(-)
 
--This document is organized into two main sections: Testing and Isolating
--Behavior. The first covers what unit tests are and how to use KUnit to write
--them. The second covers how to use KUnit to isolate code and make it possible
--to unit test code that was otherwise un-unit-testable.
-+This document is organized into two main sections: Testing and Common Patterns.
-+The first covers what unit tests are and how to use KUnit to write them. The
-+second covers common testing patterns, e.g. how to isolate code and make it
-+possible to unit test code that was otherwise un-unit-testable.
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 0578ff253c47..a366fb8a1ff0 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -833,7 +833,8 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+ 				iod->nents, rq_dma_dir(req), DMA_ATTR_NO_WARN);
+ 	else
+ 		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
+-					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
++				rq_dma_dir(req),
++			       	DMA_ATTR_NO_WARN|DMA_ATTR_SWIOTLB_KEEP_OFFSET);
+ 	if (!nr_mapped)
+ 		goto out;
+ 
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 956151052d45..e46d23d9fa20 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -61,6 +61,14 @@
+  */
+ #define DMA_ATTR_PRIVILEGED		(1UL << 9)
+ 
++/*
++ * DMA_ATTR_SWIOTLB_KEEP_OFFSET: used to indicate that the buffer has to keep
++ * its offset when mapped via SWIOTLB. Some application functionality depends
++ * on the address offset, thus when buffers are mapped via SWIOTLB, the offset
++ * needs to be preserved.
++ */
++#define DMA_ATTR_SWIOTLB_KEEP_OFFSET	(1UL << 10)
++
+ /*
+  * A dma_addr_t can hold any valid DMA or bus address for the platform.  It can
+  * be given to a device to use as a DMA source or target.  It is specific to a
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 781b9dca197c..f43d7be1342d 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -483,6 +483,13 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
+ 	max_slots = mask + 1
+ 		    ? ALIGN(mask + 1, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT
+ 		    : 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
++ 
++	/*
++	 * If we need to keep the offset when mapping, we need to add the offset
++	 * to the total set we need to allocate in SWIOTLB
++	 */
++	if (attrs & DMA_ATTR_SWIOTLB_KEEP_OFFSET)
++		alloc_size += offset_in_page(orig_addr);
+ 
+ 	/*
+ 	 * For mappings greater than or equal to a page, we limit the stride
+@@ -567,6 +574,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
+ 	 */
+ 	for (i = 0; i < nslots; i++)
+ 		io_tlb_orig_addr[index+i] = orig_addr + (i << IO_TLB_SHIFT);
++	/*
++	 * When keeping the offset of the original data, we need to advance
++	 * the tlb_addr by the offset of orig_addr.
++	 */
++	if (attrs & DMA_ATTR_SWIOTLB_KEEP_OFFSET)
++		tlb_addr += orig_addr & (PAGE_SIZE - 1);
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+ 	    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL))
+ 		swiotlb_bounce(orig_addr, tlb_addr, mapping_size, DMA_TO_DEVICE);
+-- 
+2.27.0
 
-I'll send out a V2 shortly, changing the example per David's
-suggestion and with the above.
 
->
-> > +Testing just a few inputs might not be enough to have confidence that the code
-> > +works correctly, e.g. for a hash function.
-> > +
-> > +In such cases, it can be helpful to have a helper macro or function, e.g. this
-> > +fictitious example for ``md5sum(1)``
-> > +
-> > +.. code-block:: c
-> > +
-> > +       /* Note: the cast is to satisfy overly strict type-checking. */
-> > +       #define TEST_MD5(in, want) \
-> > +               md5sum(in, out); \
-> > +               KUNIT_EXPECT_STREQ_MSG(test, (char *)out, want, "md5sum(%s)", in);
-> > +
-> > +       char out[16];
-> > +       TEST_MD5("hello world",   "5eb63bbbe01eeed093cb22bb8f5acdc3");
-> > +       TEST_MD5("hello world!",  "fc3ff98e8c6a0d3087d515c0473f8677");
-> > +
-> > +Note the use of ``KUNIT_EXPECT_STREQ_MSG`` to give more context when it fails
-> > +and make it easier to track down. (Yes, in this example, ``want`` is likely
-> > +going to be unique enough on its own).
-> > +
-> > +The ``_MSG`` variants are even more useful when the same expectation is called
-> > +multiple times (in a loop or helper function) and thus the line number isn't
-> > +enough to identify what failed, like below.
-> > +
-> > +In some cases, it can be helpful to write a *table-driven test* instead, e.g.
-> > +
-> > +.. code-block:: c
-> > +
-> > +       int i;
-> > +       char out[16];
-> > +
-> > +       struct md5_test_case {
-> > +               const char *str;
-> > +               const char *md5;
-> > +       };
-> > +
-> > +       struct md5_test_case cases[] = {
-> > +               {
-> > +                       .str = "hello world",
-> > +                       .md5 = "5eb63bbbe01eeed093cb22bb8f5acdc3",
-> > +               },
-> > +               {
-> > +                       .str = "hello world!",
-> > +                       .md5 = "fc3ff98e8c6a0d3087d515c0473f8677",
-> > +               },
-> > +       };
-> > +       for (i = 0; i < ARRAY_SIZE(cases); ++i) {
-> > +               md5sum(cases[i].str, out);
-> > +               KUNIT_EXPECT_STREQ_MSG(test, (char *)out, cases[i].md5,
-> > +                                     "md5sum(%s)", cases[i].str);
-> > +       }
-> > +
-> > +
-> > +There's more boilerplate involved, but it can:
-> > +
-> > +* be more readable when there are multiple inputs/outputs thanks to field names,
-> > +
-> > +  * E.g. see ``fs/ext4/inode-test.c`` for an example of both.
-> > +* reduce duplication if test cases can be shared across multiple tests.
-> > +
-> > +  * E.g. if we had a magical ``undo_md5sum`` function, we could reuse ``cases``.
-> > +
-> >  .. _kunit-on-non-uml:
-> >
-> >  KUnit on non-UML architectures
-> >
-> > base-commit: 77c8473edf7f7664137f555cfcdc8c460bbd947d
-> > --
-> > 2.29.1.341.ge80a0c044ae-goog
-> >
