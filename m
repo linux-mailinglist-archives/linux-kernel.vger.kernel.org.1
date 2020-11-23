@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E792C03A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35292C039E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728781AbgKWKrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:47:14 -0500
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:38473 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbgKWKrO (ORCPT
+        id S1728712AbgKWKqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:46:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728690AbgKWKqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:47:14 -0500
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.51 with ESMTP; 23 Nov 2020 19:47:12 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.126 with ESMTP; 23 Nov 2020 19:47:12 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 23 Nov 2020 19:45:38 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Byungchul Park <max.byungchul.park@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        will@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        alexander.levin@microsoft.com,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>, duyuyang@gmail.com,
-        johannes.berg@intel.com, Tejun Heo <tj@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, willy@infradead.org,
-        david@fromorbit.com, Amir Goldstein <amir73il@gmail.com>,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team <kernel-team@lge.com>
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201123104538.GA9464@X58A-UD3R>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201111105441.GA78848@gmail.com>
- <20201111093609.1bd2b637@gandalf.local.home>
- <87d00jo55p.fsf@nanos.tec.linutronix.de>
- <20201112081030.GB14554@X58A-UD3R>
- <20201112092612.00a19239@gandalf.local.home>
- <CANrsvRNr=JG=-oyYZxn+AXTMX9Ly4OJB0xY5F2Lmqo+1Q_S4fA@mail.gmail.com>
- <20201116090547.GC26078@X58A-UD3R>
+        Mon, 23 Nov 2020 05:46:51 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139E1C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:46:51 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id 7so22623312ejm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bf3Dad1zscNI33FoKwPu/py5sOPRwrYDQb8QYdxZRy4=;
+        b=VyY/UaY2A1uZvQ9rve79LjJiOJL1CI3dvsrV3swg09sAABwIgosjjta5q8zhkrPoZZ
+         5zImlhFEsF3ai58SF4irPNNvGoRzCyvQztYAx8s+zLmSXjGZPa4RtMzUBMMT0cLt23/C
+         yHjZ1Yj8/hds3Ex7rjyXLJLmFMIi2ICX9C4t2uVm1Fse395iKjIwzbqEi+10ZfRgT6Iq
+         sAq6GIQrrm5vWPAyO3ox79zmrxHRCEhXPNxlT816oaz9+2B3VFo0jHrGboJxWIB/PPoG
+         7W+5YxoOUheRkD5Zysd3l0azMFn4ne6mj/iIiaJTmtMLK+ufVDO7sVGtP0KrUy8Hs0Lm
+         QdQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bf3Dad1zscNI33FoKwPu/py5sOPRwrYDQb8QYdxZRy4=;
+        b=SKTCvOUi9rTxqJp+LW5fE0JEMvd1GEScJc7deXAqsFhcjxGUu7M/APdemV91MDfuJo
+         BUz8T8hcot4TXycV6FSdba4WCwD0yuzkgfi51zoyTykybVaq9ukdBoTfX24Sy1RTLJaX
+         KBR9VcisE/u9qMAo7GixlRqfVj6gMNFrZkBwO4z8QmhTJDX6yFxQu9pK0h47KAMvVgYy
+         0oAGFw2j89IktENZ83NVW4IiDzEG6zN2h9uKA/aANxUvOWNPO/ksoOBZCdhEmxbAQeL+
+         HkiL0stcrALLW4qknebTJUz29GAvvVI2X83AvHX4Ydy+jtDQ6BFJwJznfI82J1yszNi/
+         wtYg==
+X-Gm-Message-State: AOAM531LqN6G/FpUfmHyAZI5ORcGL2dXW0MpW/CJLY7TbWrfJ0Tgz2dp
+        I05FJPmRr8ffhvDcdSHf0cPfZg==
+X-Google-Smtp-Source: ABdhPJyMBnVAkcORAG/kSFMYC3vQyJU5E/KKGMO0DHSQoIjEO9c+wUaT0pEXyAB7B9n3QJvhfEnEuQ==
+X-Received: by 2002:a17:906:468d:: with SMTP id a13mr45376085ejr.253.1606128409768;
+        Mon, 23 Nov 2020 02:46:49 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:f25:a362:ce86:20d])
+        by smtp.gmail.com with ESMTPSA id gf9sm4792416ejb.18.2020.11.23.02.46.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 02:46:49 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        John Stultz <john.stultz@linaro.org>,
+        Peter Collingbourne <pcc@google.com>
+Cc:     Alistair Delva <adelva@google.com>,
+        Vinod Koul <vinod.koul@linaro.org>,
+        Anibal Limon <anibal.limon@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH v1] drm/bridge: lt9611: Fix handling of 4k panels
+Date:   Mon, 23 Nov 2020 11:46:16 +0100
+Message-Id: <20201123104616.1412688-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116090547.GC26078@X58A-UD3R>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 06:05:47PM +0900, Byungchul Park wrote:
-> On Thu, Nov 12, 2020 at 11:58:44PM +0900, Byungchul Park wrote:
-> > > > FYI, roughly Lockdep is doing:
-> > > >
-> > > >    1. Dependency check
-> > > >    2. Lock usage correctness check (including RCU)
-> > > >    3. IRQ related usage correctness check with IRQFLAGS
-> > > >
-> > > > 2 and 3 should be there forever which is subtle and have gotten matured.
-> > > > But 1 is not. I've been talking about 1. But again, it's not about
-> > > > replacing it right away but having both for a while. I'm gonna try my
-> > > > best to make it better.
-> > >
-> > > And I believe lockdep does handle 1. Perhaps show some tangible use case
-> > > that you want to cover that you do not believe that lockdep can handle. If
-> > > lockdep cannot handle it, it will show us where lockdep is lacking. If it
-> > > can handle it, it will educate you on other ways that lockdep can be
-> > > helpful in your development ;-)
-> 
-> 1) OK. Lockdep might work with trylock well.
-> 2) Definitely Lockdep cannot do what Cross-release was doing.
-> 3) For readlock handling, let me be back later and give you examples. I
->    need check current Lockdep code first. But I have to all-stop what
->    I'm doing at the moment because of a very big personal issue, which
->    is a sad thing.
+4k requires two dsi pipes, so don't report MODE_OK when only a
+single pipe is configured. But rather report MODE_PANEL to
+signal that requirements of the panel are not being met.
 
-I just found that Boqun Feng has made a lot of changes into Lockdep
-recently to support tracking recursive read locks, while I was checking
-how the current Lockdep deals with read locks.
+Reported-by: Peter Collingbourne <pcc@google.com>
+Suggested-by: Peter Collingbourne <pcc@google.com>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Tested-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/gpu/drm/bridge/lontium-lt9611.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-I need to read the code more.. I'll add my opinion on it once I see
-how it works. Before that, I'd like to share my approach so that you
-guys can see what means to track *wait* and *event*, how simply the tool
-can work and what exactly a deadlock detection tool should do. Let me
-add my patches onto this thread right away.
+diff --git a/drivers/gpu/drm/bridge/lontium-lt9611.c b/drivers/gpu/drm/bridge/lontium-lt9611.c
+index d734d9402c35..e8eb8deb444b 100644
+--- a/drivers/gpu/drm/bridge/lontium-lt9611.c
++++ b/drivers/gpu/drm/bridge/lontium-lt9611.c
+@@ -867,8 +867,14 @@ static enum drm_mode_status lt9611_bridge_mode_valid(struct drm_bridge *bridge,
+ 						     const struct drm_display_mode *mode)
+ {
+ 	struct lt9611_mode *lt9611_mode = lt9611_find_mode(mode);
++	struct lt9611 *lt9611 = bridge_to_lt9611(bridge);
+ 
+-	return lt9611_mode ? MODE_OK : MODE_BAD;
++	if (!lt9611_mode)
++		return MODE_BAD;
++	else if (lt9611_mode->intfs > 1 && !lt9611->dsi1)
++		return MODE_PANEL;
++	else
++		return MODE_OK;
+ }
+ 
+ static void lt9611_bridge_pre_enable(struct drm_bridge *bridge)
+-- 
+2.27.0
 
-I understand you all don't want to replace such a stable tool but I
-hope you to see *the* right way to track things for that purpose.
-Again, I do never touch any other functions of Lockdep including all
-great efforts that have been made but dependency tracking.
-
-Thanks,
-Byungchul
