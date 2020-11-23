@@ -2,61 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91752C13E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF11E2C13E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729739AbgKWSuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:50:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45000 "EHLO mail.kernel.org"
+        id S1730423AbgKWSwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:52:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:36966 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgKWSug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:50:36 -0500
-Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 653A120657;
-        Mon, 23 Nov 2020 18:50:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606157436;
-        bh=4Te0GY+0HL6NleuQzTJk1xWxop6dhSW6xscOWUrTZjA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HNyMxvysNP38YLPoH51dOjjeNpT3MCAOO1U3x00qffNoGbxQ2sukuCSZqQuuFs8zR
-         O3s0FxkCwf1wQRF5GOMS0LOL93Gl1czvuAQmKdDm1BrNpANETVc37d9fuVwCTqwOza
-         tMoJCoYO1+Jm7uD/ElHamfKaXZvQJhqINYoUp18M=
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai
-Subject: [PATCH] habanalabs/gaudi: print ECC type field
-Date:   Mon, 23 Nov 2020 20:50:32 +0200
-Message-Id: <20201123185032.18199-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1729837AbgKWSwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:52:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75CDC101E;
+        Mon, 23 Nov 2020 10:52:16 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 97FBF3F70D;
+        Mon, 23 Nov 2020 10:52:14 -0800 (PST)
+Date:   Mon, 23 Nov 2020 18:52:08 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, sudeep.holla@arm.com,
+        lukasz.luba@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, robh@kernel.org,
+        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com
+Subject: Re: [PATCH v6 4/5] dt-bindings: arm: add support for SCMI Regulators
+Message-ID: <20201123185141.GE56553@e120937-lin>
+References: <20201119191051.46363-1-cristian.marussi@arm.com>
+ <20201119191051.46363-5-cristian.marussi@arm.com>
+ <20201123173008.GK6322@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123173008.GK6322@sirena.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have the ECC type field from the firmware but the driver didn't
-print it, so we need to add that field to the ECC print message.
+On Mon, Nov 23, 2020 at 05:30:08PM +0000, Mark Brown wrote:
+> On Thu, Nov 19, 2020 at 07:10:50PM +0000, Cristian Marussi wrote:
+> 
+> > +This binding uses the common regulator binding[6] but, due to SCMI abstractions,
+> > +supports only a subset of its properties as specified below amongst Optional
+> > +properties.
+> 
+> > +Required properties:
+> > + - reg : shall identify an existent SCMI Voltage Domain.
+> 
+> > +Optional properties:
+> > + - regulator-name
+> > + - regulator-min-microvolt / regulator-max-microvolt
+> > + - regulator-always-on / regulator-boot-on
+> > + - regulator-max-step-microvolt
+> > + - regulator-coupled-with / regulator-coupled-max-spread
+> 
+> Please send a followup patch removing this stuff about only specific
+> properties being supported, that's just asking for bitrot and is equally
+> true for most regulator drivers - people shouldn't have to do do an
+> audit of every single regulator driver to add a generic feature.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/gaudi/gaudi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ok I'll remove any reference to partial SCMI regulator support.
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index c99ad8d65dea..cd18456fa523 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -6918,8 +6918,8 @@ static int gaudi_hbm_read_interrupts(struct hl_device *hdev, int device,
- 				le32_to_cpu(hbm_ecc_data->hbm_ecc_info));
- 
- 		dev_err(hdev->dev,
--			"HBM%d pc%d interrupts info: WR_PAR=%d, RD_PAR=%d, CA_PAR=%d, SERR=%d, DERR=%d\n",
--			device, ch, wr_par, rd_par, ca_par, serr, derr);
-+			"HBM%d pc%d ECC: TYPE=%d, WR_PAR=%d, RD_PAR=%d, CA_PAR=%d, SERR=%d, DERR=%d\n",
-+			device, ch, type, wr_par, rd_par, ca_par, serr, derr);
- 
- 		err = 1;
- 
--- 
-2.17.1
+Thanks
+
+Cristian
+
 
