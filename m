@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBCC2C08B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4972C0A47
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387931AbgKWM7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:59:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36204 "EHLO mail.kernel.org"
+        id S1732394AbgKWMkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:40:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387801AbgKWMwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:52:11 -0500
+        id S1732377AbgKWMjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24A5F20857;
-        Mon, 23 Nov 2020 12:52:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 569F220857;
+        Mon, 23 Nov 2020 12:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135929;
-        bh=c1aqd6n1NXAZ5I3mZnyBrCdg8g00K+y+ueGFAOjfL8Q=;
+        s=korg; t=1606135195;
+        bh=zwBQ3BKA4R2yhDU/TO/u//Nnyqnb33oJxj9u9oogg64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rfZnUojvQMDWxlAEJbHHNgaFAQBh4e4MhEoSdC9xSeShaaC/BO4uUAytFYkFftsZM
-         Rx43lux8sFTBUY/1GSV/cwIIfDG1TslXEch5fghUGPj2zTz1Mzpt4oBGKv6y8FUN4Z
-         wskrKjLe3me+m5ZrpxU6NJMRIkTrgmC8nniuOSiQ=
+        b=LIDhreyUoot85OJe0PlC5778ZdkwoNcdNTDRjiHkXwotmBzURtP8pTnIsGhqIYj3Q
+         K4QtN/FXNSaWeCPTaUlnPjR3yfbBIDqmkB51uB8vxKwsar+N2oMvo+JRHIIe9OgXom
+         YrOmFS+iiu5a6CmJWR5X3cP4O5DLKBj8uTw5KpJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        Dinh Nguyen <dinguyen@kernel.org>
-Subject: [PATCH 5.9 217/252] arm64: dts: agilex/stratix10: Fix qspi node compatible
+        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 139/158] regulator: avoid resolve_supply() infinite recursion
 Date:   Mon, 23 Nov 2020 13:22:47 +0100
-Message-Id: <20201123121846.046516851@linuxfoundation.org>
+Message-Id: <20201123121826.640186680@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
-References: <20201123121835.580259631@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit f126b6702e7354d6247a36f20b9172457af5c15a upstream.
+commit 4b639e254d3d4f15ee4ff2b890a447204cfbeea9 upstream.
 
-The QSPI flash node needs to have the required "jedec,spi-nor"
-in the compatible string.
+When a regulator's name equals its supply's name the
+regulator_resolve_supply() recurses indefinitely. Add a check
+so that debugging the problem is easier. The "fixed" commit
+just exposed the problem.
 
-Fixes: 0cb140d07fc7 ("arm64: dts: stratix10: Add QSPI support for Stratix10")
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
 Cc: stable@vger.kernel.org
-Suggested-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
+Link: https://lore.kernel.org/r/c6171057cfc0896f950c4d8cb82df0f9f1b89ad9.1605226675.git.mirq-linux@rere.qmqm.pl
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/altera/socfpga_stratix10_socdk.dts      |    2 +-
- arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts |    2 +-
- arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts          |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/regulator/core.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk.dts
-+++ b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk.dts
-@@ -159,7 +159,7 @@
- 	flash@0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
--		compatible = "n25q00a";
-+		compatible = "micron,mt25qu02g", "jedec,spi-nor";
- 		reg = <0>;
- 		spi-max-frequency = <100000000>;
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1800,6 +1800,12 @@ static int regulator_resolve_supply(stru
+ 		}
+ 	}
  
---- a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
-+++ b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
-@@ -192,7 +192,7 @@
- 	flash@0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
--		compatible = "n25q00a";
-+		compatible = "micron,mt25qu02g", "jedec,spi-nor";
- 		reg = <0>;
- 		spi-max-frequency = <100000000>;
- 
---- a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-+++ b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-@@ -110,7 +110,7 @@
- 	flash@0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
--		compatible = "mt25qu02g";
-+		compatible = "micron,mt25qu02g", "jedec,spi-nor";
- 		reg = <0>;
- 		spi-max-frequency = <100000000>;
- 
++	if (r == rdev) {
++		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
++			rdev->desc->name, rdev->supply_name);
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * If the supply's parent device is not the same as the
+ 	 * regulator's parent device, then ensure the parent device
 
 
