@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED05D2BFE9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B132BFE9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgKWDSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 22:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
+        id S1728019AbgKWDSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 22:18:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727960AbgKWDSD (ORCPT
+        with ESMTP id S1727966AbgKWDSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 22:18:03 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3EFC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:18:03 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id n137so3555553pfd.3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:18:03 -0800 (PST)
+        Sun, 22 Nov 2020 22:18:06 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB80C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:18:06 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id b63so13568887pfg.12
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjLsbUaqfKFGANYSzVJCJ4DzwFOIjnzbFmDEwR+KDb0=;
-        b=loHH8aLfeAQgvSfnU1RknoT/L5AuC9ISVx2CV+eDlWFIf3I+0zTaa/StP6GO6TOWpn
-         6WVwK18ORrkwgAPIpeqRl367g1r6zxXJZwGJ8DkGzsrvOWnJz/Uj31jrMCzpEDY8Fgpx
-         3DLaPyK7WaaxKqFR1Y3HygAuP7rEyufqqwpx2EMAreuDjvyKitMX6Cvc5eqn2gk/YZhc
-         j2qBnTniU73l+cpMRV6/j1lGdv9+4eEDavazVeLfUZX5VrTUUP+kBmiMWk3346lfVL/2
-         aDR7mIUB+LWPVkuE5FCJ9K/zU6FnxxSSmHx4quoQZUMqOaNtrndF3Jv2zRL8K4SqMgwA
-         r+zQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=U9pXaoYOYzvSlbjuyA3XUmqJqWngslHl5D8Ri48QQwk=;
+        b=hkxrUEZ1i4eD5Z6Z9NUwnB0pW+/b05J3+fhar8Vh1c92USl6x0QotN4mxcGs0y9o/7
+         Ubwb7VRC58aJhRqYWVIb57YC2WdvWNb5UsRK/i/2MculRP0xwM+pu+Nb6sunEogjdp96
+         1Z3TueUW2UoRET1qoSDiY5cLF+KuB7YHez2bu9pH0krGJRC4nWC5U0g4Y4d0l/2utAuM
+         s/0+5AbVhBvAa7EwbLu/+PFTXrIZ0P5qFqIUTQ/fL9rTLc0m7fqv/ZWWKk96x7Qgx4rp
+         GumYkZOP1P8zFccDwaKn/Y3vzO0/0uUz9CKQiFFhuTu4jR/nPCNhmpmWT9sgNmV7E1s5
+         DiEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjLsbUaqfKFGANYSzVJCJ4DzwFOIjnzbFmDEwR+KDb0=;
-        b=gbk8wxJCk8AnZ4F3St8n39lV3sPDt/JlHWsdJXeTmKXcSOVOLjzVzosP+698Be1Ykx
-         3F3mKJbC34+cKiBpwzZbb5H/8MVs2T++i9KnNojIwlKLzBk+mC9q611uWtLR9ocYqwTQ
-         zI4ts5dJ/F4kSARZp37yJchU4oTK00LqWvKeZIiXHyckQOzsPAXAYIjs0LTB1HWOTfij
-         f/6HERGlq0TRV4uzEWjM8upBY9W+1fulN634flzg2MERGpQkwUvwyKmtw7MV0pCupyt3
-         acy0WmjyylhKh5xfDbRqdWLQV1h3lH6boY4ns913XE95Cl4A0hn7Akx8IQ84uXi/sB43
-         fHfQ==
-X-Gm-Message-State: AOAM531kpA0K9RcDiJD3lf0Hw0ecQxi+XvwR7p8mdRVXWOy9CyleBfwh
-        s6yZ6zGyHKwyjepNf6iS4wfB6R2A15Y=
-X-Google-Smtp-Source: ABdhPJzzCisCzij78K2z6i2/m4zf8gNnqD6i7qRO1OWPlMTJrCEYBjbOhMuhP0ycswTxRC96j4GfGQ==
-X-Received: by 2002:a65:52c4:: with SMTP id z4mr26938950pgp.238.1606101482693;
-        Sun, 22 Nov 2020 19:18:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=U9pXaoYOYzvSlbjuyA3XUmqJqWngslHl5D8Ri48QQwk=;
+        b=Mpw47JUjxzgDdcJyG4Xy/7VuPG/MKBItjBkIiQA6x7HLjUtsSvH4cQNfRNkVoN0TrO
+         UnPQIMQsfAr+/LMg/W2TzkdNvsmH7a49cYFBkBwAEwTyyGLLKFp6gjpnsfNJ3eNaQ9UI
+         awvxWj/1tSwiyGiK4ToO2J1YnX4ORAnTs04qt4LrmvRfmGed/3uz7/I/HKIe6PRu24mN
+         ENMPrX6H7a4kYdGCvrU9EnoE5r0RwBXDrfYXUUqj4xxRG8mmUqX/k1KJtBNwqJXJ1yMa
+         MbmiS+d/cGSlqv5eTlmk4uzRqzbxTBXpOzkbNtdn1ph6ViAi2b98dwQWi05AWErnO1X4
+         QyIg==
+X-Gm-Message-State: AOAM533mdKxMvriX+7ts31sSuOziS3fGbHNXXKGNpQ/YpMJML1aXp7Au
+        Gj+E7JYG2EvprpxQaybh42OsaXwNlrA=
+X-Google-Smtp-Source: ABdhPJzg6TNYsJppZtttDAla/a1UQBtqLC3+uHiLnO04lQj71/bIz+VB2H5KbluLZah1onE9M/eXXw==
+X-Received: by 2002:a62:ce05:0:b029:198:166b:338f with SMTP id y5-20020a62ce050000b0290198166b338fmr1061890pfg.69.1606101485752;
+        Sun, 22 Nov 2020 19:18:05 -0800 (PST)
 Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
-        by smtp.gmail.com with ESMTPSA id i3sm7214044pjs.34.2020.11.22.19.18.00
+        by smtp.gmail.com with ESMTPSA id i3sm7214044pjs.34.2020.11.22.19.18.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 19:18:02 -0800 (PST)
+        Sun, 22 Nov 2020 19:18:05 -0800 (PST)
 From:   Daeho Jeong <daeho43@gmail.com>
 To:     linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
 Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH 1/2] f2fs: add compress_mode mount option
-Date:   Mon, 23 Nov 2020 12:17:50 +0900
-Message-Id: <20201123031751.36811-1-daeho43@gmail.com>
+Subject: [PATCH 2/2] f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
+Date:   Mon, 23 Nov 2020 12:17:51 +0900
+Message-Id: <20201123031751.36811-2-daeho43@gmail.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+In-Reply-To: <20201123031751.36811-1-daeho43@gmail.com>
+References: <20201123031751.36811-1-daeho43@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -64,231 +66,237 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daeho Jeong <daehojeong@google.com>
 
-We will add a new "compress_mode" mount option to control file
-compression mode. This supports "fs-based" and "user-based".
-In "fs-based" mode (default), f2fs does automatic compression on
-the compression enabled files. In "user-based" mode, f2fs disables
-the automaic compression and gives the user discretion of choosing
-the target file and the timing. It means the user can do manual
-compression/decompression on the compression enabled files using ioctls.
+Added two ioctl to decompress/compress explicitly the compression
+enabled file in "compress_mode=user-based" mount option.
+
+Using these two ioctls, the users can make a control of compression
+and decompression of their files.
 
 Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
- Documentation/filesystems/f2fs.rst |  7 +++++++
- fs/f2fs/data.c                     | 10 +++++-----
- fs/f2fs/f2fs.h                     | 30 ++++++++++++++++++++++++++++++
- fs/f2fs/segment.c                  |  2 +-
- fs/f2fs/super.c                    | 23 +++++++++++++++++++++++
- 5 files changed, 66 insertions(+), 6 deletions(-)
+ fs/f2fs/file.c            | 181 +++++++++++++++++++++++++++++++++++++-
+ include/uapi/linux/f2fs.h |   2 +
+ 2 files changed, 182 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index b8ee761c9922..0679c53d5012 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -260,6 +260,13 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
- 			 For other files, we can still enable compression via ioctl.
- 			 Note that, there is one reserved special extension '*', it
- 			 can be set to enable compression for all files.
-+compress_mode=%s	 Control file compression mode. This supports "fs-based" and
-+			 "user-based". In "fs-based" mode (default), f2fs does
-+			 automatic compression on the compression enabled files.
-+			 In "user-based" mode, f2fs disables the automaic compression
-+			 and gives the user discretion of choosing the target file and
-+			 the timing. The user can do manual compression/decompression
-+			 on the compression enabled files using ioctls.
- inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
- 			 files using the blk-crypto framework rather than
- 			 filesystem-layer encryption. This allows the use of
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index be4da52604ed..69370f0073dd 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2896,7 +2896,7 @@ static int f2fs_write_data_page(struct page *page,
- 	if (unlikely(f2fs_cp_error(F2FS_I_SB(inode))))
- 		goto out;
- 
--	if (f2fs_compressed_file(inode)) {
-+	if (f2fs_need_compress_write(inode)) {
- 		if (f2fs_is_compressed_cluster(inode, page->index)) {
- 			redirty_page_for_writepage(wbc, page);
- 			return AOP_WRITEPAGE_ACTIVATE;
-@@ -2988,7 +2988,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- readd:
- 			need_readd = false;
- #ifdef CONFIG_F2FS_FS_COMPRESSION
--			if (f2fs_compressed_file(inode)) {
-+			if (f2fs_need_compress_write(inode)) {
- 				ret = f2fs_init_compress_ctx(&cc);
- 				if (ret) {
- 					done = 1;
-@@ -3067,7 +3067,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 				goto continue_unlock;
- 
- #ifdef CONFIG_F2FS_FS_COMPRESSION
--			if (f2fs_compressed_file(inode)) {
-+			if (f2fs_need_compress_write(inode)) {
- 				get_page(page);
- 				f2fs_compress_ctx_add_page(&cc, page);
- 				continue;
-@@ -3120,7 +3120,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 	}
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	/* flush remained pages in compress cluster */
--	if (f2fs_compressed_file(inode) && !f2fs_cluster_is_empty(&cc)) {
-+	if (f2fs_need_compress_write(inode) && !f2fs_cluster_is_empty(&cc)) {
- 		ret = f2fs_write_multi_pages(&cc, &submitted, wbc, io_type);
- 		nwritten += submitted;
- 		wbc->nr_to_write -= submitted;
-@@ -3164,7 +3164,7 @@ static inline bool __should_serialize_io(struct inode *inode,
- 	if (IS_NOQUOTA(inode))
- 		return false;
- 
--	if (f2fs_compressed_file(inode))
-+	if (f2fs_need_compress_write(inode))
- 		return true;
- 	if (wbc->sync_mode != WB_SYNC_ALL)
- 		return true;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e0826779a101..88e012d07ad5 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -149,6 +149,7 @@ struct f2fs_mount_info {
- 	unsigned char compress_algorithm;	/* algorithm type */
- 	unsigned compress_log_size;		/* cluster log size */
- 	unsigned char compress_ext_cnt;		/* extension count */
-+	int compress_mode;			/* compression mode */
- 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
- };
- 
-@@ -677,6 +678,7 @@ enum {
- 	FI_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
- 	FI_COMPRESSED_FILE,	/* indicate file's data can be compressed */
- 	FI_MMAP_FILE,		/* indicate file was mmapped */
-+	FI_ENABLE_COMPRESS,	/* enable compression in user-based compression mode */
- 	FI_MAX,			/* max flag, never be used */
- };
- 
-@@ -1243,6 +1245,18 @@ enum fsync_mode {
- 	FSYNC_MODE_NOBARRIER,	/* fsync behaves nobarrier based on posix */
- };
- 
-+enum {
-+	COMPR_MODE_FS,		/*
-+				 * automatically compress compression
-+				 * enabled files
-+				 */
-+	COMPR_MODE_USER,	/*
-+				 * automatical compression is disabled.
-+				 * user can control the file compression
-+				 * using ioctls
-+				 */
-+};
-+
- /*
-  * this value is set in page as a private data which indicate that
-  * the page is atomically written, and it is in inmem_pages list.
-@@ -2752,6 +2766,22 @@ static inline int f2fs_compressed_file(struct inode *inode)
- 		is_inode_flag_set(inode, FI_COMPRESSED_FILE);
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index be8db06aca27..e8f142470e87 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -4026,6 +4026,180 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+ 	return ret;
  }
  
-+static inline int f2fs_need_compress_write(struct inode *inode)
++static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
 +{
-+	int compress_mode = F2FS_OPTION(F2FS_I_SB(inode)).compress_mode;
++	DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, page_idx);
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	struct address_space *mapping = inode->i_mapping;
++	struct page *page;
++	pgoff_t redirty_idx = page_idx;
++	int i, page_len = 0, ret = 0;
 +
-+	if (!f2fs_compressed_file(inode))
-+		return 0;
++	page_cache_ra_unbounded(&ractl, len, 0);
 +
-+	if (compress_mode == COMPR_MODE_FS)
-+		return 1;
-+	else if (compress_mode == COMPR_MODE_USER &&
-+			is_inode_flag_set(inode, FI_ENABLE_COMPRESS))
-+		return 1;
++	for (i = 0; i < len; i++, page_idx++) {
++		page = read_cache_page(mapping, page_idx, NULL, NULL);
++		if (IS_ERR(page)) {
++			ret = PTR_ERR(page);
++			f2fs_warn(sbi, "%s: inode (%lu) : page_index (%lu) "
++				"couldn't be read (errno:%d).\n",
++				__func__, inode->i_ino, page_idx, ret);
++			break;
++		}
++		page_len++;
++	}
 +
-+	return 0;
++	for (i = 0; i < page_len; i++, redirty_idx++) {
++		page = find_lock_page(mapping, redirty_idx);
++		if (!page) {
++			ret = -ENOENT;
++			f2fs_warn(sbi, "%s: inode (%lu) : page_index (%lu) "
++				"couldn't be found (errno:%d).\n",
++				__func__, inode->i_ino, redirty_idx, ret);
++		}
++		set_page_dirty(page);
++		f2fs_put_page(page, 1);
++		f2fs_put_page(page, 0);
++	}
++
++	return ret;
 +}
 +
- static inline unsigned int addrs_per_inode(struct inode *inode)
- {
- 	unsigned int addrs = CUR_ADDRS_PER_INODE(inode) -
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 1596502f7375..652ca049bb7e 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3254,7 +3254,7 @@ static int __get_segment_type_6(struct f2fs_io_info *fio)
- 			else
- 				return CURSEG_COLD_DATA;
- 		}
--		if (file_is_cold(inode) || f2fs_compressed_file(inode))
-+		if (file_is_cold(inode) || f2fs_need_compress_write(inode))
- 			return CURSEG_COLD_DATA;
- 		if (file_is_hot(inode) ||
- 				is_inode_flag_set(inode, FI_HOT_DATA) ||
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 87f7a6e86370..ea2385aa7f48 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -146,6 +146,7 @@ enum {
- 	Opt_compress_algorithm,
- 	Opt_compress_log_size,
- 	Opt_compress_extension,
-+	Opt_compress_mode,
- 	Opt_atgc,
- 	Opt_err,
- };
-@@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
- 	{Opt_compress_algorithm, "compress_algorithm=%s"},
- 	{Opt_compress_log_size, "compress_log_size=%u"},
- 	{Opt_compress_extension, "compress_extension=%s"},
-+	{Opt_compress_mode, "compress_mode=%s"},
- 	{Opt_atgc, "atgc"},
- 	{Opt_err, NULL},
- };
-@@ -934,10 +936,25 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 			F2FS_OPTION(sbi).compress_ext_cnt++;
- 			kfree(name);
- 			break;
-+		case Opt_compress_mode:
-+			name = match_strdup(&args[0]);
-+			if (!name)
-+				return -ENOMEM;
-+			if (!strcmp(name, "fs-based")) {
-+				F2FS_OPTION(sbi).compress_mode = COMPR_MODE_FS;
-+			} else if (!strcmp(name, "user-based")) {
-+				F2FS_OPTION(sbi).compress_mode = COMPR_MODE_USER;
-+			} else {
-+				kfree(name);
-+				return -EINVAL;
-+			}
-+			kfree(name);
-+			break;
- #else
- 		case Opt_compress_algorithm:
- 		case Opt_compress_log_size:
- 		case Opt_compress_extension:
-+		case Opt_compress_mode:
- 			f2fs_info(sbi, "compression options not supported");
- 			break;
- #endif
-@@ -1523,6 +1540,11 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
- 		seq_printf(seq, ",compress_extension=%s",
- 			F2FS_OPTION(sbi).extensions[i]);
- 	}
++static int f2fs_ioc_decompress_file(struct file *filp, unsigned long arg)
++{
++	struct inode *inode = file_inode(filp);
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	struct f2fs_inode_info *fi = F2FS_I(inode);
++	pgoff_t page_idx = 0, last_idx;
++	int cluster_size = F2FS_I(inode)->i_cluster_size;
++	int count, ret;
 +
-+	if (F2FS_OPTION(sbi).compress_mode == COMPR_MODE_FS)
-+		seq_printf(seq, ",compress_mode=%s", "fs-based");
-+	else if (F2FS_OPTION(sbi).compress_mode == COMPR_MODE_USER)
-+		seq_printf(seq, ",compress_mode=%s", "user-based");
- }
++	if (!f2fs_sb_has_compression(sbi))
++		return -EOPNOTSUPP;
++
++	if (!(filp->f_mode & FMODE_WRITE))
++		return -EBADF;
++
++	if (!f2fs_compressed_file(inode))
++		return -EINVAL;
++
++	f2fs_balance_fs(F2FS_I_SB(inode), true);
++
++	file_start_write(filp);
++	inode_lock(inode);
++
++	if (f2fs_is_mmap_file(inode)) {
++		ret = -EBUSY;
++		goto out;
++	}
++
++	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
++	if (ret)
++		goto out;
++
++	if (!atomic_read(&fi->i_compr_blocks))
++		goto out;
++
++	last_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
++
++	count = last_idx - page_idx;
++	while (count) {
++		int len = min(cluster_size, count);
++
++		ret = redirty_blocks(inode, page_idx, len);
++
++		if (ret < 0)
++			break;
++
++		page_idx += len;
++		count -= len;
++	}
++
++	if (!ret)
++		ret = filemap_write_and_wait_range(inode->i_mapping, 0,
++							LLONG_MAX);
++
++	if (!ret) {
++		stat_sub_compr_blocks(inode, atomic_read(&fi->i_compr_blocks));
++		atomic_set(&fi->i_compr_blocks, 0);
++		f2fs_mark_inode_dirty_sync(inode, true);
++	} else {
++		f2fs_warn(sbi, "%s: The file might be partially decompressed "
++				"(errno=%d). Please delete the file.\n",
++				__func__, ret);
++	}
++out:
++	inode_unlock(inode);
++	file_end_write(filp);
++
++	return ret;
++}
++
++static int f2fs_ioc_compress_file(struct file *filp, unsigned long arg)
++{
++	struct inode *inode = file_inode(filp);
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	pgoff_t page_idx = 0, last_idx;
++	int cluster_size = F2FS_I(inode)->i_cluster_size;
++	int count, ret;
++
++	if (!f2fs_sb_has_compression(sbi))
++		return -EOPNOTSUPP;
++
++	if (!(filp->f_mode & FMODE_WRITE))
++		return -EBADF;
++
++	if (!f2fs_compressed_file(inode))
++		return -EINVAL;
++
++	f2fs_balance_fs(F2FS_I_SB(inode), true);
++
++	file_start_write(filp);
++	inode_lock(inode);
++
++	if (f2fs_is_mmap_file(inode)) {
++		ret = -EBUSY;
++		goto out;
++	}
++
++	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
++	if (ret)
++		goto out;
++
++	set_inode_flag(inode, FI_ENABLE_COMPRESS);
++
++	last_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
++
++	count = last_idx - page_idx;
++	while (count) {
++		int len = min(cluster_size, count);
++
++		ret = redirty_blocks(inode, page_idx, len);
++
++		if (ret < 0)
++			break;
++
++		page_idx += len;
++		count -= len;
++	}
++
++	if (!ret)
++		ret = filemap_write_and_wait_range(inode->i_mapping, 0,
++							LLONG_MAX);
++
++	clear_inode_flag(inode, FI_ENABLE_COMPRESS);
++
++	if (ret)
++		f2fs_warn(sbi, "%s: The file might be partially compressed "
++				"(errno=%d). Please delete the file.\n",
++				__func__, ret);
++out:
++	inode_unlock(inode);
++	file_end_write(filp);
++
++	return ret;
++}
++
+ static long __f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ {
+ 	switch (cmd) {
+@@ -4113,6 +4287,10 @@ static long __f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		return f2fs_ioc_get_compress_option(filp, arg);
+ 	case F2FS_IOC_SET_COMPRESS_OPTION:
+ 		return f2fs_ioc_set_compress_option(filp, arg);
++	case F2FS_IOC_DECOMPRESS_FILE:
++		return f2fs_ioc_decompress_file(filp, arg);
++	case F2FS_IOC_COMPRESS_FILE:
++		return f2fs_ioc_compress_file(filp, arg);
+ 	default:
+ 		return -ENOTTY;
+ 	}
+@@ -4352,7 +4530,8 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case F2FS_IOC_SEC_TRIM_FILE:
+ 	case F2FS_IOC_GET_COMPRESS_OPTION:
+ 	case F2FS_IOC_SET_COMPRESS_OPTION:
+-		break;
++	case F2FS_IOC_DECOMPRESS_FILE:
++	case F2FS_IOC_COMPRESS_FILE:
+ 	default:
+ 		return -ENOIOCTLCMD;
+ 	}
+diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
+index f00199a2e38b..352a822d4370 100644
+--- a/include/uapi/linux/f2fs.h
++++ b/include/uapi/linux/f2fs.h
+@@ -40,6 +40,8 @@
+ 						struct f2fs_comp_option)
+ #define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
+ 						struct f2fs_comp_option)
++#define F2FS_IOC_DECOMPRESS_FILE	_IO(F2FS_IOCTL_MAGIC, 23)
++#define F2FS_IOC_COMPRESS_FILE		_IO(F2FS_IOCTL_MAGIC, 24)
  
- static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-@@ -1672,6 +1694,7 @@ static void default_options(struct f2fs_sb_info *sbi)
- 	F2FS_OPTION(sbi).compress_algorithm = COMPRESS_LZ4;
- 	F2FS_OPTION(sbi).compress_log_size = MIN_COMPRESS_LOG_SIZE;
- 	F2FS_OPTION(sbi).compress_ext_cnt = 0;
-+	F2FS_OPTION(sbi).compress_mode = COMPR_MODE_FS;
- 	F2FS_OPTION(sbi).bggc_mode = BGGC_MODE_ON;
- 
- 	sbi->sb->s_flags &= ~SB_INLINECRYPT;
+ /*
+  * should be same as XFS_IOC_GOINGDOWN.
 -- 
 2.29.2.454.gaff20da3a2-goog
 
