@@ -2,153 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77FE2C0E66
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3242C0E67
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389328AbgKWPEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:04:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40654 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729244AbgKWPEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:04:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F119DAF0D;
-        Mon, 23 Nov 2020 15:04:10 +0000 (UTC)
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com,
-        John Hubbard <jhubbard@nvidia.com>
-References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: Pinning ZONE_MOVABLE pages
-Message-ID: <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
-Date:   Mon, 23 Nov 2020 16:04:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S2389335AbgKWPEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:04:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728308AbgKWPEl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:04:41 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BB3C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:04:41 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id x24so2869856pfn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:04:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9GeUDe+xnJKsGx/qdJGPyMAJKtjNn5EQmMLLNrNDZA4=;
+        b=T4KmNxMpEXkQdIOcWZcQgxxaRoZwg7XSatqLnTSF27N92I7FzqsJwQn9p2TmP6jEyK
+         RB58PDlXb4OLzobZvLpUnkIL0gykdL/zcEWF85Hi2ZXGIvM0dFqMrAnZCZnAUTGHjsfO
+         A3gn7+N5yZEERptQ6amEu5mIhL8MkNs+47n+WVAMA605rP3c9n4r3kwXsPu90QRulUe7
+         xb45ZkLDbeQ/qsj5U82j/EDBOWzKfcLa1KDOlyFYi5P5ynUYsAq+opImW1+OTmCl8WUc
+         EuGEz4Woo+uYwbizHh1YONYcvR70+XnwH/eJoZaVE9fmU0je7ifksmwL0JqYQ+lMlkVf
+         4iKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9GeUDe+xnJKsGx/qdJGPyMAJKtjNn5EQmMLLNrNDZA4=;
+        b=pC+4oDXc8e/XM3hHZG0XicXE40PAaRUo4thb5mV6QFziOpHRaF8eHOvaJk5zDqS72A
+         3vc3IrPjsVVM9s53rNQuhiTwJWpk/roy9yknVr7Ez+TXUinFGw6IH+Q+xUEiSU8MgvEL
+         0jfl8nTJ6IRVGhtlrSPVOV+e1GUNLR4mjpw7zjnHrQB79FExKvKqhkDMrvVxICfBOZa3
+         9hX7SPwsDFNuBJ99fFAd0b1NdcPiCGIEIPfl7K+ejWS3FGrszhjZkH5w9rSCxUP2RaTy
+         91tH5jRG/JqlekPJR3ZeNfj054tVW0lygRgCH8Llj/E+RnGlIBWJlDt6o+zRyNdkcXQ+
+         stOw==
+X-Gm-Message-State: AOAM532ZRhpOxwuc7IvS9OeJQ8lRzERmHJ2mPqiXPoBRT28ZKfYnUYZL
+        /PP9UynDqvErAlrv4cSens3Haf5JrcqmIw==
+X-Google-Smtp-Source: ABdhPJycrDqMFCPFXAXhycXgCA7KGW9CCF/3QrmjZFMxMCwirJZunb7QAOBHXT6TQLHrRZxHa/RbaA==
+X-Received: by 2002:a63:4a02:: with SMTP id x2mr28240942pga.313.1606143880701;
+        Mon, 23 Nov 2020 07:04:40 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:434:b4c0:715e:8c1c:620e:4557])
+        by smtp.googlemail.com with ESMTPSA id kb12sm14302337pjb.2.2020.11.23.07.04.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 07:04:39 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     joe@perches.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] checkpatch: add fix and improve warning msg for Non-standard signature
+Date:   Mon, 23 Nov 2020 20:34:30 +0530
+Message-Id: <20201123150430.7985-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+CC John Hubbard
+Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
+styles.
 
-On 11/20/20 9:27 PM, Pavel Tatashin wrote:
-> Recently, I encountered a hang that is happening during memory hot
-> remove operation. It turns out that the hang is caused by pinned user
-> pages in ZONE_MOVABLE.
-> 
-> Kernel expects that all pages in ZONE_MOVABLE can be migrated, but
-> this is not the case if a user applications such as through dpdk
-> libraries pinned them via vfio dma map. Kernel keeps trying to
-> hot-remove them, but refcnt never gets to zero, so we are looping
-> until the hardware watchdog kicks in.
-> 
-> We cannot do dma unmaps before hot-remove, because hot-remove is a
-> slow operation, and we have thousands for network flows handled by
-> dpdk that we just cannot suspend for the duration of hot-remove
-> operation.
-> 
-> The solution is for dpdk to allocate pages from a zone below
-> ZONE_MOVAVLE, i.e. ZONE_NORMAL/ZONE_HIGHMEM, but this is not possible.
-> There is no user interface that we have that allows applications to
-> select what zone the memory should come from.
-> 
-> I've spoken with Stephen Hemminger, and he said that DPDK is moving in
-> the direction of using transparent huge pages instead of HugeTLBs,
-> which means that we need to allow at least anonymous, and anonymous
-> transparent huge pages to come from non-movable zones on demand.
-> 
-> Here is what I am proposing:
-> 1. Add a new flag that is passed through pin_user_pages_* down to
-> fault handlers, and allow the fault handler to allocate from a
-> non-movable zone.
-> 
-> Sample function stacks through which this info needs to be passed is this:
-> 
-> pin_user_pages_remote(gup_flags)
->   __get_user_pages_remote(gup_flags)
->    __gup_longterm_locked(gup_flags)
->     __get_user_pages_locked(gup_flags)
->      __get_user_pages(gup_flags)
->       faultin_page(gup_flags)
->        Convert gup_flags into fault_flags
->        handle_mm_fault(fault_flags)
-> 
->  From handle_mm_fault(), the stack diverges into various faults,
-> examples include:
-> 
-> Transparent Huge Page
-> handle_mm_fault(fault_flags)
-> __handle_mm_fault(fault_flags)
-> Create: struct vm_fault vmf, use fault_flags to specify correct gfp_mask
-> create_huge_pmd(vmf);
-> do_huge_pmd_anonymous_page(vmf);
-> mm_get_huge_zero_page(vma->vm_mm); -> flag is lost, so flag from
-> vmf.gfp_mask should be passed as well.
-> 
-> There are several other similar paths in a transparent huge page, also
-> there is a named path where allocation is based on filesystems, and
-> the flag should be honored there as well, but it does not have to be
-> added at the same time.
-> 
-> Regular Pages
-> handle_mm_fault(fault_flags)
-> __handle_mm_fault(fault_flags)
-> Create: struct vm_fault vmf, use fault_flags to specify correct gfp_mask
-> handle_pte_fault(vmf)
-> do_anonymous_page(vmf);
-> page = alloc_zeroed_user_highpage_movable(vma, vmf->address); ->
-> replace change this call according to gfp_mask.
-> 
-> The above only take care of the case if user application faults on the
-> page during pinning time, but there are also cases where pages already
-> exist.
+This warning occurs because of incorrect use of signature tags,
+e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
+signature tags, which may seem correct, but are not standard:
 
-Makes sense, as this means no userspace change.
+1) Requested-by (count: 48) => Suggested-by
+Rationale: In an open-source project, there are no 'requests', just
+'suggestions' to convince a maintainer to accept your patch
 
-> 2. Add an internal move_pages_zone() similar to move_pages() syscall
-> but instead of migrating to a different NUMA node, migrate pages from
-> ZONE_MOVABLE to another zone.
-> Call move_pages_zone() on demand prior to pinning pages from
-> vfio_pin_map_dma() for instance.
+2) Co-authored-by (count: 43) => Co-developed-by
+Rationale: Co-developed-by and Co-authored-by are synonyms
 
-As others already said, migrating away before the longterm pin should be 
-the solution. IIRC it was one of the goals of long term pinning api 
-proposed long time ago by Peter Ziljstra I think? The implementation 
-that was merged relatively recently doesn't do that (yet?) for all 
-movable pages, just CMA, but it could.
+3) Analyzed-by (count: 22) / Analysed-by (count: 5) => Co-developed-by
+Rationale: Analyzing is a part of Software Development, so
+'Co-developed-by' is perfectly fine, even if contributor did not create
+code
 
-> 3. Perhaps, it also makes sense to add madvise() flag, to allocate
-> pages from non-movable zone. When a user application knows that it
-> will do DMA mapping, and pin pages for a long time, the memory that it
-> allocates should never be migrated or hot-removed, so make sure that
-> it comes from the appropriate place.
-> The benefit of adding madvise() flag is that we won't have to deal
-> with slow page migration during pin time, but the disadvantage is that
-> we would need to change the user interface.
+4) Improvements-by (count: 19) => Co-developed-by
 
-It's best if we avoid involving userspace until it's shown that's it's 
-insufficient.
+5) Noticed-by (count: 11) => Reported-by
 
-> Before I start working on the above approaches, I would like to get an
-> opinion from the community on an appropriate path forward for this
-> problem. If what I described sounds reasonable, or if there are other
-> ideas on how to address the problem that I am seeing.
-> 
-> Thank you,
-> Pasha
-> 
+6) Inspired-by (count: 11) => Suggested-by
+
+7) Verified-by (count: 8) => Tested-by
+Rationale: Used by a single user. On reading mailing list, it seems
+Tested-by might be a suitable alternative
+
+8) Okay-ished-by (count: 8) => Acked-by
+Rationale: Used by a single user. On reading mailing list, it seems
+Acked-by must be suitable alternative
+
+9) Acked-for-MFD-by (count: 6) => Acked-by
+
+10) Reviewed-off-by (count: 5) => Reviewed-by
+
+11) Proposed-by (count: 5) => Suggested-by
+Rationale: On observing the mailing list, this tag is always used for a
+maintainer. It seems that the changes might have been suggested by them
+and the tag is used as acknowledgment for the same
+
+12) Fixed-by (count: 3) => Co-developed-by
+Rationale: Fixing bug is a part of Software Development, so
+'Co-developed-by' is perfectly fine, even if contributor did not create
+code
+
+13) Pointed-out-by (count: 3) / Pointed-at-by (count: 2) => Suggested-by
+Rationale: The tags are used for maintainers. It seems that the changes
+might have been suggested by them and the tag is used as acknowledgment
+for the same
+E.g., Pointed-at-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+14) Suggestions-by (count: 3) => Suggested-by
+
+15) Generated-by (count: 17) => remove the tag
+On observing the mailing list, this tag is always used for quoting the
+tool or script, which might have been used to generate the patch.
+E.g. Generated-by: scripts/coccinelle/api/alloc/kzalloc-simple.cocci
+
+16) Celebrated-by (count: 3) => remove the tag
+This tag was used for only one commit. On observing mailing list, it seem
+like the celebration for a particular patch and changes.
+
+Provide a fix by:
+1) replacing the non-standard signature with its standard equivalent
+2) removing the signature if it is not required
+
+Also, improve warning messages correspondingly, providing users
+suggestions to either replace or remove the signature. Also provide
+suitable rationale to the user for the suggestion made.
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+changes in v2: replace commit specific example with brief evaluation
+
+changes in v3: provide rationale to users for every signature tag suggestion;
+modify commit message describing arrival to conclusion in a structured way
+
+ scripts/checkpatch.pl | 101 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 99 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fdfd5ec09be6..f402c9c3958f 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -506,6 +506,81 @@ our $signature_tags = qr{(?xi:
+ 	Cc:
+ )};
+ 
++our %standard_signature_fix = (
++	"Requested-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "In an open-source project, there are no 'requests', just 'suggestions' to convince a maintainer to accept your patch",
++	},
++	"Co-authored-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Co-developed-by and Co-authored-by are synonyms",
++	},
++	"Analyzed-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Analyzing is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Analysed-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Analysing is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Improvements-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Performing improvements are a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Noticed-by:" => {
++		suggestion => "Reported-by:",
++		rationale => "Reported-by and Noticed-by are synonyms",
++	},
++	"Inspired-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Suggested-by is the standard signature tag for acknowledging user for their suggestions",
++	},
++	"Verified-by:" => {
++		suggestion => "Tested-by:",
++		rationale => "Tested-by and Verified-by are synonyms",
++	},
++	"Okay-ished-by:" => {
++		suggestion => "Acked-by:",
++		rationale => "Acked-by is the standard signature tag for recording your approval",
++	},
++	"Acked-for-MFD-by:" => {
++		suggestion => "Acked-by:",
++		rationale => "Acked-by is the standard signature tag for recording your approval",
++	},
++	"Reviewed-off-by:" => {
++		suggestion => "Reviewed-by:",
++		rationale => "Reviewed-by is the standard signature tag for recording your approval",
++	},
++	"Proposed-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Proposing changes is same as suggesting changes, so Suggested-by seems perfectly fine",
++	},
++	"Fixed-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Fixing bug is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Pointed-out-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Pointing out certain changes is synonymous to suggesting changes, so Suggested-by seems perfectly fine",
++	},
++	"Pointed-at-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Pointing at certain changes is synonymous to suggesting changes, so Suggested-by seems perfectly fine",
++	},
++	"Suggestions-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Suggested-by is the standard signature tag for acknowledging user for their suggestions",
++	},
++	"Generated-by:" => {
++		suggestion => "remove",
++		rationale => "Signature tags are used to acknowledge users for their contributions. It is advised to describe about tools in commit description instead",
++	},
++	"Celebrated-by:" => {
++		suggestion => "remove",
++		rationale => "Signature tags are used to acknowledge users for their contributions. This tag may not be required at all",
++	},
++);
++
+ our @typeListMisordered = (
+ 	qr{char\s+(?:un)?signed},
+ 	qr{int\s+(?:(?:un)?signed\s+)?short\s},
+@@ -2773,8 +2848,30 @@ sub process {
+ 			my $ucfirst_sign_off = ucfirst(lc($sign_off));
+ 
+ 			if ($sign_off !~ /$signature_tags/) {
+-				WARN("BAD_SIGN_OFF",
+-				     "Non-standard signature: $sign_off\n" . $herecurr);
++				my $suggested_signature = "";
++				my $rationale = "";
++				if (exists($standard_signature_fix{$sign_off})) {
++					$suggested_signature = $standard_signature_fix{$sign_off}{'suggestion'};
++					$rationale = $standard_signature_fix{$sign_off}{'rationale'};
++				}
++				if ($suggested_signature eq "") {
++					WARN("BAD_SIGN_OFF",
++					     "Non-standard signature: $sign_off\n" . $herecurr);
++				}
++				elsif ($suggested_signature eq "remove") {
++					if (WARN("BAD_SIGN_OFF",
++						"Non-standard signature: $sign_off. Please consider removing this signature tag. $rationale\n" . $herecurr) &&
++					$fix) {
++						fix_delete_line($fixlinenr, $rawline);
++					}
++				}
++				else {
++					if (WARN("BAD_SIGN_OFF",
++						"Non-standard signature: $sign_off. Please use '$suggested_signature' instead. $rationale\n" . $herecurr) &&
++					$fix) {
++						$fixed[$fixlinenr] =~ s/$sign_off/$suggested_signature/;
++					}
++				}
+ 			}
+ 			if (defined $space_before && $space_before ne "") {
+ 				if (WARN("BAD_SIGN_OFF",
+-- 
+2.17.1
 
