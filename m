@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E372C07AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FCD2C07BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733014AbgKWMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:43:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
+        id S1733111AbgKWMnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:43:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732830AbgKWMmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:42:00 -0500
+        id S1732878AbgKWMmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:42:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC91E20857;
-        Mon, 23 Nov 2020 12:41:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 845872065E;
+        Mon, 23 Nov 2020 12:42:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135319;
-        bh=dQ98rYUh9QMADQhZ0dug/LdlZNxUxxchAjpVTpcAuHQ=;
+        s=korg; t=1606135325;
+        bh=JRRpBRnUe89QT5TyEvv1Fvee1GxXlsaqiX9/Ndugci8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d9ZdtMecg/tjnbxw7WuOuRE3WE9kp+oKeNKCXXPRyu/st0Wv9ZUK+7IOHrZRPIvb1
-         r6EFMXOavXnFy0Bn5EwpOJAOKoAV+4fbPWgVHsK/WvyaFKG4FDiRk6bol0XEqoFXdj
-         Xxv+kM+sd1Ox7UWxRbHQAyirrvlW7pYB3uKBw6ps=
+        b=mAs96yjhHJJM3D6AGCQgJfGXmvItcQY0gioI+UAuM2ygo6fkONFVLALwhTHhShVUE
+         e8KYmFO10BYRuwJ0Dut4XCib1ZwtB+T96zkXXNgnLxvMRb8rgvh3z0L+Wr4TAHgIlE
+         d2VJUgdAKqZAMDgpej6yE1HWBRWYVFTDS6NrkgCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 026/252] net: lantiq: Wait for the GPHY firmware to be ready
-Date:   Mon, 23 Nov 2020 13:19:36 +0100
-Message-Id: <20201123121836.860347375@linuxfoundation.org>
+        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.9 028/252] net/mlx5e: Fix refcount leak on kTLS RX resync
+Date:   Mon, 23 Nov 2020 13:19:38 +0100
+Message-Id: <20201123121836.947659762@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -45,73 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit 2a1828e378c1b5ba1ff283ed8f8c5cc37bb391dc ]
+[ Upstream commit ea63609857321c38fd4ad096388b413b66001c6c ]
 
-A user reports (slightly shortened from the original message):
-  libphy: lantiq,xrx200-mdio: probed
-  mdio_bus 1e108000.switch-mii: MDIO device at address 17 is missing.
-  gswip 1e108000.switch lan: no phy at 2
-  gswip 1e108000.switch lan: failed to connect to port 2: -19
-  lantiq,xrx200-net 1e10b308.eth eth0: error -19 setting up slave phy
+On resync, the driver calls inet_lookup_established
+(__inet6_lookup_established) that increases sk_refcnt of the socket. To
+decrease it, the driver set skb->destructor to sock_edemux. However, it
+didn't work well, because the TCP stack also sets this destructor for
+early demux, and the refcount gets decreased only once, while increased
+two times (in mlx5e and in the TCP stack). It leads to a socket leak, a
+TLS context leak, which in the end leads to calling tls_dev_del twice:
+on socket close and on driver unload, which in turn leads to a crash.
 
-This is a single-port board using the internal Fast Ethernet PHY. The
-user reports that switching to PHY scanning instead of configuring the
-PHY within device-tree works around this issue.
+This commit fixes the refcount leak by calling sock_gen_put right away
+after using the socket, thus fixing all the subsequent issues.
 
-The documentation for the standalone variant of the PHY11G (which is
-probably very similar to what is used inside the xRX200 SoCs but having
-the firmware burnt onto that standalone chip in the factory) states that
-the PHY needs 300ms to be ready for MDIO communication after releasing
-the reset.
-
-Add a 300ms delay after initializing all GPHYs to ensure that the GPHY
-firmware had enough time to initialize and to appear on the MDIO bus.
-Unfortunately there is no (known) documentation on what the minimum time
-to wait after releasing the reset on an internal PHY so play safe and
-take the one for the external variant. Only wait after the last GPHY
-firmware is loaded to not slow down the initialization too much (
-xRX200 has two GPHYs but newer SoCs have at least three GPHYs).
-
-Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201115165757.552641-1-martin.blumenstingl@googlemail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 0419d8c9d8f8 ("net/mlx5e: kTLS, Add kTLS RX resync support")
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/lantiq_gswip.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -26,6 +26,7 @@
-  */
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
+@@ -476,19 +476,22 @@ static void resync_update_sn(struct mlx5
  
- #include <linux/clk.h>
-+#include <linux/delay.h>
- #include <linux/etherdevice.h>
- #include <linux/firmware.h>
- #include <linux/if_bridge.h>
-@@ -1821,6 +1822,16 @@ static int gswip_gphy_fw_list(struct gsw
- 		i++;
- 	}
+ 	depth += sizeof(struct tcphdr);
  
-+	/* The standalone PHY11G requires 300ms to be fully
-+	 * initialized and ready for any MDIO communication after being
-+	 * taken out of reset. For the SoC-internal GPHY variant there
-+	 * is no (known) documentation for the minimum time after a
-+	 * reset. Use the same value as for the standalone variant as
-+	 * some users have reported internal PHYs not being detected
-+	 * without any delay.
-+	 */
-+	msleep(300);
+-	if (unlikely(!sk || sk->sk_state == TCP_TIME_WAIT))
++	if (unlikely(!sk))
+ 		return;
+ 
+-	if (unlikely(!resync_queue_get_psv(sk)))
+-		return;
++	if (unlikely(sk->sk_state == TCP_TIME_WAIT))
++		goto unref;
+ 
+-	skb->sk = sk;
+-	skb->destructor = sock_edemux;
++	if (unlikely(!resync_queue_get_psv(sk)))
++		goto unref;
+ 
+ 	seq = th->seq;
+ 	datalen = skb->len - depth;
+ 	tls_offload_rx_resync_async_request_start(sk, seq, datalen);
+ 	rq->stats->tls_resync_req_start++;
 +
- 	return 0;
++unref:
++	sock_gen_put(sk);
+ }
  
- remove_gphy:
+ void mlx5e_ktls_rx_resync(struct net_device *netdev, struct sock *sk,
 
 
