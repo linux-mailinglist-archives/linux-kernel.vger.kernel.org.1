@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731AB2C05E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AA42C06A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729986AbgKWMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:25:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34834 "EHLO mail.kernel.org"
+        id S1731169AbgKWMdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:33:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729950AbgKWMZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:25:13 -0500
+        id S1731127AbgKWMcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:32:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD9982076E;
-        Mon, 23 Nov 2020 12:25:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A643C20728;
+        Mon, 23 Nov 2020 12:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134312;
-        bh=sILKl3o46a+a+JPYNYqx5q4sVE3AIvqnWN3Klwi2CMg=;
+        s=korg; t=1606134766;
+        bh=kiwOr0/77xYzymp7bfP38DluIDS/GhoyOW7eHBaxpoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DfBoRDRcTRU2nB6zHpCEI4L0GRxVmCBRdxQnf8ZbFUZIztmI4iTvId4wr46qFViyL
-         WESMKaxE7A1JEnSfmJtMHmbv1FDQMKssjD9rRD5DLp5lfSxURJcdoBR0SQOX44NoDH
-         lilpMZzQyxFSDEhD7fxmG2ioWSW6FFnXaohMODpM=
+        b=ewjyKhQMhjw6e3EgwOkZJrzxF0G5MqmAU8glN4AErO2R5Iu8e09AKePE6PkuEkk1n
+         VZi/yRdMWRlSdCYUTq2m112C3Tg04333u5mylws0r/fPI8+zZW4jOWDPza9RU1wL28
+         A2f2+sCSpNak82VhsGGdbrxiiL1q6wrTbSTc9S1I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 08/47] net: Have netpoll bring-up DSA management interface
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 34/91] arm64: dts: allwinner: h5: OrangePi PC2: Fix ethernet node
 Date:   Mon, 23 Nov 2020 13:21:54 +0100
-Message-Id: <20201123121805.951642379@linuxfoundation.org>
+Message-Id: <20201123121810.976355991@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,81 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-[ Upstream commit 1532b9778478577152201adbafa7738b1e844868 ]
+[ Upstream commit b34bf9f6a623ddb82600a5ed5c644224122395e1 ]
 
-DSA network devices rely on having their DSA management interface up and
-running otherwise their ndo_open() will return -ENETDOWN. Without doing
-this it would not be possible to use DSA devices as netconsole when
-configured on the command line. These devices also do not utilize the
-upper/lower linking so the check about the netpoll device having upper
-is not going to be a problem.
+RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
+node.
 
-The solution adopted here is identical to the one done for
-net/ipv4/ipconfig.c with 728c02089a0e ("net: ipv4: handle DSA enabled
-master network devices"), with the network namespace scope being
-restricted to that of the process configuring netpoll.
-
-Fixes: 04ff53f96a93 ("net: dsa: Add netconsole support")
-Tested-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201117035236.22658-1-f.fainelli@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20201023184858.3272918-1-jernej.skrabec@siol.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/netpoll.c |   22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/core/netpoll.c
-+++ b/net/core/netpoll.c
-@@ -28,6 +28,7 @@
- #include <linux/slab.h>
- #include <linux/export.h>
- #include <linux/if_vlan.h>
-+#include <net/dsa.h>
- #include <net/tcp.h>
- #include <net/udp.h>
- #include <net/addrconf.h>
-@@ -661,15 +662,15 @@ EXPORT_SYMBOL_GPL(__netpoll_setup);
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
+index 3e0d5a9c096d3..5fbfa76daae22 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
+@@ -157,7 +157,7 @@
+ 	pinctrl-0 = <&emac_rgmii_pins>;
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	phy-handle = <&ext_rgmii_phy>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	status = "okay";
+ };
  
- int netpoll_setup(struct netpoll *np)
- {
--	struct net_device *ndev = NULL;
-+	struct net_device *ndev = NULL, *dev = NULL;
-+	struct net *net = current->nsproxy->net_ns;
- 	struct in_device *in_dev;
- 	int err;
- 
- 	rtnl_lock();
--	if (np->dev_name[0]) {
--		struct net *net = current->nsproxy->net_ns;
-+	if (np->dev_name[0])
- 		ndev = __dev_get_by_name(net, np->dev_name);
--	}
-+
- 	if (!ndev) {
- 		np_err(np, "%s doesn't exist, aborting\n", np->dev_name);
- 		err = -ENODEV;
-@@ -677,6 +678,19 @@ int netpoll_setup(struct netpoll *np)
- 	}
- 	dev_hold(ndev);
- 
-+	/* bring up DSA management network devices up first */
-+	for_each_netdev(net, dev) {
-+		if (!netdev_uses_dsa(dev))
-+			continue;
-+
-+		err = dev_change_flags(dev, dev->flags | IFF_UP);
-+		if (err < 0) {
-+			np_err(np, "%s failed to open %s\n",
-+			       np->dev_name, dev->name);
-+			goto put;
-+		}
-+	}
-+
- 	if (netdev_master_upper_dev_get(ndev)) {
- 		np_err(np, "%s is a slave device, aborting\n", np->dev_name);
- 		err = -EBUSY;
+-- 
+2.27.0
+
 
 
