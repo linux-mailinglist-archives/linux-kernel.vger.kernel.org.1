@@ -2,181 +2,455 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD832C0564
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A552C0570
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729404AbgKWMUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:20:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39984 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729270AbgKWMT7 (ORCPT
+        id S1729435AbgKWMV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:21:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729339AbgKWMV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:19:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606133998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qeeoAM4hcE2Tqdj1kMierMvn1UuzyrNRXJg0gIbWESE=;
-        b=jM6wQ1QafSoYVBz4LjnedpMBDzbE5qtHGtEMLfWp4JokYqjfst8o1vPXQtjz2UIu2sztMU
-        I4xGsj4whWPWDqnpEla8OA4NeKzpe0KMYBFB3rZIn2sTus+6ZaZ+ffgywx46mv84lYu5NR
-        ey/JJBKPqeQMgxvo9pYAKX+QnGXGZFE=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-xadySo5GNP2kyTUrIdwATw-1; Mon, 23 Nov 2020 07:19:56 -0500
-X-MC-Unique: xadySo5GNP2kyTUrIdwATw-1
-Received: by mail-ej1-f69.google.com with SMTP id a9so5498671ejy.22
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:19:56 -0800 (PST)
+        Mon, 23 Nov 2020 07:21:56 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51FFC0613CF;
+        Mon, 23 Nov 2020 04:21:54 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id t13so15711255ilp.2;
+        Mon, 23 Nov 2020 04:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bt7RW8tesctK1xmjAkgVszIlLX3IXHJkMOc4XyKly3c=;
+        b=Mej9gtAHmigb/muFkZljF620dpm1VAIpj3v/yxbPL04Wb/K73bzItpgk2l0gbx4fBD
+         ptYFUdvY4uW1GFh1d99I885sJb14RVMvMSbXz3eAzMVkOP1Qss6VHZN9xjMTT+bTm1qo
+         muMhKmh70nOgzEyMQenRIBcFT2ETkq2EZ68imEwZtYVxiwUtGGAg7qDrXDIYzzbzKeeo
+         eOXmgN9KkufeEyhJNwG9gm2slzoq8pH0clW6S6lYQI81nHEHz0Rgr7W//v8YkmO8Zrwu
+         bSElgdhv0uGtL00/Vu96cvl3Qq1b4hpqvuTFYDs+MS+7nFKDpVwFCRgZt2xZZn0z/AqY
+         NZWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qeeoAM4hcE2Tqdj1kMierMvn1UuzyrNRXJg0gIbWESE=;
-        b=JNM48rReHdOHO4b0I4DjBPq5HYdtxExxh/VuCiHGO5rn6NqDTgg6RhBnrpfruD2x3h
-         85SNknm8ExKsr+uf2hyObkDwQBAe1P37ztb+71ffitF/lZQprAgvFHzTdQ4Z6/+4GC7I
-         jVS+zHOwztMbcFe7JyR98Zial8D6o1E2MCdY9OgNAwRpYF0ebEoT4JKUeJzABQ52dG6Z
-         bTlbB95EhHn+rUbnP33ZYe82+Lnhx1kaiC2HCeHUSROORca2vUYtQ5rflz9vqUw3/Tzc
-         JhzGTNBUrp2jJILKgC0hlxYWEp9RjnbVtw4yCmbnbD1laN0Snodr/MFoCnPz9b8muOx7
-         Yb6A==
-X-Gm-Message-State: AOAM530gSeCXC+tR2/AcfcIwPLwninSXh9jBaI5XOzwgWYVCaPTw9Whq
-        EWMn+Tp+OSLIgHGxE8sb9dy7ECqniGX+ly9NRoRBdiL/qQ+0fyV9YXpa05HHtu8j2H6VKBmM9Ph
-        FOAKW3XqEOvDzkjbqgt0ULgyt
-X-Received: by 2002:a17:907:20ac:: with SMTP id pw12mr15813618ejb.245.1606133994793;
-        Mon, 23 Nov 2020 04:19:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyCl6Est+5O33dD1/yIKWd+wwfQ8dObfaPnfKKKa4No6mpzqBFG+RaxPcyjk/JdrcxX1xjM2Q==
-X-Received: by 2002:a17:907:20ac:: with SMTP id pw12mr15813584ejb.245.1606133994369;
-        Mon, 23 Nov 2020 04:19:54 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id u7sm4196388ejt.33.2020.11.23.04.19.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 04:19:53 -0800 (PST)
-Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
-To:     Jerry Snitselaar <jsnitsel@redhat.com>
-Cc:     Matthew Garrett <mjg59@google.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jarkko@kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-References: <20201015214430.17937-1-jsnitsel@redhat.com>
- <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
- <87d009c0pn.fsf@redhat.com> <77498b10-cf2c-690b-8dad-78cbd61712ba@redhat.com>
- <87a6vdb7l2.fsf@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <161ade15-5e13-361a-572b-78dbbd1f764a@redhat.com>
-Date:   Mon, 23 Nov 2020 13:19:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bt7RW8tesctK1xmjAkgVszIlLX3IXHJkMOc4XyKly3c=;
+        b=ZFpXc0tQwzEajH5xPqgjni4+YzSST8wlJFw1JXQxK9fz7kCGotja7rJKfemnJX8lLy
+         dXnsk9Anmz29o6zEPeR3r3V3H10szHQ7NcSvcGea29Q3lH+axMVeXyThm88u5LkcWP8E
+         2hA85eIKmUBiWh5odSq94v884wNc+nuXriEvcF7geX/vYkwK7+B3LTPgd/IDOHiIf7HV
+         NFAEWEGxW4iFQ5gaHlJeqVElfu0hEAKEmwaG1QgvLg1RYOuF9rJX4/VR+WazGVvW8kMj
+         swhSgZCFLUmrF18s8vnpxB8cy9iBxbm5N/4i4En2AvyFu+ZvDo6IfX9s6C5gPv0HBJSl
+         lWFQ==
+X-Gm-Message-State: AOAM531lrumkFsm44tWlnQ45bHMjMu5H/9QhBPAZJi1U8j2WtxdvvEh/
+        kFg6ESPRuKuPdYd/bY7bxUcso9JR4xZHLJ9Ms60=
+X-Google-Smtp-Source: ABdhPJw31r1DU+cSRep2WbAidzAuU4MLjrHDjqbtUMQQwExYlyVQknqhG0eSV54HT0hBsveuTlurWLe6VJpf/q20Dx0=
+X-Received: by 2002:a92:d90c:: with SMTP id s12mr37040949iln.100.1606134113956;
+ Mon, 23 Nov 2020 04:21:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87a6vdb7l2.fsf@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201117162340.43924-1-alexandru.ardelean@analog.com>
+ <20201117162340.43924-4-alexandru.ardelean@analog.com> <20201121182435.54c61758@archlinux>
+In-Reply-To: <20201121182435.54c61758@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Mon, 23 Nov 2020 14:21:42 +0200
+Message-ID: <CA+U=Dsq0e4ytf81QeX0iQOeyxV6TSFFx9VZW5TQXH6OC7e9wng@mail.gmail.com>
+Subject: Re: [RFC PATCH 03/12] iio: buffer: rework buffer & scan_elements dir creation
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Nov 21, 2020 at 8:25 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Tue, 17 Nov 2020 18:23:31 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > When adding more than one IIO buffer per IIO device, we will need to create
+> > a buffer & scan_elements directory for each buffer.
+> > We also want to move the 'scan_elements' to be a sub-directory of the
+> > 'buffer' folder.
+> >
+> > The format we want to reach is, for a iio:device0 folder, for 2 buffers
+> > [for example], we have a 'buffer0' and a 'buffer1' subfolder, and each with
+> > it's own 'scan_elements' subfolder.
+> >
+> > So, for example:
+> >    iio:device0/buffer0
+> >       scan_elements/
+> >
+> >    iio:device0/buffer1
+> >       scan_elements/
+> >
+> > The other attributes under 'bufferX' would remain unchanged.
+> >
+> > However, we would also need to symlink back to the old 'buffer' &
+> > 'scan_elements' folders, to keep backwards compatibility.
+> >
+> > Doing all these, require that we maintain the kobjects for each 'bufferX'
+> > and 'scan_elements' so that we can symlink them back. We also need to
+> > implement the sysfs_ops for these folders.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+>
+> Hmm. This ended up a bit nasty.  It could do with a few more comments
+> in the code to make it clear what is going on.
 
-On 11/19/20 6:05 PM, Jerry Snitselaar wrote:
-> 
-> Hans de Goede @ 2020-11-19 07:42 MST:
-> 
->> Hi,
->>
->> On 11/19/20 7:36 AM, Jerry Snitselaar wrote:
->>>
->>> Matthew Garrett @ 2020-10-15 15:39 MST:
->>>
->>>> On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
->>>>>
->>>>> There is a misconfiguration in the bios of the gpio pin used for the
->>>>> interrupt in the T490s. When interrupts are enabled in the tpm_tis
->>>>> driver code this results in an interrupt storm. This was initially
->>>>> reported when we attempted to enable the interrupt code in the tpm_tis
->>>>> driver, which previously wasn't setting a flag to enable it. Due to
->>>>> the reports of the interrupt storm that code was reverted and we went back
->>>>> to polling instead of using interrupts. Now that we know the T490s problem
->>>>> is a firmware issue, add code to check if the system is a T490s and
->>>>> disable interrupts if that is the case. This will allow us to enable
->>>>> interrupts for everyone else. If the user has a fixed bios they can
->>>>> force the enabling of interrupts with tpm_tis.interrupts=1 on the
->>>>> kernel command line.
->>>>
->>>> I think an implication of this is that systems haven't been
->>>> well-tested with interrupts enabled. In general when we've found a
->>>> firmware issue in one place it ends up happening elsewhere as well, so
->>>> it wouldn't surprise me if there are other machines that will also be
->>>> unhappy with interrupts enabled. Would it be possible to automatically
->>>> detect this case (eg, if we get more than a certain number of
->>>> interrupts in a certain timeframe immediately after enabling the
->>>> interrupt) and automatically fall back to polling in that case? It
->>>> would also mean that users with fixed firmware wouldn't need to pass a
->>>> parameter.
->>>
->>> I believe Matthew is correct here. I found another system today
->>> with completely different vendor for both the system and the tpm chip.
->>> In addition another Lenovo model, the L490, has the issue.
->>>
->>> This initial attempt at a solution like Matthew suggested works on
->>> the system I found today, but I imagine it is all sorts of wrong.
->>> In the 2 systems where I've seen it, there are about 100000 interrupts
->>> in around 1.5 seconds, and then the irq code shuts down the interrupt
->>> because they aren't being handled.
->>
->> Is that with your patch? The IRQ should be silenced as soon as
->> devm_free_irq(chip->dev.parent, priv->irq, chip); is called.
->>
-> 
-> No that is just with James' patchset that enables interrupts for
-> tpm_tis. It looks like the irq is firing, but the tpm's int_status
-> register is clear, so the handler immediately returns IRQ_NONE. After
-> that happens 100000 times the core irq code shuts down the irq, but it
-> isn't released so I could still see the stats in /proc/interrupts.
+I'll take a look at these comments.
 
-I see, yes I have seen this behavior on the X1C8 with a pre-production BIOS.
+>
+> > ---
+> >  drivers/iio/industrialio-buffer.c | 151 ++++++++++++++++++++++++++----
+> >  drivers/iio/industrialio-core.c   |  24 ++---
+> >  include/linux/iio/buffer_impl.h   |  14 ++-
+> >  include/linux/iio/iio.h           |   2 +-
+> >  4 files changed, 156 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index 08aa8e0782ce..8b31faf049a5 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -1175,8 +1175,6 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+> >       return (ret < 0) ? ret : len;
+> >  }
+> >
+> > -static const char * const iio_scan_elements_group_name = "scan_elements";
+> > -
+> >  static ssize_t iio_buffer_show_watermark(struct device *dev,
+> >                                        struct device_attribute *attr,
+> >                                        char *buf)
+> > @@ -1252,6 +1250,101 @@ static struct attribute *iio_buffer_attrs[] = {
+> >       &dev_attr_data_available.attr,
+> >  };
+> >
+> > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
+> > +
+> > +static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
+> > +                                     struct attribute *attr,
+> > +                                     char *buf)
+> > +{
+> > +     struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
+> > +     struct device_attribute *dattr;
+> > +
+> > +     dattr = to_dev_attr(attr);
+> > +
+> > +     return dattr->show(&buffer->indio_dev->dev, dattr, buf);
+> > +}
+> > +
+> > +static ssize_t iio_buffer_dir_attr_store(struct kobject *kobj,
+> > +                                      struct attribute *attr,
+> > +                                      const char *buf,
+> > +                                      size_t len)
+> > +{
+> > +     struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
+> > +     struct device_attribute *dattr;
+> > +
+> > +     dattr = to_dev_attr(attr);
+> > +
+> > +     return dattr->store(&buffer->indio_dev->dev, dattr, buf, len);
+> > +}
+> > +
+> > +static const struct sysfs_ops iio_buffer_dir_sysfs_ops = {
+> > +     .show = iio_buffer_dir_attr_show,
+> > +     .store = iio_buffer_dir_attr_store,
+> > +};
+> > +
+> > +static struct kobj_type iio_buffer_dir_ktype = {
+> > +     .sysfs_ops = &iio_buffer_dir_sysfs_ops,
+> > +};
+> > +
+> > +static ssize_t iio_scan_el_dir_attr_show(struct kobject *kobj,
+> > +                                      struct attribute *attr,
+> > +                                      char *buf)
+> > +{
+> > +     struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
+> > +     struct device_attribute *dattr = to_dev_attr(attr);
+> > +
+> > +     return dattr->show(&buffer->indio_dev->dev, dattr, buf);
+> > +}
+> > +
+> > +static ssize_t iio_scan_el_dir_attr_store(struct kobject *kobj,
+> > +                                       struct attribute *attr,
+> > +                                       const char *buf,
+> > +                                       size_t len)
+> > +{
+> > +     struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
+> > +     struct device_attribute *dattr = to_dev_attr(attr);
+> > +
+> > +     return dattr->store(&buffer->indio_dev->dev, dattr, buf, len);
+> > +}
+> > +
+> > +static const struct sysfs_ops iio_scan_el_dir_sysfs_ops = {
+> > +     .show = iio_scan_el_dir_attr_show,
+> > +     .store = iio_scan_el_dir_attr_store,
+> > +};
+> > +
+> > +static struct kobj_type iio_scan_el_dir_ktype = {
+> > +     .sysfs_ops = &iio_scan_el_dir_sysfs_ops,
+> > +};
+> > +
+> > +/*
+> > + * This iio_sysfs_{add,del}_attrs() are essentially re-implementations of
+> > + * sysfs_create_files() & sysfs_remove_files(), but they are meant to get
+> > + * around the const-pointer mismatch situation with using them.
+> > + *
+> > + * sysfs_{create,remove}_files() uses 'const struct attribute * const *ptr',
+> > + * while these are happy with just 'struct attribute **ptr'
+>
+> Ouch.  This definitely doesn't feel like a great thing to do.
 
-> With
-> my attempt below on top of that patchset it releases the irq. I had to
-> stick the check prior to it checking the int_status register because it
-> is cleared and the handler returns,
+Yep.
+I'm still not 100% sure that this is needed.
+But it may be that this is the best option.
+
+>
+> > + */
+> > +static int iio_sysfs_add_attrs(struct kobject *kobj, struct attribute **ptr)
+> > +{
+> > +     int err = 0;
+> > +     int i;
+> > +
+> > +     for (i = 0; ptr[i] && !err; i++)
+> > +             err = sysfs_create_file(kobj, ptr[i]);
+> > +     if (err)
+> > +             while (--i >= 0)
+> > +                     sysfs_remove_file(kobj, ptr[i]);
+> > +     return err;
+> > +}
+> > +
+> > +static void iio_sysfs_del_attrs(struct kobject *kobj, struct attribute **ptr)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; ptr[i]; i++)
+> > +             sysfs_remove_file(kobj, ptr[i]);
+> > +}
+> > +
+> >  static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+>
+> Definitely add some docs to this to say why we have this complexity..
 
 Ack.
 
-> and I couldn't do the devm_free_irq
-> directly in tis_int_handler, so I tried sticking it in tpm_tis_send
-> where the other odd irq testing code was already located. I'm not sure
-> if there is another place that would work better for calling the
-> devm_free_irq.
+>
+> >                                            struct iio_dev *indio_dev)
+> >  {
+> > @@ -1282,12 +1375,16 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >               memcpy(&attr[ARRAY_SIZE(iio_buffer_attrs)], buffer->attrs,
+> >                      sizeof(struct attribute *) * attrcount);
+> >
+> > -     attr[attrcount + ARRAY_SIZE(iio_buffer_attrs)] = NULL;
+> > +     buffer->buffer_attrs = attr;
+> >
+> > -     buffer->buffer_group.name = "buffer";
+> > -     buffer->buffer_group.attrs = attr;
+> > +     ret = kobject_init_and_add(&buffer->buffer_dir, &iio_buffer_dir_ktype,
+> > +                                &indio_dev->dev.kobj, "buffer");
+> > +     if (ret)
+> > +             goto error_buffer_free_attrs;
+> >
+> > -     indio_dev->groups[indio_dev->groupcounter++] = &buffer->buffer_group;
+> > +     ret = iio_sysfs_add_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
+> > +     if (ret)
+> > +             goto error_buffer_kobject_put;
+> >
+> >       attrcount = 0;
+> >       INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
+> > @@ -1317,28 +1414,42 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >               }
+> >       }
+> >
+> > -     buffer->scan_el_group.name = iio_scan_elements_group_name;
+> > -
+> > -     buffer->scan_el_group.attrs = kcalloc(attrcount + 1,
+> > -                                           sizeof(buffer->scan_el_group.attrs[0]),
+> > -                                           GFP_KERNEL);
+> > -     if (buffer->scan_el_group.attrs == NULL) {
+> > +     buffer->scan_el_attrs = kcalloc(attrcount + 1,
+> > +                                     sizeof(buffer->scan_el_attrs[0]),
+> > +                                     GFP_KERNEL);
+> > +     if (buffer->scan_el_attrs == NULL) {
+> >               ret = -ENOMEM;
+> >               goto error_free_scan_mask;
+> >       }
+> > -     attrn = 0;
+> >
+> > +     ret = kobject_init_and_add(&buffer->scan_el_dir, &iio_scan_el_dir_ktype,
+> > +                                &indio_dev->dev.kobj, "scan_elements");
+> > +     if (ret)
+> > +             goto error_free_scan_attrs;
+> > +
+> > +     attrn = 0;
+> >       list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
+> > -             buffer->scan_el_group.attrs[attrn++] = &p->dev_attr.attr;
+> > -     indio_dev->groups[indio_dev->groupcounter++] = &buffer->scan_el_group;
+> > +             buffer->scan_el_attrs[attrn++] = &p->dev_attr.attr;
+> > +
+> > +     ret = iio_sysfs_add_attrs(&buffer->scan_el_dir, buffer->scan_el_attrs);
+> > +     if (ret)
+> > +             goto error_scan_kobject_put;
+> >
+> >       return 0;
+> >
+> > +error_scan_kobject_put:
+> > +     kobject_put(&buffer->scan_el_dir);
+> > +error_free_scan_attrs:
+> > +     kfree(buffer->scan_el_attrs);
+> >  error_free_scan_mask:
+> >       bitmap_free(buffer->scan_mask);
+> >  error_cleanup_dynamic:
+> > +     iio_sysfs_del_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
+> >       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > -     kfree(buffer->buffer_group.attrs);
+> > +error_buffer_kobject_put:
+> > +     kobject_put(&buffer->buffer_dir);
+> > +error_buffer_free_attrs:
+> > +     kfree(buffer->buffer_attrs);
+> >
+> >       return ret;
+> >  }
+> > @@ -1366,10 +1477,14 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> >
+> >  static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> >  {
+> > +     iio_sysfs_del_attrs(&buffer->scan_el_dir, buffer->scan_el_attrs);
+> > +     kobject_put(&buffer->scan_el_dir);
+> > +     kfree(buffer->scan_el_attrs);
+> >       bitmap_free(buffer->scan_mask);
+> > -     kfree(buffer->buffer_group.attrs);
+> > -     kfree(buffer->scan_el_group.attrs);
+> > +     iio_sysfs_del_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
+> >       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > +     kobject_put(&buffer->buffer_dir);
+> > +     kfree(buffer->buffer_attrs);
+> >  }
+> >
+> >  void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> > index ca8b11541477..f389d8feacb0 100644
+> > --- a/drivers/iio/industrialio-core.c
+> > +++ b/drivers/iio/industrialio-core.c
+> > @@ -1819,18 +1819,11 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+> >
+> >       iio_device_register_debugfs(indio_dev);
+> >
+> > -     ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
+> > -     if (ret) {
+> > -             dev_err(indio_dev->dev.parent,
+> > -                     "Failed to create buffer sysfs interfaces\n");
+> > -             goto error_unreg_debugfs;
+> > -     }
+> > -
+> >       ret = iio_device_register_sysfs(indio_dev);
+> >       if (ret) {
+> >               dev_err(indio_dev->dev.parent,
+> >                       "Failed to register sysfs interfaces\n");
+> > -             goto error_buffer_free_sysfs;
+> > +             goto error_unreg_debugfs;
+> >       }
+> >       ret = iio_device_register_eventset(indio_dev);
+> >       if (ret) {
+> > @@ -1859,14 +1852,21 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+> >       if (ret < 0)
+> >               goto error_unreg_eventset;
+> >
+> > +     ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
+>
+> There are some races around late creation of sysfs files (IIRC) but
+> I'm not sure what else could be done here.
 
-Adding it together with the other IRQ testing related code seems fine
-to me.
+Yep, I was also thinking about these potential races a bit.
+I'll need to think a bit more about handling them somehow.
 
->> Depending on if we can get your storm-detection to work or not,
->> we might also choose to just never try to use the IRQ (at least on
->> x86 systems). AFAIK the TPM is never used for high-throughput stuff
->> so the polling overhead should not be a big deal (and I'm getting the feeling
->> that Windows always polls).
->>
-> 
-> I was wondering about Windows as well. In addition to the Lenovo systems
-> which the T490s had Nuvoton tpm, the system I found yesterday was a development
-> system we have from a partner with an Infineon tpm. Dan Williams has
-> seen it internally at Intel as well on some system.
+Maybe there's a split I can try to do somewhere. Maybe the device
+doesn't need to be added, but rather initialized somehow before it can
+be referenced to add these directories dynamically.
 
-Sounds to me like Windows never uses the IRQ, so we get the fun of finding
-all the untested firmware bugs.
+Otherwise, we may try to temporarily set the 'indio_dev->info' to
+NULL, and re-initialize it after the sysfs is completely initialized.
+Under lock of course.
 
-So if we cannot get this detection code to work reliable, maybe we should
-just not use the IRQ at all, at least on X86 + ACPI systems?
-
-Anyways lets try this storm-detection thing first, but I have the feeling
-we should not spend too much time on this. Just outright disabling IRQ
-support might be better.
-
-REgards,
-
-Hans
-
+> Looking at device_add it is probably to do with the various notifiers being
+> called before we have put everything in place.
+>
+> > +     if (ret) {
+> > +             dev_err(indio_dev->dev.parent,
+> > +                     "Failed to create buffer sysfs interfaces\n");
+> > +             goto error_device_del;
+> > +     }
+> > +
+> >       return 0;
+> >
+> > +error_device_del:
+> > +     cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
+> >  error_unreg_eventset:
+> >       iio_device_unregister_eventset(indio_dev);
+> >  error_free_sysfs:
+> >       iio_device_unregister_sysfs(indio_dev);
+> > -error_buffer_free_sysfs:
+> > -     iio_buffer_free_sysfs_and_mask(indio_dev);
+> >  error_unreg_debugfs:
+> >       iio_device_unregister_debugfs(indio_dev);
+> >       return ret;
+> > @@ -1882,6 +1882,8 @@ void iio_device_unregister(struct iio_dev *indio_dev)
+> >       struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> >       struct iio_ioctl_handler *h, *t;
+> >
+> > +     iio_buffer_free_sysfs_and_mask(indio_dev);
+> > +
+> >       cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
+> >
+> >       mutex_lock(&indio_dev->info_exist_lock);
+> > @@ -1899,8 +1901,6 @@ void iio_device_unregister(struct iio_dev *indio_dev)
+> >       iio_buffer_wakeup_poll(indio_dev);
+> >
+> >       mutex_unlock(&indio_dev->info_exist_lock);
+> > -
+> > -     iio_buffer_free_sysfs_and_mask(indio_dev);
+> >  }
+> >  EXPORT_SYMBOL(iio_device_unregister);
+> >
+> > diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
+> > index 67d73d465e02..77e169e51434 100644
+> > --- a/include/linux/iio/buffer_impl.h
+> > +++ b/include/linux/iio/buffer_impl.h
+> > @@ -103,14 +103,20 @@ struct iio_buffer {
+> >       /* @scan_el_dev_attr_list: List of scan element related attributes. */
+> >       struct list_head scan_el_dev_attr_list;
+> >
+> > -     /* @buffer_group: Attributes of the buffer group. */
+> > -     struct attribute_group buffer_group;
+> > +     /* @buffer_dir: kobject for the 'buffer' directory of this buffer */
+> > +     struct kobject buffer_dir;
+> > +
+> > +     /* @buffer_attrs: Attributes of the buffer group. */
+> > +     struct attribute **buffer_attrs;
+> > +
+> > +     /* @scan_el_dir: kobject for the 'scan_elements' directory of this buffer */
+> > +     struct kobject scan_el_dir;
+> >
+> >       /*
+> > -      * @scan_el_group: Attribute group for those attributes not
+> > +      * @scan_el_attrs: Array of attributes for those attributes not
+> >        * created from the iio_chan_info array.
+> >        */
+> > -     struct attribute_group scan_el_group;
+> > +     struct attribute **scan_el_attrs;
+> >
+> >       /* @attrs: Standard attributes of the buffer. */
+> >       const struct attribute **attrs;
+> > diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> > index 9a3cf4815148..2ea185340a3a 100644
+> > --- a/include/linux/iio/iio.h
+> > +++ b/include/linux/iio/iio.h
+> > @@ -556,7 +556,7 @@ struct iio_dev {
+> >       struct mutex                    info_exist_lock;
+> >       const struct iio_buffer_setup_ops       *setup_ops;
+> >       struct cdev                     chrdev;
+> > -#define IIO_MAX_GROUPS 6
+> > +#define IIO_MAX_GROUPS 4
+> >       const struct attribute_group    *groups[IIO_MAX_GROUPS + 1];
+> >       int                             groupcounter;
+> >
+>
