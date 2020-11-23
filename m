@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA002C162D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DDE2C161C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733060AbgKWUL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:11:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729981AbgKWULN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:11:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606162272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=saslOu984ahwhKQKfNAWbZLu0fw2ozrT5TSfZyQgUMo=;
-        b=OKdrp6yd1xwaCLqF2EIRta5Ds5N9F5OMeZbojCicIt/MHfQUVvKRxqAIWbqeoVf66htabA
-        +V5NLr6zR3zYGbRY2SsdsOzg/0VdNJ/EURaJrcZqjtICiiNR1DQ4VBu4BZVJtvms3FH8+4
-        6ByTP+DZzYeNJSkmdJFK93wmGqRSTtw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-123-w9mxzQzMMTOA8i4AQPfcbw-1; Mon, 23 Nov 2020 15:11:10 -0500
-X-MC-Unique: w9mxzQzMMTOA8i4AQPfcbw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732639AbgKWULP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:11:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732570AbgKWULL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 15:11:11 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16B0A8030A5;
-        Mon, 23 Nov 2020 20:11:09 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 48A165D6DC;
+        by mail.kernel.org (Postfix) with ESMTPSA id E87FB20715;
         Mon, 23 Nov 2020 20:11:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net-next 09/17] rxrpc: Allow security classes to give more
- info on server keys
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 23 Nov 2020 20:11:07 +0000
-Message-ID: <160616226750.830164.2093457327608722796.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk>
-References: <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1606162270;
+        bh=S16KBwhaL/01tGXV0yjo+fhZ/1ZXyYm+GDtWWM3lQiw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s0Z9tEU4SklazDQUZnIX5EresDQad7SkzVV2bA8lAe3AE+57E0+xaXNcttXDY4c3N
+         2DLWeaq2KtP2uKBIu+v5SmBGjWPsJqeNodCJ3t2iSZYrAGR5dAAy9wYfOqec5z79Bc
+         gQMMbWP6RmrFDEd8+nDIcp2R2ji6h62jIynqVV8A=
+Date:   Mon, 23 Nov 2020 12:11:08 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-mm@kvack.kernel.org, Daniel Colascione <dancol@google.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [PATCH v6 1/2] Add UFFD_USER_MODE_ONLY
+Message-Id: <20201123121108.24d178769cfc9500c7c51317@linux-foundation.org>
+In-Reply-To: <CA+EESO7xnnJAsPneuy1dNj6F47gViGiL-z8rajY5EoGdFWs+-A@mail.gmail.com>
+References: <20201120030411.2690816-1-lokeshgidra@google.com>
+        <20201120030411.2690816-2-lokeshgidra@google.com>
+        <20201120153337.431dc36c1975507bb1e44596@linux-foundation.org>
+        <CA+EESO7xnnJAsPneuy1dNj6F47gViGiL-z8rajY5EoGdFWs+-A@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow a security class to give more information on an rxrpc_s-type key when
-it is viewed in /proc/keys.  This will allow the upcoming RxGK security
-class to show the enctype name here.
+On Mon, 23 Nov 2020 11:17:43 -0800 Lokesh Gidra <lokeshgidra@google.com> wrote:
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+> > > A future patch adds a knob allowing administrators to give some
+> > > processes the ability to create userfaultfd file objects only if they
+> > > pass UFFD_USER_MODE_ONLY, reducing the likelihood that these processes
+> > > will exploit userfaultfd's ability to delay kernel page faults to open
+> > > timing windows for future exploits.
+> >
+> > Can we assume that an update to the userfaultfd(2) manpage is in the
+> > works?
+> >
+> Yes, I'm working on it. Can the kernel version which will have these
+> patches be known now so that I can mention it in the manpage?
 
- net/rxrpc/ar-internal.h |    3 +++
- net/rxrpc/server_key.c  |    4 ++++
- 2 files changed, 7 insertions(+)
-
-diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
-index 6682c797b878..0fb294725ff2 100644
---- a/net/rxrpc/ar-internal.h
-+++ b/net/rxrpc/ar-internal.h
-@@ -227,6 +227,9 @@ struct rxrpc_security {
- 	/* Destroy the payload of a server key */
- 	void (*destroy_server_key)(struct key *);
- 
-+	/* Describe a server key */
-+	void (*describe_server_key)(const struct key *, struct seq_file *);
-+
- 	/* initialise a connection's security */
- 	int (*init_connection_security)(struct rxrpc_connection *,
- 					struct rxrpc_key_token *);
-diff --git a/net/rxrpc/server_key.c b/net/rxrpc/server_key.c
-index 1a2f0b63ee1d..ead3471307ee 100644
---- a/net/rxrpc/server_key.c
-+++ b/net/rxrpc/server_key.c
-@@ -105,7 +105,11 @@ static void rxrpc_destroy_s(struct key *key)
- 
- static void rxrpc_describe_s(const struct key *key, struct seq_file *m)
- {
-+	const struct rxrpc_security *sec = key->payload.data[1];
-+
- 	seq_puts(m, key->description);
-+	if (sec && sec->describe_server_key)
-+		sec->describe_server_key(key, m);
- }
- 
- /*
-
-
+5.11, if all proceeds smoothly.
