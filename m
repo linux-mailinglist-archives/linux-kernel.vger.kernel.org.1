@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846F92C06D0
+	by mail.lfdr.de (Postfix) with ESMTP id F1AFB2C06D1
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731416AbgKWMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:34:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46426 "EHLO mail.kernel.org"
+        id S1731425AbgKWMeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:34:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731395AbgKWMeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:34:37 -0500
+        id S1731413AbgKWMek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:34:40 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5158920721;
-        Mon, 23 Nov 2020 12:34:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 165C120857;
+        Mon, 23 Nov 2020 12:34:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134875;
-        bh=wkbW9bjaIoV+TbmNBkWqSH0v0BtyzWg+O1IKBRV5V6M=;
+        s=korg; t=1606134880;
+        bh=0QUuYwQkWoMKYnKni8fZwZNkzY8pchoHHX125HGgVnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PU9lqKwcpNas3oYirZqYwkZuPXo3Eb7uST/B/RMWg8Hou9OzAVTKyRx8h9GaQS7pw
-         yOvY2orVEFOaAFraWmzBZsXJuh7KK8StlQteqoQQCsMid9oi+XBrVy+IvHXPkBgpu5
-         TLqkXSeZ+D2kuDNfoPgf/7ReCgu2ZbvKdSmXcTTI=
+        b=pyuGSGxoqHPG2y2cP22ZMPNuCsw3a2QAPuFDrANPfV7iGYCU4QpbGsZNjt3DmPO5A
+         IdDe2A3DABWuxidADFZ6cYzyXTs2hYkkzOP5kGCkk5BJD98vUlWkB2TAIRw1Ir/Sr0
+         nrA4QzhomDavUoHVZA3decJQsDq7gKtLDG4DcQRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
         Wang Hai <wanghai38@huawei.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 004/158] devlink: Add missing genlmsg_cancel() in devlink_nl_sb_port_pool_fill()
-Date:   Mon, 23 Nov 2020 13:20:32 +0100
-Message-Id: <20201123121820.159883286@linuxfoundation.org>
+Subject: [PATCH 5.4 006/158] inet_diag: Fix error path to cancel the meseage in inet_req_diag_fill()
+Date:   Mon, 23 Nov 2020 13:20:34 +0100
+Message-Id: <20201123121820.251426365@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -45,43 +45,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 849920c703392957f94023f77ec89ca6cf119d43 ]
+[ Upstream commit e33de7c5317e2827b2ba6fd120a505e9eb727b05 ]
 
-If sb_occ_port_pool_get() failed in devlink_nl_sb_port_pool_fill(),
-msg should be canceled by genlmsg_cancel().
+nlmsg_cancel() needs to be called in the error path of
+inet_req_diag_fill to cancel the message.
 
-Fixes: df38dafd2559 ("devlink: implement shared buffer occupancy monitoring interface")
+Fixes: d545caca827b ("net: inet: diag: expose the socket mark to privileged processes.")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Link: https://lore.kernel.org/r/20201113111622.11040-1-wanghai38@huawei.com
+Link: https://lore.kernel.org/r/20201116082018.16496-1-wanghai38@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/devlink.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/ipv4/inet_diag.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -1144,7 +1144,7 @@ static int devlink_nl_sb_port_pool_fill(
- 		err = ops->sb_occ_port_pool_get(devlink_port, devlink_sb->index,
- 						pool_index, &cur, &max);
- 		if (err && err != -EOPNOTSUPP)
--			return err;
-+			goto sb_occ_get_failure;
- 		if (!err) {
- 			if (nla_put_u32(msg, DEVLINK_ATTR_SB_OCC_CUR, cur))
- 				goto nla_put_failure;
-@@ -1157,8 +1157,10 @@ static int devlink_nl_sb_port_pool_fill(
+--- a/net/ipv4/inet_diag.c
++++ b/net/ipv4/inet_diag.c
+@@ -388,8 +388,10 @@ static int inet_req_diag_fill(struct soc
+ 	r->idiag_inode	= 0;
+ 
+ 	if (net_admin && nla_put_u32(skb, INET_DIAG_MARK,
+-				     inet_rsk(reqsk)->ir_mark))
++				     inet_rsk(reqsk)->ir_mark)) {
++		nlmsg_cancel(skb, nlh);
+ 		return -EMSGSIZE;
++	}
+ 
+ 	nlmsg_end(skb, nlh);
  	return 0;
- 
- nla_put_failure:
-+	err = -EMSGSIZE;
-+sb_occ_get_failure:
- 	genlmsg_cancel(msg, hdr);
--	return -EMSGSIZE;
-+	return err;
- }
- 
- static int devlink_nl_cmd_sb_port_pool_get_doit(struct sk_buff *skb,
 
 
