@@ -2,184 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BF72C036D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5AB2C0375
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgKWKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgKWKhP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:37:15 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC830C061A4E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:37:13 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id f17so5340602pge.6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:37:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4eFIlDBCGuePrKXo7ssxRUnh/an23uWR8hRv/nfBrew=;
-        b=UTFKQgOoJYizpumITmdB9VlaPcXqQMrksxuklKmUZv6ApbQDov2zF5scuZArYl6A6Y
-         yd++i3f42p9lH3up/PA2WaDRuPwQVAlAVGj44ZMj/p0UxW8aMb/UDXzHAF/8F7bjBa92
-         bNWPUY6R2T4umft7PJYwJOFOPTOsAdzFQfZAkD+cIEIIb//UmiUZGZ33v4AVzaZhwBTj
-         td+K9uJO9oe3itDjbfRgjBVVceT1Wxzx39v5xAZ9+5rFZiJf0ZCiTgQdV7Do5bTaS6It
-         MOItu/J02q00pSJgoJsVqQaJlPL3pCB/UEdDyK5E5dY97QGYQUJWZ/U/NsRTqHV7m9pk
-         Gz8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4eFIlDBCGuePrKXo7ssxRUnh/an23uWR8hRv/nfBrew=;
-        b=c3ST7T1weZjh+vu4wHOHUdEtiXTaRoTqmZVfaO/gouG055Yikjm4Qta3X1DktFQqup
-         MapPjxhQE+4o/FUFEhZFbftPepjZxJyhBSzlbXWIUTZVIBGNj3NVGf1DDLVXYcQlYv8n
-         yz/CIKkAS5rDczJrOVHx50wde+PjG2kCAVdpHvYnFpz2tj2Qp9OAgf/ocPrVFGNbK+f+
-         eDQsGpMFcNnGgWixAz4giPOlAVrUPrB4G2JrVr3qE1f8I8pPVPUv4ykufoQlA5bgZ5pL
-         is/gAb5Ufxf0Cst0cJh5nyGWViZD5mrIrJOaWSBytovcbqeOHJGpCSBAvFiWsID5gd8a
-         9Nsg==
-X-Gm-Message-State: AOAM5323EHzR+sPVi92J2tzs7mpGu4qsgnGmKXG4J2SPZUXsqZUT+sEJ
-        AtuB/tYGuD0ts8MQzdq6dqCuKwaAYJrrEy215sGSuQ==
-X-Google-Smtp-Source: ABdhPJz8PxEYWSwkBesY8S8Gp7xJgr4OI3mDgYlO5QJdSzdxdF6WwhS7tyxFNc2WD1b+YhcyppNVwief6iy0SpHqQSI=
-X-Received: by 2002:a63:fe0c:: with SMTP id p12mr26221772pgh.31.1606127833192;
- Mon, 23 Nov 2020 02:37:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz> <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
- <20201120131129.GO3200@dhcp22.suse.cz> <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
- <20201123074046.GB27488@dhcp22.suse.cz> <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
- <20201123094344.GG27488@dhcp22.suse.cz>
-In-Reply-To: <20201123094344.GG27488@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 23 Nov 2020 18:36:33 +0800
-Message-ID: <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728609AbgKWKht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:37:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:41140 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726325AbgKWKht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:37:49 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CA70101E;
+        Mon, 23 Nov 2020 02:37:48 -0800 (PST)
+Received: from usa.arm.com (unknown [10.57.54.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CACF43F70D;
+        Mon, 23 Nov 2020 02:37:46 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     ALKML <linux-arm-kernel@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [GIT PULL] firmware: arm_scmi: SCMI voltage domain support for v5.11
+Date:   Mon, 23 Nov 2020 10:37:41 +0000
+Message-Id: <20201123103741.19148-1-sudeep.holla@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 5:43 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 23-11-20 16:53:53, Muchun Song wrote:
-> > On Mon, Nov 23, 2020 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Fri 20-11-20 23:44:26, Muchun Song wrote:
-> > > > On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Fri 20-11-20 20:40:46, Muchun Song wrote:
-> > > > > > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> > > > > > > [...]
-> > > > > > >
-> > > > > > > Thanks for improving the cover letter and providing some numbers. I have
-> > > > > > > only glanced through the patchset because I didn't really have more time
-> > > > > > > to dive depply into them.
-> > > > > > >
-> > > > > > > Overall it looks promissing. To summarize. I would prefer to not have
-> > > > > > > the feature enablement controlled by compile time option and the kernel
-> > > > > > > command line option should be opt-in. I also do not like that freeing
-> > > > > > > the pool can trigger the oom killer or even shut the system down if no
-> > > > > > > oom victim is eligible.
-> > > > > >
-> > > > > > Hi Michal,
-> > > > > >
-> > > > > > I have replied to you about those questions on the other mail thread.
-> > > > > >
-> > > > > > Thanks.
-> > > > > >
-> > > > > > >
-> > > > > > > One thing that I didn't really get to think hard about is what is the
-> > > > > > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> > > > > > > invalid when racing with the split. How do we enforce that this won't
-> > > > > > > blow up?
-> > > > > >
-> > > > > > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
-> > > > > > in this case, the pfn_to_page can work. The return value of the
-> > > > > > pfn_to_page is actually the address of it's struct page struct.
-> > > > > > I can not figure out where the problem is. Can you describe the
-> > > > > > problem in detail please? Thanks.
-> > > > >
-> > > > > struct page returned by pfn_to_page might get invalid right when it is
-> > > > > returned because vmemmap could get freed up and the respective memory
-> > > > > released to the page allocator and reused for something else. See?
-> > > >
-> > > > If the HugeTLB page is already allocated from the buddy allocator,
-> > > > the struct page of the HugeTLB can be freed? Does this exist?
-> > >
-> > > Nope, struct pages only ever get deallocated when the respective memory
-> > > (they describe) is hotremoved via hotplug.
-> > >
-> > > > If yes, how to free the HugeTLB page to the buddy allocator
-> > > > (cannot access the struct page)?
-> > >
-> > > But I do not follow how that relates to my concern above.
-> >
-> > Sorry. I shouldn't understand your concerns.
-> >
-> > vmemmap pages                 page frame
-> > +-----------+   mapping to   +-----------+
-> > |           | -------------> |     0     |
-> > +-----------+                +-----------+
-> > |           | -------------> |     1     |
-> > +-----------+                +-----------+
-> > |           | -------------> |     2     |
-> > +-----------+                +-----------+
-> > |           | -------------> |     3     |
-> > +-----------+                +-----------+
-> > |           | -------------> |     4     |
-> > +-----------+                +-----------+
-> > |           | -------------> |     5     |
-> > +-----------+                +-----------+
-> > |           | -------------> |     6     |
-> > +-----------+                +-----------+
-> > |           | -------------> |     7     |
-> > +-----------+                +-----------+
-> >
-> > In this patch series, we will free the page frame 2-7 to the
-> > buddy allocator. You mean that pfn_to_page can return invalid
-> > value when the pfn is the page frame 2-7? Thanks.
->
-> No I really mean that pfn_to_page will give you a struct page pointer
-> from pages which you release from the vmemmap page tables. Those pages
-> might get reused as soon sa they are freed to the page allocator.
+Hi Mark,
 
-We will remap vmemmap pages 2-7 (virtual addresses) to page
-frame 1. And then we free page frame 2-7 to the buddy allocator.
-Then accessing the struct page pointer that returned by pfn_to_page
-will be reflected on page frame 1. I think that here is no problem.
+As discussed here is the pull request for SCMI firmware part for regulator
+support. Please pull !
 
-Thanks.
+Regards,
+Sudeep
 
-> --
-> Michal Hocko
-> SUSE Labs
+-->8
 
+The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
 
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
 
--- 
-Yours,
-Muchun
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git tags/scmi-voltage-5.11
+
+for you to fetch changes up to ec88381936954a146f260a21bf8466ca07e5c71e:
+
+  firmware: arm_scmi: Add support to enumerated SCMI voltage domain device (2020-11-20 14:55:48 +0000)
+
+----------------------------------------------------------------
+SCMI voltage domain management protocol support for v5.11
+
+SCMI v3.0 voltage domain protocol support to discover the voltage levels
+supported by the domains and to set/get the configuration and voltage
+level of any given domain.
+
+----------------------------------------------------------------
+Cristian Marussi (3):
+      dt-bindings: arm: Add support for SCMI Regulators
+      firmware: arm_scmi: Add voltage domain management protocol support
+      firmware: arm_scmi: Add support to enumerated SCMI voltage domain device
+
+ Documentation/devicetree/bindings/arm/arm,scmi.txt |  43 +++
+ drivers/firmware/arm_scmi/Makefile                 |   2 +-
+ drivers/firmware/arm_scmi/common.h                 |   1 +
+ drivers/firmware/arm_scmi/driver.c                 |   3 +
+ drivers/firmware/arm_scmi/voltage.c                | 380 +++++++++++++++++++++
+ include/linux/scmi_protocol.h                      |  64 ++++
+ 6 files changed, 492 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/firmware/arm_scmi/voltage.c
