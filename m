@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67302C067B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5757D2C0725
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730364AbgKWMbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:31:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42060 "EHLO mail.kernel.org"
+        id S1732019AbgKWMhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:37:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730825AbgKWMbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:31:13 -0500
+        id S1731981AbgKWMhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB5F020781;
-        Mon, 23 Nov 2020 12:31:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94EE32065E;
+        Mon, 23 Nov 2020 12:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134671;
-        bh=xlLfugiOHGGKEEAfOJDqFe3YxwH0PwHIuzYn3TTu5Lw=;
+        s=korg; t=1606135066;
+        bh=UY4zestq1yqDp9x+p+4ZP9WeJCOYXC+lBK7i0LVhKZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fmZ2P48rqwTBqyCsTnm7JmTw6ltDyuUQl7DG07kYRutJcLpGRZd2eB+RdHQ4f8lRI
-         1U9tpxAxptRyZvvcu1W1jkZujFIEWM7JrOzP0kJz0EtEbb4S0yz6dOEdBNs01bUgAf
-         aVBWx2bIOgTA9GTmf+PP6h289dJSGM8xDM985Pi0=
+        b=gjFYrDAQEMEjAw2E7s8E0No+iw27zy2TPOWHIA5S8QS699621QEOg999DGNGIMpWE
+         XyAESuacYdoeqQN8OffViuhbRJE/i2Sk5bWBpcriNVWaeKWReDffgnl12PVLFRbk1b
+         Dc8D6HCn0Hvl+NMjm1gVpxhAPzWR9/zLHxKKvPzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 10/91] net: bridge: add missing counters to ndo_get_stats64 callback
+        stable@vger.kernel.org, Nenad Peric <nperic@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 062/158] arm64: dts: allwinner: h5: OrangePi Prime: Fix ethernet node
 Date:   Mon, 23 Nov 2020 13:21:30 +0100
-Message-Id: <20201123121809.801456175@linuxfoundation.org>
+Message-Id: <20201123121822.931793303@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,32 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Nenad Peric <nperic@gmail.com>
 
-[ Upstream commit 7a30ecc9237681bb125cbd30eee92bef7e86293d ]
+[ Upstream commit 107954afc5df667da438644aa4982606663f9b17 ]
 
-In br_forward.c and br_input.c fields dev->stats.tx_dropped and
-dev->stats.multicast are populated, but they are ignored in
-ndo_get_stats64.
+RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
+node.
 
-Fixes: 28172739f0a2 ("net: fix 64 bit counters on 32 bit arches")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/58ea9963-77ad-a7cf-8dfd-fc95ab95f606@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
+Signed-off-by: Nenad Peric <nperic@gmail.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Link: https://lore.kernel.org/r/20201028115817.68113-1-nperic@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_device.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -215,6 +215,7 @@ static void br_get_stats64(struct net_de
- 		sum.rx_packets += tmp.rx_packets;
- 	}
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
+index d9b3ed257088a..f10340339007f 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
+@@ -164,7 +164,7 @@
+ 	pinctrl-0 = <&emac_rgmii_pins>;
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	phy-handle = <&ext_rgmii_phy>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	status = "okay";
+ };
  
-+	netdev_stats_to_stats64(stats, &dev->stats);
- 	stats->tx_bytes   = sum.tx_bytes;
- 	stats->tx_packets = sum.tx_packets;
- 	stats->rx_bytes   = sum.rx_bytes;
+-- 
+2.27.0
+
 
 
