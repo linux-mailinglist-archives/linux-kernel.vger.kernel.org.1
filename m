@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8982C0321
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BDB2C0325
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgKWKVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:21:48 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:43081 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727724AbgKWKVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:21:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606126906; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=ANmJoYuuswtZF1g4TGnjWKvS5jfl6v0C3i9XCSjNnmQ=; b=RxTJdyrGndI63zgtoBzzYMrBrk5tXSMYNJZ1twRP/jmGMk2X1faGe18g16HuJ4fK/71IfOFL
- EUnHvndmioBftyuIVfgDzEhU9m3T7B3w06P4Btz/vVT/ofPwGS0kx/1bkbY+916gQRwCNfOr
- vgFC16LS1AJRLmeYMVF0UXo5PMU=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fbb8d380c9500dc7bad62bd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 10:21:44
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3A547C43463; Mon, 23 Nov 2020 10:21:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20405C433C6;
-        Mon, 23 Nov 2020 10:21:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 20405C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Mao Jinlong <jinlmao@codeaurora.org>, stable@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH] coresight: tmc-etr: Check if page is valid before dma_map_page()
-Date:   Mon, 23 Nov 2020 15:51:33 +0530
-Message-Id: <20201123102133.18979-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1728203AbgKWKVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:21:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728177AbgKWKVx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:21:53 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F7BC061A4E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:21:53 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id z5so2408691ejp.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:21:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KicNkypOIaNLZNofAMT0/dbRVfdiQb0EG7yDuWE5ulA=;
+        b=TDVt/xqwo7FGjOiB50CURiRd4zX8Glpc/xzed4IR3D50NS0EqlijbKWHNsEmT9A92f
+         opeYzaDlby6Pgpezpy0Z6eYOPQW6ipaIAyEAtip0SZR01YDtd+SICLsxoZ+9krn8s+et
+         lULt1gHvEOthv2285g8UdKxZGn8PuitA3T+FAGLQ/qKxFihLT0OrTedRRYXRz8VblfZD
+         a1sXohEAJiNhEPF+raDuSX6Ta4nQGnI6siEeVnxshXZXFTiwE+mIarl4EbBFaSYp4ZqT
+         zvmMqJJexFfo+5+oFHJeofxyxcmA2hqWZAvCeahk9touSv1o0xYBPyhqFNpgNP0LgZcR
+         CU2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KicNkypOIaNLZNofAMT0/dbRVfdiQb0EG7yDuWE5ulA=;
+        b=QozWg9lCTzpRcKLD2jO8hJNKT5vb5N8r8tRf1ah1pjwAPdheHUaVvrPlMg6dNNa3Jx
+         K0jlHL2NhqEOdIRNPHvwPqQZULt44z80m9TvHhWi4FAkCvInTKCYwGjAs30XiJLke7CE
+         aLjjGtAMOah5zT5LpYxrx/TK2kAGW7hE+iIXOMG5aoy8ua9oDRtQ9PR6mfF0AdMDWkF6
+         lxrcl5RROsJz29fKpsocz0GiBqergwedzhcyD4PiUBzmhjaMrSVYbwsfxKU/i3e2nxxd
+         kKTRxxj6pXsOmFgGw22cFQzwfQQxw+dxLFusDJd4mywUWIpezR/OoW8cEjJwRvU/uKYz
+         QR6g==
+X-Gm-Message-State: AOAM531SRsaT5cL2oRk+DNveEv68tMtUcTaEb6k+KGTtpUpJZwUzRqt8
+        KRplzb90P3B39VfaLvT6RPYTiQ==
+X-Google-Smtp-Source: ABdhPJxFSYMYi0puK0drxRNruUpOKNZHKEgE3EPEQ608H69x9iUkj+1IRAw3SWeiVlPLVEVUtEhq+A==
+X-Received: by 2002:a17:906:8058:: with SMTP id x24mr44772875ejw.272.1606126911958;
+        Mon, 23 Nov 2020 02:21:51 -0800 (PST)
+Received: from google.com ([2a01:4b00:8523:2d03:acac:b2ef:c7d:fd8a])
+        by smtp.gmail.com with ESMTPSA id k3sm4725861ejd.36.2020.11.23.02.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 02:21:51 -0800 (PST)
+Date:   Mon, 23 Nov 2020 10:21:49 +0000
+From:   David Brazdil <dbrazdil@google.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 15/17] KVM: arm64: disable LTO for the nVHE directory
+Message-ID: <20201123102149.ogl642tw234qod62@google.com>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201118220731.925424-16-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118220731.925424-16-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mao Jinlong <jinlmao@codeaurora.org>
+Hey Sami,
 
-alloc_pages_node() return should be checked before calling
-dma_map_page() to make sure that valid page is mapped or
-else it can lead to aborts as below:
+On Wed, Nov 18, 2020 at 02:07:29PM -0800, Sami Tolvanen wrote:
+> We use objcopy to manipulate ELF binaries for the nVHE code,
+> which fails with LTO as the compiler produces LLVM bitcode
+> instead. Disable LTO for this code to allow objcopy to be used.
 
- Unable to handle kernel paging request at virtual address ffffffc008000000
- Mem abort info:
- <snip>...
- pc : __dma_inv_area+0x40/0x58
- lr : dma_direct_map_page+0xd8/0x1c8
+We now partially link the nVHE code (generating machine code) before objcopy,
+so I think you should be able to drop this patch now. Tried building your
+branch without it, ran a couple of unit tests and all seems fine.
 
- Call trace:
-  __dma_inv_area
-  tmc_pages_alloc
-  tmc_alloc_data_pages
-  tmc_alloc_sg_table
-  tmc_init_etr_sg_table
-  tmc_alloc_etr_buf
-  tmc_enable_etr_sink_sysfs
-  tmc_enable_etr_sink
-  coresight_enable_path
-  coresight_enable
-  enable_source_store
-  dev_attr_store
-  sysfs_kf_write
-
-Fixes: 99443ea19e8b ("coresight: Add generic TMC sg table framework")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mao Jinlong <jinlmao@codeaurora.org>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/hwtracing/coresight/coresight-tmc-etr.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-index 525f0ecc129c..a31a4d7ae25e 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -217,6 +217,8 @@ static int tmc_pages_alloc(struct tmc_pages *tmc_pages,
- 		} else {
- 			page = alloc_pages_node(node,
- 						GFP_KERNEL | __GFP_ZERO, 0);
-+			if (!page)
-+				goto err;
- 		}
- 		paddr = dma_map_page(real_dev, page, 0, PAGE_SIZE, dir);
- 		if (dma_mapping_error(real_dev, paddr))
-
-base-commit: c04e5d7bbf6f92a346d6b36770705e7f034df42d
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+David
