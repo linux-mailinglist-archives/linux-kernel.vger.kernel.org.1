@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5757D2C0725
+	by mail.lfdr.de (Postfix) with ESMTP id C5AA32C0726
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732019AbgKWMhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:37:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
+        id S1732030AbgKWMh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:37:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731981AbgKWMhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:37:46 -0500
+        id S1732006AbgKWMht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94EE32065E;
-        Mon, 23 Nov 2020 12:37:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42DEC2076E;
+        Mon, 23 Nov 2020 12:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135066;
-        bh=UY4zestq1yqDp9x+p+4ZP9WeJCOYXC+lBK7i0LVhKZY=;
+        s=korg; t=1606135068;
+        bh=0dbkj2W4aPoipONOJq4Dp534oIT55JHvBTjuaU95hSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gjFYrDAQEMEjAw2E7s8E0No+iw27zy2TPOWHIA5S8QS699621QEOg999DGNGIMpWE
-         XyAESuacYdoeqQN8OffViuhbRJE/i2Sk5bWBpcriNVWaeKWReDffgnl12PVLFRbk1b
-         Dc8D6HCn0Hvl+NMjm1gVpxhAPzWR9/zLHxKKvPzA=
+        b=G+wLk8NT6C0bmBD74T7SJWbgVeas2ONdAP0JdWje5SckosnwQagVH4G32nvhN8jl6
+         E71jVj4YKo6g3JsrR9hw+6SiFSaQvA88S0ReSo8qcSimiFavY07dD2BbIcziys7OBS
+         8i+mbXfOts/XPfVvdHNben6jP2tGwb9Th4k+VUEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nenad Peric <nperic@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 062/158] arm64: dts: allwinner: h5: OrangePi Prime: Fix ethernet node
-Date:   Mon, 23 Nov 2020 13:21:30 +0100
-Message-Id: <20201123121822.931793303@linuxfoundation.org>
+Subject: [PATCH 5.4 063/158] arm64: dts imx8mn: Remove non-existent USB OTG2
+Date:   Mon, 23 Nov 2020 13:21:31 +0100
+Message-Id: <20201123121822.976371783@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -44,36 +44,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nenad Peric <nperic@gmail.com>
+From: Adam Ford <aford173@gmail.com>
 
-[ Upstream commit 107954afc5df667da438644aa4982606663f9b17 ]
+[ Upstream commit cf5abb0132193767c07c83e06f91b777d22ba495 ]
 
-RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
-node.
+According to the i.MX8MN TRM, there is only one OTG port.  The
+address for OTG2 is reserved on Nano.
 
-Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-Signed-off-by: Nenad Peric <nperic@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201028115817.68113-1-nperic@gmail.com
+This patch removes the non-existent OTG2, usbphynop2, and the usbmisc2
+nodes.
+
+Fixes: 6c3debcbae47 ("arm64: dts: freescale: Add i.MX8MN dtsi support")
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 30 -----------------------
+ 1 file changed, 30 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-index d9b3ed257088a..f10340339007f 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-@@ -164,7 +164,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index ac3a3b333efa6..546511b373d43 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -677,28 +677,6 @@
+ 				#index-cells = <1>;
+ 				reg = <0x32e40200 0x200>;
+ 			};
+-
+-			usbotg2: usb@32e50000 {
+-				compatible = "fsl,imx8mn-usb", "fsl,imx7d-usb";
+-				reg = <0x32e50000 0x200>;
+-				interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+-				clocks = <&clk IMX8MN_CLK_USB1_CTRL_ROOT>;
+-				clock-names = "usb1_ctrl_root_clk";
+-				assigned-clocks = <&clk IMX8MN_CLK_USB_BUS>,
+-						  <&clk IMX8MN_CLK_USB_CORE_REF>;
+-				assigned-clock-parents = <&clk IMX8MN_SYS_PLL2_500M>,
+-							 <&clk IMX8MN_SYS_PLL1_100M>;
+-				fsl,usbphy = <&usbphynop2>;
+-				fsl,usbmisc = <&usbmisc2 0>;
+-				status = "disabled";
+-			};
+-
+-			usbmisc2: usbmisc@32e50200 {
+-				compatible = "fsl,imx8mn-usbmisc", "fsl,imx7d-usbmisc";
+-				#index-cells = <1>;
+-				reg = <0x32e50200 0x200>;
+-			};
+-
+ 		};
  
+ 		dma_apbh: dma-controller@33000000 {
+@@ -747,12 +725,4 @@
+ 		assigned-clock-parents = <&clk IMX8MN_SYS_PLL1_100M>;
+ 		clock-names = "main_clk";
+ 	};
+-
+-	usbphynop2: usbphynop2 {
+-		compatible = "usb-nop-xceiv";
+-		clocks = <&clk IMX8MN_CLK_USB_PHY_REF>;
+-		assigned-clocks = <&clk IMX8MN_CLK_USB_PHY_REF>;
+-		assigned-clock-parents = <&clk IMX8MN_SYS_PLL1_100M>;
+-		clock-names = "main_clk";
+-	};
+ };
 -- 
 2.27.0
 
