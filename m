@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0E52BFFCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E34C2BFFD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbgKWGJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 01:09:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:59394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgKWGJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 01:09:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F413530E;
-        Sun, 22 Nov 2020 22:08:59 -0800 (PST)
-Received: from [10.163.82.200] (unknown [10.163.82.200])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F0E793F71F;
-        Sun, 22 Nov 2020 22:08:57 -0800 (PST)
-Subject: Re: [RFC 09/11] coresight: etm-perf: Disable the path before
- capturing the trace data
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org
-References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
- <1605012309-24812-10-git-send-email-anshuman.khandual@arm.com>
- <1ad992f4-5981-6ff1-470b-875e30d3c229@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <b947b100-0393-36da-68e8-36254fe823f9@arm.com>
-Date:   Mon, 23 Nov 2020 11:38:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727978AbgKWGPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 01:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgKWGPM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 01:15:12 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8CAC0613CF;
+        Sun, 22 Nov 2020 22:15:12 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id u2so8321364pls.10;
+        Sun, 22 Nov 2020 22:15:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=1sNSI9+VHiS8jsCXSpla4wiPIAGnEp4AMU2x4XB2+lI=;
+        b=gryl4jYuFxIcEqxDJeXzLyzCzZgG/p0D8YYm7KelV4fOIqo+nsvGcvz7GhSaqxTNA9
+         mzld6gafjsqSQpHDyVRfT/LubaK10wMKxOG4tyvgDmkhLotBvmmEWq2ffIL9tBUv8OYq
+         mnR+owkUsqn1zhNcH09zahztEynyvcyDU03tg3iEumwfm1IeFfo9+y9PjCfwBidDiql6
+         LvoRzFNJeonHC8+hfUqyt+YRDWetNGQSHZ6Wn2rJb6NplM0WGwO+6rv7qKyELlqMZU2b
+         FtM/7gfhhKdqn4r/37mTlG+ZKeNEljGx+MEnvM8RyMaj8Kyni91D1jOf4vbE8XkL/xyx
+         6/Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=1sNSI9+VHiS8jsCXSpla4wiPIAGnEp4AMU2x4XB2+lI=;
+        b=CSGRakQvXbCoK5y9K2dcp1A5vdZiXPNPTuKFYD4m4VpSR9z2/5+HNVSBAVMuSC2FWB
+         UcsOErLdEHvrgZ0T/lJVtEZRi8CaM1OvnlPBvx+DUhif7xTBC/D6Lkg5BosBbqO3lRf+
+         LGW7BfnI06EkbnSD2Fy8aolBjRcEChYxPv981ykYbU747qcsuDCLCvun15euPWNllEJw
+         1MxuA9A81uoTUP6NnBnl3zZvLKWcpBQDKZYwmDL2QVcP096ygSude3lcp1uklPot/2rR
+         QZfFLuffUPcAH68hgLtEDWUkWD5zXCbmzsiIic97z9gwEtcRSt8z/ZT/DglAP8xnCyp/
+         hG3g==
+X-Gm-Message-State: AOAM531nj+lTjxE3OD1RnnLE4CwUcuQ9xSqKIWweJlIA8z8VJWF/YlB0
+        7aTFZ43VnCIVBiRx+fhEdjuPNmmNTCg=
+X-Google-Smtp-Source: ABdhPJyxzrU59fgcFKpQVfOqbQ816ob5ymVEUOSIClvIlCWJ2PCR3rei0H9ZyLXvIRY0Hmh6n2xhMQ==
+X-Received: by 2002:a17:902:ee04:b029:d9:d8a8:fa60 with SMTP id z4-20020a170902ee04b02900d9d8a8fa60mr16849816plb.84.1606112111442;
+        Sun, 22 Nov 2020 22:15:11 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id i11sm10617915pfq.156.2020.11.22.22.15.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 22:15:10 -0800 (PST)
+Date:   Sun, 22 Nov 2020 22:15:08 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: soc_button_array - add missing include
+Message-ID: <20201123061508.GA1009828@dtor-ws>
 MIME-Version: 1.0
-In-Reply-To: <1ad992f4-5981-6ff1-470b-875e30d3c229@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This fixes the following build errors:
+
+  CC [M]  drivers/input/misc/soc_button_array.o
+drivers/input/misc/soc_button_array.c:156:4: error: implicit declaration of function 'irq_set_irq_type' [-Werror,-Wimplicit-function-declaration]
+                        irq_set_irq_type(irq, IRQ_TYPE_LEVEL_LOW);
+                        ^
+drivers/input/misc/soc_button_array.c:156:26: error: use of undeclared identifier 'IRQ_TYPE_LEVEL_LOW'
+                        irq_set_irq_type(irq, IRQ_TYPE_LEVEL_LOW);
+                                              ^
+2 errors generated.
+
+Fixes: 78a5b53e9fb4 ("Input: soc_button_array - work around DSDTs which modify the irqflags")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/misc/soc_button_array.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/input/misc/soc_button_array.c b/drivers/input/misc/soc_button_array.c
+index cae1a3fae83a..d14a65683c5e 100644
+--- a/drivers/input/misc/soc_button_array.c
++++ b/drivers/input/misc/soc_button_array.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/input.h>
+ #include <linux/init.h>
++#include <linux/irq.h>
+ #include <linux/kernel.h>
+ #include <linux/acpi.h>
+ #include <linux/dmi.h>
+-- 
+2.29.2.454.gaff20da3a2-goog
 
 
-On 11/12/20 2:57 PM, Suzuki K Poulose wrote:
-> On 11/10/20 12:45 PM, Anshuman Khandual wrote:
->> perf handle structure needs to be shared with the TRBE IRQ handler for
->> capturing trace data and restarting the handle. There is a probability
->> of an undefined reference based crash when etm event is being stopped
->> while a TRBE IRQ also getting processed. This happens due the release
->> of perf handle via perf_aux_output_end(). This stops the sinks via the
->> link before releasing the handle, which will ensure that a simultaneous
->> TRBE IRQ could not happen.
->>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> This might cause problem with traditional sink devices which can be
->> operated in both sysfs and perf mode. This needs to be addressed
->> correctly. One option would be to move the update_buffer callback
->> into the respective sink devices. e.g, disable().
->>
->>   drivers/hwtracing/coresight/coresight-etm-perf.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
->> index 534e205..1a37991 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
->> @@ -429,7 +429,9 @@ static void etm_event_stop(struct perf_event *event, int mode)
->>             size = sink_ops(sink)->update_buffer(sink, handle,
->>                             event_data->snk_config);
->> +        coresight_disable_path(path);
->>           perf_aux_output_end(handle, size);
->> +        return;
->>       }
-> 
-> As you mentioned, this is not ideal where another session could be triggered on
-> the sink from a different ETM (not for per-CPU sink) in a different mode before
-> you collect the buffer. I believe the best option is to leave the
-> update_buffer() to disable_hw. This would need to pass on the "handle" to the
-> disable_path.
-
-Passing 'handle' into coresight_ops_sink->disable() would enable pushing
-updated trace data into perf aux buffer. But do you propose to drop the
-update_buffer() call back completely or just move it into disable() call
-back (along with PERF_EF_UPDATE mode check) for all individual sinks for
-now. May be, later it can be dropped off completely.
-
-> 
-> That way the races can be handled inside the sinks. Also, this aligns the
-> perf mode of the sinks with that of the sysfs mode.
-
-Did not get that, could you please elaborate ?
+-- 
+Dmitry
