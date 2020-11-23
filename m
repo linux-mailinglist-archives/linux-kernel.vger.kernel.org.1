@@ -2,396 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE822C0359
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7377A2C035C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgKWKc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:32:29 -0500
-Received: from relay5.mymailcheap.com ([159.100.248.207]:47965 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgKWKc2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:32:28 -0500
-Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.119.155])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 2EE03260EB;
-        Mon, 23 Nov 2020 10:32:25 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id DF77D3F1CC;
-        Mon, 23 Nov 2020 11:32:22 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id C28D52A510;
-        Mon, 23 Nov 2020 11:32:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1606127542;
-        bh=nR44s1ffX1zi1t1RClhq0lZgdzVFVuAyCQlMhZqex0M=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=IRGDagK5ZIjW2L4sw3HeKK4sdRF8ad/L16MFKp71XzIbhUNpHDsaCxTTavcRFwfAg
-         iUCU4+Enp65c3preirZcY6BHeoprf/k5zFfK363EyiugdH8LGJ8d9zAIbAuXqzEtC/
-         G3w7WAoIM7xs3m7TjlgCNH/AEaVkFfnrTxuOr75M=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id O56X_Rp9IBbD; Mon, 23 Nov 2020 11:32:21 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Mon, 23 Nov 2020 11:32:21 +0100 (CET)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 4194F41AB7;
-        Mon, 23 Nov 2020 10:32:20 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="mcl9yEeh";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [192.168.1.203] (unknown [183.157.63.183])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 1CABB41BF5;
-        Mon, 23 Nov 2020 10:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1606127527;
-        bh=nR44s1ffX1zi1t1RClhq0lZgdzVFVuAyCQlMhZqex0M=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=mcl9yEehnp/jS7op42zY1Mu7tUivT4rqvq++2mSxgx3qWqFCCoNWqbF5Nl1vTtu7j
-         H5D2NS1cF6goQi+4yZwUAC8flkQxl7LwCzJlCdHQYOm54xzo3pr787Sv/i3HirO35W
-         sVYXFH6s1EkR0O2IwZzjJkW1s0wYRYGkrfaIv/RA=
-Subject: Re: [PATCH] stmmac: pci: Add support for LS7A bridge chip
-To:     lizhi01 <lizhi01@loongson.cn>, davem@davemloft.net,
-        kuba@kernel.org, mcoquelin.stm32@gmail.com
-Cc:     lixuefeng@loongson.com, gaojuxin@loongson.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <1606125828-15742-1-git-send-email-lizhi01@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <38b7eede-18de-f37c-eed9-8b59c2daf3dd@flygoat.com>
-Date:   Mon, 23 Nov 2020 18:31:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1728538AbgKWKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:32:49 -0500
+Received: from mail-eopbgr760053.outbound.protection.outlook.com ([40.107.76.53]:15842
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726416AbgKWKcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:32:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cz8G1RvioP2kw1MDCl9hwjLCfjK20fwHL5FdL8554oKz4xEcxZxVu3ShKWaWLUaVslnqB/21GDoaH/q0yCWCfJHwZNf9POJxUL4NyGQnan1r911zslm1jEuwzIycMxZHchJpQ7szuVRx2ean8fUY+9WIUtCujpNObG+YhuBCw2kKkoYariz/wwkOknD4z8Vw77OmJxfhFJUvu1PbyDyO4pNvT45kzFblzPasVbkjhn44iRC8GhqkJYJ3pXD9dl74lfi5cN9J3sWm6DQzlQpC7P7LWwLPuKOy0+0dQjQsWae9YSziYlc7+tENcdYVRHbs85yZtPBRj5NqpNdJohblgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/v3RabOWkB62RDyacqMafWyOZB5vX0udc7dbs95u1DY=;
+ b=ezx8u22/WtHwdKozsNXuejjtd8DVxmLrmXVVmUV4GNYBKOevAWtR/vAJuCRxS2pzXuV2TFoxBtSLDwM0qG5sh3Tjj2YuDv42ImuwTSbUyrINL1aKK1luGgHU5bj05ash3tHkqDVEptzO9RXIPQrQViVMr6rm0xptCRGvJMmeVySSNdJizH5Dsbi4KropvNTZioq5Fd232Wy8XFTeVwVBj2kWN7P/NyI++o19GOoglaGh49g2Ad4IMFRKjmAJgVNJq9v64kj2vWmCl7ElX1X14n+zQ/BFrngVzk07AgWPG0YdT9z0pzd/12I+w5cb2obbh7i53xm9TbegAZRapuCYUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
+ dkim=pass header.d=openfive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/v3RabOWkB62RDyacqMafWyOZB5vX0udc7dbs95u1DY=;
+ b=nPIHEHNB4IG7K4TNUgcRABjrlwuTBONKfZ6GxJja4nVXij6K4dZpDiVZnaCaaNf3b+5NYxcoSq2Lhiat1pcNinF84WcVssy+B74M7CutxlcGz9C7qWeroHnEXRLNGp+UiRPDIn5ymcTuxWfZ3kWs099OitnvGj9ooz3ziRI02oo=
+Received: from BY5PR13MB4453.namprd13.prod.outlook.com (2603:10b6:a03:1d1::19)
+ by BY5PR13MB3394.namprd13.prod.outlook.com (2603:10b6:a03:1a8::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.18; Mon, 23 Nov
+ 2020 10:32:44 +0000
+Received: from BY5PR13MB4453.namprd13.prod.outlook.com
+ ([fe80::7c13:1ac6:9f2a:5eae]) by BY5PR13MB4453.namprd13.prod.outlook.com
+ ([fe80::7c13:1ac6:9f2a:5eae%7]) with mapi id 15.20.3611.020; Mon, 23 Nov 2020
+ 10:32:44 +0000
+From:   Yash Shah <yash.shah@openfive.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "sam@ravnborg.org" <sam@ravnborg.org>,
+        Sagar Kadam <sagar.kadam@openfive.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "bp@suse.de" <bp@suse.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sachin Ghadi <sachin.ghadi@openfive.com>
+Subject: RE: [PATCH 1/2] RISC-V: Update l2 cache DT documentation to add
+ support for SiFive FU740
+Thread-Topic: [PATCH 1/2] RISC-V: Update l2 cache DT documentation to add
+ support for SiFive FU740
+Thread-Index: AQHWuNPXeVMTcgdvxUGkk0ItZFlleKnSmU6AgAL3WiA=
+Date:   Mon, 23 Nov 2020 10:32:43 +0000
+Message-ID: <BY5PR13MB445328314FB3521DE257C57782FC0@BY5PR13MB4453.namprd13.prod.outlook.com>
+References: <1605172274-44916-1-git-send-email-yash.shah@sifive.com>
+ <20201121125443.GA2076465@robh.at.kernel.org>
+In-Reply-To: <20201121125443.GA2076465@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=openfive.com;
+x-originating-ip: [103.109.13.228]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a068c750-338b-4660-95ed-08d88f9b1ce9
+x-ms-traffictypediagnostic: BY5PR13MB3394:
+x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR13MB33940F47281CCB671301EB4882FC0@BY5PR13MB3394.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OSdNfK0z+PbgBPRGtF1dPyZWJKjU2ZwrD3pmiQhOXQUzDcm0adDGKmF6QId8jiyVusfr9AbX3iL5I9Z+bG0bWcYzUGRbTi4N+Zok/7gVo7MmsF6n+x6MmI8//EVuCdsQzQHRazFGkjkHeYjFn+cVnUeDyhyRi258eu+7La9ZcG34QaapVAngXsY2odV9X5OaCepAQ8zDBsnCGF5G+PHLColVjSKRM4YQ/9cbwdIeSDpCedzsPASrVes6kSvAokH+AM/TjWGjDZk41diHTy7nOdf/v43l+wVQqLn/e4Xh8J+uuJ4oe5CiSot98lTzqU63mG1boI/8L2KbPPD9VSC6UQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR13MB4453.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(136003)(376002)(346002)(39840400004)(366004)(396003)(8936002)(6916009)(86362001)(76116006)(15650500001)(83380400001)(2906002)(66946007)(8676002)(316002)(54906003)(186003)(53546011)(6506007)(44832011)(7416002)(71200400001)(33656002)(7696005)(5660300002)(55016002)(26005)(4326008)(52536014)(478600001)(107886003)(9686003)(64756008)(66446008)(66556008)(66476007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: mHrDVxY/NtmgyGRYMQDn3RFNBFo27SBgHB576Bv8uS9bI5ERYc1tlKz6KfEl9edBc5V6wulCR1E5NC2yLl6I8Czg/QEShk33pybWN6UGYN47nCSqnDrKuYDFyRo+AoeVIOM7xEAFuuao2l4gT155gTwYcLiGVjK0iI2u33LV8ViC2tpJCC0ErYUcYm2F4tHZFIEAGcC/qyv/oh4rnDMD3liHL9lKkEk8htP+chYaCrf7NahtWp6LGHQVlBmJIOfk8nts4SnVwqbyAnoiEbVtJlgRE6tpVWgTFEjMiGVTqIZ19MP8OJc8LRNCLkZV9KlGbvh2+lJ5RmNlZmEMSYr3ukQ+9rPGcetsXFShKzA20j3LVUObGY2i17yb+kDjZTv/cPIrD7lQ+PA/Oz9zN4145e01wBS9TJbDeOcFanEbFyha28XXb9/ea6zmeOVPWLYcnYHLZXnUY4OEltpMJ0eUuY14rbqn+Nbh29mhdpGHAwEibswgkGwZ4WIYQYS10iQzyRZBodFDqmHtnnakN5km9TGHvxCPPJ5F/YyjHQ2KLtrMhna41EHzkW0zjddbl4u63zMqCO0oo4494TK7Nx9Eo2WyqUu8gjE6Kya7qx3huK2TWUq+Da9pUZTiTjzg7jxMYwuVApJ5qv+pcGUo2i/s9YL1zHGhVyb2i/o0Itj0HTqtg4xOJfUJaRBlYqHPmSX9PC6fNKjcLBbDnXUoINKuahlP9+l6kL5VmC/VpXHZCUPK5Iprh/Qj0GJEBrLpy/gfWnpeseBztKG/4kzgsd0r8JwXsrP+X2f3cQI7BxuFycen3d6tHY7l+Od9cOWzqmE/U1MkRxUCkG/H4iqhbvr721RMOLCMvAXB9QC6z/o+MmbkkDF20Mq+g7smAsOyUSjcJZ9PMVYsp9UCP7UxIapsmw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1606125828-15742-1-git-send-email-lizhi01@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4194F41AB7
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RECEIVED_SPAMHAUS_PBL(0.00)[183.157.63.183:received];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         FREEMAIL_TO(0.00)[loongson.cn,davemloft.net,kernel.org,gmail.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+X-OriginatorOrg: openfive.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR13MB4453.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a068c750-338b-4660-95ed-08d88f9b1ce9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 10:32:43.9901
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XJnFEo+GU8ieWGz6zRm4L6Tu4cjHQsrxLrIg1jE16qn4mxqapzglP/HMN8acpUmamk5N32sv2QPAnt9mkzjWVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR13MB3394
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lizhi,
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: 21 November 2020 18:25
+> To: Yash Shah <yash.shah@openfive.com>
+> Cc: Paul Walmsley ( Sifive) <paul.walmsley@sifive.com>;
+> palmer@dabbelt.com; aou@eecs.berkeley.edu;
+> Jonathan.Cameron@huawei.com; wsa@kernel.org; sam@ravnborg.org;
+> Sagar Kadam <sagar.kadam@openfive.com>; anup@brainfault.org;
+> bp@suse.de; devicetree@vger.kernel.org; linux-riscv@lists.infradead.org;
+> linux-kernel@vger.kernel.org; Sachin Ghadi <sachin.ghadi@openfive.com>
+> Subject: Re: [PATCH 1/2] RISC-V: Update l2 cache DT documentation to add
+> support for SiFive FU740
+>=20
+> [External Email] Do not click links or attachments unless you recognize t=
+he
+> sender and know the content is safe
+>=20
+> On Thu, Nov 12, 2020 at 02:41:13PM +0530, Yash Shah wrote:
+> > The L2 cache controller in SiFive FU740 has 4 ECC interrupt sources as
+> > compared to 3 in FU540. Update the DT documentation accordingly with
+> > "compatible" and "interrupt" property changes.
+> >
+> > Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> > ---
+> >  .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 33
+> > +++++++++++++++++-----
+> >  1 file changed, 26 insertions(+), 7 deletions(-)
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> > b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> > index efc0198..4873d5c 100644
+> > --- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> > +++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
 
-You didn't send the patch to any mail list, is this intentional?
+<...>
 
-在 2020/11/23 18:03, lizhi01 写道:
-> Add gmac driver to support LS7A bridge chip.
->
-> Signed-off-by: lizhi01 <lizhi01@loongson.cn>
-> ---
->   arch/mips/configs/loongson3_defconfig              |   4 +-
->   drivers/net/ethernet/stmicro/stmmac/Kconfig        |   8 +
->   drivers/net/ethernet/stmicro/stmmac/Makefile       |   1 +
->   .../net/ethernet/stmicro/stmmac/dwmac-loongson.c   | 194 +++++++++++++++++++++
->   4 files changed, 206 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
->
-> diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-> index 38a817e..2e8d2be 100644
-> --- a/arch/mips/configs/loongson3_defconfig
-> +++ b/arch/mips/configs/loongson3_defconfig
-> @@ -225,7 +225,9 @@ CONFIG_R8169=y
->   # CONFIG_NET_VENDOR_SILAN is not set
->   # CONFIG_NET_VENDOR_SIS is not set
->   # CONFIG_NET_VENDOR_SMSC is not set
-> -# CONFIG_NET_VENDOR_STMICRO is not set
-> +CONFIG_NET_VENDOR_STMICR=y
-> +CONFIG_STMMAC_ETH=y
-> +CONFIG_DWMAC_LOONGSON=y
->   # CONFIG_NET_VENDOR_SUN is not set
->   # CONFIG_NET_VENDOR_TEHUTI is not set
->   # CONFIG_NET_VENDOR_TI is not set
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> index 53f14c5..30117cb 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> @@ -230,6 +230,14 @@ config DWMAC_INTEL
->   	  This selects the Intel platform specific bus support for the
->   	  stmmac driver. This driver is used for Intel Quark/EHL/TGL.
->   
-> +config DWMAC_LOONGSON
-> +	tristate "Intel GMAC support"
-> +	depends on STMMAC_ETH && PCI
-> +	depends on COMMON_CLK
-> +	help
-> +	  This selects the Intel platform specific bus support for the
-> +	  stmmac driver.
+> > @@ -51,12 +54,6 @@ properties:
+> >
+> >    cache-unified: true
+> >
+> > -  interrupts:
+> > -    description: |
+> > -      Must contain entries for DirError, DataError and DataFail signal=
+s.
+> > -    minItems: 3
+> > -    maxItems: 3
+>=20
+> Keep this here and just change maxItems to 4. Really, what each interrupt=
+ is
+> should be listed out as an 'items' entry.
+>=20
 
-Intel ???
+Sure will send a v2 with the above modifications.
 
-> +
->   config STMMAC_PCI
->   	tristate "STMMAC PCI bus support"
->   	depends on STMMAC_ETH && PCI
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> index 24e6145..11ea4569 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> @@ -34,4 +34,5 @@ dwmac-altr-socfpga-objs := altr_tse_pcs.o dwmac-socfpga.o
->   
->   obj-$(CONFIG_STMMAC_PCI)	+= stmmac-pci.o
->   obj-$(CONFIG_DWMAC_INTEL)	+= dwmac-intel.o
-> +obj-$(CONFIG_DWMAC_LOONGSON)	+= dwmac-loongson.o
->   stmmac-pci-objs:= stmmac_pci.o
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-> new file mode 100644
-> index 0000000..765412e
-> --- /dev/null
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-> @@ -0,0 +1,194 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020, Loongson Corporation
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/pci.h>
-> +#include <linux/dmi.h>
-> +#include <linux/device.h>
-> +#include <linux/of_irq.h>
-> +#include "stmmac.h"
-> +
-> +struct stmmac_pci_info {
-> +	int (*setup)(struct pci_dev *pdev, struct plat_stmmacenet_data *plat);
-> +};
-> +
-> +static void common_default_data(struct plat_stmmacenet_data *plat)
-> +{
-> +	plat->clk_csr = 2;
-> +	plat->has_gmac = 1;
-> +	plat->force_sf_dma_mode = 1;
-> +	
-> +	plat->mdio_bus_data->needs_reset = true;
-> +
-> +	plat->multicast_filter_bins = HASH_TABLE_SIZE;
-> +
-> +	plat->unicast_filter_entries = 1;
-> +
-> +	plat->maxmtu = JUMBO_LEN;
-> +
-> +	plat->tx_queues_to_use = 1;
-> +	plat->rx_queues_to_use = 1;
-> +
-> +	plat->tx_queues_cfg[0].use_prio = false;
-> +	plat->rx_queues_cfg[0].use_prio = false;
-> +
-> +	plat->rx_queues_cfg[0].pkt_route = 0x0;
-> +}
-> +
-> +static int loongson_default_data(struct pci_dev *pdev, struct plat_stmmacenet_data *plat)
-> +{
-> +	common_default_data(plat);
-> +	
-> +	plat->bus_id = pci_dev_id(pdev);
-> +	plat->phy_addr = -1;
-> +	plat->interface = PHY_INTERFACE_MODE_GMII;
-> +
-> +	plat->dma_cfg->pbl = 32;
-> +	plat->dma_cfg->pblx8 = true;
-> +
-> +	plat->multicast_filter_bins = 256;
-> +
-> +	return 0;	
-> +}
+<...>
+
+>=20
+> > +
+> > +else:
+> > +  properties:
+> > +    interrupts:
+> > +      description: |
+> > +        Must contain entries for DirError, DirFail, DataError, DataFai=
+l signals.
+>=20
+> DirFail should be last so you keep the same indices.
+
+Actually, the interrupts have been numbered like that in FU740 SoCs and the=
+ driver expects the interrupts to be in this order.
+I will keep the same order for v2 as well. Let me know if you still disagre=
+e.
+
+Thanks for your review.
+
+- Yash
 
 
-You can merge common and Loongson config as the driver is solely used by 
-Loongson.
-
-The callback is not necessary as well...
-
-
-> +
-> +static const struct stmmac_pci_info loongson_pci_info = {
-> +	.setup = loongson_default_data,
-> +};
-> +
-> +static int loongson_gmac_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> +{
-> +	struct stmmac_pci_info *info = (struct stmmac_pci_info *)id->driver_data;
-> +	struct plat_stmmacenet_data *plat;
-> +	struct stmmac_resources res;
-> +	int ret, i, lpi_irq;
-> +	struct device_node *np;	
-> +	
-> +	plat = devm_kzalloc(&pdev->dev, sizeof(struct plat_stmmacenet_data), GFP_KERNEL);
-> +	if (!plat)
-> +		return -ENOMEM;
-> +
-> +	plat->mdio_bus_data = devm_kzalloc(&pdev->dev, sizeof(struct stmmac_mdio_bus_data), GFP_KERNEL);
-> +	if (!plat->mdio_bus_data) {
-> +		kfree(plat);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	plat->dma_cfg = devm_kzalloc(&pdev->dev, sizeof(struct stmmac_dma_cfg), GFP_KERNEL);
-> +	if (!plat->dma_cfg)	{
-> +		kfree(plat);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	ret = pci_enable_device(pdev);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "%s: ERROR: failed to enable device\n", __func__);
-> +		kfree(plat);
-> +		return ret;
-> +	}
-> +
-> +	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-> +		if (pci_resource_len(pdev, i) == 0)
-> +			continue;
-> +		ret = pcim_iomap_regions(pdev, BIT(0), pci_name(pdev));
-> +		if (ret)
-> +			return ret;
-> +		break;
-> +	}
-
-
-The BAR order is fixed on Loongson so there is no need to check it one 
-by one.
-
-Simply use BAR0 instead.
-
-
-> +
-> +	pci_set_master(pdev);
-> +
-> +	ret = info->setup(pdev, plat);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pci_enable_msi(pdev);
-> +
-> +	memset(&res, 0, sizeof(res));
-> +	res.addr = pcim_iomap_table(pdev)[i];
-> +	res.irq = pdev->irq;
-> +	res.wol_irq = pdev->irq;	
-> +
-> +	np = dev_of_node(&pdev->dev);
-
-
-Please check the node earlier and bailing out in case if there is no node.
-
-Also you should get both IRQs via DT to avoid misordering.
-
-
-> +	lpi_irq = of_irq_get_byname(np, "eth_lpi");
-> +	res.lpi_irq = lpi_irq;
-> +	
-> +	return stmmac_dvr_probe(&pdev->dev, plat, &res);
-> +}
-> +
-> +static void loongson_gmac_remove(struct pci_dev *pdev)
-> +{
-> +	int i;
-> +	
-> +	stmmac_dvr_remove(&pdev->dev);
-> +	
-> +	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-> +		if (pci_resource_len(pdev, i) == 0)
-> +			continue;
-> +		pcim_iounmap_regions(pdev, BIT(i));
-> +		break;
-> +	}
-> +
-> +	pci_disable_device(pdev);
-> +}
-> +
-> +static int __maybe_unused loongson_eth_pci_suspend(struct device *dev)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	int ret;
-> +
-> +	ret = stmmac_suspend(dev);
-> +	if (ret)
-> +		return ret;
-> +	
-> +	ret = pci_save_state(pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pci_disable_device(pdev);
-> +	pci_wake_from_d3(pdev, true);
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused loongson_eth_pci_resume(struct device *dev)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	int ret;
-> +
-> +	pci_restore_state(pdev);
-> +	pci_set_power_state(pdev, PCI_D0);
-> +
-> +	ret = pci_enable_device(pdev);
-> +	if (ret)
-> +		return ret;
-> +	
-> +	pci_set_master(pdev);
-> +	
-> +	return stmmac_resume(dev);
-> +}	
-> +
-> +static SIMPLE_DEV_PM_OPS(loongson_eth_pm_ops, loongson_eth_pci_suspend, loongson_eth_pci_resume);
-> +
-> +#define PCI_DEVICE_ID_LOONGSON_GMAC 0x7a03
-> +
-> +static const struct pci_device_id loongson_gmac_table[] = {
-> +	{ PCI_DEVICE_DATA(LOONGSON, GMAC, &loongson_pci_info) },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(pci, loongson_gmac_table);
-> +
-> +struct pci_driver loongson_gmac_driver = {
-> +	.name = "loongson gmac",
-> +	.id_table = loongson_gmac_table,
-> +	.probe = loongson_gmac_probe,
-> +	.remove = loongson_gmac_remove,
-> +	.driver = {
-> +		.pm = &loongson_eth_pm_ops,
-> +	},
-> +};
-> +
-> +module_pci_driver(loongson_gmac_driver);
-> +
-> +MODULE_DESCRIPTION("Loongson DWMAC PCI driver");
-> +MODULE_AUTHOR("Zhi Li <lizhi01@loongson.com>");
-> +MODULE_LICENSE("GPL v2");
-
-
-Thanks
-
-- Jiaxun
