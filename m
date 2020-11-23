@@ -2,119 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588182C0DCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E367C2C0DEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgKWOhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:37:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726735AbgKWOhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:37:09 -0500
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7D9920773
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:37:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606142228;
-        bh=OUEWYsBkqLktfnlUWZU93Abg+Nz/7mAOEsw44o/z+AY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LWeEmYqRvIgVibJPvSUA2bNMZQKSwK4bFEbNihh1IZICbn9g73foiQyD2lJ+Kj9cW
-         aHXTvbMmNhyKgCdAiOyMUqq9ko2uFsk4zH5WkqDSAiwX//khUaYb3iSdJ3ZinOQsLL
-         KFYTslYgHiC7hm8tX+CcEdkzT3d+WvIAEY97IJxc=
-Received: by mail-ej1-f46.google.com with SMTP id gj5so23610982ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:37:07 -0800 (PST)
-X-Gm-Message-State: AOAM532u+t93UB+UjO92raS7l7MRmTWzGTOQDWUDMaw7hWklMlmY2FEW
-        bBslk4mad+6LnVL+PFBTdkByqYsIL+gY9QlhhA==
-X-Google-Smtp-Source: ABdhPJwGasd9fgVLE5ED8mhWD3NZ+E+/6bwxsrrXYebqvxGYFpzg+IT9Mho0RkDbiY0q9WB2uZjp5mQd28XNDsFa8GI=
-X-Received: by 2002:a17:906:d0cc:: with SMTP id bq12mr42714267ejb.127.1606142226345;
- Mon, 23 Nov 2020 06:37:06 -0800 (PST)
+        id S1731672AbgKWOks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:40:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730586AbgKWOkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:40:46 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D10C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:40:44 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id g17so13482466qts.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:40:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G7Lx+ulfUjkJtOWjBaN8V+ZUQ9XkpEkdc/FGSeKx4Gk=;
+        b=v4coxE/sLVKGR/0cRlmUbQ7Ky/9oAKJ325dPfDNSlOBzjuaXdrTllIeyYlDVFJOP3J
+         PLbl7hjR+maN/VZm3l15Ip+OnPdOHP6L0PX1SDYN6J2mIuO5bzfeqbWf7Y/JPZlyTWVC
+         9FcWuRE7rTLQmxByThCGMUi66Ne4ZQo2KZl5UUFSbZipWHwUJs5f5GwycI9vjJeqizJp
+         CnQfYktYDcx27JJCOD/szx/nL4QeoIEi4VdRtGuc1n1ALan4O8EJQU9UXh91RBv0tZak
+         lGryjyvU1GYTCWWLuHiKcx7Yw2YXboPcTU4SVp5F79ZQMbzmdeiwYWF0SlyD6+reRfJ6
+         NuNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G7Lx+ulfUjkJtOWjBaN8V+ZUQ9XkpEkdc/FGSeKx4Gk=;
+        b=O3BbyCO/YC1QETKj5wniacJnq8HZlmF9u+SwQkG6r2EmvSorrRj6RSD1Kwf60YO6jp
+         3zxSzQPbcXiDnk0Fsjjn28qw12735JWUk1MthzqpIhLnwC3PPaIzoYh//SecCSa8xr6U
+         Vcx3z7oqOo+L40hsHqbqoU2Wgxb4T7cRy8qT7+pY69md152IUlDxe2v52vn+XbgeadEZ
+         OKWTk8P0FdrMp6oIuZFndAQQschyZOQT0aN54k6HHXuvfM9P13sMaPs4pMwsyZbmt5mN
+         XIs6PAxJrc6dPPgP1ohhZ636rRRtJayWm9XpJgk7q9UBuNFGfxPs37hmypFQoDqbdM0v
+         4KEQ==
+X-Gm-Message-State: AOAM532egQwVDxNqAVD6edpP7l10MxDqKDsnFxMwjhbgX9bcO994T1r/
+        iJRFRTJ8dto40oEx32BkNoEXpg==
+X-Google-Smtp-Source: ABdhPJzBzo9EiY+XpQhMqvhRKaKlzx/TFJdSvep9gvQSUqrSG2wuUN4f5ScqNXzQRUWg8JLSbGz/qA==
+X-Received: by 2002:ac8:734c:: with SMTP id q12mr18668190qtp.239.1606142444020;
+        Mon, 23 Nov 2020 06:40:44 -0800 (PST)
+Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id g143sm9642929qke.102.2020.11.23.06.40.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 06:40:43 -0800 (PST)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] arm64: dts: qcom: update usb qmp phy clock-cells property
+Date:   Mon, 23 Nov 2020 09:37:05 -0500
+Message-Id: <20201123143705.14277-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-19-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-19-lee.jones@linaro.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 23 Nov 2020 22:36:54 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9qciG6Cc4b8WqzCugdve99qjTO5ftsyK0PHJiOF+C19w@mail.gmail.com>
-Message-ID: <CAAOTY_9qciG6Cc4b8WqzCugdve99qjTO5ftsyK0PHJiOF+C19w@mail.gmail.com>
-Subject: Re: [PATCH 18/40] drm/mediatek/mtk_dpi: Remove unused struct
- definition 'mtk_dpi_encoder_funcs'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jie Qiu <jie.qiu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Lee:
+The top-level node doesn't provide any clocks, the subnode provides a
+single clock with of_clk_hw_simple_get.
 
-Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8813=E6=97=
-=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:50=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/mediatek/mtk_dpi.c:530:39: warning: =E2=80=98mtk_dpi_enc=
-oder_funcs=E2=80=99 defined but not used [-Wunused-const-variable=3D]
->
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 1 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 4 ++--
+ 4 files changed, 6 insertions(+), 7 deletions(-)
 
-Thanks for this patch, but I've applied another identical patch
-"drm/mediatek: mtk_dpi: Fix unused variable 'mtk_dpi_encoder_funcs'"
-[1].
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6678f1e8e395..0189cbfad521 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -2608,7 +2608,6 @@ usb_1_qmpphy: phy-wrapper@88e9000 {
+ 			      <0 0x088e8000 0 0x38>;
+ 			reg-names = "reg-base", "dp_com";
+ 			status = "disabled";
+-			#clock-cells = <1>;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+ 			ranges;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 40e8c11f23ab..4a353c432a83 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -3482,7 +3482,6 @@ usb_1_qmpphy: phy@88e9000 {
+ 			      <0 0x088e8000 0 0x10>;
+ 			reg-names = "reg-base", "dp_com";
+ 			status = "disabled";
+-			#clock-cells = <1>;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+ 			ranges;
+@@ -3504,6 +3503,7 @@ usb_1_ssphy: lanes@88e9200 {
+ 				      <0 0x088e9600 0 0x128>,
+ 				      <0 0x088e9800 0 0x200>,
+ 				      <0 0x088e9a00 0 0x100>;
++				#clock-cells = <0>;
+ 				#phy-cells = <0>;
+ 				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+ 				clock-names = "pipe0";
+@@ -3515,7 +3515,6 @@ usb_2_qmpphy: phy@88eb000 {
+ 			compatible = "qcom,sdm845-qmp-usb3-uni-phy";
+ 			reg = <0 0x088eb000 0 0x18c>;
+ 			status = "disabled";
+-			#clock-cells = <1>;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+ 			ranges;
+@@ -3535,6 +3534,7 @@ usb_2_ssphy: lane@88eb200 {
+ 				      <0 0x088eb400 0 0x1fc>,
+ 				      <0 0x088eb800 0 0x218>,
+ 				      <0 0x088eb600 0 0x70>;
++				#clock-cells = <0>;
+ 				#phy-cells = <0>;
+ 				clocks = <&gcc GCC_USB3_SEC_PHY_PIPE_CLK>;
+ 				clock-names = "pipe0";
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index dab852833a65..bcfb06f5bebe 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -857,7 +857,6 @@ usb_1_qmpphy: phy@88e9000 {
+ 			      <0 0x088e8000 0 0x10>;
+ 			reg-names = "reg-base", "dp_com";
+ 			status = "disabled";
+-			#clock-cells = <1>;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+ 			ranges;
+@@ -879,6 +878,7 @@ usb_1_ssphy: lanes@88e9200 {
+ 				      <0 0x088e9600 0 0x200>,
+ 				      <0 0x088e9800 0 0x200>,
+ 				      <0 0x088e9a00 0 0x100>;
++				#clock-cells = <0>;
+ 				#phy-cells = <0>;
+ 				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+ 				clock-names = "pipe0";
+@@ -904,7 +904,6 @@ usb_2_qmpphy: phy@88eb000 {
+ 			compatible = "qcom,sm8150-qmp-usb3-uni-phy";
+ 			reg = <0 0x088eb000 0 0x200>;
+ 			status = "disabled";
+-			#clock-cells = <1>;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+ 			ranges;
+@@ -924,6 +923,7 @@ usb_2_ssphy: lane@88eb200 {
+ 				      <0 0x088eb400 0 0x200>,
+ 				      <0 0x088eb800 0 0x800>,
+ 				      <0 0x088eb600 0 0x200>;
++				#clock-cells = <0>;
+ 				#phy-cells = <0>;
+ 				clocks = <&gcc GCC_USB3_SEC_PHY_PIPE_CLK>;
+ 				clock-names = "pipe0";
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 8300a5873a21..468ba1d18751 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -1494,7 +1494,6 @@ usb_1_qmpphy: phy@88e9000 {
+ 			      <0 0x088e8000 0 0x20>;
+ 			reg-names = "reg-base", "dp_com";
+ 			status = "disabled";
+-			#clock-cells = <1>;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+ 			ranges;
+@@ -1515,6 +1514,7 @@ usb_1_ssphy: lanes@88e9200 {
+ 				      <0 0x088e9600 0 0x200>,
+ 				      <0 0x088e9800 0 0x200>,
+ 				      <0 0x088e9a00 0 0x100>;
++				#clock-cells = <0>;
+ 				#phy-cells = <0>;
+ 				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+ 				clock-names = "pipe0";
+@@ -1526,7 +1526,6 @@ usb_2_qmpphy: phy@88eb000 {
+ 			compatible = "qcom,sm8250-qmp-usb3-uni-phy";
+ 			reg = <0 0x088eb000 0 0x200>;
+ 			status = "disabled";
+-			#clock-cells = <1>;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+ 			ranges;
+@@ -1545,6 +1544,7 @@ usb_2_ssphy: lane@88eb200 {
+ 				reg = <0 0x088eb200 0 0x200>,
+ 				      <0 0x088eb400 0 0x200>,
+ 				      <0 0x088eb800 0 0x800>;
++				#clock-cells = <0>;
+ 				#phy-cells = <0>;
+ 				clocks = <&gcc GCC_USB3_SEC_PHY_PIPE_CLK>;
+ 				clock-names = "pipe0";
+-- 
+2.26.1
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-commit/?h=3Dmediatek-drm-fixes&id=3D46b97aed5484a3f44584a10f9e0691bf89d2906=
-4
-
-Regards,
-Chun-Kuang.
-
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: Jie Qiu <jie.qiu@mediatek.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mediatek@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 9 ---------
->  1 file changed, 9 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index cf11c4850b405..52f11a63a3304 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -522,15 +522,6 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *=
-dpi,
->         return 0;
->  }
->
-> -static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
-> -{
-> -       drm_encoder_cleanup(encoder);
-> -}
-> -
-> -static const struct drm_encoder_funcs mtk_dpi_encoder_funcs =3D {
-> -       .destroy =3D mtk_dpi_encoder_destroy,
-> -};
-> -
->  static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
->                                  enum drm_bridge_attach_flags flags)
->  {
-> --
-> 2.25.1
->
