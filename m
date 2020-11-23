@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7122C0377
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089E12C0379
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgKWKi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:38:29 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3872 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727444AbgKWKi3 (ORCPT
+        id S1728680AbgKWKin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:38:43 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:52431 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727444AbgKWKim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:38:29 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbb91270000>; Mon, 23 Nov 2020 02:38:31 -0800
-Received: from [10.26.72.66] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov
- 2020 10:38:26 +0000
-Subject: Re: [PATCH v5 0/6] Tegra210 audio graph card
-To:     Sameer Pujar <spujar@nvidia.com>, <broonie@kernel.org>,
-        <robh+dt@kernel.org>, <thierry.reding@gmail.com>
-CC:     <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>
-References: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <bbf5c039-faab-618b-7b3c-8991bb75d4a0@nvidia.com>
-Date:   Mon, 23 Nov 2020 10:38:24 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 23 Nov 2020 05:38:42 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kh9Ey-0006Lm-RV; Mon, 23 Nov 2020 11:38:36 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kh9Ex-0007AY-QM; Mon, 23 Nov 2020 11:38:35 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 60F53240041;
+        Mon, 23 Nov 2020 11:38:35 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id D7AE8240040;
+        Mon, 23 Nov 2020 11:38:34 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 7EC19203C7;
+        Mon, 23 Nov 2020 11:38:34 +0100 (CET)
 MIME-Version: 1.0
-In-Reply-To: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606127911; bh=rja4mFvPtVCeH4UELYSy3t07Yo+UPDvUCyzzCQixKww=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=X1usOJU0UqprKtf9SA4DFxYJrh+6K9X8SYt/mat5kG4dSMka4gKP49pcyT+p8VgMd
-         C+RHSlT9DCECut9i25KXabM0IxvutDNtWbugyunFjn0LqQlhgoJXa+ta3UkfzVm4XO
-         XEF+/6ueRwEjEcEWdzXXOOej6W5Qgd80k5W+UWwjNrurK3OhrJJ+i87dEmtGhT7pfr
-         E1wGOeL9KWUjTZkz1tKSi1j9C8Eyvq1PfaSQ83Ks9XxpXcJ52QNV0EZAf5zjx8aI5D
-         ntYZjtEFwhHiXVgiCJxXImRFz5M4DgFwlR6ST45KR+i02u0QRE2bwMHBRBHVs2/CQf
-         KiJk20Zt8/N0Q==
+Date:   Mon, 23 Nov 2020 11:38:34 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v4 2/5] net/lapb: support netdev events
+Organization: TDT AG
+In-Reply-To: <CAJht_EO+enBOFMkVVB5y6aRnyMEsOZtUBJcAvOFBS91y7CauyQ@mail.gmail.com>
+References: <20201120054036.15199-1-ms@dev.tdt.de>
+ <20201120054036.15199-3-ms@dev.tdt.de>
+ <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
+ <CAJht_EP_oqCDs6mMThBZNtz4sgpbyQgMhKkHeqfS_7JmfEzfQg@mail.gmail.com>
+ <87a620b6a55ea8386bffefca0a1f8b77@dev.tdt.de>
+ <CAJht_EPc8MF1TjznSjWTPyMbsrw3JVqxST5g=eF0yf_zasUdeA@mail.gmail.com>
+ <d85a4543eae46bac1de28ec17a2389dd@dev.tdt.de>
+ <CAJht_EMjO_Tkm93QmAeK_2jg2KbLdv2744kCSHiZLy48aXiHnw@mail.gmail.com>
+ <CAJht_EO+enBOFMkVVB5y6aRnyMEsOZtUBJcAvOFBS91y7CauyQ@mail.gmail.com>
+Message-ID: <16b7e74e6e221f43420da7836659d7df@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate: clean
+X-purgate-ID: 151534::1606127916-000074F7-5C8CC61A/0/0
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-11-23 11:08, Xie He wrote:
+> On Mon, Nov 23, 2020 at 1:36 AM Xie He <xie.he.0141@gmail.com> wrote:
+>> 
+>> Some drivers don't support carrier status and will never change it.
+>> Their carrier status will always be UP. There will not be a
+>> NETDEV_CHANGE event.
 
-On 11/11/2020 18:34, Sameer Pujar wrote:
-> This series adds audio graph based sound card support for Tegra210
-> platforms like Jetson-TX1 an Jetson-Nano. The following preparatory
-> audio graph enhancement series is already merged.
->  * https://patchwork.kernel.org/project/alsa-devel/list/?series=375629&state=*
+Well, one could argue that we would have to repair these drivers, but I
+don't think that will get us anywhere.
+
+ From this point of view it will be the best to handle the NETDEV_UP in
+the lapb event handler and establish the link analog to the
+NETDEV_CHANGE event if the carrier is UP.
+
+>> 
+>> lapbether doesn't change carrier status. I also have my own virtual
+>> HDLC WAN driver (for testing) which also doesn't change carrier
+>> status.
+>> 
+>> I just tested with lapbether. When I bring up the interface, there
+>> will only be NETDEV_PRE_UP and then NETDEV_UP. There will not be
+>> NETDEV_CHANGE. The carrier status is alway UP.
+>> 
+>> I haven't tested whether a device can receive NETDEV_CHANGE when it is
+>> down. It's possible for a device driver to call netif_carrier_on when
+>> the interface is down. Do you know what will happen if a device driver
+>> calls netif_carrier_on when the interface is down?
 > 
-> Following are the summary of changes:
->  * Add graph/audio-graph based schemas or schema updates for Tegra210
->    component and machine drivers.
->  * Add Tegra audio graph machine driver.
->  * Add required DT support for Jetson-TX1/Nano.
-> 
-> This work is based on earlier discussion of DPCM usage for Tegra
-> and simple card driver updates.
->  * https://lkml.org/lkml/2020/4/30/519
->  * https://lkml.org/lkml/2020/6/27/4
-> 
-> This series has dependency over following graph and audio-graph series.
->  * http://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201102203656.220187-2-robh@kernel.org/
->  * https://patchwork.kernel.org/project/alsa-devel/list/?series=382009&state=*
-
-
-Only one minor comment, but this looks good to me. Otherwise for the
-series ...
-
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-
-Cheers
-Jon
-
--- 
-nvpublic
+> I just did a test on lapbether and saw there would be no NETDEV_CHANGE
+> event when the netif is down, even if netif_carrier_on/off is called.
+> So we can rest assured of this part.
