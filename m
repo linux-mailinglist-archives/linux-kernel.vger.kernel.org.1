@@ -2,154 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8292BFEE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BFF2BFEE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgKWDwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 22:52:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:54836 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727057AbgKWDwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 22:52:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E127E101E;
-        Sun, 22 Nov 2020 19:51:59 -0800 (PST)
-Received: from [10.163.82.200] (unknown [10.163.82.200])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D9D13F71F;
-        Sun, 22 Nov 2020 19:51:57 -0800 (PST)
-Subject: Re: [RFC 07/11] coresight: sink: Add TRBE driver
-To:     Tingwei Zhang <tingweiz@codeaurora.org>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mike.leach@linaro.org, linux-kernel@vger.kernel.org
-References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
- <1605012309-24812-8-git-send-email-anshuman.khandual@arm.com>
- <20201114053842.GB28964@codeaurora.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <bc4b7219-bee0-ad03-fba4-9f062e0521ca@arm.com>
-Date:   Mon, 23 Nov 2020 09:21:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727519AbgKWDwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 22:52:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726925AbgKWDwb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 22:52:31 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB189C061A4C
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:52:29 -0800 (PST)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 78E8A891AE;
+        Mon, 23 Nov 2020 16:52:24 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1606103544;
+        bh=2UlIo8j5DajpgR4TvxUOs90rl0Y78kKC5FRmCtyJRp0=;
+        h=From:To:Cc:Subject:Date;
+        b=FUWP6ph5yde2PC8iwNHB03SCpJ4OeNgw5gNubHM6kmGUFojjl3BrRBDMzXMooeD93
+         Lftz1WZhGEnBKmMZJBywKpSqfeRiDhha+O7Mu0cJuPC/dlyyFsOf2gTXmywV3GCinw
+         iUHbM9OBvdyAaC6qrAcAA/zh0j32600jUCBCSw7MQidTtQDYdFAT/XY4njnd5n4pAt
+         TJ8LCxilnwHYhF8VEeF5NzlnwpgikMGSAzKtVPxhjRJ0dRTTnJvCivmOfRS0QrbXoH
+         Gfs1CDCXNvbYG/Eir2K4Q0Se1pDLbp3t4kfkYExkwqYtDsswPvje7t4qR9+IlTmdUd
+         s+uW2Whk2/Acg==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5fbb31f80000>; Mon, 23 Nov 2020 16:52:24 +1300
+Received: from aryans-dl.ws.atlnz.lc (aryans-dl.ws.atlnz.lc [10.33.21.30])
+        by smtp (Postfix) with ESMTP id E4A3413EE9F;
+        Mon, 23 Nov 2020 16:52:23 +1300 (NZDT)
+Received: by aryans-dl.ws.atlnz.lc (Postfix, from userid 1844)
+        id 3797B14C2841; Mon, 23 Nov 2020 16:52:24 +1300 (NZDT)
+From:   Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+To:     robh+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, chrisp@alliedtelesis.co.nz
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Subject: [PATCH] ARM: dts: mvebu: Add device tree for RD-AC3X-48G4X2XL board
+Date:   Mon, 23 Nov 2020 16:52:15 +1300
+Message-Id: <20201123035215.2239-1-aryan.srivastava@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201114053842.GB28964@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device tree for RD-AC3X-48G4X2XL board. This has a Armada 382 SoC on
+a interposer board connected to a baseboard with a Prestera AC3X ASIC
+connected via PCI.
 
+Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+---
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/armada-382-rd-ac3x-48g4x2xl.dts  | 114 ++++++++++++++++++
+ 2 files changed, 115 insertions(+)
+ create mode 100644 arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
 
-On 11/14/20 11:08 AM, Tingwei Zhang wrote:
-> Hi Anshuman,
-> 
-> On Tue, Nov 10, 2020 at 08:45:05PM +0800, Anshuman Khandual wrote:
->> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
->> accessible via the system registers. The TRBE supports different addressing
->> modes including CPU virtual address and buffer modes including the circular
->> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
->> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
->> access to the trace buffer could be prohibited by a higher exception level
->> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
->> private interrupt (PPI) on address translation errors and when the buffer
->> is full. Overall implementation here is inspired from the Arm SPE driver.
->>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  Documentation/trace/coresight/coresight-trbe.rst |  36 ++
->>  arch/arm64/include/asm/sysreg.h                  |   2 +
->>  drivers/hwtracing/coresight/Kconfig              |  11 +
->>  drivers/hwtracing/coresight/Makefile             |   1 +
->>  drivers/hwtracing/coresight/coresight-trbe.c     | 766 
->> +++++++++++++++++++++++
->>  drivers/hwtracing/coresight/coresight-trbe.h     | 525 ++++++++++++++++
->>  6 files changed, 1341 insertions(+)
->>  create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
->>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
->>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
->>
->> diff --git a/Documentation/trace/coresight/coresight-trbe.rst 
->> b/Documentation/trace/coresight/coresight-trbe.rst
->> new file mode 100644
->> index 0000000..4320a8b
->> --- /dev/null
->> +++ b/Documentation/trace/coresight/coresight-trbe.rst
->> @@ -0,0 +1,36 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +==============================
->> +Trace Buffer Extension (TRBE).
->> +==============================
->> +
->> +    :Author:   Anshuman Khandual <anshuman.khandual@arm.com>
->> +    :Date:     November 2020
->> +
->> +Hardware Description
->> +--------------------
->> +
->> +Trace Buffer Extension (TRBE) is a percpu hardware which captures in system
->> +memory, CPU traces generated from a corresponding percpu tracing unit. This
->> +gets plugged in as a coresight sink device because the corresponding trace
->> +genarators (ETE), are plugged in as source device.
->> +
->> +Sysfs files and directories
->> +---------------------------
->> +
->> +The TRBE devices appear on the existing coresight bus alongside the other
->> +coresight devices::
->> +
->> +	>$ ls /sys/bus/coresight/devices
->> +	trbe0  trbe1  trbe2 trbe3
->> +
->> +The ``trbe<N>`` named TRBEs are associated with a CPU.::
->> +
->> +	>$ ls /sys/bus/coresight/devices/trbe0/
->> +	irq align dbm
->> +
->> +*Key file items are:-*
->> +   * ``irq``: TRBE maintenance interrupt number
->> +   * ``align``: TRBE write pointer alignment
->> +   * ``dbm``: TRBE updates memory with access and dirty flags
->> +
->> diff --git a/arch/arm64/include/asm/sysreg.h 
->> b/arch/arm64/include/asm/sysreg.h
->> index 14cb156..61136f6 100644
->> --- a/arch/arm64/include/asm/sysreg.h
->> +++ b/arch/arm64/include/asm/sysreg.h
->> @@ -97,6 +97,7 @@
->>  #define SET_PSTATE_UAO(x)		__emit_inst(0xd500401f | PSTATE_UAO | ((!!x) << 
->> PSTATE_Imm_shift))
->>  #define SET_PSTATE_SSBS(x)		__emit_inst(0xd500401f | PSTATE_SSBS | ((!!x) 
->> << PSTATE_Imm_shift))
->>  #define SET_PSTATE_TCO(x)		__emit_inst(0xd500401f | PSTATE_TCO | ((!!x) << 
->> PSTATE_Imm_shift))
->> +#define TSB_CSYNC			__emit_inst(0xd503225f)
->>
->>  #define __SYS_BARRIER_INSN(CRm, op2, Rt) \
->>  	__emit_inst(0xd5000000 | sys_insn(0, 3, 3, (CRm), (op2)) | ((Rt) & 0x1f))
->> @@ -865,6 +866,7 @@
->>  #define ID_AA64MMFR2_CNP_SHIFT		0
->>
->>  /* id_aa64dfr0 */
->> +#define ID_AA64DFR0_TRBE_SHIFT		44
->>  #define ID_AA64DFR0_TRACE_FILT_SHIFT	40
->>  #define ID_AA64DFR0_DOUBLELOCK_SHIFT	36
->>  #define ID_AA64DFR0_PMSVER_SHIFT	32
->> diff --git a/drivers/hwtracing/coresight/Kconfig 
->> b/drivers/hwtracing/coresight/Kconfig
->> index c119824..0f5e101 100644
->> --- a/drivers/hwtracing/coresight/Kconfig
->> +++ b/drivers/hwtracing/coresight/Kconfig
->> @@ -156,6 +156,17 @@ config CORESIGHT_CTI
->>  	  To compile this driver as a module, choose M here: the
->>  	  module will be called coresight-cti.
->>
->> +config CORESIGHT_TRBE
->> +	bool "Trace Buffer Extension (TRBE) driver"
-> 
-> Can you consider to support TRBE as loadable module since all coresight
-> drivers support loadable module now.
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index ce66ffd5a1bb..a60407ad7347 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1319,6 +1319,7 @@ dtb-$(CONFIG_MACH_ARMADA_370) +=3D \
+ dtb-$(CONFIG_MACH_ARMADA_375) +=3D \
+ 	armada-375-db.dtb
+ dtb-$(CONFIG_MACH_ARMADA_38X) +=3D \
++	armada-382-rd-ac3x-48g4x2xl.dtb \
+ 	armada-385-clearfog-gtr-s4.dtb \
+ 	armada-385-clearfog-gtr-l8.dtb \
+ 	armada-385-db-88f6820-amc.dtb \
+diff --git a/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts b/arch/arm=
+/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
+new file mode 100644
+index 000000000000..b08d662a8519
+--- /dev/null
++++ b/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Device Tree file for Marvell Armada 382 reference board
++ * (RD-AC3X-48G4X2XL)
++ *
++ * Copyright (C) 2020 Allied Telesis Labs
++ */
++
++/dts-v1/;
++#include "armada-385.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++
++/ {
++	model =3D "Marvell Armada 382 RD-AC3X";
++	compatible =3D "marvell,rd-ac3x-48g4x2xl", "marvell,rd-ac3x",
++			 "marvell,armada385", "marvell,armada380";
++
++	chosen {
++		stdout-path =3D "serial0:115200n8";
++	};
++
++	aliases {
++		ethernet0 =3D &eth1;
++	};
++
++	memory {
++		device_type =3D "memory";
++		reg =3D <0x00000000 0x20000000>; /* 512MB */
++	};
++
++	soc {
++		ranges =3D <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
++			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000>;
++	};
++};
++
++&i2c0 {
++	pinctrl-names =3D "default";
++	pinctrl-0 =3D <&i2c0_pins>;
++	status =3D "okay";
++
++	eeprom@53{
++		compatible =3D "atmel,24c64";
++		reg =3D <0x53>;
++	};
++//	cpld@3c{
++//		compatible =3D "marvell,ac3x-cpld";
++//		reg =3D <0x3c>;
++//	};
++};
++
++&uart0 {
++	pinctrl-names =3D "default";
++	pinctrl-0 =3D <&uart0_pins>;
++	status =3D "okay";
++};
++
++&eth1 {
++	status =3D "okay";
++	phy =3D <&phy0>;
++	phy-mode =3D "rgmii-id";
++};
++
++&mdio {
++	pinctrl-names =3D "default";
++	pinctrl-0 =3D <&mdio_pins>;
++
++	phy0: ethernet-phy@0 {
++		reg =3D <0>;
++	};
++};
++
++&pciec {
++	status =3D "okay";
++};
++
++&pcie1 {
++	/* Port 0, Lane 0 */
++	status =3D "okay";
++};
++
++&nand_controller {
++	status =3D "okay";
++
++	nand@0 {
++		reg =3D <0>;
++		label =3D "pxa3xx_nand-0";
++		nand-rb =3D <0>;
++		nand-on-flash-bbt;
++
++		partitions {
++			compatible =3D "fixed-partitions";
++			#address-cells =3D <1>;
++			#size-cells =3D <1>;
++			partition@0 {
++				reg =3D <0x00000000 0x00500000>;
++				label =3D "u-boot";
++			};
++			partition@500000{
++				reg =3D <0x00500000 0x00400000>;
++				label =3D "u-boot env";
++			};
++			partition@900000{
++				reg =3D <0x00900000 0x3F700000>;
++				label =3D "user";
++			};
++		};
++	};
++};
++
++&refclk {
++	clock-frequency =3D <200000000>;
++};
+--=20
+2.29.2
 
-Reworking the TRBE driver and making it a loadable module is part of it.
-
-- Anshuman
