@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6622C0E80
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 375722C0E84
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389382AbgKWPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731680AbgKWPLK (ORCPT
+        id S1731870AbgKWPOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:14:24 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8018 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729718AbgKWPOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:11:10 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58512C0613CF;
-        Mon, 23 Nov 2020 07:11:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=PMZZSROSJPWNUmLipsds+x4wr12FZn6VKprvQCUEVms=; b=htPboi/h4okOakVohzsKIn+HU
-        U0C2YkVCvpkzv9b+2Bn0fK9UZj2WmAEe/3QLIraAEa/UBMpGXxttojzOsxAXZsJ1tQ8Ig+ecFLnk/
-        3i2Wfh+Tz/aDipIgFAoy7vdZMWKCZ6VmsOf2KIkCiwBrDAk9HwClnnUK9X1FTPsjPpvE+nXA/LvLz
-        r+yBtXvwEIgCN6AtfuPN7ILNQKRt/++aYP4P2YxwGRWbOxCzQMazyzMjGvgtse8R6OwEQA0avHyGV
-        wUa4NY5isWKr2CcWyY6+0/yTzrIxrnpO+Vej8LAB8haUxjukYclRRGONi2ZQYqj47rvYr4cSuLuUF
-        /IAyWMxuw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35102)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1khDUT-00068T-8Z; Mon, 23 Nov 2020 15:10:53 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1khDUP-0006Pw-Kz; Mon, 23 Nov 2020 15:10:49 +0000
-Date:   Mon, 23 Nov 2020 15:10:49 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
-        antoine.tenart@bootlin.com, andrew@lunn.ch
-Subject: Re: [PATCH v1] net: mvpp2: divide fifo for dts-active ports only
-Message-ID: <20201123151049.GV1551@shell.armlinux.org.uk>
-References: <1606143160-25589-1-git-send-email-stefanc@marvell.com>
+        Mon, 23 Nov 2020 10:14:23 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CfrK46PY1zhgHQ;
+        Mon, 23 Nov 2020 23:14:00 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 23 Nov 2020
+ 23:14:14 +0800
+From:   Wang Hui <john.wanghui@huawei.com>
+To:     <alexander.shishkin@linux.intel.com>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] hwtracing: stm: fix return value of error branch in stm_heartbeat_init
+Date:   Mon, 23 Nov 2020 15:14:38 +0000
+Message-ID: <20201123151438.258314-1-john.wanghui@huawei.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1606143160-25589-1-git-send-email-stefanc@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+ret would be reset by stm_source_register_device after first loop, so we
+should reassign ret while allocation failed for
+stm_heartbeat[i].data.name
 
-On Mon, Nov 23, 2020 at 04:52:40PM +0200, stefanc@marvell.com wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
-> 
-> Tx/Rx FIFO is a HW resource limited by total size, but shared
-> by all ports of same CP110 and impacting port-performance.
-> Do not divide the FIFO for ports which are not enabled in DTS,
-> so active ports could have more FIFO.
-> 
-> The active port mapping should be done in probe before FIFO-init.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 119291853038 ("stm class: Add heartbeat stm source device")
+Signed-off-by: Wang Hui <john.wanghui@huawei.com>
+---
+ drivers/hwtracing/stm/heartbeat.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-It would be nice to know what the effect is from this - is it a
-small or large boost in performance?
-
-What is the effect when the ports on a CP110 are configured for
-10G, 1G, and 2.5G in that order, as is the case on the Macchiatobin
-board?
-
-Thanks.
-
+diff --git a/drivers/hwtracing/stm/heartbeat.c b/drivers/hwtracing/stm/heartbeat.c
+index 3e7df1c0477f..81d7b21d31ec 100644
+--- a/drivers/hwtracing/stm/heartbeat.c
++++ b/drivers/hwtracing/stm/heartbeat.c
+@@ -64,7 +64,7 @@ static void stm_heartbeat_unlink(struct stm_source_data *data)
+ 
+ static int stm_heartbeat_init(void)
+ {
+-	int i, ret = -ENOMEM;
++	int i, ret;
+ 
+ 	if (nr_devs < 0 || nr_devs > STM_HEARTBEAT_MAX)
+ 		return -EINVAL;
+@@ -72,8 +72,10 @@ static int stm_heartbeat_init(void)
+ 	for (i = 0; i < nr_devs; i++) {
+ 		stm_heartbeat[i].data.name =
+ 			kasprintf(GFP_KERNEL, "heartbeat.%d", i);
+-		if (!stm_heartbeat[i].data.name)
++		if (!stm_heartbeat[i].data.name) {
++			ret = -ENOMEM;
+ 			goto fail_unregister;
++		}
+ 
+ 		stm_heartbeat[i].data.nr_chans	= 1;
+ 		stm_heartbeat[i].data.link	= stm_heartbeat_link;
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.29.0
+
