@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA4D2C0318
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ED92C0313
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgKWKSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:18:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:40346 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726528AbgKWKSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:18:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32CED101E;
-        Mon, 23 Nov 2020 02:18:12 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 489743F70D;
-        Mon, 23 Nov 2020 02:18:10 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, broonie@kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, f.fainelli@gmail.com,
-        satyakim@qti.qualcomm.com, souvik.chakravarty@arm.com,
-        etienne.carriere@linaro.org, Jonathan.Cameron@Huawei.com,
-        vincent.guittot@linaro.org, james.quinlan@broadcom.com,
-        lukasz.luba@arm.com, robh@kernel.org
-Subject: Re: [PATCH v6 0/5] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
-Date:   Mon, 23 Nov 2020 10:18:01 +0000
-Message-Id: <160612640234.1278741.10147060324304611609.b4-ty@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201119191051.46363-1-cristian.marussi@arm.com>
-References: <20201119191051.46363-1-cristian.marussi@arm.com>
+        id S1728153AbgKWKPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:15:02 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7666 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgKWKPB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:15:01 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cfjgh1Xn2z15RBb;
+        Mon, 23 Nov 2020 18:14:40 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 23 Nov 2020
+ 18:14:56 +0800
+From:   Zhang Qilong <zhangqilong3@huawei.com>
+To:     <sre@kernel.org>
+CC:     <gustavoars@kernel.org>, <carlos.chinea@nokia.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] HSI: Fix PM usage counter unbalance in ssi_hw_init
+Date:   Mon, 23 Nov 2020 18:18:27 +0800
+Message-ID: <20201123101827.3863792-1-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 19:10:46 +0000, Cristian Marussi wrote:
-> this series introduces the support for the new SCMI Voltage Domain Protocol
-> defined by the upcoming SCMIv3.0 specification, whose BETA release is
-> available at [1].
-> 
-> Afterwards, a new generic SCMI Regulator driver is developed on top of the
-> new SCMI VD Protocol.
-> 
-> [...]
+pm_runtime_get_sync will increment pm usage counter
+even it failed. Forgetting to putting operation will
+result in reference leak here. We fix it by replacing
+it with pm_runtime_resume_and_get to keep usage counter
+balanced.
 
-Applied to sudeep.holla/linux (for-next/scmi-voltage), thanks!
+Fixes: b209e047bc743 ("HSI: Introduce OMAP SSI driver")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+---
+ drivers/hsi/controllers/omap_ssi_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I will soon send pull request to Mark Brown so tha he can pick by the
-regulator driver patches with these as agreed.
-
-[4/5] dt-bindings: arm: Add support for SCMI Regulators
-      https://git.kernel.org/sudeep.holla/c/0f80fcec08
-[1/5] firmware: arm_scmi: Add voltage domain management protocol support
-      https://git.kernel.org/sudeep.holla/c/2add5cacff
-[2/5] firmware: arm_scmi: Add support to enumerated SCMI voltage domain device
-      https://git.kernel.org/sudeep.holla/c/ec88381936
-
---
-Regards,
-Sudeep
+diff --git a/drivers/hsi/controllers/omap_ssi_core.c b/drivers/hsi/controllers/omap_ssi_core.c
+index fa69b94debd9..b4ac2f8cb9f9 100644
+--- a/drivers/hsi/controllers/omap_ssi_core.c
++++ b/drivers/hsi/controllers/omap_ssi_core.c
+@@ -424,7 +424,7 @@ static int ssi_hw_init(struct hsi_controller *ssi)
+ 	struct omap_ssi_controller *omap_ssi = hsi_controller_drvdata(ssi);
+ 	int err;
+ 
+-	err = pm_runtime_get_sync(ssi->device.parent);
++	err = pm_runtime_resume_and_get(ssi->device.parent);
+ 	if (err < 0) {
+ 		dev_err(&ssi->device, "runtime PM failed %d\n", err);
+ 		return err;
+-- 
+2.25.4
 
