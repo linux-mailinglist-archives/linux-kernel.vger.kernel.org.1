@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B9F2C0C0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9A32C0C08
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731036AbgKWNlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:41:55 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12500 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730860AbgKWNly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:41:54 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ANDUufe054615;
-        Mon, 23 Nov 2020 08:41:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=chruBFvNGuRKqGj1QlVcNgCM3MgDyhdklfyEEoguCso=;
- b=KDWosr6ETemK3ES0X7OImUBDAMYVrUJXyDtAw+McGitSFqiW79RoD1OO/p5N/eZI7dI7
- KLTSRnbkUvG9ew8bgURQHTYzOSOeiFxLWuFjFOLsRHwvYGk27QDts5UP9gd5MNgn0Qxj
- Q8zqo6P9X3vZ5jLqmP1MzcSar6dTPd9rt6yB2FHYIzP7Rm7736YzZ85ZRd607sI0STbP
- 957diyHohUedqpRg2/Y2Q7Z1GNnXkcU+Z6ZVNMCqSTHkrXJyYUJbvESETsarEUMOZuzw
- HweWMWAoMjNwxgiNrZ4N191kJ+cdQXCO8N1ynSir1tS/fPJlWlMUoKSq4WTLcjVScut/ Kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34yq4759xa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 08:41:44 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ANDUugv054630;
-        Mon, 23 Nov 2020 08:41:44 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34yq4759wf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 08:41:44 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ANDaNsS019241;
-        Mon, 23 Nov 2020 13:41:42 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 350cvrr2ws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 13:41:42 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ANDfd4761342026
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Nov 2020 13:41:39 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9722011C04A;
-        Mon, 23 Nov 2020 13:41:39 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8FB5F11C052;
-        Mon, 23 Nov 2020 13:41:36 +0000 (GMT)
-Received: from sig-9-65-241-175.ibm.com (unknown [9.65.241.175])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Nov 2020 13:41:36 +0000 (GMT)
-Message-ID: <d82ad1cac36e948c904300548c64244c145589ee.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 0/8] IMA: support for measuring kernel integrity
- critical data
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        paul@paul-moore.com, tyhicks@linux.microsoft.com,
-        sashal@kernel.org, jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Mon, 23 Nov 2020 08:41:35 -0500
-In-Reply-To: <20201122210031.GA26756@amd>
-References: <20201119232611.30114-1-tusharsu@linux.microsoft.com>
-         <20201120124657.GA31468@duo.ucw.cz>
-         <aadf6e35-39bc-74d4-6ca3-d708860738a5@linux.microsoft.com>
-         <20201122210031.GA26756@amd>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-23_09:2020-11-23,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 impostorscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 suspectscore=3 spamscore=0
- lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011230088
+        id S1729980AbgKWNlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:41:00 -0500
+Received: from mga18.intel.com ([134.134.136.126]:48007 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729539AbgKWNk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:40:59 -0500
+IronPort-SDR: DT+ZL7RcnXR3oBJoQ5fT248iemfp6kboAYj/1jOGvSDJRSgiOpc9jbmjY0SWBEoMDBqwEYGpTX
+ h8gQJ0O99NXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="159530268"
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="159530268"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 05:40:50 -0800
+IronPort-SDR: 3TVv61qLh3jys0yf/ai6P3eILCIAnAKEr5FdTsJXPN1MoL9wBBUcHF6byFEyoZoQSIEWNHz2Ug
+ ZYoYP1HWt2Lg==
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="370040760"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 05:40:46 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1khC6F-009ARV-V6; Mon, 23 Nov 2020 15:41:47 +0200
+Date:   Mon, 23 Nov 2020 15:41:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
+ table
+Message-ID: <20201123134147.GE4077@smile.fi.intel.com>
+References: <20201120161653.445521-1-krzk@kernel.org>
+ <20201120165202.GG6751@sirena.org.uk>
+ <20201120194245.GA2925@kozik-lap>
+ <20201120200429.GJ6751@sirena.org.uk>
+ <20201122105813.GA3780@kozik-lap>
+ <20201123104832.GY4077@smile.fi.intel.com>
+ <20201123123731.GA6322@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123123731.GA6322@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-On Sun, 2020-11-22 at 22:00 +0100, Pavel Machek wrote:
-> Hi!
+On Mon, Nov 23, 2020 at 12:37:31PM +0000, Mark Brown wrote:
+> On Mon, Nov 23, 2020 at 12:48:32PM +0200, Andy Shevchenko wrote:
+> > On Sun, Nov 22, 2020 at 11:59:20AM +0100, Krzysztof Kozlowski wrote:
+> > > On Fri, Nov 20, 2020 at 08:04:29PM +0000, Mark Brown wrote:
 > 
-> > >How is it supposed to be useful?
-> > >
-> > >I'm pretty sure there are critical data that are not measured by
-> > >proposed module... and that are written under normal circumstances.
-> > >
-> > The goal of this series is to introduce the IMA hook
-> > measure_critical_data() and the necessary policies to use it; and
-> > illustrate that use with one example (SELinux). It is not scalable to
-> > identify and update all the critical data sources to use the proposed
-> > module at once.
-> > 
-> > A piecemeal approach to add more critical data measurement in subsequent
-> > patches would be easy to implement and review.
+> > > > Surely if that's the desired outcome the fix is to change the definition
+> > > > of of_match_ptr() such that it leaves the reference with CONFIG_ACPI,
+> > > > perhaps hidden behind a config option for PRP0001?  That seems better
+> > > > than going through the entire tree like this.
 > 
-> Basically every other data structure in kernel is "critical" by your
-> definition, and you can't really measure them all; some of them change
-> rather often. Going piecemeal does not really help here.
+> > > That could be indeed an easier way to achieve this.
+> 
+> > ...easier and wrong in my opinion. Not all drivers need that.
+> > What the point to touch it in the driver which is OF-only?
+> > (For IP which will quite unlikely to be present in ACPI world)
+> > Or if the device will get the correct ACPI ID?
+> 
+> That feels like something that should be done with Kconfig dependencies
+> like a direct OF dependency (possibly a !PRP0001 dependency?) for the
+> driver or possibly with having a variant of_match_ptr() for things that
+> really don't want to support PRP0001.  Just removing all the use of
+> of_match_ptr() is both noisy and confusing in that it looks like it's
+> creating issues to fix, it makes it hard to understand when and why one
+> should use the macro.
 
-Agreed, measuring data structures that change is not really applicable.
-However, measuring data structures that once initialized don't change,
-does make sense (similar concept to __ro_after_init).  The attestation
-server doesn't need to know anything about the measurement, other than
-more than a single measurement is indicative of a problem.
+My personal opinion is that in 99% using that macro (as well as ACPI_PTR() one)
+is kinda mistake. We save dozen of bytes here and there by adding macro,
+necessary ifdeferry, and dropping user to know that the driver might serve for
+other device IDs as provided by OF / ACPI.
 
-Mimi
+But I'm not the one who makes a decision here and I could see some want to have
+a possibility to reduce their kernel memory footprint as much as possible.
 
-> Example of critical data structure: page table entries for process I
-> own.
-
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
