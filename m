@@ -2,132 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868CE2C0BC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D752C0BEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388404AbgKWNae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:30:34 -0500
-Received: from www62.your-server.de ([213.133.104.62]:56794 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389068AbgKWNaa (ORCPT
+        id S1730710AbgKWNdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:33:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730603AbgKWNdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:30:30 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1khBv0-0006CV-6y; Mon, 23 Nov 2020 14:30:10 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1khBuz-000NhL-VQ; Mon, 23 Nov 2020 14:30:10 +0100
-Subject: Re: [PATCH bpf-next v7 00/34] bpf: switch to memcg-based memory
- accounting
-To:     Roman Gushchin <guro@fb.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, netdev@vger.kernel.org, andrii@kernel.org,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <20201119173754.4125257-1-guro@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9134a408-e26c-a7f2-23a7-5fc221bafdde@iogearbox.net>
-Date:   Mon, 23 Nov 2020 14:30:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 23 Nov 2020 08:33:15 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F692C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:33:14 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id z12so3118964ilu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:33:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B86W+jdVxuWIBPQvh9VgYQZlnqJjyNB5p5InAyRoB6I=;
+        b=Ql+B5HYPmAmLy91ozR3CtGnnrhQQcGm7J219+3qkj1QbqFA5NSFZ+53URtCaAZT5Wz
+         mHi4LpbDZVPZNkfNnvgXiwgCbF68xX0VM75It6kkBHOvkUxvB+0tXqDqZ8+C4hSJ9STm
+         EW3mVDzssW88YlKed6bULwvfZZy929cSDs0GC4vJAOmCSQx9ao9emyU1yiUYnCk5I6mq
+         Kfu9ZePha0xTRdNKbDey5RbU32dM/gdBioX7rzdMEbTxS5BfHS2IqhNzx9CeDpRB+OsQ
+         8GapysEAT6UI//oDNv3Q4fGAqAyIt428bOzgatRAjZtuHPjST5lp2ViK+vEG4Rayo/KV
+         68Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B86W+jdVxuWIBPQvh9VgYQZlnqJjyNB5p5InAyRoB6I=;
+        b=a+uHQc973F1v2ceapoWlhO2JV7y9+5OPNHFCohczdIVsatRev2csE0WEf1Y6JLY2hn
+         guzCZ+5DVKjiIgEyaz7t35MiytqTON8GvPK3kqo3RJY4rgZkou7g0i7id2/qmL17tAsp
+         4UWrf1wpwKNKT4DMmwswqex8q1PPRYZ4ylkc6Ekb8VEvjgbVQ5aCC9wzM14wKU97da1L
+         wMSbZViqrtRkJCUWGf+1di/+RIAMlm91ALpWIPtwu+8IKRY7Yg0jtaohdV50ldz5Tt6m
+         Xx21aXisjaz5MuAuuTDweI533qPx5x1Mt792dgT6xumH15Vo8flakKvKqw8vZNq6Mrpd
+         DwVg==
+X-Gm-Message-State: AOAM532W+OFvMjmW958Ry4vcOEKJUPurqwJARVtUu3abhXppa9KP+apZ
+        KlV+2lKN5Lq0iuebN1CkKncC9OPhQmpOIsm5J24OVw==
+X-Google-Smtp-Source: ABdhPJycqSQElwVZGEibmP19tZAWy2OngMjiRi5rnuSzVjw3YWvslTK4f2cE5l7Xvyx7SmC6df6yYxWbtJmvsnBt3MI=
+X-Received: by 2002:a92:dc07:: with SMTP id t7mr34265185iln.189.1606138393796;
+ Mon, 23 Nov 2020 05:33:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201119173754.4125257-1-guro@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25996/Sun Nov 22 14:25:48 2020)
+References: <20201116104242.19907-1-brgl@bgdev.pl> <CAMRc=Mdkr+65Nu7ddjtMHTbedpNf22w1bE97vipKSdXBYm8=fw@mail.gmail.com>
+ <86bf5fda-eeb5-5cb2-901f-a887af7584f6@siemens.com> <CAMRc=MeayB1-hUiNUgKoG5v+CFt-Kxx88s+b-12iZDBfMjvttw@mail.gmail.com>
+ <fe36f3f9-fc33-c39a-1b6e-962fe2567bb8@siemens.com>
+In-Reply-To: <fe36f3f9-fc33-c39a-1b6e-962fe2567bb8@siemens.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 23 Nov 2020 14:33:03 +0100
+Message-ID: <CAMRc=Mcai324zc-W52jVeyUeG6pcCmBZx2Q-Ao_d-GMMwW6ATg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] gpio: exar: refactor the driver
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Laight <David.Laight@aculab.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/20 6:37 PM, Roman Gushchin wrote:
-> Currently bpf is using the memlock rlimit for the memory accounting.
-> This approach has its downsides and over time has created a significant
-> amount of problems:
-> 
-> 1) The limit is per-user, but because most bpf operations are performed
->     as root, the limit has a little value.
-> 
-> 2) It's hard to come up with a specific maximum value. Especially because
->     the counter is shared with non-bpf users (e.g. memlock() users).
->     Any specific value is either too low and creates false failures
->     or too high and useless.
-> 
-> 3) Charging is not connected to the actual memory allocation. Bpf code
->     should manually calculate the estimated cost and precharge the counter,
->     and then take care of uncharging, including all fail paths.
->     It adds to the code complexity and makes it easy to leak a charge.
-> 
-> 4) There is no simple way of getting the current value of the counter.
->     We've used drgn for it, but it's far from being convenient.
-> 
-> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
->     a function to "explain" this case for users.
-> 
-> In order to overcome these problems let's switch to the memcg-based
-> memory accounting of bpf objects. With the recent addition of the percpu
-> memory accounting, now it's possible to provide a comprehensive accounting
-> of the memory used by bpf programs and maps.
-> 
-> This approach has the following advantages:
-> 1) The limit is per-cgroup and hierarchical. It's way more flexible and allows
->     a better control over memory usage by different workloads. Of course, it
->     requires enabled cgroups and kernel memory accounting and properly configured
->     cgroup tree, but it's a default configuration for a modern Linux system.
-> 
-> 2) The actual memory consumption is taken into account. It happens automatically
->     on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is also
->     performed automatically on releasing the memory. So the code on the bpf side
->     becomes simpler and safer.
-> 
-> 3) There is a simple way to get the current value and statistics.
-> 
-> In general, if a process performs a bpf operation (e.g. creates or updates
-> a map), it's memory cgroup is charged. However map updates performed from
-> an interrupt context are charged to the memory cgroup which contained
-> the process, which created the map.
-> 
-> Providing a 1:1 replacement for the rlimit-based memory accounting is
-> a non-goal of this patchset. Users and memory cgroups are completely
-> orthogonal, so it's not possible even in theory.
-> Memcg-based memory accounting requires a properly configured cgroup tree
-> to be actually useful. However, it's the way how the memory is managed
-> on a modern Linux system.
+On Mon, Nov 23, 2020 at 2:00 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>
+> On 23.11.20 13:12, Bartosz Golaszewski wrote:
+> > Thanks!On Mon, Nov 23, 2020 at 1:03 PM Jan Kiszka
+> > <jan.kiszka@siemens.com> wrote:
+> >>
+> >> On 23.11.20 12:38, Bartosz Golaszewski wrote:
+> >>> On Mon, Nov 16, 2020 at 11:42 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >>>>
+> >>>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >>>>
+> >>>> I just wanted to convert the driver to using simpler IDA API but ended up
+> >>>> quickly converting it to using regmap. Unfortunately I don't have the HW
+> >>>> to test it so marking the patches that introduce functional change as RFT
+> >>>> and Cc'ing the original author.
+> >>>>
+> >>>
+> >>> Hi Jan!
+> >>>
+> >>> Could you give this last version a final spin before I merge it?
+> >>>
+> >>
+> >> [   14.250117] exar_serial 0000:02:00.0: enabling device (0000 -> 0002)
+> >> [   14.336622] 0000:02:00.0: ttyS2 at MMIO 0x90000000 (irq = 44, base_baud = 7812500) is a XR17V35X
+> >> [   14.391588] 0000:02:00.0: ttyS3 at MMIO 0x90000400 (irq = 44, base_baud = 7812500) is a XR17V35X
+> >> [   19.250510] gpio_exar: probe of gpio_exar.1.auto failed with error -22
+> >>
+> >> That's "new"...
+> >>
+> >
+> > And if you change reg_bits from 11 to 16?
+> >
+>
+> 16 works. Didn't we have that already?
+>
+> Jan
 
-The cover letter here only describes the advantages of this series, but leaves
-out discussion of the disadvantages. They definitely must be part of the series
-to provide a clear description of the semantic changes to readers. Last time we
-discussed them, they were i) no mem limits in general on unprivileged users when
-memory cgroups was not configured in the kernel, and ii) no mem limits by default
-if not configured in the cgroup specifically. Did we made any progress on these
-in the meantime? How do we want to address them? What is the concrete justification
-to not address them?
+Yes we have, Andy suggested 11 is fine because it fits the highest
+address we need to access but it seems regmap doesn't like this value.
+Ok so I'll change it when applying, is that fine with you?
 
-Also I wonder what are the risk of regressions here, for example, if an existing
-orchestrator has configured memory cgroup limits that are tailored to the application's
-needs.. now, with kernel upgrade BPF will start to interfere, e.g. if a BPF program
-attached to cgroups (e.g. connect/sendmsg/recvmsg or general cgroup skb egress hook)
-starts charging to the process' memcg due to map updates?
-
-   [0] https://lore.kernel.org/bpf/20200803190639.GD1020566@carbon.DHCP.thefacebook.com/
-
-> The patchset consists of the following parts:
-> 1) 4 mm patches, which are already in the mm tree, but are required
->     to avoid a regression (otherwise vmallocs cannot be mapped to userspace).
-> 2) memcg-based accounting for various bpf objects: progs and maps
-> 3) removal of the rlimit-based accounting
-> 4) removal of rlimit adjustments in userspace samples
-> 
-> First 4 patches are not supposed to be merged via the bpf tree. I'm including
-> them to make sure bpf tests will pass.
-> 
-> v7:
->    - introduced bpf_map_kmalloc_node() and bpf_map_alloc_percpu(), by Alexei
->    - switched allocations made from an interrupt context to new helpers,
->      by Daniel
->    - rebase and minor fixes
+Bart
