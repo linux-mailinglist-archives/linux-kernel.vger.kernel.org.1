@@ -2,48 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B3F2C1700
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D5F2C1703
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730170AbgKWUsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:48:00 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:37536 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727461AbgKWUr7 (ORCPT
+        id S1730382AbgKWUtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:49:15 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58431 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729256AbgKWUtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:47:59 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 9C8B980680;
-        Mon, 23 Nov 2020 21:47:56 +0100 (CET)
-Date:   Mon, 23 Nov 2020 21:47:55 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 1/2] dt-bindings: panel-simple-dsi: add Khadas TS050
- panel bindings
-Message-ID: <20201123204755.GA671311@ravnborg.org>
-References: <20201123143354.295844-1-narmstrong@baylibre.com>
- <20201123143354.295844-2-narmstrong@baylibre.com>
+        Mon, 23 Nov 2020 15:49:15 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <dann.frazier@canonical.com>)
+        id 1khIls-0004zx-4E
+        for linux-kernel@vger.kernel.org; Mon, 23 Nov 2020 20:49:12 +0000
+Received: by mail-il1-f199.google.com with SMTP id z8so2465300ilq.21
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:49:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aKKg6wsDaykJhzWuyANPFCAYRxtejbFckP15kDzwPrA=;
+        b=edfAoqi1JpO4fM3O7bpLimrnnl2yhRntzMk+P3ekFhDML28cfY26N0GMeAuoAMictn
+         uvMe4W/mO1wA+9w+x21cMA7ZaEYN1eFeeYpdtIIfcwXPWR6oJXL7gjsVbxyG5Z+Ochz3
+         JcBmzvJBy/MUw2o8sElt+I16Kqqp4sJic9Cksn2UA8z9g0YzilvqOeUKfADIe3zp0924
+         XU80KuejovGo/tuAcsDR0SGFvUOotETQEOQD91lXokV7OH2oprbnkHTrRFkuebUe6r0K
+         2lDelBMK85Rgk9sWxsNc9xhhVHk2L9md8vlqOOF+RZs9BNNyDbYPSg4XO+6o1rnEPvTr
+         iGwQ==
+X-Gm-Message-State: AOAM530RlWsJjtI5+E+q9j0Ggnre/AHkXH5b8UE1HKd7qNkvSAhF+rox
+        IR1B4nykXDtz+Jo9/En+S2F6rlO6lKLZWF+HkO/o8z+am/GdFBcuFDkN9plrEMVjFy3rvIRY53j
+        2ODfZHepuC25imb2+2qaeaOWqO6XMOyDPD6B5enS/iw==
+X-Received: by 2002:a92:d591:: with SMTP id a17mr1441548iln.51.1606164551120;
+        Mon, 23 Nov 2020 12:49:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxsVFmTJQa0sGKLVyLrPs1uS5N1qkeJJ5RbqqqHjnPMsF7w3O/qOHp/r3ZeWE3C7iefdhnW1w==
+X-Received: by 2002:a92:d591:: with SMTP id a17mr1441531iln.51.1606164550824;
+        Mon, 23 Nov 2020 12:49:10 -0800 (PST)
+Received: from xps13.dannf (c-71-56-235-36.hsd1.co.comcast.net. [71.56.235.36])
+        by smtp.gmail.com with ESMTPSA id o3sm8617248ilk.27.2020.11.23.12.49.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 12:49:09 -0800 (PST)
+Date:   Mon, 23 Nov 2020 13:49:07 -0700
+From:   dann frazier <dann.frazier@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: Re: [PATCH 4.4 17/70] crypto: arm64/sha - avoid non-standard inline
+ asm tricks
+Message-ID: <X7wgQ0EW4wKERbkq@xps13.dannf>
+References: <20181126105046.722096341@linuxfoundation.org>
+ <20181126105048.515352194@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123143354.295844-2-narmstrong@baylibre.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=IpJZQVW2AAAA:8 a=7gkXJVJtAAAA:8
-        a=GTP7ad_MgPmXoif0-bwA:9 a=CjuIK1q_8ugA:10 a=IawgGOuG5U0WyFbmm1f5:22
-        a=E9Po1WZjFZOl8hwRPBS3:22
+In-Reply-To: <20181126105048.515352194@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 03:33:53PM +0100, Neil Armstrong wrote:
-> This add the bindings for the Khadas TS050 1080x1920 5" LCD DSI panel designed to work
-> with the Khadas Edge-V, Captain, VIM3 and VIM3L Single Board Computers.
+On Mon, Nov 26, 2018 at 11:50:32AM +0100, Greg Kroah-Hartman wrote:
+> 4.4-stable review patch.  If anyone has any objections, please let me know.
+
+fyi, I bisected a regression down to this commit. This apparently
+causes an ADR_PREL_PG_HI21 relocation to be added to the sha{1,2}_ce
+modules. Back in 4.4 ADR_PREL_PG_HI21 relocations were forbidden if
+built with CONFIG_ARM64_ERRATUM_843419=y, so now the sha{1,2}_ce modules
+fail to load:
+
+[   37.866250] module sha1_ce: unsupported RELA relocation: 275
+
+Looks like it should be an issue for 4.14.y as well, but I haven't yet
+tested it.
+
+  -dann
+
+> From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 > 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> commit f4857f4c2ee9aa4e2aacac1a845352b00197fb57 upstream.
+> 
+> Replace the inline asm which exports struct offsets as ELF symbols
+> with proper const variables exposing the same values. This works
+> around an issue with Clang which does not interpret the "i" (or "I")
+> constraints in the same way as GCC.
+> 
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Tested-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  arch/arm64/crypto/sha1-ce-core.S |    6 ++++--
+>  arch/arm64/crypto/sha1-ce-glue.c |   11 +++--------
+>  arch/arm64/crypto/sha2-ce-core.S |    6 ++++--
+>  arch/arm64/crypto/sha2-ce-glue.c |   13 +++++--------
+>  4 files changed, 16 insertions(+), 20 deletions(-)
+> 
+> --- a/arch/arm64/crypto/sha1-ce-core.S
+> +++ b/arch/arm64/crypto/sha1-ce-core.S
+> @@ -82,7 +82,8 @@ ENTRY(sha1_ce_transform)
+>  	ldr		dgb, [x0, #16]
+>  
+>  	/* load sha1_ce_state::finalize */
+> -	ldr		w4, [x0, #:lo12:sha1_ce_offsetof_finalize]
+> +	ldr_l		w4, sha1_ce_offsetof_finalize, x4
+> +	ldr		w4, [x0, x4]
+>  
+>  	/* load input */
+>  0:	ld1		{v8.4s-v11.4s}, [x1], #64
+> @@ -132,7 +133,8 @@ CPU_LE(	rev32		v11.16b, v11.16b	)
+>  	 * the padding is handled by the C code in that case.
+>  	 */
+>  	cbz		x4, 3f
+> -	ldr		x4, [x0, #:lo12:sha1_ce_offsetof_count]
+> +	ldr_l		w4, sha1_ce_offsetof_count, x4
+> +	ldr		x4, [x0, x4]
+>  	movi		v9.2d, #0
+>  	mov		x8, #0x80000000
+>  	movi		v10.2d, #0
+> --- a/arch/arm64/crypto/sha1-ce-glue.c
+> +++ b/arch/arm64/crypto/sha1-ce-glue.c
+> @@ -17,9 +17,6 @@
+>  #include <linux/crypto.h>
+>  #include <linux/module.h>
+>  
+> -#define ASM_EXPORT(sym, val) \
+> -	asm(".globl " #sym "; .set " #sym ", %0" :: "I"(val));
+> -
+>  MODULE_DESCRIPTION("SHA1 secure hash using ARMv8 Crypto Extensions");
+>  MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
+>  MODULE_LICENSE("GPL v2");
+> @@ -32,6 +29,9 @@ struct sha1_ce_state {
+>  asmlinkage void sha1_ce_transform(struct sha1_ce_state *sst, u8 const *src,
+>  				  int blocks);
+>  
+> +const u32 sha1_ce_offsetof_count = offsetof(struct sha1_ce_state, sst.count);
+> +const u32 sha1_ce_offsetof_finalize = offsetof(struct sha1_ce_state, finalize);
+> +
+>  static int sha1_ce_update(struct shash_desc *desc, const u8 *data,
+>  			  unsigned int len)
+>  {
+> @@ -52,11 +52,6 @@ static int sha1_ce_finup(struct shash_de
+>  	struct sha1_ce_state *sctx = shash_desc_ctx(desc);
+>  	bool finalize = !sctx->sst.count && !(len % SHA1_BLOCK_SIZE);
+>  
+> -	ASM_EXPORT(sha1_ce_offsetof_count,
+> -		   offsetof(struct sha1_ce_state, sst.count));
+> -	ASM_EXPORT(sha1_ce_offsetof_finalize,
+> -		   offsetof(struct sha1_ce_state, finalize));
+> -
+>  	/*
+>  	 * Allow the asm code to perform the finalization if there is no
+>  	 * partial data and the input is a round multiple of the block size.
+> --- a/arch/arm64/crypto/sha2-ce-core.S
+> +++ b/arch/arm64/crypto/sha2-ce-core.S
+> @@ -88,7 +88,8 @@ ENTRY(sha2_ce_transform)
+>  	ld1		{dgav.4s, dgbv.4s}, [x0]
+>  
+>  	/* load sha256_ce_state::finalize */
+> -	ldr		w4, [x0, #:lo12:sha256_ce_offsetof_finalize]
+> +	ldr_l		w4, sha256_ce_offsetof_finalize, x4
+> +	ldr		w4, [x0, x4]
+>  
+>  	/* load input */
+>  0:	ld1		{v16.4s-v19.4s}, [x1], #64
+> @@ -136,7 +137,8 @@ CPU_LE(	rev32		v19.16b, v19.16b	)
+>  	 * the padding is handled by the C code in that case.
+>  	 */
+>  	cbz		x4, 3f
+> -	ldr		x4, [x0, #:lo12:sha256_ce_offsetof_count]
+> +	ldr_l		w4, sha256_ce_offsetof_count, x4
+> +	ldr		x4, [x0, x4]
+>  	movi		v17.2d, #0
+>  	mov		x8, #0x80000000
+>  	movi		v18.2d, #0
+> --- a/arch/arm64/crypto/sha2-ce-glue.c
+> +++ b/arch/arm64/crypto/sha2-ce-glue.c
+> @@ -17,9 +17,6 @@
+>  #include <linux/crypto.h>
+>  #include <linux/module.h>
+>  
+> -#define ASM_EXPORT(sym, val) \
+> -	asm(".globl " #sym "; .set " #sym ", %0" :: "I"(val));
+> -
+>  MODULE_DESCRIPTION("SHA-224/SHA-256 secure hash using ARMv8 Crypto Extensions");
+>  MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
+>  MODULE_LICENSE("GPL v2");
+> @@ -32,6 +29,11 @@ struct sha256_ce_state {
+>  asmlinkage void sha2_ce_transform(struct sha256_ce_state *sst, u8 const *src,
+>  				  int blocks);
+>  
+> +const u32 sha256_ce_offsetof_count = offsetof(struct sha256_ce_state,
+> +					      sst.count);
+> +const u32 sha256_ce_offsetof_finalize = offsetof(struct sha256_ce_state,
+> +						 finalize);
+> +
+>  static int sha256_ce_update(struct shash_desc *desc, const u8 *data,
+>  			    unsigned int len)
+>  {
+> @@ -52,11 +54,6 @@ static int sha256_ce_finup(struct shash_
+>  	struct sha256_ce_state *sctx = shash_desc_ctx(desc);
+>  	bool finalize = !sctx->sst.count && !(len % SHA256_BLOCK_SIZE);
+>  
+> -	ASM_EXPORT(sha256_ce_offsetof_count,
+> -		   offsetof(struct sha256_ce_state, sst.count));
+> -	ASM_EXPORT(sha256_ce_offsetof_finalize,
+> -		   offsetof(struct sha256_ce_state, finalize));
+> -
+>  	/*
+>  	 * Allow the asm code to perform the finalization if there is no
+>  	 * partial data and the input is a round multiple of the block size.
+> 
+> 
