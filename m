@@ -2,238 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60E22C0ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D85032C0BA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730740AbgKWMaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
+        id S1730753AbgKWN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730715AbgKWMaS (ORCPT
+        with ESMTP id S1726846AbgKWMai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:18 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2E6C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:30:18 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id o144so15766824ybg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:30:18 -0800 (PST)
+        Mon, 23 Nov 2020 07:30:38 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDF6C0613CF;
+        Mon, 23 Nov 2020 04:30:38 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id k3so1813463qvz.4;
+        Mon, 23 Nov 2020 04:30:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RktsD0CPRruiXqUdBpuftqUscZZRDieT6qGFGubMkAw=;
-        b=wyZIPxLr8uXMI/LvXgjy8a7p4+YR2Mss//CR8/zKtcZe2HwB7CyQuXYi4KSuFYxxXB
-         nzyMKCj+pGKf6v+tHMiTtCupLxq5NF19Kq73prgdRGTZmhBYix+FZzBaK7If1Lsq6cgN
-         1cyLnOIcZfSnUkOid/FpW7LsxxviClYNY1SEUyn3bnSEz5njKszaUAnLM9Wquaiaf4nj
-         wTw6OxVte65U1FbYoVt9zNjWIz5LgZEN6fl8foVO6VUnWCoO/lnR+s+Rj5eB7oWR3YlQ
-         4s1VPpFXLaxebrkwJP932K/5opC+Np7+pq+lYR9uL2ViDPSF7A1PUAibj9rAlAAJa//O
-         1gxQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OHoUqTFWWE+Wvyk/7Fm8SlSjmG5RijlPgr0GGsxt+Sg=;
+        b=sytGcyw1eZnl0TbXkzQuBT5tqfRXi2j1Zogk0VHDe6xvZ3P0+mal89v+FjPjC1i2LQ
+         eykf2AOKhm5qUbHr8xh/oG3XhhAm9XQj7hiUvkmHj7w2FfFKkEHie2CZpWhtXH7Olxd8
+         3geSXljAn9pzKiKWvsH8lBraoLpz1VN//ZTl0DmAmzpYckIFAd5j1BWLEXGelIMSadcy
+         EfrhBLCY19YMRpjzYnhfziop/gaCwmxoEgb61h0oTS9z8LgYUO6+XRHuMAvOkE2lqLn8
+         U6U4rcUO+Ry7W+BscgHLa26jhZUllxvIUEbsEPOnLWJv6fX0igETyuhkyA2xrOEwNAMm
+         c5qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RktsD0CPRruiXqUdBpuftqUscZZRDieT6qGFGubMkAw=;
-        b=n0QbAuBh3ezMF3motIhoG0ybbVWEZbC9IAH1VwquOvhP9xrmYU0FzvczanpomCPwmI
-         ThzXEVgIFl7qf+mBEK/3hoU6Xg9TFjN5LTyxX3LGBJSQcWdu47z6y2P1UdEHvu9VnR1e
-         Hl81F8RCiJ9EuhKd5p0O/i5TBxUDl18BsT7WqXE01LERVnOGC9/wBubRzgFul2T4INbG
-         a5U6fSPqNEIkU3HkFBe5I8FbVW/ah/zyjm+IzXkTAn52CVHD4b4nJGSL3iSUrTh9/uDr
-         lJI92l2FJfVqPSejAlNLqu+VM/EQ4WX6bAQZNgFG7Upyu1yo5OxRa3L2IkYipJnDtn4H
-         CGSQ==
-X-Gm-Message-State: AOAM532e8rGmTTf4sPfDl2PZOY7IoCcG/zhO5OJ4pZ6c+OYeWDx9pq1t
-        0r/7uGYhSakIS3iYoysaz5SKWf+bRnT7HuTxVUfIfw==
-X-Google-Smtp-Source: ABdhPJxGV9ajyo7weUN6KmvtjtrVucPBvdCmyNlmd5p78yIQGCidKGKBv1+/2+wgFVHWzoYz/i9TmcvXmL64dT5sXkU=
-X-Received: by 2002:a25:26d3:: with SMTP id m202mr34277382ybm.504.1606134617766;
- Mon, 23 Nov 2020 04:30:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OHoUqTFWWE+Wvyk/7Fm8SlSjmG5RijlPgr0GGsxt+Sg=;
+        b=dYUNAFVNrO+L1mSo/UviE42DBfe4inQCzVKgbT2Psn045ilMyLuvSsxSDrDjFHoTZw
+         FSP1gvmILoaUJwmI5ZxhVQyTb5HDjoy7HUz7Yj41Cm1+P33LkmQM0D0qGzQtq8nA1gBe
+         +3EsHXYtxPq5vcrIcPCX0zzw5z5vF+NnC9/HbmbKGKQWjwNO20BR1KW94jtSQd8Nqczz
+         Q0BzbpfT5P2e6tjnuDRlJneaNFKeaB9NdG1i/JYXpDCgaLAlYV4oDWKcnCfRZPGK7MSf
+         mk98NqDRqFC0aGCtz6wq2TluFxKupuiB5mQmFOOcimnp3loHV/tWMpfHiCNcGrG9JTqs
+         TQcQ==
+X-Gm-Message-State: AOAM530UcoF75+4s1ZdcxcDgI/QxXgdemTUwN8SwRTdzjKQYqg4H/XHh
+        z2FGBwQxhOW3dmWi2tGcFgU=
+X-Google-Smtp-Source: ABdhPJxImrSVZi/1EIy3edDOInFPq3eMKoEzlTqNhC6F3EZnAcIw057TQTcWqIal0rgxcMvSSuKm0Q==
+X-Received: by 2002:a05:6214:20e4:: with SMTP id 4mr29601182qvk.37.1606134637593;
+        Mon, 23 Nov 2020 04:30:37 -0800 (PST)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id h142sm9320133qke.104.2020.11.23.04.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 04:30:36 -0800 (PST)
+Date:   Mon, 23 Nov 2020 07:30:34 -0500
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     Nicolas.Ferre@microchip.com, kamel.bouhara@bootlin.com,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joe@perches.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
+ maintainer
+Message-ID: <X7uragBU7qwcs62L@shinobu>
+References: <20201121185824.451477-1-vilhelm.gray@gmail.com>
+ <df14f643-e80e-6ae6-dcef-90adefe6d733@microchip.com>
 MIME-Version: 1.0
-References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
- <20201114051715.GA23685@codeaurora.org> <CAJ9a7ViiZHi92Wr1uurb0B_nE4SmeHmbMChutaS++=FxcC8DTw@mail.gmail.com>
- <aa859d04-8ccf-cb4b-9ae4-524ab7c8451f@arm.com>
-In-Reply-To: <aa859d04-8ccf-cb4b-9ae4-524ab7c8451f@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Mon, 23 Nov 2020 12:30:07 +0000
-Message-ID: <CAJ9a7VhEmBWtasznUSwKm=pEtB2z-4k27X-hs9kZU8kz0bREjg@mail.gmail.com>
-Subject: Re: [RFC 00/11] arm64: coresight: Enable ETE and TRBE
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Tingwei Zhang <tingweiz@codeaurora.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bKBXnqDtWJCMEsOZ"
+Content-Disposition: inline
+In-Reply-To: <df14f643-e80e-6ae6-dcef-90adefe6d733@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
 
-On Mon, 23 Nov 2020 at 03:40, Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
-> Hello Mike,
->
-> On 11/16/20 8:30 PM, Mike Leach wrote:
-> > Hi Anshuman,
-> >
-> > I've not looked in detail at this set yet, but having skimmed through
-> > it  I do have an initial question about the handling of wrapped data
-> > buffers.
-> >
-> > With the ETR/ETB we found an issue with the way perf concatenated data
-> > captured from the hardware buffer into a single contiguous data
-> > block. The issue occurs when a wrapped buffer appears after another
-> > buffer in the data file. In a typical session perf would stop trace
-> > and copy the hardware buffer multiple times into the auxtrace buffer.
->
-> The hardware buffer and perf aux trace buffer are the same for TRBE and
-> hence there is no actual copy involved. Trace data gets pushed into the
-> user space via perf_aux_output_end() either via etm_event_stop() or via
-> the IRQ handler i.e arm_trbe_irq_handler(). Data transfer to user space
-> happens via updates to perf aux buffer indices i.e head, tail, wake up.
-> But logically, they will appear as a stream of records to the user space
-> while parsing perf.data file.
->
+--bKBXnqDtWJCMEsOZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Understood - I suspected this would use direct write to the aux trace
-buffer, but the principle is the same. TRBE determines the location of
-data in the buffer so even without a copy, it is possible to get
-multiple TRBE "buffers" in the auxbuffer as the TRBE is stopped and
-restarted. The later copy to userspace is independent of this.
+On Mon, Nov 23, 2020 at 09:50:34AM +0000, Nicolas.Ferre@microchip.com wrote:
+> On 21/11/2020 at 19:58, William Breathitt Gray wrote:
+> > Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > ---
+> >   Changes in v3:
+> >    - Reorder entries to match preferred MAINTAINERS ordering
+> >=20
+> >   MAINTAINERS | 7 +++++++
+> >   1 file changed, 7 insertions(+)
+> >=20
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 913b5eb64e44..1ee380dfe189 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -2104,6 +2104,13 @@ S:       Supported
+> >   F:     arch/arm64/boot/dts/microchip/
+> >   N:     sparx5
+> >=20
+> > +ARM/Microchip Timer Counter Block (TCB) Capture Driver
+>=20
+> Nit: we don't use the ARM/Microchip string for drivers which could be=20
+> multi-architecture. Only AT91 and Sparx5 families have these entries.
+>=20
+> I'm not holding the patch for this:
+> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-> >
-> > e.g.
-> >
-> > For ETR/ETB we have a fixed length hardware data buffer - and no way
-> > of detecting buffer wraps using interrupts as the tracing is in
-> > progress.
->
-> TRBE has an interrupt. Hence there will be an opportunity to insert any
-> additional packets if required to demarcate pre and post IRQ trace data
-> streams.
->
-> >
-> > If the buffer is not full at the point that perf transfers it then the
-> > data will look like this:-
-> > 1) <async><synced trace data>
-> > easy to decode, we can see the async at the start of the data - which
-> > would be the async issued at the start of trace.
->
-> Just curious, what makes the tracer to generate the <async> trace packet.
-> Is there an explicit instruction or that is how the tracer starts when
-> enabled ?
+Jonathan,
 
-ETM / ETE will generate an async at the start of trace, and then
-periodically afterwards.
+If you would like me to submit a v4 with the "ARM/" string removed, just
+let me know. Otherwise, feel free to make an adjustment if you want when
+you merge this.
 
->
-> >
-> > If the buffer wraps we see this:-
-> >
-> > 2) <unsynced trace data><async><synced trace data>
-> >
-> > Again no real issue, the decoder will skip to the async and trace from
-> > there - we lose the unsynced data.
->
-> Could you please elaborate more on the difference between sync and async
-> trace data ?
->
+Thanks,
 
-The decoder will start reading trace from the start of the buffer.
-Unsynced trace is trace data that appears before the first async
-packet. We cannot decode this as we do not know where the packet
-boundaries are.
-Synced trace is any data after the first async packet - the async
-enables us to determine where the packet boundaries are so we can now
-determine the packets and decode the trace.
+William Breathitt Gray
 
-For an unwrapped buffer, we always see the first async that the ETE
-generated when the trace generation was started. In a wrapped buffer
-we search till we find an async generated as part of the periodic
-async packets.
+> > +M:     Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > +L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscri=
+bers)
+> > +L:     linux-iio@vger.kernel.org
+> > +S:     Maintained
+> > +F:     drivers/counter/microchip-tcb-capture.c
+> > +
+> >   ARM/MIOA701 MACHINE SUPPORT
+> >   M:     Robert Jarzmik <robert.jarzmik@free.fr>
+> >   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscr=
+ibers)
+> > --
+> > 2.29.2
+> >=20
+> >=20
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> >=20
+>=20
+>=20
+> --=20
+> Nicolas Ferre
 
-> >
-> > Now the problem occurs when multiple transfers of data occur. We can
-> > see the following appearing as contiguous trace in the auxtrace
-> > buffer:-
-> >
-> > 3) < async><synced trace data><unsynced trace data><async><synced trace data>
->
-> So there is an wrap around event between <synced trace data> and
-> <unsynced trace data> ? Are there any other situations where this
-> might happen ?
+--bKBXnqDtWJCMEsOZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Not that I am aware of.
+-----BEGIN PGP SIGNATURE-----
 
->
-> >
-> > Now the decoder cannot spot the point that the synced data from the
-> > first capture ends, and the unsynced data from the second capture
-> > begins.
->
-> Got it.
->
-> > This means it will continue to decode into the unsynced data - which
-> > will result in incorrect trace / outright errors. To get round this
-> > for ETR/ETB the driver will insert barrier packets into the datafile
-> > if a wrap event is detected.
->
-> But you mentioned there are on IRQs on ETR/ETB. So how the wrap event
-> is even detected ?
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+7q18ACgkQhvpINdm7
+VJJbYhAAjacdtakChubYIw7KbWdBNeTSz8pllrkDAeJ669W2z02064sQR7TSa8Ne
+ToxOztGYN8puIvwzss3NDhUCuFHGa+dhzbPZ5w6g8Sr4yv+REJvAAEfJlPKREJIN
+XZOAGmPbHJUMo+lrf7sTx0XXS2Lsc08PB/a4FAhb90ET2mphBZHfT+piE7sz6KAu
+iP+gjz9Iow/4jciRIIcx2t7KCyk96dZ8aWe1WdhoSmD8lP7L04+BB6//DaMXBd4c
+m706d0lEEJRxa1KhrgmwnsChksCJXVxGb067iE7rN8eE5nxiFxSuD7OB/s5OM/y8
+bdr25gXhfbwT9dRE5rq6sNbM595l3MznqIDPADIxpCgyqYJ8nb0vKmWlaoZ2wxYN
+2ExKXkJRjX88WozPh/MGe7SdaRDUYYeg9T4otjytTS8Fqs5VOwNda/o3dZqsF5YL
+jq3pQaCRgnAJ0wTs5QbPZugtzwK8+nUzIq4WPKWewAmHvBi18l4UWnEalPrKKydQ
+Kn5vdKhhqhGadex6RlGUEq9upth+mSCPBNjVql8rYGQzwA0QTRjCHZojd/pF4SWf
+/Ezp21s+Bc53DmZnWPzKlDl+DCLD1Prr/GxMznUL2pbpItW0Ew3A6f5bbexijsb/
+Dz+cRYFMjOQr/1lTE0WHioOSfKPW2tDW6AzROIIGjB5+s5ZveMU=
+=w8oh
+-----END PGP SIGNATURE-----
 
-A bit in the status register tells us the buffer is full - i.e. the
-write pointer has wrapped around to the location it started at.
-We cannot tell how far, or if multiple wraps have occurred, just that
-the event has occurred.
-
->
-> >
-> > 4) <async><synced trace data><barrier><unsynced trace
-> > data><async><synced trace data>
-> >
-> > This <barrier> has the effect of resetting the decoder into the
-> > unsynced state so that the invalid trace is not decoded. This is a
-> > workaround we have to do to handle the limitations of the ETR / ETB
-> > trace hardware.
-> Got it.
->
-> >
-> > For TRBE we do have interrupts, so it should be possible to prevent
-> > the buffer wrapping in most cases - but I did see in the code that
-> > there are handlers for the TRBE buffer wrap management event. Are
-> > there other factors in play that will prevent data pattern 3) from
-> > appearing in the auxtrace buffer ?
->
-> On TRBE, the buffer wrapping cannot happen without generating an IRQ. I
-> would assume that ETE will then start again with an <async> data packet
-> first when the handler returns.
-
-This would only occur if the ETE was stopped and flushed prior to the
-wrap event. Does this happen? I am assuming that the sink is
-independent from the ETE, as ETM are from ETR.
-
-> Otherwise we might also have to insert
-> a similar barrier packet for the user space tool to reset. As trace data
-> should not get lost during an wrap event,
-
-My understanding is that if a wrap has even occurred, then data is already lost.
-
-
-> ETE should complete the packet
-> after the handler returns, hence aux buffer should still have logically
-> contiguous stream of <synced trace data> to decode. I am not sure right
-> now, but will look into this.
->
-
-So you are relying on backpressure to stop ETE emitting packets? This
-could result in trace being lost due to overflow if the IRQ is not
-handled sufficiently quickly/.
-
-Regards
-
-Mike
-
-> - Anshuman
-
-
---
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+--bKBXnqDtWJCMEsOZ--
