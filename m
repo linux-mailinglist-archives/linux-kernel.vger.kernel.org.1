@@ -2,151 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAFE2C1325
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFB32C1310
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730126AbgKWSbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:31:02 -0500
-Received: from smtp.uniroma2.it ([160.80.6.22]:41919 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728717AbgKWSa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:30:58 -0500
-Received: from localhost.localdomain ([160.80.103.126])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0ANITqgn016939
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 23 Nov 2020 19:29:55 +0100
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: [iproute2-next v1 1/1] seg6: add support for vrftable attribute in End.DT4/DT6 behaviors
-Date:   Mon, 23 Nov 2020 19:28:57 +0100
-Message-Id: <20201123182857.4640-10-andrea.mayer@uniroma2.it>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201123182857.4640-1-andrea.mayer@uniroma2.it>
-References: <20201123182857.4640-1-andrea.mayer@uniroma2.it>
+        id S1729552AbgKWS3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728809AbgKWS3V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:29:21 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEACFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:29:21 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t21so15046891pgl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:29:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LLL5VK65mropUj8eVChZS1FbZOADJKAQxn0fusexOMQ=;
+        b=E8EPKJbkoUBbzxmoxgjFiQDVuHPS66jo9mhAmbeF+pFORPGIjOhZhSTc47rfpx0BOb
+         lFz5rG5hVDN/0HlSEYnEwl0E8my4zcJNGdnReE02YgE7F44rSSK1IA8TnVbwioo4jhpR
+         /gwz4/9uQmYPEU1bYf3lUQ9myfmne+0c3HhsySPc1EQTdtxeFIW37MaXWfBm2MX6xmCR
+         rPqDrazVGn7dfJ/i1MU1LHesntCd5ldm9jGNQAbiPAFUdndrB0v8sxPlSA+9K9j56fy5
+         Nuhm6YBhVFtOyjj9xtuba7WgDOJjaSdW/+C20+47qQ8vEXov5GtQ5lnqzuJo0lSIZiIm
+         o3Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LLL5VK65mropUj8eVChZS1FbZOADJKAQxn0fusexOMQ=;
+        b=eMy4alG2Zdr4BcAWMIwM+zTEsFOrusWWAFdHeGyg729ml1NSSLgJrLUC0b9wSNHskW
+         R4RnKLTlsMYo3vCySOGTXBd7IeMWKSsd4v+A52q2thIocThSYZVlUaAm7wZuyM5OEiXK
+         h0yU0u+gM5UWjvbxsToj7/W0Qw1I9JI5SDZInQOQ3Cwv8mTKkcZ8oSjcQe2Q8orNa3AE
+         5e9ZSO8LlCJOI/LcV7N9fKHwQXMP9suU4XvjNJRkpWdVgIatXwZow1KOTnmwFT3qXPUp
+         IGEsgd6QrxXASanIwXExG+WoYP1W12/Ix5ndbWQSkCeY/mjg8qihAl2mpfcAhzU2zqyW
+         +1pg==
+X-Gm-Message-State: AOAM533Mi9o/Wb6kg+/cq1wl5x/w67jmzciHzsI+slndWuKgS7Bo48Ao
+        QXxXf81JH9CmqdQLWd09T0B9tmgbsckurRByuzt0AA==
+X-Google-Smtp-Source: ABdhPJy6gYzD7W2pmsK/fMkiWlS3Yn8XMBEuepH9rHqFD2NmMngxbrkwdDFj//KzCjmXr3fUAFfoPZbyWFaJ8QWOT5U=
+X-Received: by 2002:a62:864a:0:b029:197:ad58:4184 with SMTP id
+ x71-20020a62864a0000b0290197ad584184mr565914pfd.55.1606156161130; Mon, 23 Nov
+ 2020 10:29:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+References: <20201120165609.GE619708@rowland.harvard.edu> <000000000000c49c8b05b48cb833@google.com>
+ <20201120170055.GF619708@rowland.harvard.edu>
+In-Reply-To: <20201120170055.GF619708@rowland.harvard.edu>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 23 Nov 2020 19:29:10 +0100
+Message-ID: <CAAeHK+z0Lb_5zw-fQF6AXLzL=+P6kizOJ7yu=t4SP_5UPK66kg@mail.gmail.com>
+Subject: Re: Re: memory leak in hub_event
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        syzbot <syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: multipart/mixed; boundary="00000000000071161905b4ca5f5a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-introduces the "vrftable" attribute for supporting the End.DT4 and
-End.DT6 behaviors in iproute2.
-The "vrftable" attribute indicates the routing table associated with
-the VRF device used by SRv6 End.DT4/DT6 for routing IPv4/IPv6 packets.
+--00000000000071161905b4ca5f5a
+Content-Type: text/plain; charset="UTF-8"
 
-The End.DT4/DT6 is used to implement IPv4/IPv6 L3 VPNs based on Segment
-Routing over IPv6 networks in multi-tenants environments.
-It decapsulates the received packets and it performs the IPv4/IPv6 routing
-lookup in the routing table of the tenant.
+On Fri, Nov 20, 2020 at 6:00 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Fri, Nov 20, 2020 at 08:56:11AM -0800, syzbot wrote:
+> > > On Fri, Nov 20, 2020 at 07:15:20AM -0800, syzbot wrote:
+> > >> Hello,
+> > >>
+> > >> syzbot found the following issue on:
+> > >>
+> > >> HEAD commit:    4d02da97 Merge tag 'net-5.10-rc5' of git://git.kernel.org/..
+> > >> git tree:       upstream
+> > >> console output: https://syzkaller.appspot.com/x/log.txt?x=13a7d2b6500000
+> > >> kernel config:  https://syzkaller.appspot.com/x/.config?x=c5353ac514ca5a43
+> > >> dashboard link: https://syzkaller.appspot.com/bug?extid=44e64397bd81d5e84cba
+> > >> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14925089500000
+> > >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16810051500000
+>
+> > > #syz test: upstream 4d02da97
+> >
+> > "upstream" does not look like a valid git repo address.
+>
+> Okay, Andrey.  If "upstream" is not accepted as a valid git repo
+> address, why does syzkaller list it on the "git tree:" line?  It seems
+> to me that syzkaller should be willing to accept as input anything it
+> produces as output.
+>
+> And what repo should I put here?
 
-The End.DT4/DT6 leverages a VRF device in order to force the routing
-lookup into the associated routing table using the "vrftable" attribute.
+Hi Alan,
 
-Some examples:
- $ ip -6 route add 2001:db8::1 encap seg6local action End.DT4 vrftable 100 dev eth0
- $ ip -6 route add 2001:db8::2 encap seg6local action End.DT6 vrftable 200 dev eth0
+Yeah, this is confusing, sorry. I've filed
+https://github.com/google/syzkaller/issues/2265 for this.
 
-Standard Output:
- $ ip -6 route show 2001:db8::1
- 2001:db8::1  encap seg6local action End.DT4 vrftable 100 dev eth0 metric 1024 pref medium
+Here "upstream" stands for the mainline tree, so something like this
+should work:
 
-JSON Output:
-$ ip -6 -j -p route show 2001:db8::2
-[ {
-        "dst": "2001:db8::2",
-        "encap": "seg6local",
-        "action": "End.DT6",
-        "vrftable": 200,
-        "dev": "eth0",
-        "metric": 1024,
-        "flags": [ ],
-        "pref": "medium"
-} ]
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+4d02da97
 
-Signed-off-by: Paolo Lungaroni <paolo.lungaroni@cnit.it>
-Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
----
- include/uapi/linux/seg6_local.h |  1 +
- ip/iproute_lwtunnel.c           | 19 ++++++++++++++++---
- 2 files changed, 17 insertions(+), 3 deletions(-)
+Thanks!
 
-diff --git a/include/uapi/linux/seg6_local.h b/include/uapi/linux/seg6_local.h
-index 5312de80..bb5c8ddf 100644
---- a/include/uapi/linux/seg6_local.h
-+++ b/include/uapi/linux/seg6_local.h
-@@ -26,6 +26,7 @@ enum {
- 	SEG6_LOCAL_IIF,
- 	SEG6_LOCAL_OIF,
- 	SEG6_LOCAL_BPF,
-+	SEG6_LOCAL_VRFTABLE,
- 	__SEG6_LOCAL_MAX,
- };
- #define SEG6_LOCAL_MAX (__SEG6_LOCAL_MAX - 1)
-diff --git a/ip/iproute_lwtunnel.c b/ip/iproute_lwtunnel.c
-index 9b4f0885..1ab95cd2 100644
---- a/ip/iproute_lwtunnel.c
-+++ b/ip/iproute_lwtunnel.c
-@@ -294,6 +294,11 @@ static void print_encap_seg6local(FILE *fp, struct rtattr *encap)
- 			     rtnl_rttable_n2a(rta_getattr_u32(tb[SEG6_LOCAL_TABLE]),
- 			     b1, sizeof(b1)));
- 
-+	if (tb[SEG6_LOCAL_VRFTABLE])
-+		print_string(PRINT_ANY, "vrftable", "vrftable %s ",
-+			     rtnl_rttable_n2a(rta_getattr_u32(tb[SEG6_LOCAL_VRFTABLE]),
-+			     b1, sizeof(b1)));
-+
- 	if (tb[SEG6_LOCAL_NH4]) {
- 		print_string(PRINT_ANY, "nh4",
- 			     "nh4 %s ", rt_addr_n2a_rta(AF_INET, tb[SEG6_LOCAL_NH4]));
-@@ -860,9 +865,10 @@ static int lwt_parse_bpf(struct rtattr *rta, size_t len,
- static int parse_encap_seg6local(struct rtattr *rta, size_t len, int *argcp,
- 				 char ***argvp)
- {
--	int segs_ok = 0, hmac_ok = 0, table_ok = 0, nh4_ok = 0, nh6_ok = 0;
--	int iif_ok = 0, oif_ok = 0, action_ok = 0, srh_ok = 0, bpf_ok = 0;
--	__u32 action = 0, table, iif, oif;
-+	int segs_ok = 0, hmac_ok = 0, table_ok = 0, vrftable_ok = 0;
-+	int nh4_ok = 0, nh6_ok = 0, iif_ok = 0, oif_ok = 0;
-+	__u32 action = 0, table, vrftable, iif, oif;
-+	int action_ok = 0, srh_ok = 0, bpf_ok = 0;
- 	struct ipv6_sr_hdr *srh;
- 	char **argv = *argvp;
- 	int argc = *argcp;
-@@ -887,6 +893,13 @@ static int parse_encap_seg6local(struct rtattr *rta, size_t len, int *argcp,
- 				duparg2("table", *argv);
- 			rtnl_rttable_a2n(&table, *argv);
- 			ret = rta_addattr32(rta, len, SEG6_LOCAL_TABLE, table);
-+		} else if (strcmp(*argv, "vrftable") == 0) {
-+			NEXT_ARG();
-+			if (vrftable_ok++)
-+				duparg2("vrftable", *argv);
-+			rtnl_rttable_a2n(&vrftable, *argv);
-+			ret = rta_addattr32(rta, len, SEG6_LOCAL_VRFTABLE,
-+					    vrftable);
- 		} else if (strcmp(*argv, "nh4") == 0) {
- 			NEXT_ARG();
- 			if (nh4_ok++)
--- 
-2.20.1
+--00000000000071161905b4ca5f5a
+Content-Type: application/octet-stream; name="gspca.patch"
+Content-Disposition: attachment; filename="gspca.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_khuvvg0l0>
+X-Attachment-Id: f_khuvvg0l0
 
+SW5kZXg6IHVzYi1kZXZlbC9kcml2ZXJzL21lZGlhL3VzYi9nc3BjYS9nc3BjYS5jCj09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0KLS0tIHVzYi1kZXZlbC5vcmlnL2RyaXZlcnMvbWVkaWEvdXNiL2dzcGNhL2dzcGNhLmMKKysr
+IHVzYi1kZXZlbC9kcml2ZXJzL21lZGlhL3VzYi9nc3BjYS9nc3BjYS5jCkBAIC0xNDg5LDYgKzE0
+ODksOCBAQCBpbnQgZ3NwY2FfZGV2X3Byb2JlMihzdHJ1Y3QgdXNiX2ludGVyZmFjCiAJfQogCiAJ
+Z3NwY2FfZGV2LT52NGwyX2Rldi5yZWxlYXNlID0gZ3NwY2FfcmVsZWFzZTsKKwlyZXQgPSAtRUlP
+OworCWdvdG8gb3V0OwogCXJldCA9IHY0bDJfZGV2aWNlX3JlZ2lzdGVyKCZpbnRmLT5kZXYsICZn
+c3BjYV9kZXYtPnY0bDJfZGV2KTsKIAlpZiAocmV0KQogCQlnb3RvIG91dDsKCg==
+--00000000000071161905b4ca5f5a--
