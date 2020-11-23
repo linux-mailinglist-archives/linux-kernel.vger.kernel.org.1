@@ -2,70 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709862C1903
+	by mail.lfdr.de (Postfix) with ESMTP id 03D7B2C1902
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387968AbgKWWzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:55:24 -0500
-Received: from mga11.intel.com ([192.55.52.93]:14836 "EHLO mga11.intel.com"
+        id S2387933AbgKWWzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:55:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387934AbgKWWzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:55:14 -0500
-IronPort-SDR: qj3gTLg1WW1DGjHUrhcpsT6qQm2ZuYe9G2QWQOFFzgOqFfkpX9TJQLMJLp1NYptTUxwHUu240m
- lRz6M5G8TE6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="168348219"
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="168348219"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 14:55:10 -0800
-IronPort-SDR: sINrrY2GOCALc3Zhd6FPs0Dnm1638t4PbO26AGV6AsajeMHLhZvMNuThVukLQ4FkN8e4UIajq9
- KW8C5UtRCbrg==
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="546591122"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.57.186])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 14:55:03 -0800
-Date:   Mon, 23 Nov 2020 14:55:02 -0800
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Huazhong Tan <tanhuazhong@huawei.com>
-Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
-        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>, <kuba@kernel.org>
-Subject: Re: [PATCH V4 net-next 0/4] net: hns3: updates for -next
-Message-ID: <20201123145502.00001e2a@intel.com>
-In-Reply-To: <1605514854-11205-1-git-send-email-tanhuazhong@huawei.com>
-References: <1605514854-11205-1-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S2387931AbgKWWyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:54:53 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED069206D8;
+        Mon, 23 Nov 2020 22:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606172093;
+        bh=uARlE3HGl1j9/UX0OJKYVTZCltQTUxKUiwJyZRg1SIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aZq2EBpPIX0eaFLbDRguDSSsAkAJxuRKD3mIuP9JbWVz5H/s5cA+wymagAi+vNYaf
+         89SvwLKs0LJnsJwtEOlEZmDfr2aoYslWDUg3Nm/asGswyrdwK0VMPzBcZ7VW7wrwn2
+         2+wWuM/J6t3kZQQi2fuTi6TF0oMPq575ogXK3fFg=
+Date:   Mon, 23 Nov 2020 16:55:07 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 061/141] tee: Fix fall-through warnings for Clang
+Message-ID: <20201123225507.GR21644@embeddedor>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <c505109fe0c02f648e16caa83d8a9773afd696b1.1605896059.git.gustavoars@kernel.org>
+ <CAHUa44G1B8_CSahTJ1uOUMLcDfpVKHUaoN+u87BywkVwyhjnRw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHUa44G1B8_CSahTJ1uOUMLcDfpVKHUaoN+u87BywkVwyhjnRw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huazhong Tan wrote:
-
-> There are several updates relating to the interrupt coalesce for
-> the HNS3 ethernet driver.
+On Sun, Nov 22, 2020 at 10:26:09AM +0100, Jens Wiklander wrote:
+> On Fri, Nov 20, 2020 at 7:33 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> >
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> > by explicitly adding a break statement instead of letting the code fall
+> > through to the next case.
+> >
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >  drivers/tee/tee_core.c | 1 +
+> >  1 file changed, 1 insertion(+)
 > 
-> #1 adds support for QL(quantity limiting, interrupt coalesce
->    based on the frame quantity).
-> #2 queries the maximum value of GL from the firmware instead of
->    a fixed value in code.
-> #3 adds support for 1us unit GL(gap limiting, interrupt coalesce
->    based on the gap time).
-> #4 renames gl_adapt_enable in struct hns3_enet_coalesce to fit
->    its new usage.
-> 
-> change log:
-> V4 - remove #5~#10 from this series, which needs more discussion.
-> V3 - fix a typo error in #1 reported by Jakub Kicinski.
->      rewrite #9 commit log.
->      remove #11 from this series.
-> V2 - reorder #2 & #3 to fix compiler error.
->      fix some checkpatch warnings in #10 & #11.
+> Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
 
-
-For the series:
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Thanks, Jens.
+--
+Gustavo
