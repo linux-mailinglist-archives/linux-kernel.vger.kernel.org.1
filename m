@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9E52C058B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AE52C058D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729599AbgKWMXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:23:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60272 "EHLO mail.kernel.org"
+        id S1729609AbgKWMXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:23:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729572AbgKWMXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:23:18 -0500
+        id S1729601AbgKWMXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:23:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24BE620857;
-        Mon, 23 Nov 2020 12:23:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC7CC2076E;
+        Mon, 23 Nov 2020 12:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134197;
-        bh=6G96lTmXj/W6vNWEBzMKYkq9VDMFPXQwqddNz/jj3mU=;
+        s=korg; t=1606134200;
+        bh=93VrMVYKxpRP0ORf3ecOd7y7hC7tY7W+PyTw58cxmMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vbn7P8HKspjigULTPJtQoVdYHNvwsD2kCUwsIKcwomIEZKVLLpNkUwFR7lVWIXF//
-         nNkCowhjN6nazuYFsss8efcTgNvoCA+78lHmctHhUTQnTfHzKV/o5onkzpv50Ao/YL
-         eTq0Mc9CNLbJDS7R4VABYj+Si+gPxHAvqeyl3+E0=
+        b=hyr4r+Nd42BISqzk7GwXv+u76nGbKohV9U8OmDC+IF/jZ5cpElQOSMRgEB+V1+ej0
+         J7wqw63YbahLu6o2KrRzVyQnAqHih0PoH9wvJLQJgO/LS3Bb2O1CVjAVjJ/KX3+2ad
+         AjKaYAMay8BEG0mSyQ+jr80k/AG3gHUXMdHcz33w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Nishanth Menon <nm@ti.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 23/38] MIPS: Alchemy: Fix memleak in alchemy_clk_setup_cpu
-Date:   Mon, 23 Nov 2020 13:22:09 +0100
-Message-Id: <20201123121805.420534567@linuxfoundation.org>
+Subject: [PATCH 4.4 24/38] regulator: ti-abb: Fix array out of bound read access on the first transition
+Date:   Mon, 23 Nov 2020 13:22:10 +0100
+Message-Id: <20201123121805.463420839@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
 References: <20201123121804.306030358@linuxfoundation.org>
@@ -44,49 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Nishanth Menon <nm@ti.com>
 
-[ Upstream commit ac3b57adf87ad9bac7e33ca26bbbb13fae1ed62b ]
+[ Upstream commit 2ba546ebe0ce2af47833d8912ced9b4a579f13cb ]
 
-If the clk_register fails, we should free h before
-function returns to prevent memleak.
+At the start of driver initialization, we do not know what bias
+setting the bootloader has configured the system for and we only know
+for certain the very first time we do a transition.
 
-Fixes: 474402291a0ad ("MIPS: Alchemy: clock framework integration of onchip clocks")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+However, since the initial value of the comparison index is -EINVAL,
+this negative value results in an array out of bound access on the
+very first transition.
+
+Since we don't know what the setting is, we just set the bias
+configuration as there is nothing to compare against. This prevents
+the array out of bound access.
+
+NOTE: Even though we could use a more relaxed check of "< 0" the only
+valid values(ignoring cosmic ray induced bitflips) are -EINVAL, 0+.
+
+Fixes: 40b1936efebd ("regulator: Introduce TI Adaptive Body Bias(ABB) on-chip LDO driver")
+Link: https://lore.kernel.org/linux-mm/CA+G9fYuk4imvhyCN7D7T6PMDH6oNp6HDCRiTUKMQ6QXXjBa4ag@mail.gmail.com/
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20201118145009.10492-1-nm@ti.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/alchemy/common/clock.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/regulator/ti-abb-regulator.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
-index bd34f4093cd9f..7b0dec333c964 100644
---- a/arch/mips/alchemy/common/clock.c
-+++ b/arch/mips/alchemy/common/clock.c
-@@ -151,6 +151,7 @@ static struct clk __init *alchemy_clk_setup_cpu(const char *parent_name,
- {
- 	struct clk_init_data id;
- 	struct clk_hw *h;
-+	struct clk *clk;
+diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
+index 6d17357b3a248..5f5f63eb8c762 100644
+--- a/drivers/regulator/ti-abb-regulator.c
++++ b/drivers/regulator/ti-abb-regulator.c
+@@ -342,8 +342,17 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+ 		return ret;
+ 	}
  
- 	h = kzalloc(sizeof(*h), GFP_KERNEL);
- 	if (!h)
-@@ -163,7 +164,13 @@ static struct clk __init *alchemy_clk_setup_cpu(const char *parent_name,
- 	id.ops = &alchemy_clkops_cpu;
- 	h->init = &id;
- 
--	return clk_register(NULL, h);
-+	clk = clk_register(NULL, h);
-+	if (IS_ERR(clk)) {
-+		pr_err("failed to register clock\n");
-+		kfree(h);
-+	}
+-	/* If data is exactly the same, then just update index, no change */
+ 	info = &abb->info[sel];
++	/*
++	 * When Linux kernel is starting up, we are'nt sure of the
++	 * Bias configuration that bootloader has configured.
++	 * So, we get to know the actual setting the first time
++	 * we are asked to transition.
++	 */
++	if (abb->current_info_idx == -EINVAL)
++		goto just_set_abb;
 +
-+	return clk;
- }
++	/* If data is exactly the same, then just update index, no change */
+ 	oinfo = &abb->info[abb->current_info_idx];
+ 	if (!memcmp(info, oinfo, sizeof(*info))) {
+ 		dev_dbg(dev, "%s: Same data new idx=%d, old idx=%d\n", __func__,
+@@ -351,6 +360,7 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+ 		goto out;
+ 	}
  
- /* AUXPLLs ************************************************************/
++just_set_abb:
+ 	ret = ti_abb_set_opp(rdev, abb, info);
+ 
+ out:
 -- 
 2.27.0
 
