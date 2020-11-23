@@ -2,138 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71AC2C0B8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B80152C0B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389191AbgKWN0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:26:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56350 "EHLO mail.kernel.org"
+        id S2389061AbgKWN2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:28:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731029AbgKWN0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:26:44 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1731562AbgKWN16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:27:58 -0500
+Received: from gaia (unknown [95.146.230.165])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9466A20782;
-        Mon, 23 Nov 2020 13:26:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606138002;
-        bh=8TTRPK5WiuKGTuOXJWYuxYVpykJ3HWxVl8s8Ni1hCJA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FG5PK1zMGDQR+u6XxfELRrOhw+wAbSN2MTcm+Q9qWyqU23rKZSRFbf9kQpXkHOUlY
-         qkcg4TWeCo5Xqdo9kcZrZkb1CWbhHRJyKmjBZIRK0bX3iIn6eF9Oreinud6z8321Hu
-         VhpSh8SqY3179EJuvgVGnzfiy0QldmtPPj+FjQCc=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1khBrc-00CxET-CA; Mon, 23 Nov 2020 13:26:40 +0000
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D14220782;
+        Mon, 23 Nov 2020 13:27:55 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 13:27:52 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/6] arm64: pgtable: Fix pte_accessible()
+Message-ID: <20201123132752.GE17833@gaia>
+References: <20201120143557.6715-1-will@kernel.org>
+ <20201120143557.6715-2-will@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 13:26:40 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linuxarm@huawei.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-In-Reply-To: <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
-References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
- <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
- <874klmqu2r.fsf@nanos.tec.linutronix.de>
- <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
- <87lfexp6am.fsf@nanos.tec.linutronix.de>
- <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
- <873615oy8a.fsf@nanos.tec.linutronix.de>
- <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
- <87sg91ik9e.wl-maz@kernel.org>
- <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: john.garry@huawei.com, tglx@linutronix.de, gregkh@linuxfoundation.org, rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com, linuxarm@huawei.com, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120143557.6715-2-will@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
-
-On 2020-11-23 12:54, John Garry wrote:
-> Hi Marc,
+On Fri, Nov 20, 2020 at 02:35:52PM +0000, Will Deacon wrote:
+> pte_accessible() is used by ptep_clear_flush() to figure out whether TLB
+> invalidation is necessary when unmapping pages for reclaim. Although our
+> implementation is correct according to the architecture, returning true
+> only for valid, young ptes in the absence of racing page-table
+> modifications, this is in fact flawed due to lazy invalidation of old
+> ptes in ptep_clear_flush_young() where we elide the expensive DSB
+> instruction for completing the TLB invalidation.
 > 
->>>> Right, but if the driver is removed then the interrupts should be
->>>> deallocated, right?
->>>> 
->>> 
->>> When removing the driver we just call free_irq(), which removes the
->>> handler and disables the interrupt.
->>> 
->>> But about the irq_desc, this is created when the mapping is created 
->>> in
->>> irq_create_fwspec_mapping(), and I don't see this being torn down in
->>> the driver removal, so persistent in that regard.
->> 
->> If the irq_descs are created via the platform_get_irq() calls in
->> platform_get_irqs_affinity(), I'd expect some equivalent helper to
->> tear things down as a result, calling irq_dispose_mapping() behind the
->> scenes.
->> 
+> Rather than penalise the aging path, adjust pte_accessible() to return
+> true for any valid pte, even if the access flag is cleared.
 > 
-> So this looks lacking in the kernel AFAICS...
-> 
-> So is there a reason for which irq dispose mapping is not a
-> requirement for drivers when finished with the irq? because of shared
-> interrupts?
+> Cc: <stable@vger.kernel.org>
+> Fixes: 76c714be0e5e ("arm64: pgtable: implement pte_accessible()")
+> Reported-by: Yu Zhao <yuzhao@google.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
 
-For a bunch of reasons: IRQ number used to be created 1:1 with their
-physical counterpart, so there wasn't a need to "get rid" of the
-associated data structures. Also, people expected their drivers
-to be there for the lifetime of the system (believe it or not,
-hotplug devices are pretty new!).
-
-Shared interrupts are just another part of the problem (although we
-should be able to work out whether there is any action attached to
-the descriptor before blowing it away.
-
-> 
->>> So for pci msi I can see that we free the irq_desc in
->>> pci_disable_msi() -> free_msi_irqs() -> msi_domain_free_irqs() ...
->>> 
->>> So what I am missing here?
->> 
->> I'm not sure the paths are strictly equivalent. On the PCI side, we
->> can have something that completely driver agnostic, as it is all
->> architectural. In your case, only the endpoint driver knows about what
->> happens, and needs to free things accordingly.
->> 
->> Finally, there is the issue in your driver that everything is
->> requested using devm_request_irq, which cannot play nicely with an
->> explicit irq_desc teardown. You'll probably need to provide the
->> equivalent devm helpers for your driver to safely be taken down.
->> 
-> 
-> Yeah, so since we use the devm irq request method, we also need a devm
-> dispose release method as we can't dispose the irq mapping in the
-> remove() method, prior to the irq_free() in the later devm release
-> method.
-> 
-> But it looks like there is more to it than that, which I'm worried is
-> far from non-trivial. For example, just calling irq_dispose_mapping()
-> for removal and then plaform_get_irq()->acpi_get_irq() second time
-> fails as it looks like more tidy-up is needed for removal...
-
-Most probably. I could imagine things failing if there is any trace
-of an existing translation in the ITS or in the platform-MSI layer,
-for example, or if the interrupt is still active...
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
