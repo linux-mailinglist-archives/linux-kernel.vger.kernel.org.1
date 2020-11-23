@@ -2,297 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884982C0E97
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B8E2C0E99
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389391AbgKWPQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S2389416AbgKWPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733292AbgKWPQa (ORCPT
+        with ESMTP id S1732197AbgKWPRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:16:30 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95E7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:16:28 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id t13so16223005ilp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:16:28 -0800 (PST)
+        Mon, 23 Nov 2020 10:17:13 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257DAC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:17:13 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id z13so4018954ooa.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Dm0rY0bGNQ8BC+Ys+3XZJCyEaVm0ttig9ehZJ7XDdtY=;
-        b=bW0FaHv8S94Z2tJDElfalYw7sCTYMCorQcLlYh69PwQ93a+tckqMdLkPkc+72K8VvF
-         I09w/Il3U+AyhT6DlIbwt6XG6+lQRqxxO9RO3Lm1rKicycoyyAJ4EsvvBmL+6PTx1WRD
-         B2dsBRlumQyRJNMVfU1aYqnP0U1bxHqFcrHk6I7RKjJXHePsTE6aHDi9c1noEyWbBaL7
-         9TfLd8kZ/BL8wdkKb+SoEDuFdftjDbp9shuexIYj89uH+FgdpX0K7mGofAnZRYpjCXtM
-         5yfWZA1K81WWE9rfajsYq3q+KPM2gElLRGAk0F5HzvmlYW6tcPIb/dushMzbR6ymlr3q
-         MwiA==
+        bh=01wWOa3KrZt/xsoNZQpghL+y/uBnQBFRvt5GfUXKKDw=;
+        b=N84kzZfUdOIHKoskaZ7/SzxTFLGDBv9YekZbXOnpqwnqbnztxD2bTRRcgJOta4fqeU
+         8RCDVN4j+ocDqJHoG2wlk+DWZ165qH6ti74WoVXjWmk1RCGiRts3TUOO+7C1IgdVthtP
+         CZ45M4LlRyjDvEH9otGlsACEHrdcNTb7eFA3bkfOiWrTjRuV0vrSMqEETASrsXu8MLXi
+         WKacfnCmbcZvZ5WuF/6x/eZHabNfb4ORTnmBbFuq1zcIddxGOyvL4dw5iFmz7KEjVyUe
+         M3zqufpX1p6P9c14ZaDVYn71EuiYmO5I5y7trk1O8fXfmV3Uau6/RI5Czxci98P4AbD3
+         18Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Dm0rY0bGNQ8BC+Ys+3XZJCyEaVm0ttig9ehZJ7XDdtY=;
-        b=AylbT2Bzp5o3kXZkgbZk5ERkREcVw7zHtBnDDYqV5+TvdcMDCMUfkxZkB/4sYWjLYr
-         +ax2IgJVGerxINaNTijbanS6eNAPwYfAXOjjgdPjN4FfV5Ii3P7qO3EOx7vE/5SSx8YP
-         k7l8irKBrND6Qv3t5tazf8Y/W4jxdGHWm1obVBNWZeiVLAwfxuKjQOzGgFDoSEzi1sj1
-         fMUJJPwIuM63L1cxf8QGPdmngE46INeR8e3SPGAczGRq/cFLGGScHVKvR5JY02CR5TSU
-         O79B+KeQaLIAIhIWzUnbkfm0k6rjybXqRd1SYJve4QnRz1EEQ/uLEK1+CPBZBX1EXU74
-         4ZGg==
-X-Gm-Message-State: AOAM530u+GNwKwsSzlYuAqmKATd/v89K7XMzGGTdNMnBrOIbciEVvXVQ
-        59+kLV2E7SWqu73w2aRnT2MJf6EKtsYRNK/vX/0=
-X-Google-Smtp-Source: ABdhPJzXsaEbxvQHZ4CVobyBRv2T+x2gHPTCETEYfM46NFf2UXDcuyvB3BkXiuaCKC7vHWe37bgl40fmYckrrngJCX8=
-X-Received: by 2002:a92:aacc:: with SMTP id p73mr218215ill.64.1606144587910;
- Mon, 23 Nov 2020 07:16:27 -0800 (PST)
+        bh=01wWOa3KrZt/xsoNZQpghL+y/uBnQBFRvt5GfUXKKDw=;
+        b=d6RJORpd4aGa6cndHU0di+/bCI/RylCovua7B6rPgdy46JDCmy3kIwzFqZwvLswp76
+         QFKlzGFHlYwNxbbtxoiXpIQf1CwF1PNWSX9wNpiaPNJ35teDHbzMXS78wJchsl3O+c28
+         gDtPa9i9SM2ymh4nE7eiw+SYMJ9vKfC2Mm2ncMXzWYmtOIYdwTKQPjnEoUjWEDqWpGWC
+         HgRS+ZDmlI0QZ70UAJ8KJFzZnp1mEMm6sP9j5BwqS0R60TWqM9gJOhjE0OpQoJ4W+z9N
+         FnOn3D8CxQOFI6u57PsUCLTStn7X4CB+E6G3/r3IL3Bb70+I4nb5KN5kf5mI2zg6PYnY
+         INuw==
+X-Gm-Message-State: AOAM530CnuoRlVENoQdsjtvRCTDiSUClgCUSLOexQ4uvNIoRsFqLBScb
+        UOghJOhnYuxGmUneYN6HpPzuj09Ciy3y75RFTF2YMg==
+X-Google-Smtp-Source: ABdhPJy6n4PeKK9loF5ES07tiZosa6WsuYlaI455Jpzv7huAQyAw9CK1rm144MgCInSh1QHxCGEPTDSufeJaR4pfjnM=
+X-Received: by 2002:a4a:e4cc:: with SMTP id w12mr22858288oov.36.1606144632330;
+ Mon, 23 Nov 2020 07:17:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201123150430.7985-1-yashsri421@gmail.com>
-In-Reply-To: <20201123150430.7985-1-yashsri421@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 23 Nov 2020 16:16:17 +0100
-Message-ID: <CAKXUXMx8siSm67jkBP_r+OKyKALfT2EDcX_SfX7JGBy3YisXcQ@mail.gmail.com>
-Subject: Re: [PATCH v3] checkpatch: add fix and improve warning msg for
- Non-standard signature
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201123132300.1759342-1-elver@google.com> <20201123135512.GM3021@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201123135512.GM3021@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 23 Nov 2020 16:17:00 +0100
+Message-ID: <CANpmjNPwuq8Hph3oOyJCVgWQ_d-gOTPEOT3BpbR2pnm5LBeJbw@mail.gmail.com>
+Subject: Re: [PATCH v2] kcsan: Avoid scheduler recursion by using
+ non-instrumented preempt_{disable,enable}()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 4:04 PM Aditya Srivastava <yashsri421@gmail.com> wrote:
+On Mon, 23 Nov 2020 at 14:55, Peter Zijlstra <peterz@infradead.org> wrote:
+> On Mon, Nov 23, 2020 at 02:23:00PM +0100, Marco Elver wrote:
+> > When enabling KCSAN for kernel/sched (remove KCSAN_SANITIZE := n from
+> > kernel/sched/Makefile), with CONFIG_DEBUG_PREEMPT=y, we can observe
+> > recursion due to:
+> >
+> >       check_access() [via instrumentation]
+> >         kcsan_setup_watchpoint()
+> >           reset_kcsan_skip()
+> >             kcsan_prandom_u32_max()
+> >               get_cpu_var()
+> >                 preempt_disable()
+> >                   preempt_count_add() [in kernel/sched/core.c]
+> >                     check_access() [via instrumentation]
+> >
+> > Avoid this by rewriting kcsan_prandom_u32_max() to only use safe
+> > versions of preempt_disable() and preempt_enable() that do not call into
+> > scheduler code.
+> >
+> > Note, while this currently does not affect an unmodified kernel, it'd be
+> > good to keep a KCSAN kernel working when KCSAN_SANITIZE := n is removed
+> > from kernel/sched/Makefile to permit testing scheduler code with KCSAN
+> > if desired.
+> >
+> > Fixes: cd290ec24633 ("kcsan: Use tracing-safe version of prandom")
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> > v2:
+> > * Update comment to also point out preempt_enable().
+> > ---
+> >  kernel/kcsan/core.c | 15 ++++++++++++---
+> >  1 file changed, 12 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+> > index 3994a217bde7..10513f3e2349 100644
+> > --- a/kernel/kcsan/core.c
+> > +++ b/kernel/kcsan/core.c
+> > @@ -284,10 +284,19 @@ should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *
+> >   */
+> >  static u32 kcsan_prandom_u32_max(u32 ep_ro)
+> >  {
+> > -     struct rnd_state *state = &get_cpu_var(kcsan_rand_state);
+> > -     const u32 res = prandom_u32_state(state);
+> > +     struct rnd_state *state;
+> > +     u32 res;
+> > +
+> > +     /*
+> > +      * Avoid recursion with scheduler by using non-tracing versions of
+> > +      * preempt_disable() and preempt_enable() that do not call into
+> > +      * scheduler code.
+> > +      */
+> > +     preempt_disable_notrace();
+> > +     state = raw_cpu_ptr(&kcsan_rand_state);
+> > +     res = prandom_u32_state(state);
+> > +     preempt_enable_no_resched_notrace();
 >
-> Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
-> styles.
->
-> This warning occurs because of incorrect use of signature tags,
-> e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
-> signature tags, which may seem correct, but are not standard:
->
-> 1) Requested-by (count: 48) => Suggested-by
-> Rationale: In an open-source project, there are no 'requests', just
-> 'suggestions' to convince a maintainer to accept your patch
->
-> 2) Co-authored-by (count: 43) => Co-developed-by
-> Rationale: Co-developed-by and Co-authored-by are synonyms
->
-> 3) Analyzed-by (count: 22) / Analysed-by (count: 5) => Co-developed-by
-> Rationale: Analyzing is a part of Software Development, so
-> 'Co-developed-by' is perfectly fine, even if contributor did not create
-> code
->
-> 4) Improvements-by (count: 19) => Co-developed-by
->
-> 5) Noticed-by (count: 11) => Reported-by
->
-> 6) Inspired-by (count: 11) => Suggested-by
->
-> 7) Verified-by (count: 8) => Tested-by
-> Rationale: Used by a single user. On reading mailing list, it seems
-> Tested-by might be a suitable alternative
->
-> 8) Okay-ished-by (count: 8) => Acked-by
-> Rationale: Used by a single user. On reading mailing list, it seems
-> Acked-by must be suitable alternative
->
-> 9) Acked-for-MFD-by (count: 6) => Acked-by
->
-> 10) Reviewed-off-by (count: 5) => Reviewed-by
->
-> 11) Proposed-by (count: 5) => Suggested-by
-> Rationale: On observing the mailing list, this tag is always used for a
-> maintainer. It seems that the changes might have been suggested by them
-> and the tag is used as acknowledgment for the same
->
-> 12) Fixed-by (count: 3) => Co-developed-by
-> Rationale: Fixing bug is a part of Software Development, so
-> 'Co-developed-by' is perfectly fine, even if contributor did not create
-> code
->
-> 13) Pointed-out-by (count: 3) / Pointed-at-by (count: 2) => Suggested-by
-> Rationale: The tags are used for maintainers. It seems that the changes
-> might have been suggested by them and the tag is used as acknowledgment
-> for the same
-> E.g., Pointed-at-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> 14) Suggestions-by (count: 3) => Suggested-by
->
-> 15) Generated-by (count: 17) => remove the tag
-> On observing the mailing list, this tag is always used for quoting the
-> tool or script, which might have been used to generate the patch.
-> E.g. Generated-by: scripts/coccinelle/api/alloc/kzalloc-simple.cocci
->
-> 16) Celebrated-by (count: 3) => remove the tag
-> This tag was used for only one commit. On observing mailing list, it seem
-> like the celebration for a particular patch and changes.
->
-> Provide a fix by:
-> 1) replacing the non-standard signature with its standard equivalent
-> 2) removing the signature if it is not required
->
-> Also, improve warning messages correspondingly, providing users
-> suggestions to either replace or remove the signature. Also provide
-> suitable rationale to the user for the suggestion made.
->
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> changes in v2: replace commit specific example with brief evaluation
->
-> changes in v3: provide rationale to users for every signature tag suggestion;
-> modify commit message describing arrival to conclusion in a structured way
->
->  scripts/checkpatch.pl | 101 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 99 insertions(+), 2 deletions(-)
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index fdfd5ec09be6..f402c9c3958f 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -506,6 +506,81 @@ our $signature_tags = qr{(?xi:
->         Cc:
->  )};
->
-> +our %standard_signature_fix = (
-> +       "Requested-by:" => {
-> +               suggestion => "Suggested-by:",
-> +               rationale => "In an open-source project, there are no 'requests', just 'suggestions' to convince a maintainer to accept your patch",
-> +       },
-> +       "Co-authored-by:" => {
-> +               suggestion => "Co-developed-by:",
-> +               rationale => "Co-developed-by and Co-authored-by are synonyms",
-> +       },
+> This is a preemption bug. Does preempt_enable_notrace() not work?
 
-Maybe this reads better:
-Co-developed-by is the standard tag for patches developed by multiple authors.
+No it didn't, because we end up calling preempt_schedule_notrace(),
+which again might end in recursion.
 
-> +       "Analyzed-by:" => {
-> +               suggestion => "Co-developed-by:",
-> +               rationale => "Analyzing is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
-> +       },
-> +       "Analysed-by:" => {
-> +               suggestion => "Co-developed-by:",
-> +               rationale => "Analysing is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
-> +       },
-> +       "Improvements-by:" => {
-> +               suggestion => "Co-developed-by:",
-> +               rationale => "Performing improvements are a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
-> +       },
-> +       "Noticed-by:" => {
-> +               suggestion => "Reported-by:",
-> +               rationale => "Reported-by and Noticed-by are synonyms",
-> +       },
+Normally we could surround this by
+kcsan_disable_current/kcsan_enable_current(), but that doesn't work
+because we have this sequence:
 
-Similarly:
+     reset_kcsan_skip();
+     if (!kcsan_is_enabled())
+         ...
 
-Reported-by is the standard tag for denoting any notice or report.
+to avoid underflowing the skip counter if KCSAN is disabled. That
+could be solved by writing to the skip-counter twice: once with a
+non-random value, and if KCSAN is enabled with a random value. Would
+that be better?
 
-> +       "Inspired-by:" => {
-> +               suggestion => "Suggested-by:",
-> +               rationale => "Suggested-by is the standard signature tag for acknowledging user for their suggestions",
-> +       },
-> +       "Verified-by:" => {
-> +               suggestion => "Tested-by:",
-> +               rationale => "Tested-by and Verified-by are synonyms",
-> +       },
+And I'd like to avoid adding __no_kcsan to scheduler functions.
 
-Similarly here.
+Any recommendation?
 
-> +       "Okay-ished-by:" => {
-> +               suggestion => "Acked-by:",
-> +               rationale => "Acked-by is the standard signature tag for recording your approval",
-> +       },
+Thanks,
+-- Marco
 
-I think "your" is wrong here; the person that runs checkpatch may not
-be the person providing the approval.
 
-So maybe:
-
-- for recording one's approval.
-
-or:
-- for recording acknowledgement.
-
-> +       "Acked-for-MFD-by:" => {
-> +               suggestion => "Acked-by:",
-> +               rationale => "Acked-by is the standard signature tag for recording your approval",
-> +       },
-> +       "Reviewed-off-by:" => {
-> +               suggestion => "Reviewed-by:",
-> +               rationale => "Reviewed-by is the standard signature tag for recording your approval",
-> +       },
-
-for recording the review.
-
-> +       "Proposed-by:" => {
-> +               suggestion => "Suggested-by:",
-> +               rationale => "Proposing changes is same as suggesting changes, so Suggested-by seems perfectly fine",
-> +       },
-
-Similarly, the sentence as above could be used.
-
-> +       "Fixed-by:" => {
-> +               suggestion => "Co-developed-by:",
-> +               rationale => "Fixing bug is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
-> +       },
-> +       "Pointed-out-by:" => {
-> +               suggestion => "Suggested-by:",
-> +               rationale => "Pointing out certain changes is synonymous to suggesting changes, so Suggested-by seems perfectly fine",
-> +       },
-> +       "Pointed-at-by:" => {
-> +               suggestion => "Suggested-by:",
-> +               rationale => "Pointing at certain changes is synonymous to suggesting changes, so Suggested-by seems perfectly fine",
-> +       },
-> +       "Suggestions-by:" => {
-> +               suggestion => "Suggested-by:",
-> +               rationale => "Suggested-by is the standard signature tag for acknowledging user for their suggestions",
-> +       },
-> +       "Generated-by:" => {
-> +               suggestion => "remove",
-> +               rationale => "Signature tags are used to acknowledge users for their contributions. It is advised to describe about tools in commit description instead",
-> +       },
-> +       "Celebrated-by:" => {
-> +               suggestion => "remove",
-> +               rationale => "Signature tags are used to acknowledge users for their contributions. This tag may not be required at all",
-> +       },
-> +);
-> +
->  our @typeListMisordered = (
->         qr{char\s+(?:un)?signed},
->         qr{int\s+(?:(?:un)?signed\s+)?short\s},
-> @@ -2773,8 +2848,30 @@ sub process {
->                         my $ucfirst_sign_off = ucfirst(lc($sign_off));
 >
->                         if ($sign_off !~ /$signature_tags/) {
-> -                               WARN("BAD_SIGN_OFF",
-> -                                    "Non-standard signature: $sign_off\n" . $herecurr);
-> +                               my $suggested_signature = "";
-> +                               my $rationale = "";
-> +                               if (exists($standard_signature_fix{$sign_off})) {
-> +                                       $suggested_signature = $standard_signature_fix{$sign_off}{'suggestion'};
-> +                                       $rationale = $standard_signature_fix{$sign_off}{'rationale'};
-> +                               }
-> +                               if ($suggested_signature eq "") {
-> +                                       WARN("BAD_SIGN_OFF",
-> +                                            "Non-standard signature: $sign_off\n" . $herecurr);
-> +                               }
-> +                               elsif ($suggested_signature eq "remove") {
-> +                                       if (WARN("BAD_SIGN_OFF",
-> +                                               "Non-standard signature: $sign_off. Please consider removing this signature tag. $rationale\n" . $herecurr) &&
-> +                                       $fix) {
-> +                                               fix_delete_line($fixlinenr, $rawline);
-> +                                       }
-> +                               }
-> +                               else {
-> +                                       if (WARN("BAD_SIGN_OFF",
-> +                                               "Non-standard signature: $sign_off. Please use '$suggested_signature' instead. $rationale\n" . $herecurr) &&
-> +                                       $fix) {
-> +                                               $fixed[$fixlinenr] =~ s/$sign_off/$suggested_signature/;
-> +                                       }
-> +                               }
->                         }
->                         if (defined $space_before && $space_before ne "") {
->                                 if (WARN("BAD_SIGN_OFF",
-> --
-> 2.17.1
->
+> >
+> > -     put_cpu_var(kcsan_rand_state);
+> >       return (u32)(((u64) res * ep_ro) >> 32);
+> >  }
+> >
+> > --
+> > 2.29.2.454.gaff20da3a2-goog
+> >
