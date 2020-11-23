@@ -2,113 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553952C13D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77222C13D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388759AbgKWSns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:43:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        id S2389915AbgKWSoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:44:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729528AbgKWSnp (ORCPT
+        with ESMTP id S1732920AbgKWSoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:43:45 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7040C0613CF;
-        Mon, 23 Nov 2020 10:43:44 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a186so176644wme.1;
-        Mon, 23 Nov 2020 10:43:44 -0800 (PST)
+        Mon, 23 Nov 2020 13:44:09 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885F8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:44:08 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id v21so15093135pgi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:44:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JSJ4Bmt8TgArHN7URL0MJIhGLyKv+yFMNwC10tsqJE0=;
-        b=L9VLu9ERSvzEcDkaQCZQNPeL4KOS/8yz1HuC3+Id6cad8yv1Ggq8A57wGfeHsv0zWC
-         dDfHJ+lY9iSc5FjqSHiEYot4Llke7tCge6J5B6cJhgHqOGmH5ZubTCJqpIR6Gr66kIb8
-         DaFUrj65tzhrvMP9BEUUH1xRSNH18vYi9Rp9K8OsxDastX7Xyx+C0HmpMbYKbpHWOdji
-         imtcPIBzs2dDy2b8c5KTI1O7rwXf7r/A0CBq0NlRjYPlPHdIMM1xRB8NDGvvV4Lv86EF
-         fGZaWL5lLKpQg/ul/QNUhxll188redZ5n8lj5Kcxg4ULCpjRH4ZktZQU7Hkcgo5CJYTu
-         FjUA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BWpJZTEbYYqdTndkJGPxB+inYZkPNeNKjK+AcWxClLU=;
+        b=szQM99MUWB2Wyul7qI32qwELH8rheFKKRFflNwGL7g4nXUIC5bTWgygJQzT0i/fHHD
+         +g3epirl+0GuU3lZ74ypvWJeJazqafDOMzGurj+nkGrGvHqZ/+k+0srsVKsL4FsddWW9
+         Qg6XfRAmi+lWJkaOuZTtNRMcKgV/mbhjPqQ17XPq/MA2JxbU3dfJB1KOEsdYtFbfGhDD
+         8w+Wo6JTUuVMLyV2aRdA8Bg3DNapR4F31XhD9143jJ0mHWeU0t296sJCVMYNU3UwKtz7
+         /8Dx4VTrt6uv4+cn4nJtFHn6zQqmdeoXbVzL4JOvEUXY0pEgPk0Y8/Qq9g9mZBadSOE2
+         7LFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JSJ4Bmt8TgArHN7URL0MJIhGLyKv+yFMNwC10tsqJE0=;
-        b=iRkT68MVoSGNXiPMPekfWN6xDdh8p6R54Z4rI9eR+oED/CzG6g7G9DCwfd5N5XiWTW
-         2cSkyYGPeEQGaNQdTm8JgO13nPtRvALQN9fIwtrtOButUJzqwzLWb3eu2X40bKwrZsaT
-         niTOb1Bk3G6jS1AjGKFOJd9mmv1sIin0aayILxr6IIZoeZahBWsCn7UZ+D2VHc+x9Qs4
-         PdWxFrSdqyeDL0sABt+Sjcg5VyYQTYeg5HaUadQRt4gOJ7N4SBFWNy/2JvwdQ2LWbSIq
-         QH3NSs0Ro8m+7UATq/lYrr41CrVJL+mF/WX12hKF9tLpWncsfMyCHC0wAZLtMbGAw8sO
-         ezvQ==
-X-Gm-Message-State: AOAM533Rl+o1D10W+f1Mp3v4vHpN9laNY63dKcov8F6PQhPr/x16U0/S
-        jyQVOghYZ+N/YLhZb7bEjFSeX6qpsuA=
-X-Google-Smtp-Source: ABdhPJwYntDq6XM1iixkuMsKc9NUdSPNoR2jX0jDaHuEUC+PrFvxZ21fKFq+gtjhY1zwLsTTDpSFnQ==
-X-Received: by 2002:a1c:55ca:: with SMTP id j193mr245493wmb.87.1606157023020;
-        Mon, 23 Nov 2020 10:43:43 -0800 (PST)
-Received: from [192.168.8.114] ([37.173.143.196])
-        by smtp.gmail.com with ESMTPSA id d8sm314725wmb.11.2020.11.23.10.43.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 10:43:42 -0800 (PST)
-Subject: Re: [PATCH v8] tcp: fix race condition when creating child sockets
- from syncookies
-To:     Ricardo Dias <rdias@singlestore.com>, davem@davemloft.net,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        edumazet@google.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201120111133.GA67501@rdias-suse-pc.lan>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <7eedbc3b-e041-0eec-f015-1583ef4ae2f7@gmail.com>
-Date:   Mon, 23 Nov 2020 19:43:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BWpJZTEbYYqdTndkJGPxB+inYZkPNeNKjK+AcWxClLU=;
+        b=NFMw/tcZvAuLw6631BdZfq8IRn365ZWY/CN8nd0zBybKssTMc1JbUmA/WjUxiuLDMH
+         HA6CFB/g9yKPLEzTgVv8gvfE5lz+0MK4q0aiG+lUthtCuz6V9PUuom2GyfiM/1lyql4/
+         O+o9etBsIw/7nRxRZk3GtJBZPZroU+1yY/YFWXHfS7Vezfo+79WC45ZnaUsk39iuPJmc
+         YQj5JPSircAwlF4uQSWtlwlDaNcuY2LICtbeixKAQSQp31k6F0FkU+6ijlGnk6BBdqN0
+         ESV9DkDBASKrJKsM0epADX7Y+amlY+aBBrZn6n5sUGH1+LokxTAuMNIQQERge5TaOn+O
+         4Ijw==
+X-Gm-Message-State: AOAM531ZilKESxdBDZDptUmo+uxmohMjbRyxFdV5Yl3p1WuyvXg48TIe
+        MvFkVcWdSwE4hqvucb9mc6renoo9datxsJ3Zns/trQ==
+X-Google-Smtp-Source: ABdhPJzV7WgvUGjMsCL5eGYFxkRo9Z74P6af+WKqtJyjDvYYktlRIpjd8mQJ7obwSmcgVAT6r6NWwRH0BBh0hokJBAw=
+X-Received: by 2002:a17:90a:d250:: with SMTP id o16mr262028pjw.25.1606157047928;
+ Mon, 23 Nov 2020 10:44:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201120111133.GA67501@rdias-suse-pc.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <202011220213.McOuf9IB-lkp@intel.com>
+In-Reply-To: <202011220213.McOuf9IB-lkp@intel.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 23 Nov 2020 10:43:56 -0800
+Message-ID: <CAKwvOdmWEhR3EBaCv+ErbnRbtRbLMh3upWdCVE2U3js9ORvypg@mail.gmail.com>
+Subject: Re: arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit
+ declaration of function 'barrier'
+To:     kernel test robot <lkp@intel.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, kbuild-all@lists.01.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Randy's fix got picked up:
+https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?h=fixes&id=f52c08ea5fc8e2057a5913b1f6bfd534e1fb7e4c
+
+We're going to need to ensure that this gets backported to stable along with
+commit: 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 compiler.h: fix
+barrier_data() on clang
+
+On Sat, Nov 21, 2020 at 10:39 AM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   27bba9c532a8d21050b94224ffd310ad0058c353
+> commit: 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 compiler.h: fix barrier_data() on clang
+> date:   7 days ago
+> config: riscv-randconfig-r003-20201121 (attached as .config)
+> compiler: riscv32-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3347acc6fcd4ee71ad18a9ff9d9dac176b517329
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 3347acc6fcd4ee71ad18a9ff9d9dac176b517329
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    In file included from include/vdso/processor.h:10,
+>                     from arch/riscv/include/asm/processor.h:11,
+>                     from include/linux/prefetch.h:15,
+>                     from drivers/net/ethernet/intel/ixgb/ixgb_main.c:6:
+>    arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
+> >> arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
+>       14 |  barrier();
+>          |  ^~~~~~~
+>    cc1: some warnings being treated as errors
+>
+> vim +/barrier +14 arch/riscv/include/asm/vdso/processor.h
+>
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09   6
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09   7  static inline void cpu_relax(void)
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09   8  {
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09   9  #ifdef __riscv_muldiv
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09  10     int dummy;
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09  11     /* In lieu of a halt instruction, induce a long-latency stall. */
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09  12     __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09  13  #endif
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09 @14     barrier();
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09  15  }
+> ad5d1122b82fbd6 Vincent Chen 2020-06-09  16
+>
+> :::::: The code at line 14 was first introduced by commit
+> :::::: ad5d1122b82fbd6a816d1b9d26ee01a6dbc2d757 riscv: use vDSO common flow to reduce the latency of the time-related functions
+>
+> :::::: TO: Vincent Chen <vincent.chen@sifive.com>
+> :::::: CC: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 
-On 11/20/20 12:11 PM, Ricardo Dias wrote:
-> When the TCP stack is in SYN flood mode, the server child socket is
-> created from the SYN cookie received in a TCP packet with the ACK flag
-> set.
-> 
-> The child socket is created when the server receives the first TCP
-> packet with a valid SYN cookie from the client. Usually, this packet
-> corresponds to the final step of the TCP 3-way handshake, the ACK
-> packet. But is also possible to receive a valid SYN cookie from the
-> first TCP data packet sent by the client, and thus create a child socket
-> from that SYN cookie.
-> 
-> Since a client socket is ready to send data as soon as it receives the
-> SYN+ACK packet from the server, the client can send the ACK packet (sent
-> by the TCP stack code), and the first data packet (sent by the userspace
-> program) almost at the same time, and thus the server will equally
-> receive the two TCP packets with valid SYN cookies almost at the same
-> instant.
-> 
-> When such event happens, the TCP stack code has a race condition that
-> occurs between the momement a lookup is done to the established
-> connections hashtable to check for the existence of a connection for the
-> same client, and the moment that the child socket is added to the
-> established connections hashtable. As a consequence, this race condition
-> can lead to a situation where we add two child sockets to the
-> established connections hashtable and deliver two sockets to the
-> userspace program to the same client.
-> 
-> This patch fixes the race condition by checking if an existing child
-> socket exists for the same client when we are adding the second child
-> socket to the established connections socket. If an existing child
-> socket exists, we drop the packet and discard the second child socket
-> to the same client.
-> 
-> Signed-off-by: Ricardo Dias <rdias@singlestore.com>
 
-Ok, lets keep this version, thanks !
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-
+-- 
+Thanks,
+~Nick Desaulniers
