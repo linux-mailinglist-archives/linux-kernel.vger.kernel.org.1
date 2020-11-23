@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E0C2C0E4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAE32C0E79
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730251AbgKWO6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:58:38 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:33579 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727444AbgKWO6g (ORCPT
+        id S1732080AbgKWPIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:08:38 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:35652 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727444AbgKWPIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:58:36 -0500
-Received: by mail-ed1-f65.google.com with SMTP id k4so17419614edl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:58:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8PYxqUct+Q9mNYdM8wqPvnUwdPo92AiSu9RZ/r3u+qk=;
-        b=puJ85wHvZF/FWf9t8ZVzkRkvuicst9wtdiRZyviQM9xvujsJuzJ5N5I2OjlQh5Ymwo
-         FkWDY+e8w2QLKTrejfmI1vy93hPip3tx0yZxTGBHrllUcvYi1QKZQ4+A2zlkeVXf9lKb
-         g+A2CRRSnAFyKimHYVD0Jd2DVbzbzRSGAmI+xvtGtTDA/M3VWZeQrpXTlkCbX+TwfuBe
-         kZ+w2VgmF+t/jbmo9hh2InQkqpT15pV9kQmhmwsf2i8c8ZrV7R5od/2aZHOYhBVc6mBO
-         /semlGO/yxJ815xOQ6DSA2Vkv98GlBA8Vi5XDZ4470PgLkBICC90Px/7R63ALJd5pEf0
-         tDaw==
-X-Gm-Message-State: AOAM532oRvxkpKSmwK30KMpps8LYz3R63Zk6Xy2279CnA1Yc02u33wY2
-        qrrEIkiZ7BWQjPpAXbrubC4=
-X-Google-Smtp-Source: ABdhPJy5lpwJxRHqEXprOoNPlghH8kM6ItxjLvP3djlOBLJEk6uuQ6S56QVwCwPzAi/JZKe2jkr+6g==
-X-Received: by 2002:a50:a40f:: with SMTP id u15mr48456599edb.307.1606143514524;
-        Mon, 23 Nov 2020 06:58:34 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g20sm5224076ejk.3.2020.11.23.06.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 06:58:32 -0800 (PST)
-Date:   Mon, 23 Nov 2020 15:58:31 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201123145831.GA202597@kozik-lap>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120165202.GG6751@sirena.org.uk>
- <20201120194245.GA2925@kozik-lap>
- <20201120200429.GJ6751@sirena.org.uk>
- <20201122105813.GA3780@kozik-lap>
- <20201123104832.GY4077@smile.fi.intel.com>
- <20201123123731.GA6322@sirena.org.uk>
- <20201123124129.GA170000@kozik-lap>
- <20201123135006.GE6322@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201123135006.GE6322@sirena.org.uk>
+        Mon, 23 Nov 2020 10:08:38 -0500
+X-Greylist: delayed 3915 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Nov 2020 10:08:37 EST
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANDxD9j168015
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:03:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=Q2rFAOwVVzItQ341YSbZcp+mAOfSksMJLdZ/NsOt4U0=;
+ b=SCtbOZfIXtyR7C4ANMjwSGhQk9bWBfUa1i0oj5rB0rAdcdPlRLU4dkxYeh9ik6mzDMfu
+ 0cdHEA7EBYqtWI4TbSrVMz7aDT1LuJSuo7VDCWZZsPHqQyxOJDifEsB4bNvYxnqC0k9i
+ OiyCHYupCP41QBkYfKdi/WnOzf5XdFBFVslsoHx0DNS9+66wstwK81Jpwz+DLbgOojId
+ LtionbqjlpJcElna+jkKPnIsFTc7/Be3N25/gTWW6VN54t6KhZVUlCpc2YwmHUF2PJb/
+ VuAz35RVeCZ1QuuifxerkEQMNvzacO44PEhZqhLjUOWfssMWhr+MwMnp5BJv+yC0fDps pA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 34xtaqgs9x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:03:21 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANE0tkk006289
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:01:21 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 34yctuufdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:01:21 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0ANE1KtE016948
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:01:20 GMT
+Received: from mihai.localdomain (/10.153.73.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 23 Nov 2020 06:01:20 -0800
+From:   Mihai Carabas <mihai.carabas@oracle.com>
+To:     mihai.carabas@oracle.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re [PATCH] add support for pci in the pvpanic driver
+Date:   Mon, 23 Nov 2020 15:18:44 +0200
+Message-Id: <1606137524-11681-1-git-send-email-mihai.carabas@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1603971787-16784-1-git-send-email-mihai.carabas@oracle.com>
+References: <1603971787-16784-1-git-send-email-mihai.carabas@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9813 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ malwarescore=0 spamscore=0 phishscore=0 mlxlogscore=938 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011230096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9813 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=955 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011230096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 01:50:06PM +0000, Mark Brown wrote:
-> On Mon, Nov 23, 2020 at 01:41:29PM +0100, Krzysztof Kozlowski wrote:
-> > On Mon, Nov 23, 2020 at 12:37:31PM +0000, Mark Brown wrote:
-> 
-> > > That feels like something that should be done with Kconfig dependencies
-> > > like a direct OF dependency (possibly a !PRP0001 dependency?) for the
-> > > driver or possibly with having a variant of_match_ptr() for things that
-> > > really don't want to support PRP0001.  Just removing all the use of
-> > > of_match_ptr() is both noisy and confusing in that it looks like it's
-> > > creating issues to fix, it makes it hard to understand when and why one
-> > > should use the macro.
-> 
-> > For the OF-only drivers (without other ID table), there is no point to
-> > use the macro. Driver can bind only with DT, so what is the point of
-> > of_match_ptr? To skip the OF table when building without OF? Driver
-> > won't be usable at all in such case. So maybe for compile testing?
-> > There is no need to remove OF table for simple build tests.
-> 
-> If nothing else it means you don't have to check if the driver is OF
-> only or not.  I can see not bothering to add it but actively going round
-> removing some instances of it doesn't seem great, and it seems like
-> people will constantly be adding new uses on the basis that it's just
-> such an obviously correct thing to do.
+@Andy:
 
-If my patch was not changing anything, I would agree that it might be
-just a churn. But the patch fixes a real warning.
+>Hmm... It was a bit of a long time...
+>Have you seen [1]?
 
-The other way of fixing warning is the one you proposed at beginning -
-adding maybe_unused. Here we go to the second reason:
+>[1]:
+>https://lore.kernel.org/lkml/20201027175806.20305-1->andriy.shevche...@linux.intel.com/
 
-Having these of_match_ptr() for OF-only drivers is not the correct way
-but rather something which is copied from existing drivers into new
-ones. This is another reason for removing them - people will stop
-copying this code all over again.
+I have seen that patchset after I sent mine. Do you want me to rebase and redo
+the the pvpanic patchset of adding PCI support on top of yours? Or were you
+refering at the fact that I added your Rb? 
 
-Best regards,
-Krzysztof
 
+Any other feedback on this patchset?
+
+Thank you,
+Mihai Carabas
