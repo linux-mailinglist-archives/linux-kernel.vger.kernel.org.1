@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D7B2C1902
+	by mail.lfdr.de (Postfix) with ESMTP id DDB902C1904
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387933AbgKWWzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:55:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387931AbgKWWyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:54:53 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED069206D8;
-        Mon, 23 Nov 2020 22:54:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606172093;
-        bh=uARlE3HGl1j9/UX0OJKYVTZCltQTUxKUiwJyZRg1SIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aZq2EBpPIX0eaFLbDRguDSSsAkAJxuRKD3mIuP9JbWVz5H/s5cA+wymagAi+vNYaf
-         89SvwLKs0LJnsJwtEOlEZmDfr2aoYslWDUg3Nm/asGswyrdwK0VMPzBcZ7VW7wrwn2
-         2+wWuM/J6t3kZQQi2fuTi6TF0oMPq575ogXK3fFg=
-Date:   Mon, 23 Nov 2020 16:55:07 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 061/141] tee: Fix fall-through warnings for Clang
-Message-ID: <20201123225507.GR21644@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <c505109fe0c02f648e16caa83d8a9773afd696b1.1605896059.git.gustavoars@kernel.org>
- <CAHUa44G1B8_CSahTJ1uOUMLcDfpVKHUaoN+u87BywkVwyhjnRw@mail.gmail.com>
+        id S2388020AbgKWWzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:55:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387788AbgKWWzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:55:47 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35ABEC0613CF;
+        Mon, 23 Nov 2020 14:55:47 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id d18so18845416edt.7;
+        Mon, 23 Nov 2020 14:55:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EFk0nJ4z1D5JbLIY8TqRxM5y3KT+VTwAl77Ny6IlPqg=;
+        b=Dc3rEbK7XCvA71Jg+hUh6cPr7ZAsFWaPYkBwuFsb1XiAB6Q9yxAb4gak2gI+FchyG1
+         AM8xjoGNkKyBGPYtLFgiQrpiAa1voF+c53J0oPe9MzF+SpIz12uGtlrTwAK0W8vm9PLN
+         C7bg8jU/n8pLy0l2l9R5mO1cY7lmyhlggUfZYaPZLaznuwJTGx9o+54jkemUWDCRVana
+         f2kA1uVu/ok55W6WGBJ2FGr4rLra5aSJ5/59nKM3FEqEvDA49R4Oz45dmWYX50rgZ88L
+         etOVR0JudoP8ugIabe8VHVbJ9cKw0GROruVvqsIg+jDTeQFT7UIHMNl1TK66x2jaJdIA
+         GY/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EFk0nJ4z1D5JbLIY8TqRxM5y3KT+VTwAl77Ny6IlPqg=;
+        b=TYiZkTWys5vsBvRgyPI2Wre/8tCIjkr8wXJotHk5IrJFjFNSvfRalXIhocAZaa2Wg1
+         plv+QeV5MSqG5D35BO4EhSqVW4DgNCyYvvESu7o5h1r94AY3cdkNXY7z1RTM9AYYom3a
+         9zYQs1sV6Yd1yJWQa4ZklnTJr0Sndy4QYx3oezrikcuA6WqLKL0Zyr7Kq4mzmNL7vfYX
+         6F0eMVKXvjCOGteIrAucEdFx/lILNzdO3uaB2PTJSqQfQRUb6MZc2UIObXDZ5BGNpoDg
+         4ECCcn4OKbUUcoQxzfrVtUT2RUEZ/ufvLsjppUpIUojOyJnzbkDOL4DeGRHHqS+ZYtVR
+         jlcg==
+X-Gm-Message-State: AOAM5317Vx89s19tUowr4gS8hf1ON00Ckv5ozJQfUjrXCNFXmn5lF+gf
+        YStggHWjXBR0BxqKbKe+2Y4=
+X-Google-Smtp-Source: ABdhPJwiXGuZBCQvzN/kDyDf2ONIRRegWP7tMpmvsh+S8w2cH6t1+Ad0Pf5LV2T7vb7iN2009tTecA==
+X-Received: by 2002:a50:ed8d:: with SMTP id h13mr1378936edr.180.1606172145920;
+        Mon, 23 Nov 2020 14:55:45 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id rs27sm5108616ejb.34.2020.11.23.14.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 14:55:45 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Tue, 24 Nov 2020 00:55:44 +0200
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ioana Ciornei <ciorneiioana@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 00/15] net: phy: add support for shared
+ interrupts (part 3)
+Message-ID: <20201123225544.bywwgcoa75kmapad@skbuf>
+References: <20201123153817.1616814-1-ciorneiioana@gmail.com>
+ <CAFBinCBhWKzQFwERW9cy7T4JdOdFwNOqn2qPqFpqdjbat=-DwA@mail.gmail.com>
+ <20201123143713.6429c056@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHUa44G1B8_CSahTJ1uOUMLcDfpVKHUaoN+u87BywkVwyhjnRw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201123143713.6429c056@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 10:26:09AM +0100, Jens Wiklander wrote:
-> On Fri, Nov 20, 2020 at 7:33 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > by explicitly adding a break statement instead of letting the code fall
-> > through to the next case.
-> >
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> >  drivers/tee/tee_core.c | 1 +
-> >  1 file changed, 1 insertion(+)
+On Mon, Nov 23, 2020 at 02:37:13PM -0800, Jakub Kicinski wrote:
+> On Mon, 23 Nov 2020 23:13:11 +0100 Martin Blumenstingl wrote:
+> > > Ioana Ciornei (15):
+> > >   net: phy: intel-xway: implement generic .handle_interrupt() callback
+> > >   net: phy: intel-xway: remove the use of .ack_interrupt()
+> > >   net: phy: icplus: implement generic .handle_interrupt() callback
+> > >   net: phy: icplus: remove the use .ack_interrupt()
+> > >   net: phy: meson-gxl: implement generic .handle_interrupt() callback
+> > >   net: phy: meson-gxl: remove the use of .ack_callback()  
+> > I will check the six patches above on Saturday (due to me being very
+> > busy with my daytime job)
+> > if that's too late for the netdev maintainers then I'm not worried
+> > about it. at first glance this looks fine to me. and we can always fix
+> > things afterwards (but still before -rc1).
 > 
-> Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
+> That is a little long for patches to be hanging around. I was planning
+> to apply these on Wed. If either Ioana or you would prefer to get the
+> testing performed first, please split those patches out and repost once
+> they get validated.
 
-Thanks, Jens.
---
-Gustavo
+If there is no issue reported in the meantime, I would say to apply the
+series. I can always quickly fixup any problems that Martin might find.
+
+Ioana
