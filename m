@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314802C0613
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3502C074D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgKWM1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:27:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37060 "EHLO mail.kernel.org"
+        id S1732278AbgKWMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730261AbgKWM1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:13 -0500
+        id S1732163AbgKWMjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B734D20888;
-        Mon, 23 Nov 2020 12:27:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43B6A20857;
+        Mon, 23 Nov 2020 12:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134431;
-        bh=5gLcqFotHoXBsfxfbLxyb+KonOZkEuMtkkZ4Fg75boM=;
+        s=korg; t=1606135145;
+        bh=4Zq+7Ah7tZxgz9/wo4slOLmKpYlj87+6R8dsKcw5Jts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RMLSkvEB1iEvL7Oz72KCRBnReFxoygxoxu8GkQwZrKmceJbyLdmxDeO9dLun/IGFj
-         SVRsIj5rZzYHBFL1dYMoWSCcCvJC11J2y7ZCcmurQ8dI+IY+pdtNsQMTBEVSKCAveg
-         XEIYI3fB1vAwysy1TFIJaKxLq/v74sOTPTEDwBFo=
+        b=2sYvSBV2u4g0hlYC+ajhhyN0PtMjSB32AlCOA5U7ViRzoNBwfjAHV9BNwypwGXkEO
+         49Y8x0uJ8k0v05Ra0rfxgXmNBUqxGsipw91V8sAMYXpuBSEHDLHO9xOMCl9yC/cphL
+         VV4PcIdXsOQYA0b+kkJPglzvVB+FN1dTw+eCzsT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH 4.14 17/60] net/mlx5: Disable QoS when min_rates on all VFs are zero
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 091/158] drm/sun4i: dw-hdmi: fix error return code in sun8i_dw_hdmi_bind()
 Date:   Mon, 23 Nov 2020 13:21:59 +0100
-Message-Id: <20201123121805.851847588@linuxfoundation.org>
+Message-Id: <20201123121824.321720277@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,77 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
+From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-[ Upstream commit 470b74758260e4abc2508cf1614573c00a00465c ]
+[ Upstream commit 6654b57866b98230a270953dd34f67de17ab1708 ]
 
-Currently when QoS is enabled for VF and any min_rate is configured,
-the driver sets bw_share value to at least 1 and doesn’t allow to set
-it to 0 to make minimal rate unlimited. It means there is always a
-minimal rate configured for every VF, even if user tries to remove it.
+Fix to return a negative error code from the error handling case instead
+of 0 in function sun8i_dw_hdmi_bind().
 
-In order to make QoS disable possible, check whether all vports have
-configured min_rate = 0. If this is true, set their bw_share to 0 to
-disable min_rate limitations.
-
-Fixes: c9497c98901c ("net/mlx5: Add support for setting VF min rate")
-Signed-off-by: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b7c7436a5ff0 ("drm/sun4i: Implement A83T HDMI driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/1605488969-5211-1-git-send-email-wangxiongfeng2@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.c |   15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-@@ -1921,12 +1921,15 @@ static u32 calculate_vports_min_rate_div
- 		max_guarantee = evport->info.min_rate;
+diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
+index a44dca4b0219e..12fe241956213 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
++++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
+@@ -209,6 +209,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
+ 	phy_node = of_parse_phandle(dev->of_node, "phys", 0);
+ 	if (!phy_node) {
+ 		dev_err(dev, "Can't found PHY phandle\n");
++		ret = -EINVAL;
+ 		goto err_disable_clk_tmds;
  	}
  
--	return max_t(u32, max_guarantee / fw_max_bw_share, 1);
-+	if (max_guarantee)
-+		return max_t(u32, max_guarantee / fw_max_bw_share, 1);
-+	return 0;
- }
- 
--static int normalize_vports_min_rate(struct mlx5_eswitch *esw, u32 divider)
-+static int normalize_vports_min_rate(struct mlx5_eswitch *esw)
- {
- 	u32 fw_max_bw_share = MLX5_CAP_QOS(esw->dev, max_tsar_bw_share);
-+	u32 divider = calculate_vports_min_rate_divider(esw);
- 	struct mlx5_vport *evport;
- 	u32 vport_max_rate;
- 	u32 vport_min_rate;
-@@ -1940,9 +1943,9 @@ static int normalize_vports_min_rate(str
- 			continue;
- 		vport_min_rate = evport->info.min_rate;
- 		vport_max_rate = evport->info.max_rate;
--		bw_share = MLX5_MIN_BW_SHARE;
-+		bw_share = 0;
- 
--		if (vport_min_rate)
-+		if (divider)
- 			bw_share = MLX5_RATE_TO_BW_SHARE(vport_min_rate,
- 							 divider,
- 							 fw_max_bw_share);
-@@ -1967,7 +1970,6 @@ int mlx5_eswitch_set_vport_rate(struct m
- 	struct mlx5_vport *evport;
- 	u32 fw_max_bw_share;
- 	u32 previous_min_rate;
--	u32 divider;
- 	bool min_rate_supported;
- 	bool max_rate_supported;
- 	int err = 0;
-@@ -1993,8 +1995,7 @@ int mlx5_eswitch_set_vport_rate(struct m
- 
- 	previous_min_rate = evport->info.min_rate;
- 	evport->info.min_rate = min_rate;
--	divider = calculate_vports_min_rate_divider(esw);
--	err = normalize_vports_min_rate(esw, divider);
-+	err = normalize_vports_min_rate(esw);
- 	if (err) {
- 		evport->info.min_rate = previous_min_rate;
- 		goto unlock;
+-- 
+2.27.0
+
 
 
