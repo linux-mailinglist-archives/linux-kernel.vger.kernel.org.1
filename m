@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51B22C1126
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E992C1136
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389949AbgKWQ55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:57:57 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:36353 "EHLO
+        id S2389985AbgKWQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:59:03 -0500
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:44355 "EHLO
         mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730257AbgKWQ55 (ORCPT
+        with ESMTP id S1729482AbgKWQ7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:57:57 -0500
-Received: by mail-ej1-f68.google.com with SMTP id o21so24288366ejb.3;
-        Mon, 23 Nov 2020 08:57:54 -0800 (PST)
+        Mon, 23 Nov 2020 11:59:03 -0500
+Received: by mail-ej1-f68.google.com with SMTP id k9so9490095ejc.11;
+        Mon, 23 Nov 2020 08:59:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=u+GuuFPQRaPyq7XGG3ctPdJg1VzAE2HhoabXY71PAd4=;
-        b=AuDnqZ5znKP3DMRQS3Deul/PTt77gpLEiR2/03NEhMTXXLPus8W1kZOgaJKprWMHou
-         BAkmgQN4LXx3HCIIibtGEbsEYuxmFgwgw7h+5Qh64z/Wc8nfn7pwpdEcOQHPoMvp0gZA
-         WUEII++gsM+nja7zCWaZllM5cSYf3uVOyKCwZdGDiQHFu7FpnkAcSVH4x989rIICaSmR
-         BUjVEo0CoSiJ8OYrnRSBN0VBr4+k/gRdNq4i3BOWaSSCbeB1iK4KJar7pG7OvsUk0HrR
-         A8mMz9xywa9vvyCVEXD5ZoXe95EfZR/1YqDtOmBmKraznaQcL3PTzs3o78DA2kKVIQz4
-         9NWw==
-X-Gm-Message-State: AOAM530m8QNDTiIfUm4L1pm0HIsGAyL2Y65rjuTukxdZm4ng5i4/WeKw
-        x+oZC+ldT1sYPHpmGHoYXWc=
-X-Google-Smtp-Source: ABdhPJz0tysWwT13ob+iZmeyME81Yg6pEDfgr4LdVWFOJMOMkGgZOormMyEVd+5a9S4xKDkcg3GW+w==
-X-Received: by 2002:a17:906:2b06:: with SMTP id a6mr470698ejg.283.1606150673985;
-        Mon, 23 Nov 2020 08:57:53 -0800 (PST)
+        bh=WzvwGaD9/OHMgznZpLRtc18jBESjKRSL5NHyPBpz3bE=;
+        b=FbHz+yU7CdiKNJgHTHJZO+aGgDPJH05d/kbCP/MrJK3S4Ra9Q5+fHv8o5YPmSRRGg4
+         VM9sf0WAFeOL1WnYF8Byjee5HOXsaAp9BkSAwJ2MxtgzyDsqYolj7+0HeQvrysncf31g
+         pvgG/YQISpUH/3NHpu+uHcQAYfNkllIoFaQa/r2sE2jXu2TgmZJ55Kr9TVcjInsiT4jQ
+         gWVbSDynt8rkiT86h9Gt278U1JiunHSjug8GvgF4CG0uISutFvcEe2K9dxowoOd9zogv
+         7adEiDzPCo1pOWW6XgHHYefOpJBKcIDe28U1Z6LggC5ug21MRttRw67Iijg57llYq1Mh
+         +zpQ==
+X-Gm-Message-State: AOAM533F/4T1N8JPFOpK/gH6UgyflXUNaX2mCcKhv8leZkaMb05IYj7E
+        Y9x0NM6e2ruxb5xBmKl2nQo=
+X-Google-Smtp-Source: ABdhPJx8QBW8QFVwjDZADkajTlp0sdT5KxLzuXfAW5mMQG9nVWU0QE/iJo+TiJ/og54KjLJtRpsapw==
+X-Received: by 2002:a17:906:7e55:: with SMTP id z21mr496501ejr.154.1606150741074;
+        Mon, 23 Nov 2020 08:59:01 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id rs9sm4577335ejb.81.2020.11.23.08.57.52
+        by smtp.googlemail.com with ESMTPSA id cn8sm5335926edb.18.2020.11.23.08.58.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 08:57:52 -0800 (PST)
-Date:   Mon, 23 Nov 2020 17:57:51 +0100
+        Mon, 23 Nov 2020 08:59:00 -0800 (PST)
+Date:   Mon, 23 Nov 2020 17:58:58 +0100
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Alice Guo <alice.guo@nxp.com>
 Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 3/4] arm64: dts: imx8m: add NVMEM provider and
- consumer to read soc unique ID
-Message-ID: <20201123165751.GC214677@kozik-lap>
+Subject: Re: [PATCH v5 4/4] soc: imx8m: change to use platform driver
+Message-ID: <20201123165858.GD214677@kozik-lap>
 References: <20201123095108.19724-1-alice.guo@nxp.com>
- <20201123095108.19724-3-alice.guo@nxp.com>
+ <20201123095108.19724-4-alice.guo@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201123095108.19724-3-alice.guo@nxp.com>
+In-Reply-To: <20201123095108.19724-4-alice.guo@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 05:51:07PM +0800, Alice Guo wrote:
-> In order to be able to use NVMEM APIs to read soc unique ID, add the
-> nvmem data cell and name for nvmem-cells to the "soc" node, and add a
-> nvmem node which provides soc unique ID to efuse@30350000.
+On Mon, Nov 23, 2020 at 05:51:08PM +0800, Alice Guo wrote:
+> Directly reading ocotp register depends on that bootloader enables ocotp
+> clk, which is not always effective, so change to use nvmem API. Using
+> nvmem API requires to support driver defer probe and thus change
+> soc-imx8m.c to use platform driver.
+> 
+> The other reason is that directly reading ocotp register causes kexec
+> kernel hang because the 1st kernel running will disable unused clks
+> after kernel boots up, and then ocotp clk will be disabled even if
+> bootloader enables it. When kexec kernel, ocotp clk needs to be enabled
+> before reading ocotp registers, and nvmem API with platform driver
+> supported can accomplish this.
 > 
 > Signed-off-by: Alice Guo <alice.guo@nxp.com>
 > ---
