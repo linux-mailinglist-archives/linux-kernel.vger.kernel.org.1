@@ -2,173 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E932C03CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACBD2C03D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgKWLIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 06:08:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgKWLIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:08:18 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC8A720729;
-        Mon, 23 Nov 2020 11:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606129697;
-        bh=gS/0Cekh6Y/5gZIeZ9vh/sMPzjZWtkJBhwJGULSFSMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rhXxGAEbbaL7W9J6ud28rQGntfJejURY7o3vGGegUMcg09E8b04Mg1x4Yb+Z1NZPQ
-         1C71E6E8cP8O0tWhEFhOFI1Gsorkkq7xbVqLqS66mFHhq8eDIMRGMZvidZNT9JEtx3
-         UVbnaKVCArWVQXJL8AP4mucjBRjLPdB8PJBfxrWk=
-Date:   Mon, 23 Nov 2020 11:08:12 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] scs: switch to vmapped shadow stacks
-Message-ID: <20201123110811.GA9957@willie-the-truck>
-References: <20201022202355.3529836-1-samitolvanen@google.com>
- <20201022202355.3529836-2-samitolvanen@google.com>
- <20201119130036.GA4331@willie-the-truck>
- <CABCJKuc4W0F+8cVhGGRMnpCSwGC3wnZqvJf6zkCubEec8R88yQ@mail.gmail.com>
+        id S1728553AbgKWLJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728493AbgKWLJj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 06:09:39 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00167C0613CF;
+        Mon, 23 Nov 2020 03:09:38 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id y10so2055631ljc.7;
+        Mon, 23 Nov 2020 03:09:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HjhWcAaLBjKIfTeObnhdOKRy227KwdAp+UqnwppLEWI=;
+        b=WHelm+4QW3NjS5hvpThLZGiJxH5KsGlwbrRwZby2wckI/my8pTg1phIaEVYb5x3nnf
+         HEkYvOiUAJmXgZnqtSXVyRbMM4ZJ55iBpMuPvtwJSeS8GvMiFcja1PeVAHJ/btpbpSte
+         38U4fZ83Jqww1DP6RKVdhfR4hA3xYVOqDDax7sdr59HG59roaCv5Mui48v/LMDWKNYin
+         W/E8Zp9fi/qP1wlba8m2I3h7wVWQDhbCRdlE97WIRVZ4vU/kHOc9zsZTTAcdl7XrlxFp
+         W8NKttWDUTzB6sFWOa674LGXhTBnf6RhvDfm4t4PGp6FYefLP9q26r7HW4mMtDgv5B5J
+         KYCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HjhWcAaLBjKIfTeObnhdOKRy227KwdAp+UqnwppLEWI=;
+        b=U2wMzVGeOYAYeTTcWKo1J36oWPHdDkILLhcNUzAilYaWWZXo65ydzSqLQWDouJJ64Q
+         oRJWPCkfyyEgMl+l2X2ACgf2vio+N1RjNpS9AxqcILd1GmtwnfsI7iZoEJVZ9eTUwRHB
+         PsS08SfNWiRmT5F4SPfxNWnHP4Pz7nOx1KoQlv2/jGyOh8DPXVbDn276PmJFHPNNHl9C
+         YZEE/41zDsCKCYEFrXVyBfm/YHQgNwPcugom+IR2OLPlDhTj5W6Xtr4uaRVLvIe4pS5v
+         Mxhh88FdU1DB7bLxO/Acr7H/H5liPtZSQkjykTyPNBItgXKf0YmX4D6Y2d3OrZj+DAVF
+         VScQ==
+X-Gm-Message-State: AOAM533K4uodWjeSwHxAmdmSN/7cHsb+5dBLStm+xzmQucCs2+PosQTC
+        /jlRp2lKJYm8J53o8+WSlok=
+X-Google-Smtp-Source: ABdhPJyOFvVIdsi0jiEe2T330ZoRH2zbRtblSjL0rkMfbu56kP8aihxZt4/W61FVuc6ZGdm5iYBUgQ==
+X-Received: by 2002:a2e:924e:: with SMTP id v14mr13723829ljg.264.1606129777498;
+        Mon, 23 Nov 2020 03:09:37 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id h4sm1339738lfk.224.2020.11.23.03.09.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 03:09:36 -0800 (PST)
+Subject: Re: [PATCH v5 2/4] staging: media: Introduce NVIDIA Tegra video
+ decoder driver
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devel@driverdev.osuosl.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <cover.1513038011.git.digetx@gmail.com>
+ <3d565db80f8dccafd14224924305243b37b75a07.1513038011.git.digetx@gmail.com>
+ <CAAEAJfBZD0u6MDxcp3See-agzyCSJS7dKpwK28LMJwPvE9DLtQ@mail.gmail.com>
+ <5665b221-04d7-6be9-2377-8006b9563d4b@gmail.com>
+ <CAAEAJfAdGeFK7DNY3QzRZEsZx+PGbQtxyyOPwawmMsx2JByt8g@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8372dd41-64b9-64e1-960d-7b20717d5c1e@gmail.com>
+Date:   Mon, 23 Nov 2020 14:09:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKuc4W0F+8cVhGGRMnpCSwGC3wnZqvJf6zkCubEec8R88yQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAAEAJfAdGeFK7DNY3QzRZEsZx+PGbQtxyyOPwawmMsx2JByt8g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sami,
-
-On Fri, Nov 20, 2020 at 09:00:17AM -0800, Sami Tolvanen wrote:
-> On Thu, Nov 19, 2020 at 5:00 AM Will Deacon <will@kernel.org> wrote:
-> > On Thu, Oct 22, 2020 at 01:23:54PM -0700, Sami Tolvanen wrote:
-> > > The kernel currently uses kmem_cache to allocate shadow call stacks,
-> > > which means an overflow may not be immediately detected and can
-> > > potentially result in another task's shadow stack to be overwritten.
-> > >
-> > > This change switches SCS to use virtually mapped shadow stacks,
-> > > which increases shadow stack size to a full page and provides more
-> > > robust overflow detection similarly to VMAP_STACK.
-> > >
-> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > > ---
-> > >  include/linux/scs.h |  7 +----
-> > >  kernel/scs.c        | 63 ++++++++++++++++++++++++++++++++++++++-------
-> > >  2 files changed, 55 insertions(+), 15 deletions(-)
-> >
-> > Cheers for posting this. I _much_ prefer handling the SCS this way, but I
-> > have some comments on the implementation below.
-> >
-> > > diff --git a/include/linux/scs.h b/include/linux/scs.h
-> > > index 6dec390cf154..86e3c4b7b714 100644
-> > > --- a/include/linux/scs.h
-> > > +++ b/include/linux/scs.h
-> > > @@ -15,12 +15,7 @@
-> > >
-> > >  #ifdef CONFIG_SHADOW_CALL_STACK
-> > >
-> > > -/*
-> > > - * In testing, 1 KiB shadow stack size (i.e. 128 stack frames on a 64-bit
-> > > - * architecture) provided ~40% safety margin on stack usage while keeping
-> > > - * memory allocation overhead reasonable.
-> > > - */
-> > > -#define SCS_SIZE             SZ_1K
-> > > +#define SCS_SIZE             PAGE_SIZE
-> >
-> > We could make this SCS_ORDER and then forget about alignment etc.
+23.11.2020 06:07, Ezequiel Garcia пишет:
+> On Sat, 21 Nov 2020 at 23:01, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 22.11.2020 04:02, Ezequiel Garcia пишет:
+>>> Hi Dmitry,
+>>>
+>> ...
+>>>> +++ b/drivers/staging/media/tegra-vde/TODO
+>>>> @@ -0,0 +1,4 @@
+>>>> +TODO:
+>>>> +       - Implement V4L2 API once it gains support for stateless decoders.
+>>>> +
+>>>> +Contact: Dmitry Osipenko <digetx@gmail.com>
+>>>
+>>> The API for H264 stateless decoding is ready.
+>>> See https://lkml.org/lkml/2020/11/18/795.
+>>
+>> Hello Ezequiel,
+>>
+>> Thank you for the notification! My last attempt at implementing V4L API
+>> support was about a year ago and it stopped once I realized that there
+>> is no userspace which uses that API. FFMPEG and chromium browser had
+>> some kind of V4L support, but it all was oriented at downstream driver
+>> stacks, and thus, not usable. Do you know what is the current status?
+>>
 > 
-> It's still convenient to have SCS_SIZE defined, I think. I can
-> certainly define SCS_ORDER and use that to define SCS_SIZE, but do you
-> think we'll need an order >0 here at some point in future?
-
-I'm not daft enough to comment on SCS size again ;)
-Let's define SCS_ORDER 0 and then SCS_SIZE in terms of that.
-
+> The bulk of the API, which relies on the stateless decoder interface [1],
+> and H264 stateless V4L2 controls has been ready for some time now,
+> and there are various implementations supporting it.
 > 
-> > >  #define GFP_SCS                      (GFP_KERNEL | __GFP_ZERO)
-> > >
-> > >  /* An illegal pointer value to mark the end of the shadow stack. */
-> > > diff --git a/kernel/scs.c b/kernel/scs.c
-> > > index 4ff4a7ba0094..2136edba548d 100644
-> > > --- a/kernel/scs.c
-> > > +++ b/kernel/scs.c
-> > > @@ -5,50 +5,95 @@
-> > >   * Copyright (C) 2019 Google LLC
-> > >   */
-> > >
-> > > +#include <linux/cpuhotplug.h>
-> > >  #include <linux/kasan.h>
-> > >  #include <linux/mm.h>
-> > >  #include <linux/scs.h>
-> > > -#include <linux/slab.h>
-> > > +#include <linux/vmalloc.h>
-> > >  #include <linux/vmstat.h>
-> > >
-> > > -static struct kmem_cache *scs_cache;
-> > > -
-> > >  static void __scs_account(void *s, int account)
-> > >  {
-> > > -     struct page *scs_page = virt_to_page(s);
-> > > +     struct page *scs_page = vmalloc_to_page(s);
-> > >
-> > >       mod_node_page_state(page_pgdat(scs_page), NR_KERNEL_SCS_KB,
-> > >                           account * (SCS_SIZE / SZ_1K));
-> > >  }
-> > >
-> > > +/* Matches NR_CACHED_STACKS for VMAP_STACK */
-> > > +#define NR_CACHED_SCS 2
-> > > +static DEFINE_PER_CPU(void *, scs_cache[NR_CACHED_SCS]);
-> > > +
-> > >  static void *scs_alloc(int node)
-> > >  {
-> > > -     void *s = kmem_cache_alloc_node(scs_cache, GFP_SCS, node);
-> > > +     int i;
-> > > +     void *s;
-> > > +
-> > > +     for (i = 0; i < NR_CACHED_SCS; i++) {
-> > > +             s = this_cpu_xchg(scs_cache[i], NULL);
-> > > +             if (s) {
-> > > +                     memset(s, 0, SCS_SIZE);
-> > > +                     goto out;
-> > > +             }
-> > > +     }
-> > > +
-> > > +     /*
-> > > +      * We allocate a full page for the shadow stack, which should be
-> > > +      * more than we need. Check the assumption nevertheless.
-> > > +      */
-> > > +     BUILD_BUG_ON(SCS_SIZE > PAGE_SIZE);i
-> >
-> > With SCS_ORDER, you can drop this.
-> >
-> > > +
-> > > +     s = __vmalloc_node_range(PAGE_SIZE, SCS_SIZE,
-> > > +                              VMALLOC_START, VMALLOC_END,
-> > > +                              GFP_SCS, PAGE_KERNEL, 0,
-> > > +                              node, __builtin_return_address(0));
-> >
-> > Do we actually need vmalloc here? If we used alloc_pages() + vmap()
+> Chromium supports it [2], and I've tested it on chromebooks,
+> through chromeos builds. We haven't tried a non-chromeos build,
+> and I would say it's quite some work.
 > 
-> Does it matter that vmap() always uses NUMA_NO_NODE? We'll also lose
-> the ability to use vfree_atomic() in scs_release() unless we use
-> VM_MAP_PUT_PAGES and allocate the page array passed to vmap() with
-> kvmalloc(), which I think we need to do to avoid sleeping in
-> scs_free().
+> GStreamer support is available as well. See [3] which should
+> work for the latest H264 controls (the ones being moved out of staging).
+> 
+> LibreELEC developers maintain an Ffmpeg branch [4], I expect it will
+> be updated for the latest H264 controls soon, and hopefully merged
+> in mainline Ffmpeg.
+> 
+> GStreamer and Ffmpeg are relatively straightforward to build and test.
+> 
+> Thanks,
+> Ezequiel
+> 
+> [1] https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-stateless-decoder.html
+> [2] https://github.com/chromium/chromium/tree/master/media/gpu/v4l2
+> [3] https://gitlab.freedesktop.org/ezequielgarcia/gst-plugins-bad/-/tree/h264_stable_uapi
+> [4] https://github.com/Kwiboo/FFmpeg/tree/v4l2-request-hwaccel-4.3.
 
-Huh, I didn't realise we didn't have vunmap_atomic(). In which case, I take
-that back -- let's stick with vmalloc() for now.
+Alright, thank you.
 
-Cheers,
-
-Will
