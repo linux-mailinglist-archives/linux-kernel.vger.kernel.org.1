@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A26E2BFEC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FC62BFECD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgKWDph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 22:45:37 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4101 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgKWDpg (ORCPT
+        id S1727448AbgKWDrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 22:47:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgKWDrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 22:45:36 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CfY2Q2zlLzXfKd;
-        Mon, 23 Nov 2020 11:45:18 +0800 (CST)
-Received: from dggemi710-chm.china.huawei.com (10.3.20.109) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 23 Nov 2020 11:45:34 +0800
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemi710-chm.china.huawei.com (10.3.20.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 23 Nov 2020 11:45:33 +0800
-Received: from dggpemm000001.china.huawei.com ([7.185.36.245]) by
- dggpemm000001.china.huawei.com ([7.185.36.245]) with mapi id 15.01.1913.007;
- Mon, 23 Nov 2020 11:45:33 +0800
-From:   "liwei (CM)" <liwei213@huawei.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "Xiaqing (A)" <saberlily.xia@hisilicon.com>,
-        "Chenfeng (puck)" <puck.chen@hisilicon.com>,
-        butao <butao@hisilicon.com>,
-        fengbaopeng <fengbaopeng2@hisilicon.com>,
-        "nsaenzjulienne@suse.de" <nsaenzjulienne@suse.de>,
-        "steve.capper@arm.com" <steve.capper@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        sujunfei <sujunfei2@hisilicon.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: =?gb2312?B?tPC4tDogtPC4tDogW1BBVENIIHYyXSBhcm02NDogbW06IGZyZWUgdW51c2Vk?=
- =?gb2312?B?IG1lbW1hcCBmb3Igc3BhcnNlIG1lbW9yeSBtb2RlbCB0aGF0IGRlZmluZSBW?=
- =?gb2312?Q?MEMMAP?=
-Thread-Topic: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBhcm02NDogbW06IGZyZWUgdW51c2VkIG1lbW1h?=
- =?gb2312?Q?p_for_sparse_memory_model_that_define_VMEMMAP?=
-Thread-Index: AQHWcETlDVvjE2IvJkCQH2P2F6bPZqk7c02AgBr7NwCAdBE4gIAAh5EA//+diYCACw+1sA==
-Date:   Mon, 23 Nov 2020 03:45:33 +0000
-Message-ID: <c9d7b2cb6bc74ee5be3635d91e8f8d7c@huawei.com>
-References: <20200812010655.96339-1-liwei213@huawei.com>
- <20200817080405.GL969206@linux.ibm.com> <20200903120558.GB31409@gaia>
- <eacfa2bb19df4126a476566512d93dab@hisilicon.com>
- <f34d3387368a406582bce36627cdc29c@huawei.com> <X7JYhyr2a4H6D+cQ@trantor>
-In-Reply-To: <X7JYhyr2a4H6D+cQ@trantor>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.182.180.136]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Sun, 22 Nov 2020 22:47:15 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49436C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:47:14 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 62so12977378pgg.12
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:47:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBFTSOV5X132dLJFilDGPY0gccuN+TXfuq0RMp4Oqzw=;
+        b=JEuH55PhaK7IO9cw/CxjGzrdcTknRer/qrRcyHH+scTgYPXovzkSmgH5n9ZJp9T1uY
+         JrbUAqwU2aZHbvaHIjeg5DFe5fhzeBWqivQEKX1vCZNnUKADweCUN0hQuZSeRIzAwKnI
+         pZ8aiN5SLHO6+CQEKtN1cBrHrsfXgAsiSF4QI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBFTSOV5X132dLJFilDGPY0gccuN+TXfuq0RMp4Oqzw=;
+        b=NX+IgG58P3Up0UWRxQ0zE7QcK5/CzJLptIN29w/bxYk4e3UL+a9KYrpbEUWy1c/lk0
+         hQ7az1ojKAm0WoRZ/21M0ZDK+vVrdUU+1AYYooPnK/UTyPHkA1v63rGPPstWPFK4bWFX
+         sxNQBPvO1z/eHMG9qAwG/Z7SBioAJwP4GzS5x77W0fd/HcPLkIhinFVgPiyhYqpk20nb
+         KqSX0ZFz1Dki0L+avv+9Bwl3B2sU8jpzT/bAybU30gnRHDTIpkmwLgpugXEDgnPaNLea
+         JSOs8Yu9tLerJ4g1QUFxPDzdzfGsLChdvcWnTnIZaLx/ZSBDJ6HU+s3bGrFYbEKKpwLp
+         vmpQ==
+X-Gm-Message-State: AOAM531AESWArM3rKrQRk9NAIQAIYj9n+8UDDkbjzfGo49hSplzBqDME
+        y2uOA+HNq3z7lX+q3Mt7rTo5/g==
+X-Google-Smtp-Source: ABdhPJzpgoMOf+q/nprXjb6p03ctbOnQTmYQujTxfTsmLUeR6e38hwpr+BcyG1jJ5h09Ok3ZKHNC6w==
+X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr7221696pjb.114.1606103233806;
+        Sun, 22 Nov 2020 19:47:13 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
+        by smtp.gmail.com with ESMTPSA id m13sm149245pfa.115.2020.11.22.19.47.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 19:47:12 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: [PATCH v2 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
+Date:   Mon, 23 Nov 2020 11:46:52 +0800
+Message-Id: <20201123034652.3660584-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIENhdGFsaW4NCg0KU29ycnkgbGF0ZSBmb3IgeW91LCBJIHdpbGwgc3VibWl0IHRoZSBwYXRj
-aCBhcyBzb29uIGFzIHBvc3NpYmxlLg0KDQpUaGFua3MhDQoNCi0tLS0t08q8/tStvP4tLS0tLQ0K
-t6K8/sjLOiBDYXRhbGluIE1hcmluYXMgW21haWx0bzpjYXRhbGluLm1hcmluYXNAYXJtLmNvbV0g
-DQq3osvNyrG85DogMjAyMMTqMTHUwjE2yNUgMTg6NDcNCsrVvP7IyzogbGl3ZWkgKENNKSA8bGl3
-ZWkyMTNAaHVhd2VpLmNvbT4NCrOty806IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcu
-YmFvLmh1YUBoaXNpbGljb24uY29tPjsgTWlrZSBSYXBvcG9ydCA8cnBwdEBsaW51eC5pYm0uY29t
-Pjsgd2lsbEBrZXJuZWwub3JnOyBYaWFxaW5nIChBKSA8c2FiZXJsaWx5LnhpYUBoaXNpbGljb24u
-Y29tPjsgQ2hlbmZlbmcgKHB1Y2spIDxwdWNrLmNoZW5AaGlzaWxpY29uLmNvbT47IGJ1dGFvIDxi
-dXRhb0BoaXNpbGljb24uY29tPjsgZmVuZ2Jhb3BlbmcgPGZlbmdiYW9wZW5nMkBoaXNpbGljb24u
-Y29tPjsgbnNhZW56anVsaWVubmVAc3VzZS5kZTsgc3RldmUuY2FwcGVyQGFybS5jb207IGxpbnV4
-LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVs
-Lm9yZzsgc3VqdW5mZWkgPHN1anVuZmVpMkBoaXNpbGljb24uY29tPjsgTGludXhhcm0gPGxpbnV4
-YXJtQGh1YXdlaS5jb20+DQrW98ziOiBSZTogtPC4tDogW1BBVENIIHYyXSBhcm02NDogbW06IGZy
-ZWUgdW51c2VkIG1lbW1hcCBmb3Igc3BhcnNlIG1lbW9yeSBtb2RlbCB0aGF0IGRlZmluZSBWTUVN
-TUFQDQoNCk9uIE1vbiwgTm92IDE2LCAyMDIwIGF0IDA4OjQyOjE3QU0gKzAwMDAsIGxpd2VpIChD
-TSkgd3JvdGU6DQo+IEkgaGF2ZSBjaGFuZ2VkIFNFQ1RJT05fU0laRV9CSVRTIHRvIDI3IGluIG91
-ciBwcm9kdWN0cywgYnV0IEkgZG9uJ3QgDQo+IGhhdmUgdG8gc3VibWl0IGl0Lg0KDQpXZWxsLCBp
-ZiB5b3Ugc2VuZCBhIHBhdGNoLCBJJ20gaGFwcHkgdG8gbWVyZ2UgaXQuDQoNCi0tDQpDYXRhbGlu
-DQo=
+anx7625 requires 3 power supply regulators.
+
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+Change:
+v2: remove maxItems for supplies
+---
+ .../bindings/display/bridge/analogix,anx7625.yaml | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+index 60585a4fc22b..3ae97d9523e5 100644
+--- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+@@ -34,6 +34,15 @@ properties:
+     description: used for reset chip control, RESET_N pin B7.
+     maxItems: 1
+ 
++  vdd10-supply:
++    description: Regulator that provides the supply 1.0V power.
++
++  vdd18-supply:
++    description: Regulator that provides the supply 1.8V power.
++
++  vdd33-supply:
++    description: Regulator that provides the supply 3.3V power.
++
+   ports:
+     type: object
+ 
+@@ -55,6 +64,9 @@ properties:
+ required:
+   - compatible
+   - reg
++  - vdd10-supply
++  - vdd18-supply
++  - vdd33-supply
+   - ports
+ 
+ additionalProperties: false
+@@ -72,6 +84,9 @@ examples:
+             reg = <0x58>;
+             enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+             reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
++            vdd10-supply = <&pp1000_mipibrdg>;
++            vdd18-supply = <&pp1800_mipibrdg>;
++            vdd33-supply = <&pp3300_mipibrdg>;
+ 
+             ports {
+                 #address-cells = <1>;
+-- 
+2.29.2.454.gaff20da3a2-goog
+
