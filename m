@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCFE2C0022
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A882C0024
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbgKWGdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 01:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
+        id S1726000AbgKWGhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 01:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKWGdN (ORCPT
+        with ESMTP id S1725275AbgKWGhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 01:33:13 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D317C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:33:11 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 64so4019652wra.11
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:33:11 -0800 (PST)
+        Mon, 23 Nov 2020 01:37:16 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF367C0613CF;
+        Sun, 22 Nov 2020 22:37:15 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id v5so9937573pff.10;
+        Sun, 22 Nov 2020 22:37:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=bA6PxX8QLzsGPO0mHBN+3Dtvap+C8KIb1Z8Udw0nO2Q=;
-        b=dWLZqofKsdhEgABif3Bioetz8qih1qcB80fqacMhJo3qbRlmgvkSjpf6KfOnapZooC
-         XkowLImJFECW49B/96Na1+iiQILiX339zOB9wPpVpQDC5DBYTsboBByQ1HfKYJg+o8LD
-         CkaxrP/J0mgb7TYTF9Aan+MwAfRu68XJ9cQoEHzUwvGpVq5MyCkZyM9MgstYMeZifXda
-         +PdO08Q3Q2Qvy82Z4zlD1IjzS2e3VdNmCF+McBtr1esqW5YHW7rBOO3khdGd5lbZvwo7
-         pgkiLIGXoUHWGa/z6YUu2svO38+07/OlvlO0gIhuv9cmtUJgH/moRnI83yALB50jIUGw
-         Ufiw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KpShnKVttdp37I3RhLIbeVpDk3jfnd/Fq6u1ok+4a3Q=;
+        b=krPGUkQx4arxlxrhaB2ymV4cgj0KDzWIMypxsn14D4zJV6M5b2haLs5sLqv1HLqcFr
+         UEe6dmHYt3C1BzL6CnchimSTFzcZfG/6zJrEoDuTuT4IfjK3d1/B49GLYr9DBRCCb0Od
+         pIGCBr2xokZkaJLu/SUOhnEIIYBIrJhkOCzRgKKGAL+HhT74vIOGygYXnVR8uLkL2LdO
+         K4CzGKNXHBJu+lvYMAfPux3ozlnl7A+c1LsGJdxnXhul87rHOVRgDSJfeeZ6yXCyiUcq
+         +P/XJ5TS5e0jg+d9fOAJ9XCLfd2O/357Of6UuLFTFhyk0ZtbjATqU8rURAz4WQ7GEMfM
+         K2ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bA6PxX8QLzsGPO0mHBN+3Dtvap+C8KIb1Z8Udw0nO2Q=;
-        b=OLmEvaZqV+gV1V5/nZ2ebaQpZqkYTjnLdUVt1/2IWGy4H2nSgiwI5GuDmuMOP7L1qd
-         VqRCOUP8dPK/RSLaMUfuLJazUEzTa2BVzb5mH//roPrJ2xgQNX2wyNflyL6rJVQMhq09
-         ScikHNLpdsD6n3oSwu3SMVmdxCHR3iezHspUqycteXqC0FAuxyVn1A0bjmDPluAlPcJL
-         63ivoDGaa1V4dVhv/J/S+i9QbaQ7oVmGoj8RbN60rN944DIEGuXVI7WnqIqeGeaN3OAU
-         65yaIoTRwHG0fglx5ro/8X+AqRE3NEzaf/3YJx5rm3+GWVwqDDFONxJdpUHDzQAiReE5
-         EDBw==
-X-Gm-Message-State: AOAM5316J+Md+srMj4puJcw3rNnqn+8q9fgyFpofvsQwMc7PYuQsl4s+
-        72kzTkR/bxVGb6BQoVmJhFc+yw==
-X-Google-Smtp-Source: ABdhPJxj3l+5ygzvJnGvao/pLWVRCcUon/irO3mlsfmWiGjI66Lp7ac+52xe4O+T97k2/Htaikrpsg==
-X-Received: by 2002:adf:f24a:: with SMTP id b10mr29509390wrp.352.1606113190342;
-        Sun, 22 Nov 2020 22:33:10 -0800 (PST)
-Received: from MacBook-Pro.local ([212.45.64.13])
-        by smtp.googlemail.com with ESMTPSA id l23sm11165881wmh.40.2020.11.22.22.33.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Nov 2020 22:33:09 -0800 (PST)
-Subject: Re: [PATCH v10 06/19] memory: tegra124: Support interconnect
- framework
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201123002723.28463-1-digetx@gmail.com>
- <20201123002723.28463-7-digetx@gmail.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <8871a6d3-23da-01e2-18b6-b0dcd4df1a54@linaro.org>
-Date:   Mon, 23 Nov 2020 08:33:08 +0200
-MIME-Version: 1.0
-In-Reply-To: <20201123002723.28463-7-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KpShnKVttdp37I3RhLIbeVpDk3jfnd/Fq6u1ok+4a3Q=;
+        b=WZUBZwdPl9G6SExrItiSMNkvZ/fK1647sd/6YCR4UUcv+Mkbtl7mGDxmVTqwySqEEV
+         qJynWB0nj3B+xwunwAx2QlKIa3x74drLx4EsL1UEpQP/mvbu9zQmfU5c/C6A4z2eERGV
+         ApRRKR8JkN0VVTDp/FtgKFIw2J5fxRCqII5QnY2j7eUJcxfj0FWRUUp68gZHcCJFzlhx
+         ssIQWWx2C4RiH62kvGE1IIpobQybN4nkzJImmzM9nLAgbkIVU4LDw6SHJnROdwnlkLoy
+         WHl4sPfBItzndGm4W9xwbo1RpW47iAAE5fzeW1jG3FJDFskv6bs7A2C+dsdIRx6WV60c
+         q/pg==
+X-Gm-Message-State: AOAM531L+ztRSA0Je4yHMMCArB5PT+OiFnZ5mPiPcriZLZX2J1DyDT6h
+        +zxoX3CiaeSbdqMUbEvEuzbIuJZuzg==
+X-Google-Smtp-Source: ABdhPJxU9E8nC/buUNO4PTC/Ufg7ettszhhqvrcX5Pj/Qg7cEFAGizHFg64Y5NAJeytuFPdKNoDpLw==
+X-Received: by 2002:a17:90b:1011:: with SMTP id gm17mr22422993pjb.73.1606113435328;
+        Sun, 22 Nov 2020 22:37:15 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id z5sm8353787pgp.79.2020.11.22.22.37.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 22 Nov 2020 22:37:14 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     dmitry.torokhov@gmail.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] Input: synaptics-rmi4 - remove the useless unsigned variable compared with zero
+Date:   Mon, 23 Nov 2020 14:37:08 +0800
+Message-Id: <1606113428-21462-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.20 2:27, Dmitry Osipenko wrote:
-> Now Internal and External memory controllers are memory interconnection
-> providers. This allows us to use interconnect API for tuning of memory
-> configuration. EMC driver now supports OPPs and DVFS.
-> 
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-Acked-by: Georgi Djakov <georgi.djakov@linaro.org>
+It is always true that the value of unsigned variable size_presence_reg
+greater than or equal to zero, so compared with zero is unnecessary.
+Remove it.
 
-Thanks,
-Georgi
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ drivers/input/rmi4/rmi_driver.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->   drivers/memory/tegra/Kconfig        |   1 +
->   drivers/memory/tegra/tegra124-emc.c | 320 +++++++++++++++++++++++++++-
->   drivers/memory/tegra/tegra124.c     |  82 ++++++-
->   3 files changed, 391 insertions(+), 12 deletions(-)
+diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
+index 258d5fe3d395..e7c9300417e3 100644
+--- a/drivers/input/rmi4/rmi_driver.c
++++ b/drivers/input/rmi4/rmi_driver.c
+@@ -580,7 +580,7 @@ int rmi_read_register_desc(struct rmi_device *d, u16 addr,
+ 		return ret;
+ 	++addr;
+ 
+-	if (size_presence_reg < 0 || size_presence_reg > 35)
++	if (size_presence_reg > 35)
+ 		return -EIO;
+ 
+ 	memset(buf, 0, sizeof(buf));
+-- 
+2.20.0
+
