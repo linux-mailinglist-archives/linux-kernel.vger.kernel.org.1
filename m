@@ -2,275 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98802C0E5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF3E2C0E61
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389291AbgKWPDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729244AbgKWPD3 (ORCPT
+        id S2389311AbgKWPDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:03:48 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54908 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389294AbgKWPDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:03:29 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E416C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:03:29 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id x17so16209186ybr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:03:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eE2REjZ2KihgeWAB19FrZ0Eh0oguIUq3o8nfc663G2c=;
-        b=C1TDHyTmuOqGvQ/rAULYHA0VLje7ffu6HS7n4sv+fyvdOxVc7UkxxVj3BEy7y3WuTc
-         Kjt5liroMkMCkloTAPiLKfD+KfeppntNvDAtssxhSgjeemxx4g5BBS+yDJk21kWvKrxC
-         HdEmGU56FLIAcIIttOPxGlbStJLytRRvFr3riyLlajJRdvn0DPBLpxPrL/A1ZalaHT2F
-         7/wQgJ0wc14zTxFW2J9xyRpWlffW9o+PEiCb0icVpepVPrs3VQtbXUIQMDI9r5v6Otdl
-         ykL0BExM8ZZ2RbqHfXll3zqrqFrDhUmZNBC6hNjueYT+0SxigKXDWpZb2bYW+48kmo5K
-         PwuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eE2REjZ2KihgeWAB19FrZ0Eh0oguIUq3o8nfc663G2c=;
-        b=tHiZ1N8MqKPilHTnGEXWMxUQjLL5VCTo67xO6UEPrPv9YGsBaAYeyHhGswW2sjCjMR
-         tL4E4TZC4SKct4i2S6lI0v8MMbzaPKy63WVVsegUJkPl6OvM6O5i/pU5MFfB8cuK/ewN
-         d09/4jaI17irCEiNhRWO4lPRwdECA6s51r3Kb0hV7Tj3aGCunsn1AdrJ6WqearUQWT0f
-         lf9+aUherhAAiA7BptY4KBKS3onA1oiQgkUDSIzgmx2ZpP4vycMxNcq8/LQlfOuVgVNX
-         NN/54anGS+RXSXT+nlFqwHoCT6uQ3zAR6DYAJbrD+iVZgsgK6Ok8XtOuk4UZJdH2mRRn
-         t9Ww==
-X-Gm-Message-State: AOAM530hPVe6uxXddAaSQNEN0u3wfrFLbgiu85NUdFRMGbM05bCgV0DU
-        C7w71M8tYF8IPknIoD7br+ZZdEuUk76uskWoeTHtDA==
-X-Google-Smtp-Source: ABdhPJzLDE+mqzGHTz9C+7wh6yQ9GB0AlFQdRiud7wJMSa7X/BK8MHeeB4wZTcw2mFbjNxnS55mwH7cGFRWWj2nsIDk=
-X-Received: by 2002:a25:7453:: with SMTP id p80mr45946317ybc.31.1606143807765;
- Mon, 23 Nov 2020 07:03:27 -0800 (PST)
+        Mon, 23 Nov 2020 10:03:48 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ANF1GcZ025969;
+        Mon, 23 Nov 2020 10:03:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=ajLgjdq3F09Sm6PRnktY1ShkPTmRih/QYqAHfywLmXg=;
+ b=oPVTJ8n+2ywP1f/B9KJ+wkW2f6Uofujdza1BXx+VDVzANChzJEcLydsN6xOK3Wajl99t
+ AzWD2mbnlctq8PMize84qoKeR9fXYkjMU+Ma+AbUvv1uqUO3DEapJGtdLdKb739M1xna
+ CV8fjprrG2Gc6Q1mxPEh48T60qyJhbMEbypVNyaPv4sMnLZYZ8UXC3O/94DZRWoRW1MO
+ EmO4LZzuuErktDm5rZIfOC6PC2RBRX6K7VCZ3xeGcZ8ZuXrDnAHj5rXe7jdvvOm5PVzH
+ k5JmPKd67qnj761QXF/hDfwbsbjZG2P1eZL66hnaJTQZ4602u2SFnMTt/PdEBww/TcLF qw== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34yucmku95-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 10:03:18 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ANEwIGN021236;
+        Mon, 23 Nov 2020 15:03:17 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 34y6k4s42s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 15:03:16 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ANF3EXB64094466
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Nov 2020 15:03:14 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8B81611C069;
+        Mon, 23 Nov 2020 15:03:14 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3FA0911C052;
+        Mon, 23 Nov 2020 15:03:13 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 23 Nov 2020 15:03:13 +0000 (GMT)
+Date:   Mon, 23 Nov 2020 20:33:12 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Subject: Re: powerpc64-linux-ld: arch/powerpc/mm/numa.o:undefined reference
+ to `coregroup_enabled'
+Message-ID: <20201123150312.GC528281@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <202011200207.3PUoc4Gf-lkp@intel.com>
+ <e9a3cd97-5a26-7b43-0077-22f909986141@infradead.org>
 MIME-Version: 1.0
-References: <5ff0fc487272a7c21f63a929bfceee1ac9b43348.camel@debian.org>
- <CAOf41N=PopZ=8_05e9WfvWkBhuN5iRq1=JJ2KqkLJE5S3-XW5A@mail.gmail.com> <a443a3e8633b9be921b365764147f296d0f16f76.camel@debian.org>
-In-Reply-To: <a443a3e8633b9be921b365764147f296d0f16f76.camel@debian.org>
-From:   Adam Goode <agoode@google.com>
-Date:   Mon, 23 Nov 2020 10:02:51 -0500
-Message-ID: <CAOf41NnKMks8UgM+4Z5ymNtBnioPzsTE-1fh1ERMEcFfX=UoMg@mail.gmail.com>
-Subject: Re: PROBLEM: Broken pixel format for Elgato Cam Link 4K
-To:     Benjamin Drung <benjamin.drung@cloud.ionos.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <e9a3cd97-5a26-7b43-0077-22f909986141@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_11:2020-11-23,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
+ mlxlogscore=999 mlxscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 spamscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011230100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 2:34 PM Benjamin Drung
-<benjamin.drung@cloud.ionos.com> wrote:
->
-> Am Freitag, den 20.11.2020, 16:45 -0500 schrieb Adam Goode:
-> > On Fri, Nov 20, 2020 at 1:52 PM Benjamin Drung
-> > <benjamin.drung@cloud.ionos.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > I own an Elgato Cam Link 4K which is a very popular USB HDMI
-> > > capture
-> > > device (number one capture card by click rates on Geizhals [1]).
-> > > The
-> > > problem is that the video feed is distorted when using the
-> > > /dev/videoX
-> > > device in the browser (tested on Firefox and Chromium) for video
-> > > conferencing (tested with Jitsi Meet and Google Meet). The same
-> > > distortion is present when opening `v4l2:///dev/video0` with VLC.
-> > >
-> > > The Elgato Cam Link 4K reports to have three different pixel
-> > > formats:
-> > >
-> > > ```
-> > > $ v4l2-ctl -d /dev/video0 --list-formats-ext
-> > > ioctl: VIDIOC_ENUM_FMT
-> > >         Type: Video Capture
-> > >
-> > >         [0]: 'NV12' (Y/CbCr 4:2:0)
-> > >                 Size: Discrete 3840x2160
-> > >                         Interval: Discrete 0.040s (25.000 fps)
-> > >         [1]: 'NV12' (Y/CbCr 4:2:0)
-> > >                 Size: Discrete 3840x2160
-> > >                         Interval: Discrete 0.040s (25.000 fps)
-> > >         [2]: 'YU12' (Planar YUV 4:2:0)
-> > >                 Size: Discrete 3840x2160
-> > >                         Interval: Discrete 0.040s (25.000 fps)
-> > > ```
-> > >
-> > > When specifying the video format 'YU12' to VLC, the video is
-> > > distorted
-> > > the same way as using the default video format. When specifying
-> > > 'NV12'
-> > > to VLC, the video feed is displayed correctly:
-> > >
-> > > ```
-> > > vlc v4l2:///dev/video0 --v4l2-chroma=NV12
-> > > ```
-> > >
-> > > In OBS, the video feed is always displayed correctly. All video
-> > > formats
-> > > 'Y/CbCr 4:2:0', 'Planar YUV 4:2:0', 'BGR3 (Emulated)', and 'YV12
-> > > (Emulated)' combined with the color ranges 'Default', 'Partial',
-> > > and
-> > > 'Full' produce the same correct output.
-> > >
-> > > With Linux >= 5.9 this behavior in OBS changes: The video format
-> > > 'Y/CbCr 4:2:0' displays the video correctly. Switching to 'Planar
-> > > YUV
-> > > 4:2:0', 'BGR3 (Emulated)', or 'YV12 (Emulated)' shows the video
-> > > distorted and OBS shows this error message:
-> > >
-> > > ```
-> > > info: v4l2-input: Pixelformat: NV12
-> > > [...]
-> > > libv4l2: error set_fmt gave us a different result than try_fmt!
-> > > info: v4l2-input: Resolution: 3840x2160
-> > > info: v4l2-input: Pixelformat: NV12
-> > > ```
-> > >
-> > > Changing the video format back does not have an effect until I also
-> > > change the color range (does seem to be relevant what to select
-> > > there).
-> > >
-> > > Workaround
-> > > ----------
-> > >
-> > > You can create a v4l2loopback device and use ffmpeg to stream from
-> > > the
-> > > Cam Link 4K to the loopback device:
-> > >
-> > > ```
-> > > ffmpeg -f v4l2 -input_format yuv420p -video_size 3840x2160 \
-> > >   -i "$camlink" -codec copy -f v4l2 "$loopdev"
-> > > ```
-> > >
-> > > This workaround works, but is cumbersome and burns CPU cycles.
-> > >
-> > > Other reports
-> > > -------------
-> > >
-> > > Searching the web for "Cam Link 4K Linux" reveals many similar
-> > > reports
-> > > like this. Noteworthy is blog post [3] from Mike Walters who
-> > > patched
-> > > the Cam Link 4K firmware to report the correct video format. I am
-> > > willing to debug this issue and do test, but I don't want to flash
-> > > the
-> > > firmware to not break the warrenty (bisides I lack the hardware for
-> > > flashing).
-> > >
-> > > Environment
-> > > -----------
-> > >
-> > > This problem is present in Ubuntu 20.04 with linux 5.4.0-54.60 and
-> > > Ubuntu 20.10 with linux 5.8.0-29.31. I also tested the mainline
-> > > kernels
-> > > builds 5.9.8-050908.202011101634 and 5.10.0-051000rc4.202011152030
-> > > from
-> > > Ubuntu [2].
-> > >
-> > > The Cam Link 4K shows follow entries in dmesg:
-> > >
-> > > ```
-> > > [    1.575753] usb 2-3: new SuperSpeed Gen 1 USB device number 2
-> > > using xhci_hcd
-> > > [    1.596664] usb 2-3: LPM exit latency is zeroed, disabling LPM.
-> > > [    1.598557] usb 2-3: New USB device found, idVendor=0fd9,
-> > > idProduct=0066, bcdDevice= 0.00
-> > > [    1.598558] usb 2-3: New USB device strings: Mfr=1, Product=2,
-> > > SerialNumber=4
-> > > [    1.598559] usb 2-3: Product: Cam Link 4K
-> > > [    1.598560] usb 2-3: Manufacturer: Elgato
-> > > ```
-> > >
-> > > I have another problems with 5.9.8-050908.202011101634 and 5.10.0-
-> > > 051000rc4.202011152030: Chromium fail to access the video device of
-> > > Cam
-> > > Link 4K and the notebook integrated webcam has a too low
-> > > brightness.
-> > >
-> > > [1] https://geizhals.de/?cat=vidext
-> > > [2] https://kernel.ubuntu.com/~kernel-ppa/mainline/
-> > > [3]
-> > > https://assortedhackery.com/patching-cam-link-to-play-nicer-on-linux/
-> > >
-> > > --
-> > > Benjamin Drung
-> > > Debian & Ubuntu Developer
-> > >
-> >
-> >
-> > Hi,
-> >
-> > I am running on Fedora 32 which has the fix I wrote for the buggy
-> > elgato firmware. The bug in the firmware makes it impossible to
-> > properly select a non-0 pixel format when following the UVC
-> > negotiation protocol. This is because the firmware returns the pixel
-> > format in the wrong byte of the packet. The driver was following the
-> > UVC protocol but did not send the pixel format back to the v4l2
-> > subsystem. It does that now.
-> >
-> > I'm not surprised that other bugs are emerging now. Ultimately the
-> > firmware is buggy and announces pixel formats that it then rejects.
-> > If
-> > I flip through the settings in OBS, I do manage to wedge the
-> > interface. But most of the programs I've seen that use v4l2 are buggy
-> > in this way. A reliable one is the qv4l2 test program. I've also had
-> > no problems with Chromium.
-> >
-> > That reverse engineering is interesting! But I think it hides the
-> > real
-> > problem, where the pixel format negotiation on the firmware writes
-> > into the wrong byte of the packet.
->
-> Hi Adam,
->
-> you are talking about commit ec2c23f628802317f73fab5255cc62a776bc7930
-> and 8a652a17e3c005dcdae31b6c8fdf14382a29cbbe that are part of
-> v5.10-rc1?
->
-> What do you suggest to fix the issue? Should I contact Elgato
-> requesting a firmware update? Can the kernel ship a quirk for the Cam
-> Link 4K to workaround the firmware bug? I would be happy to try out
-> patches.
->
+* Randy Dunlap <rdunlap@infradead.org> [2020-11-19 15:51:29]:
 
-I would file a ticket. I did so some time ago, but there have been no
-firmware updates for many months.
+> On 11/19/20 10:26 AM, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   c2e7554e1b85935d962127efa3c2a76483b0b3b6
+> > commit: f9f130ff2ec93c5949576bbfb168cc9530c23649 powerpc/numa: Detect support for coregroup
+> > date:   9 weeks ago
+> > config: powerpc64-randconfig-c003-20201104 (attached as .config)
+> > compiler: powerpc64-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >          chmod +x ~/bin/make.cross
+> >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9f130ff2ec93c5949576bbfb168cc9530c23649
+> >          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >          git fetch --no-tags linus master
+> >          git checkout f9f130ff2ec93c5949576bbfb168cc9530c23649
+> >          # save the attached .config to linux build tree
+> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc64
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> > > > powerpc64-linux-ld: arch/powerpc/mm/numa.o:(.toc+0x0): undefined reference to `coregroup_enabled'
+> >     powerpc64-linux-ld: mm/page_alloc.o:(.toc+0x0): undefined reference to `node_reclaim_distance'
+> >     powerpc64-linux-ld: mm/khugepaged.o:(.toc+0x0): undefined reference to `node_reclaim_distance'
+> 
+> Hm, OK.
+> CONFIG_NUMA=y
+> # CONFIG_SMP is not set
+> 
+> Michael, Gautham, does anyone care about this config combination?
+> 
 
-> I tested the qv4l2 with Linux 5.10.0-051000rc4.202011152030. When using
-> the default settings, it displays the video correctly, but with a
-> vertical green one-pixel-wide line. The terminal prints "error" four
-> times. Sadly there is no debug mode to figure out where that error
-> comes from.
+I can add #ifdef CONFIG_SMP where coregroup_enabled is being accessed
+but I do feel CONFIG_NUMA but !CONFIG_SMP may not be a valid combination.
 
-I'm not sure where this line is coming from. Can you post a link to a
-screenshot or capture? I have never encountered this issue. Can you
-reproduce on a Windows or Mac computer?
+> 
+> Thanks.
 
->
-> Selecting "YU12 (Planar YUV 4:2:0)" print the following error message
-> and switches back to the previous format:
->
-> libv4l2: error set_fmt gave us a different result than try_fmt!
->
-
-Yes, this is the kernel coping with the buggy firmware. These errors
-are expected. It is also expected that YU12 does not work (the device
-advertises it, then rejects it when selected). I believe Windows and
-Mac (you can use OBS to try) do the same thing.
-
-A quirk is possible (I hacked something up with libuvc when I was
-debugging this) but it's not something I have time to look at right
-now.
-
-
-Adam
-
-> --
-> Benjamin Drung
-> Debian & Ubuntu Developer
->
+-- 
+Thanks and Regards
+Srikar Dronamraju
