@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FD22C0674
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C910A2C0677
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730815AbgKWMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:31:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41870 "EHLO mail.kernel.org"
+        id S1730817AbgKWMbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:31:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730799AbgKWMa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:59 -0500
+        id S1730812AbgKWMbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:31:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E43220728;
-        Mon, 23 Nov 2020 12:30:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E60D20728;
+        Mon, 23 Nov 2020 12:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134658;
-        bh=oWESSb/KESHk/7RZ6Qu/BgrRa8Q1K148M9X3dlhSkyw=;
+        s=korg; t=1606134666;
+        bh=vwlZFy4zbL3jhkYWPf5ntfpkxyvkxTmd7Tz9BRz0e4k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zai45BnD8cd3HRYWnouPTR0NguEVxX34Q8/IO3RTdSnpbQZCCQ1RpI0dyRUMc/RB6
-         JNl4mGmBcZVoP/F7VUlZeJyfXTwvONaKIPirXQvxUT8QS2cyb9rgYvoOfK+VF7QmQ3
-         dT5kGGoBr2OcMQ7EOUUHoUPkTJTsw2C98ZGBYFZ4=
+        b=sp5CfzWwrlXlj45SbLFSJgepbzFdOG9DThCQP3STNQHHWxfOvCwunJpmUyNcJJWvy
+         peT/pV+2AvpbrO97WYPXWIZOeCDYHg9xp8cIGPHsaumgO/VlB+OLgh7XhWCLnJglma
+         KTE//bedb6QlbX6g61qAAzbToG2jeIiRdnp/Oz+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Van Asbroeck <thesven73@gmail.com>,
+        stable@vger.kernel.org, Denis Yulevich <denisyu@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 07/91] lan743x: prevent entire kernel HANG on open, for some platforms
-Date:   Mon, 23 Nov 2020 13:21:27 +0100
-Message-Id: <20201123121809.660731035@linuxfoundation.org>
+Subject: [PATCH 4.19 08/91] mlxsw: core: Use variable timeout for EMAD retries
+Date:   Mon, 23 Nov 2020 13:21:28 +0100
+Message-Id: <20201123121809.710985744@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
 References: <20201123121809.285416732@linuxfoundation.org>
@@ -42,65 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <thesven73@gmail.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit 796a2665ca3e91ebaba7222f76fd9a035714e2d8 ]
+[ Upstream commit 1f492eab67bced119a0ac7db75ef2047e29a30c6 ]
 
-On arm imx6, when opening the chip's netdev, the whole Linux
-kernel intermittently hangs/freezes.
+The driver sends Ethernet Management Datagram (EMAD) packets to the
+device for configuration purposes and waits for up to 200ms for a reply.
+A request is retried up to 5 times.
 
-This is caused by a bug in the driver code which tests if pcie
-interrupts are working correctly, using the software interrupt:
+When the system is under heavy load, replies are not always processed in
+time and EMAD transactions fail.
 
-1. open: enable the software interrupt
-2. open: tell the chip to assert the software interrupt
-3. open: wait for flag
-4. ISR: acknowledge s/w interrupt, set flag
-5. open: notice flag, disable the s/w interrupt, continue
+Make the process more robust to such delays by using exponential
+backoff. First wait for up to 200ms, then retransmit and wait for up to
+400ms and so on.
 
-Unfortunately the ISR only acknowledges the s/w interrupt, but
-does not disable it. This will re-trigger the ISR in a tight
-loop.
-
-On some (lucky) platforms, open proceeds to disable the s/w
-interrupt even while the ISR is 'spinning'. On arm imx6,
-the spinning ISR does not allow open to proceed, resulting
-in a hung Linux kernel.
-
-Fix minimally by disabling the s/w interrupt in the ISR, which
-will prevent it from spinning. This won't break anything because
-the s/w interrupt is used as a one-shot interrupt.
-
-Note that this is a minimal fix, overlooking many possible
-cleanups, e.g.:
-- lan743x_intr_software_isr() is completely redundant and reads
-  INT_STS twice for no apparent reason
-- disabling the s/w interrupt in lan743x_intr_test_isr() is now
-  redundant, but harmless
-- waiting on software_isr_flag can be converted from a sleeping
-  poll loop to wait_event_timeout()
-
-Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # arm imx6 lan7430
-Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
-Link: https://lore.kernel.org/r/20201112204741.12375-1-TheSven73@gmail.com
+Fixes: caf7297e7ab5 ("mlxsw: core: Introduce support for asynchronous EMAD register access")
+Reported-by: Denis Yulevich <denisyu@nvidia.com>
+Tested-by: Denis Yulevich <denisyu@nvidia.com>
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/microchip/lan743x_main.c |    3 ++-
+ drivers/net/ethernet/mellanox/mlxsw/core.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -145,7 +145,8 @@ static void lan743x_intr_software_isr(vo
+--- a/drivers/net/ethernet/mellanox/mlxsw/core.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
+@@ -439,7 +439,8 @@ static void mlxsw_emad_trans_timeout_sch
+ 	if (trans->core->fw_flash_in_progress)
+ 		timeout = msecs_to_jiffies(MLXSW_EMAD_TIMEOUT_DURING_FW_FLASH_MS);
  
- 	int_sts = lan743x_csr_read(adapter, INT_STS);
- 	if (int_sts & INT_BIT_SW_GP_) {
--		lan743x_csr_write(adapter, INT_STS, INT_BIT_SW_GP_);
-+		/* disable the interrupt to prevent repeated re-triggering */
-+		lan743x_csr_write(adapter, INT_EN_CLR, INT_BIT_SW_GP_);
- 		intr->software_isr_flag = 1;
- 	}
+-	queue_delayed_work(trans->core->emad_wq, &trans->timeout_dw, timeout);
++	queue_delayed_work(trans->core->emad_wq, &trans->timeout_dw,
++			   timeout << trans->retries);
  }
+ 
+ static int mlxsw_emad_transmit(struct mlxsw_core *mlxsw_core,
 
 
