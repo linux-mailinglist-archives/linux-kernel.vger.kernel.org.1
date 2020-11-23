@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3862C11EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9882C11EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387842AbgKWR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:26:48 -0500
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:41791 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733189AbgKWR0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:26:48 -0500
-Received: by mail-oo1-f67.google.com with SMTP id o20so1442670oor.8;
-        Mon, 23 Nov 2020 09:26:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=74gAAKrXGHCOv5Lu8fi+qsQUyGkmNSPiGNb1uC5KwBU=;
-        b=eHUW5Lbq9b+qc+zWwfFWsOJywPXc7GS0Fr5k47oweBLIapTMEishqwdJ1VS5S8ZT34
-         aStD1/3m6k+6NKqw9pp+kGN7HTfKHvzbEvrLkIv2EE7zREWbeEbXnFpi08PWag2Ux/u4
-         FjeAz6OOSy2ENN2EoiVIT9zkFRhLibL6P+hlHD35WCnSSU7TdyEf0P0XR0+iHLy9buac
-         85qdaRwJ3kBnZiPvNjxai4yc2nSf39U9Px9qYl6yHcRZFSpf3qQrg7GrPEFWOmO33bV+
-         8GNt1MjSmMDGh0XYIyrIBaRXSX5jJceO8obW6SmosRjxs7EM6oWXQzcZib8U4aG+FdxF
-         waIA==
-X-Gm-Message-State: AOAM5330/wekNIKIiMtaVbLrfM/vp77aSiqSBLxFmXdEf6bydRdjwSpb
-        OkG7Ijm1BnvCVtA/QCHvfHopu2zvMCFUSsUS0K7i7u8pU6Y=
-X-Google-Smtp-Source: ABdhPJxcnGuNomevjJK6bWP7Z0/Y2PbUyMhXYG80JgzUvPiQZTzOSw5V+41Rng4uMxRi8H5UeauzCHAF6VlyKp7SOfE=
-X-Received: by 2002:a4a:bb07:: with SMTP id f7mr306250oop.44.1606152407187;
- Mon, 23 Nov 2020 09:26:47 -0800 (PST)
+        id S2388407AbgKWR1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:27:32 -0500
+Received: from muru.com ([72.249.23.125]:49210 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732710AbgKWR1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:27:32 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id E239D809F;
+        Mon, 23 Nov 2020 17:27:36 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 19:27:26 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Nishanth Menon <nm@ti.com>, SoC Team <soc@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Sekhar Nori <nsekhar@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-omap <linux-omap@vger.kernel.org>
+Subject: Re: [PATCH v2] ARM: multi_v7_defconfig: ti: Enable networking
+ options for nfs boot
+Message-ID: <20201123172726.GQ26857@atomide.com>
+References: <20201030124650.20349-1-grygorii.strashko@ti.com>
+ <20201116090429.GB26857@atomide.com>
+ <CAK8P3a0-LWzSvvKkH5xVAoCfNGG_fhDJ37AZVW+qknSZU1wxDw@mail.gmail.com>
 MIME-Version: 1.0
-References: <1605257895-5536-1-git-send-email-alex.shi@linux.alibaba.com>
-In-Reply-To: <1605257895-5536-1-git-send-email-alex.shi@linux.alibaba.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 23 Nov 2020 18:26:36 +0100
-Message-ID: <CAJZ5v0iUfvn0=HbuowX=j0zxpiiEmBTb=QyQknViqGrc8WDW2w@mail.gmail.com>
-Subject: Re: [PATCH] PM / suspend: fix kernel-doc markup
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0-LWzSvvKkH5xVAoCfNGG_fhDJ37AZVW+qknSZU1wxDw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 9:58 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->
-> Add parameter explanation to fix kernel-doc marks:
->
-> kernel/power/suspend.c:233: warning: Function parameter or member
-> 'state' not described in 'suspend_valid_only_mem'
-> kernel/power/suspend.c:344: warning: Function parameter or member
-> 'state' not described in 'suspend_prepare'
->
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-> Cc: Len Brown <len.brown@intel.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  kernel/power/suspend.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> index 32391acc806b..502d86ed99c7 100644
-> --- a/kernel/power/suspend.c
-> +++ b/kernel/power/suspend.c
-> @@ -224,6 +224,7 @@ EXPORT_SYMBOL_GPL(suspend_set_ops);
->
->  /**
->   * suspend_valid_only_mem - Generic memory-only valid callback.
-> + * @state: Suspend state to be set
->   *
->   * Platform drivers that implement mem suspend only and only need to check for
->   * that in their .valid() callback can use this instead of rolling their own
-> @@ -335,6 +336,7 @@ static int suspend_test(int level)
->
->  /**
->   * suspend_prepare - Prepare for entering system sleep state.
-> + * @state: suspend state which sleep from
->   *
->   * Common code run for every system sleep state that can be entered (except for
->   * hibernation).  Run suspend notifiers, allocate the "suspend" console and
-> --
+* Arnd Bergmann <arnd@kernel.org> [201123 16:55]:
+> On Mon, Nov 16, 2020 at 10:04 AM Tony Lindgren <tony@atomide.com> wrote:
+> >
+> > * Grygorii Strashko <grygorii.strashko@ti.com> [201030 14:47]:
+> > > Enable networking options required for NFS boot on TI platforms, which is
+> > > widely for automated test systems.
+> > > - enable new TI CPSW switch driver and related NET_SWITCHDEV config
+> > > - enable TI DP83867 phy
+> > > - explicitly enable PTP clock support to ensure dependent networking
+> > > drivers will stay built-in.
+> > >
+> > > vmlinux size changes:
+> > > - before:
+> > >    text       data        bss        dec        hex    filename
+> > > 14703736    8024602     444976    23173314    16198c2    ./omap-arm/vmlinux
+> > >
+> > > - after:
+> > >    text       data        bss        dec        hex    filename
+> > > 14727271    8029150     444528    23200949    16204b5    ./omap-arm/vmlinux
+> > >
+> > > diff: 27635 (dec)
+> >
+> > Thanks applying into omap-for-v5.11/defconfig.
+> 
+> Oops, I just applied it as well (as it was sent to soc@kernel.org it appeared
+> in patchwork) and I  noticed too late that you already had it.
+> Should I remove it at my end, can you just drop your copy?
 
-Applied as 5.11 material, but I've changed the originally proposed
-parameter descriptions into "Target system sleep state" in both cases.
+Sure no problem, I'll drop my copy.
 
-Thanks!
+Regards,
+
+Tony
