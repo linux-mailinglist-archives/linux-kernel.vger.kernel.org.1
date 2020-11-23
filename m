@@ -2,64 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ED92C0313
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B592C031F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgKWKPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:15:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7666 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgKWKPB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:15:01 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cfjgh1Xn2z15RBb;
-        Mon, 23 Nov 2020 18:14:40 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 23 Nov 2020
- 18:14:56 +0800
-From:   Zhang Qilong <zhangqilong3@huawei.com>
-To:     <sre@kernel.org>
-CC:     <gustavoars@kernel.org>, <carlos.chinea@nokia.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] HSI: Fix PM usage counter unbalance in ssi_hw_init
-Date:   Mon, 23 Nov 2020 18:18:27 +0800
-Message-ID: <20201123101827.3863792-1-zhangqilong3@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1728069AbgKWKUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:20:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725806AbgKWKUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:20:14 -0500
+Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94F212072C;
+        Mon, 23 Nov 2020 10:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606126813;
+        bh=lKWIE0xfvLNVmwvlh6n8fLQGdMFXyaSAl3QgCRzu1aM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=dtSFegw/Yhyq993hTtZSIfwSEuFsrCkk8L8Ekyc64C6f+3eXL5ZdJfnp8MNcnRnf+
+         qVLtmjb3lzgK9UHDQn+ywMqprnd+d9JgRyXdsdDNFGF7PHG8EEgXEnTJtU9L8xZO4B
+         ToqlflHQBOvDoo8cluinH9R7YTJ9giRMO6VIrFQk=
+Subject: Re: [PATCH v5] clk: samsung: Prevent potential endless loop in the
+ PLL ops
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-clk@vger.kernel.org, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, m.szyprowski@samsung.com, sboyd@kernel.org,
+        mturquette@baylibre.com, b.zolnierkie@samsung.com,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+References: <CGME20201120155747eucas1p248a1f0b71fbd8f329271494d7a207347@eucas1p2.samsung.com>
+ <20201120155731.26898-1-s.nawrocki@samsung.com>
+ <20201122151602.GA5346@kozik-lap>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <cbc83ec7-57f3-8ced-34c6-8df5e0541fe9@kernel.org>
+Date:   Mon, 23 Nov 2020 11:20:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201122151602.GA5346@kozik-lap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync will increment pm usage counter
-even it failed. Forgetting to putting operation will
-result in reference leak here. We fix it by replacing
-it with pm_runtime_resume_and_get to keep usage counter
-balanced.
+On 11/22/20 16:16, Krzysztof Kozlowski wrote:
+> On Fri, Nov 20, 2020 at 04:57:31PM +0100, Sylwester Nawrocki wrote:
+>> The PLL status polling loops in the set_rate callbacks of some PLLs
+>> have no timeout detection and may become endless loops when something
+>> goes wrong with the PLL.
+>>
+>> For some PLLs there is already the ktime API based timeout detection,
+>> but it will not work in all conditions when .set_rate gets called.
+>> In particular, before the clocksource is initialized or when the
+>> timekeeping is suspended.
+>>
+>> This patch adds a common helper with the PLL status bit polling and
+>> timeout detection. For conditions where the timekeeping API should not
+>> be used a simple readl_relaxed/cpu_relax() busy loop is added with the
+>> iterations limit derived from measurements of readl_relaxed() execution
+>> time for various PLL types and Exynos SoCs variants.
+>>
+>> Actual PLL lock time depends on the P divider value, the VCO frequency
+>> and a constant PLL type specific LOCK_FACTOR and can be calculated as
+>>
+>>   lock_time = Pdiv * LOCK_FACTOR / VCO_freq
+>>
+>> For the ktime API use cases a common timeout value of 20 ms is applied
+>> for all the PLLs with an assumption that maximum possible value of Pdiv
+>> is 64, maximum possible LOCK_FACTOR value is 3000 and minimum VCO
+>> frequency is 24 MHz.
+>>
+>> Signed-off-by: Sylwester Nawrocki<s.nawrocki@samsung.com>
 
-Fixes: b209e047bc743 ("HSI: Introduce OMAP SSI driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
----
- drivers/hsi/controllers/omap_ssi_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Reviewed-by: Krzysztof Kozlowski<krzk@kernel.org>
 
-diff --git a/drivers/hsi/controllers/omap_ssi_core.c b/drivers/hsi/controllers/omap_ssi_core.c
-index fa69b94debd9..b4ac2f8cb9f9 100644
---- a/drivers/hsi/controllers/omap_ssi_core.c
-+++ b/drivers/hsi/controllers/omap_ssi_core.c
-@@ -424,7 +424,7 @@ static int ssi_hw_init(struct hsi_controller *ssi)
- 	struct omap_ssi_controller *omap_ssi = hsi_controller_drvdata(ssi);
- 	int err;
- 
--	err = pm_runtime_get_sync(ssi->device.parent);
-+	err = pm_runtime_resume_and_get(ssi->device.parent);
- 	if (err < 0) {
- 		dev_err(&ssi->device, "runtime PM failed %d\n", err);
- 		return err;
--- 
-2.25.4
+Thanks, patch applied.
 
+--
+Regards,
+Sylwester
