@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1099E2C06A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA81C2C05D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbgKWMdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:33:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43988 "EHLO mail.kernel.org"
+        id S1729896AbgKWMYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:24:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731117AbgKWMcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:32:41 -0500
+        id S1729873AbgKWMYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:24:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2403920888;
-        Mon, 23 Nov 2020 12:32:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D13EB208C3;
+        Mon, 23 Nov 2020 12:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134760;
-        bh=7ZpuectY38jz0qndGQ4BhQ8W5m7X9JBRlN7ZxMBO6kw=;
+        s=korg; t=1606134287;
+        bh=BiAw6D5upIknAsiTBPJxn6Y4Z84CYEgSqf9Jodop7hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T0fsmSKOl8qvMKJ4C/MNyMf6zAZ1b69s5kJzGP322xkSXbzRe5afXogZNrFsh/Rp0
-         TDEzOwrWb6FIY+FGVdmB3RcRkaQZ3rkyk9c9IvfuBPsmUL6sQBZNOl2DZ860RmKMkI
-         nM960reBn+PW7L5p8lLk/7BBBsds1XJvWyX18tWM=
+        b=Y7DSXpnKp74UbBcz7TqPRpq21QSyB8ptrVrYrZTjo5JcO84LvLppPYPsQGgisjGf0
+         awFj35HTCizoUZG+r/Wvncl7GdWsLB/pvSb6QqUvpyii3IfTgfDL4CoeyIgg1QXwlg
+         ySzrZPlLWipj6clY1FQkelf+Am49j+NqMJ4hvaA4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nenad Peric <nperic@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 42/91] arm64: dts: allwinner: h5: OrangePi Prime: Fix ethernet node
-Date:   Mon, 23 Nov 2020 13:22:02 +0100
-Message-Id: <20201123121811.360155548@linuxfoundation.org>
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 17/47] net: ftgmac100: Fix crash when removing driver
+Date:   Mon, 23 Nov 2020 13:22:03 +0100
+Message-Id: <20201123121806.376312467@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nenad Peric <nperic@gmail.com>
+From: Joel Stanley <joel@jms.id.au>
 
-[ Upstream commit 107954afc5df667da438644aa4982606663f9b17 ]
+[ Upstream commit 3d5179458d22dc0b4fdc724e4bed4231a655112a ]
 
-RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
-node.
+When removing the driver we would hit BUG_ON(!list_empty(&dev->ptype_specific))
+in net/core/dev.c due to still having the NC-SI packet handler
+registered.
 
-Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-Signed-off-by: Nenad Peric <nperic@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201028115817.68113-1-nperic@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+ # echo 1e660000.ethernet > /sys/bus/platform/drivers/ftgmac100/unbind
+  ------------[ cut here ]------------
+  kernel BUG at net/core/dev.c:10254!
+  Internal error: Oops - BUG: 0 [#1] SMP ARM
+  CPU: 0 PID: 115 Comm: sh Not tainted 5.10.0-rc3-next-20201111-00007-g02e0365710c4 #46
+  Hardware name: Generic DT based system
+  PC is at netdev_run_todo+0x314/0x394
+  LR is at cpumask_next+0x20/0x24
+  pc : [<806f5830>]    lr : [<80863cb0>]    psr: 80000153
+  sp : 855bbd58  ip : 00000001  fp : 855bbdac
+  r10: 80c03d00  r9 : 80c06228  r8 : 81158c54
+  r7 : 00000000  r6 : 80c05dec  r5 : 80c05d18  r4 : 813b9280
+  r3 : 813b9054  r2 : 8122c470  r1 : 00000002  r0 : 00000002
+  Flags: Nzcv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment none
+  Control: 00c5387d  Table: 85514008  DAC: 00000051
+  Process sh (pid: 115, stack limit = 0x7cb5703d)
+ ...
+  Backtrace:
+  [<806f551c>] (netdev_run_todo) from [<80707eec>] (rtnl_unlock+0x18/0x1c)
+   r10:00000051 r9:854ed710 r8:81158c54 r7:80c76bb0 r6:81158c10 r5:8115b410
+   r4:813b9000
+  [<80707ed4>] (rtnl_unlock) from [<806f5db8>] (unregister_netdev+0x2c/0x30)
+  [<806f5d8c>] (unregister_netdev) from [<805a8180>] (ftgmac100_remove+0x20/0xa8)
+   r5:8115b410 r4:813b9000
+  [<805a8160>] (ftgmac100_remove) from [<805355e4>] (platform_drv_remove+0x34/0x4c)
+
+Fixes: bd466c3fb5a4 ("net/faraday: Support NCSI mode")
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20201117024448.1170761-1-joel@jms.id.au
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/faraday/ftgmac100.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-index b75ca4d7d0019..7a30211d59ef5 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-@@ -164,7 +164,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+--- a/drivers/net/ethernet/faraday/ftgmac100.c
++++ b/drivers/net/ethernet/faraday/ftgmac100.c
+@@ -1444,6 +1444,8 @@ static int ftgmac100_probe(struct platfo
+ 	return 0;
  
--- 
-2.27.0
-
+ err_ncsi_dev:
++	if (priv->ndev)
++		ncsi_unregister_dev(priv->ndev);
+ err_register_netdev:
+ 	ftgmac100_destroy_mdio(netdev);
+ err_setup_mdio:
+@@ -1465,6 +1467,8 @@ static int __exit ftgmac100_remove(struc
+ 	netdev = platform_get_drvdata(pdev);
+ 	priv = netdev_priv(netdev);
+ 
++	if (priv->ndev)
++		ncsi_unregister_dev(priv->ndev);
+ 	unregister_netdev(netdev);
+ 	ftgmac100_destroy_mdio(netdev);
+ 
 
 
