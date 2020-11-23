@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853B02C061C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04EC2C0742
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730374AbgKWM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:27:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37792 "EHLO mail.kernel.org"
+        id S1732155AbgKWMjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730339AbgKWM1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:47 -0500
+        id S1732081AbgKWMiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:38:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CADB820728;
-        Mon, 23 Nov 2020 12:27:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CDB62065E;
+        Mon, 23 Nov 2020 12:38:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134465;
-        bh=YALBh/z15FkwH/doGEmq1VORVzp2qpo7cGYWdPtnTvg=;
+        s=korg; t=1606135100;
+        bh=/lnL4kKUQjvt0DPZxtlw/Bxo0DaHITp042FE3rTo8Js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XIPHb/lmwEJ1niSnunarUoaEvpcksH4TJwtBSABcWlgR3ALHAHg3KvGPiMHYJkKU6
-         ESahk/l5UboV8GMnKiBQ+i/83Ay/IpKJwjcmpztuss8BuLl+Nc3+Z4wzlvm6grVQ8s
-         +7+N3R299vk8NNHsYXMauLaauKYmsyLEB9Q1OcXk=
+        b=Hg7RSZvVOaDcf1YSZBTU7uj6ENNH5D0TW64H3H+iqsZ7kBwqZo3E78OPosTlkjbAZ
+         14vLvD4fKiRvYYtpeghEqYQEdfDu7u/sM7ThPOubfgEQqKwKi46wJkE1qNF804fxfT
+         chL6YyOWfFjC13gQEZhXPCfmQD9sGEfY9dkMHLm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Luo Meng <luomeng12@huawei.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 30/60] can: af_can: prevent potential access of uninitialized member in canfd_rcv()
-Date:   Mon, 23 Nov 2020 13:22:12 +0100
-Message-Id: <20201123121806.497034301@linuxfoundation.org>
+Subject: [PATCH 5.4 105/158] fail_function: Remove a redundant mutex unlock
+Date:   Mon, 23 Nov 2020 13:22:13 +0100
+Message-Id: <20201123121825.003683165@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Luo Meng <luomeng12@huawei.com>
 
-[ Upstream commit 9aa9379d8f868e91719333a7f063ccccc0579acc ]
+[ Upstream commit 2801a5da5b25b7af9dd2addd19b2315c02d17b64 ]
 
-In canfd_rcv(), cfd->len is uninitialized when skb->len = 0, and this
-uninitialized cfd->len is accessed nonetheless by pr_warn_once().
+Fix a mutex_unlock() issue where before copy_from_user() is
+not called mutex_locked.
 
-Fix this uninitialized variable access by checking cfd->len's validity
-condition (cfd->len > CANFD_MAX_DLEN) separately after the skb->len's
-condition is checked, and appropriately modify the log messages that
-are generated as well.
-In case either of the required conditions fail, the skb is freed and
-NET_RX_DROP is returned, same as before.
-
-Fixes: d4689846881d ("can: af_can: canfd_rcv(): replace WARN_ONCE by pr_warn_once")
-Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-Tested-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Link: https://lore.kernel.org/r/20201103213906.24219-3-anant.thazhemadam@gmail.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 4b1a29a7f542 ("error-injection: Support fault injection framework")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lore.kernel.org/bpf/160570737118.263807.8358435412898356284.stgit@devnote2
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/af_can.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ kernel/fail_function.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index e1cf5c300bacc..ec04a33cd333c 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -748,16 +748,25 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- {
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+diff --git a/kernel/fail_function.c b/kernel/fail_function.c
+index 63b349168da72..b0b1ad93fa957 100644
+--- a/kernel/fail_function.c
++++ b/kernel/fail_function.c
+@@ -253,7 +253,7 @@ static ssize_t fei_write(struct file *file, const char __user *buffer,
  
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU ||
--		     cfd->len > CANFD_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d, len %d, datalen %d\n",
-+	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
-+			     dev->type, skb->len);
-+		goto free_skb;
-+	}
-+
-+	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
-+	if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d, datalen %d\n",
- 			     dev->type, skb->len, cfd->len);
--		kfree_skb(skb);
--		return NET_RX_DROP;
-+		goto free_skb;
+ 	if (copy_from_user(buf, buffer, count)) {
+ 		ret = -EFAULT;
+-		goto out;
++		goto out_free;
  	}
- 
- 	can_receive(skb, dev);
- 	return NET_RX_SUCCESS;
-+
-+free_skb:
-+	kfree_skb(skb);
-+	return NET_RX_DROP;
+ 	buf[count] = '\0';
+ 	sym = strstrip(buf);
+@@ -307,8 +307,9 @@ static ssize_t fei_write(struct file *file, const char __user *buffer,
+ 		ret = count;
+ 	}
+ out:
+-	kfree(buf);
+ 	mutex_unlock(&fei_lock);
++out_free:
++	kfree(buf);
+ 	return ret;
  }
  
- /*
 -- 
 2.27.0
 
