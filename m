@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358322C0CFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5032C0CFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730716AbgKWOLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:11:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729794AbgKWOLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:11:30 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7378F20732;
-        Mon, 23 Nov 2020 14:11:28 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 09:11:26 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Kernel development list <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Printk specifiers for __user pointers
-Message-ID: <20201123091126.5d6313d2@gandalf.local.home>
-In-Reply-To: <X7uGlDg88bI6zebS@alley>
-References: <20201120164412.GD619708@rowland.harvard.edu>
-        <20201120134242.6cae9e72@gandalf.local.home>
-        <X7uGlDg88bI6zebS@alley>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2388245AbgKWOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:11:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730039AbgKWOL4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:11:56 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4234C0613CF;
+        Mon, 23 Nov 2020 06:11:56 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id l1so655026pld.5;
+        Mon, 23 Nov 2020 06:11:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NU+ZBtS2PuAoVDCaiYjSDmtYV+rq9r8k1b0Hv3NXBJs=;
+        b=LvN2cgYCtq6+Y48nqWXGL7phbvUQEqHQKhNBlq0qiVygA2NutirJ3tuFZs9eQKKAUN
+         QA/PGelSg8ywUnfxQWvfpLiMjDGk9FJb1e5nsE+w5tybK7W++5HP7UUQ67hi3u8NjIC4
+         hGJpPZmu5LJYV7nnpOA28h+SQ20FUi1pAPDrn90gu3QbsDfGvlYVsdH2BebL9hX2d/mp
+         i76p6nIV2OA/PIiKLJXcEYQmP4o8iIFqK/kWYHPaVtIQexQ+RgzAGsX6rder3PwzcyYQ
+         rwTMAuoW1a1Fv9Mxtv0jQlsvvHYgSykCQPa+7/tL2yBWyUsrh9pcwLeLlqeEzc8qOJW8
+         PD0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NU+ZBtS2PuAoVDCaiYjSDmtYV+rq9r8k1b0Hv3NXBJs=;
+        b=IJXfbTNvDgcPjLQr2rY9I4fBKFhWtKlv5S/TJEAZkFq7ZPpuVaGJTz5SbB3s8nK5bs
+         Z0caerUXBIRlxMEyAazsgCKWneiA0xcsPGl+JtXawOkx6YoAwHJdhgcozkOuWwO+u2oO
+         9vEMyPqdUnuLYqpftflM9z11UtmogohsGGDPZ/RKM9i3DlRm9wLY7pXCvnZxF7WGxsNI
+         fg6Ge9B0wGvlor9QsmwfesMfCT15SWYp1jZ4lRVBWrOgnugjPTgVc2EdWa3407l0R0oD
+         5JQDssC4SvGKLWDjIJ/7wiUhOVkR2jrnmi69//PbzfKaNDVVaIjICCrQ5ZugcybDD1gA
+         9kTw==
+X-Gm-Message-State: AOAM5323fHx7dE7g2vwmIMyFDncweF6GZAORdiiTAbqdZc6jo1DQopGz
+        wkCQ7DU7wdIW/gSzAq16IgiwVwzsfNqeRbfmUPw=
+X-Google-Smtp-Source: ABdhPJyVSvyUYOybbEj86aanBvHbx+TOibpG5xGwRLKUnt31gEUAvpWn4MdO+M5sabxVJ2pu3VS1GdZefmg187NK2Q0=
+X-Received: by 2002:a17:902:be07:b029:da:c5e:81b6 with SMTP id
+ r7-20020a170902be07b02900da0c5e81b6mr3997870pls.43.1606140716201; Mon, 23 Nov
+ 2020 06:11:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <3306b4d8-8689-b0e7-3f6d-c3ad873b7093@intel.com>
+ <cover.1605686678.git.xuanzhuo@linux.alibaba.com> <dfa43bcf7083edd0823e276c0cf8e21f3a226da6.1605686678.git.xuanzhuo@linux.alibaba.com>
+In-Reply-To: <dfa43bcf7083edd0823e276c0cf8e21f3a226da6.1605686678.git.xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 23 Nov 2020 15:11:45 +0100
+Message-ID: <CAJ8uoz3PtqzbfCD6bv1LQOtPVH3qf4mc=V=u_emTxtq3yYUeYw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] xsk: replace datagram_poll by sock_poll_wait
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 10:53:24 +0100
-Petr Mladek <pmladek@suse.com> wrote:
+On Wed, Nov 18, 2020 at 9:26 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+>
+> datagram_poll will judge the current socket status (EPOLLIN, EPOLLOUT)
+> based on the traditional socket information (eg: sk_wmem_alloc), but
+> this does not apply to xsk. So this patch uses sock_poll_wait instead of
+> datagram_poll, and the mask is calculated by xsk_poll.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  net/xdp/xsk.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index cfbec39..7f0353e 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -477,11 +477,13 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>  static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>                              struct poll_table_struct *wait)
+>  {
+> -       __poll_t mask = datagram_poll(file, sock, wait);
+> +       __poll_t mask = 0;
 
-> On Fri 2020-11-20 13:42:42, Steven Rostedt wrote:
-> > On Fri, 20 Nov 2020 11:44:12 -0500
-> > Alan Stern <stern@rowland.harvard.edu> wrote:
-> >   
-> > > To the VSPRINTF maintainers:
-> > > 
-> > > Documentation/core-api/printk-formats.rst lists a large number of format 
-> > > specifiers for pointers of various sorts.  Yet as far as I can see, 
-> > > there is no specifier meant for use with __user pointers.
-> > > 
-> > > The security implications of printing the true, unmangled value of a 
-> > > __user pointer are minimal, since doing so does not leak any kernel 
-> > > information.  So %px would work, but tools like checkpatch.pl don't like 
-> > > it.  
-> 
-> Just to be sure as I am not a security expert. Is there really that
-> big difference in the risk? The following scenarios come to my mind:
+It would indeed be nice to not execute a number of tests in
+datagram_poll that will never be triggered. It will speed up things
+for sure. But we need to make sure that removing those flags that
+datagram_poll sets do not have any bad effects in the code above this.
+But let us tentatively keep this patch for the next version of the
+patch set. Just need to figure out how to solve your problem in a nice
+way first. See discussion in patch 0/3.
 
-One of the biggest differences, is that with exposing the kernel, every
-process has the same kernel address space. By leaking memory addresses of
-the kernel, and knowing of some overflow bug in a system call, you can
-exploit it right away.
-
-Also, a user space application could trigger some kind of print to show
-that kernel address space.
-
-With having the kernel show the address space of another process, it is not
-as easy to exploit. You would need to make that other process do something
-to have the kernel show its address space.
-
-> 
-> 1. The address would show a well defined location in the userspace
->    application? Could it be used to attack the application?
-
-It's possible, but the ramifications usually wont be as bad as the kernel.
-Unless of course you do it for systemd or some other daemon. But then
-again, you still need to have that application cause the print, as any
-user space address being printed from the kernel would need to be caused by
-that application.
-
-> 
-> 2. The address shows a location that is being accessed by kernel.
->    Could not it be used to pass a value that might be used to attack
->    kernel?
-
-I don't know what you mean here.
-
-> 
-> 
-> > > Should a new specifier be added?  If not, should we simply use %px?  
-> > 
-> > There's currently no user of '%pu' (although there is a '%pus'. Perhaps we
-> > should have a '%pux'?
-> > 
-> > I would even state that if it is used, that if makes sure that the value is
-> > indeed a user space pointer (goes through the same checks as accessing user
-> > space), before its printed, otherwise it shows "(fault)" or something.  
-> 
-> I have mixed feelings about this.
-> 
-> One one hand, it might make sense to mark locations where userspace
-> address is printed. We could easily decide how to print them (hash or
-> value) and we could check that it is really from a userspace one.
-
-It would definitely need to be checked that it is from user space.
-
-
-> 
-> But I have few concerns:
-> 
-> 1. The existing "%pus" has a kind of opposite meaning. It says what
->    address space should be used when the kernel and userspace address
->    space is overlapping.
-> 
-> 2. There is the history with "%pk". It did not work because people did
->    not use it.
-> 
-> 3. I am not sure about the output when the address is not from
->    userspace. Printing ("fault") is not much helpful. Printing
->    hashed value might be confusing. Well, I am still not sure
->    that it is really safe to print real userspace addresses
->    by default.
-
-We could have it print: "(kernel:<hash>)" if it is a kernel address space,
-and the hash value wont be as confusing if it states "kernel", and by
-showing the hash value, it may be possible to know what was printed there
-instead (by possibly seeing another hash with the same value).
-
--- Steve
+>         struct sock *sk = sock->sk;
+>         struct xdp_sock *xs = xdp_sk(sk);
+>         struct xsk_buff_pool *pool;
+>
+> +       sock_poll_wait(file, sock, wait);
+> +
+>         if (unlikely(!xsk_is_bound(xs)))
+>                 return mask;
+>
+> --
+> 1.8.3.1
+>
