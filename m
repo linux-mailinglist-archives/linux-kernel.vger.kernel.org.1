@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9F92C17EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9188B2C17F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731822AbgKWVrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:47:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730108AbgKWVrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:47:09 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6C6720663;
-        Mon, 23 Nov 2020 21:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606168028;
-        bh=THoe0Z/M/WwOV4LTDT6k94vvzIrnSxLcq+WgI8crrVo=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=iWKjwPo2hxGHxP6Tn5C4FmkeB8f91GU46lQpn1JLcvKayLrIIz/OA93A+qyGIhpkP
-         3Zuihqz3Taz4UBV3Ro0NT9yHzsurkRIAMz+7V1tZUJqijoiLe5+ImQ381O01wqa3Oj
-         3NwHOtEUkuFbuRf9X0CrDF24ugNGNM/TaRoAvq/8=
-Date:   Mon, 23 Nov 2020 21:46:44 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Qing Zhang <zhangqing@loongson.cn>,
-        Sanjay R Mehta <sanju.mehta@amd.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1605930231-19448-1-git-send-email-zhangqing@loongson.cn>
-References: <1605930231-19448-1-git-send-email-zhangqing@loongson.cn>
-Subject: Re: [PATCH] spi: amd: Use devm_platform_ioremap_resource() in amd_spi_probe
-Message-Id: <160616800460.26654.5502584955606530702.b4-ty@kernel.org>
+        id S1731896AbgKWVsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:48:04 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38558 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730108AbgKWVsE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 16:48:04 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606168081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w1uCKrC/JVnFefj87bZYqeaIDv0yyNdd4LhM7mGuDJM=;
+        b=YcNnH80Owhk67icq+BuAaMvftswTwmhM+6euUdaRP7WH3T+rzPpJstyMnAnylH/NUwzqUo
+        ZQrS0RmAPYvBjjLnr4LpGTm8v0sSlD18iq5nCw2lZx3WXOpAS63Tp+BfZtPdNM1BD34108
+        VYnzKJh/bF9SujydFoFCIzQwqCgIgfLg4x+BX4gNkGtjk3nOeaPEpSeeJw6e9WybLoupX3
+        m5NVmypPWg1ykY9tZ+MmwxOcGBWUa2LBVQwce5TSLeeJ5Ny1hRHS4DTFHrKRmCX+TsDn+4
+        cq1ml6AdNowL6NbKTl1jWudmP4lGWwmBUrYSykWVmMgRuDWnvIQdK+hmUDGWGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606168081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w1uCKrC/JVnFefj87bZYqeaIDv0yyNdd4LhM7mGuDJM=;
+        b=mMt/hU8u/OTPxDuQKILiP1HhdRxZ4zvs1L8KKoZmzhLl6g612jVzcISf+J/GJPD6Y6RT8s
+        rYLoGs+JkPIjWpCA==
+To:     Alex Belits <abelits@marvell.com>,
+        "nitesh\@redhat.com" <nitesh@redhat.com>,
+        "frederic\@kernel.org" <frederic@kernel.org>
+Cc:     Prasun Kapoor <pkapoor@marvell.com>,
+        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "trix\@redhat.com" <trix@redhat.com>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "catalin.marinas\@arm.com" <catalin.marinas@arm.com>,
+        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterx\@redhat.com" <peterx@redhat.com>,
+        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "mtosatti\@redhat.com" <mtosatti@redhat.com>,
+        "will\@kernel.org" <will@kernel.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "leon\@sidebranch.com" <leon@sidebranch.com>,
+        "linux-arm-kernel\@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pauld\@redhat.com" <pauld@redhat.com>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 1/9] task_isolation: vmstat: add quiet_vmstat_sync function
+In-Reply-To: <0e07e5bf6f65dc89d263683c81b4a19bcc6d4b60.camel@marvell.com>
+References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com> <0e07e5bf6f65dc89d263683c81b4a19bcc6d4b60.camel@marvell.com>
+Date:   Mon, 23 Nov 2020 22:48:01 +0100
+Message-ID: <87eekjn3se.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Nov 2020 11:43:51 +0800, Qing Zhang wrote:
-> Simplify this function implementation by using a known wrapper function.
+Alex,
 
-Applied to
+On Mon, Nov 23 2020 at 17:56, Alex Belits wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+why are you insisting on adding 'task_isolation: ' as prefix to every
+single patch? That's wrong as I explained before.
 
-Thanks!
+The prefix denotes the affected subsystem and 'task_isolation' is _NOT_
+a subsystem. It's the project name you are using but the affected code
+belongs to the memory management subsystem and if you run
 
-[1/1] spi: amd: Use devm_platform_ioremap_resource() in amd_spi_probe
-      commit: 2ed6e3bac15242c18bef5af12547a13b25b65ac8
+ git log mm/vmstat.c
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+you might get a hint what the proper prefix is, i.e. 'mm/vmstat: '
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> In commit f01f17d3705b ("mm, vmstat: make quiet_vmstat lighter")
+> the quiet_vmstat() function became asynchronous, in the sense that
+> the vmstat work was still scheduled to run on the core when the
+> function returned.  For task isolation, we need a synchronous
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This changelog is useless because how should someone not familiar with
+the term 'task isolation' figure out what that means?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+It's not the reviewers job to figure that out. Again: Go read and adhere
+to Documentation/process/*
+
+Aside of that your patches are CR/LF inflicted. Please fix your work
+flow and tools.
 
 Thanks,
-Mark
+
+        tglx
+
+
+
