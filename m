@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23EA2C0C2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02D82C0C35
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388430AbgKWNub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:50:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387728AbgKWNua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:50:30 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84CC520729;
-        Mon, 23 Nov 2020 13:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606139430;
-        bh=0/IHxMdwzZirfFUEDtxYhKAxBqnvOfBcXnmhGHLZwE8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KidfIMQVoIvcZVCdv8NPn4bJAaldX8rRH154qtqRm8yuUbNji3PZla9WdPLrOlm3h
-         F1mDMPCM5axhytJBPc4EjO1N/K8MQxJargxBN2Wv+1d+7ngs9BrQjj6UdHBebEuxSb
-         5Ysex+lthxVAeCqAhX7FXksR4WsNPBDOw4BZZyF8=
-Date:   Mon, 23 Nov 2020 13:50:06 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201123135006.GE6322@sirena.org.uk>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120165202.GG6751@sirena.org.uk>
- <20201120194245.GA2925@kozik-lap>
- <20201120200429.GJ6751@sirena.org.uk>
- <20201122105813.GA3780@kozik-lap>
- <20201123104832.GY4077@smile.fi.intel.com>
- <20201123123731.GA6322@sirena.org.uk>
- <20201123124129.GA170000@kozik-lap>
+        id S1730163AbgKWNv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729455AbgKWNv4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:51:56 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC91C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:51:56 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id x13so7744940wmj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:51:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iaau9hhA1KFwy2KDmDsX/sn+tVvl77lzzmCiDGToHck=;
+        b=BgBnJ8EK3bza/181q05p8iQXYs1RFznPl/Ry+CtkBEqrhmo0cDH+CdGkp84Kl7VtoZ
+         0MXDjoCuJ9ewJWRWvmxbHgQGAzkgtkHlr0ywKiw8rXqDO0ze1p7PzKWkFWH79bhxAqUI
+         6jIltWFyRts2sRBAUNyMtgisXoiwq3Nx0b7Lw2MIuZ2EflVqv6tUs2im41Nm2pDDGSjA
+         Fa+wRpnl6JOqv2tiJ1BvZ3rfyLWW9eUD9WZ5Wyj/7MzePo1L4f3PEMUWioqIy/BYO5Nd
+         5RqoRi/8HhqjyyjHjaUmEyFGBFS2N9lGzNc7Zf9YgR/Viuf5HTyCR9maRGJ/6GB2ZKIh
+         Jygw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iaau9hhA1KFwy2KDmDsX/sn+tVvl77lzzmCiDGToHck=;
+        b=ZxDzo+np/ItG1qS6Vj18FGToAC2NpTpq3OeIhLxrQ4AdQ9xl3JXJSEb+5+z03IU9e7
+         2EGS/KYuPsIpXegyPNi3NCflLQRreRnavfpbhepIRnw5LaLh6mXII+z+RiTN7AEFbVL+
+         +LWNZfcICBS5PqepfX0QDJmk6HWsgxAym6o3+Y5bVOJbxqFyxFwyoUKr1NAT4igtGL58
+         XmnPIcU1jEofnIT+FQrKo3f92H8VHR8s3g4PoN+CrWQTTS2XkGyQdk7dUlwSujc0jeT9
+         ZY7qf3eIHUpKjwpZZ4X6Q7Kg9cUqyAhdPicB12K8nJ0edzC6R9pA8ZvJg5fJo4yTb2uK
+         gq/A==
+X-Gm-Message-State: AOAM533uCwHi2tV9O9R6RoC66FkfnlhTqFgZPNbfcJ/hMi1RqDrfsAmB
+        4OIy2FH5T+nCnTEoytFaAFZP/w==
+X-Google-Smtp-Source: ABdhPJw2S0g7xc5LX0mjnROVXQEjQ1dcwMwqbjEh95H+sw1EIksGKfdkdpqjbz7CHSJ0dqI/brkrGw==
+X-Received: by 2002:a7b:c0cc:: with SMTP id s12mr23506422wmh.41.1606139515051;
+        Mon, 23 Nov 2020 05:51:55 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id j71sm17278653wmj.10.2020.11.23.05.51.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 05:51:54 -0800 (PST)
+Date:   Mon, 23 Nov 2020 13:51:51 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>, kernel-team@android.com,
+        Android KVM <android-kvm@google.com>
+Subject: Re: [RFC PATCH 13/27] KVM: arm64: Enable access to sanitized CPU
+ features at EL2
+Message-ID: <20201123135151.GA490744@google.com>
+References: <20201117181607.1761516-1-qperret@google.com>
+ <20201117181607.1761516-14-qperret@google.com>
+ <CA+EHjTwebfoJLpure-mHNzCnmLwnNEi6yh66OLFGrhH_+ysExA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FN+gV9K+162wdwwF"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123124129.GA170000@kozik-lap>
-X-Cookie: Dry clean only.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+EHjTwebfoJLpure-mHNzCnmLwnNEi6yh66OLFGrhH_+ysExA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 23 Nov 2020 at 10:55:20 (+0000), Fuad Tabba wrote:
+> > diff --git a/arch/arm64/include/asm/kvm_cpufeature.h b/arch/arm64/include/asm/kvm_cpufeature.h
+> > new file mode 100644
+> > index 000000000000..d34f85cba358
+> > --- /dev/null
+> > +++ b/arch/arm64/include/asm/kvm_cpufeature.h
+> > @@ -0,0 +1,17 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Copyright (C) 2020 - Google LLC
+> > + * Author: Quentin Perret <qperret@google.com>
+> > + */
+> 
+> Missing include guard.
 
---FN+gV9K+162wdwwF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Right, but on purpose :)
 
-On Mon, Nov 23, 2020 at 01:41:29PM +0100, Krzysztof Kozlowski wrote:
-> On Mon, Nov 23, 2020 at 12:37:31PM +0000, Mark Brown wrote:
+See how arm.c includes this header twice with different definitions of
+KVM_HYP_CPU_FTR_REG for instance.
 
-> > That feels like something that should be done with Kconfig dependencies
-> > like a direct OF dependency (possibly a !PRP0001 dependency?) for the
-> > driver or possibly with having a variant of_match_ptr() for things that
-> > really don't want to support PRP0001.  Just removing all the use of
-> > of_match_ptr() is both noisy and confusing in that it looks like it's
-> > creating issues to fix, it makes it hard to understand when and why one
-> > should use the macro.
-
-> For the OF-only drivers (without other ID table), there is no point to
-> use the macro. Driver can bind only with DT, so what is the point of
-> of_match_ptr? To skip the OF table when building without OF? Driver
-> won't be usable at all in such case. So maybe for compile testing?
-> There is no need to remove OF table for simple build tests.
-
-If nothing else it means you don't have to check if the driver is OF
-only or not.  I can see not bothering to add it but actively going round
-removing some instances of it doesn't seem great, and it seems like
-people will constantly be adding new uses on the basis that it's just
-such an obviously correct thing to do.
-
---FN+gV9K+162wdwwF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+7vg0ACgkQJNaLcl1U
-h9Cg2AgAgW1CZvFTYqc5Dxt0wi6xknuc2q+AJ8IrulpzeW3y6wYvug/gq0UKnGe0
-RhSfcXLgfzBLImnU7WdT72POVxtH3NahdaxVuRUy8yLpaEjq9HJMfw4FH+gTvQAP
-qfb/mcZMdXxAG8iXe6RuxOFXAd/CvMSnVvsSNPIX/wZxKDls6jK37ZbhAAJ/GQfT
-swW+LkfyQoT+f2ydE9CPZmZJyBrNsfVPNaWPbWS+Ifa+abSI8gyuj6yvy+6Fwire
-/dMRJ1mjJ3ge0TZ++pDKRIi4VOLH6xays9NNMdJh1ioJwmGvR8JkBcJEvmmxk1V5
-5ZCPCtoZpqkr8kw4+tevTm0Xz849KA==
-=1/dD
------END PGP SIGNATURE-----
-
---FN+gV9K+162wdwwF--
+Thanks,
+Quentin
