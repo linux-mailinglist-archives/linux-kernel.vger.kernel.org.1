@@ -2,51 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6162A2C1463
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0E22C1460
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731852AbgKWTTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 14:19:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56256 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729374AbgKWTTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:19:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0D255AC91;
-        Mon, 23 Nov 2020 19:19:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C1C8FDA818; Mon, 23 Nov 2020 20:17:23 +0100 (CET)
-Date:   Mon, 23 Nov 2020 20:17:23 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     xiakaixu1987@gmail.com
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: Re: [PATCH v2] btrfs: return EAGAIN when receiving a pending signal
- in the defrag loops
-Message-ID: <20201123191723.GM8669@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, xiakaixu1987@gmail.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-References: <1605672156-29051-1-git-send-email-kaixuxia@tencent.com>
+        id S1731762AbgKWTR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 14:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729407AbgKWTR4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 14:17:56 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF5AC061A4E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:17:56 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id 7so24934129ejm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:17:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HdQbgY+fGm8jxB4Ao2qaLqB1m6FKX93p0ZpDSNmzhRg=;
+        b=ecz6nru9/eO/okMaZi3M1SqeAWBy3jSLMgd0jjhCQTgpbarec4ajNZc2z34SiLaYXP
+         QaJ9mapXUBOQPHDszmlLh7XP42arbTRfXumSHa93MXICjloDTusJOZUbBPLUWOXgbgKZ
+         pQ9+nKsc1i6ipcAuXP0mxabxLfUkdI0xLURbCfbeS8wWY5rV7x0QYGWPjdqiSV52K55x
+         r78U+tHwgUxkiwIykrn1oTB8ldikaa6SeVOhCeVlAv4TB8gcYfIO54wMnjufMeoPn641
+         F1cxLMBeI9aeXeCsYDbEt+ePAmXOLWf4j+g0oiKvF1rdE0jaZD3q/81yQfnX86AGm3aN
+         H+Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HdQbgY+fGm8jxB4Ao2qaLqB1m6FKX93p0ZpDSNmzhRg=;
+        b=lQ1+VvFMUCXRLEc8BC2Ncpp44+qk/d7pdK+3Giv07RQeK5wukHgDbV1njGNLwc5ie3
+         JKlserjg5uRzi9b6vF++uLYQnUFffBLE0dUZ52mK/M899A5QLm5TRzCzyL0VdX6VwQVy
+         0grXwpPudhUYdLs0wkL90Hzipb3wuoe+HkGH5VKov9mPecwS99CdGAYE/1J3Oc572AcC
+         RskB1FIvxQR+bfOf1/VN5+PLP99NTPb9VCanghmSAVEalmIHTUuT1QMk2hcJ7Cg05NI/
+         5RLax8CAh3IYr4XxzZ7gMYrVRJYZAWLWhyiptjsi6FYKXqqzr7VTuDeSK9sajCzMwXwG
+         IA1Q==
+X-Gm-Message-State: AOAM532cJhJtfkZ7q5OrldqSj+66Wizts1NMIqs/8r8Qv549RpjILaWs
+        T1XfcstB7zTTldKbgaK6tZ4qQknczCBp0rTfiMaFPQ==
+X-Google-Smtp-Source: ABdhPJxls2+tu09Rb1v/Dt0hKt61j+cTOrCnH79IazHpSsNU2scVK5iT+mwhaQK0QUof4aS2TvFYL72oX+JQ5QIXnVs=
+X-Received: by 2002:a17:906:c059:: with SMTP id bm25mr1009217ejb.20.1606159074807;
+ Mon, 23 Nov 2020 11:17:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605672156-29051-1-git-send-email-kaixuxia@tencent.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20201120030411.2690816-1-lokeshgidra@google.com>
+ <20201120030411.2690816-2-lokeshgidra@google.com> <20201120153337.431dc36c1975507bb1e44596@linux-foundation.org>
+In-Reply-To: <20201120153337.431dc36c1975507bb1e44596@linux-foundation.org>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Mon, 23 Nov 2020 11:17:43 -0800
+Message-ID: <CA+EESO7xnnJAsPneuy1dNj6F47gViGiL-z8rajY5EoGdFWs+-A@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] Add UFFD_USER_MODE_ONLY
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-mm@kvack.kernel.org, Daniel Colascione <dancol@google.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 12:02:36PM +0800, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
-> 
-> The variable ret is overwritten by the following variable defrag_count.
-> Actually the code should return EAGAIN when receiving a pending signal
-> in the defrag loops.
+On Fri, Nov 20, 2020 at 3:33 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Thu, 19 Nov 2020 19:04:10 -0800 Lokesh Gidra <lokeshgidra@google.com> wrote:
+>
+> > userfaultfd handles page faults from both user and kernel code.
+> > Add a new UFFD_USER_MODE_ONLY flag for userfaultfd(2) that makes
+> > the resulting userfaultfd object refuse to handle faults from kernel
+> > mode, treating these faults as if SIGBUS were always raised, causing
+> > the kernel code to fail with EFAULT.
+> >
+> > A future patch adds a knob allowing administrators to give some
+> > processes the ability to create userfaultfd file objects only if they
+> > pass UFFD_USER_MODE_ONLY, reducing the likelihood that these processes
+> > will exploit userfaultfd's ability to delay kernel page faults to open
+> > timing windows for future exploits.
+>
+> Can we assume that an update to the userfaultfd(2) manpage is in the
+> works?
+>
+Yes, I'm working on it. Can the kernel version which will have these
+patches be known now so that I can mention it in the manpage?
 
-This lacks explanation why is EAGAIN supposed to be the right return
-value. This is about semantics of the FITRIM ioctl, changing that would
-affect userspace applications.
+> > --- a/fs/userfaultfd.c
+> > +++ b/fs/userfaultfd.c
+> > @@ -405,6 +405,13 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
+> >
+> >       if (ctx->features & UFFD_FEATURE_SIGBUS)
+> >               goto out;
+> > +     if ((vmf->flags & FAULT_FLAG_USER) == 0 &&
+> > +         ctx->flags & UFFD_USER_MODE_ONLY) {
+> > +             printk_once(KERN_WARNING "uffd: Set unprivileged_userfaultfd "
+> > +                     "sysctl knob to 1 if kernel faults must be handled "
+> > +                     "without obtaining CAP_SYS_PTRACE capability\n");
+> > +             goto out;
+> > +     }
+> >
+> >       /*
+> >        * If it's already released don't get it. This avoids to loop
+> > @@ -1965,10 +1972,11 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
+> >       BUG_ON(!current->mm);
+> >
+> >       /* Check the UFFD_* constants for consistency.  */
+> > +     BUILD_BUG_ON(UFFD_USER_MODE_ONLY & UFFD_SHARED_FCNTL_FLAGS);
+>
+> Are we sure this is true for all architectures?
+
+Yes, none of the architectures are using the least-significant bit for
+O_CLOEXEC or O_NONBLOCK.
+>
+> >       BUILD_BUG_ON(UFFD_CLOEXEC != O_CLOEXEC);
+> >       BUILD_BUG_ON(UFFD_NONBLOCK != O_NONBLOCK);
+> >
+> > -     if (flags & ~UFFD_SHARED_FCNTL_FLAGS)
+> > +     if (flags & ~(UFFD_SHARED_FCNTL_FLAGS | UFFD_USER_MODE_ONLY))
+> >               return -EINVAL;
+> >
+> >       ctx = kmem_cache_alloc(userfaultfd_ctx_cachep, GFP_KERNEL);
+> > diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
+> > index e7e98bde221f..5f2d88212f7c 100644
+> > --- a/include/uapi/linux/userfaultfd.h
+> > +++ b/include/uapi/linux/userfaultfd.h
+> > @@ -257,4 +257,13 @@ struct uffdio_writeprotect {
+> >       __u64 mode;
+> >  };
+> >
+> > +/*
+> > + * Flags for the userfaultfd(2) system call itself.
+> > + */
+> > +
+> > +/*
+> > + * Create a userfaultfd that can handle page faults only in user mode.
+> > + */
+> > +#define UFFD_USER_MODE_ONLY 1
+> > +
+> >  #endif /* _LINUX_USERFAULTFD_H */
+>
+> It would be nice to define this in include/linux/userfaultfd_k.h,
+> alongside the other flags.  But I guess it has to be here because it's
+> part of the userspace API.
