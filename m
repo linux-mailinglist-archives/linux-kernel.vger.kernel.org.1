@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D7E2C1758
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0272C1759
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730706AbgKWVII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730857AbgKWVIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:08:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35333 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730528AbgKWVII (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 16:08:08 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:64510 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730526AbgKWVIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:08:07 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606165687; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=xctod4y8H2RB6ARM9/cplLeTPl8gam1WWi1GE5ItuhA=;
- b=jdBu4kyXdMEWwoI1yxNFKZeTIAiKvewA9gSdPymJDunHtNeGHgFRKL+JM11DfCtT11Ih8CzR
- b1cTO8T3XpT4ZYa0okWVB+DkcP9w8umUMUknMVKNuX4ZAbv1/olkFIoBb4ScJXQ9ESjZxYTF
- yvp5N4Xsou2dK8EHuKEWb1+Iy+Q=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fbc24b37f0cfa6a1661a909 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 21:08:03
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 63565C43466; Mon, 23 Nov 2020 21:08:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606165687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JgitgtgcGISLoMc82FoNi/Rf5APfZkhmz4liERzOLZQ=;
+        b=GTis/9Qd8g9hIkBvC+aBWxbM8xiOJjXl3MBYl929erYUjbaCwVwhFAQy2fLUnIV0n9J4KK
+        eBiQUgc3YfVCGBc3CnQxZxtTjxQj/bIKBJB84Dc8qFWkJEUIzZNXIc36f5bYi+Yw4lkiCQ
+        haTkNyGPIo5XFnM0IDBSBkOtht9S5qg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-d7GEwBrOPm6YGEZ70a0RsQ-1; Mon, 23 Nov 2020 16:08:04 -0500
+X-MC-Unique: d7GEwBrOPm6YGEZ70a0RsQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51327C433C6;
-        Mon, 23 Nov 2020 21:08:01 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51FDA5212;
+        Mon, 23 Nov 2020 21:08:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FC355C1BB;
+        Mon, 23 Nov 2020 21:08:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <d0d1edf746b8f50ca8897478a5e76a006e5d36ed.camel@perches.com>
+References: <d0d1edf746b8f50ca8897478a5e76a006e5d36ed.camel@perches.com> <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk> <160616230898.830164.7298470680786861832.stgit@warthog.procyon.org.uk>
+To:     Joe Perches <joe@perches.com>
+Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 15/17] rxrpc: Organise connection security to use a union
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 13:08:01 -0800
-From:   abhinavk@codeaurora.org
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     freedreno@lists.freedesktop.org,
-        Fritz Koenig <frkoenig@google.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
-Subject: Re: [Freedreno] [PATCH 12/40] drm/msm/disp/dpu1/dpu_formats: Demote
- non-conformant kernel-doc header
-In-Reply-To: <20201123111919.233376-13-lee.jones@linaro.org>
-References: <20201123111919.233376-1-lee.jones@linaro.org>
- <20201123111919.233376-13-lee.jones@linaro.org>
-Message-ID: <98cc3d66e28b4fb863811f595a05277a@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <832868.1606165681.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 23 Nov 2020 21:08:01 +0000
+Message-ID: <832869.1606165681@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-23 03:18, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'fmt' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'a' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'r' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'g' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'b' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'e0' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'e1' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'e2' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'e3' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'uc' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'alpha' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'bp' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'flg' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'fm' not described in 'INTERLEAVED_RGB_FMT'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c:50: warning: Function
-> parameter or member 'np' not described in 'INTERLEAVED_RGB_FMT'
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Fritz Koenig <frkoenig@google.com>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c
-> index a05282dede91b..21ff8f9e5dfd1 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c
-> @@ -22,7 +22,7 @@
->  #define DPU_MAX_IMG_WIDTH		0x3FFF
->  #define DPU_MAX_IMG_HEIGHT		0x3FFF
-> 
-> -/**
-> +/*
->   * DPU supported format packing, bpp, and other format
->   * information.
->   * DPU currently only supports interleaved RGB formats
+Joe Perches <joe@perches.com> wrote:
+
+> It seems no other follow-on patch in the series uses this nameless union=
+.
+
+There will be a follow on series.  Either this:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
+/?h=3Drxrpc-rxgk
+
+
+or this:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
+/?h=3Dcrypto-krb5
+
+Depending on whether I pull the kerberos bits out into the crypto/ directo=
+ry
+so that it can be shared with sunrpc and maybe cifs.  Discussions are ongo=
+ing
+on that.
+
+David
+
