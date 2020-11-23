@@ -2,166 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3942BFFBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8631A2BFFC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgKWFvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 00:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727494AbgKWFvK (ORCPT
+        id S1727888AbgKWFz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 00:55:27 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:39080 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgKWFz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 00:51:10 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F79C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:51:10 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id f23so21604723ejk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:51:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+qgA3ucO6pJx4Po5ypwNmL1aURBC/9bk4JTFs/7xb34=;
-        b=XBe6W6gFQe0AmpCqpdOlzS+N2b8yiTEjAH5i97TL+FYtvHXAIgJjcvjHFwtD459CaH
-         TPrdj7wdUofqAbg3rnibRxF4I43112Dnuifx/sXYHPoNAihgOqmbfojo6LGvCNWMT+yW
-         fqP6C5ERIb03c3LTlIL12NLz7ghDkuTzxFU4dPzIkKrGZ1xC8gx1p7eWJ+8t9vdw0YJ4
-         wAGhNPzUo/pXKfJWsDcsIT9eyRpftQy6nKYTd3gfhyNeDeWBJfZZpk7Y0lSmnpMMbMVu
-         8v51ZYROenpXyZ9+WDuDebbuD3nx0FE6XKvYL6Pln+G88WDfn3NbHIhKhkGbQ08BKPMN
-         gruA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+qgA3ucO6pJx4Po5ypwNmL1aURBC/9bk4JTFs/7xb34=;
-        b=Eqqr/AJImMVnZAHD/k/kb9QIY6FWGNejXJVKlIl5Er/iFwqstDILDzc/070NNWNGiH
-         SxWvD52bohspFykeut+S2amFrAwzS2hg/xVIAFE7uVJLspD4Fx+5ShM1W78QmSBoPWHc
-         Z5eIeMj4TF0NJfWFDlPJs57gVZh+EJOTISVX4oKTRoPwwwCynobKw60HAvrtOifYG4TI
-         gzNOCo29Ls1gr1HWfNsQWGXXL5PYLPrE8oksAUWNYcTQGQwTGIvvw/qnIfNTfiotMvBH
-         8U6FluXoOONKlmUWj9ARuEfIkwxbmae5lt8Y5KTGLQf4QvW5OV/p7eElpBYKz1PzSph/
-         Gznw==
-X-Gm-Message-State: AOAM530ytonmUNwJsoDATQ/7+c1atlKm7FtSnWfHgDErooVNexk/y6sB
-        paWEisW9bj7dYIUEJ7OcuitaHvUrcyF7Oy1h5o5R4g==
-X-Google-Smtp-Source: ABdhPJw2tkTfWOMevrks6e4V4LMKSmWyto2oP59T/1sI8Pu5b8V0fkyL6eSjpLZk05DAApKFvd5bI47W9V9hWwOEa/w=
-X-Received: by 2002:a17:906:1682:: with SMTP id s2mr7369415ejd.62.1606110669180;
- Sun, 22 Nov 2020 21:51:09 -0800 (PST)
+        Mon, 23 Nov 2020 00:55:27 -0500
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 0AN5st9O021305;
+        Mon, 23 Nov 2020 14:54:55 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0AN5st9O021305
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606110896;
+        bh=jn3Xu+gxS+yWMV9eBhulgLuXbYWjP5oBQjfFqDpmzY4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T491TVaek5ejhy5WnCdkY1uhdZfagbwBFIowPiHtahBnqZOZdf6CZ5RF7Yl+57m4O
+         9z9pO7eEjemse4isWl8o1gG5vtqFS/qGykc951QDN99mER7P8X1hTUzXNieOLPj1MD
+         tONrhXSp8fy9f/6PzxM+YvKaVLEYhf08GY4eKzdf0hKGQVHwMbIGUBzLKYG89tENAn
+         vaEMIpe4zzlGLSLHwAFFe6et32xgogH8SN113MFH7Qn2hkJEViYmGrctYRRSc4Nmpy
+         OvMmsuaIPUJCrVI2M/WxlZ0BgOIX9uxB04ZLJd4AIPO9u1I2WxGorsQsfVhxQxiopt
+         ZUbYRxkY68YjQ==
+X-Nifty-SrcIP: [209.85.210.179]
+Received: by mail-pf1-f179.google.com with SMTP id e8so1976767pfh.2;
+        Sun, 22 Nov 2020 21:54:55 -0800 (PST)
+X-Gm-Message-State: AOAM531TZhYGOZbu2rewsDKNZQ+IZygdbjEEBvGoJ8Vvdgj3g39558LC
+        D7WvQ6/yYuxxLxQjtWEpa1fZKHbUZkdqfQ1SAIc=
+X-Google-Smtp-Source: ABdhPJxGkXrZMIP7JaTuIdt1sUF+7ujQ2MBxVPjd1INAwlaqzJYTdmn/mDahUunCTT9xNgt03FQR8lDtryIWh5tHnUk=
+X-Received: by 2002:a65:6a16:: with SMTP id m22mr14030652pgu.175.1606110894996;
+ Sun, 22 Nov 2020 21:54:54 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1605914030.git.joe@perches.com> <0e17a4c845f15e18f98b346ffb9b039584d21cdd.1605914030.git.joe@perches.com>
-In-Reply-To: <0e17a4c845f15e18f98b346ffb9b039584d21cdd.1605914030.git.joe@perches.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 23 Nov 2020 06:50:58 +0100
-Message-ID: <CAMGffE=DyJ=M_5sDpkQ_dLfKMMSduXr+UJKi44YVLjOqBWt4Rg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] scsi: pm8001: Make implicit use of pm8001_ha in
- pm8001_printk explicit
-To:     Joe Perches <joe@perches.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
+References: <20201102034001.409945-1-masahiroy@kernel.org>
+In-Reply-To: <20201102034001.409945-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 23 Nov 2020 14:54:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATQuajMK6K3HBE3U4JAHEZVXr1aqmPeC2Y=Xwp3bafszg@mail.gmail.com>
+Message-ID: <CAK7LNATQuajMK6K3HBE3U4JAHEZVXr1aqmPeC2Y=Xwp3bafszg@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: qconf: show Qt version in the About dialog
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Boris Kolpackov <boris@codesynthesis.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 12:16 AM Joe Perches <joe@perches.com> wrote:
+On Mon, Nov 2, 2020 at 12:40 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> Make the pm8001_printk macro take an explicit HBA instead of
-> assuming the existence of an unspecified pm8001_ha argument
+> You can get the Qt version by running "pkg-config --modversion Qt5Core"
+> or something, but this might be useful to get the runtime Qt version
+> more easily. Go to the menu "Help" -> "About", then you can see it.
 >
-> Miscellanea:
->
-> o Add pm8001_ha to the few uses of pm8001_printk
-> o Add HBA to the pm8001_dbg macro call to pm8001_printk
->
-> Signed-off-by: Joe Perches <joe@perches.com>
-Looks good!
-Thanks!
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  drivers/scsi/pm8001/pm8001_init.c | 11 +++++------
->  drivers/scsi/pm8001/pm8001_sas.c  |  4 ++--
->  drivers/scsi/pm8001/pm8001_sas.h  |  6 +++---
->  3 files changed, 10 insertions(+), 11 deletions(-)
+
+Applied to linux-kbuild.
+
+
+>  scripts/kconfig/qconf.cc | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-> index 96b7281b2fca..13530d7fb8a6 100644
-> --- a/drivers/scsi/pm8001/pm8001_init.c
-> +++ b/drivers/scsi/pm8001/pm8001_init.c
-> @@ -1293,9 +1293,8 @@ static int pm8001_pci_suspend(struct pci_dev *pdev, pm_message_t state)
->                         tasklet_kill(&pm8001_ha->tasklet[j]);
->  #endif
->         device_state = pci_choose_state(pdev, state);
-> -       pm8001_printk("pdev=0x%p, slot=%s, entering "
-> -                     "operating state [D%d]\n", pdev,
-> -                     pm8001_ha->name, device_state);
-> +       pm8001_printk(pm8001_ha, "pdev=0x%p, slot=%s, entering operating state [D%d]\n",
-> +                     pdev, pm8001_ha->name, device_state);
->         pci_save_state(pdev);
->         pci_disable_device(pdev);
->         pci_set_power_state(pdev, device_state);
-> @@ -1319,15 +1318,15 @@ static int pm8001_pci_resume(struct pci_dev *pdev)
->         pm8001_ha = sha->lldd_ha;
->         device_state = pdev->current_state;
+> diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+> index cbe749b44b1a..d000869b787c 100644
+> --- a/scripts/kconfig/qconf.cc
+> +++ b/scripts/kconfig/qconf.cc
+> @@ -1799,10 +1799,13 @@ void ConfigMainWindow::showIntro(void)
+>  void ConfigMainWindow::showAbout(void)
+>  {
+>         static const QString str = "qconf is Copyright (C) 2002 Roman Zippel <zippel@linux-m68k.org>.\n"
+> -               "Copyright (C) 2015 Boris Barbulovski <bbarbulovski@gmail.com>.\n\n"
+> -               "Bug reports and feature request can also be entered at http://bugzilla.kernel.org/\n";
+> +               "Copyright (C) 2015 Boris Barbulovski <bbarbulovski@gmail.com>.\n"
+> +               "\n"
+> +               "Bug reports and feature request can also be entered at http://bugzilla.kernel.org/\n"
+> +               "\n"
+> +               "Qt Version: ";
 >
-> -       pm8001_printk("pdev=0x%p, slot=%s, resuming from previous "
-> -               "operating state [D%d]\n", pdev, pm8001_ha->name, device_state);
-> +       pm8001_printk(pm8001_ha, "pdev=0x%p, slot=%s, resuming from previous operating state [D%d]\n",
-> +                     pdev, pm8001_ha->name, device_state);
->
->         pci_set_power_state(pdev, PCI_D0);
->         pci_enable_wake(pdev, PCI_D0, 0);
->         pci_restore_state(pdev);
->         rc = pci_enable_device(pdev);
->         if (rc) {
-> -               pm8001_printk("slot=%s Enable device failed during resume\n",
-> +               pm8001_printk(pm8001_ha, "slot=%s Enable device failed during resume\n",
->                               pm8001_ha->name);
->                 goto err_out_enable;
->         }
-> diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
-> index 505a885b4c77..4562b0a5062a 100644
-> --- a/drivers/scsi/pm8001/pm8001_sas.c
-> +++ b/drivers/scsi/pm8001/pm8001_sas.c
-> @@ -1191,7 +1191,7 @@ int pm8001_abort_task(struct sas_task *task)
->         phy_id = pm8001_dev->attached_phy;
->         ret = pm8001_find_tag(task, &tag);
->         if (ret == 0) {
-> -               pm8001_printk("no tag for task:%p\n", task);
-> +               pm8001_printk(pm8001_ha, "no tag for task:%p\n", task);
->                 return TMF_RESP_FUNC_FAILED;
->         }
->         spin_lock_irqsave(&task->task_state_lock, flags);
-> @@ -1313,7 +1313,7 @@ int pm8001_abort_task(struct sas_task *task)
->                 task->slow_task = NULL;
->         spin_unlock_irqrestore(&task->task_state_lock, flags);
->         if (rc != TMF_RESP_FUNC_COMPLETE)
-> -               pm8001_printk("rc= %d\n", rc);
-> +               pm8001_printk(pm8001_ha, "rc= %d\n", rc);
->         return rc;
+> -       QMessageBox::information(this, "qconf", str);
+> +       QMessageBox::information(this, "qconf", str + qVersion());
 >  }
 >
-> diff --git a/drivers/scsi/pm8001/pm8001_sas.h b/drivers/scsi/pm8001/pm8001_sas.h
-> index 5cd6fe6a7d2d..5266756a268b 100644
-> --- a/drivers/scsi/pm8001/pm8001_sas.h
-> +++ b/drivers/scsi/pm8001/pm8001_sas.h
-> @@ -70,14 +70,14 @@
->  #define PM8001_DEVIO_LOGGING   0x100 /* development io message logging */
->  #define PM8001_IOERR_LOGGING   0x200 /* development io err message logging */
->
-> -#define pm8001_printk(fmt, ...)                                                \
-> +#define pm8001_printk(HBA, fmt, ...)                                   \
->         pr_info("%s:: %s  %d:" fmt,                                     \
-> -               pm8001_ha->name, __func__, __LINE__, ##__VA_ARGS__)
-> +               (HBA)->name, __func__, __LINE__, ##__VA_ARGS__)
->
->  #define pm8001_dbg(HBA, level, fmt, ...)                               \
->  do {                                                                   \
->         if (unlikely((HBA)->logging_level & PM8001_##level##_LOGGING))  \
-> -               pm8001_printk(fmt, ##__VA_ARGS__);                      \
-> +               pm8001_printk(HBA, fmt, ##__VA_ARGS__);                 \
->  } while (0)
->
->  #define PM8001_USE_TASKLET
+>  void ConfigMainWindow::saveSettings(void)
 > --
-> 2.26.0
+> 2.25.1
 >
+
+
+-- 
+Best Regards
+Masahiro Yamada
