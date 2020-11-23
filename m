@@ -2,156 +2,570 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0582C0C13
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4FE2C0C19
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731143AbgKWNnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        id S1731544AbgKWNo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:44:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731081AbgKWNnI (ORCPT
+        with ESMTP id S1729939AbgKWNo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:43:08 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFD9C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:43:08 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id u18so23755611lfd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YngaC6Acfr1/jVJAmkXMgpT3gJKsA91CdQDO/MaDIIM=;
-        b=t4cX9IvKWPhk9A5rKy2AV+rcu+LGRH0eQ8QvWfghZQ0nrdnLH/VQH24gzXUV3Qe8nu
-         5Arx9oHd9XtoRreu3IZGA2PdMygosFwNXqh5VmbR6+1cZoeZ3hfw4ET+GEW11rnZ6sjg
-         2dj/F/dqMQbnW6JB5goeJrdZ+erRnAnSUGZnRIAgQ9Zp6XyqHnoEfuCaTVG/hxkIp319
-         JoRwGRTzmmy+ydZct/67MhFCr5H7w1IqiFxYa5EZw/3oOvispMP8HE593bc/iTV06utr
-         7CwM0ZG0nkFTzkvU4jEmn+RQMIH/j74PCSqUDOwf9uNx4leatgNaOXyc/4g1p8yD6gBk
-         PjOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YngaC6Acfr1/jVJAmkXMgpT3gJKsA91CdQDO/MaDIIM=;
-        b=n5hnYXtOzu+X0EosB9wpIJmanJGxESEKoZUUTnJf6rdhLa7WCA/U1FuIC11YgkKhX+
-         6gaxzp/LmPgkACSf9XH8CrLVARLkD8tWqz1CnJLMzJvV1e0vTOUAqseT+NKCsdGCBFw1
-         ZqBFzFkuqjFp03+dbHumbX16IDpG5y39HlpeFpN8OkEazkCxWh3PNWGSsLg8bPw1AeHH
-         5rnfY8P/eUrorhNeSj/cBmcL7QTN1a12Dl/VSWaOKZbUAyq92H6DG3g30qrpG2uL7T8X
-         zUrm8UuHrTKkWkzQH9RMhBAJRsop34kNNx3tDKDme7LD+7u8Adigb2RgC6E8AFuCf9lk
-         S/Bw==
-X-Gm-Message-State: AOAM530CwMyO8MVPo3fWYa4n46iNeqVbsYMlcn3QZJx7PYCaSl2gaNgE
-        agxdyAXECisqLayrB08s6rYv3Kq99wRhi/CzShbpGA==
-X-Google-Smtp-Source: ABdhPJxw+7r33BsIhQ5K6AomfeGzV6BA/bQotP1JYiVDiDAQX5szRbwm2aoMVpWktKJ4dxtFObPH5DZswr08GPvWvNA=
-X-Received: by 2002:a19:cc91:: with SMTP id c139mr12772897lfg.31.1606138986661;
- Mon, 23 Nov 2020 05:43:06 -0800 (PST)
-MIME-Version: 1.0
-References: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
- <20201120085653.GA3092@hirez.programming.kicks-ass.net> <66650f6a-0a95-706f-58cc-3cd241e30dda@arm.com>
- <CAKfTPtBtiweSfErgQ3ZVw9HB2Q7b=V4uoGS2dbaqY1KNz6kUhA@mail.gmail.com> <4ea72740-e724-ce20-b6d8-b6cea7c8c370@arm.com>
-In-Reply-To: <4ea72740-e724-ce20-b6d8-b6cea7c8c370@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 23 Nov 2020 14:42:55 +0100
-Message-ID: <CAKfTPtCS6rVawFLQ=XGqtySRZuqO-WnbGJQnMvAFVsqFQ7xmAg@mail.gmail.com>
-Subject: Re: [RFC] Documentation/scheduler/schedutil.txt
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@kernel.org>,
+        Mon, 23 Nov 2020 08:44:27 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66A8C0613CF;
+        Mon, 23 Nov 2020 05:44:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RydA/us2lnbAjoJ7xmSIIjKk6qIoneLQLLcDUjJYnxM=; b=U9RjAS+s/uGM6Pd4fbRXzPe1KM
+        4cjU70YB/r0s6veegEZX2/ID9UVs2g2w7Wrmga4Av7HoJvyzB8HCjxBt0lh6n1TqwfJ4H8BPNl89O
+        KIhaST/RMq5ls4KSapEf/Q6y1MdBZKQM+ClOUtBpZEeAcAx2GszgOUlSRnA9b4WaKmlsnyRCywUnh
+        vXDHsNJ6jumKfmyLNMg/Aeo8j8lSlrdZ0BpCfqzMFFUESs/Ck5qBZ6Po2Vxy3P3PKNtMfg9nJ2J5z
+        CnS28YMDzG9RwB2Zw8XvsCQJKU3GVz9fc12LIsoBs7G9XkQj9WAL8reynr3QvIcEFav40d0mVYp/L
+        oe9fweFQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khC7m-0008NA-Cg; Mon, 23 Nov 2020 13:43:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2CC6307958;
+        Mon, 23 Nov 2020 14:43:17 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 87D77200C8D27; Mon, 23 Nov 2020 14:43:17 +0100 (CET)
+Date:   Mon, 23 Nov 2020 14:43:17 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
+Message-ID: <20201123134317.GE3092@hirez.programming.kicks-ass.net>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120125342.GC3040@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120125342.GC3040@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 at 12:27, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 23/11/2020 11:05, Vincent Guittot wrote:
-> > On Mon, 23 Nov 2020 at 10:30, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
-> >>
-> >> On 20/11/2020 09:56, Peter Zijlstra wrote:
-> >>> On Fri, Nov 20, 2020 at 08:55:27AM +0100, Peter Zijlstra wrote:
-> >>>>  - In saturated scenarios task movement will cause some transient dips,
-> >>>>    suppose we have a CPU saturated with 4 tasks, then when we migrate a task
-> >>>>    to an idle CPU, the old CPU will have a 'running' value of 0.75 while the
-> >>>>    new CPU will gain 0.25. This is inevitable and time progression will
-> >>>>    correct this. XXX do we still guarantee f_max due to no idle-time?
-> >>>
-> >>> Do we want something like this? Is the 1.5 threshold sane? (it's been too
-> >>> long since I looked at actual numbers here)
-> >>
-> >> Did some tests on a big.little system:
-> >>
-> >>  (1) rt-app workload on big CPU:
-> >>
-> >>  - task0-3 (runtime/period=4000us/16000us, started with
-> >>    4000us delay to each other) run on CPU1
-> >>  - then task3 migrates to CPU2 and runs there for 64ms
-> >>  - then task2 migrates to CPU2 too and both tasks run there
-> >>    for another 64ms
-> >>
-> >> ...
-> >>     task3-3-1684  [001]  3982.798729: sched_pelt_cfs:       cpu=1 path=/ load=232890 runnable=3260 util=1011
-> >> migration/1-14    [001]  3982.798756: sched_migrate_task:   comm=task3-3 pid=1684 prio=101 orig_cpu=1 dest_cpu=2*
-> >> migration/1-14    [001]  3982.798767: sched_pelt_cfs:       cpu=1 path=/ load=161374 runnable=2263 util=*700* <-- util dip !!!
-> >>     task1-1-1682  [001]  3982.799802: sched_pelt_cfs:       cpu=1 path=/ load=160988 runnable=2257 util=706
-> >> ...
-> >>     task2-2-1683  [001]  3982.849123: sched_pelt_cfs:       cpu=1 path=/ load=161124 runnable=2284 util=904
-> >>     task2-2-1683  [001]  3982.851960: sched_pelt_cfs:       cpu=1 path=/ load=160130 runnable=2271 util=911
-> >> migration/1-14    [001]  3982.851984: sched_migrate_task:   comm=task2-2 pid=1683 prio=101 orig_cpu=1 dest_cpu=2**
-> >> migration/1-14    [001]  3982.851995: sched_pelt_cfs:       cpu=1 path=/ load=88672 runnable=*1257* util=512 <-- runnable below 1536
-> >>     task1-1-1682  [001]  3982.852983: sched_pelt_cfs:       cpu=1 path=/ load=88321 runnable=1252 util=521
-> >> ...
-> >>
-> >>
-> >> *  task1,2,3 remain on CPU1 and still have to catch up, no idle
-> >>    time on CPU1
-> >>
-> >> ** task 1,2 remain on CPU1, there is idle time on CPU1!
-> >>
-> >>
-> >> (2) rt-app workload on LITTLE CPU (orig cpu_capacity: 446)
-> >>
-> >>  - task0-3 (runtime/period=1742us/16000us, started with
-> >>    4000us delay to each other) run on CPU4
-> >>  - then task3 migrates to CPU5 and runs there for 64ms
-> >>  - then task2 migrates to CPU5 too and both tasks run there
-> >>    for another 64ms
-> >>
-> >> ...
-> >>     task1-1-1777  [004]   789.443015: sched_pelt_cfs:       cpu=4 path=/ load=234718 runnable=3018 util=976
-> >> migration/4-29    [004]   789.444718: sched_migrate_task:   comm=task3-3 pid=1779 prio=101 orig_cpu=4 dest_cpu=5*
-> >> migration/4-29    [004]   789.444739: sched_pelt_cfs:       cpu=4 path=/ load=163543 runnable=2114 util=*778* <--util dip !!!
-> >>     task2-2-1778  [004]   789.447013: sched_pelt_cfs:       cpu=4 path=/ load=163392 runnable=2120 util=777
-> >> ...
-> >>     task1-1-1777  [004]   789.507012: sched_pelt_cfs:       cpu=4 path=/ load=164482 runnable=2223 util=879
-> >> migration/4-29    [004]   789.508023: sched_migrate_task:   comm=task2-2 pid=1778 prio=101 orig_cpu=4 dest_cpu=5**
-> >> migration/4-29    [004]   789.508044: sched_pelt_cfs:       cpu=4 path=/ load=94099 runnable=*1264* util=611 <-- runnable below 1536
-> >>     task0-0-1776  [004]   789.511011: sched_pelt_cfs:       cpu=4 path=/ load=93898 runnable=1264 util=622
-> >> ...
-> >>
-> >> *  task1,2,3 remain on CPU1 and still have to catch up, no idle
-> >>    time on CPU1
-> >>
-> >> ** task 1,2 remain on CPU1, no idle time on CPU1 yet.
-> >>
-> >> So for the big CPU, there is idle time and for the LITTLE there
-> >> isn't with runnable below the threshold.
-> >
-> > I'm not sure to catch what you want to highlight with your tests ?
->
-> I thought the question was whether 'runnable_avg = 1.5 x
-> SCHED_CAPACITY_SCALE' is a good threshold to decide to drive frequency
-> by runnable_avg or util_avg.
+On Fri, Nov 20, 2020 at 01:53:42PM +0100, Peter Zijlstra wrote:
+> On Fri, Nov 20, 2020 at 12:46:18PM +0100, Juergen Gross wrote:
+> >  30 files changed, 325 insertions(+), 598 deletions(-)
+> 
+> Much awesome ! I'll try and get that objtool thing sorted.
 
-we can't use SCHED_CAPACITY_SCALE and must use cpu's capacity
+This seems to work for me. It isn't 100% accurate, because it doesn't
+know about the direct call instruction, but I can either fudge that or
+switching to static_call() will cure that.
 
->
-> [...]
+It's not exactly pretty, but it should be straight forward.
+
+Index: linux-2.6/tools/objtool/check.c
+===================================================================
+--- linux-2.6.orig/tools/objtool/check.c
++++ linux-2.6/tools/objtool/check.c
+@@ -1090,6 +1090,32 @@ static int handle_group_alt(struct objto
+ 		return -1;
+ 	}
+ 
++	/*
++	 * Add the filler NOP, required for alternative CFI.
++	 */
++	if (special_alt->group && special_alt->new_len < special_alt->orig_len) {
++		struct instruction *nop = malloc(sizeof(*nop));
++		if (!nop) {
++			WARN("malloc failed");
++			return -1;
++		}
++		memset(nop, 0, sizeof(*nop));
++		INIT_LIST_HEAD(&nop->alts);
++		INIT_LIST_HEAD(&nop->stack_ops);
++		init_cfi_state(&nop->cfi);
++
++		nop->sec = last_new_insn->sec;
++		nop->ignore = last_new_insn->ignore;
++		nop->func = last_new_insn->func;
++		nop->alt_group = alt_group;
++		nop->offset = last_new_insn->offset + last_new_insn->len;
++		nop->type = INSN_NOP;
++		nop->len = special_alt->orig_len - special_alt->new_len;
++
++		list_add(&nop->list, &last_new_insn->list);
++		last_new_insn = nop;
++	}
++
+ 	if (fake_jump)
+ 		list_add(&fake_jump->list, &last_new_insn->list);
+ 
+@@ -2190,18 +2216,12 @@ static int handle_insn_ops(struct instru
+ 	struct stack_op *op;
+ 
+ 	list_for_each_entry(op, &insn->stack_ops, list) {
+-		struct cfi_state old_cfi = state->cfi;
+ 		int res;
+ 
+ 		res = update_cfi_state(insn, &state->cfi, op);
+ 		if (res)
+ 			return res;
+ 
+-		if (insn->alt_group && memcmp(&state->cfi, &old_cfi, sizeof(struct cfi_state))) {
+-			WARN_FUNC("alternative modifies stack", insn->sec, insn->offset);
+-			return -1;
+-		}
+-
+ 		if (op->dest.type == OP_DEST_PUSHF) {
+ 			if (!state->uaccess_stack) {
+ 				state->uaccess_stack = 1;
+@@ -2399,19 +2419,137 @@ static int validate_return(struct symbol
+  * unreported (because they're NOPs), such holes would result in CFI_UNDEFINED
+  * states which then results in ORC entries, which we just said we didn't want.
+  *
+- * Avoid them by copying the CFI entry of the first instruction into the whole
+- * alternative.
++ * Avoid them by copying the CFI entry of the first instruction into the hole.
+  */
+-static void fill_alternative_cfi(struct objtool_file *file, struct instruction *insn)
++static void __fill_alt_cfi(struct objtool_file *file, struct instruction *insn)
+ {
+ 	struct instruction *first_insn = insn;
+ 	int alt_group = insn->alt_group;
+ 
+-	sec_for_each_insn_continue(file, insn) {
++	sec_for_each_insn_from(file, insn) {
+ 		if (insn->alt_group != alt_group)
+ 			break;
+-		insn->cfi = first_insn->cfi;
++
++		if (!insn->visited)
++			insn->cfi = first_insn->cfi;
++	}
++}
++
++static void fill_alt_cfi(struct objtool_file *file, struct instruction *alt_insn)
++{
++	struct alternative *alt;
++
++	__fill_alt_cfi(file, alt_insn);
++
++	list_for_each_entry(alt, &alt_insn->alts, list)
++		__fill_alt_cfi(file, alt->insn);
++}
++
++static struct instruction *
++__find_unwind(struct objtool_file *file,
++	      struct instruction *insn, unsigned long offset)
++{
++	int alt_group = insn->alt_group;
++	struct instruction *next;
++	unsigned long off = 0;
++
++	while ((off + insn->len) <= offset) {
++		next = next_insn_same_sec(file, insn);
++		if (next && next->alt_group != alt_group)
++			next = NULL;
++
++		if (!next)
++			break;
++
++		off += insn->len;
++		insn = next;
+ 	}
++
++	return insn;
++}
++
++struct instruction *
++find_alt_unwind(struct objtool_file *file,
++		struct instruction *alt_insn, unsigned long offset)
++{
++	struct instruction *fit;
++	struct alternative *alt;
++	unsigned long fit_off;
++
++	fit = __find_unwind(file, alt_insn, offset);
++	fit_off = (fit->offset - alt_insn->offset);
++
++	list_for_each_entry(alt, &alt_insn->alts, list) {
++		struct instruction *x;
++		unsigned long x_off;
++
++		x = __find_unwind(file, alt->insn, offset);
++		x_off = (x->offset - alt->insn->offset);
++
++		if (fit_off < x_off) {
++			fit = x;
++			fit_off = x_off;
++
++		} else if (fit_off == x_off &&
++			   memcmp(&fit->cfi, &x->cfi, sizeof(struct cfi_state))) {
++
++			char *_str1 = offstr(fit->sec, fit->offset);
++			char *_str2 = offstr(x->sec, x->offset);
++			WARN("%s: equal-offset incompatible alternative: %s\n", _str1, _str2);
++			free(_str1);
++			free(_str2);
++			return fit;
++		}
++	}
++
++	return fit;
++}
++
++static int __validate_unwind(struct objtool_file *file,
++			     struct instruction *alt_insn,
++			     struct instruction *insn)
++{
++	int alt_group = insn->alt_group;
++	struct instruction *unwind;
++	unsigned long offset = 0;
++
++	sec_for_each_insn_from(file, insn) {
++		if (insn->alt_group != alt_group)
++			break;
++
++		unwind = find_alt_unwind(file, alt_insn, offset);
++
++		if (memcmp(&insn->cfi, &unwind->cfi, sizeof(struct cfi_state))) {
++
++			char *_str1 = offstr(insn->sec, insn->offset);
++			char *_str2 = offstr(unwind->sec, unwind->offset);
++			WARN("%s: unwind incompatible alternative: %s (%ld)\n",
++			     _str1, _str2, offset);
++			free(_str1);
++			free(_str2);
++			return 1;
++		}
++
++		offset += insn->len;
++	}
++
++	return 0;
++}
++
++static int validate_alt_unwind(struct objtool_file *file,
++			       struct instruction *alt_insn)
++{
++	struct alternative *alt;
++
++	if (__validate_unwind(file, alt_insn, alt_insn))
++		return 1;
++
++	list_for_each_entry(alt, &alt_insn->alts, list) {
++		if (__validate_unwind(file, alt_insn, alt->insn))
++			return 1;
++	}
++
++	return 0;
+ }
+ 
+ /*
+@@ -2423,9 +2561,10 @@ static void fill_alternative_cfi(struct
+ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 			   struct instruction *insn, struct insn_state state)
+ {
++	struct instruction *next_insn, *alt_insn = NULL;
+ 	struct alternative *alt;
+-	struct instruction *next_insn;
+ 	struct section *sec;
++	int alt_group = 0;
+ 	u8 visited;
+ 	int ret;
+ 
+@@ -2480,8 +2619,10 @@ static int validate_branch(struct objtoo
+ 				}
+ 			}
+ 
+-			if (insn->alt_group)
+-				fill_alternative_cfi(file, insn);
++			if (insn->alt_group) {
++				alt_insn = insn;
++				alt_group = insn->alt_group;
++			}
+ 
+ 			if (skip_orig)
+ 				return 0;
+@@ -2613,6 +2754,17 @@ static int validate_branch(struct objtoo
+ 		}
+ 
+ 		insn = next_insn;
++
++		if (alt_insn && insn->alt_group != alt_group) {
++			alt_insn->alt_end = insn;
++
++			fill_alt_cfi(file, alt_insn);
++
++			if (validate_alt_unwind(file, alt_insn))
++				return 1;
++
++			alt_insn = NULL;
++		}
+ 	}
+ 
+ 	return 0;
+Index: linux-2.6/tools/objtool/check.h
+===================================================================
+--- linux-2.6.orig/tools/objtool/check.h
++++ linux-2.6/tools/objtool/check.h
+@@ -40,6 +40,7 @@ struct instruction {
+ 	struct instruction *first_jump_src;
+ 	struct reloc *jump_table;
+ 	struct list_head alts;
++	struct instruction *alt_end;
+ 	struct symbol *func;
+ 	struct list_head stack_ops;
+ 	struct cfi_state cfi;
+@@ -54,6 +55,10 @@ static inline bool is_static_jump(struct
+ 	       insn->type == INSN_JUMP_UNCONDITIONAL;
+ }
+ 
++struct instruction *
++find_alt_unwind(struct objtool_file *file,
++		struct instruction *alt_insn, unsigned long offset);
++
+ struct instruction *find_insn(struct objtool_file *file,
+ 			      struct section *sec, unsigned long offset);
+ 
+Index: linux-2.6/tools/objtool/orc_gen.c
+===================================================================
+--- linux-2.6.orig/tools/objtool/orc_gen.c
++++ linux-2.6/tools/objtool/orc_gen.c
+@@ -12,75 +12,86 @@
+ #include "check.h"
+ #include "warn.h"
+ 
+-int create_orc(struct objtool_file *file)
++static int create_orc_insn(struct objtool_file *file, struct instruction *insn)
+ {
+-	struct instruction *insn;
++	struct orc_entry *orc = &insn->orc;
++	struct cfi_reg *cfa = &insn->cfi.cfa;
++	struct cfi_reg *bp = &insn->cfi.regs[CFI_BP];
++
++	orc->end = insn->cfi.end;
++
++	if (cfa->base == CFI_UNDEFINED) {
++		orc->sp_reg = ORC_REG_UNDEFINED;
++		return 0;
++	}
+ 
+-	for_each_insn(file, insn) {
+-		struct orc_entry *orc = &insn->orc;
+-		struct cfi_reg *cfa = &insn->cfi.cfa;
+-		struct cfi_reg *bp = &insn->cfi.regs[CFI_BP];
++	switch (cfa->base) {
++	case CFI_SP:
++		orc->sp_reg = ORC_REG_SP;
++		break;
++	case CFI_SP_INDIRECT:
++		orc->sp_reg = ORC_REG_SP_INDIRECT;
++		break;
++	case CFI_BP:
++		orc->sp_reg = ORC_REG_BP;
++		break;
++	case CFI_BP_INDIRECT:
++		orc->sp_reg = ORC_REG_BP_INDIRECT;
++		break;
++	case CFI_R10:
++		orc->sp_reg = ORC_REG_R10;
++		break;
++	case CFI_R13:
++		orc->sp_reg = ORC_REG_R13;
++		break;
++	case CFI_DI:
++		orc->sp_reg = ORC_REG_DI;
++		break;
++	case CFI_DX:
++		orc->sp_reg = ORC_REG_DX;
++		break;
++	default:
++		WARN_FUNC("unknown CFA base reg %d",
++			  insn->sec, insn->offset, cfa->base);
++		return -1;
++	}
+ 
+-		if (!insn->sec->text)
+-			continue;
++	switch(bp->base) {
++	case CFI_UNDEFINED:
++		orc->bp_reg = ORC_REG_UNDEFINED;
++		break;
++	case CFI_CFA:
++		orc->bp_reg = ORC_REG_PREV_SP;
++		break;
++	case CFI_BP:
++		orc->bp_reg = ORC_REG_BP;
++		break;
++	default:
++		WARN_FUNC("unknown BP base reg %d",
++			  insn->sec, insn->offset, bp->base);
++		return -1;
++	}
+ 
+-		orc->end = insn->cfi.end;
++	orc->sp_offset = cfa->offset;
++	orc->bp_offset = bp->offset;
++	orc->type = insn->cfi.type;
+ 
+-		if (cfa->base == CFI_UNDEFINED) {
+-			orc->sp_reg = ORC_REG_UNDEFINED;
+-			continue;
+-		}
++	return 0;
++}
+ 
+-		switch (cfa->base) {
+-		case CFI_SP:
+-			orc->sp_reg = ORC_REG_SP;
+-			break;
+-		case CFI_SP_INDIRECT:
+-			orc->sp_reg = ORC_REG_SP_INDIRECT;
+-			break;
+-		case CFI_BP:
+-			orc->sp_reg = ORC_REG_BP;
+-			break;
+-		case CFI_BP_INDIRECT:
+-			orc->sp_reg = ORC_REG_BP_INDIRECT;
+-			break;
+-		case CFI_R10:
+-			orc->sp_reg = ORC_REG_R10;
+-			break;
+-		case CFI_R13:
+-			orc->sp_reg = ORC_REG_R13;
+-			break;
+-		case CFI_DI:
+-			orc->sp_reg = ORC_REG_DI;
+-			break;
+-		case CFI_DX:
+-			orc->sp_reg = ORC_REG_DX;
+-			break;
+-		default:
+-			WARN_FUNC("unknown CFA base reg %d",
+-				  insn->sec, insn->offset, cfa->base);
+-			return -1;
+-		}
++int create_orc(struct objtool_file *file)
++{
++	struct instruction *insn;
+ 
+-		switch(bp->base) {
+-		case CFI_UNDEFINED:
+-			orc->bp_reg = ORC_REG_UNDEFINED;
+-			break;
+-		case CFI_CFA:
+-			orc->bp_reg = ORC_REG_PREV_SP;
+-			break;
+-		case CFI_BP:
+-			orc->bp_reg = ORC_REG_BP;
+-			break;
+-		default:
+-			WARN_FUNC("unknown BP base reg %d",
+-				  insn->sec, insn->offset, bp->base);
+-			return -1;
+-		}
++	for_each_insn(file, insn) {
++		int ret;
++	       
++		if (!insn->sec->text)
++			continue;
+ 
+-		orc->sp_offset = cfa->offset;
+-		orc->bp_offset = bp->offset;
+-		orc->type = insn->cfi.type;
++		ret = create_orc_insn(file, insn);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	return 0;
+@@ -166,6 +177,28 @@ int create_orc_sections(struct objtool_f
+ 
+ 		prev_insn = NULL;
+ 		sec_for_each_insn(file, sec, insn) {
++
++			if (insn->alt_end) {
++				unsigned int offset, alt_len;
++				struct instruction *unwind;
++
++				alt_len = insn->alt_end->offset - insn->offset;
++				for (offset = 0; offset < alt_len; offset++) {
++					unwind = find_alt_unwind(file, insn, offset);
++					/* XXX: skipped earlier ! */
++					create_orc_insn(file, unwind);
++					if (!prev_insn ||
++					    memcmp(&unwind->orc, &prev_insn->orc,
++						   sizeof(struct orc_entry))) {
++						idx++;
++//						WARN_FUNC("ORC @ %d/%d", sec, insn->offset+offset, offset, alt_len);
++					}
++					prev_insn = unwind;
++				}
++
++				insn = insn->alt_end;
++			}
++
+ 			if (!prev_insn ||
+ 			    memcmp(&insn->orc, &prev_insn->orc,
+ 				   sizeof(struct orc_entry))) {
+@@ -203,6 +236,31 @@ int create_orc_sections(struct objtool_f
+ 
+ 		prev_insn = NULL;
+ 		sec_for_each_insn(file, sec, insn) {
++
++			if (insn->alt_end) {
++				unsigned int offset, alt_len;
++				struct instruction *unwind;
++
++				alt_len = insn->alt_end->offset - insn->offset;
++				for (offset = 0; offset < alt_len; offset++) {
++					unwind = find_alt_unwind(file, insn, offset);
++					if (!prev_insn ||
++					    memcmp(&unwind->orc, &prev_insn->orc,
++						   sizeof(struct orc_entry))) {
++
++						if (create_orc_entry(file->elf, u_sec, ip_relocsec, idx,
++								     insn->sec, insn->offset + offset,
++								     &unwind->orc))
++							return -1;
++
++						idx++;
++					}
++					prev_insn = unwind;
++				}
++
++				insn = insn->alt_end;
++			}
++
+ 			if (!prev_insn || memcmp(&insn->orc, &prev_insn->orc,
+ 						 sizeof(struct orc_entry))) {
+ 
