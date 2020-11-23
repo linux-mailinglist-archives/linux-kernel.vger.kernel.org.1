@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31742C07E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD5A2C07E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730216AbgKWMpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:45:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57126 "EHLO mail.kernel.org"
+        id S1732671AbgKWMpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:45:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733168AbgKWMoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:44:02 -0500
+        id S1733173AbgKWMoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:44:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAC34208C3;
-        Mon, 23 Nov 2020 12:44:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 881CD21534;
+        Mon, 23 Nov 2020 12:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135442;
-        bh=aYS2f1e6fLmruGW0G06TxwfCvJ1cA7p5SDkLwRweTKk=;
+        s=korg; t=1606135445;
+        bh=dPyFk8BTQ9ZWKFDCA6KL93rnYZxnoBEdm02hE+tuejY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m+SN3pgJnUtEwfYfYDS6y24w6VWKh6y5mSj3TT8eXTbOu1F6LN3dK6esLSgWjdM15
-         wjpuecwMC9/m4aGGlZBxZVKsu4KEWlYXNTiGvYJP3c+YoU8qBU3qLiOt7m1EAFIISL
-         lMEkvUmpMG10N3M5xQnIIffzALGyPKHJh+wsjEYQ=
+        b=eOe9/xSd9u5tLCqyu1k9cQsrDhG6oIM5IYlm7Z+kExMrwvKUMKlJTO6Lyh6Bv2Abb
+         Oh6X5ZC/Vg13wf/Kk3egIbKRtEUknu8zwrUiYNxEpyitfLqhAHGxY55Pl1o/Dm8L1Q
+         hG02vR0P5oiPMi1MIQDM/2s2C/yE1tqqWuL3ez/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Barker <pbarker@konsulko.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 069/252] hwmon: (pwm-fan) Fix RPM calculation
-Date:   Mon, 23 Nov 2020 13:20:19 +0100
-Message-Id: <20201123121838.919203389@linuxfoundation.org>
+Subject: [PATCH 5.9 070/252] gfs2: Fix case in which ail writes are done to jdata holes
+Date:   Mon, 23 Nov 2020 13:20:20 +0100
+Message-Id: <20201123121838.968481468@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -43,56 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Barker <pbarker@konsulko.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit fd8feec665fef840277515a5c2b9b7c3e3970fad ]
+[ Upstream commit 4e79e3f08e576acd51dffb4520037188703238b3 ]
 
-To convert the number of pulses counted into an RPM estimation, we need
-to divide by the width of our measurement interval instead of
-multiplying by it. If the width of the measurement interval is zero we
-don't update the RPM value to avoid dividing by zero.
+Patch b2a846dbef4e ("gfs2: Ignore journal log writes for jdata holes")
+tried (unsuccessfully) to fix a case in which writes were done to jdata
+blocks, the blocks are sent to the ail list, then a punch_hole or truncate
+operation caused the blocks to be freed. In other words, the ail items
+are for jdata holes. Before b2a846dbef4e, the jdata hole caused function
+gfs2_block_map to return -EIO, which was eventually interpreted as an
+IO error to the journal, and then withdraw.
 
-We also don't need to do 64-bit division, with 32-bits we can handle a
-fan running at over 4 million RPM.
+This patch changes function gfs2_get_block_noalloc, which is only used
+for jdata writes, so it returns -ENODATA rather than -EIO, and when
+-ENODATA is returned to gfs2_ail1_start_one, the error is ignored.
+We can safely ignore it because gfs2_ail1_start_one is only called
+when the jdata pages have already been written and truncated, so the
+ail1 content no longer applies.
 
-Signed-off-by: Paul Barker <pbarker@konsulko.com>
-Link: https://lore.kernel.org/r/20201111164643.7087-1-pbarker@konsulko.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pwm-fan.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ fs/gfs2/aops.c | 2 +-
+ fs/gfs2/log.c  | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
-index 17bb64299bfd8..3642086498d98 100644
---- a/drivers/hwmon/pwm-fan.c
-+++ b/drivers/hwmon/pwm-fan.c
-@@ -54,16 +54,18 @@ static irqreturn_t pulse_handler(int irq, void *dev_id)
- static void sample_timer(struct timer_list *t)
- {
- 	struct pwm_fan_ctx *ctx = from_timer(ctx, t, rpm_timer);
-+	unsigned int delta = ktime_ms_delta(ktime_get(), ctx->sample_start);
- 	int pulses;
--	u64 tmp;
- 
--	pulses = atomic_read(&ctx->pulses);
--	atomic_sub(pulses, &ctx->pulses);
--	tmp = (u64)pulses * ktime_ms_delta(ktime_get(), ctx->sample_start) * 60;
--	do_div(tmp, ctx->pulses_per_revolution * 1000);
--	ctx->rpm = tmp;
-+	if (delta) {
-+		pulses = atomic_read(&ctx->pulses);
-+		atomic_sub(pulses, &ctx->pulses);
-+		ctx->rpm = (unsigned int)(pulses * 1000 * 60) /
-+			(ctx->pulses_per_revolution * delta);
-+
-+		ctx->sample_start = ktime_get();
-+	}
- 
--	ctx->sample_start = ktime_get();
- 	mod_timer(&ctx->rpm_timer, jiffies + HZ);
+diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
+index d4af283fc8886..317a47d49442b 100644
+--- a/fs/gfs2/aops.c
++++ b/fs/gfs2/aops.c
+@@ -77,7 +77,7 @@ static int gfs2_get_block_noalloc(struct inode *inode, sector_t lblock,
+ 	if (error)
+ 		return error;
+ 	if (!buffer_mapped(bh_result))
+-		return -EIO;
++		return -ENODATA;
+ 	return 0;
  }
  
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index 93032feb51599..1ceeec0ffb16c 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -132,6 +132,8 @@ __acquires(&sdp->sd_ail_lock)
+ 		spin_unlock(&sdp->sd_ail_lock);
+ 		ret = generic_writepages(mapping, wbc);
+ 		spin_lock(&sdp->sd_ail_lock);
++		if (ret == -ENODATA) /* if a jdata write into a new hole */
++			ret = 0; /* ignore it */
+ 		if (ret || wbc->nr_to_write <= 0)
+ 			break;
+ 		return -EBUSY;
 -- 
 2.27.0
 
