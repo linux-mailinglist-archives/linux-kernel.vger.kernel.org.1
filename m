@@ -2,125 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6126E2C0347
+	by mail.lfdr.de (Postfix) with ESMTP id D44982C0348
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgKWK2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:28:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727724AbgKWK2a (ORCPT
+        id S1728449AbgKWK2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:28:36 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:17870 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727724AbgKWK2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:28:30 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE28AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:28:30 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 81so13868397pgf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:28:30 -0800 (PST)
+        Mon, 23 Nov 2020 05:28:35 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ANALemh013114;
+        Mon, 23 Nov 2020 02:28:31 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pfpt0220; bh=3MfMD9u7Vj4KWqTMVxM6HQmflUSQVFSMzTZlLqi1vb8=;
+ b=d0cQHdcWJ4MjxaTU4/7JuJJOSPhJVRmq4/XjOUuzeRAMwAnLh9NP+83T0LcawWnhGnIf
+ yMCJP+fJBbxiaJX9t1swTVnJ8uPIg6lFoavSJL4aWqfX7nDrXwsBhYw2e8cHq346t/6p
+ p1mtJaHCG+I+pcxOET+YaBZr8Y1fLjCDsx7BVUWSNkfejrKi4tUY5DdGAjlnLTKNUS8r
+ MPJdHJpcTssWWb7V7rss9cGpWi4SGOSPndMo0siJYI0aQ6ocD/srQZuxTLzRF93dugCt
+ +lOpi7zoYxrN2hai8Go5MVIZ4xcFvN1KwK+H3jhK9ugsp2ZzLyEcj7ygH0/GvmPjFJCq pw== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 34y14u5bna-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 02:28:30 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Nov
+ 2020 02:28:29 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
+ by SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 23 Nov 2020 02:28:29 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iAuS2+YpCTMnzKxR8OVAyI6a6nAfmveqKv7QZPxLHQlxwfXPLzMYraldJEFjU2Q+/wr6HP9qmfs76puw1F7GZFg2HWhalQhxu/teoWmj0tEx8Ro2Z6nSaaRhOav8j1NNDHUMbhRhrfa6csYy7OB7PMr64wxfInKUnmMcbL6ACZj4V2bg6AOcV4NnqnsUYdoK36q+xX1OzQX/c/NPlra18Hgo6d3jKHRFdd4hcoqKFDYsfugQc+oHpNdk+Eb7jXx6j6ONLX0tuuWmOdtTgOU6VC6VqbItI5unu71jGAmJ7mQ+taBE2YQDRhuvMxqFJULuN6fkkPIbsRVRjh5615D11w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3MfMD9u7Vj4KWqTMVxM6HQmflUSQVFSMzTZlLqi1vb8=;
+ b=hjaeQk849FXlNV0O+rsHDB94I26g8RcZsrCI4noZhVnhUSP3t9+HFTtvNBMC0F4aFR4lha7oPNYYkMQxBrlVGawXYrth+o8GTxjs5Px2ffPi6JkuE7fOkUbv9ajhJKIxN4BCMxMcSzDYgqYlnKGoVlFCbSe3EDQaxVUwFWpaGwOptXbfM5NRXJSBuouuSj1nmXACApOI+XAbb+HV9fTzk7iirwFCSLrWS0sCYAhvxoDJPuCKkICHIPxvlMqwayVvE0BUN7ZpQqJ/GoFoDaDnoVEqc9Vkav05JO7LeeS59LzqsReVgC2hbjxKBH8dhTuG3AtFZZ/5syOJogExmu8Irg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=qRhACkl7Rv1uiFh8nGeVLLx0hitLFn3xGhjC9ZYYm2s=;
-        b=mIR/WMKDFuVlCPGZvcfujDdFLjDoYpA9VEarx8tSzci8KF76UTk9zJSaCd0/zXoKmm
-         7qPKRPk9ljIanB837jZ6mTRKugYuSSFpEGkV2PjPb66bgz6spS6uWXEhrnVwM/7aQ7pA
-         kB9syVYMaA0uy/2FxAIUeRdNojRAmVCo9YRTmonu8VbcNIk+0yYMQ8OMMt6VSV7hMcOd
-         5JpFWZ6bXvfQMjeVb3LnBsVtX00+LcpTcDq12+vUmsC7DQN2hsVmSI2SmdH7tlNi0c67
-         AKE7xtwciWyPJl/A3Loj+0O/F+cBboH51Xo7xA06tbhSNewHh2hqPWO/zr48DnS46hzK
-         a7qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=qRhACkl7Rv1uiFh8nGeVLLx0hitLFn3xGhjC9ZYYm2s=;
-        b=c4F6lKLHV9H4FExI5KYeKpN9c3em8Q1s5/39etVx9tVInIa8uU541Bh1tIG7G5wQbU
-         f/UuqfQgXejJCtXA/HrcVClwjRDB+A0zJRpXD8Z13fG2jBInH6zy6TcrzFHvxyrcCjRy
-         BhA5a7KcDD9UxJECN4CMAfze0Lfdlm/pMDPBDluQyDsiKGXh9yLNpj3vNTEQo5HviY89
-         I0jlPE6l6Wh/LoC4/4FuhdIXh96zMtshpr0CeUq2kTesUSW3m1QmYG07ybuABlkMfO/W
-         gsvMAHvEpgthzqPlxhzodXEgZkIC2v6tyw53BwEnJtfR9xOsZkRlVMADjJykcEVfkz0z
-         dQMw==
-X-Gm-Message-State: AOAM531ueltSOp7D9eGwxv41uYP8Iu8maMY9Y5543By3b6vYJysRxPRH
-        I+0F6S9OLz1Q9BDvSPFQ77E=
-X-Google-Smtp-Source: ABdhPJyysChDwLc1e9sbiOMTb/IONSdknPwpSKenaAeO8j9mWeQXJWJ+8vzjQq2E0gRsbUGCVlnBaA==
-X-Received: by 2002:a17:90a:5e43:: with SMTP id u3mr23657809pji.216.1606127310005;
-        Mon, 23 Nov 2020 02:28:30 -0800 (PST)
-Received: from localhost.localdomain ([2405:204:a68f:d31a:e4c8:22ff:b3cf:2a08])
-        by smtp.googlemail.com with ESMTPSA id o9sm14030919pjr.2.2020.11.23.02.28.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 02:28:29 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7] checkpatch: add fix option for LOGICAL_CONTINUATIONS
-Date:   Mon, 23 Nov 2020 15:58:18 +0530
-Message-Id: <20201123102818.24364-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <afaa79a6d86a4184878595ced3f2de1a92a4058c.camel@perches.com>
-References: <afaa79a6d86a4184878595ced3f2de1a92a4058c.camel@perches.com>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3MfMD9u7Vj4KWqTMVxM6HQmflUSQVFSMzTZlLqi1vb8=;
+ b=c/6GWepVHXa2lCeW2nxr31UGKioqEnN7P77aATN/aX31vFp747GSnmbQuRaGNU5EuhimMAUuFOIh8Z0UWGGhaRJrudtadWmvCwEveXZgn+ma1ms/S6uBLMCJuQJpNcyxAJcQYDzeIh+A+jPxRpRcO0D2L4nZTJ9ItPbl9Ky0kos=
+Received: from BYAPR18MB2679.namprd18.prod.outlook.com (2603:10b6:a03:13c::10)
+ by BY5PR18MB3203.namprd18.prod.outlook.com (2603:10b6:a03:1a8::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.28; Mon, 23 Nov
+ 2020 10:28:28 +0000
+Received: from BYAPR18MB2679.namprd18.prod.outlook.com
+ ([fe80::fcc9:71b3:472:ef7a]) by BYAPR18MB2679.namprd18.prod.outlook.com
+ ([fe80::fcc9:71b3:472:ef7a%7]) with mapi id 15.20.3589.030; Mon, 23 Nov 2020
+ 10:28:28 +0000
+From:   George Cherian <gcherian@marvell.com>
+To:     Jiri Pirko <jiri@resnulli.us>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "Linu Cherian" <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+        "saeed@kernel.org" <saeed@kernel.org>
+Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health reporters
+ for NPA
+Thread-Topic: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
+ reporters for NPA
+Thread-Index: AdbBgtkKm18yCRXgRqiiXzaQQP+M+A==
+Date:   Mon, 23 Nov 2020 10:28:28 +0000
+Message-ID: <BYAPR18MB2679CFF7446F9EDA8A95FA1BC5FC0@BYAPR18MB2679.namprd18.prod.outlook.com>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: resnulli.us; dkim=none (message not signed)
+ header.d=none;resnulli.us; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [116.68.99.5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 702ccc4a-cb5c-43dd-748d-08d88f9a84d5
+x-ms-traffictypediagnostic: BY5PR18MB3203:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR18MB32037A839681C721F1D0D21AC5FC0@BY5PR18MB3203.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SPmZ6+eOoHiY6m3cNdpObxXk2zqZc6km7TGgYXPYRMiHnhkNDSaaH2VHOoatheNDJ/ByZ/JRf/TTL0iKGfsXDZtT/27No/MVjjTpDlF7UmTmVpdI1c7h/T9Y1LaEqb5nhPBJu543U7pCYWdbkP9tI49p4bLuKaQKsBJbjxw89puSW5qbEdspUbi5p0AjnWBnNbISAvuPkSbHCQ/tIag4zz36wtrV7sLSRXTjzaCWUk43W1b2ZikA2rerfS0iqvY3k4APZhg7jT7KSOHy4oTkq/p0+0WtkeQn0WrGlMGVkqDSoSiEO898T8u4WO0BYF0tu3MwgstJh29k2sUVJ4wwS6JmjR+IOi5dTCIejK3VEQiSF2sfLLPvG3PUkh3Fj4VcbzGJ0iaRt4QfD1PCIMHb8w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR18MB2679.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(376002)(136003)(366004)(346002)(9686003)(4326008)(66946007)(316002)(186003)(64756008)(86362001)(71200400001)(54906003)(66476007)(83380400001)(6916009)(33656002)(66556008)(66446008)(6506007)(53546011)(8676002)(8936002)(2906002)(55016002)(5660300002)(26005)(55236004)(52536014)(478600001)(76116006)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: gJiQz7lk3U8P4zHiUtTsPOvuOZxk7Uf2a+9a2115iWzjemJjacKhvpE9OxqNB/q89ybb68mv1F9O/r6QoIHfPb5BTzdpJkZ+nsZZwd91uLzeCPuysSOtcRSiNL5goTxK+JUpzFZoNFn/rrM4/C33CVdg08BtcW1n++4u82+SsKSGKQe6a6YvWjhzvW96YcBKUaFYy3SPIcHDwFb2I3TbNDZdzSjR/w+53gFQDTgRtH1nJnTIlhSEYzDE6zAkIj1VSSsYQEojYq2uJulQh1AFwiP63PiuUF/lVTq0yvEbzQPp00AMS+I09ehQBfhXZzPdfPi2EhVLLbkr12hjwMtuLvllJiO12VMqhA+tsLu6Z1ZcNmJSmRPUHzPdEEbXBmMShexJpoLI2uYqlqBLSW2vVxR3Z6R9hdDqmCqKZQKAwXkTagn1uUUwwmGAdoOlSpvShRpnp4EKlq9jPfUl0iqLctEgeLsxVV286RivbteWLHqd89nm5tsetx/76tPE9XyI57yZiAws+7NTCP3qqvDVAsgBc6mDsOwwWBCspPyJLdwe0KlDGbjkMeNrs7x72l2KeM1YTdJjdLKStsaF5+3lUuupTDFMg6UyGth7PWFqkvquXPbmA+OjpfU6dhbCWLFAQATwwR8xg22anpdlXyLv999OAqGZuyzQTzk9/3s7GgEUApKP5fc64DWe/BU81gkEiMkqQBAmjHpASKzI3fp8eT65X53/hLC7Akeu76ZMTMDK15ggCf4OjU3ZywKaotc0L4/P1w0gfphfwlV3nQpLVCR6PnIhwx28PN6sZQ/kLs39uefeTj65DTWGPUthLYT0BI+qpq0pIdpR5MB6l2P0Z6vmsAkR4mOp4RkdtOXLfAV46AeuhcJTsQEjaXsBqfqg11NJJXsVDdUqmKjhnmgjCg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR18MB2679.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 702ccc4a-cb5c-43dd-748d-08d88f9a84d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 10:28:28.7613
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q4Dzd4eX4kohhSXieXOZNIcKMqMuXNgWhIgokLnaIGUwktUI9vbbBeLGorqY3976dic6aafzwD5oIbNOULKejg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3203
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_02:2020-11-23,2020-11-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, checkpatch warns if logical continuations are placed at the
-start of a line and not at the end of previous line.
+Hi Jiri,
 
-E.g., running checkpatch on commit 3485507fc272 ("staging:
-bcm2835-camera: Reduce length of enum names") reports:
+> -----Original Message-----
+> From: Jiri Pirko <jiri@resnulli.us>
+> Sent: Monday, November 23, 2020 3:52 PM
+> To: George Cherian <gcherian@marvell.com>
+> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+> kuba@kernel.org; davem@davemloft.net; Sunil Kovvuri Goutham
+> <sgoutham@marvell.com>; Linu Cherian <lcherian@marvell.com>;
+> Geethasowjanya Akula <gakula@marvell.com>; masahiroy@kernel.org;
+> willemdebruijn.kernel@gmail.com; saeed@kernel.org
+> Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
+> reporters for NPA
+>=20
+> Mon, Nov 23, 2020 at 03:49:06AM CET, gcherian@marvell.com wrote:
+> >
+> >
+> >> -----Original Message-----
+> >> From: Jiri Pirko <jiri@resnulli.us>
+> >> Sent: Saturday, November 21, 2020 7:44 PM
+> >> To: George Cherian <gcherian@marvell.com>
+> >> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+> >> kuba@kernel.org; davem@davemloft.net; Sunil Kovvuri Goutham
+> >> <sgoutham@marvell.com>; Linu Cherian <lcherian@marvell.com>;
+> >> Geethasowjanya Akula <gakula@marvell.com>; masahiroy@kernel.org;
+> >> willemdebruijn.kernel@gmail.com; saeed@kernel.org
+> >> Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
+> >> reporters for NPA
+> >>
+> >> Sat, Nov 21, 2020 at 05:02:00AM CET, george.cherian@marvell.com wrote:
+> >> >Add health reporters for RVU NPA block.
+> >> >NPA Health reporters handle following HW event groups
+> >> > - GENERAL events
+> >> > - ERROR events
+> >> > - RAS events
+> >> > - RVU event
+> >> >An event counter per event is maintained in SW.
+> >> >
+> >> >Output:
+> >> > # devlink health
+> >> > pci/0002:01:00.0:
+> >> >   reporter npa
+> >> >     state healthy error 0 recover 0  # devlink  health dump show
+> >> >pci/0002:01:00.0 reporter npa
+> >> > NPA_AF_GENERAL:
+> >> >        Unmap PF Error: 0
+> >> >        Free Disabled for NIX0 RX: 0
+> >> >        Free Disabled for NIX0 TX: 0
+> >> >        Free Disabled for NIX1 RX: 0
+> >> >        Free Disabled for NIX1 TX: 0
+> >>
+> >> This is for 2 ports if I'm not mistaken. Then you need to have this
+> >> reporter per-port. Register ports and have reporter for each.
+> >>
+> >No, these are not port specific reports.
+> >NIX is the Network Interface Controller co-processor block.
+> >There are (max of) 2 such co-processor blocks per SoC.
+>=20
+> Ah. I see. In that case, could you please structure the json differently.=
+ Don't
+> concatenate the number with the string. Instead of that, please have 2
+> subtrees, one for each NIX.
+>=20
+NPA_AF_GENERAL:
+        Unmap PF Error: 0
+        Free Disabled for NIX0=20
+		RX: 0
+       		TX: 0
+        Free Disabled for NIX1
+		RX: 0
+        		TX: 0
 
-CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
-previous line
-+	if (!ret
-+	    && camera_port ==
+Something like this?
 
-Provide a simple fix by inserting logical operator at the last
-non-comment, non-whitespace char of the previous line and removing from
-current line, if both the lines are additions(ie start with '+')
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-changes in v2: quote $operator at substitution
-
-changes in v3: add a check for previous line ending with comment;
-If so, insert $operator at the last non-comment, non-whitespace char of the previous line
-
-changes in v4: improve the matching mechanism by matching line termination at comment or white space;
-insert the operator before comments (if any) separated by a whitespace;
-append the comment and its pre-whitespace after the inserted operator (if comment was present),
-ie if no comment was present nothing will be inserted after the operator
-
-changes in v5: improve regex for comment and line end with '$;'
-
-changes in v6: remove if-check; modify commit message
-
-changes in v7: add an extra '$' symbol at '$fixed[$fixlinenr - 1]' regex substitution to ensure match at line end
-
- scripts/checkpatch.pl | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 5b1a5a65e69a..fb3c50e0bde2 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3553,8 +3553,16 @@ sub process {
- 
- # check for && or || at the start of a line
- 		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
--			CHK("LOGICAL_CONTINUATIONS",
--			    "Logical continuations should be on the previous line\n" . $hereprev);
-+			my $operator = $1;
-+			if (CHK("LOGICAL_CONTINUATIONS",
-+				"Logical continuations should be on the previous line\n" . $hereprev) &&
-+			    $fix && $prevrawline =~ /^\+/) {
-+				# insert logical operator at last non-comment, non-whitepsace char on previous line
-+				$prevline =~ /[\s$;]*$/;
-+				my $line_end = substr($prevrawline, $-[0]);
-+				$fixed[$fixlinenr - 1] =~ s/\Q$line_end\E$/ $operator$line_end/;
-+				$fixed[$fixlinenr] =~ s/\Q$operator\E\s*//;
-+			}
- 		}
- 
- # check indentation starts on a tab stop
--- 
-2.17.1
+Regards,
+-George
+>=20
+> >
+> >Moreover, this is an NPA (Network Pool/Buffer Allocator co- processor)
+> reporter.
+> >This tells whether a free or alloc operation is skipped due to the
+> >configurations set by other co-processor blocks (NIX,SSO,TIM etc).
+> >
+> >https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
+> 3A__www.kernel.org_doc
+> >_html_latest_networking_device-
+> 5Fdrivers_ethernet_marvell_octeontx2.htm
+> >l&d=3DDwIBAg&c=3DnKjWec2b6R0mOyPaz7xtfQ&r=3DnpgTSgHrUSLmXpBZJKVhk0
+> lE_XNvtVDl8
+> >ZA2zBvBqPw&m=3DFNPm6lB8fRvGYvMqQWer6S9WI6rZIlMmDCqbM8xrnxM
+> &s=3DB47zBTfDlIdM
+> >xUmK0hmQkuoZnsGZYSzkvbZUloevT0A&e=3D
+> >> NAK.
 
