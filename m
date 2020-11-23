@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0D62C05DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074EC2C0668
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729924AbgKWMZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:25:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34510 "EHLO mail.kernel.org"
+        id S1730758AbgKWMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729898AbgKWMY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:24:56 -0500
+        id S1730391AbgKWMai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AA4820728;
-        Mon, 23 Nov 2020 12:24:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B47D4208C3;
+        Mon, 23 Nov 2020 12:30:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134295;
-        bh=uKCIqWIG6VbEfd2ErNtwFsS7ilQLTjU5M8zUZXL2OLg=;
+        s=korg; t=1606134637;
+        bh=yDBmillITIeh+0Z2HXRpHRFZQiN1aSNucR1lA1ape74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZnDgM4ACishgLqm4ct025MtD7ObqkdDoWBzeTdk09GG5o7hbbXL98crC9xOwvb02l
-         /RfSxxkqXZ7Sg2LcGP3aKO86bvxn9ThtySxDllI6pmVt/Xb2ARH14puEqjamgdxp8u
-         RdXKz4pDqmBukUWAWBWjuNm8q3/1rIUUHFOe21bQ=
+        b=cKJwqC23fvtctN0wajM0PRgW0TRkelu/HYVpfFroNu89ew2lBuY9AMmAxxu5i1Thk
+         tENFXfnyJ3aU1D2o4w0G6X4Ar8ksQZQm5av9FwZBTJNyjaM8Zb+GROwuRT0gWyzCOM
+         rR6L7ff6cLk8AghjV2AY5LtCKpFbIHPabMEhJ5To=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chas Williams <3chas3@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 02/47] atm: nicstar: Unmap DMA on send error
-Date:   Mon, 23 Nov 2020 13:21:48 +0100
-Message-Id: <20201123121805.661514797@linuxfoundation.org>
+        stable@vger.kernel.org, Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 29/91] selftests: kvm: Fix the segment descriptor layout to match the actual layout
+Date:   Mon, 23 Nov 2020 13:21:49 +0100
+Message-Id: <20201123121810.742493688@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Aaron Lewis <aaronlewis@google.com>
 
-[ Upstream commit 6dceaa9f56e22d0f9b4c4ad2ed9e04e315ce7fe5 ]
+[ Upstream commit df11f7dd5834146defa448acba097e8d7703cc42 ]
 
-The `skb' is mapped for DMA in ns_send() but does not unmap DMA in case
-push_scqe() fails to submit the `skb'. The memory of the `skb' is
-released so only the DMA mapping is leaking.
+Fix the layout of 'struct desc64' to match the layout described in the
+SDM Vol 3, Chapter 3 "Protected-Mode Memory Management", section 3.4.5
+"Segment Descriptors", Figure 3-8 "Segment Descriptor".  The test added
+later in this series relies on this and crashes if this layout is not
+correct.
 
-Unmap the DMA mapping in case push_scqe() failed.
-
-Fixes: 864a3ff635fa7 ("atm: [nicstar] remove virt_to_bus() and support 64-bit platforms")
-Cc: Chas Williams <3chas3@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Aaron Lewis <aaronlewis@google.com>
+Reviewed-by: Alexander Graf <graf@amazon.com>
+Message-Id: <20201012194716.3950330-2-aaronlewis@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/nicstar.c |    2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/kvm/include/x86.h | 2 +-
+ tools/testing/selftests/kvm/lib/x86.c     | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/atm/nicstar.c
-+++ b/drivers/atm/nicstar.c
-@@ -1707,6 +1707,8 @@ static int ns_send(struct atm_vcc *vcc,
- 
- 	if (push_scqe(card, vc, scq, &scqe, skb) != 0) {
- 		atomic_inc(&vcc->stats->tx_err);
-+		dma_unmap_single(&card->pcidev->dev, NS_PRV_DMA(skb), skb->len,
-+				 DMA_TO_DEVICE);
- 		dev_kfree_skb_any(skb);
- 		return -EIO;
- 	}
+diff --git a/tools/testing/selftests/kvm/include/x86.h b/tools/testing/selftests/kvm/include/x86.h
+index 42c3596815b83..a7667a613bbc7 100644
+--- a/tools/testing/selftests/kvm/include/x86.h
++++ b/tools/testing/selftests/kvm/include/x86.h
+@@ -59,7 +59,7 @@ enum x86_register {
+ struct desc64 {
+ 	uint16_t limit0;
+ 	uint16_t base0;
+-	unsigned base1:8, s:1, type:4, dpl:2, p:1;
++	unsigned base1:8, type:4, s:1, dpl:2, p:1;
+ 	unsigned limit1:4, avl:1, l:1, db:1, g:1, base2:8;
+ 	uint32_t base3;
+ 	uint32_t zero1;
+diff --git a/tools/testing/selftests/kvm/lib/x86.c b/tools/testing/selftests/kvm/lib/x86.c
+index 4d35eba73dc97..800fe36064f9a 100644
+--- a/tools/testing/selftests/kvm/lib/x86.c
++++ b/tools/testing/selftests/kvm/lib/x86.c
+@@ -449,11 +449,12 @@ static void kvm_seg_fill_gdt_64bit(struct kvm_vm *vm, struct kvm_segment *segp)
+ 	desc->limit0 = segp->limit & 0xFFFF;
+ 	desc->base0 = segp->base & 0xFFFF;
+ 	desc->base1 = segp->base >> 16;
+-	desc->s = segp->s;
+ 	desc->type = segp->type;
++	desc->s = segp->s;
+ 	desc->dpl = segp->dpl;
+ 	desc->p = segp->present;
+ 	desc->limit1 = segp->limit >> 16;
++	desc->avl = segp->avl;
+ 	desc->l = segp->l;
+ 	desc->db = segp->db;
+ 	desc->g = segp->g;
+-- 
+2.27.0
+
 
 
