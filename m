@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CE62C1937
+	by mail.lfdr.de (Postfix) with ESMTP id C5EF92C1938
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387948AbgKWXGI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 18:06:08 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:25059 "EHLO
+        id S2388041AbgKWXGN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 18:06:13 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:50926 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387710AbgKWXGH (ORCPT
+        by vger.kernel.org with ESMTP id S2387710AbgKWXGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:06:07 -0500
+        Mon, 23 Nov 2020 18:06:11 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-138-lNVJRUwEN-aj9WnsYi8PyQ-1; Mon, 23 Nov 2020 18:06:00 -0500
-X-MC-Unique: lNVJRUwEN-aj9WnsYi8PyQ-1
+ us-mta-340-Y-pkFb_ZPiyLomuZlSzkFQ-1; Mon, 23 Nov 2020 18:06:05 -0500
+X-MC-Unique: Y-pkFb_ZPiyLomuZlSzkFQ-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF89A100A26D;
-        Mon, 23 Nov 2020 23:05:57 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E235081CBE5;
+        Mon, 23 Nov 2020 23:06:02 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.195.242])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BCEA45D9CA;
-        Mon, 23 Nov 2020 23:05:54 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 309875D9CA;
+        Mon, 23 Nov 2020 23:05:58 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
+Cc:     Ian Rogers <irogers@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -34,14 +35,13 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Michael Petlan <mpetlan@redhat.com>,
         Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 10/25] perf tools: Add check for existing link in buildid dir
-Date:   Tue, 24 Nov 2020 00:04:57 +0100
-Message-Id: <20201123230512.2097312-11-jolsa@kernel.org>
+Subject: [PATCH 11/25] perf tools: Use struct extra_kernel_map in machine__process_kernel_mmap_event
+Date:   Tue, 24 Nov 2020 00:04:58 +0100
+Message-Id: <20201123230512.2097312-12-jolsa@kernel.org>
 In-Reply-To: <20201123230512.2097312-1-jolsa@kernel.org>
 References: <20201123230512.2097312-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,46 +56,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adding new build id link we fail if the link is already
-there. Adding check for existing link and output debug message
-that the build id is already linked.
+Using struct extra_kernel_map in machine__process_kernel_mmap_event,
+to pass mmap details. This way we can used single function for all 3
+mmap versions.
 
+Acked-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/build-id.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ tools/perf/util/machine.c | 62 +++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 29 deletions(-)
 
-diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-index 2aacc8b29f7e..4a391f13f40d 100644
---- a/tools/perf/util/build-id.c
-+++ b/tools/perf/util/build-id.c
-@@ -755,8 +755,25 @@ int build_id_cache__add_s(const char *sbuild_id, const char *name,
- 	tmp = dir_name + strlen(buildid_dir) - 5;
- 	memcpy(tmp, "../..", 5);
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 15385ea00190..1ae32a81639c 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -1581,32 +1581,25 @@ static bool machine__uses_kcore(struct machine *machine)
+ }
  
--	if (symlink(tmp, linkname) == 0)
-+	if (symlink(tmp, linkname) == 0) {
- 		err = 0;
-+	} else if (errno == EEXIST) {
-+		char path[PATH_MAX];
-+		ssize_t len;
-+
-+		len = readlink(linkname, path, sizeof(path) - 1);
-+		if (len <= 0) {
-+			pr_err("Cant read link: %s\n", linkname);
-+			goto out_free;
-+		}
-+		path[len] = '\0';
-+
-+		if (strcmp(tmp, path)) {
-+			pr_debug("build <%s> already linked to %s\n",
-+				 sbuild_id, linkname);
-+		}
-+		err = 0;
-+	}
+ static bool perf_event__is_extra_kernel_mmap(struct machine *machine,
+-					     union perf_event *event)
++					     struct extra_kernel_map *xm)
+ {
+ 	return machine__is(machine, "x86_64") &&
+-	       is_entry_trampoline(event->mmap.filename);
++	       is_entry_trampoline(xm->name);
+ }
  
- 	/* Update SDT cache : error is just warned */
- 	if (realname &&
+ static int machine__process_extra_kernel_map(struct machine *machine,
+-					     union perf_event *event)
++					     struct extra_kernel_map *xm)
+ {
+ 	struct dso *kernel = machine__kernel_dso(machine);
+-	struct extra_kernel_map xm = {
+-		.start = event->mmap.start,
+-		.end   = event->mmap.start + event->mmap.len,
+-		.pgoff = event->mmap.pgoff,
+-	};
+ 
+ 	if (kernel == NULL)
+ 		return -1;
+ 
+-	strlcpy(xm.name, event->mmap.filename, KMAP_NAME_LEN);
+-
+-	return machine__create_extra_kernel_map(machine, kernel, &xm);
++	return machine__create_extra_kernel_map(machine, kernel, xm);
+ }
+ 
+ static int machine__process_kernel_mmap_event(struct machine *machine,
+-					      union perf_event *event)
++					      struct extra_kernel_map *xm)
+ {
+ 	struct map *map;
+ 	enum dso_space_type dso_space;
+@@ -1621,20 +1614,18 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
+ 	else
+ 		dso_space = DSO_SPACE__KERNEL_GUEST;
+ 
+-	is_kernel_mmap = memcmp(event->mmap.filename,
+-				machine->mmap_name,
++	is_kernel_mmap = memcmp(xm->name, machine->mmap_name,
+ 				strlen(machine->mmap_name) - 1) == 0;
+-	if (event->mmap.filename[0] == '/' ||
+-	    (!is_kernel_mmap && event->mmap.filename[0] == '[')) {
+-		map = machine__addnew_module_map(machine, event->mmap.start,
+-						 event->mmap.filename);
++	if (xm->name[0] == '/' ||
++	    (!is_kernel_mmap && xm->name[0] == '[')) {
++		map = machine__addnew_module_map(machine, xm->start,
++						 xm->name);
+ 		if (map == NULL)
+ 			goto out_problem;
+ 
+-		map->end = map->start + event->mmap.len;
++		map->end = map->start + xm->end - xm->start;
+ 	} else if (is_kernel_mmap) {
+-		const char *symbol_name = (event->mmap.filename +
+-				strlen(machine->mmap_name));
++		const char *symbol_name = (xm->name + strlen(machine->mmap_name));
+ 		/*
+ 		 * Should be there already, from the build-id table in
+ 		 * the header.
+@@ -1688,18 +1679,17 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
+ 		if (strstr(kernel->long_name, "vmlinux"))
+ 			dso__set_short_name(kernel, "[kernel.vmlinux]", false);
+ 
+-		machine__update_kernel_mmap(machine, event->mmap.start,
+-					 event->mmap.start + event->mmap.len);
++		machine__update_kernel_mmap(machine, xm->start, xm->end);
+ 
+ 		/*
+ 		 * Avoid using a zero address (kptr_restrict) for the ref reloc
+ 		 * symbol. Effectively having zero here means that at record
+ 		 * time /proc/sys/kernel/kptr_restrict was non zero.
+ 		 */
+-		if (event->mmap.pgoff != 0) {
++		if (xm->pgoff != 0) {
+ 			map__set_kallsyms_ref_reloc_sym(machine->vmlinux_map,
+ 							symbol_name,
+-							event->mmap.pgoff);
++							xm->pgoff);
+ 		}
+ 
+ 		if (machine__is_default_guest(machine)) {
+@@ -1708,8 +1698,8 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
+ 			 */
+ 			dso__load(kernel, machine__kernel_map(machine));
+ 		}
+-	} else if (perf_event__is_extra_kernel_mmap(machine, event)) {
+-		return machine__process_extra_kernel_map(machine, event);
++	} else if (perf_event__is_extra_kernel_mmap(machine, xm)) {
++		return machine__process_extra_kernel_map(machine, xm);
+ 	}
+ 	return 0;
+ out_problem:
+@@ -1735,7 +1725,14 @@ int machine__process_mmap2_event(struct machine *machine,
+ 
+ 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
+ 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
+-		ret = machine__process_kernel_mmap_event(machine, event);
++		struct extra_kernel_map xm = {
++			.start = event->mmap2.start,
++			.end   = event->mmap2.start + event->mmap2.len,
++			.pgoff = event->mmap2.pgoff,
++		};
++
++		strlcpy(xm.name, event->mmap2.filename, KMAP_NAME_LEN);
++		ret = machine__process_kernel_mmap_event(machine, &xm);
+ 		if (ret < 0)
+ 			goto out_problem;
+ 		return 0;
+@@ -1785,7 +1782,14 @@ int machine__process_mmap_event(struct machine *machine, union perf_event *event
+ 
+ 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
+ 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
+-		ret = machine__process_kernel_mmap_event(machine, event);
++		struct extra_kernel_map xm = {
++			.start = event->mmap.start,
++			.end   = event->mmap.start + event->mmap.len,
++			.pgoff = event->mmap.pgoff,
++		};
++
++		strlcpy(xm.name, event->mmap.filename, KMAP_NAME_LEN);
++		ret = machine__process_kernel_mmap_event(machine, &xm);
+ 		if (ret < 0)
+ 			goto out_problem;
+ 		return 0;
 -- 
 2.26.2
 
