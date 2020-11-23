@@ -2,154 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783F42C196A
+	by mail.lfdr.de (Postfix) with ESMTP id E877B2C196B
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgKWXZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 18:25:21 -0500
-Received: from ozlabs.org ([203.11.71.1]:35003 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726781AbgKWXZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:25:19 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cg3Cw1Vnfz9sSs;
-        Tue, 24 Nov 2020 10:25:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606173916;
-        bh=U0b4WFh9tzIMKyMK25/hRq6XCQdlyVDVgYC507y3xPw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gQHBLv0dG3DYsw7XxirEi1lR6MFTsUytyk079pQ7ZzlkxY/5VDaqwurx/6415i5hJ
-         rLzZF3nu1GneZrE4eZFYG3x38nTTNYEDF84jUC/ryT/KpqSos+cVKIc2fUtQOMW/hw
-         Qr6MeZDFLeqiXQgk/AYjQe58wqUZJ5/WkCwEfLsUPtsmIWX22zwZPJiVgEBblV8yrz
-         YeqRe+U04oAW1OJ6Y8MmH+GdSKsj/sy/vfiqCmr8fOO88dOsL7T1DFOrd8dmqWOgyX
-         ThqXkX5VJQcVvuRz8vLd4J12NRyZoOE+sFda9DspfcTXgcEE0LzTqBq5KiLAFKj5jq
-         +oEa4HEQZbkUQ==
-Date:   Tue, 24 Nov 2020 10:25:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: linux-next: manual merge of the s390 tree with the asm-generic tree
-Message-ID: <20201124102514.0bea1349@canb.auug.org.au>
+        id S1726899AbgKWX1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 18:27:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgKWX1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 18:27:15 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7FCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:27:15 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id u18so26194461lfd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 15:27:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=62XXjbqYUttKDW7QLVDAz8ebJiWeeruFyFjZc2ME1MQ=;
+        b=eX0mkSa1IFEx1Crtlq1/XCIc1OeZ/ffiR47s6E2/QiJ6KQVAo4QDhR/CmRczTzALSK
+         AvBhlG7pHxY37bFoOnG4De2MWtFKN6YYb5n0cmzEAvkvMrZT7Y8GSRNbi5Pd1zmSDUSe
+         MINajG2ZA/qu63TeYlE4kOUf44JaUsAagJlFe8e38VBgFoe0Wvza4f0Ta1fz0MXxvXxn
+         4mhJZsihP/KqiY7hqK9CzV+jocAdFhFZGrc9sgMvkuY2uL3cC07Y89kp8HQlK5zn4lcC
+         XqFo1mD9yU8DAQYg6K7uzbTS8e+Xu9lyFBG+maKcVeDLegCY7VzcdDzOCOL8qKJXem+I
+         c4cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=62XXjbqYUttKDW7QLVDAz8ebJiWeeruFyFjZc2ME1MQ=;
+        b=YRIFwzNrcTYvka5FaZISPPwjHAf0Q4UvERL/3aiiPb0BV6UIPFWmAWVbCwYGTORhvP
+         fBXEDDUWVjRTQGjBzDjQ4FVZloQtmH/dCISiHknkJLPdByU7+EgiGQsjJnGddL8e+PBo
+         f48up+m75pl3mR9mcQSGQTf7wOFbfJseR2J6DAR+oEP2IFuyZpwFS3B6dGsMEKoNMl1G
+         0PqGz5iz/qsHfGfq0zs32Rlc4BVfXOxukfbFvzFsKrIgNsXACiv97qvJG92TYCHT+nNU
+         fvcVAPUtS9TAR0O2YZbqq55TiFJ5aTQ4ggr5TWkqKZRtMMqiuhOcNJC5rIwwyEfaQJMt
+         O5fA==
+X-Gm-Message-State: AOAM5300DZfAK0RAk8yLPSJftig7KvUpOoc0CjO3QiCBeL+0yo6EvJ0A
+        95rYhGvb6/Rkn7ejoVIbvWCQgbwTNrA2e5QPXclP6A==
+X-Google-Smtp-Source: ABdhPJzGfZCTZBEIZEGFV1gxU2z+T+t5mQtOQkhNOceO/OEzRLYH3IFCYdCd4+jCQ8prtZXhlNnogj9okxaTGvZNiFE=
+X-Received: by 2002:a19:740c:: with SMTP id v12mr522681lfe.502.1606174033954;
+ Mon, 23 Nov 2020 15:27:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/j26pNq_K4+qMt.pBWQUb7rc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <735253bd-5500-2b8d-c98d-99bddb0617ce@web.de>
+In-Reply-To: <735253bd-5500-2b8d-c98d-99bddb0617ce@web.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 00:27:02 +0100
+Message-ID: <CACRpkdb4+av1sDrQHYXYeyKemnm2a9PFGQbu++UHEe6sspRACQ@mail.gmail.com>
+Subject: Re: [Regression]: Commit 74d905d2 breaks the touchpad and touchscreen
+ of Google Chromebook "samus"
+To:     Andre <andre.muller@web.de>
+Cc:     Nick Dyer <nick.dyer@itdev.co.uk>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "George G. Davis" <george_davis@mentor.com>,
+        Jiada Wang <jiada_wang@mentor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/j26pNq_K4+qMt.pBWQUb7rc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 4, 2020 at 9:18 AM Andre <andre.muller@web.de> wrote:
 
-Hi all,
+> commit 74d905d2: Input: atmel_mxt_ts - only read messages in
+> mxt_acquire_irq() when necessary
+>
+> breaks the touchpad and touchscreen of the 2015 Chromebook Pixel "Samus".
 
-FIXME: Add owner of second tree to To:
-       Add author(s)/SOB of conflicting commits.
+This commit also breaks the touchscreen on the Samsung GT-I9070
+mobile phone. All interrupts stop appearing. If I revert the patch
+I get interrupts.
 
-Today's linux-next merge of the s390 tree got a conflict in:
+dmesg after this commit:
 
-  arch/s390/include/asm/mmu_context.h
+$ dmesg |grep mxt
+[    1.967816] atmel_mxt_ts 3-004a: Family: 129 Variant: 1 Firmware
+V1.0.AA Objects: 18
+[    1.975815] atmel_mxt_ts 3-004a: Enabling RETRIGEN workaround
+[    1.982398] atmel_mxt_ts 3-004a: Direct firmware load for
+maxtouch.cfg failed with error -2
+[    1.992252] atmel_mxt_ts 3-004a: Touchscreen size X479Y799
 
-between commit:
+dmesg with commit reverted:
+$ dmesg |grep mxt
+[    1.967831] atmel_mxt_ts 3-004a: Family: 129 Variant: 1 Firmware
+V1.0.AA Objects: 18
+[    1.984195] atmel_mxt_ts 3-004a: Direct firmware load for
+maxtouch.cfg failed with error -2
+[    2.007399] atmel_mxt_ts 3-004a: Touchscreen size X479Y799
 
-  93e2dfd39438 ("s390: use asm-generic/mmu_context.h for no-op implementati=
-ons")
+And I get interrupts.
 
-from the asm-generic tree and commits:
+Tell me if I need to test some more approaches.
 
-  ab177c5d00cd ("s390/mm: remove unused clear_user_asce()")
-  87d598634521 ("s390/mm: remove set_fs / rework address space handling")
-
-from the s390 tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/s390/include/asm/mmu_context.h
-index 66f9cf0a07e3,87a84fc59fc3..000000000000
---- a/arch/s390/include/asm/mmu_context.h
-+++ b/arch/s390/include/asm/mmu_context.h
-@@@ -70,23 -69,8 +70,6 @@@ static inline int init_new_context(stru
-  	return 0;
-  }
- =20
-- static inline void set_user_asce(struct mm_struct *mm)
-- {
-- 	S390_lowcore.user_asce =3D mm->context.asce;
-- 	__ctl_load(S390_lowcore.user_asce, 1, 1);
-- 	clear_cpu_flag(CIF_ASCE_PRIMARY);
-- }
--=20
-- static inline void clear_user_asce(void)
-- {
-- 	S390_lowcore.user_asce =3D S390_lowcore.kernel_asce;
-- 	__ctl_load(S390_lowcore.kernel_asce, 1, 1);
-- 	set_cpu_flag(CIF_ASCE_PRIMARY);
-- }
--=20
-- mm_segment_t enable_sacf_uaccess(void);
-- void disable_sacf_uaccess(mm_segment_t old_fs);
- -#define destroy_context(mm)             do { } while (0)
---
-  static inline void switch_mm(struct mm_struct *prev, struct mm_struct *ne=
-xt,
-  			     struct task_struct *tsk)
-  {
-@@@ -121,18 -98,18 +97,18 @@@ static inline void finish_arch_post_loc
-  		__tlb_flush_mm_lazy(mm);
-  		preempt_enable();
-  	}
-- 	set_fs(current->thread.mm_segment);
-+ 	__ctl_load(S390_lowcore.user_asce, 7, 7);
-  }
- =20
- -#define enter_lazy_tlb(mm,tsk)	do { } while (0)
- -#define deactivate_mm(tsk,mm)	do { } while (0)
- -
- +#define activate_mm activate_mm
-  static inline void activate_mm(struct mm_struct *prev,
-                                 struct mm_struct *next)
-  {
-  	switch_mm(prev, next, current);
-  	cpumask_set_cpu(smp_processor_id(), mm_cpumask(next));
-- 	set_user_asce(next);
-+ 	__ctl_load(S390_lowcore.user_asce, 7, 7);
-  }
- =20
- +#include <asm-generic/mmu_context.h>
- +
-  #endif /* __S390_MMU_CONTEXT_H */
-
---Sig_/j26pNq_K4+qMt.pBWQUb7rc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+8RNoACgkQAVBC80lX
-0GwDMgf/fxU6cyadfi2N0vsOLrSvBOpdjDa7jMDL+DlPEvLfxP5BN6T4QkcaAO77
-tvx5y8PowVdvdgA0Fh7LZlclXc67j0tWhRLUgm7PSC+4iTUyA2t9KcUNukefMmnb
-lgD5rDgMfGORiG34oQuJ0MP6vsR7+w8kmTClHmWdAJ0XVuZiaYqXZdQyHA8nyGmy
-GUPWES5SlQ5TqJ+CfPPzQqm4IAArFRPtNSSlNOMY6/PTfVPiruq2xR66Ntu8vLpK
-pzLoBPJ+L0R7R9yx7YKCJbWj2Le4MiOCYa8baUZX2GcbgfAQzLF07cGf//+yJXZS
-cRoQ1gxud1IgPqNzW0YBKoyFiaCKrw==
-=cvHF
------END PGP SIGNATURE-----
-
---Sig_/j26pNq_K4+qMt.pBWQUb7rc--
+Yours,
+Linus Walleij
