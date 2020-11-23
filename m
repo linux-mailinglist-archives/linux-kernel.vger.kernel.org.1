@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24282C09E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25AE2C09F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388569AbgKWNNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:13:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41246 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388568AbgKWNNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:13:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606137221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rv9w9/llZazFt1Z6bqz4fjM+bsJ8PYyhjd+2a7iwKww=;
-        b=BovGW7DoOC8krOpDGxMAvISB+An1UZdqsVUv0y+mOwCm8gQma8GRfSmZfwYSeLpHtd4a0/
-        tL9UdmdQTm1PU6J92WQP00NeFdV6eO8Y3Y0lZDPaeByUGaMvOUAdiycCP9E47AAgaodsRu
-        q3uicdbuKCt6m7LZUTwpc+6v7wB2XDg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 78EB1AC2E;
-        Mon, 23 Nov 2020 13:13:41 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 14:13:39 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-Message-ID: <20201123131339.GO27488@dhcp22.suse.cz>
-References: <20201120084202.GJ3200@dhcp22.suse.cz>
- <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
- <20201120131129.GO3200@dhcp22.suse.cz>
- <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
- <20201123074046.GB27488@dhcp22.suse.cz>
- <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
- <20201123094344.GG27488@dhcp22.suse.cz>
- <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
- <20201123104258.GJ27488@dhcp22.suse.cz>
- <20201123124513.GI4327@casper.infradead.org>
+        id S2387448AbgKWNOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:14:55 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8016 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733168AbgKWNOs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:14:48 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cfng64Fw3zhf28;
+        Mon, 23 Nov 2020 21:14:26 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 23 Nov 2020
+ 21:14:39 +0800
+From:   Xu Qiang <xuqiang36@huawei.com>
+To:     <akpm@linux-foundation.org>, <keescook@chromium.org>,
+        <mingo@kernel.org>, <peterz@infradead.org>, <mcgrof@kernel.org>,
+        <huyue2@yulong.com>, <yangtiezhu@loongson.cn>, <will@kernel.org>,
+        <aquini@redhat.com>, <gpiccoli@canonical.com>,
+        <xuqiang36@huawei.com>, <aik@ozlabs.ru>,
+        <linux-kernel@vger.kernel.org>
+CC:     <rui.xiang@huawei.com>
+Subject: [PATCH -next] panic: complete the flush of the hard deadlock log messages to the serial port
+Date:   Mon, 23 Nov 2020 13:13:59 +0000
+Message-ID: <20201123131359.34600-1-xuqiang36@huawei.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123124513.GI4327@casper.infradead.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 23-11-20 12:45:13, Matthew Wilcox wrote:
-> On Mon, Nov 23, 2020 at 11:42:58AM +0100, Michal Hocko wrote:
-> > On Mon 23-11-20 18:36:33, Muchun Song wrote:
-> > > > No I really mean that pfn_to_page will give you a struct page pointer
-> > > > from pages which you release from the vmemmap page tables. Those pages
-> > > > might get reused as soon sa they are freed to the page allocator.
-> > > 
-> > > We will remap vmemmap pages 2-7 (virtual addresses) to page
-> > > frame 1. And then we free page frame 2-7 to the buddy allocator.
-> > 
-> > And this doesn't really happen in an atomic fashion from the pfn walker
-> > POV, right? So it is very well possible that 
-> > 
-> > struct page *page = pfn_to_page();
-> > // remapping happens here
-> > // page content is no longer valid because its backing memory can be
-> > // reused for whatever purpose.
-> 
-> pfn_to_page() returns you a virtual address.  That virtual address
-> remains a valid pointer to exactly the same contents, it's just that
-> the page tables change to point to a different struct page which has
-> the same compound_head().
+when hardlockup_all_cpu_backtrace is on, and there are
+a large number of cores in the system, it takes
+a long time to output the hard deadlock logs of all cores
+to the serial port. When the console_flush_on_panic function
+in panic is executed, console_locked is still held.
+As a result, garbled characters are displayed in the serial port log.
 
-You are right. I have managed to completely confuse myself. Sorry about
-the noise!
+To solve this problem, wait for a maximum of 10s for the serial port
+to be released before console_flush_on_panic.
 
+Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
+---
+ kernel/panic.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 332736a72a58..0014788e8141 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -301,6 +301,14 @@ void panic(const char *fmt, ...)
+ 	 * panic() is not being callled from OOPS.
+ 	 */
+ 	debug_locks_off();
++
++	/* Wait for all CPUs to complete console_unlock */
++	for (i = 0; i < 10 * 1000; i++) {
++		if (console_trylock())
++			break;
++		mdelay(1);
++	}
++
+ 	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
+ 
+ 	panic_print_sys_info();
 -- 
-Michal Hocko
-SUSE Labs
+2.25.0
+
