@@ -2,135 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465E72BFEEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 05:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956422BFEEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 05:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgKWD45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 22:56:57 -0500
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:39943 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgKWD45 (ORCPT
+        id S1726917AbgKWECn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 23:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgKWECn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 22:56:57 -0500
-Received: by mail-vs1-f68.google.com with SMTP id r5so8406785vsp.7
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:56:56 -0800 (PST)
+        Sun, 22 Nov 2020 23:02:43 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE244C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 20:02:42 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q10so13683222pfn.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 20:02:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yR5CqZG96T7B8FOyDG6DEb0BKOLXt2vj8oVOlshnWBU=;
+        b=UzncrOzDAnf6+OdZfi3ny2MkrTnhc8VldtziLzNK8bgMM3LmlxOVpo9O16sGU+cuh8
+         Y90K4iWZ4PpNvLJYIUd+hAeeoXt7glhzQrpAbJOUoXAwIY+48LhN0BWP//3yEGxnAwXc
+         5+qaYlGlk9fI1Z2DJ8o97O58CQfUL9zuR5KdE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YSA3Ddm+o7uJiNoOrs81/CWwy8hP3wLFFpHjM4ph7cU=;
-        b=mMvlNpB/n8EH6knff7ldKxuVAs8tzvwzsCw54Vv0SL/8NCgtP2XdZGBXbXyKRIQ5AI
-         tc5eTlcypnZI69J6Nd/2D+DyjZTetJqghsAP4Mt/spGDxTbSzlqZf9fK3TWBiaWTG3k/
-         WGAz4AuYXNPL3R5XtatGgZAqTkVMCVJGIN9IFzEM5b2lb6rhO3ui9WsQMobht2jQSB3c
-         Kvfvjx61THHls0UndbBL/1R3p+Bmrlg2jEWELQufrn+EWNdA1bZe8etJXw3jzHqj5o3Z
-         cQVUutLLHMTEonR+DMx7fWe13tzYDUhh802OWoOkNlWtx6sQPuYlN4YYYtJTX7W+rr06
-         KTOA==
-X-Gm-Message-State: AOAM5309Lvv9R3gncI3ppEH2EL1EVRhZy26rhdTCYU5Czymgg3FaPu66
-        U0y2biyf7qv5eIM8/SbZ70P9OEf9UCO5VQ==
-X-Google-Smtp-Source: ABdhPJxZnWBODV7w0XizSaQyC0pcR9PPURpwQ8Rrd07bpEGnm+mH1+hRbCNRI4FD/eVGomLsEIuvig==
-X-Received: by 2002:a67:ce1a:: with SMTP id s26mr18008866vsl.0.1606103815582;
-        Sun, 22 Nov 2020 19:56:55 -0800 (PST)
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
-        by smtp.gmail.com with ESMTPSA id c21sm1202908vsh.31.2020.11.22.19.56.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Nov 2020 19:56:55 -0800 (PST)
-Received: by mail-vs1-f41.google.com with SMTP id m16so8400740vsl.8
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 19:56:54 -0800 (PST)
-X-Received: by 2002:a67:e2d7:: with SMTP id i23mr19286798vsm.32.1606103814801;
- Sun, 22 Nov 2020 19:56:54 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yR5CqZG96T7B8FOyDG6DEb0BKOLXt2vj8oVOlshnWBU=;
+        b=sMCUJri/2CnElRqN8rCIZAYw8TnmHI9GrovftNc3M15KXEGVyaOWqs9Nep48kmnrXh
+         gqBFv3KHm4EbfqfyWuQNLCASgTIV03FJkX1tFAQGPaYb3kS/WSklPJIg5/sh3siqgT0T
+         5SoPv+Kol9hpY2flWgQm/DijMtVom1gZHvX/aS6TspciqgF/AJoTRj4D7D97VzR8IRaP
+         bsdZSO49rUGhIQJuBDCgC2L+1basywPt82yA3qSq07o/hjzN/W2kfZ8g6Qk74OVckm/w
+         fRjPFfB8jdMPIO9jOl9Hhx44lDgtgqVy3MGikuXYCkYHDn4i8yOeX4rwx7o8q++KD16t
+         b3UA==
+X-Gm-Message-State: AOAM533H8Ct+evS6eKi/eAD3Tn5tFKehOhbZcg7CtrvaB+3hi7wpV61C
+        3IfutkyUS66in+DHca7kJyYh9Q==
+X-Google-Smtp-Source: ABdhPJzQ1fPZRBdR6Uv8knK7dPKl+RmDLBbZB8Wy/U5bnUBV5Jc9w+Uc2rBiKh2kQvaAX9GJNz6Whw==
+X-Received: by 2002:a63:c00b:: with SMTP id h11mr25323450pgg.7.1606104162288;
+        Sun, 22 Nov 2020 20:02:42 -0800 (PST)
+Received: from chromium.org ([2401:fa00:1:b:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id s21sm8942192pgm.65.2020.11.22.20.02.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 20:02:41 -0800 (PST)
+Date:   Mon, 23 Nov 2020 12:02:37 +0800
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     Weiyi Lu <weiyi.lu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 23/24] arm64: dts: mediatek: Add mt8192 clock
+ controllers
+Message-ID: <20201123040237.GA3013347@chromium.org>
+References: <1604887429-29445-1-git-send-email-weiyi.lu@mediatek.com>
+ <1604887429-29445-24-git-send-email-weiyi.lu@mediatek.com>
 MIME-Version: 1.0
-References: <20201121135933.184203-1-dinghua.ma.sz@gmail.com>
-In-Reply-To: <20201121135933.184203-1-dinghua.ma.sz@gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 23 Nov 2020 11:56:44 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67m6P19L2gMO_GnA-h3V9HTe=oQXEnpX+Fda68yXFg2rA@mail.gmail.com>
-Message-ID: <CAGb2v67m6P19L2gMO_GnA-h3V9HTe=oQXEnpX+Fda68yXFg2rA@mail.gmail.com>
-Subject: Re: [PATCH] Fix the bug of axp20x chip driver
-To:     "dinghua.ma" <dinghua.ma.sz@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604887429-29445-24-git-send-email-weiyi.lu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sat, Nov 21, 2020 at 10:00 PM dinghua.ma <dinghua.ma.sz@gmail.com> wrote:
->
-> From: "dinghua.ma" <dinghua.ma.sz@gmail.com>
-
-First of all, the subject should follow existing conventions, with
-proper subsystem and driver prefixes, which in this case would be
-"regulator: axp20x: ".
-
-Second, the subject should be more precise; "Fix the bug" could mean
-anything. "Fix DLDO2 voltage control register mask for AXP22x" says
-what is fixed.
-
-So for this patch, the subject should read:
-
-    regulator: axp20x: Fix DLDO2 voltage control register mask for AXP22x
-
-> Modified the mask parameter of the voltage data register of the
-> axp20x power chip of the PM system, and its port is DLDO2. My test
-> environment is under Allwinner A40I of arm architecture, and the
-> test kernel version is 5.4.
-
-Third,
-
-Your commit message should state why you did this change. You already
-covered what you changed, but that is also plainly visible from the
-patch body.
-
-You should include how you encountered the bug. In your case this would
-probably be the regulator output not changing voltage as it should. And
-if possible, include why the bug existed (which in this case it was likely
-a copy-paste error in the macro conversion patch). The latter is not
-required, but is helpful for others looking at the change.
-
-You also included your test platform. But you should include the test
-result of the "fixed" system, as a before-and-after comparison. This
-could be as simple as "Now the regulator output voltage changes as
-the system requests it".
-
-Fourth, please add the following tags so that the patch gets backported:
-
-    Fixes: db4a555f7c4c ("regulator: axp20x: use defines for masks")
-    Cc: <stable@vger.kernel.org>
-
-You can read more about stable kernel rules in general in
-Documentation/process/stable-kernel-rules.rst in the kernel tree.
-
-Last, and I believe this is more superficial, could you write your
-name in a slightly more standard way, such as Ding-Hua Ma, or
-DingHua Ma? Apologies if I got that wrong.
-
-
-Regards
-ChenYu
-
-
-> Signed-off-by: dinghua.ma <dinghua.ma.sz@gmail.com>
+On Mon, Nov 09, 2020 at 10:03:48AM +0800, Weiyi Lu wrote:
+> Add clock controller nodes for SoC mt8192
+> 
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 > ---
->  drivers/regulator/axp20x-regulator.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-> index cd1224182ad7..90cb8445f721 100644
-> --- a/drivers/regulator/axp20x-regulator.c
-> +++ b/drivers/regulator/axp20x-regulator.c
-> @@ -594,7 +594,7 @@ static const struct regulator_desc axp22x_regulators[] = {
->                  AXP22X_DLDO1_V_OUT, AXP22X_DLDO1_V_OUT_MASK,
->                  AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO1_MASK),
->         AXP_DESC(AXP22X, DLDO2, "dldo2", "dldoin", 700, 3300, 100,
-> -                AXP22X_DLDO2_V_OUT, AXP22X_PWR_OUT_DLDO2_MASK,
-> +                AXP22X_DLDO2_V_OUT, AXP22X_DLDO2_V_OUT_MASK,
->                  AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO2_MASK),
->         AXP_DESC(AXP22X, DLDO3, "dldo3", "dldoin", 700, 3300, 100,
->                  AXP22X_DLDO3_V_OUT, AXP22X_DLDO3_V_OUT_MASK,
-> --
-> 2.25.1
->
+>  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 163 +++++++++++++++++++++++++++++++
+>  1 file changed, 163 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> index e12e024..92dcfbd 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> @@ -5,6 +5,7 @@
+>   */
+>  
+>  /dts-v1/;
+> +#include <dt-bindings/clock/mt8192-clk.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
+> @@ -213,6 +214,24 @@
+>  			};
+>  		};
+>  
+> +		topckgen: syscon@10000000 {
+> +			compatible = "mediatek,mt8192-topckgen", "syscon";
+> +			reg = <0 0x10000000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		infracfg: syscon@10001000 {
+> +			compatible = "mediatek,mt8192-infracfg", "syscon";
+> +			reg = <0 0x10001000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		pericfg: syscon@10003000 {
+> +			compatible = "mediatek,mt8192-pericfg", "syscon";
+> +			reg = <0 0x10003000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+
+There are 26 new bindings for mt8192 clock providers, "mediatek,mt8192-*'.
+I guess the one reason of doing this is that those mmio blocks are
+just scattered all around over different memory regions.
+
+I wonder if there could be a simpler way of merging them into one
+binding of "mediatek,mt8192-clocks" and converting all new bindings
+into generic syscon:
+
+	mt8192-clocks: mt8192_clocks {
+		compatible = "mediatek,mt8192-clocks";
+		#clock-cells = <1>;
+
+		infracfg: clk_infracfg {
+			syscon = <&syscon_infracfg>;
+		};
+		pericfg: clk_pericfg {
+			syscon = <&syscon_pericfg>:
+		};
+	};
+
+	syscon_pericfg: syscon@10003000 {
+		compatible = "syscon";
+		reg = <0 0x10003000 0 0x1000>;
+	};
+
+	...
+
+>  		pio: pinctrl@10005000 {
+>  			compatible = "mediatek,mt8192-pinctrl";
+>  			reg = <0 0x10005000 0 0x1000>,
+> @@ -238,6 +257,12 @@
+>  			#interrupt-cells = <2>;
+>  		};
+>  
+> +		apmixedsys: syscon@1000c000 {
+> +			compatible = "mediatek,mt8192-apmixedsys", "syscon";
+> +			reg = <0 0x1000c000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		systimer: timer@10017000 {
+>  			compatible = "mediatek,mt8192-timer",
+>  				     "mediatek,mt6765-timer";
+> @@ -247,6 +272,12 @@
+>  			clock-names = "clk13m";
+>  		};
+>  
+> +		scp_adsp: syscon@10720000 {
+> +			compatible = "mediatek,mt8192-scp_adsp", "syscon";
+> +			reg = <0 0x10720000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		uart0: serial@11002000 {
+>  			compatible = "mediatek,mt8192-uart",
+>  				     "mediatek,mt6577-uart";
+> @@ -267,6 +298,12 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		imp_iic_wrap_c: syscon@11007000 {
+> +			compatible = "mediatek,mt8192-imp_iic_wrap_c", "syscon";
+> +			reg = <0 0x11007000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		spi0: spi@1100a000 {
+>  			compatible = "mediatek,mt8192-spi",
+>  				     "mediatek,mt6765-spi";
+> @@ -379,6 +416,12 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		audsys: syscon@11210000 {
+> +			compatible = "mediatek,mt8192-audsys", "syscon";
+> +			reg = <0 0x11210000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		i2c3: i2c3@11cb0000 {
+>  			compatible = "mediatek,mt8192-i2c";
+>  			reg = <0 0x11cb0000 0 0x1000>,
+> @@ -392,6 +435,12 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		imp_iic_wrap_e: syscon@11cb1000 {
+> +			compatible = "mediatek,mt8192-imp_iic_wrap_e", "syscon";
+> +			reg = <0 0x11cb1000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		i2c7: i2c7@11d00000 {
+>  			compatible = "mediatek,mt8192-i2c";
+>  			reg = <0 0x11d00000 0 0x1000>,
+> @@ -431,6 +480,12 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		imp_iic_wrap_s: syscon@11d03000 {
+> +			compatible = "mediatek,mt8192-imp_iic_wrap_s", "syscon";
+> +			reg = <0 0x11d03000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		i2c1: i2c1@11d20000 {
+>  			compatible = "mediatek,mt8192-i2c";
+>  			reg = <0 0x11d20000 0 0x1000>,
+> @@ -470,6 +525,12 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		imp_iic_wrap_ws: syscon@11d23000 {
+> +			compatible = "mediatek,mt8192-imp_iic_wrap_ws", "syscon";
+> +			reg = <0 0x11d23000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		i2c5: i2c5@11e00000 {
+>  			compatible = "mediatek,mt8192-i2c";
+>  			reg = <0 0x11e00000 0 0x1000>,
+> @@ -483,6 +544,12 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		imp_iic_wrap_w: syscon@11e01000 {
+> +			compatible = "mediatek,mt8192-imp_iic_wrap_w", "syscon";
+> +			reg = <0 0x11e01000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		i2c0: i2c0@11f00000 {
+>  			compatible = "mediatek,mt8192-i2c";
+>  			reg = <0 0x11f00000 0 0x1000>,
+> @@ -508,5 +575,101 @@
+>  			#size-cells = <0>;
+>  			status = "disabled";
+>  		};
+> +
+> +		imp_iic_wrap_n: syscon@11f02000 {
+> +			compatible = "mediatek,mt8192-imp_iic_wrap_n", "syscon";
+> +			reg = <0 0x11f02000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		msdc_top: syscon@11f10000 {
+> +			compatible = "mediatek,mt8192-msdc_top", "syscon";
+> +			reg = <0 0x11f10000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		msdc: syscon@11f60000 {
+> +			compatible = "mediatek,mt8192-msdc", "syscon";
+> +			reg = <0 0x11f60000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		mfgcfg: syscon@13fbf000 {
+> +			compatible = "mediatek,mt8192-mfgcfg", "syscon";
+> +			reg = <0 0x13fbf000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		mmsys: syscon@14000000 {
+> +			compatible = "mediatek,mt8192-mmsys", "syscon";
+> +			reg = <0 0x14000000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		imgsys: syscon@15020000 {
+> +			compatible = "mediatek,mt8192-imgsys", "syscon";
+> +			reg = <0 0x15020000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		imgsys2: syscon@15820000 {
+> +			compatible = "mediatek,mt8192-imgsys2", "syscon";
+> +			reg = <0 0x15820000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		vdecsys_soc: syscon@1600f000 {
+> +			compatible = "mediatek,mt8192-vdecsys_soc", "syscon";
+> +			reg = <0 0x1600f000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		vdecsys: syscon@1602f000 {
+> +			compatible = "mediatek,mt8192-vdecsys", "syscon";
+> +			reg = <0 0x1602f000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		vencsys: syscon@17000000 {
+> +			compatible = "mediatek,mt8192-vencsys", "syscon";
+> +			reg = <0 0x17000000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		camsys: syscon@1a000000 {
+> +			compatible = "mediatek,mt8192-camsys", "syscon";
+> +			reg = <0 0x1a000000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		camsys_rawa: syscon@1a04f000 {
+> +			compatible = "mediatek,mt8192-camsys_rawa", "syscon";
+> +			reg = <0 0x1a04f000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		camsys_rawb: syscon@1a06f000 {
+> +			compatible = "mediatek,mt8192-camsys_rawb", "syscon";
+> +			reg = <0 0x1a06f000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		camsys_rawc: syscon@1a08f000 {
+> +			compatible = "mediatek,mt8192-camsys_rawc", "syscon";
+> +			reg = <0 0x1a08f000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		ipesys: syscon@1b000000 {
+> +			compatible = "mediatek,mt8192-ipesys", "syscon";
+> +			reg = <0 0x1b000000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		mdpsys: syscon@1f000000 {
+> +			compatible = "mediatek,mt8192-mdpsys", "syscon";
+> +			reg = <0 0x1f000000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+>  	};
+>  };
+> -- 
+> 1.8.1.1.dirty
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
