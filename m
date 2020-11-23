@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A3A2C1814
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5862C1817
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732173AbgKWV73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:59:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729058AbgKWV72 (ORCPT
+        id S1730115AbgKWWBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:01:13 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38662 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728161AbgKWWBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:59:28 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65829C0613CF;
-        Mon, 23 Nov 2020 13:59:28 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id t4so7365145wrr.12;
-        Mon, 23 Nov 2020 13:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y5Z9D18Lkdw2Ol19/dXuIh0/n8vjMe9yN4YqNultdEQ=;
-        b=sL+hL0ZOrPe1QTjTwZtRk7hXHi4eagKWi/JxL94QeIluAmPXBQVHblRDacfOqryRRD
-         omwyZOEBKSKQS+hcKjdpv34aGh3B0Yu5OE4JFTXREXElEiIABAQCHar6qlO58iJ3fP+Z
-         Fn3gf7n9Ypz7kDSUCptPlxNPsks33Xi9oKTA6pEvHzpmeKp+UHDyTVh9mTxkbaL9Xy2c
-         QEajt6TVosacoFBbo6vGf2ZQ6EnC04cLQ6UckURqq76R7Nu1DLPUkNRaScSlFPbxwJel
-         S1KrgUw3FsCpufpsrVguYVHAyCTmMrs1rjkzjeHb6ypKXmvy38mhUhZx+5LRfXFXgYYV
-         r6lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y5Z9D18Lkdw2Ol19/dXuIh0/n8vjMe9yN4YqNultdEQ=;
-        b=eEfXTfknYm//lGieQzvO3cARanU/RJ3Y15CMnEwHlb0MhSv08ePB6JiJJ09EsHqI0l
-         hMRLf1GxkCkSVA/hsWP6xrACqrbBRRIxQAjjj58Wnezo0gx168XoeBpeZX1z54lb/yZr
-         1WdN9HfGh2Ye4ocvQ79UaYNWxzSeynpJ6e0kM732XnkMXFKxScnrdmbHbFMeveYsekAY
-         ymaZyf1/CwucHF/ku9La/RRpfPlybeSpFhgYCRzFhG0Iamn9YxbXhvvi2XZ4LB1u9s4r
-         GouvkuScnlM9OdjdGHmL3GIxL5wJIZ/fuk8J228kPpkjUTfnwZkQXDnWC8YKwlS+Pwq/
-         jdGw==
-X-Gm-Message-State: AOAM531ppOxN7bBjFV9tlsKV30EAw31k7WX+hnJGODU2aUTWQJUFw9Ao
-        FcfjAIFSpON4azFi01FA13A=
-X-Google-Smtp-Source: ABdhPJz5kSg0NawLjjRQLOzhn1nPFaKA+a5mpQG2/y1Ykqq+XblUAk/MfyDwKHd1a8UFsf+oqovVtw==
-X-Received: by 2002:a5d:570d:: with SMTP id a13mr1743749wrv.193.1606168767112;
-        Mon, 23 Nov 2020 13:59:27 -0800 (PST)
-Received: from localhost.localdomain ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id t20sm1391451wmi.3.2020.11.23.13.59.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 13:59:26 -0800 (PST)
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        libc-alpha@sourceware.org
-Subject: [PATCH] set_tid_address.2: SYNOPSIS: Fix set_tid_address() return type
-Date:   Mon, 23 Nov 2020 22:59:12 +0100
-Message-Id: <20201123215911.7576-1-alx.manpages@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 23 Nov 2020 17:01:12 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606168870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nOgyExsMmcgulCtYSfwEoyMOFUiwrusrBNm+SSTsII8=;
+        b=G2VzHdD4ucYDyOfYcf2YaTEpSNoyYjuAMLboKB1Mb5h3bbcTX3eEiUBn31rpT38IZ5i5wW
+        kpOTaPoA2M1fFW3D1BuE1XdPQG5I8I7qCEU2WOp1/CBoYNskOMKJbbFkFCUmd0GGRcgJ+Q
+        thb9GR4u1d89dvbxBmsQBXwMCCx9ixZEwEA363ihhqElKWHrB5UQ/Kibm6ZCWBSmDdbOIc
+        FLl5DGp/TATt9sFZboFhPn7YoMTalX0VsvqLV9HxEgIQGJU9lzskJygaqR0ZKzpK506Q03
+        1z+SlvrWuaDTM2eUs+lel1dR4EslM10ZfkC4rOPa+oNu4oxXlfcNKTvYMCfhOA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606168870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nOgyExsMmcgulCtYSfwEoyMOFUiwrusrBNm+SSTsII8=;
+        b=jbjqZF8KCmxT1IFmm88MtvOgo8upRZm4W8+1DkcGTMq1ZlvrJhT6IqlcThSo8L0eKieRW3
+        +Z9+Jv/vrzKd2hCw==
+To:     Alex Belits <abelits@marvell.com>,
+        "nitesh\@redhat.com" <nitesh@redhat.com>,
+        "frederic\@kernel.org" <frederic@kernel.org>
+Cc:     Prasun Kapoor <pkapoor@marvell.com>,
+        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "trix\@redhat.com" <trix@redhat.com>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "catalin.marinas\@arm.com" <catalin.marinas@arm.com>,
+        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterx\@redhat.com" <peterx@redhat.com>,
+        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "mtosatti\@redhat.com" <mtosatti@redhat.com>,
+        "will\@kernel.org" <will@kernel.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "leon\@sidebranch.com" <leon@sidebranch.com>,
+        "linux-arm-kernel\@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pauld\@redhat.com" <pauld@redhat.com>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 3/9] task_isolation: userspace hard isolation from kernel
+In-Reply-To: <5d882681867ed43636e22d265d61afbbac1b5a62.camel@marvell.com>
+References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com> <5d882681867ed43636e22d265d61afbbac1b5a62.camel@marvell.com>
+Date:   Mon, 23 Nov 2020 23:01:10 +0100
+Message-ID: <878sarn36h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Linux kernel uses 'pid_t' instead of 'long' for the return type.
-As glibc provides no wrapper, use the same types the kernel uses.
+Alex,
 
-$ sed -n 34,36p man-pages/man2/set_tid_address.2
-.PP
-.IR Note :
-There is no glibc wrapper for this system call; see NOTES.
+On Mon, Nov 23 2020 at 17:56, Alex Belits wrote:
+>  .../admin-guide/kernel-parameters.txt         |   6 +
+>  drivers/base/cpu.c                            |  23 +
+>  include/linux/hrtimer.h                       |   4 +
+>  include/linux/isolation.h                     | 326 ++++++++
+>  include/linux/sched.h                         |   5 +
+>  include/linux/tick.h                          |   3 +
+>  include/uapi/linux/prctl.h                    |   6 +
+>  init/Kconfig                                  |  27 +
+>  kernel/Makefile                               |   2 +
+>  kernel/isolation.c                            | 714 ++++++++++++++++++
+>  kernel/signal.c                               |   2 +
+>  kernel/sys.c                                  |   6 +
+>  kernel/time/hrtimer.c                         |  27 +
+>  kernel/time/tick-sched.c                      |  18 +
 
-$ grep -rn 'SYSCALL_DEFINE.*set_tid_address' linux/
-linux/kernel/fork.c:1632:
-SYSCALL_DEFINE1(set_tid_address, int __user *, tidptr)
+I asked you before to split this up into bits and pieces and argue and
+justify each change. Throwing this wholesale over the fence is going
+nowhere. It's not revieable at all.
 
-$ sed -n 1632,1638p linux/kernel/fork.c
-SYSCALL_DEFINE1(set_tid_address, int __user *, tidptr)
-{
-	current->clear_child_tid = tidptr;
+Aside of that ignoring review comments is a sure path to make yourself
+ignored:
 
-	return task_pid_vnr(current);
-}
+> +/*
+> + * Logging
+> + */
+> +int task_isolation_message(int cpu, int level, bool supp, const char *fmt, ...);
+> +
+> +#define pr_task_isol_emerg(cpu, fmt, ...)			\
+> +	task_isolation_message(cpu, LOGLEVEL_EMERG, false, fmt, ##__VA_ARGS__)
 
-$ grep -rn 'task_pid_vnr(struct' linux/
-linux/include/linux/sched.h:1374:
-static inline pid_t task_pid_vnr(struct task_struct *tsk)
+The comments various people made about that are not going away and none
+of this is going near anything I'm responsible for unless you provide
+these independent of the rest and with a reasonable justification why
+you can't use any other existing mechanism or extend it for your use
+case.
 
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
----
- man2/set_tid_address.2 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/man2/set_tid_address.2 b/man2/set_tid_address.2
-index 380efcdd8..b18b8efef 100644
---- a/man2/set_tid_address.2
-+++ b/man2/set_tid_address.2
-@@ -29,7 +29,7 @@ set_tid_address \- set pointer to thread ID
- .nf
- .B #include <linux/unistd.h>
- .PP
--.BI "long set_tid_address(int *" tidptr );
-+.BI "pid_t set_tid_address(int *" tidptr );
- .fi
- .PP
- .IR Note :
--- 
-2.29.2
-
+        tglx
