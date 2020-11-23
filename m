@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487E92C0648
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9F32C0752
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730610AbgKWM3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:29:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
+        id S1732331AbgKWMjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730593AbgKWM33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:29:29 -0500
+        id S1732303AbgKWMji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EA7420781;
-        Mon, 23 Nov 2020 12:29:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28E5D208C3;
+        Mon, 23 Nov 2020 12:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134566;
-        bh=DoUrGNENtK2xPC80298SmksnySDye6Bqr8dnb4i0WN4=;
+        s=korg; t=1606135178;
+        bh=Bg3qSo+bdQLpOLN05PDRqkoaJUVuItEwLSi3G6u1Hus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JfmvA0NemEzSItKHZKVWvD5G5t47qC+qd5VgObfX9Q5kqv6klsvcRz0zoZ5sWFqCJ
-         rI0ip2JNdHaMO7UAEVIXj2egdEdVyr3rMEwVItTN9MggMU2/OfulouzuwvFrGIIc6d
-         h+izz4GHukWq7izXflbUbqB0dwLIibXJGj8pbVPk=
+        b=HtqaMtLQpkHsIMJCeYOe5PHenlYo0Ge+yk81Rtm2Ha66RO695Fh5vSHYgYwlvHrZm
+         3liD5+g09BYqcDicL3EGt5x48q1lj3bZ4e83iTY38oyEyoWNyX3yVlWEzVW1wO09nI
+         mT3xrirutywtLwkZvjxF4POOtSfMmTxea09kDXY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.14 59/60] s390/dasd: fix null pointer dereference for ERP requests
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Han Xu <han.xu@nxp.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 133/158] spi: lpspi: Fix use-after-free on unbind
 Date:   Mon, 23 Nov 2020 13:22:41 +0100
-Message-Id: <20201123121807.905897115@linuxfoundation.org>
+Message-Id: <20201123121826.345481795@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 6f117cb854a44a79898d844e6ae3fd23bd94e786 upstream.
+commit 4def49da620c84a682d9361d6bef0a97eed46fe0 upstream.
 
-When requeueing all requests on the device request queue to the blocklayer
-we might get to an ERP (error recovery) request that is a copy of an
-original CQR.
+Normally the last reference on an spi_controller is released by
+spi_unregister_controller().  In the case of the i.MX lpspi driver,
+the spi_controller is registered with devm_spi_register_controller(),
+so spi_unregister_controller() is invoked automatically after the driver
+has unbound.
 
-Those requests do not have blocklayer request information or a pointer to
-the dasd_queue set. When trying to access those data it will lead to a
-null pointer dereference in dasd_requeue_all_requests().
+However the driver already releases the last reference in
+fsl_lpspi_remove() through a gratuitous call to spi_master_put(),
+causing a use-after-free when spi_unregister_controller() is
+subsequently invoked by the devres framework.
 
-Fix by checking if the request is an ERP request that can simply be
-ignored. The blocklayer request will be requeued by the original CQR that
-is on the device queue right behind the ERP request.
+Fix by dropping the superfluous spi_master_put().
 
-Fixes: 9487cfd3430d ("s390/dasd: fix handling of internal requests")
-Cc: <stable@vger.kernel.org> #4.16
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 944c01a889d9 ("spi: lpspi: enable runtime pm for lpspi")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v5.2+
+Cc: Han Xu <han.xu@nxp.com>
+Link: https://lore.kernel.org/r/ab3c0b18bd820501a12c85e440006e09ec0e275f.1604874488.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/spi/spi-fsl-lpspi.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/s390/block/dasd.c
-+++ b/drivers/s390/block/dasd.c
-@@ -2891,6 +2891,12 @@ static int _dasd_requeue_request(struct
+--- a/drivers/spi/spi-fsl-lpspi.c
++++ b/drivers/spi/spi-fsl-lpspi.c
+@@ -973,9 +973,6 @@ static int fsl_lpspi_remove(struct platf
+ 				spi_controller_get_devdata(controller);
  
- 	if (!block)
- 		return -EINVAL;
-+	/*
-+	 * If the request is an ERP request there is nothing to requeue.
-+	 * This will be done with the remaining original request.
-+	 */
-+	if (cqr->refers)
-+		return 0;
- 	spin_lock_irq(&cqr->dq->lock);
- 	req = (struct request *) cqr->callback_data;
- 	blk_mq_requeue_request(req, false);
+ 	pm_runtime_disable(fsl_lpspi->dev);
+-
+-	spi_master_put(controller);
+-
+ 	return 0;
+ }
+ 
 
 
