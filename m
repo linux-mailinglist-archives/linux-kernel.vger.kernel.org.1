@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEF62C0312
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97192C0319
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbgKWKNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:13:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43328 "EHLO mx2.suse.de"
+        id S1727995AbgKWKSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:18:18 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:16036 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727849AbgKWKNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:13:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9A329ABDE;
-        Mon, 23 Nov 2020 10:13:40 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 11:13:34 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH] x86/sgx: Fix sgx_ioc_enclave_provision() kernel-doc comment
-Message-ID: <20201123101334.GC29678@zn.tnic>
-References: <20201123181922.0c009406@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201123181922.0c009406@canb.auug.org.au>
+        id S1726528AbgKWKSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:18:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606126697; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xY6uS9noksXzCihG0l44z/ZA9XOGebTNqYxS6RYpRek=; b=FPGNictulUu9HLUkCzY1L13WIpsRYgqCDTl3lqgGWs+kBxfTanVADZF7LrS/H4/D6CJPmgPF
+ xcBhzuknGRmtZeCYWdUkkL7H4EJ7CnuWNRRkyJQzlnEnCx9dxGSMHEi0pbt9PBT332p5A1o0
+ UguhyHcqAsIKnJyt2rvyvNMhcyQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fbb8c680c9500dc7bab71f4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 10:18:16
+ GMT
+Sender: pkondeti=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 769D2C43461; Mon, 23 Nov 2020 10:18:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pkondeti)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61F15C433ED;
+        Mon, 23 Nov 2020 10:18:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 61F15C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
+From:   Pavankumar Kondeti <pkondeti@codeaurora.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Pavankumar Kondeti <pkondeti@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] PM / EM: Micro optimization in em_pd_energy
+Date:   Mon, 23 Nov 2020 15:47:57 +0530
+Message-Id: <1606126679-11799-1-git-send-email-pkondeti@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 06:19:22PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the tip tree, today's linux-next build (htmldocs) produced
-> these warnings:
-> 
-> arch/x86/kernel/cpu/sgx/ioctl.c:666: warning: Function parameter or member 'encl' not described in 'sgx_ioc_enclave_provision'
-> arch/x86/kernel/cpu/sgx/ioctl.c:666: warning: Excess function parameter 'enclave' description in 'sgx_ioc_enclave_provision'
-> 
-> Introduced by commit
-> 
->   c82c61865024 ("x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION")
+When the sum of the utilization of CPUs in a power domain is zero,
+return the energy as 0 without doing any computations.
 
+Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
 ---
-From: Borislav Petkov <bp@suse.de>
+ include/linux/energy_model.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Fix
-
-  ./arch/x86/kernel/cpu/sgx/ioctl.c:666: warning: Function parameter or member \
-	  'encl' not described in 'sgx_ioc_enclave_provision'
-  ./arch/x86/kernel/cpu/sgx/ioctl.c:666: warning: Excess function parameter \
-	  'enclave' description in 'sgx_ioc_enclave_provision'
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 30aefc93a31d..c206aee80a04 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -652,7 +652,7 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+index b67a51c..8810f1f 100644
+--- a/include/linux/energy_model.h
++++ b/include/linux/energy_model.h
+@@ -103,6 +103,9 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+ 	struct em_perf_state *ps;
+ 	int i, cpu;
  
- /**
-  * sgx_ioc_enclave_provision() - handler for %SGX_IOC_ENCLAVE_PROVISION
-- * @enclave:	an enclave pointer
-+ * @encl:	an enclave pointer
-  * @arg:	userspace pointer to a struct sgx_enclave_provision instance
-  *
-  * Allow ATTRIBUTE.PROVISION_KEY for an enclave by providing a file handle to
++	if (!sum_util)
++		return 0;
++
+ 	/*
+ 	 * In order to predict the performance state, map the utilization of
+ 	 * the most utilized CPU of the performance domain to a requested
 -- 
-2.21.0
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
