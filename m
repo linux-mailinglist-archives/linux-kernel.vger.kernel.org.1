@@ -2,158 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B742C1107
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FE82C1109
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390196AbgKWQq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:46:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46238 "EHLO mx2.suse.de"
+        id S1732850AbgKWQsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:48:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732672AbgKWQqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:46:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0C2A1AC24;
-        Mon, 23 Nov 2020 16:46:23 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A0FE81E130F; Mon, 23 Nov 2020 17:46:22 +0100 (CET)
-Date:   Mon, 23 Nov 2020 17:46:22 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
-Message-ID: <20201123164622.GJ27294@quack2.suse.cz>
-References: <20201101212738.GA16924@gmail.com>
- <20201102122638.GB23988@quack2.suse.cz>
- <20201103211747.GA3688@gmail.com>
+        id S1729294AbgKWQsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 11:48:17 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3A3520717;
+        Mon, 23 Nov 2020 16:48:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606150096;
+        bh=kA8c3OfIwdiQgZa+jhGYvbIcKRQ4uxazZENPSYYhqxs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wJKB6HEhoJU2IsKoFXLnIZYVF5vYv4ScRMhB6CR9MZ9Ny/zp9CPtl+iUna0DZETg8
+         Vn9lHtG71fup6t0eEEnO/ZkDT6DWvKF6yOFCIpwomLAe+u7AaqhU1tMHK2/5NYJ3pJ
+         YorfxbjuAvXdBFC5FJ1vcJUgQCRxFcItrPvqa71E=
+Date:   Mon, 23 Nov 2020 16:48:11 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 5/6] tlb: mmu_gather: Introduce tlb_gather_mmu_fullmm()
+Message-ID: <20201123164811.GA11494@willie-the-truck>
+References: <20201120143557.6715-1-will@kernel.org>
+ <20201120143557.6715-6-will@kernel.org>
+ <CAHk-=wghWFQCW83Xr16C3q+y5xZNM9frH4V9AqauedMEJ1V4wQ@mail.gmail.com>
+ <CAHk-=wjQWa14_4UpfDf=fiineNP+RH74kZeDMo_f1D35xNzq9w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="Fba/0zbH8Xs+Fj9o"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201103211747.GA3688@gmail.com>
+In-Reply-To: <CAHk-=wjQWa14_4UpfDf=fiineNP+RH74kZeDMo_f1D35xNzq9w@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---Fba/0zbH8Xs+Fj9o
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-On Tue 03-11-20 22:17:47, Paweł Jasiak wrote:
-> I have written small patch that fixes problem for me and doesn't break
-> x86_64.
-
-OK, with a help of Boris Petkov I think I have a fix that looks correct
-(attach). Can you please try whether it works for you? Thanks!
-
-								Honza
-
+On Fri, Nov 20, 2020 at 09:31:09AM -0800, Linus Torvalds wrote:
+> Oh - wait.
 > 
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index 3e01d8f2ab90..cf0b97309975 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -1285,12 +1285,27 @@ static int do_fanotify_mark(int fanotify_fd, unsigned int flags, __u64 mask,
->  	return ret;
->  }
->  
-> +#if defined(CONFIG_X86) && !defined(CONFIG_64BIT)
-> +SYSCALL_DEFINE6(fanotify_mark,
-> +			int, fanotify_fd, unsigned int, flags, __u32, mask0,
-> +			__u32, mask1, int, dfd, const char  __user *, pathname)
-> +{
-> +	return do_fanotify_mark(fanotify_fd, flags,
-> +#ifdef __BIG_ENDIAN
-> +				((__u64)mask0 << 32) | mask1,
-> +#else
-> +				((__u64)mask1 << 32) | mask0,
-> +#endif
-> +				 dfd, pathname);
-> +}
-> +#else
->  SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
->  			      __u64, mask, int, dfd,
->  			      const char  __user *, pathname)
->  {
->  	return do_fanotify_mark(fanotify_fd, flags, mask, dfd, pathname);
->  }
-> +#endif
->  
->  #ifdef CONFIG_COMPAT
->  COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+> Not ack.
 > 
+> Not because this is wrong, but because I think you should remove the
+> start/end arguments here too.
 > 
-> -- 
+> The _only_ thing they were used for was that "fullmm" flag, afaik. So
+> now they no longer make sense.
 > 
-> Paweł Jasiak
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Hmm?
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: text/x-patch; charset=utf-8
-Content-Disposition: attachment; filename="0001-fanotify-Fix-fanotify_mark-on-32-bit-archs.patch"
-Content-Transfer-Encoding: 8bit
+Oh nice, well spotted. I'll drop them for v2.
 
-From fc9104a50a774ec198c1e3a145372cde77df7967 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 23 Nov 2020 17:37:00 +0100
-Subject: [PATCH] fanotify: Fix fanotify_mark() on 32-bit archs
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Cheers,
 
-Commit converting syscalls taking 64-bit arguments to new scheme of compat
-handlers omitted converting fanotify_mark(2) which then broke the
-syscall for 32-bit ABI. Add missed conversion.
-
-CC: Brian Gerst <brgerst@gmail.com>
-Suggested-by: Borislav Petkov <bp@suse.de>
-Reported-by: Paweł Jasiak <pawel@jasiak.xyz>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- arch/x86/entry/syscalls/syscall_32.tbl | 2 +-
- fs/notify/fanotify/fanotify_user.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 0d0667a9fbd7..b2ec6ff88307 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -350,7 +350,7 @@
- 336	i386	perf_event_open		sys_perf_event_open
- 337	i386	recvmmsg		sys_recvmmsg_time32		compat_sys_recvmmsg_time32
- 338	i386	fanotify_init		sys_fanotify_init
--339	i386	fanotify_mark		sys_fanotify_mark		compat_sys_fanotify_mark
-+339	i386	fanotify_mark		sys_ia32_fanotify_mark
- 340	i386	prlimit64		sys_prlimit64
- 341	i386	name_to_handle_at	sys_name_to_handle_at
- 342	i386	open_by_handle_at	sys_open_by_handle_at		compat_sys_open_by_handle_at
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 3e01d8f2ab90..e20e7b53a87f 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -1293,7 +1293,7 @@ SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
- }
- 
- #ifdef CONFIG_COMPAT
--COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-+SYSCALL_DEFINE6(ia32_fanotify_mark,
- 				int, fanotify_fd, unsigned int, flags,
- 				__u32, mask0, __u32, mask1, int, dfd,
- 				const char  __user *, pathname)
--- 
-2.16.4
-
-
---Fba/0zbH8Xs+Fj9o--
+Will
