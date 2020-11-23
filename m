@@ -2,114 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD242C0995
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AA22C0976
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388364AbgKWNJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:09:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60300 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732828AbgKWMsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:48:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606135694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HNsaXjBNrnIghGIwSSJsd7GPRd0JFZGeNNXClXAz6nE=;
-        b=bvcVKz6XasNXvwxWZpJbU5HHXmL3bXYOAqe1+OsNM+ki7g2lxX9q+K+xIm6XtGsrA5JEqq
-        0hkkXpEWWfuRh0dTNE19QnzvSXuNXhV6BLwycdNlMiN6PoLZjBMknJEBzM+iFcszUeuXEj
-        +vrL7zBtXmWRpj7mCzAv4ooLEHFzITE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B37EDAC65;
-        Mon, 23 Nov 2020 12:48:14 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 13:48:13 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-Message-ID: <20201123124813.GN27488@dhcp22.suse.cz>
-References: <20201123074046.GB27488@dhcp22.suse.cz>
- <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
- <20201123094344.GG27488@dhcp22.suse.cz>
- <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
- <20201123104258.GJ27488@dhcp22.suse.cz>
- <CAMZfGtVzv0qPaK8GALaf8CiaPf2Z9+js24gFtFv5_RfhAyXaRA@mail.gmail.com>
- <20201123113208.GL27488@dhcp22.suse.cz>
- <CAMZfGtXUNXdqse-tsCFyqePJ65L-1EgkYW416+Hu+_6OVu7FjA@mail.gmail.com>
- <20201123121842.GM27488@dhcp22.suse.cz>
- <CAMZfGtVboaBuP_jYHeaQHwQ4gJoXuJC47g1UwTa+aUL4bqo=zw@mail.gmail.com>
+        id S2388702AbgKWNHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:07:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732870AbgKWMtI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:49:08 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7045AC061A4F
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:49:05 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id cf17so13376246edb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:49:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GyUtXV4I7oufOCmRehbSbZihfE2dNAsjJjjjrmEuICw=;
+        b=xzdEz6kB4zBik1uOatoshaBm6LaSKmUojijYt8h9dh2QGrUS76eruUvLIzkSH0eGEe
+         DOl+Li0VGvprWuzJGUffQBqShHCUBvn0FG05F8PWA7Ix6v7nmuwvqau9BuAUXtBuzc9P
+         biFtftXYWUdPL666mAAt48VYycPt4mDE/nFamResc8Jm6tepnfAiJpTSHUAnPk79ypk0
+         LDR50k++wjeWldDm+gC03roaoqPBQQqL0fsaZikOBH87K99u1MRrLTd13dwLHowdkXpQ
+         ztf6f/03UDNnrWdRmhDlhaGsgjm9AQ0a+uIiw96KobpddpBrzU5tcbP8H1dC1S7gVEf2
+         xPfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GyUtXV4I7oufOCmRehbSbZihfE2dNAsjJjjjrmEuICw=;
+        b=kh0xf3D3GEgRT4YdValvVNSuPAGv9i/wSAac3AXNhgmld3atmgt2/lZkyTS5HdgXbn
+         SBsa+A9zSk6SqmOPbjCBQ+cFJYN+KEvD17gMsOQRxC6v6gwW+KgAfLy9leFRVq3mH2CI
+         qJhrKHPYr5OTdLVOTaYq1WHb6ELGKr1PePLXbfjlYBnQLgOesSV2PDmpc+rPsCRb5JoN
+         vc/oL9S5oINUm19gaY52LTbz6iixiGmdrMO0UD8wptOWbefG3eBxGk34g0o2FpOKrZ4O
+         BxZCWwp2OttywS90akHQPZKmUosVISOJ4s3y6ODamQzkDF9D64KvUfiDn3IfPjbBLMHP
+         +6Vw==
+X-Gm-Message-State: AOAM5333yxOAndo5PwMl52V5qjsYgtjaXsqjDhnw3KMF1OpnQ7YnfAqb
+        wJ9KnNzaI9Yka+6D09j9xJJvRZ5zoBBsRX6RFcba7g==
+X-Google-Smtp-Source: ABdhPJzlanZtbb9BGdfii0DcE9OSCvj2yyVYSpep2MYBMNOh1SH5wMpSHxztxzQJLoz9y7yPdd5mKxJnY6cjP3OZ38I=
+X-Received: by 2002:aa7:cb52:: with SMTP id w18mr38774344edt.362.1606135744041;
+ Mon, 23 Nov 2020 04:49:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtVboaBuP_jYHeaQHwQ4gJoXuJC47g1UwTa+aUL4bqo=zw@mail.gmail.com>
+References: <20200922165535.1356622-1-maxime.chevallier@bootlin.com>
+ <20200922165535.1356622-3-maxime.chevallier@bootlin.com> <CAAEAJfCcPRnyjPozXG9rjovO+cJ6ZZBadShs_X9DQCrjSj7mUw@mail.gmail.com>
+ <20201123082122.49a08ebb@bootlin.com>
+In-Reply-To: <20201123082122.49a08ebb@bootlin.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Mon, 23 Nov 2020 09:48:51 -0300
+Message-ID: <CAAEAJfD9r=skAPAEZX50Y-EnbeZRy+LEnERR_rvkcoghESEn2w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] media: rockchip: Introduce driver for Rockhip's
+ camera interface
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 23-11-20 20:40:40, Muchun Song wrote:
-> On Mon, Nov 23, 2020 at 8:18 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 23-11-20 20:07:23, Muchun Song wrote:
-> > > On Mon, Nov 23, 2020 at 7:32 PM Michal Hocko <mhocko@suse.com> wrote:
-> > [...]
-> > > > > > > > No I really mean that pfn_to_page will give you a struct page pointer
-> > > > > > > > from pages which you release from the vmemmap page tables. Those pages
-> > > > > > > > might get reused as soon sa they are freed to the page allocator.
-> > > > > > >
-> > > > > > > We will remap vmemmap pages 2-7 (virtual addresses) to page
-> > > > > > > frame 1. And then we free page frame 2-7 to the buddy allocator.
-> > > > > >
-> > > > > > And this doesn't really happen in an atomic fashion from the pfn walker
-> > > > > > POV, right? So it is very well possible that
-> > > > >
-> > > > > Yeah, you are right. But it may not be a problem for HugeTLB pages.
-> > > > > Because in most cases, we only read the tail struct page and get the
-> > > > > head struct page through compound_head() when the pfn is within
-> > > > > a HugeTLB range. Right?
-> > > >
-> > > > Many pfn walkers would encounter the head page first and then skip over
-> > > > the rest. Those should be reasonably safe. But there is no guarantee and
-> > > > the fact that you need a valid page->compound_head which might get
-> > > > scribbled over once you have the struct page makes this extremely
-> > > > subtle.
-> > >
-> > > In this patch series, we can guarantee that the page->compound_head
-> > > is always valid. Because we reuse the first tail page. Maybe you need to
-> > > look closer at this series. Thanks.
-> >
-> > I must be really terrible exaplaining my concern. Let me try one last
-> > time. It is really _irrelevant_ what you do with tail pages. The
-> > underlying problem is that you are changing struct pages under users
-> > without any synchronization. What used to be a valid struct page will
-> > turn into garbage as soon as you remap vmemmap page tables.
-> 
-> Thank you very much for your patient explanation. So if the pfn walkers
-> always try get the head struct page through compound_head() when it
-> encounter a tail struct page. There will be no concerns. Do you agree?
+Hi Maxime,
 
-No, I do not agree. Please read again. The content of the struct page
-might be a complete garbage at any time after pfn_to_page returns a
-struct page. So there is no valid compound_head anywamore.
--- 
-Michal Hocko
-SUSE Labs
+On Mon, 23 Nov 2020 at 04:21, Maxime Chevallier
+<maxime.chevallier@bootlin.com> wrote:
+>
+> Hi Ezequiel, and thanks a lot for the review !
+>
+> On Fri, 2 Oct 2020 14:35:28 -0300
+> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+>
+> > Hi Maxime,
+> >
+> >Thanks to Dafna, I found the patch ^_^
+> >
+> >The driver looks real good. Just a few comments below.
+> >
+> >Is the driver passing latest v4l2-compliance tests?
+>
+> I'll post them along with the next iteration of the series.
+>
+> >> +config VIDEO_ROCKCHIP_VIP
+> >> +       tristate "Rockchip VIP (Video InPut) Camera Interface"
+> >> +       depends on VIDEO_DEV && VIDEO_V4L2
+> >> +       depends on ARCH_ROCKCHIP || COMPILE_TEST
+> >> +       select VIDEOBUF2_DMA_SG
+> >> +       select VIDEOBUF2_DMA_CONTIG
+> >> +       select V4L2_FWNODE
+> >> +       select V4L2_MEM2MEM_DEV
+> >> +       help
+> >> +         This is a v4l2 driver for Rockchip SOC Camera interface.
+> >> +
+> >> +         To compile this driver as a module choose m here.
+> >> +
+> >
+> >Please add ... "the module will be called {the name}".
+>
+> Sure, I will do !
+>
+> [...]
+>
+> >> +#define VIP_REQ_BUFS_MIN       1
+> >
+> >I think you might want to have more than 1 buffer
+> >as minimum. How about 3? Two for the ping and pong,
+> >and one more in the queue.
+>
+> Yes you're correct, 3 should be the strict minimum required buffers
+> here, I didn't update that after adding the dual-buffering mode.
+>
+> >> +#define VIP_MIN_WIDTH          64
+> >> +#define VIP_MIN_HEIGHT         64
+> >> +#define VIP_MAX_WIDTH          8192
+> >> +#define VIP_MAX_HEIGHT         8192
+> >> +
+> >> +#define RK_VIP_PLANE_Y                 0
+> >> +#define RK_VIP_PLANE_CBCR              1
+> >> +
+> >> +#define VIP_FETCH_Y_LAST_LINE(VAL) ((VAL) & 0x1fff)
+> >> +/* Check if swap y and c in bt1120 mode */
+> >> +#define VIP_FETCH_IS_Y_FIRST(VAL) ((VAL) & 0xf)
+> >> +
+> >> +/* Get xsubs and ysubs for fourcc formats
+> >> + *
+> >> + * @xsubs: horizontal color samples in a 4*4 matrix, for yuv
+> >> + * @ysubs: vertical color samples in a 4*4 matrix, for yuv
+> >> + */
+> >> +static int fcc_xysubs(u32 fcc, u32 *xsubs, u32 *ysubs)
+> >
+> >See below, you should be using v4l2_fill_pixfmt_mp.
+> >
+> >> +{
+> >> +       switch (fcc) {
+> >> +       case V4L2_PIX_FMT_NV16:
+> >> +       case V4L2_PIX_FMT_NV61:
+> >> +               *xsubs = 2;
+> >> +               *ysubs = 1;
+> >> +               break;
+> >> +       case V4L2_PIX_FMT_NV21:
+> >> +       case V4L2_PIX_FMT_NV12:
+> >> +               *xsubs = 2;
+> >> +               *ysubs = 2;
+> >> +               break;
+> >> +       default:
+> >> +               return -EINVAL;
+> >> +       }
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static const struct vip_output_fmt out_fmts[] = {
+> >> +       {
+> >> +               .fourcc = V4L2_PIX_FMT_NV16,
+> >> +               .cplanes = 2,
+> >
+> >From what I can see, you are only using this
+> >information to calculate bytesperline and sizeimage,
+> >so you should be using the v4l2_fill_pixfmt_mp() helper.
+>
+> You're correct, it indeed makes things much easier and allowed to
+> removed a lot of redundant info here !
+>
+>
+> >> +static void rk_vip_set_fmt(struct rk_vip_stream *stream,
+> >> +                          struct v4l2_pix_format_mplane *pixm,
+> >> +                          bool try)
+> >> +{
+> >> +       struct rk_vip_device *dev = stream->vipdev;
+> >> +       struct v4l2_subdev_format sd_fmt;
+> >> +       const struct vip_output_fmt *fmt;
+> >> +       struct v4l2_rect input_rect;
+> >> +       unsigned int planes, imagesize = 0;
+> >> +       u32 xsubs = 1, ysubs = 1;
+> >> +       int i;
+> >> +
+> >
+> >I was expecting to see some is_busy or is_streaming check
+> >here, have you tested what happens if you change the format
+> >while streaming, or after buffers are queued?
+>
+> Yes correct. I used the stream->state private flag here, but I it was
+> also brought to my attention that there also exists a vb2_is_busy()
+> helper, but I'm unsure if it would be correct to use it here.
+>
+
+Long story, short: when the application creates buffers,
+with e.g. REQBUF (see vb2_core_reqbufs), it will call
+the driver (vb2_ops.queue_setup), to get the planes' sizes.
+
+In the current model, for a given vb2 queue, all the buffers
+are the same size. In practice, the simpler way to express
+this is not allowing S_FMT if there are buffers allocated
+in the queue (vb2_is_busy).
+
+You could relax the vb2_is_busy requirement in your driver,
+but I usually find it's not worth the trouble.
+
+>
+> >> +
+> >> +static int rk_vip_g_input(struct file *file, void *fh, unsigned int *i)
+> >> +{
+> >> +       *i = 0;
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static int rk_vip_s_input(struct file *file, void *fh, unsigned int i)
+> >> +{
+> >
+> >Only one input, why do you need to support this ioctl at all?
+>
+> I actually saw a fair amount of existing drivers implementing these
+> callbacks even for only one input, so I don't really know if I should
+> remove it or not ?
+>
+
+S_INPUT is used e.g. on capture devices that have multiple
+inputs and can capture from one input at a time.
+
+If the ioctl is empty like this, the driver can simply not support
+the ioctl.
+
+Best regards,
+Ezequiel
