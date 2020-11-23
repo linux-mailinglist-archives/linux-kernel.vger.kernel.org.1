@@ -2,159 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85032C0BA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D102C0AEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730753AbgKWN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbgKWMai (ORCPT
+        id S1731011AbgKWMcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:32:04 -0500
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:11277 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730871AbgKWMbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:38 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDF6C0613CF;
-        Mon, 23 Nov 2020 04:30:38 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id k3so1813463qvz.4;
-        Mon, 23 Nov 2020 04:30:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OHoUqTFWWE+Wvyk/7Fm8SlSjmG5RijlPgr0GGsxt+Sg=;
-        b=sytGcyw1eZnl0TbXkzQuBT5tqfRXi2j1Zogk0VHDe6xvZ3P0+mal89v+FjPjC1i2LQ
-         eykf2AOKhm5qUbHr8xh/oG3XhhAm9XQj7hiUvkmHj7w2FfFKkEHie2CZpWhtXH7Olxd8
-         3geSXljAn9pzKiKWvsH8lBraoLpz1VN//ZTl0DmAmzpYckIFAd5j1BWLEXGelIMSadcy
-         EfrhBLCY19YMRpjzYnhfziop/gaCwmxoEgb61h0oTS9z8LgYUO6+XRHuMAvOkE2lqLn8
-         U6U4rcUO+Ry7W+BscgHLa26jhZUllxvIUEbsEPOnLWJv6fX0igETyuhkyA2xrOEwNAMm
-         c5qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OHoUqTFWWE+Wvyk/7Fm8SlSjmG5RijlPgr0GGsxt+Sg=;
-        b=dYUNAFVNrO+L1mSo/UviE42DBfe4inQCzVKgbT2Psn045ilMyLuvSsxSDrDjFHoTZw
-         FSP1gvmILoaUJwmI5ZxhVQyTb5HDjoy7HUz7Yj41Cm1+P33LkmQM0D0qGzQtq8nA1gBe
-         +3EsHXYtxPq5vcrIcPCX0zzw5z5vF+NnC9/HbmbKGKQWjwNO20BR1KW94jtSQd8Nqczz
-         Q0BzbpfT5P2e6tjnuDRlJneaNFKeaB9NdG1i/JYXpDCgaLAlYV4oDWKcnCfRZPGK7MSf
-         mk98NqDRqFC0aGCtz6wq2TluFxKupuiB5mQmFOOcimnp3loHV/tWMpfHiCNcGrG9JTqs
-         TQcQ==
-X-Gm-Message-State: AOAM530UcoF75+4s1ZdcxcDgI/QxXgdemTUwN8SwRTdzjKQYqg4H/XHh
-        z2FGBwQxhOW3dmWi2tGcFgU=
-X-Google-Smtp-Source: ABdhPJxImrSVZi/1EIy3edDOInFPq3eMKoEzlTqNhC6F3EZnAcIw057TQTcWqIal0rgxcMvSSuKm0Q==
-X-Received: by 2002:a05:6214:20e4:: with SMTP id 4mr29601182qvk.37.1606134637593;
-        Mon, 23 Nov 2020 04:30:37 -0800 (PST)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id h142sm9320133qke.104.2020.11.23.04.30.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 04:30:36 -0800 (PST)
-Date:   Mon, 23 Nov 2020 07:30:34 -0500
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org
-Cc:     Nicolas.Ferre@microchip.com, kamel.bouhara@bootlin.com,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joe@perches.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
- maintainer
-Message-ID: <X7uragBU7qwcs62L@shinobu>
-References: <20201121185824.451477-1-vilhelm.gray@gmail.com>
- <df14f643-e80e-6ae6-dcef-90adefe6d733@microchip.com>
+        Mon, 23 Nov 2020 07:31:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606134693; x=1637670693;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OLdDCWuWqpqn05lwFSC/SLaom41YK6TRggAoCaO8jHE=;
+  b=YyLXJqDJRuEo2Lspc8ndXQLnntQzuH5h7frRuPjOFYmyRJ0hvBijKUuV
+   qjW03Ji6CaVxJWKdnIfcIwe9NzYy96J/zm4aNolxfra+m3BW6j1cglrpJ
+   mzCJhbBxv4RxddLOhO7l2PtLAM5Z52mtOaav4/ZL1nPSEMAZ4AQlDDtic
+   CN4BUtO6yj8vLwycM4clLSRAMW7lxyZUJC/Ow7RYsFPstbTKtz+S8lxFD
+   9818iwdoiYz52A5atnKQtLdfvI2YWallO/442NQIajqVWnpirP1h2/bAr
+   56RJJ0mmfZFt8wSJY7BGGfocytDY6rGzSXVgeUJtNi+J2e7Eoex8O0vA6
+   w==;
+IronPort-SDR: W1ICdDpcMDhkKJbW/LJNxdyht0qv+Lb3C6KtSDBZLXpFLT5xBuHnhmD4lq485Rt0Z8bJnQdpli
+ RSCSJ7P2D8Y/0zYBA/aMtlRuwcs+qM9I+SLo6IwcJ5gJd2KCASjnVvZzfNE96V97CzGOO/jbl8
+ h5RdhB+MNoEsa1/+7C3Xwg1GxEEtRM435BScIL0xb5SZcRUHksP5W2kHN4VEFCHXztnTIY/0m+
+ hi8lXsaEthvgNR+mP9C9tnRgdDRMkO6Tei3RahQcyfrQ5Lsl4Pb9Uu3j7zBqqJKsElrkp+SXUx
+ lJ8=
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="100056419"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2020 05:31:33 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 23 Nov 2020 05:31:33 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 23 Nov 2020 05:31:32 -0700
+Date:   Mon, 23 Nov 2020 13:31:32 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+CC:     <roopa@nvidia.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next] bridge: mrp: Implement LC mode for MRP
+Message-ID: <20201123123132.uxvec6uwuegioc25@soft-dev3.localdomain>
+References: <20201123111401.136952-1-horatiu.vultur@microchip.com>
+ <5ffa6f9f-d1f3-adc7-ddb8-e8107ea78da5@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bKBXnqDtWJCMEsOZ"
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <df14f643-e80e-6ae6-dcef-90adefe6d733@microchip.com>
+In-Reply-To: <5ffa6f9f-d1f3-adc7-ddb8-e8107ea78da5@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---bKBXnqDtWJCMEsOZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Nov 23, 2020 at 09:50:34AM +0000, Nicolas.Ferre@microchip.com wrote:
-> On 21/11/2020 at 19:58, William Breathitt Gray wrote:
-> > Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+The 11/23/2020 14:13, Nikolay Aleksandrov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On 23/11/2020 13:14, Horatiu Vultur wrote:
+> > Extend MRP to support LC mode(link check) for the interconnect port.
+> > This applies only to the interconnect ring.
+> >
+> > Opposite to RC mode(ring check) the LC mode is using CFM frames to
+> > detect when the link goes up or down and based on that the userspace
+> > will need to react.
+> > One advantage of the LC mode over RC mode is that there will be fewer
+> > frames in the normal rings. Because RC mode generates InTest on all
+> > ports while LC mode sends CFM frame only on the interconnect port.
+> >
+> > All 4 nodes part of the interconnect ring needs to have the same mode.
+> > And it is not possible to have running LC and RC mode at the same time
+> > on a node.
+> >
+> > Whenever the MIM starts it needs to detect the status of the other 3
+> > nodes in the interconnect ring so it would send a frame called
+> > InLinkStatus, on which the clients needs to reply with their link
+> > status.
+> >
+> > This patch adds the frame header for the frame InLinkStatus and
+> > extends existing rules on how to forward this frame.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > > ---
-> >   Changes in v3:
-> >    - Reorder entries to match preferred MAINTAINERS ordering
-> >=20
-> >   MAINTAINERS | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> >=20
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 913b5eb64e44..1ee380dfe189 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -2104,6 +2104,13 @@ S:       Supported
-> >   F:     arch/arm64/boot/dts/microchip/
-> >   N:     sparx5
-> >=20
-> > +ARM/Microchip Timer Counter Block (TCB) Capture Driver
->=20
-> Nit: we don't use the ARM/Microchip string for drivers which could be=20
-> multi-architecture. Only AT91 and Sparx5 families have these entries.
->=20
-> I'm not holding the patch for this:
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> >  include/uapi/linux/mrp_bridge.h |  7 +++++++
+> >  net/bridge/br_mrp.c             | 18 +++++++++++++++---
+> >  2 files changed, 22 insertions(+), 3 deletions(-)
+> >
+> 
+> Hi Horatiu,
+> The patch looks good overall, just one question below.
 
-Jonathan,
+Hi Nik,
 
-If you would like me to submit a v4 with the "ARM/" string removed, just
-let me know. Otherwise, feel free to make an adjustment if you want when
-you merge this.
+Thanks for taking time to review the patch.
 
-Thanks,
-
-William Breathitt Gray
-
-> > +M:     Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > +L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscri=
-bers)
-> > +L:     linux-iio@vger.kernel.org
-> > +S:     Maintained
-> > +F:     drivers/counter/microchip-tcb-capture.c
+> 
+> > diff --git a/include/uapi/linux/mrp_bridge.h b/include/uapi/linux/mrp_bridge.h
+> > index 6aeb13ef0b1e..450f6941a5a1 100644
+> > --- a/include/uapi/linux/mrp_bridge.h
+> > +++ b/include/uapi/linux/mrp_bridge.h
+> > @@ -61,6 +61,7 @@ enum br_mrp_tlv_header_type {
+> >       BR_MRP_TLV_HEADER_IN_TOPO = 0x7,
+> >       BR_MRP_TLV_HEADER_IN_LINK_DOWN = 0x8,
+> >       BR_MRP_TLV_HEADER_IN_LINK_UP = 0x9,
+> > +     BR_MRP_TLV_HEADER_IN_LINK_STATUS = 0xa,
+> >       BR_MRP_TLV_HEADER_OPTION = 0x7f,
+> >  };
+> >
+> > @@ -156,4 +157,10 @@ struct br_mrp_in_link_hdr {
+> >       __be16 interval;
+> >  };
+> >
+> > +struct br_mrp_in_link_status_hdr {
+> > +     __u8 sa[ETH_ALEN];
+> > +     __be16 port_role;
+> > +     __be16 id;
+> > +};
 > > +
-> >   ARM/MIOA701 MACHINE SUPPORT
-> >   M:     Robert Jarzmik <robert.jarzmik@free.fr>
-> >   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscr=
-ibers)
-> > --
-> > 2.29.2
-> >=20
-> >=20
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> >=20
->=20
->=20
-> --=20
-> Nicolas Ferre
+> 
+> I didn't see this struct used anywhere, am I missing anything?
 
---bKBXnqDtWJCMEsOZ
-Content-Type: application/pgp-signature; name="signature.asc"
+Yes, you are right, the struct is not used any. But I put it there as I
+put the other frame types for MRP.
 
------BEGIN PGP SIGNATURE-----
+> 
+> Cheers,
+>  Nik
+> 
+> >  #endif
+> > diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+> > index bb12fbf9aaf2..cec2c4e4561d 100644
+> > --- a/net/bridge/br_mrp.c
+> > +++ b/net/bridge/br_mrp.c
+> > @@ -858,7 +858,8 @@ static bool br_mrp_in_frame(struct sk_buff *skb)
+> >       if (hdr->type == BR_MRP_TLV_HEADER_IN_TEST ||
+> >           hdr->type == BR_MRP_TLV_HEADER_IN_TOPO ||
+> >           hdr->type == BR_MRP_TLV_HEADER_IN_LINK_DOWN ||
+> > -         hdr->type == BR_MRP_TLV_HEADER_IN_LINK_UP)
+> > +         hdr->type == BR_MRP_TLV_HEADER_IN_LINK_UP ||
+> > +         hdr->type == BR_MRP_TLV_HEADER_IN_LINK_STATUS)
+> >               return true;
+> >
+> >       return false;
+> > @@ -1126,9 +1127,9 @@ static int br_mrp_rcv(struct net_bridge_port *p,
+> >                                               goto no_forward;
+> >                               }
+> >                       } else {
+> > -                             /* MIM should forward IntLinkChange and
+> > +                             /* MIM should forward IntLinkChange/Status and
+> >                                * IntTopoChange between ring ports but MIM
+> > -                              * should not forward IntLinkChange and
+> > +                              * should not forward IntLinkChange/Status and
+> >                                * IntTopoChange if the frame was received at
+> >                                * the interconnect port
+> >                                */
+> > @@ -1155,6 +1156,17 @@ static int br_mrp_rcv(struct net_bridge_port *p,
+> >                            in_type == BR_MRP_TLV_HEADER_IN_LINK_DOWN))
+> >                               goto forward;
+> >
+> > +                     /* MIC should forward IntLinkStatus frames only to
+> > +                      * interconnect port if it was received on a ring port.
+> > +                      * If it is received on interconnect port then, it
+> > +                      * should be forward on both ring ports
+> > +                      */
+> > +                     if (br_mrp_is_ring_port(p_port, s_port, p) &&
+> > +                         in_type == BR_MRP_TLV_HEADER_IN_LINK_STATUS) {
+> > +                             p_dst = NULL;
+> > +                             s_dst = NULL;
+> > +                     }
+> > +
+> >                       /* Should forward the InTopo frames only between the
+> >                        * ring ports
+> >                        */
+> >
+> 
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+7q18ACgkQhvpINdm7
-VJJbYhAAjacdtakChubYIw7KbWdBNeTSz8pllrkDAeJ669W2z02064sQR7TSa8Ne
-ToxOztGYN8puIvwzss3NDhUCuFHGa+dhzbPZ5w6g8Sr4yv+REJvAAEfJlPKREJIN
-XZOAGmPbHJUMo+lrf7sTx0XXS2Lsc08PB/a4FAhb90ET2mphBZHfT+piE7sz6KAu
-iP+gjz9Iow/4jciRIIcx2t7KCyk96dZ8aWe1WdhoSmD8lP7L04+BB6//DaMXBd4c
-m706d0lEEJRxa1KhrgmwnsChksCJXVxGb067iE7rN8eE5nxiFxSuD7OB/s5OM/y8
-bdr25gXhfbwT9dRE5rq6sNbM595l3MznqIDPADIxpCgyqYJ8nb0vKmWlaoZ2wxYN
-2ExKXkJRjX88WozPh/MGe7SdaRDUYYeg9T4otjytTS8Fqs5VOwNda/o3dZqsF5YL
-jq3pQaCRgnAJ0wTs5QbPZugtzwK8+nUzIq4WPKWewAmHvBi18l4UWnEalPrKKydQ
-Kn5vdKhhqhGadex6RlGUEq9upth+mSCPBNjVql8rYGQzwA0QTRjCHZojd/pF4SWf
-/Ezp21s+Bc53DmZnWPzKlDl+DCLD1Prr/GxMznUL2pbpItW0Ew3A6f5bbexijsb/
-Dz+cRYFMjOQr/1lTE0WHioOSfKPW2tDW6AzROIIGjB5+s5ZveMU=
-=w8oh
------END PGP SIGNATURE-----
-
---bKBXnqDtWJCMEsOZ--
+-- 
+/Horatiu
