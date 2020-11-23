@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057982BFDFC
+	by mail.lfdr.de (Postfix) with ESMTP id E04A22BFDFE
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 02:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgKWBLo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 22 Nov 2020 20:11:44 -0500
-Received: from david.siemens.com.cn ([194.138.202.53]:44606 "EHLO
-        david.siemens.com.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgKWBLo (ORCPT
+        id S1726893AbgKWBN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 20:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgKWBN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 20:11:44 -0500
-Received: from mail.siemens.com.cn (mail.siemens.com.cn [194.138.237.52])
-        by david.siemens.com.cn (8.14.9/8.14.9) with ESMTP id 0AN1BSHt020357
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Nov 2020 09:11:29 +0800
-Received: from CNPEK01M02MSX.ad011.siemens.net (cnpek01m02msx.ad011.siemens.net [139.24.237.215])
-        by mail.siemens.com.cn (8.14.9/8.14.9) with ESMTP id 0AN1BP1c018969
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 23 Nov 2020 09:11:27 +0800
-Received: from CNPEK01M06MSX.ad011.siemens.net (139.24.237.223) by
- CNPEK01M02MSX.ad011.siemens.net (139.24.237.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 23 Nov 2020 09:11:24 +0800
-Received: from CNPEK01M06MSX.ad011.siemens.net ([139.24.237.223]) by
- CNPEK01M06MSX.ad011.siemens.net ([139.24.237.223]) with mapi id
- 15.01.2106.003; Mon, 23 Nov 2020 09:11:24 +0800
-From:   "Wang, Sheng Long" <shenglong.wang.ext@siemens.com>
-To:     Johan Hovold <johan@kernel.org>
-CC:     Sheng Long Wang <china_shenglong@163.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Subject: RE: [PATCH v6] usb-serial:cp210x: add support to software flow
- control
-Thread-Topic: [PATCH v6] usb-serial:cp210x: add support to software flow
- control
-Thread-Index: AQHWo2OeB9qO2j8ZGUeYQhba2pC/J6nF1h2AgAS8JjCAAA6LgIAKgkeg
-Content-Class: 
-Date:   Mon, 23 Nov 2020 01:11:24 +0000
-Message-ID: <496f2cc77b4d4c3a9b49410ac318b927@siemens.com>
-References: <20201016022428.9671-1-china_shenglong@163.com>
- <X66l44MqSlj774DL@localhost> <520e730958174cb39561a94d03e4727e@siemens.com>
- <X7Kq6fJ/VMnB3Nt0@localhost>
-In-Reply-To: <X7Kq6fJ/VMnB3Nt0@localhost>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcejAwNDNjYnhcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1jYmQyM2E0My0yZDI4LTExZWItYmU3MS1iMDBjZDE2OTA4NjRcYW1lLXRlc3RcY2JkMjNhNDUtMmQyOC0xMWViLWJlNzEtYjAwY2QxNjkwODY0Ym9keS50eHQiIHN6PSIyNjE1IiB0PSIxMzI1MDU2NzQ4MTY1NDU3NzIiIGg9IkN3bGFUMXFwZm93elYzbXYxZ0RzaGFQMlk2cz0iIGlkPSIiIGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUhBQUFBRHM0eW1PTmNIV0FTYTBwTHA3VkdjZ0pyU2t1bnRVWnlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUJBQUFBbytaL1dnQUFBQUFBQUFBQUFBQUFBQT09Ii8+PC9tZXRhPg==
-x-dg-rorf: true
-msip_labels: MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Enabled=true;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SetDate=2020-11-23T01:11:21Z;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Method=Standard;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Name=restricted-default;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ActionId=b5033c27-e2f5-4078-bcd5-2c1ba15bdcdd;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ContentBits=0
-document_confidentiality: Restricted
-x-originating-ip: [139.24.108.241]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Sun, 22 Nov 2020 20:13:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334C1C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 17:13:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=EH8qXWN4Y4VrU8+zuuCH0RGfzxSOU1QsRFTP+2lfbsI=; b=ZQHETsRNaV5CFoPSkJ8gL5K5PC
+        WKUfm7x7VvtCTHr0e4MHUnbfy+4AOiKDEDadp9dFXtswx9yHcrqAccSo6f2CTc3aDYzlYse72ZuN/
+        wezs6rlZApON2236lr49bE8NargqPP/vOPEISwYYzwrSRlIwA5F02hlzLZsKGNllH7msJlPKwwb9Q
+        zA7bBhZUbFIwgJtdM3WD8d96Bz0JQRwhCfx7GeUaW3fDC/Xo4ODIEC6oyuagqB4F/simHotkgkIV8
+        ORVmAlvPMcqODaMVMFCTn1j6A1uLx8Alu6irmfH0+x/+IZLnyZ3ILi52yAyucrz2q/cShPWXLvcIg
+        +CGKn99A==;
+Received: from [2601:1c0:6280:3f0::bcc4]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kh0QS-00019e-2C; Mon, 23 Nov 2020 01:13:52 +0000
+Subject: Re: undefined reference to `start_isolate_page_range'
+To:     kernel test robot <lkp@intel.com>, Michal Simek <monstr@monstr.eu>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <202011210906.WVDfrAtS-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4860e097-f90e-fdf6-454f-514e4a7c3c68@infradead.org>
+Date:   Sun, 22 Nov 2020 17:13:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <202011210906.WVDfrAtS-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,  Johan
-
-Do I add my  software flow control  patch directly to the branch you gave me now ? 
-https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/log/?h=cp210x-termios
-
-Then, I also need the cp210x_ get_ terminus()  add ixoff / iXon handling?
-
-Thanks!
-
-
-With best regards,
-Wang Sheng Long
-Siemens Ltd., China
-RC-CN DI FA R&D SW
-Tianyuan road No.99
-611731 CHENGDU, China
-Mobil: +86 15281074996
-mailto:shenglong.wang.ext@siemens.com
-www.siemens.com/ingenuityforlife
-
-
------Original Message-----
-From: Johan Hovold <johan@kernel.org> 
-Sent: Tuesday, November 17, 2020 12:38 AM
-To: Wang, Sheng Long (EXT) (RC-CN DI FA BL IPC&C PRC4) <shenglong.wang.ext@siemens.com>
-Cc: Johan Hovold <johan@kernel.org>; Sheng Long Wang <china_shenglong@163.com>; gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; linux-kernel@vger.kernel.org; lkp@intel.com
-Subject: Re: [PATCH v6] usb-serial:cp210x: add support to software flow control
-
-[ Please avoid top posting. ]
-
-On Mon, Nov 16, 2020 at 07:56:10AM +0000, Wang, Sheng Long wrote:
-> Hi, Johan
+On 11/20/20 5:26 PM, kernel test robot wrote:
+> Hi Michal,
 > 
-> Thank you very much for your reply!
+> FYI, the error/warning still remains.
 > 
-> You mean if we call cp210x_open()  When opening the device, because 
-> IXON  is set by default, the cp210x_get_termios() does not process 
-> IXON, So it is invalid IXON at this time.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   4ccf7a01e805f04defd423fb410f47a13af76399
+> commit: 2602276d3d3811b1a48c48113042cd75fcbfc27d microblaze: Wire CMA allocator
+> date:   10 months ago
+> config: microblaze-randconfig-s031-20201121 (attached as .config)
+> compiler: microblaze-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-134-gb59dbdaf-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2602276d3d3811b1a48c48113042cd75fcbfc27d
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 2602276d3d3811b1a48c48113042cd75fcbfc27d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=microblaze 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    microblaze-linux-ld: mm/page_alloc.o: in function `alloc_contig_range':
+>>> (.text+0xa1fc): undefined reference to `start_isolate_page_range'
+>>> microblaze-linux-ld: (.text+0xa40c): undefined reference to `test_pages_isolated'
+>>> microblaze-linux-ld: (.text+0xa47c): undefined reference to `undo_isolate_page_range'
 
-Right, with the current implementation you need to make sure that termios reflects the device state on open or your changes will never actually enable software flow control in the device.
 
-> As you said, It is very strange in cp210x_get_termios()  In the "get"
-> function to "set"  IXON.  In addition, the best way is to disable the 
-> IXON bit as you said.  If the user needs IXON, call set_ termios 
-> function, So I'm now in cp210x_get_termios()  Is it a temporary 
-> solution for terminos to handle IXON ?  I'm afraid it will need to be 
-> adjusted.
+FTR:  This is a Kconfig problem in drivers/gpu/drm/aspeed/Kconfig
+and it is fixed in linux-next and drm-misc-next.
 
-No, I didn't mean that IXON should be disabled by default. I meant that the driver should make sure that the device settings matches termios on open, not the other way round.
+https://lore.kernel.org/dri-devel/20201011230131.4922-1-rdunlap@infradead.org/
 
-This unusual implementation has caused a number of issues in the past and it's been on my list fix up for some time. I finally got around to that today and I just CCed you on the result. That should simplify adding software flow control and allow more code to be shared with the hardware flow-control handling.
+-- 
+~Randy
 
-I've pushed a branch for you here:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/log/?h=cp210x-termios
-
-Johan
