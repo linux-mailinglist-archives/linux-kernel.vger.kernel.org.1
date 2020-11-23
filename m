@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CEC2C1862
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 912DF2C1866
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729663AbgKWW1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:27:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42695 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728895AbgKWW1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:27:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606170430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o7dLfFtgRm9y3CEI8VoKW/G9H4I0NA/BgsiziAd56T0=;
-        b=TKpzDrjETucAmcqiKG1pp+Sij57XiHxkw3MmDfmYONoOnTz4qTW1auxakg8eKT3S31VRKE
-        rgquzCrURluFVcezP9c+XlggRLLYcbdRfPva68hGaQVemTn0v4rbNmbaECDYSLwfTgxF/H
-        481QAQ+rIdpGrEOuUUcOSOTBygTp6yQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-KeBH2hRiO7WzQIUoO-lTGA-1; Mon, 23 Nov 2020 17:27:07 -0500
-X-MC-Unique: KeBH2hRiO7WzQIUoO-lTGA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730427AbgKWW3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:29:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729058AbgKWW3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:29:11 -0500
+Received: from localhost (unknown [176.167.152.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D58D5185;
-        Mon, 23 Nov 2020 22:27:04 +0000 (UTC)
-Received: from krava (unknown [10.40.195.242])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CF28810016FA;
-        Mon, 23 Nov 2020 22:27:00 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 23:26:59 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 22/24] perf buildid-cache: Add --debuginfod option
-Message-ID: <20201123222659.GA2088148@krava>
-References: <20201109215415.400153-1-jolsa@kernel.org>
- <20201109215415.400153-23-jolsa@kernel.org>
- <CAP-5=fUDtTU2XYr6w6wYndP6RVFDLoJSnC31m+djA-r9EVMQiw@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 18DD1206D5;
+        Mon, 23 Nov 2020 22:29:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606170550;
+        bh=xXNk1SHeG0DaBJJsaGjypi7ccMGVaxlbxK413/BOw4o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ixP3Yo9U3LEyuDTmCaRqPijWNey8CBiHdJfyFxnoMlHmfOcb4S2gKkJlPWpPLtHQg
+         kvc5oiRGqS0ZAHNBtaEIoKLepU2ALrH0nhLNWTasgX6yRBBbAHzbf8Q61ptTFdZKh4
+         xqCRZIkjtAaouTmcyAvseDOYLX1ZGfEePoTtoxDU=
+Date:   Mon, 23 Nov 2020 23:29:07 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Alex Belits <abelits@marvell.com>
+Cc:     "nitesh@redhat.com" <nitesh@redhat.com>,
+        Prasun Kapoor <pkapoor@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "leon@sidebranch.com" <leon@sidebranch.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pauld@redhat.com" <pauld@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 9/9] task_isolation: kick_all_cpus_sync: don't kick
+ isolated cpus
+Message-ID: <20201123222907.GC1751@lothringen>
+References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
+ <3236b13f42679031960c5605be20664e90e75223.camel@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fUDtTU2XYr6w6wYndP6RVFDLoJSnC31m+djA-r9EVMQiw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <3236b13f42679031960c5605be20664e90e75223.camel@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 12:23:53PM -0800, Ian Rogers wrote:
-> On Mon, Nov 9, 2020 at 1:55 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Mon, Nov 23, 2020 at 05:58:42PM +0000, Alex Belits wrote:
+> From: Yuri Norov <ynorov@marvell.com>
 > 
-> > Adding --debuginfod option to specify debuginfod url and
-> > support to do that through config file as well.
-> >
-> > Use following in ~/.perfconfig file:
-> >
-> >   [buildid-cache]
-> >   debuginfod=http://192.168.122.174:8002
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../perf/Documentation/perf-buildid-cache.txt |  4 +++
-> >  tools/perf/builtin-buildid-cache.c            | 28 +++++++++++++++++--
-> >  2 files changed, 29 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/Documentation/perf-buildid-cache.txt
-> > b/tools/perf/Documentation/perf-buildid-cache.txt
-> > index b77da5138bca..0152d8b5cfbe 100644
-> > --- a/tools/perf/Documentation/perf-buildid-cache.txt
-> > +++ b/tools/perf/Documentation/perf-buildid-cache.txt
-> > @@ -84,6 +84,10 @@ OPTIONS
-> >         used when creating a uprobe for a process that resides in a
-> >         different mount namespace from the perf(1) utility.
-> >
-> > +--debuginfod=URL::
-> > +       Specify debuginfod URL to be used when retrieving perf.data
-> > binaries,
-> > +       it follows the same syntax as the DEBUGINFOD_URLS variable.
-> > +
-> >
+> Make sure that kick_all_cpus_sync() does not call CPUs that are running
+> isolated tasks.
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Yuri Norov <ynorov@marvell.com>
+> [abelits@marvell.com: use safe task_isolation_cpumask() implementation]
+> Signed-off-by: Alex Belits <abelits@marvell.com>
+> ---
+>  kernel/smp.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
 > 
-> Nit: the environment variable name hints at this being a list, perhaps
-> change URL:: above to URLs:: to keep this clear.
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index 4d17501433be..b2faecf58ed0 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -932,9 +932,21 @@ static void do_nothing(void *unused)
+>   */
+>  void kick_all_cpus_sync(void)
+>  {
+> +	struct cpumask mask;
+> +
+>  	/* Make sure the change is visible before we kick the cpus */
+>  	smp_mb();
+> -	smp_call_function(do_nothing, NULL, 1);
+> +
+> +	preempt_disable();
+> +#ifdef CONFIG_TASK_ISOLATION
+> +	cpumask_clear(&mask);
+> +	task_isolation_cpumask(&mask);
+> +	cpumask_complement(&mask, &mask);
+> +#else
+> +	cpumask_setall(&mask);
+> +#endif
+> +	smp_call_function_many(&mask, do_nothing, NULL, 1);
+> +	preempt_enable();
 
-true, will change that
+Same comment about IPIs here.
 
-thanks,
-jirka
-
+>  }
+>  EXPORT_SYMBOL_GPL(kick_all_cpus_sync);
+>  
+> -- 
+> 2.20.1
+> 
