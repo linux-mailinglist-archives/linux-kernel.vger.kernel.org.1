@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AC72C05F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBC42C062D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730071AbgKWMZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:25:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35312 "EHLO mail.kernel.org"
+        id S1730454AbgKWM2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:28:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730029AbgKWMZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:25:41 -0500
+        id S1730422AbgKWM2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:28:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB70520857;
-        Mon, 23 Nov 2020 12:25:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F398620728;
+        Mon, 23 Nov 2020 12:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134340;
-        bh=YoQDnUTsqVY+WKspD6+ZqPA26Klmis3QpVjN5O9GZjk=;
+        s=korg; t=1606134496;
+        bh=Uv4wtkh1tAz44hK+ezbhWiW594tDLmx2I4pV5l40sTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hu31+kegdXVDR6AU4vE0AlCXWpASJjCepSzoTvVuzcTk1v9AyBCC4xzizK5D72Wu8
-         hFR1lL3V1uagM6hLXVTA3Gc7086/Wx+Pm8FNj3KHthBDxInwSl7zevj8MZAq9iHdkm
-         ghqGJVqLpZNAPr8Gw7xvsrQGWvtRWtlLhqMpfkvY=
+        b=tOq1IMq4uelbo7KmqxQ4RBZzQm3vC8KtHgHRgW6NEzZfepsGCq/B7XpPjlK9sw6ed
+         YjmG8KXXfUdQ4p2HBQ0vVtWEX7YeacqhqCVTOSYLjUO0fwPQtkytO+Qutez+1qegIX
+         HoKfa4Ykwu/ROrNrY6IS/KGTZfGBoC8/TLzH6VJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 36/47] ALSA: mixart: Fix mutex deadlock
+        stable@vger.kernel.org, Yicong Yang <yangyicong@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 40/60] libfs: fix error cast of negative value in simple_attr_write()
 Date:   Mon, 23 Nov 2020 13:22:22 +0100
-Message-Id: <20201123121807.301191486@linuxfoundation.org>
+Message-Id: <20201123121806.981602509@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-commit d21b96c8ed2aea7e6b7bf4735e1d2503cfbf4072 upstream.
+[ Upstream commit 488dac0c9237647e9b8f788b6a342595bfa40bda ]
 
-The code change for switching to non-atomic mode brought the
-unexpected mutex deadlock in get_msg().  It converted the spinlock
-with the existing mutex, but there were calls with the already holding
-the mutex.  Since the only place that needs the extra lock is the code
-path from snd_mixart_send_msg(), remove the mutex lock in get_msg()
-and apply in the caller side for fixing the mutex deadlock.
+The attr->set() receive a value of u64, but simple_strtoll() is used for
+doing the conversion.  It will lead to the error cast if user inputs a
+negative value.
 
-Fixes: 8d3a8b5cb57d ("ALSA: mixart: Use nonatomic PCM ops")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201119121440.18945-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Use kstrtoull() instead of simple_strtoll() to convert a string got from
+the user to an unsigned value.  The former will return '-EINVAL' if it
+gets a negetive value, but the latter can't handle the situation
+correctly.  Make 'val' unsigned long long as what kstrtoull() takes,
+this will eliminate the compile warning on no 64-bit architectures.
 
+Fixes: f7b88631a897 ("fs/libfs.c: fix simple_attr_write() on 32bit machines")
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Link: https://lkml.kernel.org/r/1605341356-11872-1-git-send-email-yangyicong@hisilicon.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/mixart/mixart_core.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/libfs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/sound/pci/mixart/mixart_core.c
-+++ b/sound/pci/mixart/mixart_core.c
-@@ -83,7 +83,6 @@ static int get_msg(struct mixart_mgr *mg
- 	unsigned int i;
- #endif
+diff --git a/fs/libfs.c b/fs/libfs.c
+index cb9310b091f5a..83618c21c2165 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -868,7 +868,7 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
+ 			  size_t len, loff_t *ppos)
+ {
+ 	struct simple_attr *attr;
+-	u64 val;
++	unsigned long long val;
+ 	size_t size;
+ 	ssize_t ret;
  
--	mutex_lock(&mgr->msg_lock);
- 	err = 0;
+@@ -886,7 +886,9 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
+ 		goto out;
  
- 	/* copy message descriptor from miXart to driver */
-@@ -132,8 +131,6 @@ static int get_msg(struct mixart_mgr *mg
- 	writel_be(headptr, MIXART_MEM(mgr, MSG_OUTBOUND_FREE_HEAD));
- 
-  _clean_exit:
--	mutex_unlock(&mgr->msg_lock);
--
- 	return err;
- }
- 
-@@ -271,7 +268,9 @@ int snd_mixart_send_msg(struct mixart_mg
- 	resp.data = resp_data;
- 	resp.size = max_resp_size;
- 
-+	mutex_lock(&mgr->msg_lock);
- 	err = get_msg(mgr, &resp, msg_frame);
-+	mutex_unlock(&mgr->msg_lock);
- 
- 	if( request->message_id != resp.message_id )
- 		dev_err(&mgr->pci->dev, "RESPONSE ERROR!\n");
+ 	attr->set_buf[size] = '\0';
+-	val = simple_strtoll(attr->set_buf, NULL, 0);
++	ret = kstrtoull(attr->set_buf, 0, &val);
++	if (ret)
++		goto out;
+ 	ret = attr->set(attr->data, val);
+ 	if (ret == 0)
+ 		ret = len; /* on success, claim we got the whole input */
+-- 
+2.27.0
+
 
 
