@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDD22C13CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553952C13D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387606AbgKWSno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:43:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
+        id S2388759AbgKWSns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729528AbgKWSnm (ORCPT
+        with ESMTP id S1729528AbgKWSnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:43:42 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C040C0613CF;
-        Mon, 23 Nov 2020 10:43:42 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id q206so20726489oif.13;
-        Mon, 23 Nov 2020 10:43:42 -0800 (PST)
+        Mon, 23 Nov 2020 13:43:45 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7040C0613CF;
+        Mon, 23 Nov 2020 10:43:44 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a186so176644wme.1;
+        Mon, 23 Nov 2020 10:43:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pETq9vSAMO9m2cX45Apd5Cfd9J4rgPAz5ZZICh2r7R4=;
-        b=ptGyx6cJ9GoUZYf6wMKMKNbA+CrIFjDF69cLnpHgE64fHrbWJSgr6LQpOT7Ex69M4a
-         gjxqH4lrJ2j+4f7pyE6/PkttZtamV0qwz73rUsHhQLFdR1DNh07cUsKfUjDwD6L24Gvt
-         lFAF7Y13s/teQwrYoQ/xnTeU+KH5qPX4ILw2CGkk9Ofw/58eRsdGkfxCDwC+uPMyBp2m
-         XmEpqB8SoMtW95yQ9npl9dcJvtOzkli0F/0pcIdzJ6EDVndU5kfn6ddlxqIAHPipyJam
-         6AA6lEnG7KFYdN9O3KAtlJVOtvalKX7P41nGNZggdM232JA7BIvdFQDf0nx+HloUdB7+
-         yI3w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JSJ4Bmt8TgArHN7URL0MJIhGLyKv+yFMNwC10tsqJE0=;
+        b=L9VLu9ERSvzEcDkaQCZQNPeL4KOS/8yz1HuC3+Id6cad8yv1Ggq8A57wGfeHsv0zWC
+         dDfHJ+lY9iSc5FjqSHiEYot4Llke7tCge6J5B6cJhgHqOGmH5ZubTCJqpIR6Gr66kIb8
+         DaFUrj65tzhrvMP9BEUUH1xRSNH18vYi9Rp9K8OsxDastX7Xyx+C0HmpMbYKbpHWOdji
+         imtcPIBzs2dDy2b8c5KTI1O7rwXf7r/A0CBq0NlRjYPlPHdIMM1xRB8NDGvvV4Lv86EF
+         fGZaWL5lLKpQg/ul/QNUhxll188redZ5n8lj5Kcxg4ULCpjRH4ZktZQU7Hkcgo5CJYTu
+         FjUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=pETq9vSAMO9m2cX45Apd5Cfd9J4rgPAz5ZZICh2r7R4=;
-        b=R0XMW/aTzSqmwyDcslCMjnYzLFZlPvPJN7qHO407y8vCPVekj5wD8MedTnH5j1lBmd
-         lRErLI22OLd6iBEs9CcSf1ByJswbN268nHueMCzxJk5prrrDIFGpOTLNt89OkNyRzIqv
-         Z49rxC1gmUFD//U2SZkD4Fucrx+FDq1lCeAbjSCI5Y+veRxMxzV8V8Xp8y4e0751Tqjh
-         tw/SRQfUm6FEkdgpXaCvdxxvCKOWG8/gD0GiN1y/WKOTL5/rBZYaow/kP7ulKkMOJ5Jy
-         A7E4j41D7VnMe/ZluO+xLhQaYHWtT7X2eBmR6N88I1QmcBnwhkgqVb2vJnfd/Uk2lR2d
-         ms9g==
-X-Gm-Message-State: AOAM530D2daO+sHf5LJRJHFeGoJMaabY9bctBjhujPmbTLMUa4fQ6gXN
-        wwpgNknKPLj3hejb5Ug7apQ=
-X-Google-Smtp-Source: ABdhPJzVRMqDMiiZaTuEvTvhlt+L9krQZjPTOTGWK08T6n4v6QHqyc0vmcLCWNH/Gw+arjk68K7dgA==
-X-Received: by 2002:aca:3944:: with SMTP id g65mr225965oia.36.1606157021551;
-        Mon, 23 Nov 2020 10:43:41 -0800 (PST)
-Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id 64sm6355366otu.62.2020.11.23.10.43.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 10:43:41 -0800 (PST)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     Jason Baron <jbaron@akamai.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jim Cromie <jim.cromie@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH] dyndbg: fix use before null check
-Date:   Mon, 23 Nov 2020 11:43:34 -0700
-Message-Id: <20201123184334.1777186-1-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        bh=JSJ4Bmt8TgArHN7URL0MJIhGLyKv+yFMNwC10tsqJE0=;
+        b=iRkT68MVoSGNXiPMPekfWN6xDdh8p6R54Z4rI9eR+oED/CzG6g7G9DCwfd5N5XiWTW
+         2cSkyYGPeEQGaNQdTm8JgO13nPtRvALQN9fIwtrtOButUJzqwzLWb3eu2X40bKwrZsaT
+         niTOb1Bk3G6jS1AjGKFOJd9mmv1sIin0aayILxr6IIZoeZahBWsCn7UZ+D2VHc+x9Qs4
+         PdWxFrSdqyeDL0sABt+Sjcg5VyYQTYeg5HaUadQRt4gOJ7N4SBFWNy/2JvwdQ2LWbSIq
+         QH3NSs0Ro8m+7UATq/lYrr41CrVJL+mF/WX12hKF9tLpWncsfMyCHC0wAZLtMbGAw8sO
+         ezvQ==
+X-Gm-Message-State: AOAM533Rl+o1D10W+f1Mp3v4vHpN9laNY63dKcov8F6PQhPr/x16U0/S
+        jyQVOghYZ+N/YLhZb7bEjFSeX6qpsuA=
+X-Google-Smtp-Source: ABdhPJwYntDq6XM1iixkuMsKc9NUdSPNoR2jX0jDaHuEUC+PrFvxZ21fKFq+gtjhY1zwLsTTDpSFnQ==
+X-Received: by 2002:a1c:55ca:: with SMTP id j193mr245493wmb.87.1606157023020;
+        Mon, 23 Nov 2020 10:43:43 -0800 (PST)
+Received: from [192.168.8.114] ([37.173.143.196])
+        by smtp.gmail.com with ESMTPSA id d8sm314725wmb.11.2020.11.23.10.43.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 10:43:42 -0800 (PST)
+Subject: Re: [PATCH v8] tcp: fix race condition when creating child sockets
+ from syncookies
+To:     Ricardo Dias <rdias@singlestore.com>, davem@davemloft.net,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        edumazet@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201120111133.GA67501@rdias-suse-pc.lan>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <7eedbc3b-e041-0eec-f015-1583ef4ae2f7@gmail.com>
+Date:   Mon, 23 Nov 2020 19:43:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201120111133.GA67501@rdias-suse-pc.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
 
-Above commit copies a string before checking for null pointer, fix
-this, and add a pr_err.  Also trim comment, and add return val info.
 
-Fixes: a2d375eda771
-Cc: stable@vger.kernel.org
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- lib/dynamic_debug.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+On 11/20/20 12:11 PM, Ricardo Dias wrote:
+> When the TCP stack is in SYN flood mode, the server child socket is
+> created from the SYN cookie received in a TCP packet with the ACK flag
+> set.
+> 
+> The child socket is created when the server receives the first TCP
+> packet with a valid SYN cookie from the client. Usually, this packet
+> corresponds to the final step of the TCP 3-way handshake, the ACK
+> packet. But is also possible to receive a valid SYN cookie from the
+> first TCP data packet sent by the client, and thus create a child socket
+> from that SYN cookie.
+> 
+> Since a client socket is ready to send data as soon as it receives the
+> SYN+ACK packet from the server, the client can send the ACK packet (sent
+> by the TCP stack code), and the first data packet (sent by the userspace
+> program) almost at the same time, and thus the server will equally
+> receive the two TCP packets with valid SYN cookies almost at the same
+> instant.
+> 
+> When such event happens, the TCP stack code has a race condition that
+> occurs between the momement a lookup is done to the established
+> connections hashtable to check for the existence of a connection for the
+> same client, and the moment that the child socket is added to the
+> established connections hashtable. As a consequence, this race condition
+> can lead to a situation where we add two child sockets to the
+> established connections hashtable and deliver two sockets to the
+> userspace program to the same client.
+> 
+> This patch fixes the race condition by checking if an existing child
+> socket exists for the same client when we are adding the second child
+> socket to the established connections socket. If an existing child
+> socket exists, we drop the packet and discard the second child socket
+> to the same client.
+> 
+> Signed-off-by: Ricardo Dias <rdias@singlestore.com>
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index bd7b3aaa93c3..711a9def8c83 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -553,17 +553,23 @@ static int ddebug_exec_queries(char *query, const char *modname)
-  * @query: query-string described in admin-guide/dynamic-debug-howto
-  * @modname: string containing module name, usually &module.mod_name
-  *
-- * This uses the >/proc/dynamic_debug/control reader, allowing module
-- * authors to modify their dynamic-debug callsites. The modname is
-- * canonically struct module.mod_name, but can also be null or a
-- * module-wildcard, for example: "drm*".
-+ * This uses the >control reader, allowing module authors to modify
-+ * their dynamic-debug callsites. The modname is canonically struct
-+ * module.mod_name, but can also be null or a module-wildcard, for
-+ * example: "drm*".
-+ * Returns <0 on error, >=0 for callsites changed
-  */
- int dynamic_debug_exec_queries(const char *query, const char *modname)
- {
- 	int rc;
--	char *qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
-+	char *qry; /* writable copy of query */
- 
--	if (!query)
-+	if (!query) {
-+		pr_err("non-null query/command string expected\n");
-+		return -EINVAL;
-+	}
-+	qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
-+	if (!qry)
- 		return -ENOMEM;
- 
- 	rc = ddebug_exec_queries(qry, modname);
--- 
-2.28.0
+Ok, lets keep this version, thanks !
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
 
