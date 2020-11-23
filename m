@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3236D2C12E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102772C12E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390573AbgKWSGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:06:11 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:36733 "EHLO m42-4.mailgun.net"
+        id S2390711AbgKWSHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:07:15 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:52800 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732380AbgKWSGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:06:10 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606154770; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=+GWPIHuQwAD1Es+0RdG56GcW72pfXIcFQM3ufPZO2KA=; b=TwZd0cHSjvR4iofNiFj+TcAxtOYG+1RZYHQX86SlVNu0nmDBTpVvoLoIZRR8Xiptpck4DtVG
- 2z1oUqPhuhtQcnjNR2h81QbDsLz3zhHibjynNaL72vzdlUAx+y6muxo09nQytNxNv5MQZzQh
- 4w3Rrbg56VRLCVuYW7ZfC9x3tLw=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fbbfa0f7f0cfa6a16c980b7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 18:06:07
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 91A28C43467; Mon, 23 Nov 2020 18:06:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730408AbgKWSHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:07:14 -0500
+Received: from zn.tnic (p200300ec2f0bbc00fb0727400affb1c1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:bc00:fb07:2740:aff:b1c1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9F60C433ED;
-        Mon, 23 Nov 2020 18:06:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C9F60C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jani Nikula <jani.nikula@intel.com>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-wireless@vger.kernel.org,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        ath10k@lists.infradead.org, Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        ath11k@lists.infradead.org
-Subject: Re: [PATCH 0/9] relay: cleanup and const callbacks, take 2
-References: <cover.1606153547.git.jani.nikula@intel.com>
-Date:   Mon, 23 Nov 2020 20:06:00 +0200
-In-Reply-To: <cover.1606153547.git.jani.nikula@intel.com> (Jani Nikula's
-        message of "Mon, 23 Nov 2020 19:59:20 +0200")
-Message-ID: <87mtz8q77b.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9AB741EC0528;
+        Mon, 23 Nov 2020 19:07:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606154833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GEs5mQQvcD8tVSRySCC+ykee+b35dM0fmdnL/2Hjyyo=;
+        b=UIvKRxjceURtInk5ckDLGrh0DBwPF5YKoVfLXE2pXPLFtm4Qh97HNNtknQZVkrBV+BQem+
+        KA5nWqOaay57UNvNSYCn3IJveto85T3kd5AJ0EWttHz8aiKFA0QzeHdc16YbNtRlgOwQxH
+        4TJj9kyul2p4pWqLulMfTVtMayFr9nA=
+Date:   Mon, 23 Nov 2020 19:07:14 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Paoloni, Gabriele" <gabriele.paoloni@intel.com>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-safety@lists.elisa.tech" <linux-safety@lists.elisa.tech>
+Subject: Re: [PATCH 2/4] x86/mce: move the mce_panic() call and kill_it
+ assignments at the right places
+Message-ID: <20201123180714.GH15044@zn.tnic>
+References: <20201118151552.1412-1-gabriele.paoloni@intel.com>
+ <20201118151552.1412-3-gabriele.paoloni@intel.com>
+ <20201123142746.GC15044@zn.tnic>
+ <MN2PR11MB4158162EBECE1AEA80D5EC0288FC0@MN2PR11MB4158.namprd11.prod.outlook.com>
+ <20201123171910.GF15044@zn.tnic>
+ <MN2PR11MB4158D04F8ABD74C313667CF088FC0@MN2PR11MB4158.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <MN2PR11MB4158D04F8ABD74C313667CF088FC0@MN2PR11MB4158.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jani Nikula <jani.nikula@intel.com> writes:
+On Mon, Nov 23, 2020 at 05:40:21PM +0000, Paoloni, Gabriele wrote:
+> Well it is not the easiest code to decode 😊
 
-> This is v2 of [1], with a number of cleanups added first based on
-> Christoph's feedback, making the actual constness patch much smaller and
-> cleaner.
->
-> I don't know who actually maintains relay, it's not in MAINTAINERS -
-> Cc'd Andrew just in case.
->
-> I'd think it would be simplest to queue patches 5-9 via whichever tree
-> the relay patches get merged. They're all one-liners so neglible
-> conflict potential.
->
-> BR,
-> Jani.
->
->
-> [1] http://lore.kernel.org/r/20201118165320.26829-1-jani.nikula@intel.com
->
->
-> Cc: linux-block@vger.kernel.org
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: ath11k@lists.infradead.org
-> Cc: ath10k@lists.infradead.org
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
->
->
-> Jani Nikula (9):
->   relay: remove unused buf_mapped and buf_unmapped callbacks
->   relay: require non-NULL callbacks in relay_open()
->   relay: make create_buf_file and remove_buf_file callbacks mandatory
->   relay: allow the use of const callback structs
->   drm/i915: make relay callbacks const
->   ath10k: make relay callbacks const
->   ath11k: make relay callbacks const
->   ath9k: make relay callbacks const
->   blktrace: make relay callbacks const
+Tell me about it - that's decades worth of crap being piled ontop. :-)
 
-For ath9k, ath10k & ath11k:
+> Sure I can add another patch to the set to rename it.
 
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
+Yeah, only if you really want to - that was more a note-to-self to take
+care of it eventually.
+
+Thx.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Regards/Gruss,
+    Boris.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+https://people.kernel.org/tglx/notes-about-netiquette
