@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342392C066F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259C02C071E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730795AbgKWMa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:30:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
+        id S1731968AbgKWMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:37:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730772AbgKWMav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:51 -0500
+        id S1731929AbgKWMha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E4C920728;
-        Mon, 23 Nov 2020 12:30:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F6DE2065E;
+        Mon, 23 Nov 2020 12:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134650;
-        bh=/CuCIyqCGWl1pj0qaP1PVDXHdanIKYc2bl6650nmA0w=;
+        s=korg; t=1606135050;
+        bh=LZXv1ktnG9CtImniUHN+1Oy0mabgErgup2s3uEAfvbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rXTGNhMF+tE0D7tP6XZpyMZNkQ5hMiHNNGAo0ssIFkcsHolwA5IFN9X2sTIe2jCPz
-         KHAOPIuY0HnBdYIyb1OPJ6Y0dxbEWCqZDpBEqC5ncz1PXsPhzgJDbUsW2oF9ZLm8Pb
-         XbREB5J2vR4RAghxpX28qKpqQjFsQOMUbz6M1wzw=
+        b=i80FYXhsv2GkeS2ZQCr99jQNZCZi/1mFhVtlJjsaxULmiUsfqeMB523dbH1xwK1NC
+         Edsapq1mkR4iLF3NdK4bwohCbtePpZdxsHnVOSgxC3wLppr8JLUfGIrWkqT8Y2NonO
+         NAix+2wdEuEm+E8GlXqWlbUd3MqI8t1EBfBTeJrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Wu Bo <wubo.oduw@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 33/91] arm64: dts: allwinner: a64: Pine64 Plus: Fix ethernet node
+Subject: [PATCH 5.4 085/158] can: m_can: m_can_handle_state_change(): fix state change
 Date:   Mon, 23 Nov 2020 13:21:53 +0100
-Message-Id: <20201123121810.927279546@linuxfoundation.org>
+Message-Id: <20201123121824.036101790@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Wu Bo <wubo.oduw@gmail.com>
 
-[ Upstream commit 927f42fcc1b4f7d04a2ac5cf02f25612aa8923a4 ]
+[ Upstream commit cd0d83eab2e0c26fe87a10debfedbb23901853c1 ]
 
-According to board schematic, PHY provides both, RX and TX delays.
-However, according to "fix" Realtek provided for this board, only TX
-delay should be provided by PHY.
-Tests show that both variants work but TX only PHY delay works
-slightly better.
+m_can_handle_state_change() is called with the new_state as an argument.
 
-Update ethernet node to reflect the fact that PHY provides TX delay.
+In the switch statements for CAN_STATE_ERROR_ACTIVE, the comment and the
+following code indicate that a CAN_STATE_ERROR_WARNING is handled.
 
-Fixes: 94f442886711 ("arm64: dts: allwinner: A64: Restore EMAC changes")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20201022211301.3548422-1-jernej.skrabec@siol.net
+This patch fixes this problem by changing the case to CAN_STATE_ERROR_WARNING.
+
+Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
+Link: http://lore.kernel.org/r/20200129022330.21248-2-wubo.oduw@gmail.com
+Cc: Dan Murphy <dmurphy@ti.com>
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
-index d5b6e8159a335..5d0905f0f1c1d 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
-@@ -52,7 +52,7 @@
- &emac {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&rgmii_pins>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-txid";
- 	phy-handle = <&ext_rgmii_phy>;
- 	status = "okay";
- };
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 562c8317e3aa8..20f025b4f6d4c 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -664,7 +664,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	unsigned int ecr;
+ 
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cdev->can.can_stats.error_warning++;
+ 		cdev->can.state = CAN_STATE_ERROR_WARNING;
+@@ -693,7 +693,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	__m_can_get_berr_counter(dev, &bec);
+ 
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = (bec.txerr > bec.rxerr) ?
 -- 
 2.27.0
 
