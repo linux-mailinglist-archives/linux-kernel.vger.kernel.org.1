@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821E82C0697
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71432C074A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731115AbgKWMcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:32:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43334 "EHLO mail.kernel.org"
+        id S1732244AbgKWMjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731043AbgKWMcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:32:15 -0500
+        id S1732137AbgKWMiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:38:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A9C02076E;
-        Mon, 23 Nov 2020 12:32:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59CA82065E;
+        Mon, 23 Nov 2020 12:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134735;
-        bh=zTqSVl6e/CwJ8uAp5qgjjh0A/0uAZHROmGN2twz+niA=;
+        s=korg; t=1606135131;
+        bh=XIhCtibTz5EAmi93u71+j1Y10D/sRsNnUjTBMRyTU+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZsxnOwBQ+rJp5YILwKcn5jYwd7hTXeYUbXVdMfLHOtXvvpRs65coaxPk8CHYr6ybp
-         PYLEm5oUJ4I41BhLge8IuuRhO+5uSBUY/d1YIerSwCsuv/vSQgqhDamRQ98zZQH1MV
-         mH50UoK7Q8leG1hQHSbXmOYWxIplfyOwu3RWizPw=
+        b=nsQ1Fifwgieqspq7HEOw2eAmLoLFRqwsQCPpWp6SMAIJA5n1IE4KU3ortlQ0ZXh2C
+         s/VM1QiPEJSMVH4wtu5Wjky2Mq95z/W5WZiJFTBlDwujNNCIiqrIuGn92R0gzDbypO
+         glOxO/6NfjfuSMKQ70FKE+AFnj34OWvKLdp8ZPj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Sandeen <sandeen@sandeen.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Eric Sandeen <sandeen@redhat.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 63/91] xfs: revert "xfs: fix rmap key and record comparison functions"
+Subject: [PATCH 5.4 115/158] HID: logitech-dj: Fix Dinovo Mini when paired with a MX5x00 receiver
 Date:   Mon, 23 Nov 2020 13:22:23 +0100
-Message-Id: <20201123121812.382866887@linuxfoundation.org>
+Message-Id: <20201123121825.488168996@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +43,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit eb8409071a1d47e3593cfe077107ac46853182ab ]
+[ Upstream commit b4c00e7976636f33a4f67eab436a11666c8afd60 ]
 
-This reverts commit 6ff646b2ceb0eec916101877f38da0b73e3a5b7f.
+Some users are pairing the Dinovo keyboards with the MX5000 or MX5500
+receivers, instead of with the Dinovo receivers. The receivers are
+mostly the same (and the air protocol obviously is compatible) but
+currently the Dinovo receivers are handled by hid-lg.c while the
+MX5x00 receivers are handled by logitech-dj.c.
 
-Your maintainer committed a major braino in the rmap code by adding the
-attr fork, bmbt, and unwritten extent usage bits into rmap record key
-comparisons.  While XFS uses the usage bits *in the rmap records* for
-cross-referencing metadata in xfs_scrub and xfs_repair, it only needs
-the owner and offset information to distinguish between reverse mappings
-of the same physical extent into the data fork of a file at multiple
-offsets.  The other bits are not important for key comparisons for index
-lookups, and never have been.
+When using a Dinovo keyboard, with its builtin touchpad, through
+logitech-dj.c then the touchpad stops working because when asking the
+receiver for paired devices, we get only 1 paired device with
+a device_type of REPORT_TYPE_KEYBOARD. And since we don't see a paired
+mouse, we have nowhere to send mouse-events to, so we drop them.
 
-Eric Sandeen reports that this causes regressions in generic/299, so
-undo this patch before it does more damage.
+Extend the existing fix for the Dinovo Edge for this to also cover the
+Dinovo Mini keyboard and also add a mapping to logitech-hidpp for the
+Media key on the Dinovo Mini, so that that keeps working too.
 
-Reported-by: Eric Sandeen <sandeen@sandeen.net>
-Fixes: 6ff646b2ceb0 ("xfs: fix rmap key and record comparison functions")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Eric Sandeen <sandeen@redhat.com>
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1811424
+Fixes: f2113c3020ef ("HID: logitech-dj: add support for Logitech Bluetooth Mini-Receiver")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/libxfs/xfs_rmap_btree.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/hid/hid-logitech-dj.c    |  1 +
+ drivers/hid/hid-logitech-hidpp.c | 25 +++++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/fs/xfs/libxfs/xfs_rmap_btree.c b/fs/xfs/libxfs/xfs_rmap_btree.c
-index 77528f413286b..f79cf040d7450 100644
---- a/fs/xfs/libxfs/xfs_rmap_btree.c
-+++ b/fs/xfs/libxfs/xfs_rmap_btree.c
-@@ -247,8 +247,8 @@ xfs_rmapbt_key_diff(
- 	else if (y > x)
- 		return -1;
+diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+index 32e5391d98c35..309e5df463d5c 100644
+--- a/drivers/hid/hid-logitech-dj.c
++++ b/drivers/hid/hid-logitech-dj.c
+@@ -875,6 +875,7 @@ static void logi_dj_recv_queue_notification(struct dj_receiver_dev *djrcv_dev,
+  */
+ static const u16 kbd_builtin_touchpad_ids[] = {
+ 	0xb309, /* Dinovo Edge */
++	0xb30c, /* Dinovo Mini */
+ };
  
--	x = be64_to_cpu(kp->rm_offset);
--	y = xfs_rmap_irec_offset_pack(rec);
-+	x = XFS_RMAP_OFF(be64_to_cpu(kp->rm_offset));
-+	y = rec->rm_offset;
- 	if (x > y)
- 		return 1;
- 	else if (y > x)
-@@ -279,8 +279,8 @@ xfs_rmapbt_diff_two_keys(
- 	else if (y > x)
- 		return -1;
+ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index c85070d631da5..e49d36de07968 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -88,6 +88,8 @@ MODULE_PARM_DESC(disable_tap_to_click,
+ #define HIDPP_CAPABILITY_BATTERY_MILEAGE	BIT(2)
+ #define HIDPP_CAPABILITY_BATTERY_LEVEL_STATUS	BIT(3)
  
--	x = be64_to_cpu(kp1->rm_offset);
--	y = be64_to_cpu(kp2->rm_offset);
-+	x = XFS_RMAP_OFF(be64_to_cpu(kp1->rm_offset));
-+	y = XFS_RMAP_OFF(be64_to_cpu(kp2->rm_offset));
- 	if (x > y)
- 		return 1;
- 	else if (y > x)
-@@ -393,8 +393,8 @@ xfs_rmapbt_keys_inorder(
- 		return 1;
- 	else if (a > b)
- 		return 0;
--	a = be64_to_cpu(k1->rmap.rm_offset);
--	b = be64_to_cpu(k2->rmap.rm_offset);
-+	a = XFS_RMAP_OFF(be64_to_cpu(k1->rmap.rm_offset));
-+	b = XFS_RMAP_OFF(be64_to_cpu(k2->rmap.rm_offset));
- 	if (a <= b)
- 		return 1;
++#define lg_map_key_clear(c)  hid_map_usage_clear(hi, usage, bit, max, EV_KEY, (c))
++
+ /*
+  * There are two hidpp protocols in use, the first version hidpp10 is known
+  * as register access protocol or RAP, the second version hidpp20 is known as
+@@ -2768,6 +2770,26 @@ static int g920_get_config(struct hidpp_device *hidpp,
+ 	return g920_ff_set_autocenter(hidpp, data);
+ }
+ 
++/* -------------------------------------------------------------------------- */
++/* Logitech Dinovo Mini keyboard with builtin touchpad                        */
++/* -------------------------------------------------------------------------- */
++#define DINOVO_MINI_PRODUCT_ID		0xb30c
++
++static int lg_dinovo_input_mapping(struct hid_device *hdev, struct hid_input *hi,
++		struct hid_field *field, struct hid_usage *usage,
++		unsigned long **bit, int *max)
++{
++	if ((usage->hid & HID_USAGE_PAGE) != HID_UP_LOGIVENDOR)
++		return 0;
++
++	switch (usage->hid & HID_USAGE) {
++	case 0x00d: lg_map_key_clear(KEY_MEDIA);	break;
++	default:
++		return 0;
++	}
++	return 1;
++}
++
+ /* -------------------------------------------------------------------------- */
+ /* HID++1.0 devices which use HID++ reports for their wheels                  */
+ /* -------------------------------------------------------------------------- */
+@@ -3003,6 +3025,9 @@ static int hidpp_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 			field->application != HID_GD_MOUSE)
+ 		return m560_input_mapping(hdev, hi, field, usage, bit, max);
+ 
++	if (hdev->product == DINOVO_MINI_PRODUCT_ID)
++		return lg_dinovo_input_mapping(hdev, hi, field, usage, bit, max);
++
  	return 0;
-@@ -423,8 +423,8 @@ xfs_rmapbt_recs_inorder(
- 		return 1;
- 	else if (a > b)
- 		return 0;
--	a = be64_to_cpu(r1->rmap.rm_offset);
--	b = be64_to_cpu(r2->rmap.rm_offset);
-+	a = XFS_RMAP_OFF(be64_to_cpu(r1->rmap.rm_offset));
-+	b = XFS_RMAP_OFF(be64_to_cpu(r2->rmap.rm_offset));
- 	if (a <= b)
- 		return 1;
- 	return 0;
+ }
+ 
 -- 
 2.27.0
 
