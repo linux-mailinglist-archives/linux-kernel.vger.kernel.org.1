@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B982C1269
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0909D2C1266
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390458AbgKWRwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:52:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51273 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388615AbgKWRwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:52:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606153925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KcwBDkt/6ndC1qadY8x0l7MPyKKcaJEtF94aWvQSDKM=;
-        b=YctCtNJ/mZB4HJKZT5m6XccZiHGc5jixQVdTJNXTv+BXPOqcXMe9MRnKyfWSqb+yYi6eeH
-        ZdaEBVKFcYTRJAuU05NNyOSM9j0kQuKMIt6SDzBJHlx92hyFdjRJPw2181XQgUp966/yiq
-        K/4gZEyCuAzAd3Z3ebSnBzvYBtDNWuU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-1MKVZVqrOMKyYKday_IbDw-1; Mon, 23 Nov 2020 12:51:04 -0500
-X-MC-Unique: 1MKVZVqrOMKyYKday_IbDw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2390385AbgKWRvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:51:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732699AbgKWRvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:51:14 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B60AD8145E6;
-        Mon, 23 Nov 2020 17:51:00 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.134])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9452C19D9F;
-        Mon, 23 Nov 2020 17:50:54 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 23 Nov 2020 18:51:00 +0100 (CET)
-Date:   Mon, 23 Nov 2020 18:50:53 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
+        by mail.kernel.org (Postfix) with ESMTPSA id EC25C2076E;
+        Mon, 23 Nov 2020 17:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606153874;
+        bh=gL0uiEnF5ux/DIVy6Bn9QO6COR6evZ2fenQNwK12ESU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GSuPM32rdgh1Eft5jyCUi0yPVLGiv9SiWloey5rvN1O9eDA82uOpvf3C7PvUlOC67
+         rLVepbViX/bb58GNXTbean7fkWU7n28Fms/41ypy6NB4gFpd/UPthavrCcZ+bbUVag
+         0zsqh89VYuD/hSKd63/fgpumv+bL7LCQuZE0hcLk=
+Date:   Mon, 23 Nov 2020 17:51:08 +0000
+From:   Will Deacon <will@kernel.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
-Message-ID: <20201123175052.GA20279@redhat.com>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <20201120231441.29911-2-ebiederm@xmission.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        0day robot <lkp@intel.com>, lkp@lists.01.org
+Subject: Re: [tlb]  e242a269fa: WARNING:at_mm/mmu_gather.c:#tlb_gather_mmu
+Message-ID: <20201123175107.GA11688@willie-the-truck>
+References: <20201120143557.6715-6-will@kernel.org>
+ <20201122151158.GK2390@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120231441.29911-2-ebiederm@xmission.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20201122151158.GK2390@xsang-OptiPlex-9020>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'll try to actually read this series tomorrow but I see nothing wrong
-after the quick glance.
+Hmm, this is interesting but my x86-fu is a bit lacking:
 
-Just one off-topic question,
+On Sun, Nov 22, 2020 at 11:11:58PM +0800, kernel test robot wrote:
+> commit: e242a269fa4b7aee0b157ce5b1d7d12179fc3c44 ("[PATCH 5/6] tlb: mmu_gather: Introduce tlb_gather_mmu_fullmm()")
+> url: https://github.com/0day-ci/linux/commits/Will-Deacon/tlb-Fix-access-and-soft-dirty-bit-management/20201120-223809
+> base: https://git.kernel.org/cgit/linux/kernel/git/arm64/linux.git for-next/core
 
-On 11/20, Eric W. Biederman wrote:
->
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -585,7 +585,6 @@ void do_coredump(const kernel_siginfo_t *siginfo)
->  	int ispipe;
->  	size_t *argv = NULL;
->  	int argc = 0;
-> -	struct files_struct *displaced;
->  	/* require nonrelative corefile path and be extra careful */
->  	bool need_suid_safe = false;
->  	bool core_dumped = false;
-> @@ -791,11 +790,9 @@ void do_coredump(const kernel_siginfo_t *siginfo)
->  	}
->
->  	/* get us an unshared descriptor table; almost always a no-op */
-> -	retval = unshare_files(&displaced);
-> +	retval = unshare_files();
+[...]
 
-Can anyone explain why does do_coredump() need unshare_files() at all?
+> [   14.182822] WARNING: CPU: 0 PID: 1 at mm/mmu_gather.c:293 tlb_gather_mmu+0x40/0x99
 
-Oleg.
+This fires because free_ldt_pgtables() initialises an mmu_gather() with
+an end address > TASK_SIZE. In other words, this code:
 
+	unsigned long start = LDT_BASE_ADDR;
+	unsigned long end = LDT_END_ADDR;
+
+	if (!boot_cpu_has(X86_FEATURE_PTI))
+		return;
+
+	tlb_gather_mmu(&tlb, mm, start, end);
+
+seems to be passing kernel addresses to tlb_gather_mmu(), which will cause
+the range adjusment logic in __tlb_adjust_range() to round the base down
+to TASK_SIZE afaict. At which point, I suspect the low-level invalidation
+routine replaces the enormous range with a fullmm flush (see the check in
+flush_tlb_mm_range()).
+
+If that's the case (and I would appreciate some input from somebody who
+knows what an LDT is), then I think the right answer is to replace this with
+a call to tlb_gather_mmu_fullmm, although I haven't ever anticipated these
+things working on kernel addresses and whether that would do the right kind
+of invalidation for x86 w/ PTI. A quick read of the code suggests it should
+work out...
+
+Will
