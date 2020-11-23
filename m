@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5282C0749
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AC72C05F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732232AbgKWMjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:39:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51498 "EHLO mail.kernel.org"
+        id S1730071AbgKWMZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:25:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732117AbgKWMit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:38:49 -0500
+        id S1730029AbgKWMZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:25:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0B3A21534;
-        Mon, 23 Nov 2020 12:38:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB70520857;
+        Mon, 23 Nov 2020 12:25:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135129;
-        bh=VQmjakW0fTCTGpZZ3CFA7wc7YJckrCHIEsD8badNB04=;
+        s=korg; t=1606134340;
+        bh=YoQDnUTsqVY+WKspD6+ZqPA26Klmis3QpVjN5O9GZjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wQCRpaPp3UuiCyy0x5mJD/pxeOtp42xuz4Qol1Kgff6/pJ2hIDHiAGC+JFaa+/cLj
-         wwP7hrFXVxm34d7WJF27du/WHwsLL+6Inc21xm0zk5hhSu80gh1n+Qmnu0r1wTLhr1
-         VoD1x0BfRhcQwRZCSyZTpciBEwEYaB4L9O0CrDAg=
+        b=Hu31+kegdXVDR6AU4vE0AlCXWpASJjCepSzoTvVuzcTk1v9AyBCC4xzizK5D72Wu8
+         hFR1lL3V1uagM6hLXVTA3Gc7086/Wx+Pm8FNj3KHthBDxInwSl7zevj8MZAq9iHdkm
+         ghqGJVqLpZNAPr8Gw7xvsrQGWvtRWtlLhqMpfkvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 114/158] HID: logitech-dj: Handle quad/bluetooth keyboards with a builtin trackpad
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 36/47] ALSA: mixart: Fix mutex deadlock
 Date:   Mon, 23 Nov 2020 13:22:22 +0100
-Message-Id: <20201123121825.435543539@linuxfoundation.org>
+Message-Id: <20201123121807.301191486@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,86 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit ee5e58418a854755201eb4952b1230d873a457d5 ]
+commit d21b96c8ed2aea7e6b7bf4735e1d2503cfbf4072 upstream.
 
-Some quad/bluetooth keyboards, such as the Dinovo Edge (Y-RAY81) have a
-builtin touchpad. In this case when asking the receiver for paired devices,
-we get only 1 paired device with a device_type of REPORT_TYPE_KEYBOARD.
+The code change for switching to non-atomic mode brought the
+unexpected mutex deadlock in get_msg().  It converted the spinlock
+with the existing mutex, but there were calls with the already holding
+the mutex.  Since the only place that needs the extra lock is the code
+path from snd_mixart_send_msg(), remove the mutex lock in get_msg()
+and apply in the caller side for fixing the mutex deadlock.
 
-This means that we do not instantiate a second dj_hiddev for the mouse
-(as we normally would) and thus there is no place for us to forward the
-mouse input reports to, causing the touchpad part of the keyboard to not
-work.
+Fixes: 8d3a8b5cb57d ("ALSA: mixart: Use nonatomic PCM ops")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201119121440.18945-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-There is no way for us to detect these keyboards, so this commit adds
-an array with device-ids for such keyboards and when a keyboard is on
-this list it adds STD_MOUSE to the reports_supported bitmap for the
-dj_hiddev created for the keyboard fixing the touchpad not working.
-
-Using a list of device-ids for this is not ideal, but there are only
-very few such keyboards so this should be fine. Besides the Dinovo Edge,
-other known wireless Logitech keyboards with a builtin touchpad are:
-
-* Dinovo Mini (TODO add its device-id to the list)
-* K400 (uses a unifying receiver so is not affected)
-* K600 (uses a unifying receiver so is not affected)
-
-Cc: stable@vger.kernel.org
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1811424
-Fixes: f2113c3020ef ("HID: logitech-dj: add support for Logitech Bluetooth Mini-Receiver")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-logitech-dj.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/pci/mixart/mixart_core.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
-index bb50d6e7745bc..32e5391d98c35 100644
---- a/drivers/hid/hid-logitech-dj.c
-+++ b/drivers/hid/hid-logitech-dj.c
-@@ -866,11 +866,23 @@ static void logi_dj_recv_queue_notification(struct dj_receiver_dev *djrcv_dev,
- 	schedule_work(&djrcv_dev->work);
+--- a/sound/pci/mixart/mixart_core.c
++++ b/sound/pci/mixart/mixart_core.c
+@@ -83,7 +83,6 @@ static int get_msg(struct mixart_mgr *mg
+ 	unsigned int i;
+ #endif
+ 
+-	mutex_lock(&mgr->msg_lock);
+ 	err = 0;
+ 
+ 	/* copy message descriptor from miXart to driver */
+@@ -132,8 +131,6 @@ static int get_msg(struct mixart_mgr *mg
+ 	writel_be(headptr, MIXART_MEM(mgr, MSG_OUTBOUND_FREE_HEAD));
+ 
+  _clean_exit:
+-	mutex_unlock(&mgr->msg_lock);
+-
+ 	return err;
  }
  
-+/*
-+ * Some quad/bluetooth keyboards have a builtin touchpad in this case we see
-+ * only 1 paired device with a device_type of REPORT_TYPE_KEYBOARD. For the
-+ * touchpad to work we must also forward mouse input reports to the dj_hiddev
-+ * created for the keyboard (instead of forwarding them to a second paired
-+ * device with a device_type of REPORT_TYPE_MOUSE as we normally would).
-+ */
-+static const u16 kbd_builtin_touchpad_ids[] = {
-+	0xb309, /* Dinovo Edge */
-+};
-+
- static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
- 					    struct hidpp_event *hidpp_report,
- 					    struct dj_workitem *workitem)
- {
- 	struct dj_receiver_dev *djrcv_dev = hid_get_drvdata(hdev);
-+	int i, id;
+@@ -271,7 +268,9 @@ int snd_mixart_send_msg(struct mixart_mg
+ 	resp.data = resp_data;
+ 	resp.size = max_resp_size;
  
- 	workitem->type = WORKITEM_TYPE_PAIRED;
- 	workitem->device_type = hidpp_report->params[HIDPP_PARAM_DEVICE_INFO] &
-@@ -882,6 +894,13 @@ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
- 		workitem->reports_supported |= STD_KEYBOARD | MULTIMEDIA |
- 					       POWER_KEYS | MEDIA_CENTER |
- 					       HIDPP;
-+		id = (workitem->quad_id_msb << 8) | workitem->quad_id_lsb;
-+		for (i = 0; i < ARRAY_SIZE(kbd_builtin_touchpad_ids); i++) {
-+			if (id == kbd_builtin_touchpad_ids[i]) {
-+				workitem->reports_supported |= STD_MOUSE;
-+				break;
-+			}
-+		}
- 		break;
- 	case REPORT_TYPE_MOUSE:
- 		workitem->reports_supported |= STD_MOUSE | HIDPP;
--- 
-2.27.0
-
++	mutex_lock(&mgr->msg_lock);
+ 	err = get_msg(mgr, &resp, msg_frame);
++	mutex_unlock(&mgr->msg_lock);
+ 
+ 	if( request->message_id != resp.message_id )
+ 		dev_err(&mgr->pci->dev, "RESPONSE ERROR!\n");
 
 
