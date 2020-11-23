@@ -2,231 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C34F2C18E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12ECC2C18E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387653AbgKWWwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:52:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387533AbgKWWvr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387633AbgKWWwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:52:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387529AbgKWWvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 17:51:47 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070CFC0613CF;
-        Mon, 23 Nov 2020 14:51:46 -0800 (PST)
-Date:   Mon, 23 Nov 2020 22:51:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606171905;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I2yRVGKp5DQGmKIrVePhCEZ3ZAzs1EXsL/mIi33fzRM=;
-        b=mGYj1H+zcYpb3tYmFsjenERIKvcolYe3fsE36TSl9/Xx61yIwNoREQ280jrT9iU8OJV3iR
-        Cp5r5uKI6Jz70iL5DolabpremUzmXoI8+TdlJl/HsTYLiJKZs3jIIDBCxetWtW+wdAzpVE
-        YXmubQtQQkv6qvgme19TjjEp2ZmffLanQORGUnWiBY00IaRaYlC5WLzKpYUoZEv3gF+Q1N
-        s52DBPIVfBcLi3s0NGsMFm9zuQ+AZQdHfFoeAenmhWiC1/50ZDrOtaof+Pl7Rv+K5JJVMU
-        EdokNj5RNBo6LC9jdmiFTTzzauqYZqWne8I2ia0gpONzI11sYGdbGKnIKVRhVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606171905;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I2yRVGKp5DQGmKIrVePhCEZ3ZAzs1EXsL/mIi33fzRM=;
-        b=QT8yLquEpUGRklMqj894scsUHIOQ1p54Zjqe/nGaRR/33JTxCG1gujqCgBzbNdhmyoc0tW
-        N8B0ZvqTLwIHhmBQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] softirq: Move related code into one section
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201113141733.974214480@linutronix.de>
-References: <20201113141733.974214480@linutronix.de>
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F86C20715;
+        Mon, 23 Nov 2020 22:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606171906;
+        bh=ZXc9vIM5l13483UKyWWsubayfXoDDXtja33VNeTcUhU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qsDDuDnWK5GUaGQVbz8/5EO0/9DSdVrAPwZxZyKsgRZfSg/kyAN/ExsfMf6vCCBrg
+         Bxpxd6KXI7WTvuvsYFKMGz2q2Z3jn+8IqNQnKyAF+mOclvnBsqJVUQI0a8ZsKfitu0
+         oI21w81HVsopyq5JuVAM+2IYVC2aMkThQZlQxCTY=
+Date:   Mon, 23 Nov 2020 14:51:44 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gao Xiang <hsiangkao@redhat.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, kernel-team@android.com
+Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
+Message-ID: <X7w9AO0x8vG85JQU@sol.localdomain>
+References: <20201119060904.463807-1-drosen@google.com>
+ <20201119060904.463807-3-drosen@google.com>
+ <20201122051218.GA2717478@xiangao.remote.csb>
 MIME-Version: 1.0
-Message-ID: <160617190365.11115.3838746604966137453.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201122051218.GA2717478@xiangao.remote.csb>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Sun, Nov 22, 2020 at 01:12:18PM +0800, Gao Xiang wrote:
+> Hi all,
+> 
+> On Thu, Nov 19, 2020 at 06:09:03AM +0000, Daniel Rosenberg wrote:
+> > This shifts the responsibility of setting up dentry operations from
+> > fscrypt to the individual filesystems, allowing them to have their own
+> > operations while still setting fscrypt's d_revalidate as appropriate.
+> > 
+> > Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
+> > they have their own specific dentry operations as well. That operation
+> > will set the minimal d_ops required under the circumstances.
+> > 
+> > Since the fscrypt d_ops are set later on, we must set all d_ops there,
+> > since we cannot adjust those later on. This should not result in any
+> > change in behavior.
+> > 
+> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> > Acked-by: Eric Biggers <ebiggers@google.com>
+> > ---
+> 
+> ...
+> 
+> >  extern const struct file_operations ext4_dir_operations;
+> >  
+> > -#ifdef CONFIG_UNICODE
+> > -extern const struct dentry_operations ext4_dentry_ops;
+> > -#endif
+> > -
+> >  /* file.c */
+> >  extern const struct inode_operations ext4_file_inode_operations;
+> >  extern const struct file_operations ext4_file_operations;
+> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> > index 33509266f5a0..12a417ff5648 100644
+> > --- a/fs/ext4/namei.c
+> > +++ b/fs/ext4/namei.c
+> > @@ -1614,6 +1614,7 @@ static struct buffer_head *ext4_lookup_entry(struct inode *dir,
+> >  	struct buffer_head *bh;
+> >  
+> >  	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
+> > +	generic_set_encrypted_ci_d_ops(dentry);
+> 
+> One thing might be worth noticing is that currently overlayfs might
+> not work properly when dentry->d_sb->s_encoding is set even only some
+> subdirs are CI-enabled but the others not, see generic_set_encrypted_ci_d_ops(),
+> ovl_mount_dir_noesc => ovl_dentry_weird()
+> 
+> For more details, see:
+> https://android-review.googlesource.com/c/device/linaro/hikey/+/1483316/2#message-2e1f6ab0010a3e35e7d8effea73f60341f84ee4d
+> 
+> Just found it by chance (and not sure if it's vital for now), and
+> a kind reminder about this.
+> 
 
-Commit-ID:     ae9ef58996a4447dd44aa638759f913c883ba816
-Gitweb:        https://git.kernel.org/tip/ae9ef58996a4447dd44aa638759f913c883ba816
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 13 Nov 2020 15:02:18 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 23 Nov 2020 10:31:06 +01:00
+Yes, overlayfs doesn't work on ext4 or f2fs filesystems that have the casefold
+feature enabled, regardless of which directories are actually using casefolding.
+This is an existing limitation which was previously discussed, e.g. at
+https://lkml.kernel.org/linux-ext4/CAOQ4uxgPXBazE-g2v=T_vOvnr_f0ZHyKYZ4wvn7A3ePatZrhnQ@mail.gmail.com/T/#u
+and
+https://lkml.kernel.org/linux-ext4/20191203051049.44573-1-drosen@google.com/T/#u.
 
-softirq: Move related code into one section
+Gabriel and Daniel, is one of you still looking into fixing this?  IIUC, the
+current thinking is that when the casefolding flag is set on a directory, it's
+too late to assign dentry_operations at that point.  But what if all child
+dentries (which must be negative) are invalidated first, and also the filesystem
+forbids setting the casefold flag on encrypted directories that are accessed via
+a no-key name (so that fscrypt_d_revalidate isn't needed -- i.e. the directory
+would only go from "no d_ops" to "generic_ci_dentry_ops", not from
+"generic_encrypted_dentry_ops" to "generic_encrypted_ci_dentry_ops")?
 
-To prepare for adding a RT aware variant of softirq serialization and
-processing move related code into one section so the necessary #ifdeffery
-is reduced to one.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Link: https://lore.kernel.org/r/20201113141733.974214480@linutronix.de
-
----
- kernel/softirq.c | 107 +++++++++++++++++++++++-----------------------
- 1 file changed, 54 insertions(+), 53 deletions(-)
-
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 09229ad..617009c 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -92,6 +92,13 @@ static bool ksoftirqd_running(unsigned long pending)
- 		!__kthread_should_park(tsk);
- }
- 
-+#ifdef CONFIG_TRACE_IRQFLAGS
-+DEFINE_PER_CPU(int, hardirqs_enabled);
-+DEFINE_PER_CPU(int, hardirq_context);
-+EXPORT_PER_CPU_SYMBOL_GPL(hardirqs_enabled);
-+EXPORT_PER_CPU_SYMBOL_GPL(hardirq_context);
-+#endif
-+
- /*
-  * preempt_count and SOFTIRQ_OFFSET usage:
-  * - preempt_count is changed by SOFTIRQ_OFFSET on entering or leaving
-@@ -102,17 +109,11 @@ static bool ksoftirqd_running(unsigned long pending)
-  * softirq and whether we just have bh disabled.
-  */
- 
-+#ifdef CONFIG_TRACE_IRQFLAGS
- /*
-- * This one is for softirq.c-internal use,
-- * where hardirqs are disabled legitimately:
-+ * This is for softirq.c-internal use, where hardirqs are disabled
-+ * legitimately:
-  */
--#ifdef CONFIG_TRACE_IRQFLAGS
--
--DEFINE_PER_CPU(int, hardirqs_enabled);
--DEFINE_PER_CPU(int, hardirq_context);
--EXPORT_PER_CPU_SYMBOL_GPL(hardirqs_enabled);
--EXPORT_PER_CPU_SYMBOL_GPL(hardirq_context);
--
- void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
- {
- 	unsigned long flags;
-@@ -203,6 +204,50 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
- }
- EXPORT_SYMBOL(__local_bh_enable_ip);
- 
-+static inline void invoke_softirq(void)
-+{
-+	if (ksoftirqd_running(local_softirq_pending()))
-+		return;
-+
-+	if (!force_irqthreads) {
-+#ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
-+		/*
-+		 * We can safely execute softirq on the current stack if
-+		 * it is the irq stack, because it should be near empty
-+		 * at this stage.
-+		 */
-+		__do_softirq();
-+#else
-+		/*
-+		 * Otherwise, irq_exit() is called on the task stack that can
-+		 * be potentially deep already. So call softirq in its own stack
-+		 * to prevent from any overrun.
-+		 */
-+		do_softirq_own_stack();
-+#endif
-+	} else {
-+		wakeup_softirqd();
-+	}
-+}
-+
-+asmlinkage __visible void do_softirq(void)
-+{
-+	__u32 pending;
-+	unsigned long flags;
-+
-+	if (in_interrupt())
-+		return;
-+
-+	local_irq_save(flags);
-+
-+	pending = local_softirq_pending();
-+
-+	if (pending && !ksoftirqd_running(pending))
-+		do_softirq_own_stack();
-+
-+	local_irq_restore(flags);
-+}
-+
- /*
-  * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
-  * but break the loop if need_resched() is set or after 2 ms.
-@@ -327,24 +372,6 @@ restart:
- 	current_restore_flags(old_flags, PF_MEMALLOC);
- }
- 
--asmlinkage __visible void do_softirq(void)
--{
--	__u32 pending;
--	unsigned long flags;
--
--	if (in_interrupt())
--		return;
--
--	local_irq_save(flags);
--
--	pending = local_softirq_pending();
--
--	if (pending && !ksoftirqd_running(pending))
--		do_softirq_own_stack();
--
--	local_irq_restore(flags);
--}
--
- /**
-  * irq_enter_rcu - Enter an interrupt context with RCU watching
-  */
-@@ -371,32 +398,6 @@ void irq_enter(void)
- 	irq_enter_rcu();
- }
- 
--static inline void invoke_softirq(void)
--{
--	if (ksoftirqd_running(local_softirq_pending()))
--		return;
--
--	if (!force_irqthreads) {
--#ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
--		/*
--		 * We can safely execute softirq on the current stack if
--		 * it is the irq stack, because it should be near empty
--		 * at this stage.
--		 */
--		__do_softirq();
--#else
--		/*
--		 * Otherwise, irq_exit() is called on the task stack that can
--		 * be potentially deep already. So call softirq in its own stack
--		 * to prevent from any overrun.
--		 */
--		do_softirq_own_stack();
--#endif
--	} else {
--		wakeup_softirqd();
--	}
--}
--
- static inline void tick_irq_exit(void)
- {
- #ifdef CONFIG_NO_HZ_COMMON
+- Eric
