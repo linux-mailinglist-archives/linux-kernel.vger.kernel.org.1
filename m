@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D52F2C1138
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECB02C113D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732970AbgKWRBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729514AbgKWRBJ (ORCPT
+        id S2389941AbgKWRBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:01:55 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:24022 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387746AbgKWRBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:01:09 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E79C0613CF;
-        Mon, 23 Nov 2020 09:01:09 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id 10so16574138ybx.9;
-        Mon, 23 Nov 2020 09:01:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C8oS1tqNv7f6RkxFUUnN8Th7AIx+SIEYLcj7Qp63p9k=;
-        b=XVEZRacQJCq6PUcwiSqBhTCNm6nCGyDfUWju1rcXBbeqoud9rcUoA0tOMYCMzB16+A
-         Tf2nyNR3t/IgTmwCIQB3ypyJX49r6P9OYc4rr8O0GyP+kH9GvVo57h25AzM2IpNdBJCI
-         6VLJdQ/PQ4UkU3N4pmDXYYgizJ5Pfla+w5/9goVU/6MpEicrzk67JRLBr0Cie208jhlC
-         H98JkfQHihT+nzvH+TLNNG0iXU+4+bFV34QO7OZ83KC7AUou7iPn0+Or7kQLOKk4QbqZ
-         u31mLbMWS6fVKYWBJpOVY66yIIwTk5i1l6O01w6Kg0HE6F0Pd/kbjjmGlUCXMvB2VIHC
-         l2kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C8oS1tqNv7f6RkxFUUnN8Th7AIx+SIEYLcj7Qp63p9k=;
-        b=Wc298nc/h42tFExOzZSG/XQQDQWWToqrhSnC1fve28PRg8Y9rQKDUv5xrORNiKFRQ/
-         G7PWlC7Ho08NhwEZgdYeSz0K9LkTgBceZg2+LSK1F10m2D+b3CUYLdXQrra2fsH06rur
-         +tMd+zIKkYbY7RijmRp1p9aPvE2f5JWdC6kXHbIBDjf4008BN/Z+5D5O8QaoooiIYO8W
-         Po7yAHBGou4onkZoPZEoTsEtJ6rDx0ikanbL8ViJBIOoSKSKZSNEci37gB2QN8+NIvFg
-         KWrVVDjBSE/R8VLLjvCAb6lVyVt81cDKTYHIuLuGXJBaztQWMyJNoNbivsxtw5Nh16hn
-         XweQ==
-X-Gm-Message-State: AOAM530qcPfa+7N9eHzjFouQZuSs1rRyBwlfh5gm5XZuOFw+KvesRZg5
-        MEehSIlOWcrdGsNz0IWg8/NlTz2rKxl7NaTsRUw=
-X-Google-Smtp-Source: ABdhPJw65A04SBNaDefIkuI5vF2SMl8iYxkpxXq0HO2LbpXElojOUQFFbXitA0Vl7O8rkXXIAYbjyBqND8UiNocLcps=
-X-Received: by 2002:a25:2e0d:: with SMTP id u13mr381510ybu.247.1606150868581;
- Mon, 23 Nov 2020 09:01:08 -0800 (PST)
+        Mon, 23 Nov 2020 12:01:54 -0500
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ANGvs7P001788;
+        Mon, 23 Nov 2020 18:01:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=f/KXsDREsm5c6GLokNlWtQYrob45QYlRbyJ6V0lY9Lc=;
+ b=CkJnHcnZtjloKJkw91/1I98HwnVOgtcAhxPFvxfrKttqk2/nBt0IQGzcZRKgWUpzUXHS
+ qfNVfDj1eL/tbIkFwt0kGaHyLljOGaLnDMg/oTD1xKgS0MiB5EjM3Yi5LvR0Q0CnIECP
+ iqHi8oPlePc5D3JtVOHF3N4QGOdiqjUcLlSCIPHlhy02SVrD/OEx7KIB4kLgDYAvCGyp
+ j1V1WTtCgklNJJ5OHIke3g4g4UkUeEhQWIajBVsGeHJ28CIFiyjtrbmmRFT0xeM7gUFJ
+ q1RtBQc6A1ktAIUqSUkYjSZf/1ujzkB1XHUaEUqVQtu30i443Xur4w83E3dIH45uks1s 8Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34y01caexk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 18:01:37 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3999E10002A;
+        Mon, 23 Nov 2020 18:01:35 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 276042BA2D8;
+        Mon, 23 Nov 2020 18:01:35 +0100 (CET)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov 2020 18:01:34
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>
+Subject: [PATCH 0/6] STM32 USBPHYC PLL management rework
+Date:   Mon, 23 Nov 2020 18:01:26 +0100
+Message-ID: <20201123170132.17859-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201121194339.52290-1-masahiroy@kernel.org> <CANiq72nL7yxGj-Q6aOxG68967g_fB6=hDED0mTBrZ_SjC=U-Pg@mail.gmail.com>
- <CAK7LNARjU5HTcTjJG1-sQTJBFqohC1O8aAvFs3Hn_sXscH_pdg@mail.gmail.com>
-In-Reply-To: <CAK7LNARjU5HTcTjJG1-sQTJBFqohC1O8aAvFs3Hn_sXscH_pdg@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 23 Nov 2020 18:00:57 +0100
-Message-ID: <CANiq72mcJMRqV+YZbQtLTCR37ydD=8yFjFzg5ZYMmtH5pK1sEQ@mail.gmail.com>
-Subject: Re: [PATCH] compiler_attribute: remove CONFIG_ENABLE_MUST_CHECK
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        wireguard@lists.zx2c4.com,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_14:2020-11-23,2020-11-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 4:37 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> I can move it to compiler_attribute.h
->
-> This attribute is supported by gcc, clang, and icc.
-> https://godbolt.org/z/ehd6so
->
-> I can send v2.
->
-> I do not mind renaming, but it should be done in a separate patch.
+STM32 USBPHYC controls the USB PLL. PLL requires to be powered with 1v1 and 1v8
+supplies. To ensure a good behavior of the PLL, during boot, runtime and
+suspend/resume sequences, this series reworks its management to fix regulators
+issues and improve PLL status reliability.
 
-Of course -- sorry, I didn't mean we had to do them now, i.e. we can
-do the move and the rename later on, if you prefer.
+Amelie Delaunay (6):
+  dt-bindings: phy: phy-stm32-usbphyc: move PLL supplies to parent node
+  phy: stm32: manage 1v1 and 1v8 supplies at pll activation/deactivation
+  phy: stm32: replace regulator_bulk* by multiple regulator_*
+  phy: stm32: ensure pll is disabled before phys creation
+  phy: stm32: ensure phy are no more active when removing the driver
+  phy: stm32: rework PLL Lock detection
 
-Cheers,
-Miguel
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |  22 +-
+ drivers/phy/st/phy-stm32-usbphyc.c            | 222 +++++++++++-------
+ 2 files changed, 153 insertions(+), 91 deletions(-)
+
+-- 
+2.17.1
+
