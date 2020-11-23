@@ -2,207 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424D52C0537
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E552C053B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgKWMID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728701AbgKWMIC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:08:02 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF720C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:08:01 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w4so14049016pgg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1ZwLi5KRkc7YH23f9Wv8M0kLSaVg1GJ6vD+Tr6xYwho=;
-        b=IiUZbN+TSyDav/TFnZlOF5BIoECPnwKi34wOtfJVV1hSgL+63lDNLN21fJQbf4qfTK
-         kPJsh7mr3uR8ks+wZdJUQXpbGOaI17hhT5b+kxEmFN+7FTu3V4n3A4QEpTwdYQuU6Xdf
-         gs4xdupO8MqvBj2FWG4FK38qeNXAMUKhG3VkJNaKEEsD8HOIpI44K4WdIS9TsDQrd+zg
-         hUCAHvsszcnML/J61XtxKF5JHyhepM7V5vd4Eu4By5qvkhygu9T2Fx+E7E8Ht5ycDFKS
-         uKAMckJC7GOTiLxKFZEg5qNJWunods6f001aPP+OudqhXD7Kk5uXwFxyiWwgT192KQR3
-         8cbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1ZwLi5KRkc7YH23f9Wv8M0kLSaVg1GJ6vD+Tr6xYwho=;
-        b=Ulh5gCMb3oxysDsXxzc0uy2vI1rQyn24dFgSBlRRDOZEM6X3+MRdzQpdtJrzVd23Gu
-         3Ct+mT7MzmWHNxb7+0kwCxgA+9T07k7gmmw7cF+65r4gu8h17f0CLR5J2EPhgl81nOZJ
-         nYGe1lxmMJy2BwHwq7yvIDtCMwquJwyZd+Ym0A8bpT6ZpI0nQ/H8D8UiZ+xmFmf3RwAk
-         vr0uFdqb+FCffXfVX9ZAmNU6b7/D/zg5wXLYJB1YXIq2PO/BFpe/1PSOAreMx03jHRem
-         aRt9AZl1w10Za8lQcaws9yh1i49hmGXcM0g1GjyTcIa5116hyJ/JJ+Zh/0g9QnvR9hWp
-         pB2w==
-X-Gm-Message-State: AOAM533mxP7Y8zYBqqUeg/qy1zFwfwlwAmImm5C/htUTdsCzdtjHn9W8
-        dCaaAvBLerngkri35IX1fY84rOz6JeSOhoNvTtN43w==
-X-Google-Smtp-Source: ABdhPJyt/oW7jZAXAavquDzFIuIBuPiB0sOvy5NAGzdC1kKO5etcNhkUOoZ96fOKjlyJJA3BsgbAHkP+UpOtIt47xjE=
-X-Received: by 2002:a63:ff18:: with SMTP id k24mr26483211pgi.273.1606133281419;
- Mon, 23 Nov 2020 04:08:01 -0800 (PST)
+        id S1729288AbgKWMI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:08:27 -0500
+Received: from david.siemens.de ([192.35.17.14]:48510 "EHLO david.siemens.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728857AbgKWMI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:08:26 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 0ANC87R1030157
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Nov 2020 13:08:08 +0100
+Received: from [167.87.38.29] ([167.87.38.29])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0ANC87Fd011297;
+        Mon, 23 Nov 2020 13:08:07 +0100
+Subject: Re: [PATCH v5 0/7] gpio: exar: refactor the driver
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Laight <David.Laight@aculab.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20201116104242.19907-1-brgl@bgdev.pl>
+ <CAMRc=Mdkr+65Nu7ddjtMHTbedpNf22w1bE97vipKSdXBYm8=fw@mail.gmail.com>
+ <86bf5fda-eeb5-5cb2-901f-a887af7584f6@siemens.com>
+Message-ID: <4cf1dcf9-93b7-910c-005f-3bf316e0fb64@siemens.com>
+Date:   Mon, 23 Nov 2020 13:08:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201120084202.GJ3200@dhcp22.suse.cz> <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
- <20201120131129.GO3200@dhcp22.suse.cz> <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
- <20201123074046.GB27488@dhcp22.suse.cz> <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
- <20201123094344.GG27488@dhcp22.suse.cz> <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
- <20201123104258.GJ27488@dhcp22.suse.cz> <CAMZfGtVzv0qPaK8GALaf8CiaPf2Z9+js24gFtFv5_RfhAyXaRA@mail.gmail.com>
- <20201123113208.GL27488@dhcp22.suse.cz>
-In-Reply-To: <20201123113208.GL27488@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 23 Nov 2020 20:07:23 +0800
-Message-ID: <CAMZfGtXUNXdqse-tsCFyqePJ65L-1EgkYW416+Hu+_6OVu7FjA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <86bf5fda-eeb5-5cb2-901f-a887af7584f6@siemens.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 7:32 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 23-11-20 19:16:18, Muchun Song wrote:
-> > On Mon, Nov 23, 2020 at 6:43 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 23-11-20 18:36:33, Muchun Song wrote:
-> > > > On Mon, Nov 23, 2020 at 5:43 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 23-11-20 16:53:53, Muchun Song wrote:
-> > > > > > On Mon, Nov 23, 2020 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Fri 20-11-20 23:44:26, Muchun Song wrote:
-> > > > > > > > On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Fri 20-11-20 20:40:46, Muchun Song wrote:
-> > > > > > > > > > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> > > > > > > > > > > [...]
-> > > > > > > > > > >
-> > > > > > > > > > > Thanks for improving the cover letter and providing some numbers. I have
-> > > > > > > > > > > only glanced through the patchset because I didn't really have more time
-> > > > > > > > > > > to dive depply into them.
-> > > > > > > > > > >
-> > > > > > > > > > > Overall it looks promissing. To summarize. I would prefer to not have
-> > > > > > > > > > > the feature enablement controlled by compile time option and the kernel
-> > > > > > > > > > > command line option should be opt-in. I also do not like that freeing
-> > > > > > > > > > > the pool can trigger the oom killer or even shut the system down if no
-> > > > > > > > > > > oom victim is eligible.
-> > > > > > > > > >
-> > > > > > > > > > Hi Michal,
-> > > > > > > > > >
-> > > > > > > > > > I have replied to you about those questions on the other mail thread.
-> > > > > > > > > >
-> > > > > > > > > > Thanks.
-> > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > One thing that I didn't really get to think hard about is what is the
-> > > > > > > > > > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> > > > > > > > > > > invalid when racing with the split. How do we enforce that this won't
-> > > > > > > > > > > blow up?
-> > > > > > > > > >
-> > > > > > > > > > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
-> > > > > > > > > > in this case, the pfn_to_page can work. The return value of the
-> > > > > > > > > > pfn_to_page is actually the address of it's struct page struct.
-> > > > > > > > > > I can not figure out where the problem is. Can you describe the
-> > > > > > > > > > problem in detail please? Thanks.
-> > > > > > > > >
-> > > > > > > > > struct page returned by pfn_to_page might get invalid right when it is
-> > > > > > > > > returned because vmemmap could get freed up and the respective memory
-> > > > > > > > > released to the page allocator and reused for something else. See?
-> > > > > > > >
-> > > > > > > > If the HugeTLB page is already allocated from the buddy allocator,
-> > > > > > > > the struct page of the HugeTLB can be freed? Does this exist?
-> > > > > > >
-> > > > > > > Nope, struct pages only ever get deallocated when the respective memory
-> > > > > > > (they describe) is hotremoved via hotplug.
-> > > > > > >
-> > > > > > > > If yes, how to free the HugeTLB page to the buddy allocator
-> > > > > > > > (cannot access the struct page)?
-> > > > > > >
-> > > > > > > But I do not follow how that relates to my concern above.
-> > > > > >
-> > > > > > Sorry. I shouldn't understand your concerns.
-> > > > > >
-> > > > > > vmemmap pages                 page frame
-> > > > > > +-----------+   mapping to   +-----------+
-> > > > > > |           | -------------> |     0     |
-> > > > > > +-----------+                +-----------+
-> > > > > > |           | -------------> |     1     |
-> > > > > > +-----------+                +-----------+
-> > > > > > |           | -------------> |     2     |
-> > > > > > +-----------+                +-----------+
-> > > > > > |           | -------------> |     3     |
-> > > > > > +-----------+                +-----------+
-> > > > > > |           | -------------> |     4     |
-> > > > > > +-----------+                +-----------+
-> > > > > > |           | -------------> |     5     |
-> > > > > > +-----------+                +-----------+
-> > > > > > |           | -------------> |     6     |
-> > > > > > +-----------+                +-----------+
-> > > > > > |           | -------------> |     7     |
-> > > > > > +-----------+                +-----------+
-> > > > > >
-> > > > > > In this patch series, we will free the page frame 2-7 to the
-> > > > > > buddy allocator. You mean that pfn_to_page can return invalid
-> > > > > > value when the pfn is the page frame 2-7? Thanks.
-> > > > >
-> > > > > No I really mean that pfn_to_page will give you a struct page pointer
-> > > > > from pages which you release from the vmemmap page tables. Those pages
-> > > > > might get reused as soon sa they are freed to the page allocator.
-> > > >
-> > > > We will remap vmemmap pages 2-7 (virtual addresses) to page
-> > > > frame 1. And then we free page frame 2-7 to the buddy allocator.
-> > >
-> > > And this doesn't really happen in an atomic fashion from the pfn walker
-> > > POV, right? So it is very well possible that
-> >
-> > Yeah, you are right. But it may not be a problem for HugeTLB pages.
-> > Because in most cases, we only read the tail struct page and get the
-> > head struct page through compound_head() when the pfn is within
-> > a HugeTLB range. Right?
->
-> Many pfn walkers would encounter the head page first and then skip over
-> the rest. Those should be reasonably safe. But there is no guarantee and
-> the fact that you need a valid page->compound_head which might get
-> scribbled over once you have the struct page makes this extremely
-> subtle.
+On 23.11.20 12:58, Jan Kiszka wrote:
+> On 23.11.20 12:38, Bartosz Golaszewski wrote:
+>> On Mon, Nov 16, 2020 at 11:42 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>>>
+>>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>>>
+>>> I just wanted to convert the driver to using simpler IDA API but ended up
+>>> quickly converting it to using regmap. Unfortunately I don't have the HW
+>>> to test it so marking the patches that introduce functional change as RFT
+>>> and Cc'ing the original author.
+>>>
+>>
+>> Hi Jan!
+>>
+>> Could you give this last version a final spin before I merge it?
+>>
+> 
+> [   14.250117] exar_serial 0000:02:00.0: enabling device (0000 -> 0002)
+> [   14.336622] 0000:02:00.0: ttyS2 at MMIO 0x90000000 (irq = 44, base_baud = 7812500) is a XR17V35X
+> [   14.391588] 0000:02:00.0: ttyS3 at MMIO 0x90000400 (irq = 44, base_baud = 7812500) is a XR17V35X
+> [   19.250510] gpio_exar: probe of gpio_exar.1.auto failed with error -22
+> 
+> That's "new"...
+> 
 
-In this patch series, we can guarantee that the page->compound_head
-is always valid. Because we reuse the first tail page. Maybe you need to
-look closer at this series. Thanks.
+Bisected to "gpio: exar: switch to using regmap" again.
 
+Jan
 
->
-> --
->
-> SUSE Labs
-
-
-
---
-Yours,
-Muchun
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
