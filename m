@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A882C0BC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB49C2C0BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731022AbgKWNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:30:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        id S2389389AbgKWNcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:32:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730329AbgKWM1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:51 -0500
+        id S1730179AbgKWM0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:26:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E91D208C3;
-        Mon, 23 Nov 2020 12:27:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EB9A2076E;
+        Mon, 23 Nov 2020 12:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134470;
-        bh=B0HIVhOOFgPqMRT5qB5gRrANqaf0nGkWUCvrnaJBgVg=;
+        s=korg; t=1606134401;
+        bh=6Dcwo4OSCRn0tLFb05dYVmqq8EyU5c8u391HU+6KyMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PhTRcmy7YhB5mAPmz0d+jFwpCTImZvbsZQ9rb0IkMGGCgpfdsQ3gGVJdh0shNYnGl
-         pyQ1qa6KUAJzcY7QBtgXFcTlH8ZbumLc4KMVjAM9PoboOvjcBw4hS8linx/FB1WNro
-         ETVAdNkwpIlm3U01TmYCiPggGAXe4JnUqkFxEl24=
+        b=mH9Kct5aw+A1bedmJFTvxD0kHwq+vrs31VPxmm1yFQvJFb9DEG3jz6rptJQguejmq
+         b+FPULyZnDAHiFG3IDe9nIg7IYFgi3QHZbrBb8G3s1Lc2riNpG4pkmVc+DANdMzQ1F
+         VoZ0DAPsZKc0C1GcLtAKB7TotHLl50ApUEUNGn1Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 32/60] can: ti_hecc: Fix memleak in ti_hecc_probe
+Subject: [PATCH 4.9 28/47] can: peak_usb: fix potential integer overflow on shift of a int
 Date:   Mon, 23 Nov 2020 13:22:14 +0100
-Message-Id: <20201123121806.591554330@linuxfoundation.org>
+Message-Id: <20201123121806.909374940@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 7968c7c79d3be8987feb8021f0c46e6866831408 ]
+[ Upstream commit 8a68cc0d690c9e5730d676b764c6f059343b842c ]
 
-In the error handling, we should goto the probe_exit_candev
-to free ndev to prevent memory leak.
+The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+arithmetic and then assigned to a signed 64 bit variable. In the case where
+time_ref->adapter->ts_used_bits is 32 or more this can lead to an oveflow.
+Avoid this by shifting using the BIT_ULL macro instead.
 
-Fixes: dabf54dd1c63 ("can: ti_hecc: Convert TI HECC driver to DT only driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201114111708.3465543-1-zhangqilong3@huawei.com
+Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20201105112427.40688-1-colin.king@canonical.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/ti_hecc.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index db6ea936dc3fc..81a3fdd5e0103 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -903,7 +903,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv->base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(priv->base)) {
- 		dev_err(&pdev->dev, "hecc ioremap failed\n");
--		return PTR_ERR(priv->base);
-+		err = PTR_ERR(priv->base);
-+		goto probe_exit_candev;
- 	}
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 74b37309efab7..2e316228aa1e8 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -178,7 +178,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ 		if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
+ 			/* case when event time (tsw) wraps */
+ 			if (ts < time_ref->ts_dev_1)
+-				delta_ts = 1 << time_ref->adapter->ts_used_bits;
++				delta_ts = BIT_ULL(time_ref->adapter->ts_used_bits);
  
- 	/* handle hecc-ram memory */
-@@ -916,7 +917,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(priv->hecc_ram)) {
- 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
--		return PTR_ERR(priv->hecc_ram);
-+		err = PTR_ERR(priv->hecc_ram);
-+		goto probe_exit_candev;
- 	}
+ 		/* Otherwise, sync time counter (ts_dev_2) has wrapped:
+ 		 * handle case when event time (tsn) hasn't.
+@@ -190,7 +190,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ 		 *              tsn            ts
+ 		 */
+ 		} else if (time_ref->ts_dev_1 < ts) {
+-			delta_ts = -(1 << time_ref->adapter->ts_used_bits);
++			delta_ts = -BIT_ULL(time_ref->adapter->ts_used_bits);
+ 		}
  
- 	/* handle mbx memory */
-@@ -929,13 +931,14 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(priv->mbx)) {
- 		dev_err(&pdev->dev, "mbx ioremap failed\n");
--		return PTR_ERR(priv->mbx);
-+		err = PTR_ERR(priv->mbx);
-+		goto probe_exit_candev;
- 	}
- 
- 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (!irq) {
- 		dev_err(&pdev->dev, "No irq resource\n");
--		goto probe_exit;
-+		goto probe_exit_candev;
- 	}
- 
- 	priv->ndev = ndev;
-@@ -988,7 +991,7 @@ probe_exit_clk:
- 	clk_put(priv->clk);
- probe_exit_candev:
- 	free_candev(ndev);
--probe_exit:
-+
- 	return err;
- }
- 
+ 		/* add delay between last sync and event timestamps */
 -- 
 2.27.0
 
