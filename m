@@ -2,98 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E992C126D
+	by mail.lfdr.de (Postfix) with ESMTP id A09C22C126E
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387444AbgKWRyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730906AbgKWRyy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:54:54 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5942DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:54:54 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id q16so18009719edv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuMYUJdtH/2nxOl3I7w6Zr/wW7lBFGJLSxs8ekU48XU=;
-        b=EZyroN8QsWMlG8MTbc4cEihy9jePh/EDRLIjidMYCh0AaOGMIsSZ+OIATwGTb7DrBg
-         B0Y1wY8pXvHBi6kX0TuUMi2Fdaf8/jL0YYRk8gQBTf34tAYfi7wTZVQbICJ6erlFoTnn
-         gInq2VWGc7qr88/qrPaiO2j8C7HaCasgFulEZuWEY+s4HTf5C89bIQH2CuSqqzHDwZLb
-         SW1ZK7U1VKG+c+pTLi3qwYcop/T7aXkxdii36ISw06hkxzwkbqUfwSvgdRcVscA/1F2K
-         HXzrUVMZ0qTJB8usXug7XfUu9DDeABr7dCAv3/Yq6EpSpY2b6FOKz09hxaYomrGi6hPi
-         VJ5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuMYUJdtH/2nxOl3I7w6Zr/wW7lBFGJLSxs8ekU48XU=;
-        b=bQITNgf+zK036dCUSYxjMKNbTr9HoNdI58V1D4fy8lrC3rpbU7brlJ9VF4PWoqOULQ
-         z4h7dsjl0IEfQvnCWhKRHUXcMV9zwkhD3562Ff693CzxMaus8fFhUfE7kA9sVPt4k3Qf
-         wjMoqMtynyMtvi4b4gt1peTjie7MTFcvhl1RfUC6aqBD0YmDpm7AWT60ApKtx58dfH5W
-         FHXHQbZh5FmGEpNk8yzgnV1cjPpN9rL0fVmtjP7D0KqEWzRC2V11EpE0uxuhk4D7nmxo
-         NOAbYC6ZNcrGktTi+7bsqAJujfsaWd1aSw8j61KSwaTyF33MLLIZNiNpxcp+B603je7Z
-         Rbqg==
-X-Gm-Message-State: AOAM531pDKSDu/e3VX/bB+hDLIPcAbb9bQXlngI1/JBZkYDuSS6EUwcj
-        MLpFLpgjhIvS2T9jh0G0XkfZF0t5efycNzrCfAtkbg==
-X-Google-Smtp-Source: ABdhPJx9togWcreQZq9uZt2NQSkdTVSANgXKGsHDuOkAlNfI9HveEvIYQVujmi34Dwt3OzWxuuRhLbvrCyUCRDN8+Jw=
-X-Received: by 2002:aa7:d54b:: with SMTP id u11mr309610edr.341.1606154092463;
- Mon, 23 Nov 2020 09:54:52 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
- <20201123090129.GD27488@dhcp22.suse.cz> <CA+CK2bCD8_x5cBUOksAzat_O4G8-PoLp378zN1mxKMcmyV8dAw@mail.gmail.com>
- <20201123171502.GX244516@ziepe.ca>
-In-Reply-To: <20201123171502.GX244516@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Mon, 23 Nov 2020 12:54:16 -0500
-Message-ID: <CA+CK2bDx1Q5QWw=hXMs=OWwCSVrFu-xizY8YOR_MqLsvMAZm0Q@mail.gmail.com>
-Subject: Re: Pinning ZONE_MOVABLE pages
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730906AbgKWRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:55:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726015AbgKWRz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:55:26 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CCE820758;
+        Mon, 23 Nov 2020 17:55:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606154125;
+        bh=qpL2f9sT7xzn5bt7AxFkYrpasWopOpy+BMt6mJNfUdE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MyGoDeE9Xb5w0Rb1rp40aIH1W3SfLalyE0hoPHRvdaBD9q4AvRwLZdkKf5dKD79/V
+         RrHWMtlp/SRjl9XIKcv3hJgdpA3BGUyL0wMfnyxUtasH03ex+8/qjFsIIluYN/7K+r
+         BPBUP8q+VZGOPlmw0/ZG25s7hrbPWZlT0A2P5H4I=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khG3e-00D1UR-UK; Mon, 23 Nov 2020 17:55:23 +0000
+Date:   Mon, 23 Nov 2020 17:55:21 +0000
+Message-ID: <87blfo556e.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 12/24] kvm: arm64: Bootstrap PSCI SMC handler in nVHE EL2
+In-Reply-To: <20201116204318.63987-13-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-13-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 12:15 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Mon, Nov 23, 2020 at 11:06:21AM -0500, Pavel Tatashin wrote:
->
-> > What I mean here is allowing users to guarantee that the page's PA is
-> > going to stay the same. Sort of a stronger mlock. Mlock only
-> > guarantees that the page is not swapped, but something like
->
-> You've just described get/pin_user_pages(), that is exactly what it is
-> for.
+On Mon, 16 Nov 2020 20:43:06 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
+> 
+> Add a handler of PSCI SMCs in nVHE hyp code. The handler is initialized
+> with the version used by the host's PSCI driver and the function IDs it
+> was configured with. If the SMC function ID matches one of the
+> configured PSCI calls (for v0.1) or falls into the PSCI function ID
+> range (for v0.2+), the SMC is handled by the PSCI handler. For now, all
+> SMCs return PSCI_RET_NOT_SUPPORTED.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_hyp.h     |   4 ++
+>  arch/arm64/kvm/arm.c                 |  14 ++++
+>  arch/arm64/kvm/hyp/nvhe/Makefile     |   2 +-
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c   |   6 +-
+>  arch/arm64/kvm/hyp/nvhe/psci-relay.c | 104 +++++++++++++++++++++++++++
+>  5 files changed, 128 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> 
+> diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
+> index a3289071f3d8..95a2bbbcc7e1 100644
+> --- a/arch/arm64/include/asm/kvm_hyp.h
+> +++ b/arch/arm64/include/asm/kvm_hyp.h
+> @@ -96,6 +96,10 @@ void deactivate_traps_vhe_put(void);
+>  
+>  u64 __guest_enter(struct kvm_vcpu *vcpu);
+>  
+> +#ifdef __KVM_NVHE_HYPERVISOR__
+> +bool kvm_host_psci_handler(struct kvm_cpu_context *host_ctxt);
+> +#endif
+> +
+>  void __noreturn hyp_panic(void);
+>  #ifdef __KVM_NVHE_HYPERVISOR__
+>  void __noreturn __hyp_do_panic(bool restore_host, u64 spsr, u64 elr, u64 par);
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index cdd7981ea560..7d2270eeecfb 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/kvm_irqfd.h>
+>  #include <linux/irqbypass.h>
+>  #include <linux/sched/stat.h>
+> +#include <linux/psci.h>
+>  #include <trace/events/kvm.h>
+>  
+>  #define CREATE_TRACE_POINTS
+> @@ -1514,6 +1515,18 @@ static void init_cpu_logical_map(void)
+>  		CHOOSE_NVHE_SYM(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
+>  }
+>  
+> +static void init_psci_relay(void)
+> +{
+> +	extern u32 kvm_nvhe_sym(kvm_host_psci_version);
+> +	extern u32 kvm_nvhe_sym(kvm_host_psci_function_id)[PSCI_FN_MAX];
 
-You are right. No need for the madvise() flag at all. (The slight
-difference of being able to mark memory pinned prior to touching is
-really insignificant).
+nit: I'd rather have these outside of the function body.
 
->
-> I agree with the other emails, ZONE_MOVABLE needs to be reconciled
-> with FOLL_LONGTERM - most likely by preventing ZONE_MOVABLE pages from
-> being returned. This will need migration like CMA does and the point
-> about faulting is only an optimization to prevent fault then immediate
-> migration.
+> +	int i;
+> +
+> +	CHOOSE_NVHE_SYM(kvm_host_psci_version) = psci_ops.get_version
+> +		? psci_ops.get_version() : PSCI_VERSION(0, 0);
 
-That is right, as the first step we could just do fault and immediate
-migration, which is silly, but still better than what we have now.
+nit: please write this with an if/else construct, it will read a lot
+better.
 
->
-> Jason
+> +	for (i = 0; i < PSCI_FN_MAX; ++i)
+> +		CHOOSE_NVHE_SYM(kvm_host_psci_function_id)[i] = psci_get_function_id(i);
+
+Either pick kvm_nvhe_sym(), or CHOOSE_NVHE_SYM(). Having both used
+together is just an annoyance (and in this case there is nothing to
+choose, really).
+
+> +}
+> +
+>  static int init_common_resources(void)
+>  {
+>  	return kvm_set_ipa_limit();
+> @@ -1693,6 +1706,7 @@ static int init_hyp_mode(void)
+>  	}
+>  
+>  	init_cpu_logical_map();
+> +	init_psci_relay();
+>  
+>  	return 0;
+>  
+> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+> index 2d842e009a40..bf62c8e42ab2 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
+> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+> @@ -7,7 +7,7 @@ asflags-y := -D__KVM_NVHE_HYPERVISOR__
+>  ccflags-y := -D__KVM_NVHE_HYPERVISOR__
+>  
+>  obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
+> -	 hyp-main.o hyp-smp.o
+> +	 hyp-main.o hyp-smp.o psci-relay.o
+>  obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
+>  	 ../fpsimd.o ../hyp-entry.o
+>  
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> index 71a17af05953..df4acb40dd39 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> @@ -120,7 +120,11 @@ static void skip_host_instruction(void)
+>  
+>  static void handle_host_smc(struct kvm_cpu_context *host_ctxt)
+>  {
+> -	default_host_smc_handler(host_ctxt);
+> +	bool handled;
+> +
+> +	handled = kvm_host_psci_handler(host_ctxt);
+> +	if (!handled)
+> +		default_host_smc_handler(host_ctxt);
+>  
+>  	/*
+>  	 * Unlike HVC, the return address of an SMC is the instruction's PC.
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> new file mode 100644
+> index 000000000000..d75d3f896bfd
+> --- /dev/null
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> @@ -0,0 +1,104 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2020 - Google LLC
+> + * Author: David Brazdil <dbrazdil@google.com>
+> + */
+> +
+> +#include <asm/kvm_asm.h>
+> +#include <asm/kvm_hyp.h>
+> +#include <asm/kvm_mmu.h>
+> +#include <kvm/arm_hypercalls.h>
+> +#include <linux/arm-smccc.h>
+> +#include <linux/psci.h>
+> +#include <kvm/arm_psci.h>
+> +#include <uapi/linux/psci.h>
+> +
+> +/* Config options set by the host. */
+> +u32 __ro_after_init kvm_host_psci_version = PSCI_VERSION(0, 0);
+> +u32 __ro_after_init kvm_host_psci_function_id[PSCI_FN_MAX];
+> +
+> +static u64 get_psci_func_id(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	return host_ctxt->regs.regs[0];
+> +}
+> +
+> +static bool is_psci_0_1_call(u64 func_id)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(kvm_host_psci_function_id); ++i) {
+> +		if (func_id == kvm_host_psci_function_id[i])
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+> +static bool is_psci_0_2_call(u64 func_id)
+> +{
+> +	/* SMCCC reserves IDs 0x00-1F with the given 32/64-bit base for PSCI. */
+> +	return (PSCI_0_2_FN(0) <= func_id && func_id <= PSCI_0_2_FN(31)) ||
+> +	       (PSCI_0_2_FN64(0) <= func_id && func_id <= PSCI_0_2_FN64(31));
+> +}
+> +
+> +static bool is_psci_call(u64 func_id)
+> +{
+> +	switch (kvm_host_psci_version) {
+> +	case PSCI_VERSION(0, 0):
+> +		return false;
+> +	case PSCI_VERSION(0, 1):
+> +		return is_psci_0_1_call(func_id);
+> +	default:
+> +		return is_psci_0_2_call(func_id);
+> +	}
+> +}
+> +
+> +static unsigned long psci_0_1_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
+> +{
+> +	return PSCI_RET_NOT_SUPPORTED;
+> +}
+> +
+> +static unsigned long psci_0_2_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
+> +{
+> +	switch (func_id) {
+> +	default:
+> +		return PSCI_RET_NOT_SUPPORTED;
+> +	}
+> +}
+> +
+> +static unsigned long psci_1_0_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
+> +{
+> +	switch (func_id) {
+> +	default:
+> +		return psci_0_2_handler(func_id, host_ctxt);
+> +	}
+> +}
+> +
+> +bool kvm_host_psci_handler(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	u64 func_id = get_psci_func_id(host_ctxt);
+> +	unsigned long ret;
+> +
+> +	if (!is_psci_call(func_id))
+> +		return false;
+> +
+> +	switch (kvm_host_psci_version) {
+> +	case PSCI_VERSION(0, 0):
+> +		ret = PSCI_RET_NOT_SUPPORTED;
+
+But isn't that way too late? No PSCI means that we cannot control the
+way CPUs boot at all. I think we should completely fail the whole
+Protected KVM business if we don't have PSCI.
+
+> +		break;
+> +	case PSCI_VERSION(0, 1):
+> +		ret = psci_0_1_handler(func_id, host_ctxt);
+> +		break;
+> +	case PSCI_VERSION(0, 2):
+> +		ret = psci_0_2_handler(func_id, host_ctxt);
+> +		break;
+> +	default:
+> +		ret = psci_1_0_handler(func_id, host_ctxt);
+> +		break;
+> +	}
+> +
+> +	host_ctxt->regs.regs[0] = ret;
+> +	host_ctxt->regs.regs[1] = 0;
+> +	host_ctxt->regs.regs[2] = 0;
+> +	host_ctxt->regs.regs[3] = 0;
+> +	return true;
+> +}
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
