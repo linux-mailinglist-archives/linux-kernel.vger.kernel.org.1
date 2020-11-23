@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA8B2C1456
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBD92C1458
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731284AbgKWTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 14:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
+        id S1729599AbgKWTPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 14:15:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729873AbgKWTM5 (ORCPT
+        with ESMTP id S1728930AbgKWTPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:12:57 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A79C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:12:57 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id q206so20826412oif.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:12:57 -0800 (PST)
+        Mon, 23 Nov 2020 14:15:33 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75F5C0613CF;
+        Mon, 23 Nov 2020 11:15:33 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id u4so18036857qkk.10;
+        Mon, 23 Nov 2020 11:15:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jkFKVVE05DxxQZn8gUPCNJA2GtzoswBnLFvjycznboA=;
-        b=B0WPvS5cX1vh7WcbwvFULs6V49mSQJI5mklyizuz6mRTnR0smBcGNV2KveycRToSg6
-         PDbNj9L6Vny8/fkqrX7Kk7hnPOqmrBF1m8F7tV6sS6oAQfmRuWIE9hSyQZ940cE5zMXp
-         RyvClPePh5gB2cKcKuZGNgkm1j4g3Sq3ObzjltBTBqmhKSB8qvyLZQaodzWiDCvW+v0z
-         89DIYYnTxKcF6jqsSnr7INvme0uqhJLN6GTpGTh4bbsuZamATknOJcBCc502Kqx17BvV
-         6aAgHk1nHCK2W93jSlGIkInL8PpEkocmtf95rrv6Qm1FYWcusO0u4dYRhmHDekixJx1s
-         vpkQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=lsk3l50IUlnXuysK/qr0G1Jf7d6JfVUjA/eYi8O2geA=;
+        b=ZjKCDWGIRLgKDvKwoAQ/Tdf9QWbi/RzXSaxEcWje+l/O3zHCmHqGQzwBMTv9KJ7SN0
+         ai/WCMj5UgddZv0EKbGYTkv/nK1Mm45jOxZAKrlDkv0bdkd2EXiwxL6Cvba0Bsh9JEAZ
+         Yidfd4HZKWnJYPps6+U7hmy5r29ofNIQVpqNsrnu7emVfw7++PxGUQsP57St7qLdTBYd
+         OiS1qNRWLQRnN8dTL2yzYrPT8Lar9twVF1paL347DEIm3DVX2JT/UMuf600jgCfDsFrY
+         NiHFk0tfiaXFNNZiyCcLD3mxNnMJ0LQI5R0TGePgCjPTb8Xwmew1eroPhr9FwIwWyrV1
+         Zc4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jkFKVVE05DxxQZn8gUPCNJA2GtzoswBnLFvjycznboA=;
-        b=AignDN3lJUMw/Frx1dEn7qqasALSheLUCgsh1kjDKNjxkL5MIY8tweIHpdOE/LG79J
-         A39MO2zQa5oIsBVSFXCMxrbAfJgf4q6q+KOuLybki8OjnWBYKU/eABDjGvuq1Y7n8qLP
-         A9JkZ2UDXvHeC+SHxEB/FgoORUHC1ZN8LAXR6V7PT6z4pUHhDgrf+JIhjsjeRRLnHXtR
-         IskYR/+MDlXge+Inu2gtJzOmn8uqJl123FuQS+DqIFOUVWglyt8Bz+Z39y0Dj+m9O3gF
-         ALjpvUxhsmobfc3jnW0z7wVU8/5MBUwqFRPX+dGvWe5y+UMaTs+EcVpktjcOxa3q3fa0
-         d1zQ==
-X-Gm-Message-State: AOAM533fulPAw6rUD496x9p58q9pl+yCs1QKNJV5zSKMMjqKm56/unxr
-        kXtZFTpuxgyuQKSKLvmlsO9R0bvyIvrXmu0U7A711g==
-X-Google-Smtp-Source: ABdhPJxtM4a5n5IQmwpNR+Xj4I97E2W+t+5QcauITjNyguGsV9COpv5Kj4u0+cOXz1dJYUTpDdd11H+vSoqEF7wquLs=
-X-Received: by 2002:a54:4394:: with SMTP id u20mr299277oiv.70.1606158776324;
- Mon, 23 Nov 2020 11:12:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20201123132300.1759342-1-elver@google.com> <20201123135512.GM3021@hirez.programming.kicks-ass.net>
- <CANpmjNPwuq8Hph3oOyJCVgWQ_d-gOTPEOT3BpbR2pnm5LBeJbw@mail.gmail.com>
- <20201123155746.GA2203226@elver.google.com> <20201123160823.GC2414@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201123160823.GC2414@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 23 Nov 2020 20:12:44 +0100
-Message-ID: <CANpmjNMzeU8GBkNr-_6Rq8+9CNW476DBMpck9oeFw-pE5J0beg@mail.gmail.com>
-Subject: Re: [PATCH v2] kcsan: Avoid scheduler recursion by using
- non-instrumented preempt_{disable,enable}()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lsk3l50IUlnXuysK/qr0G1Jf7d6JfVUjA/eYi8O2geA=;
+        b=esE0CNY1R9RwXY7ANIKv62/mF+PDcNk1EbapbUJFn0p9SmGr/vkrtT1gBUI1+tHEXk
+         HCjUNzbGIcXT15+xOm3U6U+gB2cMXktAba7XdyYyYZatpmCplnj8/WE5Euxe9yz9Neen
+         ObN3u3ZZL5RKtlkHDuXOSdtOcI4xbQ+ToHEgupvSdxAubVPclj66EqlFJ+9QepjmD4OR
+         j1EdtykE4Dv/LJvusnrvcZgxQnc16yMWW8/C9gYQ1zRaS6nGIJagaM5I9y1nCvGP4rmu
+         0SeYI6Ud0STec05Am+q7+7eMHvPXg7ZT4OmQDPnrD6Lq2lt78M+iF5asQ/JrPo2u8a1Z
+         hOGQ==
+X-Gm-Message-State: AOAM530vt0WIrYSbCP7rsLlWZpMRnRq+eHCoCa/By1NB6SLUy9ZVKgD3
+        8AKdM4JW9212ceIuCo+rAFI=
+X-Google-Smtp-Source: ABdhPJyKiuEn0gESPmF4riPXg80tuJ6CvB027stRO5inddlu4fNnejf5dC2NY6pPZPd16f9AzQtiBw==
+X-Received: by 2002:a37:bac7:: with SMTP id k190mr1009816qkf.464.1606158933051;
+        Mon, 23 Nov 2020 11:15:33 -0800 (PST)
+Received: from svens-asus.arcx.com ([184.94.50.30])
+        by smtp.gmail.com with ESMTPSA id r190sm10116348qkf.101.2020.11.23.11.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 11:15:32 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David S Miller <davem@davemloft.net>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v1 1/2] lan743x: clean up software_isr function
+Date:   Mon, 23 Nov 2020 14:15:28 -0500
+Message-Id: <20201123191529.14908-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 at 17:08, Peter Zijlstra <peterz@infradead.org> wrote:
-> On Mon, Nov 23, 2020 at 04:57:46PM +0100, Marco Elver wrote:
-> > Let me know what you prefer.
-> >
->
-> > @@ -288,27 +288,19 @@ static u32 kcsan_prandom_u32_max(u32 ep_ro)
-> >       u32 res;
-> >
-> >       /*
-> > +      * Avoid recursion with scheduler by disabling KCSAN because
-> > +      * preempt_enable_notrace() will still call into scheduler code.
-> >        */
-> > +     kcsan_disable_current();
-> >       preempt_disable_notrace();
-> >       state = raw_cpu_ptr(&kcsan_rand_state);
-> >       res = prandom_u32_state(state);
-> > +     preempt_enable_notrace();
-> > +     kcsan_enable_current_nowarn();
-> >
-> >       return (u32)(((u64) res * ep_ro) >> 32);
-> >  }
->
-> This is much preferred over the other. The thing with _no_resched is that
-> you can miss a preemption for an unbounded amount of time, which is bad.
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-Ah, I think this is rubbish, too. Because it might fix one problem,
-but now I'm left with the problem that kcsan_prandom_u32_max() is
-called for udelay() later and at that point we lose skip_count
-randomness entirely.
+For no apparent reason, this function reads the INT_STS register, and
+checks if the software interrupt bit is set. These things have already
+been carried out by this function's only caller.
 
-I think relying on lib/random32.c already caused too many headaches,
-so I'm tempted to just get rid of that dependency entirely. And
-instead do the simplest possible thing, which might just be calling
-get_cycles() (all we need is to introduce some non-determinism).
+Clean up by removing the redundant code.
 
-> The _only_ valid use of _no_resched is when there's a call to schedule()
-> right after it.
+Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+---
+
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git # f9e425e99b07
+
+To: Bryan Whitehead <bryan.whitehead@microchip.com>
+To: Jakub Kicinski <kuba@kernel.org>
+To: "David S. Miller" <davem@davemloft.net>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+ drivers/net/ethernet/microchip/lan743x_main.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 87b6c59a1e03..bdc80098c240 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -140,18 +140,13 @@ static int lan743x_csr_init(struct lan743x_adapter *adapter)
+ 	return result;
+ }
+ 
+-static void lan743x_intr_software_isr(void *context)
++static void lan743x_intr_software_isr(struct lan743x_adapter *adapter)
+ {
+-	struct lan743x_adapter *adapter = context;
+ 	struct lan743x_intr *intr = &adapter->intr;
+-	u32 int_sts;
+ 
+-	int_sts = lan743x_csr_read(adapter, INT_STS);
+-	if (int_sts & INT_BIT_SW_GP_) {
+-		/* disable the interrupt to prevent repeated re-triggering */
+-		lan743x_csr_write(adapter, INT_EN_CLR, INT_BIT_SW_GP_);
+-		intr->software_isr_flag = 1;
+-	}
++	/* disable the interrupt to prevent repeated re-triggering */
++	lan743x_csr_write(adapter, INT_EN_CLR, INT_BIT_SW_GP_);
++	intr->software_isr_flag = 1;
+ }
+ 
+ static void lan743x_tx_isr(void *context, u32 int_sts, u32 flags)
+-- 
+2.17.1
+
