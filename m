@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D0B2C08A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424BD2C0A46
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388027AbgKWM5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:57:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35486 "EHLO mail.kernel.org"
+        id S2387490AbgKWNS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:18:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387606AbgKWMvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:51:02 -0500
+        id S1732417AbgKWMkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:40:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3580020657;
-        Mon, 23 Nov 2020 12:50:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E285E2065E;
+        Mon, 23 Nov 2020 12:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135857;
-        bh=bLd/IA/GBN91CmWxjZ77W/baBskahdfQejsxLh0CS6A=;
+        s=korg; t=1606135209;
+        bh=JLQWrrUwT4ql2E8ef7oDROak7waEQSlL1oPIRGDx4Xw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=olNZ3LldWaiatKaMMPb0PcSAMm9XBClAQyvXY7V9LnmBtY9GwOODyLX4sCxXRADDj
-         NwwcACcS8bagHzapo2jIplYiFjoqTOwhP/Go8E5NJhMlxqGnALOBm/l2qUij6SZMIJ
-         hvb1wr4hUlocIHLCyrhj75nnJDbISgPhL/WZ1SrI=
+        b=kJ9rywFc9i4QKXM686EOI6PxBTxpA95XnikCyfwUr8FmxGaMdPFZR9QxtHpl5PIaV
+         yS6zGfA7kK+t7CDuz1+lHnRHQDKCQAxJdh0ZSgNlX3AUIEur89mnRvE6C9l8VV2jQy
+         Mr2jrLkh/6XeYltAaqbZJedXW5e90yhzXwxtBsKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.9 221/252] spi: bcm2835aux: Fix use-after-free on unbind
-Date:   Mon, 23 Nov 2020 13:22:51 +0100
-Message-Id: <20201123121846.236048984@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 144/158] mac80211: minstrel: fix tx status processing corner case
+Date:   Mon, 23 Nov 2020 13:22:52 +0100
+Message-Id: <20201123121826.877671154@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
-References: <20201123121835.580259631@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,85 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit e13ee6cc4781edaf8c7321bee19217e3702ed481 upstream.
+commit b2911a84396f72149dce310a3b64d8948212c1b3 upstream.
 
-bcm2835aux_spi_remove() accesses the driver's private data after calling
-spi_unregister_master() even though that function releases the last
-reference on the spi_master and thereby frees the private data.
+Some drivers fill the status rate list without setting the rate index after
+the final rate to -1. minstrel_ht already deals with this, but minstrel
+doesn't, which causes it to get stuck at the lowest rate on these drivers.
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound.
+Fix this by checking the count as well.
 
-Fixes: b9dd3f6d4172 ("spi: bcm2835aux: Fix controller unregister order")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.4+: 123456789abc: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.4+: b9dd3f6d4172: spi: bcm2835aux: Fix controller unregister order
-Cc: <stable@vger.kernel.org> # v4.4+
-Link: https://lore.kernel.org/r/b290b06357d0c0bdee9cecc539b840a90630f101.1605121038.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: cccf129f820e ("mac80211: add the 'minstrel' rate control algorithm")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20201111183359.43528-3-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-bcm2835aux.c |   21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ net/mac80211/rc80211_minstrel.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/spi/spi-bcm2835aux.c
-+++ b/drivers/spi/spi-bcm2835aux.c
-@@ -494,7 +494,7 @@ static int bcm2835aux_spi_probe(struct p
- 	unsigned long clk_hz;
- 	int err;
+--- a/net/mac80211/rc80211_minstrel.c
++++ b/net/mac80211/rc80211_minstrel.c
+@@ -270,7 +270,7 @@ minstrel_tx_status(void *priv, struct ie
+ 	success = !!(info->flags & IEEE80211_TX_STAT_ACK);
  
--	master = spi_alloc_master(&pdev->dev, sizeof(*bs));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(*bs));
- 	if (!master)
- 		return -ENOMEM;
+ 	for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+-		if (ar[i].idx < 0)
++		if (ar[i].idx < 0 || !ar[i].count)
+ 			break;
  
-@@ -524,29 +524,24 @@ static int bcm2835aux_spi_probe(struct p
- 
- 	/* the main area */
- 	bs->regs = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(bs->regs)) {
--		err = PTR_ERR(bs->regs);
--		goto out_master_put;
--	}
-+	if (IS_ERR(bs->regs))
-+		return PTR_ERR(bs->regs);
- 
- 	bs->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(bs->clk)) {
--		err = PTR_ERR(bs->clk);
- 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
--		goto out_master_put;
-+		return PTR_ERR(bs->clk);
- 	}
- 
- 	bs->irq = platform_get_irq(pdev, 0);
--	if (bs->irq <= 0) {
--		err = bs->irq ? bs->irq : -ENODEV;
--		goto out_master_put;
--	}
-+	if (bs->irq <= 0)
-+		return bs->irq ? bs->irq : -ENODEV;
- 
- 	/* this also enables the HW block */
- 	err = clk_prepare_enable(bs->clk);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not prepare clock: %d\n", err);
--		goto out_master_put;
-+		return err;
- 	}
- 
- 	/* just checking if the clock returns a sane value */
-@@ -581,8 +576,6 @@ static int bcm2835aux_spi_probe(struct p
- 
- out_clk_disable:
- 	clk_disable_unprepare(bs->clk);
--out_master_put:
--	spi_master_put(master);
- 	return err;
- }
- 
+ 		ndx = rix_to_ndx(mi, ar[i].idx);
 
 
