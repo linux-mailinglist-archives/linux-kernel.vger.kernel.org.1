@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CD92C062B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 640342C074B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730440AbgKWM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38676 "EHLO mail.kernel.org"
+        id S1732264AbgKWMj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730426AbgKWM2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:24 -0500
+        id S1732158AbgKWMjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AC712076E;
-        Mon, 23 Nov 2020 12:28:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93BF22076E;
+        Mon, 23 Nov 2020 12:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134502;
-        bh=UQg/RWwP5+WrRaMaJNf8KMdy1OCi+B5uD4EPEedixk8=;
+        s=korg; t=1606135140;
+        bh=eM/A2Gt6qPDjT4lcbUVvMzb+xRiqchOcjtPCv+PF9YE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p6MgEtbybmW6Ng6g0IVR3ydU0RwxOSBTYui0HrM14s0tWu9Vf9S6HSZRsePM56vqj
-         aUlXmFXugrfljwMwGH/gfibnoLkk9I8qIrowaiaoPcdFQYHjeI0cqhiyDgX/fBs6yq
-         aX15L94dMO0lXqgql6ACMgwSL2mCzbE46pgoxU74=
+        b=JoDYoNa/i1P9HfoOk6nPo/QRec+rasKM5TxU/wAnAy4ZTqGtAoZ0onN2sQFOUS3jP
+         xZLB7HEhx1ecXy75yf3s4nM9EMEcPIHLM0D+ghLc0lgxHeC0b2qwm0QqCsu/0iFU4Y
+         fwLN5DR8SzhEXD05kH/6lQGCTGyLGdAaZrP56kK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=E7=A7=A6=E4=B8=96=E6=9D=BE?= <qinshisong1205@gmail.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>
-Subject: [PATCH 4.14 42/60] speakup: Do not let the line discipline be used several times
-Date:   Mon, 23 Nov 2020 13:22:24 +0100
-Message-Id: <20201123121807.083931084@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 117/158] ALSA: firewire: Clean up a locking issue in copy_resp_to_buf()
+Date:   Mon, 23 Nov 2020 13:22:25 +0100
+Message-Id: <20201123121825.583279079@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,73 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit d4122754442799187d5d537a9c039a49a67e57f1 upstream.
+commit 02a9c6ee4183af2e438454c55098b828a96085fb upstream.
 
-Speakup has only one speakup_tty variable to store the tty it is managing. This
-makes sense since its codebase currently assumes that there is only one user who
-controls the screen reading.
+The spin_lock/unlock_irq() functions cannot be nested.  The problem is
+that presumably we would want the IRQs to be re-enabled on the second
+call the spin_unlock_irq() but instead it will be enabled at the first
+call so IRQs will be enabled earlier than expected.
 
-That however means that we have to forbid using the line discipline several
-times, otherwise the second closure would try to free a NULL ldisc_data, leading to
+In this situation the copy_resp_to_buf() function is only called from
+one function and it is called with IRQs disabled.  We can just use
+the regular spin_lock/unlock() functions.
 
-general protection fault: 0000 [#1] SMP KASAN PTI
-RIP: 0010:spk_ttyio_ldisc_close+0x2c/0x60
-Call Trace:
- tty_ldisc_release+0xa2/0x340
- tty_release_struct+0x17/0xd0
- tty_release+0x9d9/0xcc0
- __fput+0x231/0x740
- task_work_run+0x12c/0x1a0
- do_exit+0x9b5/0x2230
- ? release_task+0x1240/0x1240
- ? __do_page_fault+0x562/0xa30
- do_group_exit+0xd5/0x2a0
- __x64_sys_exit_group+0x35/0x40
- do_syscall_64+0x89/0x2b0
- ? page_fault+0x8/0x30
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Cc: stable@vger.kernel.org
-Reported-by: 秦世松 <qinshisong1205@gmail.com>
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Tested-by: Shisong Qin <qinshisong1205@gmail.com>
-Link: https://lore.kernel.org/r/20201110183541.fzgnlwhjpgqzjeth@function
+Fixes: 555e8a8f7f14 ("ALSA: fireworks: Add command/response functionality into hwdep interface")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201113101241.GB168908@mwanda
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/speakup/spk_ttyio.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/firewire/fireworks/fireworks_transaction.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/speakup/spk_ttyio.c
-+++ b/drivers/staging/speakup/spk_ttyio.c
-@@ -48,10 +48,18 @@ static int spk_ttyio_ldisc_open(struct t
+--- a/sound/firewire/fireworks/fireworks_transaction.c
++++ b/sound/firewire/fireworks/fireworks_transaction.c
+@@ -123,7 +123,7 @@ copy_resp_to_buf(struct snd_efw *efw, vo
+ 	t = (struct snd_efw_transaction *)data;
+ 	length = min_t(size_t, be32_to_cpu(t->length) * sizeof(u32), length);
  
- 	if (tty->ops->write == NULL)
- 		return -EOPNOTSUPP;
-+
-+	mutex_lock(&speakup_tty_mutex);
-+	if (speakup_tty) {
-+		mutex_unlock(&speakup_tty_mutex);
-+		return -EBUSY;
-+	}
- 	speakup_tty = tty;
+-	spin_lock_irq(&efw->lock);
++	spin_lock(&efw->lock);
  
- 	ldisc_data = kmalloc(sizeof(struct spk_ldisc_data), GFP_KERNEL);
- 	if (!ldisc_data) {
-+		speakup_tty = NULL;
-+		mutex_unlock(&speakup_tty_mutex);
- 		pr_err("speakup: Failed to allocate ldisc_data.\n");
- 		return -ENOMEM;
- 	}
-@@ -59,6 +67,7 @@ static int spk_ttyio_ldisc_open(struct t
- 	sema_init(&ldisc_data->sem, 0);
- 	ldisc_data->buf_free = true;
- 	speakup_tty->disc_data = ldisc_data;
-+	mutex_unlock(&speakup_tty_mutex);
+ 	if (efw->push_ptr < efw->pull_ptr)
+ 		capacity = (unsigned int)(efw->pull_ptr - efw->push_ptr);
+@@ -190,7 +190,7 @@ handle_resp_for_user(struct fw_card *car
  
- 	return 0;
+ 	copy_resp_to_buf(efw, data, length, rcode);
+ end:
+-	spin_unlock_irq(&instances_lock);
++	spin_unlock(&instances_lock);
  }
+ 
+ static void
 
 
