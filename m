@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FB22C0737
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DCC2C0733
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732104AbgKWMic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:38:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50528 "EHLO mail.kernel.org"
+        id S1732082AbgKWMiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:38:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732049AbgKWMiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:38:06 -0500
+        id S1732025AbgKWMiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:38:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DC1D20732;
-        Mon, 23 Nov 2020 12:38:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4AB7208C3;
+        Mon, 23 Nov 2020 12:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135084;
-        bh=DrJb/ry/H3aPSpWFoAtR8cOM79J66ZPdh5HPDRRvztY=;
+        s=korg; t=1606135087;
+        bh=+/XInTxqoknupdebruEVQIZZbeJa9DLxTBHjIGoaWDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TQZ7b6rZjNYmXM0ibYS46E2Mtg/sU4FXUqq0CzXcoSTtUvSn4szW57u1N9dDTRodU
-         6TxT1K2juyxxvreUwMW8isAuM97ii1TnDa1u7QfHgSF89PJ6kgYQOS4x14Vn7cQi1y
-         IA/DgAyXCTfN8WSR85J5OhkB8bzTEkJ2PPJgaPx0=
+        b=T06t+Df02z3kICeIOnO6Qks/Cptyavgrn2iUpTZNVT8SRPW1qWnttxDwEaHGS77+c
+         mk4xf2Ps8iGZKupteYCJAzD44Ygc0JKdNwPYhgrwPgSPhLVuwRdtD40iNpJM409KSt
+         FQKxvIiyFXRIXC6fVRmbGl/VhABaczJLKhVNDKzs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 099/158] can: flexcan: flexcan_chip_start(): fix erroneous flexcan_transceiver_enable() during bus-off recovery
-Date:   Mon, 23 Nov 2020 13:22:07 +0100
-Message-Id: <20201123121824.710096846@linuxfoundation.org>
+Subject: [PATCH 5.4 100/158] can: m_can: process interrupt only when not runtime suspended
+Date:   Mon, 23 Nov 2020 13:22:08 +0100
+Message-Id: <20201123121824.756406776@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -42,104 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 
-[ Upstream commit cd9f13c59461351d7a5fd07924264fb49b287359 ]
+[ Upstream commit a1f634463aaf2c94dfa13001dbdea011303124cc ]
 
-If the CAN controller goes into bus off, the do_set_mode() callback with
-CAN_MODE_START can be used to recover the controller, which then calls
-flexcan_chip_start(). If configured, this is done automatically by the
-framework or manually by the user.
+Avoid processing bogus interrupt statuses when the HW is runtime suspended and
+the M_CAN_IR register read may get all bits 1's. Handler can be called if the
+interrupt request is shared with other peripherals or at the end of free_irq().
 
-In flexcan_chip_start() there is an explicit call to
-flexcan_transceiver_enable(), which does a regulator_enable() on the
-transceiver regulator. This results in a net usage counter increase, as there
-is no corresponding flexcan_transceiver_disable() in the bus off code path.
-This further leads to the transceiver stuck enabled, even if the CAN interface
-is shut down.
+Therefore check the runtime suspended status before processing.
 
-To fix this problem the
-flexcan_transceiver_enable()/flexcan_transceiver_disable() are moved out of
-flexcan_chip_start()/flexcan_chip_stop() into flexcan_open()/flexcan_close().
-
-Fixes: e955cead0311 ("CAN: Add Flexcan CAN controller driver")
-Link: https://lore.kernel.org/r/20201118150148.2664024-1-mkl@pengutronix.de
+Fixes: cdf8259d6573 ("can: m_can: Add PM Support")
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Link: https://lore.kernel.org/r/20200915134715.696303-1-jarkko.nikula@linux.intel.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/can/m_can/m_can.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index b22cd8d14716a..1bd955e4c7d66 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1202,14 +1202,10 @@ static int flexcan_chip_start(struct net_device *dev)
- 		priv->write(reg_mecr, &regs->mecr);
- 	}
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 661db85d569ce..246fa2657d744 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -913,6 +913,8 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
+ 	struct net_device_stats *stats = &dev->stats;
+ 	u32 ir;
  
--	err = flexcan_transceiver_enable(priv);
--	if (err)
--		goto out_chip_disable;
--
- 	/* synchronize with the can bus */
- 	err = flexcan_chip_unfreeze(priv);
- 	if (err)
--		goto out_transceiver_disable;
-+		goto out_chip_disable;
- 
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
-@@ -1226,8 +1222,6 @@ static int flexcan_chip_start(struct net_device *dev)
- 
- 	return 0;
- 
-- out_transceiver_disable:
--	flexcan_transceiver_disable(priv);
-  out_chip_disable:
- 	flexcan_chip_disable(priv);
- 	return err;
-@@ -1257,7 +1251,6 @@ static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
- 	priv->write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
- 		    &regs->ctrl);
- 
--	flexcan_transceiver_disable(priv);
- 	priv->can.state = CAN_STATE_STOPPED;
- 
- 	return 0;
-@@ -1293,10 +1286,14 @@ static int flexcan_open(struct net_device *dev)
- 	if (err)
- 		goto out_runtime_put;
- 
--	err = request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
-+	err = flexcan_transceiver_enable(priv);
- 	if (err)
- 		goto out_close;
- 
-+	err = request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
-+	if (err)
-+		goto out_transceiver_disable;
-+
- 	priv->mb_size = sizeof(struct flexcan_mb) + CAN_MAX_DLEN;
- 	priv->mb_count = (sizeof(priv->regs->mb[0]) / priv->mb_size) +
- 			 (sizeof(priv->regs->mb[1]) / priv->mb_size);
-@@ -1352,6 +1349,8 @@ static int flexcan_open(struct net_device *dev)
- 	can_rx_offload_del(&priv->offload);
-  out_free_irq:
- 	free_irq(dev->irq, dev);
-+ out_transceiver_disable:
-+	flexcan_transceiver_disable(priv);
-  out_close:
- 	close_candev(dev);
-  out_runtime_put:
-@@ -1370,6 +1369,7 @@ static int flexcan_close(struct net_device *dev)
- 
- 	can_rx_offload_del(&priv->offload);
- 	free_irq(dev->irq, dev);
-+	flexcan_transceiver_disable(priv);
- 
- 	close_candev(dev);
- 	pm_runtime_put(priv->dev);
++	if (pm_runtime_suspended(cdev->dev))
++		return IRQ_NONE;
+ 	ir = m_can_read(cdev, M_CAN_IR);
+ 	if (!ir)
+ 		return IRQ_NONE;
 -- 
 2.27.0
 
