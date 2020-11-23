@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C792C05E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342392C066F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729974AbgKWMZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:25:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34664 "EHLO mail.kernel.org"
+        id S1730795AbgKWMa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729940AbgKWMZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:25:10 -0500
+        id S1730772AbgKWMav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08E3520857;
-        Mon, 23 Nov 2020 12:25:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E4C920728;
+        Mon, 23 Nov 2020 12:30:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134309;
-        bh=vEveepjJECq8Q7QmV4F3VjVF9TjNSLIX4IXXka6cj1Y=;
+        s=korg; t=1606134650;
+        bh=/CuCIyqCGWl1pj0qaP1PVDXHdanIKYc2bl6650nmA0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oz61t1Pb9LCYaoSc04y9px8bG66faNfm76MxqtXp7vwJDMPdwrvHWmlT+KN9TIePH
-         SI/2PInEyuPmc/EFmMNKJIj4txzF/Vuuhoq6Dq3k/qIu2qR1Mi6+cc7/LbBc9hFKXa
-         uORHhkbg6EZQgDvCiLBw593cP1tf8Fna/wyUnqrw=
+        b=rXTGNhMF+tE0D7tP6XZpyMZNkQ5hMiHNNGAo0ssIFkcsHolwA5IFN9X2sTIe2jCPz
+         KHAOPIuY0HnBdYIyb1OPJ6Y0dxbEWCqZDpBEqC5ncz1PXsPhzgJDbUsW2oF9ZLm8Pb
+         XbREB5J2vR4RAghxpX28qKpqQjFsQOMUbz6M1wzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 07/47] net: bridge: add missing counters to ndo_get_stats64 callback
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 33/91] arm64: dts: allwinner: a64: Pine64 Plus: Fix ethernet node
 Date:   Mon, 23 Nov 2020 13:21:53 +0100
-Message-Id: <20201123121805.904214183@linuxfoundation.org>
+Message-Id: <20201123121810.927279546@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,32 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-[ Upstream commit 7a30ecc9237681bb125cbd30eee92bef7e86293d ]
+[ Upstream commit 927f42fcc1b4f7d04a2ac5cf02f25612aa8923a4 ]
 
-In br_forward.c and br_input.c fields dev->stats.tx_dropped and
-dev->stats.multicast are populated, but they are ignored in
-ndo_get_stats64.
+According to board schematic, PHY provides both, RX and TX delays.
+However, according to "fix" Realtek provided for this board, only TX
+delay should be provided by PHY.
+Tests show that both variants work but TX only PHY delay works
+slightly better.
 
-Fixes: 28172739f0a2 ("net: fix 64 bit counters on 32 bit arches")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/58ea9963-77ad-a7cf-8dfd-fc95ab95f606@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Update ethernet node to reflect the fact that PHY provides TX delay.
+
+Fixes: 94f442886711 ("arm64: dts: allwinner: A64: Restore EMAC changes")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20201022211301.3548422-1-jernej.skrabec@siol.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_device.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -177,6 +177,7 @@ static struct rtnl_link_stats64 *br_get_
- 		sum.rx_packets += tmp.rx_packets;
- 	}
- 
-+	netdev_stats_to_stats64(stats, &dev->stats);
- 	stats->tx_bytes   = sum.tx_bytes;
- 	stats->tx_packets = sum.tx_packets;
- 	stats->rx_bytes   = sum.rx_bytes;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
+index d5b6e8159a335..5d0905f0f1c1d 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
+@@ -52,7 +52,7 @@
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmii_pins>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-txid";
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	status = "okay";
+ };
+-- 
+2.27.0
+
 
 
