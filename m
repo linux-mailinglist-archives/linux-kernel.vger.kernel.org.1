@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42BD2C06AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50632C0645
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731192AbgKWMdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:33:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
+        id S1730592AbgKWM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:29:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731149AbgKWMc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:32:58 -0500
+        id S1730582AbgKWM3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:29:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B403420857;
-        Mon, 23 Nov 2020 12:32:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFC11208C3;
+        Mon, 23 Nov 2020 12:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134777;
-        bh=pcZCWID/4hnB0Wdf7edu0WS6n5erSAElGHQbmYw2bfY=;
+        s=korg; t=1606134561;
+        bh=Gn5WVvQ6ZdDM+36FkyPSDh0KOXeEH7zLNSX8Px5UhNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E7f09wYWGYKsijGVCE6Gl9AxCCnP+K2CuO8DUqs5KVaNt4hXJf3rehM5Occtkxeoy
-         Oesm5FYFs3/TW+XxnogOsfgviwu1Eh/oJt3UAUjoyEkkHG5xXhXiTiGeBPLXa9rRMx
-         16HXEz8POjd96frgi/Rtpihfr4GFIt9Bgbs2f6/o=
+        b=Bp5U1xVko9Ky4pddGZb+/6q18Gcunrky28EJwdwL6Mujma734k/bUAvOVx1RWJDsO
+         VRG6It6/3P/EmtNyzAVYn01i+OIDuW+8jx1TOiYoISGDxfhnQFBSccv+/WLc720rjh
+         FBWlrqRrB2Den9/IelIPHcm5SaQLjpBSckY7FfDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Mark Brown <broonie@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: [PATCH 4.19 79/91] regulator: fix memory leak with repeated set_machine_constraints()
+        syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com,
+        syzbot+4c81fe92e372d26c4246@syzkaller.appspotmail.com,
+        syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com,
+        syzbot+abed06851c5ffe010921@syzkaller.appspotmail.com,
+        syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com,
+        syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 57/60] mac80211: free sta in sta_info_insert_finish() on errors
 Date:   Mon, 23 Nov 2020 13:22:39 +0100
-Message-Id: <20201123121813.163118071@linuxfoundation.org>
+Message-Id: <20201123121807.803959448@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,102 +48,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 57a6ad482af256b2a13de14194fb8f67c1a65f10 upstream.
+commit 7bc40aedf24d31d8bea80e1161e996ef4299fb10 upstream.
 
-Fixed commit introduced a possible second call to
-set_machine_constraints() and that allocates memory for
-rdev->constraints. Move the allocation to the caller so
-it's easier to manage and done once.
+If sta_info_insert_finish() fails, we currently keep the station
+around and free it only in the caller, but there's only one such
+caller and it always frees it immediately.
 
-Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+As syzbot found, another consequence of this split is that we can
+put things that sleep only into __cleanup_single_sta() and not in
+sta_info_free(), but this is the only place that requires such of
+sta_info_free() now.
+
+Change this to free the station in sta_info_insert_finish(), in
+which case we can still sleep. This will also let us unify the
+cleanup code later.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
-Link: https://lore.kernel.org/r/78c3d4016cebc08d441aad18cb924b4e4d9cf9df.1605226675.git.mirq-linux@rere.qmqm.pl
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
+Reported-by: syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com
+Reported-by: syzbot+4c81fe92e372d26c4246@syzkaller.appspotmail.com
+Reported-by: syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com
+Reported-by: syzbot+abed06851c5ffe010921@syzkaller.appspotmail.com
+Reported-by: syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com
+Reported-by: syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20201112112201.ee6b397b9453.I9c31d667a0ea2151441cc64ed6613d36c18a48e0@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/regulator/core.c |   29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ net/mac80211/sta_info.c |   14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1091,7 +1091,6 @@ static int _regulator_do_enable(struct r
- /**
-  * set_machine_constraints - sets regulator constraints
-  * @rdev: regulator source
-- * @constraints: constraints to apply
-  *
-  * Allows platform initialisation code to define and constrain
-  * regulator circuits e.g. valid voltage/current ranges, etc.  NOTE:
-@@ -1099,21 +1098,11 @@ static int _regulator_do_enable(struct r
-  * regulator operations to proceed i.e. set_voltage, set_current_limit,
-  * set_mode.
-  */
--static int set_machine_constraints(struct regulator_dev *rdev,
--	const struct regulation_constraints *constraints)
-+static int set_machine_constraints(struct regulator_dev *rdev)
- {
- 	int ret = 0;
- 	const struct regulator_ops *ops = rdev->desc->ops;
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -607,7 +607,7 @@ static int sta_info_insert_finish(struct
+  out_drop_sta:
+ 	local->num_sta--;
+ 	synchronize_net();
+-	__cleanup_single_sta(sta);
++	cleanup_single_sta(sta);
+  out_err:
+ 	mutex_unlock(&local->sta_mtx);
+ 	kfree(sinfo);
+@@ -626,19 +626,13 @@ int sta_info_insert_rcu(struct sta_info
  
--	if (constraints)
--		rdev->constraints = kmemdup(constraints, sizeof(*constraints),
--					    GFP_KERNEL);
--	else
--		rdev->constraints = kzalloc(sizeof(*constraints),
--					    GFP_KERNEL);
--	if (!rdev->constraints)
--		return -ENOMEM;
+ 	err = sta_info_insert_check(sta);
+ 	if (err) {
++		sta_info_free(local, sta);
+ 		mutex_unlock(&local->sta_mtx);
+ 		rcu_read_lock();
+-		goto out_free;
++		return err;
+ 	}
+ 
+-	err = sta_info_insert_finish(sta);
+-	if (err)
+-		goto out_free;
 -
- 	ret = machine_constraints_voltage(rdev, rdev->constraints);
- 	if (ret != 0)
- 		return ret;
-@@ -4257,7 +4246,6 @@ struct regulator_dev *
- regulator_register(const struct regulator_desc *regulator_desc,
- 		   const struct regulator_config *cfg)
- {
--	const struct regulation_constraints *constraints = NULL;
- 	const struct regulator_init_data *init_data;
- 	struct regulator_config *config = NULL;
- 	static atomic_t regulator_no = ATOMIC_INIT(-1);
-@@ -4358,14 +4346,23 @@ regulator_register(const struct regulato
+-	return 0;
+- out_free:
+-	sta_info_free(local, sta);
+-	return err;
++	return sta_info_insert_finish(sta);
+ }
  
- 	/* set regulator constraints */
- 	if (init_data)
--		constraints = &init_data->constraints;
-+		rdev->constraints = kmemdup(&init_data->constraints,
-+					    sizeof(*rdev->constraints),
-+					    GFP_KERNEL);
-+	else
-+		rdev->constraints = kzalloc(sizeof(*rdev->constraints),
-+					    GFP_KERNEL);
-+	if (!rdev->constraints) {
-+		ret = -ENOMEM;
-+		goto wash;
-+	}
- 
- 	if (init_data && init_data->supply_regulator)
- 		rdev->supply_name = init_data->supply_regulator;
- 	else if (regulator_desc->supply_name)
- 		rdev->supply_name = regulator_desc->supply_name;
- 
--	ret = set_machine_constraints(rdev, constraints);
-+	ret = set_machine_constraints(rdev);
- 	if (ret == -EPROBE_DEFER) {
- 		/* Regulator might be in bypass mode and so needs its supply
- 		 * to set the constraints */
-@@ -4374,7 +4371,7 @@ regulator_register(const struct regulato
- 		 * that is just being created */
- 		ret = regulator_resolve_supply(rdev);
- 		if (!ret)
--			ret = set_machine_constraints(rdev, constraints);
-+			ret = set_machine_constraints(rdev);
- 		else
- 			rdev_dbg(rdev, "unable to resolve supply early: %pe\n",
- 				 ERR_PTR(ret));
+ int sta_info_insert(struct sta_info *sta)
 
 
