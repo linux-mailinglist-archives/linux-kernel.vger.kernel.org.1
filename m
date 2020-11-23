@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFF32C0AD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C212C0B82
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729513AbgKWM3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:29:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39640 "EHLO mail.kernel.org"
+        id S2389140AbgKWNZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:25:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730566AbgKWM3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:29:17 -0500
+        id S1731143AbgKWMcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:32:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB33120857;
-        Mon, 23 Nov 2020 12:29:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18E382076E;
+        Mon, 23 Nov 2020 12:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134556;
-        bh=KSX0GOJAIGf/XPCwJh5SbZHN4b3oQ1XwQefD9h4Ag9g=;
+        s=korg; t=1606134774;
+        bh=p/BMhVuLgfQmPSua40UMbAp85aa9kbc6tWNh85jGz6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWnTDiZwxcgzoU0R9YfpecGM06RVz6XRTRrnxrCRJu+nP+/dmm+Ayf6myLgLohIA9
-         eauMSCxt0CLqS8o8xRXLJb0Xt6A3fmnukOd8jxCJIlNjHf2y0xtnbx8DB4XrAr4Zi2
-         psk9uTfCRolqx7sLGAZVESKza6Zjsw9yt6oILJqw=
+        b=m/CajdNhScmR+8rdcqo6uKogWAmnR5gPxjLIU701NLY76gMIsdg3Ei9qcDLpq+DOH
+         jNl5IxriqAkbfi88+TG5UlGLhVXFjG+CtFg/jdBGrTJLBNzS7rfndxeq2uP1TaiK+D
+         KWVVlStsrFvJ7sqLhuQLa/bhVgM91peHYWeLK4Go=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 55/60] mac80211: minstrel: remove deferred sampling code
-Date:   Mon, 23 Nov 2020 13:22:37 +0100
-Message-Id: <20201123121807.705465888@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 78/91] regulator: pfuze100: limit pfuze-support-disable-sw to pfuze{100,200}
+Date:   Mon, 23 Nov 2020 13:22:38 +0100
+Message-Id: <20201123121813.119234370@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,108 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Sean Nyekjaer <sean@geanix.com>
 
-commit 4fe40b8e1566dad04c87fbf299049a1d0d4bd58d upstream.
+commit 365ec8b61689bd64d6a61e129e0319bf71336407 upstream.
 
-Deferring sampling attempts to the second stage has some bad interactions
-with drivers that process the rate table in hardware and use the probe flag
-to indicate probing packets (e.g. most mt76 drivers). On affected drivers
-it can lead to probing not working at all.
+Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
+variants.
+When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
+pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
+instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
 
-If the link conditions turn worse, it might not be such a good idea to
-do a lot of sampling for lower rates in this case.
-
-Fix this by simply skipping the sample attempt instead of deferring it,
-but keep the checks that would allow it to be sampled if it was skipped
-too often, but only if it has less than 95% success probability.
-
-Also ensure that IEEE80211_TX_CTL_RATE_CTRL_PROBE is set for all probing
-packets.
-
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Fixes: 6f1cf5257acc ("regualtor: pfuze100: correct sw1a/sw2 on pfuze3000")
 Cc: stable@vger.kernel.org
-Fixes: cccf129f820e ("mac80211: add the 'minstrel' rate control algorithm")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20201111183359.43528-2-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Link: https://lore.kernel.org/r/20201110174113.2066534-1-sean@geanix.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/mac80211/rc80211_minstrel.c |   25 ++++---------------------
- net/mac80211/rc80211_minstrel.h |    1 -
- 2 files changed, 4 insertions(+), 22 deletions(-)
+ drivers/regulator/pfuze100-regulator.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/net/mac80211/rc80211_minstrel.c
-+++ b/net/mac80211/rc80211_minstrel.c
-@@ -289,12 +289,6 @@ minstrel_tx_status(void *priv, struct ie
- 			mi->r[ndx].stats.success += success;
- 	}
+--- a/drivers/regulator/pfuze100-regulator.c
++++ b/drivers/regulator/pfuze100-regulator.c
+@@ -755,11 +755,14 @@ static int pfuze100_regulator_probe(stru
+ 		 * the switched regulator till yet.
+ 		 */
+ 		if (pfuze_chip->flags & PFUZE_FLAG_DISABLE_SW) {
+-			if (pfuze_chip->regulator_descs[i].sw_reg) {
+-				desc->ops = &pfuze100_sw_disable_regulator_ops;
+-				desc->enable_val = 0x8;
+-				desc->disable_val = 0x0;
+-				desc->enable_time = 500;
++			if (pfuze_chip->chip_id == PFUZE100 ||
++				pfuze_chip->chip_id == PFUZE200) {
++				if (pfuze_chip->regulator_descs[i].sw_reg) {
++					desc->ops = &pfuze100_sw_disable_regulator_ops;
++					desc->enable_val = 0x8;
++					desc->disable_val = 0x0;
++					desc->enable_time = 500;
++				}
+ 			}
+ 		}
  
--	if ((info->flags & IEEE80211_TX_CTL_RATE_CTRL_PROBE) && (i >= 0))
--		mi->sample_packets++;
--
--	if (mi->sample_deferred > 0)
--		mi->sample_deferred--;
--
- 	if (time_after(jiffies, mi->last_stats_update +
- 				(mp->update_interval * HZ) / 1000))
- 		minstrel_update_stats(mp, mi);
-@@ -373,7 +367,7 @@ minstrel_get_rate(void *priv, struct iee
- 		return;
- 
- 	delta = (mi->total_packets * sampling_ratio / 100) -
--			(mi->sample_packets + mi->sample_deferred / 2);
-+			mi->sample_packets;
- 
- 	/* delta < 0: no sampling required */
- 	prev_sample = mi->prev_sample;
-@@ -382,7 +376,6 @@ minstrel_get_rate(void *priv, struct iee
- 		return;
- 
- 	if (mi->total_packets >= 10000) {
--		mi->sample_deferred = 0;
- 		mi->sample_packets = 0;
- 		mi->total_packets = 0;
- 	} else if (delta > mi->n_rates * 2) {
-@@ -407,19 +400,8 @@ minstrel_get_rate(void *priv, struct iee
- 	 * rate sampling method should be used.
- 	 * Respect such rates that are not sampled for 20 interations.
- 	 */
--	if (mrr_capable &&
--	    msr->perfect_tx_time > mr->perfect_tx_time &&
--	    msr->stats.sample_skipped < 20) {
--		/* Only use IEEE80211_TX_CTL_RATE_CTRL_PROBE to mark
--		 * packets that have the sampling rate deferred to the
--		 * second MRR stage. Increase the sample counter only
--		 * if the deferred sample rate was actually used.
--		 * Use the sample_deferred counter to make sure that
--		 * the sampling is not done in large bursts */
--		info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
--		rate++;
--		mi->sample_deferred++;
--	} else {
-+	if (msr->perfect_tx_time < mr->perfect_tx_time ||
-+	    msr->stats.sample_skipped >= 20) {
- 		if (!msr->sample_limit)
- 			return;
- 
-@@ -439,6 +421,7 @@ minstrel_get_rate(void *priv, struct iee
- 
- 	rate->idx = mi->r[ndx].rix;
- 	rate->count = minstrel_get_retry_count(&mi->r[ndx], info);
-+	info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
- }
- 
- 
---- a/net/mac80211/rc80211_minstrel.h
-+++ b/net/mac80211/rc80211_minstrel.h
-@@ -98,7 +98,6 @@ struct minstrel_sta_info {
- 	u8 max_prob_rate;
- 	unsigned int total_packets;
- 	unsigned int sample_packets;
--	int sample_deferred;
- 
- 	unsigned int sample_row;
- 	unsigned int sample_column;
 
 
