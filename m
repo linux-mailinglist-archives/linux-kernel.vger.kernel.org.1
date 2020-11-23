@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C304D2C0632
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99562C06B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730489AbgKWM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38892 "EHLO mail.kernel.org"
+        id S1730662AbgKWMdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:33:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730476AbgKWM2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:41 -0500
+        id S1731244AbgKWMdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:33:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EB632076E;
-        Mon, 23 Nov 2020 12:28:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E96A320721;
+        Mon, 23 Nov 2020 12:33:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134519;
-        bh=Zz50vd5vD4HIByIieSimEQ3FOV/r3Q+AnWO1Q63UXwA=;
+        s=korg; t=1606134816;
+        bh=YoQDnUTsqVY+WKspD6+ZqPA26Klmis3QpVjN5O9GZjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=attaxExqU3jpiY94glnJkdJFZ9+1rXF54EkHb6F+oSrUtHJRCeOdE4XMlMMAT1vZp
-         vaaEtpcP6r/65dQlUPFM86BLp+XHOYBgyf+wzA4/1gKuNnx6gfhoZFAyf2ef1NSsBG
-         yKq9Ee4JUkqiGdk97PA/IxqRL19i1F0xUCb+TQNI=
+        b=0ksHPcheyuBYaYosHiKznGlGizn8WFqy5SxI1P2rPdhfL048raqZWzUjhdUeDYB3D
+         KO1glFF1KayKc9VAyLpybxVrjjwrDDMjNDHT+kCZJnsKD2toW9jIrI+BUrMouiW+gD
+         vFvSkdfK5a3JL+9/Dsn0BVJBitw94dePaXXuOMoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
-        Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.14 48/60] ext4: fix bogus warning in ext4_update_dx_flag()
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 70/91] ALSA: mixart: Fix mutex deadlock
 Date:   Mon, 23 Nov 2020 13:22:30 +0100
-Message-Id: <20201123121807.373841463@linuxfoundation.org>
+Message-Id: <20201123121812.727253198@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit f902b216501094495ff75834035656e8119c537f upstream.
+commit d21b96c8ed2aea7e6b7bf4735e1d2503cfbf4072 upstream.
 
-The idea of the warning in ext4_update_dx_flag() is that we should warn
-when we are clearing EXT4_INODE_INDEX on a filesystem with metadata
-checksums enabled since after clearing the flag, checksums for internal
-htree nodes will become invalid. So there's no need to warn (or actually
-do anything) when EXT4_INODE_INDEX is not set.
+The code change for switching to non-atomic mode brought the
+unexpected mutex deadlock in get_msg().  It converted the spinlock
+with the existing mutex, but there were calls with the already holding
+the mutex.  Since the only place that needs the extra lock is the code
+path from snd_mixart_send_msg(), remove the mutex lock in get_msg()
+and apply in the caller side for fixing the mutex deadlock.
 
-Link: https://lore.kernel.org/r/20201118153032.17281-1-jack@suse.cz
-Fixes: 48a34311953d ("ext4: fix checksum errors with indexed dirs")
-Reported-by: Eric Biggers <ebiggers@kernel.org>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Fixes: 8d3a8b5cb57d ("ALSA: mixart: Use nonatomic PCM ops")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201119121440.18945-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/ext4.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/mixart/mixart_core.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2406,7 +2406,8 @@ void ext4_insert_dentry(struct inode *in
- 			struct ext4_filename *fname);
- static inline void ext4_update_dx_flag(struct inode *inode)
- {
--	if (!ext4_has_feature_dir_index(inode->i_sb)) {
-+	if (!ext4_has_feature_dir_index(inode->i_sb) &&
-+	    ext4_test_inode_flag(inode, EXT4_INODE_INDEX)) {
- 		/* ext4_iget() should have caught this... */
- 		WARN_ON_ONCE(ext4_has_feature_metadata_csum(inode->i_sb));
- 		ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
+--- a/sound/pci/mixart/mixart_core.c
++++ b/sound/pci/mixart/mixart_core.c
+@@ -83,7 +83,6 @@ static int get_msg(struct mixart_mgr *mg
+ 	unsigned int i;
+ #endif
+ 
+-	mutex_lock(&mgr->msg_lock);
+ 	err = 0;
+ 
+ 	/* copy message descriptor from miXart to driver */
+@@ -132,8 +131,6 @@ static int get_msg(struct mixart_mgr *mg
+ 	writel_be(headptr, MIXART_MEM(mgr, MSG_OUTBOUND_FREE_HEAD));
+ 
+  _clean_exit:
+-	mutex_unlock(&mgr->msg_lock);
+-
+ 	return err;
+ }
+ 
+@@ -271,7 +268,9 @@ int snd_mixart_send_msg(struct mixart_mg
+ 	resp.data = resp_data;
+ 	resp.size = max_resp_size;
+ 
++	mutex_lock(&mgr->msg_lock);
+ 	err = get_msg(mgr, &resp, msg_frame);
++	mutex_unlock(&mgr->msg_lock);
+ 
+ 	if( request->message_id != resp.message_id )
+ 		dev_err(&mgr->pci->dev, "RESPONSE ERROR!\n");
 
 
