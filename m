@@ -2,64 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315DB2C1727
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816EE2C172C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730403AbgKWUzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:55:02 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:47690 "EHLO mail.skyhub.de"
+        id S1729584AbgKWU5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:57:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728989AbgKWUzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:55:01 -0500
-Received: from zn.tnic (p200300ec2f0bbc004db97da25dfc8587.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:bc00:4db9:7da2:5dfc:8587])
+        id S1728093AbgKWU5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 15:57:43 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1AF6F1EC0506;
-        Mon, 23 Nov 2020 21:55:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606164900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=eOxsNY7Er405uLXDsZt8H9k38WgOvAwa9tKguJYOqQo=;
-        b=Ax4UYuaYggVY1jvgLuF6jrJBpT1tgAhDIW85bNQ/6QCQZ3cN4++42EfPZxl9NA5ijzQSq4
-        93w4FOMIm5QyAEhJ8fxMWCoqR/qRzgwapgc/1bi3LdJ+DM0TuNvv11PX6BsAFl5PTPvsxe
-        ISQpzkyf3WS135ypXyIwOz5T3MiLS2Y=
-Date:   Mon, 23 Nov 2020 21:54:53 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yash Shah <yash.shah@sifive.com>
-Cc:     robh+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        mchehab@kernel.org, tony.luck@intel.com, james.morse@arm.com,
-        rric@kernel.org, aou@eecs.berkeley.edu, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, sachin.ghadi@sifive.com
-Subject: Re: [PATCH 3/3] EDAC/sifive: Add support for SiFive BEU in SiFive
- platform EDAC
-Message-ID: <20201123205453.GJ15044@zn.tnic>
-References: <1605182457-86046-1-git-send-email-yash.shah@sifive.com>
- <1605182457-86046-3-git-send-email-yash.shah@sifive.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 083C2206B7;
+        Mon, 23 Nov 2020 20:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606165062;
+        bh=3RNDJzOWiD85IYyAHYIvb7mYZk5j7kJsGG+OaDPykV0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=h6ows1NGdvRNFsMQi8xtK6l8ZfaBpVJF8jwBbArnJq2xhHn/5KmjxITogxO5Lawt2
+         hLWqHUKcjI4aGxIc0b3D5q9Qj2L8bpSfsu9G1YDf9FiPlB5tOvAeAtSXYlAwIQrc+Y
+         oRzcP/kYPJgL7d3R49MVn91yfDRTM3pYLaRfdkbM=
+Date:   Mon, 23 Nov 2020 20:57:37 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Nicolas.Ferre@microchip.com, kamel.bouhara@bootlin.com,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joe@perches.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
+ maintainer
+Message-ID: <20201123205737.4f5f06b3@archlinux>
+In-Reply-To: <X7uragBU7qwcs62L@shinobu>
+References: <20201121185824.451477-1-vilhelm.gray@gmail.com>
+        <df14f643-e80e-6ae6-dcef-90adefe6d733@microchip.com>
+        <X7uragBU7qwcs62L@shinobu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1605182457-86046-3-git-send-email-yash.shah@sifive.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:30:57PM +0530, Yash Shah wrote:
-> Register for ECC error events from SiFive BEU in SiFive platform EDAC
-> driver.
+On Mon, 23 Nov 2020 07:30:34 -0500
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+
+> On Mon, Nov 23, 2020 at 09:50:34AM +0000, Nicolas.Ferre@microchip.com wrote:
+> > On 21/11/2020 at 19:58, William Breathitt Gray wrote:  
+> > > Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > ---
+> > >   Changes in v3:
+> > >    - Reorder entries to match preferred MAINTAINERS ordering
+> > > 
+> > >   MAINTAINERS | 7 +++++++
+> > >   1 file changed, 7 insertions(+)
+> > > 
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 913b5eb64e44..1ee380dfe189 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -2104,6 +2104,13 @@ S:       Supported
+> > >   F:     arch/arm64/boot/dts/microchip/
+> > >   N:     sparx5
+> > > 
+> > > +ARM/Microchip Timer Counter Block (TCB) Capture Driver  
+> > 
+> > Nit: we don't use the ARM/Microchip string for drivers which could be 
+> > multi-architecture. Only AT91 and Sparx5 families have these entries.
+> > 
+> > I'm not holding the patch for this:
+> > Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>  
 > 
-> Signed-off-by: Yash Shah <yash.shah@sifive.com>
-> ---
->  drivers/edac/Kconfig       |  2 +-
->  drivers/edac/sifive_edac.c | 13 +++++++++++--
->  2 files changed, 12 insertions(+), 3 deletions(-)
+> Jonathan,
+> 
+> If you would like me to submit a v4 with the "ARM/" string removed, just
+> let me know. Otherwise, feel free to make an adjustment if you want when
+> you merge this.
 
-Acked-by: Borislav Petkov <bp@suse.de>
+No problem, I'll tweak it when I pick it up.
 
--- 
-Regards/Gruss,
-    Boris.
+Thanks,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Jonathan
+
+> 
+> Thanks,
+> 
+> William Breathitt Gray
+> 
+> > > +M:     Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > > +L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> > > +L:     linux-iio@vger.kernel.org
+> > > +S:     Maintained
+> > > +F:     drivers/counter/microchip-tcb-capture.c
+> > > +
+> > >   ARM/MIOA701 MACHINE SUPPORT
+> > >   M:     Robert Jarzmik <robert.jarzmik@free.fr>
+> > >   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> > > --
+> > > 2.29.2
+> > > 
+> > > 
+> > > _______________________________________________
+> > > linux-arm-kernel mailing list
+> > > linux-arm-kernel@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > >   
+> > 
+> > 
+> > -- 
+> > Nicolas Ferre  
+
