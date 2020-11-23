@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B462C05A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E25B2C05A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729760AbgKWMYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:24:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33370 "EHLO mail.kernel.org"
+        id S1729407AbgKWMYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:24:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729361AbgKWMYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:24:06 -0500
+        id S1729764AbgKWMYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:24:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B91AF208FE;
-        Mon, 23 Nov 2020 12:24:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF9B620781;
+        Mon, 23 Nov 2020 12:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134244;
-        bh=zAGFwI+/cRpJDwLyxUtzSYE4+l+MOqPG7UIOWrt+1CU=;
+        s=korg; t=1606134252;
+        bh=8zuK+EHkzGHFrY+j+zhJ+t4rmPsnmwXt3TG/2VbhS7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QJmGqrj/At+Lsa+pVaTjRvVjK9+1Ie8pou41t9gQH/FzrVz/rZ+pA7t89+qnwx2xO
-         ZdJNDreUOApWOZZqW3q/7SASS+f1c9jMMQFORGYZ2tLDSSVrvJ9YAaCHL6TaKUDD9z
-         ATp87e9B4o6AyFs45ZYDiIC++Oa1ikzchJlF8eZw=
+        b=gN+V4q0kKl6CXfulDnaTmrHJ2uuI+SNzthGHhpab6jFOetgJzKhojFJ2zyliBbn6L
+         /2vUrr7q4pK461ebFqT5nzXwnwUDXhF+TVjViyKgH/W9NRY8UEX/UwukZV/TdBaNrx
+         zlXCgQ+xYf1mqdc2Pp8F/BKqBhPCTiQ63ldGeato=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>,
-        linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/38] MIPS: Fix BUILD_ROLLBACK_PROLOGUE for microMIPS
-Date:   Mon, 23 Nov 2020 13:22:01 +0100
-Message-Id: <20201123121805.043491918@linuxfoundation.org>
+Subject: [PATCH 4.4 18/38] ARM: dts: imx50-evk: Fix the chip select 1 IOMUX
+Date:   Mon, 23 Nov 2020 13:22:04 +0100
+Message-Id: <20201123121805.181129732@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
 References: <20201123121804.306030358@linuxfoundation.org>
@@ -43,47 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Burton <paul.burton@imgtec.com>
+From: Fabio Estevam <festevam@gmail.com>
 
-[ Upstream commit 1eefcbc89cf3a8e252e5aeb25825594699b47360 ]
+[ Upstream commit 33d0d843872c5ddbe28457a92fc6f2487315fb9f ]
 
-When the kernel is built for microMIPS, branches targets need to be
-known to be microMIPS code in order to result in bit 0 of the PC being
-set. The branch target in the BUILD_ROLLBACK_PROLOGUE macro was simply
-the end of the macro, which may be pointing at padding rather than at
-code. This results in recent enough GNU linkers complaining like so:
+The SPI chip selects are represented as:
 
-    mips-img-linux-gnu-ld: arch/mips/built-in.o: .text+0x3e3c: Unsupported branch between ISA modes.
-    mips-img-linux-gnu-ld: final link failed: Bad value
-    Makefile:936: recipe for target 'vmlinux' failed
-    make: *** [vmlinux] Error 1
+cs-gpios = <&gpio4 11 GPIO_ACTIVE_LOW>, <&gpio4 13 GPIO_ACTIVE_LOW>;
 
-Fix this by changing the branch target to be the start of the
-appropriate handler, skipping over any padding.
+, which means that they are used in GPIO function instead of native
+SPI mode.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Patchwork: https://patchwork.linux-mips.org/patch/14019/
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+Fix the IOMUX for the chip select 1 to use GPIO4_13 instead of
+the native CSPI_SSI function.
+
+Fixes: c605cbf5e135 ("ARM: dts: imx: add device tree support for Freescale imx50evk board")
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/genex.S | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/boot/dts/imx50-evk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index 7ffd158de76e5..1b837d6f73deb 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -142,9 +142,8 @@ LEAF(__r4k_wait)
- 	PTR_LA	k1, __r4k_wait
- 	ori	k0, 0x1f	/* 32 byte rollback region */
- 	xori	k0, 0x1f
--	bne	k0, k1, 9f
-+	bne	k0, k1, \handler
- 	MTC0	k0, CP0_EPC
--9:
- 	.set pop
- 	.endm
+diff --git a/arch/arm/boot/dts/imx50-evk.dts b/arch/arm/boot/dts/imx50-evk.dts
+index 27d763c7a307d..4dbd180e72ba6 100644
+--- a/arch/arm/boot/dts/imx50-evk.dts
++++ b/arch/arm/boot/dts/imx50-evk.dts
+@@ -66,7 +66,7 @@
+ 				MX50_PAD_CSPI_MISO__CSPI_MISO		0x00
+ 				MX50_PAD_CSPI_MOSI__CSPI_MOSI		0x00
+ 				MX50_PAD_CSPI_SS0__GPIO4_11		0xc4
+-				MX50_PAD_ECSPI1_MOSI__CSPI_SS1		0xf4
++				MX50_PAD_ECSPI1_MOSI__GPIO4_13		0x84
+ 			>;
+ 		};
  
 -- 
 2.27.0
