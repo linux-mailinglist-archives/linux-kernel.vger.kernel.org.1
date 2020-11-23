@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912DF2C1866
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6832C186A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbgKWW3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:29:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45868 "EHLO mail.kernel.org"
+        id S1731488AbgKWWaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:30:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729058AbgKWW3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:29:11 -0500
-Received: from localhost (unknown [176.167.152.233])
+        id S1728649AbgKWWai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 17:30:38 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18DD1206D5;
-        Mon, 23 Nov 2020 22:29:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75A21206D5;
+        Mon, 23 Nov 2020 22:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606170550;
-        bh=xXNk1SHeG0DaBJJsaGjypi7ccMGVaxlbxK413/BOw4o=;
+        s=default; t=1606170638;
+        bh=qMsLhguUfZGHthn8o/bIe+LRx3PrKd4xYprbL94g5Es=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ixP3Yo9U3LEyuDTmCaRqPijWNey8CBiHdJfyFxnoMlHmfOcb4S2gKkJlPWpPLtHQg
-         kvc5oiRGqS0ZAHNBtaEIoKLepU2ALrH0nhLNWTasgX6yRBBbAHzbf8Q61ptTFdZKh4
-         xqCRZIkjtAaouTmcyAvseDOYLX1ZGfEePoTtoxDU=
-Date:   Mon, 23 Nov 2020 23:29:07 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Alex Belits <abelits@marvell.com>
-Cc:     "nitesh@redhat.com" <nitesh@redhat.com>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 9/9] task_isolation: kick_all_cpus_sync: don't kick
- isolated cpus
-Message-ID: <20201123222907.GC1751@lothringen>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
- <3236b13f42679031960c5605be20664e90e75223.camel@marvell.com>
+        b=DNfDxTnuJc/9ZOQO+U1ViZqPntmi9u+PapFohdzgovjh/jy/Yy4xVB33Rww+qBRm7
+         az2CJzZnLZkYf7iatMCzDNGSHVMHyPoXq/qiSNoa3lsby8//RGmrveXMtq3Cqen2Q2
+         SidiEvRqa7Jbzx0Zmg8juZV1Q8JiUJnD9dIkecsc=
+Date:   Mon, 23 Nov 2020 14:30:35 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, kernel-team@android.com
+Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
+Message-ID: <X7w4C8GAy+P9KNU6@sol.localdomain>
+References: <20201119060904.463807-1-drosen@google.com>
+ <20201119060904.463807-3-drosen@google.com>
+ <87y2iuj8y2.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3236b13f42679031960c5605be20664e90e75223.camel@marvell.com>
+In-Reply-To: <87y2iuj8y2.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 05:58:42PM +0000, Alex Belits wrote:
-> From: Yuri Norov <ynorov@marvell.com>
+On Sat, Nov 21, 2020 at 11:45:41PM -0500, Gabriel Krisman Bertazi wrote:
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 6633b20224d5..0288bedf46e1 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -4968,11 +4968,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+> >  		goto failed_mount4;
+> >  	}
+> >  
+> > -#ifdef CONFIG_UNICODE
+> > -	if (sb->s_encoding)
+> > -		sb->s_d_op = &ext4_dentry_ops;
+> > -#endif
 > 
-> Make sure that kick_all_cpus_sync() does not call CPUs that are running
-> isolated tasks.
+> This change has the side-effect of removing the capability of the root
+> directory from being case-insensitive.  It is not a backward
+> incompatible change because there is no way to make the root directory
+> CI at the moment (it is never empty). But this restriction seems
+> artificial. Is there a real reason to prevent the root inode from being
+> case-insensitive?
 > 
-> Signed-off-by: Yuri Norov <ynorov@marvell.com>
-> [abelits@marvell.com: use safe task_isolation_cpumask() implementation]
-> Signed-off-by: Alex Belits <abelits@marvell.com>
-> ---
->  kernel/smp.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index 4d17501433be..b2faecf58ed0 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -932,9 +932,21 @@ static void do_nothing(void *unused)
->   */
->  void kick_all_cpus_sync(void)
->  {
-> +	struct cpumask mask;
-> +
->  	/* Make sure the change is visible before we kick the cpus */
->  	smp_mb();
-> -	smp_call_function(do_nothing, NULL, 1);
-> +
-> +	preempt_disable();
-> +#ifdef CONFIG_TASK_ISOLATION
-> +	cpumask_clear(&mask);
-> +	task_isolation_cpumask(&mask);
-> +	cpumask_complement(&mask, &mask);
-> +#else
-> +	cpumask_setall(&mask);
-> +#endif
-> +	smp_call_function_many(&mask, do_nothing, NULL, 1);
-> +	preempt_enable();
 
-Same comment about IPIs here.
+The problem is that the "lost+found" directory is special in that e2fsck needs
+to be able to find it.
 
->  }
->  EXPORT_SYMBOL_GPL(kick_all_cpus_sync);
->  
-> -- 
-> 2.20.1
-> 
+That's the reason why ext4 doesn't allow the root directory to be encrypted.
+(And encrypting the root directory isn't really useful anyway, since if the goal
+is to encrypt a whole filesystem with one key, dm-crypt is a better solution.)
+
+Casefolding is a bit less problematic than encryption.  But it still doesn't
+entirely work, as e.g. if you name the directory "LOST+FOUND" instead (the
+directory is casefolded after all...), then e2fsck can't find it.
+
+Unless there's a real use case for the root directory being casefolded and
+people are willing to fix e2fsck, I think we should just make ext4 return an
+error when setting the casefold flag on the root directory, like it does when
+trying to enable encryption on the root directory.
+
+- Eric
