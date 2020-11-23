@@ -2,144 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D651F2C08CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB972C08F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387948AbgKWNBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:01:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49310 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729696AbgKWNBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:01:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8B828ABCE;
-        Mon, 23 Nov 2020 13:01:16 +0000 (UTC)
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
- <20201121194506.13464-1-aarcange@redhat.com>
- <20201121194506.13464-2-aarcange@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
-Date:   Mon, 23 Nov 2020 14:01:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S2388341AbgKWNDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:03:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388291AbgKWND3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:03:29 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4296DC0613CF;
+        Mon, 23 Nov 2020 05:03:28 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id a19so10018140ilm.3;
+        Mon, 23 Nov 2020 05:03:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VgtEn6nPojjN2lvwmJh9UMbzFe91Uj7vgQrKYEqQmM4=;
+        b=cmKeGzC7lz8HlnrMAWzyrHfNpn8Bywv3nPT1Mb46N4ONsackWtmLEbHKhBqVseUVnt
+         O6rUIIqSvwg2xOAsN04BxY1/u4tTF3DDmkgM1NPWKo6aT78XwDFRaCvBGxGC0AKHxL10
+         JpJIdybwo8n6+OlEMqXrHa8DpNDVMz0TT5mIIHO8B+RpU9q2ZsOgnR2lFZay3JQstYg2
+         JpI7Ukkp3AzGkPPYtVLD8jYy0wv6p/KHqXts75XGuquBhe8V+22XulxX7tn0zCgAcHW2
+         rsNr74Zsp1H8aef00Cxf37fC93nvRGQIEzGFWeL7zyrYxlY6ZMw+MgAoykaFsRGaNbIY
+         Ewfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VgtEn6nPojjN2lvwmJh9UMbzFe91Uj7vgQrKYEqQmM4=;
+        b=cl2HFzLD4iSbc5L2w/Ug+Ge052J19F6yPXPQqxXPNjO89oXj29/WtgO/nXY3PbcEfR
+         3yT+phKwyjOnc9M6kR+gWMtBdE6tsRtlztcBRlP8UTkB6FRLbnGmx7HvrQiipuNirpZM
+         JC4Qn0AxqJbZKLFt3nuD2l3kzo8MiMSNjDWthRV3aS8EIxQ7JjX2v1wuAXrvnpV7AXE5
+         JoVV8YRGl1YA7qf1waudIgjL6UH/t0aLGpNmVpmsJzsjuHO4DxtH2hUCeHoho1COvvHH
+         sB1ABV72ApGDDkfIMx5zNxXwHkc7epozN0RD+FeFZdrE0I2u2TBzO7WGyzLgaTSx03f5
+         Q7Sg==
+X-Gm-Message-State: AOAM531o8wtseNsDj5IM3o7zXp21DrnDJpm7d76TF2J3MuYQq+96JLBz
+        hwTNVygm6sNnnSvRa2LqnqcS7DpuNv17od1bYD2V8SHC
+X-Google-Smtp-Source: ABdhPJzbB/GZrJLU4XesvKCAa3niOAF1s8BMslHJ1LJaRzwQhZHU0kLizrvlaX/ZBF7zc6qOSOrDwJhI3ZqnJN/yZOU=
+X-Received: by 2002:a92:8707:: with SMTP id m7mr34276204ild.217.1606136607242;
+ Mon, 23 Nov 2020 05:03:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201121194506.13464-2-aarcange@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201117162340.43924-1-alexandru.ardelean@analog.com> <20201121185243.255d33b2@archlinux>
+In-Reply-To: <20201121185243.255d33b2@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Mon, 23 Nov 2020 15:03:16 +0200
+Message-ID: <CA+U=DspcRkY9-RfAvR9wRwbo_zpy87APb6gxnBWjLHRMZesj9A@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/12] iio: core,buffer: add support for multiple IIO
+ buffers per IIO device
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/20 8:45 PM, Andrea Arcangeli wrote:
-> A corollary issue was fixed in
-> e577c8b64d58fe307ea4d5149d31615df2d90861. A second issue remained in
-> v5.7:
-> 
-> 	https://lkml.kernel.org/r/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
-> 
-> ==
-> page:ffffea0000aa0000 refcount:1 mapcount:0 mapping:000000002243743b index:0x0
-> flags: 0x1fffe000001000(reserved)
-> ==
-> 
-> 73a6e474cb376921a311786652782155eac2fdf0 was applied to supposedly the
-> second issue, but I still reproduced it twice with v5.9 on two
-> different systems:
-> 
-> ==
-> page:0000000062b3e92f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x39800
-> flags: 0x1000(reserved)
-> ==
-> page:000000002a7114f8 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7a200
-> flags: 0x1fff000000001000(reserved)
-> ==
-> 
-> I actually never reproduced it until v5.9, but it's still the same bug
-> as it was reported first for v5.7.
-> 
-> See the page is "reserved" in all 3 cases. In the last two crashes
-> with the pfn:
-> 
-> pfn 0x39800 -> 0x39800000 min_pfn hit non-RAM:
-> 
-> 39639000-39814fff : Unknown E820 type
-> 
-> pfn 0x7a200 -> 0x7a200000 min_pfn hit non-RAM:
-> 
-> 7a17b000-7a216fff : Unknown E820 type
+On Sat, Nov 21, 2020 at 8:53 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Tue, 17 Nov 2020 18:23:28 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > Continuing from:
+> >   https://lore.kernel.org/linux-iio/20200517144023.6c5cb169@archlinux/
+> >
+> > This is a V2 of the initial attempt in the discussion above.
+> > But it did not occur to me that I should mark it as V2 when I generated
+> > the patches.
+> > I've only tested [so far] that the current IIO buffer mechnism still works.
+> > And decided to show this sketch patchset.
+> >
+> > This requires the ioctl() centralization mechanism, for which I sent a
+> > fix earlier.
+> >   https://lore.kernel.org/linux-iio/CA+U=Dsqf3UgyM666Gg9EmehpWiucDx2P0bmsC9JR--JJDT_eWQ@mail.gmail.com/T/#t
+> >   https://lore.kernel.org/linux-iio/20201117095154.7189-1-alexandru.ardelean@analog.com/T/#u
+> >
+> > The gist of this is that now, the first IIO buffer should work as
+> > before, but all extra buffers should go through the anon inodes
+> > mechanism.
+> > I'd need to find a device or a way or a chip to test these extra buffers
+> > stuff. But I'm confident that this current form should eventually work
+> > with multiple IIO buffers per 1 IIO device and with anon inodes.
+> >
+> > Maybe I'll take some of the patches in this set separately and send them
+> > individually. The problem with patchsets like this that tackle changes
+> > in a framework (like IIO) is that I become unsure after the 5th-7th patch,
+> > that the approach is correct. And I get even more unsure after that.
+> >
+> > I'll create some userspace code to test this a bit, but I thought I'd
+> > send an RFC in the meantime.
+>
+> From a first read, with all the warnings you give above, this looks pretty
+> good to me.   The kobj stuff is a little nasty and needs more docs
+> but other than that it all looks quite pleasant and readable and was
+> roughly what I was expecting from earlier discussions (which is great!).
+>
+> Good work on this, looking forward to next steps.
 
-It would be nice to also provide a /proc/zoneinfo and how exactly the 
-"zone_spans_pfn" was violated. I assume we end up below zone's 
-start_pfn, but is it true?
+Thanks.
+I'll see about re-spinning this.
+With the iio_buffer_set_attrs() change merged, this  patchset has a
+new context that I need to take a look at.
 
-> This actually seems a false positive bugcheck, the page structures are
-> valid and the zones are correct, just it's non-RAM but setting
-> pageblockskip should do no harm. However it's possible to solve the
-> crash without lifting the bugcheck, by enforcing the invariant that
-> the free_pfn cursor doesn't point to reserved pages (which would be
-> otherwise implicitly achieved through the PageBuddy check, except in
-> the new fast_isolate_around() path).
-> 
-> Fixes: 5a811889de10 ("mm, compaction: use free lists to quickly locate a migration target")
-> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> ---
->   mm/compaction.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 13cb7a961b31..d17e69549d34 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1433,7 +1433,10 @@ fast_isolate_freepages(struct compact_control *cc)
->   					page = pageblock_pfn_to_page(min_pfn,
->   						pageblock_end_pfn(min_pfn),
->   						cc->zone);
-> -					cc->free_pfn = min_pfn;
-> +					if (likely(!PageReserved(page)))
-
-PageReserved check seems rather awkward solution to me. Wouldn't it be 
-more obvious if we made sure we don't end up below zone's start_pfn (if 
-my assumption is correct) in the first place?
-
-When I check the code:
-
-unsigned long distance;
-distance = (cc->free_pfn - cc->migrate_pfn);
-low_pfn = pageblock_start_pfn(cc->free_pfn - (distance >> 2));
-min_pfn = pageblock_start_pfn(cc->free_pfn - (distance >> 1));
-
-I think what can happen is that cc->free_pfn <= cc->migrate_pfn after 
-the very last isolate_migratepages(). Then compact_finished() detects 
-that in compact_zone(), but only after migrate_pages() and thus 
-fast_isolate_freepages() is called.
-
-That would mean distance can be negative, or rather a large unsigned 
-number and low_pfn and min_pfn end up away from the zone?
-
-Or maybe the above doesn't happen, but cc->free_pfn gets so close to 
-start of the zone, that the calculations above make min_pfn go below 
-start_pfn?
-
-In any case I would rather make sure we stay within the expected zone 
-boundaries, than play tricks with PageReserved. Mel?
-
-> +						cc->free_pfn = min_pfn;
-> +					else
-> +						page = NULL;
->   				}
->   			}
->   		}
-> 
-
+>
+> Jonathan
+>
+> >
+> > Alexandru Ardelean (12):
+> >   iio: core: register chardev only if needed
+> >   iio: buffer: add back-ref from iio_buffer to iio_dev
+> >   iio: buffer: rework buffer & scan_elements dir creation
+> >   iio: buffer: add index to the first IIO buffer dir and symlink it back
+> >   iio: core: split __iio_device_attr_init() to init only the attr object
+> >   iio: buffer: re-route scan_elements via it's kobj_type
+> >   iio: buffer: re-route core buffer attributes via it's new kobj_type
+> >   iio: buffer: add helper to get the IIO device to which a buffer
+> >     belongs
+> >   iio: re-route all buffer attributes through new buffer kobj_type
+> >   iio: core: wrap iio device & buffer into struct for character devices
+> >   iio: buffer: introduce support for attaching more IIO buffers
+> >   iio: buffer: add ioctl() to support opening extra buffers for IIO
+> >     device
+> >
+> >  drivers/iio/accel/adxl372.c                   |  36 +-
+> >  drivers/iio/accel/bmc150-accel-core.c         |  34 +-
+> >  drivers/iio/adc/at91-sama5d2_adc.c            |  30 +-
+> >  .../buffer/industrialio-buffer-dmaengine.c    |  13 +-
+> >  .../cros_ec_sensors/cros_ec_sensors_core.c    |  30 +-
+> >  .../common/hid-sensors/hid-sensor-trigger.c   |  32 +-
+> >  drivers/iio/iio_core.h                        |  11 +
+> >  drivers/iio/industrialio-buffer.c             | 582 ++++++++++++++----
+> >  drivers/iio/industrialio-core.c               | 117 ++--
+> >  include/linux/iio/buffer.h                    |   2 +
+> >  include/linux/iio/buffer_impl.h               |  25 +-
+> >  include/linux/iio/iio-opaque.h                |   6 +
+> >  include/linux/iio/iio.h                       |   2 +-
+> >  include/linux/iio/sysfs.h                     |  50 ++
+> >  include/uapi/linux/iio/buffer.h               |  16 +
+> >  15 files changed, 735 insertions(+), 251 deletions(-)
+> >  create mode 100644 include/uapi/linux/iio/buffer.h
+> >
+>
