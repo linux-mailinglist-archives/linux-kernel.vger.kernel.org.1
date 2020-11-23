@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3BE2C0B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7B82C0B3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388965AbgKWNWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:22:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49074 "EHLO mail.kernel.org"
+        id S1732435AbgKWNWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:22:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731825AbgKWMgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:36:52 -0500
+        id S1731840AbgKWMg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:36:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 843D72065E;
-        Mon, 23 Nov 2020 12:36:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B0C420857;
+        Mon, 23 Nov 2020 12:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135012;
-        bh=zRbcK81dP3lykh7Lie0sKi3uPFLovLliutkdOcjLtpw=;
+        s=korg; t=1606135017;
+        bh=NloPI28+U5uT9HfwbMIsGovgtDmuJDWGVYeZ5ho+LwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=isgLhMp2RCOYxX0PJd+AB9viDQ7BFe4usTDN+ueRCYyebCQIiiDxSVrc8Jf7utC14
-         DuPXOsaK0vXWvpNlQquSDNm/RxFAlJ7qP1pjiJBjGpmjGtPJTFW20JVQijEcmtaofx
-         h/WW7GHgvuzR+rXXglvf+gaDvRj/YcHrfLWogmN8=
+        b=0bqcMCJpIVdVARUbsQa7bfyAfxAATeGD7VyAgwZjHUGVPQy2JxxO+/3AxpaX47Qeh
+         YjO1/JtEnjFpbKRzLheN+EQ0Jhy6e5ke+iJoHVoXV5CQqGISTKC8uH58wLanyeA1YH
+         6PjGdXX4OcFXNgNOFEbN31AbK/L+cvuojlwx7DJ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Hai <wanghai38@huawei.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, Yi-Hung Wei <yihung.wei@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 073/158] tools, bpftool: Add missing close before bpftool net attach exit
-Date:   Mon, 23 Nov 2020 13:21:41 +0100
-Message-Id: <20201123121823.460500486@linuxfoundation.org>
+Subject: [PATCH 5.4 074/158] ip_tunnels: Set tunnel option flag when tunnel metadata is present
+Date:   Mon, 23 Nov 2020 13:21:42 +0100
+Message-Id: <20201123121823.508265910@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -43,71 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Yi-Hung Wei <yihung.wei@gmail.com>
 
-[ Upstream commit 50431b45685b600fc2851a3f2b53e24643efe6d3 ]
+[ Upstream commit 9c2e14b48119b39446031d29d994044ae958d8fc ]
 
-progfd is created by prog_parse_fd() in do_attach() and before the latter
-returns in case of success, the file descriptor should be closed.
+Currently, we may set the tunnel option flag when the size of metadata
+is zero.  For example, we set TUNNEL_GENEVE_OPT in the receive function
+no matter the geneve option is present or not.  As this may result in
+issues on the tunnel flags consumers, this patch fixes the issue.
 
-Fixes: 04949ccc273e ("tools: bpftool: add net attach command to attach XDP on interface")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20201113115152.53178-1-wanghai38@huawei.com
+Related discussion:
+* https://lore.kernel.org/netdev/1604448694-19351-1-git-send-email-yihung.wei@gmail.com/T/#u
+
+Fixes: 256c87c17c53 ("net: check tunnel option type in tunnel flags")
+Signed-off-by: Yi-Hung Wei <yihung.wei@gmail.com>
+Link: https://lore.kernel.org/r/1605053800-74072-1-git-send-email-yihung.wei@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/net.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/geneve.c     | 3 +--
+ include/net/ip_tunnels.h | 7 ++++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index 4f52d31516166..bb311ccc6c487 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -312,8 +312,8 @@ static int do_attach(int argc, char **argv)
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index fcb7a6b4cc02a..c7ec3d24eabc8 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -221,8 +221,7 @@ static void geneve_rx(struct geneve_dev *geneve, struct geneve_sock *gs,
+ 	if (ip_tunnel_collect_metadata() || gs->collect_md) {
+ 		__be16 flags;
  
- 	ifindex = net_parse_dev(&argc, &argv);
- 	if (ifindex < 1) {
--		close(progfd);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto cleanup;
- 	}
+-		flags = TUNNEL_KEY | TUNNEL_GENEVE_OPT |
+-			(gnvh->oam ? TUNNEL_OAM : 0) |
++		flags = TUNNEL_KEY | (gnvh->oam ? TUNNEL_OAM : 0) |
+ 			(gnvh->critical ? TUNNEL_CRIT_OPT : 0);
  
- 	if (argc) {
-@@ -321,8 +321,8 @@ static int do_attach(int argc, char **argv)
- 			overwrite = true;
- 		} else {
- 			p_err("expected 'overwrite', got: '%s'?", *argv);
--			close(progfd);
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto cleanup;
- 		}
- 	}
- 
-@@ -330,17 +330,17 @@ static int do_attach(int argc, char **argv)
- 	if (is_prefix("xdp", attach_type_strings[attach_type]))
- 		err = do_attach_detach_xdp(progfd, attach_type, ifindex,
- 					   overwrite);
--
--	if (err < 0) {
-+	if (err) {
- 		p_err("interface %s attach failed: %s",
- 		      attach_type_strings[attach_type], strerror(-err));
--		return err;
-+		goto cleanup;
- 	}
- 
- 	if (json_output)
- 		jsonw_null(json_wtr);
--
--	return 0;
-+cleanup:
-+	close(progfd);
-+	return err;
+ 		tun_dst = udp_tun_rx_dst(skb, geneve_get_sk_family(gs), flags,
+diff --git a/include/net/ip_tunnels.h b/include/net/ip_tunnels.h
+index af645604f3289..56deb2501e962 100644
+--- a/include/net/ip_tunnels.h
++++ b/include/net/ip_tunnels.h
+@@ -472,9 +472,11 @@ static inline void ip_tunnel_info_opts_set(struct ip_tunnel_info *info,
+ 					   const void *from, int len,
+ 					   __be16 flags)
+ {
+-	memcpy(ip_tunnel_info_opts(info), from, len);
+ 	info->options_len = len;
+-	info->key.tun_flags |= flags;
++	if (len > 0) {
++		memcpy(ip_tunnel_info_opts(info), from, len);
++		info->key.tun_flags |= flags;
++	}
  }
  
- static int do_detach(int argc, char **argv)
+ static inline struct ip_tunnel_info *lwt_tun_info(struct lwtunnel_state *lwtstate)
+@@ -520,7 +522,6 @@ static inline void ip_tunnel_info_opts_set(struct ip_tunnel_info *info,
+ 					   __be16 flags)
+ {
+ 	info->options_len = 0;
+-	info->key.tun_flags |= flags;
+ }
+ 
+ #endif /* CONFIG_INET */
 -- 
 2.27.0
 
