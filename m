@@ -2,130 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF292C032A
+	by mail.lfdr.de (Postfix) with ESMTP id 184692C0329
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgKWKWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:22:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727984AbgKWKWG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:22:06 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE2EC061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:22:06 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id c198so15468486wmd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:22:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m2/dM0fiZFFaVmOHUldEXcGmQWn8Jr9SAh0wPU5gbj0=;
-        b=xdilp649Fuj21dkVTPgC3MH7YkEUop9b7ELDJZc7oLaFgQVfEAODOZBiZL+nzQ9F3z
-         AYi6UKfT37LQaYld5fvNCn5PhejTzrgzma+Z+8elyjCVU3q0E2eDBktqxpmCEn5bD8Mo
-         e3YSS6if3Zfv1O7hX1k2vpEgiDfgpnacHQo/ut+b6vKU4OWgal3iPf1iT2BkKgKI8I7I
-         PNbRIC8mrdMyvKX1HRzbHaoQSM2DaBVUJ3Ymjhy4HuPy7n2eNhnyNnv+BefIowc5MEMM
-         xNjGiIyRhlaJmFbvXkvXZeLtrxnjAPbuPdvwuQbucW8Jc6Qcs49B5eC+bYK9hf2V+923
-         hl0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m2/dM0fiZFFaVmOHUldEXcGmQWn8Jr9SAh0wPU5gbj0=;
-        b=FMY0UITwBHJyno6lr7pOFo7ZbyUdVmcZ/DP7HPIlEgQTCOEJFE9c63j3hYOd1EXpO0
-         Wgb7QMPbnaKvos1+NQgAmLg/s7i6YdJmd+RB+l+e/SD5SiNq4kt8p3JXOAXXerMMrscB
-         kqYEaif0jeV6FMQVjmG9xGgdZAeUGihlUeYXQYrMGmorsmgAIGyUwl39WwVsWwR1rtW2
-         OGqzSjylu37vqOwq153AtHFm6mJyzVMiEA1Temk4hXqyyfRoQtbXU8rCWRzlJTkhJ+qr
-         R2baIjDqZ2y+RxyOqsjTrdYIjLnFI/PpnymzotOuVlZuXG0otvyaT7owgO8DjRPkLRD7
-         MtFw==
-X-Gm-Message-State: AOAM531iIfg4D+z2clPyFQ9Ck+d1T2FM/TI7zwJwvFJnRL6kooTPP2XP
-        erXrrZiS3svmzIX+WLJiFOIiWQ==
-X-Google-Smtp-Source: ABdhPJzyrmOIreek1BO7giUW6mMgGaKdm3OWuSiLTdj1g05sySw3/UiLj72O1cLUNvTTRF6x26sAEQ==
-X-Received: by 2002:a1c:1c3:: with SMTP id 186mr22816096wmb.39.1606126925037;
-        Mon, 23 Nov 2020 02:22:05 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id d15sm19893678wrx.93.2020.11.23.02.22.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 02:22:04 -0800 (PST)
-Date:   Mon, 23 Nov 2020 11:22:03 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     George Cherian <gcherian@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-        "saeed@kernel.org" <saeed@kernel.org>
-Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
- reporters for NPA
-Message-ID: <20201123102203.GH3055@nanopsycho.orion>
-References: <BYAPR18MB2679FA2CCEBC4E921C3E078DC5FC0@BYAPR18MB2679.namprd18.prod.outlook.com>
+        id S1728240AbgKWKV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:21:57 -0500
+Received: from mga07.intel.com ([134.134.136.100]:13889 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728177AbgKWKV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:21:57 -0500
+IronPort-SDR: aPE8N6gKOTojOmbxUxZrWrTVCOdt0EIESBgrA0I30BRHfp4JdxRnRtsjBZwup/GMhZt6HAL5BX
+ chnnyBTF5U9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="235879373"
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="235879373"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 02:21:56 -0800
+IronPort-SDR: bDYcC0KazFEg8m1ptN73iHBFmsa13wxflaQanQLsw0kHHkwlR1mXimKGt/uNf9/QIGiAh2fjlu
+ dlnEAr6WbTPw==
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="536051793"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 02:21:54 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kh8zo-0097fC-RX; Mon, 23 Nov 2020 12:22:56 +0200
+Date:   Mon, 23 Nov 2020 12:22:56 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sia Jee Heng <jee.heng.sia@intel.com>
+Cc:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 16/16] dmaengine: dw-axi-dmac: Virtually split the
+ linked-list
+Message-ID: <20201123102256.GV4077@smile.fi.intel.com>
+References: <20201123023452.7894-1-jee.heng.sia@intel.com>
+ <20201123023452.7894-17-jee.heng.sia@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BYAPR18MB2679FA2CCEBC4E921C3E078DC5FC0@BYAPR18MB2679.namprd18.prod.outlook.com>
+In-Reply-To: <20201123023452.7894-17-jee.heng.sia@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Nov 23, 2020 at 03:49:06AM CET, gcherian@marvell.com wrote:
->
->
->> -----Original Message-----
->> From: Jiri Pirko <jiri@resnulli.us>
->> Sent: Saturday, November 21, 2020 7:44 PM
->> To: George Cherian <gcherian@marvell.com>
->> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->> kuba@kernel.org; davem@davemloft.net; Sunil Kovvuri Goutham
->> <sgoutham@marvell.com>; Linu Cherian <lcherian@marvell.com>;
->> Geethasowjanya Akula <gakula@marvell.com>; masahiroy@kernel.org;
->> willemdebruijn.kernel@gmail.com; saeed@kernel.org
->> Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
->> reporters for NPA
->> 
->> Sat, Nov 21, 2020 at 05:02:00AM CET, george.cherian@marvell.com wrote:
->> >Add health reporters for RVU NPA block.
->> >NPA Health reporters handle following HW event groups
->> > - GENERAL events
->> > - ERROR events
->> > - RAS events
->> > - RVU event
->> >An event counter per event is maintained in SW.
->> >
->> >Output:
->> > # devlink health
->> > pci/0002:01:00.0:
->> >   reporter npa
->> >     state healthy error 0 recover 0
->> > # devlink  health dump show pci/0002:01:00.0 reporter npa
->> > NPA_AF_GENERAL:
->> >        Unmap PF Error: 0
->> >        Free Disabled for NIX0 RX: 0
->> >        Free Disabled for NIX0 TX: 0
->> >        Free Disabled for NIX1 RX: 0
->> >        Free Disabled for NIX1 TX: 0
->> 
->> This is for 2 ports if I'm not mistaken. Then you need to have this reporter
->> per-port. Register ports and have reporter for each.
->> 
->No, these are not port specific reports.
->NIX is the Network Interface Controller co-processor block.
->There are (max of) 2 such co-processor blocks per SoC.
+On Mon, Nov 23, 2020 at 10:34:52AM +0800, Sia Jee Heng wrote:
+> AxiDMA driver exposed the dma_set_max_seg_size() to the DMAENGINE.
+> It shall helps the DMA clients to create size-optimized linked-list
+> for the controller.
+> 
+> However, there are certain situations where DMA client might not be
+> abled to benefit from the dma_get_max_seg_size() if the segment size
+> can't meet the nature of the DMA client's operation.
+> 
+> In the case of ALSA operation, ALSA application and driver expecting
+> to run in a period of larger than 10ms regardless of the bit depth.
+> With this large period, there is a strong request to split the linked-list
+> in the AxiDMA driver.
 
-Ah. I see. In that case, could you please structure the json
-differently. Don't concatenate the number with the string. Instead of
-that, please have 2 subtrees, one for each NIX.
+I'm wondering why ASoC generic code can't use DMA channel and device
+capabilities and prepare SG list with all limitations taken into account.
 
 
->
->Moreover, this is an NPA (Network Pool/Buffer Allocator co- processor) reporter.
->This tells whether a free or alloc operation is skipped due to the configurations set by
->other co-processor blocks (NIX,SSO,TIM etc).
->
->https://www.kernel.org/doc/html/latest/networking/device_drivers/ethernet/marvell/octeontx2.html
->> NAK.
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
