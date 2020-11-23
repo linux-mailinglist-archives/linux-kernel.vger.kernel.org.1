@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D662BFFDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2172BFFE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 07:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbgKWGRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 01:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgKWGRh (ORCPT
+        id S1728069AbgKWGSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 01:18:15 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:41501 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgKWGSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 01:17:37 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994F6C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:17:37 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w16so912332pga.9
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 22:17:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GKa7W0DjsQScUMdM+fh7P8EBsnhIK0qKVT7JJFmlduM=;
-        b=rGEfXEwlr66TrbSIzeEJ5FDjg42pe+KTbVMCt3orA1E7AS+8bNxLN7hgHnv9wZ4zRW
-         7tpleeyHmO/Mk8recctOvWkoXB3ku7K//lc6CBgJCg0vWvIt2AJaVorT8KgtJz/s6UB0
-         cpghzzT0Whp/cpSh8xdsm+7U0PDuVKeQZYtYxg7x7LSYM7de4ahGiiU9M/u1Byu8drem
-         otVZOkwRy7/W7UYjnbAxFwhn3Sd2uxThXBJZ4CVJgiBId/k4K2AClDUHlRFQFeBgjwHm
-         rOckwkbQUfwnqqyNo7jur3VrxoBOcrEAz7n+xImPhIOplX5ie4p+LdjYQX3X+I048R3F
-         +i1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GKa7W0DjsQScUMdM+fh7P8EBsnhIK0qKVT7JJFmlduM=;
-        b=JYxDo/442ZFQLeg74J9kn1JhDrMh+oueLKvnMlEWAblsvIGgfVtQoLI6vTVApnP1SH
-         t9R8IOPqbE+DC7UxrXeuQTfs671wF0x0BBM620fT6qZChrTmQTbTeQzmgkSWe6ZhCA+r
-         SYFHIhbjRRJXiShGE97BJV45SgxNrfBB3ZED1PgEQX6phYOChcfKsB0+fD0Bj1DN6Rfc
-         hdkxXNaOkrBbH39ukC3I6111xf93Qun7b0bSCcqbF4/myOacfxTm8TCofNa9uPEYH0B6
-         byYosht7xa5OpM58SZwz9VXtjY0eAzHq/iHANJ529WucydeCCv9fbtvdCvoxeRRxulFl
-         kiwQ==
-X-Gm-Message-State: AOAM533agwD6YgwDjJckxQKjrCAvWTduHJvz737e/hPM0XpZl7cIOZlp
-        4TPZQzrEcFCaqt33QGarTPTV7w==
-X-Google-Smtp-Source: ABdhPJzlkLlCQ2x4GcvUyoOExAar0nVc9jrP+KcgO26RrmOh/VDHjgc+ePCKgyNUoHpOWBv65Xzzwg==
-X-Received: by 2002:a62:52d7:0:b029:18b:7093:fb88 with SMTP id g206-20020a6252d70000b029018b7093fb88mr24458173pfb.76.1606112257122;
-        Sun, 22 Nov 2020 22:17:37 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id u197sm10953224pfc.127.2020.11.22.22.17.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 22 Nov 2020 22:17:36 -0800 (PST)
-Date:   Mon, 23 Nov 2020 11:47:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v10 00/19] Introduce memory interconnect for NVIDIA Tegra
- SoCs
-Message-ID: <20201123061734.mpmkdxzullrh52o7@vireshk-i7>
-References: <20201123002723.28463-1-digetx@gmail.com>
+        Mon, 23 Nov 2020 01:18:15 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kh5Av-0005Mz-SP; Mon, 23 Nov 2020 07:18:09 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kh5Au-0005Mn-OT; Mon, 23 Nov 2020 07:18:08 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 50DED240041;
+        Mon, 23 Nov 2020 07:18:08 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id E4FAA240040;
+        Mon, 23 Nov 2020 07:18:07 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 72EE020624;
+        Mon, 23 Nov 2020 07:18:07 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123002723.28463-1-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 07:18:07 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5] net/tun: Call netdev notifiers
+Organization: TDT AG
+In-Reply-To: <20201120102827.6b432dc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201118063919.29485-1-ms@dev.tdt.de>
+ <20201120102827.6b432dc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Message-ID: <a00d2725bce23f451cd030b9e621a764@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate-ID: 151534::1606112289-000074F7-130D8890/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-11-20, 03:27, Dmitry Osipenko wrote:
-> This series brings initial support for memory interconnect to Tegra20,
-> Tegra30 and Tegra124 SoCs.
+On 2020-11-20 19:28, Jakub Kicinski wrote:
+> On Wed, 18 Nov 2020 07:39:19 +0100 Martin Schiller wrote:
+>> Call netdev notifiers before and after changing the device type.
+>> 
+>> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
 > 
-> For the starter only display controllers and devfreq devices are getting
-> interconnect API support, others could be supported later on. The display
-> controllers have the biggest demand for interconnect API right now because
-> dynamic memory frequency scaling can't be done safely without taking into
-> account bandwidth requirement from the displays. In particular this series
-> fixes distorted display output on T30 Ouya and T124 TK1 devices.
-> 
-> Changelog:
-> 
-> v10 - In a longer run it will be much nicer if we could support EMC
->       hardware versioning on Tegra20 and it's not late to support it now.
->       Hence I added these new patches:
-> 
->         dt-bindings: memory: tegra20: emc: Document opp-supported-hw property
->         memory: tegra20: Support hardware versioning and clean up OPP table initialization
-> 
->     - Removed error message from tegra30-devfreq driver about missing OPP
->       properties in a device-tree because EMC driver already prints that
->       message and it uses OPP API error code instead of checking DT directly,
->       which is a more correct way of doing that.
+> This is a fix, right? Can you give an example of something that goes
+> wrong without this patch?
 
-Looks good to me (from OPP APIs usage perspective). Thanks for
-continuing with this and fixing all the issues Dmitry.
+This change is related to my latest patches to the X.25 Subsystem:
+https://patchwork.kernel.org/project/netdevbpf/list/?series=388087
 
--- 
-viresh
+I use a tun interface in a XoT (X.25 over TCP) application and use the
+TUNSETLINK ioctl to change the device type to ARPHRD_X25.
+As the default device type is ARPHRD_NONE the initial NETDEV_REGISTER
+event won't be catched by the X.25 Stack.
+
+Therefore I have to use the NETDEV_POST_TYPE_CHANGE to make sure that
+the corresponding neighbour structure is created.
+
+I could imagine that other protocols have similar requirements.
+
+Whether this is a fix or a functional extension is hard to say.
+
+Some time ago there was also a corresponding patch for the WAN/HDLC
+subsystem:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=2f8364a291e8
