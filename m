@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B26B2C05AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507E02C058A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbgKWMY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:24:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
+        id S1729591AbgKWMXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:23:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbgKWMYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:24:20 -0500
+        id S1729577AbgKWMXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:23:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA54520888;
-        Mon, 23 Nov 2020 12:24:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6419B2076E;
+        Mon, 23 Nov 2020 12:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134260;
-        bh=NhW2l7iFTdAxLHami2bE1HItPltCxtUxuNThYSVGZXk=;
+        s=korg; t=1606134194;
+        bh=fpRHnWk875PicaKG9ODEDzkL8KyVZHCkv1aQOYD+ftY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YiAfg3suuvk0tEURHRjva/Ruv0oq8uQHKs9p0zLxNxz7R5EmonaOduFRC9nUotFKE
-         aFocgNWHAlOaYma3Jx5fT7SkRAVB/NwXogwRKTVeDmf2K5DSHMAoKVqQ6YkBWf/mmM
-         blk5C6AgxNM0idiXhEc9Ao2QWVYtLbQ6SVWZ3i/8=
+        b=eLEzadH90JQMaDVwU7xTUQmwEk80QFblPbUC0v62tOnTfQFdh12jEKAcJyV3hZe3i
+         nV/0gIf9BShb6KwfldbgZ/f1QXdcXynehuD0CFeJbdCJKPiLQaam/Aspv8ve/G1Nxy
+         3vMtOZnf/HGbSlYMC2ljuEziwMgC0o836ZARWY0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, Wu Bo <wubo.oduw@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 21/38] can: peak_usb: fix potential integer overflow on shift of a int
-Date:   Mon, 23 Nov 2020 13:22:07 +0100
-Message-Id: <20201123121805.325118365@linuxfoundation.org>
+Subject: [PATCH 4.4 22/38] can: m_can: m_can_handle_state_change(): fix state change
+Date:   Mon, 23 Nov 2020 13:22:08 +0100
+Message-Id: <20201123121805.370011806@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
 References: <20201123121804.306030358@linuxfoundation.org>
@@ -43,46 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Wu Bo <wubo.oduw@gmail.com>
 
-[ Upstream commit 8a68cc0d690c9e5730d676b764c6f059343b842c ]
+[ Upstream commit cd0d83eab2e0c26fe87a10debfedbb23901853c1 ]
 
-The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
-arithmetic and then assigned to a signed 64 bit variable. In the case where
-time_ref->adapter->ts_used_bits is 32 or more this can lead to an oveflow.
-Avoid this by shifting using the BIT_ULL macro instead.
+m_can_handle_state_change() is called with the new_state as an argument.
 
-Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20201105112427.40688-1-colin.king@canonical.com
+In the switch statements for CAN_STATE_ERROR_ACTIVE, the comment and the
+following code indicate that a CAN_STATE_ERROR_WARNING is handled.
+
+This patch fixes this problem by changing the case to CAN_STATE_ERROR_WARNING.
+
+Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
+Link: http://lore.kernel.org/r/20200129022330.21248-2-wubo.oduw@gmail.com
+Cc: Dan Murphy <dmurphy@ti.com>
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
+ drivers/net/can/m_can/m_can.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 22deddb2dbf5a..7b148174eb760 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -176,7 +176,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
- 		if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
- 			/* case when event time (tsw) wraps */
- 			if (ts < time_ref->ts_dev_1)
--				delta_ts = 1 << time_ref->adapter->ts_used_bits;
-+				delta_ts = BIT_ULL(time_ref->adapter->ts_used_bits);
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 195f15edb32e3..0bd7e71647964 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -572,7 +572,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	unsigned int ecr;
  
- 		/* Otherwise, sync time counter (ts_dev_2) has wrapped:
- 		 * handle case when event time (tsn) hasn't.
-@@ -188,7 +188,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
- 		 *              tsn            ts
- 		 */
- 		} else if (time_ref->ts_dev_1 < ts) {
--			delta_ts = -(1 << time_ref->adapter->ts_used_bits);
-+			delta_ts = -BIT_ULL(time_ref->adapter->ts_used_bits);
- 		}
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		priv->can.can_stats.error_warning++;
+ 		priv->can.state = CAN_STATE_ERROR_WARNING;
+@@ -601,7 +601,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	__m_can_get_berr_counter(dev, &bec);
  
- 		/* add delay between last sync and event timestamps */
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = (bec.txerr > bec.rxerr) ?
 -- 
 2.27.0
 
