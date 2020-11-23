@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AFD2C1958
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2562C1966
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgKWXVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 18:21:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbgKWXVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:21:09 -0500
-Received: from localhost (unknown [176.167.152.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4344320691;
-        Mon, 23 Nov 2020 23:21:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606173668;
-        bh=CKEZj+lJVWkeVVIkmbst5AlXQtm5TYqw8mkzx03cZBU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zpqpMZvcXj6eTZp/HvX7RSWVfU6lHF73DU+DFeuP40CbQiCiDOIg1/VNvpX1jv6cD
-         Gt3rCu0U+kSHPlMbzN7C3jATvZXGSXHffUaym7cB38YrFwbHnTI/aFUVqHhsz/7SQE
-         KtHgEJvoXzPT3SHCBdQxaAUJhf1EzU4WZWSzY7ac=
-Date:   Tue, 24 Nov 2020 00:21:06 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Alex Belits <abelits@marvell.com>
-Cc:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "nitesh@redhat.com" <nitesh@redhat.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH v5 9/9] task_isolation: kick_all_cpus_sync:
- don't kick isolated cpus
-Message-ID: <20201123232106.GD1751@lothringen>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
- <3236b13f42679031960c5605be20664e90e75223.camel@marvell.com>
- <20201123222907.GC1751@lothringen>
- <c65ac23c1c408614110635c33eaf4ace98da4343.camel@marvell.com>
+        id S1726775AbgKWXYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 18:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgKWXYt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 18:24:49 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C7FC0613CF;
+        Mon, 23 Nov 2020 15:24:49 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id s8so20447995wrw.10;
+        Mon, 23 Nov 2020 15:24:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UnwtktLjTAV/jmHMTDv2SE7u5b+YrWXDA2YR3n/dS8I=;
+        b=YVpWE1GaOpI8em08mEaHrJnBNT6uQE2byOZ1I+KhF5VtYsMWVEfW02GrBPLG7ZdyQe
+         r4zsqDF8gJZ5DcInQuBhlYwaX32R1TbagnNkoVwOz5f6DKAVbvRiguHUv1MC8VbRj9Cb
+         I4cjlU2IZwikf1T6p7yJiyUN2vegfeq29xNnUA+t7Ko615ks5FSb6xCXfG6UYua0fqtD
+         DMwmHAkbayO8/eevzg/2qdNOnRze2zhWRjX/Wb8Cbyb4OAW3THIsHQuLHrOaCu7L8wTy
+         Zy6DC+ROQuvYjI3ns1Xv97AuQ2KHvetzM6JliET0oWRbMjpMOuDU0jmv+UPhldaRAYRJ
+         wyuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=UnwtktLjTAV/jmHMTDv2SE7u5b+YrWXDA2YR3n/dS8I=;
+        b=NjHcgyYFLeraeYGqsc3vuaTkUHPZnvOPDK9+kO+nRWaihayJMl2pxikpqKLFao46di
+         QcSo8ATVI4R+h6/JvB1P44mxCyMz6xSLpzIUlMQzfXR2PfaNFZwOQAaNzXZTBZCEjFh8
+         UzDusuB9xQqlVHGRMGJRU19Cc/dy4ckj/zJSdpom3f28ooL2IPl7nPRmmtAf6YcAHIRc
+         pkM94wZQ8Jvndp/1pAgypVFAELNsq6Yn/B07KpPzoh/cnYDcfwHTiKsu3VA9kJrOoDSH
+         iKWN7PBkzgvH7VTUNO5MghesPeVcBJdFkAFE3cVy4zYaC/2EkPxT/3z0G/yU99mhxQf2
+         CvPg==
+X-Gm-Message-State: AOAM530vusXD6LmQOTSZ2UYooy+SdHnFkg9V1BjofVVq99t/Y6ovx4gM
+        B6F9ht56xb/QPMaWbkIQ2jPxbXS5kKhA3O5W
+X-Google-Smtp-Source: ABdhPJzSfKI604g1VoEX9+y3jkyeIYv24e/idimICuJQliWRsZ70cvfrppeGICa4AM+1XzzWxff6tQ==
+X-Received: by 2002:a5d:6310:: with SMTP id i16mr2060964wru.284.1606173887588;
+        Mon, 23 Nov 2020 15:24:47 -0800 (PST)
+Received: from [192.168.1.42] (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
+        by smtp.gmail.com with ESMTPSA id j14sm9151458wrs.49.2020.11.23.15.24.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 15:24:47 -0800 (PST)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+ <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+ <a23b9038-b553-fdc3-c461-384aeeddb6f3@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Message-ID: <adc90511-2484-039e-f67f-486b2c3ea9f7@gmail.com>
+Date:   Mon, 23 Nov 2020 23:21:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c65ac23c1c408614110635c33eaf4ace98da4343.camel@marvell.com>
+In-Reply-To: <a23b9038-b553-fdc3-c461-384aeeddb6f3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:39:34PM +0000, Alex Belits wrote:
+On 21/11/2020 14:31, Pavel Begunkov wrote:
+> On 21/11/2020 14:13, David Howells wrote:
+>> Switch to using a table of operations.  In a future patch the individual
+>> methods will be split up by type.  For the moment, however, the ops tables
+>> just jump directly to the old functions - which are now static.  Inline
+>> wrappers are provided to jump through the hooks.
+>>
+>> Signed-off-by: David Howells <dhowells@redhat.com>
+>> ---
+>>
+>>  fs/io_uring.c       |    2 
+>>  include/linux/uio.h |  241 ++++++++++++++++++++++++++++++++++--------
+>>  lib/iov_iter.c      |  293 +++++++++++++++++++++++++++++++++++++++------------
+>>  3 files changed, 422 insertions(+), 114 deletions(-)
+>>
+>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>> index 4ead291b2976..baa78f58ae5c 100644
+>> --- a/fs/io_uring.c
+>> +++ b/fs/io_uring.c
+>> @@ -3192,7 +3192,7 @@ static void io_req_map_rw(struct io_kiocb *req, const struct iovec *iovec,
+>>  	rw->free_iovec = iovec;
+>>  	rw->bytes_done = 0;
+>>  	/* can only be fixed buffers, no need to do anything */
+>> -	if (iter->type == ITER_BVEC)
+>> +	if (iov_iter_is_bvec(iter))
 > 
-> On Mon, 2020-11-23 at 23:29 +0100, Frederic Weisbecker wrote:
-> > External Email
-> > 
-> > -------------------------------------------------------------------
-> > ---
-> > On Mon, Nov 23, 2020 at 05:58:42PM +0000, Alex Belits wrote:
-> > > From: Yuri Norov <ynorov@marvell.com>
-> > > 
-> > > Make sure that kick_all_cpus_sync() does not call CPUs that are
-> > > running
-> > > isolated tasks.
-> > > 
-> > > Signed-off-by: Yuri Norov <ynorov@marvell.com>
-> > > [abelits@marvell.com: use safe task_isolation_cpumask()
-> > > implementation]
-> > > Signed-off-by: Alex Belits <abelits@marvell.com>
-> > > ---
-> > >  kernel/smp.c | 14 +++++++++++++-
-> > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/smp.c b/kernel/smp.c
-> > > index 4d17501433be..b2faecf58ed0 100644
-> > > --- a/kernel/smp.c
-> > > +++ b/kernel/smp.c
-> > > @@ -932,9 +932,21 @@ static void do_nothing(void *unused)
-> > >   */
-> > >  void kick_all_cpus_sync(void)
-> > >  {
-> > > +	struct cpumask mask;
-> > > +
-> > >  	/* Make sure the change is visible before we kick the cpus */
-> > >  	smp_mb();
-> > > -	smp_call_function(do_nothing, NULL, 1);
-> > > +
-> > > +	preempt_disable();
-> > > +#ifdef CONFIG_TASK_ISOLATION
-> > > +	cpumask_clear(&mask);
-> > > +	task_isolation_cpumask(&mask);
-> > > +	cpumask_complement(&mask, &mask);
-> > > +#else
-> > > +	cpumask_setall(&mask);
-> > > +#endif
-> > > +	smp_call_function_many(&mask, do_nothing, NULL, 1);
-> > > +	preempt_enable();
-> > 
-> > Same comment about IPIs here.
-> 
-> This is different from timers. The original design was based on the
-> idea that every CPU should be able to enter kernel at any time and run
-> kernel code with no additional preparation. Then the only solution is
-> to always do full broadcast and require all CPUs to process it.
-> 
-> What I am trying to introduce is the idea of CPU that is not likely to
-> run kernel code any soon, and can afford to go through an additional
-> synchronization procedure on the next entry into kernel. The
-> synchronization is not skipped, it simply happens later, early in
-> kernel entry code.
+> Could you split this io_uring change and send for 5.10?
+> Or I can do it for you if you wish.
 
-Ah I see, this is ordered that way:
+FYI, I stole this chunk with right attributes. It should go through
+io_uring 5.10, so shouldn't be a problem if you just drop it.
 
-ll_isol_flags = ISOLATED
-
-         CPU 0                                CPU 1
-    ------------------                       -----------------
-                                            // kernel entry
-    data_to_sync = 1                        ll_isol_flags = ISOLATED_BROKEN
-    smp_mb()                                smp_mb()
-    if ll_isol_flags(CPU 1) == ISOLATED     READ data_to_sync
-         smp_call(CPU 1)
-
-You should document that, ie: explain why what you're doing is safe.
-
-Also Beware though that the data to sync in question doesn't need to be visible
-in the entry code before task_isolation_kernel_enter(). You need to audit all
-the callers of kick_all_cpus_sync().
+-- 
+Pavel Begunkov
