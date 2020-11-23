@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C652C05B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69632C0589
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgKWMYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:24:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34022 "EHLO mail.kernel.org"
+        id S1729580AbgKWMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:23:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729832AbgKWMYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:24:37 -0500
+        id S1729572AbgKWMXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:23:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E0CE20857;
-        Mon, 23 Nov 2020 12:24:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0DF520781;
+        Mon, 23 Nov 2020 12:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134276;
-        bh=X//zobSDZ3L331AYD4tAv4j4HKY0XYtevooqjRZONoM=;
+        s=korg; t=1606134192;
+        bh=by19dbk8qiKH5x+RZOVoPhhuECcjlAFajqxWpET6ieg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zCDGkuZ+hxUFdTfMYz30c4RnTKfHAPxcBrtFKr7OsTNPvPtykGpnxUNo6dOols8Iy
-         9foKEktKnGUv0zz9deemaIJhjZuDS0hyP98VKuaJA10118flVt+yjGfUI8T+8B8LId
-         HCmxRGczSaQEqP1oyGHQVBGHMF+nNRvhudzMa1a4=
+        b=u6nOUrKnl258oCI4YGBHR6z2hotaBD5Sq5yx4SYX9NQVRduX3PrOBIf62pGI00A1z
+         l0/e174f9Q5AEFZxsDnltNs4/YetAw+d/JwJ0YvadfgS/7MkDsLfgXVZEuAc56vuOe
+         ZWgF5Y18R66mGEiR+iLnWOses4vFg9wNaDQpp7h0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 13/47] qlcnic: fix error return code in qlcnic_83xx_restart_hw()
+        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 13/38] pinctrl: rockchip: enable gpio pclk for rockchip_gpio_to_irq
 Date:   Mon, 23 Nov 2020 13:21:59 +0100
-Message-Id: <20201123121806.180235170@linuxfoundation.org>
+Message-Id: <20201123121804.953410325@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
+References: <20201123121804.306030358@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Jianqun Xu <jay.xu@rock-chips.com>
 
-[ Upstream commit 3beb9be165083c2964eba1923601c3bfac0b02d4 ]
+[ Upstream commit 63fbf8013b2f6430754526ef9594f229c7219b1f ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+There need to enable pclk_gpio when do irq_create_mapping, since it will
+do access to gpio controller.
 
-Fixes: 3ced0a88cd4c ("qlcnic: Add support to run firmware POST")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Link: https://lore.kernel.org/r/1605248186-16013-1-git-send-email-zhangchangzhong@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Reviewed-by: Kever Yang<kever.yang@rock-chips.com>
+Link: https://lore.kernel.org/r/20201013063731.3618-3-jay.xu@rock-chips.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-rockchip.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-@@ -2251,7 +2251,8 @@ static int qlcnic_83xx_restart_hw(struct
+diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+index 616055b5e9967..eba400df82154 100644
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -1445,7 +1445,9 @@ static int rockchip_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
+ 	if (!bank->domain)
+ 		return -ENXIO;
  
- 	/* Boot either flash image or firmware image from host file system */
- 	if (qlcnic_load_fw_file == 1) {
--		if (qlcnic_83xx_load_fw_image_from_host(adapter))
-+		err = qlcnic_83xx_load_fw_image_from_host(adapter);
-+		if (err)
- 			return err;
- 	} else {
- 		QLC_SHARED_REG_WR32(adapter, QLCNIC_FW_IMG_VALID,
++	clk_enable(bank->clk);
+ 	virq = irq_create_mapping(bank->domain, offset);
++	clk_disable(bank->clk);
+ 
+ 	return (virq) ? : -ENXIO;
+ }
+-- 
+2.27.0
+
 
 
