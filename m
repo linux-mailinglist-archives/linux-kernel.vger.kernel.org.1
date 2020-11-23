@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EF22C0B4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DF52C0BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733124AbgKWNWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:22:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47840 "EHLO mail.kernel.org"
+        id S2389092AbgKWN2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:28:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731602AbgKWMfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:35:53 -0500
+        id S1730052AbgKWMan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07E3E2065E;
-        Mon, 23 Nov 2020 12:35:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30D032076E;
+        Mon, 23 Nov 2020 12:30:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134951;
-        bh=KQHgldinaXVU4ptnrhh+NXgdwdh0aUB+OeY0+doq9Aw=;
+        s=korg; t=1606134642;
+        bh=3XXRU0SamzwdowKRTgVR/7wc20oNw3fz8/ccqjK87f8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=elgpC8ufIghgOiOB4CJZQnlvK3UP/Qnb66rrIz1gylnr111s19GMXc+m84u5EuNSr
-         KNS9iPXg6DLuqve8jhP50OFX2Lza1aSh0pWrz5ZmaZLwdCWhp+uYsItNB+WpTQgUo/
-         rueqEL7cOd+vU/gcdE9r9AuLw0s6rI4NaSrdt5Js=
+        b=h2jEJhdjHaILRi6m43fgcn3tfRMfZmgH2gXxKRqSgtzZA2W6KQHCE9BL8Zy3js8Zw
+         sDOnEe+0Lqt/xsF1Hmc1ZgC3pLb4nsgHjg+/ZBGMyoZj0z27bfhyWuFY175pJP1Cn6
+         lM8T600s9yU/eHeZJhzwgRznfJHoeIp3Lm5TY0So=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 050/158] ARM: dts: sun8i: r40: bananapi-m2-ultra: Fix ethernet node
-Date:   Mon, 23 Nov 2020 13:21:18 +0100
-Message-Id: <20201123121822.345295587@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 04/91] devlink: Add missing genlmsg_cancel() in devlink_nl_sb_port_pool_fill()
+Date:   Mon, 23 Nov 2020 13:21:24 +0100
+Message-Id: <20201123121809.511065072@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit b3eec3212e66ece33f69be0de98d54e67834e798 ]
+[ Upstream commit 849920c703392957f94023f77ec89ca6cf119d43 ]
 
-Ethernet PHY on BananaPi M2 Ultra provides RX and TX delays. Fix
-ethernet node to reflect that fact.
+If sb_occ_port_pool_get() failed in devlink_nl_sb_port_pool_fill(),
+msg should be canceled by genlmsg_cancel().
 
-Fixes: c36fd5a48bd2 ("ARM: dts: sun8i: r40: bananapi-m2-ultra: Enable GMAC ethernet controller")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20201025081949.783443-1-jernej.skrabec@siol.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: df38dafd2559 ("devlink: implement shared buffer occupancy monitoring interface")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20201113111622.11040-1-wanghai38@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/devlink.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-index ea15073f0c79c..7db89500f399c 100644
---- a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-+++ b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-@@ -129,7 +129,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&gmac_rgmii_pins>;
- 	phy-handle = <&phy1>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	phy-supply = <&reg_dc1sw>;
- 	status = "okay";
- };
--- 
-2.27.0
-
+--- a/net/core/devlink.c
++++ b/net/core/devlink.c
+@@ -1113,7 +1113,7 @@ static int devlink_nl_sb_port_pool_fill(
+ 		err = ops->sb_occ_port_pool_get(devlink_port, devlink_sb->index,
+ 						pool_index, &cur, &max);
+ 		if (err && err != -EOPNOTSUPP)
+-			return err;
++			goto sb_occ_get_failure;
+ 		if (!err) {
+ 			if (nla_put_u32(msg, DEVLINK_ATTR_SB_OCC_CUR, cur))
+ 				goto nla_put_failure;
+@@ -1126,8 +1126,10 @@ static int devlink_nl_sb_port_pool_fill(
+ 	return 0;
+ 
+ nla_put_failure:
++	err = -EMSGSIZE;
++sb_occ_get_failure:
+ 	genlmsg_cancel(msg, hdr);
+-	return -EMSGSIZE;
++	return err;
+ }
+ 
+ static int devlink_nl_cmd_sb_port_pool_get_doit(struct sk_buff *skb,
 
 
