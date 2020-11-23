@@ -2,106 +2,498 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2ADB2C0EC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971672C0EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389507AbgKWP0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:26:55 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:44181 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2389490AbgKWP0z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:26:55 -0500
-Received: (qmail 710166 invoked by uid 1000); 23 Nov 2020 10:26:54 -0500
-Date:   Mon, 23 Nov 2020 10:26:54 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     John Boero <boeroboy@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: core: Null deref in kernel with USB webcams.
-Message-ID: <20201123152654.GB708586@rowland.harvard.edu>
-References: <X61rce8GANHW1ysh@kroah.com>
- <CAO5W59iGm3kN-HhA_g78iJH9cV3fHzjQORM_b3xqo1Mg+XEi2g@mail.gmail.com>
- <X613chtPVIg8kquH@kroah.com>
- <CAO5W59jZdDgSBE3Tr79u7TuCrdsirhisFxKH6aCH5oE4soOz1g@mail.gmail.com>
- <20201112192524.GB287229@rowland.harvard.edu>
- <CAO5W59hXOHAd_D0K3HnvJmf883e_u+s6oM+DGJMqpr392N5Gww@mail.gmail.com>
- <20201113163449.GB322940@rowland.harvard.edu>
- <CAO5W59iqXGeAQTP7hzzRmbqwZUcK=vwuJ7pFzzNzZ9o11_k2tw@mail.gmail.com>
- <20201113171658.GF322940@rowland.harvard.edu>
- <CAO5W59hRNB0xH1Z2cd17ckYuHp38zL366K_3AuMoH8WTZYatow@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAO5W59hRNB0xH1Z2cd17ckYuHp38zL366K_3AuMoH8WTZYatow@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2389513AbgKWP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:27:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389487AbgKWP1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:27:07 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC4A320756;
+        Mon, 23 Nov 2020 15:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606145225;
+        bh=YHflJBturQsBRbzG4p8nhF0CssD0IerjBRJvX18RBVA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=b8ZKEVs6JPjuffvpnJ57wUjf1pzh0+MT9qK+z/Cfkrkma8Sskloxbax+Ov8ciQ3K4
+         SgOoJWL4MFBmWkI31uI20LuszjCrQgW4rsVoIm3wDfTtQRhmzWTCYzesLe+2ovIhYX
+         X28yErJ0wVecKhRmfMaQFJh7BJNwOpoJRtN2VA4o=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khDk6-00CzHK-D5; Mon, 23 Nov 2020 15:27:02 +0000
+Date:   Mon, 23 Nov 2020 15:27:01 +0000
+Message-ID: <87im9w5c1m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 15/24] kvm: arm64: Extract parts of el2_setup into a macro
+In-Reply-To: <20201116204318.63987-16-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-16-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To recap: The problem is that uvcvideo tries to change an interface 
-altsetting (from within uvc_video_start_streaming -> 
-uvc_video_start_transfer) after the driver has been unbound from the 
-device.  This triggers an invalid memory reference.
-
-On Sun, Nov 22, 2020 at 08:03:43PM +0000, John Boero wrote:
-> Thanks Alan
-> I just spent some more time investigating and playing with different patches,
-> locks, mutexes, and sleeps, and I think I see exactly what's happening now.
-> I now understand why it:
-> A) seems to happen randomly during uvc start_stream
-> B) affects multiple device vendors
-> C) has been reported in RaspberryPi and IoT threads
+On Mon, 16 Nov 2020 20:43:09 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
 > 
-> I put a trace on usb/core/hub.c:usb_disconnect to identify why the device was
-> disconnecting and it seems this is a low power issue.  An idle webcam appears
-> fine to usbcore but as soon as you initialize it or uvc starts a stream, it
-> consumes more power, might find the cable can't supply it, and then disconnects
-> via interrupt. In my case I can reproduce this consistently with a cheap USB
-> extension cable, but this issue appears common to passive hubs, and IoT or SBCs
-> that don't always supply clean power over USB.  My simplified patch can at least
-> protect usbcore from crashing on a bad device:
+> When the a CPU is booted in EL2, the kernel checks for VHE support and
+> initializes the CPU core accordingly. For nVHE it also installs the stub
+> vectors and drops down to EL1.
 > 
-> From 73019d79fe4fd8b2c945005f8a067f528d8056fd Mon Sep 17 00:00:00 2001
-> From: jboero <boeroboy@gmail.com>
-> Date: Sun, 22 Nov 2020 19:30:41 +0000
-> Subject: [PATCH] USBCore NULL interface deref fix
+> Once KVM gains the ability to boot cores without going through the
+> kernel entry point, it will need to initialize the CPU the same way.
+> Extract the relevant bits of el2_setup into an init_el2_state macro
+> with an argument specifying whether to initialize for VHE or nVHE.
 > 
+> No functional change. Size of el2_setup increased by 148 bytes due
+> to duplication.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 > ---
-> drivers/usb/core/usb.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/include/asm/el2_setup.h | 185 +++++++++++++++++++++++++++++
+>  arch/arm64/kernel/head.S           | 144 +++-------------------
+>  2 files changed, 201 insertions(+), 128 deletions(-)
+>  create mode 100644 arch/arm64/include/asm/el2_setup.h
 > 
-> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-> index bafc113f2b3e..da46c84c87ce 100644
-> --- a/drivers/usb/core/usb.c
-> +++ b/drivers/usb/core/usb.c
-> @@ -278,7 +278,7 @@ struct usb_interface *usb_ifnum_to_if(const struct
-> usb_device *dev,
->        if (!config)
->                return NULL;
->        for (i = 0; i < config->desc.bNumInterfaces; i++)
-> -               if (config->interface[i]->altsetting[0]
-> +               if (config->interface[i] && config->interface[i]->altsetting[0]
->                                .desc.bInterfaceNumber == ifnum)
->                        return config->interface[i];
+> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
+> new file mode 100644
+> index 000000000000..e5026e0aa878
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/el2_setup.h
+> @@ -0,0 +1,185 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (C) 2012,2013 - ARM Ltd
+> + * Author: Marc Zyngier <marc.zyngier@arm.com>
+> + */
+> +
+> +#ifndef __ARM_KVM_INIT_H__
+> +#define __ARM_KVM_INIT_H__
+> +
+> +#ifndef __ASSEMBLY__
+> +#error Assembly-only header
+> +#endif
+> +
+> +#ifdef CONFIG_ARM_GIC_V3
+> +#include <linux/irqchip/arm-gic-v3.h>
+> +#endif
+> +
+> +#include <asm/kvm_arm.h>
+> +#include <asm/ptrace.h>
+> +#include <asm/sysreg.h>
+> +
+> +.macro __init_el2_sctlr
+> +	mov_q	x0, (SCTLR_EL2_RES1 | ENDIAN_SET_EL2)
+> +	msr	sctlr_el2, x0
+> +	isb
+> +.endm
+> +
+> +/*
+> + * Allow Non-secure EL1 and EL0 to access physical timer and counter.
+> + * This is not necessary for VHE, since the host kernel runs in EL2,
+> + * and EL0 accesses are configured in the later stage of boot process.
+> + * Note that when HCR_EL2.E2H == 1, CNTHCTL_EL2 has the same bit layout
+> + * as CNTKCTL_EL1, and CNTKCTL_EL1 accessing instructions are redefined
+> + * to access CNTHCTL_EL2. This allows the kernel designed to run at EL1
+> + * to transparently mess with the EL0 bits via CNTKCTL_EL1 access in
+> + * EL2.
+> + */
+> +.macro __init_el2_timers mode
+> +.ifeqs "\mode", "nvhe"
+> +	mrs	x0, cnthctl_el2
+> +	orr	x0, x0, #3			// Enable EL1 physical timers
+> +	msr	cnthctl_el2, x0
+> +.endif
+> +	msr	cntvoff_el2, xzr		// Clear virtual offset
+> +.endm
+> +
+> +.macro __init_el2_debug mode
+> +	mrs	x1, id_aa64dfr0_el1
+> +	sbfx	x0, x1, #ID_AA64DFR0_PMUVER_SHIFT, #4
+> +	cmp	x0, #1
+> +	b.lt	1f				// Skip if no PMU present
+> +	mrs	x0, pmcr_el0			// Disable debug access traps
+> +	ubfx	x0, x0, #11, #5			// to EL2 and allow access to
+> +1:
+> +	csel	x2, xzr, x0, lt			// all PMU counters from EL1
+> +
+> +	/* Statistical profiling */
+> +	ubfx	x0, x1, #ID_AA64DFR0_PMSVER_SHIFT, #4
+> +	cbz	x0, 3f				// Skip if SPE not present
+> +
+> +.ifeqs "\mode", "nvhe"
+> +	mrs_s	x0, SYS_PMBIDR_EL1              // If SPE available at EL2,
+> +	and	x0, x0, #(1 << SYS_PMBIDR_EL1_P_SHIFT)
+> +	cbnz	x0, 2f				// then permit sampling of physical
+> +	mov	x0, #(1 << SYS_PMSCR_EL2_PCT_SHIFT | \
+> +		      1 << SYS_PMSCR_EL2_PA_SHIFT)
+> +	msr_s	SYS_PMSCR_EL2, x0		// addresses and physical counter
+> +2:
+> +	mov	x0, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
+> +	orr	x2, x2, x0			// If we don't have VHE, then
+> +						// use EL1&0 translation.
+> +.else
+> +	orr	x2, x2, #MDCR_EL2_TPMS		// For VHE, use EL2 translation
+> +						// and disable access from EL1
+> +.endif
+> +
+> +3:
+> +	msr	mdcr_el2, x2			// Configure debug traps
+> +.endm
+> +
+> +/* LORegions */
+> +.macro __init_el2_lor
+> +	mrs	x1, id_aa64mmfr1_el1
+> +	ubfx	x0, x1, #ID_AA64MMFR1_LOR_SHIFT, 4
+> +	cbz	x0, 1f
+> +	msr_s	SYS_LORC_EL1, xzr
+> +1:
+> +.endm
+> +
+> +/* Stage-2 translation */
+> +.macro __init_el2_stage2
+> +	msr	vttbr_el2, xzr
+> +.endm
+> +
+> +/* GICv3 system register access */
+> +#ifdef CONFIG_ARM_GIC_V3
 
-I really dislike the idea of papering over a problem instead of fixing 
-it properly.
+nit: this #ifdef isn't relevant anymore and can be dropped throughout
+the file.
 
-> This protects ongoing USB functionality including lsusb, and prevents a hang on
-> reboot after error.  It doesn't help a user diagnose the error on the UVC side.
-> A fix from the uvc side is a little trickier and I'd like an opinion on how
-> best to handle locks in uvc_video_start_transfer. I've tried a few options
-> around uvcvideo.c:1874
+> +.macro __init_el2_gicv3
+> +	mrs	x0, id_aa64pfr0_el1
+> +	ubfx	x0, x0, #ID_AA64PFR0_GIC_SHIFT, #4
+> +	cbz	x0, 1f
+> +
+> +	mrs_s	x0, SYS_ICC_SRE_EL2
+> +	orr	x0, x0, #ICC_SRE_EL2_SRE	// Set ICC_SRE_EL2.SRE==1
+> +	orr	x0, x0, #ICC_SRE_EL2_ENABLE	// Set ICC_SRE_EL2.Enable==1
+> +	msr_s	SYS_ICC_SRE_EL2, x0
+> +	isb					// Make sure SRE is now set
+> +	mrs_s	x0, SYS_ICC_SRE_EL2		// Read SRE back,
+> +	tbz	x0, #0, 1f			// and check that it sticks
+> +	msr_s	SYS_ICH_HCR_EL2, xzr		// Reset ICC_HCR_EL2 to defaults
+> +1:
+> +.endm
+> +#endif
+> +
+> +/* Virtual CPU ID registers */
+> +.macro __init_el2_nvhe_idregs
+> +	mrs	x0, midr_el1
+> +	mrs	x1, mpidr_el1
+> +	msr	vpidr_el2, x0
+> +	msr	vmpidr_el2, x1
+> +.endm
+> +
+> +/* Coprocessor traps */
+> +.macro __init_el2_nvhe_cptr
+> +	mov	x0, #0x33ff
+> +	msr	cptr_el2, x0			// Disable copro. traps to EL2
+> +.endm
+> +
+> +/* SVE register access */
+> +.macro __init_el2_nvhe_sve
+> +	mrs	x1, id_aa64pfr0_el1
+> +	ubfx	x1, x1, #ID_AA64PFR0_SVE_SHIFT, #4
+> +	cbz	x1, 1f
+> +
+> +	bic	x0, x0, #CPTR_EL2_TZ		// Also disable SVE traps
+> +	msr	cptr_el2, x0			// Disable copro. traps to EL2
+> +	isb
+> +	mov	x1, #ZCR_ELx_LEN_MASK		// SVE: Enable full vector
+> +	msr_s	SYS_ZCR_EL2, x1			// length for EL1.
+> +1:
+> +.endm
+> +
+> +.macro __init_el2_nvhe_spsr
+
+nit: this would be better named as "prepare_eret".
+
+> +	mov	x0, #(PSR_F_BIT | PSR_I_BIT | PSR_A_BIT | PSR_D_BIT |\
+> +		      PSR_MODE_EL1h)
+> +	msr	spsr_el2, x0
+> +.endm
+> +
+> +.macro init_el2_state mode
+> +
+> +.ifnes "\mode", "vhe"
+> +.ifnes "\mode", "nvhe"
+> +.error "Invalid 'mode' argument"
+> +.endif
+> +.endif
+> +
+> +	__init_el2_sctlr
+> +	__init_el2_timers \mode
+> +	__init_el2_debug \mode
+> +	__init_el2_lor
+> +	__init_el2_stage2
+> +
+> +#ifdef CONFIG_ARM_GIC_V3
+> +	__init_el2_gicv3
+> +#endif
+> +
+> +#ifdef CONFIG_COMPAT
+
+I also think we can drop this one, as HSTR_EL2 is always defined, even
+when AArch32 isn't present in the system.
+
+> +	msr	hstr_el2, xzr			// Disable CP15 traps to EL2
+> +#endif
+> +
+> +	/*
+> +	 * When VHE is not in use, early init of EL2 needs to be done here.
+> +	 * When VHE _is_ in use, EL1 will not be used in the host and
+> +	 * requires no configuration, and all non-hyp-specific EL2 setup
+> +	 * will be done via the _EL1 system register aliases in __cpu_setup.
+> +	 */
+> +.ifeqs "\mode", "nvhe"
+> +	__init_el2_nvhe_idregs
+> +	__init_el2_nvhe_cptr
+> +	__init_el2_nvhe_sve
+> +	__init_el2_nvhe_spsr
+> +.endif
+> +
+> +.endm
+
+One thing that is missing here is a description of the registers that
+are clobbered. It was easy to spot before (everything was in the same
+file), and a bit harder now.
+
+> +
+> +#endif /* __ARM_KVM_INIT_H__ */
+> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> index d8d9caf02834..da913ce9e89f 100644
+> --- a/arch/arm64/kernel/head.S
+> +++ b/arch/arm64/kernel/head.S
+> @@ -11,7 +11,6 @@
+>  
+>  #include <linux/linkage.h>
+>  #include <linux/init.h>
+> -#include <linux/irqchip/arm-gic-v3.h>
+>  #include <linux/pgtable.h>
+>  
+>  #include <asm/asm_pointer_auth.h>
+> @@ -21,6 +20,7 @@
+>  #include <asm/asm-offsets.h>
+>  #include <asm/cache.h>
+>  #include <asm/cputype.h>
+> +#include <asm/el2_setup.h>
+>  #include <asm/elf.h>
+>  #include <asm/image.h>
+>  #include <asm/kernel-pgtable.h>
+> @@ -493,159 +493,47 @@ SYM_FUNC_START(el2_setup)
+>  	mrs	x0, CurrentEL
+>  	cmp	x0, #CurrentEL_EL2
+>  	b.eq	1f
+> +
+>  	mov_q	x0, (SCTLR_EL1_RES1 | ENDIAN_SET_EL1)
+>  	msr	sctlr_el1, x0
+>  	mov	w0, #BOOT_CPU_MODE_EL1		// This cpu booted in EL1
+>  	isb
+>  	ret
+>  
+> -1:	mov_q	x0, (SCTLR_EL2_RES1 | ENDIAN_SET_EL2)
+> -	msr	sctlr_el2, x0
+> -
+> +1:
+>  #ifdef CONFIG_ARM64_VHE
+>  	/*
+> -	 * Check for VHE being present. For the rest of the EL2 setup,
+> -	 * x2 being non-zero indicates that we do have VHE, and that the
+> -	 * kernel is intended to run at EL2.
+> +	 * Check for VHE being present. x2 being non-zero indicates that we
+> +	 * do have VHE, and that the kernel is intended to run at EL2.
+>  	 */
+>  	mrs	x2, id_aa64mmfr1_el1
+>  	ubfx	x2, x2, #ID_AA64MMFR1_VHE_SHIFT, #4
+> -#else
+> -	mov	x2, xzr
+> -#endif
+> +	cbz	x2, el2_setup_nvhe
+>  
+> -	/* Hyp configuration. */
+> -	mov_q	x0, HCR_HOST_NVHE_FLAGS
+> -	cbz	x2, set_hcr
+>  	mov_q	x0, HCR_HOST_VHE_FLAGS
+> -set_hcr:
+>  	msr	hcr_el2, x0
+>  	isb
+>  
+> -	/*
+> -	 * Allow Non-secure EL1 and EL0 to access physical timer and counter.
+> -	 * This is not necessary for VHE, since the host kernel runs in EL2,
+> -	 * and EL0 accesses are configured in the later stage of boot process.
+> -	 * Note that when HCR_EL2.E2H == 1, CNTHCTL_EL2 has the same bit layout
+> -	 * as CNTKCTL_EL1, and CNTKCTL_EL1 accessing instructions are redefined
+> -	 * to access CNTHCTL_EL2. This allows the kernel designed to run at EL1
+> -	 * to transparently mess with the EL0 bits via CNTKCTL_EL1 access in
+> -	 * EL2.
+> -	 */
+> -	cbnz	x2, 1f
+> -	mrs	x0, cnthctl_el2
+> -	orr	x0, x0, #3			// Enable EL1 physical timers
+> -	msr	cnthctl_el2, x0
+> -1:
+> -	msr	cntvoff_el2, xzr		// Clear virtual offset
+> -
+> -#ifdef CONFIG_ARM_GIC_V3
+> -	/* GICv3 system register access */
+> -	mrs	x0, id_aa64pfr0_el1
+> -	ubfx	x0, x0, #ID_AA64PFR0_GIC_SHIFT, #4
+> -	cbz	x0, 3f
+> -
+> -	mrs_s	x0, SYS_ICC_SRE_EL2
+> -	orr	x0, x0, #ICC_SRE_EL2_SRE	// Set ICC_SRE_EL2.SRE==1
+> -	orr	x0, x0, #ICC_SRE_EL2_ENABLE	// Set ICC_SRE_EL2.Enable==1
+> -	msr_s	SYS_ICC_SRE_EL2, x0
+> -	isb					// Make sure SRE is now set
+> -	mrs_s	x0, SYS_ICC_SRE_EL2		// Read SRE back,
+> -	tbz	x0, #0, 3f			// and check that it sticks
+> -	msr_s	SYS_ICH_HCR_EL2, xzr		// Reset ICC_HCR_EL2 to defaults
+> -
+> -3:
+> -#endif
+> -
+> -	/* Populate ID registers. */
+> -	mrs	x0, midr_el1
+> -	mrs	x1, mpidr_el1
+> -	msr	vpidr_el2, x0
+> -	msr	vmpidr_el2, x1
+> -
+> -#ifdef CONFIG_COMPAT
+> -	msr	hstr_el2, xzr			// Disable CP15 traps to EL2
+> -#endif
+> -
+> -	/* EL2 debug */
+> -	mrs	x1, id_aa64dfr0_el1
+> -	sbfx	x0, x1, #ID_AA64DFR0_PMUVER_SHIFT, #4
+> -	cmp	x0, #1
+> -	b.lt	4f				// Skip if no PMU present
+> -	mrs	x0, pmcr_el0			// Disable debug access traps
+> -	ubfx	x0, x0, #11, #5			// to EL2 and allow access to
+> -4:
+> -	csel	x3, xzr, x0, lt			// all PMU counters from EL1
+> -
+> -	/* Statistical profiling */
+> -	ubfx	x0, x1, #ID_AA64DFR0_PMSVER_SHIFT, #4
+> -	cbz	x0, 7f				// Skip if SPE not present
+> -	cbnz	x2, 6f				// VHE?
+> -	mrs_s	x4, SYS_PMBIDR_EL1		// If SPE available at EL2,
+> -	and	x4, x4, #(1 << SYS_PMBIDR_EL1_P_SHIFT)
+> -	cbnz	x4, 5f				// then permit sampling of physical
+> -	mov	x4, #(1 << SYS_PMSCR_EL2_PCT_SHIFT | \
+> -		      1 << SYS_PMSCR_EL2_PA_SHIFT)
+> -	msr_s	SYS_PMSCR_EL2, x4		// addresses and physical counter
+> -5:
+> -	mov	x1, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
+> -	orr	x3, x3, x1			// If we don't have VHE, then
+> -	b	7f				// use EL1&0 translation.
+> -6:						// For VHE, use EL2 translation
+> -	orr	x3, x3, #MDCR_EL2_TPMS		// and disable access from EL1
+> -7:
+> -	msr	mdcr_el2, x3			// Configure debug traps
+> -
+> -	/* LORegions */
+> -	mrs	x1, id_aa64mmfr1_el1
+> -	ubfx	x0, x1, #ID_AA64MMFR1_LOR_SHIFT, 4
+> -	cbz	x0, 1f
+> -	msr_s	SYS_LORC_EL1, xzr
+> -1:
+> -
+> -	/* Stage-2 translation */
+> -	msr	vttbr_el2, xzr
+> -
+> -	cbz	x2, install_el2_stub
+> +	init_el2_state vhe
+>  
+>  	mov	w0, #BOOT_CPU_MODE_EL2		// This CPU booted in EL2
+>  	isb
+>  	ret
+> +#endif
+>  
+> -SYM_INNER_LABEL(install_el2_stub, SYM_L_LOCAL)
+> -	/*
+> -	 * When VHE is not in use, early init of EL2 and EL1 needs to be
+> -	 * done here.
+> -	 * When VHE _is_ in use, EL1 will not be used in the host and
+> -	 * requires no configuration, and all non-hyp-specific EL2 setup
+> -	 * will be done via the _EL1 system register aliases in __cpu_setup.
+> -	 */
+> -	mov_q	x0, (SCTLR_EL1_RES1 | ENDIAN_SET_EL1)
+> -	msr	sctlr_el1, x0
+> -
+> -	/* Coprocessor traps. */
+> -	mov	x0, #0x33ff
+> -	msr	cptr_el2, x0			// Disable copro. traps to EL2
+> -
+> -	/* SVE register access */
+> -	mrs	x1, id_aa64pfr0_el1
+> -	ubfx	x1, x1, #ID_AA64PFR0_SVE_SHIFT, #4
+> -	cbz	x1, 7f
+> -
+> -	bic	x0, x0, #CPTR_EL2_TZ		// Also disable SVE traps
+> -	msr	cptr_el2, x0			// Disable copro. traps to EL2
+> +SYM_INNER_LABEL(el2_setup_nvhe, SYM_L_LOCAL)
+> +	mov_q	x0, HCR_HOST_NVHE_FLAGS
+> +	msr	hcr_el2, x0
+>  	isb
+> -	mov	x1, #ZCR_ELx_LEN_MASK		// SVE: Enable full vector
+> -	msr_s	SYS_ZCR_EL2, x1			// length for EL1.
+> +
+> +	init_el2_state nvhe
+>  
+>  	/* Hypervisor stub */
+> -7:	adr_l	x0, __hyp_stub_vectors
+> +	adr_l	x0, __hyp_stub_vectors
+>  	msr	vbar_el2, x0
+>  
+> -	/* spsr */
+> -	mov	x0, #(PSR_F_BIT | PSR_I_BIT | PSR_A_BIT | PSR_D_BIT |\
+> -		      PSR_MODE_EL1h)
+> -	msr	spsr_el2, x0
+> +	mov_q	x0, (SCTLR_EL1_RES1 | ENDIAN_SET_EL1)
+> +	msr	sctlr_el1, x0
+>  	msr	elr_el2, lr
+>  	mov	w0, #BOOT_CPU_MODE_EL2		// This CPU booted in EL2
+>  	eret
+> -- 
+> 2.29.2.299.gdc1121823c-goog
 > 
-> ret = usb_set_interface(stream->dev->udev, intfnum, altsetting);
 > 
-> I've even used multiple msleeps and checked for NULL interfaces but that feels
-> like a cheap trick and I was wondering what lock solution might help best here?
 
-Laurent Pinchart is the person to ask.  He is the maintainer of the 
-uvcvideo driver.  I know very little about it.
+It looks much better now, thanks a lot for going through the pain of
+splitting everything.
 
-Alan Stern
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
