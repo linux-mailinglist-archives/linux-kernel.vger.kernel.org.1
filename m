@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BFC2C0626
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1CF2C0692
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730413AbgKWM2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38276 "EHLO mail.kernel.org"
+        id S1730337AbgKWMcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:32:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730402AbgKWM2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:09 -0500
+        id S1731028AbgKWMcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:32:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96F8B20781;
-        Mon, 23 Nov 2020 12:28:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 302F72076E;
+        Mon, 23 Nov 2020 12:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134488;
-        bh=93VrMVYKxpRP0ORf3ecOd7y7hC7tY7W+PyTw58cxmMg=;
+        s=korg; t=1606134729;
+        bh=WnoWaPOliwfCDnB34vVQAmgvOEREp88/2DhlefrORCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q5y6HtfuH58sT/a6NbnSPjA45W5/uH+7MzhIEL1OGgaNsnhDFC3+VqUyqcMKHToWO
-         Ziyxh+3WGNjlAjVyzXOJ8aDqLu2oScLpQNOta31HF82hqu/neJ/b9OpYzrnFeQHzG9
-         C7gfzh3dxffOi/ItIBUxnjU7nMOHLRITjlHn2/jg=
+        b=sqYRfAPx0b5PKGaic6gatV1Qk/4BULBkASq3KjLp095u7sbcYngSmf9gknTdqZZzJ
+         z8bV842HzZtRqS3CsR2Qtn+yPakfpfSW9lVLyFdwWVn+TPGZZgZl9OwGG8SYQbOFnH
+         wnA9kdVLvLS4ML7/3JI2DpbfQ2xEk8Ed+Ic6n0WM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arnd Bergmann <arnd@arndb.de>, Nishanth Menon <nm@ti.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 38/60] regulator: ti-abb: Fix array out of bound read access on the first transition
-Date:   Mon, 23 Nov 2020 13:22:20 +0100
-Message-Id: <20201123121806.889509136@linuxfoundation.org>
+Subject: [PATCH 4.19 61/91] regulator: ti-abb: Fix array out of bound read access on the first transition
+Date:   Mon, 23 Nov 2020 13:22:21 +0100
+Message-Id: <20201123121812.287151293@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -76,7 +76,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
-index 6d17357b3a248..5f5f63eb8c762 100644
+index 89b9314d64c9d..016330f909c09 100644
 --- a/drivers/regulator/ti-abb-regulator.c
 +++ b/drivers/regulator/ti-abb-regulator.c
 @@ -342,8 +342,17 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
