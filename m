@@ -2,203 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4952C1330
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B322C1334
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbgKWSb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729114AbgKWSbV (ORCPT
+        id S1732886AbgKWSbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:31:49 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37148 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731900AbgKWSbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:31:21 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D169CC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:31:21 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t3so1195294pgi.11
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:31:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GtsXyovkQ24MNl8aC+lmA/AQ0EZdim/KFPinJ6iekIY=;
-        b=ZKdbyuYa3NBPgyJ1UvPCx1/DfKfQIPDzEMsww1gBhs33Y7LM2MaVu+kMOSGL9NeIaT
-         E1s0lofMOrf8w7dImvZZD3BLwd79FgBiog3iAFkQqa2gaf1xqRCUHcZr/BTpsFvDs7yR
-         2aOtqghWBYVte9Ao31KDGGcc3VGakr83xlRjHeoW3PoUyQnvWbG/HYSnZlRs9+Tfgk9r
-         e+cUSyacpNaphIGv45qpxslMH0ybaqpdgtZKPA7AFSNpQCZAKn88ybuxMVNFbbT5r8q2
-         AeN69oC2uknIGiMEweez6yyx0glSRV+wXM4Aixwp63DF7Lfki1AIbOLizMRXp52QCdm5
-         cJWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GtsXyovkQ24MNl8aC+lmA/AQ0EZdim/KFPinJ6iekIY=;
-        b=eZ2d9Yw40KmEo9Zx9XvvXIV3F4y3mDoL5xF9KVO8MSFJE3piGKpUkUipM6ROHGeOZH
-         BLAdOeC0A/f9x+5EQ7l0W0P1lgON+MMrL10HhnT8EWe/kL38HTV7liM0LXv6YVZ+j8/x
-         8H3bqF2sBer1628SOwJVx0LgAjzdwFyi6IAdtOIg8LlCr56ADktqnkj6qnHv307XjqYn
-         E50fpz9fMsQB+PlGkwSD5MsV4IbKm1yW8PIMf6VJss0NC4tfmwk37MTDmXQILPvs7rM7
-         g4RVxFfG+fiXX3x7S9bWKdol2FxABK84akffr6P45f2jwxIUEalL2hczsRf9E/Z4YHCj
-         KThg==
-X-Gm-Message-State: AOAM531s9/i9SbxqDWwWaCwC0ist3Y9JncQhUMP/ikoGXap4GW1RHjMl
-        Z2t2DOBL2+O3Y2PqU4oojChA4L7R3ltNAMTqM7xnlg==
-X-Google-Smtp-Source: ABdhPJwTCWlrGAoulcXiTu9f9xpkhjcWmeAyOr0brrz2ozaqFV4zsGrTrQA/z3rhWpl4PUtSr4PlcRnXVl/rFS8cvmc=
-X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id
- 144-20020a6218960000b0290197491cbe38mr689584pfy.15.1606156281177; Mon, 23 Nov
- 2020 10:31:21 -0800 (PST)
+        Mon, 23 Nov 2020 13:31:48 -0500
+Received: from obbardc-laptop.home (unknown [IPv6:2a00:23c5:9900:2d00:fa7c:ed23:2f0a:448d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: obbardc)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3DD761F44D56;
+        Mon, 23 Nov 2020 18:31:45 +0000 (GMT)
+From:   Christopher Obbard <chris.obbard@collabora.com>
+To:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sjoerd Simons <sjoerd@collabora.co.uk>,
+        Christopher Obbard <chris.obbard@collabora.com>
+Subject: [PATCH] um: ubd: Set device serial attribute from cmdline
+Date:   Mon, 23 Nov 2020 18:31:37 +0000
+Message-Id: <20201123183137.741647-1-chris.obbard@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201123121819.943135899@linuxfoundation.org> <20201123121822.053682010@linuxfoundation.org>
-In-Reply-To: <20201123121822.053682010@linuxfoundation.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 23 Nov 2020 10:31:10 -0800
-Message-ID: <CAKwvOdmX_M6wn-UUO39EqRZNbHCn22dsNND6sZ6q+Tzjyez=7A@mail.gmail.com>
-Subject: Re: [PATCH 5.4 044/158] compiler.h: fix barrier_data() on clang
-To:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Doesn't this depend on a v2 of
-https://lore.kernel.org/lkml/fe040988-c076-8dec-8268-3fbaa8b39c0f@infradead.org/
-? Oh, looks like v1 got picked up:
-https://lore.kernel.org/lkml/mhng-8c56f671-512a-45e7-9c94-fa39a80451da@palmerdabbelt-glaptop1/.
-Won't this break RISCV VDSO?
+Adds the ability to set the UBD device serial number from the
+commandline, disabling the serial number functionality by default.
 
-On Mon, Nov 23, 2020 at 4:35 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Arvind Sankar <nivedita@alum.mit.edu>
->
-> [ Upstream commit 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 ]
->
-> Commit 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h
-> mutually exclusive") neglected to copy barrier_data() from
-> compiler-gcc.h into compiler-clang.h.
->
-> The definition in compiler-gcc.h was really to work around clang's more
-> aggressive optimization, so this broke barrier_data() on clang, and
-> consequently memzero_explicit() as well.
->
-> For example, this results in at least the memzero_explicit() call in
-> lib/crypto/sha256.c:sha256_transform() being optimized away by clang.
->
-> Fix this by moving the definition of barrier_data() into compiler.h.
->
-> Also move the gcc/clang definition of barrier() into compiler.h,
-> __memory_barrier() is icc-specific (and barrier() is already defined
-> using it in compiler-intel.h) and doesn't belong in compiler.h.
->
-> [rdunlap@infradead.org: fix ALPHA builds when SMP is not enabled]
->
-> Link: https://lkml.kernel.org/r/20201101231835.4589-1-rdunlap@infradead.org
-> Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: <stable@vger.kernel.org>
-> Link: https://lkml.kernel.org/r/20201014212631.207844-1-nivedita@alum.mit.edu
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  include/linux/compiler-clang.h |  5 -----
->  include/linux/compiler-gcc.h   | 19 -------------------
->  include/linux/compiler.h       | 18 ++++++++++++++++--
->  3 files changed, 16 insertions(+), 26 deletions(-)
->
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index 333a6695a918c..9b89141604ed0 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -37,8 +37,3 @@
->  #define COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW 1
->  #endif
->
-> -/* The following are for compatibility with GCC, from compiler-gcc.h,
-> - * and may be redefined here because they should not be shared with other
-> - * compilers, like ICC.
-> - */
-> -#define barrier() __asm__ __volatile__("" : : : "memory")
-> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> index e8579412ad214..d8fab3ecf5120 100644
-> --- a/include/linux/compiler-gcc.h
-> +++ b/include/linux/compiler-gcc.h
-> @@ -14,25 +14,6 @@
->  # error Sorry, your compiler is too old - please upgrade it.
->  #endif
->
-> -/* Optimization barrier */
-> -
-> -/* The "volatile" is due to gcc bugs */
-> -#define barrier() __asm__ __volatile__("": : :"memory")
-> -/*
-> - * This version is i.e. to prevent dead stores elimination on @ptr
-> - * where gcc and llvm may behave differently when otherwise using
-> - * normal barrier(): while gcc behavior gets along with a normal
-> - * barrier(), llvm needs an explicit input variable to be assumed
-> - * clobbered. The issue is as follows: while the inline asm might
-> - * access any memory it wants, the compiler could have fit all of
-> - * @ptr into memory registers instead, and since @ptr never escaped
-> - * from that, it proved that the inline asm wasn't touching any of
-> - * it. This version works well with both compilers, i.e. we're telling
-> - * the compiler that the inline asm absolutely may see the contents
-> - * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
-> - */
-> -#define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
-> -
->  /*
->   * This macro obfuscates arithmetic on a variable address so that gcc
->   * shouldn't recognize the original var, and make assumptions about it.
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index 448c91bf543b7..f164a9b12813f 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -80,11 +80,25 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
->
->  /* Optimization barrier */
->  #ifndef barrier
-> -# define barrier() __memory_barrier()
-> +/* The "volatile" is due to gcc bugs */
-> +# define barrier() __asm__ __volatile__("": : :"memory")
->  #endif
->
->  #ifndef barrier_data
-> -# define barrier_data(ptr) barrier()
-> +/*
-> + * This version is i.e. to prevent dead stores elimination on @ptr
-> + * where gcc and llvm may behave differently when otherwise using
-> + * normal barrier(): while gcc behavior gets along with a normal
-> + * barrier(), llvm needs an explicit input variable to be assumed
-> + * clobbered. The issue is as follows: while the inline asm might
-> + * access any memory it wants, the compiler could have fit all of
-> + * @ptr into memory registers instead, and since @ptr never escaped
-> + * from that, it proved that the inline asm wasn't touching any of
-> + * it. This version works well with both compilers, i.e. we're telling
-> + * the compiler that the inline asm absolutely may see the contents
-> + * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
-> + */
-> +# define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
->  #endif
->
->  /* workaround for GCC PR82365 if needed */
-> --
-> 2.27.0
->
->
->
+In some cases it may be useful to set a serial to the UBD device, such
+that downstream users (i.e. udev) can use this information to better
+describe the hardware to the user from the UML cmdline. In our case we
+use this parameter to create some entries under /dev/disk/by-ubd-id/
+for each of the UBD devices passed through the UML cmdline.
 
+Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
+---
+ arch/um/drivers/ubd_kern.c | 78 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 62 insertions(+), 16 deletions(-)
 
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index a97b40432331..f59e23748c16 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -155,6 +155,7 @@ struct ubd {
+ 	/* name (and fd, below) of the file opened for writing, either the
+ 	 * backing or the cow file. */
+ 	char *file;
++	char *serial;
+ 	int count;
+ 	int fd;
+ 	__u64 size;
+@@ -180,6 +181,7 @@ struct ubd {
+ 
+ #define DEFAULT_UBD { \
+ 	.file = 		NULL, \
++	.serial =		NULL, \
+ 	.count =		0, \
+ 	.fd =			-1, \
+ 	.size =			-1, \
+@@ -272,7 +274,7 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
+ {
+ 	struct ubd *ubd_dev;
+ 	struct openflags flags = global_openflags;
+-	char *backing_file;
++	char *file, *backing_file, *serial;
+ 	int n, err = 0, i;
+ 
+ 	if(index_out) *index_out = -1;
+@@ -368,24 +370,27 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
+ 	goto out;
+ 
+ break_loop:
+-	backing_file = strchr(str, ',');
++	file = strsep(&str, ",:");
++	if (*file == '\0')
++		file = NULL;
+ 
+-	if (backing_file == NULL)
+-		backing_file = strchr(str, ':');
++	backing_file = strsep(&str, ",:");
++	if (*backing_file == '\0')
++		backing_file = NULL;
+ 
+-	if(backing_file != NULL){
+-		if(ubd_dev->no_cow){
+-			*error_out = "Can't specify both 'd' and a cow file";
+-			goto out;
+-		}
+-		else {
+-			*backing_file = '\0';
+-			backing_file++;
+-		}
++	serial = strsep(&str, ",:");
++	if (*serial == '\0')
++		serial = NULL;
++
++	if (backing_file && ubd_dev->no_cow) {
++		*error_out = "Can't specify both 'd' and a cow file";
++		goto out;
+ 	}
++
+ 	err = 0;
+-	ubd_dev->file = str;
++	ubd_dev->file = file;
+ 	ubd_dev->cow.file = backing_file;
++	ubd_dev->serial = serial;
+ 	ubd_dev->boot_openflags = flags;
+ out:
+ 	mutex_unlock(&ubd_lock);
+@@ -406,7 +411,7 @@ static int ubd_setup(char *str)
+ 
+ __setup("ubd", ubd_setup);
+ __uml_help(ubd_setup,
+-"ubd<n><flags>=<filename>[(:|,)<filename2>]\n"
++"ubd<n><flags>=<filename>[(:|,)<filename2>][(:|,)<serial>]\n"
+ "    This is used to associate a device with a file in the underlying\n"
+ "    filesystem. When specifying two filenames, the first one is the\n"
+ "    COW name and the second is the backing file name. As separator you can\n"
+@@ -429,6 +434,12 @@ __uml_help(ubd_setup,
+ "    UMLs and file locking will be turned off - this is appropriate for a\n"
+ "    cluster filesystem and inappropriate at almost all other times.\n\n"
+ "    't' will disable trim/discard support on the device (enabled by default).\n\n"
++"    An optional device serial number can be exposed using the serial parameter\n"
++"    on the cmdline which is exposed as a sysfs entry. This is particularly\n"
++"    useful when a unique number should be given to the device. Note when\n"
++"    specifying a label, the filename2 must be also presented. It can be\n"
++"    an empty string, in which case the backing file is not used:\n"
++"       ubd0=File,,Serial\n"
+ );
+ 
+ static int udb_setup(char *str)
+@@ -868,6 +879,41 @@ static void ubd_device_release(struct device *dev)
+ 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
+ }
+ 
++static ssize_t serial_show(struct device *dev,
++			   struct device_attribute *attr, char *buf)
++{
++	struct gendisk *disk = dev_to_disk(dev);
++	struct ubd *ubd_dev = disk->private_data;
++
++	if (!ubd_dev)
++		return 0;
++
++	return sprintf(buf, "%s", ubd_dev->serial);
++}
++
++static DEVICE_ATTR_RO(serial);
++
++static struct attribute *ubd_attrs[] = {
++	&dev_attr_serial.attr,
++	NULL,
++};
++
++static umode_t ubd_attrs_are_visible(struct kobject *kobj,
++				     struct attribute *a, int n)
++{
++	return a->mode;
++}
++
++static const struct attribute_group ubd_attr_group = {
++	.attrs = ubd_attrs,
++	.is_visible = ubd_attrs_are_visible,
++};
++
++static const struct attribute_group *ubd_attr_groups[] = {
++	&ubd_attr_group,
++	NULL,
++};
++
+ static int ubd_disk_register(int major, u64 size, int unit,
+ 			     struct gendisk **disk_out)
+ {
+@@ -899,7 +945,7 @@ static int ubd_disk_register(int major, u64 size, int unit,
+ 
+ 	disk->private_data = &ubd_devs[unit];
+ 	disk->queue = ubd_devs[unit].queue;
+-	device_add_disk(parent, disk, NULL);
++	device_add_disk(parent, disk, ubd_attr_groups);
+ 
+ 	*disk_out = disk;
+ 	return 0;
 -- 
-Thanks,
-~Nick Desaulniers
+2.28.0
+
