@@ -2,217 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB6A2C01FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547142C0200
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgKWJEo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 04:04:44 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:44486 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKWJEn (ORCPT
+        id S1727388AbgKWJFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgKWJFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:04:43 -0500
-Received: by mail-ed1-f65.google.com with SMTP id l5so16245703edq.11;
-        Mon, 23 Nov 2020 01:04:41 -0800 (PST)
+        Mon, 23 Nov 2020 04:05:23 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADE9C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 01:05:21 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id y10so1683810ljc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 01:05:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8XaBqDDPJL3HLBnms0Ixvz/F1NwF3Bgl8gVECLmIQiI=;
+        b=Dprj/NYgpo2wGwvJcQ/Ukf6Nzb/3auYXGzfjUbwtgMzxL9zR9LzOO3UCG7vh+0yiJN
+         Of2JW+1mupBMXSy0EZXfPJMw8j+ZWtaK4EDToqoPxoa87s9s9rTDYxu3qnqHpCB+aFP5
+         wHCdhvby2pWZxW2KNCj5PaweJhcrTdfSGcJTNFgCERpq8CX9lo0QViSvQfxkLXuyFO+l
+         TPb2IREt3oZeWZmYCfisjuyrRQ6zJ5T8V6/aSni22BARZr049BLKvMQVBRERIOzH6QUO
+         ntTP2Mv859iNRdEmfaHIQ7+LejNAKNfDFyinrlQ2XQWjceLdtfnBB96DAhPti52GMLG2
+         Bz1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wGGlpzvGX0by37pqRtpcEEdM/2jadzvK1HD3lMXgLU0=;
-        b=ix6B8IsnEofDPVMe0nIt0OGMzvGxygTHN0WZVY8AGXH+BGOyK+4zvYMM6a7aFQFMTd
-         FFDnclWyRA1JpIhb5xiB/mmQiyzvdtl8xoKsVSp9G+fcFV420T3EuDYf+S6GVVsjK+g4
-         lQsxNPPPQrLxtLHmuCVLAOj4bV3B4pqNM2L2Y2FI64w+uzCIKUgN47jR6sT4xYySDONm
-         APFceL36CoaxKSfANB11QG8wgzVxnaFZ+J2saEWcA/dPTnVuXqHqoO5PRA9k5KxrDU4Z
-         Ahb6E635MMBZ8cgZ+WRSgzTi/HItjtYtxTu8n7soqSjE0B88QkNSSO8u8/uvrmes/T21
-         33rw==
-X-Gm-Message-State: AOAM5327JTikbjuDTnqPYXoCDYrF7uCj4/4wXtdgZzErNwqrMZfxNfGF
-        PL92lc+If3KMV6OfVFzV80o=
-X-Google-Smtp-Source: ABdhPJzXhq9gEvTmWy4BzqVCA2dUlKZtyrI26WLTpJtn0H4cJoZyCMMvO3yAjfu7+TzSRCQIVqx/VQ==
-X-Received: by 2002:a05:6402:54d:: with SMTP id i13mr48437719edx.3.1606122280616;
-        Mon, 23 Nov 2020 01:04:40 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id k1sm4561266ejr.53.2020.11.23.01.04.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 01:04:39 -0800 (PST)
-Date:   Mon, 23 Nov 2020 10:04:38 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alice Guo <alice.guo@nxp.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH v4 1/4] dt-bindings: soc: imx8m: add DT Binding
- doc for soc unique ID
-Message-ID: <20201123090438.GA17112@kozik-lap>
-References: <20201120101112.31819-1-alice.guo@nxp.com>
- <20201120105045.GA18581@kozik-lap>
- <DBBPR04MB606015EDBC99EF83B434D71AE2FC0@DBBPR04MB6060.eurprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8XaBqDDPJL3HLBnms0Ixvz/F1NwF3Bgl8gVECLmIQiI=;
+        b=o+Seb0WKAjUvs5ao/9tJLY6NY4tJZg13Embiarve33bLUpLmYl/MKz/D/9OvKx6BYG
+         gdLSF40kr0CnHmAXYFEV3p+dpTG/iPvAwqNuY2HNN2eNxVcyD2Hhkaxs9UnDkQjYxOl2
+         4KM+d9ZF+KRh1tkWGClfG8ytR9hmFo9HG/a4ZtVoqUzhXEF58vLReBR8oXy2i/hra9WJ
+         UrF2vkNpKXPbG1cXzMYxriBxOY6eoFKbxpuB6j+zVz3EhMuPX4htNLDXK7KEPTqn0GzJ
+         Vb52ugYxKQOlD4zc+M2iWkqoFc869Wz48o5jsg7S1y8Oj3U+vWJaDJoS2fPqRew6qgIv
+         b2WQ==
+X-Gm-Message-State: AOAM531TJRtY75ENUdbZFMCiTJKt0WuvypZrp35KV4t9PuHvKGSopZZX
+        pvubi6zX8BIqHpJIPTELBi5WQe/aH24yAEsOVzUBhg8yQKnzmA==
+X-Google-Smtp-Source: ABdhPJxUl6QJbAo3mZz/mFi7DkaXpyrgX8fJfx+qo+dg1t23qvjkhTnp+OvGKTc71ZorK7COmj5OsEtbaia8UJfGvV8=
+X-Received: by 2002:a2e:8143:: with SMTP id t3mr12002350ljg.269.1606122319731;
+ Mon, 23 Nov 2020 01:05:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <DBBPR04MB606015EDBC99EF83B434D71AE2FC0@DBBPR04MB6060.eurprd04.prod.outlook.com>
+References: <20201121212414.170840-1-dwaipayanray1@gmail.com>
+In-Reply-To: <20201121212414.170840-1-dwaipayanray1@gmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Mon, 23 Nov 2020 14:34:49 +0530
+Message-ID: <CABJPP5Bg_Ewgsu_J+Bz-VGaa+D3W-wRg-_2f-590HZWLL-K=5g@mail.gmail.com>
+Subject: Re: [PATCH v2] checkpatch: add --fix option for INCLUDE_LINUX
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:45:13AM +0000, Alice Guo wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Krzysztof Kozlowski <krzk@kernel.org>
-> > Sent: 2020年11月20日 18:51
-> > To: Alice Guo <alice.guo@nxp.com>
-> > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
-> > dl-linux-imx <linux-imx@nxp.com>; Peng Fan <peng.fan@nxp.com>;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > linux-arm-kernel@lists.infradead.org
-> > Subject: [EXT] Re: [PATCH v4 1/4] dt-bindings: soc: imx8m: add DT Binding doc
-> > for soc unique ID
-> > 
-> > Caution: EXT Email
-> > 
-> > On Fri, Nov 20, 2020 at 06:11:09PM +0800, Alice Guo wrote:
-> > > Add DT Binding doc for the Unique ID of i.MX 8M series.
-> > >
-> > > v2: remove the subject prefix "LF-2571-1"
-> > > v3: put it into Documentation/devicetree/bindings/arm/fsl.yaml
-> > >     modify the description of nvmem-cells
-> > >     use "make ARCH=arm64 dtbs_check" to test it and fix errors
-> > > v4: use allOf to limit new version DTS files for i.MX8M to include
-> > >     "fsl,imx8mm/n/p/q-soc", nvmem-cells and nvmem-cells-names
-> > >
-> > > Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> > > ---
-> > >  .../devicetree/bindings/arm/fsl.yaml          | 51
-> > +++++++++++++++++++
-> > >  1 file changed, 51 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml
-> > > b/Documentation/devicetree/bindings/arm/fsl.yaml
-> > > index 67980dcef66d..d8048323a290 100644
-> > > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> > > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> > > @@ -918,6 +918,57 @@ properties:
-> > >                - fsl,s32v234-evb           # S32V234-EVB2 Customer
-> > Evaluation Board
-> > >            - const: fsl,s32v234
-> > >
-> > > +  soc:
-> > > +    type: object
-> > > +    properties:
-> > > +      compatible:
-> > > +        oneOf:
-> > > +          - description: new version compatible for i.MX8M SoCs
-> > > +            items:
-> > > +              - enum:
-> > > +                  - fsl,imx8mm-soc
-> > > +                  - fsl,imx8mn-soc
-> > > +                  - fsl,imx8mp-soc
-> > > +                  - fsl,imx8mq-soc
-> > > +              - const: simple-bus
-> > > +
-> > > +          - description: old version compatible for i.MX8M SoCs
-> > > +            items:
-> > > +              - const: simple-bus
-> > > +
-> > > +      nvmem-cells:
-> > > +        maxItems: 1
-> > > +        description: Phandle to the SOC Unique ID provided by a nvmem
-> > > + node
-> > > +
-> > > +      nvmem-cells-names:
-> > > +        const: soc_unique_id
-> > > +
-> > > +    allOf:
-> > 
-> > Nothing changed here comparing to previous version. Still does not work.
-> > 
-> > The allOf should not be part of soc node because the "if" below won't match.
-> > Instead, it should be against root node.
-> > 
-> > Best regards,
-> > Krzysztof
-> 
-> I'm sorry to disturb you. I don't very clear about the grammar rules of yaml, so don't know how to make allOf be part of root node.
-> If allof is part of root node, how does it specify the soc node? The following is my change which is definitely wrong.
->   soc:
->     properties:
->       compatible:
->         - description: new version compatible for i.MX8M SoCs
->           items:
->             - enum:
->                 - fsl,imx8mm-soc
->                 - fsl,imx8mn-soc
->                 - fsl,imx8mp-soc
->                 - fsl,imx8mq-soc
->             - const: simple-bus
-> 
->       nvmem-cells:
->         maxItems: 1
->         description: Phandle to the SOC Unique ID provided by a nvmem node
-> 
->       nvmem-cells-names:
->         const: soc_unique_id
-> 
-> allOf:
->   - if:
->       properties:
->         compatible:
->           contains:
->             enum:
->               - fsl,imx8mm
->               - fsl,imx8mn
->               - fsl,imx8mp
->               - fsl,imx8mq
-> 
->       then:
->         required:
->           - soc
-> 
-> Please give me suggestion. Thank you.
+On Sun, Nov 22, 2020 at 2:54 AM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+>
+> Provide fix option to INCLUDE_LINUX check to replace asm
+> includes.
+>
+> Macros of type:
+>  #include <asm/percpu.h>
+>
+> are corrected to:
+>  #include <linux/percpu.h>
+>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+>
 
-This should work:
+Hello Joe,
+Could I get some review on this if you are not too busy.
 
-940 allOf:
-941   - if:
-942       properties:
-943         compatible:
-944           contains:
-945             enum:
-946               - fsl,imx8mm
-947               - fsl,imx8mn
-948               - fsl,imx8mp
-949               - fsl,imx8mq
-950 
-951     then:
-952       patternProperties:
-953         "^soc@[0-9a-f]+$":
-954           properties:
-955             compatible:
-956               items:
-957                 - enum:
-958                     - fsl,imx8mm-soc
-959                     - fsl,imx8mn-soc
-960                     - fsl,imx8mp-soc
-961                     - fsl,imx8mq-soc
-962                 - const: simple-bus
-963 
-964           required:
-965             - nvmem-cells
-966             - nvmem-cells-names
+Thank you,
+Dwaipayan.
 
-And probablt "soc" should also be added to required, just below the
-"then:".
-
-You need to test it and find the proper solution.
-
-Best regards,
-Krzysztof
-
-
+> Changes in v2:
+> - Use \Q..\E quoting
+> - Use @ as regex delimiter
+>
+>  scripts/checkpatch.pl | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 0da6422cd0fd..e4feb91a0fe4 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -5468,8 +5468,11 @@ sub process {
+>                                                 CHK("ARCH_INCLUDE_LINUX",
+>                                                     "Consider using #include <linux/$file> instead of <asm/$file>\n" . $herecurr);
+>                                         } else {
+> -                                               WARN("INCLUDE_LINUX",
+> -                                                    "Use #include <linux/$file> instead of <asm/$file>\n" . $herecurr);
+> +                                               if (WARN("INCLUDE_LINUX",
+> +                                                        "Use #include <linux/$file> instead of <asm/$file>\n" . $herecurr) &&
+> +                                                   $fix) {
+> +                                                       $fixed[$fixlinenr] =~ s@\Q<asm/$file>\E@<linux/$file>@;
+> +                                               }
+>                                         }
+>                                 }
+>                         }
+> --
+> 2.27.0
+>
