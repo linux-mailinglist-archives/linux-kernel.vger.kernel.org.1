@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519772C08DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9102C0A57
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388249AbgKWNCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:02:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36238 "EHLO mail.kernel.org"
+        id S1730913AbgKWNT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:19:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387810AbgKWMwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:52:13 -0500
+        id S1732273AbgKWMjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0463F2168B;
-        Mon, 23 Nov 2020 12:52:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55B0120888;
+        Mon, 23 Nov 2020 12:39:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135932;
-        bh=t48Fk7y6e31vreDfy66nKUHstMM67OHS6UVFPC91zxI=;
+        s=korg; t=1606135170;
+        bh=LVl9AgLF4EMvwg7O7NqXDbzsSL8wwpORgfCwtTvJvKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PVAUX8yXAV1G24WBUTaShZq8EE8TAq3dtYmYzgAqvbaYpkdZgTEAuEgj0zriNHI9G
-         mPAkg8c4P6f6a4IyO2MdNkx2e0bkkfGCcVk94lWWzOv7bYWNUt6sAQ93ts2VYNjlpa
-         2sgx3xMBtf9PcJfKvyrLGD4c4AuJAwlXrZZD2ErI=
+        b=BqCgQt/SOZz517WpROkZocbLY4NPUaIF9708BhY/Z7wsVTzmePANOXQE2dNdw8aQM
+         4Ofm0xkFCXWZaLTEPvZmisxjsVsmlAzK6jTlqmrr/5YWt9m98mBql3leUkmZbXl6/q
+         BmufDJXXZFy5bQZAGVnb1SNXzvwcWMksMwf/HY5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.9 208/252] iio: accel: kxcjk1013: Replace is_smo8500_device with an acpi_type enum
+Subject: [PATCH 5.4 130/158] iio: accel: kxcjk1013: Replace is_smo8500_device with an acpi_type enum
 Date:   Mon, 23 Nov 2020 13:22:38 +0100
-Message-Id: <20201123121845.605212231@linuxfoundation.org>
+Message-Id: <20201123121826.198910030@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
-References: <20201123121835.580259631@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -80,7 +80,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  struct kxcjk1013_data {
  	struct i2c_client *client;
  	struct iio_trigger *dready_trig;
-@@ -143,7 +148,7 @@ struct kxcjk1013_data {
+@@ -142,7 +147,7 @@ struct kxcjk1013_data {
  	bool motion_trigger_on;
  	int64_t timestamp;
  	enum kx_chipset chipset;
@@ -89,7 +89,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  };
  
  enum kxcjk1013_axis {
-@@ -1247,7 +1252,7 @@ static irqreturn_t kxcjk1013_data_rdy_tr
+@@ -1233,7 +1238,7 @@ static irqreturn_t kxcjk1013_data_rdy_tr
  
  static const char *kxcjk1013_match_acpi_device(struct device *dev,
  					       enum kx_chipset *chipset,
@@ -98,7 +98,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  {
  	const struct acpi_device_id *id;
  
-@@ -1256,7 +1261,7 @@ static const char *kxcjk1013_match_acpi_
+@@ -1242,7 +1247,7 @@ static const char *kxcjk1013_match_acpi_
  		return NULL;
  
  	if (strcmp(id->id, "SMO8500") == 0)
@@ -107,7 +107,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	*chipset = (enum kx_chipset)id->driver_data;
  
-@@ -1299,7 +1304,7 @@ static int kxcjk1013_probe(struct i2c_cl
+@@ -1278,7 +1283,7 @@ static int kxcjk1013_probe(struct i2c_cl
  	} else if (ACPI_HANDLE(&client->dev)) {
  		name = kxcjk1013_match_acpi_device(&client->dev,
  						   &data->chipset,
@@ -116,7 +116,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	} else
  		return -ENODEV;
  
-@@ -1316,7 +1321,7 @@ static int kxcjk1013_probe(struct i2c_cl
+@@ -1296,7 +1301,7 @@ static int kxcjk1013_probe(struct i2c_cl
  	indio_dev->modes = INDIO_DIRECT_MODE;
  	indio_dev->info = &kxcjk1013_info;
  
