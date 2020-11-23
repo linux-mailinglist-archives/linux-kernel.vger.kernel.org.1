@@ -2,271 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB56E2C1067
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C502C108D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389972AbgKWQaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:30:46 -0500
-Received: from mga04.intel.com ([192.55.52.120]:7534 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732895AbgKWQap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:30:45 -0500
-IronPort-SDR: hl04egNVOIV00ayjig7JXF+/ZLPLfa1Y6lG4/njPRTH9mSEH3oCANyxPw5B+SmjcTK2WVD3dHs
- AKKg581PdNVw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="169231825"
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="169231825"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 08:30:44 -0800
-IronPort-SDR: NJ3AwRD6HhHhDpqi1F7obMvlxX/YfgaMo+hCU38d4kCySkd1sTL2rC4wpFFjfAvZYZI8z72Ryn
- BWNtn7Ul7FAA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="332239425"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP; 23 Nov 2020 08:30:44 -0800
-Received: from [10.213.137.103] (mreddy3x-MOBL.gar.corp.intel.com [10.213.137.103])
-        by linux.intel.com (Postfix) with ESMTP id 3035F580638;
-        Mon, 23 Nov 2020 08:30:40 -0800 (PST)
-Subject: Re: [PATCH v9 1/2] dt-bindings: dma: Add bindings for Intel LGM SoC
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
-References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <20201118155552.GV50232@vkoul-mobl>
- <44fba7c3-37a9-7168-3c19-eeb5068b7063@linux.intel.com>
- <20201121121917.GC8403@vkoul-mobl>
-From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Message-ID: <f9eedf31-0452-590b-061a-2946594bc9ea@linux.intel.com>
-Date:   Tue, 24 Nov 2020 00:30:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2390007AbgKWQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730953AbgKWQbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 11:31:36 -0500
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C8FC0613CF;
+        Mon, 23 Nov 2020 08:31:35 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7AB3012808F4;
+        Mon, 23 Nov 2020 08:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1606149095;
+        bh=+IhPqZ/v6VfDyyXzj4lMu9axEsbedJZyqBpFfwsfG+g=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=taYTQdLWt1uKXwIt/3Ve/mEupTdq+Wcpdv+UXp5WQMTWxY34l98m0qHLcdAiwuo2t
+         gwBg46qri78QHRql74q8THMzP+7WPx9XqttvrPch20gBcYUMT4pLXQarcLhIoin1Gp
+         Z+ziweydBKwdaV8ZmrW12X55c5G6vUR8Kiznotik=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id a5HoKkemyWLj; Mon, 23 Nov 2020 08:31:35 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 9FAA112808A8;
+        Mon, 23 Nov 2020 08:31:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1606149095;
+        bh=+IhPqZ/v6VfDyyXzj4lMu9axEsbedJZyqBpFfwsfG+g=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=taYTQdLWt1uKXwIt/3Ve/mEupTdq+Wcpdv+UXp5WQMTWxY34l98m0qHLcdAiwuo2t
+         gwBg46qri78QHRql74q8THMzP+7WPx9XqttvrPch20gBcYUMT4pLXQarcLhIoin1Gp
+         Z+ziweydBKwdaV8ZmrW12X55c5G6vUR8Kiznotik=
+Message-ID: <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
+ Clang
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Joe Perches <joe@perches.com>, Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
+        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        x86@kernel.org, linux-nfs@vger.kernel.org,
+        GR-Linux-NIC-Dev@marvell.com, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
+        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Date:   Mon, 23 Nov 2020 08:31:30 -0800
+In-Reply-To: <20201123130348.GA3119@embeddedor>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+         <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <202011201129.B13FDB3C@keescook>
+         <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <202011220816.8B6591A@keescook>
+         <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+         <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+         <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
+         <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
+         <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
+         <20201123130348.GA3119@embeddedor>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20201121121917.GC8403@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Mon, 2020-11-23 at 07:03 -0600, Gustavo A. R. Silva wrote:
+> On Sun, Nov 22, 2020 at 11:53:55AM -0800, James Bottomley wrote:
+> > On Sun, 2020-11-22 at 11:22 -0800, Joe Perches wrote:
+> > > On Sun, 2020-11-22 at 11:12 -0800, James Bottomley wrote:
+> > > > On Sun, 2020-11-22 at 10:25 -0800, Joe Perches wrote:
+> > > > > On Sun, 2020-11-22 at 10:21 -0800, James Bottomley wrote:
+> > > > > > Please tell me our reward for all this effort isn't a
+> > > > > > single missing error print.
+> > > > > 
+> > > > > There were quite literally dozens of logical defects found
+> > > > > by the fallthrough additions.  Very few were logging only.
+> > > > 
+> > > > So can you give us the best examples (or indeed all of them if
+> > > > someone is keeping score)?  hopefully this isn't a US election
+> > > > situation ...
+> > > 
+> > > Gustavo?  Are you running for congress now?
+> > > 
+> > > https://lwn.net/Articles/794944/
+> > 
+> > That's 21 reported fixes of which about 50% seem to produce no
+> > change in code behaviour at all, a quarter seem to have no user
+> > visible effect with the remaining quarter producing unexpected
+> > errors on obscure configuration parameters, which is why no-one
+> > really noticed them before.
+> 
+> The really important point here is the number of bugs this has
+> prevented and will prevent in the future. See an example of this,
+> below:
+> 
+> https://lore.kernel.org/linux-iio/20190813135802.GB27392@kroah.com/
 
-Thanks for your valuable review. My comments inline.
+I think this falls into the same category as the other six bugs: it
+changes the output/input for parameters but no-one has really noticed,
+usually because the command is obscure or the bias effect is minor.
 
-On 11/21/2020 8:19 PM, Vinod Koul wrote:
-> On 20-11-20, 19:30, Reddy, MallikarjunaX wrote:
->> Hi Vinod,
->> Thanks for the review. My comments inline.
->>
->> On 11/18/2020 11:55 PM, Vinod Koul wrote:
->>> On 12-11-20, 13:38, Amireddy Mallikarjuna reddy wrote:
->>>> Add DT bindings YAML schema for DMA controller driver
->>>> of Lightning Mountain (LGM) SoC.
->>>>
->>>> Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
->>>> ---
->>>> v1:
->>>> - Initial version.
->>>>
->>>> v2:
->>>> - Fix bot errors.
->>>>
->>>> v3:
->>>> - No change.
->>>>
->>>> v4:
->>>> - Address Thomas langer comments
->>>>     - use node name pattern as dma-controller as in common binding.
->>>>     - Remove "_" (underscore) in instance name.
->>>>     - Remove "port-" and "chan-" in attribute name for both 'dma-ports' & 'dma-channels' child nodes.
->>>>
->>>> v5:
->>>> - Moved some of the attributes in 'dma-ports' & 'dma-channels' child nodes to dma client/consumer side as cells in 'dmas' properties.
->>>>
->>>> v6:
->>>> - Add additionalProperties: false
->>>> - completely removed 'dma-ports' and 'dma-channels' child nodes.
->>>> - Moved channel dt properties to client side dmas.
->>>> - Use standard dma-channels and dma-channel-mask properties.
->>>> - Documented reset-names
->>>> - Add description for dma-cells
->>>>
->>>> v7:
->>>> - modified compatible to oneof
->>>> - Reduced number of dma-cells to 3
->>>> - Fine tune the description of some properties.
->>>>
->>>> v7-resend:
->>>> - rebase to 5.10-rc1
->>>>
->>>> v8:
->>>> - rebased to 5.10-rc3
->>>> - Fixing the bot issues (wrong indentation)
->>>>
->>>> v9:
->>>> - rebased to 5.10-rc3
->>>> - Use 'enum' instead of oneOf+const
->>>> - Drop '#dma-cells' in required:, already covered in dma-common.yaml
->>>> - Drop nodename Already covered by dma-controller.yaml
->>>> ---
->>>>    .../devicetree/bindings/dma/intel,ldma.yaml        | 130 +++++++++++++++++++++
->>>>    1 file changed, 130 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/dma/intel,ldma.yaml b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
->>>> new file mode 100644
->>>> index 000000000000..c06281a10178
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
->>>> @@ -0,0 +1,130 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/dma/intel,ldma.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Lightning Mountain centralized low speed DMA and high speed DMA controllers.
->>>> +
->>>> +maintainers:
->>>> +  - chuanhua.lei@intel.com
->>>> +  - mallikarjunax.reddy@intel.com
->>>> +
->>>> +allOf:
->>>> +  - $ref: "dma-controller.yaml#"
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    enum:
->>>> +      - intel,lgm-cdma
->>>> +      - intel,lgm-dma2tx
->>>> +      - intel,lgm-dma1rx
->>>> +      - intel,lgm-dma1tx
->>>> +      - intel,lgm-dma0tx
->>>> +      - intel,lgm-dma3
->>>> +      - intel,lgm-toe-dma30
->>>> +      - intel,lgm-toe-dma31
->>>> +
->>>> +  reg:
->>>> +    maxItems: 1
->>>> +
->>>> +  "#dma-cells":
->>>> +    const: 3
->>>> +    description:
->>>> +      The first cell is the peripheral's DMA request line.
->>>> +      The second cell is the peripheral's (port) number corresponding to the channel.
->>>> +      The third cell is the burst length of the channel.
->>>> +
->>>> +  dma-channels:
->>>> +    minimum: 1
->>>> +    maximum: 16
->>>> +
->>>> +  dma-channel-mask:
->>>> +    maxItems: 1
->>>> +
->>>> +  clocks:
->>>> +    maxItems: 1
->>>> +
->>>> +  resets:
->>>> +    maxItems: 1
->>>> +
->>>> +  reset-names:
->>>> +    items:
->>>> +      - const: ctrl
->>>> +
->>>> +  interrupts:
->>>> +    maxItems: 1
->>>> +
->>>> +  intel,dma-poll-cnt:
->>>> +    $ref: /schemas/types.yaml#definitions/uint32
->>>> +    description:
->>>> +      DMA descriptor polling counter is used to control the poling mechanism
->>> s/poling/polling
->> Ok, Thanks.
->>>> +      for the descriptor fetching for all channels.
->>>> +
->>>> +  intel,dma-byte-en:
->>>> +    type: boolean
->>>> +    description:
->>>> +      DMA byte enable is only valid for DMA write(RX).
->>>> +      Byte enable(1) means DMA write will be based on the number of dwords
->>>> +      instead of the whole burst.
->>> Can you explain this, also sounds you could use _maxburst values..?
->> when dma-byte-en = 0 (disabled) DMA write will be in terms of burst length,
->> dma-byte-en = 1 (enabled) write will be in terms of Dwords.
->>
->> Byte enable = 0 (Disabled) means that DMA write will be based on the burst
->> length, even if it only transmits one byte.
->> Byte enable = 1(enabled) means that DMA write will be based on the number of
->> Dwords, instead of the whole burst.
-> Sounds like a hw property or is this configurable to engine..?
-Yes its hw property. Not configurable to engine.
->>>> +
->>>> +  intel,dma-drb:
->>>> +    type: boolean
->>>> +    description:
->>>> +      DMA descriptor read back to make sure data and desc synchronization.
->>>> +
->>>> +  intel,dma-desc-in-sram:
->>>> +    type: boolean
->>>> +    description:
->>>> +      DMA descritpors in SRAM or not. Some old controllers descriptors
->>>> +      can be in DRAM or SRAM. The new ones are all in SRAM.
->>> should that not be decided by driver..? Or is this a hw property?
->> This is DMA controller capability. It can be decided from driver also. i
->> will change accordingly.
->>>> +
->>>> +  intel,dma-orrc:
->>>> +    $ref: /schemas/types.yaml#definitions/uint32
->>>> +    description:
->>>> +      DMA outstanding read counter value determine the number of
->>>> +      ORR-Outstanding Read Request. The maximum value is 16.
->>> How would this be used by folks..?
->> A register bit will be used to enable/disable the ORR feature.
->>
->> Outstanding Read Capability introduce CMD FIFO to support up to 16
->> outstanding reads for different packet in same channel.
->>
->> For large packets up to 16 OR can be issued, the number of OR is
->> configurable.
-> How will configure this and when..?
+> This work is still relevant, even if the total number of issues/bugs
+> we find in the process is zero (which is not the case).
 
-This is DMA (ver > DMA_VER22) hw capability and is configured from 
-device tree.
+Really, no ... something which produces no improvement has no value at
+all ... we really shouldn't be wasting maintainer time with it because
+it has a cost to merge.  I'm not sure we understand where the balance
+lies in value vs cost to merge but I am confident in the zero value
+case.
 
-If this property is not present or count is zero means orrc capability 
-is disabled.
-If orrc count is 4 <= orr_cnt < 16 then write the enable bit and value 
-to corresponding register.
+> "The sucky thing about doing hard work to deploy hardening is that
+> the result is totally invisible by definition (things not happening)
+> [..]"
+> - Dmitry Vyukov
 
-Ex:
-         if (d->orrc > 0 && d->orrc <= DMA_ORRC_MAX_CNT)
-                 val = DMA_ORRC_EN | FIELD_PREP(DMA_ORRC_ORRCNT, d->orrc);
+Really, no.  Something that can't be measured at all doesn't exist.
 
-         ldma_update_bits(d, mask, val, DMA_ORRC);
+And actually hardening is one of those things you can measure (which I
+do have to admit isn't true for everything in the security space) ...
+it's number of exploitable bugs found before you did it vs number of
+exploitable bugs found after you did it.  Usually hardening eliminates
+a class of bug, so the way I've measured hardening before is to go
+through the CVE list for the last couple of years for product X, find
+all the bugs that are of the class we're looking to eliminate and say
+if we had hardened X against this class of bug we'd have eliminated Y%
+of the exploits.  It can be quite impressive if Y is a suitably big
+number.
 
-This hw capability supports dma instances ver > DMA_VER22.
->
->>>> +
->>>> +  intel,dma-dburst-wr:
->>>> +    type: boolean
->>>> +    description:
->>>> +      Enable RX dynamic burst write. When it is enabled, the DMA does RX dynamic burst;
->>>> +      if it is disabled, the DMA RX will still support programmable fixed burst size of 2,4,8,16.
->>>> +      It only applies to RX DMA and memcopy DMA.
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - reg
->>> So only two are mandatory, what about the bunch of intel properties you
->>> added above..?
->> Some of the properties are DMA capabilities, Enabling from device tree.
->> other properties will use default values from driver if we dont pass it from
->> device tree.
->
+James
+
+
