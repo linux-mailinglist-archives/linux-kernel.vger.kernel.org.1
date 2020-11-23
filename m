@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8530E2C09F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019492C082F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387576AbgKWNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:14:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58654 "EHLO mail.kernel.org"
+        id S1732597AbgKWMqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:46:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733293AbgKWMpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:45:12 -0500
+        id S1730960AbgKWMpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:45:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E75BA20888;
-        Mon, 23 Nov 2020 12:45:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C701620732;
+        Mon, 23 Nov 2020 12:45:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135511;
-        bh=44Uiu1GUEtXfKu+p2pVas5QFqW1xtqZAcsv9wE2M27Y=;
+        s=korg; t=1606135514;
+        bh=UPaGgCww6vH2pt5wQbpdIBAiPafM9ztfYfb7Sz0Tnd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ALJcUwfs+wmxcZKw9T6qKsfn74Ou56CfozRzsVEyBptgvI1bzCEvWDPUtL9nrd9CM
-         3qZ10JVEfXZuykyBYoV56CD80BRzNZSFS7pvXo52DxN3ZJedkSCaPfea7vhDEqOKdP
-         JuLjyW7DLE/yMz6vH7O9Jzm/F+XJ77JKt6T5Q8Sk=
+        b=lfxC2+06YxVzR9vwF+qrdvm/xgXEBNwQ9SkYntL9UF2LMPqe65EuCLgok6opcI0IB
+         nJ2uXosyGrQS9uVvhsEH4ORJJJjcjwr4k2UQq2/v1fvR9IlAHP1PWNrVbS09D4Bm3K
+         xler2OQd0CuD4dF3wi//vkzniETcVQH7dSQeLSWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Biwen Li <biwen.li@nxp.com>,
-        Ran Wang <ran.wang_1@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 095/252] arm64: dts: fsl: fix endianness issue of rcpm
-Date:   Mon, 23 Nov 2020 13:20:45 +0100
-Message-Id: <20201123121840.175401451@linuxfoundation.org>
+Subject: [PATCH 5.9 096/252] arm64: dts: imx8mm-beacon-som: Fix Choppy BT audio
+Date:   Mon, 23 Nov 2020 13:20:46 +0100
+Message-Id: <20201123121840.223983551@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -44,63 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+From: Adam Ford <aford173@gmail.com>
 
-[ Upstream commit d92454287ee25d78f1caac3734a1864f8a5a5275 ]
+[ Upstream commit 587258edd94c305077923ec458e04c032fca83e6 ]
 
-Add little-endian property to RCPM node (for ls1028a,ls1088a,ls208xa),
-otherwise RCPM driver will program hardware with incorrect setting,
-causing system (such as LS1028ARDB) failed to be waked by wakeup source.
+When streaming bluetooth audio, the sound is choppy due to the
+fact that the default baud rate of the HCI interface is too slow
+to handle 16-bit stereo at 48KHz.
 
-Fixes: 791c88ca5713 (“arm64: dts: ls1028a: Add ftm_alarm0 DT node”)
-Fixes: f4fe3a8665495 (“arm64: dts: layerscape: add ftm_alarm0 node”)
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
-Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-Acked-by: Li Yang <leoyang.li@nxp.com>
+The Bluetooth chip is capable of up to 4M baud on the serial port,
+so this patch sets the max-speed to 4000000 in order to properly
+stream audio over the Bluetooth.
+
+Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
+Signed-off-by: Adam Ford <aford173@gmail.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 1 +
- arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 1 +
- arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 +
- 3 files changed, 3 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index 0efeb8fa773e7..651bfe1040ba3 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -1012,6 +1012,7 @@
- 			compatible = "fsl,ls1028a-rcpm", "fsl,qoriq-rcpm-2.1+";
- 			reg = <0x0 0x1e34040 0x0 0x1c>;
- 			#fsl,rcpm-wakeup-cells = <7>;
-+			little-endian;
- 		};
- 
- 		ftm_alarm0: timer@2800000 {
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-index 169f4742ae3b2..2ef812dd29ebc 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-@@ -787,6 +787,7 @@
- 			compatible = "fsl,ls1088a-rcpm", "fsl,qoriq-rcpm-2.1+";
- 			reg = <0x0 0x1e34040 0x0 0x18>;
- 			#fsl,rcpm-wakeup-cells = <6>;
-+			little-endian;
- 		};
- 
- 		ftm_alarm0: timer@2800000 {
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index 41102dacc2e10..141b3d23b1552 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -769,6 +769,7 @@
- 			compatible = "fsl,ls208xa-rcpm", "fsl,qoriq-rcpm-2.1+";
- 			reg = <0x0 0x1e34040 0x0 0x18>;
- 			#fsl,rcpm-wakeup-cells = <6>;
-+			little-endian;
- 		};
- 
- 		ftm_alarm0: timer@2800000 {
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+index 94911b1707ef2..09d757b3e3ce6 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+@@ -210,6 +210,7 @@
+ 		host-wakeup-gpios = <&gpio2 8 GPIO_ACTIVE_HIGH>;
+ 		device-wakeup-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+ 		clocks = <&osc_32k>;
++		max-speed = <4000000>;
+ 		clock-names = "extclk";
+ 	};
+ };
 -- 
 2.27.0
 
