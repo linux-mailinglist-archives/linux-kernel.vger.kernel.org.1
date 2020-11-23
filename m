@@ -2,95 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712272C0E19
+	by mail.lfdr.de (Postfix) with ESMTP id DDB992C0E1A
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731039AbgKWOsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:48:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730142AbgKWOsb (ORCPT
+        id S1731714AbgKWOtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:49:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60399 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728972AbgKWOtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:48:31 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502B0C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:48:29 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id m6so18843201wrg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:48:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j3w1GqHE08GStM/FLoVxqtcruKl7crLd6tb2/zrsaZo=;
-        b=HBmYLN3XpZuXc+k7o3oPHKUiBOVZVGKMLlUtlZYnuMYguOXjuS7k+Y3qtnx9wY/UmJ
-         a5gcLYQmvATwN3KcQAL2GNy/JOUBnWvNttq0kl0MtuxVaT1Bset1PUM0wRQe7efukfH4
-         zFVekyFAz0HROoZGdmVZrLKicLJNXNXPLmsoyHkar8xpZZhnYl0sOLL5x4QQ+oK7ztYd
-         kvnye4dIrZNljZ5iEWLH6DvobUmKXXjDrKJI3xeAdnQwFGCkrU0WlwNFUhpNbYI+t1t6
-         jOuSI9LT3vYQ+Qo/401gZ84DarbWpSFRzoImCb6m4AlMD+e6gX2ww5L5GHUZ/IyQPs0L
-         Ro8w==
+        Mon, 23 Nov 2020 09:49:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606142954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jx0e387EU8Y8QGi626Zz2QkBXc0rICaXyds9sJ3z3xc=;
+        b=iUx6CnHwKEHjgKXOgGgF3CSepsWWVCdCaFDvvWHXy8kcCXc0sRx+1yTcN8NexhEl1wxSLP
+        r6OkVb2tfR6CGsoujjRj4grvSVOdFbO7v8wUvnnY5Guhc5Vm9nlU7CT2HhnztncwWcDYz6
+        f94OFGwDc3ZxrH/cU61FJdFuIG7IIsY=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-hMTp-9tIPwCQLKS050Ts0Q-1; Mon, 23 Nov 2020 09:49:12 -0500
+X-MC-Unique: hMTp-9tIPwCQLKS050Ts0Q-1
+Received: by mail-ej1-f71.google.com with SMTP id a13so5327692ejv.17
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:49:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j3w1GqHE08GStM/FLoVxqtcruKl7crLd6tb2/zrsaZo=;
-        b=oAFTIZz0J6lOnKSneJ3fjJfQCPswKKQbZJXWu9w8U2nSSsdGPi90gAtoeiu4HIGng9
-         ASvVD8HOPUrjCWm1wd7znkyV3ZBIIPdfT6897+vxIMu1Kyj08fJRsrCwf6iUq7zcQAqC
-         GdWWRnoCvuzX/pBNfb0Q5L+76YJxBPcBOKTxchFFoo+ic/9QLBdB3BS3K9m2EJOqNigm
-         jE+xMe/9Nref5Nwjoo7hoFuesAs+BkGpiCoFefXTugUvcKlFXjaU3XavExQMl3MSxcjz
-         c3krz5/KoGWSbPv9ftZtgdKIPHUXpDsO2AYm6UepiZ/HOCFXpNELC7lE4Mxk/qnLwIP+
-         dovA==
-X-Gm-Message-State: AOAM532ZSnpvkaaxm5eaWu4Rg7VoQJzvlSDzUd8qoT5cYcYpdne0SfwY
-        zs1C0OBFnjBaUELigGgXdbfyHg==
-X-Google-Smtp-Source: ABdhPJx6nTEwiFj8zZhxXBuJbb4oSybAB3dPrXTH+w6ewGwc/0dai1XkAj+mvfJ/6d3uF5/5kpr7Hw==
-X-Received: by 2002:adf:e481:: with SMTP id i1mr22651329wrm.282.1606142907911;
-        Mon, 23 Nov 2020 06:48:27 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id x2sm19346846wru.44.2020.11.23.06.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 06:48:27 -0800 (PST)
-Date:   Mon, 23 Nov 2020 14:48:24 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jx0e387EU8Y8QGi626Zz2QkBXc0rICaXyds9sJ3z3xc=;
+        b=ai03se6xZQ+zmafq9gsOh6RBNyfxekq7+UBZeQtdwye+d7MDQoFGYA4HoqgWM63nCu
+         ACh3gjnIXI32765BolwY6xmb/ODs883P2nqjJd8j86VJtrX/MYyxoN0QwDS17SYSZHor
+         Jdef8obHihvVyBontHe/KGq/uh6p/34Yv9vCeqDxTfrHKaenRtf30Pk6s8xIoI05Mm+A
+         vs0XgUT180gtxukRjoOIjP0iwfH/bUGUBzoE/atrT1LAVZFPVhFYSJcX+p67tRiptpEn
+         R4TE2af+83mJS5Y2UecZB503SDZhloxnwp1Ei+iLnr/jhZ98Kue2jKF/AHaY5UUEyN2f
+         jJQQ==
+X-Gm-Message-State: AOAM533tcEbe3AH7JWbkJvnCcsCVRrnhQbZf4QDCtFz4ehYnQTEoJK5L
+        ZSmyosNRkA5xRYtAsvykAn99a0DxKfUqv0suAMYU5FR/nwvsLXF6jIyRvnJGvU40kudOhTp+esH
+        Ci+pp7wiV0orBnPV/jZ/8xB5T
+X-Received: by 2002:a17:906:34c3:: with SMTP id h3mr44342899ejb.132.1606142951014;
+        Mon, 23 Nov 2020 06:49:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxxZbyXGfQnU6e1Iz1byKZPi+kKZ/Xi1qd7ffpRUxuGiEndpGF59D1Wg50E4fd2o/f5XNyoWw==
+X-Received: by 2002:a17:906:34c3:: with SMTP id h3mr44342885ejb.132.1606142950839;
+        Mon, 23 Nov 2020 06:49:10 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id u13sm5094947ejz.74.2020.11.23.06.49.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 06:49:09 -0800 (PST)
+Subject: Re: 5.10 regression, many XHCI swiotlb buffer is full / DMAR: Device
+ bounce map failed errors on thunderbolt connected XHCI controller
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 10/14] sched: Introduce arch_cpu_allowed_mask() to
- limit fallback rq selection
-Message-ID: <20201123144824.GA586782@google.com>
-References: <20201113093720.21106-1-will@kernel.org>
- <20201113093720.21106-11-will@kernel.org>
- <20201119093850.GD2416649@google.com>
- <20201119110709.GD3946@willie-the-truck>
- <20201119203906.GA5099@willie-the-truck>
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-usb <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+References: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
+Message-ID: <be031d15-201f-0e5c-8b0f-be030077141f@redhat.com>
+Date:   Mon, 23 Nov 2020 15:49:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119203906.GA5099@willie-the-truck>
+In-Reply-To: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 19 Nov 2020 at 20:39:07 (+0000), Will Deacon wrote:
-> Ah, so in doing this I realised I don't like arch_cpu_possible_mask() so
-> much because it makes it sound like a back-end to cpu_possible_mask, but
-> the two are really different things.
+Hi,
+
++Cc Christoph Hellwig <hch@lst.de>
+
+Christoph, this is still an issue, so I've been looking around a bit and think this
+might have something to do with the dma-mapping-5.10 changes.
+
+Do you have any suggestions to debug this, or is it time to do a git bisect
+on this before 5.10 ships with regression?
+
+Regards,
+
+Hans
+
+
+
+
+On 11/10/20 12:36 PM, Hans de Goede wrote:
+> Hi All,
 > 
-> arch_task_cpu_possible_mask() might work?
+> Not sure if this is a XHCI driver problem at all, but I needed to start
+> somewhere with reporting this so I went with:
+> 
+> scripts/get_maintainer.pl -f drivers/usb/host/xhci-pci.c
+> 
+> And added a Cc: linux-pci@vger.kernel.org as bonus.
+> 
+> I'm seeing the following errors and very slow network performance with
+> the USB NIC in a Lenovo Thunderbolt gen 2 dock.
+> 
+> Note that the USB NIC is connected to the XHCI controller which is
+> embedded inside the dock and is connected over thunderbolt!
+> 
+> So the errors are:
+> 
+> [ 1148.744205] swiotlb_tbl_map_single: 6 callbacks suppressed
+> [ 1148.744210] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1148.744218] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 16ea@1411c0000 dir 1 --- failed
+> [ 1148.744226] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1148.744368] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1148.744375] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 16ea@10aabc000 dir 1 --- failed
+> [ 1148.744381] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1148.745141] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1148.745148] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 118e@1411c0000 dir 1 --- failed
+> [ 1148.745155] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1148.951282] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1148.951388] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 118e@140988000 dir 1 --- failed
+> [ 1148.951420] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1151.013342] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1151.013357] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 1d2a@1411c0000 dir 1 --- failed
+> [ 1151.013373] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1151.018660] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 18 (slots)
+> [ 1151.018696] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@1411c0000 dir 1 --- failed
+> [ 1151.018711] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1151.223022] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1151.223102] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@10aabc000 dir 1 --- failed
+> [ 1151.223133] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1151.228810] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1151.228870] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@10aabc000 dir 1 --- failed
+> [ 1151.228898] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> [ 1151.234792] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
+> [ 1151.234852] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@10aabc000 dir 1 --- failed
+> [ 1151.234882] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
+> 
+> etc.
+> 
+> This happens as soon as I generate any serious amount of outgoing network traffic. E.g. rsyncing files
+> to another machine.
+> 
+> Regards,
+> 
+> Hans
+> 
 
-Yes, making it explicit in the name that this is a task-specific thing
-doesn't hurt.
-
-Thanks,
-Quentin
