@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0044D2C1778
+	by mail.lfdr.de (Postfix) with ESMTP id DA3192C177A
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730481AbgKWVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:13:14 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:21922 "EHLO m42-4.mailgun.net"
+        id S1730721AbgKWVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:13:37 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:50324 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729639AbgKWVNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:13:11 -0500
+        id S1729639AbgKWVNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 16:13:36 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606165990; h=Message-ID: References: In-Reply-To: Subject:
+ s=smtp; t=1606166015; h=Message-ID: References: In-Reply-To: Subject:
  Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eWZ6QZkKfoZgGA0Z1xGVlAKN3o4fc7HBpyuUpR+spMA=;
- b=ule5OuJduLg7VjhQnbq8qbwFtlehWdXAM72V5xJGk0QJa5wCBCjjxgiRtinKiN3pfFOGtvKW
- mt3PAMIeY4/5cUFwcbroLz9j7hlo9yK/r54C3VC3g0BVduJBe+aVB7COmzURS9cTCPZzxReE
- 2nSH9Y6O9Jc/49nMiMhVu1rBqSA=
-X-Mailgun-Sending-Ip: 69.72.42.4
+ MIME-Version: Sender; bh=MpPyix18w9A/YIkD3A/ihCcjBzXbm8kBCQdGFP27g6U=;
+ b=ooR8nBaFD56aMaTnj8UKL4VGg8NNgwptISqlxmuSifewVKumEgFL4hvGKNSlIUo1p8IFvHeh
+ pyhIJSIwxt3g/azjeEzb1Mzwchb4Z0KkwePHvFgBsvAfUg5zgCA81u0Vmv8SFF6mAeIwm3UC
+ XvUSmJYAv69s81zBlkhcRovghEo=
+X-Mailgun-Sending-Ip: 104.130.96.5
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5fbc25e60c9500dc7b2bbf9a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 21:13:10
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fbc25ff7f0cfa6a1666a91e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 21:13:35
  GMT
 Sender: abhinavk=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 372CDC433C6; Mon, 23 Nov 2020 21:13:10 +0000 (UTC)
+        id A0DACC433ED; Mon, 23 Nov 2020 21:13:34 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -38,27 +38,27 @@ Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
         (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF725C43460;
-        Mon, 23 Nov 2020 21:13:08 +0000 (UTC)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7901AC43462;
+        Mon, 23 Nov 2020 21:13:33 +0000 (UTC)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 13:13:08 -0800
+Date:   Mon, 23 Nov 2020 13:13:33 -0800
 From:   abhinavk@codeaurora.org
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Drew Davenport <ddavenport@chromium.org>,
         Sean Paul <sean@poorly.run>
-Subject: Re: [Freedreno] [PATCH 35/40] drm/msm/disp/dpu1/dpu_plane: Fix some
- spelling and missing function param descriptions
-In-Reply-To: <20201123111919.233376-36-lee.jones@linaro.org>
+Subject: Re: [Freedreno] [PATCH 31/40] drm/msm/disp/dpu1/dpu_rm: Fix
+ formatting issues and supply 'global_state' description
+In-Reply-To: <20201123111919.233376-32-lee.jones@linaro.org>
 References: <20201123111919.233376-1-lee.jones@linaro.org>
- <20201123111919.233376-36-lee.jones@linaro.org>
-Message-ID: <d30180faae8158c7a489f2e1c206e2f7@codeaurora.org>
+ <20201123111919.233376-32-lee.jones@linaro.org>
+Message-ID: <04c43a8bf76d7d44fb21add18697f470@codeaurora.org>
 X-Sender: abhinavk@codeaurora.org
 User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
@@ -68,82 +68,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 2020-11-23 03:19, Lee Jones wrote:
 > Fixes the following W=1 kernel build warning(s):
 > 
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:152: warning: Function
-> parameter or member 'plane' not described in '_dpu_plane_calc_bw'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:152: warning: Function
-> parameter or member 'fb' not described in '_dpu_plane_calc_bw'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:152: warning: Excess
-> function parameter 'Plane' description in '_dpu_plane_calc_bw'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:200: warning: Function
-> parameter or member 'plane' not described in '_dpu_plane_calc_clk'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:200: warning: Excess
-> function parameter 'Plane' description in '_dpu_plane_calc_clk'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:232: warning: Function
-> parameter or member 'src_width' not described in
-> '_dpu_plane_calc_fill_level'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:232: warning: Excess
-> function parameter 'src_wdith' description in
-> '_dpu_plane_calc_fill_level'
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:1060: warning: Function
-> parameter or member 'error' not described in 'dpu_plane_set_error'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:247: warning: Excess function
+> parameter 'Return' description in '_dpu_rm_check_lm_peer'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:283: warning: Function
+> parameter or member 'global_state' not described in
+> '_dpu_rm_check_lm_and_get_connected_blks'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:283: warning: Excess function
+> parameter 'Return' description in
+> '_dpu_rm_check_lm_and_get_connected_blks'
 > 
 > Cc: Rob Clark <robdclark@gmail.com>
 > Cc: Sean Paul <sean@poorly.run>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Kalyan Thota <kalyan_t@codeaurora.org>
+> Cc: Drew Davenport <ddavenport@chromium.org>
 > Cc: linux-arm-msm@vger.kernel.org
 > Cc: dri-devel@lists.freedesktop.org
 > Cc: freedreno@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
 > ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> index c0b1d77369e53..cf0084d7cc7c9 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> @@ -142,7 +142,8 @@ static struct dpu_kms *_dpu_plane_get_kms(struct
-> drm_plane *plane)
-> 
->  /**
->   * _dpu_plane_calc_bw - calculate bandwidth required for a plane
-> - * @Plane: Pointer to drm plane.
-> + * @plane: Pointer to drm plane.
-> + * @fb:   Pointer to framebuffer associated with the given plane
->   * Result: Updates calculated bandwidth in the plane state.
->   * BW Equation: src_w * src_h * bpp * fps * (v_total / v_dest)
->   * Prefill BW Equation: line src bytes * line_time
-> @@ -192,7 +193,7 @@ static void _dpu_plane_calc_bw(struct drm_plane 
-> *plane,
-> 
->  /**
->   * _dpu_plane_calc_clk - calculate clock required for a plane
-> - * @Plane: Pointer to drm plane.
-> + * @plane: Pointer to drm plane.
->   * Result: Updates calculated clock in the plane state.
->   * Clock equation: dst_w * v_total * fps * (src_h / dst_h)
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> index 0ae8a36ffcff3..fd2d104f0a91d 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> @@ -239,7 +239,7 @@ static bool _dpu_rm_needs_split_display(const
+> struct msm_display_topology *top)
+>   * @rm: dpu resource manager handle
+>   * @primary_idx: index of primary mixer in rm->mixer_blks[]
+>   * @peer_idx: index of other mixer in rm->mixer_blks[]
+> - * @Return: true if rm->mixer_blks[peer_idx] is a peer of
+> + * Return: true if rm->mixer_blks[peer_idx] is a peer of
+>   *          rm->mixer_blks[primary_idx]
 >   */
-> @@ -224,7 +225,7 @@ static void _dpu_plane_calc_clk(struct drm_plane 
-> *plane)
->   * _dpu_plane_calc_fill_level - calculate fill level of the given 
-> source format
->   * @plane:		Pointer to drm plane
->   * @fmt:		Pointer to source buffer format
-> - * @src_wdith:		width of source buffer
-> + * @src_width:		width of source buffer
->   * Return: fill level corresponding to the source buffer/format or 0 
-> if error
+>  static bool _dpu_rm_check_lm_peer(struct dpu_rm *rm, int primary_idx,
+> @@ -264,6 +264,7 @@ static bool _dpu_rm_check_lm_peer(struct dpu_rm
+> *rm, int primary_idx,
+>   *	proposed use case requirements, incl. hardwired dependent blocks 
+> like
+>   *	pingpong
+>   * @rm: dpu resource manager handle
+> + * @global_state: resources shared across multiple kms objects
+>   * @enc_id: encoder id requesting for allocation
+>   * @lm_idx: index of proposed layer mixer in rm->mixer_blks[], 
+> function checks
+>   *      if lm, and all other hardwired blocks connected to the lm (pp) 
+> is
+> @@ -274,7 +275,7 @@ static bool _dpu_rm_check_lm_peer(struct dpu_rm
+> *rm, int primary_idx,
+>   *      mixer in rm->dspp_blks[].
+>   * @reqs: input parameter, rm requirements for HW blocks needed in the
+>   *      datapath.
+> - * @Return: true if lm matches all requirements, false otherwise
+> + * Return: true if lm matches all requirements, false otherwise
 >   */
->  static int _dpu_plane_calc_fill_level(struct drm_plane *plane,
-> @@ -1055,6 +1056,7 @@ void dpu_plane_flush(struct drm_plane *plane)
->  /**
->   * dpu_plane_set_error: enable/disable error condition
->   * @plane: pointer to drm_plane structure
-> + * @error: error value to set
->   */
->  void dpu_plane_set_error(struct drm_plane *plane, bool error)
->  {
+>  static bool _dpu_rm_check_lm_and_get_connected_blks(struct dpu_rm *rm,
+>  		struct dpu_global_state *global_state,
