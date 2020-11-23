@@ -2,55 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806172C197D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645EB2C197F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgKWXfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 18:35:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
+        id S1727673AbgKWXjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 18:39:18 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57557 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727058AbgKWXfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:35:18 -0500
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.10-rc6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606174517;
-        bh=OjRwgYvjC7vz/qfUdF+Ir9evUzXap6tTZKJIbtIL+oA=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=V0hQVK0rrLkwymWB8G2gWGD3W8JxNeGYeJSjrZa2DZt1YpH66Rqux6r9Qdu7bt8yo
-         xMiUfuxP5oZK7vx0KW1Rz5L+TnX0aedszmLyEjPZJnlDnBjVpAtsmB5/hhhrxNcuUV
-         NUISW6+4EfPxkTJDXczh+kMO125OKHkd5r9EV6x8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201123110123.yeaovck27pc2odiq@liuwe-devbox-debian-v2>
-References: <20201123110123.yeaovck27pc2odiq@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201123110123.yeaovck27pc2odiq@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
-X-PR-Tracked-Commit-Id: 5f1251a48c17b54939d7477305e39679a565382c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d5beb3140f91b1c8a3d41b14d729aefa4dcc58bc
-Message-Id: <160617451760.16558.12498787497038286492.pr-tracker-bot@kernel.org>
-Date:   Mon, 23 Nov 2020 23:35:17 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
+        id S1727637AbgKWXjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 18:39:17 -0500
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4Cg3X33gPhz9sSs; Tue, 24 Nov 2020 10:39:15 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Nicholas Piggin <npiggin@gmail.com>
+In-Reply-To: <20201123184016.693fe464@canb.auug.org.au>
+References: <20201123184016.693fe464@canb.auug.org.au>
+Subject: Re: linux-next: build failure in Linus' tree
+Message-Id: <160617472873.1817800.16473753588453276266.b4-ty@ellerman.id.au>
+Date:   Tue, 24 Nov 2020 10:39:15 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 23 Nov 2020 11:01:23 +0000:
+On Mon, 23 Nov 2020 18:40:16 +1100, Stephen Rothwell wrote:
+> After merging most of the trees, today's linux-next build (powerpc64
+> allnoconfig) failed like this:
+> 
+> In file included from arch/powerpc/include/asm/kup.h:18,
+>                  from arch/powerpc/include/asm/uaccess.h:9,
+>                  from include/linux/uaccess.h:11,
+>                  from include/linux/sched/task.h:11,
+>                  from include/linux/sched/signal.h:9,
+>                  from include/linux/rcuwait.h:6,
+>                  from include/linux/percpu-rwsem.h:7,
+>                  from include/linux/fs.h:33,
+>                  from include/linux/compat.h:17,
+>                  from arch/powerpc/kernel/asm-offsets.c:14:
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:66:1: warning: data definition has no type or storage class
+>    66 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
+>       | ^~~~~~~~~~~~~~~~~~~~~~~~
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:66:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:66:1: warning: parameter names (without types) in function declaration
+> arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:180:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
+>   180 |  if (static_branch_unlikely(&uaccess_flush_key))
+>       |      ^~~~~~~~~~~~~~~~~~~~~~
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:180:30: error: 'uaccess_flush_key' undeclared (first use in this function)
+>   180 |  if (static_branch_unlikely(&uaccess_flush_key))
+>       |                              ^~~~~~~~~~~~~~~~~
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:180:30: note: each undeclared identifier is reported only once for each function it appears in
+> arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access_return':
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:189:30: error: 'uaccess_flush_key' undeclared (first use in this function)
+>   189 |  if (static_branch_unlikely(&uaccess_flush_key))
+>       |                              ^~~~~~~~~~~~~~~~~
+> arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'restore_user_access':
+> arch/powerpc/include/asm/book3s/64/kup-radix.h:198:30: error: 'uaccess_flush_key' undeclared (first use in this function)
+>   198 |  if (static_branch_unlikely(&uaccess_flush_key) && flags == AMR_KUAP_BLOCKED)
+>       |                              ^~~~~~~~~~~~~~~~~
+> 
+> [...]
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
+Applied to powerpc/fixes.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d5beb3140f91b1c8a3d41b14d729aefa4dcc58bc
+[1/1] powerpc/64s: Fix allnoconfig build since uaccess flush
+      https://git.kernel.org/powerpc/c/b6b79dd53082db11070b4368d85dd6699ff0b063
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+cheers
