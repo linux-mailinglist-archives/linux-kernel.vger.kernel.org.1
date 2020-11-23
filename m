@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99562C06B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004F02C05FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730662AbgKWMdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:33:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44958 "EHLO mail.kernel.org"
+        id S1729477AbgKWM0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:26:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731244AbgKWMdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:33:37 -0500
+        id S1730109AbgKWM0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:26:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E96A320721;
-        Mon, 23 Nov 2020 12:33:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92A1220781;
+        Mon, 23 Nov 2020 12:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134816;
-        bh=YoQDnUTsqVY+WKspD6+ZqPA26Klmis3QpVjN5O9GZjk=;
+        s=korg; t=1606134371;
+        bh=HeojfOZ6wP/5ai0cJ0vvsBGZEVopctrrvmzK5hPJf1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ksHPcheyuBYaYosHiKznGlGizn8WFqy5SxI1P2rPdhfL048raqZWzUjhdUeDYB3D
-         KO1glFF1KayKc9VAyLpybxVrjjwrDDMjNDHT+kCZJnsKD2toW9jIrI+BUrMouiW+gD
-         vFvSkdfK5a3JL+9/Dsn0BVJBitw94dePaXXuOMoE=
+        b=IOqRXjf1cUV0lILHYlKcP+HmPSFzJ12f/0mTQxokSqIHcDgRYBRpX1DArsJaGrx81
+         S9dDM11ZxgQtwtjMegRkkfQIS3/r10g+3sWLPIxRG/MaiUSSl0mVF+lnlNvfayCAr7
+         N5vxd7PaGxFYs6mMpXYhDCb8t6dMlaic7WURXRf0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 70/91] ALSA: mixart: Fix mutex deadlock
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.9 44/47] mac80211: minstrel: fix tx status processing corner case
 Date:   Mon, 23 Nov 2020 13:22:30 +0100
-Message-Id: <20201123121812.727253198@linuxfoundation.org>
+Message-Id: <20201123121807.686294075@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit d21b96c8ed2aea7e6b7bf4735e1d2503cfbf4072 upstream.
+commit b2911a84396f72149dce310a3b64d8948212c1b3 upstream.
 
-The code change for switching to non-atomic mode brought the
-unexpected mutex deadlock in get_msg().  It converted the spinlock
-with the existing mutex, but there were calls with the already holding
-the mutex.  Since the only place that needs the extra lock is the code
-path from snd_mixart_send_msg(), remove the mutex lock in get_msg()
-and apply in the caller side for fixing the mutex deadlock.
+Some drivers fill the status rate list without setting the rate index after
+the final rate to -1. minstrel_ht already deals with this, but minstrel
+doesn't, which causes it to get stuck at the lowest rate on these drivers.
 
-Fixes: 8d3a8b5cb57d ("ALSA: mixart: Use nonatomic PCM ops")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201119121440.18945-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fix this by checking the count as well.
+
+Cc: stable@vger.kernel.org
+Fixes: cccf129f820e ("mac80211: add the 'minstrel' rate control algorithm")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20201111183359.43528-3-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/mixart/mixart_core.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/mac80211/rc80211_minstrel.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/mixart/mixart_core.c
-+++ b/sound/pci/mixart/mixart_core.c
-@@ -83,7 +83,6 @@ static int get_msg(struct mixart_mgr *mg
- 	unsigned int i;
- #endif
+--- a/net/mac80211/rc80211_minstrel.c
++++ b/net/mac80211/rc80211_minstrel.c
+@@ -274,7 +274,7 @@ minstrel_tx_status(void *priv, struct ie
+ 	success = !!(info->flags & IEEE80211_TX_STAT_ACK);
  
--	mutex_lock(&mgr->msg_lock);
- 	err = 0;
+ 	for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+-		if (ar[i].idx < 0)
++		if (ar[i].idx < 0 || !ar[i].count)
+ 			break;
  
- 	/* copy message descriptor from miXart to driver */
-@@ -132,8 +131,6 @@ static int get_msg(struct mixart_mgr *mg
- 	writel_be(headptr, MIXART_MEM(mgr, MSG_OUTBOUND_FREE_HEAD));
- 
-  _clean_exit:
--	mutex_unlock(&mgr->msg_lock);
--
- 	return err;
- }
- 
-@@ -271,7 +268,9 @@ int snd_mixart_send_msg(struct mixart_mg
- 	resp.data = resp_data;
- 	resp.size = max_resp_size;
- 
-+	mutex_lock(&mgr->msg_lock);
- 	err = get_msg(mgr, &resp, msg_frame);
-+	mutex_unlock(&mgr->msg_lock);
- 
- 	if( request->message_id != resp.message_id )
- 		dev_err(&mgr->pci->dev, "RESPONSE ERROR!\n");
+ 		ndx = rix_to_ndx(mi, ar[i].idx);
 
 
