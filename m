@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D722C0C16
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF64C2C0C1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731266AbgKWNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:44:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
+        id S1732300AbgKWNom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:44:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729939AbgKWNoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:44:17 -0500
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730068AbgKWNol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:44:41 -0500
+Received: from localhost (unknown [176.167.152.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 813D7206F1;
-        Mon, 23 Nov 2020 13:44:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B2AF206F1;
+        Mon, 23 Nov 2020 13:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606139056;
-        bh=DB3QEZuy+Fe1QR9eYhfJo9ZD6woPmMFGSzD2JXS+9+Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Cmr9EANzmv4bIP3wlI7Dhllj0uIjXveZ90qem2GkU4WVQzSmKOzQa17Jtu/YyEH21
-         6rY+XVs4S0KSTvniAUG26veNWwMmaTW6qg/+TwvFiVqkb1o2hn2yDfVJWQINFzb3AW
-         Oeqsv8YlMpF+tsbFbkDG9c2VnTzlXdI7XCvO/z6U=
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Edgar Merger <Edgar.Merger@emerson.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH] PCI: Mark AMD Raven iGPU ATS as broken
-Date:   Mon, 23 Nov 2020 13:44:10 +0000
-Message-Id: <20201123134410.10648-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        s=default; t=1606139080;
+        bh=P9zQbHB28E6VtYusUFpATLlB1aKLlAxQSqrq/mCm4FA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K+ehFd6USfbS/TljS1tg/RC+MNXIQxsXIXc+xVORBRpWK5OMZqRunsbCJWvMXQuor
+         KDFJIax5mc0aaPeN/c15BVFH2tuZnwaXqQ1i+BgXEeLu1OjJBSAHJ+u0CKbLSlD45Q
+         2GlZcY3RVfb4H4uRcAcxIKt0VrsnKIWLDUKKugBA=
+Date:   Mon, 23 Nov 2020 14:44:37 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT
+ aware
+Message-ID: <20201123134437.GA95787@lothringen>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141734.324061522@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113141734.324061522@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Edgar Merger reports that the AMD Raven GPU does not work reliably on
-his system when the IOMMU is enabled:
+On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
+> +void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+> +{
+> +	bool preempt_on = preemptible();
+> +	unsigned long flags;
+> +	u32 pending;
+> +	int curcnt;
+> +
+> +	WARN_ON_ONCE(in_irq());
+> +	lockdep_assert_irqs_enabled();
+> +
+> +	local_irq_save(flags);
+> +	curcnt = this_cpu_read(softirq_ctrl.cnt);
+> +
+> +	/*
+> +	 * If this is not reenabling soft interrupts, no point in trying to
+> +	 * run pending ones.
+> +	 */
+> +	if (curcnt != cnt)
+> +		goto out;
+> +
+> +	pending = local_softirq_pending();
+> +	if (!pending || ksoftirqd_running(pending))
+> +		goto out;
+> +
+> +	/*
+> +	 * If this was called from non preemptible context, wake up the
+> +	 * softirq daemon.
+> +	 */
+> +	if (!preempt_on) {
+> +		wakeup_softirqd();
+> +		goto out;
+> +	}
+> +
+> +	/*
+> +	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
+> +	 * in_serving_softirq() become true.
+> +	 */
+> +	cnt = SOFTIRQ_OFFSET;
+> +	__local_bh_enable(cnt, false);
 
-  | [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx timeout, signaled seq=1, emitted seq=3
-  | [...]
-  | amdgpu 0000:0b:00.0: GPU reset begin!
-  | AMD-Vi: Completion-Wait loop timed out
-  | iommu ivhd0: AMD-Vi: Event logged [IOTLB_INV_TIMEOUT device=0b:00.0 address=0x38edc0970]
+But then you enter __do_softirq() with softirq_count() == SOFTIRQ_OFFSET.
+__do_softirq() calls softirq_handle_begin() which then sets it back to SOFTIRQ_DISABLE_OFFSET...
 
-This is indicative of a hardware/platform configuration issue so, since
-disabling ATS has been shown to resolve the problem, add a quirk to
-match this particular device while Edgar follows-up with AMD for more
-information.
+> +	__do_softirq();
+> +
+> +out:
+> +	__local_bh_enable(cnt, preempt_on);
 
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Reported-by: Edgar Merger <Edgar.Merger@emerson.com>
-Suggested-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/linux-iommu/MWHPR10MB1310F042A30661D4158520B589FC0@MWHPR10MB1310.namprd10.prod.outlook.com
-Signed-off-by: Will Deacon <will@kernel.org>
----
+You escape from there with a correct preempt_count() but still the softirq executes
+under SOFTIRQ_DISABLE_OFFSET and not SOFTIRQ_OFFSET, making in_serving_softirq() false.
 
-Hi all,
+> +	local_irq_restore(flags);
+> +}
+> +EXPORT_SYMBOL(__local_bh_enable_ip);
 
-Since Joerg is away at the moment, I'm posting this to try to make some
-progress with the thread in the Link: tag.
-
-Cheers,
-
-Will
-
- drivers/pci/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index f70692ac79c5..3911b0ec57ba 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5176,6 +5176,8 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x6900, quirk_amd_harvest_no_ats);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7312, quirk_amd_harvest_no_ats);
- /* AMD Navi14 dGPU */
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7340, quirk_amd_harvest_no_ats);
-+/* AMD Raven platform iGPU */
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x15d8, quirk_amd_harvest_no_ats);
- #endif /* CONFIG_PCI_ATS */
- 
- /* Freescale PCIe doesn't support MSI in RC mode */
--- 
-2.29.2.454.gaff20da3a2-goog
-
+Thanks.
