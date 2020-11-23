@@ -2,171 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41082C01BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 908C52C01D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgKWIye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 03:54:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgKWIyd (ORCPT
+        id S1726837AbgKWJAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:00:16 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:54335 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgKWJAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 03:54:33 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E65C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 00:54:33 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id s2so8514646plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 00:54:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+bYpsl8R9NvO/I5lN+BmuwOl70TRIsehsuL2xad98dg=;
-        b=S70EpVIPjzIAK5nZ7KUmoydETAntPJamCslr4CbpuhjTFouDc0sfycP4I9S5jc4V12
-         3CYcPiUZJR1TrV3XChtafJEEb3kabGjGfG3pIbI7kG+en3p+Zmw5NFGwHKmlDC8QsREc
-         NYM+Gg4XzlqhW6d5Lg59iSB2acN5FN0eUBt94oTklB0VzsDC6RErR76C55MuchLXj6oM
-         ktJbtKcbViCqOijsP7s73R2j7CaPPGR0DA0FZ8+onobungDtZd2SjRvZ1tkpmtbFfmGw
-         q91FKsW0XkTmSnkZG86k4rrObeOrzNg4NnukYemJktelhKtPS6Ezi9VxYIGjBoJTWllt
-         7qxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+bYpsl8R9NvO/I5lN+BmuwOl70TRIsehsuL2xad98dg=;
-        b=pexhUJTrRIJA2sc7xd2+96BL/zWdW4iwIfmH9pC2OqWMIJw+9JZY14jpMEhUswxgq7
-         qE6LG67hq1tMlysQxiU6vfRm8pRrmyoSZe1XD7LMO/CWmgrT32xU2nck5wJ5QxXmayMm
-         yiXf6elolK8SoLuqzc+AV/2w66WqokDof9QTC7kwESM89d4m9l2e7///3uQLU1YceIGx
-         P4GfU4kcw6N/NaNJ8vzRU6r5iMHbJxivp/t+62/s02Y0yfRe9wqXZseZ1EzMd+rnHH9e
-         flouD++Jw/QZ6zgRP3F8VNXLBEnvXKZT18i3YrGjmpQ1ZP/81hB+L72dw9+oB2YBuMbi
-         O3ig==
-X-Gm-Message-State: AOAM532sgH7csSexRySSPcHJ9y4pspq2OcOpSaeabkwbzk3BsvlN/PIe
-        l/LRhqR2+Xij/yLE77DxkpEqZpYiGOaUTXexT79nuA==
-X-Google-Smtp-Source: ABdhPJwq0k/O5Uc/JRdE+7QUeFuc9rwPeHWeJehd8e8HxO9FsA6DBl6oXeKnVkQ75hHtSHTg49fQ6xxBtkD8Wa9RyPE=
-X-Received: by 2002:a17:902:c14b:b029:d6:ab18:108d with SMTP id
- 11-20020a170902c14bb02900d6ab18108dmr23794233plj.20.1606121672924; Mon, 23
- Nov 2020 00:54:32 -0800 (PST)
+        Mon, 23 Nov 2020 04:00:16 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kh7he-0007dS-1W; Mon, 23 Nov 2020 10:00:06 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kh7hc-00079Z-Vb; Mon, 23 Nov 2020 10:00:05 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 55B8A240041;
+        Mon, 23 Nov 2020 10:00:04 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id C8593240040;
+        Mon, 23 Nov 2020 10:00:03 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 8512B203C7;
+        Mon, 23 Nov 2020 10:00:02 +0100 (CET)
 MIME-Version: 1.0
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz> <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
- <20201120131129.GO3200@dhcp22.suse.cz> <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
- <20201123074046.GB27488@dhcp22.suse.cz>
-In-Reply-To: <20201123074046.GB27488@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 23 Nov 2020 16:53:53 +0800
-Message-ID: <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 10:00:02 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v4 2/5] net/lapb: support netdev events
+Organization: TDT AG
+In-Reply-To: <CAJht_EPc8MF1TjznSjWTPyMbsrw3JVqxST5g=eF0yf_zasUdeA@mail.gmail.com>
+References: <20201120054036.15199-1-ms@dev.tdt.de>
+ <20201120054036.15199-3-ms@dev.tdt.de>
+ <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
+ <CAJht_EP_oqCDs6mMThBZNtz4sgpbyQgMhKkHeqfS_7JmfEzfQg@mail.gmail.com>
+ <87a620b6a55ea8386bffefca0a1f8b77@dev.tdt.de>
+ <CAJht_EPc8MF1TjznSjWTPyMbsrw3JVqxST5g=eF0yf_zasUdeA@mail.gmail.com>
+Message-ID: <d85a4543eae46bac1de28ec17a2389dd@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate: clean
+X-purgate-ID: 151534::1606122005-000064E4-D07DD3F9/0/0
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 20-11-20 23:44:26, Muchun Song wrote:
-> > On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Fri 20-11-20 20:40:46, Muchun Song wrote:
-> > > > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> > > > > [...]
-> > > > >
-> > > > > Thanks for improving the cover letter and providing some numbers. I have
-> > > > > only glanced through the patchset because I didn't really have more time
-> > > > > to dive depply into them.
-> > > > >
-> > > > > Overall it looks promissing. To summarize. I would prefer to not have
-> > > > > the feature enablement controlled by compile time option and the kernel
-> > > > > command line option should be opt-in. I also do not like that freeing
-> > > > > the pool can trigger the oom killer or even shut the system down if no
-> > > > > oom victim is eligible.
-> > > >
-> > > > Hi Michal,
-> > > >
-> > > > I have replied to you about those questions on the other mail thread.
-> > > >
-> > > > Thanks.
-> > > >
-> > > > >
-> > > > > One thing that I didn't really get to think hard about is what is the
-> > > > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> > > > > invalid when racing with the split. How do we enforce that this won't
-> > > > > blow up?
-> > > >
-> > > > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
-> > > > in this case, the pfn_to_page can work. The return value of the
-> > > > pfn_to_page is actually the address of it's struct page struct.
-> > > > I can not figure out where the problem is. Can you describe the
-> > > > problem in detail please? Thanks.
-> > >
-> > > struct page returned by pfn_to_page might get invalid right when it is
-> > > returned because vmemmap could get freed up and the respective memory
-> > > released to the page allocator and reused for something else. See?
-> >
-> > If the HugeTLB page is already allocated from the buddy allocator,
-> > the struct page of the HugeTLB can be freed? Does this exist?
->
-> Nope, struct pages only ever get deallocated when the respective memory
-> (they describe) is hotremoved via hotplug.
->
-> > If yes, how to free the HugeTLB page to the buddy allocator
-> > (cannot access the struct page)?
->
-> But I do not follow how that relates to my concern above.
+On 2020-11-23 09:31, Xie He wrote:
+> On Sun, Nov 22, 2020 at 10:55 PM Martin Schiller <ms@dev.tdt.de> wrote:
+>> 
+>> No, they aren't independent. The carrier can only be up if the device 
+>> /
+>> interface is UP. And as far as I can see a NETDEV_CHANGE event will 
+>> also
+>> only be generated on interfaces that are UP.
+>> 
+>> So you can be sure, that if there is a NETDEV_CHANGE event then the
+>> device is UP.
+> 
+> OK. Thanks for your explanation!
+> 
+>> I removed the NETDEV_UP handling because I don't think it makes sense
+>> to implicitly try to establish layer2 (LAPB) if there is no carrier.
+> 
+> As I understand, when the device goes up, the carrier can be either
+> down or up. Right?
+> 
+> If this is true, when a device goes up and the carrier then goes up
+> after that, L2 will automatically connect, but if a device goes up and
+> the carrier is already up, L2 will not automatically connect. I think
+> it might be better to eliminate this difference in handling. It might
+> be better to make it automatically connect in both situations, or in
+> neither situations.
 
-Sorry. I shouldn't understand your concerns.
+AFAIK the carrier can't be up before the device is up. Therefore, there
+will be a NETDEV_CHANGE event after the NETDEV_UP event.
 
-vmemmap pages                 page frame
-+-----------+   mapping to   +-----------+
-|           | -------------> |     0     |
-+-----------+                +-----------+
-|           | -------------> |     1     |
-+-----------+                +-----------+
-|           | -------------> |     2     |
-+-----------+                +-----------+
-|           | -------------> |     3     |
-+-----------+                +-----------+
-|           | -------------> |     4     |
-+-----------+                +-----------+
-|           | -------------> |     5     |
-+-----------+                +-----------+
-|           | -------------> |     6     |
-+-----------+                +-----------+
-|           | -------------> |     7     |
-+-----------+                +-----------+
+This is what I can see in my tests (with the HDLC interface).
 
-In this patch series, we will free the page frame 2-7 to the
-buddy allocator. You mean that pfn_to_page can return invalid
-value when the pfn is the page frame 2-7? Thanks.
+Is the behaviour different for e.g. lapbether?
 
->
-> --
-> Michal Hocko
-> SUSE Labs
-
-
-
---
-Yours,
-Muchun
+> 
+> If you want to go with the second way (auto connect in neither
+> situations), the next (3rd) patch of this series might be also not
+> needed.
+> 
+> I just want to make the behavior of LAPB more consistent. I think we
+> should either make LAPB auto-connect in all situations, or make LAPB
+> wait for L3's instruction to connect in all situations.
+> 
+>> And with the first X.25 connection request on that interface, it will
+>> be established anyway by x25_transmit_link().
+>> 
+>> I've tested it here with an HDLC WAN Adapter and it works as expected.
+>> 
+>> These are also the ideal conditions for the already mentioned "on
+>> demand" scenario. The only necessary change would be to call
+>> x25_terminate_link() on an interface after clearing the last X.25
+>> session.
+>> 
+>> > On NETDEV_GOING_DOWN, we can also check the carrier status first and
+>> > if it is down, we don't need to call lapb_disconnect_request.
+>> 
+>> This is not necessary because lapb_disconnect_request() checks the
+>> current state. And if the carrier is DOWN then the state should also 
+>> be
+>> LAPB_STATE_0 and so lapb_disconnect_request() does nothing.
+> 
+> Yes, I understand. I just thought adding this check might make the
+> code cleaner. But you are right.
