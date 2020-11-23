@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1145B2C08C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5482C08C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387925AbgKWNAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
+        id S2388189AbgKWM7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:59:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388089AbgKWM7Q (ORCPT
+        with ESMTP id S2387906AbgKWM70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:59:16 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E1EC0613CF;
-        Mon, 23 Nov 2020 04:59:12 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id 103so2302487uai.9;
-        Mon, 23 Nov 2020 04:59:12 -0800 (PST)
+        Mon, 23 Nov 2020 07:59:26 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847F0C0613CF;
+        Mon, 23 Nov 2020 04:59:19 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id v8so8563797vso.2;
+        Mon, 23 Nov 2020 04:59:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UBZC3oh3zblyjdeIOfJKrQPEZerRPY4V37fF8XKdWfQ=;
-        b=JwCbmYUFZndqE5USltdqIcZR9zNfa8+6CuI03mxaIoxcLjyCTu964vbGfoegJKs1VN
-         wSfPrAPDzEVYh03a7QIeNq/cWbZlPyrVecPFb8mDtaL2Dm7gynRR48tI2dyygVm5GJPf
-         du1ErgNAmjaVySrZqKmW/qdxDXr0pJBrphTCcU41gEM25uMNuGnv8JayQjyCYCkVj/r2
-         0tYi8vSAUQCLz4AL9hnjUHIqdopPXtlVtBThyEW9PwpLB7To90fEwUu6nyEJWYUJTyus
-         U9v5xq92HiKR6jY6ROitdq6/flzc7JvOLu48L3sQmkToGpt4LvHp5Ie15+mnbOjHri1C
-         xYmw==
+        bh=otvHsBK309Im5qDvFzb2gsetTyToE9JqIm2soMTdgKc=;
+        b=a9BX3hPRtuylw57ie+8VSJSYjteS5JLiGpzK97bXfrzcifbK594dVob++o6eKfvIPJ
+         0vY2WZdC0vP/kvP8qZdW26FCfK0ZTgI136EIxKN5NqOtW4+QRxPQrGaH2eeV//rYO4Yx
+         bmGE79hwyqjJbEvwjOSC8OC73W1LK29n2l5U0chP24hrUB0pLsDlnUK4lRBOyJBKklQs
+         r3KXeiJe2pqocQyBvgYElIYHEPRXZ7LPPYTBBZTHTrPVzMVUBG2x+tfMjYEfyVGxrO6S
+         vH2t/8JsstWj5nsqZfbCYu4YYxEUIgB4DaYeOsuDfgUvlJQ00jg2/s1RoM1xl4T7cFPD
+         fegg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UBZC3oh3zblyjdeIOfJKrQPEZerRPY4V37fF8XKdWfQ=;
-        b=GGGjYPLKuTpBr/l/9VuyaQ4BmHGiJ5zKQpj4g8UgM9yLi6FogU1gYPnkFvMRd6MswJ
-         n6NROJeFlIJH4MK2HRwQHj+gRZGClCnsqjaP4d+vUoWbfSq0fAZLE8ZATCkHhk59+64b
-         SAfOmfRTO5pi8LSDr/v6xqrmp5v+JKtlpGg3/xvC0bSNBhvNFQEJzfOCWbRKYOG2vjdc
-         VB+EHTJwXcLh8uAWIL7l9HP/jkoBM9nH3etXPjQxfQVLqyUfQyGCfW5ZnPFCSoHCEtBf
-         NdVkjUCEumh1XA6ORC+b0meTT6/P2hi52o3v/v/wT2Qrd7IXHjPNhx0GcrsgK/2c3A0c
-         Fe4w==
-X-Gm-Message-State: AOAM531TkBw3R2nBx2RzCYs+3Rt+b1Z0BNZaKJz1Vwus3o+y/G8t9FAf
-        G6YSQ1QmiTURqKxo6bHHB5M=
-X-Google-Smtp-Source: ABdhPJwaGlM1ICdvxT9KuqDKe/uYK4qIZcNRFjfT3f5ZT7V2/r0NdsMBoN6dS7VNuhuuVkmff1RvOQ==
-X-Received: by 2002:ab0:35c8:: with SMTP id x8mr736382uat.72.1606136351324;
-        Mon, 23 Nov 2020 04:59:11 -0800 (PST)
+        bh=otvHsBK309Im5qDvFzb2gsetTyToE9JqIm2soMTdgKc=;
+        b=otBujbOSHRLStsJfcrWuUbwUnvgcTvdmbEaBodPYCvi4EGp3JwUENjG13eZ0hV0wa7
+         C/r7GJ+eiwVyIzEeLtKd6hb59q2pcsBUQ5poGlOCbLgA+AvzgfCBobq9DSyczdBTm6W+
+         8FwXIFLryDcULQyK0uwdG04YsCOwf+ZcA9m6xDknsLKqOJXsdlvM6V7IJEPUhc1GDueT
+         xCLTf0a4kifPugBfMeoPBeDcoZ0fSfIIlWsvMpSJ3Ype5zfq6Y34uYe1YPptnHPUv1c4
+         k0ogg3TF8VTPvOirPeoUgsOP6c3ewjScU7vRykAFObQQjYfGk4H9mzAxLx8ufRcAmc52
+         u12A==
+X-Gm-Message-State: AOAM533kfFyTU+F46fGSGu9I1PAPXlpwl3XPFyW9jnt74Bqnl0l1Korn
+        ysBU0C3LWe4zdsxEDao8/Jg=
+X-Google-Smtp-Source: ABdhPJyzwdKNtQSGxNKjIfRgUaQlIa+Mi0EKZPRjf5lpDjS0xnlzGa3djEXLu5ttt8y1kPgGLtswgQ==
+X-Received: by 2002:a67:1783:: with SMTP id 125mr18926084vsx.36.1606136358803;
+        Mon, 23 Nov 2020 04:59:18 -0800 (PST)
 Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id h16sm1579091uaw.7.2020.11.23.04.59.05
+        by smtp.gmail.com with ESMTPSA id h16sm1579091uaw.7.2020.11.23.04.59.13
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 23 Nov 2020 04:59:10 -0800 (PST)
+        Mon, 23 Nov 2020 04:59:18 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     mgorman@suse.de, mingo@redhat.com, peterz@infradead.org,
         juri.lelli@redhat.com, vincent.guittot@linaro.org,
@@ -55,9 +55,9 @@ To:     mgorman@suse.de, mingo@redhat.com, peterz@infradead.org,
         bristot@redhat.com
 Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH v2 4/5] sched: define update_stats_curr_start() as a common helper
-Date:   Mon, 23 Nov 2020 20:58:07 +0800
-Message-Id: <20201123125808.50896-5-laoar.shao@gmail.com>
+Subject: [RFC PATCH v2 5/5] sched, rt: support schedstat for RT sched class
+Date:   Mon, 23 Nov 2020 20:58:08 +0800
+Message-Id: <20201123125808.50896-6-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20201123125808.50896-1-laoar.shao@gmail.com>
 References: <20201123125808.50896-1-laoar.shao@gmail.com>
@@ -67,83 +67,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update_stats_curr_start() is used to update the exec_start when we are
-starting a new run period, which is used by all sched class. So we'd
-better define it as a common helper.
+We want to measure the latency of RT tasks in our production
+environment with schedstat facility, but currently schedstat is only
+supported for fair sched class. This patch enable it for RT sched class
+as well.
+
+The schedstat statistics are define in struct sched_entity, which is a
+member of struct task_struct, so we can resue it for RT sched class.
+
+The schedstat usage in RT sched class is similar with fair sched class,
+for example,
+		fair				RT
+enqueue		update_stats_enqueue_fair	update_stats_enqueue_rt
+dequeue		update_stats_dequeue_fair	update_stats_dequeue_rt
+put_prev_task	update_stats_wait_start		update_stats_wait_start
+set_next_task	update_stats_wait_end		update_stats_wait_end
+show		/proc/[pid]/sched		/proc/[pid]/sched
+
+The sched:sched_stats_* tracepoints can be used to trace RT tasks as
+well.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/sched/fair.c  | 14 +-------------
- kernel/sched/rt.c    |  2 +-
- kernel/sched/sched.h | 12 ++++++++++++
- 3 files changed, 14 insertions(+), 14 deletions(-)
+ kernel/sched/rt.c    | 90 ++++++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/sched.h |  4 ++
+ 2 files changed, 94 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 946b60f586e4..13e803369ced 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -915,18 +915,6 @@ update_stats_dequeue(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 	}
- }
- 
--/*
-- * We are picking a new current task - update its stats:
-- */
--static inline void
--update_stats_curr_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
--{
--	/*
--	 * We are starting a new run period:
--	 */
--	se->exec_start = rq_clock_task(rq_of(cfs_rq));
--}
--
- /**************************************************
-  * Scheduling class queueing methods:
-  */
-@@ -4255,7 +4243,7 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 		update_load_avg(cfs_rq, se, UPDATE_TG);
- 	}
- 
--	update_stats_curr_start(cfs_rq, se);
-+	update_stats_curr_start(rq_of(cfs_rq), se);
- 	cfs_rq->curr = se;
- 
- 	/*
 diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index af772ac0f32d..3422dd85cfb4 100644
+index 3422dd85cfb4..f2eff92275f0 100644
 --- a/kernel/sched/rt.c
 +++ b/kernel/sched/rt.c
-@@ -1574,7 +1574,7 @@ static void check_preempt_curr_rt(struct rq *rq, struct task_struct *p, int flag
+@@ -1246,6 +1246,75 @@ void dec_rt_tasks(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
+ 	dec_rt_group(rt_se, rt_rq);
+ }
+ 
++#ifdef CONFIG_SCHEDSTATS
++
++static inline bool
++rt_se_is_waiting(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
++{
++	return rt_se != rt_rq->curr;
++}
++
++static inline void
++rt_rq_curr_set(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
++{
++	rt_rq->curr = rt_se;
++}
++
++#else
++
++static inline bool
++rt_se_is_waiting(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
++{
++	return false;
++}
++
++static inline void
++rt_rq_curr_set(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
++{
++}
++
++#endif
++
++static inline void
++update_stats_enqueue_rt(struct rq *rq, struct sched_entity *se,
++			struct sched_rt_entity *rt_se, int flags)
++{
++	struct rt_rq *rt_rq = &rq->rt;
++
++	if (!schedstat_enabled())
++		return;
++
++	if (rt_se_is_waiting(rt_rq, rt_se))
++		update_stats_wait_start(rq, se);
++
++	if (flags & ENQUEUE_WAKEUP)
++		update_stats_enqueue_sleeper(rq, se);
++}
++
++static inline void
++update_stats_dequeue_rt(struct rq *rq, struct sched_entity *se,
++			struct sched_rt_entity *rt_se, int flags)
++{
++	struct rt_rq *rt_rq = &rq->rt;
++
++	if (!schedstat_enabled())
++		return;
++
++	if (rt_se_is_waiting(rt_rq, rt_se))
++		update_stats_wait_end(rq, se);
++
++	if ((flags & DEQUEUE_SLEEP) && rt_entity_is_task(rt_se)) {
++		struct task_struct *tsk = rt_task_of(rt_se);
++
++		if (tsk->state & TASK_INTERRUPTIBLE)
++			__schedstat_set(se->statistics.sleep_start,
++					rq_clock(rq));
++		if (tsk->state & TASK_UNINTERRUPTIBLE)
++			__schedstat_set(se->statistics.block_start,
++					rq_clock(rq));
++	}
++}
++
+ /*
+  * Change rt_se->run_list location unless SAVE && !MOVE
+  *
+@@ -1275,6 +1344,7 @@ static void __enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
+ 	struct rt_prio_array *array = &rt_rq->active;
+ 	struct rt_rq *group_rq = group_rt_rq(rt_se);
+ 	struct list_head *queue = array->queue + rt_se_prio(rt_se);
++	struct task_struct *task = rt_task_of(rt_se);
+ 
+ 	/*
+ 	 * Don't enqueue the group if its throttled, or when empty.
+@@ -1288,6 +1358,8 @@ static void __enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
+ 		return;
+ 	}
+ 
++	update_stats_enqueue_rt(rq_of_rt_rq(rt_rq), &task->se, rt_se, flags);
++
+ 	if (move_entity(flags)) {
+ 		WARN_ON_ONCE(rt_se->on_list);
+ 		if (flags & ENQUEUE_HEAD)
+@@ -1307,7 +1379,9 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
+ {
+ 	struct rt_rq *rt_rq = rt_rq_of_se(rt_se);
+ 	struct rt_prio_array *array = &rt_rq->active;
++	struct task_struct *task = rt_task_of(rt_se);
+ 
++	update_stats_dequeue_rt(rq_of_rt_rq(rt_rq), &task->se, rt_se, flags);
+ 	if (move_entity(flags)) {
+ 		WARN_ON_ONCE(!rt_se->on_list);
+ 		__delist_rt_entity(rt_se, array);
+@@ -1374,6 +1448,7 @@ enqueue_task_rt(struct rq *rq, struct task_struct *p, int flags)
+ 	if (flags & ENQUEUE_WAKEUP)
+ 		rt_se->timeout = 0;
+ 
++	check_schedstat_required();
+ 	enqueue_rt_entity(rt_se, flags);
+ 
+ 	if (!task_current(rq, p) && p->nr_cpus_allowed > 1)
+@@ -1574,6 +1649,12 @@ static void check_preempt_curr_rt(struct rq *rq, struct task_struct *p, int flag
  
  static inline void set_next_task_rt(struct rq *rq, struct task_struct *p, bool first)
  {
--	p->se.exec_start = rq_clock_task(rq);
-+	update_stats_curr_start(rq, &p->se);
++	struct sched_rt_entity *rt_se = &p->rt;
++	struct rt_rq *rt_rq = &rq->rt;
++
++	if (on_rt_rq(&p->rt))
++		update_stats_wait_end(rq, &p->se);
++
+ 	update_stats_curr_start(rq, &p->se);
  
  	/* The running task is never eligible for pushing */
- 	dequeue_pushable_task(rq, p);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 9a4576ccf3d7..3948112dc31c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2644,4 +2644,16 @@ static inline struct task_struct *task_of(struct sched_entity *se)
- 	return container_of(se, struct task_struct, se);
+@@ -1591,6 +1672,8 @@ static inline void set_next_task_rt(struct rq *rq, struct task_struct *p, bool f
+ 		update_rt_rq_load_avg(rq_clock_pelt(rq), rq, 0);
+ 
+ 	rt_queue_push_tasks(rq);
++
++	rt_rq_curr_set(rt_rq, rt_se);
  }
  
-+/*
-+ * We are picking a new current task - update its stats:
-+ */
-+static inline void
-+update_stats_curr_start(struct rq *rq, struct sched_entity *se)
-+{
-+	/*
-+	 * We are starting a new run period:
-+	 */
-+	se->exec_start = rq_clock_task(rq);
-+}
+ static struct sched_rt_entity *pick_next_rt_entity(struct rq *rq,
+@@ -1638,6 +1721,11 @@ static struct task_struct *pick_next_task_rt(struct rq *rq)
+ 
+ static void put_prev_task_rt(struct rq *rq, struct task_struct *p)
+ {
++	struct rt_rq *rt_rq = &rq->rt;
 +
- #endif	/* _KERNEL_SCHED_SCHED_H */
++	if (on_rt_rq(&p->rt))
++		update_stats_wait_start(rq, &p->se);
++
+ 	update_curr_rt(rq);
+ 
+ 	update_rt_rq_load_avg(rq_clock_pelt(rq), rq, 1);
+@@ -1648,6 +1736,8 @@ static void put_prev_task_rt(struct rq *rq, struct task_struct *p)
+ 	 */
+ 	if (on_rt_rq(&p->rt) && p->nr_cpus_allowed > 1)
+ 		enqueue_pushable_task(rq, p);
++
++	rt_rq_curr_set(rt_rq, NULL);
+ }
+ 
+ #ifdef CONFIG_SMP
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 3948112dc31c..a9a2f579f50c 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -652,6 +652,10 @@ struct rt_rq {
+ 	struct rq		*rq;
+ 	struct task_group	*tg;
+ #endif
++
++#ifdef CONFIG_SCHEDSTATS
++	struct sched_rt_entity  *curr;
++#endif
+ };
+ 
+ static inline bool rt_rq_is_runnable(struct rt_rq *rt_rq)
 -- 
 2.18.4
 
