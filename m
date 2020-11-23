@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD1F2C062C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CD92C062B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730447AbgKWM23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38652 "EHLO mail.kernel.org"
+        id S1730440AbgKWM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:28:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730424AbgKWM2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:20 -0500
+        id S1730426AbgKWM2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:28:24 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA75420781;
-        Mon, 23 Nov 2020 12:28:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AC712076E;
+        Mon, 23 Nov 2020 12:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134499;
-        bh=9TNSILEiZYYklOtuCxbobqHGVG427ZMFU/vmbkl3gqM=;
+        s=korg; t=1606134502;
+        bh=UQg/RWwP5+WrRaMaJNf8KMdy1OCi+B5uD4EPEedixk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UJK3+LdHx8eY6BZqmf//ges3ya2i2LOUQcZ188TVmjAhbcPWIInAxmv5Qix+8T8qf
-         kwf8Zg1M/38yu+sdjZ2KikJJFDCecBzHhe2VlVDSgWTZTOHsI5MvIHADMb2jGrCNAJ
-         QAEhYfLT8wS/craXLeTG5z6gPvERvO7SmDi4q3e8=
+        b=p6MgEtbybmW6Ng6g0IVR3ydU0RwxOSBTYui0HrM14s0tWu9Vf9S6HSZRsePM56vqj
+         aUlXmFXugrfljwMwGH/gfibnoLkk9I8qIrowaiaoPcdFQYHjeI0cqhiyDgX/fBs6yq
+         aX15L94dMO0lXqgql6ACMgwSL2mCzbE46pgoxU74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Axtens <dja@axtens.net>
-Subject: [PATCH 4.14 41/60] powerpc/uaccess-flush: fix missing includes in kup-radix.h
-Date:   Mon, 23 Nov 2020 13:22:23 +0100
-Message-Id: <20201123121807.031623016@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?=E7=A7=A6=E4=B8=96=E6=9D=BE?= <qinshisong1205@gmail.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: [PATCH 4.14 42/60] speakup: Do not let the line discipline be used several times
+Date:   Mon, 23 Nov 2020 13:22:24 +0100
+Message-Id: <20201123121807.083931084@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
 References: <20201123121805.028396732@linuxfoundation.org>
@@ -42,48 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Axtens <dja@axtens.net>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-Guenter reports a build failure on cell_defconfig and maple_defconfg:
+commit d4122754442799187d5d537a9c039a49a67e57f1 upstream.
 
-In file included from arch/powerpc/include/asm/kup.h:10:0,
-		 from arch/powerpc/include/asm/uaccess.h:12,
-		 from arch/powerpc/lib/checksum_wrappers.c:24:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
- ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
-  if (static_branch_unlikely(&uaccess_flush_key))
-      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean
-‘do_uaccess_flush’?
-  if (static_branch_unlikely(&uaccess_flush_key))
-			      ^~~~~~~~~~~~~~~~~
-			      do_uaccess_flush
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: all warnings being treated as errors
+Speakup has only one speakup_tty variable to store the tty it is managing. This
+makes sense since its codebase currently assumes that there is only one user who
+controls the screen reading.
 
-This is because I failed to include linux/jump_label.h in kup-radix.h. Include it.
+That however means that we have to forbid using the line discipline several
+times, otherwise the second closure would try to free a NULL ldisc_data, leading to
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Daniel Axtens <dja@axtens.net>
+general protection fault: 0000 [#1] SMP KASAN PTI
+RIP: 0010:spk_ttyio_ldisc_close+0x2c/0x60
+Call Trace:
+ tty_ldisc_release+0xa2/0x340
+ tty_release_struct+0x17/0xd0
+ tty_release+0x9d9/0xcc0
+ __fput+0x231/0x740
+ task_work_run+0x12c/0x1a0
+ do_exit+0x9b5/0x2230
+ ? release_task+0x1240/0x1240
+ ? __do_page_fault+0x562/0xa30
+ do_group_exit+0xd5/0x2a0
+ __x64_sys_exit_group+0x35/0x40
+ do_syscall_64+0x89/0x2b0
+ ? page_fault+0x8/0x30
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Cc: stable@vger.kernel.org
+Reported-by: 秦世松 <qinshisong1205@gmail.com>
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Tested-by: Shisong Qin <qinshisong1205@gmail.com>
+Link: https://lore.kernel.org/r/20201110183541.fzgnlwhjpgqzjeth@function
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/powerpc/include/asm/book3s/64/kup-radix.h |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/include/asm/book3s/64/kup-radix.h
-+++ b/arch/powerpc/include/asm/book3s/64/kup-radix.h
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef _ASM_POWERPC_BOOK3S_64_KUP_RADIX_H
- #define _ASM_POWERPC_BOOK3S_64_KUP_RADIX_H
-+#include <linux/jump_label.h>
+---
+ drivers/staging/speakup/spk_ttyio.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+--- a/drivers/staging/speakup/spk_ttyio.c
++++ b/drivers/staging/speakup/spk_ttyio.c
+@@ -48,10 +48,18 @@ static int spk_ttyio_ldisc_open(struct t
  
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
+ 	if (tty->ops->write == NULL)
+ 		return -EOPNOTSUPP;
++
++	mutex_lock(&speakup_tty_mutex);
++	if (speakup_tty) {
++		mutex_unlock(&speakup_tty_mutex);
++		return -EBUSY;
++	}
+ 	speakup_tty = tty;
  
+ 	ldisc_data = kmalloc(sizeof(struct spk_ldisc_data), GFP_KERNEL);
+ 	if (!ldisc_data) {
++		speakup_tty = NULL;
++		mutex_unlock(&speakup_tty_mutex);
+ 		pr_err("speakup: Failed to allocate ldisc_data.\n");
+ 		return -ENOMEM;
+ 	}
+@@ -59,6 +67,7 @@ static int spk_ttyio_ldisc_open(struct t
+ 	sema_init(&ldisc_data->sem, 0);
+ 	ldisc_data->buf_free = true;
+ 	speakup_tty->disc_data = ldisc_data;
++	mutex_unlock(&speakup_tty_mutex);
+ 
+ 	return 0;
+ }
 
 
