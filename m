@@ -2,292 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368182BFD1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 00:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4927B2BFD30
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 01:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgKVXzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 18:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgKVXzD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 18:55:03 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B06C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 15:55:03 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id r2so312091pls.3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 15:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sTrFkVjBTvuRzAyjMLohzxLAMHmdJ9CkOOZJnRCr2vI=;
-        b=k6VmViGwYJp07rzEmdB+N8914lfq8ePmVgL5CLJgbYBMNSN6WgLYd3g3Eogu5URsKS
-         TxoJT/UwpDw3UeaCVCRxrFn0ZbXN/3M264DctjVgL8K7eebIXa3mZpQoYq/RnsRkmQnZ
-         qUK3BvpXBZBELA30BA6ugOhPSTHLBVAsCdBjCzscb8WF77wtSt4y+z4jMRC3q1i4SNzC
-         UBqGq7yplJvdXQ290tc/CVIp08BQMZR9jjbFD6VYVhJSFZS3eOrZihF9M1fqj1QIYc5S
-         TODu9lfdOAEyZLcln7GD/g2inJLJmv/jPtNLTZeXj27xWS9XnS3el0BN3+qx6g4tTQ2b
-         Qccw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sTrFkVjBTvuRzAyjMLohzxLAMHmdJ9CkOOZJnRCr2vI=;
-        b=JQ7zQ88lKJNHwvJJCvNgOz0lxqoOiQ2r/ozWLPWft/la5RaSfvxuSdC6gcAYxLcmwd
-         Yvvu4FxeLdQO2Zlq5F/ihcyD8ZCnXBmnl8CZVJ0fJ8eqwc2+XZS3oX4IZH07BPrFSIvX
-         6GOkocp+aREjbt3U/dzNQHdj9048ZfucZ0FU2EIGTI7WCRVpBqU89x3kd+B2Q+k2oSXJ
-         tUE1mfqD99Z6eMqlvf0rGQiYKcpXqfqxi/z65dtNPHXM+XTCU2+6SHp8FXOtYiysmHmC
-         Qesj+6kzooqx1B2UIrz3b5R81nWDwB+vQiWezjUZaygGBvSpdLIrIvTWt0Wc28U2fJTq
-         U4Wg==
-X-Gm-Message-State: AOAM530U9F8yWGchk04iZf1oRzv9rg8I9g7YQ/cvJCjoE6h4L1byZT78
-        ud1xEcsHlC6KgLJGe4K76pU=
-X-Google-Smtp-Source: ABdhPJwoOAhYjxjgpmUMAaJBjYo8SDEdefBdhlkEMHmSj4wJI+c491RfUwe6VzqWOp2sTySsx/5UAA==
-X-Received: by 2002:a17:902:a607:b029:d8:ba6e:9b54 with SMTP id u7-20020a170902a607b02900d8ba6e9b54mr21937132plq.42.1606089302832;
-        Sun, 22 Nov 2020 15:55:02 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id e18sm1892055pgr.71.2020.11.22.15.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 15:55:00 -0800 (PST)
-Date:   Mon, 23 Nov 2020 10:54:56 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
-Message-ID: <20201122235456.GF110669@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-15-joel@joelfernandes.org>
+        id S1726711AbgKWABm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 19:01:42 -0500
+Received: from mga18.intel.com ([134.134.136.126]:63592 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726486AbgKWABl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 19:01:41 -0500
+IronPort-SDR: tT5WC1X9GWoTsHWstme7sSJLVVtQ6Vg6alMcOQ3KhAyn5DX7MmgEOtK3itf1tKZv/QCRsG8AdE
+ l1Ke7F/6WRpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="159447598"
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="159447598"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 16:01:40 -0800
+IronPort-SDR: GMXsy0jsvzKYHcP9J42S32qOcAwOHRP6G6J+kjKY4GzRcItDeBI4MFWuHVlW4+NgT/9xuE/JVX
+ Eeub1tq/mA2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="477921202"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga004.jf.intel.com with ESMTP; 22 Nov 2020 16:01:39 -0800
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 22 Nov 2020 16:01:39 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sun, 22 Nov 2020 16:01:39 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Sun, 22 Nov 2020 16:01:38 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TqfXEhdH1eTae3rF8FEqv90DKyTGVtxQkUY2R7u3EhMqObliviyVMPLUsCq9g4hUoaXl2rusvFj4qT5Zq//WR6mhFuCzpnKcWbU3ONX8zWo6VxDlh3PxzCUgqnCfrSSDVO/MDXgkKQ9lbIyi3FfeXcW3UgzT2PHauYM3adCtbQQWdGV032yx1CQqrnGCF2fogFLWVWyRajmFqL3VUS78nDmp93iZT6N2uZk+nocvUgxWRHTLcfuj+v3eOsL46K0nl7OSlr3kNWWDQ9aCcwJxMVOM67hovMs8IK+6jRdxh2r+7wYuuSTaD1lHjNDlJ2NvnbCrYbMoWItzwuhhrTEiTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hc9kOowHyfg63f8zPUNhnmNwY448k03KLpEf6dxq4Eo=;
+ b=FB7+5FlMjYtNtdzelgRT+g9RvZ8vObuIrYTBzsnX2RR/BpPldX8D/HXz5TD3SBWf43A7MnH/75/oZZDdhwFTfbl7B7v5fH+ILyt755lEKRloKoiYZ6q/0zHgiH9tMhY18Aa27ZAb7aOv2aK/ImvhTEPhk8DSYcbfc6xXjPj4VmVelyUE2Q7n+rUDhlZDAyqkflGd2iOzwavJ4WsxdZy0Zjv0sQJS+k7IWYn+RPzODFczE1ByFs1cXnD8YGp8c+LPK3/U8s5KPEt//hZsLoCSCxkJG/Rs/y15ET3m4DneSwhhng7i8b7zgH5FkNgOKmh3jUvcg5MdtzJ6Av2FJv8SDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hc9kOowHyfg63f8zPUNhnmNwY448k03KLpEf6dxq4Eo=;
+ b=LBquraX3472rwdWrnfGnz4ZLGmjo/s96tz9slm924ak6wU31JRZUkNITKg9eXIbTS6ZOeQnVmL8MGBL8EnVicLenTG7BWpWgjjHppdSeRJVCbhhLvAWotj0jO9omZ+wCaiVmjLQhryLAENxcc6IeYuhME6X4r1XdzmeGkJYciTo=
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
+ by SN6PR11MB3119.namprd11.prod.outlook.com (2603:10b6:805:cc::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 23 Nov
+ 2020 00:01:35 +0000
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::bcad:a1da:3b9b:1412]) by SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::bcad:a1da:3b9b:1412%6]) with mapi id 15.20.3589.025; Mon, 23 Nov 2020
+ 00:01:35 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "luto@kernel.org" <luto@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
+Thread-Topic: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
+Thread-Index: AQHWv3v0VGlTYBJQUE2XnxoQHVHqeqnTi8sAgAFM2IA=
+Date:   Mon, 23 Nov 2020 00:01:35 +0000
+Message-ID: <90d528be131a77a167df757b83118a275d9cb35f.camel@intel.com>
+References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
+         <20201120202426.18009-2-rick.p.edgecombe@intel.com>
+         <CALCETrUjpdSGg0T8vehkXszDJKx5AS0BHP9qFRsakPABzPM2GA@mail.gmail.com>
+In-Reply-To: <CALCETrUjpdSGg0T8vehkXszDJKx5AS0BHP9qFRsakPABzPM2GA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.30.1 (3.30.1-1.fc29) 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [134.134.137.75]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6804ffcb-82a9-4e12-691a-08d88f42f17c
+x-ms-traffictypediagnostic: SN6PR11MB3119:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB31192133A676AE64B52B624FC9FC0@SN6PR11MB3119.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: K93SXbRei8OlfGTl86H1UkkF7+9MVR/8MZFXRUxNAyhWg8oHn7eYR/X4NoJJ0eEBZynRMiCsSjDCPF1DzNyGhwnP1qBOQuJIefT2Wfliq/V1Zgnu/8ttdV32J9xKSTJVpQuWSWeYB4sreh58u0kc3Ez4zjz1nAeG4ZK9V8/Idbcf3JcPvcmugoQa4bCQ9YGkrO5ndl67KpRQUDp5TH973xJZow0mMFuJOmlbwEpoy/i57RWa1FN4zPl8JsqWwKBNSP/sy9Dj/f+9CibvgTLQ1YiTZxSpgDb5BPMb3AZSuKMbl+dC4A6w7y1WTlSEEPHR9lxK42qqFMe9Pm4IvW+ANw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(366004)(396003)(66476007)(91956017)(76116006)(4001150100001)(64756008)(66946007)(6506007)(8936002)(66556008)(66446008)(5660300002)(6916009)(53546011)(6512007)(4326008)(83380400001)(71200400001)(7416002)(6486002)(186003)(8676002)(26005)(2616005)(316002)(54906003)(86362001)(2906002)(36756003)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: j06TPIUdEfQAQsf22FLomFTjhOZCykYuJSFBIcoaydrtey8wNewIyQ/A9jGobMqVH6rBxHmO79L34gj3H+oIMXDm5uGO2iFNwBqArMXwdsCyWs1WDJ+5bZY0JCQrLRC/59pRiUSzGkUctFdQYy6Nl3+6tI2vMlDSb566x4kUw+PbGYv7HDouz8z5VXaXpVMFyTtxEpyilmuYh/lk0lnxFZg3TbSY/gybX6oua+GH6zISkp5wq5KKrzK/kU1KQVKXZNpUfmVjnDScTL2DiluFeCgcISMG7eIbvLSAsgbIZkCaHP0zcgI/6hxoE1rVQO6cydQHzRrA7U63DYcxR1ShGdNusA8taKPhBVDqkYO1NTjyHPqkASiEddprrtDWqgeB7+OUOFrfr/CYjYyXJI73FxMqMIYNu6e6lOEvQiR1NcgUedu3MiTDNp9e+divLW/lzc9Zb5bhmOE3SkCIQ4hCq+XAicpBMYotBrdiRV1gkhAmXWzC/W5PIpw4pkmc5ZHFHZ8RbjTKgvbEBh9e2lVPWHnqeaHLZxp28I2vyGhBhACcV3PYgTz4EsXCyZXD8YzGGsGU571I2vzibBFulXgEbLx8bhGxp5tTLbZko7fC8iU2jasC5va9pcPBwE55eaHb28ZpJioS+FhX40LMuvsiib3FFWdkX+Mi2EWSo4PPOLJgokhDhVo1Fy97Oq+/sB5fEA334KbsDBuD1Pdr/dkoisiOVFyfkjUSihD/xnEeRTXcAf5L7BV9iaCIqThUUUTGAJ4KMjh5xu8Ar9odeuwS83D7debjrS7DtLc5Uv5B8R+6rXdXBDrcInJoUX1q8uzL8oQ/KCiq0GdTWwtpJKMeJ4fETIYWx0/K3XDLFFXtwbFFpMc8I7IKSLyxVcjFfi3dEq0+SD/rwurhHZOLKznVgA==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2D3694FC895D7244B9E7ACE12F9A3064@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-15-joel@joelfernandes.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6804ffcb-82a9-4e12-691a-08d88f42f17c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 00:01:35.3631
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: G/BjXziqvPlScFW6eItk7mEJon+IfA46YDnRZn3ZPqsSsFujEshkaK1sBMAwN4qytuyd7BMDwNEu86yQy2xdaNhKSw8lKOK7FyNpSna0e9E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3119
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:44PM -0500, Joel Fernandes (Google) wrote:
-> From: Aubrey Li <aubrey.li@intel.com>
-> 
->  - Don't migrate if there is a cookie mismatch
->      Load balance tries to move task from busiest CPU to the
->      destination CPU. When core scheduling is enabled, if the
->      task's cookie does not match with the destination CPU's
->      core cookie, this task will be skipped by this CPU. This
->      mitigates the forced idle time on the destination CPU.
-> 
->  - Select cookie matched idle CPU
->      In the fast path of task wakeup, select the first cookie matched
->      idle CPU instead of the first idle CPU.
-> 
->  - Find cookie matched idlest CPU
->      In the slow path of task wakeup, find the idlest CPU whose core
->      cookie matches with task's cookie
-> 
->  - Don't migrate task if cookie not match
->      For the NUMA load balance, don't migrate task to the CPU whose
->      core cookie does not match with task's cookie
-> 
-> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-> Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/sched/fair.c  | 64 ++++++++++++++++++++++++++++++++++++++++----
->  kernel/sched/sched.h | 29 ++++++++++++++++++++
->  2 files changed, 88 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index de82f88ba98c..ceb3906c9a8a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1921,6 +1921,15 @@ static void task_numa_find_cpu(struct task_numa_env *env,
->  		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
->  			continue;
->  
-> +#ifdef CONFIG_SCHED_CORE
-> +		/*
-> +		 * Skip this cpu if source task's cookie does not match
-> +		 * with CPU's core cookie.
-> +		 */
-> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-> +			continue;
-> +#endif
-> +
-
-Any reason this is under an #ifdef? In sched_core_cookie_match() won't
-the check for sched_core_enabled() do the right thing even when
-CONFIG_SCHED_CORE is not enabed?
-
->  		env->dst_cpu = cpu;
->  		if (task_numa_compare(env, taskimp, groupimp, maymove))
->  			break;
-> @@ -5867,11 +5876,17 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
->  
->  	/* Traverse only the allowed CPUs */
->  	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
-> +		struct rq *rq = cpu_rq(i);
-> +
-> +#ifdef CONFIG_SCHED_CORE
-> +		if (!sched_core_cookie_match(rq, p))
-> +			continue;
-> +#endif
-> +
->  		if (sched_idle_cpu(i))
->  			return i;
->  
->  		if (available_idle_cpu(i)) {
-> -			struct rq *rq = cpu_rq(i);
->  			struct cpuidle_state *idle = idle_get_state(rq);
->  			if (idle && idle->exit_latency < min_exit_latency) {
->  				/*
-> @@ -6129,8 +6144,18 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->  	for_each_cpu_wrap(cpu, cpus, target) {
->  		if (!--nr)
->  			return -1;
-> -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-> -			break;
-> +
-> +		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
-> +#ifdef CONFIG_SCHED_CORE
-> +			/*
-> +			 * If Core Scheduling is enabled, select this cpu
-> +			 * only if the process cookie matches core cookie.
-> +			 */
-> +			if (sched_core_enabled(cpu_rq(cpu)) &&
-> +			    p->core_cookie == cpu_rq(cpu)->core->core_cookie)
-> +#endif
-> +				break;
-> +		}
->  	}
->  
->  	time = cpu_clock(this) - time;
-> @@ -7530,8 +7555,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->  	 * We do not migrate tasks that are:
->  	 * 1) throttled_lb_pair, or
->  	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
-> -	 * 3) running (obviously), or
-> -	 * 4) are cache-hot on their current CPU.
-> +	 * 3) task's cookie does not match with this CPU's core cookie
-> +	 * 4) running (obviously), or
-> +	 * 5) are cache-hot on their current CPU.
->  	 */
->  	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
->  		return 0;
-> @@ -7566,6 +7592,15 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->  		return 0;
->  	}
->  
-> +#ifdef CONFIG_SCHED_CORE
-> +	/*
-> +	 * Don't migrate task if the task's cookie does not match
-> +	 * with the destination CPU's core cookie.
-> +	 */
-> +	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
-> +		return 0;
-> +#endif
-> +
->  	/* Record that we found atleast one task that could run on dst_cpu */
->  	env->flags &= ~LBF_ALL_PINNED;
->  
-> @@ -8792,6 +8827,25 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
->  					p->cpus_ptr))
->  			continue;
->  
-> +#ifdef CONFIG_SCHED_CORE
-> +		if (sched_core_enabled(cpu_rq(this_cpu))) {
-> +			int i = 0;
-> +			bool cookie_match = false;
-> +
-> +			for_each_cpu(i, sched_group_span(group)) {
-> +				struct rq *rq = cpu_rq(i);
-> +
-> +				if (sched_core_cookie_match(rq, p)) {
-> +					cookie_match = true;
-> +					break;
-> +				}
-> +			}
-> +			/* Skip over this group if no cookie matched */
-> +			if (!cookie_match)
-> +				continue;
-> +		}
-> +#endif
-> +
->  		local_group = cpumask_test_cpu(this_cpu,
->  					       sched_group_span(group));
->  
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index e72942a9ee11..de553d39aa40 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1135,6 +1135,35 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
->  
->  bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
->  
-> +/*
-> + * Helper to check if the CPU's core cookie matches with the task's cookie
-> + * when core scheduling is enabled.
-> + * A special case is that the task's cookie always matches with CPU's core
-> + * cookie if the CPU is in an idle core.
-> + */
-> +static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-> +{
-> +	bool idle_core = true;
-> +	int cpu;
-> +
-> +	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-> +	if (!sched_core_enabled(rq))
-> +		return true;
-> +
-> +	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
-> +		if (!available_idle_cpu(cpu)) {
-
-I was looking at this snippet and comparing this to is_core_idle(), the
-major difference is the check for vcpu_is_preempted(). Do we want to
-call the core as non idle if any vcpu was preempted on this CPU?
-
-> +			idle_core = false;
-> +			break;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * A CPU in an idle core is always the best choice for tasks with
-> +	 * cookies.
-> +	 */
-> +	return idle_core || rq->core->core_cookie == p->core_cookie;
-> +}
-> +
-
-Balbir Singh.
+T24gU2F0LCAyMDIwLTExLTIxIGF0IDIwOjEwIC0wODAwLCBBbmR5IEx1dG9taXJza2kgd3JvdGU6
+DQo+IE9uIEZyaSwgTm92IDIwLCAyMDIwIGF0IDEyOjMwIFBNIFJpY2sgRWRnZWNvbWJlDQo+IDxy
+aWNrLnAuZWRnZWNvbWJlQGludGVsLmNvbT4gd3JvdGU6DQo+ID4gSW4gb3JkZXIgdG8gYWxsb3cg
+Zm9yIGZ1dHVyZSBhcmNoIHNwZWNpZmljIG9wdGltaXphdGlvbnMgZm9yDQo+ID4gdm1hbGxvYw0K
+PiA+IHBlcm1pc3Npb25zLCBmaXJzdCBhZGQgYW4gaW1wbGVtZW50YXRpb24gb2YgYSBuZXcgaW50
+ZXJmYWNlIHRoYXQNCj4gPiB3aWxsDQo+ID4gd29yayBjcm9zcyBhcmNoIGJ5IHVzaW5nIHRoZSBl
+eGlzdGluZyBzZXRfbWVtb3J5XygpIGZ1bmN0aW9ucy4NCj4gPiANCj4gPiBXaGVuIGFsbG9jYXRp
+bmcgc29tZSBtZW1vcnkgdGhhdCB3aWxsIGJlIFJPLCBmb3IgZXhhbXBsZSBpdCBzaG91bGQNCj4g
+PiBiZSB1c2VkDQo+ID4gbGlrZToNCj4gPiANCj4gPiAvKiBSZXNlcnZlIHZhICovDQo+ID4gc3Ry
+dWN0IHBlcm1fYWxsb2NhdGlvbiAqYWxsb2MgPSBwZXJtX2FsbG9jKHZzdGFydCwgdmVuZCwgcGFn
+ZV9jbnQsDQo+ID4gUEVSTV9SKTsNCj4gDQo+IEknbSBzdXJlIEkgY291bGQgcmV2ZXJzZS1lbmdp
+bmVlciB0aGlzIGZyb20gdGhlIGNvZGUsIGJ1dDoNCj4gDQo+IFdoZXJlIGRvIHZzdGFydCBhbmQg
+dmVuZCBjb21lIGZyb20/DQoNClRoZXkgYXJlIHRoZSBzdGFydCBhbmQgZW5kIHZpcnR1YWwgYWRk
+cmVzcyByYW5nZSB0byB0cnkgdG8gYWxsb2NhdGUgaW4sDQpsaWtlIF9fdm1hbGxvY19ub2RlX3Jh
+bmdlKCkgaGFzLiBTbyBsaWtlLCBNT0RVTEVTX1ZBRERSIGFuZA0KTU9EVUxFU19FTkQuIFNvcnJ5
+IGZvciB0aGUgdGVyc2UgZXhhbXBsZS4gVGhlIGhlYWRlciBpbiB0aGlzIHBhdGNoIGhhcw0Kc29t
+ZSBjb21tZW50cyBhYm91dCBlYWNoIG9mIHRoZSBuZXcgZnVuY3Rpb25zIHRvIHN1cHBsZW1lbnQg
+aXQgYSBiaXQuDQoNCj4gRG9lcyBwZXJtX2FsbG9jKCkgYWxsb2NhdGUgbWVtb3J5IG9yIGp1c3Qg
+dmlydHVhbCBhZGRyZXNzZXM/IElzIHRoZQ0KPiBjYWxsZXIgZXhwZWN0ZWQgdG8gY2FsbCB2bWFs
+bG9jKCk/DQoNClRoZSBjYWxsZXIgZG9lcyBub3QgbmVlZCB0byBjYWxsIHZtYWxsb2MoKS4gcGVy
+bV9hbGxvYygpIGJlaGF2ZXMNCnNpbWlsYXIgdG8gX192bWFsbG9jX25vZGVfcmFuZ2UoKSwgd2hl
+cmUgaXQgYWxsb2NhdGVzIGJvdGggbWVtb3J5IGFuZA0KdmlydHVhbCBhZGRyZXNzZXMuIEkgbGVm
+dCBhIGxpdHRsZSB3aWdnbGUgcm9vbSBpbiB0aGUgZGVzY3JpcHRpb25zIGluDQp0aGUgaGVhZGVy
+LCB0aGF0IHRoZSB2aXJ0dWFsIGFkZHJlc3MgcmFuZ2UgZG9lc24ndCBhY3R1YWxseSBuZWVkIHRv
+IGJlDQptYXBwZWQgdW50aWwgYWZ0ZXIgcGVybV93cml0YWJsZV9maW5pc2goKS4gQnV0IGJvdGgg
+b2YgdGhlDQppbXBsZW1lbnRhdGlvbnMgaW4gdGhpcyBzZXJpZXMgd2lsbCBtYXAgaXQgcmlnaHQg
+YXdheSBsaWtlIGEgdm1hbGxvYygpLg0KDQpTbyB0aGUgaW50ZXJmYWNlIGNvdWxkIGFjdHVhbGx5
+IHByZXR0eSBlYXNpbHkgYmUgY2hhbmdlZCB0byBsb29rIGxpa2UNCmFub3RoZXIgZmxhdm9yIG9m
+IHZtYWxsb2MoKSB0aGF0IGp1c3QgcmV0dXJucyBhIHBvaW50ZXIgdG8gYWxsb2NhdGlvbi4NClRo
+ZSByZWFzb24gd2h5IGl0IHJldHVybnMgdGhpcyBuZXcgc3RydWN0IGluc3RlYWQgaXMgdGhhdCwg
+dW5saWtlIG1vc3QNCnZtYWxsb2MoKSdzLCB0aGUgY2FsbGVycyB3aWxsIGJlIGxvb2tpbmcgdXAg
+bWV0YWRhdGEgYWJvdXQgdGhlDQphbGxvY2F0aW9uIGEgYnVuY2ggb2YgdGltZXMgKHRoZSB3cml0
+YWJsZSBhZGRyZXNzKS4gSGF2aW5nIHRoaXMNCm1ldGFkYXRhIHN0b3JlZCBpbiBzb21lIHN0cnVj
+dCBpbnNpZGUgdm1hbGxvYyB3b3VsZCBtZWFuDQpwZXJtX3dyaXRhYmxlX2FkZHIoKSB3b3VsZCBo
+YXZlIHRvIGRvIHNvbWV0aGluZyBsaWtlIGZpbmRfdm1hcF9hcmVhKCkNCmV2ZXJ5IHRpbWUgaW4g
+b3JkZXIgdG8gZmluZCB0aGUgd3JpdGFibGUgYWxsb2NhdGlvbiBhZGRyZXNzIGZyb20gdGhlDQph
+bGxvY2F0aW9ucyBhZGRyZXNzIHBhc3NlZCBpbi4gU28gcmV0dXJuaW5nIGEgc3RydWN0IG1ha2Vz
+IGl0IHNvIHRoZQ0Kd3JpdGFibGUgdHJhbnNsYXRpb24gY2FuIHNraXAgYSBnbG9iYWwgbG9jayBh
+bmQgbG9va3VwLiANCg0KQW5vdGhlciBvcHRpb24gY291bGQgYmUgcHV0dGluZyB0aGUgbmV3IG1l
+dGFkYXRhIGluIHZtX3N0cnVjdCBhbmQganVzdA0KcmV0dXJuIHRoYXQsIGxpa2UgZ2V0X3ZtX2Fy
+ZWEoKS4gVGhlbiB3ZSBkb24ndCBuZWVkIHRvIGludmVudCBhIG5ldw0Kc3RydWN0LiBCdXQgdGhl
+biBub3JtYWwgdm1hbGxvYygpJ3Mgd291bGQgaGF2ZSBhIGJpdCBvZiB3YXN0ZWQgbWVtb3J5DQpz
+aW5jZSB0aGV5IGRvbid0IG5lZWQgdGhpcyBtZXRhZGF0YS4NCg0KQSBuaWNlIHRoaW5nIGFib3V0
+IHRoYXQgdGhvdWdoLCBpcyB0aGVyZSB3b3VsZCBiZSBhIGNlbnRyYWwgcGxhY2UgdG8NCnRyYW5z
+bGF0ZSB0byB0aGUgd3JpdGFibGUgYWRkcmVzc2VzIGluIGNhc2VzIHdoZXJlIG9ubHkgYSB2aXJ0
+dWFsDQphZGRyZXNzIGlzIGF2YWlsYWJsZS4gSW4gbGF0ZXIgcGF0Y2hlcyBoZXJlLCBhIHNpbWls
+YXIgbG9va3VwIGhhcHBlbnMNCmFueXdheSBmb3IgbW9kdWxlcyB1c2luZyBfX21vZHVsZV9hZGRy
+ZXNzKCkgdG8gZ2V0IHRoZSB3cml0YWJsZQ0KYWRkcmVzcy4gVGhpcyBpcyBkdWUgdG8gc29tZSBl
+eGlzdGluZyBjb2RlIHdoZXJlIHBsdW1iaW5nIHRoZSBuZXcNCnN0cnVjdCBhbGwgdGhlIHdheSB0
+aHJvdWdoIHdvdWxkIGhhdmUgcmVzdWx0ZWQgaW4gdG9vIG1hbnkgY2hhbmdlcy4NCg0KSSdtIG5v
+dCBzdXJlIHdoaWNoIGlzIGJlc3QuDQoNCj4gSG93IGRvZXMgb25lIGZyZWUgdGhpcyB0aGluZz8N
+Cg0Kdm9pZCBwZXJtX2ZyZWUoc3RydWN0IHBlcm1fYWxsb2NhdGlvbiAqYWxsb2MpOw0KDQo=
