@@ -2,68 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EF62C17FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF0B2C1802
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732031AbgKWVuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:50:02 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:41724 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730809AbgKWVuC (ORCPT
+        id S1732096AbgKWVvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731686AbgKWVvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:50:02 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id B5DC820051;
-        Mon, 23 Nov 2020 22:49:59 +0100 (CET)
-Date:   Mon, 23 Nov 2020 22:49:58 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] drm/panel: st7703: Use dev_err_probe
-Message-ID: <20201123214958.GD675342@ravnborg.org>
-References: <cover.1605688147.git.agx@sigxcpu.org>
- <36405038d93eb148f3e8ed8e5ea70de8e87afd78.1605688147.git.agx@sigxcpu.org>
+        Mon, 23 Nov 2020 16:51:46 -0500
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09788C0613CF;
+        Mon, 23 Nov 2020 13:51:46 -0800 (PST)
+Received: from fencepost.gnu.org ([2001:470:142:3::e]:56296)
+        by eggs.gnu.org with esmtp (Exim 4.90_1)
+        (envelope-from <ebrahim@gnu.org>)
+        id 1khJkO-00082X-1f; Mon, 23 Nov 2020 16:51:44 -0500
+Received: from ebrahim by fencepost.gnu.org with local (Exim 4.82)
+        (envelope-from <ebrahim@gnu.org>)
+        id 1khJkN-0005sj-It; Mon, 23 Nov 2020 16:51:43 -0500
+Date:   Mon, 23 Nov 2020 16:51:43 -0500
+From:   Ebrahim Byagowi <ebrahim@gnu.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gconfig: avoid use of hard coded colors for rows
+Message-ID: <20201123215143.GA21824@gnu.org>
+References: <20201123213314.GA25149@gnu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <36405038d93eb148f3e8ed8e5ea70de8e87afd78.1605688147.git.agx@sigxcpu.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=8nJEP1OIZ-IA:10 a=ze386MxoAAAA:8 a=KKAkSRfTAAAA:8
-        a=rHKuKkdvJC2CxiFwilcA:9 a=wPNLvfGTeEIA:10 a=iBZjaW-pnkserzjvUTHh:22
-        a=cvBusfyB2V15izCimMoJ:22
+In-Reply-To: <20201123213314.GA25149@gnu.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 09:29:48AM +0100, Guido Günther wrote:
-> Less code and easier probe deferral debugging.
-> 
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Not an important thing of course just that I was unable to
+use gconfig on my system with a theme dark is set like [1]
+and this turns it into [2] without noticable change to the
+light theme.
 
-Nice.
+I had hit this minor issue also in the past but decided to
+fix it this time.
 
-I hope someone comes around and update all panel drivers to use
-dev_err_probe. It is simpler and better than the current code.
-And it will fix a lot of drivers that are noisy during deferral.
+This isn't the best possible approach as now we have we have
+a GdkColor -> gchar * -> GdkColor round trip, yet wanted to
+keep the change small and maybe go for a larger change later
+if it worths it.
 
-	Sam
+Hope you find it useful also.
+
+  [1]: https://i.imgur.com/MJfIkup.png
+  [2]: https://i.imgur.com/lgvod9V.png
