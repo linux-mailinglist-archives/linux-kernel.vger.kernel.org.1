@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E992C1136
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D52F2C1138
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389985AbgKWQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:59:03 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:44355 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729482AbgKWQ7D (ORCPT
+        id S1732970AbgKWRBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729514AbgKWRBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:59:03 -0500
-Received: by mail-ej1-f68.google.com with SMTP id k9so9490095ejc.11;
-        Mon, 23 Nov 2020 08:59:01 -0800 (PST)
+        Mon, 23 Nov 2020 12:01:09 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E79C0613CF;
+        Mon, 23 Nov 2020 09:01:09 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id 10so16574138ybx.9;
+        Mon, 23 Nov 2020 09:01:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C8oS1tqNv7f6RkxFUUnN8Th7AIx+SIEYLcj7Qp63p9k=;
+        b=XVEZRacQJCq6PUcwiSqBhTCNm6nCGyDfUWju1rcXBbeqoud9rcUoA0tOMYCMzB16+A
+         Tf2nyNR3t/IgTmwCIQB3ypyJX49r6P9OYc4rr8O0GyP+kH9GvVo57h25AzM2IpNdBJCI
+         6VLJdQ/PQ4UkU3N4pmDXYYgizJ5Pfla+w5/9goVU/6MpEicrzk67JRLBr0Cie208jhlC
+         H98JkfQHihT+nzvH+TLNNG0iXU+4+bFV34QO7OZ83KC7AUou7iPn0+Or7kQLOKk4QbqZ
+         u31mLbMWS6fVKYWBJpOVY66yIIwTk5i1l6O01w6Kg0HE6F0Pd/kbjjmGlUCXMvB2VIHC
+         l2kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WzvwGaD9/OHMgznZpLRtc18jBESjKRSL5NHyPBpz3bE=;
-        b=FbHz+yU7CdiKNJgHTHJZO+aGgDPJH05d/kbCP/MrJK3S4Ra9Q5+fHv8o5YPmSRRGg4
-         VM9sf0WAFeOL1WnYF8Byjee5HOXsaAp9BkSAwJ2MxtgzyDsqYolj7+0HeQvrysncf31g
-         pvgG/YQISpUH/3NHpu+uHcQAYfNkllIoFaQa/r2sE2jXu2TgmZJ55Kr9TVcjInsiT4jQ
-         gWVbSDynt8rkiT86h9Gt278U1JiunHSjug8GvgF4CG0uISutFvcEe2K9dxowoOd9zogv
-         7adEiDzPCo1pOWW6XgHHYefOpJBKcIDe28U1Z6LggC5ug21MRttRw67Iijg57llYq1Mh
-         +zpQ==
-X-Gm-Message-State: AOAM533F/4T1N8JPFOpK/gH6UgyflXUNaX2mCcKhv8leZkaMb05IYj7E
-        Y9x0NM6e2ruxb5xBmKl2nQo=
-X-Google-Smtp-Source: ABdhPJx8QBW8QFVwjDZADkajTlp0sdT5KxLzuXfAW5mMQG9nVWU0QE/iJo+TiJ/og54KjLJtRpsapw==
-X-Received: by 2002:a17:906:7e55:: with SMTP id z21mr496501ejr.154.1606150741074;
-        Mon, 23 Nov 2020 08:59:01 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id cn8sm5335926edb.18.2020.11.23.08.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 08:59:00 -0800 (PST)
-Date:   Mon, 23 Nov 2020 17:58:58 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alice Guo <alice.guo@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 4/4] soc: imx8m: change to use platform driver
-Message-ID: <20201123165858.GD214677@kozik-lap>
-References: <20201123095108.19724-1-alice.guo@nxp.com>
- <20201123095108.19724-4-alice.guo@nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C8oS1tqNv7f6RkxFUUnN8Th7AIx+SIEYLcj7Qp63p9k=;
+        b=Wc298nc/h42tFExOzZSG/XQQDQWWToqrhSnC1fve28PRg8Y9rQKDUv5xrORNiKFRQ/
+         G7PWlC7Ho08NhwEZgdYeSz0K9LkTgBceZg2+LSK1F10m2D+b3CUYLdXQrra2fsH06rur
+         +tMd+zIKkYbY7RijmRp1p9aPvE2f5JWdC6kXHbIBDjf4008BN/Z+5D5O8QaoooiIYO8W
+         Po7yAHBGou4onkZoPZEoTsEtJ6rDx0ikanbL8ViJBIOoSKSKZSNEci37gB2QN8+NIvFg
+         KWrVVDjBSE/R8VLLjvCAb6lVyVt81cDKTYHIuLuGXJBaztQWMyJNoNbivsxtw5Nh16hn
+         XweQ==
+X-Gm-Message-State: AOAM530qcPfa+7N9eHzjFouQZuSs1rRyBwlfh5gm5XZuOFw+KvesRZg5
+        MEehSIlOWcrdGsNz0IWg8/NlTz2rKxl7NaTsRUw=
+X-Google-Smtp-Source: ABdhPJw65A04SBNaDefIkuI5vF2SMl8iYxkpxXq0HO2LbpXElojOUQFFbXitA0Vl7O8rkXXIAYbjyBqND8UiNocLcps=
+X-Received: by 2002:a25:2e0d:: with SMTP id u13mr381510ybu.247.1606150868581;
+ Mon, 23 Nov 2020 09:01:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201123095108.19724-4-alice.guo@nxp.com>
+References: <20201121194339.52290-1-masahiroy@kernel.org> <CANiq72nL7yxGj-Q6aOxG68967g_fB6=hDED0mTBrZ_SjC=U-Pg@mail.gmail.com>
+ <CAK7LNARjU5HTcTjJG1-sQTJBFqohC1O8aAvFs3Hn_sXscH_pdg@mail.gmail.com>
+In-Reply-To: <CAK7LNARjU5HTcTjJG1-sQTJBFqohC1O8aAvFs3Hn_sXscH_pdg@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 23 Nov 2020 18:00:57 +0100
+Message-ID: <CANiq72mcJMRqV+YZbQtLTCR37ydD=8yFjFzg5ZYMmtH5pK1sEQ@mail.gmail.com>
+Subject: Re: [PATCH] compiler_attribute: remove CONFIG_ENABLE_MUST_CHECK
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Shuah Khan <shuah@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        wireguard@lists.zx2c4.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 05:51:08PM +0800, Alice Guo wrote:
-> Directly reading ocotp register depends on that bootloader enables ocotp
-> clk, which is not always effective, so change to use nvmem API. Using
-> nvmem API requires to support driver defer probe and thus change
-> soc-imx8m.c to use platform driver.
-> 
-> The other reason is that directly reading ocotp register causes kexec
-> kernel hang because the 1st kernel running will disable unused clks
-> after kernel boots up, and then ocotp clk will be disabled even if
-> bootloader enables it. When kexec kernel, ocotp clk needs to be enabled
-> before reading ocotp registers, and nvmem API with platform driver
-> supported can accomplish this.
-> 
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> ---
-> 
+On Mon, Nov 23, 2020 at 4:37 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> I can move it to compiler_attribute.h
+>
+> This attribute is supported by gcc, clang, and icc.
+> https://godbolt.org/z/ehd6so
+>
+> I can send v2.
+>
+> I do not mind renaming, but it should be done in a separate patch.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Of course -- sorry, I didn't mean we had to do them now, i.e. we can
+do the move and the rename later on, if you prefer.
 
-Best regards,
-Krzysztof
+Cheers,
+Miguel
