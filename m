@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F612C0771
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784222C0644
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732603AbgKWMlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:41:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53608 "EHLO mail.kernel.org"
+        id S1730585AbgKWM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:29:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732553AbgKWMkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:40:51 -0500
+        id S1730059AbgKWM3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:29:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8507320732;
-        Mon, 23 Nov 2020 12:40:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FC3920888;
+        Mon, 23 Nov 2020 12:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135247;
-        bh=ymHBzHjZBKjhUiOdIHUAkAUL3+rX6EiiTK+jwWixTVI=;
+        s=korg; t=1606134559;
+        bh=a5VPfCgx+ZvYrOxZ08N88GWvxf4bGUowlK9tjl2ZcCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FNDXzjxcMSbeeIt2LT+frfgD1yhaikN3RDMa2KrcsUNBtzVWrOXJym2anRSFlQqSm
-         CE0RZqzGW6fXum521FFdZtMdRjW8v5MezL8eqh5TEs/jxUJniTMrZzvpj1ExODG5kv
-         ENknouFe7Og78508KXsoPlajVSSYYtNl+is4LGy4=
+        b=GWHVSio71RJdGOdHYe6UzVcy0IOgmCrvySyJL0SXMQYlre8q2yNpP1miibzQauDEs
+         QuEgVqhBaOZXK25Hzi1Z0DLuj7jZ2c6wJW5MCXWH/FL1sF9dAG+S/SvRcAfs7OXK0k
+         VVKSLrHbCQhxHeD+WePqwU1Q8I+0rQW+cnrqBP84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 128/158] iio: light: fix kconfig dependency bug for VCNL4035
-Date:   Mon, 23 Nov 2020 13:22:36 +0100
-Message-Id: <20201123121826.109321732@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 56/60] mac80211: minstrel: fix tx status processing corner case
+Date:   Mon, 23 Nov 2020 13:22:38 +0100
+Message-Id: <20201123121807.755655510@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit 44a146a44f656fc03d368c1b9248d29a128cd053 upstream.
+commit b2911a84396f72149dce310a3b64d8948212c1b3 upstream.
 
-When VCNL4035 is enabled and IIO_BUFFER is disabled, it results in the
-following Kbuild warning:
+Some drivers fill the status rate list without setting the rate index after
+the final rate to -1. minstrel_ht already deals with this, but minstrel
+doesn't, which causes it to get stuck at the lowest rate on these drivers.
 
-WARNING: unmet direct dependencies detected for IIO_TRIGGERED_BUFFER
-  Depends on [n]: IIO [=y] && IIO_BUFFER [=n]
-  Selected by [y]:
-  - VCNL4035 [=y] && IIO [=y] && I2C [=y]
+Fix this by checking the count as well.
 
-The reason is that VCNL4035 selects IIO_TRIGGERED_BUFFER without depending
-on or selecting IIO_BUFFER while IIO_TRIGGERED_BUFFER depends on
-IIO_BUFFER. This can also fail building the kernel.
-
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
-
-Fixes: 55707294c4eb ("iio: light: Add support for vishay vcnl4035")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209883
-Link: https://lore.kernel.org/r/20201102223523.572461-1-fazilyildiran@gmail.com
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: stable@vger.kernel.org
+Fixes: cccf129f820e ("mac80211: add the 'minstrel' rate control algorithm")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20201111183359.43528-3-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/light/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ net/mac80211/rc80211_minstrel.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/light/Kconfig
-+++ b/drivers/iio/light/Kconfig
-@@ -485,6 +485,7 @@ config VCNL4000
+--- a/net/mac80211/rc80211_minstrel.c
++++ b/net/mac80211/rc80211_minstrel.c
+@@ -276,7 +276,7 @@ minstrel_tx_status(void *priv, struct ie
+ 	success = !!(info->flags & IEEE80211_TX_STAT_ACK);
  
- config VCNL4035
- 	tristate "VCNL4035 combined ALS and proximity sensor"
-+	select IIO_BUFFER
- 	select IIO_TRIGGERED_BUFFER
- 	select REGMAP_I2C
- 	depends on I2C
+ 	for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+-		if (ar[i].idx < 0)
++		if (ar[i].idx < 0 || !ar[i].count)
+ 			break;
+ 
+ 		ndx = rix_to_ndx(mi, ar[i].idx);
 
 
