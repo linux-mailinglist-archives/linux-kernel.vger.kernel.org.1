@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C25D2C04D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A25812C04DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbgKWLqH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 06:46:07 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:50105 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728769AbgKWLqG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:46:06 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.193.87])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 869A3CECCF;
-        Mon, 23 Nov 2020 12:53:15 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH 0/3] Bluetooth: Power down controller when suspending
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201118234352.2138694-1-abhishekpandit@chromium.org>
-Date:   Mon, 23 Nov 2020 12:46:02 +0100
-Cc:     BlueZ development <linux-bluetooth@vger.kernel.org>,
-        chromeos-bluetooth-upstreaming@chromium.org, mcchou@chromium.org,
-        danielwinkler@chromium.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <7235CD4E-963C-4BCB-B891-62494AD7F10D@holtmann.org>
-References: <20201118234352.2138694-1-abhishekpandit@chromium.org>
-To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S1728841AbgKWLrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:47:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726529AbgKWLrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 06:47:12 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A24C82074B;
+        Mon, 23 Nov 2020 11:47:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606132031;
+        bh=2PtTmOJEIKueGGOEndNNTAvxa8jv28ItaoA+w5cJ7ok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fS2ygnXRKaVKl4yrUEJ1wu6gxcKFF9B8z1SqnqIBryRZo8H3iMw8c/PuRyGBRVI4s
+         Gkull3LJtsdvMhMitK/U+14Nivs7X3Og57TUZ5utLIEpOuw8cEy4sSibAXSeOSK0BF
+         x9jmfc8UdRdBxKuq4H5+wxRwysi8KA/rB6mtk1ds=
+Date:   Mon, 23 Nov 2020 11:47:06 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: Re: [PATCH v5 3/7] iommu: Allow the dma-iommu api to use bounce
+ buffers
+Message-ID: <20201123114705.GA10233@willie-the-truck>
+References: <20201120101719.3172693-1-baolu.lu@linux.intel.com>
+ <20201120101719.3172693-4-baolu.lu@linux.intel.com>
+ <20201123100816.GA26619@infradead.org>
+ <73ac6a6b-ede9-b306-6d8f-c73f22e1e8e3@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73ac6a6b-ede9-b306-6d8f-c73f22e1e8e3@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhishek,
-
-> This patch series adds support for a quirk that will power down the
-> Bluetooth controller when suspending and power it back up when resuming.
+On Mon, Nov 23, 2020 at 07:40:57PM +0800, Lu Baolu wrote:
+> On 2020/11/23 18:08, Christoph Hellwig wrote:
+> > > +	/*
+> > > +	 * If both the physical buffer start address and size are
+> > > +	 * page aligned, we don't need to use a bounce page.
+> > > +	 */
+> > > +	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
+> > > +	    iova_offset(iovad, phys | org_size)) {
+> > > +		aligned_size = iova_align(iovad, org_size);
+> > > +		phys = swiotlb_tbl_map_single(dev,
+> > > +				phys_to_dma(dev, io_tlb_start),
+> > > +				phys, org_size, aligned_size, dir, attrs);
+> > 
+> > swiotlb_tbl_map_single takes one less argument in 5.10-rc now.
+> > 
 > 
-> On Marvell SDIO Bluetooth controllers (SD8897 and SD8997), we are seeing
-> a large number of suspend failures with the following log messages:
-> 
-> [ 4764.773873] Bluetooth: hci_cmd_timeout() hci0 command 0x0c14 tx timeout
-> [ 4767.777897] Bluetooth: btmrvl_enable_hs() Host sleep enable command failed
-> [ 4767.777920] Bluetooth: btmrvl_sdio_suspend() HS not actived, suspend failed!
-> [ 4767.777946] dpm_run_callback(): pm_generic_suspend+0x0/0x48 returns -16
-> [ 4767.777963] call mmc2:0001:2+ returned -16 after 4882288 usecs
-> 
-> The daily failure rate with this signature is quite significant and
-> users are likely facing this at least once a day (and some unlucky users
-> are likely facing it multiple times a day).
-> 
-> Given the severity, we'd like to power off the controller during suspend
-> so the driver doesn't need to take any action (or block in any way) when
-> suspending and power on during resume. This will break wake-on-bt for
-> users but should improve the reliability of suspend.
-> 
-> We don't want to force all users of MVL8897 and MVL8997 to encounter
-> this behavior if they're not affected (especially users that depend on
-> Bluetooth for keyboard/mouse input) so the new behavior is enabled via
-> module param. We are limiting this quirk to only Chromebooks (i.e.
-> laptop). Chromeboxes will continue to have the old behavior since users
-> may depend on BT HID to wake and use the system.
+> Yes. But Will's iommu/next branch is based on 5.10-rc3. I synced with
+> him, we agreed to keep it 5.10-rc3 and resolve this conflict when
+> merging it.
 
-I don’t have a super great feeling with this change.
+That's right, although I failed to appreciate the conflict was due to a
+change in function prototype rather than just a context collision. So
+I've updated the vt-d branch to contain the stuff fron Konrad:
 
-So historically only hciconfig hci0 up/down was doing a power cycle of the controller and when adding the mgmt interface we moved that to the mgmt interface. In addition we added a special case of power up via hdev->setup. We never had an intention that the kernel otherwise can power up/down the controller as it pleases.
+https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/iommu/vt-d
 
-Can we ask Marvell first to investigate why this is fundamentally broken with their hardware? Since what you are proposing is a pretty heavy change that might has side affects. For example the state machine for the mgmt interface has no concept of a power down/up from the kernel. It is all triggered by bluetoothd.
+Sorry for messing you around!
 
-I am careful here since the whole power up/down path is already complicated enough.
-
-Regards
-
-Marcel
-
+Will
