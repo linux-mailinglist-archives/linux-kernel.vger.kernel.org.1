@@ -2,136 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A44D2C0113
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465382C0118
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:09:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgKWIEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 03:04:46 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:34475 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgKWIEq (ORCPT
+        id S1728203AbgKWIFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 03:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725998AbgKWIFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 03:04:46 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5C19620000A;
-        Mon, 23 Nov 2020 08:04:43 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 09:04:43 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen.Hegelund@microchip.com
-Subject: Re: [PATCH v4 4/6] irqchip: ocelot: Add support for Luton platforms
-Message-ID: <20201123080443.GJ348979@piout.net>
-References: <20201120164108.2096359-1-gregory.clement@bootlin.com>
- <20201120164108.2096359-5-gregory.clement@bootlin.com>
+        Mon, 23 Nov 2020 03:05:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5584CC0613CF;
+        Mon, 23 Nov 2020 00:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6vGNH6/LtgD9H2B7jY2SC28nVQh3dS5TfEwthu4Yqq0=; b=ZAqo9NfKjGkL2SJi0Et2eFTHHn
+        SyVCEbdUmUIfwpdvBuuWvFBs+XXOd7k1xLJehh+E7u1OeHRW7tdsHvERCOFJ18rpuaDwZrh2Bpf4p
+        GHifpGgC0MOM2Cj739hSkfHtJxZ7U412O1Tzn65r8/mLOHMADt9YJdfREPFf2EtryGT+OIY+r4Nz1
+        WBeADPY66kCsCM8yUaREC77lOZ09vI2AT1QsaaFr1N1hHvNXhVevUpoQ2ZnJ531G4XlESqBTwNfAN
+        9Se0TiLHstfosyW2NcAEDqbCjU1U+jZvKjRy4hDToRxwrdt597/uGrDfWAgjbGxLFhVXqyo8FblrG
+        HduUcWMw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kh6qQ-000852-Hy; Mon, 23 Nov 2020 08:05:06 +0000
+Date:   Mon, 23 Nov 2020 08:05:06 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Message-ID: <20201123080506.GA30578@infradead.org>
+References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+ <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120164108.2096359-5-gregory.clement@bootlin.com>
+In-Reply-To: <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2020 17:41:06+0100, Gregory CLEMENT wrote:
-> This patch extends irqchip driver for oceleot to be used with an other
-> vcoreiii base platform: Luton.
+On Sat, Nov 21, 2020 at 02:13:30PM +0000, David Howells wrote:
+> Switch to using a table of operations.  In a future patch the individual
+> methods will be split up by type.  For the moment, however, the ops tables
+> just jump directly to the old functions - which are now static.  Inline
+> wrappers are provided to jump through the hooks.
 > 
-> For this platform there is a few differences:
->    - the interrupt must be enabled for the parent controller
->    - there is no trigger register needed to be managed
-> 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
 
-> ---
->  drivers/irqchip/irq-mscc-ocelot.c | 38 +++++++++++++++++++++++++++----
->  1 file changed, 34 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
-> index 6d4029a2ded0..496f955b8fc4 100644
-> --- a/drivers/irqchip/irq-mscc-ocelot.c
-> +++ b/drivers/irqchip/irq-mscc-ocelot.c
-> @@ -16,6 +16,7 @@
->  #define ICPU_CFG_INTR_INTR_TRIGGER(_p, x)   ((_p)->reg_off_trigger + 0x4 * (x))
->  
->  #define FLAGS_HAS_TRIGGER	BIT(0)
-> +#define FLAGS_NEED_INIT_ENABLE	BIT(1)
->  
->  struct chip_props {
->  	u8 flags;
-> @@ -40,6 +41,17 @@ static struct chip_props ocelot_props = {
->  	.n_irq			= 24,
->  };
->  
-> +static struct chip_props luton_props = {
-> +	.flags			= FLAGS_NEED_INIT_ENABLE,
-> +	.reg_off_sticky		= 0,
-> +	.reg_off_ena		= 0x4,
-> +	.reg_off_ena_clr	= 0x8,
-> +	.reg_off_ena_set	= 0xc,
-> +	.reg_off_ident		= 0x18,
-> +	.reg_off_ena_irq0	= 0x14,
-> +	.n_irq			= 28,
-> +};
-> +
->  static void ocelot_irq_unmask(struct irq_data *data)
->  {
->  	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
-> @@ -115,17 +127,27 @@ static int __init vcoreiii_irq_init(struct device_node *node,
->  		goto err_gc_free;
->  	}
->  
-> -	gc->chip_types[0].regs.ack = p->reg_off_sticky;
-> -	gc->chip_types[0].regs.mask = p->reg_off_ena_clr;
->  	gc->chip_types[0].chip.irq_ack = irq_gc_ack_set_bit;
-> -	gc->chip_types[0].chip.irq_mask = irq_gc_mask_set_bit;
-> -	if (p->flags & FLAGS_HAS_TRIGGER)
-> +	gc->chip_types[0].regs.ack = p->reg_off_sticky;
-> +	if (p->flags & FLAGS_HAS_TRIGGER) {
-> +		gc->chip_types[0].regs.mask = p->reg_off_ena_clr;
->  		gc->chip_types[0].chip.irq_unmask = ocelot_irq_unmask;
-> +		gc->chip_types[0].chip.irq_mask = irq_gc_mask_set_bit;
-> +	} else {
-> +		gc->chip_types[0].regs.enable = p->reg_off_ena_set;
-> +		gc->chip_types[0].regs.disable = p->reg_off_ena_clr;
-> +		gc->chip_types[0].chip.irq_mask = irq_gc_mask_disable_reg;
-> +		gc->chip_types[0].chip.irq_unmask = irq_gc_unmask_enable_reg;
-> +	}
->  
->  	/* Mask and ack all interrupts */
->  	irq_reg_writel(gc, 0, p->reg_off_ena);
->  	irq_reg_writel(gc, 0xffffffff, p->reg_off_sticky);
->  
-> +	/* Overall init */
-> +	if (p->flags & FLAGS_NEED_INIT_ENABLE)
-> +		irq_reg_writel(gc, BIT(0), p->reg_off_ena_irq0);
-> +
->  	domain->host_data = p;
->  	irq_set_chained_handler_and_data(parent_irq, ocelot_irq_handler,
->  					 domain);
-> @@ -148,3 +170,11 @@ static int __init ocelot_irq_init(struct device_node *node,
->  }
->  
->  IRQCHIP_DECLARE(ocelot_icpu, "mscc,ocelot-icpu-intr", ocelot_irq_init);
-> +
-> +static int __init luton_irq_init(struct device_node *node,
-> +				 struct device_node *parent)
-> +{
-> +	return vcoreiii_irq_init(node, parent, &luton_props);
-> +}
-> +
-> +IRQCHIP_DECLARE(luton_icpu, "mscc,luton-icpu-intr", luton_irq_init);
-> -- 
-> 2.29.2
-> 
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Please run performance tests.  I think the indirect calls could totally
+wreck things like high performance direct I/O, especially using io_uring
+on x86.
