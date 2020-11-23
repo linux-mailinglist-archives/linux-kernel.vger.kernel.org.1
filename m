@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3296B2C0599
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09F72C05B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729673AbgKWMXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:23:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
+        id S1729866AbgKWMYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:24:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729399AbgKWMXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:23:43 -0500
+        id S1729847AbgKWMYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:24:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67A31208C3;
-        Mon, 23 Nov 2020 12:23:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29B5E20728;
+        Mon, 23 Nov 2020 12:24:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134222;
-        bh=LgOf4RUUX2aOzmRVCY4k7EOzBrEF5eZj+47Nx5X8j3w=;
+        s=korg; t=1606134281;
+        bh=3/8Oqa9fZr1BV8DjKGyJGYz3rBD2hBXeacN6NR9H2SE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AsRzksry6BCS5foRcJIHpD6luBDt6k9twyLnR9ZR7SC4taNXqCtFNyEcjvfhQQRNN
-         GtKnYGKIF1Q3pYSY4W5FjFmvPqAvBxlkC7Ca/7IZ+jLYv+8JbCcvBfYcKj8Je7Qlec
-         sHq06WqBomDst0V/gQUtGYQgUUVUv0dw/GbTf0FE=
+        b=11+T69zSDBAcVi1mv7SW1k3ome5NnKrkwb3L9XcjI2nF5RKxOeIDI1yilOYS5Mxrx
+         VSp0kccffQTU82WZduFzmq8x2jLXC7bDSdbu4SydbkfsPxoDf4Xy55hUp9GY+EYhhc
+         9i7O6XxcxVHsc+QcdAZ+G/8m3evlZUX6Gcb31VVw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 14/38] arm64: psci: Avoid printing in cpu_psci_cpu_die()
-Date:   Mon, 23 Nov 2020 13:22:00 +0100
-Message-Id: <20201123121804.994617906@linuxfoundation.org>
+        stable@vger.kernel.org, Filip Moc <dev@moc6.cz>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 15/47] net: usb: qmi_wwan: Set DTR quirk for MR400
+Date:   Mon, 23 Nov 2020 13:22:01 +0100
+Message-Id: <20201123121806.278599214@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
-References: <20201123121804.306030358@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Filip Moc <dev@moc6.cz>
 
-[ Upstream commit 891deb87585017d526b67b59c15d38755b900fea ]
+[ Upstream commit df8d85d8c69d6837817e54dcb73c84a8b5a13877 ]
 
-cpu_psci_cpu_die() is called in the context of the dying CPU, which
-will no longer be online or tracked by RCU. It is therefore not generally
-safe to call printk() if the PSCI "cpu off" request fails, so remove the
-pr_crit() invocation.
+LTE module MR400 embedded in TL-MR6400 v4 requires DTR to be set.
 
-Cc: Qian Cai <cai@redhat.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20201106103602.9849-2-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Filip Moc <dev@moc6.cz>
+Acked-by: Bjørn Mork <bjorn@mork.no>
+Link: https://lore.kernel.org/r/20201117173631.GA550981@moc6.cz
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/psci.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/usb/qmi_wwan.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
-index e6ad81556575c..ae91d202b7475 100644
---- a/arch/arm64/kernel/psci.c
-+++ b/arch/arm64/kernel/psci.c
-@@ -136,7 +136,6 @@ static int cpu_psci_cpu_disable(unsigned int cpu)
- 
- static void cpu_psci_cpu_die(unsigned int cpu)
- {
--	int ret;
- 	/*
- 	 * There are no known implementations of PSCI actually using the
- 	 * power state field, pass a sensible default for now.
-@@ -144,9 +143,7 @@ static void cpu_psci_cpu_die(unsigned int cpu)
- 	u32 state = PSCI_POWER_STATE_TYPE_POWER_DOWN <<
- 		    PSCI_0_2_POWER_STATE_TYPE_SHIFT;
- 
--	ret = psci_ops.cpu_off(state);
--
--	pr_crit("unable to power off CPU%u (%d)\n", cpu, ret);
-+	psci_ops.cpu_off(state);
- }
- 
- static int cpu_psci_cpu_kill(unsigned int cpu)
--- 
-2.27.0
-
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -705,7 +705,7 @@ static const struct usb_device_id produc
+ 	{QMI_FIXED_INTF(0x05c6, 0x9011, 4)},
+ 	{QMI_FIXED_INTF(0x05c6, 0x9021, 1)},
+ 	{QMI_FIXED_INTF(0x05c6, 0x9022, 2)},
+-	{QMI_FIXED_INTF(0x05c6, 0x9025, 4)},	/* Alcatel-sbell ASB TL131 TDD LTE  (China Mobile) */
++	{QMI_QUIRK_SET_DTR(0x05c6, 0x9025, 4)},	/* Alcatel-sbell ASB TL131 TDD LTE (China Mobile) */
+ 	{QMI_FIXED_INTF(0x05c6, 0x9026, 3)},
+ 	{QMI_FIXED_INTF(0x05c6, 0x902e, 5)},
+ 	{QMI_FIXED_INTF(0x05c6, 0x9031, 5)},
 
 
