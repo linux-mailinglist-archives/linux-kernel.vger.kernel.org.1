@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833CF2C1102
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B1B2C1105
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388285AbgKWQpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:45:54 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:45017 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732365AbgKWQpy (ORCPT
+        id S2389987AbgKWQqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:46:03 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37142 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387509AbgKWQqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:45:54 -0500
-Received: by mail-wr1-f65.google.com with SMTP id 64so5846669wra.11
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:45:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tTIXw5rLyAv33bToM20XD0dcKwsOzV94mj/iEGVXRWs=;
-        b=oy9bV82qhmGP0lU1dJ9z8CrDxCaO0R2bYAH/YpanNuqr0reZIvllu7qPBYwMPNBdtU
-         vNDc8M8HjUbst3xWXAzOOAMUVooJ90T1UTcGULN3HEG/9qDlAAAmpwWpDUvqKJhCGHnG
-         BI+MYvJi+lxOyHv6RNmzlA8zA9suF9cLkO7hOav0e51YAkiwqtlIrzyqXT+8aQ4Tmad9
-         rzjM6PmWg71njkFkE/Gm/DFeLO2fV876SYNjJqcd+wcq+dPRIgr9WubnlEgEuIR8HpO4
-         xcfWrsqBSyiTgey+C8YHoSRNvQK3IIHvGD/dDxdD74BoxB358oxaashrbCcfG8ia2xZO
-         FMKQ==
-X-Gm-Message-State: AOAM531lkSLM1bMyPg9EsXrpOacyha0BFu6i7bcb2xBoUCZ35f4LfEVv
-        Bo26jJb+V/Hvg6fRVCMr2yE=
-X-Google-Smtp-Source: ABdhPJwjyRPsg/ZgyyqA5febFYxtxg+7Hu3QymLN9YFEKOn7qG9Jk/Avn4KesTL8D6o4vJvRQHgSRg==
-X-Received: by 2002:adf:fd0d:: with SMTP id e13mr538070wrr.85.1606149951691;
-        Mon, 23 Nov 2020 08:45:51 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id d13sm22466554wrb.39.2020.11.23.08.45.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 08:45:49 -0800 (PST)
-Date:   Mon, 23 Nov 2020 17:45:48 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201123164548.GA211086@kozik-lap>
-References: <20201120165202.GG6751@sirena.org.uk>
- <20201120194245.GA2925@kozik-lap>
- <20201120200429.GJ6751@sirena.org.uk>
- <20201122105813.GA3780@kozik-lap>
- <20201123104832.GY4077@smile.fi.intel.com>
- <20201123123731.GA6322@sirena.org.uk>
- <20201123124129.GA170000@kozik-lap>
- <20201123135006.GE6322@sirena.org.uk>
- <20201123145831.GA202597@kozik-lap>
- <20201123164330.GG6322@sirena.org.uk>
+        Mon, 23 Nov 2020 11:46:02 -0500
+Date:   Mon, 23 Nov 2020 16:45:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606149960;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ogLvqf0Bj+toXu2RJnRnKoGi8YkpKVwa8dItBgaBt0s=;
+        b=VOK+uSMRaOQm6tAmhHYFOz/hE/tQaqgYlcJRYAYRfLUd8IjuxtEE0ATbwdCny5FKmn5Dh/
+        Ld1u83i47yFXyvYLFVlLEbXdVjQ2XMU+EF9amxFgvErm5IXcgaVDRSg7qmOHylCRTxG9fE
+        W/HsYwTuK/VsopPtz8IaX5hvZ1NbNIL7QGZP8SGADF3BN3Lpo8UbUofoT72anoWAr4Plir
+        czacpJmH8LrIkrb3H/T16fj7/1Fc1QzRTlm59VVrpavpVxymUvU1bQwi8X+uhF79Ml+Ez5
+        +g0G0+vY5MW+l1Ia+/+3tR2bWVMhGV3wYSolq6+BISNXDRG22Ib+5aTqh1d5gw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606149960;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ogLvqf0Bj+toXu2RJnRnKoGi8YkpKVwa8dItBgaBt0s=;
+        b=pEKe16x3ji2a/Q74X1cZd1GzSjh/NlK0u7wOTXiTWFkKLHu036XKKY/p6X8HuQSKUxpcqo
+        c6zYh0h8U1EUf2AA==
+From:   "irqchip-bot for Chen Baozi" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip/exiu: Fix the index of fwspec for
+ IRQ type
+Cc:     Chen Baozi <chenbaozi@phytium.com.cn>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, stable@vger.kernel.org,
+        tglx@linutronix.de
+In-Reply-To: <20201117032015.11805-1-cbz@baozis.org>
+References: <20201117032015.11805-1-cbz@baozis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201123164330.GG6322@sirena.org.uk>
+Message-ID: <160614995899.11115.18133033549355488513.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:43:30PM +0000, Mark Brown wrote:
-> On Mon, Nov 23, 2020 at 03:58:31PM +0100, Krzysztof Kozlowski wrote:
-> 
-> > Having these of_match_ptr() for OF-only drivers is not the correct way
-> > but rather something which is copied from existing drivers into new
-> > ones. This is another reason for removing them - people will stop
-> > copying this code all over again.
-> 
-> Well, it seems that the issue the PRP0001 people are having is that
-> they'd rather that there were fewer OF only drivers!  More generally
-> it is good practice to write things as though there might be non-DT
-> support even if it's not there at the present time, it's easier to not
-> have to think if it's strictly needed and it helps anyone coming along
-> later who does want to use things elsewhere.
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-I understand. I will send therefore a v2 adding __maybe_unused to the OF
-table.
+Commit-ID:     d001e41e1b15716e9b759df5ef00510699f85282
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/d001e41e1b15716e9b759df5ef00510699f85282
+Author:        Chen Baozi <chenbaozi@phytium.com.cn>
+AuthorDate:    Tue, 17 Nov 2020 11:20:15 +08:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Sun, 22 Nov 2020 10:27:23 
 
-Best regards,
-Krzysztof
+irqchip/exiu: Fix the index of fwspec for IRQ type
 
+Since fwspec->param_count of ACPI node is two, the index of IRQ type
+in fwspec->param[] should be 1 rather than 2.
+
+Fixes: 3d090a36c8c8 ("irqchip/exiu: Implement ACPI support")
+Signed-off-by: Chen Baozi <chenbaozi@phytium.com.cn>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/r/20201117032015.11805-1-cbz@baozis.org
+Cc: stable@vger.kernel.org
+---
+ drivers/irqchip/irq-sni-exiu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-sni-exiu.c b/drivers/irqchip/irq-sni-exiu.c
+index 1d02762..abd011f 100644
+--- a/drivers/irqchip/irq-sni-exiu.c
++++ b/drivers/irqchip/irq-sni-exiu.c
+@@ -136,7 +136,7 @@ static int exiu_domain_translate(struct irq_domain *domain,
+ 		if (fwspec->param_count != 2)
+ 			return -EINVAL;
+ 		*hwirq = fwspec->param[0];
+-		*type = fwspec->param[2] & IRQ_TYPE_SENSE_MASK;
++		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+ 	}
+ 	return 0;
+ }
