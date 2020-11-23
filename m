@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A7B2C0DB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386B02C0DBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389175AbgKWObz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:31:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729794AbgKWOby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:31:54 -0500
-Received: from gaia (unknown [95.146.230.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74C3820781;
-        Mon, 23 Nov 2020 14:31:52 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 14:31:49 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, kernel-team@android.com,
-        Yu Zhao <yuzhao@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-mm@kvack.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/6] arm64: pgtable: Ensure dirty bit is preserved across
- pte_wrprotect()
-Message-ID: <20201123143149.GG17833@gaia>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-3-will@kernel.org>
- <20201120170903.GC3377168@google.com>
+        id S2389184AbgKWOcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:32:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729794AbgKWOcF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:32:05 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F3BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:32:05 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id v14so1855891lfo.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:32:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CD/fQep9OsiPNeBueraAPkoryFQ/vLrFoZEixh/G32w=;
+        b=B23wlcJH+h65Oy3GOsnudV95X0Xup3PY4Z8RpaKih0qYIno5amPc/+FdCSVJCj6m7U
+         8U8Pc7tLOLeXQkimJ5BOKLLYdzMTmGR+/plmRepLBDr6vuYU1c4Mss1x0/fqA4+xIO5O
+         DsLfCP0jzl9hGiUvhnjb9IeViXxf9lypNpl4Tx39WdghoKy/UHxw1Yl46bX4WyB592y9
+         A502hG1TQCbr0E+LfKAT33rIDSzTpRb/yTlhzNJnGbqJx8uYS3ZWMfbKuP3fXYlFyH8w
+         TVajzuVtjqWewR1h9+QMQrbQG6boxLL7a19eUG8WZSGhP74kfchf1B0xdIG3miKTt9Qg
+         4D/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CD/fQep9OsiPNeBueraAPkoryFQ/vLrFoZEixh/G32w=;
+        b=stB+sfHR/nB02qWbI5GVEfXfJU9dk/n1y4A828kl4EEKugObTcng0OfrPlQNML9TDm
+         2GFLp+cD3aOiV5tCHJmQLU95TBv0Frv2mx/d+Tbg58LH/kE4WGPcnEUvn9880uzhOHXb
+         wyJB7LTv3yN92CcijeyEfhUqEgpSXBIpOzwUcogxj9+QLgE+YJgSd2cOT5Gv7rU+7l7B
+         3JDz19OIU4Iug6w9RrZ823W4hZ40TYcvT66vTN5Fmtj65cjLn0tWoDX98URYv61qCyLd
+         gflb4xyflAbLNG6f4b5429epu3eas64jK2lWcwEFXjBVw0mmEoUy4mPHImohWKAsg98E
+         KTMA==
+X-Gm-Message-State: AOAM530638jrrN27Z818w6Kz6wYd2uLPw97SOHJ2xIfcNcnAwe0joAjt
+        JgVPbLOPzsDkaCbz0Ig8DwxK7yjSzO1XSvF9Rfv0pCcNxkX6dA==
+X-Google-Smtp-Source: ABdhPJx3/GiTdrK6xYxnUkNa0bd9c+GF88T8obU8aOlbCwnyfO7IZEeHl3HBCCg6OK8iuW/g1BPwo3ZtShcB2FSBm3k=
+X-Received: by 2002:a05:6512:3e7:: with SMTP id n7mr12620380lfq.585.1606141923819;
+ Mon, 23 Nov 2020 06:32:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120170903.GC3377168@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201113145151.68900-1-lars.povlsen@microchip.com> <20201113145151.68900-4-lars.povlsen@microchip.com>
+In-Reply-To: <20201113145151.68900-4-lars.povlsen@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 23 Nov 2020 15:31:53 +0100
+Message-ID: <CACRpkdaYHTTXC2gEgtCvDk9N8AqWeUyFSXyWp2aiEd97hk55fA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] arm64: dts: sparx5: Add SGPIO devices
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:09:03AM -0800, Minchan Kim wrote:
-> On Fri, Nov 20, 2020 at 02:35:53PM +0000, Will Deacon wrote:
-> > With hardware dirty bit management, calling pte_wrprotect() on a writable,
-> > dirty PTE will lose the dirty state and return a read-only, clean entry.
-> > 
-> > Move the logic from ptep_set_wrprotect() into pte_wrprotect() to ensure that
-> > the dirty bit is preserved for writable entries, as this is required for
-> > soft-dirty bit management if we enable it in the future.
-> > 
-> > Cc: <stable@vger.kernel.org>
-> 
-> It this stable material if it would be a problem once ARM64 supports
-> softdirty in future?
+On Fri, Nov 13, 2020 at 3:52 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
-I don't think so. Arm64 did not have a hardware dirty mechanism from the
-start, it was added later but in a way as to coexist with other CPUs or
-peripherals that don't support it. So instead of setting a PTE_DIRTY bit
-as one would expect, the CPU clears the PTE_RDONLY on write access to a
-writable PTE (the PTE_DBM/PTE_WRITE bit set). So our pte_wrprotect()
-needs to set PTE_RDONLY and clear PTE_DBM (PTE_WRITE) but !PTE_RDONLY is
-our only information of a pte having been dirtied, so we have to
-transfer it to a software PTE_DIRTY bit. This is different from a
-soft-dirty pte bit if we add it in the future.
+> This adds SGPIO devices for the Sparx5 SoC and configures it for the
+> applicable reference boards.
+>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
 
--- 
-Catalin
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Please funnel this patch through the SoC tree for this machine.
+
+Yours,
+Linus Walleij
