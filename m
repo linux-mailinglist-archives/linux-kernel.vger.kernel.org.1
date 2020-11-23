@@ -2,51 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B162C16D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF4E2C16C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgKWUhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:37:47 -0500
-Received: from host22.hardover.com ([209.59.173.58]:42658 "EHLO
-        host22.hardover.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728798AbgKWUhr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:37:47 -0500
-X-Greylist: delayed 2650 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Nov 2020 15:37:46 EST
-Received: from westrox by host22.hardover.com with local (Exim 4.93)
-        (envelope-from <westrox@host22.hardover.com>)
-        id 1khHu6-000Dke-9d
-        for linux-kernel@vger.kernel.org; Mon, 23 Nov 2020 14:53:38 -0500
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?=F0=9F=96=A4_Secret_meetings_and_single_girls_are_waiting_for_y?=  =?UTF-8?Q?ou._Answer_me_here:_http://bit.do/fLifv=3Ff5p9_=F0=9F=96=A4?=
-X-PHP-Script: westroxburydentalart.com/index.php for 105.213.77.14
-X-PHP-Originating-Script: 1022:class-phpmailer.php
-Date:   Mon, 23 Nov 2020 19:53:38 +0000
-From:   =?UTF-8?Q?=F0=9F=96=A4_Secret_meetings_and_single_girls_are_waiting_for_y?=
-         =?UTF-8?Q?ou=2E_Answer_me_here=3A_http=3A//bit=2Edo/fLifv=3Ff5p9_?=
-         =?UTF-8?Q?=F0=9F=96=A4?= <linux-kernel@vger.kernel.org>
-Message-ID: <45c6639167970139cec01b7521665158@westroxburydentalart.com>
-X-Mailer: PHPMailer 5.2.27 (https://github.com/PHPMailer/PHPMailer)
+        id S1728057AbgKWUa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:30:59 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:43442 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727461AbgKWUa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 15:30:58 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbc1c000000>; Tue, 24 Nov 2020 04:30:56 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov
+ 2020 20:30:52 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.170)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 23 Nov 2020 20:30:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fHwUvjXZHU3TQJaHZSs/4p6h4YQ3d1VwIUjd/3h+kN9M5Wq7hUySg+jgA0xQdorlRs7avPkxGHvc8BI7F8U7+h9rgu/txSrspiDhFl5l+znIWj+cEf6uNkZkwehX+EvbqFq9+5TGn5LzhYg735HsA8b4ALhXh6eZiUXnrlzBFS2/EY5BQCe5fSfp1tG0z1faFwkhbF80kiXL2SFMbiEV9m8+iyd1ovfcaHlqxPSrJziF/IKxxFh7SjHm5zErCVG5k0uAfbD7eCm+oyFbjxKk0vMAIInMeTco/+4GG2aC+lU62e6vezr3FvOBMVQWppl6djnaalgPtlJlAdPlVKTqwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cnUMuVBegwyQnKb0R5E916DXWjswpfVuGY3GYJ4bUPM=;
+ b=PASzwS2hOLlCvodDpnMrNE2FIoxe76GoLJQI2HhqbaiM2xWuAes776Q1IJekC5/uHI84iZurakoR4yphdznpJDVn1s5aMB8jQk9Ea3FnyG6HHg8gQMjXIYbsBZuzqarkOs4F1Q/t/SJccLWXPWRwvbw6FCscslZ/rYxmHT2s/RYwvwKH8FwFgJ3vhNsmJilO/EDa7bqbO9/zEccxdAvDe3Xzg6Wwf7cgfWYYmSL+Lvc3VDQuD3peLnsfGQK/oWE2pstoIJQDdIcudn1P4SqyPSmODOGgGlQ8TdyFML39K/VIXU/0cfmkdQBuUXi/7RbAWuMe2kKrmM1931JYRFyKqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4944.namprd12.prod.outlook.com (2603:10b6:5:1ba::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.24; Mon, 23 Nov
+ 2020 20:30:50 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Mon, 23 Nov 2020
+ 20:30:50 +0000
+Date:   Mon, 23 Nov 2020 16:30:48 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+CC:     Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/i40iw: Constify ops structs
+Message-ID: <20201123203048.GA85243@nvidia.com>
+References: <20201121002529.89148-1-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201121002529.89148-1-rikard.falkeborn@gmail.com>
+X-ClientProxiedBy: MN2PR17CA0028.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::41) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - host22.hardover.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [1022 994] / [47 12]
-X-AntiAbuse: Sender Address Domain - host22.hardover.com
-X-Get-Message-Sender-Via: host22.hardover.com: authenticated_id: westrox/primary_hostname/system user
-X-Authenticated-Sender: host22.hardover.com: westrox
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0028.namprd17.prod.outlook.com (2603:10b6:208:15e::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Mon, 23 Nov 2020 20:30:49 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1khIU4-000MBQ-JR; Mon, 23 Nov 2020 16:30:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606163456; bh=cnUMuVBegwyQnKb0R5E916DXWjswpfVuGY3GYJ4bUPM=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=hToL8sqVT7cWKD9Pp0Mj7NdaPgHw8khUevHhtRMLCi8nC9vQXvnmfZ1XgumHL6XN9
+         MxOvA086ajl664eqyQJCcl59GfEToULlb//YiW1Ej0aJCNmZoSn+5shdeb4ZdRnbbC
+         21UEjiC7wJziugwk5QqkXYypD42sdR2gTmeKmll79P/dmI52ipSWYb5oW/g2X/bNvV
+         OXj8xxeXc6msxJ0p+DXTwzB6Nx2Y/kXf5I0Z5uvGiZL0GBaj1K5MT9Wx+CmwdClkcw
+         3L5vUlwg6t3Wzw+/TMPtXBl/gu70kbVk5b33aj4D3L3hIFL7cpmESBk1s9reD6DDtN
+         ziI3+nrv9a8Tg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Message Body:
-🖤 Secret meetings and single girls are waiting for you. Answer me here: http://bit.do/fLifv?f5p9 🖤
+On Sat, Nov 21, 2020 at 01:25:29AM +0100, Rikard Falkeborn wrote:
+> The ops structs are never modified. Make them const to allow the
+> compiler to put them in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw_ctrl.c | 20 ++++++++++----------
+>  drivers/infiniband/hw/i40iw/i40iw_type.h | 20 ++++++++++----------
+>  2 files changed, 20 insertions(+), 20 deletions(-)
 
---
-This e-mail was sent from a contact form on BeTheme (http://themes.muffingroup.com/betheme)
+Applied to for-next thanks
 
+Jason
