@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCF32C05AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B26B2C05AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgKWMYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:24:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33770 "EHLO mail.kernel.org"
+        id S1729812AbgKWMY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:24:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729771AbgKWMYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:24:15 -0500
+        id S1729784AbgKWMYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:24:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64E6220728;
-        Mon, 23 Nov 2020 12:24:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA54520888;
+        Mon, 23 Nov 2020 12:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134255;
-        bh=76l3zAfG964D45CtF8vkuHVfmhTKm31v6OXflPeosIg=;
+        s=korg; t=1606134260;
+        bh=NhW2l7iFTdAxLHami2bE1HItPltCxtUxuNThYSVGZXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HIaLvUA91/MUB3jqP6tDwfqbhg9/ql/9mO8zGmia1tZFOF2pCTG9JqenNPOztLm4C
-         7dsdTn/WL5WOQnE3Yz7dFQKcJjd6bdUgQPkpGtJJIXEqMEXzGxI4/Py01TyC3Pslfy
-         pv54ofW9EoUFT9mAIovfKk7Bx1LI8OU0pJ5O/BsY=
+        b=YiAfg3suuvk0tEURHRjva/Ruv0oq8uQHKs9p0zLxNxz7R5EmonaOduFRC9nUotFKE
+         aFocgNWHAlOaYma3Jx5fT7SkRAVB/NwXogwRKTVeDmf2K5DSHMAoKVqQ6YkBWf/mmM
+         blk5C6AgxNM0idiXhEc9Ao2QWVYtLbQ6SVWZ3i/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 19/38] perf lock: Dont free "lock_seq_stat" if read_count isnt zero
-Date:   Mon, 23 Nov 2020 13:22:05 +0100
-Message-Id: <20201123121805.230222756@linuxfoundation.org>
+Subject: [PATCH 4.4 21/38] can: peak_usb: fix potential integer overflow on shift of a int
+Date:   Mon, 23 Nov 2020 13:22:07 +0100
+Message-Id: <20201123121805.325118365@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
 References: <20201123121804.306030358@linuxfoundation.org>
@@ -44,52 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit b0e5a05cc9e37763c7f19366d94b1a6160c755bc ]
+[ Upstream commit 8a68cc0d690c9e5730d676b764c6f059343b842c ]
 
-When execute command "perf lock report", it hits failure and outputs log
-as follows:
+The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+arithmetic and then assigned to a signed 64 bit variable. In the case where
+time_ref->adapter->ts_used_bits is 32 or more this can lead to an oveflow.
+Avoid this by shifting using the BIT_ULL macro instead.
 
-  perf: builtin-lock.c:623: report_lock_release_event: Assertion `!(seq->read_count < 0)' failed.
-  Aborted
-
-This is an imbalance issue.  The locking sequence structure
-"lock_seq_stat" contains the reader counter and it is used to check if
-the locking sequence is balance or not between acquiring and releasing.
-
-If the tool wrongly frees "lock_seq_stat" when "read_count" isn't zero,
-the "read_count" will be reset to zero when allocate a new structure at
-the next time; thus it causes the wrong counting for reader and finally
-results in imbalance issue.
-
-To fix this issue, if detects "read_count" is not zero (means still have
-read user in the locking sequence), goto the "end" tag to skip freeing
-structure "lock_seq_stat".
-
-Fixes: e4cef1f65061 ("perf lock: Fix state machine to recognize lock sequence")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Link: https://lore.kernel.org/r/20201104094229.17509-2-leo.yan@linaro.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20201105112427.40688-1-colin.king@canonical.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-lock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index de16aaed516e6..daf2dc0232450 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -616,7 +616,7 @@ static int report_lock_release_event(struct perf_evsel *evsel,
- 	case SEQ_STATE_READ_ACQUIRED:
- 		seq->read_count--;
- 		BUG_ON(seq->read_count < 0);
--		if (!seq->read_count) {
-+		if (seq->read_count) {
- 			ls->nr_release++;
- 			goto end;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 22deddb2dbf5a..7b148174eb760 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -176,7 +176,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ 		if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
+ 			/* case when event time (tsw) wraps */
+ 			if (ts < time_ref->ts_dev_1)
+-				delta_ts = 1 << time_ref->adapter->ts_used_bits;
++				delta_ts = BIT_ULL(time_ref->adapter->ts_used_bits);
+ 
+ 		/* Otherwise, sync time counter (ts_dev_2) has wrapped:
+ 		 * handle case when event time (tsn) hasn't.
+@@ -188,7 +188,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ 		 *              tsn            ts
+ 		 */
+ 		} else if (time_ref->ts_dev_1 < ts) {
+-			delta_ts = -(1 << time_ref->adapter->ts_used_bits);
++			delta_ts = -BIT_ULL(time_ref->adapter->ts_used_bits);
  		}
+ 
+ 		/* add delay between last sync and event timestamps */
 -- 
 2.27.0
 
