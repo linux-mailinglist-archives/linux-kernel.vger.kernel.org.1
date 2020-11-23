@@ -2,199 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9371D2C0367
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BF72C036D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgKWKfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:35:39 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3712 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728181AbgKWKfj (ORCPT
+        id S1728266AbgKWKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbgKWKhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:35:39 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbb907d0000>; Mon, 23 Nov 2020 02:35:41 -0800
-Received: from [10.26.72.66] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov
- 2020 10:35:36 +0000
-Subject: Re: [PATCH v5 3/6] ASoC: tegra: Add audio graph based card driver
-To:     Sameer Pujar <spujar@nvidia.com>, <broonie@kernel.org>,
-        <robh+dt@kernel.org>, <thierry.reding@gmail.com>
-CC:     <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>
-References: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
- <1605119676-32273-4-git-send-email-spujar@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <46aa4d68-03e9-72e9-51f9-e67dba15f5d3@nvidia.com>
-Date:   Mon, 23 Nov 2020 10:35:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 23 Nov 2020 05:37:15 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC830C061A4E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:37:13 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id f17so5340602pge.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:37:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4eFIlDBCGuePrKXo7ssxRUnh/an23uWR8hRv/nfBrew=;
+        b=UTFKQgOoJYizpumITmdB9VlaPcXqQMrksxuklKmUZv6ApbQDov2zF5scuZArYl6A6Y
+         yd++i3f42p9lH3up/PA2WaDRuPwQVAlAVGj44ZMj/p0UxW8aMb/UDXzHAF/8F7bjBa92
+         bNWPUY6R2T4umft7PJYwJOFOPTOsAdzFQfZAkD+cIEIIb//UmiUZGZ33v4AVzaZhwBTj
+         td+K9uJO9oe3itDjbfRgjBVVceT1Wxzx39v5xAZ9+5rFZiJf0ZCiTgQdV7Do5bTaS6It
+         MOItu/J02q00pSJgoJsVqQaJlPL3pCB/UEdDyK5E5dY97QGYQUJWZ/U/NsRTqHV7m9pk
+         Gz8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4eFIlDBCGuePrKXo7ssxRUnh/an23uWR8hRv/nfBrew=;
+        b=c3ST7T1weZjh+vu4wHOHUdEtiXTaRoTqmZVfaO/gouG055Yikjm4Qta3X1DktFQqup
+         MapPjxhQE+4o/FUFEhZFbftPepjZxJyhBSzlbXWIUTZVIBGNj3NVGf1DDLVXYcQlYv8n
+         yz/CIKkAS5rDczJrOVHx50wde+PjG2kCAVdpHvYnFpz2tj2Qp9OAgf/ocPrVFGNbK+f+
+         eDQsGpMFcNnGgWixAz4giPOlAVrUPrB4G2JrVr3qE1f8I8pPVPUv4ykufoQlA5bgZ5pL
+         is/gAb5Ufxf0Cst0cJh5nyGWViZD5mrIrJOaWSBytovcbqeOHJGpCSBAvFiWsID5gd8a
+         9Nsg==
+X-Gm-Message-State: AOAM5323EHzR+sPVi92J2tzs7mpGu4qsgnGmKXG4J2SPZUXsqZUT+sEJ
+        AtuB/tYGuD0ts8MQzdq6dqCuKwaAYJrrEy215sGSuQ==
+X-Google-Smtp-Source: ABdhPJz8PxEYWSwkBesY8S8Gp7xJgr4OI3mDgYlO5QJdSzdxdF6WwhS7tyxFNc2WD1b+YhcyppNVwief6iy0SpHqQSI=
+X-Received: by 2002:a63:fe0c:: with SMTP id p12mr26221772pgh.31.1606127833192;
+ Mon, 23 Nov 2020 02:37:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1605119676-32273-4-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606127741; bh=uMDIowN3wpMWfJH47P7VBkUozBmVOf28BCnQ/0Jg7dM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=kAEUdK2R/aWUfXr+TRSWtdJ0VtB+URhq7Y92DufuUpzrPqL8o2YjNcgiRC9XLzQ6M
-         ar9rzb3qPFGBwKAyhleD7EgEryZZzhBeqP7bfCm12dBu72kK9emFDjOpTKYh3VPHk5
-         dGYpULQVhOGCunoz9X4/uL9WXnT4cVdapjca4Dhzvks4UCg37SPpg4W7PzHphjrv1B
-         Jbd9ggOSUbnyL/OiYjAQ92vxlRWFcN+IzvVAgWj04P7sp/hzv2fDztd8riInzpeHNX
-         QwWgUBqDqCSq2DB52fVgFbgJ6wEChQypb0DYklILjRzg4t1WI4+V83BeqBYkIphBp4
-         2GIaqS0iH1zng==
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz> <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
+ <20201120131129.GO3200@dhcp22.suse.cz> <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
+ <20201123074046.GB27488@dhcp22.suse.cz> <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
+ <20201123094344.GG27488@dhcp22.suse.cz>
+In-Reply-To: <20201123094344.GG27488@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 23 Nov 2020 18:36:33 +0800
+Message-ID: <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
+ hugetlb page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 5:43 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 23-11-20 16:53:53, Muchun Song wrote:
+> > On Mon, Nov 23, 2020 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 20-11-20 23:44:26, Muchun Song wrote:
+> > > > On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Fri 20-11-20 20:40:46, Muchun Song wrote:
+> > > > > > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > > >
+> > > > > > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
+> > > > > > > [...]
+> > > > > > >
+> > > > > > > Thanks for improving the cover letter and providing some numbers. I have
+> > > > > > > only glanced through the patchset because I didn't really have more time
+> > > > > > > to dive depply into them.
+> > > > > > >
+> > > > > > > Overall it looks promissing. To summarize. I would prefer to not have
+> > > > > > > the feature enablement controlled by compile time option and the kernel
+> > > > > > > command line option should be opt-in. I also do not like that freeing
+> > > > > > > the pool can trigger the oom killer or even shut the system down if no
+> > > > > > > oom victim is eligible.
+> > > > > >
+> > > > > > Hi Michal,
+> > > > > >
+> > > > > > I have replied to you about those questions on the other mail thread.
+> > > > > >
+> > > > > > Thanks.
+> > > > > >
+> > > > > > >
+> > > > > > > One thing that I didn't really get to think hard about is what is the
+> > > > > > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+> > > > > > > invalid when racing with the split. How do we enforce that this won't
+> > > > > > > blow up?
+> > > > > >
+> > > > > > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
+> > > > > > in this case, the pfn_to_page can work. The return value of the
+> > > > > > pfn_to_page is actually the address of it's struct page struct.
+> > > > > > I can not figure out where the problem is. Can you describe the
+> > > > > > problem in detail please? Thanks.
+> > > > >
+> > > > > struct page returned by pfn_to_page might get invalid right when it is
+> > > > > returned because vmemmap could get freed up and the respective memory
+> > > > > released to the page allocator and reused for something else. See?
+> > > >
+> > > > If the HugeTLB page is already allocated from the buddy allocator,
+> > > > the struct page of the HugeTLB can be freed? Does this exist?
+> > >
+> > > Nope, struct pages only ever get deallocated when the respective memory
+> > > (they describe) is hotremoved via hotplug.
+> > >
+> > > > If yes, how to free the HugeTLB page to the buddy allocator
+> > > > (cannot access the struct page)?
+> > >
+> > > But I do not follow how that relates to my concern above.
+> >
+> > Sorry. I shouldn't understand your concerns.
+> >
+> > vmemmap pages                 page frame
+> > +-----------+   mapping to   +-----------+
+> > |           | -------------> |     0     |
+> > +-----------+                +-----------+
+> > |           | -------------> |     1     |
+> > +-----------+                +-----------+
+> > |           | -------------> |     2     |
+> > +-----------+                +-----------+
+> > |           | -------------> |     3     |
+> > +-----------+                +-----------+
+> > |           | -------------> |     4     |
+> > +-----------+                +-----------+
+> > |           | -------------> |     5     |
+> > +-----------+                +-----------+
+> > |           | -------------> |     6     |
+> > +-----------+                +-----------+
+> > |           | -------------> |     7     |
+> > +-----------+                +-----------+
+> >
+> > In this patch series, we will free the page frame 2-7 to the
+> > buddy allocator. You mean that pfn_to_page can return invalid
+> > value when the pfn is the page frame 2-7? Thanks.
+>
+> No I really mean that pfn_to_page will give you a struct page pointer
+> from pages which you release from the vmemmap page tables. Those pages
+> might get reused as soon sa they are freed to the page allocator.
 
-On 11/11/2020 18:34, Sameer Pujar wrote:
-> Add Tegra audio machine driver which is based on generic audio graph card
-> driver. It re-uses most of the common stuff from audio graph driver and
-> uses the same DT binding. Required Tegra specific customizations are done
-> in the driver and additional DT bindings are required for clock handling.
-> 
-> Details on the customizations done:
-> 
->  - Update PLL rates at runtime: Tegra HW supports multiple sample rates
->    (multiples of 8x and 11.025x) and both of these groups require different
->    PLL rates. Hence there is a requirement to update this at runtime.
->    This is achieved by providing a custom 'snd_soc_ops' and in hw_param()
->    callback PLL rate is updated as per the sample rate.
-> 
->  - Internal structure 'tegra_audio_graph_data' is used to maintain clock
->    handles of PLL.
-> 
->  - The 'force_dpcm' flag is set to use DPCM for all DAI links.
-> 
->  - The 'component_chaining' flag is set to use DPCM with component model.
-> 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  sound/soc/tegra/Kconfig                  |   9 ++
->  sound/soc/tegra/Makefile                 |   2 +
->  sound/soc/tegra/tegra_audio_graph_card.c | 255 +++++++++++++++++++++++++++++++
->  3 files changed, 266 insertions(+)
->  create mode 100644 sound/soc/tegra/tegra_audio_graph_card.c
-> 
-> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-> index a62cc87..6dc83ad 100644
-> --- a/sound/soc/tegra/Kconfig
-> +++ b/sound/soc/tegra/Kconfig
-> @@ -117,6 +117,15 @@ config SND_SOC_TEGRA210_ADMAIF
->  	  channel. Buffer size is configurable for each ADMAIIF channel.
->  	  Say Y or M if you want to add support for Tegra210 ADMAIF module.
->  
-> +config SND_SOC_TEGRA_AUDIO_GRAPH_CARD
-> +	tristate "Audio Graph Card based Tegra driver"
-> +	depends on SND_AUDIO_GRAPH_CARD
-> +	help
-> +	  Config to enable Tegra audio machine driver based on generic
-> +	  audio graph driver. It is a thin driver written to customize
-> +	  few things for Tegra audio. Most of the code is re-used from
-> +	  audio graph driver and the same DT bindings are used.
-> +
->  config SND_SOC_TEGRA_RT5640
->  	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
->  	depends on SND_SOC_TEGRA && I2C && GPIOLIB
-> diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-> index 60040a0..b17dd6e 100644
-> --- a/sound/soc/tegra/Makefile
-> +++ b/sound/soc/tegra/Makefile
-> @@ -38,6 +38,7 @@ snd-soc-tegra-trimslice-objs := trimslice.o
->  snd-soc-tegra-alc5632-objs := tegra_alc5632.o
->  snd-soc-tegra-max98090-objs := tegra_max98090.o
->  snd-soc-tegra-sgtl5000-objs := tegra_sgtl5000.o
-> +snd-soc-tegra-audio-graph-card-objs := tegra_audio_graph_card.o
->  
->  obj-$(CONFIG_SND_SOC_TEGRA_RT5640) += snd-soc-tegra-rt5640.o
->  obj-$(CONFIG_SND_SOC_TEGRA_RT5677) += snd-soc-tegra-rt5677.o
-> @@ -48,3 +49,4 @@ obj-$(CONFIG_SND_SOC_TEGRA_TRIMSLICE) += snd-soc-tegra-trimslice.o
->  obj-$(CONFIG_SND_SOC_TEGRA_ALC5632) += snd-soc-tegra-alc5632.o
->  obj-$(CONFIG_SND_SOC_TEGRA_MAX98090) += snd-soc-tegra-max98090.o
->  obj-$(CONFIG_SND_SOC_TEGRA_SGTL5000) += snd-soc-tegra-sgtl5000.o
-> +obj-$(CONFIG_SND_SOC_TEGRA_AUDIO_GRAPH_CARD) += snd-soc-tegra-audio-graph-card.o
-> diff --git a/sound/soc/tegra/tegra_audio_graph_card.c b/sound/soc/tegra/tegra_audio_graph_card.c
-> new file mode 100644
-> index 0000000..f4d826d
-> --- /dev/null
-> +++ b/sound/soc/tegra/tegra_audio_graph_card.c
-> @@ -0,0 +1,255 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +//
-> +// tegra_audio_graph_card.c - Audio Graph based Tegra Machine Driver
-> +//
-> +// Copyright (c) 2020 NVIDIA CORPORATION.  All rights reserved.
-> +
-> +#include <linux/math64.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <sound/graph_card.h>
-> +#include <sound/pcm_params.h>
-> +
-> +#define MAX_PLLA_OUT0_DIV 128
-> +
-> +#define simple_to_tegra_priv(simple) \
-> +		container_of(simple, struct tegra_audio_priv, simple)
-> +
-> +enum srate_type {
-> +	/*
-> +	 * Sample rates multiple of 8000 Hz and below are supported:
-> +	 * ( 8000, 16000, 32000, 48000, 96000, 192000 Hz )
-> +	 */
-> +	x8_RATE,
-> +
-> +	/*
-> +	 * Sample rates multiple of 11025 Hz and below are supported:
-> +	 * ( 11025, 22050, 44100, 88200, 176400 Hz )
-> +	 */
-> +	x11_RATE,
-> +
-> +	NUM_RATE_TYPE,
-> +};
-> +
-> +struct tegra_audio_priv {
-> +	struct asoc_simple_priv simple;
-> +	struct clk *clk_plla_out0;
-> +	struct clk *clk_plla;
-> +};
-> +
-> +/* Tegra audio chip data */
-> +struct tegra_audio_cdata {
-> +	unsigned int plla_rates[NUM_RATE_TYPE];
-> +	unsigned int plla_out0_rates[NUM_RATE_TYPE];
-> +};
-> +
-> +/* Setup PLL clock as per the given sample rate */
-> +static int tegra_audio_graph_update_pll(struct snd_pcm_substream *substream,
-> +					struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-> +	struct asoc_simple_priv *simple = snd_soc_card_get_drvdata(rtd->card);
-> +	struct tegra_audio_priv *priv = simple_to_tegra_priv(simple);
-> +	struct device *dev = rtd->card->dev;
-> +	const struct tegra_audio_cdata *data = of_device_get_match_data(dev);
-> +	unsigned int plla_rate, plla_out0_rate, bclk;
-> +	unsigned int srate = params_rate(params);
-> +	int err;
-> +
-> +	/* There is nothing to configure */
-> +	if (!data)
-> +		return 0;
+We will remap vmemmap pages 2-7 (virtual addresses) to page
+frame 1. And then we free page frame 2-7 to the buddy allocator.
+Then accessing the struct page pointer that returned by pfn_to_page
+will be reflected on page frame 1. I think that here is no problem.
+
+Thanks.
+
+> --
+> Michal Hocko
+> SUSE Labs
 
 
-Seems like this should never happen and so if it did this is an error.
-Any reason why we don't return an error here?
-
-Cheers
-Jon
 
 -- 
-nvpublic
+Yours,
+Muchun
