@@ -2,539 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17442C1681
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A16372C1687
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730476AbgKWUYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:24:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:41546 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728895AbgKWUYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:24:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A5C01476;
-        Mon, 23 Nov 2020 12:24:16 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 237C13F71F;
-        Mon, 23 Nov 2020 12:24:14 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        broonie@kernel.org, robh@kernel.org, satyakim@qti.qualcomm.com,
-        etienne.carriere@linaro.org, f.fainelli@gmail.com,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v7 3/3] regulator: add SCMI driver
-Date:   Mon, 23 Nov 2020 20:23:36 +0000
-Message-Id: <20201123202336.46701-4-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201123202336.46701-1-cristian.marussi@arm.com>
-References: <20201123202336.46701-1-cristian.marussi@arm.com>
+        id S1731253AbgKWU2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729369AbgKWU2l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 15:28:41 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCD8C0613CF;
+        Mon, 23 Nov 2020 12:28:40 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id x22so544578wmc.5;
+        Mon, 23 Nov 2020 12:28:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JF92Ap9pQq6g3y0WEz7b0UsYbEc+bqYHK8US2snmSeo=;
+        b=GY4VQbahRN8elTYkZlz7wW7Z3zAuOwHooXAVjrqrMvZQ33FvSQTdSfri3jjkV1R2jt
+         y5/q8DkR9qkrWFiEn8HMMasiYP1r1M1hevpoZQjrnYYlEMDzilznvAVhhJlP+740lcCc
+         0fX8iQOcCxCietrgZVr7GI/euURIR6P6JNdcdrPMQVL9fL1Zmx30EMyEL42Qr0refwQZ
+         oyvSFoQnIxPLX54eQr8JtG5p3f6AP2FFjmuSpaplL8Vms91guPw4raFgNDKk2K0BIwBA
+         pkAiyc0ZU/1IiC20elp3jXIMTbBUf9aWoFbbTteP3leg8nUSmfbpIhazJeG6+rxkH1X1
+         LqFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=JF92Ap9pQq6g3y0WEz7b0UsYbEc+bqYHK8US2snmSeo=;
+        b=tywEEOpOVF9n0A8/2TzOHhdJeNqJH0BU5LWQhrme0IRXSyhRn+nrHsnn+qux8v/sas
+         FnhU7biY8n/EvghrQxMLoT6UOcvk1ZCQPcV6ckninTuO7MFD5xhgXVUna2SUZrlZIywL
+         LN7WD7FFLIdQKicAjt+WS5+uLN9UMEmk1Fqdy1qUpPFLOyNZjJM7lqEeeSqPjyZq+2st
+         6CwqVkcmhZFLXcswU3vvSqFt5/daIP9079YE0sVsAhyzk7gnzsPlZIgIYHp2tww6j50P
+         tPbTZiUge481NKAql965Dp5GPN/BUR8Z4AS6fLp8ImmDKP+sGO+9RIWTj7DUUg0qoRW3
+         LaXg==
+X-Gm-Message-State: AOAM531zSz5FAYBf2VCWmO9v2ZlHMMOvfFSosnMOAiNMw5H7gsSG9zz9
+        4cGjzcCsirrVAYFse1M4Sqc=
+X-Google-Smtp-Source: ABdhPJwW8YSLI6zMD2OCHTi4wn/kQCYiiPRFN3+6wEWYj15MmxAxu/R4j25lXFV5MQEEtiJEs+CSMw==
+X-Received: by 2002:a1c:2dc8:: with SMTP id t191mr632165wmt.73.1606163318879;
+        Mon, 23 Nov 2020 12:28:38 -0800 (PST)
+Received: from [192.168.1.159] (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
+        by smtp.gmail.com with ESMTPSA id 140sm809533wme.14.2020.11.23.12.28.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 12:28:38 -0800 (PST)
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+c0d52d0b3c0c3ffb9525@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, will@kernel.org
+References: <0000000000002bea4605b4a5931d@google.com>
+ <20201122030421.2088-1-hdanton@sina.com>
+ <20201122092003.7724-1-hdanton@sina.com>
+ <20201123073426.1951-1-hdanton@sina.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: INFO: task hung in __io_uring_files_cancel
+Message-ID: <eec45499-8b3c-f17f-8d20-a3eaa4144c07@gmail.com>
+Date:   Mon, 23 Nov 2020 20:25:29 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
+MIME-Version: 1.0
+In-Reply-To: <20201123073426.1951-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a simple regulator based on SCMI Voltage Domain Protocol.
+On 23/11/2020 07:34, Hillf Danton wrote:
+[...]
+> After staring the report and 311daef8013a a bit more, it seems that we
+> can have a simpler fix without the help of wakeup. It is implemented
+> by busy waiting until there is no more request in flight found.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-----
-v6 --> v7
-- add proper blank lines between semantic blocks
-- fix return value on error path of scmi_reg_is_enabled()
-- use generic Failure message on err path of info_get()
-- fix comment containing apostrophe
+I think it's better not. It doesn't happen instantly, so may take a
+lot of spinning in some cases. Moreover, I don't want an unkillable
+task eating up all CPU if this hangs again (eg because of some other
+case).
 
-v3 --> v4
-- using of_match_full_name core regulator flag
-- avoid coccinelle falde complaints about pointer-sized allocations
+And, I'd love to keep it working similarly to __io_uring_task_cancel()
+to not think twice about all corner cases.
 
-v2 --> v3
-- remove multiple linear mappings support
-- removed duplicated voltage name printout
-- added a few comments
-- simplified return path in scmi_reg_set_voltage_sel()
+> 
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -6077,13 +6077,10 @@ static int io_req_defer(struct io_kiocb
+>  static void io_req_drop_files(struct io_kiocb *req)
+>  {
+>  	struct io_ring_ctx *ctx = req->ctx;
+> -	struct io_uring_task *tctx = req->task->io_uring;
+>  	unsigned long flags;
+>  
+>  	spin_lock_irqsave(&ctx->inflight_lock, flags);
+>  	list_del(&req->inflight_entry);
+> -	if (atomic_read(&tctx->in_idle))
+> -		wake_up(&tctx->wait);
+>  	spin_unlock_irqrestore(&ctx->inflight_lock, flags);
+>  	req->flags &= ~REQ_F_INFLIGHT;
+>  	put_files_struct(req->work.identity->files);
+> @@ -8706,7 +8703,6 @@ static void io_uring_cancel_files(struct
+>  	while (!list_empty_careful(&ctx->inflight_list)) {
+>  		struct io_task_cancel cancel = { .task = task, .files = NULL, };
+>  		struct io_kiocb *req;
+> -		DEFINE_WAIT(wait);
+>  		bool found = false;
+>  
+>  		spin_lock_irq(&ctx->inflight_lock);
+> @@ -8718,9 +8714,6 @@ static void io_uring_cancel_files(struct
+>  			found = true;
+>  			break;
+>  		}
+> -		if (found)
+> -			prepare_to_wait(&task->io_uring->wait, &wait,
+> -					TASK_UNINTERRUPTIBLE);
+>  		spin_unlock_irq(&ctx->inflight_lock);
+>  
+>  		/* We need to keep going until we don't find a matching req */
+> @@ -8733,7 +8726,6 @@ static void io_uring_cancel_files(struct
+>  		/* cancellations _may_ trigger task work */
+>  		io_run_task_work();
+>  		schedule();
+> -		finish_wait(&task->io_uring->wait, &wait);
+>  	}
+>  }
+>  
+> 
 
-v1 --> v2
-- removed duplicate regulator naming
-- removed redundant .get/set_voltage ops: only _sel variants implemented
-- removed condexpr on fail path to increase readability
-
-v0 --> v1
-- fixed init_data constraint parsing
-- fixes for v5.8 (linear_range.h)
-- fixed commit message content and subject line format
-- factored out SCMI core specific changes to distinct patch
-- reworked Kconfig and Makefile to keep proper alphabetic order
-- fixed SPDX comment style
-- removed unneeded inline functions
-- reworked conditionals for legibility
-- fixed some return paths to properly report SCMI original errors codes
-- added some more descriptive error messages when fw returns invalid ranges
-- removed unneeded explicit devm_regulator_unregister from .remove()
----
- drivers/regulator/Kconfig          |   9 +
- drivers/regulator/Makefile         |   1 +
- drivers/regulator/scmi-regulator.c | 417 +++++++++++++++++++++++++++++
- 3 files changed, 427 insertions(+)
- create mode 100644 drivers/regulator/scmi-regulator.c
-
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 020a00d6696b..5617c56fbe9b 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -155,6 +155,15 @@ config REGULATOR_ARIZONA_MICSUPP
- 	  and Wolfson Microelectronic Arizona codecs
- 	  devices.
- 
-+config REGULATOR_ARM_SCMI
-+	tristate "SCMI based regulator driver"
-+	depends on ARM_SCMI_PROTOCOL && OF
-+	help
-+	  This adds the regulator driver support for ARM platforms using SCMI
-+	  protocol for device voltage management.
-+	  This driver uses SCMI Message Protocol driver to interact with the
-+	  firmware providing the device Voltage functionality.
-+
- config REGULATOR_AS3711
- 	tristate "AS3711 PMIC"
- 	depends on MFD_AS3711
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 6ebae516258e..aeed0b6079b2 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_REGULATOR_AD5398) += ad5398.o
- obj-$(CONFIG_REGULATOR_ANATOP) += anatop-regulator.o
- obj-$(CONFIG_REGULATOR_ARIZONA_LDO1) += arizona-ldo1.o
- obj-$(CONFIG_REGULATOR_ARIZONA_MICSUPP) += arizona-micsupp.o
-+obj-$(CONFIG_REGULATOR_ARM_SCMI) += scmi-regulator.o
- obj-$(CONFIG_REGULATOR_AS3711) += as3711-regulator.o
- obj-$(CONFIG_REGULATOR_AS3722) += as3722-regulator.o
- obj-$(CONFIG_REGULATOR_AXP20X) += axp20x-regulator.o
-diff --git a/drivers/regulator/scmi-regulator.c b/drivers/regulator/scmi-regulator.c
-new file mode 100644
-index 000000000000..0e8b3caa8146
---- /dev/null
-+++ b/drivers/regulator/scmi-regulator.c
-@@ -0,0 +1,417 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// System Control and Management Interface (SCMI) based regulator driver
-+//
-+// Copyright (C) 2020 ARM Ltd.
-+//
-+// Implements a regulator driver on top of the SCMI Voltage Protocol.
-+//
-+// The ARM SCMI Protocol aims in general to hide as much as possible all the
-+// underlying operational details while providing an abstracted interface for
-+// its users to operate upon: as a consequence the resulting operational
-+// capabilities and configurability of this regulator device are much more
-+// limited than the ones usually available on a standard physical regulator.
-+//
-+// The supported SCMI regulator ops are restricted to the bare minimum:
-+//
-+//  - 'status_ops': enable/disable/is_enabled
-+//  - 'voltage_ops': get_voltage_sel/set_voltage_sel
-+//		     list_voltage/map_voltage
-+//
-+// Each SCMI regulator instance is associated, through the means of a proper DT
-+// entry description, to a specific SCMI Voltage Domain.
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/linear_range.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
-+#include <linux/regulator/of_regulator.h>
-+#include <linux/scmi_protocol.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+
-+struct scmi_regulator {
-+	u32 id;
-+	struct scmi_device *sdev;
-+	struct regulator_dev *rdev;
-+	struct device_node *of_node;
-+	struct regulator_desc desc;
-+	struct regulator_config conf;
-+};
-+
-+struct scmi_regulator_info {
-+	int num_doms;
-+	struct scmi_regulator **sregv;
-+};
-+
-+static int scmi_reg_enable(struct regulator_dev *rdev)
-+{
-+	struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
-+	const struct scmi_handle *handle = sreg->sdev->handle;
-+
-+	return handle->voltage_ops->config_set(handle, sreg->id,
-+					       SCMI_VOLTAGE_ARCH_STATE_ON);
-+}
-+
-+static int scmi_reg_disable(struct regulator_dev *rdev)
-+{
-+	struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
-+	const struct scmi_handle *handle = sreg->sdev->handle;
-+
-+	return handle->voltage_ops->config_set(handle, sreg->id,
-+					       SCMI_VOLTAGE_ARCH_STATE_OFF);
-+}
-+
-+static int scmi_reg_is_enabled(struct regulator_dev *rdev)
-+{
-+	int ret;
-+	u32 config;
-+	struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
-+	const struct scmi_handle *handle = sreg->sdev->handle;
-+
-+	ret = handle->voltage_ops->config_get(handle, sreg->id,
-+					      &config);
-+	if (ret) {
-+		dev_err(&sreg->sdev->dev,
-+			"Error %d reading regulator %s status.\n",
-+			ret, sreg->desc.name);
-+		return ret;
-+	}
-+
-+	return config & SCMI_VOLTAGE_ARCH_STATE_ON;
-+}
-+
-+static int scmi_reg_get_voltage_sel(struct regulator_dev *rdev)
-+{
-+	int ret;
-+	s32 volt_uV;
-+	struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
-+	const struct scmi_handle *handle = sreg->sdev->handle;
-+
-+	ret = handle->voltage_ops->level_get(handle, sreg->id, &volt_uV);
-+	if (ret)
-+		return ret;
-+
-+	return sreg->desc.ops->map_voltage(rdev, volt_uV, volt_uV);
-+}
-+
-+static int scmi_reg_set_voltage_sel(struct regulator_dev *rdev,
-+				    unsigned int selector)
-+{
-+	s32 volt_uV;
-+	struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
-+	const struct scmi_handle *handle = sreg->sdev->handle;
-+
-+	volt_uV = sreg->desc.ops->list_voltage(rdev, selector);
-+	if (volt_uV <= 0)
-+		return -EINVAL;
-+
-+	return handle->voltage_ops->level_set(handle, sreg->id, 0x0, volt_uV);
-+}
-+
-+static const struct regulator_ops scmi_reg_fixed_ops = {
-+	.enable = scmi_reg_enable,
-+	.disable = scmi_reg_disable,
-+	.is_enabled = scmi_reg_is_enabled,
-+};
-+
-+static const struct regulator_ops scmi_reg_linear_ops = {
-+	.enable = scmi_reg_enable,
-+	.disable = scmi_reg_disable,
-+	.is_enabled = scmi_reg_is_enabled,
-+	.get_voltage_sel = scmi_reg_get_voltage_sel,
-+	.set_voltage_sel = scmi_reg_set_voltage_sel,
-+	.list_voltage = regulator_list_voltage_linear,
-+	.map_voltage = regulator_map_voltage_linear,
-+};
-+
-+static const struct regulator_ops scmi_reg_discrete_ops = {
-+	.enable = scmi_reg_enable,
-+	.disable = scmi_reg_disable,
-+	.is_enabled = scmi_reg_is_enabled,
-+	.get_voltage_sel = scmi_reg_get_voltage_sel,
-+	.set_voltage_sel = scmi_reg_set_voltage_sel,
-+	.list_voltage = regulator_list_voltage_table,
-+	.map_voltage = regulator_map_voltage_iterate,
-+};
-+
-+static int
-+scmi_config_linear_regulator_mappings(struct scmi_regulator *sreg,
-+				      const struct scmi_voltage_info *vinfo)
-+{
-+	s32 delta_uV;
-+
-+	/*
-+	 * Note that SCMI voltage domains describable by linear ranges
-+	 * (segments) {low, high, step} are guaranteed to come in one single
-+	 * triplet by the SCMI Voltage Domain protocol support itself.
-+	 */
-+
-+	delta_uV = (vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_HIGH] -
-+			vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW]);
-+
-+	/* Rule out buggy negative-intervals answers from fw */
-+	if (delta_uV < 0) {
-+		dev_err(&sreg->sdev->dev,
-+			"Invalid volt-range %d-%duV for domain %d\n",
-+			vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW],
-+			vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_HIGH],
-+			sreg->id);
-+		return -EINVAL;
-+	}
-+
-+	if (!delta_uV) {
-+		/* Just one fixed voltage exposed by SCMI */
-+		sreg->desc.fixed_uV =
-+			vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW];
-+		sreg->desc.n_voltages = 1;
-+		sreg->desc.ops = &scmi_reg_fixed_ops;
-+	} else {
-+		/* One simple linear mapping. */
-+		sreg->desc.min_uV =
-+			vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW];
-+		sreg->desc.uV_step =
-+			vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_STEP];
-+		sreg->desc.linear_min_sel = 0;
-+		sreg->desc.n_voltages = delta_uV / sreg->desc.uV_step;
-+		sreg->desc.ops = &scmi_reg_linear_ops;
-+	}
-+
-+	return 0;
-+}
-+
-+static int
-+scmi_config_discrete_regulator_mappings(struct scmi_regulator *sreg,
-+					const struct scmi_voltage_info *vinfo)
-+{
-+	/* Discrete non linear levels are mapped to volt_table */
-+	sreg->desc.n_voltages = vinfo->num_levels;
-+
-+	if (sreg->desc.n_voltages > 1) {
-+		sreg->desc.volt_table = (const unsigned int *)vinfo->levels_uv;
-+		sreg->desc.ops = &scmi_reg_discrete_ops;
-+	} else {
-+		sreg->desc.fixed_uV = vinfo->levels_uv[0];
-+		sreg->desc.ops = &scmi_reg_fixed_ops;
-+	}
-+
-+	return 0;
-+}
-+
-+static int scmi_regulator_common_init(struct scmi_regulator *sreg)
-+{
-+	int ret;
-+	const struct scmi_handle *handle = sreg->sdev->handle;
-+	struct device *dev = &sreg->sdev->dev;
-+	const struct scmi_voltage_info *vinfo;
-+
-+	vinfo = handle->voltage_ops->info_get(handle, sreg->id);
-+	if (!vinfo) {
-+		dev_warn(dev, "Failure to get voltage domain %d\n",
-+			 sreg->id);
-+		return -ENODEV;
-+	}
-+
-+	/*
-+	 * Regulator framework does not fully support negative voltages
-+	 * so we discard any voltage domain reported as supporting negative
-+	 * voltages: as a consequence each levels_uv entry is guaranteed to
-+	 * be non-negative from here on.
-+	 */
-+	if (vinfo->negative_volts_allowed) {
-+		dev_warn(dev, "Negative voltages NOT supported...skip %s\n",
-+			 sreg->of_node->full_name);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	sreg->desc.name = devm_kasprintf(dev, GFP_KERNEL, "%s", vinfo->name);
-+	if (!sreg->desc.name)
-+		return -ENOMEM;
-+
-+	sreg->desc.id = sreg->id;
-+	sreg->desc.type = REGULATOR_VOLTAGE;
-+	sreg->desc.owner = THIS_MODULE;
-+	sreg->desc.of_match_full_name = true;
-+	sreg->desc.of_match = sreg->of_node->full_name;
-+	sreg->desc.regulators_node = "regulators";
-+	if (vinfo->segmented)
-+		ret = scmi_config_linear_regulator_mappings(sreg, vinfo);
-+	else
-+		ret = scmi_config_discrete_regulator_mappings(sreg, vinfo);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Using the scmi device here to have DT searched from Voltage
-+	 * protocol node down.
-+	 */
-+	sreg->conf.dev = dev;
-+
-+	/* Store for later retrieval via rdev_get_drvdata() */
-+	sreg->conf.driver_data = sreg;
-+
-+	return 0;
-+}
-+
-+static int process_scmi_regulator_of_node(struct scmi_device *sdev,
-+					  struct device_node *np,
-+					  struct scmi_regulator_info *rinfo)
-+{
-+	u32 dom, ret;
-+
-+	ret = of_property_read_u32(np, "reg", &dom);
-+	if (ret)
-+		return ret;
-+
-+	if (dom >= rinfo->num_doms)
-+		return -ENODEV;
-+
-+	if (rinfo->sregv[dom]) {
-+		dev_err(&sdev->dev,
-+			"SCMI Voltage Domain %d already in use. Skipping: %s\n",
-+			dom, np->full_name);
-+		return -EINVAL;
-+	}
-+
-+	rinfo->sregv[dom] = devm_kzalloc(&sdev->dev,
-+					 sizeof(struct scmi_regulator),
-+					 GFP_KERNEL);
-+	if (!rinfo->sregv[dom])
-+		return -ENOMEM;
-+
-+	rinfo->sregv[dom]->id = dom;
-+	rinfo->sregv[dom]->sdev = sdev;
-+
-+	/* get hold of good nodes */
-+	of_node_get(np);
-+	rinfo->sregv[dom]->of_node = np;
-+
-+	dev_dbg(&sdev->dev,
-+		"Found SCMI Regulator entry -- OF node [%d] -> %s\n",
-+		dom, np->full_name);
-+
-+	return 0;
-+}
-+
-+static int scmi_regulator_probe(struct scmi_device *sdev)
-+{
-+	int d, ret, num_doms;
-+	struct device_node *np, *child;
-+	const struct scmi_handle *handle = sdev->handle;
-+	struct scmi_regulator_info *rinfo;
-+
-+	if (!handle || !handle->voltage_ops)
-+		return -ENODEV;
-+
-+	num_doms = handle->voltage_ops->num_domains_get(handle);
-+	if (num_doms <= 0) {
-+		if (!num_doms) {
-+			dev_err(&sdev->dev,
-+				"number of voltage domains invalid\n");
-+			num_doms = -EINVAL;
-+		} else {
-+			dev_err(&sdev->dev,
-+				"failed to get voltage domains - err:%d\n",
-+				num_doms);
-+		}
-+
-+		return num_doms;
-+	}
-+
-+	rinfo = devm_kzalloc(&sdev->dev, sizeof(*rinfo), GFP_KERNEL);
-+	if (!rinfo)
-+		return -ENOMEM;
-+
-+	/* Allocate pointers array for all possible domains */
-+	rinfo->sregv = devm_kcalloc(&sdev->dev, num_doms,
-+				    sizeof(void *), GFP_KERNEL);
-+	if (!rinfo->sregv)
-+		return -ENOMEM;
-+
-+	rinfo->num_doms = num_doms;
-+
-+	/*
-+	 * Start collecting into rinfo->sregv possibly good SCMI Regulators as
-+	 * described by a well-formed DT entry and associated with an existing
-+	 * plausible SCMI Voltage Domain number, all belonging to this SCMI
-+	 * platform instance node (handle->dev->of_node).
-+	 */
-+	np = of_find_node_by_name(handle->dev->of_node, "regulators");
-+	for_each_child_of_node(np, child) {
-+		ret = process_scmi_regulator_of_node(sdev, child, rinfo);
-+		/* abort on any mem issue */
-+		if (ret == -ENOMEM)
-+			return ret;
-+	}
-+
-+	/*
-+	 * Register a regulator for each valid regulator-DT-entry that we
-+	 * can successfully reach via SCMI and has a valid associated voltage
-+	 * domain.
-+	 */
-+	for (d = 0; d < num_doms; d++) {
-+		struct scmi_regulator *sreg = rinfo->sregv[d];
-+
-+		/* Skip empty slots */
-+		if (!sreg)
-+			continue;
-+
-+		ret = scmi_regulator_common_init(sreg);
-+		/* Skip invalid voltage domains */
-+		if (ret)
-+			continue;
-+
-+		sreg->rdev = devm_regulator_register(&sdev->dev, &sreg->desc,
-+						     &sreg->conf);
-+		if (IS_ERR(sreg->rdev)) {
-+			sreg->rdev = NULL;
-+			continue;
-+		}
-+
-+		dev_info(&sdev->dev,
-+			 "Regulator %s registered for domain [%d]\n",
-+			 sreg->desc.name, sreg->id);
-+	}
-+
-+	dev_set_drvdata(&sdev->dev, rinfo);
-+
-+	return 0;
-+}
-+
-+static void scmi_regulator_remove(struct scmi_device *sdev)
-+{
-+	int d;
-+	struct scmi_regulator_info *rinfo;
-+
-+	rinfo = dev_get_drvdata(&sdev->dev);
-+	if (!rinfo)
-+		return;
-+
-+	for (d = 0; d < rinfo->num_doms; d++) {
-+		if (!rinfo->sregv[d])
-+			continue;
-+		of_node_put(rinfo->sregv[d]->of_node);
-+	}
-+}
-+
-+static const struct scmi_device_id scmi_regulator_id_table[] = {
-+	{ SCMI_PROTOCOL_VOLTAGE,  "regulator" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(scmi, scmi_regulator_id_table);
-+
-+static struct scmi_driver scmi_drv = {
-+	.name		= "scmi-regulator",
-+	.probe		= scmi_regulator_probe,
-+	.remove		= scmi_regulator_remove,
-+	.id_table	= scmi_regulator_id_table,
-+};
-+
-+module_scmi_driver(scmi_drv);
-+
-+MODULE_AUTHOR("Cristian Marussi <cristian.marussi@arm.com>");
-+MODULE_DESCRIPTION("ARM SCMI regulator driver");
-+MODULE_LICENSE("GPL v2");
 -- 
-2.17.1
-
+Pavel Begunkov
