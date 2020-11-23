@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8982A2C0FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106172C0FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389931AbgKWQIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731032AbgKWQId (ORCPT
+        id S2389935AbgKWQLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:11:13 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:27242 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732681AbgKWQLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:08:33 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61367C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 08:08:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=id/l05lUXRZXVoeT5E2V5g7f5O6E+dlvltH8HKfDmtQ=; b=R9Cz4Sm0LqXno5jNhdi2wuzuFe
-        wpU4YHQTOPAaHjnyfWvgccWkR5bZIQ6Q3mHioTe3kDtaBt/9FWD/fi0QsLt6E2ANWwfcJK2VbnlFv
-        ZzYnDU7cJWiLq99XkaMTtvpwLICLlMFeht9oxNtCuhTT75TAs/eL0KTRFJ4AgJW9nI/Bkt5Zp3HwQ
-        sekTmartdABgp/vS68owgxY3JqtmG+Q9UahyU4cBwFmqFS8eVIHef6SB7qhRFOQWf+lg+my9N9d4n
-        Ax/CJys262sHwABSJaVAvmG9GTNs15QUST/df6X7sDN+acTYRl67Il6YaOhgCuFACZaPMoQ1ZmRQn
-        pQkWDBSg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khEOA-0003Rv-8D; Mon, 23 Nov 2020 16:08:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9CCF53070F9;
-        Mon, 23 Nov 2020 17:08:23 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 81ACC20222D93; Mon, 23 Nov 2020 17:08:23 +0100 (CET)
-Date:   Mon, 23 Nov 2020 17:08:23 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] kcsan: Avoid scheduler recursion by using
- non-instrumented preempt_{disable,enable}()
-Message-ID: <20201123160823.GC2414@hirez.programming.kicks-ass.net>
-References: <20201123132300.1759342-1-elver@google.com>
- <20201123135512.GM3021@hirez.programming.kicks-ass.net>
- <CANpmjNPwuq8Hph3oOyJCVgWQ_d-gOTPEOT3BpbR2pnm5LBeJbw@mail.gmail.com>
- <20201123155746.GA2203226@elver.google.com>
+        Mon, 23 Nov 2020 11:11:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606147871;
+        s=strato-dkim-0002; d=fossekall.de;
+        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=r79O/P1839GmQYZ+SH8EHuSaDqcnxgnZm/rLG59yiHw=;
+        b=dy/y8U9I2S3/SsJuQ1wENAToEtvIaJgJCxfbSfZT3y5ohvN/q/Ltq6oYJd7TZQ1akL
+        kWO+6qyLyMcuxWnFzj8i7Uv/FKWWkTI6IpkhAzW69kKBNf6C64HOM+V6prIDK82MNY+I
+        l9lN5ZjBfQtt0pBbaNxr9QjifuLc2siOtJ5MAxTypNg501djYUgdp2bbUy8zqI1W6J3r
+        TrDLtatcyl9JGTYHjtOVggkHUvdJtOyMq9tQv2lqXXS0SRIa1jKKNgtMPkN0vZxYTEsC
+        tqfRtsGFDkqKz3aeF2vdLwOPz23kzqvldWXX7z7gkau3YgeMXcw1mOkRqQtHT8f6GcgK
+        V1cA==
+X-RZG-AUTH: ":O2kGeEG7b/pS1EzgE2y7nF0STYsSLflpbjNKxx7cGrBOdI6BL9pkS3QW19mO7I+/JwRspuzJFZuRzQ=="
+X-RZG-CLASS-ID: mo00
+Received: from aerfugl
+        by smtp.strato.de (RZmta 47.3.4 AUTH)
+        with ESMTPSA id g02087wANGB96rS
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Mon, 23 Nov 2020 17:11:09 +0100 (CET)
+Received: from koltrast.a98shuttle.de ([192.168.1.27] helo=a98shuttle.de)
+        by aerfugl with smtp (Exim 4.89)
+        (envelope-from <michael@a98shuttle.de>)
+        id 1khEQk-0003gZ-9t; Mon, 23 Nov 2020 17:11:06 +0100
+Received: (nullmailer pid 2304817 invoked by uid 502);
+        Mon, 23 Nov 2020 16:11:06 -0000
+From:   Michael Klein <michael@fossekall.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Michael Klein <michael@fossekall.de>
+Subject: [PATCH] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add gpio-poweroff to DT
+Date:   Mon, 23 Nov 2020 17:10:41 +0100
+Message-Id: <20201123161041.2304766-1-michael@fossekall.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123155746.GA2203226@elver.google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:57:46PM +0100, Marco Elver wrote:
-> Let me know what you prefer.
-> 
+Add gpio-poweroff node to allow the board to power itself off after
+shutdown by disabling the SYSTEM and CPUX regulators (U5 resp. U6).
+The RST button can be used to restart the board.
 
-> @@ -288,27 +288,19 @@ static u32 kcsan_prandom_u32_max(u32 ep_ro)
->  	u32 res;
->  
->  	/*
-> +	 * Avoid recursion with scheduler by disabling KCSAN because
-> +	 * preempt_enable_notrace() will still call into scheduler code.
->  	 */
-> +	kcsan_disable_current();
->  	preempt_disable_notrace();
->  	state = raw_cpu_ptr(&kcsan_rand_state);
->  	res = prandom_u32_state(state);
-> +	preempt_enable_notrace();
-> +	kcsan_enable_current_nowarn();
->  
->  	return (u32)(((u64) res * ep_ro) >> 32);
->  }
+Signed-off-by: Michael Klein <michael@fossekall.de>
+---
+ arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-This is much preferred over the other. The thing with _no_resched is that
-you can miss a preemption for an unbounded amount of time, which is bad.
+diff --git a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+index 4c6704e4c57e..76e79e6db733 100644
+--- a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
++++ b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+@@ -46,6 +46,11 @@ sw4 {
+ 		};
+ 	};
+ 
++	gpio_poweroff {
++		compatible = "gpio-poweroff";
++		gpios = <&r_pio 0 8 GPIO_ACTIVE_LOW>; /* PL8 */
++	};
++
+ 	reg_vdd_cpux: vdd-cpux-regulator {
+ 		compatible = "regulator-gpio";
+ 		regulator-name = "vdd-cpux";
+-- 
+2.29.2
 
-The _only_ valid use of _no_resched is when there's a call to schedule()
-right after it.
