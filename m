@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B552C0BAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 272C22C0AC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731414AbgKWN2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:28:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41214 "EHLO mail.kernel.org"
+        id S1730312AbgKWM1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:27:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730090AbgKWMac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:32 -0500
+        id S1730298AbgKWM11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:27:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C81520781;
-        Mon, 23 Nov 2020 12:30:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C544120781;
+        Mon, 23 Nov 2020 12:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134631;
-        bh=jiXUb3dHuj6wF3mgnGob5udyk4xvwnvCnIdVrrxyCAY=;
+        s=korg; t=1606134447;
+        bh=Pd8ASYazydzHlkt+6FkVjYmgPAlhMkmPbMcy12H8pxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lx8H3oObPqNDoT3A5W4WKhnpQ5Er+laEhHfeeqaCVcrLmQD8AmI7qxE1h/jvYbSrr
-         qvuMCclcDaz2Df8GS0UtEldqWrouOh2AvgAW/W0/XoAnzEN3ZM7VG+nTFU9yXNzCVI
-         kPutJdhyv+AIwMYJ1i7Q7oi1fIFI+VZ8sFavLBys=
+        b=k8I+0+jHnyhkvEzhEP3Baz/HWPJV26IQxucFOtNvRwysJ5dtBZaaVD1mlQVtutcoL
+         pYJWHPfft/25TqOr0gf5fF6DneeFYy9K0T+0gkejbEqhZ370a1i1EFy9ayOaXMPcov
+         CDHhefw02aew8AiiDiIZfYCwNKebecZXIyb6SZFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/91] pinctrl: rockchip: enable gpio pclk for rockchip_gpio_to_irq
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 05/60] inet_diag: Fix error path to cancel the meseage in inet_req_diag_fill()
 Date:   Mon, 23 Nov 2020 13:21:47 +0100
-Message-Id: <20201123121810.643571132@linuxfoundation.org>
+Message-Id: <20201123121805.297633311@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianqun Xu <jay.xu@rock-chips.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 63fbf8013b2f6430754526ef9594f229c7219b1f ]
+[ Upstream commit e33de7c5317e2827b2ba6fd120a505e9eb727b05 ]
 
-There need to enable pclk_gpio when do irq_create_mapping, since it will
-do access to gpio controller.
+nlmsg_cancel() needs to be called in the error path of
+inet_req_diag_fill to cancel the message.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Kever Yang<kever.yang@rock-chips.com>
-Link: https://lore.kernel.org/r/20201013063731.3618-3-jay.xu@rock-chips.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d545caca827b ("net: inet: diag: expose the socket mark to privileged processes.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20201116082018.16496-1-wanghai38@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-rockchip.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv4/inet_diag.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
-index 005df24f5b3f1..4d3b62707524a 100644
---- a/drivers/pinctrl/pinctrl-rockchip.c
-+++ b/drivers/pinctrl/pinctrl-rockchip.c
-@@ -2778,7 +2778,9 @@ static int rockchip_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
- 	if (!bank->domain)
- 		return -ENXIO;
+--- a/net/ipv4/inet_diag.c
++++ b/net/ipv4/inet_diag.c
+@@ -393,8 +393,10 @@ static int inet_req_diag_fill(struct soc
+ 	r->idiag_inode	= 0;
  
-+	clk_enable(bank->clk);
- 	virq = irq_create_mapping(bank->domain, offset);
-+	clk_disable(bank->clk);
+ 	if (net_admin && nla_put_u32(skb, INET_DIAG_MARK,
+-				     inet_rsk(reqsk)->ir_mark))
++				     inet_rsk(reqsk)->ir_mark)) {
++		nlmsg_cancel(skb, nlh);
+ 		return -EMSGSIZE;
++	}
  
- 	return (virq) ? : -ENXIO;
- }
--- 
-2.27.0
-
+ 	nlmsg_end(skb, nlh);
+ 	return 0;
 
 
