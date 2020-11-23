@@ -2,102 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C809D2C13C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326EA2C13C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387843AbgKWSlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:41:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730457AbgKWSlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:41:19 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4632E20658;
-        Mon, 23 Nov 2020 18:41:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606156879;
-        bh=zvwUlE1bsbb8piym1lzeYg6Hi20pP/U0RsMsiCqmH3M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p0Wq6RmkqjomZjc9exaa3msJgEvmFoeBH7VsucYn7yMLqSayRn6019L09nE6IZX7x
-         OJMY1M2U+AYGCbRLmDRw+uBehfQ96iXrHstQukwl7Jk9DQupc0YTFQOzHYfqEDT2oG
-         ARuvFdjD9CSVYmNhb28gjl6jo+Y/oBquhekNx/IQ=
-Date:   Mon, 23 Nov 2020 18:41:14 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/6] mm: proc: Invalidate TLB after clearing soft-dirty
- page state
-Message-ID: <20201123184113.GD11688@willie-the-truck>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-5-will@kernel.org>
- <20201120150023.GH3040@hirez.programming.kicks-ass.net>
- <20201120155514.GA3377168@google.com>
+        id S2390881AbgKWSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388571AbgKWSmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:42:22 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393D9C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:42:22 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t18so9304725plo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nJpF2gat8sIt3hy0qTCyIbzDeQ9i0fB1Rc02MDjSdMo=;
+        b=Xo+IICOVGLt3K5DTzifwsDmhU2bw3XpbSOth7zBf0YtrMOcywoA7vKYHOTrNbQ/cy5
+         Wu2u0j0BYYEhqP97oK87DYkrPmp5aE5r28Gx/xZi9dbyrYZ4A7lXa35F/XQuM6S75qrz
+         2zy9YncnWdm4MApfAv8i8XhkJDGkKcBUePtwI6OJQI7qszQyxWBO7M23sWV0L3fVSBIy
+         Bf67URSBbdR868+F9oAGnCu/Dx6cL9eAp3FujPNNtjh0HWBAmF54SqBgAlBcs3RupQYa
+         gHkPM7G4I7OLSg1ZIPudEOhX2dUut7Y78zvnlN/GNG9t1y9AYCKPPkV0k7SzmejGqjoZ
+         NCpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nJpF2gat8sIt3hy0qTCyIbzDeQ9i0fB1Rc02MDjSdMo=;
+        b=jDEIRFj9CIxSdIEWrcF5Yn0xLMN3Z6LDVNMHwkfla3nh2o+gO1RxXJzSCSGUR4ST6P
+         Z4aZMTgeKbKYgy0Dpqwj5KwEV93I3ICN+FbhWzA34klAJT2znBuqrTaY1huXgqf4QWlm
+         LHIw/eT4PwIV1403kKwIf8GW1m6VjrEy13SxoS/f+kGwI69pXiOjRsdESqZVkoJBfI5U
+         n0IF+wkAlTmdIqxezLUKRTW5kyoC7OAdaYMRmevyUHE8zDD5DpeDFHQtN0JWuOdFu5qU
+         3H3s9wwPBSAzbSk13LDGGamw3F48+6rtjl3LMBhGwKlhwa8bYs+ktgTX5bXKGAFQpi/h
+         o1iQ==
+X-Gm-Message-State: AOAM531Dazpz4CxVUnu3WzUmFN7mGShKRF0j2kbnFvR7Q59ZzE5Ypppx
+        Y/HLGoOHmWd6ITCXUjVWLTzL+ISBMXhOwocgSV3uYQ==
+X-Google-Smtp-Source: ABdhPJz2y23kaDogZeYSzaZ8TlHAb3VOf4t6+w3ZMmbCWzUdvceIsMpH2hbtRYSvATaO/ZuHzxMtKk9B9Ty8c17OTJE=
+X-Received: by 2002:a17:902:221:b029:d8:f938:b112 with SMTP id
+ 30-20020a1709020221b02900d8f938b112mr702048plc.10.1606156941355; Mon, 23 Nov
+ 2020 10:42:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120155514.GA3377168@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAKwvOd=9iqLgdtAWe2h-9n=KUWm_rjCCJJYeop8PS6F+AA0VtA@mail.gmail.com>
+ <20201109183528.1391885-1-ndesaulniers@google.com> <CAKwvOdnxAr7UdjUiuttj=bz1_voK1qUvpOvSY35qOZ60+E8LBA@mail.gmail.com>
+ <CA+SOCLJTg6U+Ddop_5O-baVR42va3vGAvMQ62o9H6rd+10aKrw@mail.gmail.com>
+In-Reply-To: <CA+SOCLJTg6U+Ddop_5O-baVR42va3vGAvMQ62o9H6rd+10aKrw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 23 Nov 2020 10:42:10 -0800
+Message-ID: <CAKwvOdn0qoa_F-qX10Hu7Cr8eeCjcK23i10zw4fty32u1aBPSw@mail.gmail.com>
+Subject: Re: [PATCH v3] Kbuild: do not emit debug info for assembly with LLVM_IAS=1
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>,
+        "# 3.4.x" <stable@vger.kernel.org>, Jian Cai <jiancai@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 07:55:14AM -0800, Minchan Kim wrote:
-> On Fri, Nov 20, 2020 at 04:00:23PM +0100, Peter Zijlstra wrote:
-> > On Fri, Nov 20, 2020 at 02:35:55PM +0000, Will Deacon wrote:
-> > > Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double flush"),
-> > > TLB invalidation is elided in tlb_finish_mmu() if no entries were batched
-> > > via the tlb_remove_*() functions. Consequently, the page-table modifications
-> > > performed by clear_refs_write() in response to a write to
-> > > /proc/<pid>/clear_refs do not perform TLB invalidation. Although this is
-> > > fine when simply aging the ptes, in the case of clearing the "soft-dirty"
-> > > state we can end up with entries where pte_write() is false, yet a
-> > > writable mapping remains in the TLB.
-> > > 
-> > > Fix this by calling tlb_remove_tlb_entry() for each entry being
-> > > write-protected when cleating soft-dirty.
-> > > 
-> > 
-> > > @@ -1053,6 +1054,7 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
-> > >  		ptent = pte_wrprotect(old_pte);
-> > >  		ptent = pte_clear_soft_dirty(ptent);
-> > >  		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
-> > > +		tlb_remove_tlb_entry(tlb, pte, addr);
-> > >  	} else if (is_swap_pte(ptent)) {
-> > >  		ptent = pte_swp_clear_soft_dirty(ptent);
-> > >  		set_pte_at(vma->vm_mm, addr, pte, ptent);
-> > 
-> > Oh!
-> > 
-> > Yesterday when you had me look at this code; I figured the sane thing
-> > to do was to make it look more like mprotect().
-> > 
-> > Why did you chose to make it work with mmu_gather instead? I'll grant
-> > you that it's probably the smaller patch, but I still think it's weird
-> > to use mmu_gather here.
-> 
-> I agree. The reason why clear_refs_write used the gather API was [1] and
-> seems like to overkill to me.
+Hi Masahiro,
+I would appreciate any feedback you have on this patch.
 
-I don't see why it's overkill. Prior to that commit, it called
-flush_tlb_mm() directly.
+On Fri, Nov 20, 2020 at 3:58 PM Jian Cai <jiancai@google.com> wrote:
+>
+> I also verified that with this patch Chrome OS devices booted with either=
+ GNU assembler or LLVM's integrated assembler. With this patch, IAS no long=
+er produces extra warnings compared to GNU as on Chrome OS and would remove=
+ the last blocker of enabling IAS on it.
+>
+> Tested-by: Jian Cai <jiancai@google.com> # Compile-tested on mainline (wi=
+th defconfig) and boot-tested on ChromeOS (with olddefconfig).
+>
+>
+> On Mon, Nov 16, 2020 at 3:41 PM 'Nick Desaulniers' via Clang Built Linux =
+<clang-built-linux@googlegroups.com> wrote:
+>>
+>> Hi Masahiro, have you had time to review v3 of this patch?
+>>
+>> On Mon, Nov 9, 2020 at 10:35 AM Nick Desaulniers
+>> <ndesaulniers@google.com> wrote:
+>> >
+>> > Clang's integrated assembler produces the warning for assembly files:
+>> >
+>> > warning: DWARF2 only supports one section per compilation unit
+>> >
+>> > If -Wa,-gdwarf-* is unspecified, then debug info is not emitted for
+>> > assembly sources (it is still emitted for C sources).  This will be
+>> > re-enabled for newer DWARF versions in a follow up patch.
+>> >
+>> > Enables defconfig+CONFIG_DEBUG_INFO to build cleanly with
+>> > LLVM=3D1 LLVM_IAS=3D1 for x86_64 and arm64.
+>> >
+>> > Cc: <stable@vger.kernel.org>
+>> > Link: https://github.com/ClangBuiltLinux/linux/issues/716
+>> > Reported-by: Dmitry Golovin <dima@golovin.in>
+>> > Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+>> > Suggested-by: Dmitry Golovin <dima@golovin.in>
+>> > Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+>> > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+>> > Reviewed-by: Fangrui Song <maskray@google.com>
+>> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+>> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>> > ---
+>> >  Makefile | 2 ++
+>> >  1 file changed, 2 insertions(+)
+>> >
+>> > diff --git a/Makefile b/Makefile
+>> > index f353886dbf44..7e899d356902 100644
+>> > --- a/Makefile
+>> > +++ b/Makefile
+>> > @@ -826,7 +826,9 @@ else
+>> >  DEBUG_CFLAGS   +=3D -g
+>> >  endif
+>> >
+>> > +ifneq ($(LLVM_IAS),1)
+>> >  KBUILD_AFLAGS  +=3D -Wa,-gdwarf-2
+>> > +endif
+>> >
+>> >  ifdef CONFIG_DEBUG_INFO_DWARF4
+>> >  DEBUG_CFLAGS   +=3D -gdwarf-4
+>> > --
+>> > 2.29.2.222.g5d2a92d10f8-goog
+>> >
+>>
+>>
+>> --
+>> Thanks,
+>> ~Nick Desaulniers
+>>
+>> --
+>> You received this message because you are subscribed to the Google Group=
+s "Clang Built Linux" group.
+>> To unsubscribe from this group and stop receiving emails from it, send a=
+n email to clang-built-linux+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msg=
+id/clang-built-linux/CAKwvOdnxAr7UdjUiuttj%3Dbz1_voK1qUvpOvSY35qOZ60%2BE8LB=
+A%40mail.gmail.com.
 
-> We could just do like [inc|dec]_tlb_flush_pending with flush_tlb_mm at
-> right before dec_tlb_flush_pending instead of gather.
-> 
-> thought?
 
-I'm not sure why this is better; it's different to the madvise() path, and
-will need special logic to avoid the flush in the case where we're just
-doing aging.
 
-Will
-
-> [1] b3a81d0841a95, mm: fix KSM data corruption
+--=20
+Thanks,
+~Nick Desaulniers
