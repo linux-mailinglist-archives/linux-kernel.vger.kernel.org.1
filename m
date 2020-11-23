@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1822C15E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 618582C15E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731333AbgKWUJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:09:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
+        id S1731380AbgKWUJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:09:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731169AbgKWUJ0 (ORCPT
+        with ESMTP id S1731309AbgKWUJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:09:26 -0500
+        Mon, 23 Nov 2020 15:09:27 -0500
 Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B923C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:24 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id g125so94868wme.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C2BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:26 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id u123so102521wmu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=KVSJXJK3L8qTAj65/VfUWb47G8JUT1DB2NysMQkgqU4=;
-        b=bzRUk7lH945+D4glkCJTKLJUwSPZmB7Rhy8GTksmj5BD4GyFtkilz7wrLtlk9Ei+MY
-         2bSehq8DRjRDlXgHVIWbosolvD7F7NAi8y2Sln5aVLVGPp3qMblvzZByi7i85hUbLveg
-         JcrtmiCCavd+vGYNqKM63InzkQ/nYT2ezWga/nUZmX3pq8a8Bcvis4S747GTAKSuWi35
-         7WziuBIy2Im/xwj8823jjukD2LFYv55LMajt90HiyEzNUk1RUucBXEuRFOQHPzpn3oST
-         gkJ7HsBzFRfEbATT6NuZK0moEs0gyz/vJnauuOMCrDARGRLGJOPJ9a/fU/L43Jfxl9eI
-         sSKQ==
+        bh=8e63GTlhB9QbGsFBUU3MJ45Yhzqtwy6A04ZDFy/2ryA=;
+        b=hROpr06Af2azW5P0KOMBzJJzAAugwdrKuBphF0Q1s38CbOsluQKYZ69oDwLyH8bvS7
+         Uu49Xj2MQkN9fNDS9NcJ3oTUbBFlaPWTSu+Tx9rP+OyR8PF/tbPgRPSMVDbULAFClvWB
+         BYqQ72HANksQEMCYxsfZBvyVAxPgAuDuM1MHPsOV3sOicUvgHZAtfBi4qHKJg2iEczyl
+         xUw1aR3s2iaFPdiydOxpcNMwl/zs/yiMKZ9865JCmHz62yajS0xUdlI6C2B8T/Gqses7
+         a8xtOxLkBgttbusikCtfgASm6pL9oPtEjOC/QVO6+hOysuwAktSN7QrNK318M48IjzQs
+         qxYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=KVSJXJK3L8qTAj65/VfUWb47G8JUT1DB2NysMQkgqU4=;
-        b=Hqrlm06iuoAjXEUTNaOxiKpa6xRUZ3Q3pfK8IrXUDMzvGB3sSPVwwn21oRs3KzBCgv
-         fNyF1wx14ICPTDmOFSVr68YxN8LK9Hakk4AWxQ7Ku2cgx36YJnndtdVqQR3O7FvoZxYN
-         dG4lRaa9/bR/dLQYQhsqyEYtk+i7GTydbHLC16/0EnHY8Y08c180oO8369kvWBzagGDq
-         pIq2jcqn4DpfdJce4Uxb4A+quCipzUXGsrnemszdCswQEaZkOBq4juOjV0FnoejoYrRA
-         YrCbEOJuwAKK+0Qie2MQGU9YLbvyapA5zMk+fkkESR4BQSq/LUC663M9gUorRSROyDLN
-         cicQ==
-X-Gm-Message-State: AOAM530cRnjrAgulGxF9m/smkgH5Q7yx67IPOd3myYa8m8c5I2uWqNSA
-        NlzfWXrB4pRLPFM7V/dfgo10PUUkOd7k7mJu
-X-Google-Smtp-Source: ABdhPJyACYW4zaMGjNwfxx49aU3DfZ/9cHrTN2moJdj3kkxbybIzLkr76NufI/imYXaFTYNN4fq5KUcM14rjZc9m
+        bh=8e63GTlhB9QbGsFBUU3MJ45Yhzqtwy6A04ZDFy/2ryA=;
+        b=AKNoqc1/258ukZVwvLzB0rthQ6kzMwrJkJx/nMo+giXV+cKJPzwVax0aeQsKy+Iv8b
+         zLBngb6PUIky1rq166ePaM8OM+A2QFhFw1mp66vWHO2ZsO0hIEw/rZdK48tnEmA7AUir
+         5yoPrqLG/PrWMuURfq4Oo/l21M9+HHbONowWWBky80P6nW69RpsIueIeDdzb7A1QAPih
+         OVprrrGGohf0cn/VkD/uJ3BeQPUzZYVDBhBHsmqsle0oYnTTMyN6ee68Des78OviA5Gz
+         evnltKrO+hXGzkr6gu/roeFwBCJiIi9Ecb9lbW+EC6yECnScDXkF5ZXTUug8CL6M5/6s
+         8XnA==
+X-Gm-Message-State: AOAM5321yFmcus7BuK6ymDYRy3HC25PgFoBvBFyAeJ+SH4Dv1BwNDVG5
+        IRou+mZ+ODm7W/DUZdPXvElSwinEr8FOaKGj
+X-Google-Smtp-Source: ABdhPJx+23yuZaLzkgw5W5iy7I2YfVUY21RAjIgQeF58w7+TG79ouc+OTfbSq4R+OK8ML2DJf7vqrB1A2M3VnTGm
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:e3d4:: with SMTP id
- a203mr566406wmh.177.1606162163180; Mon, 23 Nov 2020 12:09:23 -0800 (PST)
-Date:   Mon, 23 Nov 2020 21:07:48 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a5d:618c:: with SMTP id
+ j12mr1465350wru.182.1606162165477; Mon, 23 Nov 2020 12:09:25 -0800 (PST)
+Date:   Mon, 23 Nov 2020 21:07:49 +0100
 In-Reply-To: <cover.1606161801.git.andreyknvl@google.com>
-Message-Id: <d03d1157124ea3532eaeb77507988733f5734986.1606161801.git.andreyknvl@google.com>
+Message-Id: <c31bf759b4411b2d98cdd801eb928e241584fd1f.1606161801.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1606161801.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH mm v11 24/42] arm64: Enable armv8.5-a asm-arch option
+Subject: [PATCH mm v11 25/42] arm64: mte: Add in-kernel MTE helpers
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -75,61 +75,273 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Hardware tag-based KASAN relies on Memory Tagging Extension (MTE) which
-is an armv8.5-a architecture extension.
+Provide helper functions to manipulate allocation and pointer tags for
+kernel addresses.
 
-Enable the correct asm option when the compiler supports it in order to
-allow the usage of ALTERNATIVE()s with MTE instructions.
+Low-level helper functions (mte_assign_*, written in assembly) operate
+tag values from the [0x0, 0xF] range. High-level helper functions
+(mte_get/set_*) use the [0xF0, 0xFF] range to preserve compatibility
+with normal kernel pointers that have 0xFF in their top byte.
+
+MTE_GRANULE_SIZE and related definitions are moved to mte-def.h header
+that doesn't have any dependencies and is safe to include into any
+low-level header.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
 ---
-Change-Id: I172e15e4c189f073e4c14a10276b276092e76536
+Change-Id: I1b5230254f90dc21a913447cb17f07fea7944ece
 ---
- arch/arm64/Kconfig  | 4 ++++
- arch/arm64/Makefile | 5 +++++
- 2 files changed, 9 insertions(+)
+ arch/arm64/include/asm/esr.h       |  1 +
+ arch/arm64/include/asm/mte-def.h   | 15 ++++++++
+ arch/arm64/include/asm/mte-kasan.h | 56 ++++++++++++++++++++++++++++++
+ arch/arm64/include/asm/mte.h       | 20 +++++++----
+ arch/arm64/kernel/mte.c            | 48 +++++++++++++++++++++++++
+ arch/arm64/lib/mte.S               | 16 +++++++++
+ 6 files changed, 150 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm64/include/asm/mte-def.h
+ create mode 100644 arch/arm64/include/asm/mte-kasan.h
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 026aaa64a7e0..b641bb6cbc73 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1591,6 +1591,9 @@ endmenu
- 
- menu "ARMv8.5 architectural features"
- 
-+config AS_HAS_ARMV8_5
-+	def_bool $(cc-option,-Wa$(comma)-march=armv8.5-a)
+diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
+index 22c81f1edda2..971c20ddfed4 100644
+--- a/arch/arm64/include/asm/esr.h
++++ b/arch/arm64/include/asm/esr.h
+@@ -105,6 +105,7 @@
+ #define ESR_ELx_FSC		(0x3F)
+ #define ESR_ELx_FSC_TYPE	(0x3C)
+ #define ESR_ELx_FSC_EXTABT	(0x10)
++#define ESR_ELx_FSC_MTE		(0x11)
+ #define ESR_ELx_FSC_SERROR	(0x11)
+ #define ESR_ELx_FSC_ACCESS	(0x08)
+ #define ESR_ELx_FSC_FAULT	(0x04)
+diff --git a/arch/arm64/include/asm/mte-def.h b/arch/arm64/include/asm/mte-def.h
+new file mode 100644
+index 000000000000..8401ac5840c7
+--- /dev/null
++++ b/arch/arm64/include/asm/mte-def.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2020 ARM Ltd.
++ */
++#ifndef __ASM_MTE_DEF_H
++#define __ASM_MTE_DEF_H
 +
- config ARM64_BTI
- 	bool "Branch Target Identification support"
- 	default y
-@@ -1665,6 +1668,7 @@ config ARM64_MTE
- 	bool "Memory Tagging Extension support"
- 	default y
- 	depends on ARM64_AS_HAS_MTE && ARM64_TAGGED_ADDR_ABI
-+	depends on AS_HAS_ARMV8_5
- 	select ARCH_USES_HIGH_VMA_FLAGS
- 	help
- 	  Memory Tagging (part of the ARMv8.5 Extensions) provides
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 5789c2d18d43..50ad9cbccb51 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -100,6 +100,11 @@ ifeq ($(CONFIG_AS_HAS_ARMV8_4), y)
- asm-arch := armv8.4-a
- endif
- 
-+ifeq ($(CONFIG_AS_HAS_ARMV8_5), y)
-+# make sure to pass the newest target architecture to -march.
-+asm-arch := armv8.5-a
-+endif
++#define MTE_GRANULE_SIZE	UL(16)
++#define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
++#define MTE_TAG_SHIFT		56
++#define MTE_TAG_SIZE		4
++#define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
++#define MTE_TAG_MAX		(MTE_TAG_MASK >> MTE_TAG_SHIFT)
 +
- ifdef asm-arch
- KBUILD_CFLAGS	+= -Wa,-march=$(asm-arch) \
- 		   -DARM64_ASM_ARCH='"$(asm-arch)"'
++#endif /* __ASM_MTE_DEF_H  */
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+new file mode 100644
+index 000000000000..3a70fb1807fd
+--- /dev/null
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -0,0 +1,56 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2020 ARM Ltd.
++ */
++#ifndef __ASM_MTE_KASAN_H
++#define __ASM_MTE_KASAN_H
++
++#include <asm/mte-def.h>
++
++#ifndef __ASSEMBLY__
++
++#include <linux/types.h>
++
++/*
++ * The functions below are meant to be used only for the
++ * KASAN_HW_TAGS interface defined in asm/memory.h.
++ */
++#ifdef CONFIG_ARM64_MTE
++
++static inline u8 mte_get_ptr_tag(void *ptr)
++{
++	/* Note: The format of KASAN tags is 0xF<x> */
++	u8 tag = 0xF0 | (u8)(((u64)(ptr)) >> MTE_TAG_SHIFT);
++
++	return tag;
++}
++
++u8 mte_get_mem_tag(void *addr);
++u8 mte_get_random_tag(void);
++void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
++
++#else /* CONFIG_ARM64_MTE */
++
++static inline u8 mte_get_ptr_tag(void *ptr)
++{
++	return 0xFF;
++}
++
++static inline u8 mte_get_mem_tag(void *addr)
++{
++	return 0xFF;
++}
++static inline u8 mte_get_random_tag(void)
++{
++	return 0xFF;
++}
++static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
++{
++	return addr;
++}
++
++#endif /* CONFIG_ARM64_MTE */
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* __ASM_MTE_KASAN_H  */
+diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+index 1c99fcadb58c..cf1cd181dcb2 100644
+--- a/arch/arm64/include/asm/mte.h
++++ b/arch/arm64/include/asm/mte.h
+@@ -5,14 +5,16 @@
+ #ifndef __ASM_MTE_H
+ #define __ASM_MTE_H
+ 
+-#define MTE_GRANULE_SIZE	UL(16)
+-#define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
+-#define MTE_TAG_SHIFT		56
+-#define MTE_TAG_SIZE		4
++#include <asm/compiler.h>
++#include <asm/mte-def.h>
++
++#define __MTE_PREAMBLE		ARM64_ASM_PREAMBLE ".arch_extension memtag\n"
+ 
+ #ifndef __ASSEMBLY__
+ 
++#include <linux/bitfield.h>
+ #include <linux/page-flags.h>
++#include <linux/types.h>
+ 
+ #include <asm/pgtable-types.h>
+ 
+@@ -45,7 +47,9 @@ long get_mte_ctrl(struct task_struct *task);
+ int mte_ptrace_copy_tags(struct task_struct *child, long request,
+ 			 unsigned long addr, unsigned long data);
+ 
+-#else
++void mte_assign_mem_tag_range(void *addr, size_t size);
++
++#else /* CONFIG_ARM64_MTE */
+ 
+ /* unused if !CONFIG_ARM64_MTE, silence the compiler */
+ #define PG_mte_tagged	0
+@@ -80,7 +84,11 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
+ 	return -EIO;
+ }
+ 
+-#endif
++static inline void mte_assign_mem_tag_range(void *addr, size_t size)
++{
++}
++
++#endif /* CONFIG_ARM64_MTE */
+ 
+ #endif /* __ASSEMBLY__ */
+ #endif /* __ASM_MTE_H  */
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index 52a0638ed967..8f99c65837fd 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -13,10 +13,13 @@
+ #include <linux/swap.h>
+ #include <linux/swapops.h>
+ #include <linux/thread_info.h>
++#include <linux/types.h>
+ #include <linux/uio.h>
+ 
++#include <asm/barrier.h>
+ #include <asm/cpufeature.h>
+ #include <asm/mte.h>
++#include <asm/mte-kasan.h>
+ #include <asm/ptrace.h>
+ #include <asm/sysreg.h>
+ 
+@@ -72,6 +75,51 @@ int memcmp_pages(struct page *page1, struct page *page2)
+ 	return ret;
+ }
+ 
++u8 mte_get_mem_tag(void *addr)
++{
++	if (!system_supports_mte())
++		return 0xFF;
++
++	asm(__MTE_PREAMBLE "ldg %0, [%0]"
++	    : "+r" (addr));
++
++	return mte_get_ptr_tag(addr);
++}
++
++u8 mte_get_random_tag(void)
++{
++	void *addr;
++
++	if (!system_supports_mte())
++		return 0xFF;
++
++	asm(__MTE_PREAMBLE "irg %0, %0"
++	    : "+r" (addr));
++
++	return mte_get_ptr_tag(addr);
++}
++
++void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
++{
++	void *ptr = addr;
++
++	if ((!system_supports_mte()) || (size == 0))
++		return addr;
++
++	/* Make sure that size is MTE granule aligned. */
++	WARN_ON(size & (MTE_GRANULE_SIZE - 1));
++
++	/* Make sure that the address is MTE granule aligned. */
++	WARN_ON((u64)addr & (MTE_GRANULE_SIZE - 1));
++
++	tag = 0xF0 | tag;
++	ptr = (void *)__tag_set(ptr, tag);
++
++	mte_assign_mem_tag_range(ptr, size);
++
++	return ptr;
++}
++
+ static void update_sctlr_el1_tcf0(u64 tcf0)
+ {
+ 	/* ISB required for the kernel uaccess routines */
+diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
+index cceed41bba15..e63890292bc1 100644
+--- a/arch/arm64/lib/mte.S
++++ b/arch/arm64/lib/mte.S
+@@ -149,3 +149,19 @@ SYM_FUNC_START(mte_restore_page_tags)
+ 
+ 	ret
+ SYM_FUNC_END(mte_restore_page_tags)
++
++/*
++ * Assign allocation tags for a region of memory based on the pointer tag
++ *   x0 - source pointer
++ *   x1 - size
++ *
++ * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
++ * size must be non-zero and MTE_GRANULE_SIZE aligned.
++ */
++SYM_FUNC_START(mte_assign_mem_tag_range)
++1:	stg	x0, [x0]
++	add	x0, x0, #MTE_GRANULE_SIZE
++	subs	x1, x1, #MTE_GRANULE_SIZE
++	b.gt	1b
++	ret
++SYM_FUNC_END(mte_assign_mem_tag_range)
 -- 
 2.29.2.454.gaff20da3a2-goog
 
