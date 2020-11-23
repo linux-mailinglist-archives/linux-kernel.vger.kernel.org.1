@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A862C0627
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5282C0749
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730419AbgKWM2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:28:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38422 "EHLO mail.kernel.org"
+        id S1732232AbgKWMjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:39:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730405AbgKWM2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:28:11 -0500
+        id S1732117AbgKWMit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:38:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D8C620728;
-        Mon, 23 Nov 2020 12:28:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0B3A21534;
+        Mon, 23 Nov 2020 12:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134491;
-        bh=3i3BNRwgTngmXQDGhlJTZWn4AqkcOujRVWgiWIW22+I=;
+        s=korg; t=1606135129;
+        bh=VQmjakW0fTCTGpZZ3CFA7wc7YJckrCHIEsD8badNB04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hcIzOjSr+ypbt84MfRb6rcKGRdsMpQK1Lx70BqaODG2Ew0pdcWwqbjiZ+cs+8gfOP
-         sIGIn+khdmtjRdrBN7OsVx91MoGQLM/RuQMro1OuywPHzkycwvi//8bGLfvj/wONmc
-         DNaFqapTfL8/4mGtn4Rvlc3pMWLpJX2wMJRpaeSQ=
+        b=wQCRpaPp3UuiCyy0x5mJD/pxeOtp42xuz4Qol1Kgff6/pJ2hIDHiAGC+JFaa+/cLj
+         wwP7hrFXVxm34d7WJF27du/WHwsLL+6Inc21xm0zk5hhSu80gh1n+Qmnu0r1wTLhr1
+         VoD1x0BfRhcQwRZCSyZTpciBEwEYaB4L9O0CrDAg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Sandeen <sandeen@sandeen.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Eric Sandeen <sandeen@redhat.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 39/60] xfs: revert "xfs: fix rmap key and record comparison functions"
-Date:   Mon, 23 Nov 2020 13:22:21 +0100
-Message-Id: <20201123121806.937808906@linuxfoundation.org>
+Subject: [PATCH 5.4 114/158] HID: logitech-dj: Handle quad/bluetooth keyboards with a builtin trackpad
+Date:   Mon, 23 Nov 2020 13:22:22 +0100
+Message-Id: <20201123121825.435543539@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit eb8409071a1d47e3593cfe077107ac46853182ab ]
+[ Upstream commit ee5e58418a854755201eb4952b1230d873a457d5 ]
 
-This reverts commit 6ff646b2ceb0eec916101877f38da0b73e3a5b7f.
+Some quad/bluetooth keyboards, such as the Dinovo Edge (Y-RAY81) have a
+builtin touchpad. In this case when asking the receiver for paired devices,
+we get only 1 paired device with a device_type of REPORT_TYPE_KEYBOARD.
 
-Your maintainer committed a major braino in the rmap code by adding the
-attr fork, bmbt, and unwritten extent usage bits into rmap record key
-comparisons.  While XFS uses the usage bits *in the rmap records* for
-cross-referencing metadata in xfs_scrub and xfs_repair, it only needs
-the owner and offset information to distinguish between reverse mappings
-of the same physical extent into the data fork of a file at multiple
-offsets.  The other bits are not important for key comparisons for index
-lookups, and never have been.
+This means that we do not instantiate a second dj_hiddev for the mouse
+(as we normally would) and thus there is no place for us to forward the
+mouse input reports to, causing the touchpad part of the keyboard to not
+work.
 
-Eric Sandeen reports that this causes regressions in generic/299, so
-undo this patch before it does more damage.
+There is no way for us to detect these keyboards, so this commit adds
+an array with device-ids for such keyboards and when a keyboard is on
+this list it adds STD_MOUSE to the reports_supported bitmap for the
+dj_hiddev created for the keyboard fixing the touchpad not working.
 
-Reported-by: Eric Sandeen <sandeen@sandeen.net>
-Fixes: 6ff646b2ceb0 ("xfs: fix rmap key and record comparison functions")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Eric Sandeen <sandeen@redhat.com>
+Using a list of device-ids for this is not ideal, but there are only
+very few such keyboards so this should be fine. Besides the Dinovo Edge,
+other known wireless Logitech keyboards with a builtin touchpad are:
+
+* Dinovo Mini (TODO add its device-id to the list)
+* K400 (uses a unifying receiver so is not affected)
+* K600 (uses a unifying receiver so is not affected)
+
+Cc: stable@vger.kernel.org
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1811424
+Fixes: f2113c3020ef ("HID: logitech-dj: add support for Logitech Bluetooth Mini-Receiver")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/libxfs/xfs_rmap_btree.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/hid/hid-logitech-dj.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/fs/xfs/libxfs/xfs_rmap_btree.c b/fs/xfs/libxfs/xfs_rmap_btree.c
-index cd689d21d3af8..9d9c9192584c9 100644
---- a/fs/xfs/libxfs/xfs_rmap_btree.c
-+++ b/fs/xfs/libxfs/xfs_rmap_btree.c
-@@ -262,8 +262,8 @@ xfs_rmapbt_key_diff(
- 	else if (y > x)
- 		return -1;
+diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+index bb50d6e7745bc..32e5391d98c35 100644
+--- a/drivers/hid/hid-logitech-dj.c
++++ b/drivers/hid/hid-logitech-dj.c
+@@ -866,11 +866,23 @@ static void logi_dj_recv_queue_notification(struct dj_receiver_dev *djrcv_dev,
+ 	schedule_work(&djrcv_dev->work);
+ }
  
--	x = be64_to_cpu(kp->rm_offset);
--	y = xfs_rmap_irec_offset_pack(rec);
-+	x = XFS_RMAP_OFF(be64_to_cpu(kp->rm_offset));
-+	y = rec->rm_offset;
- 	if (x > y)
- 		return 1;
- 	else if (y > x)
-@@ -294,8 +294,8 @@ xfs_rmapbt_diff_two_keys(
- 	else if (y > x)
- 		return -1;
++/*
++ * Some quad/bluetooth keyboards have a builtin touchpad in this case we see
++ * only 1 paired device with a device_type of REPORT_TYPE_KEYBOARD. For the
++ * touchpad to work we must also forward mouse input reports to the dj_hiddev
++ * created for the keyboard (instead of forwarding them to a second paired
++ * device with a device_type of REPORT_TYPE_MOUSE as we normally would).
++ */
++static const u16 kbd_builtin_touchpad_ids[] = {
++	0xb309, /* Dinovo Edge */
++};
++
+ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
+ 					    struct hidpp_event *hidpp_report,
+ 					    struct dj_workitem *workitem)
+ {
+ 	struct dj_receiver_dev *djrcv_dev = hid_get_drvdata(hdev);
++	int i, id;
  
--	x = be64_to_cpu(kp1->rm_offset);
--	y = be64_to_cpu(kp2->rm_offset);
-+	x = XFS_RMAP_OFF(be64_to_cpu(kp1->rm_offset));
-+	y = XFS_RMAP_OFF(be64_to_cpu(kp2->rm_offset));
- 	if (x > y)
- 		return 1;
- 	else if (y > x)
-@@ -400,8 +400,8 @@ xfs_rmapbt_keys_inorder(
- 		return 1;
- 	else if (a > b)
- 		return 0;
--	a = be64_to_cpu(k1->rmap.rm_offset);
--	b = be64_to_cpu(k2->rmap.rm_offset);
-+	a = XFS_RMAP_OFF(be64_to_cpu(k1->rmap.rm_offset));
-+	b = XFS_RMAP_OFF(be64_to_cpu(k2->rmap.rm_offset));
- 	if (a <= b)
- 		return 1;
- 	return 0;
-@@ -430,8 +430,8 @@ xfs_rmapbt_recs_inorder(
- 		return 1;
- 	else if (a > b)
- 		return 0;
--	a = be64_to_cpu(r1->rmap.rm_offset);
--	b = be64_to_cpu(r2->rmap.rm_offset);
-+	a = XFS_RMAP_OFF(be64_to_cpu(r1->rmap.rm_offset));
-+	b = XFS_RMAP_OFF(be64_to_cpu(r2->rmap.rm_offset));
- 	if (a <= b)
- 		return 1;
- 	return 0;
+ 	workitem->type = WORKITEM_TYPE_PAIRED;
+ 	workitem->device_type = hidpp_report->params[HIDPP_PARAM_DEVICE_INFO] &
+@@ -882,6 +894,13 @@ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
+ 		workitem->reports_supported |= STD_KEYBOARD | MULTIMEDIA |
+ 					       POWER_KEYS | MEDIA_CENTER |
+ 					       HIDPP;
++		id = (workitem->quad_id_msb << 8) | workitem->quad_id_lsb;
++		for (i = 0; i < ARRAY_SIZE(kbd_builtin_touchpad_ids); i++) {
++			if (id == kbd_builtin_touchpad_ids[i]) {
++				workitem->reports_supported |= STD_MOUSE;
++				break;
++			}
++		}
+ 		break;
+ 	case REPORT_TYPE_MOUSE:
+ 		workitem->reports_supported |= STD_MOUSE | HIDPP;
 -- 
 2.27.0
 
