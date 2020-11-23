@@ -2,79 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386B02C0DBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 299562C0DBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389184AbgKWOcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729794AbgKWOcF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:32:05 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F3BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:32:05 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id v14so1855891lfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:32:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CD/fQep9OsiPNeBueraAPkoryFQ/vLrFoZEixh/G32w=;
-        b=B23wlcJH+h65Oy3GOsnudV95X0Xup3PY4Z8RpaKih0qYIno5amPc/+FdCSVJCj6m7U
-         8U8Pc7tLOLeXQkimJ5BOKLLYdzMTmGR+/plmRepLBDr6vuYU1c4Mss1x0/fqA4+xIO5O
-         DsLfCP0jzl9hGiUvhnjb9IeViXxf9lypNpl4Tx39WdghoKy/UHxw1Yl46bX4WyB592y9
-         A502hG1TQCbr0E+LfKAT33rIDSzTpRb/yTlhzNJnGbqJx8uYS3ZWMfbKuP3fXYlFyH8w
-         TVajzuVtjqWewR1h9+QMQrbQG6boxLL7a19eUG8WZSGhP74kfchf1B0xdIG3miKTt9Qg
-         4D/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CD/fQep9OsiPNeBueraAPkoryFQ/vLrFoZEixh/G32w=;
-        b=stB+sfHR/nB02qWbI5GVEfXfJU9dk/n1y4A828kl4EEKugObTcng0OfrPlQNML9TDm
-         2GFLp+cD3aOiV5tCHJmQLU95TBv0Frv2mx/d+Tbg58LH/kE4WGPcnEUvn9880uzhOHXb
-         wyJB7LTv3yN92CcijeyEfhUqEgpSXBIpOzwUcogxj9+QLgE+YJgSd2cOT5Gv7rU+7l7B
-         3JDz19OIU4Iug6w9RrZ823W4hZ40TYcvT66vTN5Fmtj65cjLn0tWoDX98URYv61qCyLd
-         gflb4xyflAbLNG6f4b5429epu3eas64jK2lWcwEFXjBVw0mmEoUy4mPHImohWKAsg98E
-         KTMA==
-X-Gm-Message-State: AOAM530638jrrN27Z818w6Kz6wYd2uLPw97SOHJ2xIfcNcnAwe0joAjt
-        JgVPbLOPzsDkaCbz0Ig8DwxK7yjSzO1XSvF9Rfv0pCcNxkX6dA==
-X-Google-Smtp-Source: ABdhPJx3/GiTdrK6xYxnUkNa0bd9c+GF88T8obU8aOlbCwnyfO7IZEeHl3HBCCg6OK8iuW/g1BPwo3ZtShcB2FSBm3k=
-X-Received: by 2002:a05:6512:3e7:: with SMTP id n7mr12620380lfq.585.1606141923819;
- Mon, 23 Nov 2020 06:32:03 -0800 (PST)
+        id S2389212AbgKWOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:32:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729794AbgKWOcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:32:11 -0500
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E43820782
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606141930;
+        bh=ftNKqa+bYDhqF4CMFphNHzMCzHAOisKpwk67ZYS6ZgM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=z33v22hdW4YxiwW6UEgw0GvvELco7HO5D74BE8TiqvAF2YrPjUDKYmmLTSTjzEXzQ
+         v6Qi2fTyU9w/KjIUEQPP7wzuYXaF7LpZ++7dBhNBNaz6XK+BswUidtVXm9Oslh+sSJ
+         xFTJAgH+Rq7jFYAWobff4/qdOjMk7bGHLg9i3vfg=
+Received: by mail-ed1-f54.google.com with SMTP id cf17so13739315edb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:32:10 -0800 (PST)
+X-Gm-Message-State: AOAM532/bKULqpFjIVmqnp4sZIZj0kd6lpXN3fLfCt3HyW59Ab0xJVZo
+        mhJu4YWj75htYHXMDaJwZEypbjpIK3Srr15kKg==
+X-Google-Smtp-Source: ABdhPJyS2K7No/Iy7mVbNPsYoEYSje2gRGMO/P9wTkTu5AgIlPqa/VzyGgZFr00oj+Lye5y2SIpkBeoCVwE63Mb7TOk=
+X-Received: by 2002:a50:f742:: with SMTP id j2mr39321499edn.72.1606141928430;
+ Mon, 23 Nov 2020 06:32:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20201113145151.68900-1-lars.povlsen@microchip.com> <20201113145151.68900-4-lars.povlsen@microchip.com>
-In-Reply-To: <20201113145151.68900-4-lars.povlsen@microchip.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 23 Nov 2020 15:31:53 +0100
-Message-ID: <CACRpkdaYHTTXC2gEgtCvDk9N8AqWeUyFSXyWp2aiEd97hk55fA@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] arm64: dts: sparx5: Add SGPIO devices
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-29-lee.jones@linaro.org>
+In-Reply-To: <20201112190039.2785914-29-lee.jones@linaro.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 23 Nov 2020 22:31:56 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__Q39YMUGLtrBi0p+kedU5xSHv0dUKz2NA3ajR17Fe-4A@mail.gmail.com>
+Message-ID: <CAAOTY__Q39YMUGLtrBi0p+kedU5xSHv0dUKz2NA3ajR17Fe-4A@mail.gmail.com>
+Subject: Re: [PATCH 28/30] drm/mediatek/mtk_disp_color: Fix formatting and
+ provide missing member description
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 3:52 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+Hi, Lee:
 
-> This adds SGPIO devices for the Sparx5 SoC and configures it for the
-> applicable reference boards.
+Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8813=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=883:01=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function paramete=
+r or member 'ddp_comp' not described in 'mtk_disp_color'
+>  drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function paramete=
+r or member 'crtc' not described in 'mtk_disp_color'
+>  drivers/gpu/drm/mediatek/mtk_disp_color.c:40: warning: Function paramete=
+r or member 'data' not described in 'mtk_disp_color'
+>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Applied to mediatek-drm-next [1], thanks.
 
-Please funnel this patch through the SoC tree for this machine.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
-Yours,
-Linus Walleij
+Regards,
+Chun-Kuang.
+
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mediatek@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_disp_color.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/=
+mediatek/mtk_disp_color.c
+> index 3ae9c810845bb..a788ff95ed6e4 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+> @@ -30,8 +30,9 @@ struct mtk_disp_color_data {
+>
+>  /**
+>   * struct mtk_disp_color - DISP_COLOR driver structure
+> - * @ddp_comp - structure containing type enum and hardware resources
+> - * @crtc - associated crtc to report irq events to
+> + * @ddp_comp: structure containing type enum and hardware resources
+> + * @crtc: associated crtc to report irq events to
+> + * @data: platform colour driver data
+>   */
+>  struct mtk_disp_color {
+>         struct mtk_ddp_comp                     ddp_comp;
+> --
+> 2.25.1
+>
