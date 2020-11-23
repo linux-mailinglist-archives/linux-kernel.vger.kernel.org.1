@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94E02C0B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 379B82C0B45
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389019AbgKWNX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731526AbgKWMf1 (ORCPT
+        id S2388981AbgKWNW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:22:27 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7667 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731825AbgKWNWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:35:27 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24021C061A4F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:35:27 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id e139so23534969lfd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:35:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bIWsoLneay5Kl8XDCK10cRcYyCYPRUIRK+zSmVlUvos=;
-        b=ucPq/htyydn+9nClVGlZXYjYlkUMJiVSI6//s3K2lB127+Dttlcf30ubg2H0y6FtTe
-         0t0/uAcNyjks0BNC+Nc9WQM9twGuyQgzeJDmHOJCcuG+BPEgo4hZphWquRikKVGCaEDH
-         fZ9J0t0/u2VfMvu3ThtvvLpxoqAXFYzigtfxsm/UFO7lW8Qd2SlHVODvvjva2lUIv9Wh
-         C56U3YkqIoZLIrq/Q6mXCqbIVVZjrdUbXXTgF57i/vdQhFyGr1ys40XzGUOvAyMl6YSB
-         r9W3JHWAvhB32/0yGKToSVztgYnBmSn1zD2LDPjUKQH80SPA+8oNJEecXJ/c2Cat6vX+
-         DDsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bIWsoLneay5Kl8XDCK10cRcYyCYPRUIRK+zSmVlUvos=;
-        b=rfroiApzmBHgXJilmVm2SfStU07j9mwgepburGhfsEU5YQe49IrJpaaXZsF+8HKea9
-         H5YcHsXDjBF7NuVDLlnKIt9bgx9Q2S/ffCw1zT8ALjJ7hXL+fc7OGbsILvOP9q+aa3Yu
-         f3OQ7oN7G4DrAJcev7QtAtXT7NXqoS5A11Ubo0aTTn/1n47DgpXhjajUHdSN4v+tgbxj
-         YHFW6jAVAqQp5KKmoKvTCE0oXTrdlg6ruEqwOPmb/G56bIrJ8CeVb4GjC7EdefT/YWpk
-         hX+zXCYk7caBs7v+9Bpp6vPdIgK1JJQTNXxeCwGFhv3IIcIcbyG/JTnAyHqzY8iLnctl
-         tQUA==
-X-Gm-Message-State: AOAM530GXS8wKeLlqBiU9ZiIyj9vtkNEvlzzaF1NHW0amg+ZM26Ovw/E
-        rHN2ArlJH7Xu4mQWWf7xMZFGuTv4NDTBzN2kLkWgvQ==
-X-Google-Smtp-Source: ABdhPJyKTHrZB4S6+zJWCf7UD8YLgth7EXVZo1EcgOOYpBLPQaWWmzkLYbQnaZmrG7aYqRK3IZDf1ocx2qEm2ucjD18=
-X-Received: by 2002:a19:5f11:: with SMTP id t17mr1536573lfb.572.1606134925520;
- Mon, 23 Nov 2020 04:35:25 -0800 (PST)
+        Mon, 23 Nov 2020 08:22:21 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cfnqq5QnKz15Qyl;
+        Mon, 23 Nov 2020 21:21:59 +0800 (CST)
+Received: from [10.174.176.199] (10.174.176.199) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 23 Nov 2020 21:22:09 +0800
+To:     <fweisbec@gmail.com>, <tglx@linutronix.de>, <mingo@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Shiyuan Hu <hushiyuan@huawei.com>,
+        Hewenliang <hewenliang4@huawei.com>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Subject: nohz: Update tick instead of restarting tick in tick_nohz_idle_exit()
+Message-ID: <66014fea-7b84-358b-137d-d15190241528@huawei.com>
+Date:   Mon, 23 Nov 2020 21:22:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20201106042710.55979-1-john.stultz@linaro.org>
- <20201106042710.55979-3-john.stultz@linaro.org> <20201116155936.GE2224373@ulmo>
- <20201116163603.GA30507@willie-the-truck>
-In-Reply-To: <20201116163603.GA30507@willie-the-truck>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 23 Nov 2020 13:35:14 +0100
-Message-ID: <CACRpkdZ9P0vG-deWmK8A-zRZbndq1gz_oaK_b128bu4NfUB+Nw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-To:     Will Deacon <will@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.199]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 5:36 PM Will Deacon <will@kernel.org> wrote:
+In realtime scenarios, the "nohz_full" parameter is configured. Tick
+interference is not expected when there is only one realtime thread.
+But when the idle thread is switched to the realtime thread, the tick
+timer is restarted always.
 
-> Linus -- please can you drop this one (patch 3/3) for now, given that it's
-> causing problems?
+So on the nohz full mode, it is unnecessary to restart the tick timer
+when there is only one realtime thread. Adding can_stop_full_tick()
+before restarting the tick, if it return true, keep tick stopped.
 
-Reverted now, sorry for missing to do this earlier.
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+---
+ kernel/time/tick-sched.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-Yours,
-Linus Walleij
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index cc7cba20382e..f664c7735cab 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1208,6 +1208,20 @@ void tick_nohz_idle_restart_tick(void)
+ 		__tick_nohz_idle_restart_tick(ts, ktime_get());
+ }
+
++static void tick_nohz_update_tick(struct tick_sched *ts, ktime_t now)
++{
++#ifdef CONFIG_NO_HZ_FULL
++	int cpu = smp_processor_id();
++
++	if (tick_nohz_full_cpu(cpu) && can_stop_full_tick(cpu, ts)) {
++		tick_nohz_stop_sched_tick(ts, cpu);
++		tick_nohz_account_idle_ticks(ts);
++		return;
++	}
++#endif
++	__tick_nohz_idle_restart_tick(ts, now);
++}
++
+ /**
+  * tick_nohz_idle_exit - restart the idle tick from the idle task
+  *
+@@ -1237,7 +1251,7 @@ void tick_nohz_idle_exit(void)
+ 		tick_nohz_stop_idle(ts, now);
+
+ 	if (tick_stopped)
+-		__tick_nohz_idle_restart_tick(ts, now);
++		tick_nohz_update_tick(ts, now);
+
+ 	local_irq_enable();
+ }
+-- 
+2.18.4
