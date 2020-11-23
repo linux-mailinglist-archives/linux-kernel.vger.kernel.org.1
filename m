@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5356A2C05FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A9D2C076B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730133AbgKWM0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:26:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36006 "EHLO mail.kernel.org"
+        id S1732531AbgKWMkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:40:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730118AbgKWM0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:14 -0500
+        id S1732517AbgKWMkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:40:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C1D520728;
-        Mon, 23 Nov 2020 12:26:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF0CE20732;
+        Mon, 23 Nov 2020 12:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134373;
-        bh=T+K1zlRew3ryGsi62w+reYxMmI8B1UZy564mOS2Y14k=;
+        s=korg; t=1606135236;
+        bh=AmD7T3beoWo/DzHnBurLwTXjZxHiMjYyblxw0C8IgR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qq/32oXViiGDIFgrIKGk/nmp2kphBJNENcghikeuwbZdtmBsmbjXUZxzY9vFRULWd
-         pTP++08GKxLiqk5Fh2N64CuB4YTrleq7ZC6JrdYmR/kbLJHWxp0mHCTN+X9O9gaJ1M
-         l1aPut2jbsJUXX/AVX8BbyupDqNfttrH9xqDs7qo=
+        b=vvyyP28FpgIEZvrYCoeijTj/cKR6wJa9cFqblAW4M9oxcX3dhH7z3qfmCBMjtSgpj
+         lqY+QkqhW7cpL+uLf4PK/1h7aUXECkjh/Z7XZmn/NG/QCDyUV/F15QSIAVHlWF2PR2
+         L5tHHLd889Cn/UzE6S/E4b/M2p+9VNmGoyX9Kf8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com,
-        syzbot+4c81fe92e372d26c4246@syzkaller.appspotmail.com,
-        syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com,
-        syzbot+abed06851c5ffe010921@syzkaller.appspotmail.com,
-        syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com,
-        syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.9 45/47] mac80211: free sta in sta_info_insert_finish() on errors
-Date:   Mon, 23 Nov 2020 13:22:31 +0100
-Message-Id: <20201123121807.728010760@linuxfoundation.org>
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Fugang Duan <fugang.duan@nxp.com>
+Subject: [PATCH 5.4 124/158] tty: serial: imx: keep console clocks always on
+Date:   Mon, 23 Nov 2020 13:22:32 +0100
+Message-Id: <20201123121825.914709199@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,72 +43,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-commit 7bc40aedf24d31d8bea80e1161e996ef4299fb10 upstream.
+commit e67c139c488e84e7eae6c333231e791f0e89b3fb upstream.
 
-If sta_info_insert_finish() fails, we currently keep the station
-around and free it only in the caller, but there's only one such
-caller and it always frees it immediately.
+For below code, there has chance to cause deadlock in SMP system:
+Thread 1:
+clk_enable_lock();
+pr_info("debug message");
+clk_enable_unlock();
 
-As syzbot found, another consequence of this split is that we can
-put things that sleep only into __cleanup_single_sta() and not in
-sta_info_free(), but this is the only place that requires such of
-sta_info_free() now.
+Thread 2:
+imx_uart_console_write()
+	clk_enable()
+		clk_enable_lock();
 
-Change this to free the station in sta_info_insert_finish(), in
-which case we can still sleep. This will also let us unify the
-cleanup code later.
+Thread 1:
+Acuired clk enable_lock -> printk -> console_trylock_spinning
+Thread 2:
+console_unlock() -> imx_uart_console_write -> clk_disable -> Acquite clk enable_lock
 
-Cc: stable@vger.kernel.org
-Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
-Reported-by: syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com
-Reported-by: syzbot+4c81fe92e372d26c4246@syzkaller.appspotmail.com
-Reported-by: syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com
-Reported-by: syzbot+abed06851c5ffe010921@syzkaller.appspotmail.com
-Reported-by: syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com
-Reported-by: syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20201112112201.ee6b397b9453.I9c31d667a0ea2151441cc64ed6613d36c18a48e0@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+So the patch is to keep console port clocks always on like
+other console drivers.
+
+Fixes: 1cf93e0d5488 ("serial: imx: remove the uart_console() check")
+Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Link: https://lore.kernel.org/r/20201111025136.29818-1-fugang.duan@nxp.com
+Cc: stable <stable@vger.kernel.org>
+[fix up build warning - gregkh]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/mac80211/sta_info.c |   14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ drivers/tty/serial/imx.c |   20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -601,7 +601,7 @@ static int sta_info_insert_finish(struct
-  out_drop_sta:
- 	local->num_sta--;
- 	synchronize_net();
--	__cleanup_single_sta(sta);
-+	cleanup_single_sta(sta);
-  out_err:
- 	mutex_unlock(&local->sta_mtx);
- 	kfree(sinfo);
-@@ -620,19 +620,13 @@ int sta_info_insert_rcu(struct sta_info
- 
- 	err = sta_info_insert_check(sta);
- 	if (err) {
-+		sta_info_free(local, sta);
- 		mutex_unlock(&local->sta_mtx);
- 		rcu_read_lock();
--		goto out_free;
-+		return err;
- 	}
- 
--	err = sta_info_insert_finish(sta);
--	if (err)
--		goto out_free;
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -1942,16 +1942,6 @@ imx_uart_console_write(struct console *c
+ 	unsigned int ucr1;
+ 	unsigned long flags = 0;
+ 	int locked = 1;
+-	int retval;
 -
--	return 0;
-- out_free:
--	sta_info_free(local, sta);
--	return err;
-+	return sta_info_insert_finish(sta);
+-	retval = clk_enable(sport->clk_per);
+-	if (retval)
+-		return;
+-	retval = clk_enable(sport->clk_ipg);
+-	if (retval) {
+-		clk_disable(sport->clk_per);
+-		return;
+-	}
+ 
+ 	if (sport->port.sysrq)
+ 		locked = 0;
+@@ -1987,9 +1977,6 @@ imx_uart_console_write(struct console *c
+ 
+ 	if (locked)
+ 		spin_unlock_irqrestore(&sport->port.lock, flags);
+-
+-	clk_disable(sport->clk_ipg);
+-	clk_disable(sport->clk_per);
  }
  
- int sta_info_insert(struct sta_info *sta)
+ /*
+@@ -2090,15 +2077,14 @@ imx_uart_console_setup(struct console *c
+ 
+ 	retval = uart_set_options(&sport->port, co, baud, parity, bits, flow);
+ 
+-	clk_disable(sport->clk_ipg);
+ 	if (retval) {
+-		clk_unprepare(sport->clk_ipg);
++		clk_disable_unprepare(sport->clk_ipg);
+ 		goto error_console;
+ 	}
+ 
+-	retval = clk_prepare(sport->clk_per);
++	retval = clk_prepare_enable(sport->clk_per);
+ 	if (retval)
+-		clk_unprepare(sport->clk_ipg);
++		clk_disable_unprepare(sport->clk_ipg);
+ 
+ error_console:
+ 	return retval;
 
 
