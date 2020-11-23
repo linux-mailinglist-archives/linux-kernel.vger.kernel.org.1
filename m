@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A492C0BE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019652C0AEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389396AbgKWNcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:32:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36586 "EHLO mail.kernel.org"
+        id S1731026AbgKWMcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:32:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730157AbgKWM0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:33 -0500
+        id S1730916AbgKWMbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:31:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 476F520888;
-        Mon, 23 Nov 2020 12:26:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A4C520781;
+        Mon, 23 Nov 2020 12:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134392;
-        bh=8zuK+EHkzGHFrY+j+zhJ+t4rmPsnmwXt3TG/2VbhS7w=;
+        s=korg; t=1606134701;
+        bh=2SJF0xW/s368wSUMH5FRjmo7TsU0/ZJWqMCftbMkCu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRdEVCkWbYs3Ecab9MwlWINPB/0T2zx543xOocM8Sr0aCP0K9xcB2uzzhLpJ6J7zC
-         laz2SYlRsU3fjDzDMzuWsHhGoVExsly6X4YsQV/h5rH0EcVlvf82mcEUqe9/CpF7vK
-         4TREN+Rm5qu+BphhKtxKcQRn5GW1O+yaIeZL3HIg=
+        b=r61iYQx1ZCFRR74/xs7VfcIi515yE+Pj0XVU3ywVwtoD2uOs29bAQJlxenmB9dYQX
+         fUinJ9W3LqliE1aeuAxiTgoQ+cGndoV5rQ2ro9fjRul34vgf2PwmrT4mNB2oH7Lcwy
+         OULl6/RioztyzYMZ4xLWKyfME2M/FXs2b/rbLbtg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?= 
+        <remigiusz.kollataj@mobica.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 25/47] ARM: dts: imx50-evk: Fix the chip select 1 IOMUX
-Date:   Mon, 23 Nov 2020 13:22:11 +0100
-Message-Id: <20201123121806.766422455@linuxfoundation.org>
+Subject: [PATCH 4.19 52/91] can: mcba_usb: mcba_usb_start_xmit(): first fill skb, then pass to can_put_echo_skb()
+Date:   Mon, 23 Nov 2020 13:22:12 +0100
+Message-Id: <20201123121811.850807835@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-[ Upstream commit 33d0d843872c5ddbe28457a92fc6f2487315fb9f ]
+[ Upstream commit 81c9c8e0adef3285336b942f93287c554c89e6c6 ]
 
-The SPI chip selects are represented as:
+The driver has to first fill the skb with data and then handle it to
+can_put_echo_skb(). This patch moves the can_put_echo_skb() down, right before
+sending the skb out via USB.
 
-cs-gpios = <&gpio4 11 GPIO_ACTIVE_LOW>, <&gpio4 13 GPIO_ACTIVE_LOW>;
-
-, which means that they are used in GPIO function instead of native
-SPI mode.
-
-Fix the IOMUX for the chip select 1 to use GPIO4_13 instead of
-the native CSPI_SSI function.
-
-Fixes: c605cbf5e135 ("ARM: dts: imx: add device tree support for Freescale imx50evk board")
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
+Cc: Remigiusz Kołłątaj <remigiusz.kollataj@mobica.com>
+Link: https://lore.kernel.org/r/20201111221204.1639007-1-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx50-evk.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/mcba_usb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx50-evk.dts b/arch/arm/boot/dts/imx50-evk.dts
-index 27d763c7a307d..4dbd180e72ba6 100644
---- a/arch/arm/boot/dts/imx50-evk.dts
-+++ b/arch/arm/boot/dts/imx50-evk.dts
-@@ -66,7 +66,7 @@
- 				MX50_PAD_CSPI_MISO__CSPI_MISO		0x00
- 				MX50_PAD_CSPI_MOSI__CSPI_MOSI		0x00
- 				MX50_PAD_CSPI_SS0__GPIO4_11		0xc4
--				MX50_PAD_ECSPI1_MOSI__CSPI_SS1		0xf4
-+				MX50_PAD_ECSPI1_MOSI__GPIO4_13		0x84
- 			>;
- 		};
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index 1b0afeaf1a3c2..896f5b0227295 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -337,8 +337,6 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
+ 	if (!ctx)
+ 		return NETDEV_TX_BUSY;
  
+-	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
+-
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+ 		/* SIDH    | SIDL                 | EIDH   | EIDL
+ 		 * 28 - 21 | 20 19 18 x x x 17 16 | 15 - 8 | 7 - 0
+@@ -368,6 +366,8 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		usb_msg.dlc |= MCBA_DLC_RTR_MASK;
+ 
++	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
++
+ 	err = mcba_usb_xmit(priv, (struct mcba_usb_msg *)&usb_msg, ctx);
+ 	if (err)
+ 		goto xmit_failed;
 -- 
 2.27.0
 
