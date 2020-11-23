@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCE92C07E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31742C07E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733286AbgKWMpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:45:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57012 "EHLO mail.kernel.org"
+        id S1730216AbgKWMpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:45:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733137AbgKWMnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:43:50 -0500
+        id S1733168AbgKWMoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:44:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91B952076E;
-        Mon, 23 Nov 2020 12:43:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAC34208C3;
+        Mon, 23 Nov 2020 12:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135430;
-        bh=np4gkClCu/IG0KMtmwyrWwgIOOEPiPKW8reOaJ/AqKE=;
+        s=korg; t=1606135442;
+        bh=aYS2f1e6fLmruGW0G06TxwfCvJ1cA7p5SDkLwRweTKk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QpWgcx7CKZ792W71KFrkTJnJOb/G7xoXRjKQgi68FYUCgov5cnVbmAlK7YWto8oD2
-         8c+ETsKDVhakowPBiuGvdiRtTm9Xu0SE/+QL6wGWA0Vgjhxfz2OdaiK+/wHMo5TpR6
-         +SL8SuecpPyuEY8t+VPIJ4Be8GCp89mbksGdI9Uc=
+        b=m+SN3pgJnUtEwfYfYDS6y24w6VWKh6y5mSj3TT8eXTbOu1F6LN3dK6esLSgWjdM15
+         wjpuecwMC9/m4aGGlZBxZVKsu4KEWlYXNTiGvYJP3c+YoU8qBU3qLiOt7m1EAFIISL
+         lMEkvUmpMG10N3M5xQnIIffzALGyPKHJh+wsjEYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 065/252] arm64: smp: Tell RCU about CPUs that fail to come online
-Date:   Mon, 23 Nov 2020 13:20:15 +0100
-Message-Id: <20201123121838.726749582@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Barker <pbarker@konsulko.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 069/252] hwmon: (pwm-fan) Fix RPM calculation
+Date:   Mon, 23 Nov 2020 13:20:19 +0100
+Message-Id: <20201123121838.919203389@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -43,73 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Paul Barker <pbarker@konsulko.com>
 
-[ Upstream commit 04e613ded8c26489b3e0f9101b44462f780d1a35 ]
+[ Upstream commit fd8feec665fef840277515a5c2b9b7c3e3970fad ]
 
-Commit ce3d31ad3cac ("arm64/smp: Move rcu_cpu_starting() earlier") ensured
-that RCU is informed early about incoming CPUs that might end up calling
-into printk() before they are online. However, if such a CPU fails the
-early CPU feature compatibility checks in check_local_cpu_capabilities(),
-then it will be powered off or parked without informing RCU, leading to
-an endless stream of stalls:
+To convert the number of pulses counted into an RPM estimation, we need
+to divide by the width of our measurement interval instead of
+multiplying by it. If the width of the measurement interval is zero we
+don't update the RPM value to avoid dividing by zero.
 
-  | rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-  | rcu:	2-O...: (0 ticks this GP) idle=002/1/0x4000000000000000 softirq=0/0 fqs=2593
-  | (detected by 0, t=5252 jiffies, g=9317, q=136)
-  | Task dump for CPU 2:
-  | task:swapper/2       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x00000028
-  | Call trace:
-  | ret_from_fork+0x0/0x30
+We also don't need to do 64-bit division, with 32-bits we can handle a
+fan running at over 4 million RPM.
 
-Ensure that the dying CPU invokes rcu_report_dead() prior to being powered
-off or parked.
-
-Cc: Qian Cai <cai@redhat.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Qian Cai <cai@redhat.com>
-Link: https://lore.kernel.org/r/20201105222242.GA8842@willie-the-truck
-Link: https://lore.kernel.org/r/20201106103602.9849-3-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Paul Barker <pbarker@konsulko.com>
+Link: https://lore.kernel.org/r/20201111164643.7087-1-pbarker@konsulko.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/smp.c | 1 +
- kernel/rcu/tree.c       | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/hwmon/pwm-fan.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 98c059b6bacae..361cfc55cf5a7 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -401,6 +401,7 @@ void cpu_die_early(void)
+diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
+index 17bb64299bfd8..3642086498d98 100644
+--- a/drivers/hwmon/pwm-fan.c
++++ b/drivers/hwmon/pwm-fan.c
+@@ -54,16 +54,18 @@ static irqreturn_t pulse_handler(int irq, void *dev_id)
+ static void sample_timer(struct timer_list *t)
+ {
+ 	struct pwm_fan_ctx *ctx = from_timer(ctx, t, rpm_timer);
++	unsigned int delta = ktime_ms_delta(ktime_get(), ctx->sample_start);
+ 	int pulses;
+-	u64 tmp;
  
- 	/* Mark this CPU absent */
- 	set_cpu_present(cpu, 0);
-+	rcu_report_dead(cpu);
+-	pulses = atomic_read(&ctx->pulses);
+-	atomic_sub(pulses, &ctx->pulses);
+-	tmp = (u64)pulses * ktime_ms_delta(ktime_get(), ctx->sample_start) * 60;
+-	do_div(tmp, ctx->pulses_per_revolution * 1000);
+-	ctx->rpm = tmp;
++	if (delta) {
++		pulses = atomic_read(&ctx->pulses);
++		atomic_sub(pulses, &ctx->pulses);
++		ctx->rpm = (unsigned int)(pulses * 1000 * 60) /
++			(ctx->pulses_per_revolution * delta);
++
++		ctx->sample_start = ktime_get();
++	}
  
- 	if (IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
- 		update_cpu_boot_status(CPU_KILL_ME);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c8f62e2d02761..b4924fefe2745 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4024,7 +4024,6 @@ void rcu_cpu_starting(unsigned int cpu)
- 	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
+-	ctx->sample_start = ktime_get();
+ 	mod_timer(&ctx->rpm_timer, jiffies + HZ);
  }
  
--#ifdef CONFIG_HOTPLUG_CPU
- /*
-  * The outgoing function has no further need of RCU, so remove it from
-  * the rcu_node tree's ->qsmaskinitnext bit masks.
-@@ -4064,6 +4063,7 @@ void rcu_report_dead(unsigned int cpu)
- 	per_cpu(rcu_cpu_started, cpu) = 0;
- }
- 
-+#ifdef CONFIG_HOTPLUG_CPU
- /*
-  * The outgoing CPU has just passed through the dying-idle state, and we
-  * are being invoked from the CPU that was IPIed to continue the offline
 -- 
 2.27.0
 
