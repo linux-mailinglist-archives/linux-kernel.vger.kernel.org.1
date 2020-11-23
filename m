@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D732C0827
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452202C0A15
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732712AbgKWMqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:46:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58014 "EHLO mail.kernel.org"
+        id S2387507AbgKWNQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:16:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733244AbgKWMok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:44:40 -0500
+        id S1733086AbgKWMnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:43:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65B7320857;
-        Mon, 23 Nov 2020 12:44:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1447B20888;
+        Mon, 23 Nov 2020 12:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135479;
-        bh=Uq7Mm0fH0GeoEf0FK7NZg4YvfEhyM/7m8LEGhI5rbic=;
+        s=korg; t=1606135410;
+        bh=bmntKh40Rt/hnMj496EtbyZ+MsWTcvjmdL9eQkWgf1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TBtGR32wdo0QFHQHlNFE36cCOPf3F1OhM1QKK0H6EgOycFfvcZqtrfocuosFs7UyL
-         zGMfd+GHtf2SazUsUijXjtQxp5CjtSag4TXsrTJ+luUIni2gO970Q0/zftiEQLiU/Y
-         Qs0ioRn0LhX5IUlvOmN1xT6Lo4G0DQN1CwwjRI7c=
+        b=1pux28HPDksuhxLzTwRQHKAmt1KGwDzfuXcHL0xp5Iirou9O+CWMZ1IGsyBpofUhW
+         tK0UETexJqs6deCoV8ZNSIBSPFrI/oZfWiJGujGE3jQisFxoUaM4IxGAL5lXuTA0bj
+         SIv9SbOijhVFQp79jiedu54KWgUz+3uuFSiDxraI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>,
-        Ladislav Michl <ladis@linux-mips.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Tero Kristo <t-kristo@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 054/252] Revert "Revert "gpio: omap: Fix lost edge wake-up interrupts""
-Date:   Mon, 23 Nov 2020 13:20:04 +0100
-Message-Id: <20201123121838.197550694@linuxfoundation.org>
+Subject: [PATCH 5.9 059/252] scsi: ufs: Try to save power mode change and UIC cmd completion timeout
+Date:   Mon, 23 Nov 2020 13:20:09 +0100
+Message-Id: <20201123121838.441129724@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -50,62 +44,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Can Guo <cang@codeaurora.org>
 
-[ Upstream commit 7ffa08169849be898eed6f3694aab8c425497749 ]
+[ Upstream commit 0f52fcb99ea2738a0a0f28e12cf4dd427069dd2a ]
 
-This reverts commit 579ced8fdb00b8e94304a83e3cc419f6f8eab08e.
+Use the uic_cmd->cmd_active as a flag to track the lifecycle of an UIC cmd.
+The flag is set before sending the UIC cmd and cleared in IRQ handler. When
+a PMC or UIC cmd completion timeout happens, if the flag is not set,
+instead of returning timeout error, we still treat it as a successful
+operation.  This is to deal with the scenario in which completion has been
+raised but the one waiting for the completion cannot be awaken in time due
+to kernel scheduling problem.
 
-Turns out I was overly optimistic about cpu_pm blocking idle being a
-solution for handling edge interrupts. While it helps in preventing
-entering idle states that potentially lose context, we can still get
-an edge interrupt triggering while entering idle. So we need to also
-add back the workaround for seeing if there are any pending edge
-interrupts when waking up.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Ladislav Michl <ladis@linux-mips.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: Tero Kristo <t-kristo@ti.com>
-Link: https://lore.kernel.org/r/20201028060556.56038-1-tony@atomide.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/1604384682-15837-3-git-send-email-cang@codeaurora.org
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-omap.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c | 26 ++++++++++++++++++++++++--
+ drivers/scsi/ufs/ufshcd.h |  2 ++
+ 2 files changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-index 0ea640fb636cf..3b87989e27640 100644
---- a/drivers/gpio/gpio-omap.c
-+++ b/drivers/gpio/gpio-omap.c
-@@ -1114,13 +1114,23 @@ static void omap_gpio_idle(struct gpio_bank *bank, bool may_lose_context)
- {
- 	struct device *dev = bank->chip.parent;
- 	void __iomem *base = bank->base;
--	u32 nowake;
-+	u32 mask, nowake;
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 0cb3e71f30ffb..54928a837dad0 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -2100,10 +2100,20 @@ ufshcd_wait_for_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd)
+ 	unsigned long flags;
  
- 	bank->saved_datain = readl_relaxed(base + bank->regs->datain);
- 
- 	if (!bank->enabled_non_wakeup_gpios)
- 		goto update_gpio_context_count;
- 
-+	/* Check for pending EDGE_FALLING, ignore EDGE_BOTH */
-+	mask = bank->enabled_non_wakeup_gpios & bank->context.fallingdetect;
-+	mask &= ~bank->context.risingdetect;
-+	bank->saved_datain |= mask;
+ 	if (wait_for_completion_timeout(&uic_cmd->done,
+-					msecs_to_jiffies(UIC_CMD_TIMEOUT)))
++					msecs_to_jiffies(UIC_CMD_TIMEOUT))) {
+ 		ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
+-	else
++	} else {
+ 		ret = -ETIMEDOUT;
++		dev_err(hba->dev,
++			"uic cmd 0x%x with arg3 0x%x completion timeout\n",
++			uic_cmd->command, uic_cmd->argument3);
 +
-+	/* Check for pending EDGE_RISING, ignore EDGE_BOTH */
-+	mask = bank->enabled_non_wakeup_gpios & bank->context.risingdetect;
-+	mask &= ~bank->context.fallingdetect;
-+	bank->saved_datain &= ~mask;
++		if (!uic_cmd->cmd_active) {
++			dev_err(hba->dev, "%s: UIC cmd has been completed, return the result\n",
++				__func__);
++			ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
++		}
++	}
+ 
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	hba->active_uic_cmd = NULL;
+@@ -2135,6 +2145,7 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba, struct uic_command *uic_cmd,
+ 	if (completion)
+ 		init_completion(&uic_cmd->done);
+ 
++	uic_cmd->cmd_active = 1;
+ 	ufshcd_dispatch_uic_cmd(hba, uic_cmd);
+ 
+ 	return 0;
+@@ -3774,10 +3785,18 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
+ 		dev_err(hba->dev,
+ 			"pwr ctrl cmd 0x%x with mode 0x%x completion timeout\n",
+ 			cmd->command, cmd->argument3);
 +
- 	if (!may_lose_context)
- 		goto update_gpio_context_count;
++		if (!cmd->cmd_active) {
++			dev_err(hba->dev, "%s: Power Mode Change operation has been completed, go check UPMCRS\n",
++				__func__);
++			goto check_upmcrs;
++		}
++
+ 		ret = -ETIMEDOUT;
+ 		goto out;
+ 	}
+ 
++check_upmcrs:
+ 	status = ufshcd_get_upmcrs(hba);
+ 	if (status != PWR_LOCAL) {
+ 		dev_err(hba->dev,
+@@ -4887,11 +4906,14 @@ static irqreturn_t ufshcd_uic_cmd_compl(struct ufs_hba *hba, u32 intr_status)
+ 			ufshcd_get_uic_cmd_result(hba);
+ 		hba->active_uic_cmd->argument3 =
+ 			ufshcd_get_dme_attr_val(hba);
++		if (!hba->uic_async_done)
++			hba->active_uic_cmd->cmd_active = 0;
+ 		complete(&hba->active_uic_cmd->done);
+ 		retval = IRQ_HANDLED;
+ 	}
+ 
+ 	if ((intr_status & UFSHCD_UIC_PWR_MASK) && hba->uic_async_done) {
++		hba->active_uic_cmd->cmd_active = 0;
+ 		complete(hba->uic_async_done);
+ 		retval = IRQ_HANDLED;
+ 	}
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 363589c0bd370..23f46c7b8cb28 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -64,6 +64,7 @@ enum dev_cmd_type {
+  * @argument1: UIC command argument 1
+  * @argument2: UIC command argument 2
+  * @argument3: UIC command argument 3
++ * @cmd_active: Indicate if UIC command is outstanding
+  * @done: UIC command completion
+  */
+ struct uic_command {
+@@ -71,6 +72,7 @@ struct uic_command {
+ 	u32 argument1;
+ 	u32 argument2;
+ 	u32 argument3;
++	int cmd_active;
+ 	struct completion done;
+ };
  
 -- 
 2.27.0
