@@ -2,239 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AA22C0976
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3D32C091C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388702AbgKWNHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:07:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        id S2388344AbgKWNEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732870AbgKWMtI (ORCPT
+        with ESMTP id S2387604AbgKWMvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:49:08 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7045AC061A4F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:49:05 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id cf17so13376246edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:49:05 -0800 (PST)
+        Mon, 23 Nov 2020 07:51:18 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCE0C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:51:16 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id i9so17963274ioo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:51:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GyUtXV4I7oufOCmRehbSbZihfE2dNAsjJjjjrmEuICw=;
-        b=xzdEz6kB4zBik1uOatoshaBm6LaSKmUojijYt8h9dh2QGrUS76eruUvLIzkSH0eGEe
-         DOl+Li0VGvprWuzJGUffQBqShHCUBvn0FG05F8PWA7Ix6v7nmuwvqau9BuAUXtBuzc9P
-         biFtftXYWUdPL666mAAt48VYycPt4mDE/nFamResc8Jm6tepnfAiJpTSHUAnPk79ypk0
-         LDR50k++wjeWldDm+gC03roaoqPBQQqL0fsaZikOBH87K99u1MRrLTd13dwLHowdkXpQ
-         ztf6f/03UDNnrWdRmhDlhaGsgjm9AQ0a+uIiw96KobpddpBrzU5tcbP8H1dC1S7gVEf2
-         xPfg==
+        bh=ChGGp6ozLF8Hqqacc/T6RB3u8BJrScH/8AVJQ+SJlqc=;
+        b=GQmvg0K83WBAgSVzaF5VAtfXr7EQ+BDfUtj6SK+fUpCnpwbNNHQUYIsmOVKpmvYRzq
+         V8jgwfAcwElh6TmMc5cXC3anZmJ/tmxGBxCi4OyFTzN1Fvj6vhodrqFnC31G6TG7aWyU
+         hoCnwnNzFdcmk9JoLcfDlUdNLwNrM/7emgYFB4F4iXjq7xdnzW6Ex444dC+SNs2k0tRE
+         de5kjD/LMtm/LiJjWkJr3o0PAFcPTOZx+G51ZOu1aDAv0u2XC36NFBoBBshUrC1aaIa2
+         mH8VZiF3i5CBF1WeoLIX2z9FFuLcvuYcTYSE0KSCTveQ50TkXaRrUKqWUSSfmq/D7uAt
+         lGkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GyUtXV4I7oufOCmRehbSbZihfE2dNAsjJjjjrmEuICw=;
-        b=kh0xf3D3GEgRT4YdValvVNSuPAGv9i/wSAac3AXNhgmld3atmgt2/lZkyTS5HdgXbn
-         SBsa+A9zSk6SqmOPbjCBQ+cFJYN+KEvD17gMsOQRxC6v6gwW+KgAfLy9leFRVq3mH2CI
-         qJhrKHPYr5OTdLVOTaYq1WHb6ELGKr1PePLXbfjlYBnQLgOesSV2PDmpc+rPsCRb5JoN
-         vc/oL9S5oINUm19gaY52LTbz6iixiGmdrMO0UD8wptOWbefG3eBxGk34g0o2FpOKrZ4O
-         BxZCWwp2OttywS90akHQPZKmUosVISOJ4s3y6ODamQzkDF9D64KvUfiDn3IfPjbBLMHP
-         +6Vw==
-X-Gm-Message-State: AOAM5333yxOAndo5PwMl52V5qjsYgtjaXsqjDhnw3KMF1OpnQ7YnfAqb
-        wJ9KnNzaI9Yka+6D09j9xJJvRZ5zoBBsRX6RFcba7g==
-X-Google-Smtp-Source: ABdhPJzlanZtbb9BGdfii0DcE9OSCvj2yyVYSpep2MYBMNOh1SH5wMpSHxztxzQJLoz9y7yPdd5mKxJnY6cjP3OZ38I=
-X-Received: by 2002:aa7:cb52:: with SMTP id w18mr38774344edt.362.1606135744041;
- Mon, 23 Nov 2020 04:49:04 -0800 (PST)
+        bh=ChGGp6ozLF8Hqqacc/T6RB3u8BJrScH/8AVJQ+SJlqc=;
+        b=g/DmNxBahtgw8U7ezxGGj9/VFpkz7gBSgg00SOUb/JD678OY5CzI6/NKs3NtBdq+7W
+         KCp0nV+9plJupfRCA2Sv2jE0XH0f5z8RVUsiD8+Ke8QYaE3V6DQdMCuBccYQtUtjEST4
+         BZ2ZLXUiijTmhw6LVCcZDPLbllHYuAVJONbz+Pzgyt3ViVVHtxSN1KmSM+eebroft9bU
+         XlN5MCupuOEGGgcz7QNQ7H0WJGEuqUsqIqNvAc1gpcqyjP+7BKzi+LVgzN2rDnt4spZG
+         bBszjpEH9Mao/UmgyN6wl9I5QI7PKGSEXDvm1mESh+K4at3raORmSk2mjEqtY2n8DeZ1
+         K3CQ==
+X-Gm-Message-State: AOAM532CLC6dtbf8DZXSJZAE5nxuGlyORvRQ3eJGetQkFYnFtotd9nWV
+        v0pv/LKtKpaxXXqTZz+gtj1qnbrBq1vL+3gG/+6qBA==
+X-Google-Smtp-Source: ABdhPJwjSDw9+c6uweVEjlqzf4HyZgrTBKpCxM706Ia1w1xFow0qSWfpDisGwGemBzV99rInzODBnf02oD9HTEO1vyk=
+X-Received: by 2002:a05:6638:15a:: with SMTP id y26mr28570709jao.57.1606135876154;
+ Mon, 23 Nov 2020 04:51:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20200922165535.1356622-1-maxime.chevallier@bootlin.com>
- <20200922165535.1356622-3-maxime.chevallier@bootlin.com> <CAAEAJfCcPRnyjPozXG9rjovO+cJ6ZZBadShs_X9DQCrjSj7mUw@mail.gmail.com>
- <20201123082122.49a08ebb@bootlin.com>
-In-Reply-To: <20201123082122.49a08ebb@bootlin.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Mon, 23 Nov 2020 09:48:51 -0300
-Message-ID: <CAAEAJfD9r=skAPAEZX50Y-EnbeZRy+LEnERR_rvkcoghESEn2w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] media: rockchip: Introduce driver for Rockhip's
- camera interface
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+References: <20201116104242.19907-1-brgl@bgdev.pl> <CAMRc=Mdkr+65Nu7ddjtMHTbedpNf22w1bE97vipKSdXBYm8=fw@mail.gmail.com>
+ <86bf5fda-eeb5-5cb2-901f-a887af7584f6@siemens.com> <4cf1dcf9-93b7-910c-005f-3bf316e0fb64@siemens.com>
+In-Reply-To: <4cf1dcf9-93b7-910c-005f-3bf316e0fb64@siemens.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 23 Nov 2020 13:51:05 +0100
+Message-ID: <CAMRc=Me49Aoz1zVT-raQ8WyS5xhUTLC72J8+j+mTWJSFairU4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] gpio: exar: refactor the driver
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Laight <David.Laight@aculab.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
-
-On Mon, 23 Nov 2020 at 04:21, Maxime Chevallier
-<maxime.chevallier@bootlin.com> wrote:
+On Mon, Nov 23, 2020 at 1:12 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
 >
-> Hi Ezequiel, and thanks a lot for the review !
->
-> On Fri, 2 Oct 2020 14:35:28 -0300
-> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
->
-> > Hi Maxime,
+> On 23.11.20 12:58, Jan Kiszka wrote:
+> > On 23.11.20 12:38, Bartosz Golaszewski wrote:
+> >> On Mon, Nov 16, 2020 at 11:42 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >>>
+> >>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >>>
+> >>> I just wanted to convert the driver to using simpler IDA API but ended up
+> >>> quickly converting it to using regmap. Unfortunately I don't have the HW
+> >>> to test it so marking the patches that introduce functional change as RFT
+> >>> and Cc'ing the original author.
+> >>>
+> >>
+> >> Hi Jan!
+> >>
+> >> Could you give this last version a final spin before I merge it?
+> >>
 > >
-> >Thanks to Dafna, I found the patch ^_^
+> > [   14.250117] exar_serial 0000:02:00.0: enabling device (0000 -> 0002)
+> > [   14.336622] 0000:02:00.0: ttyS2 at MMIO 0x90000000 (irq = 44, base_baud = 7812500) is a XR17V35X
+> > [   14.391588] 0000:02:00.0: ttyS3 at MMIO 0x90000400 (irq = 44, base_baud = 7812500) is a XR17V35X
+> > [   19.250510] gpio_exar: probe of gpio_exar.1.auto failed with error -22
 > >
-> >The driver looks real good. Just a few comments below.
+> > That's "new"...
 > >
-> >Is the driver passing latest v4l2-compliance tests?
 >
-> I'll post them along with the next iteration of the series.
->
-> >> +config VIDEO_ROCKCHIP_VIP
-> >> +       tristate "Rockchip VIP (Video InPut) Camera Interface"
-> >> +       depends on VIDEO_DEV && VIDEO_V4L2
-> >> +       depends on ARCH_ROCKCHIP || COMPILE_TEST
-> >> +       select VIDEOBUF2_DMA_SG
-> >> +       select VIDEOBUF2_DMA_CONTIG
-> >> +       select V4L2_FWNODE
-> >> +       select V4L2_MEM2MEM_DEV
-> >> +       help
-> >> +         This is a v4l2 driver for Rockchip SOC Camera interface.
-> >> +
-> >> +         To compile this driver as a module choose m here.
-> >> +
-> >
-> >Please add ... "the module will be called {the name}".
->
-> Sure, I will do !
->
-> [...]
->
-> >> +#define VIP_REQ_BUFS_MIN       1
-> >
-> >I think you might want to have more than 1 buffer
-> >as minimum. How about 3? Two for the ping and pong,
-> >and one more in the queue.
->
-> Yes you're correct, 3 should be the strict minimum required buffers
-> here, I didn't update that after adding the dual-buffering mode.
->
-> >> +#define VIP_MIN_WIDTH          64
-> >> +#define VIP_MIN_HEIGHT         64
-> >> +#define VIP_MAX_WIDTH          8192
-> >> +#define VIP_MAX_HEIGHT         8192
-> >> +
-> >> +#define RK_VIP_PLANE_Y                 0
-> >> +#define RK_VIP_PLANE_CBCR              1
-> >> +
-> >> +#define VIP_FETCH_Y_LAST_LINE(VAL) ((VAL) & 0x1fff)
-> >> +/* Check if swap y and c in bt1120 mode */
-> >> +#define VIP_FETCH_IS_Y_FIRST(VAL) ((VAL) & 0xf)
-> >> +
-> >> +/* Get xsubs and ysubs for fourcc formats
-> >> + *
-> >> + * @xsubs: horizontal color samples in a 4*4 matrix, for yuv
-> >> + * @ysubs: vertical color samples in a 4*4 matrix, for yuv
-> >> + */
-> >> +static int fcc_xysubs(u32 fcc, u32 *xsubs, u32 *ysubs)
-> >
-> >See below, you should be using v4l2_fill_pixfmt_mp.
-> >
-> >> +{
-> >> +       switch (fcc) {
-> >> +       case V4L2_PIX_FMT_NV16:
-> >> +       case V4L2_PIX_FMT_NV61:
-> >> +               *xsubs = 2;
-> >> +               *ysubs = 1;
-> >> +               break;
-> >> +       case V4L2_PIX_FMT_NV21:
-> >> +       case V4L2_PIX_FMT_NV12:
-> >> +               *xsubs = 2;
-> >> +               *ysubs = 2;
-> >> +               break;
-> >> +       default:
-> >> +               return -EINVAL;
-> >> +       }
-> >> +
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +static const struct vip_output_fmt out_fmts[] = {
-> >> +       {
-> >> +               .fourcc = V4L2_PIX_FMT_NV16,
-> >> +               .cplanes = 2,
-> >
-> >From what I can see, you are only using this
-> >information to calculate bytesperline and sizeimage,
-> >so you should be using the v4l2_fill_pixfmt_mp() helper.
->
-> You're correct, it indeed makes things much easier and allowed to
-> removed a lot of redundant info here !
->
->
-> >> +static void rk_vip_set_fmt(struct rk_vip_stream *stream,
-> >> +                          struct v4l2_pix_format_mplane *pixm,
-> >> +                          bool try)
-> >> +{
-> >> +       struct rk_vip_device *dev = stream->vipdev;
-> >> +       struct v4l2_subdev_format sd_fmt;
-> >> +       const struct vip_output_fmt *fmt;
-> >> +       struct v4l2_rect input_rect;
-> >> +       unsigned int planes, imagesize = 0;
-> >> +       u32 xsubs = 1, ysubs = 1;
-> >> +       int i;
-> >> +
-> >
-> >I was expecting to see some is_busy or is_streaming check
-> >here, have you tested what happens if you change the format
-> >while streaming, or after buffers are queued?
->
-> Yes correct. I used the stream->state private flag here, but I it was
-> also brought to my attention that there also exists a vb2_is_busy()
-> helper, but I'm unsure if it would be correct to use it here.
+> Bisected to "gpio: exar: switch to using regmap" again.
 >
 
-Long story, short: when the application creates buffers,
-with e.g. REQBUF (see vb2_core_reqbufs), it will call
-the driver (vb2_ops.queue_setup), to get the planes' sizes.
+I'm not sure if you saw my email which I sent at the same time as you
+- but does reverting reg_bits to 16 help?
 
-In the current model, for a given vb2 queue, all the buffers
-are the same size. In practice, the simpler way to express
-this is not allowing S_FMT if there are buffers allocated
-in the queue (vb2_is_busy).
-
-You could relax the vb2_is_busy requirement in your driver,
-but I usually find it's not worth the trouble.
-
->
-> >> +
-> >> +static int rk_vip_g_input(struct file *file, void *fh, unsigned int *i)
-> >> +{
-> >> +       *i = 0;
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +static int rk_vip_s_input(struct file *file, void *fh, unsigned int i)
-> >> +{
-> >
-> >Only one input, why do you need to support this ioctl at all?
->
-> I actually saw a fair amount of existing drivers implementing these
-> callbacks even for only one input, so I don't really know if I should
-> remove it or not ?
->
-
-S_INPUT is used e.g. on capture devices that have multiple
-inputs and can capture from one input at a time.
-
-If the ioctl is empty like this, the driver can simply not support
-the ioctl.
-
-Best regards,
-Ezequiel
+Bart
