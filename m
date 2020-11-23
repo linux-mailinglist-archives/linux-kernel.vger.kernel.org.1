@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DE12C07CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1DB2C079B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733204AbgKWMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:44:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56426 "EHLO mail.kernel.org"
+        id S1732946AbgKWMmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:42:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733050AbgKWMnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:43:15 -0500
+        id S1732707AbgKWMlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:41:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 866D02076E;
-        Mon, 23 Nov 2020 12:43:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37A0920857;
+        Mon, 23 Nov 2020 12:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135394;
-        bh=Vlflz4S5UuU79PFz/XLQj3y3sHe0RbpyB1hvs/40RZE=;
+        s=korg; t=1606135304;
+        bh=/jpYZnt1I94h0DAoaPAZx8Z9mO5ccuJojKLYicp9uhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nq47GgFAPmJYcElUw1cOEQwB919KZkbLpYJRp1mw9sSOsM6cTDjSEduWCbUI/K82U
-         iyYKyUV0jRWcEh+JpPJwg+QP2aMlg+uzRhEuXfzx6Hx456lnIs52wCZpCADPoI+ANH
-         rUWMjW0LL2i8EEmrc0ZgO9aKGf4Tjai+VZuuz2dI=
+        b=A9ZKRdldggdNvObKvekkQazouWLvW/j6IoYTYbCP5Qwl7c2ub2d1x0UkjCBIQV53s
+         eXeUW1PV4YpHuifng+w5Y/v1/B8dzQBpaeGUeqpVL7yB3uh3wWxLDSlphNvM/V3Wjd
+         t2b+mT6QQqTlYUG3hQwxJksTq870dt2wKKt6Ttko=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Michael Chan <michael.chan@broadcom.com>,
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 012/252] net: b44: fix error return code in b44_init_one()
-Date:   Mon, 23 Nov 2020 13:19:22 +0100
-Message-Id: <20201123121836.183117675@linuxfoundation.org>
+Subject: [PATCH 5.9 013/252] net: bridge: add missing counters to ndo_get_stats64 callback
+Date:   Mon, 23 Nov 2020 13:19:23 +0100
+Message-Id: <20201123121836.231919918@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -44,35 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 7b027c249da54f492699c43e26cba486cfd48035 ]
+[ Upstream commit 7a30ecc9237681bb125cbd30eee92bef7e86293d ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+In br_forward.c and br_input.c fields dev->stats.tx_dropped and
+dev->stats.multicast are populated, but they are ignored in
+ndo_get_stats64.
 
-Fixes: 39a6f4bce6b4 ("b44: replace the ssb_dma API with the generic DMA API")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
-Link: https://lore.kernel.org/r/1605582131-36735-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: 28172739f0a2 ("net: fix 64 bit counters on 32 bit arches")
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/58ea9963-77ad-a7cf-8dfd-fc95ab95f606@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/b44.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/bridge/br_device.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/broadcom/b44.c
-+++ b/drivers/net/ethernet/broadcom/b44.c
-@@ -2383,7 +2383,8 @@ static int b44_init_one(struct ssb_devic
- 		goto err_out_free_dev;
+--- a/net/bridge/br_device.c
++++ b/net/bridge/br_device.c
+@@ -223,6 +223,7 @@ static void br_get_stats64(struct net_de
+ 		sum.rx_packets += tmp.rx_packets;
  	}
  
--	if (dma_set_mask_and_coherent(sdev->dma_dev, DMA_BIT_MASK(30))) {
-+	err = dma_set_mask_and_coherent(sdev->dma_dev, DMA_BIT_MASK(30));
-+	if (err) {
- 		dev_err(sdev->dev,
- 			"Required 30BIT DMA mask unsupported by the system\n");
- 		goto err_out_powerdown;
++	netdev_stats_to_stats64(stats, &dev->stats);
+ 	stats->tx_bytes   = sum.tx_bytes;
+ 	stats->tx_packets = sum.tx_packets;
+ 	stats->rx_bytes   = sum.rx_bytes;
 
 
