@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76A92C0755
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537202C0758
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732374AbgKWMjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:39:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52622 "EHLO mail.kernel.org"
+        id S1732405AbgKWMkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:40:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732338AbgKWMjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:39:49 -0500
+        id S1732396AbgKWMkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:40:01 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A836208DB;
-        Mon, 23 Nov 2020 12:39:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F0802065E;
+        Mon, 23 Nov 2020 12:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135188;
-        bh=H9uK/2MhtcSMf/LlP7tZgmppFmP/4GMIrxIkEpiOGQg=;
+        s=korg; t=1606135201;
+        bh=RBl0T9IW6VKzCyg8ZrAnQlz21jCSqXjixPMlNfM9T9A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OuUmrSrb199uxElUZzNJX2uICymqVdUas2uh0eykYh2SfU7QUG5rRh4d2mKuEKXrM
-         eaHu0BsXwxSNuUUh3UvYiGnqMuFbBh5lwMR1arCsvDXrD3pd+TFLQSxq48oOGAYuDm
-         ZM2E6CJvT07gbgeW2VNrrhjfKlpzxVE0m5/n85S8=
+        b=Ry/rUuqZLbPiKod2gjzxdQlYt84gGc+Tfm3vna+sYxMfnX5L9Lhe3MTMV42j9Q7kd
+         BfIDdWnAu5Uayw4rNSbVKTqyDxw2m/1nDgnBVg2rA7ZAXG1kYKNfJ9mYcP43KVBGh7
+         mtNlHt0tXapRvmF5Y0zGHCkkxqnl4BbRsjfjfeZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 137/158] regulator: pfuze100: limit pfuze-support-disable-sw to pfuze{100,200}
-Date:   Mon, 23 Nov 2020 13:22:45 +0100
-Message-Id: <20201123121826.538738599@linuxfoundation.org>
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH 5.4 141/158] xtensa: fix TLBTEMP area placement
+Date:   Mon, 23 Nov 2020 13:22:49 +0100
+Message-Id: <20201123121826.741479326@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -42,48 +41,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-commit 365ec8b61689bd64d6a61e129e0319bf71336407 upstream.
+commit 481535c5b41d191b22775a6873de5ec0e1cdced1 upstream.
 
-Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
-variants.
-When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
-pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
-instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
+fast_second_level_miss handler for the TLBTEMP area has an assumption
+that page table directory entry for the TLBTEMP address range is 0. For
+it to be true the TLBTEMP area must be aligned to 4MB boundary and not
+share its 4MB region with anything that may use a page table. This is
+not true currently: TLBTEMP shares space with vmalloc space which
+results in the following kinds of runtime errors when
+fast_second_level_miss loads page table directory entry for the vmalloc
+space instead of fixing up the TLBTEMP area:
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Fixes: 6f1cf5257acc ("regualtor: pfuze100: correct sw1a/sw2 on pfuze3000")
+ Unable to handle kernel paging request at virtual address c7ff0e00
+  pc = d0009275, ra = 90009478
+ Oops: sig: 9 [#1] PREEMPT
+ CPU: 1 PID: 61 Comm: kworker/u9:2 Not tainted 5.10.0-rc3-next-20201110-00007-g1fe4962fa983-dirty #58
+ Workqueue: xprtiod xs_stream_data_receive_workfn
+ a00: 90009478 d11e1dc0 c7ff0e00 00000020 c7ff0000 00000001 7f8b8107 00000000
+ a08: 900c5992 d11e1d90 d0cc88b8 5506e97c 00000000 5506e97c d06c8074 d11e1d90
+ pc: d0009275, ps: 00060310, depc: 00000014, excvaddr: c7ff0e00
+ lbeg: d0009275, lend: d0009287 lcount: 00000003, sar: 00000010
+ Call Trace:
+   xs_stream_data_receive_workfn+0x43c/0x770
+   process_one_work+0x1a1/0x324
+   worker_thread+0x1cc/0x3c0
+   kthread+0x10d/0x124
+   ret_from_kernel_thread+0xc/0x18
+
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201110174113.2066534-1-sean@geanix.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/regulator/pfuze100-regulator.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ Documentation/xtensa/mmu.rst      |    9 ++++++---
+ arch/xtensa/include/asm/pgtable.h |    2 +-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
---- a/drivers/regulator/pfuze100-regulator.c
-+++ b/drivers/regulator/pfuze100-regulator.c
-@@ -833,11 +833,14 @@ static int pfuze100_regulator_probe(stru
- 		 * the switched regulator till yet.
- 		 */
- 		if (pfuze_chip->flags & PFUZE_FLAG_DISABLE_SW) {
--			if (pfuze_chip->regulator_descs[i].sw_reg) {
--				desc->ops = &pfuze100_sw_disable_regulator_ops;
--				desc->enable_val = 0x8;
--				desc->disable_val = 0x0;
--				desc->enable_time = 500;
-+			if (pfuze_chip->chip_id == PFUZE100 ||
-+				pfuze_chip->chip_id == PFUZE200) {
-+				if (pfuze_chip->regulator_descs[i].sw_reg) {
-+					desc->ops = &pfuze100_sw_disable_regulator_ops;
-+					desc->enable_val = 0x8;
-+					desc->disable_val = 0x0;
-+					desc->enable_time = 500;
-+				}
- 			}
- 		}
- 
+--- a/Documentation/xtensa/mmu.rst
++++ b/Documentation/xtensa/mmu.rst
+@@ -82,7 +82,8 @@ Default MMUv2-compatible layout::
+   +------------------+
+   | VMALLOC area     |  VMALLOC_START            0xc0000000  128MB - 64KB
+   +------------------+  VMALLOC_END
+-  | Cache aliasing   |  TLBTEMP_BASE_1           0xc7ff0000  DCACHE_WAY_SIZE
++  +------------------+
++  | Cache aliasing   |  TLBTEMP_BASE_1           0xc8000000  DCACHE_WAY_SIZE
+   | remap area 1     |
+   +------------------+
+   | Cache aliasing   |  TLBTEMP_BASE_2                       DCACHE_WAY_SIZE
+@@ -124,7 +125,8 @@ Default MMUv2-compatible layout::
+   +------------------+
+   | VMALLOC area     |  VMALLOC_START            0xa0000000  128MB - 64KB
+   +------------------+  VMALLOC_END
+-  | Cache aliasing   |  TLBTEMP_BASE_1           0xa7ff0000  DCACHE_WAY_SIZE
++  +------------------+
++  | Cache aliasing   |  TLBTEMP_BASE_1           0xa8000000  DCACHE_WAY_SIZE
+   | remap area 1     |
+   +------------------+
+   | Cache aliasing   |  TLBTEMP_BASE_2                       DCACHE_WAY_SIZE
+@@ -167,7 +169,8 @@ Default MMUv2-compatible layout::
+   +------------------+
+   | VMALLOC area     |  VMALLOC_START            0x90000000  128MB - 64KB
+   +------------------+  VMALLOC_END
+-  | Cache aliasing   |  TLBTEMP_BASE_1           0x97ff0000  DCACHE_WAY_SIZE
++  +------------------+
++  | Cache aliasing   |  TLBTEMP_BASE_1           0x98000000  DCACHE_WAY_SIZE
+   | remap area 1     |
+   +------------------+
+   | Cache aliasing   |  TLBTEMP_BASE_2                       DCACHE_WAY_SIZE
+--- a/arch/xtensa/include/asm/pgtable.h
++++ b/arch/xtensa/include/asm/pgtable.h
+@@ -70,7 +70,7 @@
+  */
+ #define VMALLOC_START		(XCHAL_KSEG_CACHED_VADDR - 0x10000000)
+ #define VMALLOC_END		(VMALLOC_START + 0x07FEFFFF)
+-#define TLBTEMP_BASE_1		(VMALLOC_END + 1)
++#define TLBTEMP_BASE_1		(VMALLOC_START + 0x08000000)
+ #define TLBTEMP_BASE_2		(TLBTEMP_BASE_1 + DCACHE_WAY_SIZE)
+ #if 2 * DCACHE_WAY_SIZE > ICACHE_WAY_SIZE
+ #define TLBTEMP_SIZE		(2 * DCACHE_WAY_SIZE)
 
 
