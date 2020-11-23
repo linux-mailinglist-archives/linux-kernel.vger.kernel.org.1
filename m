@@ -2,81 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675E62C01DA
+	by mail.lfdr.de (Postfix) with ESMTP id DEEDC2C01DB
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgKWJA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 04:00:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgKWJA5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:00:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED8CC0613CF;
-        Mon, 23 Nov 2020 01:00:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=flYiZOk1DDOO3edQvf6Tz2+/+AB101STTfYO1lfvvJ8=; b=N/3WgXhoIf3l9jopQDWfhTq6NU
-        C/ZOAgGe/B4ARIcIcrVx8uQBhyS06iJkU9B3vaUTvKcXd3FqgM81DY/5Qf0yGeJsCBXaKC15BodUR
-        zqqZ4TdqPAZcbVC0++BJmUB6050njxfsfd8mJUe30ymCfPgR3wb0YK46pfpjY0Mb4rAVkEgCxSWDY
-        jXHBOuJZ2tNQ5t9DbEudZ6UFHjaKKawfkSYTkD7sV6PW/qQruEHlAdAkfJBWEVz+fTKQhJBABwSh/
-        JRAq0qRv1OjED/a1D+8Y0TUsaP+8HzkeP9nqnmmPWztjcfHEV6f7W+qJg3Kz2WimkJvFOhNG73B2y
-        Ypx0g3lw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kh7iC-0002pP-JH; Mon, 23 Nov 2020 09:00:40 +0000
-Date:   Mon, 23 Nov 2020 09:00:40 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     akpm@linux-foundation.org, jeyu@kernel.org, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, luto@kernel.org,
-        dave.hansen@linux.intel.com, peterz@infradead.org, x86@kernel.org,
-        rppt@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dan.j.williams@intel.com, elena.reshetova@intel.com,
-        ira.weiny@intel.com
-Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
-Message-ID: <20201123090040.GA6334@infradead.org>
-References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
- <20201120202426.18009-2-rick.p.edgecombe@intel.com>
+        id S1727531AbgKWJBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:01:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725275AbgKWJBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 04:01:08 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E52CE212CC;
+        Mon, 23 Nov 2020 09:01:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606122067;
+        bh=ch1J/XrZOhgNgEVG3DSB00XE9M7T2SbWIBz6UFzeLT4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=y6oAcMVl/WqXYapvvflctl97B4hdr4zuEHwneI3cqJSVGZboMACiuGvtSyUsDeTha
+         ReGj1hPITRiAkErHjPCbJ+32/NvWLtujjxigtmDZcMYawKtIl0MLhX5XUKqkFre5gI
+         HQeRBl/0B5Z/935y3h5u222iEpKG/0t1mKricXhA=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kh7ia-00CrUx-M0; Mon, 23 Nov 2020 09:01:04 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120202426.18009-2-rick.p.edgecombe@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 09:01:04 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shenming Lu <lushenming@huawei.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
+ callback
+In-Reply-To: <20201123065410.1915-2-lushenming@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-2-lushenming@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <f64703b618a2ebc6c6f5c423e2b779c6@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First thanks for doing this, having a vmalloc variant that starts out
-with proper permissions has been on my todo list for a while.
+On 2020-11-23 06:54, Shenming Lu wrote:
+> From: Zenghui Yu <yuzenghui@huawei.com>
+> 
+> Up to now, the irq_get_irqchip_state() callback of its_irq_chip
+> leaves unimplemented since there is no architectural way to get
+> the VLPI's pending state before GICv4.1. Yeah, there has one in
+> v4.1 for VLPIs.
+> 
+> With GICv4.1, after unmapping the vPE, which cleans and invalidates
+> any caching of the VPT, we can get the VLPI's pending state by
 
+This is a crucial note: without this unmapping and invalidation,
+the pending bits are not generally accessible (they could be cached
+in a GIC private structure, cache or otherwise).
 
-> +#define PERM_R	1
-> +#define PERM_W	2
-> +#define PERM_X	4
-> +#define PERM_RWX	(PERM_R | PERM_W | PERM_X)
-> +#define PERM_RW		(PERM_R | PERM_W)
-> +#define PERM_RX		(PERM_R | PERM_X)
+> peeking at the VPT. So we implement the irq_get_irqchip_state()
+> callback of its_irq_chip to do it.
+> 
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+> ---
+>  drivers/irqchip/irq-gic-v3-its.c | 38 ++++++++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
+> b/drivers/irqchip/irq-gic-v3-its.c
+> index 0fec31931e11..287003cacac7 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -1695,6 +1695,43 @@ static void its_irq_compose_msi_msg(struct
+> irq_data *d, struct msi_msg *msg)
+>  	iommu_dma_compose_msi_msg(irq_data_get_msi_desc(d), msg);
+>  }
+> 
+> +static bool its_peek_vpt(struct its_vpe *vpe, irq_hw_number_t hwirq)
+> +{
+> +	int mask = hwirq % BITS_PER_BYTE;
 
-Why can't this use the normal pgprot flags?
+nit: this isn't a mask, but a shift instead. BIT(hwirq % BPB) would give
+you a mask.
 
-> +typedef u8 virtual_perm;
+> +	void *va;
+> +	u8 *pt;
+> +
+> +	va = page_address(vpe->vpt_page);
+> +	pt = va + hwirq / BITS_PER_BYTE;
+> +
+> +	return !!(*pt & (1U << mask));
+> +}
+> +
+> +static int its_irq_get_irqchip_state(struct irq_data *d,
+> +				     enum irqchip_irq_state which, bool *val)
+> +{
+> +	struct its_device *its_dev = irq_data_get_irq_chip_data(d);
+> +	struct its_vlpi_map *map = get_vlpi_map(d);
+> +
+> +	if (which != IRQCHIP_STATE_PENDING)
+> +		return -EINVAL;
+> +
+> +	/* not intended for physical LPI's pending state */
+> +	if (!map)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * In GICv4.1, a VMAPP with {V,Alloc}=={0,1} cleans and invalidates
+> +	 * any caching of the VPT associated with the vPEID held in the GIC.
+> +	 */
+> +	if (!is_v4_1(its_dev->its) || atomic_read(&map->vpe->vmapp_count))
 
-This would need __bitwise annotations to allow sparse to typecheck the
-flags.
+It isn't clear to me what prevents this from racing against a mapping of
+the VPE. Actually, since we only hold the LPI irqdesc lock, I'm pretty 
+sure
+nothing prevents it.
 
-> +/*
-> + * Allocate a special permission kva region. The region may not be mapped
-> + * until a call to perm_writable_finish(). A writable region will be mapped
-> + * immediately at the address returned by perm_writable_addr(). The allocation
-> + * will be made between the start and end virtual addresses.
-> + */
-> +struct perm_allocation *perm_alloc(unsigned long vstart, unsigned long vend, unsigned long page_cnt,
-> +				   virtual_perm perms);
+> +		return -EACCES;
 
-Please avoid totally pointless overly long line (all over the series)
+I can sort of buy EACCESS for a VPE that is currently mapped, but a 
+non-4.1
+ITS should definitely return EINVAL.
 
-Also I find the unsigned long for kernel virtual address interface
-strange, but I'll take a look at the callers later.
+> +
+> +	*val = its_peek_vpt(map->vpe, map->vintid);
+> +
+> +	return 0;
+> +}
+> +
+>  static int its_irq_set_irqchip_state(struct irq_data *d,
+>  				     enum irqchip_irq_state which,
+>  				     bool state)
+> @@ -1975,6 +2012,7 @@ static struct irq_chip its_irq_chip = {
+>  	.irq_eoi		= irq_chip_eoi_parent,
+>  	.irq_set_affinity	= its_set_affinity,
+>  	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
+> +	.irq_get_irqchip_state	= its_irq_get_irqchip_state,
+
+My biggest issue with this is that it isn't a reliable interface.
+It happens to work in the context of KVM, because you make sure it
+is called at the right time, but that doesn't make it safe in general
+(anyone with the interrupt number is allowed to call this at any time).
+
+Is there a problem with poking at the VPT page from the KVM side?
+The code should be exactly the same (maybe simpler even), and at least
+you'd be guaranteed to be in the correct context.
+
+>  	.irq_set_irqchip_state	= its_irq_set_irqchip_state,
+>  	.irq_retrigger		= its_irq_retrigger,
+>  	.irq_set_vcpu_affinity	= its_irq_set_vcpu_affinity,
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
