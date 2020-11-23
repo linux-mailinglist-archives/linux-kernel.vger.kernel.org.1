@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6489D2C0A11
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C414D2C0A28
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733074AbgKWMnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:43:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55634 "EHLO mail.kernel.org"
+        id S2388858AbgKWNRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:17:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732939AbgKWMmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:42:32 -0500
+        id S1732947AbgKWMmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:42:35 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E422208FE;
-        Mon, 23 Nov 2020 12:42:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C025E20857;
+        Mon, 23 Nov 2020 12:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135352;
-        bh=glmf3rwlgCIycDDhruSNvopWtMzWAaMpZbp2MagjPNc=;
+        s=korg; t=1606135355;
+        bh=6g76o2F+FbIGM89xfWcvN/UJw/qeZchtFzipodfoOmQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GrNxKS/TdIDpLkVzjlbFiVKMtGhs3xd7eZS3bVoY3E+rWALUZ/6K56vWsd42dOZVJ
-         Xj3rznrvujpP9u7dyBby402XIibQv9OgjODU4T0X5fsimypAgDwe+I3VBE6cKiMVat
-         YUaH+62vrka3b0UbM39iFn+nRkALiEaKOnk/8Ak4=
+        b=FDQg2ltVs7pi9FpgOtwl47wmDkLNCX6FzAyGql/Wsv2wjp5kLnss61kRgorcUSA7y
+         wp7uy6yuhiyB9D++CPnGgrU9h+fUCl9m1FZ/zcVVeJ94wyjNvR6abZ2r0clQDe76hW
+         kYBjWh2WN/mKIa9rCFkUqPRw5W8JAPbNZYcGgLyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        =?UTF-8?q?Michal=20Kalderon=C2=A0?= <michal.kalderon@marvell.com>,
+        stable@vger.kernel.org, Igor Russkikh <irusskikh@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Dmitry Bogdanov <dbogdanov@marvell.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 037/252] qed: fix error return code in qed_iwarp_ll2_start()
-Date:   Mon, 23 Nov 2020 13:19:47 +0100
-Message-Id: <20201123121837.373808256@linuxfoundation.org>
+Subject: [PATCH 5.9 038/252] qed: fix ILT configuration of SRC block
+Date:   Mon, 23 Nov 2020 13:19:48 +0100
+Message-Id: <20201123121837.423094705@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -44,60 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Dmitry Bogdanov <dbogdanov@marvell.com>
 
-[ Upstream commit cb47d16ea21045c66eebbf5ed792e74a8537e27a ]
+[ Upstream commit 93be52612431e71ee8cb980ef11468997857e4c4 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+The code refactoring of ILT configuration was not complete, the old
+unused variables were used for the SRC block. That could lead to the memory
+corruption by HW when rx filters are configured.
+This patch completes that refactoring.
 
-Fixes: 469981b17a4f ("qed: Add unaligned and packed packet processing")
-Fixes: fcb39f6c10b2 ("qed: Add mpa buffer descriptors for storing and processing mpa fpdus")
-Fixes: 1e28eaad07ea ("qed: Add iWARP support for fpdu spanned over more than two tcp packets")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
-Link: https://lore.kernel.org/r/1605532033-27373-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: 8a52bbab39c9 (qed: Debug feature: ilt and mdump)
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Dmitry Bogdanov <dbogdanov@marvell.com>
+Link: https://lore.kernel.org/r/20201116132944.2055-1-dbogdanov@marvell.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_iwarp.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_cxt.c |    4 ++--
+ drivers/net/ethernet/qlogic/qed/qed_cxt.h |    3 ---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-@@ -2754,14 +2754,18 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_h
- 	iwarp_info->partial_fpdus = kcalloc((u16)p_hwfn->p_rdma_info->num_qps,
- 					    sizeof(*iwarp_info->partial_fpdus),
- 					    GFP_KERNEL);
--	if (!iwarp_info->partial_fpdus)
-+	if (!iwarp_info->partial_fpdus) {
-+		rc = -ENOMEM;
- 		goto err;
-+	}
+--- a/drivers/net/ethernet/qlogic/qed/qed_cxt.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
+@@ -1647,9 +1647,9 @@ static void qed_src_init_pf(struct qed_h
+ 		     ilog2(rounded_conn_num));
  
- 	iwarp_info->max_num_partial_fpdus = (u16)p_hwfn->p_rdma_info->num_qps;
+ 	STORE_RT_REG_AGG(p_hwfn, SRC_REG_FIRSTFREE_RT_OFFSET,
+-			 p_hwfn->p_cxt_mngr->first_free);
++			 p_hwfn->p_cxt_mngr->src_t2.first_free);
+ 	STORE_RT_REG_AGG(p_hwfn, SRC_REG_LASTFREE_RT_OFFSET,
+-			 p_hwfn->p_cxt_mngr->last_free);
++			 p_hwfn->p_cxt_mngr->src_t2.last_free);
+ }
  
- 	iwarp_info->mpa_intermediate_buf = kzalloc(buff_size, GFP_KERNEL);
--	if (!iwarp_info->mpa_intermediate_buf)
-+	if (!iwarp_info->mpa_intermediate_buf) {
-+		rc = -ENOMEM;
- 		goto err;
-+	}
+ /* Timers PF */
+--- a/drivers/net/ethernet/qlogic/qed/qed_cxt.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.h
+@@ -326,9 +326,6 @@ struct qed_cxt_mngr {
  
- 	/* The mpa_bufs array serves for pending RX packets received on the
- 	 * mpa ll2 that don't have place on the tx ring and require later
-@@ -2771,8 +2775,10 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_h
- 	iwarp_info->mpa_bufs = kcalloc(data.input.rx_num_desc,
- 				       sizeof(*iwarp_info->mpa_bufs),
- 				       GFP_KERNEL);
--	if (!iwarp_info->mpa_bufs)
-+	if (!iwarp_info->mpa_bufs) {
-+		rc = -ENOMEM;
- 		goto err;
-+	}
+ 	/* SRC T2 */
+ 	struct qed_src_t2 src_t2;
+-	u32 t2_num_pages;
+-	u64 first_free;
+-	u64 last_free;
  
- 	INIT_LIST_HEAD(&iwarp_info->mpa_buf_pending_list);
- 	INIT_LIST_HEAD(&iwarp_info->mpa_buf_list);
+ 	/* total number of SRQ's for this hwfn */
+ 	u32 srq_count;
 
 
