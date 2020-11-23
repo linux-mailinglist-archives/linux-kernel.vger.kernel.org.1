@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C732C00AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7382C00AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgKWHi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 02:38:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgKWHi2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:38:28 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB35AC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:38:27 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id c198so15038969wmd.0
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:38:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sKnvipRdH5O5nwcZGT41u1DCEbXND0993nykFgKds7Y=;
-        b=smrn5v9zKwc7LpQiiXvRkqe4V4Xyo+HcNnQfIYBjcjZxl8xKleGocb/Dw0+JucTxl0
-         gxQvqP/MpdMJlRV26CVCy/SJ2AcVpTLt99cqNxGb634lBSI0yaa06VsU0RIpc1PNV9B2
-         USJUf+z6LxdBBxOQEVYDTvkfQmRouuPJkvz5niDZI9/IAFuBvKhiyCJf7i3FlSXlHqMS
-         +ekzryEGGiDuUjaltP2PZHoT6qlajd5DcBNhcsTILlV9wfjhUJiRbLYBZiXSSwqoYPPW
-         /BnY6F2MeKVCVJlJEv7htF1Zbtqj9S23U2Z88XxTzAkbKxALjrAVhrxuVYEEwknCfApz
-         5+jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sKnvipRdH5O5nwcZGT41u1DCEbXND0993nykFgKds7Y=;
-        b=rG8XV83NiAIL7PHIRz7veVTV5rJiEB4JTSFN2sHLWX0z9vn7Nn+h9IoOUFYq9dRhpX
-         NvH/6PiJ5utdoLCP6gZ4p8mnxzl1ulYfXANqDFYBCNMJknoi9XZkMVyGP1ZJhWjz0yCW
-         Kf9AsxpJLlo8ZOpNlQUqHcgQlruH568UhSiKbt9t6C3P65eR9M4DEhJBGPArq1QExNac
-         rwI+xANTwAs6VqKnyQYB6NLdfwyj9aMpT1hMNLHuO85YwbM4QfU959cnbqrThztcsOtF
-         fcJL/IjKqebLNJwIHsHychBNXMgfwVxLmEXEc0eNPK4okqcdITGgWQgxCfFEz+ahIi8I
-         8fAw==
-X-Gm-Message-State: AOAM533MOMPkF9IzFWAn42D4H2Eu7Lg1kdH///DDm3MYIXB8qEtoNXf8
-        MjwO/INBIXxyHt02fDlN0TE=
-X-Google-Smtp-Source: ABdhPJwtvwR4tEbGdt64452+NtS6ThnxMs/sNtsxvROMuyckjORrFOrYWPoMYP+r428ViukTUJSJ7w==
-X-Received: by 2002:a1c:3d05:: with SMTP id k5mr23507181wma.151.1606117106354;
-        Sun, 22 Nov 2020 23:38:26 -0800 (PST)
-Received: from localhost.localdomain (60-250-204-170.HINET-IP.hinet.net. [60.250.204.170])
-        by smtp.googlemail.com with ESMTPSA id 17sm50927847wma.3.2020.11.22.23.38.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 22 Nov 2020 23:38:25 -0800 (PST)
-From:   Antony Yu <swpenim@gmail.com>
-Cc:     swpenim@gmail.com, Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with clang
-Date:   Mon, 23 Nov 2020 15:36:32 +0800
-Message-Id: <20201123073634.6854-1-swpenim@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        id S1727667AbgKWHiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 02:38:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43526 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgKWHiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 02:38:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606117133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DAbMhd58MepnJ3wMNvb/zcTlCSLnBv7xL56Vesu5R1o=;
+        b=lZJNaK+zKvjftgQ9k5+/adyl3XY7aEfdiOJ+dAXhG8va60Zactln2x6BiRwuIU5QSiP+dD
+        6Z4L18p2ngk3lSmCPyCYLT8jYUt8r1AYwVRlGbE49ILwX3ecjFTvGnwhpaMvOj9bf/OWtJ
+        VM5o7sQcwiSv3lWFCvjBQAGKju6BcZs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7EB96ABDE;
+        Mon, 23 Nov 2020 07:38:53 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 08:38:42 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
+Message-ID: <20201123073842.GA27488@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz>
+ <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
+ <20201120093912.GM3200@dhcp22.suse.cz>
+ <eda50930-05b5-0ad9-2985-8b6328f92cec@redhat.com>
+ <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__do_div64 clobbers the input register r0 in little endian system.
-According to the inline assembly document, if an input operand is
-modified, it should be tied to a output operand. This patch can
-prevent compilers from reusing r0 register after asm statements.
+On Fri 20-11-20 09:45:12, Mike Kravetz wrote:
+> On 11/20/20 1:43 AM, David Hildenbrand wrote:
+[...]
+> >>> To keep things easy, maybe simply never allow to free these hugetlb pages
+> >>> again for now? If they were reserved during boot and the vmemmap condensed,
+> >>> then just let them stick around for all eternity.
+> >>
+> >> Not sure I understand. Do you propose to only free those vmemmap pages
+> >> when the pool is initialized during boot time and never allow to free
+> >> them up? That would certainly make it safer and maybe even simpler wrt
+> >> implementation.
+> > 
+> > Exactly, let's keep it simple for now. I guess most use cases of this (virtualization, databases, ...) will allocate hugepages during boot and never free them.
+> 
+> Not sure if I agree with that last statement.  Database and virtualization
+> use cases from my employer allocate allocate hugetlb pages after boot.  It
+> is shortly after boot, but still not from boot/kernel command line.
 
-Signed-off-by: Antony Yu <swpenim@gmail.com>
----
- arch/arm/include/asm/div64.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Is there any strong reason for that?
 
-diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
-index 898e9c78a7e7..809efc51e90f 100644
---- a/arch/arm/include/asm/div64.h
-+++ b/arch/arm/include/asm/div64.h
-@@ -39,9 +39,10 @@ static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
- 	asm(	__asmeq("%0", __xh)
- 		__asmeq("%1", "r2")
- 		__asmeq("%2", "r0")
--		__asmeq("%3", "r4")
-+		__asmeq("%3", "r0")
-+		__asmeq("%4", "r4")
- 		"bl	__do_div64"
--		: "=r" (__rem), "=r" (__res)
-+		: "=r" (__rem), "=r" (__res), "=r" (__n)
- 		: "r" (__n), "r" (__base)
- 		: "ip", "lr", "cc");
- 	*n = __res;
+> Somewhat related, but not exactly addressing this issue ...
+> 
+> One idea discussed in a previous patch set was to disable PMD/huge page
+> mapping of vmemmap if this feature was enabled.  This would eliminate a bunch
+> of the complex code doing page table manipulation.  It does not address
+> the issue of struct page pages going away which is being discussed here,
+> but it could be a way to simply the first version of this code.  If this
+> is going to be an 'opt in' feature as previously suggested, then eliminating
+> the  PMD/huge page vmemmap mapping may be acceptable.  My guess is that
+> sysadmins would only 'opt in' if they expect most of system memory to be used
+> by hugetlb pages.  We certainly have database and virtualization use cases
+> where this is true.
+
+Would this simplify the code considerably? I mean, the vmemmap page
+tables will need to be updated anyway. So that code has to stay. PMD
+entry split shouldn't be the most complex part of that operation.  On
+the other hand dropping large pages for all vmemmaps will likely have a
+performance.
 -- 
-2.23.0
-
+Michal Hocko
+SUSE Labs
