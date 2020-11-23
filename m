@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074EC2C0668
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F302C0714
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730758AbgKWMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:30:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41548 "EHLO mail.kernel.org"
+        id S1731922AbgKWMhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:37:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730391AbgKWMai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:38 -0500
+        id S1731901AbgKWMhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B47D4208C3;
-        Mon, 23 Nov 2020 12:30:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40DC72076E;
+        Mon, 23 Nov 2020 12:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134637;
-        bh=yDBmillITIeh+0Z2HXRpHRFZQiN1aSNucR1lA1ape74=;
+        s=korg; t=1606135036;
+        bh=S/vGdyUBSIet9wkp1y1hSa15PkXBOLfclbHDU1OECCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cKJwqC23fvtctN0wajM0PRgW0TRkelu/HYVpfFroNu89ew2lBuY9AMmAxxu5i1Thk
-         tENFXfnyJ3aU1D2o4w0G6X4Ar8ksQZQm5av9FwZBTJNyjaM8Zb+GROwuRT0gWyzCOM
-         rR6L7ff6cLk8AghjV2AY5LtCKpFbIHPabMEhJ5To=
+        b=TZrRsAxOMu9ylBrdKsMkq9eOJnHtYTifA4SjCCw7gcSHIbs/Na2DjEQxyUKRf/xrG
+         aysX0Zl/vc8qycB9iHF3AkUv9rl2E6CRdVL/oX9RxAYjSaoaOlTzJ2dOPteojHlpQp
+         ek4bKxBylsk319/3lNCicgj2oJnOCdYy9WOmx/zM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 29/91] selftests: kvm: Fix the segment descriptor layout to match the actual layout
+Subject: [PATCH 5.4 081/158] can: flexcan: fix failure handling of pm_runtime_get_sync()
 Date:   Mon, 23 Nov 2020 13:21:49 +0100
-Message-Id: <20201123121810.742493688@linuxfoundation.org>
+Message-Id: <20201123121823.838877636@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Lewis <aaronlewis@google.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit df11f7dd5834146defa448acba097e8d7703cc42 ]
+[ Upstream commit b7ee5bc3e1006433601a058a6a7c24c5272635f4 ]
 
-Fix the layout of 'struct desc64' to match the layout described in the
-SDM Vol 3, Chapter 3 "Protected-Mode Memory Management", section 3.4.5
-"Segment Descriptors", Figure 3-8 "Segment Descriptor".  The test added
-later in this series relies on this and crashes if this layout is not
-correct.
+pm_runtime_get_sync() will increment pm usage at first and it will resume the
+device later. If runtime of the device has error or device is in inaccessible
+state(or other error state), resume operation will fail. If we do not call put
+operation to decrease the reference, it will result in reference leak in the
+two functions flexcan_get_berr_counter() and flexcan_open().
 
-Signed-off-by: Aaron Lewis <aaronlewis@google.com>
-Reviewed-by: Alexander Graf <graf@amazon.com>
-Message-Id: <20201012194716.3950330-2-aaronlewis@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Moreover, this device cannot enter the idle state and always stay busy or other
+non-idle state later. So we should fix it through adding
+pm_runtime_put_noidle().
+
+Fixes: ca10989632d88 ("can: flexcan: implement can Runtime PM")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201108083000.2599705-1-zhangqilong3@huawei.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/include/x86.h | 2 +-
- tools/testing/selftests/kvm/lib/x86.c     | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/include/x86.h b/tools/testing/selftests/kvm/include/x86.h
-index 42c3596815b83..a7667a613bbc7 100644
---- a/tools/testing/selftests/kvm/include/x86.h
-+++ b/tools/testing/selftests/kvm/include/x86.h
-@@ -59,7 +59,7 @@ enum x86_register {
- struct desc64 {
- 	uint16_t limit0;
- 	uint16_t base0;
--	unsigned base1:8, s:1, type:4, dpl:2, p:1;
-+	unsigned base1:8, type:4, s:1, dpl:2, p:1;
- 	unsigned limit1:4, avl:1, l:1, db:1, g:1, base2:8;
- 	uint32_t base3;
- 	uint32_t zero1;
-diff --git a/tools/testing/selftests/kvm/lib/x86.c b/tools/testing/selftests/kvm/lib/x86.c
-index 4d35eba73dc97..800fe36064f9a 100644
---- a/tools/testing/selftests/kvm/lib/x86.c
-+++ b/tools/testing/selftests/kvm/lib/x86.c
-@@ -449,11 +449,12 @@ static void kvm_seg_fill_gdt_64bit(struct kvm_vm *vm, struct kvm_segment *segp)
- 	desc->limit0 = segp->limit & 0xFFFF;
- 	desc->base0 = segp->base & 0xFFFF;
- 	desc->base1 = segp->base >> 16;
--	desc->s = segp->s;
- 	desc->type = segp->type;
-+	desc->s = segp->s;
- 	desc->dpl = segp->dpl;
- 	desc->p = segp->present;
- 	desc->limit1 = segp->limit >> 16;
-+	desc->avl = segp->avl;
- 	desc->l = segp->l;
- 	desc->db = segp->db;
- 	desc->g = segp->g;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 130f3022d3396..b22cd8d14716a 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -614,8 +614,10 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
+ 	int err;
+ 
+ 	err = pm_runtime_get_sync(priv->dev);
+-	if (err < 0)
++	if (err < 0) {
++		pm_runtime_put_noidle(priv->dev);
+ 		return err;
++	}
+ 
+ 	err = __flexcan_get_berr_counter(dev, bec);
+ 
+@@ -1282,8 +1284,10 @@ static int flexcan_open(struct net_device *dev)
+ 	int err;
+ 
+ 	err = pm_runtime_get_sync(priv->dev);
+-	if (err < 0)
++	if (err < 0) {
++		pm_runtime_put_noidle(priv->dev);
+ 		return err;
++	}
+ 
+ 	err = open_candev(dev);
+ 	if (err)
 -- 
 2.27.0
 
