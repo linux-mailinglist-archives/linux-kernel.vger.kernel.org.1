@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E412C046C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A272A2C0452
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729157AbgKWLVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 06:21:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
+        id S1728990AbgKWLT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:19:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728955AbgKWLTv (ORCPT
+        with ESMTP id S1728963AbgKWLTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:19:51 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2F7C061A52
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:50 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id p8so18211684wrx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:50 -0800 (PST)
+        Mon, 23 Nov 2020 06:19:52 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D120AC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:51 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 10so17530569wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 03:19:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wldsqjpaFVDFoYgF4DYJ7wI1w74XU6uKcd1AqstflIg=;
-        b=j2lpQSm4QAruRHwdMh9MeGZIC4kPQ82NerLc4fhX1Bf7ALSDHI5+t4h/QNS+ETUlkP
-         Oc0ibH/V0O5O1c3FC3j5OXzmPUqRr9hDN829yi5pqtPFDwVbfrnW3SnegJl6K/xqflq/
-         7cv3kQf3peWq0HBjW8kRrH1PMz7wRm+kNtLf1Q5A8IDR3OuihiLFyjl2GN7VJraUbohg
-         c7Kn0VF2HguehowbndbNIUhMlyJv1A9XAVuBA3ozsUiqXFLfq6qlZr2eFDpFmChxIatw
-         WlIJQhIOb2zFNvbP+nwZOsSV6Km0QodzzixeR1P/WvdhBx1dFeoaIIN6HIgM2+vD+p8k
-         H+xw==
+        bh=T4FjG6f9bymrh4PjmAcFpuoCus4SJcn+AyFqjEZrv1I=;
+        b=vVtLw5uT6obzsw8cMoY4xbKNUucmADpVYib8Njfe0EEVJAIs0FfMXC1oaf4fr2ouBA
+         uBpCJ+IgKilFI5lPWPI2Rtmasmj1eHvBiS02GeGassoW1xZq+fzzvhgvM2jOlBtIm8QD
+         hNxNVPUBFiqe7UXOzN34Knlk7OeyVnKRxJqpMbKIUF79T0Gg9rEedupu/GGa8mPcVcUH
+         LJ5jfGxGyY/jaoqgQ1F31B48lWeWBek6XwBzueCp4Meg/RjV8gmLcgO5ZD5GlG+Uw4sp
+         d5PlZxY/WVYFRUk8ZT2RP8PfIwaO1mv/OxhEqG51oexe0MCWWB65fGWFWPRkVJP7aiNS
+         VFtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wldsqjpaFVDFoYgF4DYJ7wI1w74XU6uKcd1AqstflIg=;
-        b=on0UWBjM93hKxmNJ0aA4I98Sxpos8X3gvzuMVjX2FKMA71AGbpLSLJ65sqs3ilTb1C
-         YDIKvW5iAPXKpr79jeoPRKiAL/FPJ7mHuBOodvUzY7ZcB2h91M+HM2pXcSldeRxQ7ytZ
-         g1G8CjBwWUlG+cNwSB3j1XJTcTTuINm2Dbn/SjaVN7cU4JKtvvV/qL0EVI41HmSequft
-         b41RkwI+qyyKBAXL54vnbTfGeiM6CB5T756gFr6WByBlR+ftkACcx6bNQZXWmXJ4sQhK
-         A1AEgAvvnMQEkWhbYA8BFhER9va4NxcqLvoyjoHEQ/15799DF6HAxowsQXq13jvncaeD
-         P9mw==
-X-Gm-Message-State: AOAM530kbQ54GqyX1kU978TWWKRNhFTcb3Iatl0KPhglD9NeiTp3MlkC
-        SlNp0AOo0iiexcSjOJ35lvm7sw==
-X-Google-Smtp-Source: ABdhPJzkQHLFLDVqk8bBYOGQlRNcxZJ2NJUnUeOlCzkzous3GkJECyu4+omxNzV9wQBqsYx2tYgfkA==
-X-Received: by 2002:a5d:4d92:: with SMTP id b18mr9164383wru.260.1606130389281;
-        Mon, 23 Nov 2020 03:19:49 -0800 (PST)
+        bh=T4FjG6f9bymrh4PjmAcFpuoCus4SJcn+AyFqjEZrv1I=;
+        b=mmt9oWlYG65Dqqtfu2Q6aZ6qdTTZ2957bFpx5+Bj/rWnlSY+OcmSmJz79ytYwA3T89
+         yWIUWeh0MpfAiVO+YwQ+O9GpG5qIBD2j9x32bayhRnUTlFvYK1QBhQzjxPN4j+cBiSaG
+         XOTDMtE41aZajAjv1Sb/TbIA1nw54sTspBxG+ZZBErdDuwu5VPT3RIokjsEgqygZRm54
+         ohqV7LpZe80HSlrvCjjSYgu0n0S0Ek9Wqf10V3xHO0877Pn5bGftR9UJtqnGT7arRQfK
+         AZxAjpCm7mkrUuKNsc3r/PbuLsOIq57KZvCQwQOdDIGahwGTEoGG4/smkMbIbkktisUy
+         5hsA==
+X-Gm-Message-State: AOAM533aabFW51rIPGhRLfJzBGkplnaT1LXUqvQdD105TApzLqxL0THJ
+        YU5SomJcqO2eOnyXG3ux9c7yEQ==
+X-Google-Smtp-Source: ABdhPJyUOXqPshe2OXY/yWW4HWBycTHOYqj9YJnlDG9mNMgCMAKhHT1jzXAB7KFzPcBCMyeSQyPeYg==
+X-Received: by 2002:a05:600c:22d5:: with SMTP id 21mr22035408wmg.33.1606130390647;
+        Mon, 23 Nov 2020 03:19:50 -0800 (PST)
 Received: from dell.default ([91.110.221.218])
-        by smtp.gmail.com with ESMTPSA id n9sm16317290wmd.4.2020.11.23.03.19.48
+        by smtp.gmail.com with ESMTPSA id n9sm16317290wmd.4.2020.11.23.03.19.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 03:19:48 -0800 (PST)
+        Mon, 23 Nov 2020 03:19:49 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,11 +55,11 @@ Cc:     linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sonny Jiang <sonny.jiang@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 21/40] drm/amd/amdgpu/uvd_v3_1: Fix-up some documentation issues
-Date:   Mon, 23 Nov 2020 11:19:00 +0000
-Message-Id: <20201123111919.233376-22-lee.jones@linaro.org>
+Subject: [PATCH 22/40] drm/amd/amdgpu/dce_v6_0: Fix formatting and missing parameter description issues
+Date:   Mon, 23 Nov 2020 11:19:01 +0000
+Message-Id: <20201123111919.233376-23-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201123111919.233376-1-lee.jones@linaro.org>
 References: <20201123111919.233376-1-lee.jones@linaro.org>
@@ -72,72 +72,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:91: warning: Function parameter or member 'job' not described in 'uvd_v3_1_ring_emit_ib'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:91: warning: Function parameter or member 'flags' not described in 'uvd_v3_1_ring_emit_ib'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:108: warning: Function parameter or member 'addr' not described in 'uvd_v3_1_ring_emit_fence'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:108: warning: Function parameter or member 'seq' not described in 'uvd_v3_1_ring_emit_fence'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:108: warning: Function parameter or member 'flags' not described in 'uvd_v3_1_ring_emit_fence'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:108: warning: Excess function parameter 'fence' description in 'uvd_v3_1_ring_emit_fence'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:625: warning: Function parameter or member 'handle' not described in 'uvd_v3_1_hw_init'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:625: warning: Excess function parameter 'adev' description in 'uvd_v3_1_hw_init'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:692: warning: Function parameter or member 'handle' not described in 'uvd_v3_1_hw_fini'
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c:692: warning: Excess function parameter 'adev' description in 'uvd_v3_1_hw_fini'
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c:192: warning: Function parameter or member 'async' not described in 'dce_v6_0_page_flip'
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c:1050: warning: Cannot understand  *
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sonny Jiang <sonny.jiang@amd.com>
+Cc: Luben Tuikov <luben.tuikov@amd.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
-index 7cf4b11a65c5c..143ba7a41f41f 100644
---- a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
-+++ b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
-@@ -80,7 +80,9 @@ static void uvd_v3_1_ring_set_wptr(struct amdgpu_ring *ring)
-  * uvd_v3_1_ring_emit_ib - execute indirect buffer
+diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+index 9439763493464..83a88385b7620 100644
+--- a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+@@ -180,6 +180,7 @@ static void dce_v6_0_pageflip_interrupt_fini(struct amdgpu_device *adev)
+  * @adev: amdgpu_device pointer
+  * @crtc_id: crtc to cleanup pageflip on
+  * @crtc_base: new address of the crtc (GPU MC address)
++ * @async: asynchronous flip
   *
-  * @ring: amdgpu_ring pointer
-+ * @job: unused
-  * @ib: indirect buffer to execute
-+ * @flags: unused
-  *
-  * Write ring commands to execute the indirect buffer
-  */
-@@ -99,7 +101,9 @@ static void uvd_v3_1_ring_emit_ib(struct amdgpu_ring *ring,
-  * uvd_v3_1_ring_emit_fence - emit an fence & trap command
-  *
-  * @ring: amdgpu_ring pointer
-- * @fence: fence to emit
-+ * @addr: address
-+ * @seq: sequence number
-+ * @flags: fence related flags
-  *
-  * Write a fence and a trap command to the ring.
-  */
-@@ -617,7 +621,7 @@ static void uvd_v3_1_enable_mgcg(struct amdgpu_device *adev,
+  * Does the actual pageflip (evergreen+).
+  * During vblank we take the crtc lock and wait for the update_pending
+@@ -1047,7 +1048,6 @@ static u32 dce_v6_0_line_buffer_adjust(struct amdgpu_device *adev,
+ 
+ 
  /**
-  * uvd_v3_1_hw_init - start and test UVD block
+- *
+  * dce_v6_0_bandwidth_update - program display watermarks
   *
-- * @adev: amdgpu_device pointer
-+ * @handle: handle used to pass amdgpu_device pointer
-  *
-  * Initialize the hardware, boot up the VCPU and do some testing
-  */
-@@ -684,7 +688,7 @@ static int uvd_v3_1_hw_init(void *handle)
- /**
-  * uvd_v3_1_hw_fini - stop the hardware block
-  *
-- * @adev: amdgpu_device pointer
-+ * @handle: handle used to pass amdgpu_device pointer
-  *
-  * Stop the UVD block, mark ring as not ready any more
-  */
+  * @adev: amdgpu_device pointer
 -- 
 2.25.1
 
