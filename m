@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196192C0CE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB552C0CE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731233AbgKWOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        id S1731438AbgKWOGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:06:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729562AbgKWOGG (ORCPT
+        with ESMTP id S1729453AbgKWOGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:06:06 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC9DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:06:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qaqWmswva0Ac2dKQfCICz2b5VfKAsUa/VEE2k3X6Nk4=; b=Cs3JxcwkxSBLa2fXuNhKR2uVXa
-        b8rvsuF9PtOqr17zCAGhMT13BlePqrJzixsQLvd9Q6S87ejH+O1/01Hu/9uxEhWkiQD1dIp4U11n3
-        W1OKtzO4edh37UCIlrvoxAh4VlhOEnunwlMK9/TxOjxieWTogDZStbLJNsTcKAWiCYDIwGSzvs9K5
-        zThVkoWAXp7MBrVXCrtBC0m4AfbrYYMtbUKci6JYRjQqCk6KnofYEU6VwUFEjzSmqAphvHvIZav6Y
-        3TWLDMk+TmHL7vYLRBMZxHdsanvqTjb/fczo84e8JbvrKEQ3rs5KMtEHtiSZYzi83zvX+zXKa/KR3
-        AOLO0D6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khCTa-0002yJ-BV; Mon, 23 Nov 2020 14:05:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B470D306E0C;
-        Mon, 23 Nov 2020 15:05:52 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 98D53200DF1B9; Mon, 23 Nov 2020 15:05:52 +0100 (CET)
-Date:   Mon, 23 Nov 2020 15:05:52 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Omar Sandoval <osandov@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH 1/2] events/core: introduce perf_pmu_disable_all() to
- turn off all PMU
-Message-ID: <20201123140552.GN3021@hirez.programming.kicks-ass.net>
-References: <1606109846-13688-1-git-send-email-kernelfans@gmail.com>
+        Mon, 23 Nov 2020 09:06:21 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9772DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:06:19 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id 142so18077337ljj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:06:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yOJoUUi3QECcvzuYDvZQKkbQooLbVapSba7D9AdKZgE=;
+        b=g02va37MFIoFx3hvG/lPTuaAb9EGDa4OPTnhWnNErRVvR26TPzhwL/YSGl9XH06Ban
+         GLaP6rOf9Le9Hv3XUSN6kkLGJxbUBB7YpdYIJQ9kpWc0PLeYry7oa2a0EAI+izCZgYrV
+         gI8kssPprToX4CQ92C1Dnq6bNeRnBtN3HFCOg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yOJoUUi3QECcvzuYDvZQKkbQooLbVapSba7D9AdKZgE=;
+        b=Eyz4a82Fv1OvJ7iH5Pja8cEWjspTXb+avrCbh7lVazvKLn0LgYN4ar99XTm5Z8E/pB
+         mP76AFw6A4T1/nPMlDKm1o6mz+AErbt+Q+lbDwH66MZsMHQIh+flAHZYbxvnlzHAHxMN
+         6L5xVIXPHweZjQF/epzfaOW8ogNAL+sIih0SyYX1I/jbAnLhopJYsdG0a/jy2GedT5q+
+         V0IPMOw0rPMXBdgJ3IIu9dizsftmcvy9horFSj1kZQtx3xMg16GHO8ISzi9Rc/9rtzve
+         YTQ0T5aWt5PP5pRTYnL9vPZCGjmXhk3bhLIdPWGv3BhtusDVmniH7EnOUJE2765VMArM
+         7Eag==
+X-Gm-Message-State: AOAM530qXbSQifP7rBgTPX/wzkWEGwYf6q44Bp1gPw+RXoKi5aleAObM
+        VPZdL06rNtK9ntRWJuLKpduCWj31REmHLo8U6q4nJg==
+X-Google-Smtp-Source: ABdhPJyIM1KLcez6Q4p3jPbCCe+oj5X9cN4ct/4A+vkNM4F2hoRVX6Cjl/82rapeZbwXjZxLFpjZllAbpV+QEQGaLHg=
+X-Received: by 2002:a2e:8908:: with SMTP id d8mr1095267lji.309.1606140376535;
+ Mon, 23 Nov 2020 06:06:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1606109846-13688-1-git-send-email-kernelfans@gmail.com>
+References: <20201121005054.3467947-1-kpsingh@chromium.org>
+ <20201121005054.3467947-3-kpsingh@chromium.org> <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
+In-Reply-To: <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Mon, 23 Nov 2020 15:06:05 +0100
+Message-ID: <CACYkzJ4VkwRV5WKe8WZjXgd1C1erXr_NtZhgKJL3ckTmS1M5VA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: Update LSM selftests for bpf_ima_inode_hash
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 01:37:25PM +0800, Pingfan Liu wrote:
+On Mon, Nov 23, 2020 at 2:24 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>
+> On Sat, 2020-11-21 at 00:50 +0000, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > - Update the IMA policy before executing the test binary (this is not an
+> >   override of the policy, just an append that ensures that hashes are
+> >   calculated on executions).
+>
+> Assuming the builtin policy has been replaced with a custom policy and
+> CONFIG_IMA_WRITE_POLICY is enabled, then yes the rule is appended.   If
+> a custom policy has not yet been loaded, loading this rule becomes the
+> defacto custom policy.
+>
+> Even if a custom policy has been loaded, potentially additional
+> measurements unrelated to this test would be included the measurement
+> list.  One way of limiting a rule to a specific test is by loopback
+> mounting a file system and defining a policy rule based on the loopback
+> mount unique uuid.
 
-> +/* When crashed, other cpus hang in idle loop, so here do an emergency job under no lock */
+Thanks Mimi!
 
--ENOPARSE, -ETOOLONG
+I wonder if we simply limit this to policy to /tmp and run an executable
+from /tmp (like test_local_storage.c does).
 
-> +void perf_pmu_disable_all(void)
-> +{
-> +	struct pmu *pmu;
-> +
-> +	list_for_each_entry(pmu, &pmus, entry)
-> +		if (pmu->pmu_disable)
-> +			pmu->pmu_disable(pmu);
-> +}
+The only side effect would be of extra hashes being calculated on
+binaries run from /tmp which is not too bad I guess?
 
-This violates both locking rules and coding style.
+We could do the loop mount too, but I am guessing the most clean way
+would be to shell out to mount from the test? Are there some other examples
+of IMA we could look at?
+
+- KP
+
+>
+> Mimi
+>
