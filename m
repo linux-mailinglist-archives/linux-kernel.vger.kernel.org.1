@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00FC2C0605
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 027512C068B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730172AbgKWM0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:26:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36452 "EHLO mail.kernel.org"
+        id S1729595AbgKWMcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:32:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730154AbgKWM0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:30 -0500
+        id S1730889AbgKWMbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:31:39 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D90A20781;
-        Mon, 23 Nov 2020 12:26:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81B522076E;
+        Mon, 23 Nov 2020 12:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134390;
-        bh=5iHJVBCrO4OWFLwOLqTNlOglaLqh9Bh6J993w5LCR3o=;
+        s=korg; t=1606134699;
+        bh=B0HIVhOOFgPqMRT5qB5gRrANqaf0nGkWUCvrnaJBgVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WDUY22ufEQ4icVDT/QxF77LhAuhwciEWAUk8nRSnJcwH87i6QGOT8h2L8n7xXCKar
-         mJplaZ4JKzeKofNGly/DlHeCoSiSM30Khetq8+vFx0Eu/m+Tac1HHGkRtYZ7Gw7u4d
-         fLttJF9MqCoa/WSDcfjkInoJGLfoRI1wKeaDua6Q=
+        b=P+/mf+ksN2cDc6fDHHCIFDJVFuYTP0Wu93kxnigaVZ8PIbze5gw7sCcn9RhIx3Jmo
+         rRhsmxCKE90d2UUXx0p83oc7wkM4bD6vT+zqzbnIoXG1zFdNdwAckbZf/EXyOKl+Ae
+         rxjUtvYX7G0UGxZH95z+bCLDVUewN3Obx1qaTqDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Matyukevich <geomatsi@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 24/47] arm: dts: imx6qdl-udoo: fix rgmii phy-mode for ksz9031 phy
-Date:   Mon, 23 Nov 2020 13:22:10 +0100
-Message-Id: <20201123121806.718202475@linuxfoundation.org>
+Subject: [PATCH 4.19 51/91] can: ti_hecc: Fix memleak in ti_hecc_probe
+Date:   Mon, 23 Nov 2020 13:22:11 +0100
+Message-Id: <20201123121811.803791718@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Matyukevich <geomatsi@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 7dd8f0ba88fce98e2953267a66af74c6f4792a56 ]
+[ Upstream commit 7968c7c79d3be8987feb8021f0c46e6866831408 ]
 
-Commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the
-KSZ9031 PHY") fixed micrel phy driver adding proper support for phy
-modes. Adapt imx6q-udoo board phy settings : explicitly set required
-delay configuration using "rgmii-id".
+In the error handling, we should goto the probe_exit_candev
+to free ndev to prevent memory leak.
 
-Fixes: cbd54fe0b2bc ("ARM: dts: imx6dl-udoo: Add board support based off imx6q-udoo")
-Signed-off-by: Sergey Matyukevich <geomatsi@gmail.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: dabf54dd1c63 ("can: ti_hecc: Convert TI HECC driver to DT only driver")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201114111708.3465543-1-zhangqilong3@huawei.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-udoo.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/ti_hecc.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-udoo.dtsi b/arch/arm/boot/dts/imx6qdl-udoo.dtsi
-index c96c91d836785..fc4ae2e423bd7 100644
---- a/arch/arm/boot/dts/imx6qdl-udoo.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-udoo.dtsi
-@@ -94,7 +94,7 @@
- &fec {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_enet>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index db6ea936dc3fc..81a3fdd5e0103 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -903,7 +903,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv->base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(priv->base)) {
+ 		dev_err(&pdev->dev, "hecc ioremap failed\n");
+-		return PTR_ERR(priv->base);
++		err = PTR_ERR(priv->base);
++		goto probe_exit_candev;
+ 	}
+ 
+ 	/* handle hecc-ram memory */
+@@ -916,7 +917,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(priv->hecc_ram)) {
+ 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
+-		return PTR_ERR(priv->hecc_ram);
++		err = PTR_ERR(priv->hecc_ram);
++		goto probe_exit_candev;
+ 	}
+ 
+ 	/* handle mbx memory */
+@@ -929,13 +931,14 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(priv->mbx)) {
+ 		dev_err(&pdev->dev, "mbx ioremap failed\n");
+-		return PTR_ERR(priv->mbx);
++		err = PTR_ERR(priv->mbx);
++		goto probe_exit_candev;
+ 	}
+ 
+ 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (!irq) {
+ 		dev_err(&pdev->dev, "No irq resource\n");
+-		goto probe_exit;
++		goto probe_exit_candev;
+ 	}
+ 
+ 	priv->ndev = ndev;
+@@ -988,7 +991,7 @@ probe_exit_clk:
+ 	clk_put(priv->clk);
+ probe_exit_candev:
+ 	free_candev(ndev);
+-probe_exit:
++
+ 	return err;
+ }
  
 -- 
 2.27.0
