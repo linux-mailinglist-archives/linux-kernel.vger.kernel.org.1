@@ -2,144 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CD92C0662
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B502C061B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730732AbgKWMaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:30:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40986 "EHLO mail.kernel.org"
+        id S1730351AbgKWM1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:27:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730165AbgKWMaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:30:15 -0500
+        id S1730335AbgKWM1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:27:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 420F320781;
-        Mon, 23 Nov 2020 12:30:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60F442076E;
+        Mon, 23 Nov 2020 12:27:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134614;
-        bh=nqjcF6JBWvu9wm/xcmuYhnS7YRSnRIHpS25g8/DlIX0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1cMw/1cFqEPueMq79TXvPJ53sVF6DuccGNNZrU6mKRnkiiUP2WXZWPo4JnYuM7LoI
-         9hB2XY/RZfXJUql88bhu65EtfxT9YvARGcNgL6WrzN8SRAZvrS79BhC+fVvT6Nb3oz
-         0glQNBLhLY0fQjWdDmHsRbDflhbeoxM8nz84Wz4w=
+        s=korg; t=1606134459;
+        bh=Qat97L+bWeVV8OLI72pI8zhvdPOZgyFsDyBpeqVopEQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IgYfyPVR1uICz8YgyM/NZ6tbFw/J8/cy3Z6T+Vdd9hlGGyPxhYCrXwVOqnQzNTDEb
+         +/PMgug3fHPLAUznxtsbW2P2XXSmi/KtlG4rdJHgxRE6aGSOFs0Sr0xSEe7z1R7VkS
+         jJw6m2q/irgkFsLAIidNpGxfrwwVykPtKW6nnhbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 21/91] sctp: change to hold/put transport for proto_unreach_timer
-Date:   Mon, 23 Nov 2020 13:21:41 +0100
-Message-Id: <20201123121810.339376302@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.14 00/60] 4.14.209-rc1 review
+Date:   Mon, 23 Nov 2020 13:21:42 +0100
+Message-Id: <20201123121805.028396732@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.209-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.209-rc1
+X-KernelTest-Deadline: 2020-11-25T12:18+00:00
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+This is the start of the stable review cycle for the 4.14.209 release.
+There are 60 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit 057a10fa1f73d745c8e69aa54ab147715f5630ae ]
+Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
+Anything received after that time might be too late.
 
-A call trace was found in Hangbin's Codenomicon testing with debug kernel:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.209-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
 
-  [ 2615.981988] ODEBUG: free active (active state 0) object type: timer_list hint: sctp_generate_proto_unreach_event+0x0/0x3a0 [sctp]
-  [ 2615.995050] WARNING: CPU: 17 PID: 0 at lib/debugobjects.c:328 debug_print_object+0x199/0x2b0
-  [ 2616.095934] RIP: 0010:debug_print_object+0x199/0x2b0
-  [ 2616.191533] Call Trace:
-  [ 2616.194265]  <IRQ>
-  [ 2616.202068]  debug_check_no_obj_freed+0x25e/0x3f0
-  [ 2616.207336]  slab_free_freelist_hook+0xeb/0x140
-  [ 2616.220971]  kfree+0xd6/0x2c0
-  [ 2616.224293]  rcu_do_batch+0x3bd/0xc70
-  [ 2616.243096]  rcu_core+0x8b9/0xd00
-  [ 2616.256065]  __do_softirq+0x23d/0xacd
-  [ 2616.260166]  irq_exit+0x236/0x2a0
-  [ 2616.263879]  smp_apic_timer_interrupt+0x18d/0x620
-  [ 2616.269138]  apic_timer_interrupt+0xf/0x20
-  [ 2616.273711]  </IRQ>
+thanks,
 
-This is because it holds asoc when transport->proto_unreach_timer starts
-and puts asoc when the timer stops, and without holding transport the
-transport could be freed when the timer is still running.
+greg k-h
 
-So fix it by holding/putting transport instead for proto_unreach_timer
-in transport, just like other timers in transport.
+-------------
+Pseudo-Shortlog of commits:
 
-v1->v2:
-  - Also use sctp_transport_put() for the "out_unlock:" path in
-    sctp_generate_proto_unreach_event(), as Marcelo noticed.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.209-rc1
 
-Fixes: 50b5d6ad6382 ("sctp: Fix a race between ICMP protocol unreachable and connect()")
-Reported-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Link: https://lore.kernel.org/r/102788809b554958b13b95d33440f5448113b8d6.1605331373.git.lucien.xin@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/sctp/input.c         |    4 ++--
- net/sctp/sm_sideeffect.c |    4 ++--
- net/sctp/transport.c     |    2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+Chen Yu <yu.c.chen@intel.com>
+    x86/microcode/intel: Check patch signature before saving microcode for early loading
 
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -461,7 +461,7 @@ void sctp_icmp_proto_unreachable(struct
- 		else {
- 			if (!mod_timer(&t->proto_unreach_timer,
- 						jiffies + (HZ/20)))
--				sctp_association_hold(asoc);
-+				sctp_transport_hold(t);
- 		}
- 	} else {
- 		struct net *net = sock_net(sk);
-@@ -470,7 +470,7 @@ void sctp_icmp_proto_unreachable(struct
- 			 "encountered!\n", __func__);
- 
- 		if (del_timer(&t->proto_unreach_timer))
--			sctp_association_put(asoc);
-+			sctp_transport_put(t);
- 
- 		sctp_do_sm(net, SCTP_EVENT_T_OTHER,
- 			   SCTP_ST_OTHER(SCTP_EVENT_ICMP_PROTO_UNREACH),
---- a/net/sctp/sm_sideeffect.c
-+++ b/net/sctp/sm_sideeffect.c
-@@ -434,7 +434,7 @@ void sctp_generate_proto_unreach_event(s
- 		/* Try again later.  */
- 		if (!mod_timer(&transport->proto_unreach_timer,
- 				jiffies + (HZ/20)))
--			sctp_association_hold(asoc);
-+			sctp_transport_hold(transport);
- 		goto out_unlock;
- 	}
- 
-@@ -450,7 +450,7 @@ void sctp_generate_proto_unreach_event(s
- 
- out_unlock:
- 	bh_unlock_sock(sk);
--	sctp_association_put(asoc);
-+	sctp_transport_put(transport);
- }
- 
-  /* Handle the timeout of the RE-CONFIG timer. */
---- a/net/sctp/transport.c
-+++ b/net/sctp/transport.c
-@@ -148,7 +148,7 @@ void sctp_transport_free(struct sctp_tra
- 
- 	/* Delete the ICMP proto unreachable timer if it's active. */
- 	if (del_timer(&transport->proto_unreach_timer))
--		sctp_association_put(transport->asoc);
-+		sctp_transport_put(transport);
- 
- 	sctp_transport_put(transport);
- }
+Stefan Haberland <sth@linux.ibm.com>
+    s390/dasd: fix null pointer dereference for ERP requests
+
+Thomas Richter <tmricht@linux.ibm.com>
+    s390/cpum_sf.c: fix file permission for cpum_sfb_size
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: free sta in sta_info_insert_finish() on errors
+
+Felix Fietkau <nbd@nbd.name>
+    mac80211: minstrel: fix tx status processing corner case
+
+Felix Fietkau <nbd@nbd.name>
+    mac80211: minstrel: remove deferred sampling code
+
+Max Filippov <jcmvbkbc@gmail.com>
+    xtensa: disable preemption around cache alias management calls
+
+Michał Mirosław <mirq-linux@rere.qmqm.pl>
+    regulator: workaround self-referent regulators
+
+Michał Mirosław <mirq-linux@rere.qmqm.pl>
+    regulator: avoid resolve_supply() infinite recursion
+
+Michał Mirosław <mirq-linux@rere.qmqm.pl>
+    regulator: fix memory leak with repeated set_machine_constraints()
+
+Hans de Goede <hdegoede@redhat.com>
+    iio: accel: kxcjk1013: Add support for KIOX010A ACPI DSM for setting tablet-mode
+
+Hans de Goede <hdegoede@redhat.com>
+    iio: accel: kxcjk1013: Replace is_smo8500_device with an acpi_type enum
+
+Jan Kara <jack@suse.cz>
+    ext4: fix bogus warning in ext4_update_dx_flag()
+
+Brian O'Keefe <bokeefe@alum.wpi.edu>
+    staging: rtl8723bs: Add 024c:0627 to the list of SDIO device-ids
+
+Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+    efivarfs: fix memory leak in efivarfs_create()
+
+Fugang Duan <fugang.duan@nxp.com>
+    tty: serial: imx: keep console clocks always on
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: mixart: Fix mutex deadlock
+
+Takashi Sakamoto <o-takashi@sakamocchi.jp>
+    ALSA: ctl: fix error path at adding user-defined element set
+
+Samuel Thibault <samuel.thibault@ens-lyon.org>
+    speakup: Do not let the line discipline be used several times
+
+Daniel Axtens <dja@axtens.net>
+    powerpc/uaccess-flush: fix missing includes in kup-radix.h
+
+Yicong Yang <yangyicong@hisilicon.com>
+    libfs: fix error cast of negative value in simple_attr_write()
+
+Darrick J. Wong <darrick.wong@oracle.com>
+    xfs: revert "xfs: fix rmap key and record comparison functions"
+
+Nishanth Menon <nm@ti.com>
+    regulator: ti-abb: Fix array out of bound read access on the first transition
+
+Zhang Qilong <zhangqilong3@huawei.com>
+    MIPS: Alchemy: Fix memleak in alchemy_clk_setup_cpu
+
+Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+    ASoC: qcom: lpass-platform: Fix memory leak
+
+Wu Bo <wubo.oduw@gmail.com>
+    can: m_can: m_can_handle_state_change(): fix state change
+
+Colin Ian King <colin.king@canonical.com>
+    can: peak_usb: fix potential integer overflow on shift of a int
+
+Marc Kleine-Budde <mkl@pengutronix.de>
+    can: mcba_usb: mcba_usb_start_xmit(): first fill skb, then pass to can_put_echo_skb()
+
+Zhang Qilong <zhangqilong3@huawei.com>
+    can: ti_hecc: Fix memleak in ti_hecc_probe
+
+Alejandro Concepcion Rodriguez <alejandro@acoro.eu>
+    can: dev: can_restart(): post buffer from the right context
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    can: af_can: prevent potential access of uninitialized member in canfd_rcv()
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    can: af_can: prevent potential access of uninitialized member in can_rcv()
+
+Leo Yan <leo.yan@linaro.org>
+    perf lock: Don't free "lock_seq_stat" if read_count isn't zero
+
+Fabio Estevam <festevam@gmail.com>
+    ARM: dts: imx50-evk: Fix the chip select 1 IOMUX
+
+Sergey Matyukevich <geomatsi@gmail.com>
+    arm: dts: imx6qdl-udoo: fix rgmii phy-mode for ksz9031 phy
+
+Randy Dunlap <rdunlap@infradead.org>
+    MIPS: export has_transparent_hugepage() for modules
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    Input: adxl34x - clean up a data type in adxl34x_probe()
+
+Darrick J. Wong <darrick.wong@oracle.com>
+    vfs: remove lockdep bogosity in __sb_start_write
+
+Will Deacon <will@kernel.org>
+    arm64: psci: Avoid printing in cpu_psci_cpu_die()
+
+Jianqun Xu <jay.xu@rock-chips.com>
+    pinctrl: rockchip: enable gpio pclk for rockchip_gpio_to_irq
+
+Joel Stanley <joel@jms.id.au>
+    net: ftgmac100: Fix crash when removing driver
+
+Ryan Sharpelletti <sharpelletti@google.com>
+    tcp: only postpone PROBE_RTT if RTT is < current min_rtt estimate
+
+Filip Moc <dev@moc6.cz>
+    net: usb: qmi_wwan: Set DTR quirk for MR400
+
+Vladyslav Tarasiuk <vladyslavt@nvidia.com>
+    net/mlx5: Disable QoS when min_rates on all VFs are zero
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: change to hold/put transport for proto_unreach_timer
+
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    qlcnic: fix error return code in qlcnic_83xx_restart_hw()
+
+Xie He <xie.he.0141@gmail.com>
+    net: x25: Increase refcnt of "struct x25_neigh" in x25_rx_call_request
+
+Aya Levin <ayal@nvidia.com>
+    net/mlx4_core: Fix init_hca fields offset
+
+Paul Moore <paul@paul-moore.com>
+    netlabel: fix an uninitialized warning in netlbl_unlabel_staticlist()
+
+Paul Moore <paul@paul-moore.com>
+    netlabel: fix our progress tracking in netlbl_unlabel_staticlist()
+
+Florian Fainelli <f.fainelli@gmail.com>
+    net: Have netpoll bring-up DSA management interface
+
+Tobias Waldekranz <tobias@waldekranz.com>
+    net: dsa: mv88e6xxx: Avoid VTU corruption on 6097
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    net: bridge: add missing counters to ndo_get_stats64 callback
+
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    net: b44: fix error return code in b44_init_one()
+
+Ido Schimmel <idosch@nvidia.com>
+    mlxsw: core: Use variable timeout for EMAD retries
+
+Wang Hai <wanghai38@huawei.com>
+    inet_diag: Fix error path to cancel the meseage in inet_req_diag_fill()
+
+Wang Hai <wanghai38@huawei.com>
+    devlink: Add missing genlmsg_cancel() in devlink_nl_sb_port_pool_fill()
+
+Edwin Peer <edwin.peer@broadcom.com>
+    bnxt_en: read EEPROM A2h address using page 0
+
+Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    atm: nicstar: Unmap DMA on send error
+
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    ah6: fix error return code in ah6_input()
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +-
+ arch/arm/boot/dts/imx50-evk.dts                    |  2 +-
+ arch/arm/boot/dts/imx6qdl-udoo.dtsi                |  2 +-
+ arch/arm64/kernel/psci.c                           |  5 +-
+ arch/mips/alchemy/common/clock.c                   |  9 +++-
+ arch/mips/mm/tlb-r4k.c                             |  1 +
+ arch/powerpc/include/asm/book3s/64/kup-radix.h     |  1 +
+ arch/s390/kernel/perf_cpum_sf.c                    |  2 +-
+ arch/x86/kernel/cpu/microcode/intel.c              | 63 ++++------------------
+ arch/xtensa/mm/cache.c                             | 14 +++++
+ drivers/atm/nicstar.c                              |  2 +
+ drivers/iio/accel/kxcjk-1013.c                     | 51 ++++++++++++++++--
+ drivers/input/misc/adxl34x.c                       |  2 +-
+ drivers/net/can/dev.c                              |  2 +-
+ drivers/net/can/m_can/m_can.c                      |  4 +-
+ drivers/net/can/ti_hecc.c                          | 13 +++--
+ drivers/net/can/usb/mcba_usb.c                     |  4 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c       |  4 +-
+ drivers/net/dsa/mv88e6xxx/global1_vtu.c            | 59 ++++++++++++++++----
+ drivers/net/ethernet/broadcom/b44.c                |  3 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c  |  2 +-
+ drivers/net/ethernet/faraday/ftgmac100.c           |  4 ++
+ drivers/net/ethernet/mellanox/mlx4/fw.c            |  6 +--
+ drivers/net/ethernet/mellanox/mlx4/fw.h            |  4 +-
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  | 15 +++---
+ drivers/net/ethernet/mellanox/mlxsw/core.c         |  3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c  |  3 +-
+ drivers/net/usb/qmi_wwan.c                         |  2 +-
+ drivers/pinctrl/pinctrl-rockchip.c                 |  2 +
+ drivers/regulator/core.c                           | 38 +++++++------
+ drivers/regulator/ti-abb-regulator.c               | 12 ++++-
+ drivers/s390/block/dasd.c                          |  6 +++
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c       |  1 +
+ drivers/staging/speakup/spk_ttyio.c                |  9 ++++
+ drivers/tty/serial/imx.c                           | 20 ++-----
+ fs/efivarfs/super.c                                |  1 +
+ fs/ext4/ext4.h                                     |  3 +-
+ fs/libfs.c                                         |  6 ++-
+ fs/super.c                                         | 33 ++----------
+ fs/xfs/libxfs/xfs_rmap_btree.c                     | 16 +++---
+ net/bridge/br_device.c                             |  1 +
+ net/can/af_can.c                                   | 38 +++++++++----
+ net/core/devlink.c                                 |  6 ++-
+ net/core/netpoll.c                                 | 22 ++++++--
+ net/ipv4/inet_diag.c                               |  4 +-
+ net/ipv4/tcp_bbr.c                                 |  2 +-
+ net/ipv6/ah6.c                                     |  3 +-
+ net/mac80211/rc80211_minstrel.c                    | 27 ++--------
+ net/mac80211/rc80211_minstrel.h                    |  1 -
+ net/mac80211/sta_info.c                            | 14 ++---
+ net/netlabel/netlabel_unlabeled.c                  | 17 ++++--
+ net/sctp/input.c                                   |  4 +-
+ net/sctp/sm_sideeffect.c                           |  4 +-
+ net/sctp/transport.c                               |  2 +-
+ net/x25/af_x25.c                                   |  1 +
+ sound/core/control.c                               |  2 +-
+ sound/pci/mixart/mixart_core.c                     |  5 +-
+ sound/soc/qcom/lpass-platform.c                    |  5 +-
+ tools/perf/builtin-lock.c                          |  2 +-
+ 59 files changed, 343 insertions(+), 250 deletions(-)
 
 
