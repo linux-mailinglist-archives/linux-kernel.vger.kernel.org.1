@@ -2,239 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7B52C11DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943542C11E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388493AbgKWRXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:23:14 -0500
-Received: from mga05.intel.com ([192.55.52.43]:22637 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730840AbgKWRXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:23:13 -0500
-IronPort-SDR: NBYgyMfzrc0ihXeogAU+FoekYpIwOj9I0EXG4mJiqix9j5euCaHXKN/WgrOrTG4p4Ulhf6/aNz
- 23Y7gvVdbqrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="256515929"
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="256515929"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:23:13 -0800
-IronPort-SDR: Ft4PhTCr/UhN3ogk4bmlUg01kSd9ke6/9PNmhB4WZ/UZT0W7/qCyRplhh0ZQlCSTe9aFbUsQzA
- pwhLNMrDxUWQ==
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="546495990"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.140])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:23:12 -0800
-Date:   Mon, 23 Nov 2020 09:24:24 -0800 (PST)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     Moritz Fischer <mdf@kernel.org>
-cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hao.wu@intel.com, trix@redhat.com, linux-doc@vger.kernel.org,
-        corbet@lwn.net
-Subject: Re: [PATCH v2 2/2] fpga: dfl: look for vendor specific capability
-In-Reply-To: <X7m8frDb8I+Q3zbt@archbook>
-Message-ID: <alpine.DEB.2.22.394.2011230910400.645786@rhweight-WRK1>
-References: <20201118190151.365564-1-matthew.gerlach@linux.intel.com> <20201118190151.365564-3-matthew.gerlach@linux.intel.com> <X7m8frDb8I+Q3zbt@archbook>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+        id S2387952AbgKWRYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729344AbgKWRYn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:24:43 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3596EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:24:43 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id v12so15500253pfm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:24:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=2yYDqQPMJ4/Ej4t++O02JPknf9YKcT/ImIiC3QyYahY=;
+        b=Q8oZ7t9UaATsyMNOrNM4q7QJEr3I2huxlsrI9hNkGVtjJAZXZEejZDvGVSAuRxrpNk
+         wmKcUQK4E475/y682gdSEe6Xbw3HtCVWrXx5iK0yq5UKPgZwH/SpJbQRmwVAVjkw8Jzg
+         Td+Q8T8mQ/V2wgNhrD5V4etq7VDIKWigNNrviwxceDLpZd2RQTtMiffGk7jC2Akq8Eui
+         /tMRCX0wdgHbUBD2vppijn/JHN5pU7hjgSCUdAqp3niWs7AIS3cHtBnOGSgQr5dRM3C4
+         40qqtFXN1SDq9a6Z1cdK3L8NAdoOwfmiDCbCk6xzlaaC6Fre3iMnTti+IcN6VRM8OugX
+         ViFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=2yYDqQPMJ4/Ej4t++O02JPknf9YKcT/ImIiC3QyYahY=;
+        b=TtSy/65Wwammkff9Tq5JGABxHiGiDbTCIlL4l4or7VJEA9m8K+4L6PPaFs391L/5qP
+         G7SwCGeEUEXrbr9HlW+dqF6CxoMclVMWZSBz/4kt3lTOQNXrnZU3NUiR/Kk9TdeZbMEa
+         tIqyuf9jmtWOqlIdMlhOBRmaLVjM9wogyGs3+cutQlrvcBEW2sDcRauyd4F0EjzGzxA6
+         laz0ww46imdRFduCoB0dD+RAdbC3My415iSjzlz5NA2xL24YRlW/YdWtthbIA3d6UJyE
+         0ceJ2/mzjH23GEe1ltjkMuwt9NjRVnMpEoeKjKPCMXtDIGKOjtEjRKrdMW0suHQailEO
+         Vijw==
+X-Gm-Message-State: AOAM532p7Z2iXNOFrPZMQ1PzwmzCqz079u++t4c1/rpGaR5HsI/o/0DK
+        o8u0O2aLql7RwKlXZTQRWiU=
+X-Google-Smtp-Source: ABdhPJyLRaUG72exY64XFZgIq0Ilx+BI0OXlv6FFv+vtoQmPYJsw4Qp8g54W8E0XXyCZmTwITJ6IRQ==
+X-Received: by 2002:aa7:953c:0:b029:18b:bfb:9fa1 with SMTP id c28-20020aa7953c0000b029018b0bfb9fa1mr499944pfp.14.1606152282437;
+        Mon, 23 Nov 2020 09:24:42 -0800 (PST)
+Received: from localhost.localdomain ([2405:204:a68f:d31a:715e:8c1c:620e:4557])
+        by smtp.googlemail.com with ESMTPSA id z12sm12722123pfg.123.2020.11.23.09.24.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 09:24:41 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     lukas.bulwahn@gmail.com
+Cc:     yashsri421@gmail.com, joe@perches.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] checkpatch: add fix and improve warning msg for Non-standard signature
+Date:   Mon, 23 Nov 2020 22:54:30 +0530
+Message-Id: <20201123172430.12854-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CAKXUXMx8siSm67jkBP_r+OKyKALfT2EDcX_SfX7JGBy3YisXcQ@mail.gmail.com>
+References: <CAKXUXMx8siSm67jkBP_r+OKyKALfT2EDcX_SfX7JGBy3YisXcQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
+styles.
 
+This warning occurs because of incorrect use of signature tags,
+e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
+signature tags, which may seem correct, but are not standard:
 
-On Sat, 21 Nov 2020, Moritz Fischer wrote:
+1) Requested-by (count: 48) => Suggested-by
+Rationale: In an open-source project, there are no 'requests', just
+'suggestions' to convince a maintainer to accept your patch
 
-> Hi Matthew,
->
-> On Wed, Nov 18, 2020 at 11:01:51AM -0800, matthew.gerlach@linux.intel.com wrote:
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> A DFL may not begin at offset 0 of BAR 0.  A PCIe vendor
->> specific capability can be used to specify the start of a
->> number of DFLs.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->> v2: Update documentation for clarity.
->>     Clean up  macro names.
->>     Use GENMASK.
->>     Removed spurious blank lines.
->>     Changed some calls from dev_info to dev_dbg.
->>     Specifically check for VSEC not found, -ENODEV.
->>     Ensure correct pci vendor id.
->>     Remove check for page alignment.
->>     Rename find_dfl_in_cfg to find_dfls_by_vsec.
->>     Initialize target memory of pci_read_config_dword to invalid values before use.
->> ---
->>  Documentation/fpga/dfl.rst | 13 ++++++
->>  drivers/fpga/dfl-pci.c     | 87 +++++++++++++++++++++++++++++++++++++-
->>  2 files changed, 98 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
->> index 0404fe6ffc74..37016ff35a90 100644
->> --- a/Documentation/fpga/dfl.rst
->> +++ b/Documentation/fpga/dfl.rst
->> @@ -501,6 +501,19 @@ Developer only needs to provide a sub feature driver with matched feature id.
->>  FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
->>  could be a reference.
->>
->> +Location of DFLs on PCI Device
->> +===========================
->
-> Maybe start with: "There are two ways of locating the DFLs"
+2) Co-authored-by (count: 43) => Co-developed-by
+Rationale: Co-developed-by and Co-authored-by are synonyms
 
-This seems to be a reasonable suggestion.  I will update the text.
+3) Analyzed-by (count: 22) / Analysed-by (count: 5) => Co-developed-by
+Rationale: Analyzing is a part of Software Development, so
+'Co-developed-by' is perfectly fine, even if contributor did not create
+code
 
->> +The start of the first DFL is assumed to be offset 0 of bar 0.
->> +If the first node of the DFL is an FME, then further DFLs
->> +in the port(s) are specified in FME header registers.
->> +Alternatively, a vendor specific capability structure can be used to
->> +specify the location of all the DFLs on the device, providing flexibility
->> +for the type of starting node in the DFL.  Intel has reserved the
->> +VSEC ID of 0x43 for this purpose.  The vendor specific
->> +data begins with a 4 byte vendor specific register for the number of DFLs followed 4 byte
->> +Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR register
->> +indicates the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
->> +zero.
-> It's nice to have details, thanks! Nit: This could be a table maybe?
+4) Improvements-by (count: 19) => Co-developed-by
 
-I will look into some sort of table if it looks helpful.
+5) Noticed-by (count: 11) => Reported-by
 
->>
->>  Open discussion
->>  ===============
->> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
->> index b27fae045536..3a6807e3e10c 100644
->> --- a/drivers/fpga/dfl-pci.c
->> +++ b/drivers/fpga/dfl-pci.c
->> @@ -27,6 +27,14 @@
->>  #define DRV_VERSION	"0.8"
->>  #define DRV_NAME	"dfl-pci"
->>
->> +#define PCI_VSEC_ID_INTEL_DFLS 0x43
->> +
->> +#define PCI_VNDR_DFLS_CNT 8
->> +#define PCI_VNDR_DFLS_RES 0x0c
->> +
->> +#define PCI_VNDR_DFLS_RES_BAR_MASK GENMASK(2, 0)
->> +#define PCI_VNDR_DFLS_RES_OFF_MASK GENMASK(31, 3)
->> +
->>  struct cci_drvdata {
->>  	struct dfl_fpga_cdev *cdev;	/* container device */
->>  };
->> @@ -119,8 +127,80 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
->>  	return table;
->>  }
->>
->> +static int find_dfls_by_vsec(struct pci_dev *pcidev, struct dfl_fpga_enum_info *info)
->> +{
->> +	u32 bar, offset, vndr_hdr, dfl_cnt, dfl_res;
->> +	int dfl_res_off, i, voff = 0;
->> +	resource_size_t start, len;
->> +
->> +	if (pcidev->vendor != PCI_VENDOR_ID_INTEL)
->> +		return -ENODEV;
->> +
->> +	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
->> +		vndr_hdr = 0;
->> +		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
-> Are there concerns around those failing?
+6) Inspired-by (count: 11) => Suggested-by
 
-The intent is that failing pci_read_config would be handled by 
-initializing the target to an invalid value.
+7) Verified-by (count: 8) => Tested-by
+Rationale: Used by a single user. On reading mailing list, it seems
+Tested-by might be a suitable alternative
 
->> +
->> +		dev_dbg(&pcidev->dev,
->> +			"vendor-specific capability id 0x%x, rev 0x%x len 0x%x\n",
->> +			PCI_VNDR_HEADER_ID(vndr_hdr),
->> +			PCI_VNDR_HEADER_REV(vndr_hdr),
->> +			PCI_VNDR_HEADER_LEN(vndr_hdr));
->> +
->> +		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VSEC_ID_INTEL_DFLS)
->> +			break;
->> +	}
->> +
->> +	if (!voff) {
->> +		dev_dbg(&pcidev->dev, "%s no VSEC found\n", __func__);
->> +		return -ENODEV;
->> +	}
->> +
->> +	dfl_cnt = 0;
->> +	pci_read_config_dword(pcidev, voff + PCI_VNDR_DFLS_CNT, &dfl_cnt);
-> I guess this could fall on it's face if you'd read back ~0 ... maybe
-> I'm being too paranoid :)
+8) Okay-ished-by (count: 8) => Acked-by
+Rationale: Used by a single user. On reading mailing list, it seems
+Acked-by must be suitable alternative
 
-I don't think you are being too paranoid.  I can add a check to make sure 
-dfl_res_off never outgrows the size of PCIe config space.
+9) Acked-for-MFD-by (count: 6) => Acked-by
 
->> +	dev_dbg(&pcidev->dev, "dfl_cnt %d\n", dfl_cnt);
->> +	for (i = 0; i < dfl_cnt; i++) {
->> +		dfl_res_off = voff + PCI_VNDR_DFLS_RES +
->> +				      (i * sizeof(dfl_res));
->> +		dfl_res = GENMASK(31, 0);
->> +		pci_read_config_dword(pcidev, dfl_res_off, &dfl_res);
->> +
->> +		dev_dbg(&pcidev->dev, "dfl_res 0x%x\n", dfl_res);
->> +
->> +		bar = dfl_res & PCI_VNDR_DFLS_RES_BAR_MASK;
->> +		if (bar >= PCI_STD_NUM_BARS) {
->> +			dev_err(&pcidev->dev, "%s bad bar number %d\n",
->> +				__func__, bar);
->> +			return -EINVAL;
->> +		}
->> +
->> +		len = pci_resource_len(pcidev, bar);
->> +		if (len == 0) {
->> +			dev_err(&pcidev->dev, "%s unmapped bar number %d\n",
->> +				__func__, bar);
->> +			return -EINVAL;
->> +		}
->> +
->> +		offset = dfl_res & PCI_VNDR_DFLS_RES_OFF_MASK;
->> +		if (offset >= len) {
->> +			dev_err(&pcidev->dev, "%s bad offset %u >= %pa\n",
->> +				__func__, offset, &len);
->> +			return -EINVAL;
->> +		}
->> +
->> +		dev_dbg(&pcidev->dev, "%s BAR %d offset 0x%x\n", __func__, bar, offset);
->> +
->> +		len -= offset;
->> +
->> +		start = pci_resource_start(pcidev, bar) + offset;
->> +
->> +		dfl_fpga_enum_info_add_dfl(info, start, len);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static int find_dfls_by_default(struct pci_dev *pcidev,
->> -				struct dfl_fpga_enum_info *info)
->> +			       struct dfl_fpga_enum_info *info)
->>  {
->>  	resource_size_t start, len;
->>  	int port_num, bar, i;
->> @@ -220,7 +300,10 @@ static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
->>  			goto irq_free_exit;
->>  	}
->>
->> -	ret = find_dfls_by_default(pcidev, info);
->> +	ret = find_dfls_by_vsec(pcidev, info);
->> +	if (ret == -ENODEV)
->> +		ret = find_dfls_by_default(pcidev, info);
->> +
->>  	if (ret)
->>  		goto irq_free_exit;
->>
->> --
->> 2.25.2
->>
->
-> Thanks,
-> Moritz
->
+10) Reviewed-off-by (count: 5) => Reviewed-by
+
+11) Proposed-by (count: 5) => Suggested-by
+Rationale: On observing the mailing list, this tag is always used for a
+maintainer. It seems that the changes might have been suggested by them
+and the tag is used as acknowledgment for the same
+
+12) Fixed-by (count: 3) => Co-developed-by
+Rationale: Fixing bug is a part of Software Development, so
+'Co-developed-by' is perfectly fine, even if contributor did not create
+code
+
+13) Pointed-out-by (count: 3) / Pointed-at-by (count: 2) => Suggested-by
+Rationale: The tags are used for maintainers. It seems that the changes
+might have been suggested by them and the tag is used as acknowledgment
+for the same
+E.g., Pointed-at-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+14) Suggestions-by (count: 3) => Suggested-by
+
+15) Generated-by (count: 17) => remove the tag
+On observing the mailing list, this tag is always used for quoting the
+tool or script, which might have been used to generate the patch.
+E.g. Generated-by: scripts/coccinelle/api/alloc/kzalloc-simple.cocci
+
+16) Celebrated-by (count: 3) => remove the tag
+This tag was used for only one commit. On observing mailing list, it seem
+like the celebration for a particular patch and changes.
+
+Provide a fix by:
+1) replacing the non-standard signature with its standard equivalent
+2) removing the signature if it is not required
+
+Also, improve warning messages correspondingly, providing users
+suggestions to either replace or remove the signature. Also provide
+suitable rationale to the user for the suggestion made.
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+changes in v2: replace commit specific example with brief evaluation
+
+changes in v3: provide rationale to users for every signature tag suggestion;
+modify commit message describing arrival to conclusion in a structured way
+
+changes in v4: modify rationale for certain suggestions
+
+ scripts/checkpatch.pl | 101 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 99 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fdfd5ec09be6..b018deecec1a 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -506,6 +506,81 @@ our $signature_tags = qr{(?xi:
+ 	Cc:
+ )};
+ 
++our %standard_signature_fix = (
++	"Requested-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "In an open-source project, there are no 'requests', just 'suggestions' to convince a maintainer to accept your patch",
++	},
++	"Co-authored-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Co-developed-by is the standard signature tag to attribute multiple authors for a patch",
++	},
++	"Analyzed-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Analyzing is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Analysed-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Analysing is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Improvements-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Performing improvements are a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Noticed-by:" => {
++		suggestion => "Reported-by:",
++		rationale => "Reported-by is the standard signature tag for acknowledging user who noticed or reported any bug(s)",
++	},
++	"Inspired-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Suggested-by is the standard signature tag for acknowledging user for their suggestions",
++	},
++	"Verified-by:" => {
++		suggestion => "Tested-by:",
++		rationale => "Tested-by is the standard signature tag to attribute user for verifying/testing the patch",
++	},
++	"Okay-ished-by:" => {
++		suggestion => "Acked-by:",
++		rationale => "Acked-by is the standard signature tag for recording one's approval",
++	},
++	"Acked-for-MFD-by:" => {
++		suggestion => "Acked-by:",
++		rationale => "Acked-by is the standard signature tag for recording one's approval",
++	},
++	"Reviewed-off-by:" => {
++		suggestion => "Reviewed-by:",
++		rationale => "Reviewed-by is the standard signature tag to indicate that the patch has been reviewed",
++	},
++	"Proposed-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Suggested-by is the standard signature tag for acknowledging user for their suggestions",
++	},
++	"Fixed-by:" => {
++		suggestion => "Co-developed-by:",
++		rationale => "Fixing bug is a part of Software Development, so 'Co-developed-by' is perfectly fine, even if contributor did not create code",
++	},
++	"Pointed-out-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Pointing out certain changes is synonymous to suggesting changes, so Suggested-by seems perfectly fine",
++	},
++	"Pointed-at-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Pointing at certain changes is synonymous to suggesting changes, so Suggested-by seems perfectly fine",
++	},
++	"Suggestions-by:" => {
++		suggestion => "Suggested-by:",
++		rationale => "Suggested-by is the standard signature tag for acknowledging user for their suggestions",
++	},
++	"Generated-by:" => {
++		suggestion => "remove",
++		rationale => "Signature tags are used to acknowledge users for their contributions. It is advised to describe about tools in commit description instead",
++	},
++	"Celebrated-by:" => {
++		suggestion => "remove",
++		rationale => "Signature tags are used to acknowledge users for their contributions. This tag may not be required at all",
++	},
++);
++
+ our @typeListMisordered = (
+ 	qr{char\s+(?:un)?signed},
+ 	qr{int\s+(?:(?:un)?signed\s+)?short\s},
+@@ -2773,8 +2848,30 @@ sub process {
+ 			my $ucfirst_sign_off = ucfirst(lc($sign_off));
+ 
+ 			if ($sign_off !~ /$signature_tags/) {
+-				WARN("BAD_SIGN_OFF",
+-				     "Non-standard signature: $sign_off\n" . $herecurr);
++				my $suggested_signature = "";
++				my $rationale = "";
++				if (exists($standard_signature_fix{$sign_off})) {
++					$suggested_signature = $standard_signature_fix{$sign_off}{'suggestion'};
++					$rationale = $standard_signature_fix{$sign_off}{'rationale'};
++				}
++				if ($suggested_signature eq "") {
++					WARN("BAD_SIGN_OFF",
++					     "Non-standard signature: $sign_off\n" . $herecurr);
++				}
++				elsif ($suggested_signature eq "remove") {
++					if (WARN("BAD_SIGN_OFF",
++						"Non-standard signature: $sign_off. Please consider removing this signature tag. $rationale\n" . $herecurr) &&
++					$fix) {
++						fix_delete_line($fixlinenr, $rawline);
++					}
++				}
++				else {
++					if (WARN("BAD_SIGN_OFF",
++						"Non-standard signature: $sign_off. Please use '$suggested_signature' instead. $rationale\n" . $herecurr) &&
++					$fix) {
++						$fixed[$fixlinenr] =~ s/$sign_off/$suggested_signature/;
++					}
++				}
+ 			}
+ 			if (defined $space_before && $space_before ne "") {
+ 				if (WARN("BAD_SIGN_OFF",
+-- 
+2.17.1
+
