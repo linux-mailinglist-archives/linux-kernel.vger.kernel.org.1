@@ -2,189 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18272C0281
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAA32C0289
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgKWJui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 04:50:38 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:26987 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgKWJuh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:50:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606125037; x=1637661037;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=1U4giIt3XH6zbhLVwM5cMemU5Yd85t4keQFi3mXrfnU=;
-  b=fsgJ0JcLPAJAAY+LQHikLgiwZxPrwBJ0137KFwtfI4b/Y9qoc6Yl5Fb7
-   Wwwb/4FGHJCnCJTYjAt1gaAFYw5jAczM20o7G5AzVnQEDHl3Rb3ePBUJc
-   9ejK9VrvweA7unusPPbkieUSrlKnaQ5an9imNivX9k6zChvu7VDr7uCJs
-   1KwdQyd9Zlz0POZIFzEQ/CQdU5WiUEiGYlQHIJu5XfUBLXHbqt/psKDCp
-   aKYNYq4+GvWgIToXSEzMc9z4UTJcbFc1aq8iar9QL9BRMlySyv2nYdcV2
-   KGIL99McjiBBbxaxJUX6GLGe8RlxFmnjxSZuJYxFOv9FjvDZZPVzj+zIy
-   g==;
-IronPort-SDR: Cm+hMPPFwNzz2ioNwIYKxxJVNOy4dPRodrYeV8lvVPjZv8MbAzJpQBJb1i5wMVjTnPWT8ONeuM
- t8/XTksKhZpgk2KkGwpB0HxBGjwZSLm2jq+oTv7pA40v3zHY0wiCn1IlCUjwCt8FXOK8yKkr4L
- V6aiDOXUlRT4BCgxb8MgVAlVE66dbrtcTC3B51NBZrmRyBGxhRWh4ZnuvvXwn5O9fhA9bUH6kn
- JcH7mSj5drQdV8R7HIfVpxlXV2VRX4k+WIPjVSVpd9s6i+6Yj0DRh2nJEk7NMZSdgOV4veNdRv
- g/0=
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="34674082"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2020 02:50:36 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 23 Nov 2020 02:50:36 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Mon, 23 Nov 2020 02:50:36 -0700
+        id S1727927AbgKWJvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:51:36 -0500
+Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:17993
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725275AbgKWJvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 04:51:36 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=InZcjHugOOnF2kyBjbtYysyNdvK0MXBPCssnOzqfMJWWw7jQHUVNVsP5glbyUarfDsDZa/2JyCRSZSfyAnm+gwJ0WXvTPJUgEAr7Ir83ndfzC9r0U+j+ru7ZPkPZqaG8HywUTwQY4vzXuOgeqU7Aqoa/zEhyeRQq8rEvG1Vmzi/tMxPiFs0AMNloIND4Og4yNuwMNidjq+WNwxwQWKJYwVlFP5QpMSb+VLeA53WumNbwyqO3fUcCjfPZ6Ff84/9XruOA+HVnwlSj4H3hxzFEsFfptvHrUzmkCipWUSvA2PtwAvTXcl95LaLTQKanS+L+1AZyFJ5SJ1TI57QLccnHdQ==
+ b=JGt8zyaIRCo+D2m1iCP+Uvj46r8VD7bBPkSqG8vBx9OFM2zGt8AHN+lKHN84qyAb9n2z7RY9h4hvBg8MM03nQyYlUB0Y2HhERh3JonPnFj9WyyHvp2My2ieN1L+A/um5sYtBuJd/m4JcQ9MDgFV1HKJ1jhOjNM8VLkPkjbbnjOfZJ5uyAx1ZYUVzVxr3rBmlqV+KzBT2u3kDyQUThl4NAfqsVQW9zZq9yyG8n7lgHa2jHT8zJGOJk0kt68IgRAfKdsGqdhXM0ezri3YaXcWgQmPtp8ojHdCg1CnaHvVT7ZpbT58eNazJo7UEuCk0hqA0mA37KV+yKvdjxYTfvycRGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EXroJJLFUDIe25nfiiEEAQdITdhOQ6g7Ey6rnyYOsIQ=;
- b=eNJeTHfKYx5q3IiNQzOysL3xgFvlDiXXsUJM/b2HQG37olnjjvuqOTNd9b6iPcEcMXWz8dwIIErJu1ON/IFJmfgl3ytepEq2uBco+xB1sEapMzoIyINoqh7oJZ797rLwq8IHypLQgS2yhAqpY6htmbFBzRiatoq4S0e5YA8EZ42PC+4G1FW+5ipqGirYBj2wQ7nqg0Pdiq2VlPnijxUjt4IhfdFDAJ3A11K1rv5sXbUA9C2x2l2zo1VsPJVtrJa+/sbiqaDn/tcIzpfZQgdhXgOZQ+pzgdqR8JO6asdAkCw4dU8RqEK3zkNBybbirzzvzNMNecNLr4FQ5kdDIG3mhA==
+ bh=G9tW+5mIADY4usrFOv+S5a3+2SU2dQ6RziprLWmT26Y=;
+ b=BRtNJexpYo1XgF5UPbr/tR7XtIsN6Efry0FYruCegk9iANYo6HqSYC8x+ojFWgRh9Z+dj6Xi+sLAvW03MXiq9yLMpoanHB0Z8Y6hOR0NDcRm93FuOsDQAb1piYH5zFfKxZKavTtlU/5sSR3/OsvFZnffqtdxPQ7KMZUu4iWw4OEY+mLP6cn4JMVAG5OuFqU7nv1y/oRvNVaZE/Tv1rlMcYK/cK3nrnHCiMuMHE7rmkqOE44TmEQ0JnwAU+wcxl0nqFC8efstClKftityP7WPd7r2VVknmEnV3JwiaRT/DhXxp3D9Wtmi9QxIMBegsrxxlmNiummqgrayIb5p39LtIg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EXroJJLFUDIe25nfiiEEAQdITdhOQ6g7Ey6rnyYOsIQ=;
- b=FK/Zh7xn7nJ6niM9RRd8+UgxDm0Yg8b1mQef9jLGJ1UHCFzH9kF2UrpQ11N7pZgHpR2QsH+WN0u1RMginGjNeI5AjUopJD5qfIRc8LnyjodhHW/cXEQGlmK+G4zyelKrufb4dmcgNQUVvPNuRMPHdMzJ+cu/iZlP2ICJDH8AbvU=
-Received: from BYAPR11MB3477.namprd11.prod.outlook.com (2603:10b6:a03:7c::28)
- by BYAPR11MB3303.namprd11.prod.outlook.com (2603:10b6:a03:18::15) with
+ bh=G9tW+5mIADY4usrFOv+S5a3+2SU2dQ6RziprLWmT26Y=;
+ b=qrpgWzx449iWzWARj2O0AHvrLwyTfoJgiAToILxuC6oCu9gBrKICEUmvPbwPdl5vEczUHrT9FBjKvI9g+IHQbfdmzVCFnGlvYHMrO5nWWBDDoxviWEluFnByjbN/BMoGu/tSqI9WFwaRocPEZUD0SPJqSfOG96mIdTVeAoFAly0=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
+ by AM7PR04MB7048.eurprd04.prod.outlook.com (2603:10a6:20b:11a::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.25; Mon, 23 Nov
- 2020 09:50:34 +0000
-Received: from BYAPR11MB3477.namprd11.prod.outlook.com
- ([fe80::712e:b004:b0c0:6dca]) by BYAPR11MB3477.namprd11.prod.outlook.com
- ([fe80::712e:b004:b0c0:6dca%3]) with mapi id 15.20.3589.030; Mon, 23 Nov 2020
- 09:50:34 +0000
-From:   <Nicolas.Ferre@microchip.com>
-To:     <vilhelm.gray@gmail.com>, <jic23@kernel.org>
-CC:     <kamel.bouhara@bootlin.com>, <alexandre.belloni@bootlin.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <joe@perches.com>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
- maintainer
-Thread-Topic: [PATCH v3] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
- maintainer
-Thread-Index: AQHWwX4W51UXP5UMT0u18aYb6eJOJg==
-Date:   Mon, 23 Nov 2020 09:50:34 +0000
-Message-ID: <df14f643-e80e-6ae6-dcef-90adefe6d733@microchip.com>
-References: <20201121185824.451477-1-vilhelm.gray@gmail.com>
-In-Reply-To: <20201121185824.451477-1-vilhelm.gray@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [2a01:cb1c:8c:b200:1047:dcdb:b744:3fbc]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dddf7599-872a-4dc0-9524-08d88f953932
-x-ms-traffictypediagnostic: BYAPR11MB3303:
-x-microsoft-antispam-prvs: <BYAPR11MB3303AFBA1D55014B302CEB2FE0FC0@BYAPR11MB3303.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: STL9kg0sr/r+4ZPLDYtR2EXTXw2W1LOG9aDYj/NsG0iDcM7tEi5/0QuWf1D98EDdTmw4ywjfPF3mrxkiGDAUHxZmMpCr3B7pAAd1mGdP4LX+9FE4sn5/MWVb1P/xJlaBntsiQXTczRsi6xHb69rNztgryYPhiFo+Bp/Ql7hCZaRWl/PJSe8IFB9aoLc+8opDp/aFNOEWruGK0tBXxwUW4UZxgkCBS4R3QWPhq0I6sJaf1hgkM6lFeAKYbrmd8hS2b/3QwjvJZJYmgfQYOs24Q2PzEo5Ja10OjdX+sbXLfFV2jKk4I72QXOwowBJslncmYy7YGWJHQXvu14Fdi6E9os9duXzx/JFkhgO0yJ7O/pco8U4Dm1MKoBo3rjFb8GQ0HqF1Nj+jDVFUGqhzQS15nqUPo/2OnkInXWCukwEf3E3GSnTSsAIWy7iTgXRxR8ZO5iytGPmuQyeP8XCeBlzbL5fatiHrj/NED0HcKsU54Y0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3477.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(136003)(366004)(39860400002)(53546011)(186003)(6506007)(31686004)(966005)(5660300002)(2616005)(8676002)(86362001)(8936002)(6486002)(2906002)(83380400001)(71200400001)(6512007)(36756003)(110136005)(316002)(54906003)(4326008)(66446008)(31696002)(91956017)(76116006)(66946007)(66476007)(64756008)(478600001)(66556008)(43740500002)(15866825006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?Windows-1252?Q?CBIC5UCpKoQI0oYP7VFK/sN9QhiNH+4fdaIc/NkIOuSBpMtGTtppEWzu?=
- =?Windows-1252?Q?JGnE9JhHX/MrUaJALc9UECJbSLkEzFHII2ZUIQCKSz+ZifHADxhXH+Ip?=
- =?Windows-1252?Q?xBW2EP70MtluBPy/9LBItfKKcaY0aaepxmp/b964Qp7Qx6E0+PipcuKJ?=
- =?Windows-1252?Q?tbRGsYbyN2/AQX60U4ljH20nZJzMFIw4OxtBRpMJzP9xUkcbbzJsfXu9?=
- =?Windows-1252?Q?w56sB4yncpEDJwYpq7Yjp0j9hVtvpGdasjvao60QVA9Umi2IcvIHUY+i?=
- =?Windows-1252?Q?pOY+jrzEq8IeXQUxp04h4LWHnrI4rRhVfqQyF4u4+o7yrNtcZf9ccw9t?=
- =?Windows-1252?Q?wclGTeexYD3Q5YfNeRbiho6dU3/+xMMNH4evxAqoRfuQp9wOxlxO4+PY?=
- =?Windows-1252?Q?C6gt+fXLkdCeWmaBJ1I1cMdRFjkr+m/kNXR8yeKVtfoxhHqjM/urNSSv?=
- =?Windows-1252?Q?SBIcwdS4SRTEIJf1jlF9g9Y40zsopALS82dKX1OnoqxLVKWHeA+lFc8a?=
- =?Windows-1252?Q?Ue7jacwc1RkpnDNn9nczFInGRtxNhuGH25dWanYaHck8B0yam+3CtfNS?=
- =?Windows-1252?Q?QYPm+BhD0G0Cj1wiawvdep/X5ZX9w4qN1WA2OdJPNBt+gServkhEN7Ac?=
- =?Windows-1252?Q?OnSfDB3iSeOFAi8aPkMssOFgcA/BAy7G1/6GZweE8Kwo1CezFrLRsM0w?=
- =?Windows-1252?Q?sINwixiUf9g6SIq/D8k1ipGvRaSE7om4tmP63E0ugElxcO/Fjla5VrhW?=
- =?Windows-1252?Q?ou9Snxfkbk5f18bmKCtDYMoXvMSjfm+2qBUDbliOK/E4pjDVAHfyFvMT?=
- =?Windows-1252?Q?scPrCTWoiSZeNwZr7IhdcIeVJlH9Xnj4skJLMghsUDmd7cp6xtRe/f+N?=
- =?Windows-1252?Q?xKXlNAdyjCsn6JJbV9w0DkxdgfAZxYLYOUHPfnAxwcAhlocNejt0F76y?=
- =?Windows-1252?Q?oVvbmoMbV+s9jHtvW2Ixt2NZ0+rfG7PG8HQVQ4KOHRC55fCh7HNcmFNf?=
- =?Windows-1252?Q?XdCvYyf/bJbAm1tHSKVU5duasCoG7A=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <66FF9A3E80B6C64DB3EC6E7D995E1507@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Mon, 23 Nov
+ 2020 09:51:32 +0000
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::78fe:9b7a:a2ac:9631]) by AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::78fe:9b7a:a2ac:9631%7]) with mapi id 15.20.3589.030; Mon, 23 Nov 2020
+ 09:51:32 +0000
+From:   Alice Guo <alice.guo@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        krzk@kernel.org
+Cc:     linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 1/4] dt-bindings: soc: imx8m: add DT Binding doc for soc unique ID
+Date:   Mon, 23 Nov 2020 17:51:05 +0800
+Message-Id: <20201123095108.19724-1-alice.guo@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: AM0PR10CA0088.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:15::41) To AM6PR04MB6053.eurprd04.prod.outlook.com
+ (2603:10a6:20b:b9::10)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by AM0PR10CA0088.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Mon, 23 Nov 2020 09:51:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 485c8454-4cc9-48f6-5c2c-08d88f955b71
+X-MS-TrafficTypeDiagnostic: AM7PR04MB7048:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM7PR04MB704852B67EBD805532E74963E2FC0@AM7PR04MB7048.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ICz0r1RiqC6AYmp+7OSGAqFxyAkZ4Bc8HaYKvDK9IWJFR9LJWzfgxSCGqXvE0sOi1q/s8KJeumtoo+jx3bOrzKRuMU+LX+UEfTfZ5LVM1PFzyRJN3740HMOjoznRXh/JXaZWtFTEkrGtTD1wAIve00eL4p/j9QhDXmFh7qdcRSoFglgwa3a/kKfClkEx7rwT9J3RNaLTXgrnwEM+XFx2VyA3R79kKtkHAvFEBJ8+UzCU5LgXBUhIrwnXsGjBb9HPezEOeklWU7F+b19QBI4kDTsMGXEYrIz4yXiJeltMXjQ/6lnh/ZxuE5DyJzjIcfGKKNtnTLHqfw7ip3v+UqSINhqOAx+P2lgmOUKueY8/6zToezEV7/QVPHWCs1XA4kDN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(136003)(39860400002)(346002)(2616005)(478600001)(6666004)(4326008)(52116002)(8936002)(8676002)(6486002)(316002)(2906002)(6506007)(6512007)(36756003)(186003)(16526019)(26005)(44832011)(66946007)(66556008)(956004)(83380400001)(66476007)(1076003)(86362001)(5660300002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 7HJPXVfDMOCuOpL8NckIXgobAP+LypbikX/m5Wd4Ug/HVhy58JsNffQ3AoR9r4TPzg7Lt2PfKPeL3GIttuWGiu/+rn/SX6P6Ne0VQDDHZSAWG3+e/zs/x4eyo1SVD/++XmVKnB1e+US6t9Zwr4UZCzymBuZ3Dj837816CDsC1NIMQliOIIqyh+JP9CTlJhub/C0HUtqGO09+Y06nvCuT/Fm8MEjVuf5Ba57Q5tPxg5TmJ8QLZCad05TrNZ9K6ur89kiUBlZ9JVUcsdssvKoVlV94uEr3iSN4BRRs1jSmzgnItmSnio1QbIdLC8JJngbbxeVcRrgdcBCRJisO091KEOxqHWQX/ChqbNDin0qDw2vvnc+WZLGdimgX8hDWHTpwjJeVUiz3ohCYrcxGt7MimUVquneZPztnzye//mqDBtKrXiT+5TpSScZ/NKwyHJT36hT53WL94Awut3igJMTwX6g+gqiBedZtHDfDpvhHBxckOY7s4zhJy1oCGgvcWx1S9FTxRiNxPCJu8Y9Wvep28IvOVoElgrfSGsotEzWnAio5inNWG75X/7q9pRs84MEXdGENEpT5zp0v+6ebjl/twVRjkLufHt2fakRVOPbloFUJYKLcgJuDD2/xuIFFZmoFv6Zwi6RwhFb7A7o+OAYXW8KNfrDlMjjR9Z1YFMNxmTO3d+/NHLf1fT65jgXBzNpBT/k9wp5LBoZhpBuglM2O9KC6bayDEY8A5PsmTjStU9tgm42wPCL/79/f53YcJgcbMyx982erKjUQGBE+26QIhfja+AlFhlrwmFpPLN4oukPYxgU0HboIqvCIdvb5e0q1xkNopXWXDZvcjSMWZcrarGj9uTedm2ExRjVsaf5Fc4omFQ9+ZFmS8BajATREfhRUIzPiC1yzUbj2SwbHc4Dkfw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 485c8454-4cc9-48f6-5c2c-08d88f955b71
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3477.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dddf7599-872a-4dc0-9524-08d88f953932
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 09:50:34.4041
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2020 09:51:32.3967
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8KeUdQf30O3lDHTX7Xwq3Qu6J/GCg85ID40MoximSzj/4YQcXuv7NNK/+z7oGPV811DOZAreEijkAZZyyEnNjEiZ3lkIXIcUj1XuIKL6sIM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3303
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t7TKYnyDcP4ggExalRLNqeJ+f6jUwzoHOerI7LNslsw091QYOeFiKvYrty6imeDgfST3XK/Favd/Tx3sl+no8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/11/2020 at 19:58, William Breathitt Gray wrote:
-> Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
->   Changes in v3:
->    - Reorder entries to match preferred MAINTAINERS ordering
->=20
->   MAINTAINERS | 7 +++++++
->   1 file changed, 7 insertions(+)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 913b5eb64e44..1ee380dfe189 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2104,6 +2104,13 @@ S:       Supported
->   F:     arch/arm64/boot/dts/microchip/
->   N:     sparx5
->=20
-> +ARM/Microchip Timer Counter Block (TCB) Capture Driver
+Add DT Binding doc for the Unique ID of i.MX 8M series.
 
-Nit: we don't use the ARM/Microchip string for drivers which could be=20
-multi-architecture. Only AT91 and Sparx5 families have these entries.
+Signed-off-by: Alice Guo <alice.guo@nxp.com>
+---
 
-I'm not holding the patch for this:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+v2: remove the subject prefix "LF-2571-1"
+v3: put it into Documentation/devicetree/bindings/arm/fsl.yaml
+    modify the description of nvmem-cells
+    use "make ARCH=arm64 dtbs_check" to test it and fix errors
+v4: use allOf to limit new version DTS files for i.MX8M to include
+    "fsl,imx8mm/n/p/q-soc", nvmem-cells and nvmem-cells-names
+v5: correct the error of using allOf
 
-> +M:     Kamel Bouhara <kamel.bouhara@bootlin.com>
-> +L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribe=
-rs)
-> +L:     linux-iio@vger.kernel.org
-> +S:     Maintained
-> +F:     drivers/counter/microchip-tcb-capture.c
-> +
->   ARM/MIOA701 MACHINE SUPPORT
->   M:     Robert Jarzmik <robert.jarzmik@free.fr>
->   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscrib=
-ers)
-> --
-> 2.29.2
->=20
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->=20
+ .../devicetree/bindings/arm/fsl.yaml          | 47 +++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 67980dcef66d..7132ffd41abb 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -918,6 +918,53 @@ properties:
+               - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
+           - const: fsl,s32v234
 
---=20
-Nicolas Ferre
++  soc:
++    type: object
++    properties:
++      compatible:
++        oneOf:
++          - description: new version compatible for i.MX8M SoCs
++            items:
++              - enum:
++                  - fsl,imx8mm-soc
++                  - fsl,imx8mn-soc
++                  - fsl,imx8mp-soc
++                  - fsl,imx8mq-soc
++              - const: simple-bus
++
++          - description: old version compatible for i.MX8M SoCs
++            items:
++              - const: simple-bus
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - fsl,imx8mm
++              - fsl,imx8mn
++              - fsl,imx8mp
++              - fsl,imx8mq
++
++    then:
++      patternProperties:
++        "^soc@[0-9a-f]+$":
++          properties:
++            compatible:
++              items:
++                - enum:
++                    - fsl,imx8mm-soc
++                    - fsl,imx8mn-soc
++                    - fsl,imx8mp-soc
++                    - fsl,imx8mq-soc
++                - const: simple-bus
++
++          required:
++            - compatible
++            - nvmem-cells
++            - nvmem-cell-names
++
+ additionalProperties: true
+
+ ...
+--
+2.17.1
+
