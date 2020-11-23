@@ -2,93 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3A02C149A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A522C14AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730815AbgKWTlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 14:41:06 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60006 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730205AbgKWTlG (ORCPT
+        id S1730714AbgKWTom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 14:44:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730575AbgKWTol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:41:06 -0500
-Received: from 89-64-88-191.dynamic.chello.pl (89.64.88.191) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
- id 62d924656228e836; Mon, 23 Nov 2020 20:41:03 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 5/5] ACPI: EC: Clean up status flags checks in advance_transaction()
-Date:   Mon, 23 Nov 2020 20:40:53 +0100
-Message-ID: <5941029.rKP6mmzaN7@kreacher>
-In-Reply-To: <3259005.CeRvrUlyd7@kreacher>
-References: <3259005.CeRvrUlyd7@kreacher>
+        Mon, 23 Nov 2020 14:44:41 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26766C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:44:40 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id t6so9318054lfl.13
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:44:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WkkyfzYc5dkm/KIiF9W4jRT3BRx+3sqZpO+ldzSWHAU=;
+        b=ucprSht07o3L8qhZLLc2Vt4PubCLLYecCKNAauQVntt/WOQx0TnUKdvhSMo4O3kPUB
+         uaUTYfr9u7VuLEvtbM35aoZwakgOWHYVHjw4Mng7Nx7VrQbWv4Tt/KS5ugKh9SaGeFX2
+         RVWHUO8H6oE35g5xy4ExNT0J9tz1RPg7b9HOQlsjqvp5KHt1ZdUObef9cJxmfTjtGs3e
+         thKIj2KnAjmAnht0O8u+JMUIDM9eFbTD7ieYfOqhRhtEVosbjAvqv+gyPmolJ+wWqzdt
+         5ZUswM45maUXB35BfcN7RSu535krwgoOUgZM4t2JGI8pMMDiwiDnaCVZppVOab7LjX70
+         E/mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WkkyfzYc5dkm/KIiF9W4jRT3BRx+3sqZpO+ldzSWHAU=;
+        b=rYrfDL2sWVW08InV32JmQRzsYPanxIzEKGe7gLVSuUkGPzzUcg6WTxWYSKtQv1zgDN
+         xFZXCK2P9T7sh+WcqhqkmQvTwD5LscHo9+BH9yWSjU4JUWJCPbnafc8d2vrA7IkLHa+f
+         2gmTqmSvqF2wFCYWrijgW9O2WohZAkdUP6xHE5HSNkmThnZYEsNNsiM9YM6VHSoC4Wcx
+         sDlFqFMM7EGhP34KPAOGxczHEYYSKn7KA++2E3K7xc8JD1KUPlwL54e/IMwVToF685Gy
+         dL4L0weFmzaIyZ+DbSTzoA2oqe7mHF3R6OzMur0Jm5e6hUpqtB0+dhy2A9OClPTAB8H5
+         49Wg==
+X-Gm-Message-State: AOAM531qTs1dyjdjsVWSgRky58MHKU5qS6uOb3WC6ePT5tqzLPo3oIQX
+        /LwY+be8tkMVPeWt9ujahZGMGmaK7Y4EY3gU39BFgA==
+X-Google-Smtp-Source: ABdhPJxvAu80d98nm8DgUgnbxicof2cbnVoJUKvK4sfJq22s1FLjdXhc3R1+79TzlVPSsvuacsn9pSzptfgKcYYBWqk=
+X-Received: by 2002:ac2:5a49:: with SMTP id r9mr259465lfn.381.1606160678276;
+ Mon, 23 Nov 2020 11:44:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20201112205141.775752-1-mic@digikod.net> <20201112205141.775752-8-mic@digikod.net>
+ <CAG48ez3HA63CX852LLDFCcNyzRGwAr3x_cvA1-t8tgDxfF1dOQ@mail.gmail.com> <1d524ea9-85eb-049c-2156-05cad6d6fcfd@digikod.net>
+In-Reply-To: <1d524ea9-85eb-049c-2156-05cad6d6fcfd@digikod.net>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 23 Nov 2020 20:44:11 +0100
+Message-ID: <CAG48ez2cmsrZbUEmQmzPQugJikkvfs_MWmMizxmoyspCeXAXRQ@mail.gmail.com>
+Subject: Re: [PATCH v24 07/12] landlock: Support filesystem access-control
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On Sat, Nov 21, 2020 at 11:06 AM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>=
+ wrote:
+> On 21/11/2020 08:00, Jann Horn wrote:
+> > On Thu, Nov 12, 2020 at 9:52 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.n=
+et> wrote:
+> >> Thanks to the Landlock objects and ruleset, it is possible to identify
+> >> inodes according to a process's domain.  To enable an unprivileged
+> >> process to express a file hierarchy, it first needs to open a director=
+y
+> >> (or a file) and pass this file descriptor to the kernel through
+> >> landlock_add_rule(2).  When checking if a file access request is
+> >> allowed, we walk from the requested dentry to the real root, following
+> >> the different mount layers.  The access to each "tagged" inodes are
+> >> collected according to their rule layer level, and ANDed to create
+> >> access to the requested file hierarchy.  This makes possible to identi=
+fy
+> >> a lot of files without tagging every inodes nor modifying the
+> >> filesystem, while still following the view and understanding the user
+> >> has from the filesystem.
+> >>
+> >> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
+> >> keep the same struct inodes for the same inodes whereas these inodes a=
+re
+> >> in use.
+> >>
+> >> This commit adds a minimal set of supported filesystem access-control
+> >> which doesn't enable to restrict all file-related actions.  This is th=
+e
+> >> result of multiple discussions to minimize the code of Landlock to eas=
+e
+> >> review.  Thanks to the Landlock design, extending this access-control
+> >> without breaking user space will not be a problem.  Moreover, seccomp
+> >> filters can be used to restrict the use of syscall families which may
+> >> not be currently handled by Landlock.
+> >>
+> >> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> >> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> >> Cc: James Morris <jmorris@namei.org>
+> >> Cc: Jann Horn <jannh@google.com>
+> >> Cc: Jeff Dike <jdike@addtoit.com>
+> >> Cc: Kees Cook <keescook@chromium.org>
+> >> Cc: Richard Weinberger <richard@nod.at>
+> >> Cc: Serge E. Hallyn <serge@hallyn.com>
+> >> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+> >> ---
+> >>
+> >> Changes since v23:
+> >> * Enforce deterministic interleaved path rules.  To have consistent
+> >>   layered rules, granting access to a path implies that all accesses
+> >>   tied to inodes, from the requested file to the real root, must be
+> >>   checked.  Otherwise, stacked rules may result to overzealous
+> >>   restrictions.  By excluding the ability to add exceptions in the sam=
+e
+> >>   layer (e.g. /a allowed, /a/b denied, and /a/b/c allowed), we get
+> >>   deterministic interleaved path rules.  This removes an optimization
+> >
+> > I don't understand the "deterministic interleaved path rules" part.
+>
+> I explain bellow.
+>
+> >
+> >
+> > What if I have a policy like this?
+> >
+> > /home/user READ
+> > /home/user/Downloads READ+WRITE
+> >
+> > That's a reasonable policy, right?
+>
+> Definitely, I forgot this, thanks for the outside perspective!
+>
+> >
+> > If I then try to open /home/user/Downloads/foo in WRITE mode, the loop
+> > will first check against the READ+WRITE rule for /home/user, that
+> > check will pass, and then it will check against the READ rule for /,
+> > which will deny the access, right? That seems bad.
+>
+> Yes that was the intent.
+>
+> >
+> >
+> > The v22 code ensured that for each layer, the most specific rule (the
+> > first we encounter on the walk) always wins, right? What's the problem
+> > with that?
+>
+> This can be explained with the interleaved_masked_accesses test:
+> https://github.com/landlock-lsm/linux/blob/landlock-v24/tools/testing/sel=
+ftests/landlock/fs_test.c#L647
+>
+> In this case there is 4 stacked layers:
+> layer 1: allows s1d1/s1d2/s1d3/file1
+> layer 2: allows s1d1/s1d2/s1d3
+>          denies s1d1/s1d2
+> layer 3: allows s1d1
+> layer 4: allows s1d1/s1d2
+>
+> In the v23, access to file1 would be allowed until layer 3, but layer 4
+> would merge a new rule for the s1d2 inode. Because we don't record where
+> exactly the access come from, we can't tell that layer 2 allowed access
+> thanks to s1d3 and that its s1d2 rule was ignored. I think this behavior
+> doesn't make sense from the user point of view.
 
-Eliminate comparisons from the status flags checks in
-advance_transaction() (especially from the one that is only correct,
-because the value of the flag checked in there is 1) and rearrange
-the code for more clarity while at it.
+Aah, I think I'm starting to understand the issue now. Basically, with
+the current UAPI, the semantics have to be "an access is permitted if,
+for each policy layer, at least one rule encountered on the pathwalk
+permits the access; rules that deny the access are irrelevant". And if
+it turns out that someone needs to be able to deny access to specific
+inodes, we'll have to extend struct landlock_path_beneath_attr.
 
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/ec.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index 091f0e9f37a0..13565629ce0a 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -667,25 +667,24 @@ static void advance_transaction(struct acpi_ec *ec, bool interrupt)
- 
- 	if (t->flags & ACPI_EC_COMMAND_POLL) {
- 		if (t->wlen > t->wi) {
--			if ((status & ACPI_EC_FLAG_IBF) == 0)
-+			if (!(status & ACPI_EC_FLAG_IBF))
- 				acpi_ec_write_data(ec, t->wdata[t->wi++]);
- 			else if (interrupt && !(status & ACPI_EC_FLAG_SCI))
- 				acpi_ec_spurious_interrupt(ec, t);
- 		} else if (t->rlen > t->ri) {
--			if ((status & ACPI_EC_FLAG_OBF) == 1) {
-+			if (status & ACPI_EC_FLAG_OBF) {
- 				t->rdata[t->ri++] = acpi_ec_read_data(ec);
- 				if (t->rlen == t->ri) {
- 					ec_transaction_transition(ec, ACPI_EC_COMMAND_COMPLETE);
-+					wakeup = true;
- 					if (t->command == ACPI_EC_COMMAND_QUERY)
- 						ec_dbg_evt("Command(%s) completed by hardware",
- 							   acpi_ec_cmd_string(ACPI_EC_COMMAND_QUERY));
--					wakeup = true;
- 				}
- 			} else if (interrupt && !(status & ACPI_EC_FLAG_SCI)) {
- 				acpi_ec_spurious_interrupt(ec, t);
- 			}
--		} else if (t->wlen == t->wi &&
--			   (status & ACPI_EC_FLAG_IBF) == 0) {
-+		} else if (t->wlen == t->wi && !(status & ACPI_EC_FLAG_IBF)) {
- 			ec_transaction_transition(ec, ACPI_EC_COMMAND_COMPLETE);
- 			wakeup = true;
- 		}
-@@ -697,6 +696,7 @@ static void advance_transaction(struct acpi_ec *ec, bool interrupt)
- out:
- 	if (status & ACPI_EC_FLAG_SCI)
- 		acpi_ec_submit_query(ec);
-+
- 	if (wakeup && interrupt)
- 		wake_up(&ec->wait);
- }
--- 
-2.26.2
+That reminds me... if we do need to make such a change in the future,
+it would be easier in terms of UAPI compatibility if
+landlock_add_rule() used copy_struct_from_user(), which is designed to
+create backwards and forwards compatibility with other version of UAPI
+headers. So adding that now might save us some headaches later.
 
 
+> In the v24, access to file1 would only be allowed with layer 1. The
+> layer 2, would deny access to file1 because of the s1d2 rule. This makes
+> the reasoning consistent and deterministic whatever the layers are,
+> while storing the same access and layer bits. But I agree that this may
+> not be desirable.
+>
+> In a perfect v25, file1 should be allowed by all these layers. I didn't
+> find a simple solution to this while minimizing the memory allocated by
+> rule (cf. struct landlock_rule: mainly 32-bits for access rights and
+> 64-bits for the layers that contributed to this ANDed accesses). I would
+> like to avoid storing 32-bits access rights per stacked layer. Do you
+> see another solution?
 
+I don't think you can avoid storing the access rights per layer unless
+you actually merge the layers when setting up the ruleset (which would
+be messy). But I don't think that's a big problem. A straightforward
+implementation might become inefficient if you stack too many policy
+layers, but I don't think that's a problem for an initial
+implementation - the common usecase is probably going to be a single
+layer, or maybe two, or something like that?
 
+If you had a ton of layers, most of them would likely specify the same
+access permissions - so one possible optimization might be to use the
+current representation if all rules matching the inode specify the
+same permissions, and use a different representation otherwise. But I
+don't think such an optimization is necessary at this point.
