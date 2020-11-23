@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089E12C0379
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD60E2C037F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgKWKin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:38:43 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:52431 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727444AbgKWKim (ORCPT
+        id S1728701AbgKWKj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:39:29 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:38210 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728158AbgKWKj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:38:42 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kh9Ey-0006Lm-RV; Mon, 23 Nov 2020 11:38:36 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kh9Ex-0007AY-QM; Mon, 23 Nov 2020 11:38:35 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 60F53240041;
-        Mon, 23 Nov 2020 11:38:35 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id D7AE8240040;
-        Mon, 23 Nov 2020 11:38:34 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 7EC19203C7;
-        Mon, 23 Nov 2020 11:38:34 +0100 (CET)
+        Mon, 23 Nov 2020 05:39:28 -0500
+Received: by mail-lf1-f66.google.com with SMTP id s27so3071007lfp.5;
+        Mon, 23 Nov 2020 02:39:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zu6OfJ95y/pN6IwPuUeH5utOpyu4tZOqYK7qDx71Ni8=;
+        b=k9JqMwa01H/TlQXgxHuXxiJo/wUA1VsRNt3AxNiDnjURaGSfwSG+QEH43PMQ/Rw1yY
+         jI0xFRSXAQYJo6c9tZyoSmxZKkpl0/SPZVInxv12CnjZSbi9CbCfe7JsoESPfnrPYxcL
+         /wdnvFU12+j7+AiUVRfO3Z/xZljrjdTmRU+U6oWeioBukaiqLgHK7Qg2EseYZFj77X3g
+         u0xkug4Er8VAo6rNgd+IHkwi6U6pEtKYAMYh1oA7k8a83ajT6qc/pvdgxwZm5aNwLm5S
+         9KipbC5NH5+C8dqx073LE1hbCWvEFbrAaxVHZcoPzf126t2IGpe2BqsfrCR6j7DWieQx
+         W/jw==
+X-Gm-Message-State: AOAM5315nVHeLZzfG5vjv0Rr2yYdullCmpn9zwwYRaIfZFX49akRVQ94
+        tF/QIM8NvrHlm8dvXmZAnLfT8v76LDstGQ==
+X-Google-Smtp-Source: ABdhPJzUGZ0YqN/vl49P9feH1vlK2oj73FKY6pxWrO7X1b7knH1ZqrDuJBa3qsxmQarxIFKwpMFjqQ==
+X-Received: by 2002:a19:1d0:: with SMTP id 199mr12243126lfb.151.1606127965943;
+        Mon, 23 Nov 2020 02:39:25 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id s20sm493368ljg.15.2020.11.23.02.39.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 02:39:25 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kh9Ft-0002BT-Sm; Mon, 23 Nov 2020 11:39:34 +0100
+Date:   Mon, 23 Nov 2020 11:39:33 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <X7uRZUY+2L9Yg9wt@localhost>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
+ <20201106164537.GD4085@localhost>
+ <20201111154716.GB5304@linux-8ccs>
+ <X66VvI/M4GRDbiWM@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 11:38:34 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 2/5] net/lapb: support netdev events
-Organization: TDT AG
-In-Reply-To: <CAJht_EO+enBOFMkVVB5y6aRnyMEsOZtUBJcAvOFBS91y7CauyQ@mail.gmail.com>
-References: <20201120054036.15199-1-ms@dev.tdt.de>
- <20201120054036.15199-3-ms@dev.tdt.de>
- <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
- <CAJht_EP_oqCDs6mMThBZNtz4sgpbyQgMhKkHeqfS_7JmfEzfQg@mail.gmail.com>
- <87a620b6a55ea8386bffefca0a1f8b77@dev.tdt.de>
- <CAJht_EPc8MF1TjznSjWTPyMbsrw3JVqxST5g=eF0yf_zasUdeA@mail.gmail.com>
- <d85a4543eae46bac1de28ec17a2389dd@dev.tdt.de>
- <CAJht_EMjO_Tkm93QmAeK_2jg2KbLdv2744kCSHiZLy48aXiHnw@mail.gmail.com>
- <CAJht_EO+enBOFMkVVB5y6aRnyMEsOZtUBJcAvOFBS91y7CauyQ@mail.gmail.com>
-Message-ID: <16b7e74e6e221f43420da7836659d7df@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.15
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate: clean
-X-purgate-ID: 151534::1606127916-000074F7-5C8CC61A/0/0
-X-purgate-type: clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X66VvI/M4GRDbiWM@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-23 11:08, Xie He wrote:
-> On Mon, Nov 23, 2020 at 1:36 AM Xie He <xie.he.0141@gmail.com> wrote:
->> 
->> Some drivers don't support carrier status and will never change it.
->> Their carrier status will always be UP. There will not be a
->> NETDEV_CHANGE event.
-
-Well, one could argue that we would have to repair these drivers, but I
-don't think that will get us anywhere.
-
- From this point of view it will be the best to handle the NETDEV_UP in
-the lapb event handler and establish the link analog to the
-NETDEV_CHANGE event if the carrier is UP.
-
->> 
->> lapbether doesn't change carrier status. I also have my own virtual
->> HDLC WAN driver (for testing) which also doesn't change carrier
->> status.
->> 
->> I just tested with lapbether. When I bring up the interface, there
->> will only be NETDEV_PRE_UP and then NETDEV_UP. There will not be
->> NETDEV_CHANGE. The carrier status is alway UP.
->> 
->> I haven't tested whether a device can receive NETDEV_CHANGE when it is
->> down. It's possible for a device driver to call netif_carrier_on when
->> the interface is down. Do you know what will happen if a device driver
->> calls netif_carrier_on when the interface is down?
+On Fri, Nov 13, 2020 at 03:18:36PM +0100, Johan Hovold wrote:
+> On Wed, Nov 11, 2020 at 04:47:16PM +0100, Jessica Yu wrote:
 > 
-> I just did a test on lapbether and saw there would be no NETDEV_CHANGE
-> event when the netif is down, even if netif_carrier_on/off is called.
-> So we can rest assured of this part.
+> > Thanks for providing the links and references. Your explanation and
+> > this reply from Jakub [1] clarified things for me. I was not aware of
+> > the distinction gcc made between aligned attributes on types vs. on
+> > variables. So from what I understand now, gcc suppresses the
+> > optimization when the alignment is specified in the variable
+> > declaration, but not necessarily when the aligned attribute is just on
+> > the type.
+> > 
+> > Even though it's been in use for a long time, I think it would be
+> > really helpful if this gcc quirk was explained just a bit more in the
+> > patch changelogs, especially since this is undocumented behavior.
+> > I found the explanation in [1] (as well as in your cover letter) to be
+> > sufficient. Maybe something like "GCC suppresses any optimizations
+> > increasing alignment when the alignment is specified in the variable
+> > declaration, as opposed to just on the type definition. Therefore,
+> > explicitly specify type alignment when declaring entries to prevent
+> > gcc from increasing alignment."
+> 
+> Sure, I can try to expand the commit messages a bit.
+
+I've amended the commit messages of the relevant patches to make it more
+clear that the optimisation can be suppressed by specifying alignment
+when declaring variables, but without making additional claims about the
+type attribute. I hope the result is acceptable to you.
+
+Perhaps you can include a lore link to the patches when applying so that
+this thread can be found easily if needed.
+
+Johan
