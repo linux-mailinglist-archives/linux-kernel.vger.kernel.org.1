@@ -2,157 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC3D2BFE04
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 02:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740B52BFE0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 02:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgKWBRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 20:17:03 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:61970 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgKWBRC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 20:17:02 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201123011700epoutp010beb4359c3e898b777cc38ede7130011~J-i8MenZo2195721957epoutp01-
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 01:17:00 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201123011700epoutp010beb4359c3e898b777cc38ede7130011~J-i8MenZo2195721957epoutp01-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1606094220;
-        bh=zVzTnuyKE3DO2//uowBhMsWnup1z0a7x1hwyk7fg5zg=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Aps6gfjyPJ2Q9prFEC5A2XDcfvIjNEaobfUnrat1AZ90L+MbwbRBMZvHFpkKivCwS
-         zNFijCDn53fj96kkISoQ00K8uLuu3E3R4MiuUkqzsVfa6sray9oJl7J2or91SDr1aR
-         sc36Xg+SqyQO73RCLGGMxhLEf9tfXbLSlCxqHrsQ=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201123011659epcas1p1f73f65b6aba279f2b7958c17ccf58dd8~J-i7sOpua0596505965epcas1p1L;
-        Mon, 23 Nov 2020 01:16:59 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4CfTlF1lw6zMqYkb; Mon, 23 Nov
-        2020 01:16:57 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        47.4A.63458.18D0BBF5; Mon, 23 Nov 2020 10:16:49 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201123011649epcas1p4824e4ed9cdcb96e74606da954f783edb~J-ix9TPv02005820058epcas1p4n;
-        Mon, 23 Nov 2020 01:16:49 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201123011649epsmtrp1720f6cfb9eb188fce3ea745a6eefd8b2~J-ix8Os7O1181211812epsmtrp1Z;
-        Mon, 23 Nov 2020 01:16:49 +0000 (GMT)
-X-AuditID: b6c32a36-6c9ff7000000f7e2-18-5fbb0d81f8fc
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9F.D5.13470.18D0BBF5; Mon, 23 Nov 2020 10:16:49 +0900 (KST)
-Received: from [10.113.221.211] (unknown [10.113.221.211]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201123011648epsmtip2c593d73923d4ce98001aae700522ba1f~J-ixpnLIB0813908139epsmtip2R;
-        Mon, 23 Nov 2020 01:16:48 +0000 (GMT)
-Subject: Re: [PATCH 1/2] drm/exynos: depend on COMMON_CLK to fix compile
- tests
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Paul Cercueil <paul@crapouillou.net>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>
-From:   Inki Dae <inki.dae@samsung.com>
-Message-ID: <5447e15e-d5a9-9d09-d6d1-6f9dff8cc142@samsung.com>
-Date:   Mon, 23 Nov 2020 10:24:23 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
-        Thunderbird/68.8.0
+        id S1726839AbgKWB0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 20:26:00 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:34329 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726630AbgKWBZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 20:25:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606094758; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=itDjw5PoXE9wLCf0hinarSHz0GqjMyDV2OjE5ZmvB2U=;
+ b=xMw6FPPZZ20Yk2IGtDNJv3ynWiHgj2pNnaZ9vq8d0CxSChh+2s1pcSGOYxQYh/S/PRvvnHZz
+ qBehg7oLGDfxPkujVDlHjsE3ToQweEcI0G9yoysP688AgU0atLBJIl5SmNF4MsASCu0HbCgg
+ 5soFuIHCEpNgg1hvDfktVAd0yV8=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fbb0fa11dba509aaef3a447 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 01:25:53
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AF40DC43462; Mon, 23 Nov 2020 01:25:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE792C433C6;
+        Mon, 23 Nov 2020 01:25:52 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201116175301.402787-1-krzk@kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKJsWRmVeSWpSXmKPExsWy7bCmnm4j7+54g0uflS16z51ksvi/bSKz
-        xZWv79ksXty7yGJx/vwGdouzTW/YLTY9vsZqcXnXHDaLGef3MVm8an7EZtG/+BKLxYzJL9kc
-        eDxWX2pn89j7bQGLx+I9L5k8Nq3qZPPY/u0Bq8f97uNMHpuX1Hv0bVnF6PF5k1wAZ1S2TUZq
-        YkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QyUoKZYk5pUCh
-        gMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAssCveLE3OLSvHS95PxcK0MDAyNToMKE7IzlB9pZ
-        Ck5yVTS+3c/cwHibo4uRk0NCwESi+c9y9i5GLg4hgR2MEg1vJzJCOJ8YJWbtOMUK4XxjlPi/
-        9io7TMudY5ugEnsZJR62r2SBcN4zSrzbfp6ti5GDQ1ggQKLpqxBIg4jAAmaJbxudQWxmAVWJ
-        13vfMoHYbED2xBX32UBsXgE7iR1NPWALWIDiezubWEBsUYEIiePdk9khagQlTs58AhbnFDCT
-        WPXvAiPETHGJW0/mM0HY8hLNW2czg9wjIXCGQ2LuyW42iKtdJL6+nwZlC0u8Or4F6hspiZf9
-        bewQDc2MEhNnnGaCcDoYJe4+vs4CUWUssX/pZCaQz5gFNCXW79KHCCtK7Pw9F+oKPol3X3tY
-        QUokBHglOtqEIEqUJI5dvMEIYUtIXFgyEeoGD4nZNz+xTWBUnIXkt1lI/pmF5J9ZCIsXMLKs
-        YhRLLSjOTU8tNiwwQo7uTYzg9KxltoNx0tsPeocYmTgYDzFKcDArifC2yu2MF+JNSaysSi3K
-        jy8qzUktPsRoCgzticxSosn5wAyRVxJvaGpkbGxsYWJoZmpoqCTO+0e7I15IID2xJDU7NbUg
-        tQimj4mDU6qByWmy+CUdtT08pzxuF5w4ctlvrZnX8as6Vja/vjQySX6yn8zXGq4xobz62jWP
-        mkKds9vqGBodwh60/bvBkmOTI3DjxPrFaTsbEv5avhQO0Iq+O2/BCrVl6/L0lO6fY5h4duFx
-        1w+CB/+YODnbqK97Pv1iWtbsGFu5332GqWEXtpaXvNxibfzvun4625mV51aoK2wXmlR396GG
-        tN3Rh+faf65/cT7oh/7a13XRhk0J0rw7n4U+kVnq8nCJGOunOTWJX67ki97JnV9VvPPZwYYQ
-        V07vP3eYTv0vT37K7xMbrt95lO9L4i3b6n+xPccK0pZPez/1muOb/uAfjdOdeqOT8+bkd3hn
-        +Dcbbjtpw/TjjhJLcUaioRZzUXEiAHIgVz1YBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsWy7bCSvG4j7+54g1ebmC16z51ksvi/bSKz
-        xZWv79ksXty7yGJx/vwGdouzTW/YLTY9vsZqcXnXHDaLGef3MVm8an7EZtG/+BKLxYzJL9kc
-        eDxWX2pn89j7bQGLx+I9L5k8Nq3qZPPY/u0Bq8f97uNMHpuX1Hv0bVnF6PF5k1wAZxSXTUpq
-        TmZZapG+XQJXxvID7SwFJ7kqGt/uZ25gvM3RxcjJISFgInHn2CbWLkYuDiGB3YwS67ffY+li
-        5ABKSEhs2coBYQpLHD5cDFHyllHiz7JeZpC4sICfxOYlDiBxEYFFzBIfrzxhApnJLKAq8Xrv
-        WyaIhk5GibtXn7CAJNiAEhNX3GcDsXkF7CR2NPWwg9gsQPG9nU1gNaICERIt9/+wQ9QISpyc
-        CdHLKWAmserfBUaIBeoSf+ZdYoawxSVuPZkPtVheonnrbOYJjEKzkLTPQtIyC0nLLCQtCxhZ
-        VjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBEejluYOxu2rPugdYmTiYDzEKMHBrCTC
-        2yq3M16INyWxsiq1KD++qDQntfgQozQHi5I4743ChXFCAumJJanZqakFqUUwWSYOTqkGpqNa
-        82y05hyecO4Ek+c9ho0/Km1Zn74OX2D03ek+69uVGzvXZn9qX68u4SIf+SPBTLNavOn0QWW+
-        g+EcovvKpXr6HgbE5uluumkaz/Fp4eNXf9dwCH5+4af25yijyMy/Nz5IWIvM3bcnijchwSDw
-        bo70zc/TXmlPEfTcWPPA3nnxcV+J7NfiYXOYI0RPsQVOXlidsFXQ9uhu+bJ9p/qWmi09cnm9
-        ycam+6t6M0/MTt99JiBgfvGE2eeZla79mbrmTRXPkfdRfKejPpXd3rlg+btKy0obxtgj2x99
-        5PmllSxzMk1iq9jB3Z9Wzk29n7e/7/fWJq9trM3BlUKGJva5bnsyeq693cSUHbyk5aP4/1Yl
-        luKMREMt5qLiRAAjRKH+NQMAAA==
-X-CMS-MailID: 20201123011649epcas1p4824e4ed9cdcb96e74606da954f783edb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201116175410epcas1p1c0dbe17b850b30baa05d768fbdc74f5d
-References: <CGME20201116175410epcas1p1c0dbe17b850b30baa05d768fbdc74f5d@epcas1p1.samsung.com>
-        <20201116175301.402787-1-krzk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 09:25:52 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bean Huo <beanhuo@micron.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: Adjust logic in common ADAPT helper
+In-Reply-To: <20201121044810.507288-1-bjorn.andersson@linaro.org>
+References: <20201121044810.507288-1-bjorn.andersson@linaro.org>
+Message-ID: <29141b56fe3a92a8f038ca6c4a117890@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Krzysztof,
-
-20. 11. 17. 오전 2:53에 Krzysztof Kozlowski 이(가) 쓴 글:
-> The Exynos DRM uses Common Clock Framework thus it cannot be built on
-> platforms without it (e.g. compile test on MIPS with RALINK and
-> SOC_RT305X):
+On 2020-11-21 12:48, Bjorn Andersson wrote:
+> The introduction of ufshcd_dme_configure_adapt() refactored out
+> duplication from the Mediatek and Qualcomm drivers.
 > 
->     /usr/bin/mips-linux-gnu-ld: drivers/gpu/drm/exynos/exynos_mixer.o: in function `mixer_bind':
->     exynos_mixer.c:(.text+0x958): undefined reference to `clk_set_parent'
+> Both these implementations had the logic of:
+>     gear_tx == UFS_HS_G4 => PA_INITIAL_ADAPT
+>     gear_tx != UFS_HS_G4 => PA_NO_ADAPT
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> but now both implementations pass PA_INITIAL_ADAPT as "adapt_val" and 
+> if
+> gear_tx is not UFS_HS_G4 that is replaced with PA_INITIAL_ADAPT. In
+> other words, it's PA_INITIAL_ADAPT in both above cases.
+> 
+> The result is that e.g. Qualcomm SM8150 has no longer functional UFS, 
+> so
+> adjust the logic to match the previous implementation.
+> 
+> Fixes: fc85a74e28fe ("scsi: ufs: Refactor ADAPT configuration 
+> function")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Picked it up.
-
-Thanks,
-Inki Dae
+Reviewed-by: Can Guo <cang@codeaurora.org>
 
 > ---
->  drivers/gpu/drm/exynos/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/scsi/ufs/ufshcd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/exynos/Kconfig b/drivers/gpu/drm/exynos/Kconfig
-> index 6417f374b923..951d5f708e92 100644
-> --- a/drivers/gpu/drm/exynos/Kconfig
-> +++ b/drivers/gpu/drm/exynos/Kconfig
-> @@ -1,7 +1,8 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  config DRM_EXYNOS
->  	tristate "DRM Support for Samsung SoC Exynos Series"
-> -	depends on OF && DRM && (ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || ARCH_MULTIPLATFORM || COMPILE_TEST)
-> +	depends on OF && DRM && COMMON_CLK
-> +	depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || ARCH_MULTIPLATFORM || COMPILE_TEST
->  	depends on MMU
->  	select DRM_KMS_HELPER
->  	select VIDEOMODE_HELPERS
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 52e077aa3efe..13281c74cb4f 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -3618,7 +3618,7 @@ int ufshcd_dme_configure_adapt(struct ufs_hba 
+> *hba,
+>  	int ret;
 > 
+>  	if (agreed_gear != UFS_HS_G4)
+> -		adapt_val = PA_INITIAL_ADAPT;
+> +		adapt_val = PA_NO_ADAPT;
+> 
+>  	ret = ufshcd_dme_set(hba,
+>  			     UIC_ARG_MIB(PA_TXHSADAPTTYPE),
