@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D8A2C061E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EF22C060A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730383AbgKWM15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:27:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37904 "EHLO mail.kernel.org"
+        id S1730205AbgKWM0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:26:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730372AbgKWM1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:54 -0500
+        id S1730177AbgKWM0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:26:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 057E620728;
-        Mon, 23 Nov 2020 12:27:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F06420857;
+        Mon, 23 Nov 2020 12:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134473;
-        bh=2o+IrL6ls186owsVIYjGju/S/on1RIVKXwdFhgF2Bds=;
+        s=korg; t=1606134403;
+        bh=fpRHnWk875PicaKG9ODEDzkL8KyVZHCkv1aQOYD+ftY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uNlwF7DLmoDqbzMNgDvVGIlBrLRh1uiJJpsciQMCABCUSrQhaVAeBEohh0Ls2WHwh
-         kirvb0T0EX7hGNrVIZhGOyL41dhMRBHt5SfCYMZYSWWDJ7fOR9fxwAaZARk+79RkC0
-         VN2AcFCmpg+rBCdSVBCLWtE2GSjUMwFleWJLfhfU=
+        b=UsLvocmX9dDpWQizAj79ZB6ZXRWE4asyvhsTWHHyxrsbP7RQmhbLqp7ORINkcFk+1
+         io+8WtO/AcK3njlr+Tcp3rvQiRwfUIsIrPvkZfRgZBnTXnaHa6VflMIrBy/svsCXZ0
+         6cIi0Qn6v6I4sqvaQJdMfcbhX9lF2vI2gJMWUKcc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?= 
-        <remigiusz.kollataj@mobica.com>,
+        stable@vger.kernel.org, Wu Bo <wubo.oduw@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 33/60] can: mcba_usb: mcba_usb_start_xmit(): first fill skb, then pass to can_put_echo_skb()
+Subject: [PATCH 4.9 29/47] can: m_can: m_can_handle_state_change(): fix state change
 Date:   Mon, 23 Nov 2020 13:22:15 +0100
-Message-Id: <20201123121806.640458250@linuxfoundation.org>
+Message-Id: <20201123121806.958114275@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Wu Bo <wubo.oduw@gmail.com>
 
-[ Upstream commit 81c9c8e0adef3285336b942f93287c554c89e6c6 ]
+[ Upstream commit cd0d83eab2e0c26fe87a10debfedbb23901853c1 ]
 
-The driver has to first fill the skb with data and then handle it to
-can_put_echo_skb(). This patch moves the can_put_echo_skb() down, right before
-sending the skb out via USB.
+m_can_handle_state_change() is called with the new_state as an argument.
 
-Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
-Cc: Remigiusz Kołłątaj <remigiusz.kollataj@mobica.com>
-Link: https://lore.kernel.org/r/20201111221204.1639007-1-mkl@pengutronix.de
+In the switch statements for CAN_STATE_ERROR_ACTIVE, the comment and the
+following code indicate that a CAN_STATE_ERROR_WARNING is handled.
+
+This patch fixes this problem by changing the case to CAN_STATE_ERROR_WARNING.
+
+Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
+Link: http://lore.kernel.org/r/20200129022330.21248-2-wubo.oduw@gmail.com
+Cc: Dan Murphy <dmurphy@ti.com>
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/mcba_usb.c | 4 ++--
+ drivers/net/can/m_can/m_can.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index 070e1ba797369..a09e3f6c2c504 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -337,8 +337,6 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
- 	if (!ctx)
- 		return NETDEV_TX_BUSY;
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 195f15edb32e3..0bd7e71647964 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -572,7 +572,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	unsigned int ecr;
  
--	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
--
- 	if (cf->can_id & CAN_EFF_FLAG) {
- 		/* SIDH    | SIDL                 | EIDH   | EIDL
- 		 * 28 - 21 | 20 19 18 x x x 17 16 | 15 - 8 | 7 - 0
-@@ -368,6 +366,8 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
- 	if (cf->can_id & CAN_RTR_FLAG)
- 		usb_msg.dlc |= MCBA_DLC_RTR_MASK;
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		priv->can.can_stats.error_warning++;
+ 		priv->can.state = CAN_STATE_ERROR_WARNING;
+@@ -601,7 +601,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	__m_can_get_berr_counter(dev, &bec);
  
-+	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
-+
- 	err = mcba_usb_xmit(priv, (struct mcba_usb_msg *)&usb_msg, ctx);
- 	if (err)
- 		goto xmit_failed;
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = (bec.txerr > bec.rxerr) ?
 -- 
 2.27.0
 
