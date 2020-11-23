@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E7D2C06E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC522C06E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731009AbgKWMfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:35:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47336 "EHLO mail.kernel.org"
+        id S1731591AbgKWMfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:35:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731522AbgKWMf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:35:27 -0500
+        id S1731564AbgKWMfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:35:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 031A12076E;
-        Mon, 23 Nov 2020 12:35:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 771C72065E;
+        Mon, 23 Nov 2020 12:35:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134925;
-        bh=jHoMiLOchel5wWVZkh1TSEFrQWmI0TrgBv6+wcnxQlY=;
+        s=korg; t=1606134937;
+        bh=T9PqBdyYdqYlCNxWCfEOekEaHTaHKDdc4s99GtrsAlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K8bm9bvohf59TRabeOquqy8fP/HzWsh2/4iTTkG1o6MkAxI2aFLL0kmLM2eiavw5N
-         ZhA8PUS3z2PGbu3G41bMr26F4LYbSHnbmBUoxroOTMcNdw+yNZA6boE+e71f7A80N3
-         zx8pc1b0OFGy6CNtpbUCXX9zY4OLFw2J88LEf2Ok=
+        b=R1K1Uhn9E5cDSwJvlELGTjVQVReJXcJbg3N0JMZ/NM69ceYyND0u0iAix+GHXs580
+         yIV6chYZkShReB9xqZgB9dpKsGxIKcRnPR8fNRpc6BMMOD1gIMFL5IeUXPTMq80W4J
+         oDjlscShE6QMp6T4UOvr1UykI1AS5AqpBSVl9V2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 041/158] vfs: remove lockdep bogosity in __sb_start_write
-Date:   Mon, 23 Nov 2020 13:21:09 +0100
-Message-Id: <20201123121821.918265409@linuxfoundation.org>
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chen-Yu Tsai <wens@csie.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 045/158] arm64: dts: allwinner: beelink-gs1: Enable both RGMII RX/TX delay
+Date:   Mon, 23 Nov 2020 13:21:13 +0100
+Message-Id: <20201123121822.103712706@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -44,109 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Clément Péron <peron.clem@gmail.com>
 
-[ Upstream commit 22843291efc986ce7722610073fcf85a39b4cb13 ]
+[ Upstream commit 97a38c1c213b162aa577299de698f39c18ba696b ]
 
-__sb_start_write has some weird looking lockdep code that claims to
-exist to handle nested freeze locking requests from xfs.  The code as
-written seems broken -- if we think we hold a read lock on any of the
-higher freeze levels (e.g. we hold SB_FREEZE_WRITE and are trying to
-lock SB_FREEZE_PAGEFAULT), it converts a blocking lock attempt into a
-trylock.
+Before the commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
+delay config"), the software overwrite for RX/TX delays of the RTL8211e
+were not working properly and the Beelink GS1 had both RX/TX delay of RGMII
+interface set using pull-up on the TXDLY and RXDLY pins.
 
-However, it's not correct to downgrade a blocking lock attempt to a
-trylock unless the downgrading code or the callers are prepared to deal
-with that situation.  Neither __sb_start_write nor its callers handle
-this at all.  For example:
+Now that these delays are working properly they overwrite the HW
+config and set this to 'rgmii' meaning no delay on both RX/TX.
+This makes the ethernet of this board not working anymore.
 
-sb_start_pagefault ignores the return value completely, with the result
-that if xfs_filemap_fault loses a race with a different thread trying to
-fsfreeze, it will proceed without pagefault freeze protection (thereby
-breaking locking rules) and then unlocks the pagefault freeze lock that
-it doesn't own on its way out (thereby corrupting the lock state), which
-leads to a system hang shortly afterwards.
+Set the phy-mode to 'rgmii-id' meaning RGMII with RX/TX delays
+in the device-tree to keep the correct configuration.
 
-Normally, this won't happen because our ownership of a read lock on a
-higher freeze protection level blocks fsfreeze from grabbing a write
-lock on that higher level.  *However*, if lockdep is offline,
-lock_is_held_type unconditionally returns 1, which means that
-percpu_rwsem_is_held returns 1, which means that __sb_start_write
-unconditionally converts blocking freeze lock attempts into trylocks,
-even when we *don't* hold anything that would block a fsfreeze.
-
-Apparently this all held together until 5.10-rc1, when bugs in lockdep
-caused lockdep to shut itself off early in an fstests run, and once
-fstests gets to the "race writes with freezer" tests, kaboom.  This
-might explain the long trail of vanishingly infrequent livelocks in
-fstests after lockdep goes offline that I've never been able to
-diagnose.
-
-We could fix it by spinning on the trylock if wait==true, but AFAICT the
-locking works fine if lockdep is not built at all (and I didn't see any
-complaints running fstests overnight), so remove this snippet entirely.
-
-NOTE: Commit f4b554af9931 in 2015 created the current weird logic (which
-used to exist in a different form in commit 5accdf82ba25c from 2012) in
-__sb_start_write.  XFS solved this whole problem in the late 2.6 era by
-creating a variant of transactions (XFS_TRANS_NO_WRITECOUNT) that don't
-grab intwrite freeze protection, thus making lockdep's solution
-unnecessary.  The commit claims that Dave Chinner explained that the
-trylock hack + comment could be removed, but nobody ever did.
-
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
+Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 board")
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Link: https://lore.kernel.org/r/20201018172409.1754775-1-peron.clem@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/super.c | 33 ++++-----------------------------
- 1 file changed, 4 insertions(+), 29 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/super.c b/fs/super.c
-index a288cd60d2aed..877532baf513d 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1647,36 +1647,11 @@ EXPORT_SYMBOL(__sb_end_write);
-  */
- int __sb_start_write(struct super_block *sb, int level, bool wait)
- {
--	bool force_trylock = false;
--	int ret = 1;
-+	if (!wait)
-+		return percpu_down_read_trylock(sb->s_writers.rw_sem + level-1);
- 
--#ifdef CONFIG_LOCKDEP
--	/*
--	 * We want lockdep to tell us about possible deadlocks with freezing
--	 * but it's it bit tricky to properly instrument it. Getting a freeze
--	 * protection works as getting a read lock but there are subtle
--	 * problems. XFS for example gets freeze protection on internal level
--	 * twice in some cases, which is OK only because we already hold a
--	 * freeze protection also on higher level. Due to these cases we have
--	 * to use wait == F (trylock mode) which must not fail.
--	 */
--	if (wait) {
--		int i;
--
--		for (i = 0; i < level - 1; i++)
--			if (percpu_rwsem_is_held(sb->s_writers.rw_sem + i)) {
--				force_trylock = true;
--				break;
--			}
--	}
--#endif
--	if (wait && !force_trylock)
--		percpu_down_read(sb->s_writers.rw_sem + level-1);
--	else
--		ret = percpu_down_read_trylock(sb->s_writers.rw_sem + level-1);
--
--	WARN_ON(force_trylock && !ret);
--	return ret;
-+	percpu_down_read(sb->s_writers.rw_sem + level-1);
-+	return 1;
- }
- EXPORT_SYMBOL(__sb_start_write);
- 
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+index 1d05d570142fa..0a04730960fcb 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+@@ -83,7 +83,7 @@
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&ext_rgmii_pins>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	phy-supply = <&reg_aldo2>;
+ 	status = "okay";
 -- 
 2.27.0
 
