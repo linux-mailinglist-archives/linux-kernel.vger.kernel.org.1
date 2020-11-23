@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81ED2C037D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D252C0384
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgKWKjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:39:20 -0500
-Received: from mga05.intel.com ([192.55.52.43]:49135 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728158AbgKWKjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:39:19 -0500
-IronPort-SDR: 7LqS+uOGH3qPzkyp7cWCrjgvfLNGI/IywDyEBB0e2HRhYAO2HeumYgaxQNxSJVnvuwRxCJJZCx
- afSHK5kwRZeQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="256448152"
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="256448152"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 02:39:18 -0800
-IronPort-SDR: LnTLGymFhDLD+F75Vc+8xhKIR+E7tN1APiFLfeMTeqoGNWa/yj5zGiaidNwcm5E/o37/yNU18n
- x0KfGz6x8q2A==
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="327154350"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 02:39:16 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kh9Gc-0097rg-N4; Mon, 23 Nov 2020 12:40:18 +0200
-Date:   Mon, 23 Nov 2020 12:40:18 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning:
- implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short')
- changes value from 131072 to 0
-Message-ID: <20201123104018.GX4077@smile.fi.intel.com>
-References: <202011211600.bZyprrVg-lkp@intel.com>
+        id S1728631AbgKWKlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:41:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726416AbgKWKlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:41:23 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080F8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:41:23 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w187so23625pfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:41:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=W4UeX702/W/B+orq6/435ThFfL21LhW6NTckU122ScE=;
+        b=x7op+jf5m//qfxOW3YREpxBAYH/LAYSElwklnA60y/QJvCAKLz/NT5Gq5EeVdcne4X
+         wQqy39P0zj/yAmJYwWpP9zm9Ui9h2U+80q7Y7IOUfMl7u37/1+ylAp+5iTePZ15nDDgQ
+         CanlLm6DlwykU5Vj64+s0JTcVFuTHLsEqmslOsc8NtfY3Uwql+e88Hbu/jmH/FXhGFJ2
+         PpEVg9Xsgr/CGbD07d/N6FTQXuJsBjFMv7zkqIB2E9L5/NvgrECrj2re84UAr9KObFSn
+         PuJf7A85Wfznjq6lZj6cAP0K6UfaqiT/9miXA1DsJ+3+0MrDf5rXCeJsAfrBVx1dHhlG
+         wYZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W4UeX702/W/B+orq6/435ThFfL21LhW6NTckU122ScE=;
+        b=P2EZIOqzlGkQ5U1IqOYsDgtvoLoSFGbIoSZe3TrN2pAzV+j/MmN3YOqLFIxWXbLQF9
+         Mi7Am2jExkAhk1HtQM/bYnb23ZTYdSdtZczZylPto4w8qHU02mR+UgCPiLbSEcZ9llj/
+         V0Ubq/z91wEi7XEfCQZfoBxQcnYkCWsqoc808WTQMs7xD7+3/4Niog/VKnOHL19A3oNY
+         6YGzvwyLM/G5M6dQEDxK8HQFqjOp7yls+VYBmhKbFIsZz39MEL8owcXE2AFaOPEIGf1O
+         Wcxm4u73jK7h7nNNXV9WIXP4W3kE917K9KGicJmNTTcbxq71zZaRfEIAbBS09uTV6403
+         oQ7g==
+X-Gm-Message-State: AOAM5330Zr6qGm7NrbKr2/NSpc8E3S5m1XmGkaYtwFWbqdGtpK/plIL/
+        rCOIfp7nv1TRMSVzgQjrMPCagg==
+X-Google-Smtp-Source: ABdhPJwdLEHQdl8W4i1u7+hMZVMXYrB5kBrzOx5IexzNxzTI4QMz+m70VCABUQsOUqWTeKODK7DSFQ==
+X-Received: by 2002:a17:90b:50e:: with SMTP id r14mr24081521pjz.193.1606128082567;
+        Mon, 23 Nov 2020 02:41:22 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id o133sm11440537pfg.97.2020.11.23.02.41.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 23 Nov 2020 02:41:21 -0800 (PST)
+Date:   Mon, 23 Nov 2020 16:11:19 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Quentin Perret <qperret@google.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V3 2/2] thermal: cpufreq_cooling: Reuse sched_cpu_util()
+ for SMP platforms
+Message-ID: <20201123104119.g46y6idk734pw7fl@vireshk-i7>
+References: <cover.1605770951.git.viresh.kumar@linaro.org>
+ <1fa9994395764ba19cfe6240d8b3c1ce390e8f82.1605770951.git.viresh.kumar@linaro.org>
+ <be46b60a-0304-8fe0-53cf-3c179a8fd04a@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202011211600.bZyprrVg-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <be46b60a-0304-8fe0-53cf-3c179a8fd04a@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 04:23:05PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   27bba9c532a8d21050b94224ffd310ad0058c353
-> commit: 7b285f41f7376dc37e7fad1e803995fd39f42848 media: ipu3-cio2: Introduce CIO2_LOP_ENTRIES constant
-> date:   2 months ago
-> config: arm64-randconfig-r031-20201121 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project bec968cbb367dd03439c89c1d4ef968ef662d7c0)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm64 cross compiling tool for clang build
->         # apt-get install binutils-aarch64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b285f41f7376dc37e7fad1e803995fd39f42848
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 7b285f41f7376dc37e7fad1e803995fd39f42848
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+On 20-11-20, 14:51, Lukasz Luba wrote:
+> On 11/19/20 7:38 AM, Viresh Kumar wrote:
+> > Scenario 1: The CPUs were mostly idle in the previous polling window of
+> > the IPA governor as the tasks were sleeping and here are the details
+> > from traces (load is in %):
+> > 
+> >   Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=203 load={{0x35,0x1,0x0,0x31,0x0,0x0,0x64,0x0}} dynamic_power=1339
+> >   New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=600 load={{0x60,0x46,0x45,0x45,0x48,0x3b,0x61,0x44}} dynamic_power=3960
+> > 
+> > Here, the "Old" line gives the load and requested_power (dynamic_power
+> > here) numbers calculated using the idle time based implementation, while
+> > "New" is based on the CPU utilization from scheduler.
+> > 
+> > As can be clearly seen, the load and requested_power numbers are simply
+> > incorrect in the idle time based approach and the numbers collected from
+> > CPU's utilization are much closer to the reality.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> It is contradicting to what you have put in 'Scenario 1' description,
+> isn't it?
+
+At least I didn't think so when I wrote this and am still not sure :)
+
+> Frequency at 1.2GHz, 75% total_load, power 4W... I'd say if CPUs were
+> mostly idle than 1.3W would better reflect that state.
+
+The CPUs were idle because the tasks were sleeping, but once the tasks
+resume to work, we need a frequency that matches the real load of the
+tasks. This is exactly what schedutil would ask for as well as it uses
+the same metric and so we should be looking to ask for the same power
+budget..
+
+> What was the IPA period in your setup?
+
+It is 100 ms by default, though I remember that I tried with 10 ms as
+well.
+
+> It depends on your platform IPA period (e.g. 100ms) and your current
+> runqueues state (at that sampling point in time). The PELT decay/rise
+> period is different. I am not sure if you observe the system avg load
+> for last e.g. 100ms looking at these signals. Maybe IPA period is too
+> short/long and couldn't catch up with PELT signals?
+> But we won't too short averaging, since 16ms is a display tick.
 > 
-> All warnings (new ones prefixed by >>):
+> IMHO based on this result it looks like the util could lost older
+> information from the past or didn't converge yet to this low load yet.
 > 
-> >> drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning: implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short') changes value from 131072 to 0 [-Wconstant-conversion]
->            entry[1].second_entry.num_of_pages = CIO2_LOP_ENTRIES * CIO2_MAX_LOPS;
->                                               ~ ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
->    1 warning generated.
+> > 
+> > Scenario 2: The CPUs were busy in the previous polling window of the IPA
+> > governor:
+> > 
+> >   Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=800 load={{0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x64}} dynamic_power=5280
+> >   New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=708 load={{0x4d,0x5c,0x5c,0x5b,0x5c,0x5c,0x51,0x5b}} dynamic_power=4672
+> > 
+> > As can be seen, the idle time based load is 100% for all the CPUs as it
+> > took only the last window into account, but in reality the CPUs aren't
+> > that loaded as shown by the utilization numbers.
+> 
+> This is also odd. The ~88% of total_load, looks like started decaying or
+> didn't converge yet to 100% or some task vanished?
 
-Okay, now we have an interesting case. The IP is quite unlikely be used on
-ARM64, but my patches made the clear picture about use of PAGE_SIZE here.
-
-So, I see at least the following options to mitigate the above, i.e.:
- 1/ reduce driver scope to X86
- 2/ fix the variables to be wider type to be able to hold PAGE_SIZE > 4k
- 3/ switch to custom PAGE_SIZE / _SHIFT / _MASK and accompanying macros
-
-And I still consider 3/ is silly move because as we see the driver was
-never assumed to work with big page sizes (besides unsigned short type
-here, PAGE_SHIFT and PAGE_MASK in the original code was as is and on ARM64
-they compiled to 0 values w/o warnings, effectively make the driver
-improperly functioning anyway).
-
+They must have decayed a bit because of the idle period, so looks okay
+that way.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+viresh
