@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA362BFE33
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 03:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8862BFE46
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 03:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgKWCeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 21:34:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:57533 "EHLO mga05.intel.com"
+        id S1726964AbgKWCv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 21:51:29 -0500
+Received: from mga18.intel.com ([134.134.136.126]:60192 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgKWCeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 21:34:08 -0500
-IronPort-SDR: qfZlZVOrs6DMaO1ul1duv9WXjl5VO7XEvX1ZlWZb1ExceljQyqZpYPWLq7LSIePgumWEGI3NKE
- wzA6xaLq8cyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="256398230"
+        id S1725788AbgKWCv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 21:51:28 -0500
+IronPort-SDR: hazuHOHloQdmrn/5bU98oga66Nk9jxLr1liY2oWtDAMOl77J6PYbcRT7VvnTj/xIMIArEfEMXE
+ y0q9Eu5hrKzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="159459953"
 X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="256398230"
+   d="scan'208";a="159459953"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 18:34:07 -0800
-IronPort-SDR: uX9/LfJ/tvobNnVhGIUmL5uJ2TL/nOpCEX8l6OPyJxxDeplYOcuFdLAliYMZ+JAMz87XPtil2x
- BQSzJU4sHicA==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 18:51:27 -0800
+IronPort-SDR: PYa3cNe6yVPxbnIo1xNRhk9ejRKI1eYFvbXb4dLvhy2oO1SlOxH5NQV+dGAAcqQK+yA/mlE0K8
+ gmoJKDsc6OXQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="361273622"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Nov 2020 18:34:04 -0800
-Date:   Mon, 23 Nov 2020 10:29:47 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mdf@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        yilun.xu@intel.com
-Subject: Re: [PATCH v13 0/6] add DFL bus support to MODULE_DEVICE_TABLE()
-Message-ID: <20201123022947.GC12837@yilunxu-OptiPlex-7050>
-References: <1605159759-3439-1-git-send-email-yilun.xu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605159759-3439-1-git-send-email-yilun.xu@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+   d="scan'208";a="369879809"
+Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Nov 2020 18:51:25 -0800
+From:   Sia Jee Heng <jee.heng.sia@intel.com>
+To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v5 00/16] dmaengine: dw-axi-dmac: support Intel KeemBay AxiDMA
+Date:   Mon, 23 Nov 2020 10:34:36 +0800
+Message-Id: <20201123023452.7894-1-jee.heng.sia@intel.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Moritz:
+The below patch series are to support AxiDMA running on Intel KeemBay SoC.
+The base driver is dw-axi-dmac. This driver only support DMA memory copy
+transfers. Code refactoring is needed so that additional features can be
+supported.
+The features added in this patch series are:
+- Replacing Linked List with virtual descriptor management.
+- Remove unrelated hw desc stuff from dma memory pool.
+- Manage dma memory pool alloc/destroy based on channel activity.
+- Support dmaengine device_sync() callback.
+- Support dmaengine device_config().
+- Support dmaengine device_prep_slave_sg().
+- Support dmaengine device_prep_dma_cyclic().
+- Support of_dma_controller_register().
+- Support burst residue granularity.
+- Support Intel KeemBay AxiDMA registers.
+- Support Intel KeemBay AxiDMA device handshake.
+- Support Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Add constraint to Max segment size.
+- Virtually split the linked-list
 
-Do you have some suggestion on this patchset? In last pull request,
-there are some comments, I explained for them and fixes some of them.
-I'm wondering if they are ready now.
+This patch series are tested on Intel KeemBay platform.
 
-Thanks in advance,
-Yilun
+v5:
+- Added comment to the Apb registers used by Intel KeemBay Soc.
+- Renamed "hs_num" to "handshake_num".
+- Conditional check for the compatible property and return error
+  instead of printing warning.
+- Added patch 16th to virtually split the linked-list as per
+  request from ALSA team. 
 
-On Thu, Nov 12, 2020 at 01:42:33PM +0800, Xu Yilun wrote:
-> Main changes from v1: 
-> - A new patch (Patch #3) to fix the description.
-> - Rename the dfl-bus.h to dfl.h
-> - Updated the MAINTAINERS under FPGA DFL DRIVERS.
-> - Improve comments and minor fixes.
-> 
-> Main changes from v2: 
-> - Change the bus name from "dfl" to "fpga-dfl", also rename related
->   variables, functions ... 
-> - Changes the data type of fpga_dfl_device_id.type from u8 to u16 
-> - Explicitly defines the values of enum fpga_dfl_id_type
-> - Delete the comments for the valid bits of type & feature_id
-> - changes MODALIAS format for fpga dfl devices
-> 
-> Main changes from v3: 
-> - Change the bus name back to "dfl".
-> - Add 2 patches (#5, 6) for dfl drivers.
-> - Delete the retimer FEC mode configuration via module_parameter for 
->   Patch #5
-> - Merge the patch "Make m10_n3000_info static" (https://lore.kernel.org/linux-fpga/52d8411e-13d8-1e91-756d-131802f5f445@huawei.com/T/#t)
->   into Patch #5
-> - Add static prefix for emif attributes macro for Patch #6
-> 
-> Main changes from v9:
-> - Add the description for struct dfl_device_id in mod_devicetable.h
-> - Move the dfl.h from include/linux/fpga to include/linux
-> - some code refactor and minor fixes for dfl-n3000-nios
-> 
-> Main changes from v10:
-> - use sysfs_emit instead of sprintf for both patches
-> - rebase to 5.10-rc1
-> 
-> Main changes from v11:
-> - Fix the type of driver_data from unsigned long to kernel_ulong_t
-> - Fixed up header guards to match filename by Moritz
-> - move the MODULE_DEVICE_TABLE() right after its definition
-> 
-> Main changes from v12:
-> - For patch #5, fix the wrong use of logical'||', should use '|'
-> 
-> Xu Yilun (6):
->   fpga: dfl: fix the definitions of type & feature_id for dfl devices
->   fpga: dfl: move dfl_device_id to mod_devicetable.h
->   fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()
->   fpga: dfl: move dfl bus related APIs to include/linux/dfl.h
->   fpga: dfl: add support for N3000 Nios private feature
->   memory: dfl-emif: add the DFL EMIF private feature driver
-> 
->  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +
->  .../ABI/testing/sysfs-bus-dfl-devices-n3000-nios   |  47 ++
->  MAINTAINERS                                        |   3 +-
->  drivers/fpga/Kconfig                               |  11 +
->  drivers/fpga/Makefile                              |   2 +
->  drivers/fpga/dfl-n3000-nios.c                      | 588 +++++++++++++++++++++
->  drivers/fpga/dfl.c                                 |   4 +-
->  drivers/fpga/dfl.h                                 |  85 +--
->  drivers/memory/Kconfig                             |   9 +
->  drivers/memory/Makefile                            |   2 +
->  drivers/memory/dfl-emif.c                          | 207 ++++++++
->  include/linux/dfl.h                                |  86 +++
->  include/linux/mod_devicetable.h                    |  24 +
->  scripts/mod/devicetable-offsets.c                  |   4 +
->  scripts/mod/file2alias.c                           |  13 +
->  15 files changed, 1023 insertions(+), 87 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-n3000-nios
->  create mode 100644 drivers/fpga/dfl-n3000-nios.c
->  create mode 100644 drivers/memory/dfl-emif.c
->  create mode 100644 include/linux/dfl.h
-> 
-> -- 
-> 2.7.4
+v4:
+- Fixed bot found errors running make_dt_binding_check.
+- Added minItems: 1 to the YAML schemas DT binding.
+- Updated "reg" field to the YAML schemas DT binding.
+
+v3:
+- Added additionalProperties: false to the YAML schemas DT binding.
+- Reordered patch sequence for patch 10th, 11th and 12th so that
+  DT binding come first, follow by adding Intel KeemBay SoC registers
+  and update .compatible field.
+- Checked txstate NULL condition.
+- Created helper function dw_axi_dma_set_hw_desc() to handle common code.
+
+v2:
+- Rebased to v5.10-rc1 kernel.
+- Added support for dmaengine device_config().
+- Added support for dmaengine device_prep_slave_sg().
+- Added support for dmaengine device_prep_dma_cyclic().
+- Added support for of_dma_controller_register().
+- Added support for burst residue granularity.
+- Added support for Intel KeemBay AxiDMA registers.
+- Added support for Intel KeemBay AxiDMA device handshake.
+- Added support for Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Added constraint to Max segment size.
+
+v1:
+- Initial version. Patch on top of dw-axi-dma driver. This version improve
+  the descriptor management by replacing Linked List Item (LLI) with
+  virtual descriptor management, only allocate hardware LLI memories from
+  DMA memory pool, manage DMA memory pool alloc/destroy based on channel
+  activity and to support device_sync callback.
+
+Sia Jee Heng (16):
+  dt-bindings: dma: Add YAML schemas for dw-axi-dmac
+  dmaengine: dw-axi-dmac: simplify descriptor management
+  dmaengine: dw-axi-dmac: move dma_pool_create() to
+    alloc_chan_resources()
+  dmaengine: dw-axi-dmac: Add device_synchronize() callback
+  dmaengine: dw-axi-dmac: Add device_config operation
+  dmaengine: dw-axi-dmac: Support device_prep_slave_sg
+  dmaegine: dw-axi-dmac: Support device_prep_dma_cyclic()
+  dmaengine: dw-axi-dmac: Support of_dma_controller_register()
+  dmaengine: dw-axi-dmac: Support burst residue granularity
+  dt-binding: dma: dw-axi-dmac: Add support for Intel KeemBay AxiDMA
+  dmaengine: dw-axi-dmac: Add Intel KeemBay DMA register fields
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA support
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA handshake
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA BYTE and HALFWORD
+    registers
+  dmaengine: dw-axi-dmac: Set constraint to the Max segment size
+  dmaengine: dw-axi-dmac: Virtually split the linked-list
+
+ .../bindings/dma/snps,dw-axi-dmac.txt         |  39 -
+ .../bindings/dma/snps,dw-axi-dmac.yaml        | 153 ++++
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 710 +++++++++++++++---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |  34 +-
+ 4 files changed, 802 insertions(+), 134 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+
+
+base-commit: 4d02da974ea85a62074efedf354e82778f910d82
+-- 
+2.18.0
+
