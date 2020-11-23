@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402DC2C00B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC872C00C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgKWHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 02:40:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44606 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgKWHku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:40:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606117249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qDKd/j/QMUNk+/p2NwiTiy96ayOEs3BuwGOqaQL5s+c=;
-        b=ezVAS4q+yY3KB7/f2FALGK82bgAjW+b5kVyFv4xuqGO6lb82TcYoJxP6KhSaKImDGnkbAt
-        Tt8TWcoLgHPwD61QMXVwnQ/J1Q79H3FMW7WYKYnCzjqUNbRqHvhTAUbO6Bc01xLi42FhIi
-        DkFUPz+KuuqcjYnSGwamDnkv23XrGpU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D9D65ABCE;
-        Mon, 23 Nov 2020 07:40:48 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 08:40:46 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-Message-ID: <20201123074046.GB27488@dhcp22.suse.cz>
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz>
- <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
- <20201120131129.GO3200@dhcp22.suse.cz>
- <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
+        id S1728039AbgKWHls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 02:41:48 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:33142 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726715AbgKWHlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 02:41:47 -0500
+Received: by mail-ot1-f65.google.com with SMTP id n12so11545805otk.0;
+        Sun, 22 Nov 2020 23:41:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v/aFWB6RaZl4bPbf4u8QBig1bHxal58mvCrDRYw2MDY=;
+        b=tajGKBEdRIcXd5b1aWwlOD6pltPpI6iQMeVJbDnlKXtFjhg1b5xaF6nyr57psXy+Pf
+         gH8lIoeew8gYTAa2FOYUdls1GYDubc6eXPnAi8SIhuuQeJwfxnta82/0BluY7pQmzCfY
+         DiIT4pcWopwrGgq/AKmgr32cQu1vxXSb9vZg/k3/Ppynb2xtBKgKu4IjtrUgwoLL+tWC
+         9RKA+kKFBGLrUsyFEKWz04Z3rJ5IpEizwrj5zhKWwjjGXueKzptAasExvVz8DQJokHae
+         7bLRMdp5u5SljkBJklaG0okuInbIg+NqznucAbub+zP+IoWYzM3kX+L4jPs/iZa8fGdK
+         53mA==
+X-Gm-Message-State: AOAM531oACY0cuFpNFgq3pCkJj/iIg5DBSuuWjo1H9tbMPMcOvhJp/yI
+        hx2McdRnyzUhq9zF7tNrqQRIlPVY6cV3mmktfxSKRvgI
+X-Google-Smtp-Source: ABdhPJwOS4ETsQtrnuzwdglRTFc9o4bRkl73fYrQqy0ojA0VieDuwXIhtAd6Jk9B6DjFxUz/xh090HVbci/SooYB8j0=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr22819280oth.250.1606117306692;
+ Sun, 22 Nov 2020 23:41:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
+References: <0c0fe1e4f11ccec202d4df09ea7d9d98155d101a.1606001297.git.fthain@telegraphics.com.au>
+In-Reply-To: <0c0fe1e4f11ccec202d4df09ea7d9d98155d101a.1606001297.git.fthain@telegraphics.com.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 23 Nov 2020 08:41:35 +0100
+Message-ID: <CAMuHMdWdt8r=wW1beX60KYpwFtzGzXDwQGP21iUYp2NKuK_w5w@mail.gmail.com>
+Subject: Re: [PATCH v2] m68k: Fix WARNING splat in pmac_zilog driver
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        stable <stable@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-11-20 23:44:26, Muchun Song wrote:
-> On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 20-11-20 20:40:46, Muchun Song wrote:
-> > > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> > > > [...]
-> > > >
-> > > > Thanks for improving the cover letter and providing some numbers. I have
-> > > > only glanced through the patchset because I didn't really have more time
-> > > > to dive depply into them.
-> > > >
-> > > > Overall it looks promissing. To summarize. I would prefer to not have
-> > > > the feature enablement controlled by compile time option and the kernel
-> > > > command line option should be opt-in. I also do not like that freeing
-> > > > the pool can trigger the oom killer or even shut the system down if no
-> > > > oom victim is eligible.
-> > >
-> > > Hi Michal,
-> > >
-> > > I have replied to you about those questions on the other mail thread.
-> > >
-> > > Thanks.
-> > >
-> > > >
-> > > > One thing that I didn't really get to think hard about is what is the
-> > > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> > > > invalid when racing with the split. How do we enforce that this won't
-> > > > blow up?
-> > >
-> > > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
-> > > in this case, the pfn_to_page can work. The return value of the
-> > > pfn_to_page is actually the address of it's struct page struct.
-> > > I can not figure out where the problem is. Can you describe the
-> > > problem in detail please? Thanks.
-> >
-> > struct page returned by pfn_to_page might get invalid right when it is
-> > returned because vmemmap could get freed up and the respective memory
-> > released to the page allocator and reused for something else. See?
-> 
-> If the HugeTLB page is already allocated from the buddy allocator,
-> the struct page of the HugeTLB can be freed? Does this exist?
+On Sun, Nov 22, 2020 at 12:40 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> Don't add platform resources that won't be used. This avoids a
+> recently-added warning from the driver core, that can show up on a
+> multi-platform kernel when !MACH_IS_MAC.
+>
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 0 at drivers/base/platform.c:224 platform_get_irq_optional+0x8e/0xce
+> 0 is an invalid IRQ number
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper Not tainted 5.9.0-multi #1
+> Stack from 004b3f04:
+>         004b3f04 00462c2f 00462c2f 004b3f20 0002e128 004754db 004b6ad4 004b3f4c
+>         0002e19c 004754f7 000000e0 00285ba0 00000009 00000000 004b3f44 ffffffff
+>         004754db 004b3f64 004b3f74 00285ba0 004754f7 000000e0 00000009 004754db
+>         004fdf0c 005269e2 004fdf0c 00000000 004b3f88 00285cae 004b6964 00000000
+>         004fdf0c 004b3fac 0051cc68 004b6964 00000000 004b6964 00000200 00000000
+>         0051cc3e 0023c18a 004b3fc0 0051cd8a 004fdf0c 00000002 0052b43c 004b3fc8
+> Call Trace: [<0002e128>] __warn+0xa6/0xd6
+>  [<0002e19c>] warn_slowpath_fmt+0x44/0x76
+>  [<00285ba0>] platform_get_irq_optional+0x8e/0xce
+>  [<00285ba0>] platform_get_irq_optional+0x8e/0xce
+>  [<00285cae>] platform_get_irq+0x12/0x4c
+>  [<0051cc68>] pmz_init_port+0x2a/0xa6
+>  [<0051cc3e>] pmz_init_port+0x0/0xa6
+>  [<0023c18a>] strlen+0x0/0x22
+>  [<0051cd8a>] pmz_probe+0x34/0x88
+>  [<0051cde6>] pmz_console_init+0x8/0x28
+>  [<00511776>] console_init+0x1e/0x28
+>  [<0005a3bc>] printk+0x0/0x16
+>  [<0050a8a6>] start_kernel+0x368/0x4ce
+>  [<005094f8>] _sinittext+0x4f8/0xc48
+> random: get_random_bytes called from print_oops_end_marker+0x56/0x80 with crng_init=0
+> ---[ end trace 392d8e82eed68d6c ]---
+>
+> Commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid"),
+> which introduced the WARNING, suggests that testing for irq == 0 is
+> undesirable. Instead of that comparison, just test for resource existence.
+>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: stable@vger.kernel.org # v5.8+
+> References: commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid")
+> Reported-by: Laurent Vivier <laurent@vivier.eu>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Nope, struct pages only ever get deallocated when the respective memory
-(they describe) is hotremoved via hotplug.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.11 branch.
 
-> If yes, how to free the HugeTLB page to the buddy allocator
-> (cannot access the struct page)?
+Gr{oetje,eeting}s,
 
-But I do not follow how that relates to my concern above.
+                        Geert
 
 -- 
-Michal Hocko
-SUSE Labs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
