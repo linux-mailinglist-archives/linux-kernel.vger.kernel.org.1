@@ -2,96 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FAC2C1209
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 198EC2C1218
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390365AbgKWRfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:35:04 -0500
-Received: from mga18.intel.com ([134.134.136.126]:7338 "EHLO mga18.intel.com"
+        id S2390368AbgKWRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:36:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730867AbgKWRfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:35:04 -0500
-IronPort-SDR: j26Ja5nMiItW+fDhRu78sZ5m+HUyMzGaO/4SeHWTxXIFyYNcHYG/Db+XX+jc9xwWta61N7J0mm
- geF4ErHfok7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="159577500"
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="159577500"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:35:03 -0800
-IronPort-SDR: icjRiGPYcByjDGJSIMRLn5mZ8P4BP1y84bzFOOpMtPmduaZvWYlUsyGqrGQQL5rzhJDYbUKPHC
- 10uOLSE1aaGA==
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="332261026"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:35:01 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1khFkx-009DgZ-Eu; Mon, 23 Nov 2020 19:36:03 +0200
-Date:   Mon, 23 Nov 2020 19:36:03 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Felipe Balbi <balbi@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH 0/2] Remove one more platform_device_add_properties() call
-Message-ID: <20201123173603.GJ4077@smile.fi.intel.com>
-References: <20201123153148.52647-1-heikki.krogerus@linux.intel.com>
- <CAJZ5v0jAaz2zELkJoKjHtxyfuKEi=ORuCCad-F0yp6KephieGg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jAaz2zELkJoKjHtxyfuKEi=ORuCCad-F0yp6KephieGg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1730885AbgKWRgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:36:20 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50D2A2075A;
+        Mon, 23 Nov 2020 17:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606152980;
+        bh=72RRatZM1+/5lYRX4mU7xJg9Ys//lfez1nyUPZbbrYA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xPEwZEJWN7lkIGMrZ9gsZz5S8sQEWFFbhNlzIkp24L/GvwO8wQ6Ba5D9bzJMdICNb
+         s+MIIj1EoywpByO9j/hQKMd/+zNdwLqCZDPBAI4g7tU9d3Vw6p0xHyOeroOy318kGJ
+         77i9RvP6gwzIkfSDGYgWGVNFP8PSzpwdnp7AZtnE=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khFlB-00D1DY-RG; Mon, 23 Nov 2020 17:36:17 +0000
+Date:   Mon, 23 Nov 2020 17:36:16 +0000
+Message-ID: <87d0045627.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 23/24] kvm: arm64: Trap host SMCs in protected mode.
+In-Reply-To: <20201116204318.63987-24-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-24-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 06:06:31PM +0100, Rafael J. Wysocki wrote:
-> On Mon, Nov 23, 2020 at 4:32 PM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> >
-> > Hi,
-> >
-> > I originally introduced these as part of my series where I was
-> > proposing PM ops for software nodes [1], but since that still needs
-> > work, I'm sending these two separately.
-> >
-> > So basically I'm only modifying dwc3-pci.c so it registers a software
-> > node directly at this point. That will remove one more user of
-> > platform_device_add_properties().
-> >
-> > [1] https://lore.kernel.org/lkml/20201029105941.63410-1-heikki.krogerus@linux.intel.com/
-> >
-> > thanks,
-> >
-> > Heikki Krogerus (2):
-> >   software node: Introduce device_add_software_node()
-> >   usb: dwc3: pci: Register a software node for the dwc3 platform device
-> >
-> >  drivers/base/swnode.c       | 69 ++++++++++++++++++++++++++++++++-----
-> >  drivers/usb/dwc3/dwc3-pci.c | 61 +++++++++++++++++++-------------
-> >  include/linux/property.h    |  3 ++
-> >  3 files changed, 100 insertions(+), 33 deletions(-)
-> >
-> > --
+On Mon, 16 Nov 2020 20:43:17 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
 > 
-> These look good to me.
+> While protected nVHE KVM is installed, start trapping all host SMCs.
+> By default, these are simply forwarded to EL3, but PSCI SMCs are
+> validated first.
 > 
-> If you want me to take them, though, I need an ACK from the dwc3 side.
+> Create new constant HCR_HOST_NVHE_PROTECTED_FLAGS with the new set of HCR
+> flags to use while the nVHE vector is installed when the kernel was
+> booted with the protected flag enabled. Switch back to the default HCR
+> flags when switching back to the stub vector.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_arm.h   |  1 +
+>  arch/arm64/kvm/hyp/nvhe/hyp-init.S | 12 ++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/switch.c   |  5 ++++-
+>  3 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
+> index 64ce29378467..4e90c2debf70 100644
+> --- a/arch/arm64/include/asm/kvm_arm.h
+> +++ b/arch/arm64/include/asm/kvm_arm.h
+> @@ -80,6 +80,7 @@
+>  			 HCR_FMO | HCR_IMO | HCR_PTW )
+>  #define HCR_VIRT_EXCP_MASK (HCR_VSE | HCR_VI | HCR_VF)
+>  #define HCR_HOST_NVHE_FLAGS (HCR_RW | HCR_API | HCR_APK | HCR_ATA)
+> +#define HCR_HOST_NVHE_PROTECTED_FLAGS (HCR_HOST_NVHE_FLAGS | HCR_TSC)
+>  #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
+>  
+>  /* TCR_EL2 Registers bits */
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+> index 6d8202d2bdfb..8f3602f320ac 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+> @@ -88,6 +88,12 @@ SYM_CODE_END(__kvm_hyp_init)
+>   * x0: struct kvm_nvhe_init_params PA
+>   */
+>  SYM_CODE_START(___kvm_hyp_init)
+> +alternative_if ARM64_PROTECTED_KVM
+> +	mov_q	x1, HCR_HOST_NVHE_PROTECTED_FLAGS
+> +	msr	hcr_el2, x1
+> +	isb
 
-Btw, I have tested this on one of the platform with DWC3 and found no
-regression, so feel free to add
+Why the ISB? For HCR_TSC to have any effect, you'll have to go via an
+ERET to EL1 first, which will have the required synchronisation effect.
 
-Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> +alternative_else_nop_endif
+> +
+>  	ldr	x1, [x0, #NVHE_INIT_TPIDR_EL2]
+>  	msr	tpidr_el2, x1
+>  
+> @@ -224,6 +230,12 @@ reset:
+>  	msr	sctlr_el2, x5
+>  	isb
+>  
+> +alternative_if ARM64_PROTECTED_KVM
+> +	mov_q	x5, HCR_HOST_NVHE_FLAGS
+> +	msr	hcr_el2, x5
+> +	isb
+
+Same thing here, I believe.
+
+> +alternative_else_nop_endif
+> +
+>  	/* Install stub vectors */
+>  	adr_l	x5, __hyp_stub_vectors
+>  	msr	vbar_el2, x5
+> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
+> index 8ae8160bc93a..e1f8e0797144 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
+> @@ -96,7 +96,10 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+>  	mdcr_el2 |= MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT;
+>  
+>  	write_sysreg(mdcr_el2, mdcr_el2);
+> -	write_sysreg(HCR_HOST_NVHE_FLAGS, hcr_el2);
+> +	if (is_protected_kvm_enabled())
+> +		write_sysreg(HCR_HOST_NVHE_PROTECTED_FLAGS, hcr_el2);
+> +	else
+> +		write_sysreg(HCR_HOST_NVHE_FLAGS, hcr_el2);
+>  	write_sysreg(CPTR_EL2_DEFAULT, cptr_el2);
+>  	write_sysreg(__kvm_hyp_host_vector, vbar_el2);
+>  }
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
+
+Thanks,
+
+	M.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Without deviation from the norm, progress is not possible.
