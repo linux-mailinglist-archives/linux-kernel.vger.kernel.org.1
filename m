@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1872C0707
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A442C0656
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731814AbgKWMgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:36:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48570 "EHLO mail.kernel.org"
+        id S1730668AbgKWM34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:29:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731699AbgKWMga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:36:30 -0500
+        id S1730653AbgKWM3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:29:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03F052065E;
-        Mon, 23 Nov 2020 12:36:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F34F21D7A;
+        Mon, 23 Nov 2020 12:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134989;
-        bh=NDiwTZ+Yy4EQL78bDKUvx5rt4xEaVpYvsuF9xd2hvTE=;
+        s=korg; t=1606134593;
+        bh=Q1TdgDXmY1kSWooOCJWJqG1UQDpxrak7pKjGdM5pMiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XX7OYv+V83k5tFrCvVHN7XUhPNqsBYRWS/5WW4pwun+EvttXsEF1/Tvld7xaaLEuy
-         Ka90v9X8SzmIT8QGYsjTfU/H+b/hls1664GR+Qm4fPOKjj38JzWj8asVmYpPUvpC2f
-         aSM2zsAj5Jv9I5CBquMtT7oUVgmD76kwp2ZFMxoc=
+        b=ynPgI7uLVLn4BLtusJroVYtjAgy0CnjsnuUl6xtPkqxmhvZ4RDz/3OyP6D/GKmMdv
+         +001xzzcI/nmlQgWnz8ThFXYxNYem71gPJ0NfFUIkUNItlEudoCvF2ilCu9a4xeY3c
+         qdQZVkX97ALMvPjRhg2esWpPJSiFd9k6CVSGfBQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 065/158] swiotlb: using SIZE_MAX needs limits.h included
-Date:   Mon, 23 Nov 2020 13:21:33 +0100
-Message-Id: <20201123121823.072877964@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 14/91] netlabel: fix an uninitialized warning in netlbl_unlabel_staticlist()
+Date:   Mon, 23 Nov 2020 13:21:34 +0100
+Message-Id: <20201123121809.995006720@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
+From: Paul Moore <paul@paul-moore.com>
 
-[ Upstream commit f51778db088b2407ec177f2f4da0f6290602aa3f ]
+[ Upstream commit 1ba86d4366e023d96df3dbe415eea7f1dc08c303 ]
 
-After merging the drm-misc tree, linux-next build (arm
-multi_v7_defconfig) failed like this:
+Static checking revealed that a previous fix to
+netlbl_unlabel_staticlist() leaves a stack variable uninitialized,
+this patches fixes that.
 
-In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
-include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
-include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use in this function)
-   99 |  return SIZE_MAX;
-      |         ^~~~~~~~
-include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; did you forget to '#include <stdint.h>'?
-    6 | #include <linux/init.h>
-  +++ |+#include <stdint.h>
-    7 | #include <linux/types.h>
-include/linux/swiotlb.h:99:9: note: each undeclared identifier is reported only once for each function it appears in
-   99 |  return SIZE_MAX;
-      |         ^~~~~~~~
-
-Caused by commit
-
-  abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-
-but only exposed by commit "drm/nouveu: fix swiotlb include"
-
-Fix it by including linux/limits.h as appropriate.
-
-Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Link: https://lore.kernel.org/r/20201102124327.2f82b2a7@canb.auug.org.au
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 866358ec331f ("netlabel: fix our progress tracking in netlbl_unlabel_staticlist()")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Link: https://lore.kernel.org/r/160530304068.15651.18355773009751195447.stgit@sifl
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/swiotlb.h | 1 +
- 1 file changed, 1 insertion(+)
+ net/netlabel/netlabel_unlabeled.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index cde3dc18e21a2..0a8fced6aaec4 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -5,6 +5,7 @@
- #include <linux/dma-direction.h>
- #include <linux/init.h>
- #include <linux/types.h>
-+#include <linux/limits.h>
- 
- struct device;
- struct page;
--- 
-2.27.0
-
+--- a/net/netlabel/netlabel_unlabeled.c
++++ b/net/netlabel/netlabel_unlabeled.c
+@@ -1180,7 +1180,7 @@ static int netlbl_unlabel_staticlist(str
+ 	u32 skip_bkt = cb->args[0];
+ 	u32 skip_chain = cb->args[1];
+ 	u32 skip_addr4 = cb->args[2];
+-	u32 iter_bkt, iter_chain, iter_addr4 = 0, iter_addr6 = 0;
++	u32 iter_bkt, iter_chain = 0, iter_addr4 = 0, iter_addr6 = 0;
+ 	struct netlbl_unlhsh_iface *iface;
+ 	struct list_head *iter_list;
+ 	struct netlbl_af4list *addr4;
 
 
