@@ -2,159 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9502C00B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 402DC2C00B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgKWHkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 02:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727641AbgKWHkU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:40:20 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B003DC0613CF;
-        Sun, 22 Nov 2020 23:40:19 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CffFY0JXhz9sRR;
-        Mon, 23 Nov 2020 18:40:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606117217;
-        bh=feBwx742S3KxPsGL6rDfJ09Kn4ZnORD8sGkRYwcY0Og=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hzTsKrVrvVqhAY2PLgq/c9N58GEqXNEMyV4HI07riRoxZfNd+1h6YhPtIgsn3Hj4T
-         JN1laq+Uz47M8OrV8y32cS3eGfcVSvWrNbRNqfiDPVywzeCDhI7KHmSINb+JoAAaKj
-         ETZdHJNXiKrLjLcRLcRznTJ2EBH/neIGts6ANXl8PO34PL4cTu9B70Ntbfo6U62tGC
-         +zepQJfIcBV3UfD9WuVwcSJ1NPY5l4/P7EaJJycyuaRPw22GR1pq1Co9oJEROM0Y8H
-         syILem/9j4IhLBekDBVCJQWt8B1W53WoSvi0gY8+zT2Y7s1wJGKsYHGMyIJxFDxBrp
-         3Wws9tTZ4d6ZQ==
-Date:   Mon, 23 Nov 2020 18:40:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Daniel Axtens <dja@axtens.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure in Linus' tree
-Message-ID: <20201123184016.693fe464@canb.auug.org.au>
+        id S1727976AbgKWHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 02:40:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44606 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726302AbgKWHku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 02:40:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606117249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qDKd/j/QMUNk+/p2NwiTiy96ayOEs3BuwGOqaQL5s+c=;
+        b=ezVAS4q+yY3KB7/f2FALGK82bgAjW+b5kVyFv4xuqGO6lb82TcYoJxP6KhSaKImDGnkbAt
+        Tt8TWcoLgHPwD61QMXVwnQ/J1Q79H3FMW7WYKYnCzjqUNbRqHvhTAUbO6Bc01xLi42FhIi
+        DkFUPz+KuuqcjYnSGwamDnkv23XrGpU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D9D65ABCE;
+        Mon, 23 Nov 2020 07:40:48 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 08:40:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
+ hugetlb page
+Message-ID: <20201123074046.GB27488@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz>
+ <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
+ <20201120131129.GO3200@dhcp22.suse.cz>
+ <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EdvlojBL39g6k/WuaBky3z0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EdvlojBL39g6k/WuaBky3z0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri 20-11-20 23:44:26, Muchun Song wrote:
+> On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Fri 20-11-20 20:40:46, Muchun Song wrote:
+> > > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
+> > > > [...]
+> > > >
+> > > > Thanks for improving the cover letter and providing some numbers. I have
+> > > > only glanced through the patchset because I didn't really have more time
+> > > > to dive depply into them.
+> > > >
+> > > > Overall it looks promissing. To summarize. I would prefer to not have
+> > > > the feature enablement controlled by compile time option and the kernel
+> > > > command line option should be opt-in. I also do not like that freeing
+> > > > the pool can trigger the oom killer or even shut the system down if no
+> > > > oom victim is eligible.
+> > >
+> > > Hi Michal,
+> > >
+> > > I have replied to you about those questions on the other mail thread.
+> > >
+> > > Thanks.
+> > >
+> > > >
+> > > > One thing that I didn't really get to think hard about is what is the
+> > > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+> > > > invalid when racing with the split. How do we enforce that this won't
+> > > > blow up?
+> > >
+> > > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
+> > > in this case, the pfn_to_page can work. The return value of the
+> > > pfn_to_page is actually the address of it's struct page struct.
+> > > I can not figure out where the problem is. Can you describe the
+> > > problem in detail please? Thanks.
+> >
+> > struct page returned by pfn_to_page might get invalid right when it is
+> > returned because vmemmap could get freed up and the respective memory
+> > released to the page allocator and reused for something else. See?
+> 
+> If the HugeTLB page is already allocated from the buddy allocator,
+> the struct page of the HugeTLB can be freed? Does this exist?
 
-Hi all,
+Nope, struct pages only ever get deallocated when the respective memory
+(they describe) is hotremoved via hotplug.
 
-After merging most of the trees, today's linux-next build (powerpc64
-allnoconfig) failed like this:
+> If yes, how to free the HugeTLB page to the buddy allocator
+> (cannot access the struct page)?
 
-In file included from arch/powerpc/include/asm/kup.h:18,
-                 from arch/powerpc/include/asm/uaccess.h:9,
-                 from include/linux/uaccess.h:11,
-                 from include/linux/sched/task.h:11,
-                 from include/linux/sched/signal.h:9,
-                 from include/linux/rcuwait.h:6,
-                 from include/linux/percpu-rwsem.h:7,
-                 from include/linux/fs.h:33,
-                 from include/linux/compat.h:17,
-                 from arch/powerpc/kernel/asm-offsets.c:14:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:66:1: warning: data definiti=
-on has no type or storage class
-   66 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:66:1: error: type defaults t=
-o 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=3Dimplicit-in=
-t]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:66:1: warning: parameter nam=
-es (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_a=
-ccess':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:180:6: error: implicit decla=
-ration of function 'static_branch_unlikely' [-Werror=3Dimplicit-function-de=
-claration]
-  180 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:180:30: error: 'uaccess_flus=
-h_key' undeclared (first use in this function)
-  180 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:180:30: note: each undeclare=
-d identifier is reported only once for each function it appears in
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_a=
-ccess_return':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:189:30: error: 'uaccess_flus=
-h_key' undeclared (first use in this function)
-  189 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'restore_user_a=
-ccess':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:198:30: error: 'uaccess_flus=
-h_key' undeclared (first use in this function)
-  198 |  if (static_branch_unlikely(&uaccess_flush_key) && flags =3D=3D AMR=
-_KUAP_BLOCKED)
-      |                              ^~~~~~~~~~~~~~~~~
+But I do not follow how that relates to my concern above.
 
-Caused by commit
-
-  9a32a7e78bd0 ("powerpc/64s: flush L1D after user accesses")
-
-I have applied the following patch for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 23 Nov 2020 18:35:02 +1100
-Subject: [PATCH] powerpc/64s: using DECLARE_STATIC_KEY_FALSE needs
- linux/jump_table.h
-
-Fixes: 9a32a7e78bd0 ("powerpc/64s: flush L1D after user accesses")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/powerpc/include/asm/book3s/64/kup-radix.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/powerpc/include/asm/book3s/64/kup-radix.h b/arch/powerpc/=
-include/asm/book3s/64/kup-radix.h
-index 28716e2f13e3..a39e2d193fdc 100644
---- a/arch/powerpc/include/asm/book3s/64/kup-radix.h
-+++ b/arch/powerpc/include/asm/book3s/64/kup-radix.h
-@@ -63,6 +63,8 @@
-=20
- #else /* !__ASSEMBLY__ */
-=20
-+#include <linux/jump_label.h>
-+
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-=20
- #ifdef CONFIG_PPC_KUAP
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/EdvlojBL39g6k/WuaBky3z0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+7Z2AACgkQAVBC80lX
-0GwEzAgAoZEvlgCXERg+onNkmuCjQWCaqqGFZXyJV9Z7Tgs2pKSezeRvTn/Q2IuD
-JxOWJuA9xnseQ6gScuUk7FbT4IqVNPEP4E6xcB3ijWqz+FoxCo13L0oHuvavKV7g
-1YSDl0bI2lcTu3aLh8G4pl9u+Qsw2X7A1c/fOCRqzrJ9cPAQqI8n9bNJs6Wv7sSX
-nbGvSWC/J9GXhr1eFtovk5sDjaIibxIK1wQrOfyJgN0N5CGBpvMTEOSMmhz1iyNI
-UnsSeBQW9I5VWayCWBTLWfKCyvacpf4u3L8g4fyXQI4eL/ifTgmE35O/s1JEYmxn
-LcL4KT4cDw4w/wLchVzvd81WVksT0Q==
-=zrca
------END PGP SIGNATURE-----
-
---Sig_/EdvlojBL39g6k/WuaBky3z0--
+-- 
+Michal Hocko
+SUSE Labs
