@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E7F2C008A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8B62C008C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgKWHQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 02:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S1727605AbgKWHS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 02:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgKWHQu (ORCPT
+        with ESMTP id S1726921AbgKWHS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 02:16:50 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D2DC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:16:50 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id z24so992603oto.6
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:16:50 -0800 (PST)
+        Mon, 23 Nov 2020 02:18:28 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45845C061A4D
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:18:28 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id f12so3564797oto.10
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:18:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wLXgsyTqO2RarUvyH8ZTTAYF4WDtQk4zjdGgRXC7rCg=;
-        b=cJi+sHIc9PIFYzVrxZIJR6TBDveCOPoJo7R9h9i35/0I1WcDW0tCvgyKeQNWpFHauV
-         H1YjIY8kRymMFlnofU0cW6rqxYuTIw1VRpSCRiL36LNItAs2MfpGnwmTt+RMg5tY4XLg
-         ciAXADVti0dmblXhg00sub5IbraSwBVnEfIyF7NizMX6kKjTbsv50O3SRm6+3FJx1qG6
-         WnZEa7whuIHVCP2Kzz5OJuO2BLi+dEKi2ZV1CQxsmjh3viQ+bS0KKeKpey/gRXqdND+q
-         mTsaphypJz0oRNOr2CqFWneCcMqa5zptoQYzGXRQvx7YTrhaCoTW5KvrTngH8glCvWSb
-         pWhw==
+        bh=sfKjG2GvoDhQiB7EpkscGKZ+97rkBF/pnq0LhdxYBSQ=;
+        b=Nhi41X2pbTeawhTkWHetJJ8SzZ7jdWhXuzFPECnPqfmjT2n5H0aJE/I9Fhz5WpkOTi
+         U1f2uuCWR5MWR2ZUnRWcMSrmka1wwVzu4a6pwiYKsFabNZqQNgXJiJtVdQg6fBKG/ojv
+         wQoiop9+kZRRADXjWOAF/gd5OO+gMdZdnWewS7O9jsEwzxEuyzSYSbmjWGXuCLu3smeQ
+         aS/po47CbgOhCG5PUD2dzUI/mjZVLQVhLYtj9N8+Ga+eh9ixBzz4dcx2Roiqpt4QI0Al
+         kmDFP01bTVN1xbUdqzWFwfsEyaL8LjqdkSyLMg1fWWx/9PneRe4zhP1jMIaBy3BPBPMv
+         92TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wLXgsyTqO2RarUvyH8ZTTAYF4WDtQk4zjdGgRXC7rCg=;
-        b=Zn+4jJd6rJuA/0GLFVknCNo9Am/tsORJrXZZi0YVsTlpy96U8vnOcAgJfQHS0IoBG2
-         kXL4S6b/CYhYWGr2/jp/6jM6Px8XPDzZ919f7vE8cS+E3HjN+LdEriFbp7v8MKGFhAeZ
-         dkncaaxVBvV1foSorT548A6tsaQsz1pWGTEa5VZOrp98netq2AhS3urGjeC28/glQig3
-         qJlwHH/iv4nS2aeL/3ysQs0JvumvxTMVquqzlsEla3zhmOfEXKgQwcHICLqws7GK6/xu
-         IuRouBtwuvkjE5g+yYf2wPj/70EW6bq1mEhnCAYHqZzeRarvC63VxXXFsj4wlZpVufu8
-         qkSQ==
-X-Gm-Message-State: AOAM533txcaV4FwTiupNSGl0VLHXAurG7gHlh4IHavaLr2uXiP1/Lwe/
-        uQW766tRSVZRfhwUpdI5qucXyq2SSVWuhh8Z89xphQ==
-X-Google-Smtp-Source: ABdhPJzVm9yG9nWXa/SZbEw2G6kXq7rqr9EqAzpThBAB7CTo/wwfjZlLxIvi+xA2Iol2Cfd/oLqW1289GKRfVU/RQNE=
-X-Received: by 2002:a9d:6f8f:: with SMTP id h15mr22425313otq.166.1606115809393;
- Sun, 22 Nov 2020 23:16:49 -0800 (PST)
+        bh=sfKjG2GvoDhQiB7EpkscGKZ+97rkBF/pnq0LhdxYBSQ=;
+        b=CTIRnaRIvAvuxd8NG4IpSbUZu25t7pzqxvksZHzBPDTFOp93qUSF1Adj8gUe3plV91
+         pL+pJwoVtEbgUMGNvIH3wWzTC8pwUA6yNDmpjYJH3zE4YXF0PMJFF8nLnmAg+ZXMrHCl
+         5kzMmXgHP+ojJiOoOJ7YDL7/lh7UrpGoy0Q8HIkJWP3/PKb0xGPMmY27huzTMu7oORPO
+         /w5Yak9gLoZsEYp/mF4QeX5aPK0Vj26H8lx2nVHQgBTYWGJABAhHIXBRcZvdmCU68IdU
+         G0C8LPy4MDgFpE/c78iRcXExtO+N4e0P3fpWfcsZBKy/LS8UouBbj7Pw9y37EnXWTFsu
+         mh8g==
+X-Gm-Message-State: AOAM532BYcmRBs7JQ8vCLElqV50VX5REoDcxZx7DvS8QtGXWEe9NwTgt
+        FvxPtSM3zgMRbz4//0Y1RhE6JFukI1feCEPjQQYTRA==
+X-Google-Smtp-Source: ABdhPJweIoXhEjpbvXwglI32aXPOWNF6IbolZiWACHGNa+GuXDBW2FXTa0dak0WYveQO8IuYFPBrvHcq4162/Q4SUIA=
+X-Received: by 2002:a9d:6f8f:: with SMTP id h15mr22428460otq.166.1606115907677;
+ Sun, 22 Nov 2020 23:18:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20201111100608.108842-3-zong.li@sifive.com> <mhng-ca3ea720-b6b1-4b6e-a58f-43fadd7f1c18@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-ca3ea720-b6b1-4b6e-a58f-43fadd7f1c18@palmerdabbelt-glaptop1>
+References: <20201111100608.108842-5-zong.li@sifive.com> <mhng-738e4a27-9751-4937-b3ed-efdcdce56f0c@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-738e4a27-9751-4937-b3ed-efdcdce56f0c@palmerdabbelt-glaptop1>
 From:   Zong Li <zong.li@sifive.com>
-Date:   Mon, 23 Nov 2020 15:16:39 +0800
-Message-ID: <CANXhq0r+TOu_=c+KpNYFu3xzFtfmORoyDR+8mRrXwRCgpGWe8A@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] clk: sifive: Use common name for prci configuration
+Date:   Mon, 23 Nov 2020 15:18:17 +0800
+Message-ID: <CANXhq0rQtgVNoDJ7DLFcBRwru1H5+4_0LoANCVcGMaB2LmCOMA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] clk: sifive: Fix the wrong bit field shift
 To:     Palmer Dabbelt <palmer@dabbelt.com>
 Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -62,7 +62,7 @@ Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
         linux-clk@vger.kernel.org,
         linux-riscv <linux-riscv@lists.infradead.org>,
-        Pragnesh Patel <Pragnesh.patel@sifive.com>
+        Pragnesh Patel <pragnesh.patel@sifive.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -70,75 +70,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, Nov 21, 2020 at 9:29 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 >
-> On Wed, 11 Nov 2020 02:06:06 PST (-0800), zong.li@sifive.com wrote:
-> > Use generic name CLK_SIFIVE_PRCI instead of CLK_SIFIVE_FU540_PRCI. This
-> > patch is prepared for fu740 support.
+> On Wed, 11 Nov 2020 02:06:08 PST (-0800), zong.li@sifive.com wrote:
+> > The clk enable bit should be 31 instead of 24.
 > >
 > > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> > Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> > Reviewed-by: Pragnesh Patel <Pragnesh.patel@sifive.com>
+> > Reported-by: Pragnesh Patel <pragnesh.patel@sifive.com>
 > > ---
-> >  arch/riscv/Kconfig.socs     | 2 +-
-> >  drivers/clk/sifive/Kconfig  | 6 +++---
-> >  drivers/clk/sifive/Makefile | 2 +-
-> >  3 files changed, 5 insertions(+), 5 deletions(-)
+> >  drivers/clk/sifive/sifive-prci.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 > >
-> > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> > index 8a55f6156661..3284d5c291be 100644
-> > --- a/arch/riscv/Kconfig.socs
-> > +++ b/arch/riscv/Kconfig.socs
-> > @@ -5,7 +5,7 @@ config SOC_SIFIVE
-> >       select SERIAL_SIFIVE if TTY
-> >       select SERIAL_SIFIVE_CONSOLE if TTY
-> >       select CLK_SIFIVE
-> > -     select CLK_SIFIVE_FU540_PRCI
-> > +     select CLK_SIFIVE_PRCI
-> >       select SIFIVE_PLIC
-> >       help
-> >         This enables support for SiFive SoC platform hardware.
-> > diff --git a/drivers/clk/sifive/Kconfig b/drivers/clk/sifive/Kconfig
-> > index f3b4eb9cb0f5..ab48cf7e0105 100644
-> > --- a/drivers/clk/sifive/Kconfig
-> > +++ b/drivers/clk/sifive/Kconfig
-> > @@ -8,12 +8,12 @@ menuconfig CLK_SIFIVE
+> > diff --git a/drivers/clk/sifive/sifive-prci.h b/drivers/clk/sifive/sifive-prci.h
+> > index 802fc8fb9c09..da7be9103d4d 100644
+> > --- a/drivers/clk/sifive/sifive-prci.h
+> > +++ b/drivers/clk/sifive/sifive-prci.h
+> > @@ -59,7 +59,7 @@
 > >
-> >  if CLK_SIFIVE
+> >  /* DDRPLLCFG1 */
+> >  #define PRCI_DDRPLLCFG1_OFFSET               0x10
+> > -#define PRCI_DDRPLLCFG1_CKE_SHIFT    24
+> > +#define PRCI_DDRPLLCFG1_CKE_SHIFT    31
+> >  #define PRCI_DDRPLLCFG1_CKE_MASK     (0x1 << PRCI_DDRPLLCFG1_CKE_SHIFT)
 > >
-> > -config CLK_SIFIVE_FU540_PRCI
-> > -     bool "PRCI driver for SiFive FU540 SoCs"
-> > +config CLK_SIFIVE_PRCI
-> > +     bool "PRCI driver for SiFive SoCs"
-> >       select CLK_ANALOGBITS_WRPLL_CLN28HPC
-> >       help
-> >         Supports the Power Reset Clock interface (PRCI) IP block found in
-> > -       FU540 SoCs.  If this kernel is meant to run on a SiFive FU540 SoC,
-> > +       FU540 SoCs. If this kernel is meant to run on a SiFive FU540 SoC,
+> >  /* GEMGXLPLLCFG0 */
+> > @@ -81,7 +81,7 @@
+> >
+> >  /* GEMGXLPLLCFG1 */
+> >  #define PRCI_GEMGXLPLLCFG1_OFFSET    0x20
+> > -#define RCI_GEMGXLPLLCFG1_CKE_SHIFT  24
+> > +#define RCI_GEMGXLPLLCFG1_CKE_SHIFT  31
+> >  #define PRCI_GEMGXLPLLCFG1_CKE_MASK  (0x1 << PRCI_GEMGXLPLLCFG1_CKE_SHIFT)
+> >
+> >  /* CORECLKSEL */
 >
-> This just removes the double-space.  Presumably in should also remove the
-> "FU540", as this clock driver will now function for multiple SiFive SOCs?
->
+> Section 7.3 of v1.0 of the FU540 manual says that bit 24 contains the PLL clock
+> enable for both of these.  I don't know if that's accurate, but if it is then I
+> believe this would break the FU540.  Don't have one to test on, though.
 
-I'd like to list the support SoCs here, so in the third patch, I list
-the FU740 in the description as well. I would remove the SoC names if
-it is better by using a generic term. What do you think about that?
+Yes, the manual seems to be wrong and should be corrected. It doesn't
+break the FU540 yet because we don't use these fields in s-mode Linux
+driver, we set them in m-mode FSBL/U-boot-SPL bootloader during boot
+time, and the implementation of FSBL and U-boot-SPL both are correct.
+The following link is the U-boot SPL source:
 
-> >         enable this driver.
-> >
-> >  endif
-> > diff --git a/drivers/clk/sifive/Makefile b/drivers/clk/sifive/Makefile
-> > index 627effe2ece1..fe3e2cb4c4d8 100644
-> > --- a/drivers/clk/sifive/Makefile
-> > +++ b/drivers/clk/sifive/Makefile
-> > @@ -1,4 +1,4 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> >  obj-y += sifive-prci.o
-> >
-> > -obj-$(CONFIG_CLK_SIFIVE_FU540_PRCI)  += fu540-prci.o
-> > +obj-$(CONFIG_CLK_SIFIVE_PRCI)        += fu540-prci.o
->
-> Probably best to rename the source file as well.
-
-I added fu740-prci.c in the third patch, these two files fu740-prci.c
-and fu540-prci.c hold the soc-dependent code, and sifive-prci.c is the
-core of this driver.
+https://github.com/u-boot/u-boot/blob/da09b99ea572cec9a114872e480b798db11f9c6e/drivers/clk/sifive/fu540-prci.c#L128
