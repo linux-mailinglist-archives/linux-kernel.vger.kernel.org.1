@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09A72C0C00
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03A12C0BF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730350AbgKWNfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:35:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33254 "EHLO mail.kernel.org"
+        id S1732044AbgKWNdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:33:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729713AbgKWMX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:23:59 -0500
+        id S1730040AbgKWMZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:25:45 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 915A92076E;
-        Mon, 23 Nov 2020 12:23:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA11C208C3;
+        Mon, 23 Nov 2020 12:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134239;
-        bh=aheUR8BdLnRwTwuMCdOH5VMxLk5EdkoELalPBNjEmZg=;
+        s=korg; t=1606134343;
+        bh=beepN1enpIkIqzm43BzJnt/q7Dpf/K7nNG/A2pLSkbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ibujwRDrwB8ZnAeALI1YR6DD2jTKgtX9xGE3yp/9TLz/KUZ9uUeGSco0aZKudQ0iF
-         rh8QMBE2zUtZxXfRsrpitA3Eu16u4mQAedRQi2PUocBjTItbHChh2LYAAc62VH6AAu
-         VWejgXArWfBTRrP0JJCFE2tuLuH+ldARNrrHzF60=
+        b=0dolPQ8HoJ8FRjKrYrKf8j/MV8ecOpbKtQYTSmcqkGPVle3vybMTETD/iDZv/pv7H
+         vZAoPTB2fk4LeXDQPWOrTk74SPPTf4rH7FsmCkgbq6N+ghtSuiden5EfTykndGFbHR
+         FWMXffydJDCu7UkEDl/aHluXLWw2py+AdPZ76nbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 4.4 37/38] s390/cpum_sf.c: fix file permission for cpum_sfb_size
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Fugang Duan <fugang.duan@nxp.com>
+Subject: [PATCH 4.9 37/47] tty: serial: imx: keep console clocks always on
 Date:   Mon, 23 Nov 2020 13:22:23 +0100
-Message-Id: <20201123121806.070380991@linuxfoundation.org>
+Message-Id: <20201123121807.348822035@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
-References: <20201123121804.306030358@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Richter <tmricht@linux.ibm.com>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-commit 78d732e1f326f74f240d416af9484928303d9951 upstream.
+commit e67c139c488e84e7eae6c333231e791f0e89b3fb upstream.
 
-This file is installed by the s390 CPU Measurement sampling
-facility device driver to export supported minimum and
-maximum sample buffer sizes.
-This file is read by lscpumf tool to display the details
-of the device driver capabilities. The lscpumf tool might
-be invoked by a non-root user. In this case it does not
-print anything because the file contents can not be read.
+For below code, there has chance to cause deadlock in SMP system:
+Thread 1:
+clk_enable_lock();
+pr_info("debug message");
+clk_enable_unlock();
 
-Fix this by allowing read access for all users. Reading
-the file contents is ok, changing the file contents is
-left to the root user only.
+Thread 2:
+imx_uart_console_write()
+	clk_enable()
+		clk_enable_lock();
 
-For further reference and details see:
- [1] https://github.com/ibm-s390-tools/s390-tools/issues/97
+Thread 1:
+Acuired clk enable_lock -> printk -> console_trylock_spinning
+Thread 2:
+console_unlock() -> imx_uart_console_write -> clk_disable -> Acquite clk enable_lock
 
-Fixes: 69f239ed335a ("s390/cpum_sf: Dynamically extend the sampling buffer if overflows occur")
-Cc: <stable@vger.kernel.org> # 3.14
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+So the patch is to keep console port clocks always on like
+other console drivers.
+
+Fixes: 1cf93e0d5488 ("serial: imx: remove the uart_console() check")
+Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Link: https://lore.kernel.org/r/20201111025136.29818-1-fugang.duan@nxp.com
+Cc: stable <stable@vger.kernel.org>
+[fix up build warning - gregkh]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/kernel/perf_cpum_sf.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/imx.c |   20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
---- a/arch/s390/kernel/perf_cpum_sf.c
-+++ b/arch/s390/kernel/perf_cpum_sf.c
-@@ -1666,4 +1666,4 @@ out:
- 	return err;
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -1787,16 +1787,6 @@ imx_console_write(struct console *co, co
+ 	unsigned int ucr1;
+ 	unsigned long flags = 0;
+ 	int locked = 1;
+-	int retval;
+-
+-	retval = clk_enable(sport->clk_per);
+-	if (retval)
+-		return;
+-	retval = clk_enable(sport->clk_ipg);
+-	if (retval) {
+-		clk_disable(sport->clk_per);
+-		return;
+-	}
+ 
+ 	if (sport->port.sysrq)
+ 		locked = 0;
+@@ -1832,9 +1822,6 @@ imx_console_write(struct console *co, co
+ 
+ 	if (locked)
+ 		spin_unlock_irqrestore(&sport->port.lock, flags);
+-
+-	clk_disable(sport->clk_ipg);
+-	clk_disable(sport->clk_per);
  }
- arch_initcall(init_cpum_sampling_pmu);
--core_param(cpum_sfb_size, CPUM_SF_MAX_SDB, sfb_size, 0640);
-+core_param(cpum_sfb_size, CPUM_SF_MAX_SDB, sfb_size, 0644);
+ 
+ /*
+@@ -1935,15 +1922,14 @@ imx_console_setup(struct console *co, ch
+ 
+ 	retval = uart_set_options(&sport->port, co, baud, parity, bits, flow);
+ 
+-	clk_disable(sport->clk_ipg);
+ 	if (retval) {
+-		clk_unprepare(sport->clk_ipg);
++		clk_disable_unprepare(sport->clk_ipg);
+ 		goto error_console;
+ 	}
+ 
+-	retval = clk_prepare(sport->clk_per);
++	retval = clk_prepare_enable(sport->clk_per);
+ 	if (retval)
+-		clk_unprepare(sport->clk_ipg);
++		clk_disable_unprepare(sport->clk_ipg);
+ 
+ error_console:
+ 	return retval;
 
 
