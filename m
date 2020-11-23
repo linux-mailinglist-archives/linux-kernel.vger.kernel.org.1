@@ -2,261 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78EC2C194B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CC02C1944
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388417AbgKWXIl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 18:08:41 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:32106 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388330AbgKWXHA (ORCPT
+        id S2388333AbgKWXH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 18:07:59 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:52770 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388349AbgKWXHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:07:00 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-0zWTdIuFM1-AZvojJXnlpQ-1; Mon, 23 Nov 2020 18:06:53 -0500
-X-MC-Unique: 0zWTdIuFM1-AZvojJXnlpQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ADDCC100A241;
-        Mon, 23 Nov 2020 23:06:51 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.195.242])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A08F45D9CA;
-        Mon, 23 Nov 2020 23:06:48 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 25/25] perf record: Add --buildid-mmap option to enable mmap's build id
-Date:   Tue, 24 Nov 2020 00:05:12 +0100
-Message-Id: <20201123230512.2097312-26-jolsa@kernel.org>
-In-Reply-To: <20201123230512.2097312-1-jolsa@kernel.org>
-References: <20201123230512.2097312-1-jolsa@kernel.org>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+        Mon, 23 Nov 2020 18:07:32 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANMsX12113282;
+        Mon, 23 Nov 2020 23:07:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=K1DhUzzU97l1ZYnVyDXejVMftTY19HzCvuzkVYTz7Co=;
+ b=jLoLuYGoQeMBwNNeudTLvENPLFjZX4LmmEiA+dIQ2RXGU30zFRfeBrQYXEnO3BnQrWh5
+ JVq4YblQP7ELJfBx7Jac087pgmduut9MfaODb6rm7BJv0yIBTRPRbf6f6l781knwH3my
+ XNWSmckz4RexxfOeehqUzTX4TDR2F8418LbcLlx7o+aiUcmOUWQONUq2EeqzHFwnpxpB
+ ChFTI3CjgBUpdZJE/8rFGqFfgZAsmYwbvBe0X8Tmfs5NfAvHblbE1ujIsO+JkKknp1S9
+ lPx3tnIq9ULMtkKnWdJokSgb2qmUHmq+zaTWIUJ8PJFTovDBh/zq8z25SCYNNOZ9sH1c mQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34xrdar0cr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 23 Nov 2020 23:07:18 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANMnoSS171914;
+        Mon, 23 Nov 2020 23:07:17 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34ycnrkp0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Nov 2020 23:07:17 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ANN7GpE028459;
+        Mon, 23 Nov 2020 23:07:16 GMT
+Received: from [20.15.0.5] (/73.88.28.6)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 23 Nov 2020 15:07:15 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] iscsi: Do Not set param when sock is NULL
+From:   Michael Christie <michael.christie@oracle.com>
+X-Priority: 3
+In-Reply-To: <9df96d73-015c-4de6-96fa-2f315b066909@default>
+Date:   Mon, 23 Nov 2020 17:07:14 -0600
+Cc:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <05277786-2E1F-432D-AE73-F39565C6BEA4@oracle.com>
+References: <1a8aaa17-b1a3-4d6a-b87a-ff49d61a0d0b@default>
+ <9df96d73-015c-4de6-96fa-2f315b066909@default>
+To:     Gulam Mohamed <gulam.mohamed@oracle.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=2
+ mlxlogscore=999 phishscore=0 spamscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011230147
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=2 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011230147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding --buildid-mmap option to enable build id in mmap2 events.
-It will only work if there's kernel support for that and it disables
-build id cache (implies --no-buildid).
 
-It's also possible to enable it permanently via config option
-in ~.perfconfig file:
 
-  [record]
-  build-id=mmap
+> On Nov 4, 2020, at 11:40 PM, Gulam Mohamed <gulam.mohamed@oracle.com> =
+wrote:
+>=20
+> Description
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+> 1. This Kernel panic could be due to a timing issue when there is a =
+race between the sync thread and the initiator was processing of a login =
+response from the target. The session re-open can be invoked from two =
+places
+>          a.	Sessions sync thread when the iscsid restart
+>          b.	=46rom iscsid through iscsi error handler
+> 2. The session reopen sequence is as follows in user-space =
+(iscsi-initiator-utils)
+>          a.	Disconnect the connection
+>          b.	Then send the stop connection request to the kernel =
+which releases the connection (releases the socket)
+>          c.	Queues the reopen for 2 seconds delay
+>         d.	Once the delay expires, create the TCP connection again =
+by calling the connect() call
+>         e.	Poll for the connection
+>          f.	When poll is successful i.e when the TCP connection is =
+established, it performs
+> 	i. Creation of session and connection data structures
+> 	ii. Bind the connection to the session. This is the place where =
+we assign the sock to tcp_sw_conn->sock
+> 	iii. Sets the parameters like target name, persistent address =
+etc .
+> 	iv. Creates the login pdu
+> 	v. Sends the login pdu to kernel
+> 	vi. Returns to the main loop to process further events. The =
+kernel then sends the login request over to the target node
+> 	g. Once login response with success is received, it enters into =
+full feature phase and sets the negotiable parameters like =
+max_recv_data_length, max_transmit_length, data_digest etc .
+> 3. While setting the negotiable parameters by calling =
+"iscsi_session_set_neg_params()", kernel panicked as sock was NULL
+>=20
+> What happened here is
+> --------------------------------
+> 1.	Before initiator received the login response mentioned in above =
+point 2.f.v, another reopen request was sent from the error handler/sync =
+session for the same session, as the initiator utils was in main loop to =
+process further events (as=20
+> 	mentioned in point 2.f.vi above).=20
+> 2.	While processing this reopen, it stopped the connection which =
+released the socket and queued this connection and at this point of time =
+the login response was received for the earlier one
 
-Also added build_id bit in the verbose output for perf_event_attr:
 
-  # perf record --buildid-mmap -vv
-  ...
-  perf_event_attr:
-    type                             1
-    size                             120
-    ...
-    build_id                         1
+To make sure I got this you are saying before iscsi_sw_tcp_conn_stop =
+calls iscsi_sw_tcp_release_conn that the recv path has called =
+iscsi_recv_pdu right?
 
-Adding also missing text_poke bit.
 
-Acked-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/Documentation/perf-config.txt  |  3 ++-
- tools/perf/Documentation/perf-record.txt  |  3 +++
- tools/perf/builtin-record.c               | 20 ++++++++++++++++++++
- tools/perf/util/evsel.c                   | 10 ++++++----
- tools/perf/util/perf_api_probe.c          | 10 ++++++++++
- tools/perf/util/perf_api_probe.h          |  1 +
- tools/perf/util/perf_event_attr_fprintf.c |  2 ++
- tools/perf/util/record.h                  |  1 +
- 8 files changed, 45 insertions(+), 5 deletions(-)
+> 3.	The kernel passed over this response to user-space which then =
+sent the set_neg_params request to kernel
+> 4.	As the connection was stopped, the sock was NULL and hence while =
+the kernel was processing the set param request from user-space, it =
+panicked
+>=20
+> Fix
+> ----
+> 1.	While setting the set_param in kernel, we need to check if sock =
+is NULL
+> 2.	If the sock is NULL, then return EPERM (operation not permitted)
+> 3.	Due to this error handler will be invoked in user-space again to =
+recover the session
+>=20
+> Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
+> Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
+> ---
+> diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
+> index df47557a02a3..fd668a194053 100644
+> --- a/drivers/scsi/iscsi_tcp.c
+> +++ b/drivers/scsi/iscsi_tcp.c
+> @@ -711,6 +711,12 @@ static int iscsi_sw_tcp_conn_set_param(struct =
+iscsi_cls_conn *cls_conn,
+>        struct iscsi_tcp_conn *tcp_conn =3D conn->dd_data;
+>        struct iscsi_sw_tcp_conn *tcp_sw_conn =3D tcp_conn->dd_data;
+>=20
+> +       if (!tcp_sw_conn->sock) {
+> +               iscsi_conn_printk(KERN_ERR, conn,
+> +                               "Cannot set param as sock is NULL\n");
+> +               return -ENOTCONN;
+> +       }
+> +
 
-diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-index e3672c5d801b..8a1c6c16821a 100644
---- a/tools/perf/Documentation/perf-config.txt
-+++ b/tools/perf/Documentation/perf-config.txt
-@@ -559,11 +559,12 @@ kmem.*::
- 
- record.*::
- 	record.build-id::
--		This option can be 'cache', 'no-cache' or 'skip'.
-+		This option can be 'cache', 'no-cache', 'skip' or 'mmap'.
- 		'cache' is to post-process data and save/update the binaries into
- 		the build-id cache (in ~/.debug). This is the default.
- 		But if this option is 'no-cache', it will not update the build-id cache.
- 		'skip' skips post-processing and does not update the cache.
-+		'mmap' skips post-processing and reads build-ids from MMAP events.
- 
- 	record.call-graph::
- 		This is identical to 'call-graph.record-mode', except it is
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 768888b9326a..1bcf51e24979 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -482,6 +482,9 @@ Specify vmlinux path which has debuginfo.
- --buildid-all::
- Record build-id of all DSOs regardless whether it's actually hit or not.
- 
-+--buildid-mmap::
-+Record build ids in mmap2 events, disables build id cache (implies --no-buildid).
-+
- --aio[=n]::
- Use <n> control blocks in asynchronous (Posix AIO) trace writing mode (default: 1, max: 4).
- Asynchronous mode is supported only when linking Perf tool with libc library
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index adf311d15d3d..47bae9d82d43 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -102,6 +102,7 @@ struct record {
- 	bool			no_buildid_cache;
- 	bool			no_buildid_cache_set;
- 	bool			buildid_all;
-+	bool			buildid_mmap;
- 	bool			timestamp_filename;
- 	bool			timestamp_boundary;
- 	struct switch_output	switch_output;
-@@ -2139,6 +2140,8 @@ static int perf_record_config(const char *var, const char *value, void *cb)
- 			rec->no_buildid_cache = true;
- 		else if (!strcmp(value, "skip"))
- 			rec->no_buildid = true;
-+		else if (!strcmp(value, "mmap"))
-+			rec->buildid_mmap = true;
- 		else
- 			return -1;
- 		return 0;
-@@ -2554,6 +2557,8 @@ static struct option __record_options[] = {
- 		   "file", "vmlinux pathname"),
- 	OPT_BOOLEAN(0, "buildid-all", &record.buildid_all,
- 		    "Record build-id of all DSOs regardless of hits"),
-+	OPT_BOOLEAN(0, "buildid-mmap", &record.buildid_mmap,
-+		    "Record build-id in map events"),
- 	OPT_BOOLEAN(0, "timestamp-filename", &record.timestamp_filename,
- 		    "append timestamp to output filename"),
- 	OPT_BOOLEAN(0, "timestamp-boundary", &record.timestamp_boundary,
-@@ -2657,6 +2662,21 @@ int cmd_record(int argc, const char **argv)
- 
- 	}
- 
-+	if (rec->buildid_mmap) {
-+		if (!perf_can_record_build_id()) {
-+			pr_err("Failed: no support to record build id in mmap events, update your kernel.\n");
-+			err = -EINVAL;
-+			goto out_opts;
-+		}
-+		pr_debug("Enabling build id in mmap2 events.\n");
-+		/* Enable mmap build id synthesizing. */
-+		symbol_conf.buildid_mmap2 = true;
-+		/* Enable perf_event_attr::build_id bit. */
-+		rec->opts.build_id = true;
-+		/* Disable build id cache. */
-+		rec->no_buildid = true;
-+	}
-+
- 	if (rec->opts.kcore)
- 		rec->data.is_dir = true;
- 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 1cad6051d8b0..749d806ee1d1 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1170,10 +1170,12 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	if (opts->sample_weight)
- 		evsel__set_sample_bit(evsel, WEIGHT);
- 
--	attr->task  = track;
--	attr->mmap  = track;
--	attr->mmap2 = track && !perf_missing_features.mmap2;
--	attr->comm  = track;
-+	attr->task     = track;
-+	attr->mmap     = track;
-+	attr->mmap2    = track && !perf_missing_features.mmap2;
-+	attr->comm     = track;
-+	attr->build_id = track && opts->build_id;
-+
- 	/*
- 	 * ksymbol is tracked separately with text poke because it needs to be
- 	 * system wide and enabled immediately.
-diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
-index 3840d02f0f7b..829af17a0867 100644
---- a/tools/perf/util/perf_api_probe.c
-+++ b/tools/perf/util/perf_api_probe.c
-@@ -98,6 +98,11 @@ static void perf_probe_text_poke(struct evsel *evsel)
- 	evsel->core.attr.text_poke = 1;
- }
- 
-+static void perf_probe_build_id(struct evsel *evsel)
-+{
-+	evsel->core.attr.build_id = 1;
-+}
-+
- bool perf_can_sample_identifier(void)
- {
- 	return perf_probe_api(perf_probe_sample_identifier);
-@@ -172,3 +177,8 @@ bool perf_can_aux_sample(void)
- 
- 	return true;
- }
-+
-+bool perf_can_record_build_id(void)
-+{
-+	return perf_probe_api(perf_probe_build_id);
-+}
-diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_probe.h
-index d5506a983a94..f12ca55f509a 100644
---- a/tools/perf/util/perf_api_probe.h
-+++ b/tools/perf/util/perf_api_probe.h
-@@ -11,5 +11,6 @@ bool perf_can_record_cpu_wide(void);
- bool perf_can_record_switch_events(void);
- bool perf_can_record_text_poke_events(void);
- bool perf_can_sample_identifier(void);
-+bool perf_can_record_build_id(void);
- 
- #endif // __PERF_API_PROBE_H
-diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index e67a227c0ce7..656a7fddfc26 100644
---- a/tools/perf/util/perf_event_attr_fprintf.c
-+++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -134,6 +134,8 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
- 	PRINT_ATTRf(bpf_event, p_unsigned);
- 	PRINT_ATTRf(aux_output, p_unsigned);
- 	PRINT_ATTRf(cgroup, p_unsigned);
-+	PRINT_ATTRf(text_poke, p_unsigned);
-+	PRINT_ATTRf(build_id, p_unsigned);
- 
- 	PRINT_ATTRn("{ wakeup_events, wakeup_watermark }", wakeup_events, p_unsigned);
- 	PRINT_ATTRf(bp_type, p_unsigned);
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index 266760ac9143..609e706f4282 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -49,6 +49,7 @@ struct record_opts {
- 	bool	      no_bpf_event;
- 	bool	      kcore;
- 	bool	      text_poke;
-+	bool	      build_id;
- 	unsigned int  freq;
- 	unsigned int  mmap_pages;
- 	unsigned int  auxtrace_mmap_pages;
--- 
-2.26.2
+I think this might have 2 issues:
 
+1. It only fixes iscsi_tcp. What about other drivers that free/null =
+resources/fields in ep_disconnect that we layer need to access in the =
+set_param callback (the cxgbi drivers)?
+
+2. What about drivers that do not free/null fields (be2iscsi, bnx2i, =
+ql4xxx and qedi) so the set_param calls end up just working. What state =
+will userspace be in where we have logged in, but iscsid also thinks we =
+are in the middle of trying to login?
+
+I think we could do:
+
+1. On ep_disconnect and stop_conn set some iscsi_cls_conn bit that =
+indicates set_param calls for connection level settings should fail. =
+scsi_transport_iscsi could set and check this bit for all drivers.
+2. On bind_conn clear the bit.=
