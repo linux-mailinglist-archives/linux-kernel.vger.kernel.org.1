@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5032C0CFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB54B2C0D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388245AbgKWOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730039AbgKWOL4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:11:56 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4234C0613CF;
-        Mon, 23 Nov 2020 06:11:56 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id l1so655026pld.5;
-        Mon, 23 Nov 2020 06:11:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NU+ZBtS2PuAoVDCaiYjSDmtYV+rq9r8k1b0Hv3NXBJs=;
-        b=LvN2cgYCtq6+Y48nqWXGL7phbvUQEqHQKhNBlq0qiVygA2NutirJ3tuFZs9eQKKAUN
-         QA/PGelSg8ywUnfxQWvfpLiMjDGk9FJb1e5nsE+w5tybK7W++5HP7UUQ67hi3u8NjIC4
-         hGJpPZmu5LJYV7nnpOA28h+SQ20FUi1pAPDrn90gu3QbsDfGvlYVsdH2BebL9hX2d/mp
-         i76p6nIV2OA/PIiKLJXcEYQmP4o8iIFqK/kWYHPaVtIQexQ+RgzAGsX6rder3PwzcyYQ
-         rwTMAuoW1a1Fv9Mxtv0jQlsvvHYgSykCQPa+7/tL2yBWyUsrh9pcwLeLlqeEzc8qOJW8
-         PD0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NU+ZBtS2PuAoVDCaiYjSDmtYV+rq9r8k1b0Hv3NXBJs=;
-        b=IJXfbTNvDgcPjLQr2rY9I4fBKFhWtKlv5S/TJEAZkFq7ZPpuVaGJTz5SbB3s8nK5bs
-         Z0caerUXBIRlxMEyAazsgCKWneiA0xcsPGl+JtXawOkx6YoAwHJdhgcozkOuWwO+u2oO
-         9vEMyPqdUnuLYqpftflM9z11UtmogohsGGDPZ/RKM9i3DlRm9wLY7pXCvnZxF7WGxsNI
-         fg6Ge9B0wGvlor9QsmwfesMfCT15SWYp1jZ4lRVBWrOgnugjPTgVc2EdWa3407l0R0oD
-         5JQDssC4SvGKLWDjIJ/7wiUhOVkR2jrnmi69//PbzfKaNDVVaIjICCrQ5ZugcybDD1gA
-         9kTw==
-X-Gm-Message-State: AOAM5323fHx7dE7g2vwmIMyFDncweF6GZAORdiiTAbqdZc6jo1DQopGz
-        wkCQ7DU7wdIW/gSzAq16IgiwVwzsfNqeRbfmUPw=
-X-Google-Smtp-Source: ABdhPJyVSvyUYOybbEj86aanBvHbx+TOibpG5xGwRLKUnt31gEUAvpWn4MdO+M5sabxVJ2pu3VS1GdZefmg187NK2Q0=
-X-Received: by 2002:a17:902:be07:b029:da:c5e:81b6 with SMTP id
- r7-20020a170902be07b02900da0c5e81b6mr3997870pls.43.1606140716201; Mon, 23 Nov
- 2020 06:11:56 -0800 (PST)
+        id S1731570AbgKWOND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:13:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:50980 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729562AbgKWONC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:13:02 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02278101E;
+        Mon, 23 Nov 2020 06:13:02 -0800 (PST)
+Received: from [10.57.53.209] (unknown [10.57.53.209])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8336C3F718;
+        Mon, 23 Nov 2020 06:13:00 -0800 (PST)
+Subject: Re: [PATCH] coresight: etm4x: Modify core-commit of cpu to avoid the
+ overflow of HiSilicon ETM
+To:     Qi Liu <liuqi115@huawei.com>, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com
+References: <1606138167-8076-1-git-send-email-liuqi115@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <cfa91a72-6e01-85ce-583a-9a49093a875b@arm.com>
+Date:   Mon, 23 Nov 2020 14:12:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <3306b4d8-8689-b0e7-3f6d-c3ad873b7093@intel.com>
- <cover.1605686678.git.xuanzhuo@linux.alibaba.com> <dfa43bcf7083edd0823e276c0cf8e21f3a226da6.1605686678.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <dfa43bcf7083edd0823e276c0cf8e21f3a226da6.1605686678.git.xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 23 Nov 2020 15:11:45 +0100
-Message-ID: <CAJ8uoz3PtqzbfCD6bv1LQOtPVH3qf4mc=V=u_emTxtq3yYUeYw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] xsk: replace datagram_poll by sock_poll_wait
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1606138167-8076-1-git-send-email-liuqi115@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 9:26 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> datagram_poll will judge the current socket status (EPOLLIN, EPOLLOUT)
-> based on the traditional socket information (eg: sk_wmem_alloc), but
-> this does not apply to xsk. So this patch uses sock_poll_wait instead of
-> datagram_poll, and the mask is calculated by xsk_poll.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Hi Qi
+
+Thanks for the changes. Mostly looks good to me, except for the
+name of the call back.
+
+
+On 11/23/20 1:29 PM, Qi Liu wrote:
+> The ETM device can't keep up with the core pipeline when cpu core
+> is at full speed. This may cause overflow within core and its ETM.
+> This is a common phenomenon on ETM devices.
+> 
+> On HiSilicon Hip08 platform, a specific feature is added to set
+> core pipeline. So commit rate can be reduced manually to avoid ETM
+> overflow.
+> 
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+
+
 > ---
->  net/xdp/xsk.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index cfbec39..7f0353e 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -477,11 +477,13 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
->  static __poll_t xsk_poll(struct file *file, struct socket *sock,
->                              struct poll_table_struct *wait)
->  {
-> -       __poll_t mask = datagram_poll(file, sock, wait);
-> +       __poll_t mask = 0;
+> Change since v1:
+> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
+>    to keep specific feature off platforms which don't use it.
+> Change since v2:
+> - remove some unused variable.
+> Change since v3:
+> - use read/write_sysreg_s() to access register.
+> 
+>   drivers/hwtracing/coresight/Kconfig                |  9 +++
+>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 84 ++++++++++++++++++++++
+>   drivers/hwtracing/coresight/coresight-etm4x.h      | 12 ++++
+>   3 files changed, 105 insertions(+)
+> 
 
-It would indeed be nice to not execute a number of tests in
-datagram_poll that will never be triggered. It will speed up things
-for sure. But we need to make sure that removing those flags that
-datagram_poll sets do not have any bad effects in the code above this.
-But let us tentatively keep this patch for the next version of the
-patch set. Just need to figure out how to solve your problem in a nice
-way first. See discussion in patch 0/3.
-
->         struct sock *sk = sock->sk;
->         struct xdp_sock *xs = xdp_sk(sk);
->         struct xsk_buff_pool *pool;
->
-> +       sock_poll_wait(file, sock, wait);
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index eefc737..1784975 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -8,6 +8,7 @@
+> 
+>   #include <asm/local.h>
+>   #include <linux/spinlock.h>
+> +#include <linux/types.h>
+>   #include "coresight-priv.h"
+> 
+>   /*
+> @@ -203,6 +204,11 @@
+>   /* Interpretation of resource numbers change at ETM v4.3 architecture */
+>   #define ETM4X_ARCH_4V3	0x43
+> 
+> +enum etm_impdef_type {
+> +	ETM4_IMPDEF_HISI_CORE_COMMIT,
+> +	ETM4_IMPDEF_FEATURE_MAX,
+> +};
 > +
->         if (unlikely(!xsk_is_bound(xs)))
->                 return mask;
->
-> --
-> 1.8.3.1
->
+>   /**
+>    * struct etmv4_config - configuration information related to an ETMv4
+>    * @mode:	Controls various modes supported by this ETM.
+> @@ -415,6 +421,7 @@ struct etmv4_save_state {
+>    * @state_needs_restore: True when there is context to restore after PM exit
+>    * @skip_power_up: Indicates if an implementation can skip powering up
+>    *		   the trace unit.
+> + * @arch_features: Bitmap of arch features of etmv4 devices.
+>    */
+>   struct etmv4_drvdata {
+>   	void __iomem			*base;
+> @@ -463,6 +470,11 @@ struct etmv4_drvdata {
+>   	struct etmv4_save_state		*save_state;
+>   	bool				state_needs_restore;
+>   	bool				skip_power_up;
+> +	DECLARE_BITMAP(arch_features, ETM4_IMPDEF_FEATURE_MAX);
+> +};
+> +
+> +struct etm4_arch_features {
+> +	void (*set_commit)(bool enable);
+
+The set_commit is too hisilicon specific :-). Could we please rename
+this to soemthing more generic. The callback for hisilicon etms, could still
+be xx_commit". May be simply call it
+
+	callback() ?
+
+or may be even
+	arch_callback() ?
+
+
+>   };
+
+nit: This need not be part of the header file, as it is not used
+outside the etm4x-core.c
+
+Suzuki
