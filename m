@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299512C0CEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 358322C0CFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729842AbgKWOI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:08:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50221 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729652AbgKWOIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:08:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606140504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hUFzzbljONitOgcLEsp2ObXM969hWXj1Vl6yGCwoRQg=;
-        b=TR9LFZA/b1sKHRWBbK+q/6lwf2REia7mug2Tegn4vyWSSpw1K4cGSzJ0vREx/Qa+XvZEBf
-        Ku+hLvJawqRUnrnVLMdZ09QOn93yxJ+D3CctE516p+hXVKelmLBHkCm60QBPpS40fAcxav
-        ybe2Jk2A7ijE6mnnlYfDxDv1NfMKaKY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-VQsyr_QwP4-uPr5e20dvKg-1; Mon, 23 Nov 2020 09:08:19 -0500
-X-MC-Unique: VQsyr_QwP4-uPr5e20dvKg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730716AbgKWOLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:11:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729794AbgKWOLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:11:30 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6456C1005E48;
-        Mon, 23 Nov 2020 14:08:18 +0000 (UTC)
-Received: from [10.36.114.57] (ovpn-114-57.ams2.redhat.com [10.36.114.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 46E7960864;
-        Mon, 23 Nov 2020 14:08:17 +0000 (UTC)
-Subject: Re: [PATCH] mm: memory_hotplug: put migration failure information
- under DEBUG_VM
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        akpm@linux-foundation.org, mhocko@suse.com, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <9e2b8ee5-62b5-4f38-207e-b68b615e304d@redhat.com>
-Date:   Mon, 23 Nov 2020 15:08:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 7378F20732;
+        Mon, 23 Nov 2020 14:11:28 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 09:11:26 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Printk specifiers for __user pointers
+Message-ID: <20201123091126.5d6313d2@gandalf.local.home>
+In-Reply-To: <X7uGlDg88bI6zebS@alley>
+References: <20201120164412.GD619708@rowland.harvard.edu>
+        <20201120134242.6cae9e72@gandalf.local.home>
+        <X7uGlDg88bI6zebS@alley>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.20 15:03, Charan Teja Reddy wrote:
-> When the pages are failed to get isolate or migrate, the page owner
-> information along with page info is dumped. If there are continuous
-> failures in migration(say page is pinned) or isolation, the log buffer
-> is simply getting flooded with the page owner information. As most of
-> the times page info is sufficient to know the causes for failures of
-> migration or isolation, place the page owner information under DEBUG_VM.
+On Mon, 23 Nov 2020 10:53:24 +0100
+Petr Mladek <pmladek@suse.com> wrote:
+
+> On Fri 2020-11-20 13:42:42, Steven Rostedt wrote:
+> > On Fri, 20 Nov 2020 11:44:12 -0500
+> > Alan Stern <stern@rowland.harvard.edu> wrote:
+> >   
+> > > To the VSPRINTF maintainers:
+> > > 
+> > > Documentation/core-api/printk-formats.rst lists a large number of format 
+> > > specifiers for pointers of various sorts.  Yet as far as I can see, 
+> > > there is no specifier meant for use with __user pointers.
+> > > 
+> > > The security implications of printing the true, unmangled value of a 
+> > > __user pointer are minimal, since doing so does not leak any kernel 
+> > > information.  So %px would work, but tools like checkpatch.pl don't like 
+> > > it.  
 > 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> ---
->  mm/memory_hotplug.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+> Just to be sure as I am not a security expert. Is there really that
+> big difference in the risk? The following scenarios come to my mind:
+
+One of the biggest differences, is that with exposing the kernel, every
+process has the same kernel address space. By leaking memory addresses of
+the kernel, and knowing of some overflow bug in a system call, you can
+exploit it right away.
+
+Also, a user space application could trigger some kind of print to show
+that kernel address space.
+
+With having the kernel show the address space of another process, it is not
+as easy to exploit. You would need to make that other process do something
+to have the kernel show its address space.
+
 > 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 63b2e46..f48f30d 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1326,7 +1326,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
->  
->  		} else {
->  			pr_warn("failed to isolate pfn %lx\n", pfn);
-> -			dump_page(page, "isolation failed");
-> +			__dump_page(page, "isolation failed");
-> +#if defined(CONFIG_DEBUG_VM)
-> +			dump_page_owner(page);
-> +#endif
->  		}
->  		put_page(page);
->  	}
-> @@ -1357,7 +1360,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
->  			list_for_each_entry(page, &source, lru) {
->  				pr_warn("migrating pfn %lx failed ret:%d ",
->  				       page_to_pfn(page), ret);
-> -				dump_page(page, "migration failure");
-> +				__dump_page(page, "migration failure");
-> +#if defined(CONFIG_DEBUG_VM)
-> +				dump_page_owner(page);
-> +#endif
->  			}
->  			putback_movable_pages(&source);
->  		}
+> 1. The address would show a well defined location in the userspace
+>    application? Could it be used to attack the application?
+
+It's possible, but the ramifications usually wont be as bad as the kernel.
+Unless of course you do it for systemd or some other daemon. But then
+again, you still need to have that application cause the print, as any
+user space address being printed from the kernel would need to be caused by
+that application.
+
 > 
+> 2. The address shows a location that is being accessed by kernel.
+>    Could not it be used to pass a value that might be used to attack
+>    kernel?
 
-It might also make sense to provide an explicit opt-in whether to
-pr_warn/dump at all. Most user simply don't care, yet dmesg gets flooded.
+I don't know what you mean here.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+> 
+> 
+> > > Should a new specifier be added?  If not, should we simply use %px?  
+> > 
+> > There's currently no user of '%pu' (although there is a '%pus'. Perhaps we
+> > should have a '%pux'?
+> > 
+> > I would even state that if it is used, that if makes sure that the value is
+> > indeed a user space pointer (goes through the same checks as accessing user
+> > space), before its printed, otherwise it shows "(fault)" or something.  
+> 
+> I have mixed feelings about this.
+> 
+> One one hand, it might make sense to mark locations where userspace
+> address is printed. We could easily decide how to print them (hash or
+> value) and we could check that it is really from a userspace one.
 
--- 
-Thanks,
+It would definitely need to be checked that it is from user space.
 
-David / dhildenb
 
+> 
+> But I have few concerns:
+> 
+> 1. The existing "%pus" has a kind of opposite meaning. It says what
+>    address space should be used when the kernel and userspace address
+>    space is overlapping.
+> 
+> 2. There is the history with "%pk". It did not work because people did
+>    not use it.
+> 
+> 3. I am not sure about the output when the address is not from
+>    userspace. Printing ("fault") is not much helpful. Printing
+>    hashed value might be confusing. Well, I am still not sure
+>    that it is really safe to print real userspace addresses
+>    by default.
+
+We could have it print: "(kernel:<hash>)" if it is a kernel address space,
+and the hash value wont be as confusing if it states "kernel", and by
+showing the hash value, it may be possible to know what was printed there
+instead (by possibly seeing another hash with the same value).
+
+-- Steve
