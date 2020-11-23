@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496E02C13C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDD22C13CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390874AbgKWSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:41:54 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:57872 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730928AbgKWSlx (ORCPT
+        id S2387606AbgKWSno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729528AbgKWSnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:41:53 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANIZFTd082282;
-        Mon, 23 Nov 2020 18:41:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=TBRod9DMYmZtaGtcFOBny/67g1rpeUEvFkWSLiuvxw4=;
- b=lk9qkZ4eKX/vCffjQ/rAJ+IFXqtGsFmvf5jxkwOQ/oND7Z8VIEuTUXH9Fp2obP6DIX9x
- YpQy4LwcSV32WyS88YttX97m3z0DjIsCNkdYyM9Tpso+sViSR8mb6hrEH375ozXnT0Fr
- nM+PL7/vhTNS0/1+HZcqBKamkoYU/CUB1zjoNUb9W4tNHixO1cSfTXNRhcEAJ6xzBqP0
- 38Y4dcHOucoRe9ZAy2SO3yfjUS3SDs7F17crXp4Lezbbs1UktwKUH+AdKCNTWNwcyc0S
- 2EV6TUaEZigkJzfafYFLSIv517Y9dYTMssQwL8aPBEk8mr2xpQSm78LEqG6yBC3TZhtm bg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 34xtaqj98q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 23 Nov 2020 18:41:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ANIZdwj020081;
-        Mon, 23 Nov 2020 18:41:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34yx8ht5hc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Nov 2020 18:41:32 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ANIfU1P024224;
-        Mon, 23 Nov 2020 18:41:30 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Nov 2020 10:41:30 -0800
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id CB7E46A00A8; Mon, 23 Nov 2020 13:43:27 -0500 (EST)
-Date:   Mon, 23 Nov 2020 13:43:27 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, hch@lst.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
-        dave.hansen@linux-intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
-        Thomas.Lendacky@amd.com, jon.grimm@amd.com, rientjes@google.com
-Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Message-ID: <20201123184327.GA22269@char.us.oracle.com>
-References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
- <20201123170647.GE15044@zn.tnic>
- <20201123175632.GA21539@char.us.oracle.com>
- <20201123180215.GG15044@zn.tnic>
+        Mon, 23 Nov 2020 13:43:42 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C040C0613CF;
+        Mon, 23 Nov 2020 10:43:42 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id q206so20726489oif.13;
+        Mon, 23 Nov 2020 10:43:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pETq9vSAMO9m2cX45Apd5Cfd9J4rgPAz5ZZICh2r7R4=;
+        b=ptGyx6cJ9GoUZYf6wMKMKNbA+CrIFjDF69cLnpHgE64fHrbWJSgr6LQpOT7Ex69M4a
+         gjxqH4lrJ2j+4f7pyE6/PkttZtamV0qwz73rUsHhQLFdR1DNh07cUsKfUjDwD6L24Gvt
+         lFAF7Y13s/teQwrYoQ/xnTeU+KH5qPX4ILw2CGkk9Ofw/58eRsdGkfxCDwC+uPMyBp2m
+         XmEpqB8SoMtW95yQ9npl9dcJvtOzkli0F/0pcIdzJ6EDVndU5kfn6ddlxqIAHPipyJam
+         6AA6lEnG7KFYdN9O3KAtlJVOtvalKX7P41nGNZggdM232JA7BIvdFQDf0nx+HloUdB7+
+         yI3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pETq9vSAMO9m2cX45Apd5Cfd9J4rgPAz5ZZICh2r7R4=;
+        b=R0XMW/aTzSqmwyDcslCMjnYzLFZlPvPJN7qHO407y8vCPVekj5wD8MedTnH5j1lBmd
+         lRErLI22OLd6iBEs9CcSf1ByJswbN268nHueMCzxJk5prrrDIFGpOTLNt89OkNyRzIqv
+         Z49rxC1gmUFD//U2SZkD4Fucrx+FDq1lCeAbjSCI5Y+veRxMxzV8V8Xp8y4e0751Tqjh
+         tw/SRQfUm6FEkdgpXaCvdxxvCKOWG8/gD0GiN1y/WKOTL5/rBZYaow/kP7ulKkMOJ5Jy
+         A7E4j41D7VnMe/ZluO+xLhQaYHWtT7X2eBmR6N88I1QmcBnwhkgqVb2vJnfd/Uk2lR2d
+         ms9g==
+X-Gm-Message-State: AOAM530D2daO+sHf5LJRJHFeGoJMaabY9bctBjhujPmbTLMUa4fQ6gXN
+        wwpgNknKPLj3hejb5Ug7apQ=
+X-Google-Smtp-Source: ABdhPJzVRMqDMiiZaTuEvTvhlt+L9krQZjPTOTGWK08T6n4v6QHqyc0vmcLCWNH/Gw+arjk68K7dgA==
+X-Received: by 2002:aca:3944:: with SMTP id g65mr225965oia.36.1606157021551;
+        Mon, 23 Nov 2020 10:43:41 -0800 (PST)
+Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id 64sm6355366otu.62.2020.11.23.10.43.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 10:43:41 -0800 (PST)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     Jason Baron <jbaron@akamai.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jim Cromie <jim.cromie@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: [PATCH] dyndbg: fix use before null check
+Date:   Mon, 23 Nov 2020 11:43:34 -0700
+Message-Id: <20201123184334.1777186-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123180215.GG15044@zn.tnic>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011230122
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 clxscore=1015 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011230122
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 07:02:15PM +0100, Borislav Petkov wrote:
-> On Mon, Nov 23, 2020 at 12:56:32PM -0500, Konrad Rzeszutek Wilk wrote:
-> > This is not going to work for TDX. I think having a registration
-> > to SWIOTLB to have this function would be better going forward.
-> > 
-> > As in there will be a swiotlb_register_adjuster() which AMD SEV
-> > code can call at start, also TDX can do it (and other platforms).
-> 
-> Oh do tell. It doesn't need to adjust size?
+commit a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
 
-I am assuming that TDX is going to have the same exact issue that 
-AMD SEV will have.
+Above commit copies a string before checking for null pointer, fix
+this, and add a pr_err.  Also trim comment, and add return val info.
 
-Are you recommending to have an unified x86 specific callback
-where we check if it:
+Fixes: a2d375eda771
+Cc: stable@vger.kernel.org
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ lib/dynamic_debug.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
- - CPUID_AMD_SEV or CPUID_INTEL_TDX is set, and
- - No vIOMMU present, then we adjust the size?
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index bd7b3aaa93c3..711a9def8c83 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -553,17 +553,23 @@ static int ddebug_exec_queries(char *query, const char *modname)
+  * @query: query-string described in admin-guide/dynamic-debug-howto
+  * @modname: string containing module name, usually &module.mod_name
+  *
+- * This uses the >/proc/dynamic_debug/control reader, allowing module
+- * authors to modify their dynamic-debug callsites. The modname is
+- * canonically struct module.mod_name, but can also be null or a
+- * module-wildcard, for example: "drm*".
++ * This uses the >control reader, allowing module authors to modify
++ * their dynamic-debug callsites. The modname is canonically struct
++ * module.mod_name, but can also be null or a module-wildcard, for
++ * example: "drm*".
++ * Returns <0 on error, >=0 for callsites changed
+  */
+ int dynamic_debug_exec_queries(const char *query, const char *modname)
+ {
+ 	int rc;
+-	char *qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
++	char *qry; /* writable copy of query */
+ 
+-	if (!query)
++	if (!query) {
++		pr_err("non-null query/command string expected\n");
++		return -EINVAL;
++	}
++	qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
++	if (!qry)
+ 		return -ENOMEM;
+ 
+ 	rc = ddebug_exec_queries(qry, modname);
+-- 
+2.28.0
 
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
