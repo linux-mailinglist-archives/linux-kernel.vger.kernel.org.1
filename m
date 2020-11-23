@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A262C082E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8530E2C09F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387423AbgKWMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:46:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58624 "EHLO mail.kernel.org"
+        id S2387576AbgKWNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:14:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733128AbgKWMpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:45:08 -0500
+        id S1733293AbgKWMpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:45:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AA32208FE;
-        Mon, 23 Nov 2020 12:45:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E75BA20888;
+        Mon, 23 Nov 2020 12:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135508;
-        bh=Vni6a2lyPNyngzwlqGG+41IQH5zShe0IUDbipIRBlsI=;
+        s=korg; t=1606135511;
+        bh=44Uiu1GUEtXfKu+p2pVas5QFqW1xtqZAcsv9wE2M27Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mlPjVWjb23XSfIHRn6CLCqTok5JnBW14b1Q6usoLh2F8v7jTNX7qIPYTp0holGOGY
-         eocjBPen30SZ3YmspiK259zLRFxHg8u81s1r6Zwvtb3lKXvYvoJr4YuEOvRwMOi7bu
-         rJzxjIjWBS11NQW94SsiSIIz1iFaPg7DiJNQXMtg=
+        b=ALJcUwfs+wmxcZKw9T6qKsfn74Ou56CfozRzsVEyBptgvI1bzCEvWDPUtL9nrd9CM
+         3qZ10JVEfXZuykyBYoV56CD80BRzNZSFS7pvXo52DxN3ZJedkSCaPfea7vhDEqOKdP
+         JuLjyW7DLE/yMz6vH7O9Jzm/F+XJ77JKt6T5Q8Sk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nenad Peric <nperic@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
+        stable@vger.kernel.org, Biwen Li <biwen.li@nxp.com>,
+        Ran Wang <ran.wang_1@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 094/252] arm64: dts: allwinner: h5: OrangePi Prime: Fix ethernet node
-Date:   Mon, 23 Nov 2020 13:20:44 +0100
-Message-Id: <20201123121840.126597718@linuxfoundation.org>
+Subject: [PATCH 5.9 095/252] arm64: dts: fsl: fix endianness issue of rcpm
+Date:   Mon, 23 Nov 2020 13:20:45 +0100
+Message-Id: <20201123121840.175401451@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -44,36 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nenad Peric <nperic@gmail.com>
+From: Biwen Li <biwen.li@nxp.com>
 
-[ Upstream commit 107954afc5df667da438644aa4982606663f9b17 ]
+[ Upstream commit d92454287ee25d78f1caac3734a1864f8a5a5275 ]
 
-RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
-node.
+Add little-endian property to RCPM node (for ls1028a,ls1088a,ls208xa),
+otherwise RCPM driver will program hardware with incorrect setting,
+causing system (such as LS1028ARDB) failed to be waked by wakeup source.
 
-Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-Signed-off-by: Nenad Peric <nperic@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201028115817.68113-1-nperic@gmail.com
+Fixes: 791c88ca5713 (“arm64: dts: ls1028a: Add ftm_alarm0 DT node”)
+Fixes: f4fe3a8665495 (“arm64: dts: layerscape: add ftm_alarm0 node”)
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 1 +
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 1 +
+ arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-index cb44bfa5981fd..33ab44072e6d7 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-@@ -124,7 +124,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index 0efeb8fa773e7..651bfe1040ba3 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -1012,6 +1012,7 @@
+ 			compatible = "fsl,ls1028a-rcpm", "fsl,qoriq-rcpm-2.1+";
+ 			reg = <0x0 0x1e34040 0x0 0x1c>;
+ 			#fsl,rcpm-wakeup-cells = <7>;
++			little-endian;
+ 		};
  
+ 		ftm_alarm0: timer@2800000 {
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index 169f4742ae3b2..2ef812dd29ebc 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -787,6 +787,7 @@
+ 			compatible = "fsl,ls1088a-rcpm", "fsl,qoriq-rcpm-2.1+";
+ 			reg = <0x0 0x1e34040 0x0 0x18>;
+ 			#fsl,rcpm-wakeup-cells = <6>;
++			little-endian;
+ 		};
+ 
+ 		ftm_alarm0: timer@2800000 {
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index 41102dacc2e10..141b3d23b1552 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -769,6 +769,7 @@
+ 			compatible = "fsl,ls208xa-rcpm", "fsl,qoriq-rcpm-2.1+";
+ 			reg = <0x0 0x1e34040 0x0 0x18>;
+ 			#fsl,rcpm-wakeup-cells = <6>;
++			little-endian;
+ 		};
+ 
+ 		ftm_alarm0: timer@2800000 {
 -- 
 2.27.0
 
