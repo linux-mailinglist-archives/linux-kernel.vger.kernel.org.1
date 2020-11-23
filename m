@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0C12C0AF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFF32C0AD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731178AbgKWMdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:33:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
+        id S1729513AbgKWM3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:29:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731138AbgKWMcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:32:52 -0500
+        id S1730566AbgKWM3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:29:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 325B920728;
-        Mon, 23 Nov 2020 12:32:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB33120857;
+        Mon, 23 Nov 2020 12:29:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134771;
-        bh=SNmOTrYumDbeoO8R2LSsVtkf19qUhscjepDZKMpxfhM=;
+        s=korg; t=1606134556;
+        bh=KSX0GOJAIGf/XPCwJh5SbZHN4b3oQ1XwQefD9h4Ag9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o6p8Bk4faummQCI5zcsdt4a6QRxXgKBvv2g4xKUNNjkWqE6qqse8t9XjdKaFjYnsB
-         DOUxpgv1QK+8Hn22XwVC9ttlwQO5EZXmydOpXbqdvpEJb5uSKBIrkSAdfPdSLVsvYp
-         oRXEU1B43oRj8s7bKFhcGIMI5RqU814cvfEygRP0=
+        b=DWnTDiZwxcgzoU0R9YfpecGM06RVz6XRTRrnxrCRJu+nP+/dmm+Ayf6myLgLohIA9
+         eauMSCxt0CLqS8o8xRXLJb0Xt6A3fmnukOd8jxCJIlNjHf2y0xtnbx8DB4XrAr4Zi2
+         psk9uTfCRolqx7sLGAZVESKza6Zjsw9yt6oILJqw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        russianneuromancer <russianneuromancer@ya.ru>
-Subject: [PATCH 4.19 77/91] iio: accel: kxcjk1013: Add support for KIOX010A ACPI DSM for setting tablet-mode
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 55/60] mac80211: minstrel: remove deferred sampling code
 Date:   Mon, 23 Nov 2020 13:22:37 +0100
-Message-Id: <20201123121813.070000500@linuxfoundation.org>
+Message-Id: <20201123121807.705465888@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,113 +42,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit e5b1032a656e9aa4c7a4df77cb9156a2a651a5f9 upstream.
+commit 4fe40b8e1566dad04c87fbf299049a1d0d4bd58d upstream.
 
-Some 360 degree hinges (yoga) style 2-in-1 devices use 2 KXCJ91008-s
-to allow the OS to determine the angle between the display and the base
-of the device, so that the OS can determine if the 2-in-1 is in laptop
-or in tablet-mode.
+Deferring sampling attempts to the second stage has some bad interactions
+with drivers that process the rate table in hardware and use the probe flag
+to indicate probing packets (e.g. most mt76 drivers). On affected drivers
+it can lead to probing not working at all.
 
-On Windows both accelerometers are read by a special HingeAngleService
-process; and this process calls a DSM (Device Specific Method) on the
-ACPI KIOX010A device node for the sensor in the display, to let the
-embedded-controller (EC) know about the mode so that it can disable the
-kbd and touchpad to avoid spurious input while folded into tablet-mode.
+If the link conditions turn worse, it might not be such a good idea to
+do a lot of sampling for lower rates in this case.
 
-This notifying of the EC is problematic because sometimes the EC comes up
-thinking that device is in tablet-mode and the kbd and touchpad do not
-work. This happens for example on Irbis NB111 devices after a suspend /
-resume cycle (after a complete battery drain / hard reset without having
-booted Windows at least once). Other 2-in-1s which are likely affected
-too are e.g. the Teclast F5 and F6 series.
+Fix this by simply skipping the sample attempt instead of deferring it,
+but keep the checks that would allow it to be sampled if it was skipped
+too often, but only if it has less than 95% success probability.
 
-The kxcjk-1013 driver may seem like a strange place to deal with this,
-but since it is *the* driver for the ACPI KIOX010A device, it is also
-the driver which has access to the ACPI handle needed by the DSM.
+Also ensure that IEEE80211_TX_CTL_RATE_CTRL_PROBE is set for all probing
+packets.
 
-Add support for calling the DSM and on probe unconditionally tell the
-EC that the device is laptop mode, fixing the kbd and touchpad sometimes
-not working.
-
-Fixes: 7f6232e69539 ("iio: accel: kxcjk1013: Add KIOX010A ACPI Hardware-ID")
-Reported-and-tested-by: russianneuromancer <russianneuromancer@ya.ru>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201110133835.129080-3-hdegoede@redhat.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: stable@vger.kernel.org
+Fixes: cccf129f820e ("mac80211: add the 'minstrel' rate control algorithm")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20201111183359.43528-2-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/accel/kxcjk-1013.c |   36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ net/mac80211/rc80211_minstrel.c |   25 ++++---------------------
+ net/mac80211/rc80211_minstrel.h |    1 -
+ 2 files changed, 4 insertions(+), 22 deletions(-)
 
---- a/drivers/iio/accel/kxcjk-1013.c
-+++ b/drivers/iio/accel/kxcjk-1013.c
-@@ -137,6 +137,7 @@ enum kx_chipset {
- enum kx_acpi_type {
- 	ACPI_GENERIC,
- 	ACPI_SMO8500,
-+	ACPI_KIOX010A,
- };
+--- a/net/mac80211/rc80211_minstrel.c
++++ b/net/mac80211/rc80211_minstrel.c
+@@ -289,12 +289,6 @@ minstrel_tx_status(void *priv, struct ie
+ 			mi->r[ndx].stats.success += success;
+ 	}
  
- struct kxcjk1013_data {
-@@ -282,6 +283,32 @@ static const struct {
- 			      {19163, 1, 0},
- 			      {38326, 0, 1} };
+-	if ((info->flags & IEEE80211_TX_CTL_RATE_CTRL_PROBE) && (i >= 0))
+-		mi->sample_packets++;
+-
+-	if (mi->sample_deferred > 0)
+-		mi->sample_deferred--;
+-
+ 	if (time_after(jiffies, mi->last_stats_update +
+ 				(mp->update_interval * HZ) / 1000))
+ 		minstrel_update_stats(mp, mi);
+@@ -373,7 +367,7 @@ minstrel_get_rate(void *priv, struct iee
+ 		return;
  
-+#ifdef CONFIG_ACPI
-+enum kiox010a_fn_index {
-+	KIOX010A_SET_LAPTOP_MODE = 1,
-+	KIOX010A_SET_TABLET_MODE = 2,
-+};
-+
-+static int kiox010a_dsm(struct device *dev, int fn_index)
-+{
-+	acpi_handle handle = ACPI_HANDLE(dev);
-+	guid_t kiox010a_dsm_guid;
-+	union acpi_object *obj;
-+
-+	if (!handle)
-+		return -ENODEV;
-+
-+	guid_parse("1f339696-d475-4e26-8cad-2e9f8e6d7a91", &kiox010a_dsm_guid);
-+
-+	obj = acpi_evaluate_dsm(handle, &kiox010a_dsm_guid, 1, fn_index, NULL);
-+	if (!obj)
-+		return -EIO;
-+
-+	ACPI_FREE(obj);
-+	return 0;
-+}
-+#endif
-+
- static int kxcjk1013_set_mode(struct kxcjk1013_data *data,
- 			      enum kxcjk1013_mode mode)
- {
-@@ -359,6 +386,13 @@ static int kxcjk1013_chip_init(struct kx
- {
- 	int ret;
+ 	delta = (mi->total_packets * sampling_ratio / 100) -
+-			(mi->sample_packets + mi->sample_deferred / 2);
++			mi->sample_packets;
  
-+#ifdef CONFIG_ACPI
-+	if (data->acpi_type == ACPI_KIOX010A) {
-+		/* Make sure the kbd and touchpad on 2-in-1s using 2 KXCJ91008-s work */
-+		kiox010a_dsm(&data->client->dev, KIOX010A_SET_LAPTOP_MODE);
-+	}
-+#endif
-+
- 	ret = i2c_smbus_read_byte_data(data->client, KXCJK1013_REG_WHO_AM_I);
- 	if (ret < 0) {
- 		dev_err(&data->client->dev, "Error reading who_am_i\n");
-@@ -1256,6 +1290,8 @@ static const char *kxcjk1013_match_acpi_
+ 	/* delta < 0: no sampling required */
+ 	prev_sample = mi->prev_sample;
+@@ -382,7 +376,6 @@ minstrel_get_rate(void *priv, struct iee
+ 		return;
  
- 	if (strcmp(id->id, "SMO8500") == 0)
- 		*acpi_type = ACPI_SMO8500;
-+	else if (strcmp(id->id, "KIOX010A") == 0)
-+		*acpi_type = ACPI_KIOX010A;
+ 	if (mi->total_packets >= 10000) {
+-		mi->sample_deferred = 0;
+ 		mi->sample_packets = 0;
+ 		mi->total_packets = 0;
+ 	} else if (delta > mi->n_rates * 2) {
+@@ -407,19 +400,8 @@ minstrel_get_rate(void *priv, struct iee
+ 	 * rate sampling method should be used.
+ 	 * Respect such rates that are not sampled for 20 interations.
+ 	 */
+-	if (mrr_capable &&
+-	    msr->perfect_tx_time > mr->perfect_tx_time &&
+-	    msr->stats.sample_skipped < 20) {
+-		/* Only use IEEE80211_TX_CTL_RATE_CTRL_PROBE to mark
+-		 * packets that have the sampling rate deferred to the
+-		 * second MRR stage. Increase the sample counter only
+-		 * if the deferred sample rate was actually used.
+-		 * Use the sample_deferred counter to make sure that
+-		 * the sampling is not done in large bursts */
+-		info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
+-		rate++;
+-		mi->sample_deferred++;
+-	} else {
++	if (msr->perfect_tx_time < mr->perfect_tx_time ||
++	    msr->stats.sample_skipped >= 20) {
+ 		if (!msr->sample_limit)
+ 			return;
  
- 	*chipset = (enum kx_chipset)id->driver_data;
+@@ -439,6 +421,7 @@ minstrel_get_rate(void *priv, struct iee
  
+ 	rate->idx = mi->r[ndx].rix;
+ 	rate->count = minstrel_get_retry_count(&mi->r[ndx], info);
++	info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
+ }
+ 
+ 
+--- a/net/mac80211/rc80211_minstrel.h
++++ b/net/mac80211/rc80211_minstrel.h
+@@ -98,7 +98,6 @@ struct minstrel_sta_info {
+ 	u8 max_prob_rate;
+ 	unsigned int total_packets;
+ 	unsigned int sample_packets;
+-	int sample_deferred;
+ 
+ 	unsigned int sample_row;
+ 	unsigned int sample_column;
 
 
