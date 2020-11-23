@@ -2,134 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77222C13D4
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD062C13D3
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389915AbgKWSoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:44:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732920AbgKWSoJ (ORCPT
+        id S2389464AbgKWSoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:44:08 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:55769 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732920AbgKWSoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:44:09 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885F8C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:44:08 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id v21so15093135pgi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:44:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BWpJZTEbYYqdTndkJGPxB+inYZkPNeNKjK+AcWxClLU=;
-        b=szQM99MUWB2Wyul7qI32qwELH8rheFKKRFflNwGL7g4nXUIC5bTWgygJQzT0i/fHHD
-         +g3epirl+0GuU3lZ74ypvWJeJazqafDOMzGurj+nkGrGvHqZ/+k+0srsVKsL4FsddWW9
-         Qg6XfRAmi+lWJkaOuZTtNRMcKgV/mbhjPqQ17XPq/MA2JxbU3dfJB1KOEsdYtFbfGhDD
-         8w+Wo6JTUuVMLyV2aRdA8Bg3DNapR4F31XhD9143jJ0mHWeU0t296sJCVMYNU3UwKtz7
-         /8Dx4VTrt6uv4+cn4nJtFHn6zQqmdeoXbVzL4JOvEUXY0pEgPk0Y8/Qq9g9mZBadSOE2
-         7LFA==
+        Mon, 23 Nov 2020 13:44:07 -0500
+Received: by mail-io1-f70.google.com with SMTP id j10so13608973iog.22
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:44:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BWpJZTEbYYqdTndkJGPxB+inYZkPNeNKjK+AcWxClLU=;
-        b=NFMw/tcZvAuLw6631BdZfq8IRn365ZWY/CN8nd0zBybKssTMc1JbUmA/WjUxiuLDMH
-         HA6CFB/g9yKPLEzTgVv8gvfE5lz+0MK4q0aiG+lUthtCuz6V9PUuom2GyfiM/1lyql4/
-         O+o9etBsIw/7nRxRZk3GtJBZPZroU+1yY/YFWXHfS7Vezfo+79WC45ZnaUsk39iuPJmc
-         YQj5JPSircAwlF4uQSWtlwlDaNcuY2LICtbeixKAQSQp31k6F0FkU+6ijlGnk6BBdqN0
-         ESV9DkDBASKrJKsM0epADX7Y+amlY+aBBrZn6n5sUGH1+LokxTAuMNIQQERge5TaOn+O
-         4Ijw==
-X-Gm-Message-State: AOAM531ZilKESxdBDZDptUmo+uxmohMjbRyxFdV5Yl3p1WuyvXg48TIe
-        MvFkVcWdSwE4hqvucb9mc6renoo9datxsJ3Zns/trQ==
-X-Google-Smtp-Source: ABdhPJzV7WgvUGjMsCL5eGYFxkRo9Z74P6af+WKqtJyjDvYYktlRIpjd8mQJ7obwSmcgVAT6r6NWwRH0BBh0hokJBAw=
-X-Received: by 2002:a17:90a:d250:: with SMTP id o16mr262028pjw.25.1606157047928;
- Mon, 23 Nov 2020 10:44:07 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Y7OXxGuhTNSLjHgBwnMPkQNQXPV8jo1HjwxEZT4e6RI=;
+        b=dc0cWmVBLvspcisE2REOXOWANrc0a6NrxDB6ocRkZiPw2u9gv2zHvk4KClmy26Ku4u
+         KWI64z3opPlA3axYl8AYYjawohqtAvmaxW2aAFAXkfH9Pw7SJYNbvhzgOg/N5zqyhING
+         DBzHd7xe8mhpZ5dypCvv6E1HH52W5iUu+s5hOUjYoFBZnpf1jHt/vLT+ujm/B+iR1EwU
+         yxDF9R++M+tEg+fHC2l3YVV6wX7fty6IshR57pFxjtwX60Lta2UkO/AkcHf1075V8GbR
+         yO1wF1sCy2MjNH7gOs++9kBxOGfH0IpmADpQXa1cMlpEBjOkXabLxHWZrmPXgjqwGiNx
+         EPEA==
+X-Gm-Message-State: AOAM5303Cfao4Uxu57NkBAACBszE2DvGU2sQG3KRf1QcBmQNOt00hpbR
+        c1QR/RND/a3c4OUbOUBr8yhEq/G1b+xOJulu3Z70fEGcV3jW
+X-Google-Smtp-Source: ABdhPJzUPe49Pf5zqftMbICWiMg5hxz1uvONaaf2UKjilTNrUpSZLE2ariCLahkjtorhEnG6zXhsQKf4JOT6B800SIy1I/+95n3A
 MIME-Version: 1.0
-References: <202011220213.McOuf9IB-lkp@intel.com>
-In-Reply-To: <202011220213.McOuf9IB-lkp@intel.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 23 Nov 2020 10:43:56 -0800
-Message-ID: <CAKwvOdmWEhR3EBaCv+ErbnRbtRbLMh3upWdCVE2U3js9ORvypg@mail.gmail.com>
-Subject: Re: arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit
- declaration of function 'barrier'
-To:     kernel test robot <lkp@intel.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>, kbuild-all@lists.01.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Kees Cook <keescook@chromium.org>
+X-Received: by 2002:a02:c881:: with SMTP id m1mr888289jao.86.1606157046221;
+ Mon, 23 Nov 2020 10:44:06 -0800 (PST)
+Date:   Mon, 23 Nov 2020 10:44:06 -0800
+In-Reply-To: <CAAeHK+z0Lb_5zw-fQF6AXLzL=+P6kizOJ7yu=t4SP_5UPK66kg@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000031907005b4ca944b@google.com>
+Subject: Re: memory leak in hub_event
+From:   syzbot <syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, balbi@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy's fix got picked up:
-https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?h=fixes&id=f52c08ea5fc8e2057a5913b1f6bfd534e1fb7e4c
+Hello,
 
-We're going to need to ensure that this gets backported to stable along with
-commit: 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 compiler.h: fix
-barrier_data() on clang
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+memory leak in rxrpc_lookup_local
 
-On Sat, Nov 21, 2020 at 10:39 AM kernel test robot <lkp@intel.com> wrote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   27bba9c532a8d21050b94224ffd310ad0058c353
-> commit: 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 compiler.h: fix barrier_data() on clang
-> date:   7 days ago
-> config: riscv-randconfig-r003-20201121 (attached as .config)
-> compiler: riscv32-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3347acc6fcd4ee71ad18a9ff9d9dac176b517329
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 3347acc6fcd4ee71ad18a9ff9d9dac176b517329
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    In file included from include/vdso/processor.h:10,
->                     from arch/riscv/include/asm/processor.h:11,
->                     from include/linux/prefetch.h:15,
->                     from drivers/net/ethernet/intel/ixgb/ixgb_main.c:6:
->    arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
-> >> arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
->       14 |  barrier();
->          |  ^~~~~~~
->    cc1: some warnings being treated as errors
->
-> vim +/barrier +14 arch/riscv/include/asm/vdso/processor.h
->
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09   6
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09   7  static inline void cpu_relax(void)
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09   8  {
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09   9  #ifdef __riscv_muldiv
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09  10     int dummy;
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09  11     /* In lieu of a halt instruction, induce a long-latency stall. */
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09  12     __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09  13  #endif
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09 @14     barrier();
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09  15  }
-> ad5d1122b82fbd6 Vincent Chen 2020-06-09  16
->
-> :::::: The code at line 14 was first introduced by commit
-> :::::: ad5d1122b82fbd6a816d1b9d26ee01a6dbc2d757 riscv: use vDSO common flow to reduce the latency of the time-related functions
->
-> :::::: TO: Vincent Chen <vincent.chen@sifive.com>
-> :::::: CC: Palmer Dabbelt <palmerdabbelt@google.com>
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+BUG: memory leak
+unreferenced object 0xffff888117824d00 (size 256):
+  comm "syz-executor.6", pid 8896, jiffies 4294943994 (age 432.900s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 0a 00 00 00 00 00 ad 17 81 88 ff ff  ................
+  backtrace:
+    [<0000000069b066ee>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000069b066ee>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000069b066ee>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
+    [<0000000069b066ee>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
+    [<0000000085db7132>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
+    [<00000000a2a77c59>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
+    [<0000000086f4a248>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
+    [<00000000fafe7caa>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
+    [<00000000c3d26710>] setup_net+0xdb/0x2d0 net/core/net_namespace.c:342
+    [<000000001d81d993>] copy_net_ns+0x14b/0x320 net/core/net_namespace.c:483
+    [<0000000058b54b80>] create_new_namespaces+0x199/0x4e0 kernel/nsproxy.c:110
+    [<00000000cd2a2042>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:231
+    [<00000000f7907f96>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2949
+    [<0000000050cbc28c>] __do_sys_unshare kernel/fork.c:3017 [inline]
+    [<0000000050cbc28c>] __se_sys_unshare kernel/fork.c:3015 [inline]
+    [<0000000050cbc28c>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3015
+    [<00000000ade5a609>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000003424d3b0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff8881182a6700 (size 256):
+  comm "syz-executor.2", pid 8885, jiffies 4294943999 (age 432.850s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 0a 00 00 00 00 c0 b7 16 81 88 ff ff  ................
+  backtrace:
+    [<0000000069b066ee>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000069b066ee>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000069b066ee>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
+    [<0000000069b066ee>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
+    [<0000000085db7132>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
+    [<00000000a2a77c59>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
+    [<0000000086f4a248>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
+    [<00000000fafe7caa>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
+    [<00000000c3d26710>] setup_net+0xdb/0x2d0 net/core/net_namespace.c:342
+    [<000000001d81d993>] copy_net_ns+0x14b/0x320 net/core/net_namespace.c:483
+    [<0000000058b54b80>] create_new_namespaces+0x199/0x4e0 kernel/nsproxy.c:110
+    [<00000000cd2a2042>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:231
+    [<00000000f7907f96>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2949
+    [<0000000050cbc28c>] __do_sys_unshare kernel/fork.c:3017 [inline]
+    [<0000000050cbc28c>] __se_sys_unshare kernel/fork.c:3015 [inline]
+    [<0000000050cbc28c>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3015
+    [<00000000ade5a609>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000003424d3b0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888118395100 (size 256):
+  comm "syz-executor.4", pid 8892, jiffies 4294944000 (age 432.840s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 0a 00 00 00 00 00 8b 17 81 88 ff ff  ................
+  backtrace:
+    [<0000000069b066ee>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000069b066ee>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000069b066ee>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
+    [<0000000069b066ee>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
+    [<0000000085db7132>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
+    [<00000000a2a77c59>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
+    [<0000000086f4a248>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
+    [<00000000fafe7caa>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
+    [<00000000c3d26710>] setup_net+0xdb/0x2d0 net/core/net_namespace.c:342
+    [<000000001d81d993>] copy_net_ns+0x14b/0x320 net/core/net_namespace.c:483
+    [<0000000058b54b80>] create_new_namespaces+0x199/0x4e0 kernel/nsproxy.c:110
+    [<00000000cd2a2042>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:231
+    [<00000000f7907f96>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2949
+    [<0000000050cbc28c>] __do_sys_unshare kernel/fork.c:3017 [inline]
+    [<0000000050cbc28c>] __se_sys_unshare kernel/fork.c:3015 [inline]
+    [<0000000050cbc28c>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3015
+    [<00000000ade5a609>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000003424d3b0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff8881116e0f00 (size 256):
+  comm "syz-executor.7", pid 8894, jiffies 4294944002 (age 432.820s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 0a 00 00 00 00 00 b9 17 81 88 ff ff  ................
+  backtrace:
+    [<0000000069b066ee>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000069b066ee>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000069b066ee>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
+    [<0000000069b066ee>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
+    [<0000000085db7132>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
+    [<00000000a2a77c59>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
+    [<0000000086f4a248>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
+    [<00000000fafe7caa>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
+    [<00000000c3d26710>] setup_net+0xdb/0x2d0 net/core/net_namespace.c:342
+    [<000000001d81d993>] copy_net_ns+0x14b/0x320 net/core/net_namespace.c:483
+    [<0000000058b54b80>] create_new_namespaces+0x199/0x4e0 kernel/nsproxy.c:110
+    [<00000000cd2a2042>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:231
+    [<00000000f7907f96>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2949
+    [<0000000050cbc28c>] __do_sys_unshare kernel/fork.c:3017 [inline]
+    [<0000000050cbc28c>] __se_sys_unshare kernel/fork.c:3015 [inline]
+    [<0000000050cbc28c>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3015
+    [<00000000ade5a609>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000003424d3b0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
 
 
+Tested on:
 
--- 
-Thanks,
-~Nick Desaulniers
+commit:         4d02da97 Merge tag 'net-5.10-rc5' of git://git.kernel.org/..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=134bda0d500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b29e92cdfa2687df
+dashboard link: https://syzkaller.appspot.com/bug?extid=44e64397bd81d5e84cba
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10d4463e500000
+
