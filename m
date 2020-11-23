@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22892C1146
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EECA2C114B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390192AbgKWRCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:02:05 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:30247 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390129AbgKWRCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:02:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606150924; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=OMLlds5ZASBxc6VI9c5Wt8OmEB5BECKe6YXf0Nc2/+A=;
- b=SgkY4Tbn2VQT0EWvzcDLNUXIjWan4nPkafaaVZPEm47WBl/j9EHrHclTwW0euI8FGP+20lQM
- 6S86crjCwUPPiX9sInpnLixYZ/JZt6nKkuAewO/qnqxCvS05aCenwLaZJbdqsDv2Wg7BtvxR
- qYtQk5nFaPhNy0Wiw7uC/mTsKck=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fbbeafea5c560669cd5f5f1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 17:01:50
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D7902C43466; Mon, 23 Nov 2020 17:01:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A71EC433C6;
-        Mon, 23 Nov 2020 17:01:48 +0000 (UTC)
+        id S2390211AbgKWRCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:02:35 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34383 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387757AbgKWRCf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:02:35 -0500
+Received: by mail-ot1-f65.google.com with SMTP id h19so3930240otr.1;
+        Mon, 23 Nov 2020 09:02:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0lGM4pOPvAmkdRh3kP6eJPs9iYpu5tJR7XH1PIxCUmM=;
+        b=Pv7plHtcmS+Ov8zY1kf7+xi2lBlKtOaqVNPwKaazM7X4mA9/UKSMU+A7P7PQYenz3k
+         n5F+7QpOS6pYGCqIlM35Z7aAevusrh8Sn4y/T57rGey+wX3hD3TtV/R3kwykG6ZNrm4j
+         bGwNfiMIR6CELoMpFqy9mxVFF6wCDDL6xEywvwEKWSOlqj6BzJ68D7KQHwVkNxxfGRXN
+         gUFZlx+TvVN5czDDuIHM+qtQy3TQuZQovP1rSq1iL2jndIpq0WerJgqxWrzs+KeiXJ5f
+         3WQAv6BxXW1RMN3B84x/TytK9a+Z/AylP1AZfT8X0jP1ckN2I/zPL44cSK8dCIbPQZJv
+         WZ+g==
+X-Gm-Message-State: AOAM530K3yv4/FlImwQmk9qVIxqi05/oZXvE1MXdxBFfZTakLkDam5Z2
+        AM1kj1xPHFPL5yX2m8sn9byezjwot6WN2rnrXvQs7H/+l74=
+X-Google-Smtp-Source: ABdhPJwyCdVjVibPqKrQy4Lj7nZfu82474LEJlTPdJCRpsaDGQ6SLPYaUcR9e9CSN9uaQ+ctlMQPylBDJuBQMtMH0ho=
+X-Received: by 2002:a9d:16f:: with SMTP id 102mr207668otu.206.1606150954566;
+ Mon, 23 Nov 2020 09:02:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 22:31:48 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCHv8 0/8] System Cache support for GPU and required SMMU
- support
-In-Reply-To: <20201123152146.GE11033@willie-the-truck>
-References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
- <20201123152146.GE11033@willie-the-truck>
-Message-ID: <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20201120111125.78296-1-f.suligoi@asem.it>
+In-Reply-To: <20201120111125.78296-1-f.suligoi@asem.it>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 23 Nov 2020 18:02:23 +0100
+Message-ID: <CAJZ5v0jTLcvcyzKRvM6N_2xJq94PseUNtd5xCPpS59Nz4VvWnQ@mail.gmail.com>
+Subject: Re: [PATCH v2] docs: ACPI: enumeration: add PCI hierarchy representation
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-23 20:51, Will Deacon wrote:
-> On Tue, Nov 17, 2020 at 08:00:39PM +0530, Sai Prakash Ranjan wrote:
->> Some hardware variants contain a system cache or the last level
->> cache(llc). This cache is typically a large block which is shared
->> by multiple clients on the SOC. GPU uses the system cache to cache
->> both the GPU data buffers(like textures) as well the SMMU pagetables.
->> This helps with improved render performance as well as lower power
->> consumption by reducing the bus traffic to the system memory.
->> 
->> The system cache architecture allows the cache to be split into slices
->> which then be used by multiple SOC clients. This patch series is an
->> effort to enable and use two of those slices preallocated for the GPU,
->> one for the GPU data buffers and another for the GPU SMMU hardware
->> pagetables.
->> 
->> Patch 1 - Patch 6 adds system cache support in SMMU and GPU driver.
->> Patch 7 and 8 are minor cleanups for arm-smmu impl.
->> 
->> Changes in v8:
->>  * Introduce a generic domain attribute for pagetable config (Will)
->>  * Rename quirk to more generic IO_PGTABLE_QUIRK_ARM_OUTER_WBWA (Will)
->>  * Move non-strict mode to use new struct domain_attr_io_pgtbl_config 
->> (Will)
-> 
-> Modulo some minor comments I've made, this looks good to me. What is 
-> the
-> plan for merging it? I can take the IOMMU parts, but patches 4-6 touch 
-> the
-> MSM GPU driver and I'd like to avoid conflicts with that.
-> 
+On Fri, Nov 20, 2020 at 12:12 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
+>
+> For "fixed" PCI devices, such as chips directly soldered
+> on the main board (ethernet, Wi-Fi, serial ports, etc.),
+> it is possible to find an ACPI enumeration.
+>
+> This allows to add useful properties to these devices.
+> Just for an example: the property "gpio-line-names" can be
+> added to the pins of a GPIO expander on the PCI bus.
+>
+> In order to find the ACPI name of a PCI device, it's necessary
+> to disassemble the BIOS ACPI tables (in particular the DSDT)
+> and also to analyze the PCI bus topology of the board.
+>
+> This patch, with a practical example, show how to do this.
+>
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
 
-SMMU bits are pretty much independent and GPU relies on the domain 
-attribute
-and the quirk exposed, so as long as SMMU changes go in first it should 
-be good.
-Rob?
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Applied as 5.11 material with the R-by tags from Mika and Andy, thanks!
