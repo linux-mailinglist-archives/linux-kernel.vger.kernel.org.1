@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645862C18F1
+	by mail.lfdr.de (Postfix) with ESMTP id D164E2C18F2
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387785AbgKWWwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387540AbgKWWvu (ORCPT
+        id S2387792AbgKWWwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:52:46 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38936 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387537AbgKWWvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:51:50 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD6CC0613CF;
-        Mon, 23 Nov 2020 14:51:50 -0800 (PST)
+        Mon, 23 Nov 2020 17:51:51 -0500
 Date:   Mon, 23 Nov 2020 22:51:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606171908;
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jHaQ7+aWpYd1G52BS6Q30yEkqRRE2IvI6iKwqutbdBM=;
-        b=fPdMOwD/ojXzpkcsWfjnJgY030V0mWJlW004Knw52LFAa0cIXRnuFb/dqbVPPnTgg6sOHd
-        /QRLQZh2MrU6xxAxYGEQkkH8JbhVQA4hhfcYsBrj5C+oNchKyrF3ktaLeYTDHfyf99pKo0
-        loy15RurwEdK7uzs6TiFics/Wn6YdaD1Jk3sF8aUSzwvJ+bBDSMu8E9m4AFpN+qNh8EtqF
-        WndeB52qcVPCzm9c7i18WuumM4nTGQ2XKq+o5kYoPrqgL7OqZXg+89z3LCTl84iPvbjAp+
-        5Ejdt/Z7dmk/wUhfDGz1Eaj9hlDiIavCTLH+m8ptBvKBYyGBCI5ilBPYE1eugw==
+        bh=+BJwrOxS8rNjDzQpYoKsYOqwsmWdoAX3rqCXki4ajGg=;
+        b=cghmki5dg2PQPTCZT4coOcY57pBdhwRXx0dUdwTYHRtaaWqrQgWLch/24tLgmuw3i5MzMY
+        jJDW0SINDCsEY2ErTSPuu2lqPNmQ8E0g86Sr0p5vMNm3xqSShkReIPMvwEnQZEH5ce+i5m
+        iwGFAnW9pXmhkrAepfmGq7BkYlKyT1sUNi8iDmbqgQ1iIfOziEpChTcDv3S12UCQscJh/F
+        Icz5e0HOrVLJbNyqGf8/99mIkMf8zAmGaDqOguFm5yxQMwfcGMUO9z/5incpDigBmejC/i
+        Nu9lnlZhWDGXtdfGJMj5HLiwHuqH6QnGwUIctR/EAEST6PQrUKVxeP88z3I+fQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606171908;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +33,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jHaQ7+aWpYd1G52BS6Q30yEkqRRE2IvI6iKwqutbdBM=;
-        b=Ds91ym0fjDOTY5wlHtJ7IM4mw5nA3HyjEmHhGGph9utS2rCUFl89EsU+ZyjD+0t5z9WKD0
-        E1IjzjFAR/910xBw==
+        bh=+BJwrOxS8rNjDzQpYoKsYOqwsmWdoAX3rqCXki4ajGg=;
+        b=z+KFcoTiPOvBl6qa6EP3tksWPijLkamdPuvk3x1kBFv3M6cPMfXsbJbqYjEhxQNz0/4Fgw
+        VfTsXsuwYQU8UfDQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] um/irqstat: Get rid of the duplicated declarations
+Subject: [tip: irq/core] ARM: irqstat: Get rid of duplicated declaration
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201113141733.156361337@linutronix.de>
-References: <20201113141733.156361337@linutronix.de>
+        Frederic Weisbecker <frederic@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20201113141733.276505871@linutronix.de>
+References: <20201113141733.276505871@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160617190799.11115.15507871466882450295.tip-bot2@tip-bot2>
+Message-ID: <160617190736.11115.7355137821207330254.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,51 +59,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     e83694a7b249de63beb1d8b45474b796dce3cd45
-Gitweb:        https://git.kernel.org/tip/e83694a7b249de63beb1d8b45474b796dce3cd45
+Commit-ID:     7fd70c65faacd39628ba5f670be6490010c8132f
+Gitweb:        https://git.kernel.org/tip/7fd70c65faacd39628ba5f670be6490010c8132f
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 13 Nov 2020 15:02:11 +01:00
+AuthorDate:    Fri, 13 Nov 2020 15:02:12 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Mon, 23 Nov 2020 10:31:05 +01:00
 
-um/irqstat: Get rid of the duplicated declarations
+ARM: irqstat: Get rid of duplicated declaration
 
-irq_cpustat_t and ack_bad_irq() are exactly the same as the asm-generic
-ones.
+irq_cpustat_t is exactly the same as the asm-generic one. Define
+ack_bad_irq so the generic header does not emit the generic version of it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Link: https://lore.kernel.org/r/20201113141733.156361337@linutronix.de
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lore.kernel.org/r/20201113141733.276505871@linutronix.de
 
 ---
- arch/um/include/asm/hardirq.h | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
+ arch/arm/include/asm/hardirq.h | 11 +++--------
+ arch/arm/include/asm/irq.h     |  2 ++
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/arch/um/include/asm/hardirq.h b/arch/um/include/asm/hardirq.h
-index b426796..52e2c36 100644
---- a/arch/um/include/asm/hardirq.h
-+++ b/arch/um/include/asm/hardirq.h
-@@ -2,22 +2,7 @@
- #ifndef __ASM_UM_HARDIRQ_H
- #define __ASM_UM_HARDIRQ_H
+diff --git a/arch/arm/include/asm/hardirq.h b/arch/arm/include/asm/hardirq.h
+index b95848e..706efaf 100644
+--- a/arch/arm/include/asm/hardirq.h
++++ b/arch/arm/include/asm/hardirq.h
+@@ -2,16 +2,11 @@
+ #ifndef __ASM_HARDIRQ_H
+ #define __ASM_HARDIRQ_H
  
 -#include <linux/cache.h>
 -#include <linux/threads.h>
--
+ #include <asm/irq.h>
+ 
 -typedef struct {
 -	unsigned int __softirq_pending;
 -} ____cacheline_aligned irq_cpustat_t;
 -
 -#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
--#include <linux/irq.h>
 -
--#ifndef ack_bad_irq
--static inline void ack_bad_irq(unsigned int irq)
--{
--	printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
--}
--#endif
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
++#define ack_bad_irq ack_bad_irq
++
 +#include <asm-generic/hardirq.h>
  
- #define __ARCH_IRQ_EXIT_IRQS_DISABLED 1
+ #endif /* __ASM_HARDIRQ_H */
+diff --git a/arch/arm/include/asm/irq.h b/arch/arm/include/asm/irq.h
+index 46d4114..1cbcc46 100644
+--- a/arch/arm/include/asm/irq.h
++++ b/arch/arm/include/asm/irq.h
+@@ -31,6 +31,8 @@ void handle_IRQ(unsigned int, struct pt_regs *);
+ void init_IRQ(void);
  
+ #ifdef CONFIG_SMP
++#include <linux/cpumask.h>
++
+ extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
+ 					   bool exclude_self);
+ #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
