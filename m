@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C8D2C03D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FE82C03DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgKWLJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 06:09:31 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:42641 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgKWLJa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:09:30 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        id S1728631AbgKWLMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 06:12:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728204AbgKWLMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 06:12:19 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 1437C22F99;
-        Mon, 23 Nov 2020 12:09:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1606129768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Ueqku/JVNSF/2s8zRFoeRCB+yxaWGTNZHlXD0vl0yg=;
-        b=Ac+d/i/ksWz/18OB3eyODgr1vHRZdVbui2nzOE7zfBcQyBcwgUh4bJjYQdBBug4O5y2WI4
-        C/HN77/y/dXOfoV8jAjSguqTYpDK6Jey2CBfED0xidqQSeAcqvpJmzW2pnxUZGNB+YljqD
-        WFImC6lopFoAqkVwrZ329l/F7M6Melg=
+        by mail.kernel.org (Postfix) with ESMTPSA id A390C20729;
+        Mon, 23 Nov 2020 11:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606129938;
+        bh=pb4Go2JyNL0QLyA7eUeTpK8YGyPsHlVFVkkpOAFF2+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KnAR0eBjYg503oHliulkSYZ2BQv7U0mnNXsrxwOyUY/K7+HcLZV6BW762+cAlbBYY
+         amxkA39BVs9oOwlv1fNGhQxuwD3ReQO/5IuOqCUoK2dc3Wqto3yDzJr39t0BEojsoP
+         Hn8bqO0YGK+o97t8GzJ6k2rPprm5pzestGnqADWU=
+Date:   Mon, 23 Nov 2020 11:12:14 +0000
+From:   Will Deacon <will@kernel.org>
+To:     youngjun <her0gyugyu@gmail.com>, rossmeikleham@gmail.com
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: update RANDOMIZE_MODULE_REGION_FULL config
+ description
+Message-ID: <20201123111213.GB9957@willie-the-truck>
+References: <20201122070855.10506-1-her0gyugyu@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 12:09:23 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     "Y.b. Lu" <yangbo.lu@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <ashish.kumar@nxp.com>
-Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-In-Reply-To: <20201120093015.duel3yx63cbya77w@skbuf>
-References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
- <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <20201120093015.duel3yx63cbya77w@skbuf>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <47517939c251b1bc2f04ee1962caddf4@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201122070855.10506-1-her0gyugyu@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-11-20 10:30, schrieb Vladimir Oltean:
-> On Fri, Nov 20, 2020 at 02:04:02AM +0000, Y.b. Lu wrote:
->> Hi Vladimir,
->> 
->> I have already upstreamed a patch for all affected layerscape boards.
->> https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/commit/?h=imx/dt64&id=342ab37ecaf8c1b10dd3ca9a1271db29a6af0705
->> 
->> Please check whether it works for you.
+On Sat, Nov 21, 2020 at 11:08:55PM -0800, youngjun wrote:
+> module randomization is reduced. (range to 2 GB)
+> RANDOMIZE_MODULE_REGION_FULL config description is not updated.
+> update RANDOMIZE_MODULE_REGION_FULL config description.
 > 
-> Thanks, one can tell that I haven't done my due diligence of checking
-> Shawn's tree first. I'll cherry-pick that patch and carry on with my
-> work.
+> Signed-off-by: youngjun <her0gyugyu@gmail.com>
+> ---
+>  arch/arm64/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+This looks like the same patch as the one I reviewed here:
+
+https://lore.kernel.org/r/20201109112705.GC14356@willie-the-truck
+
+but the commit message isn't a lot better. Please could you (or Ross)
+post a version with a fixed commit message?
+
+Thanks,
+
+Will
+
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 1515f6f153a0..0da551828a59 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1804,11 +1804,11 @@ config RANDOMIZE_BASE
+>  	  If unsure, say N.
+>  
+>  config RANDOMIZE_MODULE_REGION_FULL
+> -	bool "Randomize the module region over a 4 GB range"
+> +	bool "Randomize the module region over a 2 GB range"
+>  	depends on RANDOMIZE_BASE
+>  	default y
+>  	help
+> -	  Randomizes the location of the module region inside a 4 GB window
+> +	  Randomizes the location of the module region inside a 2 GB window
+>  	  covering the core kernel. This way, it is less likely for modules
+>  	  to leak information about the location of core kernel data structures
+>  	  but it does imply that function calls between modules and the core
+> -- 
+> 2.17.1
 > 
-> However, the fact still remains that Michael has expressed his opinion
-> regarding mmcblk0 vs mmcblk1. Do you think that we could make the
-> aliases a per-board option instead of per-SoC? Consider that there 
-> might
-> even be boards that only use SD card. It would be strange for the block
-> device in that case to be called /dev/mmcblk1.
-
-Yangbo, any news on this? I'd like to have this resorted out before it 
-is
-set in stone for 5.10.
-
--- 
--michael
