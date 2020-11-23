@@ -2,157 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07A62C11C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6942C11DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387953AbgKWRTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:19:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58310 "EHLO mx2.suse.de"
+        id S2387908AbgKWRWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:22:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726417AbgKWRTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:19:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52398AC82;
-        Mon, 23 Nov 2020 17:19:37 +0000 (UTC)
-Message-ID: <ac38b89133f80f82b857ad2b4e421b501c2f4826.camel@suse.de>
-Subject: Re: [PATCH v4 01/11] firmware: raspberrypi: Keep count of all
- consumers
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-pwm@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        linux-input <linux-input@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 23 Nov 2020 18:19:35 +0100
-In-Reply-To: <20201113072615.GE356503@dtor-ws>
-References: <20201112163630.17177-1-nsaenzjulienne@suse.de>
-         <20201112163630.17177-2-nsaenzjulienne@suse.de>
-         <CAHp75Vf9E7UWVDMs=eRjLjoSN6SVOWw9thNdnR8ruCL6GmY7JQ@mail.gmail.com>
-         <20201113072615.GE356503@dtor-ws>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-4mT4pfaztxo3yJL0guCg"
-User-Agent: Evolution 3.38.1 
-MIME-Version: 1.0
+        id S1729698AbgKWRWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:22:35 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF96420728;
+        Mon, 23 Nov 2020 17:22:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606152154;
+        bh=8wEfC5w8dh4/BgvMmxnFJk49Pw9D7B7b3SRsuAKB1CA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Dh9eL4mEAzqVUyJpdosPigUkyRsdc/BQ32Q6qR9ScTB9wi0OJtUVPuLJ+BF/RVRUo
+         pa3s2b8l6KimnttnT7V3tkOOClmJoFrYI81eHx7P7B5bw/1xpPNo4UVnirUrUkCXvy
+         PoR3Aa9zG20MVRFndp49qqp9lcW2vm81Ko+Fnp58=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khFXs-00D134-DG; Mon, 23 Nov 2020 17:22:32 +0000
+Date:   Mon, 23 Nov 2020 17:22:30 +0000
+Message-ID: <87ft5056p5.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v2 20/24] kvm: arm64: Intercept host's CPU_SUSPEND PSCI SMCs
+In-Reply-To: <20201116204318.63987-21-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-21-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com, lorenzo.pieralisi@arm.com, sudeep.holla@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adding Lorenzo and Sudeep to this one in particular, as there is a bit
+of a corner case below.
 
---=-4mT4pfaztxo3yJL0guCg
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Mon, 16 Nov 2020 20:43:14 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
+> 
+> Add a handler of CPU_SUSPEND host PSCI SMCs. The SMC can either enter
+> a sleep state indistinguishable from a WFI or a deeper sleep state that
+> behaves like a CPU_OFF+CPU_ON.
+> 
+> The handler saves r0,pc of the host and makes the same call to EL3 with
+> the hyp CPU entry point. It either returns back to the handler and then
+> back to the host, or wakes up into the entry point and initializes EL2
+> state before dropping back to EL1.
+> 
+> There is a simple atomic lock around the reset state struct to protect
+> from races with CPU_ON. A well-behaved host should never run CPU_ON
+> against an already online core, and the kernel indeed does not allow
+> that, so if the core sees its reset state struct locked, it will return
+> a non-spec error code PENDING_ON. This protects the hypervisor state and
 
-On Thu, 2020-11-12 at 23:26 -0800, Dmitry Torokhov wrote:
-> On Thu, Nov 12, 2020 at 07:52:14PM +0200, Andy Shevchenko wrote:
-> > On Thu, Nov 12, 2020 at 6:40 PM Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
-> > >=20
-> > > When unbinding the firmware device we need to make sure it has no
-> > > consumers left. Otherwise we'd leave them with a firmware handle
-> > > pointing at freed memory.
-> > >=20
-> > > Keep a reference count of all consumers and introduce rpi_firmware_pu=
-t()
-> > > which will permit automatically decrease the reference count upon
-> > > unbinding consumer drivers.
-> >=20
-> > ...
-> >=20
-> > > =C2=A0/**
-> > > - * rpi_firmware_get - Get pointer to rpi_firmware structure.
-> > > =C2=A0=C2=A0* @firmware_node:    Pointer to the firmware Device Tree =
-node.
-> > > =C2=A0=C2=A0*
-> > > + * The reference to rpi_firmware has to be released with rpi_firmwar=
-e_put().
-> > > + *
-> > > =C2=A0=C2=A0* Returns NULL is the firmware device is not ready.
-> > > =C2=A0=C2=A0*/
-> > > =C2=A0struct rpi_firmware *rpi_firmware_get(struct device_node *firmw=
-are_node)
-> > > =C2=A0{
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct platform_devic=
-e *pdev =3D of_find_device_by_node(firmware_node);
-> > > +       struct rpi_firmware *fw;
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!pdev)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0return NULL;
-> > >=20
-> > > -       return platform_get_drvdata(pdev);
-> > > +       fw =3D platform_get_drvdata(pdev);
-> > > +       if (!fw)
-> > > +               return NULL;
-> > > +
-> > > +       if (!kref_get_unless_zero(&fw->consumers))
-> > > +               return NULL;
-> >=20
+"non-spec" as in "outside of the PSCI specification"? Err...
 
-Hi Andy, Dimitry,
+> avoids the need for more complicated locking and/or tracking power state
+> of individual cores.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/psci-relay.c | 39 +++++++++++++++++++++++++++-
+>  1 file changed, 38 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> index 2daf52b59846..313ef42f0eab 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> @@ -121,6 +121,39 @@ static void release_reset_state(struct kvm_host_psci_state *cpu_state)
+>  	atomic_set_release(&cpu_state->pending_on, 0);
+>  }
+>  
+> +static int psci_cpu_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
+> +{
+> +	u64 power_state = host_ctxt->regs.regs[1];
+> +	unsigned long pc = host_ctxt->regs.regs[2];
+> +	unsigned long r0 = host_ctxt->regs.regs[3];
+> +	struct kvm_host_psci_state *cpu_state;
+> +	struct kvm_nvhe_init_params *cpu_params;
+> +	int ret;
+> +
+> +	cpu_state = this_cpu_ptr(&kvm_host_psci_state);
+> +	cpu_params = this_cpu_ptr(&kvm_init_params);
+> +
+> +	/*
+> +	 * Lock the reset state struct. This fails if the host has concurrently
+> +	 * called CPU_ON with this CPU as target. The kernel keeps track of
+> +	 * online CPUs, so that should never happen. If it does anyway, return
+> +	 * a non-spec error. This avoids the need for spinlocks.
+> +	 */
+> +	if (!try_acquire_reset_state(cpu_state, pc, r0))
+> +		return PSCI_RET_ALREADY_ON;
 
-> > Don't we have a more traditional way of doing this, i.e.
-> > try_module_get() coupled with get_device() ?
->=20
-> get_device() will make sure that device is there, but gives no
-> assurances that device is bound to a driver, so it will not help with
-> the racy access to firmware via platform_get_drvdata() call.
+So that's the core of the problem. I'm definitely not keen on EL2
+returning unspecified error codes. But there is something I don't get:
 
-I also looked at using get/put_device() just as a means for refcounting (i.=
-e.
-replacing fw->consumers), but I can't make it work either. I'd need a way t=
-o
-hook up into one of the struct device_ktype release() functions. AFAIK it's=
- not
-possible for private uses like this.
+If the CPU is currently booting (reset state is locked), it means that
+CPU hasn't reached the EL1 kernel yet. So how can this same CPU issue
+a CPU_SUSPEND from EL1? CPU_SUSPEND can't be called for a third party,
+only by a CPU for itself.
 
-IIUC the way to do this would be to bypass platform device and create a spe=
-cial
-device class/bus for RPi's firmware dependent devices (I could pretty much =
-copy
-SCMI's implementation), but I fear that's overkill.
+It looks like this case cannot happen by construction. And if it
+happens, it looks like the only course of action should be to panic,
+as we have lost track of the running CPUs. Am I missing something
+obvious?
 
-So, for now I'll stick with the kref based implementation, I'll be happy to
-change it if you find a better solution. :)
+> +
+> +	/*
+> +	 * Will either return if shallow sleep state, or wake up into the entry
+> +	 * point if it is a deep sleep state.
+> +	 */
+> +	ret = psci_call(func_id, power_state,
+> +			__hyp_pa(hyp_symbol_addr(__kvm_hyp_cpu_entry)),
+> +			__hyp_pa(cpu_params));
+> +
+> +	release_reset_state(cpu_state);
+> +	return ret;
+> +}
+> +
+>  static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
+>  {
+>  	u64 mpidr = host_ctxt->regs.regs[1];
+> @@ -178,7 +211,9 @@ asmlinkage void __noreturn __kvm_hyp_psci_cpu_entry(void)
+>  
+>  static unsigned long psci_0_1_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
+>  {
+> -	if (func_id == kvm_host_psci_function_id[PSCI_FN_CPU_OFF])
+> +	if (func_id == kvm_host_psci_function_id[PSCI_FN_CPU_SUSPEND])
+> +		return psci_cpu_suspend(func_id, host_ctxt);
+> +	else if (func_id == kvm_host_psci_function_id[PSCI_FN_CPU_OFF])
+>  		return psci_forward(host_ctxt);
+>  	else if (func_id == kvm_host_psci_function_id[PSCI_FN_CPU_ON])
+>  		return psci_cpu_on(func_id, host_ctxt);
+> @@ -202,6 +237,8 @@ static unsigned long psci_0_2_handler(u64 func_id, struct kvm_cpu_context *host_
+>  	case PSCI_0_2_FN_SYSTEM_RESET:
+>  		psci_forward_noreturn(host_ctxt);
+>  		unreachable();
+> +	case PSCI_0_2_FN64_CPU_SUSPEND:
+> +		return psci_cpu_suspend(func_id, host_ctxt);
+>  	case PSCI_0_2_FN64_CPU_ON:
+>  		return psci_cpu_on(func_id, host_ctxt);
+>  	default:
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
 
-Regards,
-Nicolas
+Thanks,
 
+	M.
 
---=-4mT4pfaztxo3yJL0guCg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+77ycACgkQlfZmHno8
-x/4SuAf/fbVt5dbVlASpaXs9h1cMXb/e8xl+GmDU2l1pP/uQHmyY+sGKGqNo7+G1
-gtKuEhPEavnasiHhJaBTWCCpwytJF9/iToX0i75cDZIObrF1xbO1A3L7hvlRiO6x
-C+oECKGo3/Awayb7MRHqEiRrLqtuu0odnT3Usn26Rbo7J2o5Lc4KF8WwYblFkmV9
-KCW77SlB/6W865vD6KK1KaN6nPqOD3XmKC7doM/MWHIvYd8siFy8qlT5m06s/vhC
-OHHbX2/7bhgcB+3/9LA9TF5J/JU9KIDHuUVbPYC2hcAVbkELXL93OwJ3DnN7csjp
-6obres4oiWUNt0B5Zi7lJDT4Y1KnUw==
-=C3d8
------END PGP SIGNATURE-----
-
---=-4mT4pfaztxo3yJL0guCg--
-
+-- 
+Without deviation from the norm, progress is not possible.
