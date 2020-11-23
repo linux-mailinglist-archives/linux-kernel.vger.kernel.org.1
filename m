@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5F32C1207
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FAC2C1209
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390362AbgKWRdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:33:33 -0500
-Received: from smtprelay0151.hostedemail.com ([216.40.44.151]:41386 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730356AbgKWRdc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:33:32 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id DE947837F24F;
-        Mon, 23 Nov 2020 17:33:31 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3874:4321:5007:6120:7901:10004:10400:10848:11026:11232:11473:11658:11914:12297:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14096:14097:14181:14659:14721:21080:21212:21627:21660:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: woman80_51130f927367
-X-Filterd-Recvd-Size: 1792
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 23 Nov 2020 17:33:30 +0000 (UTC)
-Message-ID: <148208ef84344069a6c95d3f686a86ca1199be90.camel@perches.com>
-Subject: Re: [PATCH v4] checkpatch: add fix and improve warning msg for
- Non-standard signature
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>, lukas.bulwahn@gmail.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 23 Nov 2020 09:33:29 -0800
-In-Reply-To: <20201123172430.12854-1-yashsri421@gmail.com>
-References: <CAKXUXMx8siSm67jkBP_r+OKyKALfT2EDcX_SfX7JGBy3YisXcQ@mail.gmail.com>
-         <20201123172430.12854-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S2390365AbgKWRfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:35:04 -0500
+Received: from mga18.intel.com ([134.134.136.126]:7338 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730867AbgKWRfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:35:04 -0500
+IronPort-SDR: j26Ja5nMiItW+fDhRu78sZ5m+HUyMzGaO/4SeHWTxXIFyYNcHYG/Db+XX+jc9xwWta61N7J0mm
+ geF4ErHfok7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="159577500"
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="159577500"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:35:03 -0800
+IronPort-SDR: icjRiGPYcByjDGJSIMRLn5mZ8P4BP1y84bzFOOpMtPmduaZvWYlUsyGqrGQQL5rzhJDYbUKPHC
+ 10uOLSE1aaGA==
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="332261026"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:35:01 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1khFkx-009DgZ-Eu; Mon, 23 Nov 2020 19:36:03 +0200
+Date:   Mon, 23 Nov 2020 19:36:03 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Felipe Balbi <balbi@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH 0/2] Remove one more platform_device_add_properties() call
+Message-ID: <20201123173603.GJ4077@smile.fi.intel.com>
+References: <20201123153148.52647-1-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0jAaz2zELkJoKjHtxyfuKEi=ORuCCad-F0yp6KephieGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jAaz2zELkJoKjHtxyfuKEi=ORuCCad-F0yp6KephieGg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-23 at 22:54 +0530, Aditya Srivastava wrote:
-> Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
-> styles.
+On Mon, Nov 23, 2020 at 06:06:31PM +0100, Rafael J. Wysocki wrote:
+> On Mon, Nov 23, 2020 at 4:32 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > Hi,
+> >
+> > I originally introduced these as part of my series where I was
+> > proposing PM ops for software nodes [1], but since that still needs
+> > work, I'm sending these two separately.
+> >
+> > So basically I'm only modifying dwc3-pci.c so it registers a software
+> > node directly at this point. That will remove one more user of
+> > platform_device_add_properties().
+> >
+> > [1] https://lore.kernel.org/lkml/20201029105941.63410-1-heikki.krogerus@linux.intel.com/
+> >
+> > thanks,
+> >
+> > Heikki Krogerus (2):
+> >   software node: Introduce device_add_software_node()
+> >   usb: dwc3: pci: Register a software node for the dwc3 platform device
+> >
+> >  drivers/base/swnode.c       | 69 ++++++++++++++++++++++++++++++++-----
+> >  drivers/usb/dwc3/dwc3-pci.c | 61 +++++++++++++++++++-------------
+> >  include/linux/property.h    |  3 ++
+> >  3 files changed, 100 insertions(+), 33 deletions(-)
+> >
+> > --
+> 
+> These look good to me.
+> 
+> If you want me to take them, though, I need an ACK from the dwc3 side.
 
-I think this proposed change is unnecessary.
- 
-> This warning occurs because of incorrect use of signature tags,
-> e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
-> signature tags, which may seem correct, but are not standard:
+Btw, I have tested this on one of the platform with DWC3 and found no
+regression, so feel free to add
 
-Standards are useful, but standards are not constraints.
+Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> 1) Requested-by (count: 48) => Suggested-by
-> Rationale: In an open-source project, there are no 'requests', just
-> 'suggestions' to convince a maintainer to accept your patch
+-- 
+With Best Regards,
+Andy Shevchenko
 
-There's nothing really wrong with some non-standard signatures.
-And I think leaving humor like brown-paper-bag-by: is useful.
-
-Just telling people that they are using a non-standard signature
-I think is enough.
 
