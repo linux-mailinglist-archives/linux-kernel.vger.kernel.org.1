@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092D52C0708
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B997E2C0658
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731837AbgKWMg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:36:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48682 "EHLO mail.kernel.org"
+        id S1730683AbgKWMaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731724AbgKWMgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:36:40 -0500
+        id S1730674AbgKWMaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C8252065E;
-        Mon, 23 Nov 2020 12:36:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4F33217A0;
+        Mon, 23 Nov 2020 12:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134998;
-        bh=sK4olq0KBy5MHExu9roPZP0tGBsa83kpaUElyyUOPsw=;
+        s=korg; t=1606134598;
+        bh=gFYKp9oCnoY+gznxezB/CM7o+fWi9PE7Rvso+R0FRiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NOx2NXzPdsURwQ7K46xCO6IpPxsCNz28dHXpw3t1TgQ/ZMfhUDyw8Y5RMVHS8Mc8h
-         kshzNF7NsXw/zmUpi1uTx40dyz3X1QRaBiKtT2cuebiWHqTLfpJ51Bc9hapC/3wWqm
-         mwcdULEhUpprFbllXkOn/LrKComxhAWKIZqeP6wc=
+        b=BDJQzgP9fcCggplqJ4vwWJwc95giuW8+NRmdqZpyng/gjnUVPYoiiGBWswSUhNKD/
+         cThD4wpk7pIOSAY0LWq7B40pJbW+9S/5YF6kRy3y5mCmhS3DY6P+vUEPOoGiNw5/ga
+         xDdR5rwO2cyOfRQI5JomGWSfa3USC9enDuAIWZkI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 068/158] Input: resistive-adc-touch - fix kconfig dependency on IIO_BUFFER
+        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 16/91] net: qualcomm: rmnet: Fix incorrect receive packet handling during cleanup
 Date:   Mon, 23 Nov 2020 13:21:36 +0100
-Message-Id: <20201123121823.216612745@linuxfoundation.org>
+Message-Id: <20201123121810.094422752@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
 
-[ Upstream commit 676650d007e06fddcf3fe38238251d71bd179641 ]
+[ Upstream commit fc70f5bf5e525dde81565f0a30d5e39168062eba ]
 
-When TOUCHSCREEN_ADC is enabled and IIO_BUFFER is disabled, it results
-in the following Kbuild warning:
+During rmnet unregistration, the real device rx_handler is first cleared
+followed by the removal of rx_handler_data after the rcu synchronization.
 
-WARNING: unmet direct dependencies detected for IIO_BUFFER_CB
-  Depends on [n]: IIO [=y] && IIO_BUFFER [=n]
-  Selected by [y]:
-  - TOUCHSCREEN_ADC [=y] && !UML && INPUT [=y] && INPUT_TOUCHSCREEN [=y] && IIO [=y]
+Any packets in the receive path may observe that the rx_handler is NULL.
+However, there is no check when dereferencing this value to use the
+rmnet_port information.
 
-The reason is that TOUCHSCREEN_ADC selects IIO_BUFFER_CB without depending
-on or selecting IIO_BUFFER while IIO_BUFFER_CB depends on IIO_BUFFER. This
-can also fail building the kernel.
+This fixes following splat by adding the NULL check.
 
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
+Unable to handle kernel NULL pointer dereference at virtual
+address 000000000000000d
+pc : rmnet_rx_handler+0x124/0x284
+lr : rmnet_rx_handler+0x124/0x284
+ rmnet_rx_handler+0x124/0x284
+ __netif_receive_skb_core+0x758/0xd74
+ __netif_receive_skb+0x50/0x17c
+ process_backlog+0x15c/0x1b8
+ napi_poll+0x88/0x284
+ net_rx_action+0xbc/0x23c
+ __do_softirq+0x20c/0x48c
 
-Fixes: aa132ffb6b0a ("input: touchscreen: resistive-adc-touch: add generic resistive ADC touchscreen")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Link: https://lore.kernel.org/r/20201102221504.541279-1-fazilyildiran@gmail.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ceed73a2cf4a ("drivers: net: ethernet: qualcomm: rmnet: Initial implementation")
+Signed-off-by: Sean Tranchetti <stranche@codeaurora.org>
+Signed-off-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Link: https://lore.kernel.org/r/1605298325-3705-1-git-send-email-subashab@codeaurora.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/touchscreen/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index 46ad9090493bb..1e812a193ce7a 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -96,6 +96,7 @@ config TOUCHSCREEN_AD7879_SPI
- config TOUCHSCREEN_ADC
- 	tristate "Generic ADC based resistive touchscreen"
- 	depends on IIO
-+	select IIO_BUFFER
- 	select IIO_BUFFER_CB
- 	help
- 	  Say Y here if you want to use the generic ADC
--- 
-2.27.0
-
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
+@@ -197,6 +197,11 @@ rx_handler_result_t rmnet_rx_handler(str
+ 
+ 	dev = skb->dev;
+ 	port = rmnet_get_port_rcu(dev);
++	if (unlikely(!port)) {
++		atomic_long_inc(&skb->dev->rx_nohandler);
++		kfree_skb(skb);
++		goto done;
++	}
+ 
+ 	switch (port->rmnet_mode) {
+ 	case RMNET_EPMODE_VND:
 
 
