@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CFB2C0B95
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F09242C0AC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389042AbgKWN1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:27:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43090 "EHLO mail.kernel.org"
+        id S1730389AbgKWM2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:28:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730982AbgKWMb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:31:56 -0500
+        id S1730381AbgKWM15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:27:57 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EF44208DB;
-        Mon, 23 Nov 2020 12:31:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A9362076E;
+        Mon, 23 Nov 2020 12:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134715;
-        bh=EXU7sJnhAg4IF3h+mZOvVZLTcZwlXfQZiFgdO0i1qCE=;
+        s=korg; t=1606134476;
+        bh=MyHEBUeDHBGuj3YLSxyV0vX64dd0nNgvUcg3vxgRKlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xDgfZGQsA6ZD5x1iop+kDi1NgKw5jzDGCN7MuzNYFQt1ZW8ilVzzLZ8/mrmW3T7Ei
-         TCHVPI5A7GNC14l5dXs1jrYc+rWvuRDsf8Iio0vG+AuJlH3vzvEX7r9UK4CTte89LF
-         r1OdqOnX9cpedwBU86jIfdtB2QRiFwh+h/FcKhK8=
+        b=WGFZlZL5UBZkxze127/50cae2HIYHqRe+i1iCPDZgNBLZaCroQl1o4U8DnlbkcIgT
+         a5mMrDwAgTP8Ugf59TQe09AaoqWTa752jof3VtFDhVpwzqklZxmN59bdc57LiOHIQY
+         T3BAq/XYEcFnj3EfUxiZtL8QoyvxRYYmq2QS4Yq8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 56/91] MIPS: Alchemy: Fix memleak in alchemy_clk_setup_cpu
+Subject: [PATCH 4.14 34/60] can: peak_usb: fix potential integer overflow on shift of a int
 Date:   Mon, 23 Nov 2020 13:22:16 +0100
-Message-Id: <20201123121812.045541763@linuxfoundation.org>
+Message-Id: <20201123121806.691720950@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit ac3b57adf87ad9bac7e33ca26bbbb13fae1ed62b ]
+[ Upstream commit 8a68cc0d690c9e5730d676b764c6f059343b842c ]
 
-If the clk_register fails, we should free h before
-function returns to prevent memleak.
+The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+arithmetic and then assigned to a signed 64 bit variable. In the case where
+time_ref->adapter->ts_used_bits is 32 or more this can lead to an oveflow.
+Avoid this by shifting using the BIT_ULL macro instead.
 
-Fixes: 474402291a0ad ("MIPS: Alchemy: clock framework integration of onchip clocks")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20201105112427.40688-1-colin.king@canonical.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/alchemy/common/clock.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
-index d129475fd40de..4254ba13c5c51 100644
---- a/arch/mips/alchemy/common/clock.c
-+++ b/arch/mips/alchemy/common/clock.c
-@@ -152,6 +152,7 @@ static struct clk __init *alchemy_clk_setup_cpu(const char *parent_name,
- {
- 	struct clk_init_data id;
- 	struct clk_hw *h;
-+	struct clk *clk;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 9d78ba7776140..c9d86d50bf886 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -180,7 +180,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ 		if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
+ 			/* case when event time (tsw) wraps */
+ 			if (ts < time_ref->ts_dev_1)
+-				delta_ts = 1 << time_ref->adapter->ts_used_bits;
++				delta_ts = BIT_ULL(time_ref->adapter->ts_used_bits);
  
- 	h = kzalloc(sizeof(*h), GFP_KERNEL);
- 	if (!h)
-@@ -164,7 +165,13 @@ static struct clk __init *alchemy_clk_setup_cpu(const char *parent_name,
- 	id.ops = &alchemy_clkops_cpu;
- 	h->init = &id;
+ 		/* Otherwise, sync time counter (ts_dev_2) has wrapped:
+ 		 * handle case when event time (tsn) hasn't.
+@@ -192,7 +192,7 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ 		 *              tsn            ts
+ 		 */
+ 		} else if (time_ref->ts_dev_1 < ts) {
+-			delta_ts = -(1 << time_ref->adapter->ts_used_bits);
++			delta_ts = -BIT_ULL(time_ref->adapter->ts_used_bits);
+ 		}
  
--	return clk_register(NULL, h);
-+	clk = clk_register(NULL, h);
-+	if (IS_ERR(clk)) {
-+		pr_err("failed to register clock\n");
-+		kfree(h);
-+	}
-+
-+	return clk;
- }
- 
- /* AUXPLLs ************************************************************/
+ 		/* add delay between last sync and event timestamps */
 -- 
 2.27.0
 
