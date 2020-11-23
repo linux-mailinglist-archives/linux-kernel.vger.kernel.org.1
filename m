@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470042BFF26
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 05:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC9A2BFF24
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 05:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727245AbgKWEs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 23:48:28 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:50397 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726610AbgKWEs1 (ORCPT
+        id S1727641AbgKWErr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 23:47:47 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:45183 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727119AbgKWErq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 23:48:27 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UGBILz2_1606106903;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGBILz2_1606106903)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 23 Nov 2020 12:48:24 +0800
-Subject: Re: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201120151948.c3f4175ed18ed74e46760b87@linux-foundation.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <ae6509ef-66f5-eabe-2f9c-b28871b68db0@linux.alibaba.com>
-Date:   Mon, 23 Nov 2020 12:46:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Sun, 22 Nov 2020 23:47:46 -0500
+Received: by mail-lf1-f68.google.com with SMTP id z21so21908883lfe.12;
+        Sun, 22 Nov 2020 20:47:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NPKKFFttECtrhCNY5oVMatcAdfTTlnNsNes6pooxhN8=;
+        b=AYtgLdNIHUUOMX4qY3sqqX7ERuT6JEJceSqzmJJ1/95k6vFS3HpfGn/MiydK0mymyU
+         WyujGpaouNbdVeRalvCeVDld8lSd1eW8BGZ1gJH5aeJMJRVa8qRr1Ob8mU2H/ClVjcD8
+         MRnduaYtDY+53Axh3Ir4ZipjGI5ccNPIKGoVnWNkPHmzut6NybLQJKUEYPfNg1Y0Jg5s
+         CtZIPWxzZkRpvFpO3ic4AhxZKpUTeTjavEoo+WyoR5ZqbIbB00gdQ7bOE95ZRILCdFPB
+         2VBxXKJctUPn0pjejpbGrWigoK8/mZCb8YrKUfpyYtziVEoN71gO+vnP8Yp5PXem115k
+         2wxQ==
+X-Gm-Message-State: AOAM533IMJW6G/9ES6Ep54vu8bvPQV4KbNgR7Uzx8LFqOZqsbWvqnLgD
+        Lj16ZHY8tnuTrkK1L3GPdUAcQ/eUg4stcA==
+X-Google-Smtp-Source: ABdhPJx578+8Q/xkNyW1vIDXuvs5ZVDTnTgZNRExsmVXLl52xPEFPHW/W/QJM7BVGnbRSb3nXYcVOQ==
+X-Received: by 2002:ac2:483b:: with SMTP id 27mr11813195lft.551.1606106864573;
+        Sun, 22 Nov 2020 20:47:44 -0800 (PST)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id m16sm1237091lfa.57.2020.11.22.20.47.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Nov 2020 20:47:43 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id o24so16564897ljj.6;
+        Sun, 22 Nov 2020 20:47:43 -0800 (PST)
+X-Received: by 2002:a2e:8546:: with SMTP id u6mr12923580ljj.125.1606106863590;
+ Sun, 22 Nov 2020 20:47:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201120151948.c3f4175ed18ed74e46760b87@linux-foundation.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+References: <20201116125617.7597-1-m.cerveny@computer.org> <20201116125617.7597-7-m.cerveny@computer.org>
+In-Reply-To: <20201116125617.7597-7-m.cerveny@computer.org>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 23 Nov 2020 12:47:32 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67kS3TfoEv+QsoOawuMOaRU89DY3TvJAruF6Tzryzwv_w@mail.gmail.com>
+Message-ID: <CAGb2v67kS3TfoEv+QsoOawuMOaRU89DY3TvJAruF6Tzryzwv_w@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] ARM: dts: sun8i: v3s: Add video engine node
+To:     Martin Cerveny <m.cerveny@computer.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, devel@driverdev.osuosl.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Icenowy Zheng <icenowy@aosc.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 8:58 PM Martin Cerveny <m.cerveny@computer.org> wrote:
+>
+> Allwinner V3S SoC has a video engine.
+> Add a node for it.
+>
+> Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
 
-
-ÔÚ 2020/11/21 ÉÏÎç7:19, Andrew Morton Ð´µÀ:
-> On Fri, 20 Nov 2020 16:27:27 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> 
->> The current relock logical will change lru_lock when found a new
->> lruvec, so if 2 memcgs are reading file or alloc page at same time,
->> they could hold the lru_lock alternately, and wait for each other for
->> fairness attribute of ticket spin lock.
->>
->> This patch will sort that all lru_locks and only hold them once in
->> above scenario. That could reduce fairness waiting for lock reget.
->> Than, vm-scalability/case-lru-file-readtwice could get ~5% performance
->> gain on my 2P*20core*HT machine.
-> 
-> But what happens when all or most of the pages belong to the same
-> lruvec?  This sounds like the common case - won't it suffer?
-> 
-Hi Andrew,
-
-My testing show no regression on this situation, like original centos7,
-The most spending time is on lru_lock for lru sensitive case.
-
-Thanks
-Alex
+Acked-by: Chen-Yu Tsai <wens@csie.org>
