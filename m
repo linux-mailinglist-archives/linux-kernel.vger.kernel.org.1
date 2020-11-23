@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFCB2C0680
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990D82C0665
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730861AbgKWMba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:31:30 -0500
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:52125 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730829AbgKWMbO (ORCPT
+        id S1730208AbgKWMae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730723AbgKWMaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:31:14 -0500
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.51 with ESMTP; 23 Nov 2020 21:31:12 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.121 with ESMTP; 23 Nov 2020 21:31:12 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 23 Nov 2020 21:29:38 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     torvalds@linux-foundation.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com
-Subject: Re: [RFC] Dept(Dependency Tracker) Implementation
-Message-ID: <20201123122938.GA10265@X58A-UD3R>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201123110527.GB9464@X58A-UD3R>
+        Mon, 23 Nov 2020 07:30:20 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A309C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:30:20 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 10so17725435wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hQ9274cJRcisj/k1DnNRPg/AWzSpXOLuASkzuQMMEJk=;
+        b=loC7jwFZZxCVRUrWK3gkEV+nGPQO8gNgJHe9CO8Ho/sjQ+3TR3d9I8PAGUmT32DpLd
+         XF45t36teSRWCy5rRGkpKWWKho4bfob6jVR4z87QtSvdZY+PWwuEG6552uCFfZYGYwWM
+         TeYvw5BHHdArvuLvMR6+jWWE7Gf3wl5/CHG1ip4kmRu8V0NI08HHBZtzJx2Nzs78Lifm
+         ofQpQZSHatSAZOcoxUFcKOu45nQW820RNRa6+iq0oOol4VBdbXPNzbW6QVWqZLRfRJMu
+         8X1JkcflXcrN8J8rJ2VsTx30DouJ3eTevyQcQc/epohTycYBeGuQ+QjUC2P7tdgAjjFH
+         IThw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hQ9274cJRcisj/k1DnNRPg/AWzSpXOLuASkzuQMMEJk=;
+        b=UYYmgaxjgaU6o8ZMIbDU8VgJ88puMztA0Z5/q+WXevUICya2e0pvSZsMrygXygNMx5
+         PDJJ9dYCI4aEKwjRKNeTx4MpukeaAFSBeqMspgo33dc7qaVQzdK9xfAbmtU62LzKIOS8
+         mufXja3ODVg5eedLcNgSXYiz4GWNyXDWk2mrMMR7/t+h+IXzq6bj8iC8PdIv+4BQ8OxK
+         tjAzNBto3ieE5F2LIeilj6BfdDGP59l8syyd8w3vSR/jejwiAUVFp577TVF/T6OfFdSM
+         sMjwRPf0siTn7amq6LcJ2arZefDifIuEKYvGzjQfPy4+xD6n/oZg0Jo0ioWMkZSm7CDJ
+         spsw==
+X-Gm-Message-State: AOAM530cSLcO9ZwwmnVhANoA4NLdmWEB65h1FMDA57AhEFrAO2JWlRp5
+        1izk/Inwi1sEUeTQpyN6NQ1bgw==
+X-Google-Smtp-Source: ABdhPJyDOBP0tlstfPSopOHwDgmQuvftD21pkr092ilv2i4DAaBWKV4gEPJF2xEJaLrKvkQTiu1XiQ==
+X-Received: by 2002:a1c:9804:: with SMTP id a4mr23315406wme.158.1606134619163;
+        Mon, 23 Nov 2020 04:30:19 -0800 (PST)
+Received: from dell ([91.110.221.218])
+        by smtp.gmail.com with ESMTPSA id q16sm19309395wrn.13.2020.11.23.04.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 04:30:18 -0800 (PST)
+Date:   Mon, 23 Nov 2020 12:30:16 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Drew Davenport <ddavenport@chromium.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Fritz Koenig <frkoenig@google.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Jiansong Chen <Jiansong.Chen@amd.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Likun Gao <Likun.Gao@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        nouveau@lists.freedesktop.org,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sonny Jiang <sonny.jiang@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Tao Zhou <tao.zhou1@amd.com>
+Subject: Re: [PATCH 00/40] [Set 8] Rid W=1 warnings from GPU
+Message-ID: <20201123123016.GA4716@dell>
+References: <20201123111919.233376-1-lee.jones@linaro.org>
+ <feda98c5-a677-7bf5-c1e7-2bf311ba8097@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201123110527.GB9464@X58A-UD3R>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <feda98c5-a677-7bf5-c1e7-2bf311ba8097@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 08:05:27PM +0900, Byungchul Park wrote:
-> Hi,
-> 
-> This patchset is too nasty to get reviewed in detail for now.
+On Mon, 23 Nov 2020, Christian König wrote:
 
-I worked Dept against mainline v5.9.
+> Only skimmed over them, but over all looks sane to me.
+> 
+> Series is Acked-by: Christian König <christian.koenig@amd.com>
 
-Thanks,
-Byungchul
+Thanks Christian, much appreciated.
 
-> This have:
-> 
->    1. applying Dept to spinlock/mutex/rwlock/completion
->    2. assigning custom keys or disable maps to avoid false positives
-> 
-> This doesn't have yet (but will be done):
-> 
->    1. proc interfaces e.g. to see dependecies the tool has built,
->    2. applying Dept to rw semaphore and the like,
->    3. applying Dept to lock_page()/unlock_page(),
->    4. assigning custom keys to more places properly,
->    5. replace all manual Lockdep annotations,
->    (and so on..)
-> 
-> But I decided to share it to let others able to test how it works and
-> someone who wants to see the detail able to check the code. The most
-> important thing I'd like to show is what exactly a deadlock detection
-> tool should do.
-> 
-> Turn on CONFIG_DEPT to test it. Feel free to leave any questions if you
-> have.
-> 
-> Thanks,
-> Byungchul
+> Am 23.11.20 um 12:18 schrieb Lee Jones:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > Only 900 (from 5000) to go!
+> > 
+> > Lee Jones (40):
+> >    drm/radeon/radeon_device: Consume our own header where the prototypes
+> >      are located
+> >    drm/amd/amdgpu/amdgpu_ttm: Add description for 'page_flags'
+> >    drm/amd/amdgpu/amdgpu_ib: Provide docs for 'amdgpu_ib_schedule()'s
+> >      'job' param
+> >    drm/amd/amdgpu/amdgpu_virt: Correct possible copy/paste or doc-rot
+> >      misnaming issue
+> >    drm/amd/amdgpu/cik_ih: Supply description for 'ih' in
+
+[...]
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
