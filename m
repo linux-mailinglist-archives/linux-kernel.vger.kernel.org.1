@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08F32C174B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A62A2C174E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbgKWVGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:06:45 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:2421 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729905AbgKWVGo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:06:44 -0500
-X-IronPort-AV: E=Sophos;i="5.78,364,1599516000"; 
-   d="scan'208";a="479042964"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 22:06:42 +0100
-Date:   Mon, 23 Nov 2020 22:06:42 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-cc:     linux-kernel@vger.kernel.org, michal.lkml@markovi.net,
-        nicolas.palix@imag.fr, cocci@systeme.lip6.fr, Gilles.Muller@lip6.fr
-Subject: Re: [Cocci] [PATCH v2] scripts: coccicheck: Correct usage of make
- coccicheck
-In-Reply-To: <20201118082705.ympf6ulol6wua4cl@adolin>
-Message-ID: <alpine.DEB.2.22.394.2011232204550.2682@hadrien>
-References: <20201118082705.ympf6ulol6wua4cl@adolin>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1730079AbgKWVGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:06:53 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:64510 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729905AbgKWVGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 16:06:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606165612; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=pVDvnBZoRhuxsGugrA9S3QxKjdkQCI4rMRDzzBJfqdg=;
+ b=F9GdK+rMihKSGxfC2/VsUU5rBNhe6p0MBYLt2tnr6YLfyNUCd1HRQjgGVo9aaVTjZnlXcsn6
+ gIiwhR949FgE2B68MHsmHvUWDlFal66nXEM4g56QMqeITEywqUUtQjEWK/TxBHToAGBnThux
+ wOWMrBnaRviAAgQutsKhtH1tzYE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fbc246bd64ea0b7030e46cc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 21:06:51
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CA1ECC433ED; Mon, 23 Nov 2020 21:06:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A11C0C433C6;
+        Mon, 23 Nov 2020 21:06:49 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Nov 2020 13:06:49 -0800
+From:   abhinavk@codeaurora.org
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+Subject: Re: [Freedreno] [PATCH 11/40] drm/msm/disp/dpu1/dpu_hw_blk: Add one
+ missing and remove an extra param description
+In-Reply-To: <20201123111919.233376-12-lee.jones@linaro.org>
+References: <20201123111919.233376-1-lee.jones@linaro.org>
+ <20201123111919.233376-12-lee.jones@linaro.org>
+Message-ID: <bd9e7b914116e49b60b082fe40daf78c@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, 18 Nov 2020, Sumera Priyadarsini wrote:
-
-> The command "make coccicheck C=1 CHECK=scripts/coccicheck" results in the
-> error:
->         ./scripts/coccicheck: line 65: -1: shift count out of range
->
-> This happens because every time the C variable is specified,
-> the shell arguments need to be "shifted" in order to take only
-> the last argument, which is the C file to test. These shell arguments
-> mostly comprise flags that have been set in the Makefile. However,
-> when coccicheck is specified in the make command as a rule, the
-> number of shell arguments is zero, thus passing the invalid value -1
-> to the shift command, resulting in an error.
->
-> Modify coccicheck to print correct usage of make coccicheck so as to
-> avoid the error.
->
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+On 2020-11-23 03:18, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_blk.c:28: warning: Function
+> parameter or member 'hw_blk' not described in 'dpu_hw_blk_init'
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_blk.c:120: warning: Excess
+> function parameter 'free_blk' description in 'dpu_hw_blk_put'
+> 
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
 > ---
-> Changes in v2:
-> - Move test to only display error message
-> ---
->  scripts/coccicheck | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/scripts/coccicheck b/scripts/coccicheck
-> index 209bb0427b43..f3b8bf505c5f 100755
-> --- a/scripts/coccicheck
-> +++ b/scripts/coccicheck
-> @@ -61,6 +61,18 @@ COCCIINCLUDE=${COCCIINCLUDE// -include/ --include}
->  if [ "$C" = "1" -o "$C" = "2" ]; then
->      ONLINE=1
->
-> +    if [[ $# -le 0 ]]; then
-> +	    echo ''
-> +	    echo 'Specifying both the variable "C" and rule "coccicheck" in the make
-> +command results in a shift count error.'
-> +	    echo ''
-> +	    echo 'Try specifying "scripts/coccicheck" as a value for the CHECK variable instead.'
-> +	    echo ''
-> +	    echo 'Example:	make C=2 CHECK=scripts/coccicheck drivers/staging/wfx/hi_t.o'
-
-I think that this file doesn't exist any more.  Even though you can't
-guarantee that any particular file will be around forever, a file in
-staging is probably not a good choice, since they are usually on their way
-in or on the way out of the kernel.
-
-julia
-
-> +	    echo ''
-> +	    exit 1
-> +    fi
-> +
->      # Take only the last argument, which is the C file to test
->      shift $(( $# - 1 ))
->      OPTIONS="$COCCIINCLUDE $1"
-> --
-> 2.25.1
->
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
->
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_blk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_blk.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_blk.c
+> index ca26666d2af91..819b26e660b9c 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_blk.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_blk.c
+> @@ -19,6 +19,7 @@ static LIST_HEAD(dpu_hw_blk_list);
+> 
+>  /**
+>   * dpu_hw_blk_init - initialize hw block object
+> + * @hw_blk: pointer to hw block object
+>   * @type: hw block type - enum dpu_hw_blk_type
+>   * @id: instance id of the hw block
+>   * @ops: Pointer to block operations
+> @@ -114,7 +115,6 @@ struct dpu_hw_blk *dpu_hw_blk_get(struct
+> dpu_hw_blk *hw_blk, u32 type, int id)
+>  /**
+>   * dpu_hw_blk_put - put hw_blk to free pool if decremented refcount is 
+> zero
+>   * @hw_blk: hw block to be freed
+> - * @free_blk: function to be called when reference count goes to zero
+>   */
+>  void dpu_hw_blk_put(struct dpu_hw_blk *hw_blk)
+>  {
