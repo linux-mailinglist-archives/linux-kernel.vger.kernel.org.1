@@ -2,62 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465382C0118
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579462C011A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbgKWIFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 03:05:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgKWIFQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 03:05:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5584CC0613CF;
-        Mon, 23 Nov 2020 00:05:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6vGNH6/LtgD9H2B7jY2SC28nVQh3dS5TfEwthu4Yqq0=; b=ZAqo9NfKjGkL2SJi0Et2eFTHHn
-        SyVCEbdUmUIfwpdvBuuWvFBs+XXOd7k1xLJehh+E7u1OeHRW7tdsHvERCOFJ18rpuaDwZrh2Bpf4p
-        GHifpGgC0MOM2Cj739hSkfHtJxZ7U412O1Tzn65r8/mLOHMADt9YJdfREPFf2EtryGT+OIY+r4Nz1
-        WBeADPY66kCsCM8yUaREC77lOZ09vI2AT1QsaaFr1N1hHvNXhVevUpoQ2ZnJ531G4XlESqBTwNfAN
-        9Se0TiLHstfosyW2NcAEDqbCjU1U+jZvKjRy4hDToRxwrdt597/uGrDfWAgjbGxLFhVXqyo8FblrG
-        HduUcWMw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kh6qQ-000852-Hy; Mon, 23 Nov 2020 08:05:06 +0000
-Date:   Mon, 23 Nov 2020 08:05:06 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
-Message-ID: <20201123080506.GA30578@infradead.org>
-References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
- <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+        id S1728214AbgKWIFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 03:05:41 -0500
+Received: from ozlabs.org ([203.11.71.1]:59681 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgKWIFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 03:05:40 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cffpl0V1hz9sRR;
+        Mon, 23 Nov 2020 19:05:34 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606118737;
+        bh=jt3SU2wmecYt6zydgV+VjfimB4PbRhZ32q060YXUudY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tbcxjoTPAW9F9LHhPHWV/E9iknCe9chILE4Wh7vdmX+na0k5IoG0nz15Wm+SbHo+Q
+         Xj8cq7U3zAj7mGj4g9rIYdjfXwgGKH+aLE6aJUcKHYXGQ0y5n58jSFCG5Zqg2YwKxh
+         FIwGVAaEq5Hj859owFMRlVNn6C6n5xeZ72H+akaG+57jHTiwA69UOmHMFcUfuqJoS4
+         rK06n72/FO8wAoQam7V2ZM+MR5OufEXZHbeGPkHXcw84iaeNmNn9xoxhZi12jzDab2
+         a/Oiy7caM2rwUXHw4yIASSS1GkOfv7rZaOQ7CxKjkqKHDM2ciDAiv/Oe7IdIZws+tc
+         jzFoEY+zzlGlw==
+Date:   Mon, 23 Nov 2020 19:05:34 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: linux-next: manual merge of the akpm-current tree with the tip tree
+Message-ID: <20201123190534.6c151a96@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: multipart/signed; boundary="Sig_/uuHS8JhepAUgrZmiNp1ILVS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 02:13:30PM +0000, David Howells wrote:
-> Switch to using a table of operations.  In a future patch the individual
-> methods will be split up by type.  For the moment, however, the ops tables
-> just jump directly to the old functions - which are now static.  Inline
-> wrappers are provided to jump through the hooks.
-> 
-> Signed-off-by: David Howells <dhowells@redhat.com>
+--Sig_/uuHS8JhepAUgrZmiNp1ILVS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Please run performance tests.  I think the indirect calls could totally
-wreck things like high performance direct I/O, especially using io_uring
-on x86.
+Hi all,
+
+Today's linux-next merge of the akpm-current tree got a conflict in:
+
+  include/linux/mm.h
+
+between commit:
+
+  95bb7c42ac8a ("mm: Add 'mprotect' hook to struct vm_operations_struct")
+
+from the tip tree and commit:
+
+  6dd8e5dab7c1 ("mremap: don't allow MREMAP_DONTUNMAP on special_mappings a=
+nd aio")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/mm.h
+index e877401baae6,cd50a37aa76d..000000000000
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@@ -557,15 -557,9 +557,16 @@@ enum page_entry_size=20
+  struct vm_operations_struct {
+  	void (*open)(struct vm_area_struct * area);
+  	void (*close)(struct vm_area_struct * area);
+- 	int (*split)(struct vm_area_struct * area, unsigned long addr);
+- 	int (*mremap)(struct vm_area_struct * area);
++ 	/* Called any time before splitting to check if it's allowed */
++ 	int (*may_split)(struct vm_area_struct *area, unsigned long addr);
++ 	int (*mremap)(struct vm_area_struct *area, unsigned long flags);
+ +	/*
+ +	 * Called by mprotect() to make driver-specific permission
+ +	 * checks before mprotect() is finalised.   The VMA must not
+ +	 * be modified.  Returns 0 if eprotect() can proceed.
+ +	 */
+ +	int (*mprotect)(struct vm_area_struct *vma, unsigned long start,
+ +			unsigned long end, unsigned long newflags);
+  	vm_fault_t (*fault)(struct vm_fault *vmf);
+  	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+  			enum page_entry_size pe_size);
+
+--Sig_/uuHS8JhepAUgrZmiNp1ILVS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+7bU4ACgkQAVBC80lX
+0GyJ6QgAmR1jBRG0FvJlIvp6CxHqk1gpALARLqawPVzSPOWZB+DFwguDHajzrMWC
+XLEXSt+cAhQXwf1J8nVVrJe/yK5EG4gWaS+x+TcABZkZs9IdnE4loPoJPuZWM2Z2
+XKKSlfBqmQTKZi1Jb+Hi1YGYdT7MOvHjSGtXATjGtMHqXpgeNIhd4tm222MgxviT
+A31QqJMu9t7yUUy0y7Q5K957I6RV18OAD19ZIUhwwXjz4PjVwc7LZBsr/m0CJiA4
+NqUlvsTS3J/hlOQGI04DZYzGdvjlwHwqcLweLS3jjtCpm2wp0BQDBhs9AJiK1Zfk
+sEFQmi9qGNbM+AJnMw3tvgjcgGEtZQ==
+=/fc6
+-----END PGP SIGNATURE-----
+
+--Sig_/uuHS8JhepAUgrZmiNp1ILVS--
