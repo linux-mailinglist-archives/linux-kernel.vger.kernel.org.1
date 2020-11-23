@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A7C2C12C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760302C12C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390625AbgKWR77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:59:59 -0500
-Received: from mga12.intel.com ([192.55.52.136]:8419 "EHLO mga12.intel.com"
+        id S2390636AbgKWSAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:00:08 -0500
+Received: from mga18.intel.com ([134.134.136.126]:9945 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390610AbgKWR76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:59:58 -0500
-IronPort-SDR: brXQtO02mmoWVzujk2ibdrP2Q0oG7l6iA4vdJto4ylCaJn0vhI3DlSt3CxQfXPli1hi7qQFV5v
- V49181bBUzcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="151072636"
+        id S2390610AbgKWSAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:00:07 -0500
+IronPort-SDR: pBNKLOF1sk6eefNQ+eje0MH4tymOhndepAsnWV7Xbd9VqzZ1QxhPJSzLE2GgNKyR5j7hsYDh5v
+ wmGJPJdqek4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="159581607"
 X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="151072636"
+   d="scan'208";a="159581607"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:59:58 -0800
-IronPort-SDR: f8T1J64kku1oms2cBb/glw0QI/tIYtsZ3XN5tvBdfvuRCX3mURFNzaUmC7IuN6z02uS+fTEs4r
- c1fKByUb9WaA==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 10:00:05 -0800
+IronPort-SDR: uwGS3K3pbOs/n8e3wfn9KSb+BAlxZAUWi5s9FXtFaA2IazgHHzCxCxY6XTxNpdDDAwGpPReZG2
+ LHtz1I4W769g==
 X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="478196775"
+   d="scan'208";a="536180669"
 Received: from suygunge-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.108])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:59:56 -0800
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 10:00:01 -0800
 From:   Jani Nikula <jani.nikula@intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Christoph Hellwig <hch@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        intel-gfx@lists.freedesktop.org, jani.nikula@intel.com
-Subject: [PATCH 3/9] relay: make create_buf_file and remove_buf_file callbacks mandatory
-Date:   Mon, 23 Nov 2020 19:59:23 +0200
-Message-Id: <88003c1527386b93036e286e7917f1e33aec84ac.1606153547.git.jani.nikula@intel.com>
+        intel-gfx@lists.freedesktop.org, jani.nikula@intel.com,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        ath11k@lists.infradead.org, ath10k@lists.infradead.org,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Subject: [PATCH 4/9] relay: allow the use of const callback structs
+Date:   Mon, 23 Nov 2020 19:59:24 +0200
+Message-Id: <cc3ff292e4eb4fdc56bee3d690c7b8e39209cd37.1606153547.git.jani.nikula@intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1606153547.git.jani.nikula@intel.com>
 References: <cover.1606153547.git.jani.nikula@intel.com>
@@ -43,102 +48,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All clients provide create_buf_file and remove_buf_file callbacks, and
-they're required for relay to make sense. There is no point in them
-being optional.
+None of the relay users require the use of mutable structs for
+callbacks, however the relay code does. Instead of assigning the default
+callback for subbuf_start, add a wrapper to conditionally call the
+client callback if available, and fall back to default behaviour
+otherwise.
 
-Also document whether each callback is mandatory/optional.
+This lets all relay users make their struct rchan_callbacks const data.
 
-Suggested-by: Christoph Hellwig <hch@infradead.org>
+Cc: linux-block@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: ath11k@lists.infradead.org
+Cc: ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org
+Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Cc: intel-gfx@lists.freedesktop.org
 Cc: Christoph Hellwig <hch@infradead.org>
 Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+
 ---
- include/linux/relay.h |  6 ++++++
- kernel/relay.c        | 26 +-------------------------
- 2 files changed, 7 insertions(+), 25 deletions(-)
+
+v2: Simplify after nuking some callbacks and making some others
+mandatory in previous patches, as per Christoph's review comments.
+
+I thought about adding wrappers for the now-mandatory create_buf_file
+and remove_buf_file as well, for consistency, but ended up leaving them
+out.
+---
+ include/linux/relay.h |  4 ++--
+ kernel/relay.c        | 35 +++++++++++------------------------
+ 2 files changed, 13 insertions(+), 26 deletions(-)
 
 diff --git a/include/linux/relay.h b/include/linux/relay.h
-index b3c4f49f6951..99d024475ba5 100644
+index 99d024475ba5..72b876dd5cb8 100644
 --- a/include/linux/relay.h
 +++ b/include/linux/relay.h
-@@ -89,6 +89,8 @@ struct rchan_callbacks
- 	 * The client should return 1 to continue logging, 0 to stop
- 	 * logging.
- 	 *
-+	 * This callback is optional.
-+	 *
- 	 * NOTE: subbuf_start will also be invoked when the buffer is
- 	 *       created, so that the first sub-buffer can be initialized
- 	 *       if necessary.  In this case, prev_subbuf will be NULL.
-@@ -122,6 +124,8 @@ struct rchan_callbacks
- 	 * cause relay_open() to create a single global buffer rather
- 	 * than the default set of per-cpu buffers.
- 	 *
-+	 * This callback is mandatory.
-+	 *
- 	 * See Documentation/filesystems/relay.rst for more info.
- 	 */
- 	struct dentry *(*create_buf_file)(const char *filename,
-@@ -139,6 +143,8 @@ struct rchan_callbacks
- 	 * channel buffer.
- 	 *
- 	 * The callback should return 0 if successful, negative if not.
-+	 *
-+	 * This callback is mandatory.
- 	 */
- 	int (*remove_buf_file)(struct dentry *dentry);
- };
+@@ -62,7 +62,7 @@ struct rchan
+ 	size_t subbuf_size;		/* sub-buffer size */
+ 	size_t n_subbufs;		/* number of sub-buffers per buffer */
+ 	size_t alloc_size;		/* total buffer size allocated */
+-	struct rchan_callbacks *cb;	/* client callbacks */
++	const struct rchan_callbacks *cb; /* client callbacks */
+ 	struct kref kref;		/* channel refcount */
+ 	void *private_data;		/* for user-defined data */
+ 	size_t last_toobig;		/* tried to log event > subbuf size */
+@@ -157,7 +157,7 @@ struct rchan *relay_open(const char *base_filename,
+ 			 struct dentry *parent,
+ 			 size_t subbuf_size,
+ 			 size_t n_subbufs,
+-			 struct rchan_callbacks *cb,
++			 const struct rchan_callbacks *cb,
+ 			 void *private_data);
+ extern int relay_late_setup_files(struct rchan *chan,
+ 				  const char *base_filename,
 diff --git a/kernel/relay.c b/kernel/relay.c
-index d9b8185161a8..dd4ec4ec07f3 100644
+index dd4ec4ec07f3..02bdba5372cb 100644
 --- a/kernel/relay.c
 +++ b/kernel/relay.c
-@@ -271,26 +271,6 @@ static int subbuf_start_default_callback (struct rchan_buf *buf,
- 	return 1;
- }
+@@ -252,19 +252,14 @@ EXPORT_SYMBOL_GPL(relay_buf_full);
+  * High-level relay kernel API and associated functions.
+  */
  
 -/*
-- * create_buf_file_create() default callback.  Does nothing.
+- * rchan_callback implementations defining default channel behavior.  Used
+- * in place of corresponding NULL values in client callback struct.
 - */
--static struct dentry *create_buf_file_default_callback(const char *filename,
--						       struct dentry *parent,
--						       umode_t mode,
--						       struct rchan_buf *buf,
--						       int *is_global)
--{
--	return NULL;
--}
 -
 -/*
-- * remove_buf_file() default callback.  Does nothing.
+- * subbuf_start() default callback.  Does nothing.
 - */
--static int remove_buf_file_default_callback(struct dentry *dentry)
--{
--	return -EINVAL;
--}
--
- /**
-  *	wakeup_readers - wake up readers waiting on a channel
-  *	@work: contains the channel buffer
-@@ -467,10 +447,6 @@ static void setup_callbacks(struct rchan *chan,
+-static int subbuf_start_default_callback (struct rchan_buf *buf,
+-					  void *subbuf,
+-					  void *prev_subbuf,
+-					  size_t prev_padding)
++/* subbuf_start callback wrapper */
++static int cb_subbuf_start(struct rchan_buf *buf, void *subbuf,
++			   void *prev_subbuf, size_t prev_padding)
  {
- 	if (!cb->subbuf_start)
- 		cb->subbuf_start = subbuf_start_default_callback;
--	if (!cb->create_buf_file)
--		cb->create_buf_file = create_buf_file_default_callback;
--	if (!cb->remove_buf_file)
--		cb->remove_buf_file = remove_buf_file_default_callback;
- 	chan->cb = cb;
++	if (buf->chan->cb->subbuf_start)
++		return buf->chan->cb->subbuf_start(buf, subbuf,
++						   prev_subbuf, prev_padding);
++
+ 	if (relay_buf_full(buf))
+ 		return 0;
+ 
+@@ -314,7 +309,7 @@ static void __relay_reset(struct rchan_buf *buf, unsigned int init)
+ 	for (i = 0; i < buf->chan->n_subbufs; i++)
+ 		buf->padding[i] = 0;
+ 
+-	buf->chan->cb->subbuf_start(buf, buf->data, NULL, 0);
++	cb_subbuf_start(buf, buf->data, NULL, 0);
  }
  
-@@ -530,7 +506,7 @@ struct rchan *relay_open(const char *base_filename,
- 		return NULL;
- 	if (subbuf_size > UINT_MAX / n_subbufs)
- 		return NULL;
--	if (!cb)
-+	if (!cb || !cb->create_buf_file || !cb->remove_buf_file)
- 		return NULL;
+ /**
+@@ -442,14 +437,6 @@ static void relay_close_buf(struct rchan_buf *buf)
+ 	kref_put(&buf->kref, relay_remove_buf);
+ }
  
- 	chan = kzalloc(sizeof(struct rchan), GFP_KERNEL);
+-static void setup_callbacks(struct rchan *chan,
+-				   struct rchan_callbacks *cb)
+-{
+-	if (!cb->subbuf_start)
+-		cb->subbuf_start = subbuf_start_default_callback;
+-	chan->cb = cb;
+-}
+-
+ int relay_prepare_cpu(unsigned int cpu)
+ {
+ 	struct rchan *chan;
+@@ -495,7 +482,7 @@ struct rchan *relay_open(const char *base_filename,
+ 			 struct dentry *parent,
+ 			 size_t subbuf_size,
+ 			 size_t n_subbufs,
+-			 struct rchan_callbacks *cb,
++			 const struct rchan_callbacks *cb,
+ 			 void *private_data)
+ {
+ 	unsigned int i;
+@@ -529,7 +516,7 @@ struct rchan *relay_open(const char *base_filename,
+ 		chan->has_base_filename = 1;
+ 		strlcpy(chan->base_filename, base_filename, NAME_MAX);
+ 	}
+-	setup_callbacks(chan, cb);
++	chan->cb = cb;
+ 	kref_init(&chan->kref);
+ 
+ 	mutex_lock(&relay_channels_mutex);
+@@ -712,7 +699,7 @@ size_t relay_switch_subbuf(struct rchan_buf *buf, size_t length)
+ 	new_subbuf = buf->subbufs_produced % buf->chan->n_subbufs;
+ 	new = buf->start + new_subbuf * buf->chan->subbuf_size;
+ 	buf->offset = 0;
+-	if (!buf->chan->cb->subbuf_start(buf, new, old, buf->prev_padding)) {
++	if (!cb_subbuf_start(buf, new, old, buf->prev_padding)) {
+ 		buf->offset = buf->chan->subbuf_size + 1;
+ 		return 0;
+ 	}
 -- 
 2.20.1
 
