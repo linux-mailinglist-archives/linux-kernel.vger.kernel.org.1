@@ -2,384 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097C42C0143
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA102C0179
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgKWITq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 03:19:46 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:41033 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgKWITq (ORCPT
+        id S1727667AbgKWIbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 03:31:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgKWIbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 03:19:46 -0500
-Received: by mail-ed1-f65.google.com with SMTP id t9so16140805edq.8;
-        Mon, 23 Nov 2020 00:19:43 -0800 (PST)
+        Mon, 23 Nov 2020 03:31:49 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C509C0613CF;
+        Mon, 23 Nov 2020 00:31:48 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id b6so3793727pfp.7;
+        Mon, 23 Nov 2020 00:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A2OCYPW48+EaJEiSvyQJ2+kFYlsiz/LUK7yoFIj7s/0=;
+        b=ARYHclAhefMjQHT4pgy8KkNlOofEUe0LkbQSPGkdnzqUV2+hD6tBxSunTjYE5sCLw5
+         uvuR9gciPL3KO0c8LfdT/WsDQyWWd+8g4+W/ZeM7hApLOw7CHS6PwFO0uXjUfPIpW8Rd
+         atZazrkI4VZL27dree/jNephYhEoySeNnC0jFyiocUZ8WlGVYoIqytNkHjT/0gmiGaOx
+         S2qdJszwvrGaAonzGFg9OAPsvqYO5yNiCoSt7nS2C8dHNUDX2EvA1Pa+Sj0kgJawS9td
+         uJZB6Sp8xX5ouYYG2dtlYMSJ4/ani1XY3s1n5qXaCSlAnTxylkV4YOteyF2R5YeO31N9
+         txqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vGHEv9tO/TuylPKziKq+WNYNan9WllujiyJ2jgN6u4c=;
-        b=ZWwb+RJ8BLMdi86ulY/XSFJ132pR719ZB+1L+ditgobp65tN/dsjKJFmSrHv6caYnu
-         Ju74IGYBIcTlMPU/j+abFYTPcdFGMmEK6zcNYYy4NUDG1DpXniNtDOJieSAHlXJw0pw5
-         b4Thhu/sIg/c7NFuR8fLbSXAYdPCDk187gxLsFSIKURP50lKMQneFDDcw+BOxZT42c4b
-         3cG4eYrFpMo2uhtWqhfCAXVnd3Dm66UwCdEQUxWR0PEPOQttbitsHy/Fh5IwOhSs66mF
-         cs4ZX7MQqa97I7YUyYprF2KOytSZ5bVGmCP+QRmpLQOuBD5rAy6u3UQeb+mjkqkGrVHW
-         DuHA==
-X-Gm-Message-State: AOAM530QDrFzZHyEu0jo5xBVSoh2pPscXuQjtGEcPnA0ONzJ2f5Ub3rV
-        CZsL4YvnDbtcvZ7vYr3m9do=
-X-Google-Smtp-Source: ABdhPJzjbkWc6uWsPqF+tYZNsTY0q8W9kDTcHzlKde+Vbda30Si58oOoq+NJaPx8hiDSCqnW57MAOQ==
-X-Received: by 2002:aa7:d3cc:: with SMTP id o12mr5276583edr.331.1606119582909;
-        Mon, 23 Nov 2020 00:19:42 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id bx21sm4531740ejc.26.2020.11.23.00.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 00:19:41 -0800 (PST)
-Date:   Mon, 23 Nov 2020 09:19:40 +0100
-From:   "krzk@kernel.org" <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon@samsung.com>
-Cc:     "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next 2/2] net: nfc: s3fwrn5: Support a UART interface
-Message-ID: <20201123081940.GA9323@kozik-lap>
-References: <CGME20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93@epcms2p5>
- <20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93@epcms2p5>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A2OCYPW48+EaJEiSvyQJ2+kFYlsiz/LUK7yoFIj7s/0=;
+        b=qA6MKfmz51/1KbXqXchcmjyinHT+QZPAiuQj+ZGXw/UQw15r2ohlIEbL5u/OWzTGUc
+         dIB15d2Qy2TTdw94thjsPhTLcp6H6u47NXt/+re7dAqGROarapodTMfC4a6Z59UHGxAN
+         Ks8xomn8BZ8bxzFD/B7KsPSL8qvhMdE4b4o6VaCstj7LUvFG05T72mPDkKb6tFjHy/Ys
+         WyfRFKEzQFi8ZMnx8380hBx633h9KHSbiJfHadzIyvOcZzBo3l8j/yTIyxnJw3WnsUPv
+         BPgJgjviO5tFqkiacpSwWNUamjLR1XXs5HS3Om85pABBDRNLkxUkCvAqfP/QMdsYitPI
+         wemQ==
+X-Gm-Message-State: AOAM533XJu/KPXzlmqlX4zdkzhemTJCNo7INnXMpLnWo2/PkN2i0Zc8E
+        sY7sQ+BEYjEAGTIxj98x/ZY8Z4hDL7/sZN0dHajpI51wcMw=
+X-Google-Smtp-Source: ABdhPJyxRfMW6NRCYI589d8PdoA0y+Re41zIClMnGwIgTP3GCGEMMmHLctaZH8yt14IL9Xa5GUD3Cegsb3DsGBGuwSw=
+X-Received: by 2002:a65:560b:: with SMTP id l11mr27674361pgs.63.1606120307543;
+ Mon, 23 Nov 2020 00:31:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93@epcms2p5>
+References: <20201120054036.15199-1-ms@dev.tdt.de> <20201120054036.15199-3-ms@dev.tdt.de>
+ <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
+ <CAJht_EP_oqCDs6mMThBZNtz4sgpbyQgMhKkHeqfS_7JmfEzfQg@mail.gmail.com> <87a620b6a55ea8386bffefca0a1f8b77@dev.tdt.de>
+In-Reply-To: <87a620b6a55ea8386bffefca0a1f8b77@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Mon, 23 Nov 2020 00:31:36 -0800
+Message-ID: <CAJht_EPc8MF1TjznSjWTPyMbsrw3JVqxST5g=eF0yf_zasUdeA@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 2/5] net/lapb: support netdev events
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:56:58PM +0900, Bongsu Jeon wrote:
-> Since S3FWRN82 NFC Chip, The UART interface can be used.
-> S3FWRN82 uses NCI protocol and supports I2C and UART interface.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+On Sun, Nov 22, 2020 at 10:55 PM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> No, they aren't independent. The carrier can only be up if the device /
+> interface is UP. And as far as I can see a NETDEV_CHANGE event will also
+> only be generated on interfaces that are UP.
+>
+> So you can be sure, that if there is a NETDEV_CHANGE event then the
+> device is UP.
 
-Please start sending emails properly, e.g. with git send-email, so all
-your patches in the patchset are referencing the first patch.
+OK. Thanks for your explanation!
 
-> ---
->  drivers/nfc/s3fwrn5/Kconfig  |  12 ++
->  drivers/nfc/s3fwrn5/Makefile |   2 +
->  drivers/nfc/s3fwrn5/uart.c   | 250 +++++++++++++++++++++++++++++++++++
->  3 files changed, 264 insertions(+)
->  create mode 100644 drivers/nfc/s3fwrn5/uart.c
-> 
-> diff --git a/drivers/nfc/s3fwrn5/Kconfig b/drivers/nfc/s3fwrn5/Kconfig
-> index 3f8b6da58280..6f88737769e1 100644
-> --- a/drivers/nfc/s3fwrn5/Kconfig
-> +++ b/drivers/nfc/s3fwrn5/Kconfig
-> @@ -20,3 +20,15 @@ config NFC_S3FWRN5_I2C
->  	  To compile this driver as a module, choose m here. The module will
->  	  be called s3fwrn5_i2c.ko.
->  	  Say N if unsure.
-> +
-> +config NFC_S3FWRN82_UART
-> +	tristate "Samsung S3FWRN82 UART support"
-> +	depends on NFC_NCI && SERIAL_DEV_BUS
+> I removed the NETDEV_UP handling because I don't think it makes sense
+> to implicitly try to establish layer2 (LAPB) if there is no carrier.
 
-What about SERIAL_DEV_BUS as module? Shouldn't this be
-SERIAL_DEV_BUS || !SERIAL_DEV_BUS?
+As I understand, when the device goes up, the carrier can be either
+down or up. Right?
 
-> +	select NFC_S3FWRN5
-> +	help
-> +	  This module adds support for a UART interface to the S3FWRN82 chip.
-> +	  Select this if your platform is using the UART bus.
-> +
-> +	  To compile this driver as a module, choose m here. The module will
-> +	  be called s3fwrn82_uart.ko.
-> +	  Say N if unsure.
-> diff --git a/drivers/nfc/s3fwrn5/Makefile b/drivers/nfc/s3fwrn5/Makefile
-> index d0ffa35f50e8..d1902102060b 100644
-> --- a/drivers/nfc/s3fwrn5/Makefile
-> +++ b/drivers/nfc/s3fwrn5/Makefile
-> @@ -5,6 +5,8 @@
->  
->  s3fwrn5-objs = core.o firmware.o nci.o
->  s3fwrn5_i2c-objs = i2c.o
-> +s3fwrn82_uart-objs = uart.o
->  
->  obj-$(CONFIG_NFC_S3FWRN5) += s3fwrn5.o
->  obj-$(CONFIG_NFC_S3FWRN5_I2C) += s3fwrn5_i2c.o
-> +obj-$(CONFIG_NFC_S3FWRN82_UART) += s3fwrn82_uart.o
-> diff --git a/drivers/nfc/s3fwrn5/uart.c b/drivers/nfc/s3fwrn5/uart.c
-> new file mode 100644
-> index 000000000000..b3c36a5b28d3
-> --- /dev/null
-> +++ b/drivers/nfc/s3fwrn5/uart.c
-> @@ -0,0 +1,250 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * UART Link Layer for S3FWRN82 NCI based Driver
-> + *
-> + * Copyright (C) 2020 Samsung Electronics
-> + * Author: Bongsu Jeon <bongsu.jeon@samsung.com>
+If this is true, when a device goes up and the carrier then goes up
+after that, L2 will automatically connect, but if a device goes up and
+the carrier is already up, L2 will not automatically connect. I think
+it might be better to eliminate this difference in handling. It might
+be better to make it automatically connect in both situations, or in
+neither situations.
 
-You copied a lot from existing i2c.c. Please keep also the original
-copyrights.
+If you want to go with the second way (auto connect in neither
+situations), the next (3rd) patch of this series might be also not
+needed.
 
-> + * All rights reserved.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/nfc.h>
-> +#include <linux/netdevice.h>
-> +#include <linux/of.h>
-> +#include <linux/serdev.h>
-> +#include <linux/gpio.h>
-> +#include <linux/of_gpio.h>
-> +
-> +#include "s3fwrn5.h"
-> +
-> +#define S3FWRN82_UART_DRIVER_NAME "s3fwrn82_uart"
+I just want to make the behavior of LAPB more consistent. I think we
+should either make LAPB auto-connect in all situations, or make LAPB
+wait for L3's instruction to connect in all situations.
 
-Remove the define, it is used only once.
+> And with the first X.25 connection request on that interface, it will
+> be established anyway by x25_transmit_link().
+>
+> I've tested it here with an HDLC WAN Adapter and it works as expected.
+>
+> These are also the ideal conditions for the already mentioned "on
+> demand" scenario. The only necessary change would be to call
+> x25_terminate_link() on an interface after clearing the last X.25
+> session.
+>
+> > On NETDEV_GOING_DOWN, we can also check the carrier status first and
+> > if it is down, we don't need to call lapb_disconnect_request.
+>
+> This is not necessary because lapb_disconnect_request() checks the
+> current state. And if the carrier is DOWN then the state should also be
+> LAPB_STATE_0 and so lapb_disconnect_request() does nothing.
 
-> +#define S3FWRN82_NCI_HEADER 3
-> +#define S3FWRN82_NCI_IDX 2
-> +#define S3FWRN82_EN_WAIT_TIME 20
-> +#define NCI_SKB_BUFF_LEN 258
-> +
-> +struct s3fwrn82_uart_phy {
-> +	struct serdev_device *ser_dev;
-> +	struct nci_dev *ndev;
-> +	struct sk_buff *recv_skb;
-> +
-> +	unsigned int gpio_en;
-> +	unsigned int gpio_fw_wake;
-> +
-> +	/* mutex is used to synchronize */
-
-Please do not write obvious comments. Mutex is always used to
-synchronize, what else is it for? Instead you must describe what exactly
-is protected with mutex.
-
-> +	struct mutex mutex;
-> +	enum s3fwrn5_mode mode;
-> +};
-> +
-> +static void s3fwrn82_uart_set_wake(void *phy_id, bool wake)
-> +{
-> +	struct s3fwrn82_uart_phy *phy = phy_id;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	gpio_set_value(phy->gpio_fw_wake, wake);
-> +	msleep(S3FWRN82_EN_WAIT_TIME);
-> +	mutex_unlock(&phy->mutex);
-> +}
-> +
-> +static void s3fwrn82_uart_set_mode(void *phy_id, enum s3fwrn5_mode mode)
-> +{
-> +	struct s3fwrn82_uart_phy *phy = phy_id;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	if (phy->mode == mode)
-> +		goto out;
-> +	phy->mode = mode;
-> +	gpio_set_value(phy->gpio_en, 1);
-> +	gpio_set_value(phy->gpio_fw_wake, 0);
-> +	if (mode == S3FWRN5_MODE_FW)
-> +		gpio_set_value(phy->gpio_fw_wake, 1);
-> +	if (mode != S3FWRN5_MODE_COLD) {
-> +		msleep(S3FWRN82_EN_WAIT_TIME);
-> +		gpio_set_value(phy->gpio_en, 0);
-> +		msleep(S3FWRN82_EN_WAIT_TIME);
-> +	}
-> +out:
-> +	mutex_unlock(&phy->mutex);
-> +}
-> +
-> +static enum s3fwrn5_mode s3fwrn82_uart_get_mode(void *phy_id)
-> +{
-> +	struct s3fwrn82_uart_phy *phy = phy_id;
-> +	enum s3fwrn5_mode mode;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	mode = phy->mode;
-> +	mutex_unlock(&phy->mutex);
-> +	return mode;
-> +}
-
-All this duplicates I2C version. You need to start either reusing common
-blocks.
-
-> +
-> +static int s3fwrn82_uart_write(void *phy_id, struct sk_buff *out)
-> +{
-> +	struct s3fwrn82_uart_phy *phy = phy_id;
-> +	int err;
-> +
-> +	err = serdev_device_write(phy->ser_dev,
-> +				  out->data, out->len,
-> +				  MAX_SCHEDULE_TIMEOUT);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct s3fwrn5_phy_ops uart_phy_ops = {
-> +	.set_wake = s3fwrn82_uart_set_wake,
-> +	.set_mode = s3fwrn82_uart_set_mode,
-> +	.get_mode = s3fwrn82_uart_get_mode,
-> +	.write = s3fwrn82_uart_write,
-> +};
-> +
-> +static int s3fwrn82_uart_read(struct serdev_device *serdev,
-> +			      const unsigned char *data,
-> +			      size_t count)
-> +{
-> +	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-> +	size_t i;
-> +
-> +	for (i = 0; i < count; i++) {
-> +		skb_put_u8(phy->recv_skb, *data++);
-> +
-> +		if (phy->recv_skb->len < S3FWRN82_NCI_HEADER)
-> +			continue;
-> +
-> +		if ((phy->recv_skb->len - S3FWRN82_NCI_HEADER)
-> +				< phy->recv_skb->data[S3FWRN82_NCI_IDX])
-> +			continue;
-> +
-> +		s3fwrn5_recv_frame(phy->ndev, phy->recv_skb, phy->mode);
-> +		phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-> +		if (!phy->recv_skb)
-> +			return 0;
-> +	}
-> +
-> +	return i;
-> +}
-> +
-> +static struct serdev_device_ops s3fwrn82_serdev_ops = {
-
-const
-
-> +	.receive_buf = s3fwrn82_uart_read,
-> +	.write_wakeup = serdev_device_write_wakeup,
-> +};
-> +
-> +static const struct of_device_id s3fwrn82_uart_of_match[] = {
-> +	{ .compatible = "samsung,s3fwrn82-uart", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, s3fwrn82_uart_of_match);
-> +
-> +static int s3fwrn82_uart_parse_dt(struct serdev_device *serdev)
-> +{
-> +	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-> +	struct device_node *np = serdev->dev.of_node;
-> +
-> +	if (!np)
-> +		return -ENODEV;
-> +
-> +	phy->gpio_en = of_get_named_gpio(np, "en-gpios", 0);
-> +	if (!gpio_is_valid(phy->gpio_en))
-> +		return -ENODEV;
-> +
-> +	phy->gpio_fw_wake = of_get_named_gpio(np, "wake-gpios", 0);
-
-You should not cast it it unsigned int. I'll fix the s3fwrn5 from which
-you copied this apparently.
-
-> +	if (!gpio_is_valid(phy->gpio_fw_wake))
-> +		return -ENODEV;
-> +
-> +	return 0;
-> +}
-> +
-> +static int s3fwrn82_uart_probe(struct serdev_device *serdev)
-> +{
-> +	struct s3fwrn82_uart_phy *phy;
-> +	int ret = -ENOMEM;
-> +
-> +	phy = devm_kzalloc(&serdev->dev, sizeof(*phy), GFP_KERNEL);
-> +	if (!phy)
-> +		goto err_exit;
-> +
-> +	phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-> +	if (!phy->recv_skb)
-> +		goto err_free;
-> +
-> +	mutex_init(&phy->mutex);
-> +	phy->mode = S3FWRN5_MODE_COLD;
-> +
-> +	phy->ser_dev = serdev;
-> +	serdev_device_set_drvdata(serdev, phy);
-> +	serdev_device_set_client_ops(serdev, &s3fwrn82_serdev_ops);
-> +	ret = serdev_device_open(serdev);
-> +	if (ret) {
-> +		dev_err(&serdev->dev, "Unable to open device\n");
-> +		goto err_skb;
-> +	}
-> +
-> +	ret = serdev_device_set_baudrate(serdev, 115200);
-
-Why baudrate is fixed?
-
-> +	if (ret != 115200) {
-> +		ret = -EINVAL;
-> +		goto err_serdev;
-> +	}
-> +
-> +	serdev_device_set_flow_control(serdev, false);
-> +
-> +	ret = s3fwrn82_uart_parse_dt(serdev);
-> +	if (ret < 0)
-> +		goto err_serdev;
-> +
-> +	ret = devm_gpio_request_one(&phy->ser_dev->dev,
-> +				    phy->gpio_en,
-> +				    GPIOF_OUT_INIT_HIGH,
-> +				    "s3fwrn82_en");
-
-This is weirdly wrapped.
-
-> +	if (ret < 0)
-> +		goto err_serdev;
-> +
-> +	ret = devm_gpio_request_one(&phy->ser_dev->dev,
-> +				    phy->gpio_fw_wake,
-> +				    GPIOF_OUT_INIT_LOW,
-> +				    "s3fwrn82_fw_wake");
-> +	if (ret < 0)
-> +		goto err_serdev;
-> +
-> +	ret = s3fwrn5_probe(&phy->ndev, phy, &phy->ser_dev->dev, &uart_phy_ops);
-> +	if (ret < 0)
-> +		goto err_serdev;
-> +
-> +	return ret;
-> +
-> +err_serdev:
-> +	serdev_device_close(serdev);
-> +err_skb:
-> +	kfree_skb(phy->recv_skb);
-> +err_free:
-> +	kfree(phy);
-
-Eee.... why? Did you test this code?
-
-> +err_exit:
-> +	return ret;
-> +}
-> +
-> +static void s3fwrn82_uart_remove(struct serdev_device *serdev)
-> +{
-> +	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-> +
-> +	s3fwrn5_remove(phy->ndev);
-> +	serdev_device_close(serdev);
-> +	kfree_skb(phy->recv_skb);
-> +	kfree(phy);
-
-This does not look like tested...
-
-Best regards,
-Krzysztof
+Yes, I understand. I just thought adding this check might make the
+code cleaner. But you are right.
