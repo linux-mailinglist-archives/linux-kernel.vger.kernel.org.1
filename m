@@ -2,178 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5052C0F9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265A62C0FA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389805AbgKWP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:58:14 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:35000 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732564AbgKWP6L (ORCPT
+        id S2389828AbgKWP6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389689AbgKWP6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:58:11 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 82CCB12803A5;
-        Mon, 23 Nov 2020 07:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1606147090;
-        bh=lBjYTVUJkmNX+Ql1BcMOHCS5uLgrfuyir/PBRp4vAgY=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=tw2BKkTzWzFWEQdrm6zgBKJtIh2PRfv5Mb0TfkjZKqSr5KeTmWZWgl8VEPx5No8bX
-         gdEQ1NYoCzrZ51ueWl3PIAwT19fSirwyiz4cqIKbNqhoqeMTMjHgs4jilQhkGLvH0x
-         +YA09wNIiuW9eCRS9chAzVTlxjJYgA69RXyn6sLU=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id aM_gK-Y9XcvU; Mon, 23 Nov 2020 07:58:10 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1690C12802D9;
-        Mon, 23 Nov 2020 07:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1606147090;
-        bh=lBjYTVUJkmNX+Ql1BcMOHCS5uLgrfuyir/PBRp4vAgY=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=tw2BKkTzWzFWEQdrm6zgBKJtIh2PRfv5Mb0TfkjZKqSr5KeTmWZWgl8VEPx5No8bX
-         gdEQ1NYoCzrZ51ueWl3PIAwT19fSirwyiz4cqIKbNqhoqeMTMjHgs4jilQhkGLvH0x
-         +YA09wNIiuW9eCRS9chAzVTlxjJYgA69RXyn6sLU=
-Message-ID: <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
-        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
-        cluster-devel@redhat.com, coreteam@netfilter.org,
-        devel@driverdev.osuosl.org, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
-        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
-Date:   Mon, 23 Nov 2020 07:58:06 -0800
-In-Reply-To: <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
-References: <cover.1605896059.git.gustavoars@kernel.org>
-         <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <202011201129.B13FDB3C@keescook>
-         <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <202011220816.8B6591A@keescook>
-         <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
-         <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
-         <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
-         <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Mon, 23 Nov 2020 10:58:35 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE43C061A4E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:58:34 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id r3so790893wrt.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 07:58:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vd60SCgR6+ET/ZsRSmwZxCjt0Lopi+E/RXm5ctjzCSA=;
+        b=epQm8wsbrZ6fRk0brRMQPSj1P/BvxnIRnAXlM8uhxhVGl07E7KRrTpC8IZJ0Kp8LwX
+         /ziprmiFfmzRk+AecNfpEWRdoqfitgDwt4IyTtHhk37G89nac2hsz2Z/YKpgz6G14jYs
+         JhA/cMLUiY5R1a3tplBWo+cSgLh5kmjWwrYJo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vd60SCgR6+ET/ZsRSmwZxCjt0Lopi+E/RXm5ctjzCSA=;
+        b=MdtZ5DApqoyWwkejAkjGexSg9tqh/jUI6xqQO2yrYh9PJPOzbNXaZlHcOqJuGy8giT
+         abiBKI6SMmBzcqDg1kymLCRBMzUDQHlH5hPwBcRuICAeFlkXZQ6Cx7Ii2zpG4t2vjL22
+         HJhj/KSJ1U6RyofhSuVKg6oKn+gq2ymwYFhhBZ+bTWtUK3MMpoQ3Ei85rAAH+inhJUej
+         7rfdH5Vwbaz5sjn196mqPwzS0+KbnzXjpPp9dqQkIN7DMGOyEEP2QP6cP5HMFXfjCayn
+         jBLdZGIlp6sFK/idXZwZ8N1d0D+vg3JPCQ48Fzyzp0h2sRS3PpFgd7h7v+8/SRA8Uy8P
+         2Jug==
+X-Gm-Message-State: AOAM530HWuzjwINBqaOD3avsujEsaFfTDca94a9OB1f3Ij3YnfaPpKVT
+        oNKgAvb6RVQI/XugUojm8ZdeZjLO+PL53/UF/GBm4w==
+X-Google-Smtp-Source: ABdhPJzfc79PY6eNDEoomp3X5q17gbDMu1sWXoPIcGzs9UP1Co36EJV/IBjDbltXME/e2GC4Owz4wvebX8Cr1Fqq1as=
+X-Received: by 2002:a5d:5552:: with SMTP id g18mr296545wrw.145.1606147113083;
+ Mon, 23 Nov 2020 07:58:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201120194305.8847-1-alcooperx@gmail.com> <20201120194305.8847-2-alcooperx@gmail.com>
+In-Reply-To: <20201120194305.8847-2-alcooperx@gmail.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon, 23 Nov 2020 10:58:20 -0500
+Message-ID: <CA+-6iNxteaMui4XdC-eMctguuZs3T-G85UMuwa7fNUCkJqE1Cw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] serial: 8250: of: Check for CONFIG_SERIAL_8250_BCM7271
+To:     Al Cooper <alcooperx@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000272c4605b4c8442b"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-23 at 15:19 +0100, Miguel Ojeda wrote:
-> On Sun, Nov 22, 2020 at 11:36 PM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > Well, it seems to be three years of someone's time plus the
-> > maintainer review time and series disruption of nearly a thousand
-> > patches.  Let's be conservative and assume the producer worked
-> > about 30% on the series and it takes about 5-10 minutes per patch
-> > to review, merge and for others to rework existing series.  So
-> > let's say it's cost a person year of a relatively junior engineer
-> > producing the patches and say 100h of review and application
-> > time.  The latter is likely the big ticket item because it's what
-> > we have in least supply in the kernel (even though it's 20x vs the
-> > producer time).
-> 
-> How are you arriving at such numbers? It is a total of ~200 trivial
-> lines.
+--000000000000272c4605b4c8442b
+Content-Type: text/plain; charset="UTF-8"
 
-Well, I used git.  It says that as of today in Linus' tree we have 889
-patches related to fall throughs and the first series went in in
-october 2017 ... ignoring a couple of outliers back to February.
+On Fri, Nov 20, 2020 at 2:45 PM Al Cooper <alcooperx@gmail.com> wrote:
+>
+> From: Jim Quinlan <jquinlan@broadcom.com>
+>
+> This commit has of_platform_serial_probe() check specifically for the
+> "brcm,bcm7271-uart" and whether its companion driver is enabled. If it
+> is the case, and the clock provider is not ready, we want to make sure
+> that when the 8250_bcm7271.c driver returns EPROBE_DEFER, we are not
+> getting the UART registered via 8250_of.c.
+>
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> ---
+>  drivers/tty/serial/8250/8250_of.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
+> index 65e9045dafe6..aa458f3c6644 100644
+> --- a/drivers/tty/serial/8250/8250_of.c
+> +++ b/drivers/tty/serial/8250/8250_of.c
+> @@ -192,6 +192,10 @@ static int of_platform_serial_probe(struct platform_device *ofdev)
+>         u32 tx_threshold;
+>         int ret;
+>
+> +       if (IS_ENABLED(CONFIG_SERIAL_8250_BCM7271) &&
+> +           of_device_is_compatible(ofdev->dev.of_node, "brcm,bcm7271-uart"))
+> +               return -ENODEV;
+> +
+NOTE: this commit is a "strawman" commit, and I will not be surprised
+if it gets quickly NAKed. We have a new idea on how to solve this
+issue, and if that not is not viable, will ask for a dialog on this
+problem either in this thread or through a separate RFC.
 
-> > It's not about the risk of the changes it's about the cost of
-> > implementing them.  Even if you discount the producer time (which
-> > someone gets to pay for, and if I were the engineering manager, I'd
-> > be unhappy about), the review/merge/rework time is pretty
-> > significant in exchange for six minor bug fixes.  Fine, when a new
-> > compiler warning comes along it's certainly reasonable to see if we
-> > can benefit from it and the fact that the compiler people think
-> > it's worthwhile is enough evidence to assume this initially.  But
-> > at some point you have to ask whether that assumption is supported
-> > by the evidence we've accumulated over the time we've been using
-> > it.  And if the evidence doesn't support it perhaps it is time to
-> > stop the experiment.
-> 
-> Maintainers routinely review 1-line trivial patches, not to mention
-> internal API changes, etc.
-
-We're also complaining about the inability to recruit maintainers:
-
-https://www.theregister.com/2020/06/30/hard_to_find_linux_maintainers_says_torvalds/
-
-And burn out:
-
-http://antirez.com/news/129
-
-The whole crux of your argument seems to be maintainers' time isn't
-important so we should accept all trivial patches ... I'm pushing back
-on that assumption in two places, firstly the valulessness of the time
-and secondly that all trivial patches are valuable.
-
-> If some company does not want to pay for that, that's fine, but they
-> don't get to be maintainers and claim `Supported`.
-
-What I'm actually trying to articulate is a way of measuring value of
-the patch vs cost ... it has nothing really to do with who foots the
-actual bill.
-
-One thesis I'm actually starting to formulate is that this continual
-devaluing of maintainers is why we have so much difficulty keeping and
-recruiting them.
-
-James
+Regards,
+Jim Quinlan
+Broadcom STB
 
 
 
+>         port_type = (unsigned long)of_device_get_match_data(&ofdev->dev);
+>         if (port_type == PORT_UNKNOWN)
+>                 return -EINVAL;
+> --
+> 2.17.1
+>
+
+--000000000000272c4605b4c8442b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKk4bcwhZay0
+QtQwptb+OXJGvqHBdi28o6aGQub5gT9hMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTEyMzE1NTgzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCTkYAzlI6mnMf3cUR34Xqc1UrPbGP1
+ov1xAXpsloy3OnQUf+HK6zOFtn7mff8pk+QpOUb/ixx3srrUNmMhorbu4qEj2/6V+ojkpmxtZ23M
+vuKx8pfiyVCI4VvBSK3xw8u9NKml2xaTJ+wocHK2y5ap6i6fCNY1+3iJyEc4xpGu757ACOqBqM1L
+u4XrWpeQz22ZhdsRIYYnwbb6ZJ/DfoNOhp0XJS+1uyAG8rLmT7cr808/zBsc2Dswd4C7huDJFphX
+A8ReWwEya4Z8gMeIGjNcRX4us1rCiJYexoQmV29yca/nCP52f08eBk/m7mJIVSYdwfOanDwoOOYS
+DjfCumUf
+--000000000000272c4605b4c8442b--
