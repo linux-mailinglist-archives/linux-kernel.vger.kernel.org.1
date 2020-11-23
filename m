@@ -2,176 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEDC2C01DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36AB2C01F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbgKWJBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 04:01:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgKWJBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:01:08 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E52CE212CC;
-        Mon, 23 Nov 2020 09:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606122067;
-        bh=ch1J/XrZOhgNgEVG3DSB00XE9M7T2SbWIBz6UFzeLT4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=y6oAcMVl/WqXYapvvflctl97B4hdr4zuEHwneI3cqJSVGZboMACiuGvtSyUsDeTha
-         ReGj1hPITRiAkErHjPCbJ+32/NvWLtujjxigtmDZcMYawKtIl0MLhX5XUKqkFre5gI
-         HQeRBl/0B5Z/935y3h5u222iEpKG/0t1mKricXhA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kh7ia-00CrUx-M0; Mon, 23 Nov 2020 09:01:04 +0000
+        id S1728069AbgKWJC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:02:28 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:38458 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727983AbgKWJCX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 04:02:23 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AN8wQg7011534;
+        Mon, 23 Nov 2020 10:02:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=LXvgTHQI0eYF62IvHYLnCBkMkZy/vMxDWx34Jatxj7E=;
+ b=MnSKVDDQGr/07oiBcRpzYuizM5aCnRaV3BNM0Gqqu1oMjf/S+ygjy7EWPxquFZZ/4/Hg
+ +9weMb0+Znu/xWYIM0eZRW7lA6wgw4Dm+lCo1AQLVSRaK1biaCxfGK7hBLw3GyjUJv0P
+ zbeJN72qTP8DEISPnk+ddfb/4TFh2E5ehYa8OuQDf8mlaREQRvnanKwUU26pnXTMclGK
+ TkY+jtRdiuNkWIvogS1DjHTRIox4OE+B33kRewlVSsJk2PyweV31EGdrQzGKakPRNhQA
+ bM2CdLqPVfVyG6R+PNrSQXtzkx2c2xt0wD7kaoEH3EDjD1soEe4fM9pOviV46NYDnCI/ dA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34y0fgh61a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 10:02:15 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4664B100038;
+        Mon, 23 Nov 2020 10:02:10 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2BF5423129F;
+        Mon, 23 Nov 2020 10:02:10 +0100 (CET)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov 2020 10:01:17
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>
+Subject: [PATCH 0/3] STM32MP15 OTG params updates
+Date:   Mon, 23 Nov 2020 10:01:11 +0100
+Message-ID: <20201123090114.12641-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 09:01:04 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
- callback
-In-Reply-To: <20201123065410.1915-2-lushenming@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-2-lushenming@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <f64703b618a2ebc6c6f5c423e2b779c6@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_02:2020-11-20,2020-11-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-23 06:54, Shenming Lu wrote:
-> From: Zenghui Yu <yuzenghui@huawei.com>
-> 
-> Up to now, the irq_get_irqchip_state() callback of its_irq_chip
-> leaves unimplemented since there is no architectural way to get
-> the VLPI's pending state before GICv4.1. Yeah, there has one in
-> v4.1 for VLPIs.
-> 
-> With GICv4.1, after unmapping the vPE, which cleans and invalidates
-> any caching of the VPT, we can get the VLPI's pending state by
+This patchset brings some updates on STM32MP15 OTG HS and FS.
+It sets ahbcfg parameter for both HS and FS as the value reported by the
+hardware is not recommended.
+It also disables Link Power Management on OTG HS because with some Host
+controllers (at least seen with some USB 3.2 Gen2 controllers), OTG doesn't
+succeed to exit L1 state.
+It also enables FS/LS PHY clock selection when the Core is in FS Host mode,
+to have 6MHz PHY clock when the connected device is LS, and 48Mhz PHY clock
+otherwise. 
 
-This is a crucial note: without this unmapping and invalidation,
-the pending bits are not generally accessible (they could be cached
-in a GIC private structure, cache or otherwise).
+Amelie Delaunay (3):
+  usb: dwc2: set ahbcfg parameter for STM32MP15 OTG HS and FS
+  usb: dwc2: enable FS/LS PHY clock select on STM32MP15 FS OTG
+  usb: dwc2: disable Link Power Management on STM32MP15 HS OTG
 
-> peeking at the VPT. So we implement the irq_get_irqchip_state()
-> callback of its_irq_chip to do it.
-> 
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> Signed-off-by: Shenming Lu <lushenming@huawei.com>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 38 ++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
-> b/drivers/irqchip/irq-gic-v3-its.c
-> index 0fec31931e11..287003cacac7 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -1695,6 +1695,43 @@ static void its_irq_compose_msi_msg(struct
-> irq_data *d, struct msi_msg *msg)
->  	iommu_dma_compose_msi_msg(irq_data_get_msi_desc(d), msg);
->  }
-> 
-> +static bool its_peek_vpt(struct its_vpe *vpe, irq_hw_number_t hwirq)
-> +{
-> +	int mask = hwirq % BITS_PER_BYTE;
+ drivers/usb/dwc2/params.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-nit: this isn't a mask, but a shift instead. BIT(hwirq % BPB) would give
-you a mask.
-
-> +	void *va;
-> +	u8 *pt;
-> +
-> +	va = page_address(vpe->vpt_page);
-> +	pt = va + hwirq / BITS_PER_BYTE;
-> +
-> +	return !!(*pt & (1U << mask));
-> +}
-> +
-> +static int its_irq_get_irqchip_state(struct irq_data *d,
-> +				     enum irqchip_irq_state which, bool *val)
-> +{
-> +	struct its_device *its_dev = irq_data_get_irq_chip_data(d);
-> +	struct its_vlpi_map *map = get_vlpi_map(d);
-> +
-> +	if (which != IRQCHIP_STATE_PENDING)
-> +		return -EINVAL;
-> +
-> +	/* not intended for physical LPI's pending state */
-> +	if (!map)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * In GICv4.1, a VMAPP with {V,Alloc}=={0,1} cleans and invalidates
-> +	 * any caching of the VPT associated with the vPEID held in the GIC.
-> +	 */
-> +	if (!is_v4_1(its_dev->its) || atomic_read(&map->vpe->vmapp_count))
-
-It isn't clear to me what prevents this from racing against a mapping of
-the VPE. Actually, since we only hold the LPI irqdesc lock, I'm pretty 
-sure
-nothing prevents it.
-
-> +		return -EACCES;
-
-I can sort of buy EACCESS for a VPE that is currently mapped, but a 
-non-4.1
-ITS should definitely return EINVAL.
-
-> +
-> +	*val = its_peek_vpt(map->vpe, map->vintid);
-> +
-> +	return 0;
-> +}
-> +
->  static int its_irq_set_irqchip_state(struct irq_data *d,
->  				     enum irqchip_irq_state which,
->  				     bool state)
-> @@ -1975,6 +2012,7 @@ static struct irq_chip its_irq_chip = {
->  	.irq_eoi		= irq_chip_eoi_parent,
->  	.irq_set_affinity	= its_set_affinity,
->  	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
-> +	.irq_get_irqchip_state	= its_irq_get_irqchip_state,
-
-My biggest issue with this is that it isn't a reliable interface.
-It happens to work in the context of KVM, because you make sure it
-is called at the right time, but that doesn't make it safe in general
-(anyone with the interrupt number is allowed to call this at any time).
-
-Is there a problem with poking at the VPT page from the KVM side?
-The code should be exactly the same (maybe simpler even), and at least
-you'd be guaranteed to be in the correct context.
-
->  	.irq_set_irqchip_state	= its_irq_set_irqchip_state,
->  	.irq_retrigger		= its_irq_retrigger,
->  	.irq_set_vcpu_affinity	= its_irq_set_vcpu_affinity,
-
-Thanks,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
