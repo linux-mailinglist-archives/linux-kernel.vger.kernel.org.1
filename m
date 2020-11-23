@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781792C0709
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0A92C065A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731847AbgKWMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:36:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48794 "EHLO mail.kernel.org"
+        id S1730697AbgKWMaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731734AbgKWMgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:36:41 -0500
+        id S1730680AbgKWMaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:01 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 436CD208DB;
-        Mon, 23 Nov 2020 12:36:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E13320857;
+        Mon, 23 Nov 2020 12:30:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135000;
-        bh=NJM/xv7ajV6T3lJmtrIFBLU9THVHK/5+yjuVa9HCo7k=;
+        s=korg; t=1606134600;
+        bh=AOB30L8ww43v7wr6brdJId+AsaRQj64ltkSfM+gFsw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ujEkbBNIVjds8qVq60mbkKondEaZAWX9oG7A0Yt3ylq7JokMcggMBvF7QC3XlVxQw
-         2B1s4oUZ1BBsNf6NeZz/20tUCIOxSVZ60V4TlaAvfMv9LBJ/nwhJ2LtpMF0jFUseBq
-         V1JaiJjUxhBtm9kGUJuQ5TEK4F13P302RdOM9Fcg=
+        b=FyEeMsJ9u4F9F9XBypC30J0Mp442l/x/mGVQ1Ho2O3hzwxBg+ySG4aeayQp4LtLzb
+         OYIGI6y48la3nI3MkQh1aocEBpB8kjyQQkHUvh+/1CN/iqkabziM2tD6MkLOnaCkCf
+         S9OTkRH4aE86pdFI4QDlAwl5JEIAZpidQ6OipaNg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 069/158] rfkill: Fix use-after-free in rfkill_resume()
+        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 17/91] net: x25: Increase refcnt of "struct x25_neigh" in x25_rx_call_request
 Date:   Mon, 23 Nov 2020 13:21:37 +0100
-Message-Id: <20201123121823.264864165@linuxfoundation.org>
+Message-Id: <20201123121810.143254246@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,75 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claire Chang <tientzu@chromium.org>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 94e2bd0b259ed39a755fdded47e6734acf1ce464 ]
+[ Upstream commit 4ee18c179e5e815fa5575e0d2db0c05795a804ee ]
 
-If a device is getting removed or reprobed during resume, use-after-free
-might happen. For example, h5_btrtl_resume() schedules a work queue for
-device reprobing, which of course requires removal first.
+The x25_disconnect function in x25_subr.c would decrease the refcount of
+"x25->neighbour" (struct x25_neigh) and reset this pointer to NULL.
 
-If the removal happens in parallel with the device_resume() and wins the
-race to acquire device_lock(), removal may remove the device from the PM
-lists and all, but device_resume() is already running and will continue
-when the lock can be acquired, thus calling rfkill_resume().
+However, the x25_rx_call_request function in af_x25.c, which is called
+when we receive a connection request, does not increase the refcount when
+it assigns the pointer.
 
-During this, if rfkill_set_block() is then called after the corresponding
-*_unregister() and kfree() are called, there will be an use-after-free
-in hci_rfkill_set_block():
+Fix this issue by increasing the refcount of "struct x25_neigh" in
+x25_rx_call_request.
 
-BUG: KASAN: use-after-free in hci_rfkill_set_block+0x58/0xc0 [bluetooth]
-...
-Call trace:
-  dump_backtrace+0x0/0x154
-  show_stack+0x20/0x2c
-  dump_stack+0xbc/0x12c
-  print_address_description+0x88/0x4b0
-  __kasan_report+0x144/0x168
-  kasan_report+0x10/0x18
-  check_memory_region+0x19c/0x1ac
-  __kasan_check_write+0x18/0x24
-  hci_rfkill_set_block+0x58/0xc0 [bluetooth]
-  rfkill_set_block+0x9c/0x120
-  rfkill_resume+0x34/0x70
-  dpm_run_callback+0xf0/0x1f4
-  device_resume+0x210/0x22c
+This patch fixes frequent kernel crashes when using AF_X25 sockets.
 
-Fix this by checking rfkill->registered in rfkill_resume(). device_del()
-in rfkill_unregister() requires device_lock() and the whole rfkill_resume()
-is also protected by the same lock via device_resume(), we can make sure
-either the rfkill->registered is false before rfkill_resume() starts or the
-rfkill device won't be unregistered before rfkill_resume() returns.
-
-As async_resume() holds a reference to the device, at this level there can
-be no use-after-free; only in the user that doesn't expect this scenario.
-
-Fixes: 8589086f4efd ("Bluetooth: hci_h5: Turn off RTL8723BS on suspend, reprobe on resume")
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Link: https://lore.kernel.org/r/20201110084908.219088-1-tientzu@chromium.org
-[edit commit message for clarity and add more info provided later]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Link: https://lore.kernel.org/r/20201112103506.5875-1-xie.he.0141@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rfkill/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/x25/af_x25.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/rfkill/core.c b/net/rfkill/core.c
-index 6c089320ae4f1..5bba7c36ac74f 100644
---- a/net/rfkill/core.c
-+++ b/net/rfkill/core.c
-@@ -876,6 +876,9 @@ static int rfkill_resume(struct device *dev)
- 
- 	rfkill->suspended = false;
- 
-+	if (!rfkill->registered)
-+		return 0;
-+
- 	if (!rfkill->persistent) {
- 		cur = !!(rfkill->state & RFKILL_BLOCK_SW);
- 		rfkill_set_block(rfkill, cur);
--- 
-2.27.0
-
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -1049,6 +1049,7 @@ int x25_rx_call_request(struct sk_buff *
+ 	makex25->lci           = lci;
+ 	makex25->dest_addr     = dest_addr;
+ 	makex25->source_addr   = source_addr;
++	x25_neigh_hold(nb);
+ 	makex25->neighbour     = nb;
+ 	makex25->facilities    = facilities;
+ 	makex25->dte_facilities= dte_facilities;
 
 
