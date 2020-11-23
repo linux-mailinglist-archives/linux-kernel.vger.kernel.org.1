@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81D72C063F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0509D2C0603
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730551AbgKWM3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:29:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39478 "EHLO mail.kernel.org"
+        id S1730159AbgKWM0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:26:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730535AbgKWM3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:29:03 -0500
+        id S1730146AbgKWM02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:26:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6640220728;
-        Mon, 23 Nov 2020 12:29:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 743BB2076E;
+        Mon, 23 Nov 2020 12:26:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134542;
-        bh=inTh39fKXH0jzq5TeqstCSargK1uQOyd/fjwYZg+92I=;
+        s=korg; t=1606134387;
+        bh=frCVka9YuGqxr2RrDANFnW8tkhiq/VbNt2PTcU9GSGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cpy1OkFew2AkXuT0nfAl6rwFFs7XQbCOfKEcJ+KMSfk5qcQXzYXsulFr50YWB0TtM
-         7rI9HmzQBrAWrBU5nPM2Moz2P3ZnJeEZ1DCn+EhSakiWbFOFlePmye5CCu54oJgDuv
-         uD+VLi2lAfQDSfEjIUxMal8VP7+LJj8QZ5SaBld0=
+        b=he2CNP2JfSz3SRBG9V7gwEOPOCXY5CvTJCTBpfjMPVN1bbMSkLAwiYPL/3k3FqxmF
+         ICfkFkdY3JWioWoTZQMBC1Yc4y7wlrHkxM4Y5eXIiagCDWy5N+Ii0qv5y3S8VIf705
+         hSI0ex9rdXllik1LxtJRREQaskl6Wk0bMWGWh3is=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 27/60] ARM: dts: imx50-evk: Fix the chip select 1 IOMUX
+Subject: [PATCH 4.9 23/47] MIPS: export has_transparent_hugepage() for modules
 Date:   Mon, 23 Nov 2020 13:22:09 +0100
-Message-Id: <20201123121806.343021318@linuxfoundation.org>
+Message-Id: <20201123121806.663159108@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
+References: <20201123121805.530891002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +50,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 33d0d843872c5ddbe28457a92fc6f2487315fb9f ]
+[ Upstream commit 31b4d8e172f614adc53ddecb4b6b2f6411a49b84 ]
 
-The SPI chip selects are represented as:
+MIPS should export its local version of "has_transparent_hugepage"
+so that loadable modules (dax) can use it.
 
-cs-gpios = <&gpio4 11 GPIO_ACTIVE_LOW>, <&gpio4 13 GPIO_ACTIVE_LOW>;
+Fixes this build error:
+ERROR: modpost: "has_transparent_hugepage" [drivers/dax/dax.ko] undefined!
 
-, which means that they are used in GPIO function instead of native
-SPI mode.
-
-Fix the IOMUX for the chip select 1 to use GPIO4_13 instead of
-the native CSPI_SSI function.
-
-Fixes: c605cbf5e135 ("ARM: dts: imx: add device tree support for Freescale imx50evk board")
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: fd8cfd300019 ("arch: fix has_transparent_hugepage()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: linux-nvdimm@lists.01.org
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx50-evk.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/mm/tlb-r4k.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/imx50-evk.dts b/arch/arm/boot/dts/imx50-evk.dts
-index 98b5faa06e27e..07b8870dfff13 100644
---- a/arch/arm/boot/dts/imx50-evk.dts
-+++ b/arch/arm/boot/dts/imx50-evk.dts
-@@ -65,7 +65,7 @@
- 				MX50_PAD_CSPI_MISO__CSPI_MISO		0x00
- 				MX50_PAD_CSPI_MOSI__CSPI_MOSI		0x00
- 				MX50_PAD_CSPI_SS0__GPIO4_11		0xc4
--				MX50_PAD_ECSPI1_MOSI__CSPI_SS1		0xf4
-+				MX50_PAD_ECSPI1_MOSI__GPIO4_13		0x84
- 			>;
- 		};
+diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
+index 0596505770dba..11985399c4695 100644
+--- a/arch/mips/mm/tlb-r4k.c
++++ b/arch/mips/mm/tlb-r4k.c
+@@ -424,6 +424,7 @@ int has_transparent_hugepage(void)
+ 	}
+ 	return mask == PM_HUGE_MASK;
+ }
++EXPORT_SYMBOL(has_transparent_hugepage);
+ 
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
  
 -- 
 2.27.0
