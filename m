@@ -2,184 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69952BFFAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9892F2BFFB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgKWFgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 00:36:51 -0500
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:36269 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726163AbgKWFgu (ORCPT
+        id S1727885AbgKWFiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 00:38:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgKWFiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 00:36:50 -0500
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 23 Nov 2020 07:36:43 +0200
-Received: from vnc1.mtl.labs.mlnx (vnc1.mtl.labs.mlnx [10.7.2.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 0AN5ahTA000721;
-        Mon, 23 Nov 2020 07:36:43 +0200
-Received: from vnc1.mtl.labs.mlnx (localhost [127.0.0.1])
-        by vnc1.mtl.labs.mlnx (8.14.4/8.14.4) with ESMTP id 0AN5ahth025283;
-        Mon, 23 Nov 2020 07:36:43 +0200
-Received: (from moshe@localhost)
-        by vnc1.mtl.labs.mlnx (8.14.4/8.14.4/Submit) id 0AN5abhC025268;
-        Mon, 23 Nov 2020 07:36:37 +0200
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH net v2] devlink: Fix reload stats structure
-Date:   Mon, 23 Nov 2020 07:36:25 +0200
-Message-Id: <1606109785-25197-1-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
+        Mon, 23 Nov 2020 00:38:08 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A01C0613CF;
+        Sun, 22 Nov 2020 21:38:08 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id l11so8306636plt.1;
+        Sun, 22 Nov 2020 21:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ivjo757clFR0whhjs5PVIdMjPczKMK3WkRUo0lKbdS4=;
+        b=MzozNj1dAFjS9Qd6hVbs8TxJqyEiFgHZLs14qdaHPqXelOCKkgFrsVu1xCFct5gpaN
+         +BbyI5aso85O8MRiXxHdAmeCnP4GZT03jxn+x12Za9fAsdXF46n2fJw1hNA5E1aQSBv2
+         TULpMejAlXHrJ982DRpIwnt0rPJSd7pq7TSMPgAdk8tZccmVzbc7JpVkJR0pWdKfTLbD
+         8gFQQYw1w4MZOCs8WjGol8FAO9M50s8uosrlFiKFcmT0ARxj/A4Wnds3h+zjviHCzaAU
+         iWZuYPkpU/zPCjPSQFQeAUJifNIuQ0z30q5rnxub95ud0Vdtr/LIS0UKG71w3PkRx16F
+         WSRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ivjo757clFR0whhjs5PVIdMjPczKMK3WkRUo0lKbdS4=;
+        b=rfArAjL9NoPTU1u8pj9fMk80gTF4iWcOky8ix9vJGzfaPWIAhuelwIpcLHmt5io1Pc
+         gGktFYFku50eQ8l1f/feeXHUh8HVOpsKI7ylZvpwBfD4xQZYewv49NJLiSNdLlPcO7ja
+         3Pq4zAYZTCmahj7kSYLZrof898GBo9KMwc/S8vS+7SiB83VcOt2TcS+9iS6jD2oNz9Qz
+         SibE3yAyF5Vu8YgJ2IB+DoVrHBJXNgduguSXaeLp2b1k5VZfZ9MvaUvwT2mDs6FOjviQ
+         6yNcntSMIFhTRrplUyiejSq3BsXv8xW/qo6rnHBeue23oBYM0Wnjyc0lQl9uhm2enS3x
+         7ChA==
+X-Gm-Message-State: AOAM532hAKDNjnizxTRlim7W52CNBrxuoJ0pRFY2VG/tZpIBpLl4A4IJ
+        dIngznff8znP90FuH6i/22s=
+X-Google-Smtp-Source: ABdhPJy72LJpOT6zvATmsXzDOENjyQzOdXuHwjRp6lWaUaW2H+DFQNwiotnI9yn0NG1TUrt+W306hQ==
+X-Received: by 2002:a17:902:ec03:b029:d7:c7c2:145a with SMTP id l3-20020a170902ec03b02900d7c7c2145amr23476385pld.33.1606109887904;
+        Sun, 22 Nov 2020 21:38:07 -0800 (PST)
+Received: from gli-arch.genesyslogic.com.tw ([122.146.30.3])
+        by smtp.gmail.com with ESMTPSA id m9sm10441472pfh.94.2020.11.22.21.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2020 21:38:07 -0800 (PST)
+From:   Ben Chuang <benchuanggli@gmail.com>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, Ben Chuang <benchuanggli@gmail.com>
+Subject: [PATCH] mmc: sdhci-pci-gli: Reduce power consumption for GL9755
+Date:   Mon, 23 Nov 2020 13:37:02 +0800
+Message-Id: <20201123053702.6083-1-benchuanggli@gmail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix reload stats structure exposed to the user. Change stats structure
-hierarchy to have the reload action as a parent of the stat entry and
-then stat entry includes value per limit. This will also help to avoid
-string concatenation on iproute2 output.
+From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 
-Reload stats structure before this fix:
-"stats": {
-    "reload": {
-        "driver_reinit": 2,
-        "fw_activate": 1,
-        "fw_activate_no_reset": 0
-     }
-}
+For GL9755, reduce power consumption by lowering the LFCLK and disabling
+the DMACLK on low-power.
 
-After this fix:
-"stats": {
-    "reload": {
-        "driver_reinit": {
-            "unspecified": 2
-        },
-        "fw_activate": {
-            "unspecified": 1,
-            "no_reset": 0
-        }
-}
-
-Fixes: a254c264267e ("devlink: Add reload stats")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 ---
-v1 -> v2:
-- Fold comment at 80 characters.
----
- include/uapi/linux/devlink.h |  2 ++
- net/core/devlink.c           | 49 +++++++++++++++++++++++-------------
- 2 files changed, 34 insertions(+), 17 deletions(-)
+ drivers/mmc/host/sdhci-pci-gli.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
-index 0113bc4db9f5..5203f54a2be1 100644
---- a/include/uapi/linux/devlink.h
-+++ b/include/uapi/linux/devlink.h
-@@ -526,6 +526,8 @@ enum devlink_attr {
- 	DEVLINK_ATTR_RELOAD_STATS_LIMIT,	/* u8 */
- 	DEVLINK_ATTR_RELOAD_STATS_VALUE,	/* u32 */
- 	DEVLINK_ATTR_REMOTE_RELOAD_STATS,	/* nested */
-+	DEVLINK_ATTR_RELOAD_ACTION_INFO,        /* nested */
-+	DEVLINK_ATTR_RELOAD_ACTION_STATS,       /* nested */
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index 9887485a4134..f10bdfbfce36 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -97,6 +97,10 @@
+ #define   GLI_9755_WT_EN_ON     0x1
+ #define   GLI_9755_WT_EN_OFF    0x0
  
- 	/* add new attributes above here, update the policy in devlink.c */
- 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index e6fb1fdedded..bf79d018990c 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -517,8 +517,7 @@ devlink_reload_limit_is_supported(struct devlink *devlink, enum devlink_reload_l
- 	return test_bit(limit, &devlink->ops->reload_limits);
++#define PCI_GLI_9755_PECONF   0x44
++#define   PCI_GLI_9755_LFCLK    GENMASK(14, 12)
++#define   PCI_GLI_9755_DMACLK   BIT(29)
++
+ #define PCI_GLI_9755_PLL            0x64
+ #define   PCI_GLI_9755_PLL_LDIV       GENMASK(9, 0)
+ #define   PCI_GLI_9755_PLL_PDIV       GENMASK(14, 12)
+@@ -519,6 +523,21 @@ static void sdhci_gl9755_set_clock(struct sdhci_host *host, unsigned int clock)
+ 	sdhci_enable_clk(host, clk);
  }
  
--static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_action action,
--				   enum devlink_reload_limit limit, u32 value)
-+static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_limit limit, u32 value)
- {
- 	struct nlattr *reload_stats_entry;
- 
-@@ -526,8 +525,7 @@ static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_acti
- 	if (!reload_stats_entry)
- 		return -EMSGSIZE;
- 
--	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, action) ||
--	    nla_put_u8(msg, DEVLINK_ATTR_RELOAD_STATS_LIMIT, limit) ||
-+	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_STATS_LIMIT, limit) ||
- 	    nla_put_u32(msg, DEVLINK_ATTR_RELOAD_STATS_VALUE, value))
- 		goto nla_put_failure;
- 	nla_nest_end(msg, reload_stats_entry);
-@@ -540,7 +538,7 @@ static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_acti
- 
- static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink, bool is_remote)
- {
--	struct nlattr *reload_stats_attr;
-+	struct nlattr *reload_stats_attr, *action_info_attr, *action_stats_attr;
- 	int i, j, stat_idx;
- 	u32 value;
- 
-@@ -552,17 +550,28 @@ static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink
- 	if (!reload_stats_attr)
- 		return -EMSGSIZE;
- 
--	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
--		/* Remote stats are shown even if not locally supported. Stats
--		 * of actions with unspecified limit are shown though drivers
--		 * don't need to register unspecified limit.
--		 */
--		if (!is_remote && j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
--		    !devlink_reload_limit_is_supported(devlink, j))
-+	for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
-+		if ((!is_remote && !devlink_reload_action_is_supported(devlink, i)) ||
-+		    i == DEVLINK_RELOAD_ACTION_UNSPEC)
- 			continue;
--		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
--			if ((!is_remote && !devlink_reload_action_is_supported(devlink, i)) ||
--			    i == DEVLINK_RELOAD_ACTION_UNSPEC ||
-+		action_info_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_ACTION_INFO);
-+		if (!action_info_attr)
-+			goto nla_put_failure;
++static void gl9755_hw_setting(struct sdhci_pci_slot *slot)
++{
++	struct pci_dev *pdev = slot->chip->pdev;
++	u32 value;
 +
-+		if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, i))
-+			goto action_info_nest_cancel;
-+		action_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_ACTION_STATS);
-+		if (!action_stats_attr)
-+			goto action_info_nest_cancel;
++	gl9755_wt_on(pdev);
 +
-+		for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
-+			/* Remote stats are shown even if not locally supported.
-+			 * Stats of actions with unspecified limit are shown
-+			 * though drivers don't need to register unspecified
-+			 * limit.
-+			 */
-+			if ((!is_remote && j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
-+			     !devlink_reload_limit_is_supported(devlink, j)) ||
- 			    devlink_reload_combination_is_invalid(i, j))
- 				continue;
++	pci_read_config_dword(pdev, PCI_GLI_9755_PECONF, &value);
++	value &= ~PCI_GLI_9755_LFCLK;
++	value &= ~PCI_GLI_9755_DMACLK;
++	pci_write_config_dword(pdev, PCI_GLI_9755_PECONF, value);
++
++	gl9755_wt_off(pdev);
++}
++
+ static int gli_probe_slot_gl9750(struct sdhci_pci_slot *slot)
+ {
+ 	struct sdhci_host *host = slot->host;
+@@ -534,6 +553,7 @@ static int gli_probe_slot_gl9755(struct sdhci_pci_slot *slot)
+ {
+ 	struct sdhci_host *host = slot->host;
  
-@@ -571,13 +580,19 @@ static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink
- 				value = devlink->stats.reload_stats[stat_idx];
- 			else
- 				value = devlink->stats.remote_reload_stats[stat_idx];
--			if (devlink_reload_stat_put(msg, i, j, value))
--				goto nla_put_failure;
-+			if (devlink_reload_stat_put(msg, j, value))
-+				goto action_stats_nest_cancel;
- 		}
-+		nla_nest_end(msg, action_stats_attr);
-+		nla_nest_end(msg, action_info_attr);
- 	}
- 	nla_nest_end(msg, reload_stats_attr);
- 	return 0;
- 
-+action_stats_nest_cancel:
-+	nla_nest_cancel(msg, action_stats_attr);
-+action_info_nest_cancel:
-+	nla_nest_cancel(msg, action_info_attr);
- nla_put_failure:
- 	nla_nest_cancel(msg, reload_stats_attr);
- 	return -EMSGSIZE;
++	gl9755_hw_setting(slot);
+ 	gli_pcie_enable_msi(slot);
+ 	slot->host->mmc->caps2 |= MMC_CAP2_NO_SDIO;
+ 	sdhci_enable_v4_mode(host);
 -- 
-2.18.2
+2.29.2
 
