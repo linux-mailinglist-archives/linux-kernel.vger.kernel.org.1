@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB2C2C0A2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFAD2C0A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732912AbgKWMmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:42:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54672 "EHLO mail.kernel.org"
+        id S2388872AbgKWNRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:17:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732682AbgKWMlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:41:36 -0500
+        id S1732617AbgKWMmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:42:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BDE32065E;
-        Mon, 23 Nov 2020 12:41:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8070E20732;
+        Mon, 23 Nov 2020 12:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135296;
-        bh=HyW5RGxfhSeP5WyEk7Wqkjl79jCKZx0NkQVMJgcx5Ho=;
+        s=korg; t=1606135336;
+        bh=mGWjZSu3zXKv9i8E57uyyHYaoeA3qrC3Ff3m4uJ5QS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qGixH40rhYWR2rhPSlnRmssxshZ9Vd0YIiIuR7KacXlCMwqSx4j+8LmfclDIWYN8k
-         X5hTwSpqh/ferxuHDRHNR7roozjWkAe5NxgDNaOwgG124n+fm6hBiUvucuub/C64Al
-         4bBKyrNFWW+ojMXsiHv9yL0qMUqfKCxA1lanQ9AU=
+        b=l96zlfr2FtYNPIHDKa2ewpEY3QQii47y/X/UmiYhZEGZusGm/UW7I8M/L0d47JTgE
+         u7elg0zK6dquSmTTIAyMWtmxsusoXZULFrm8KgjPc+/q2Nzrt72I582X7grJ0KVDDL
+         F4O5PDe0FAdesizs4+AxWANuNX+ghxB/xTlJ/kWE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 008/252] ipv6: Fix error path to cancel the meseage
-Date:   Mon, 23 Nov 2020 13:19:18 +0100
-Message-Id: <20201123121835.994003918@linuxfoundation.org>
+Subject: [PATCH 5.9 014/252] netdevsim: set .owner to THIS_MODULE
+Date:   Mon, 23 Nov 2020 13:19:24 +0100
+Message-Id: <20201123121836.279812929@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -43,49 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit ceb736e1d45c253f5e86b185ca9b497cdd43063f ]
+[ Upstream commit a5bbcbf29089a1252c201b1a7fd38151de355db9 ]
 
-genlmsg_cancel() needs to be called in the error path of
-inet6_fill_ifmcaddr and inet6_fill_ifacaddr to cancel
-the message.
+If THIS_MODULE is not set, the module would be removed while debugfs is
+being used.
+It eventually makes kernel panic.
 
-Fixes: 6ecf4c37eb3e ("ipv6: enable IFA_TARGET_NETNSID for RTM_GETADDR")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201112080950.1476302-1-zhangqilong3@huawei.com
+Fixes: 82c93a87bf8b ("netdevsim: implement couple of testing devlink health reporters")
+Fixes: 424be63ad831 ("netdevsim: add UDP tunnel port offload support")
+Fixes: 4418f862d675 ("netdevsim: implement support for devlink region and snapshots")
+Fixes: d3cbb907ae57 ("netdevsim: add ACL trap reporting cookie as a metadata")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Link: https://lore.kernel.org/r/20201115103041.30701-1-ap420073@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/addrconf.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/netdevsim/dev.c         |    2 ++
+ drivers/net/netdevsim/health.c      |    1 +
+ drivers/net/netdevsim/udp_tunnels.c |    1 +
+ 3 files changed, 4 insertions(+)
 
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -5022,8 +5022,10 @@ static int inet6_fill_ifmcaddr(struct sk
- 		return -EMSGSIZE;
+--- a/drivers/net/netdevsim/dev.c
++++ b/drivers/net/netdevsim/dev.c
+@@ -94,6 +94,7 @@ static const struct file_operations nsim
+ 	.open = simple_open,
+ 	.write = nsim_dev_take_snapshot_write,
+ 	.llseek = generic_file_llseek,
++	.owner = THIS_MODULE,
+ };
  
- 	if (args->netnsid >= 0 &&
--	    nla_put_s32(skb, IFA_TARGET_NETNSID, args->netnsid))
-+	    nla_put_s32(skb, IFA_TARGET_NETNSID, args->netnsid)) {
-+		nlmsg_cancel(skb, nlh);
- 		return -EMSGSIZE;
-+	}
+ static ssize_t nsim_dev_trap_fa_cookie_read(struct file *file,
+@@ -186,6 +187,7 @@ static const struct file_operations nsim
+ 	.read = nsim_dev_trap_fa_cookie_read,
+ 	.write = nsim_dev_trap_fa_cookie_write,
+ 	.llseek = generic_file_llseek,
++	.owner = THIS_MODULE,
+ };
  
- 	put_ifaddrmsg(nlh, 128, IFA_F_PERMANENT, scope, ifindex);
- 	if (nla_put_in6_addr(skb, IFA_MULTICAST, &ifmca->mca_addr) < 0 ||
-@@ -5054,8 +5056,10 @@ static int inet6_fill_ifacaddr(struct sk
- 		return -EMSGSIZE;
+ static int nsim_dev_debugfs_init(struct nsim_dev *nsim_dev)
+--- a/drivers/net/netdevsim/health.c
++++ b/drivers/net/netdevsim/health.c
+@@ -261,6 +261,7 @@ static const struct file_operations nsim
+ 	.open = simple_open,
+ 	.write = nsim_dev_health_break_write,
+ 	.llseek = generic_file_llseek,
++	.owner = THIS_MODULE,
+ };
  
- 	if (args->netnsid >= 0 &&
--	    nla_put_s32(skb, IFA_TARGET_NETNSID, args->netnsid))
-+	    nla_put_s32(skb, IFA_TARGET_NETNSID, args->netnsid)) {
-+		nlmsg_cancel(skb, nlh);
- 		return -EMSGSIZE;
-+	}
+ int nsim_dev_health_init(struct nsim_dev *nsim_dev, struct devlink *devlink)
+--- a/drivers/net/netdevsim/udp_tunnels.c
++++ b/drivers/net/netdevsim/udp_tunnels.c
+@@ -119,6 +119,7 @@ static const struct file_operations nsim
+ 	.open = simple_open,
+ 	.write = nsim_udp_tunnels_info_reset_write,
+ 	.llseek = generic_file_llseek,
++	.owner = THIS_MODULE,
+ };
  
- 	put_ifaddrmsg(nlh, 128, IFA_F_PERMANENT, scope, ifindex);
- 	if (nla_put_in6_addr(skb, IFA_ANYCAST, &ifaca->aca_addr) < 0 ||
+ int nsim_udp_tunnels_info_create(struct nsim_dev *nsim_dev,
 
 
