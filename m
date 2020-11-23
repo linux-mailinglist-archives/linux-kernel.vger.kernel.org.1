@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8862C069C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2603A2C069F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731139AbgKWMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43828 "EHLO mail.kernel.org"
+        id S1731145AbgKWMcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:32:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731090AbgKWMca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:32:30 -0500
+        id S1731086AbgKWMcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:32:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB42A20728;
-        Mon, 23 Nov 2020 12:32:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 510382076E;
+        Mon, 23 Nov 2020 12:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134750;
-        bh=fEF9kRPPCardacE5L9TP+K37eC3+sGoXEkoj/lRVbTk=;
+        s=korg; t=1606134752;
+        bh=i0JLtIsLsB60KnJBANGpwL95XLftI2liUKtcr7CUQEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jo/JkEVQrbFQZKHtv2XeAYdvvZ+45SSFmHsUL6QRDPTX8V3ijbe5aDrUCWnyx2yPw
-         ncUmYk6VGN+btkPKIHxyHf/693KuXJ7elifr7FwIQYcDxGtC1F9MFD3bUF8otY8dao
-         KQKu1pbXF/BGvC0FONy8qe14moLbhLcnp0xIV+VA=
+        b=LILBMYfIZ8mejlgND2bKcQDEi0ZsZp4NhVLdUev/wpRYDZN0+T8u+RhCogfrEKddR
+         8/DIkcTo0epq9bPOZtNKTJYz0em/f67XknzStPMW889QV8g9BPrI6fBgsfGzlHgSj5
+         FtyoFl8KiBrzpWEHLfAPB2RVw8mo9C8VcJp2AOto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
         Maxime Ripard <maxime@cerno.tech>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 38/91] ARM: dts: sun8i: a83t: Enable both RGMII RX/TX delay on Ethernet PHY
-Date:   Mon, 23 Nov 2020 13:21:58 +0100
-Message-Id: <20201123121811.163725411@linuxfoundation.org>
+Subject: [PATCH 4.19 39/91] arm64: dts: allwinner: a64: bananapi-m64: Enable RGMII RX/TX delay on PHY
+Date:   Mon, 23 Nov 2020 13:21:59 +0100
+Message-Id: <20201123121811.212732948@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
 References: <20201123121809.285416732@linuxfoundation.org>
@@ -46,54 +47,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit 57dbe558457bf4042169bc1f334e3b53a8480a1c ]
+[ Upstream commit 1a9a8910b2153cd3c4f3f2f8defcb853ead3b1fd ]
 
-The Ethernet PHY on the Bananapi M3 and Cubietruck Plus have the RX
-and TX delays enabled on the PHY, using pull-ups on the RXDLY and
-TXDLY pins.
+The Ethernet PHY on the Bananapi M64 has the RX and TX delays
+enabled on the PHY, using pull-ups on the RXDLY and TXDLY pins.
 
 Fix the phy-mode description to correct reflect this so that the
 implementation doesn't reconfigure the delays incorrectly. This
 happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
 rx/tx delay config").
 
-Fixes: 039359948a4b ("ARM: dts: sun8i: a83t: Enable Ethernet on two boards")
+Fixes: e7295499903d ("arm64: allwinner: bananapi-m64: Enable dwmac-sun8i")
+Fixes: 94f442886711 ("arm64: dts: allwinner: A64: Restore EMAC changes")
 Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201024162515.30032-6-wens@kernel.org
+Link: https://lore.kernel.org/r/20201024162515.30032-10-wens@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts     | 2 +-
- arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-index f250b20af4937..9be1c4a3d95fb 100644
---- a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-+++ b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-@@ -131,7 +131,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_sw>;
- 	phy-handle = <&rgmii_phy>;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
+index 094cfed13df97..13ce24e922eea 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
+@@ -97,7 +97,7 @@
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmii_pins>;
 -	phy-mode = "rgmii";
 +	phy-mode = "rgmii-id";
- 	allwinner,rx-delay-ps = <700>;
- 	allwinner,tx-delay-ps = <700>;
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	phy-supply = <&reg_dc1sw>;
  	status = "okay";
-diff --git a/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts b/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts
-index 7e74ba83f8095..75396993195d1 100644
---- a/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts
-+++ b/arch/arm/boot/dts/sun8i-a83t-cubietruck-plus.dts
-@@ -168,7 +168,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_dldo4>;
- 	phy-handle = <&rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
- 
 -- 
 2.27.0
 
