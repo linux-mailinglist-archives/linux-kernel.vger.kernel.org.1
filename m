@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAEC2C0B26
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D402C0BE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732262AbgKWNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:20:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
+        id S1730288AbgKWNcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:32:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732239AbgKWMjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:39:22 -0500
+        id S1730241AbgKWM1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:27:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C2F52065E;
-        Mon, 23 Nov 2020 12:39:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9ABFC20728;
+        Mon, 23 Nov 2020 12:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135162;
-        bh=lGAiTNLPpgZHf6Z751ZJKF2JpgaVX5LuiCr1mKXV1pw=;
+        s=korg; t=1606134423;
+        bh=nzfg4Je3v8X3FMgIxzuCOwLQWyWWxmVyGSEI3map3KQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MTODjHdLv0JNymj/SYQV6G3ppTqTsqAUSMWqsroqckxYbWU12N0I3PCKfA0A8Nhqg
-         wEoX8j6YKzniUwLIX71UrRUxuRU2zAe+mH8Z0Zq0FNCVgpTABy+FJUprsEnSoypmf8
-         kYI7O3hqwrKQMEAPTsq6Ys+mrTCyFx6hjWyCmK9Q=
+        b=YGw0oXHWMCtDpZ5mpcNizaRZxRSDzvpedsnAwW24xrUaJlVC+D41FoCsibnxy/L/T
+         tA7Z2wAblanBFOFXRkpSyFEdjvJZ20bsW/YyzPfqz9Nu1UfemDQ26PuIpinJuNJnml
+         MU91u6yeyoJXBYgNMDiQJjuJEtLhvtsqYoVVKU5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Faiz Abbas <faiz_abbas@ti.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 087/158] can: m_can: m_can_stop(): set device to software init mode before closing
-Date:   Mon, 23 Nov 2020 13:21:55 +0100
-Message-Id: <20201123121824.131320309@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 14/60] net: x25: Increase refcnt of "struct x25_neigh" in x25_rx_call_request
+Date:   Mon, 23 Nov 2020 13:21:56 +0100
+Message-Id: <20201123121805.721776206@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Faiz Abbas <faiz_abbas@ti.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit a584e9bc1b7e88f24f8504886eafbe6c73d8a97c ]
+[ Upstream commit 4ee18c179e5e815fa5575e0d2db0c05795a804ee ]
 
-There might be some requests pending in the buffer when the interface close
-sequence occurs. In some devices, these pending requests might lead to the
-module not shutting down properly when m_can_clk_stop() is called.
+The x25_disconnect function in x25_subr.c would decrease the refcount of
+"x25->neighbour" (struct x25_neigh) and reset this pointer to NULL.
 
-Therefore, move the device to init state before potentially powering it down.
+However, the x25_rx_call_request function in af_x25.c, which is called
+when we receive a connection request, does not increase the refcount when
+it assigns the pointer.
 
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20200825055442.16994-1-faiz_abbas@ti.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this issue by increasing the refcount of "struct x25_neigh" in
+x25_rx_call_request.
+
+This patch fixes frequent kernel crashes when using AF_X25 sockets.
+
+Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Link: https://lore.kernel.org/r/20201112103506.5875-1-xie.he.0141@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/m_can/m_can.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/x25/af_x25.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 85e3df24e7bfb..661db85d569ce 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1366,6 +1366,9 @@ static void m_can_stop(struct net_device *dev)
- 	/* disable all interrupts */
- 	m_can_disable_all_interrupts(cdev);
- 
-+	/* Set init mode to disengage from the network */
-+	m_can_config_endisable(cdev, true);
-+
- 	/* set the state as STOPPED */
- 	cdev->can.state = CAN_STATE_STOPPED;
- }
--- 
-2.27.0
-
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -1048,6 +1048,7 @@ int x25_rx_call_request(struct sk_buff *
+ 	makex25->lci           = lci;
+ 	makex25->dest_addr     = dest_addr;
+ 	makex25->source_addr   = source_addr;
++	x25_neigh_hold(nb);
+ 	makex25->neighbour     = nb;
+ 	makex25->facilities    = facilities;
+ 	makex25->dte_facilities= dte_facilities;
 
 
