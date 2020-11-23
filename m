@@ -2,118 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7012C054E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAC52C0557
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgKWMOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729294AbgKWMOY (ORCPT
+        id S1729369AbgKWMQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:16:15 -0500
+Received: from lgeamrelo13.lge.com ([156.147.23.53]:58108 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727941AbgKWMQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:14:24 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D920EC0613CF;
-        Mon, 23 Nov 2020 04:14:22 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id d17so23380878lfq.10;
-        Mon, 23 Nov 2020 04:14:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TRhGjbX+VEiprJASwNsMJBN6MmSp2/p8ffbHFNLLsjE=;
-        b=K4daee2wLSFX05MC4H13VqAmjxeWpMxobi3uR5PHfIWNbdrgwBaSFlnfYL1dH55R/k
-         Q4OGdyP5r6mHHk5nagnfvdyFpW347yr4CP77sOfL/q+fYsSjxR07X3LDfEz3yTdD3ATS
-         MQTwsYFRCNSfgwQP00E/IHq1SDs0popuUroi2NUnsQssoGcJ3eOF2BJjOCE9zwZVn7sR
-         XutkFZyFixsUwRX7R/iV86VV4fMQPUn1lOkBeSGlP+lUgQmwtCyWceLG9Kws2FZcONzi
-         TAmvLk+APEduPsVRXNZCpkMlzp51XoyRIQTTaom1cvbRfM4+TzmPyNdSOkhFG8GgSFU2
-         MK2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TRhGjbX+VEiprJASwNsMJBN6MmSp2/p8ffbHFNLLsjE=;
-        b=koZX/ccODYENofJgzxodA6jae7f4IbiBXWeV2kjGZIjYAaEtulQ92fIO5PZAuR9nt+
-         2YApf10O1pVVuk0lnCN2buHIhETfbtnLPuDiEfN7vcMkyOoo39sAr6+flqrFQ4TfT4Ll
-         eTsL+VRNZKNGw39BSlMjbEgrsjpzM6uCKh4KJDNBQIngoSGpyDCZ6Xfd3lZV3qLu8+YK
-         iRaCOVpB8gjnpy+5EW7EiW9doIv4PuQiaeSagBWZj2hP3cOExOI3Cu9iWsHhaS6KXiFZ
-         LP2DZ2Iu/t82Z+3c95nTpYqBRZUhhw7LziAHesApMEd782x3Ne5+GMJq35ZwtW7cJ/HD
-         AHww==
-X-Gm-Message-State: AOAM532I5I4jveYEZGi+/LNLqxS8Cy1JuvgFd8t4Yzc9GQpz2np3O8Nb
-        xRx9eUyxTLiWBKY0VFwJ/2Q=
-X-Google-Smtp-Source: ABdhPJyeUKDBnMC5w2mRg2QuoMaH6BuqaSjVArPe4axgNT1C/Ngvvfi2S1/Hfsx7UiIAQiajE51y0Q==
-X-Received: by 2002:a19:c94:: with SMTP id 142mr12360394lfm.284.1606133661420;
-        Mon, 23 Nov 2020 04:14:21 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id q26sm1371522lfa.104.2020.11.23.04.14.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 04:14:20 -0800 (PST)
-Subject: Re: [PATCH v10 09/19] PM / devfreq: tegra30: Support interconnect and
- OPPs from device-tree
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201123002723.28463-1-digetx@gmail.com>
- <CGME20201123003325epcas1p1b90c7b94507a3d58053949f5395c885a@epcas1p1.samsung.com>
- <20201123002723.28463-10-digetx@gmail.com>
- <f8f0b254-b5d6-7951-7576-846d8f58cb13@samsung.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <cb9ba2fd-c450-b35d-9a72-846f33e0c427@gmail.com>
-Date:   Mon, 23 Nov 2020 15:14:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Mon, 23 Nov 2020 07:16:15 -0500
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.53 with ESMTP; 23 Nov 2020 21:16:13 +0900
+X-Original-SENDERIP: 156.147.1.125
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.125 with ESMTP; 23 Nov 2020 21:16:13 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Mon, 23 Nov 2020 21:14:39 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     torvalds@linux-foundation.org, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com
+Subject: Re: [RFC] Dept(Dependency Tracker) Report Example
+Message-ID: <20201123121439.GD9464@X58A-UD3R>
+References: <20201111050559.GA24438@X58A-UD3R>
+ <20201123111332.GC9464@X58A-UD3R>
 MIME-Version: 1.0
-In-Reply-To: <f8f0b254-b5d6-7951-7576-846d8f58cb13@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123111332.GC9464@X58A-UD3R>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-23.11.2020 10:02, Chanwoo Choi пишет:
-> Hi Dmitry,
-> 
-> On 11/23/20 9:27 AM, Dmitry Osipenko wrote:
->> This patch moves ACTMON driver away from generating OPP table by itself,
->> transitioning it to use the table which comes from device-tree. This
->> change breaks compatibility with older device-trees and brings support
->> for the interconnect framework to the driver. This is a mandatory change
->> which needs to be done in order to implement interconnect-based memory
->> DVFS, i.e. device-trees need to be updated. Now ACTMON issues a memory
->> bandwidth requests using dev_pm_opp_set_bw() instead of driving EMC clock
->> rate directly.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com>
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
->> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/devfreq/tegra30-devfreq.c | 79 +++++++++++++++----------------
->>  1 file changed, 37 insertions(+), 42 deletions(-)
->>
-> 
-> (snip)
+On Mon, Nov 23, 2020 at 08:13:32PM +0900, Byungchul Park wrote:
+> [    0.995081] ===================================================
+> [    0.995619] Dept: Circular dependency has been detected.
+> [    0.995816] 5.9.0+ #8 Tainted: G        W        
+> [    0.996493] ---------------------------------------------------
+> [    0.996493] summary
+> [    0.996493] ---------------------------------------------------
+> [    0.996493] *** AA DEADLOCK ***
+> [    0.996493] 
+> [    0.996493] context A
+> [    0.996493]     [S] __mutex_lock(&dev->mutex:0)
+> [    0.996493]     [W] __mutex_lock(&dev->mutex:0)
+> [    0.996493]     [E] __mutex_unlock(&dev->mutex:0)
+> [    0.996493] 
+> [    0.996493] [S]: start of the event context
+> [    0.996493] [W]: the wait blocked
+> [    0.996493] [E]: the event not reachable
 
-Hello Chanwoo,
+Let me explain what [S], [W] and [E] mean using example:
 
-> When the patches related to icc are merged, I'll merge patch9/10.
-> Thanks for your work.
-> 
+1. In the case of typical locks:
 
-Alright, thank you!
+   if condition a
+      lock(&a);		<- [S] start of the event context for the event, unlock(&a)
+			   [W] wait as well
+      ...
+      unlock(&a);	<- [E] event to someone who has been waiting lock &a to
+			       be released
+   else
+      lock(&b);		<- [S] start of the event context for the event, unlock(&b)
+			   [W] wait as well
+      ...
+      unlock(&b);	<- [E] event to someone who has been waiting lock &b to
+			       be released
+
+2. In the case of general wait and event:
+
+   THREAD 1
+      trigger_the_event_context_to_go();
+      ...
+      wait_for_something(&c); <- [W] wait
+         store_timestamp();
+
+   THREAD 2
+      notice_someone_triggered_me();
+      ...
+
+      (somewhere can see the timestamp of wait_for_something(&c) in THREAD 1)
+      <- [S] start of the event context for the event, do_something(&c)
+
+      ...
+      do_something(&c); <- [E] event the wait is waiting for in THREAD 1
+
+Thanks,
+Byungchul
+
