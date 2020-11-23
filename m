@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD822C0FAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D21522C0FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389839AbgKWP7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732573AbgKWP7F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:59:05 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15BEC061A4D;
-        Mon, 23 Nov 2020 07:59:04 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id t6so8324979lfl.13;
-        Mon, 23 Nov 2020 07:59:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RjB6THgFfAGNOmPEWbFN7h54KgyZNiFVqrDhQfHhZxw=;
-        b=hqZLFq/dAnLg0d8QRN7oYGB8URkZqNG/1BmOZg5zQ/UGMj3t3ofcV1zE1AIL+3I77q
-         zyJxYd2GXCHnEjrVgsEBXeVNwtyR0ZAtRSUxwDBHL59PxPTJ7RWt2Qr01pcBe9/XAWjH
-         7sZEEjO+RV4AI1gikoVFSdT+xlbU5BgjVqVwUZ2vsGqMmWv7KxN1guVTOeqM85R1UFPB
-         upBZzGs/cE1i5Ov/AXMkITqLr5jVTwaHokuWqTqfAoggDuIY50QkfopuCfINgmqYKdAU
-         ymzjGBDXbqZ0YuLu8/ST1B+SG1dq7UarmBoTVgZlRFPotProEdt/6D5i9Fgzba06h84D
-         200w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RjB6THgFfAGNOmPEWbFN7h54KgyZNiFVqrDhQfHhZxw=;
-        b=TgYLTnE/xUwL6CK6t+q2FKvVJY1iYChMV/f/ix93T6v5z5ET0pNZd5yC/bYuqI1vfy
-         JdPIBaF5+B5KYH+jHJe58DwFNd2pfv5Ks5tx5uOwSHpCG6goqKu7QUi4ZBFcLhDFNdKD
-         2d3w6XxPJzrN0MSmTvJ1XftOWD6Sui5Cf3/n4Taf9X4iO34GbvjkzM/NYbQeEDF7b0PX
-         c26lDI9oVdWPhBwbSiDc3jv6Er8K3uDSw8QDlmrS0HcSnYcjlaBCi9fC4/de13NpiSuN
-         qLBGhw6zub1jcuM99ueBMqES8p6bJt8ak5S57jzwAkVNsR53S3br/qKk/jGZ6ieBeFEq
-         xsSg==
-X-Gm-Message-State: AOAM5305VXBUjrYVagjObszZxlOHekrqrqn9+NX9WyJFGdHZSixwbfz8
-        xdUfdFTmrGeoBBiY4DPCMREEM67vh2s=
-X-Google-Smtp-Source: ABdhPJw4G/w7sb5nk91yMkULl1enFhQsDNfT9QxRePl5UTCHTB3ld7KdAXjEuu5MW/oHds6AzM16MA==
-X-Received: by 2002:a19:2389:: with SMTP id j131mr14015245lfj.324.1606147143341;
-        Mon, 23 Nov 2020 07:59:03 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:2d9:200d:7c26:7999:20ce:bced? ([2a00:1fa0:2d9:200d:7c26:7999:20ce:bced])
-        by smtp.gmail.com with ESMTPSA id d18sm5859ljo.115.2020.11.23.07.59.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 07:59:02 -0800 (PST)
-Subject: Re: [PATCH 1/2] media: max9271: Fix GPIO enable/disable
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        id S2389853AbgKWP70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:59:26 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:33167 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389608AbgKWP7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:59:25 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606147165; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=00OpK4o0NPNd7XNVkSwBJiMIlV8DgX3BA73j/1v6x6E=; b=adT8VNOTv+YsQpKBKM+0thoBNiBJsC9frsAFE3BJ9r1ZMeBmTBGxqg3lfv3RKxzcovTv773v
+ bazg73SXAvO/CxxLbcItnjjEwuNizayhB7SQAbyWbqxKXi+O9ZYRQn0jJHWib8EA7aOhCUhH
+ 6ATiCtI9AU18ClTddiipEKaMRNo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fbbdc599e87e1635248db58 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 15:59:20
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 28A9DC43463; Mon, 23 Nov 2020 15:59:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD0D6C433C6;
+        Mon, 23 Nov 2020 15:59:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CD0D6C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     hby <hby2003@163.com>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20201120161529.236447-1-jacopo+renesas@jmondi.org>
- <20201120161529.236447-2-jacopo+renesas@jmondi.org>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <bef922f7-f9c9-de6f-dd3c-9a0d22581edc@gmail.com>
-Date:   Mon, 23 Nov 2020 18:59:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+Subject: Re: [PATCH] drivers: Fix the Raspberry Pi debug version compile
+References: <20201122100606.20289-1-hby2003@163.com>
+Date:   Mon, 23 Nov 2020 17:59:12 +0200
+In-Reply-To: <20201122100606.20289-1-hby2003@163.com> (hby's message of "Sun,
+        22 Nov 2020 18:06:06 +0800")
+Message-ID: <87r1okqd2n.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201120161529.236447-2-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 7:15 PM, Jacopo Mondi wrote:
+hby <hby2003@163.com> writes:
 
-> Fix GPIO enable/disable operations which wrongly read the 0x0f register
-> to obtain the current mask of the enabled lines instead of using
-> the correct 0x0e register.
-> 
-> Also fix access to bit 0 of the register which is marked as reserved.
-> 
-> Fixes: 34009bffc1c6 ("media: i2c: Add RDACM20 driver")
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> enable the DEBUG in source code, and it will compile fail,
+> modify the DEBUG macro, to adapt the compile
+>
+> Signed-off-by: hby <hby2003@163.com>
 > ---
->  drivers/media/i2c/max9271.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/max9271.c b/drivers/media/i2c/max9271.c
-> index 0f6f7a092a46..c247db569bab 100644
-> --- a/drivers/media/i2c/max9271.c
-> +++ b/drivers/media/i2c/max9271.c
-> @@ -223,12 +223,12 @@ int max9271_enable_gpios(struct max9271_device *dev, u8 gpio_mask)
->  {
->  	int ret;
->  
-> -	ret = max9271_read(dev, 0x0f);
-> +	ret = max9271_read(dev, 0x0e);
->  	if (ret < 0)
->  		return 0;
->  
->  	/* BIT(0) reserved: GPO is always enabled. */
-> -	ret |= gpio_mask | BIT(0);
-> +	ret |= (gpio_mask & ~BIT(0));
+>  drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-   () hardly needed here, = and <op>= have very low prio...
+This has nothing to do with Raspberry Pi, so the title should be:
 
-[...]
+brmcfmac: fix compile when DEBUG is defined
 
-MBR, Sergei
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
