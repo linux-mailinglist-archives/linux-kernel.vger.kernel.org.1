@@ -2,186 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ED12C10F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E179C2C10FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390163AbgKWQmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:42:38 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:39687 "EHLO z5.mailgun.us"
+        id S2390179AbgKWQnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:43:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387986AbgKWQmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:42:38 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606149757; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=BA4PcbiZ9C47lYPVovvBsIy3njEFvvWJDKuQ323HHlM=;
- b=jw2Nm8RBxAXrFb96obZrtWPxb5tMNb0fJQ0UbZsXRzeonVS8MY7NtzEQvQ9NtYzOAeqeAKD4
- P5j9Y4q9GfiLVjL23uZc1dC8zjHQMrMIEHPIiVHo7PhGM9A9qWJUludL8bTO/WCjsg985E8k
- Bum9grAdItt5EpEr2am/HaGDZPg=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fbbe675e9b7088622dd38b0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 16:42:29
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B0828C43464; Mon, 23 Nov 2020 16:42:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S2388042AbgKWQnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 11:43:05 -0500
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9AFA6C433C6;
-        Mon, 23 Nov 2020 16:42:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 799092100A;
+        Mon, 23 Nov 2020 16:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606149785;
+        bh=48yrGgOJSfFiFwXNjJgUxD28dU09ZoQpitv1nN78NfY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=OOdwg3X7qtb0xLRx4ZMFOFyVEDbz8DDxZVb6YXRTLrprTD+7S0iIgIlMRYYtt2O/s
+         ZFj+93FLN3Uu68QtJpuddpAhykPUyqzryxUGKAPo42C+MJTq8S4vnUVZbwLHOCd6F1
+         O7Izr6WqdKFlAH4IJrTIj8LTeYJ1UHQEH3j9dztc=
+Message-ID: <a12a732b67245cc02344405f7dd9fef4f3b47fbc.camel@kernel.org>
+Subject: Re: [RFC PATCH] ceph: add ceph.caps vxattr
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Luis Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 23 Nov 2020 11:43:03 -0500
+In-Reply-To: <20201123145311.13588-1-lhenriques@suse.de>
+References: <20201123145311.13588-1-lhenriques@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Nov 2020 22:12:27 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCHv8 2/8] iommu/arm-smmu: Add domain attribute for pagetable
- configuration
-In-Reply-To: <20201123151857.GC11033@willie-the-truck>
-References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
- <3dfbc9d6d4489ca90361fac4e64586434331792f.1605621785.git.saiprakash.ranjan@codeaurora.org>
- <20201123151857.GC11033@willie-the-truck>
-Message-ID: <0907c051561caa178365730c2ca8bccf@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-23 20:48, Will Deacon wrote:
-> On Tue, Nov 17, 2020 at 08:00:41PM +0530, Sai Prakash Ranjan wrote:
->> Add iommu domain attribute for pagetable configuration which
->> initially will be used to set quirks like for system cache aka
->> last level cache to be used by client drivers like GPU to set
->> right attributes for caching the hardware pagetables into the
->> system cache and later can be extended to include other page
->> table configuration data.
->> 
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 25 +++++++++++++++++++++++++
->>  drivers/iommu/arm/arm-smmu/arm-smmu.h |  1 +
->>  include/linux/io-pgtable.h            |  4 ++++
->>  include/linux/iommu.h                 |  1 +
->>  4 files changed, 31 insertions(+)
->> 
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> index 0f28a8614da3..7b05782738e2 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> @@ -789,6 +789,9 @@ static int arm_smmu_init_domain_context(struct 
->> iommu_domain *domain,
->>  	if (smmu_domain->non_strict)
->>  		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
->> 
->> +	if (smmu_domain->pgtbl_cfg.quirks)
->> +		pgtbl_cfg.quirks |= smmu_domain->pgtbl_cfg.quirks;
->> +
->>  	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
->>  	if (!pgtbl_ops) {
->>  		ret = -ENOMEM;
->> @@ -1511,6 +1514,12 @@ static int arm_smmu_domain_get_attr(struct 
->> iommu_domain *domain,
->>  		case DOMAIN_ATTR_NESTING:
->>  			*(int *)data = (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED);
->>  			return 0;
->> +		case DOMAIN_ATTR_IO_PGTABLE_CFG: {
->> +			struct domain_attr_io_pgtbl_cfg *pgtbl_cfg = data;
->> +			*pgtbl_cfg = smmu_domain->pgtbl_cfg;
->> +
->> +			return 0;
->> +		}
->>  		default:
->>  			return -ENODEV;
->>  		}
->> @@ -1551,6 +1560,22 @@ static int arm_smmu_domain_set_attr(struct 
->> iommu_domain *domain,
->>  			else
->>  				smmu_domain->stage = ARM_SMMU_DOMAIN_S1;
->>  			break;
->> +		case DOMAIN_ATTR_IO_PGTABLE_CFG: {
->> +			struct domain_attr_io_pgtbl_cfg *pgtbl_cfg = data;
->> +
->> +			if (smmu_domain->smmu) {
->> +				ret = -EPERM;
->> +				goto out_unlock;
->> +			}
->> +
->> +			if (!pgtbl_cfg) {
+On Mon, 2020-11-23 at 14:53 +0000, Luis Henriques wrote:
+> Add a new vxattr that allows userspace to list the caps for a specific
+> directory or file.
 > 
-> Do we really need to check this? If somebody passed us a NULL pointer 
-> then
-> they have a bug and we don't check this for other domain attributes 
-> afaict.
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> ---
+>  fs/ceph/xattr.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
+> diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
+> index 197cb1234341..996512e05513 100644
+> --- a/fs/ceph/xattr.c
+> +++ b/fs/ceph/xattr.c
+> @@ -303,6 +303,18 @@ static ssize_t ceph_vxattrcb_snap_btime(struct ceph_inode_info *ci, char *val,
+>  				ci->i_snap_btime.tv_nsec);
+>  }
+>  
+> 
+> 
+> 
+> +static ssize_t ceph_vxattrcb_caps(struct ceph_inode_info *ci, char *val,
+> +					size_t size)
+> +{
+> +	int issued;
+> +
+> +	spin_lock(&ci->i_ceph_lock);
+> +	issued = __ceph_caps_issued(ci, NULL);
+> +	spin_unlock(&ci->i_ceph_lock);
+> +
+> +	return ceph_fmt_xattr(val, size, "%s", ceph_cap_string(issued));
+> +}
 
-True, I'll drop it.
+I wonder if we ought to print a numerical (hex) representation of the
+cap set here in addition to the ceph_cap_string. A main use-case for
+this will be in testcases, and determining whether (e.g.) Fs is in the
+mask may be easier to do with a bitwise AND rather than having to parse
+a string of text.
 
->> +				ret = -ENODEV;
->> +				goto out_unlock;
->> +			}
->> +
->> +			smmu_domain->pgtbl_cfg = *pgtbl_cfg;
->> +			break;
->> +		}
->>  		default:
->>  			ret = -ENODEV;
->>  		}
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu.h
->> index 04288b6fc619..18fbed376afb 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
->> @@ -364,6 +364,7 @@ enum arm_smmu_domain_stage {
->>  struct arm_smmu_domain {
->>  	struct arm_smmu_device		*smmu;
->>  	struct io_pgtable_ops		*pgtbl_ops;
->> +	struct domain_attr_io_pgtbl_cfg	pgtbl_cfg;
->>  	const struct iommu_flush_ops	*flush_ops;
->>  	struct arm_smmu_cfg		cfg;
->>  	enum arm_smmu_domain_stage	stage;
->> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
->> index a9a2c59fab37..686b37d48743 100644
->> --- a/include/linux/io-pgtable.h
->> +++ b/include/linux/io-pgtable.h
->> @@ -212,6 +212,10 @@ struct io_pgtable {
->> 
->>  #define io_pgtable_ops_to_pgtable(x) container_of((x), struct 
->> io_pgtable, ops)
->> 
->> +struct domain_attr_io_pgtbl_cfg {
->> +	unsigned long quirks;
->> +};
+> +
+>  #define CEPH_XATTR_NAME(_type, _name)	XATTR_CEPH_PREFIX #_type "." #_name
+>  #define CEPH_XATTR_NAME2(_type, _name, _name2)	\
+>  	XATTR_CEPH_PREFIX #_type "." #_name "." #_name2
+> @@ -378,6 +390,13 @@ static struct ceph_vxattr ceph_dir_vxattrs[] = {
+>  		.exists_cb = ceph_vxattrcb_snap_btime_exists,
+>  		.flags = VXATTR_FLAG_READONLY,
+>  	},
+> +	{
+> +		.name = "ceph.caps",
+> +		.name_size = sizeof("ceph.caps"),
+> +		.getxattr_cb = ceph_vxattrcb_caps,
+> +		.exists_cb = NULL,
+> +		.flags = VXATTR_FLAG_HIDDEN,
+> +	},
+>  	{ .name = NULL, 0 }	/* Required table terminator */
+>  };
+>  
 > 
-> nit: Can you rename this to 'struct io_pgtable_domain_attr' please?
 > 
-
-Done, thanks.
+> 
+> @@ -403,6 +422,13 @@ static struct ceph_vxattr ceph_file_vxattrs[] = {
+>  		.exists_cb = ceph_vxattrcb_snap_btime_exists,
+>  		.flags = VXATTR_FLAG_READONLY,
+>  	},
+> +	{
+> +		.name = "ceph.caps",
+> +		.name_size = sizeof("ceph.caps"),
+> +		.getxattr_cb = ceph_vxattrcb_caps,
+> +		.exists_cb = NULL,
+> +		.flags = VXATTR_FLAG_HIDDEN,
+> +	},
+>  	{ .name = NULL, 0 }	/* Required table terminator */
+>  };
+>  
+> 
+> 
+> 
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Jeff Layton <jlayton@kernel.org>
+
