@@ -2,103 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD6E2C0C67
+	by mail.lfdr.de (Postfix) with ESMTP id E85912C0C68
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388772AbgKWNxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388750AbgKWNw7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388786AbgKWNxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:53:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388734AbgKWNw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 08:52:59 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17590C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:52:56 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id l17so3870558pgk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:52:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=088zmG11B7ENQeStfIt/hKr66YTpt35vQc34h9N/mec=;
-        b=WwhwzWGgg7krqxKQSWo7qxirBtmz/vdt/6j2DSW4AJ7H0uqC3m0kiJkpBJUucnhIRU
-         regOTZnXOw2Mi23u2xxBoyTAQh/+fHvAJiccNvPdxWN9U1cHeo5sE6tGyzX0cIJPLlaY
-         w+fAPAny5FGyPfO2+0RttYdgJ/tRMrSPdYmX/bNX94ViHoyZGhRhVEIY+W8zmX6IGNA8
-         nYevFmxgPTO18WEhkQw1uKz+URUyhtoqWU862+CeihUSza4nYw9m5qwhbWsJX9A2o3vA
-         ZgvgnUnLQMI93t7IHi6NpCMu3KZnsu+UZObEw5s6dTmcEThWCXXZcWNZJ5cGrp5dTKMq
-         9EKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=088zmG11B7ENQeStfIt/hKr66YTpt35vQc34h9N/mec=;
-        b=VFOcVxPGdm/ztKMp7RNA5I80Jh7Vked5/vb99aY4Xjen5794XVs3vAooEYJkgDaFYp
-         lewuQ9eADzcqhn0eO2U5ziN/KYQzOGMBesdtWjHQWSDQ+3uGVPGgkYoQ9Iu55PRlcTW1
-         g6Xe340t/yp7mY8R1GaT7gYRr1fsQK5MnQifaPJdaT8A68qe24H6dlaFBu3wld2T5MTD
-         84jCOsnk7OGr3TjKLu+qJHkpwZv8oHEwmOYrUPDLNDXkw8Xbd3zLs4auTp3EfrERH4nI
-         2Sh42XKZkje0KjvjYWUvyUoRuxo0XU3jvffD/PN/HhqO8YDs/d4OXiMgAuE2NjXxW/GW
-         HDyQ==
-X-Gm-Message-State: AOAM530QtGzTh8pm93LuBZu5HmJblWy5IQ6/EfHfxy3BxlVfUq8ZqS3j
-        4eBemkn6KvJRj07XidhZ8mLdB7Oc1LzAtmWPY/F4+A==
-X-Google-Smtp-Source: ABdhPJz7/esoZcZXlaX0WzzQ5aE2SmW1dFlTaMzQH4jQHeR8+EBmkgGNvBzdbUUfdwnFOrNPM2g04JhCTBIRIMN2d9U=
-X-Received: by 2002:a63:f20:: with SMTP id e32mr27452713pgl.130.1606139575373;
- Mon, 23 Nov 2020 05:52:55 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605305978.git.andreyknvl@google.com> <6f0a1e72783ddac000ac08e7315b1d7c0ca4ec51.1605305978.git.andreyknvl@google.com>
- <CACT4Y+azmp-xczEt5rQmejtrnQ=e9PFC15tOHTjA3nHfgQ5gpg@mail.gmail.com>
-In-Reply-To: <CACT4Y+azmp-xczEt5rQmejtrnQ=e9PFC15tOHTjA3nHfgQ5gpg@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 23 Nov 2020 14:52:44 +0100
-Message-ID: <CAAeHK+xc5zgoaPsE9Xg5H6ZTHhBfbPFAygOxSeoJoTAqc8SH5Q@mail.gmail.com>
-Subject: Re: [PATCH mm v3 18/19] kasan, mm: allow cache merging with no metadata
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6EBE206F1;
+        Mon, 23 Nov 2020 13:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606139578;
+        bh=oUMhhreD7ORSVrrrxM5Yp8Xa1lT9bZsNE1HGqNx/qbI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1DmGyMg9eMalGYHoQw6TtxoithgNF2WCrrlalkPjTDIThefRks1IY2/MCE5C84fCn
+         UjCt0DR0TwRmheSneb3LDTFout9MOCchOC/G4VcMluASR3m91xpKn/QPgNQRr6rtu4
+         UunLVdT99666+RRSOwxISTl8mX8C5i2wWx6VcAYk=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khCH1-00Cxvt-Is; Mon, 23 Nov 2020 13:52:56 +0000
+Date:   Mon, 23 Nov 2020 13:52:54 +0000
+Message-ID: <87mtz85geh.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 04/24] arm64: Move MAIR_EL1_SET to asm/memory.h
+In-Reply-To: <20201116204318.63987-5-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-5-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 2:25 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Fri, Nov 13, 2020 at 11:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > The reason cache merging is disabled with KASAN is because KASAN puts its
-> > metadata right after the allocated object. When the merged caches have
-> > slightly different sizes, the metadata ends up in different places, which
-> > KASAN doesn't support.
-> >
-> > It might be possible to adjust the metadata allocation algorithm and make
-> > it friendly to the cache merging code. Instead this change takes a simpler
-> > approach and allows merging caches when no metadata is present. Which is
-> > the case for hardware tag-based KASAN with kasan.mode=prod.
-> >
-> > Co-developed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
-> > Signed-off-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > Link: https://linux-review.googlesource.com/id/Ia114847dfb2244f297d2cb82d592bf6a07455dba
->
-> Somehow gerrit contains an old version... so I was going to
-> independently propose what Marco already proposed as simplification...
-> until I looked at the patch in the email :)
+On Mon, 16 Nov 2020 20:42:58 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
+> 
+> KVM currently initializes MAIR_EL2 to the value of MAIR_EL1. In
+> preparation for initializing MAIR_EL2 before MAIR_EL1, move the constant
+> into a shared header file. Since it is used for EL1 and EL2, rename to
+> MAIR_ELx_SET.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/memory.h | 29 ++++++++++++++---------------
+>  arch/arm64/include/asm/sysreg.h | 30 ++++++++++++++++++++++++++++++
+>  arch/arm64/mm/proc.S            | 15 +--------------
+>  3 files changed, 45 insertions(+), 29 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index cd61239bae8c..8ae8fd883a0c 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -13,6 +13,7 @@
+>  #include <linux/const.h>
+>  #include <linux/sizes.h>
+>  #include <asm/page-def.h>
+> +#include <asm/sysreg.h>
+>  
+>  /*
+>   * Size of the PCI I/O space. This must remain a power of two so that
+> @@ -124,21 +125,6 @@
+>   */
+>  #define SEGMENT_ALIGN		SZ_64K
+>  
+> -/*
+> - * Memory types available.
+> - *
+> - * IMPORTANT: MT_NORMAL must be index 0 since vm_get_page_prot() may 'or' in
+> - *	      the MT_NORMAL_TAGGED memory type for PROT_MTE mappings. Note
+> - *	      that protection_map[] only contains MT_NORMAL attributes.
+> - */
+> -#define MT_NORMAL		0
+> -#define MT_NORMAL_TAGGED	1
+> -#define MT_NORMAL_NC		2
+> -#define MT_NORMAL_WT		3
+> -#define MT_DEVICE_nGnRnE	4
+> -#define MT_DEVICE_nGnRE		5
+> -#define MT_DEVICE_GRE		6
+> -
+>  /*
+>   * Memory types for Stage-2 translation
+>   */
+> @@ -152,6 +138,19 @@
+>  #define MT_S2_FWB_NORMAL	6
+>  #define MT_S2_FWB_DEVICE_nGnRE	1
+>  
+> +/*
+> + * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memory and
+> + * changed during __cpu_setup to Normal Tagged if the system supports MTE.
+> + */
+> +#define MAIR_ELx_SET							\
+> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> +
+>  #ifdef CONFIG_ARM64_4K_PAGES
+>  #define IOREMAP_MAX_ORDER	(PUD_SHIFT)
+>  #else
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index e2ef4c2edf06..24e773414cb4 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -635,6 +635,34 @@
+>  /* Position the attr at the correct index */
+>  #define MAIR_ATTRIDX(attr, idx)		((attr) << ((idx) * 8))
+>  
+> +/*
+> + * Memory types available.
+> + *
+> + * IMPORTANT: MT_NORMAL must be index 0 since vm_get_page_prot() may 'or' in
+> + *	      the MT_NORMAL_TAGGED memory type for PROT_MTE mappings. Note
+> + *	      that protection_map[] only contains MT_NORMAL attributes.
+> + */
+> +#define MT_NORMAL		0
+> +#define MT_NORMAL_TAGGED	1
+> +#define MT_NORMAL_NC		2
+> +#define MT_NORMAL_WT		3
+> +#define MT_DEVICE_nGnRnE	4
+> +#define MT_DEVICE_nGnRE		5
+> +#define MT_DEVICE_GRE		6
+> +
+> +/*
+> + * Default MAIR_ELx. MT_NORMAL_TAGGED is initially mapped as Normal memory and
+> + * changed during __cpu_setup to Normal Tagged if the system supports MTE.
+> + */
+> +#define MAIR_ELx_SET							\
+> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> +
+>  /* id_aa64isar0 */
+>  #define ID_AA64ISAR0_RNDR_SHIFT		60
+>  #define ID_AA64ISAR0_TLB_SHIFT		56
+> @@ -992,6 +1020,7 @@
+>  /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
+>  #define SYS_MPIDR_SAFE_VAL	(BIT(31))
+>  
+> +#ifndef LINKER_SCRIPT
 
-Ah, this is because I couldn't push next/mm-based changes into Gerrit
-without manually adding tags to all of the yet-out-of-tree patches. So
-the Gerrit doesn't have the last version of the patchset.
+This is terribly ugly. Why is this included by the linker script? Does
+it actually define __ASSEMBLY__?
 
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+>  #ifdef __ASSEMBLY__
+>  
+>  	.irp	num,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
+> @@ -1109,5 +1138,6 @@
+>  })
+>  
+>  #endif
+> +#endif	/* LINKER_SCRIPT */
+>  
+>  #endif	/* __ASM_SYSREG_H */
+> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> index 23c326a06b2d..e3b9aa372b96 100644
+> --- a/arch/arm64/mm/proc.S
+> +++ b/arch/arm64/mm/proc.S
+> @@ -45,19 +45,6 @@
+>  #define TCR_KASAN_FLAGS 0
+>  #endif
+>  
+> -/*
+> - * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memory and
+> - * changed during __cpu_setup to Normal Tagged if the system supports MTE.
+> - */
+> -#define MAIR_EL1_SET							\
+> -	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> -
+>  #ifdef CONFIG_CPU_PM
+>  /**
+>   * cpu_do_suspend - save CPU registers context
+> @@ -425,7 +412,7 @@ SYM_FUNC_START(__cpu_setup)
+>  	/*
+>  	 * Memory region attributes
+>  	 */
+> -	mov_q	x5, MAIR_EL1_SET
+> +	mov_q	x5, MAIR_ELx_SET
+>  #ifdef CONFIG_ARM64_MTE
+>  	/*
+>  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
 
-Thanks!
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
