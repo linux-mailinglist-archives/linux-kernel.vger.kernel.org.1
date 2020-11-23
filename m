@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E112C0BCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A93A2C0B2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389285AbgKWNbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:31:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37782 "EHLO mail.kernel.org"
+        id S1733098AbgKWNUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:20:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730345AbgKWM1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:46 -0500
+        id S1732215AbgKWMjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D199C20857;
-        Mon, 23 Nov 2020 12:27:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A60E2065E;
+        Mon, 23 Nov 2020 12:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134462;
-        bh=R4LWO04Ts5s9UfBFE1ucirvhHuqqdNVcbzsVK+aoODw=;
+        s=korg; t=1606135156;
+        bh=M6L+Nawp5+EPafUv3Lj7DKn06qbCVDGJ6RaSKEWqFxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dvoTgWX1d8XgCiZ5aEq8FUnL9evYK/Hr7TI0SkaUy7Lu1+XTOxpiqFP0QNQfERLwb
-         kCWnj7Hse1kO6GTRME838hZjudCkQj09IdImznaqfUu2PcWkboIO2J9vHG9lab4BBP
-         8O0Xnuvy+8Yazqzqgf7P9KWiluZRY4GFFOwOcWiw=
+        b=wmh4nqKesNUfXWzaxJMPF84XSrjCpe8BdLzhkqjtqu0GhCkUkVSmYmMd7UmOKIs6G
+         BaAe2jXsigLZOfKM8HosamJxJZSDfrDeddoc0zhinWm7TnNfv6L942WncXGEU6jm1x
+         h+93/dpE9bIWzn1l90eYpb5ThBsPviyMPUp24Yi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 21/60] pinctrl: rockchip: enable gpio pclk for rockchip_gpio_to_irq
+Subject: [PATCH 5.4 095/158] can: kvaser_pciefd: Fix KCAN bittiming limits
 Date:   Mon, 23 Nov 2020 13:22:03 +0100
-Message-Id: <20201123121806.050209466@linuxfoundation.org>
+Message-Id: <20201123121824.515427206@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianqun Xu <jay.xu@rock-chips.com>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-[ Upstream commit 63fbf8013b2f6430754526ef9594f229c7219b1f ]
+[ Upstream commit 470e14c00c63752466ac44de392f584dfdddd82e ]
 
-There need to enable pclk_gpio when do irq_create_mapping, since it will
-do access to gpio controller.
+Use correct bittiming limits for the KCAN CAN controller.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Kever Yang<kever.yang@rock-chips.com>
-Link: https://lore.kernel.org/r/20201013063731.3618-3-jay.xu@rock-chips.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/r/20201115163027.16851-1-jimmyassarsson@gmail.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-rockchip.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/kvaser_pciefd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
-index 5d6cf024ee9c8..26974973ecdde 100644
---- a/drivers/pinctrl/pinctrl-rockchip.c
-+++ b/drivers/pinctrl/pinctrl-rockchip.c
-@@ -2547,7 +2547,9 @@ static int rockchip_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
- 	if (!bank->domain)
- 		return -ENXIO;
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index 6f766918211a4..72acd1ba162d2 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -287,12 +287,12 @@ struct kvaser_pciefd_tx_packet {
+ static const struct can_bittiming_const kvaser_pciefd_bittiming_const = {
+ 	.name = KVASER_PCIEFD_DRV_NAME,
+ 	.tseg1_min = 1,
+-	.tseg1_max = 255,
++	.tseg1_max = 512,
+ 	.tseg2_min = 1,
+ 	.tseg2_max = 32,
+ 	.sjw_max = 16,
+ 	.brp_min = 1,
+-	.brp_max = 4096,
++	.brp_max = 8192,
+ 	.brp_inc = 1,
+ };
  
-+	clk_enable(bank->clk);
- 	virq = irq_create_mapping(bank->domain, offset);
-+	clk_disable(bank->clk);
- 
- 	return (virq) ? : -ENXIO;
- }
 -- 
 2.27.0
 
