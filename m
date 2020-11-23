@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9722C0B84
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7491E2C0B28
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389144AbgKWNZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:25:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44042 "EHLO mail.kernel.org"
+        id S2388023AbgKWNUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:20:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731122AbgKWMcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:32:43 -0500
+        id S1732213AbgKWMjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:39:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C255A20728;
-        Mon, 23 Nov 2020 12:32:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5C0820857;
+        Mon, 23 Nov 2020 12:39:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134763;
-        bh=uv8NaVi5sIeCxzxuF1RmchYY6x10GhsiwPAYJAvbLcI=;
+        s=korg; t=1606135159;
+        bh=5WeBFUD6vwEUlct8jF4tp60WXcAHD+mGFWdMxYEeyoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V79hKFReoNf25CnuUlP66L3S4vW5e3qdeE+HTGNAK5VbdBTNZxsTHbZt2NUjzeLGM
-         XnaVkC0jqR/MI6Z1L/OGhrc+NtfPIa2lFThFeSyVNs6Snt3VwWbxb5NT2aTuOBQ44e
-         Jgadm1orTXP/0MhRMjdmbZfAEzMGNGCjVDYvSWkU=
+        b=Srva5hwlCL5o0wnGm84Ul2qSsEoRIRg7PW1OxaGUGecdlerFoHdMh1p95pmpKttD4
+         8WZRP0fjmOok54LXlf8yP26a7QOB5vDVcaZQv4hfUduyVTNRFTAmD2TM8DrGat6EuH
+         419v6qKAwWLoJoFuSIP9fiCJEg6LxTz5Hv0B7BbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Matyukevich <geomatsi@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 43/91] arm: dts: imx6qdl-udoo: fix rgmii phy-mode for ksz9031 phy
-Date:   Mon, 23 Nov 2020 13:22:03 +0100
-Message-Id: <20201123121811.407279113@linuxfoundation.org>
+Subject: [PATCH 5.4 096/158] can: kvaser_usb: kvaser_usb_hydra: Fix KCAN bittiming limits
+Date:   Mon, 23 Nov 2020 13:22:04 +0100
+Message-Id: <20201123121824.563618068@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Matyukevich <geomatsi@gmail.com>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-[ Upstream commit 7dd8f0ba88fce98e2953267a66af74c6f4792a56 ]
+[ Upstream commit d003868d7f8579838ed58b6429af91844039b6f8 ]
 
-Commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the
-KSZ9031 PHY") fixed micrel phy driver adding proper support for phy
-modes. Adapt imx6q-udoo board phy settings : explicitly set required
-delay configuration using "rgmii-id".
+Use correct bittiming limits for the KCAN CAN controller.
 
-Fixes: cbd54fe0b2bc ("ARM: dts: imx6dl-udoo: Add board support based off imx6q-udoo")
-Signed-off-by: Sergey Matyukevich <geomatsi@gmail.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/r/20201115163027.16851-2-jimmyassarsson@gmail.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-udoo.dtsi | 2 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-udoo.dtsi b/arch/arm/boot/dts/imx6qdl-udoo.dtsi
-index 4f27861bbb324..4cc9858f7ff80 100644
---- a/arch/arm/boot/dts/imx6qdl-udoo.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-udoo.dtsi
-@@ -97,7 +97,7 @@
- &fec {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_enet>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 7ab87a7587545..218fadc911558 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -367,7 +367,7 @@ static const struct can_bittiming_const kvaser_usb_hydra_kcan_bittiming_c = {
+ 	.tseg2_max = 32,
+ 	.sjw_max = 16,
+ 	.brp_min = 1,
+-	.brp_max = 4096,
++	.brp_max = 8192,
+ 	.brp_inc = 1,
  };
  
 -- 
