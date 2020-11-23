@@ -2,46 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576922C0B4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045CE2C0B49
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389003AbgKWNWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:22:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47866 "EHLO mail.kernel.org"
+        id S2388995AbgKWNWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:22:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731605AbgKWMfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:35:54 -0500
+        id S1731119AbgKWMgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:36:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EA8C20721;
-        Mon, 23 Nov 2020 12:35:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FEF32065E;
+        Mon, 23 Nov 2020 12:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134954;
-        bh=/TrVmaW4nD0eqEg0VZOBHqg7wnAJJGot18nOv3dhZF8=;
+        s=korg; t=1606134978;
+        bh=w4sMYw8FTXTLU3YoJ5gQCC6GLOnwx2Ikq5d/cEpGdpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HPf/s1oiFO4HtsvkWbkC0tIstIASUzx0Zeb1wo3YUOvA7PHiXfjn35hdoNc4UNHWB
-         U0gy2hMdIjjmjI4rNaQDQtV0xTlb1cMZ8J5r/ypjRfdYClz3eYkAzuDDRWiudo9zPh
-         XwDOoGU6YsYAjowwljYHaykYYRdFbH69hnF+xVG4=
+        b=aQt9Puaftd6Jtb/xsQ2mYEBAVWxxcRmNoyXslCd3VTgjAMA/VV0VZN7NwxLjOaX+7
+         GcjwIEWH6TlxBgRtgjR/m01ZiMHgbJrXY0EB2nlu/l1Md7y5y/DsinNg6qXQcIKMvH
+         Uw03Rqi466JVN9PXmHMefVieA+WUVgwOFqFSNn30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
-        Bert Barbe <bert.barbe@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>,
-        Manjunath Patil <manjunath.b.patil@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>,
-        SRINIVAS <srinivas.eeda@oracle.com>,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 024/158] page_frag: Recover from memory pressure
-Date:   Mon, 23 Nov 2020 13:20:52 +0100
-Message-Id: <20201123121821.100592189@linuxfoundation.org>
+        stable@vger.kernel.org, Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.4 030/158] net/mlx5: Disable QoS when min_rates on all VFs are zero
+Date:   Mon, 23 Nov 2020 13:20:58 +0100
+Message-Id: <20201123121821.390172508@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -53,78 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongli Zhang <dongli.zhang@oracle.com>
+From: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
 
-[ Upstream commit d8c19014bba8f565d8a2f1f46b4e38d1d97bf1a7 ]
+[ Upstream commit 470b74758260e4abc2508cf1614573c00a00465c ]
 
-The ethernet driver may allocate skb (and skb->data) via napi_alloc_skb().
-This ends up to page_frag_alloc() to allocate skb->data from
-page_frag_cache->va.
+Currently when QoS is enabled for VF and any min_rate is configured,
+the driver sets bw_share value to at least 1 and doesn’t allow to set
+it to 0 to make minimal rate unlimited. It means there is always a
+minimal rate configured for every VF, even if user tries to remove it.
 
-During the memory pressure, page_frag_cache->va may be allocated as
-pfmemalloc page. As a result, the skb->pfmemalloc is always true as
-skb->data is from page_frag_cache->va. The skb will be dropped if the
-sock (receiver) does not have SOCK_MEMALLOC. This is expected behaviour
-under memory pressure.
+In order to make QoS disable possible, check whether all vports have
+configured min_rate = 0. If this is true, set their bw_share to 0 to
+disable min_rate limitations.
 
-However, once kernel is not under memory pressure any longer (suppose large
-amount of memory pages are just reclaimed), the page_frag_alloc() may still
-re-use the prior pfmemalloc page_frag_cache->va to allocate skb->data. As a
-result, the skb->pfmemalloc is always true unless page_frag_cache->va is
-re-allocated, even if the kernel is not under memory pressure any longer.
-
-Here is how kernel runs into issue.
-
-1. The kernel is under memory pressure and allocation of
-PAGE_FRAG_CACHE_MAX_ORDER in __page_frag_cache_refill() will fail. Instead,
-the pfmemalloc page is allocated for page_frag_cache->va.
-
-2: All skb->data from page_frag_cache->va (pfmemalloc) will have
-skb->pfmemalloc=true. The skb will always be dropped by sock without
-SOCK_MEMALLOC. This is an expected behaviour.
-
-3. Suppose a large amount of pages are reclaimed and kernel is not under
-memory pressure any longer. We expect skb->pfmemalloc drop will not happen.
-
-4. Unfortunately, page_frag_alloc() does not proactively re-allocate
-page_frag_alloc->va and will always re-use the prior pfmemalloc page. The
-skb->pfmemalloc is always true even kernel is not under memory pressure any
-longer.
-
-Fix this by freeing and re-allocating the page instead of recycling it.
-
-Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-Cc: Bert Barbe <bert.barbe@oracle.com>
-Cc: Rama Nichanamatlu <rama.nichanamatlu@oracle.com>
-Cc: Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
-Cc: Manjunath Patil <manjunath.b.patil@oracle.com>
-Cc: Joe Jin <joe.jin@oracle.com>
-Cc: SRINIVAS <srinivas.eeda@oracle.com>
-Fixes: 79930f5892e1 ("net: do not deplete pfmemalloc reserve")
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20201115201029.11903-1-dongli.zhang@oracle.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: c9497c98901c ("net/mlx5: Add support for setting VF min rate")
+Signed-off-by: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/page_alloc.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c |   15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4910,6 +4910,11 @@ refill:
- 		if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
- 			goto refill;
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+@@ -2369,12 +2369,15 @@ static u32 calculate_vports_min_rate_div
+ 		max_guarantee = evport->info.min_rate;
+ 	}
  
-+		if (unlikely(nc->pfmemalloc)) {
-+			free_the_page(page, compound_order(page));
-+			goto refill;
-+		}
-+
- #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
- 		/* if size can vary use size else just use PAGE_SIZE */
- 		size = nc->size;
+-	return max_t(u32, max_guarantee / fw_max_bw_share, 1);
++	if (max_guarantee)
++		return max_t(u32, max_guarantee / fw_max_bw_share, 1);
++	return 0;
+ }
+ 
+-static int normalize_vports_min_rate(struct mlx5_eswitch *esw, u32 divider)
++static int normalize_vports_min_rate(struct mlx5_eswitch *esw)
+ {
+ 	u32 fw_max_bw_share = MLX5_CAP_QOS(esw->dev, max_tsar_bw_share);
++	u32 divider = calculate_vports_min_rate_divider(esw);
+ 	struct mlx5_vport *evport;
+ 	u32 vport_max_rate;
+ 	u32 vport_min_rate;
+@@ -2387,9 +2390,9 @@ static int normalize_vports_min_rate(str
+ 			continue;
+ 		vport_min_rate = evport->info.min_rate;
+ 		vport_max_rate = evport->info.max_rate;
+-		bw_share = MLX5_MIN_BW_SHARE;
++		bw_share = 0;
+ 
+-		if (vport_min_rate)
++		if (divider)
+ 			bw_share = MLX5_RATE_TO_BW_SHARE(vport_min_rate,
+ 							 divider,
+ 							 fw_max_bw_share);
+@@ -2414,7 +2417,6 @@ int mlx5_eswitch_set_vport_rate(struct m
+ 	struct mlx5_vport *evport = mlx5_eswitch_get_vport(esw, vport);
+ 	u32 fw_max_bw_share;
+ 	u32 previous_min_rate;
+-	u32 divider;
+ 	bool min_rate_supported;
+ 	bool max_rate_supported;
+ 	int err = 0;
+@@ -2439,8 +2441,7 @@ int mlx5_eswitch_set_vport_rate(struct m
+ 
+ 	previous_min_rate = evport->info.min_rate;
+ 	evport->info.min_rate = min_rate;
+-	divider = calculate_vports_min_rate_divider(esw);
+-	err = normalize_vports_min_rate(esw, divider);
++	err = normalize_vports_min_rate(esw);
+ 	if (err) {
+ 		evport->info.min_rate = previous_min_rate;
+ 		goto unlock;
 
 
