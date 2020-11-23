@@ -2,189 +2,511 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ED52C0A41
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079152C0A4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732472AbgKWNSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:18:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731646AbgKWNSE (ORCPT
+        id S2388636AbgKWNSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:18:42 -0500
+Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:44486 "EHLO
+        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388601AbgKWNSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:18:04 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AA9C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:18:04 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id q1so15837233ilt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:18:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8GVYu+FzJGPxHeAYn+3oYhbrF8dl3hAe7amTT6QoedQ=;
-        b=jEbtRNq2ntpxKh+/JAMPmXvFpLgUhvd5WbADxmzA9Jf7/2ANFqHNI/cPf62prApHkN
-         Zv76pd5frLURQBenXbCWRSKMwh85ycFSSUjU6QB0rLyRu0tkNdsjnGTiayj2o0tTHZiD
-         q1QtXMnlMTyRb9dhDW1A1C72+DxJR5hE9aoPOYFyPfOcpoVEQgTI0mlWtNmrg66q18b0
-         rZo3G1AWD7oAJEY/GC45quSq4L5z/OJs6ocepuyBqwboOUXS9+xLzLtWmJVDuOWzG41f
-         zYBW/llrlF/ZVRERJwzOQLKIHW+688d16ory0EvkB6HNFLFgLrtlumG+F5pFO27Y/FoW
-         Y7BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8GVYu+FzJGPxHeAYn+3oYhbrF8dl3hAe7amTT6QoedQ=;
-        b=s5j1jDwe/w1vqeMpRf3uf+INm3SgpAcKJSSvXUYLws0D2tCbong1wkCfGm1HGMM3WK
-         tPwip54vOHRxpQuQ2tm+dZHaA4oqu5Atvkq4wIR38n9v/UpMvupR9HOoXAq8123dTV7u
-         iSKgnRvc/7R2k4kHqLc8SjEyo91d9ZpoRL6VKaTTjEyqb9ZWxysTEfo8/QI3D+R4b4Ot
-         zGBS6BgU9QJEYY5l6DgL//s2+1dh0VjGzjFiR/eaBJcuODdximWc7IH7Ehn/OrX/9wlk
-         LjGps88d+hrP+IJp8XDDNAyHSzVpoo3iI4RIjXBYp4u1l5CFHSySQse11ox4cpwD2eTx
-         L3YA==
-X-Gm-Message-State: AOAM531iEm1Qcux/SgSH45TSN8Dcjm5vNzk3MAdhDdj488kKKwG3+qHp
-        /iv1WbtM5s2jSzvcKdwIyGkZTaFIMmm9iu22hB0eG5gVvC4=
-X-Google-Smtp-Source: ABdhPJxXoezB+bkDkzia7wlIU0nZt5UFiPhVO71wV9dUFAMWOoazYxY2NqTLV22fb9SH5g7wxER3XHHBGFolzMtfa0s=
-X-Received: by 2002:a92:600e:: with SMTP id u14mr33590848ilb.221.1606137483984;
- Mon, 23 Nov 2020 05:18:03 -0800 (PST)
+        Mon, 23 Nov 2020 08:18:39 -0500
+Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
+        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 03366BAE70477
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:18:33 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id hBjlkLRmoh41lhBjlkPZrH; Mon, 23 Nov 2020 06:18:33 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=FoUrAVjq c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
+ a=FOH2dFAWAAAA:8 a=eJIs5Ax8GuWUTwcQiUoA:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
+ a=QEXdDO2ut3YA:10:nop_charset_2 a=i3VuKzQdj-NEYjvDI-p3:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EqjbpuYCB63XFCsnvvldJSGoPeW8YbemiiuetxwkKkA=; b=5k3CokD0kMJF6D270Xcp2Wh+SN
+        Ka7rZrgtt645XOyb/2HCVHo+CLm9bQDbvk9we46odDa7goLPUOoAYzxOWKlqQrgpuVOJQ3vvLyxN3
+        IAOZvon6B2w6Xn7wHufyLOGFtZhxWNiU0KF8idzvUwWNdlTcPQz+kHi5ee05Dy7ZpvrIxbzJeHQ9p
+        425uYlrR8Db+zME7Uw2CSgGk3gMtyewwrggbQj8LvJKAkEjKcOoCplSWMrBs/lzfkQ5nTL+WsLgVb
+        EuHga+PZBZgE099R4AQkx6enWhxlAuZhOKV8a8L3JhZuzBPwcKPI/RT658N4k34dgDHHZHU5k5r5Y
+        W8DujQ9A==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:50882 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1khBjk-0012M1-Ps; Mon, 23 Nov 2020 13:18:32 +0000
+Date:   Mon, 23 Nov 2020 05:18:32 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     rentao.bupt@gmail.com
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        taoren@fb.com, mikechoi@fb.com
+Subject: Re: [PATCH v4 1/2] hwmon: (max127) Add Maxim MAX127 hardware
+ monitoring driver
+Message-ID: <20201123131832.GB136636@roeck-us.net>
+References: <20201123074532.3730-1-rentao.bupt@gmail.com>
+ <20201123074532.3730-2-rentao.bupt@gmail.com>
 MIME-Version: 1.0
-References: <1606132778-34209-1-git-send-email-milan.lakhani@codethink.co.uk> <1606132778-34209-2-git-send-email-milan.lakhani@codethink.co.uk>
-In-Reply-To: <1606132778-34209-2-git-send-email-milan.lakhani@codethink.co.uk>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 23 Nov 2020 14:17:53 +0100
-Message-ID: <CAKXUXMym-YfjQdDx7DcW8VHZH2bV5DbO6t0EgzmqD5hDe1AOZA@mail.gmail.com>
-Subject: Re: [linux-safety] [PATCH 2/2] staging: vt6655: Correct wrappping in rxtx.c
-To:     Milan Lakhani <milan.lakhani@codethink.co.uk>
-Cc:     forest@alittletooquiet.net,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-safety@lists.elisa.tech
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201123074532.3730-2-rentao.bupt@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1khBjk-0012M1-Ps
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:50882
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 14
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 12:59 PM Milan Lakhani
-<milan.lakhani@codethink.co.uk> wrote:
->
-> Correct line length and alignment in rxtx.c. Reported by checkpatch.
->
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Forest Bond <forest@alittletooquiet.net>
-> CC: linux-kernel@vger.kernel.org
-> CC: linux-safety@lists.elisa.tech
-
-Milan, I am wondering where you picked up this convention to add these
-Cc: and CC: tags in your patch?
-
-Is there some documentation that points out to do that? (That might
-need to be fixed...)
-
-Did you observe that on some other commits? I think these tags are
-added by some maintainers (probably tool-supported) when they pick the
-patches, not by the authors, though.
-
-> Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
+On Sun, Nov 22, 2020 at 11:45:31PM -0800, rentao.bupt@gmail.com wrote:
+> From: Tao Ren <rentao.bupt@gmail.com>
+> 
+> Add hardware monitoring driver for the Maxim MAX127 chip.
+> 
+> MAX127 min/max range handling code is inspired by the max197 driver.
+> 
+> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 > ---
->  drivers/staging/vt6655/rxtx.c | 63 +++++++++++++++++++++++++++++++++----------
->  1 file changed, 49 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
-> index 508e1bd..4073c33 100644
-> --- a/drivers/staging/vt6655/rxtx.c
-> +++ b/drivers/staging/vt6655/rxtx.c
-> @@ -492,14 +492,29 @@ s_uFillDataHead(
->                                   pDevice->byTopCCKBasicRate,
->                                   PK_TYPE_11B, &buf->b);
->                 /* Get Duration and TimeStamp */
-> -               buf->duration_a = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
-> -                                                                     wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -               buf->duration_b = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B, cbFrameLength, PK_TYPE_11B,
-> -                                                                      pDevice->byTopCCKBasicRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -               buf->duration_a_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
-> -                                                                         wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -               buf->duration_a_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
-> -                                                                        wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> +               buf->duration_a = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A,
-> +                                                                     cbFrameLength, byPktType,
-> +                                                                     wCurrentRate, bNeedAck,
-> +                                                                     uFragIdx, cbLastFragmentSize,
-> +                                                                     uMACfragNum, byFBOption));
-> +               buf->duration_b = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B,
-> +                                                                     cbFrameLength, PK_TYPE_11B,
-> +                                                                     pDevice->byTopCCKBasicRate,
-> +                                                                     bNeedAck, uFragIdx,
-> +                                                                     cbLastFragmentSize,
-> +                                                                     uMACfragNum, byFBOption));
-> +               buf->duration_a_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0,
-> +                                                                        cbFrameLength, byPktType,
-> +                                                                        wCurrentRate, bNeedAck,
-> +                                                                        uFragIdx,
-> +                                                                        cbLastFragmentSize,
-> +                                                                        uMACfragNum, byFBOption));
-> +               buf->duration_a_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1,
-> +                                                                        cbFrameLength, byPktType,
-> +                                                                        wCurrentRate, bNeedAck,
-> +                                                                        uFragIdx,
-> +                                                                        cbLastFragmentSize,
-> +                                                                        uMACfragNum, byFBOption));
->
+>  Changes in v4:
+>    - delete unnecessary "#include" lines.
+>    - simplify i2c_transfer() error handling.
+>    - add mutex to protect ctrl_byte in write_min|max() functions.
+>  Changes in v3:
+>    - no code change. xdp maintainers were removed from to/cc list.
+>  Changes in v2:
+>    - replace devm_hwmon_device_register_with_groups() with
+>      devm_hwmon_device_register_with_info() API.
+>    - divide min/max read and write methods to separate functions.
+>    - fix raw-to-vin conversion logic.
+>    - refine ctrl_byte handling so mutex is not needed to protect the
+>      byte.
+>    - improve i2c_transfer() error handling.
+>    - a few other improvements (comments, variable naming, and etc.).
+> 
+>  drivers/hwmon/Kconfig  |   9 ++
+>  drivers/hwmon/Makefile |   1 +
+>  drivers/hwmon/max127.c | 346 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 356 insertions(+)
+>  create mode 100644 drivers/hwmon/max127.c
+> 
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 9d600e0c5584..716df51edc87 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -950,6 +950,15 @@ config SENSORS_MAX1111
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called max1111.
+>  
+> +config SENSORS_MAX127
+> +	tristate "Maxim MAX127 12-bit 8-channel Data Acquisition System"
+> +	depends on I2C
+> +	help
+> +	  Say y here to support Maxim's MAX127 DAS chips.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called max127.
+> +
+>  config SENSORS_MAX16065
+>  	tristate "Maxim MAX16065 System Manager and compatibles"
+>  	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 1083bbfac779..01ca5d3fbad4 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -127,6 +127,7 @@ obj-$(CONFIG_SENSORS_LTC4260)	+= ltc4260.o
+>  obj-$(CONFIG_SENSORS_LTC4261)	+= ltc4261.o
+>  obj-$(CONFIG_SENSORS_LTQ_CPUTEMP) += ltq-cputemp.o
+>  obj-$(CONFIG_SENSORS_MAX1111)	+= max1111.o
+> +obj-$(CONFIG_SENSORS_MAX127)	+= max127.o
+>  obj-$(CONFIG_SENSORS_MAX16065)	+= max16065.o
+>  obj-$(CONFIG_SENSORS_MAX1619)	+= max1619.o
+>  obj-$(CONFIG_SENSORS_MAX1668)	+= max1668.o
+> diff --git a/drivers/hwmon/max127.c b/drivers/hwmon/max127.c
+> new file mode 100644
+> index 000000000000..1c54146b6086
+> --- /dev/null
+> +++ b/drivers/hwmon/max127.c
+> @@ -0,0 +1,346 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Hardware monitoring driver for MAX127.
+> + *
+> + * Copyright (c) 2020 Facebook Inc.
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +
+> +/*
+> + * MAX127 Control Byte. Refer to MAX127 datasheet, Table 1 "Control-Byte
+> + * Format" for details.
+> + */
+> +#define MAX127_CTRL_START	BIT(7)
+> +#define MAX127_CTRL_SEL_SHIFT	4
+> +#define MAX127_CTRL_RNG		BIT(3)
+> +#define MAX127_CTRL_BIP		BIT(2)
+> +#define MAX127_CTRL_PD1		BIT(1)
+> +#define MAX127_CTRL_PD0		BIT(0)
+> +
+> +#define MAX127_NUM_CHANNELS	8
+> +#define MAX127_SET_CHANNEL(ch)	(((ch) & 7) << MAX127_CTRL_SEL_SHIFT)
+> +
+> +/*
+> + * MAX127 channel input ranges. Refer to MAX127 datasheet, Table 3 "Range
+> + * and Polarity Selection" for details.
+> + */
+> +#define MAX127_FULL_RANGE	10000	/* 10V */
+> +#define MAX127_HALF_RANGE	5000	/* 5V */
+> +
+> +/*
+> + * MAX127 returns 2 bytes at read:
+> + *   - the first byte contains data[11:4].
+> + *   - the second byte contains data[3:0] (MSB) and 4 dummy 0s (LSB).
+> + * Refer to MAX127 datasheet, "Read a Conversion (Read Cycle)" section
+> + * for details.
+> + */
+> +#define MAX127_DATA_LEN		2
+> +#define MAX127_DATA_SHIFT	4
+> +
+> +#define MAX127_SIGN_BIT		BIT(11)
+> +
+> +struct max127_data {
+> +	struct mutex lock;
+> +	struct i2c_client *client;
+> +	u8 ctrl_byte[MAX127_NUM_CHANNELS];
+> +};
+> +
+> +static int max127_select_channel(struct i2c_client *client, u8 ctrl_byte)
+> +{
+> +	int status;
+> +	struct i2c_msg msg = {
+> +		.addr = client->addr,
+> +		.flags = 0,
+> +		.len = sizeof(ctrl_byte),
+> +		.buf = &ctrl_byte,
+> +	};
+> +
+> +	status = i2c_transfer(client->adapter, &msg, 1);
+> +
+> +	return (status == 1) ? 0 : -EIO;
 
-Now to this change... it seems reasonable to refactor this into a
-dedicated function or macro because this is largely "copy-and-paste"
-calls with slight variable on a single argument.
+This isn't what I said and asked for. It drops the unnecessary else,
+but now it overwrites an error value.
 
-How about proposing such a change instead?
+Guenter
 
->                 buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, wCurrentRate);
->                 buf->time_stamp_off_b = vnt_time_stamp_off(pDevice, pDevice->byTopCCKBasicRate);
-> @@ -517,12 +532,32 @@ s_uFillDataHead(
->                                           byPktType, &buf->a);
->
->                         /* Get Duration and TimeStampOff */
-> -                       buf->duration = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
-> -                                                                           wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -                       buf->duration_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
-> -                                                                              wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -                       buf->duration_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
-> -                                                                               wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> +                       buf->duration = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A,
-> +                                                                           cbFrameLength,
-> +                                                                           byPktType,
-> +                                                                           wCurrentRate, bNeedAck,
-> +                                                                           uFragIdx,
-> +                                                                           cbLastFragmentSize,
-> +                                                                           uMACfragNum,
-> +                                                                           byFBOption));
-> +                       buf->duration_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice,
-> +                                                                              DATADUR_A_F0,
-> +                                                                              cbFrameLength,
-> +                                                                              byPktType,
-> +                                                                              wCurrentRate,
-> +                                                                              bNeedAck, uFragIdx,
-> +                                                                              cbLastFragmentSize,
-> +                                                                              uMACfragNum,
-> +                                                                              byFBOption));
-> +                       buf->duration_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice,
-> +                                                                              DATADUR_A_F1,
-> +                                                                              cbFrameLength,
-> +                                                                              byPktType,
-> +                                                                              wCurrentRate,
-> +                                                                              bNeedAck, uFragIdx,
-> +                                                                              cbLastFragmentSize,
-> +                                                                              uMACfragNum,
-> +                                                                              byFBOption));
->                         buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
->                         return buf->duration;
->                 }
-> --
-> 2.7.4
->
->
->
-> -=-=-=-=-=-=-=-=-=-=-=-
-> Links: You receive all messages sent to this group.
-> View/Reply Online (#187): https://lists.elisa.tech/g/linux-safety/message/187
-> Mute This Topic: https://lists.elisa.tech/mt/78451464/1714638
-> Group Owner: linux-safety+owner@lists.elisa.tech
-> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [lukas.bulwahn@gmail.com]
-> -=-=-=-=-=-=-=-=-=-=-=-
->
->
+> +}
+> +
+> +static int max127_read_channel(struct i2c_client *client, long *val)
+> +{
+> +	int status;
+> +	u8 i2c_data[MAX127_DATA_LEN];
+> +	struct i2c_msg msg = {
+> +		.addr = client->addr,
+> +		.flags = I2C_M_RD,
+> +		.len = sizeof(i2c_data),
+> +		.buf = i2c_data,
+> +	};
+> +
+> +	status = i2c_transfer(client->adapter, &msg, 1);
+> +	if (status != 1)
+> +		return -EIO;
+
+This isn't what I asked for.
+
+Guenter
+
+> +
+> +	*val = (i2c_data[1] >> MAX127_DATA_SHIFT) |
+> +		((u16)i2c_data[0] << MAX127_DATA_SHIFT);
+> +	return 0;
+> +}
+> +
+> +static long max127_process_raw(u8 ctrl_byte, long raw)
+> +{
+> +	long scale, weight;
+> +
+> +	/*
+> +	 * MAX127's data coding is binary in unipolar mode with 1 LSB =
+> +	 * (Full-Scale/4096) and two’s complement binary in bipolar mode
+> +	 * with 1 LSB = [(2 x |FS|)/4096].
+> +	 * Refer to MAX127 datasheet, "Transfer Function" section for
+> +	 * details.
+> +	 */
+> +	scale = (ctrl_byte & MAX127_CTRL_RNG) ? MAX127_FULL_RANGE :
+> +						MAX127_HALF_RANGE;
+> +	if (ctrl_byte & MAX127_CTRL_BIP) {
+> +		weight = (raw & MAX127_SIGN_BIT);
+> +		raw &= ~MAX127_SIGN_BIT;
+> +		raw -= weight;
+> +		raw *= 2;
+> +	}
+> +
+> +	return raw * scale / 4096;
+> +}
+> +
+> +static int max127_read_input(struct max127_data *data, int channel, long *val)
+> +{
+> +	long raw;
+> +	int status;
+> +	struct i2c_client *client = data->client;
+> +	u8 ctrl_byte = data->ctrl_byte[channel];
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	status = max127_select_channel(client, ctrl_byte);
+> +	if (status)
+> +		goto exit;
+> +
+> +	status = max127_read_channel(client, &raw);
+> +	if (status)
+> +		goto exit;
+> +
+> +	*val = max127_process_raw(ctrl_byte, raw);
+> +
+> +exit:
+> +	mutex_unlock(&data->lock);
+> +	return status;
+> +}
+> +
+> +static int max127_read_min(struct max127_data *data, int channel, long *val)
+> +{
+> +	u8 rng_bip = (data->ctrl_byte[channel] >> 2) & 3;
+> +	static const int min_input_map[4] = {
+> +		0,			/* RNG=0, BIP=0 */
+> +		-MAX127_HALF_RANGE,	/* RNG=0, BIP=1 */
+> +		0,			/* RNG=1, BIP=0 */
+> +		-MAX127_FULL_RANGE,	/* RNG=1, BIP=1 */
+> +	};
+> +
+> +	*val = min_input_map[rng_bip];
+> +	return 0;
+> +}
+> +
+> +static int max127_read_max(struct max127_data *data, int channel, long *val)
+> +{
+> +	u8 rng_bip = (data->ctrl_byte[channel] >> 2) & 3;
+> +	static const int max_input_map[4] = {
+> +		MAX127_HALF_RANGE,	/* RNG=0, BIP=0 */
+> +		MAX127_HALF_RANGE,	/* RNG=0, BIP=1 */
+> +		MAX127_FULL_RANGE,	/* RNG=1, BIP=0 */
+> +		MAX127_FULL_RANGE,	/* RNG=1, BIP=1 */
+> +	};
+> +
+> +	*val = max_input_map[rng_bip];
+> +	return 0;
+> +}
+> +
+> +static int max127_write_min(struct max127_data *data, int channel, long val)
+> +{
+> +	u8 ctrl;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	ctrl = data->ctrl_byte[channel];
+> +	if (val <= -MAX127_FULL_RANGE) {
+> +		ctrl |= (MAX127_CTRL_RNG | MAX127_CTRL_BIP);
+> +	} else if (val < 0) {
+> +		ctrl |= MAX127_CTRL_BIP;
+> +		ctrl &= ~MAX127_CTRL_RNG;
+> +	} else {
+> +		ctrl &= ~MAX127_CTRL_BIP;
+> +	}
+> +	data->ctrl_byte[channel] = ctrl;
+> +
+> +	mutex_unlock(&data->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int max127_write_max(struct max127_data *data, int channel, long val)
+> +{
+> +	mutex_lock(&data->lock);
+> +
+> +	if (val >= MAX127_FULL_RANGE)
+> +		data->ctrl_byte[channel] |= MAX127_CTRL_RNG;
+> +	else
+> +		data->ctrl_byte[channel] &= ~MAX127_CTRL_RNG;
+> +
+> +	mutex_unlock(&data->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static umode_t max127_is_visible(const void *_data,
+> +				 enum hwmon_sensor_types type,
+> +				 u32 attr, int channel)
+> +{
+> +	if (type == hwmon_in) {
+> +		switch (attr) {
+> +		case hwmon_in_input:
+> +			return 0444;
+> +
+> +		case hwmon_in_min:
+> +		case hwmon_in_max:
+> +			return 0644;
+> +
+> +		default:
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int max127_read(struct device *dev, enum hwmon_sensor_types type,
+> +			u32 attr, int channel, long *val)
+> +{
+> +	int status;
+> +	struct max127_data *data = dev_get_drvdata(dev);
+> +
+> +	if (type != hwmon_in)
+> +		return -EOPNOTSUPP;
+> +
+> +	switch (attr) {
+> +	case hwmon_in_input:
+> +		status = max127_read_input(data, channel, val);
+> +		break;
+> +
+> +	case hwmon_in_min:
+> +		status = max127_read_min(data, channel, val);
+> +		break;
+> +
+> +	case hwmon_in_max:
+> +		status = max127_read_max(data, channel, val);
+> +		break;
+> +
+> +	default:
+> +		status = -EOPNOTSUPP;
+> +		break;
+> +	}
+> +
+> +	return status;
+> +}
+> +
+> +static int max127_write(struct device *dev, enum hwmon_sensor_types type,
+> +			u32 attr, int channel, long val)
+> +{
+> +	int status;
+> +	struct max127_data *data = dev_get_drvdata(dev);
+> +
+> +	if (type != hwmon_in)
+> +		return -EOPNOTSUPP;
+> +
+> +	switch (attr) {
+> +	case hwmon_in_min:
+> +		status = max127_write_min(data, channel, val);
+> +		break;
+> +
+> +	case hwmon_in_max:
+> +		status = max127_write_max(data, channel, val);
+> +		break;
+> +
+> +	default:
+> +		status = -EOPNOTSUPP;
+> +		break;
+> +	}
+> +
+> +	return status;
+> +}
+> +
+> +static const struct hwmon_ops max127_hwmon_ops = {
+> +	.is_visible = max127_is_visible,
+> +	.read = max127_read,
+> +	.write = max127_write,
+> +};
+> +
+> +static const struct hwmon_channel_info *max127_info[] = {
+> +	HWMON_CHANNEL_INFO(in,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX,
+> +			   HWMON_I_INPUT | HWMON_I_MIN | HWMON_I_MAX),
+> +	NULL,
+> +};
+> +
+> +static const struct hwmon_chip_info max127_chip_info = {
+> +	.ops = &max127_hwmon_ops,
+> +	.info = max127_info,
+> +};
+> +
+> +static int max127_probe(struct i2c_client *client,
+> +			const struct i2c_device_id *id)
+> +{
+> +	int i;
+> +	struct device *hwmon_dev;
+> +	struct max127_data *data;
+> +	struct device *dev = &client->dev;
+> +
+> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->client = client;
+> +	mutex_init(&data->lock);
+> +	for (i = 0; i < ARRAY_SIZE(data->ctrl_byte); i++)
+> +		data->ctrl_byte[i] = (MAX127_CTRL_START |
+> +				      MAX127_SET_CHANNEL(i));
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
+> +							 data,
+> +							 &max127_chip_info,
+> +							 NULL);
+> +
+> +	return PTR_ERR_OR_ZERO(hwmon_dev);
+> +}
+> +
+> +static const struct i2c_device_id max127_id[] = {
+> +	{ "max127", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, max127_id);
+> +
+> +static struct i2c_driver max127_driver = {
+> +	.class		= I2C_CLASS_HWMON,
+> +	.driver = {
+> +		.name	= "max127",
+> +	},
+> +	.probe		= max127_probe,
+> +	.id_table	= max127_id,
+> +};
+> +
+> +module_i2c_driver(max127_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Mike Choi <mikechoi@fb.com>");
+> +MODULE_AUTHOR("Tao Ren <rentao.bupt@gmail.com>");
+> +MODULE_DESCRIPTION("MAX127 Hardware Monitoring driver");
+> -- 
+> 2.17.1
+> 
