@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5862C1817
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1530F2C181B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 23:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbgKWWBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 17:01:13 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38662 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728161AbgKWWBM (ORCPT
+        id S1731420AbgKWWCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 17:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729668AbgKWWCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:01:12 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606168870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOgyExsMmcgulCtYSfwEoyMOFUiwrusrBNm+SSTsII8=;
-        b=G2VzHdD4ucYDyOfYcf2YaTEpSNoyYjuAMLboKB1Mb5h3bbcTX3eEiUBn31rpT38IZ5i5wW
-        kpOTaPoA2M1fFW3D1BuE1XdPQG5I8I7qCEU2WOp1/CBoYNskOMKJbbFkFCUmd0GGRcgJ+Q
-        thb9GR4u1d89dvbxBmsQBXwMCCx9ixZEwEA363ihhqElKWHrB5UQ/Kibm6ZCWBSmDdbOIc
-        FLl5DGp/TATt9sFZboFhPn7YoMTalX0VsvqLV9HxEgIQGJU9lzskJygaqR0ZKzpK506Q03
-        1z+SlvrWuaDTM2eUs+lel1dR4EslM10ZfkC4rOPa+oNu4oxXlfcNKTvYMCfhOA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606168870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOgyExsMmcgulCtYSfwEoyMOFUiwrusrBNm+SSTsII8=;
-        b=jbjqZF8KCmxT1IFmm88MtvOgo8upRZm4W8+1DkcGTMq1ZlvrJhT6IqlcThSo8L0eKieRW3
-        +Z9+Jv/vrzKd2hCw==
-To:     Alex Belits <abelits@marvell.com>,
-        "nitesh\@redhat.com" <nitesh@redhat.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>
-Cc:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "trix\@redhat.com" <trix@redhat.com>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas\@arm.com" <catalin.marinas@arm.com>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx\@redhat.com" <peterx@redhat.com>,
-        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti\@redhat.com" <mtosatti@redhat.com>,
-        "will\@kernel.org" <will@kernel.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "leon\@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld\@redhat.com" <pauld@redhat.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 3/9] task_isolation: userspace hard isolation from kernel
-In-Reply-To: <5d882681867ed43636e22d265d61afbbac1b5a62.camel@marvell.com>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com> <5d882681867ed43636e22d265d61afbbac1b5a62.camel@marvell.com>
-Date:   Mon, 23 Nov 2020 23:01:10 +0100
-Message-ID: <878sarn36h.fsf@nanos.tec.linutronix.de>
+        Mon, 23 Nov 2020 17:02:06 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0789C0613CF;
+        Mon, 23 Nov 2020 14:02:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mhCpis23NqY63c8NxX6Wxg38gWQuSreQ5clgMaAKViA=; b=PaJdSMiw4iN/I92Z9bYbMfvscb
+        9HdMsduPzdTIWJyB7e51N3arRZiy6S9g2BEVESuiG4aHlFqUVtzpiHADx5/vpdb4EsfqzxwQaJ501
+        8X4XZ1f5cae1Gtb2wfzzBtKYWL7eHl8h08lFMoGtaHk3ITOOet0NdKxNtaDLhK8dVho/V1FEmI6tA
+        6veew9XNjrE/VaddCQg6FI8xVBEcLcBX2HPiuKZyg3iAna/mlju19wC6xuBdRs/tvvZwJ74mYuWUm
+        UrjkO13j9FbNlho28eMkAfhgPXwyhed3yB0Sd18s9qs6YQGExCsFAOXewM+LpBP5pCPAVNO8gNi0w
+        dA3THayQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khJtZ-0005K1-So; Mon, 23 Nov 2020 22:01:13 +0000
+Date:   Mon, 23 Nov 2020 22:01:13 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
+Message-ID: <20201123220113.GW4327@casper.infradead.org>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz>
+ <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
+ <20201120093912.GM3200@dhcp22.suse.cz>
+ <eda50930-05b5-0ad9-2985-8b6328f92cec@redhat.com>
+ <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
+ <20201123073842.GA27488@dhcp22.suse.cz>
+ <37f4bf02-c438-9fbd-32ea-8bedbe30c4da@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37f4bf02-c438-9fbd-32ea-8bedbe30c4da@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex,
+On Mon, Nov 23, 2020 at 01:52:13PM -0800, Mike Kravetz wrote:
+> On 11/22/20 11:38 PM, Michal Hocko wrote:
+> > On Fri 20-11-20 09:45:12, Mike Kravetz wrote:
+> >> Not sure if I agree with that last statement.  Database and virtualization
+> >> use cases from my employer allocate allocate hugetlb pages after boot.  It
+> >> is shortly after boot, but still not from boot/kernel command line.
+> > 
+> > Is there any strong reason for that?
+> 
+> The reason I have been given is that it is preferable to have SW compute
+> the number of needed huge pages after boot based on total memory, rather
+> than have a sysadmin calculate the number and add a boot parameter.
 
-On Mon, Nov 23 2020 at 17:56, Alex Belits wrote:
->  .../admin-guide/kernel-parameters.txt         |   6 +
->  drivers/base/cpu.c                            |  23 +
->  include/linux/hrtimer.h                       |   4 +
->  include/linux/isolation.h                     | 326 ++++++++
->  include/linux/sched.h                         |   5 +
->  include/linux/tick.h                          |   3 +
->  include/uapi/linux/prctl.h                    |   6 +
->  init/Kconfig                                  |  27 +
->  kernel/Makefile                               |   2 +
->  kernel/isolation.c                            | 714 ++++++++++++++++++
->  kernel/signal.c                               |   2 +
->  kernel/sys.c                                  |   6 +
->  kernel/time/hrtimer.c                         |  27 +
->  kernel/time/tick-sched.c                      |  18 +
+Oh, I remember this bug!  I think it was posted publically, even.
+If the sysadmin configures, say, 90% of the RAM to be hugepages and
+then a DIMM fails and the sysadmin doesn't remember to adjust the boot
+parameter, Linux does some pretty horrible things and the symptom is
+"Linux doesn't boot".
 
-I asked you before to split this up into bits and pieces and argue and
-justify each change. Throwing this wholesale over the fence is going
-nowhere. It's not revieable at all.
-
-Aside of that ignoring review comments is a sure path to make yourself
-ignored:
-
-> +/*
-> + * Logging
-> + */
-> +int task_isolation_message(int cpu, int level, bool supp, const char *fmt, ...);
-> +
-> +#define pr_task_isol_emerg(cpu, fmt, ...)			\
-> +	task_isolation_message(cpu, LOGLEVEL_EMERG, false, fmt, ##__VA_ARGS__)
-
-The comments various people made about that are not going away and none
-of this is going near anything I'm responsible for unless you provide
-these independent of the rest and with a reasonable justification why
-you can't use any other existing mechanism or extend it for your use
-case.
-
-Thanks,
-
-        tglx
