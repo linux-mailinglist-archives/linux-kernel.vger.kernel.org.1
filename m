@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C072C0C7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBA32C0C7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388814AbgKWNy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:54:57 -0500
-Received: from mga12.intel.com ([192.55.52.136]:47964 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733086AbgKWNy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:54:56 -0500
-IronPort-SDR: P5u1POPLGhOGC7LP3R1NL81LikzlBTvHKqs3M2ghLBPLl1FHszmNEjjKcKeBjGqmXGg4C4WkoB
- Skqlxs+nCLrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="151027269"
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="151027269"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 05:54:54 -0800
-IronPort-SDR: ujcBQ6RvfszZYenJ8xid3jLrnvKfurOLfhNZE08oJqQlaw5VQnzKnrOUCgYi+g8M8VkawmKZFb
- jB9SXcg5o/dw==
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="546420754"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.240]) ([10.254.210.240])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 05:54:51 -0800
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH v9 1/4] iommu: Move def_domain type check for untrusted
- device into core
-To:     Will Deacon <will@kernel.org>
-References: <20201121135620.3496419-1-baolu.lu@linux.intel.com>
- <20201121135620.3496419-2-baolu.lu@linux.intel.com>
- <20201123120449.GB10233@willie-the-truck>
- <5f6f0d5e-0cfc-2274-b186-180f50b8b1df@linux.intel.com>
- <20201123130335.GD10233@willie-the-truck>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <c75c2981-11bd-74c0-289b-c2eb198bb5ab@linux.intel.com>
-Date:   Mon, 23 Nov 2020 21:54:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730068AbgKWNzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729792AbgKWNzS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:55:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A859FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:55:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uUPaDYAemmJYHuwFkYYuuftPgDPHYdEdgPTzaW0nVXY=; b=Uqui2mMbeRyawJOPg5AAfYJY6W
+        WltTLAk6IRy2Og9Slxu+Cr4Vk1RASFdKjY3/ME8jJHcZZTU6HVCBE3IEvOejVJpbhukorM2v+LyPq
+        ukts4lnW+9laDJmhDRum9/tDkxbZ1EVfG7CeQfFvkMkCCDpEVYbWRbKLH/YolaMY64FxnifCGB0VI
+        9HRi0aw3IG6YEiE8GlEtKiW3TtBQYxWulLtRoXsLzAmNRmuPkzHQ+U22HcYSF63STEyajcW1GzJvi
+        33vYzdpAw9plvIYTsrlMZkNQJwXv57OTZmpR66DeWB2n1pqKieG+uVrU5h/Rh2wKTZoc6pKNVsrWu
+        U/zMrRiQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khCJE-0006V8-Ss; Mon, 23 Nov 2020 13:55:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7BF013069B1;
+        Mon, 23 Nov 2020 14:55:12 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5D477201D16D7; Mon, 23 Nov 2020 14:55:12 +0100 (CET)
+Date:   Mon, 23 Nov 2020 14:55:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     paulmck@kernel.org, will@kernel.org, tglx@linutronix.de,
+        mingo@kernel.org, mark.rutland@arm.com, boqun.feng@gmail.com,
+        dvyukov@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] kcsan: Avoid scheduler recursion by using
+ non-instrumented preempt_{disable,enable}()
+Message-ID: <20201123135512.GM3021@hirez.programming.kicks-ass.net>
+References: <20201123132300.1759342-1-elver@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201123130335.GD10233@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123132300.1759342-1-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
-
-On 2020/11/23 21:03, Will Deacon wrote:
-> Hi Baolu,
+On Mon, Nov 23, 2020 at 02:23:00PM +0100, Marco Elver wrote:
+> When enabling KCSAN for kernel/sched (remove KCSAN_SANITIZE := n from
+> kernel/sched/Makefile), with CONFIG_DEBUG_PREEMPT=y, we can observe
+> recursion due to:
 > 
-> On Mon, Nov 23, 2020 at 08:55:17PM +0800, Lu Baolu wrote:
->> On 2020/11/23 20:04, Will Deacon wrote:
->>> On Sat, Nov 21, 2020 at 09:56:17PM +0800, Lu Baolu wrote:
->>>> @@ -1645,13 +1655,10 @@ struct __group_domain_type {
->>>>    static int probe_get_default_domain_type(struct device *dev, void *data)
->>>>    {
->>>> -	const struct iommu_ops *ops = dev->bus->iommu_ops;
->>>>    	struct __group_domain_type *gtype = data;
->>>>    	unsigned int type = 0;
->>>> -	if (ops->def_domain_type)
->>>> -		type = ops->def_domain_type(dev);
->>>> -
->>>> +	type = iommu_get_mandatory_def_domain_type(dev);
->>>
->>> afaict, this code is only called from probe_alloc_default_domain(), which
->>> has:
->>>
->>>           /* Ask for default domain requirements of all devices in the group */
->>>           __iommu_group_for_each_dev(group, &gtype,
->>>                                      probe_get_default_domain_type);
->>>
->>>           if (!gtype.type)
->>>                   gtype.type = iommu_def_domain_type;
->>>
->>> so is there actually a need to introduce the new
->>> iommu_get_mandatory_def_domain_type() function, given that a type of 0
->>> always ends up resolving to the default domain type?
->>
->> Another consumer of this helper is in the next patch:
->>
->> +	dev_def_dom = iommu_get_mandatory_def_domain_type(dev);
->> +
->> +	/* Check if user requested domain is supported by the device or not */
->> +	if (!type) {
->> +		/*
->> +		 * If the user hasn't requested any specific type of domain and
->> +		 * if the device supports both the domains, then default to the
->> +		 * domain the device was booted with
->> +		 */
->> +		type = iommu_get_def_domain_type(dev);
->> +	} else if (dev_def_dom && type != dev_def_dom) {
->> +		dev_err_ratelimited(prev_dev, "Device cannot be in %s domain\n",
->> +				    iommu_domain_type_str(type));
->> +		ret = -EINVAL;
->> +		goto out;
->> +	}
->>
->> I also added the untrusted device check in
->> iommu_get_mandatory_def_domain_type(), so that we don't need to care
->> about this in multiple places.
+> 	check_access() [via instrumentation]
+> 	  kcsan_setup_watchpoint()
+> 	    reset_kcsan_skip()
+> 	      kcsan_prandom_u32_max()
+> 	        get_cpu_var()
+> 		  preempt_disable()
+> 		    preempt_count_add() [in kernel/sched/core.c]
+> 		      check_access() [via instrumentation]
 > 
-> I see, but isn't this also setting the default domain type in the case that
-> it gets back a type of 0? I think it would be nice to avoid having both
-> iommu_get_mandatory_def_domain_type() and iommu_get_def_domain_type() of we
-> can, as it's really not clear which one to use when and what is meant by
-> "mandatory" imo.
+> Avoid this by rewriting kcsan_prandom_u32_max() to only use safe
+> versions of preempt_disable() and preempt_enable() that do not call into
+> scheduler code.
+> 
+> Note, while this currently does not affect an unmodified kernel, it'd be
+> good to keep a KCSAN kernel working when KCSAN_SANITIZE := n is removed
+> from kernel/sched/Makefile to permit testing scheduler code with KCSAN
+> if desired.
+> 
+> Fixes: cd290ec24633 ("kcsan: Use tracing-safe version of prandom")
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> v2:
+> * Update comment to also point out preempt_enable().
+> ---
+>  kernel/kcsan/core.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+> index 3994a217bde7..10513f3e2349 100644
+> --- a/kernel/kcsan/core.c
+> +++ b/kernel/kcsan/core.c
+> @@ -284,10 +284,19 @@ should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *
+>   */
+>  static u32 kcsan_prandom_u32_max(u32 ep_ro)
+>  {
+> -	struct rnd_state *state = &get_cpu_var(kcsan_rand_state);
+> -	const u32 res = prandom_u32_state(state);
+> +	struct rnd_state *state;
+> +	u32 res;
+> +
+> +	/*
+> +	 * Avoid recursion with scheduler by using non-tracing versions of
+> +	 * preempt_disable() and preempt_enable() that do not call into
+> +	 * scheduler code.
+> +	 */
+> +	preempt_disable_notrace();
+> +	state = raw_cpu_ptr(&kcsan_rand_state);
+> +	res = prandom_u32_state(state);
+> +	preempt_enable_no_resched_notrace();
 
-Yes, agreed. I will remove iommu_get_mandatory_def_domain_type() and
-keep iommu_get_def_domain_type() as the only helper in the next version.
+This is a preemption bug. Does preempt_enable_notrace() not work?
 
-Best regards,
-baolu
+>  
+> -	put_cpu_var(kcsan_rand_state);
+>  	return (u32)(((u64) res * ep_ro) >> 32);
+>  }
+>  
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
