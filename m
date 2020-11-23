@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABF72BFED0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508C42BFEDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727673AbgKWDr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 22:47:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39445 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726163AbgKWDr2 (ORCPT
+        id S1727878AbgKWDsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 22:48:33 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:55020 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727454AbgKWDsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 22:47:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606103247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RBxcPYH+vdk8Hh+y1ztx/6aT2W6/WgcV8+UQyj1Byj0=;
-        b=QAj3nMDXlAjXcSw7re791Ltk9IIMyfeRlPGkEosl+G3riPLTx8E5Radhx1huhxuSb3CGou
-        o14fjsZZuOgEXFn0e/D/nu3GUJ+WVTDjgiuhe6mnlTGFcT6I5s9TsLaFuwA7aFiCaLmT7T
-        hwp8679PVDXQWdCIUm0GYIWQBUMeQvE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-QHdtGe_NPWCUZAllIfaYtg-1; Sun, 22 Nov 2020 22:47:25 -0500
-X-MC-Unique: QHdtGe_NPWCUZAllIfaYtg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1E61809DE3;
-        Mon, 23 Nov 2020 03:47:20 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-80.pek2.redhat.com [10.72.12.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4FE655C1C4;
-        Mon, 23 Nov 2020 03:47:09 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 11:47:05 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Guilherme Piccoli <gpiccoli@canonical.com>
-Cc:     Kairui Song <kasong@redhat.com>,
-        Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        John Donnelly <john.p.donnelly@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# v4 . 16+" <stable@vger.kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Diego Elio =?iso-8859-1?Q?Petten=F2?= <flameeyes@flameeyes.com>,
-        Olof Johansson <olof@lixom.net>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
- and ARM
-Message-ID: <20201123034705.GA5908@dhcp-128-65.nay.redhat.com>
-References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
- <CACPcB9e8p5Ayw15aOe5ZNPOa7MF3+pzPdcaZgTc_E_TZYkgD6Q@mail.gmail.com>
- <AC36B9BC-654C-4FC1-8EA3-94B986639F1E@oracle.com>
- <CACPcB9d7kU1TYaF-g2GH16Wg=hrQu71sGDoC8uMFFMc6oW_duQ@mail.gmail.com>
- <CAHD1Q_yB1B4gu7EDqbZJ5dxAAkr-dVKa9yRDK-tE3oLeTTmLJQ@mail.gmail.com>
+        Sun, 22 Nov 2020 22:48:30 -0500
+X-UUID: 646c172b4ec24cd490e3ca3ace01faba-20201123
+X-UUID: 646c172b4ec24cd490e3ca3ace01faba-20201123
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 406099563; Mon, 23 Nov 2020 11:48:23 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 23 Nov 2020 11:48:22 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 23 Nov 2020 11:48:23 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Subject: [PATCH v3 0/8] Add Support for MediaTek PMIC MT6359
+Date:   Mon, 23 Nov 2020 11:48:02 +0800
+Message-ID: <1606103290-15034-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHD1Q_yB1B4gu7EDqbZJ5dxAAkr-dVKa9yRDK-tE3oLeTTmLJQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guilherme,
-On 11/22/20 at 12:32pm, Guilherme Piccoli wrote:
-> Hi Dave and Kairui, thanks for your responses! OK, if that makes sense
-> to you I'm fine with it. I'd just recommend to test recent kernels in
-> multiple distros with the minimum "range" to see if 64M is enough for
-> crashkernel, maybe we'd need to bump that.
+This patchset includes refactoring interrupt and adding support to MT6359 PMIC.
+This patchset includes refactoring interrupt and adding support to MT6359 PMIC.
+MT6359 is the primary PMIC for MT6779 and probably other SOCs.
+The series[1] sent by Wen will continue to upstream in this patchset afterwards.
+The series[1] sent by Wen will continue to upstream in this patchset afterwards.
 
-Giving the different kernel configs and the different userspace
-initramfs setup it is hard to get an uniform value for all distributions,
-but we can have an interface/kconfig-option for them to provide a value like this patch
-is doing. And it could be improved like Kairui said about some known
-kernel added extra values later, probably some more improvements if
-doable.
+The series[1] sent by Wen will continue to upstream in this patchset afterwards.
 
-Thanks
-Dave
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=306579
+
+changes since v2:
+- update binding document in DT schema format.
+- remove unused compatible name.
+- update correct registers for VBBCK and VA09.
+
+Hsin-Hsiung Wang (6):
+  mfd: mt6358: refine interrupt code
+  dt-bindings: mfd: Add compatible for the MediaTek MT6359 PMIC
+  dt-bindings: regulator: Add document for MT6359 regulator
+  mfd: Add support for the MediaTek MT6359 PMIC
+  regulator: mt6359: Set the enable time for LDOs
+  regulator: mt6359: Add support for MT6359P regulator
+
+Wen Su (2):
+  regulator: mt6359: Add support for MT6359 regulator
+  arm64: dts: mt6359: add PMIC MT6359 related nodes
+
+ .../devicetree/bindings/mfd/mt6397.txt        |    8 +-
+ .../bindings/regulator/mt6359-regulator.yaml  |  145 +++
+ arch/arm64/boot/dts/mediatek/mt6359.dtsi      |  295 +++++
+ drivers/mfd/mt6358-irq.c                      |   89 +-
+ drivers/mfd/mt6397-core.c                     |   23 +
+ drivers/regulator/Kconfig                     |    9 +
+ drivers/regulator/Makefile                    |    1 +
+ drivers/regulator/mt6359-regulator.c          | 1136 +++++++++++++++++
+ include/linux/mfd/mt6358/core.h               |    8 +-
+ include/linux/mfd/mt6358/core.h               |    8 +-
+ include/linux/mfd/mt6359/core.h               |  133 ++
+ include/linux/mfd/mt6359/registers.h          |  529 ++++++++
+ include/linux/mfd/mt6359p/registers.h         |  249 ++++
+ include/linux/mfd/mt6397/core.h               |    1 +
+ include/linux/regulator/mt6359-regulator.h    |   59 +
+ 14 files changed, 2652 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt6359.dtsi
+ create mode 100644 drivers/regulator/mt6359-regulator.c
+ create mode 100644 include/linux/mfd/mt6359/core.h
+ create mode 100644 include/linux/mfd/mt6359/registers.h
+ create mode 100644 include/linux/mfd/mt6359p/registers.h
+ create mode 100644 include/linux/regulator/mt6359-regulator.h
+
+-- 
+2.18.0
 
