@@ -2,148 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC0B2C111F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7A92C1122
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733004AbgKWQzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:55:42 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:40125 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729300AbgKWQzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:55:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606150540; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=48GiYkMnk/tiZ+MZBdx/eVYwFAxX3prqUpGuzMArSDc=; b=ZLeRFxXxg5FjH/4ffwXfWBio2Od5uvfoVfDcm1dQatAQozOplpdUddeePnfNAIfFWsu+Q923
- WLPBvJcGQF6LS9Nhnrn7larCWZ070wLKRNvfMdh4EyY9aiu8xemgxZ/pZXB4dRfJXGoa9I3R
- AzIzruGcT/r62bvZAaPGOTfhKcs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fbbe9897e9d874dfc611b9f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 16:55:37
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D47D3C433ED; Mon, 23 Nov 2020 16:55:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.77.145])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1F075C433C6;
-        Mon, 23 Nov 2020 16:55:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1F075C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies
- to avoid build error
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org
-References: <20201121063302.84090-1-john.stultz@linaro.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <e860242d-9024-0f68-9b83-ef4938fc17d8@codeaurora.org>
-Date:   Mon, 23 Nov 2020 22:25:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2388104AbgKWQ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:56:48 -0500
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:41197 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733040AbgKWQ4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 11:56:48 -0500
+Received: by mail-ej1-f67.google.com with SMTP id gj5so24310741ejb.8;
+        Mon, 23 Nov 2020 08:56:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hxvf5ckkSe3OXhzX0J+DbLitEVXMZZ90l4Ivr7vuqTA=;
+        b=ZewzdnokQsPC7EIxfsmYX8K0HxREH/5hLdupW8/kw+qOojhSRmiX1N/aAXqvQsr3RS
+         oSL7JfqmdjzAc5hEhVMx5jo4SN8sIEwH037Ay7jkxwWjUC373ghdXYTk6VIxHFH/I+fL
+         hHHtIA2RtKAW4RPAyQg0Z6vy05P9dOx1HsHE9XuOBTQNaURJEglEfKTgEQ1WzbS8pJo5
+         S43Qza7CPndabn7zINNsrcrvkfKj1fMt93PDyGRt+bUsX/HTwyYiI390KPRgSEjoVlCh
+         DPWMlD91mvH0HbuQoRmOB7NX6ggye2LCgR/2JJHPJMQOTCeBiAOB3Agyv9IJQKZG1wLg
+         B/OQ==
+X-Gm-Message-State: AOAM531fDNGXN1e22VSp5Yc0cJcsMBdWjhMmbAvpe8zEnJ4K82ufbTOA
+        +D6cKm2SuA/cvTGP4PBDxqg=
+X-Google-Smtp-Source: ABdhPJxD7dv4JMUU3i8uZZaxsCP/0JysWa2EN2bgDtd+86i0MSVO2XhNPmWGhXwASDU1HLdn3eLlng==
+X-Received: by 2002:a17:906:3153:: with SMTP id e19mr473511eje.17.1606150606412;
+        Mon, 23 Nov 2020 08:56:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id h2sm5290943ejx.55.2020.11.23.08.56.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 08:56:45 -0800 (PST)
+Date:   Mon, 23 Nov 2020 17:56:43 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
+ soc unique ID
+Message-ID: <20201123165643.GA214677@kozik-lap>
+References: <20201123095108.19724-1-alice.guo@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20201121063302.84090-1-john.stultz@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201123095108.19724-1-alice.guo@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
-
-Thanks for the patch.
-
-On 11/21/2020 12:03 PM, John Stultz wrote:
-> The kernel test robot reported the following build error:
->
-> All errors (new ones prefixed by >>):
->
->     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
->     qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
->     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
->     qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
->     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
->>> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
->     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
->     qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
->
-> Which is due to REGULATOR_QCOM_RPMH depending on
-> QCOM_RPMH || COMPILE_TEST. The problem is that QOM_RPMH can now
-> be a module, which in that case requires REGULATOR_QCOM_RPMH=m
-> to build.
->
-> However, if COMPILE_TEST is enabled, REGULATOR_QCOM_RPMH can be
-> set to =y while REGULATOR_QCOM_RPMH=m which will cause build
-> failures.
-Seems typo here, you mean to say, REGULATOR_QCOM_RPMH can be set to =y 
-while QCOM_RPMH=m....
->
-> The easy fix here is to remove COMPILE_TEST.
-
-As config QCOM_RPMH also has COMPILE_TEST, i don't see why it should be 
-removed from REGULATOR_QCOM_RPMH.
-
-Can REGULATOR_QCOM_RPMH have depends on ARCH_QCOM set similar to 
-QCOM_RPMH? As test bot reported build errors on other ARCH with 
-regulatore driver of QCOM arch.
-
-Thanks,
-Maulik
-
->
-> Feedback would be appreciated!
->
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rajendra Nayak <rnayak@codeaurora.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+On Mon, Nov 23, 2020 at 05:51:05PM +0800, Alice Guo wrote:
+> Add DT Binding doc for the Unique ID of i.MX 8M series.
+> 
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
 > ---
->   drivers/regulator/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-> index 020a00d6696b..9e4fc73ed5a1 100644
-> --- a/drivers/regulator/Kconfig
-> +++ b/drivers/regulator/Kconfig
-> @@ -843,7 +843,7 @@ config REGULATOR_QCOM_RPM
->   
->   config REGULATOR_QCOM_RPMH
->   	tristate "Qualcomm Technologies, Inc. RPMh regulator driver"
-> -	depends on QCOM_RPMH || COMPILE_TEST
-> +	depends on QCOM_RPMH
->   	help
->   	  This driver supports control of PMIC regulators via the RPMh hardware
->   	  block found on Qualcomm Technologies Inc. SoCs.  RPMh regulator
+> 
+> v2: remove the subject prefix "LF-2571-1"
+> v3: put it into Documentation/devicetree/bindings/arm/fsl.yaml
+>     modify the description of nvmem-cells
+>     use "make ARCH=arm64 dtbs_check" to test it and fix errors
+> v4: use allOf to limit new version DTS files for i.MX8M to include
+>     "fsl,imx8mm/n/p/q-soc", nvmem-cells and nvmem-cells-names
+> v5: correct the error of using allOf
+> 
+>  .../devicetree/bindings/arm/fsl.yaml          | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
+Best regards,
+Krzysztof
