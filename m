@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEB22C1018
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1922D2C1019
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387845AbgKWQUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:20:24 -0500
-Received: from foss.arm.com ([217.140.110.172]:56530 "EHLO foss.arm.com"
+        id S2389849AbgKWQUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:20:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729881AbgKWQUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:20:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB09D1396;
-        Mon, 23 Nov 2020 08:20:22 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DAB83F718;
-        Mon, 23 Nov 2020 08:20:22 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH] firmware: arm_scmi: remove residual _le structs naming
-Date:   Mon, 23 Nov 2020 16:20:08 +0000
-Message-Id: <20201123162008.35814-1-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730595AbgKWQUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 11:20:47 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E53D420665;
+        Mon, 23 Nov 2020 16:20:45 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 11:20:44 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: [ANNOUNCE] 5.4.78-rt44
+Message-ID: <20201123112044.79f0eeb4@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For sake of consistency, remove any residual naming based on _le suffixes
-in SCMI Sensors Protocol, since little endianity is already assumed across
-all of SCMI implementation and, as such, all currently existent names do
-not explicitly state their endianness.
 
-No functional change.
+Dear RT Folks,
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-Based on for-next/scmi
+I'm pleased to announce the 5.4.78-rt44 stable release.
 
-commit e3811190acf8 ("firmware: arm_scmi: Add SCMI v3.0 sensor notifications")
 
-Thanks
+This release is just an update to the new stable 5.4.78 version
+and no RT specific changes have been made.
 
-Cristian
----
- drivers/firmware/arm_scmi/sensors.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-index b3d7c08c09a0..4541b891b733 100644
---- a/drivers/firmware/arm_scmi/sensors.c
-+++ b/drivers/firmware/arm_scmi/sensors.c
-@@ -168,7 +168,7 @@ struct scmi_resp_sensor_reading_complete {
- 	__le64 readings;
- };
- 
--struct scmi_sensor_reading_le {
-+struct scmi_sensor_reading_resp {
- 	__le32 sensor_value_low;
- 	__le32 sensor_value_high;
- 	__le32 timestamp_low;
-@@ -177,7 +177,7 @@ struct scmi_sensor_reading_le {
- 
- struct scmi_resp_sensor_reading_complete_v3 {
- 	__le32 id;
--	struct scmi_sensor_reading_le readings[];
-+	struct scmi_sensor_reading_resp readings[];
- };
- 
- struct scmi_sensor_trip_notify_payld {
-@@ -189,7 +189,7 @@ struct scmi_sensor_trip_notify_payld {
- struct scmi_sensor_update_notify_payld {
- 	__le32 agent_id;
- 	__le32 sensor_id;
--	struct scmi_sensor_reading_le readings[];
-+	struct scmi_sensor_reading_resp readings[];
- };
- 
- struct sensors_info {
-@@ -734,7 +734,7 @@ static int scmi_sensor_reading_get(const struct scmi_handle *handle,
- 
- static inline void
- scmi_parse_sensor_readings(struct scmi_sensor_reading *out,
--			   const struct scmi_sensor_reading_le *in)
-+			   const struct scmi_sensor_reading_resp *in)
- {
- 	out->value = get_unaligned_le64((void *)&in->sensor_value_low);
- 	out->timestamp = get_unaligned_le64((void *)&in->timestamp_low);
-@@ -797,7 +797,7 @@ scmi_sensor_reading_get_timestamped(const struct scmi_handle *handle,
- 		ret = scmi_do_xfer(handle, t);
- 		if (!ret) {
- 			int i;
--			struct scmi_sensor_reading_le *resp_readings;
-+			struct scmi_sensor_reading_resp *resp_readings;
- 
- 			resp_readings = t->rx.buf;
- 			for (i = 0; i < count; i++)
-@@ -931,7 +931,7 @@ static const struct scmi_event sensor_events[] = {
- 		.max_payld_sz =
- 			sizeof(struct scmi_sensor_update_notify_payld) +
- 			 SCMI_MAX_NUM_SENSOR_AXIS *
--			 sizeof(struct scmi_sensor_reading_le),
-+			 sizeof(struct scmi_sensor_reading_resp),
- 		.max_report_sz = sizeof(struct scmi_sensor_update_report) +
- 				  SCMI_MAX_NUM_SENSOR_AXIS *
- 				  sizeof(struct scmi_sensor_reading),
--- 
-2.17.1
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v5.4-rt
+  Head SHA1: 4d14b16b44c117ee3912ef9973460d98b232266a
+
+
+Or to build 5.4.78-rt44 directly, the following patches should be applied:
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.78.xz
+
+  http://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.78-rt44.patch.xz
+
+
+
+
+Enjoy,
+
+-- Steve
 
