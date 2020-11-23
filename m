@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9892F2BFFB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A782BFFAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgKWFiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 00:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgKWFiI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 00:38:08 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A01C0613CF;
-        Sun, 22 Nov 2020 21:38:08 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id l11so8306636plt.1;
-        Sun, 22 Nov 2020 21:38:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ivjo757clFR0whhjs5PVIdMjPczKMK3WkRUo0lKbdS4=;
-        b=MzozNj1dAFjS9Qd6hVbs8TxJqyEiFgHZLs14qdaHPqXelOCKkgFrsVu1xCFct5gpaN
-         +BbyI5aso85O8MRiXxHdAmeCnP4GZT03jxn+x12Za9fAsdXF46n2fJw1hNA5E1aQSBv2
-         TULpMejAlXHrJ982DRpIwnt0rPJSd7pq7TSMPgAdk8tZccmVzbc7JpVkJR0pWdKfTLbD
-         8gFQQYw1w4MZOCs8WjGol8FAO9M50s8uosrlFiKFcmT0ARxj/A4Wnds3h+zjviHCzaAU
-         iWZuYPkpU/zPCjPSQFQeAUJifNIuQ0z30q5rnxub95ud0Vdtr/LIS0UKG71w3PkRx16F
-         WSRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ivjo757clFR0whhjs5PVIdMjPczKMK3WkRUo0lKbdS4=;
-        b=rfArAjL9NoPTU1u8pj9fMk80gTF4iWcOky8ix9vJGzfaPWIAhuelwIpcLHmt5io1Pc
-         gGktFYFku50eQ8l1f/feeXHUh8HVOpsKI7ylZvpwBfD4xQZYewv49NJLiSNdLlPcO7ja
-         3Pq4zAYZTCmahj7kSYLZrof898GBo9KMwc/S8vS+7SiB83VcOt2TcS+9iS6jD2oNz9Qz
-         SibE3yAyF5Vu8YgJ2IB+DoVrHBJXNgduguSXaeLp2b1k5VZfZ9MvaUvwT2mDs6FOjviQ
-         6yNcntSMIFhTRrplUyiejSq3BsXv8xW/qo6rnHBeue23oBYM0Wnjyc0lQl9uhm2enS3x
-         7ChA==
-X-Gm-Message-State: AOAM532hAKDNjnizxTRlim7W52CNBrxuoJ0pRFY2VG/tZpIBpLl4A4IJ
-        dIngznff8znP90FuH6i/22s=
-X-Google-Smtp-Source: ABdhPJy72LJpOT6zvATmsXzDOENjyQzOdXuHwjRp6lWaUaW2H+DFQNwiotnI9yn0NG1TUrt+W306hQ==
-X-Received: by 2002:a17:902:ec03:b029:d7:c7c2:145a with SMTP id l3-20020a170902ec03b02900d7c7c2145amr23476385pld.33.1606109887904;
-        Sun, 22 Nov 2020 21:38:07 -0800 (PST)
-Received: from gli-arch.genesyslogic.com.tw ([122.146.30.3])
-        by smtp.gmail.com with ESMTPSA id m9sm10441472pfh.94.2020.11.22.21.38.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 21:38:07 -0800 (PST)
-From:   Ben Chuang <benchuanggli@gmail.com>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, Ben Chuang <benchuanggli@gmail.com>
-Subject: [PATCH] mmc: sdhci-pci-gli: Reduce power consumption for GL9755
-Date:   Mon, 23 Nov 2020 13:37:02 +0800
-Message-Id: <20201123053702.6083-1-benchuanggli@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727494AbgKWFhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 00:37:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:58352 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726163AbgKWFhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 00:37:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 06E4B101E;
+        Sun, 22 Nov 2020 21:37:22 -0800 (PST)
+Received: from [10.163.82.200] (unknown [10.163.82.200])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 249C13F71F;
+        Sun, 22 Nov 2020 21:37:19 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [RFC 10/11] coresgith: etm-perf: Connect TRBE sink with ETE
+ source
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org
+References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
+ <1605012309-24812-11-git-send-email-anshuman.khandual@arm.com>
+ <d409acab-f811-45f7-b00f-cd2f281d6112@arm.com>
+Message-ID: <e86aab46-ed7d-5634-cae5-8289974dd52d@arm.com>
+Date:   Mon, 23 Nov 2020 11:07:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d409acab-f811-45f7-b00f-cd2f281d6112@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 
-For GL9755, reduce power consumption by lowering the LFCLK and disabling
-the DMACLK on low-power.
 
-Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
----
- drivers/mmc/host/sdhci-pci-gli.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+On 11/12/20 3:01 PM, Suzuki K Poulose wrote:
+> Hi Anshuman,
+> On 11/10/20 12:45 PM, Anshuman Khandual wrote:
+>> Unlike traditional sink devices, individual TRBE instances are not detected
+>> via DT or ACPI nodes. Instead TRBE instances are detected during CPU online
+>> process. Hence a path connecting ETE and TRBE on a given CPU would not have
+>> been established until then. This adds two coresight helpers that will help
+>> modify outward connections from a source device to establish and terminate
+>> path to a given sink device. But this method might not be optimal and would
+>> be reworked later.
+>>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> 
+> Instead of this, could we come up something like a percpu_sink concept ? That
+> way, the TRBE driver could register the percpu_sink for the corresponding CPU
+> and we don't have to worry about the order in which the ETE will be probed
+> on a hotplugged CPU. (i.e, if the TRBE is probed before the ETE, the following
+> approach would fail to register the sink).
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index 9887485a4134..f10bdfbfce36 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -97,6 +97,10 @@
- #define   GLI_9755_WT_EN_ON     0x1
- #define   GLI_9755_WT_EN_OFF    0x0
- 
-+#define PCI_GLI_9755_PECONF   0x44
-+#define   PCI_GLI_9755_LFCLK    GENMASK(14, 12)
-+#define   PCI_GLI_9755_DMACLK   BIT(29)
-+
- #define PCI_GLI_9755_PLL            0x64
- #define   PCI_GLI_9755_PLL_LDIV       GENMASK(9, 0)
- #define   PCI_GLI_9755_PLL_PDIV       GENMASK(14, 12)
-@@ -519,6 +523,21 @@ static void sdhci_gl9755_set_clock(struct sdhci_host *host, unsigned int clock)
- 	sdhci_enable_clk(host, clk);
- }
- 
-+static void gl9755_hw_setting(struct sdhci_pci_slot *slot)
-+{
-+	struct pci_dev *pdev = slot->chip->pdev;
-+	u32 value;
-+
-+	gl9755_wt_on(pdev);
-+
-+	pci_read_config_dword(pdev, PCI_GLI_9755_PECONF, &value);
-+	value &= ~PCI_GLI_9755_LFCLK;
-+	value &= ~PCI_GLI_9755_DMACLK;
-+	pci_write_config_dword(pdev, PCI_GLI_9755_PECONF, value);
-+
-+	gl9755_wt_off(pdev);
-+}
-+
- static int gli_probe_slot_gl9750(struct sdhci_pci_slot *slot)
- {
- 	struct sdhci_host *host = slot->host;
-@@ -534,6 +553,7 @@ static int gli_probe_slot_gl9755(struct sdhci_pci_slot *slot)
- {
- 	struct sdhci_host *host = slot->host;
- 
-+	gl9755_hw_setting(slot);
- 	gli_pcie_enable_msi(slot);
- 	slot->host->mmc->caps2 |= MMC_CAP2_NO_SDIO;
- 	sdhci_enable_v4_mode(host);
--- 
-2.29.2
+Right, it wont work.
 
+We already have a per cpu csdev sink. The current mechanism expects all ETEs
+to have been established and the TRBEs just get plugged in during their init
+while probing each individual cpus. During cpu hotplug in or out, a TRBE-ETE
+link either gets created and destroyed. But it assumes that an ETE is always
+present for TRBE to get plugged into or teared down from. csdev for TRBE sink
+too gets released during cpu hot remove path.
+
+Are you suggesting that there should be a percpu static csdev array defined
+for potential all TRBEs so that the ETE-TRBE links be permanently established
+given that the ETEs are permanent and never really go away with cpu hot remove
+event (my assumption). TRBE csdevs should just get enabled or disabled without
+really being destroyed during cpu hotplug, so that the corresponding TRBE-ETE
+connection remains in place.
+
+> 
+> And the default sink can be initialized when the ETE instance first starts
+> looking for it.
+
+IIUC def_sink is the sink which will be selected by default for a source device
+while creating a path, in case there is no clear preference from the user. ETE's
+default sink should be fixed (TRBE) to be on the easy side and hence assigning
+that during connection expansion procedure, does make sense. But then it can be
+more complex where the 'default' sink for an ETE can be scenario specific and
+may not be always be its TRBE.
+
+The expanding connections fits into a scenario where the ETE is present with
+all it's other traditional sinks and TRBE is the one which comes in or goes out
+with the cpu.
+
+If ETE also comes in and goes out with individual cpu hotplug which is preferred
+ideally, we would need to also
+
+1. Co-ordinate with TRBE bring up and connection creation to avoid race
+2. Rediscover traditional sinks which were attached to the ETE before -
+   go back, rescan the DT/ACPI entries for sinks with whom a path can
+   be established etc.
+
+Basically there are three choices we have here
+
+1. ETE is permanent, TRBE and ETE-TRBE path gets created or destroyed with hotplug (current proposal)
+2. ETE/TRBE/ETE-TRBE path are all permanent, ETE and TRBE get enabled or disabled with hotplug
+3. ETE, TRBE and ETE-TRBE path, all get created, enabled and destroyed with hotplug in sync
+
+- Anshuman
