@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34122C05E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 618B52C066B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729948AbgKWMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:25:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
+        id S1729990AbgKWMav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729917AbgKWMZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:25:01 -0500
+        id S1730766AbgKWMaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7457F20728;
-        Mon, 23 Nov 2020 12:25:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24D9920728;
+        Mon, 23 Nov 2020 12:30:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134301;
-        bh=HoIxnDrBm+fJ0iCjA74t68UzK62ny8/iYmYyqlIrhVQ=;
+        s=korg; t=1606134645;
+        bh=0A66eNDJ2aZU+lf9L5muAqnCOkTKeAP0usRGZ3A0xHs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kk3Jyw2GplEfc0yBPCJGGMc0WRqAOJEiyoMtgKik8ZMeNu0TVG/5nELvlJr1wcRnu
-         YcuD5eGJECmxgVL3NJU/dGkYRNZXXGa+AFG1xl3cXNoSIxACSy3mi0w27NiguDst7U
-         9JmR97kbPldt3Vxs8vG4bnN/QJP6idTwSZwPQoLY=
+        b=w0gCgWlIb9MVTtC96tE9XgAW5hDAVYe8MoqZxbrMQtT2pN2MMKHJb1bX+5PtBUg21
+         J1p7MFQn26gdrdL0h1SEHV4qm9ts9oL5Zw4hz9jRgGkJQaLUQgNA4dCxIlHkezksLV
+         79KjEp50oTFbx/lpK2fVLrZPScb0+ndm8nkp+TdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 04/47] devlink: Add missing genlmsg_cancel() in devlink_nl_sb_port_pool_fill()
-Date:   Mon, 23 Nov 2020 13:21:50 +0100
-Message-Id: <20201123121805.760726665@linuxfoundation.org>
+        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 31/91] arm64: psci: Avoid printing in cpu_psci_cpu_die()
+Date:   Mon, 23 Nov 2020 13:21:51 +0100
+Message-Id: <20201123121810.837992909@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit 849920c703392957f94023f77ec89ca6cf119d43 ]
+[ Upstream commit 891deb87585017d526b67b59c15d38755b900fea ]
 
-If sb_occ_port_pool_get() failed in devlink_nl_sb_port_pool_fill(),
-msg should be canceled by genlmsg_cancel().
+cpu_psci_cpu_die() is called in the context of the dying CPU, which
+will no longer be online or tracked by RCU. It is therefore not generally
+safe to call printk() if the PSCI "cpu off" request fails, so remove the
+pr_crit() invocation.
 
-Fixes: df38dafd2559 ("devlink: implement shared buffer occupancy monitoring interface")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Link: https://lore.kernel.org/r/20201113111622.11040-1-wanghai38@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Qian Cai <cai@redhat.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://lore.kernel.org/r/20201106103602.9849-2-will@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/devlink.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/psci.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -986,7 +986,7 @@ static int devlink_nl_sb_port_pool_fill(
- 		err = ops->sb_occ_port_pool_get(devlink_port, devlink_sb->index,
- 						pool_index, &cur, &max);
- 		if (err && err != -EOPNOTSUPP)
--			return err;
-+			goto sb_occ_get_failure;
- 		if (!err) {
- 			if (nla_put_u32(msg, DEVLINK_ATTR_SB_OCC_CUR, cur))
- 				goto nla_put_failure;
-@@ -999,8 +999,10 @@ static int devlink_nl_sb_port_pool_fill(
- 	return 0;
+diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
+index 3856d51c645b5..3ebb2a56e5f7b 100644
+--- a/arch/arm64/kernel/psci.c
++++ b/arch/arm64/kernel/psci.c
+@@ -69,7 +69,6 @@ static int cpu_psci_cpu_disable(unsigned int cpu)
  
- nla_put_failure:
-+	err = -EMSGSIZE;
-+sb_occ_get_failure:
- 	genlmsg_cancel(msg, hdr);
--	return -EMSGSIZE;
-+	return err;
+ static void cpu_psci_cpu_die(unsigned int cpu)
+ {
+-	int ret;
+ 	/*
+ 	 * There are no known implementations of PSCI actually using the
+ 	 * power state field, pass a sensible default for now.
+@@ -77,9 +76,7 @@ static void cpu_psci_cpu_die(unsigned int cpu)
+ 	u32 state = PSCI_POWER_STATE_TYPE_POWER_DOWN <<
+ 		    PSCI_0_2_POWER_STATE_TYPE_SHIFT;
+ 
+-	ret = psci_ops.cpu_off(state);
+-
+-	pr_crit("unable to power off CPU%u (%d)\n", cpu, ret);
++	psci_ops.cpu_off(state);
  }
  
- static int devlink_nl_cmd_sb_port_pool_get_doit(struct sk_buff *skb,
+ static int cpu_psci_cpu_kill(unsigned int cpu)
+-- 
+2.27.0
+
 
 
