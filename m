@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226272C11B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D11E2C11BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390261AbgKWRPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733152AbgKWRPG (ORCPT
+        id S2390000AbgKWRSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:18:04 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55268 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729378AbgKWRSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:15:06 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C9EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:15:04 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id u184so3068308qkf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:15:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kvBGtFT9p+lNN1wnKJ27cKqo+mVo01rfpUdq4ICcnCo=;
-        b=LlizgBvVF6PIc8dJ2FLojBbEJZlK9COaX2vyuLyDC9PG/wNw623YnlNybC47WpFuiv
-         PtYA6ubE3P7QBehYPVwSYRflyWgHrmkjugD+nCjHntymPepmKyLUTwugEfYW3Nw2P2SP
-         hrxib78j7pTNqBYSvjBMrV4x4viFURYxEkgDpKYhm9Y92yo6qzxSvybp8ECcjZpITAZf
-         qvC3hDeripEmGZQW/kh5aGtYhMpLHrN0Q+LEDhznEStp4gDxzc8nVB5YJ8yF6rmFEmEQ
-         HmH6JVP9m7vwxphnbgUdVGbN4ebQq4wbUeA/lVItKFo6EAa2EvHcBZ7mmhOo3Tww4s3V
-         OQWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kvBGtFT9p+lNN1wnKJ27cKqo+mVo01rfpUdq4ICcnCo=;
-        b=kpf7rlPYA1OfglvOvoRJgXw8jm74z6ki5r4BmQuQS2spKGqQLR7+oUuuS4uS+9j7L/
-         3ThisOm0oQ9ZdSl0pSc2wBdfZAa2j+484WxZP32Wgc+ud5YoDSzuZvFJc+/CCnw2GjDA
-         jqLG6SvHC09tyF7+DSJT39pRBrtgiEVG9kCyA0iOUx2PTI0kw7XAm7zfu+NzOidbFfrV
-         04Of4O7IZRZycsLjzotnRBAcrO7QIbkyvc+wlpccytUmUa4wFG9JnmmK+ouKTH0YqGVW
-         g46Is7PdVj9xDXtdLT3xbW8OdG+/Lx3mebWBJ2fH/DZcNMf/dVDgjlxx2xRrBTcMeJnt
-         4spA==
-X-Gm-Message-State: AOAM530RXWCdNIjHpmhS079EO7/IeXg33oPnEotMWl6PGSZR6W1XYqhq
-        W5U5FU8nMYXuOHi5/HnDwpRJdg==
-X-Google-Smtp-Source: ABdhPJzzfbE7crG1AGzIBt80F3rqZ7Bc00frJCBVtjv7Axg3xfzI1getpXUfvt7Qln7neCKN55RBtw==
-X-Received: by 2002:a05:620a:ec2:: with SMTP id x2mr484822qkm.328.1606151704157;
-        Mon, 23 Nov 2020 09:15:04 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id z133sm10523570qka.20.2020.11.23.09.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 09:15:03 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1khFQc-00A6rX-Ou; Mon, 23 Nov 2020 13:15:02 -0400
-Date:   Mon, 23 Nov 2020 13:15:02 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com
-Subject: Re: Pinning ZONE_MOVABLE pages
-Message-ID: <20201123171502.GX244516@ziepe.ca>
-References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
- <20201123090129.GD27488@dhcp22.suse.cz>
- <CA+CK2bCD8_x5cBUOksAzat_O4G8-PoLp378zN1mxKMcmyV8dAw@mail.gmail.com>
+        Mon, 23 Nov 2020 12:18:03 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 23EAC1C0B9D; Mon, 23 Nov 2020 18:18:01 +0100 (CET)
+Date:   Mon, 23 Nov 2020 18:18:00 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH v6 0/8] IMA: support for measuring kernel integrity
+ critical data
+Message-ID: <20201123171800.GA6407@duo.ucw.cz>
+References: <20201119232611.30114-1-tusharsu@linux.microsoft.com>
+ <20201120124657.GA31468@duo.ucw.cz>
+ <aadf6e35-39bc-74d4-6ca3-d708860738a5@linux.microsoft.com>
+ <20201122210031.GA26756@amd>
+ <d82ad1cac36e948c904300548c64244c145589ee.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bCD8_x5cBUOksAzat_O4G8-PoLp378zN1mxKMcmyV8dAw@mail.gmail.com>
+In-Reply-To: <d82ad1cac36e948c904300548c64244c145589ee.camel@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 11:06:21AM -0500, Pavel Tatashin wrote:
 
-> What I mean here is allowing users to guarantee that the page's PA is
-> going to stay the same. Sort of a stronger mlock. Mlock only
-> guarantees that the page is not swapped, but something like
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You've just described get/pin_user_pages(), that is exactly what it is
-for.
+Hi!
 
-I agree with the other emails, ZONE_MOVABLE needs to be reconciled
-with FOLL_LONGTERM - most likely by preventing ZONE_MOVABLE pages from
-being returned. This will need migration like CMA does and the point
-about faulting is only an optimization to prevent fault then immediate
-migration.
+> > > >How is it supposed to be useful?
+> > > >
+> > > >I'm pretty sure there are critical data that are not measured by
+> > > >proposed module... and that are written under normal circumstances.
+> > > >
+> > > The goal of this series is to introduce the IMA hook
+> > > measure_critical_data() and the necessary policies to use it; and
+> > > illustrate that use with one example (SELinux). It is not scalable to
+> > > identify and update all the critical data sources to use the proposed
+> > > module at once.
+> > >=20
+> > > A piecemeal approach to add more critical data measurement in subsequ=
+ent
+> > > patches would be easy to implement and review.
+> >=20
+> > Basically every other data structure in kernel is "critical" by your
+> > definition, and you can't really measure them all; some of them change
+> > rather often. Going piecemeal does not really help here.
+>=20
+> Agreed, measuring data structures that change is not really applicable.
+> However, measuring data structures that once initialized don't change,
+> does make sense (similar concept to __ro_after_init).  The attestation
+> server doesn't need to know anything about the measurement, other than
+> more than a single measurement is indicative of a problem.
 
-Jason
+So, why not simply measure everything that is ro_after_init?
+
+But... I really fail to see how this is useful. It is trivial to
+"backdoor" kernel w/o modifying anything that is
+ro_after_init. (Example: page tables).
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7vuyAAKCRAw5/Bqldv6
+8l0NAKCno5uLV1J+u9T4SaYxmY8EkH/yQQCeJ/9tVl7wyA/jWR7tMN6Lj6pfIx8=
+=FwxO
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
