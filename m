@@ -2,61 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6492C11AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226272C11B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390136AbgKWRO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:14:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733152AbgKWRO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:14:27 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D1D320719;
-        Mon, 23 Nov 2020 17:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606151667;
-        bh=Z0D0G7UXZZita+xmedZvqpv4DisJLJYg0ajIZcOzBSM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l5q7W847ripT143Funrq1sT9U76vY3E2WEZwTVwNMc1eh5l8aK10ltL1gxezscOtZ
-         onto7fUrNGV8XlWu1BHq0poN7oQBNVUFjNWUtpnnoKoMizawr1FPxR2W7cF5Uv6qtg
-         DfN0pit+2G73GnUJVaEvOBA7pX/SHQnqUUZRUNoY=
-Date:   Mon, 23 Nov 2020 22:44:22 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: sdm845: Add iommus property to qup
-Message-ID: <20201123171422.GE8403@vkoul-mobl>
-References: <20201122034149.626045-1-bjorn.andersson@linaro.org>
+        id S2390261AbgKWRPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733152AbgKWRPG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:15:06 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C9EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:15:04 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id u184so3068308qkf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 09:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kvBGtFT9p+lNN1wnKJ27cKqo+mVo01rfpUdq4ICcnCo=;
+        b=LlizgBvVF6PIc8dJ2FLojBbEJZlK9COaX2vyuLyDC9PG/wNw623YnlNybC47WpFuiv
+         PtYA6ubE3P7QBehYPVwSYRflyWgHrmkjugD+nCjHntymPepmKyLUTwugEfYW3Nw2P2SP
+         hrxib78j7pTNqBYSvjBMrV4x4viFURYxEkgDpKYhm9Y92yo6qzxSvybp8ECcjZpITAZf
+         qvC3hDeripEmGZQW/kh5aGtYhMpLHrN0Q+LEDhznEStp4gDxzc8nVB5YJ8yF6rmFEmEQ
+         HmH6JVP9m7vwxphnbgUdVGbN4ebQq4wbUeA/lVItKFo6EAa2EvHcBZ7mmhOo3Tww4s3V
+         OQWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kvBGtFT9p+lNN1wnKJ27cKqo+mVo01rfpUdq4ICcnCo=;
+        b=kpf7rlPYA1OfglvOvoRJgXw8jm74z6ki5r4BmQuQS2spKGqQLR7+oUuuS4uS+9j7L/
+         3ThisOm0oQ9ZdSl0pSc2wBdfZAa2j+484WxZP32Wgc+ud5YoDSzuZvFJc+/CCnw2GjDA
+         jqLG6SvHC09tyF7+DSJT39pRBrtgiEVG9kCyA0iOUx2PTI0kw7XAm7zfu+NzOidbFfrV
+         04Of4O7IZRZycsLjzotnRBAcrO7QIbkyvc+wlpccytUmUa4wFG9JnmmK+ouKTH0YqGVW
+         g46Is7PdVj9xDXtdLT3xbW8OdG+/Lx3mebWBJ2fH/DZcNMf/dVDgjlxx2xRrBTcMeJnt
+         4spA==
+X-Gm-Message-State: AOAM530RXWCdNIjHpmhS079EO7/IeXg33oPnEotMWl6PGSZR6W1XYqhq
+        W5U5FU8nMYXuOHi5/HnDwpRJdg==
+X-Google-Smtp-Source: ABdhPJzzfbE7crG1AGzIBt80F3rqZ7Bc00frJCBVtjv7Axg3xfzI1getpXUfvt7Qln7neCKN55RBtw==
+X-Received: by 2002:a05:620a:ec2:: with SMTP id x2mr484822qkm.328.1606151704157;
+        Mon, 23 Nov 2020 09:15:04 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id z133sm10523570qka.20.2020.11.23.09.15.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 09:15:03 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1khFQc-00A6rX-Ou; Mon, 23 Nov 2020 13:15:02 -0400
+Date:   Mon, 23 Nov 2020 13:15:02 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com
+Subject: Re: Pinning ZONE_MOVABLE pages
+Message-ID: <20201123171502.GX244516@ziepe.ca>
+References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
+ <20201123090129.GD27488@dhcp22.suse.cz>
+ <CA+CK2bCD8_x5cBUOksAzat_O4G8-PoLp378zN1mxKMcmyV8dAw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201122034149.626045-1-bjorn.andersson@linaro.org>
+In-Reply-To: <CA+CK2bCD8_x5cBUOksAzat_O4G8-PoLp378zN1mxKMcmyV8dAw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-11-20, 19:41, Bjorn Andersson wrote:
-> From: Stephen Boyd <swboyd@chromium.org>
-> 
-> The SMMU that sits in front of the QUP needs to be programmed properly
-> so that the i2c geni driver can allocate DMA descriptors. Failure to do
-> this leads to faults when using devices such as an i2c touchscreen where
-> the transaction is larger than 32 bytes and we use a DMA buffer.
-> 
-> arm-smmu 15000000.iommu: Unexpected global fault, this could be serious
-> arm-smmu 15000000.iommu:         GFSR 0x00000002, GFSYNR0 0x00000002, GFSYNR1 0x000006c0, GFSYNR2 0x00000000
-> 
-> Add the right SID and mask so this works.
+On Mon, Nov 23, 2020 at 11:06:21AM -0500, Pavel Tatashin wrote:
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> What I mean here is allowing users to guarantee that the page's PA is
+> going to stay the same. Sort of a stronger mlock. Mlock only
+> guarantees that the page is not swapped, but something like
 
-on DB845c with GSI DMA:
-Tested-by: Vinod Koul <vkoul@kernel.org>
+You've just described get/pin_user_pages(), that is exactly what it is
+for.
 
--- 
-~Vinod
+I agree with the other emails, ZONE_MOVABLE needs to be reconciled
+with FOLL_LONGTERM - most likely by preventing ZONE_MOVABLE pages from
+being returned. This will need migration like CMA does and the point
+about faulting is only an optimization to prevent fault then immediate
+migration.
+
+Jason
