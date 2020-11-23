@@ -2,123 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCAB2C0B55
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5E72C0B77
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732410AbgKWNXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731551AbgKWNXH (ORCPT
+        id S2389102AbgKWNZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:25:09 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55094 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730533AbgKWNY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:23:07 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78901C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:23:07 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id b10so13476664qtb.16
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:23:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=t3/TP+aeGOrrYIoQsNoDeJwx7Pw16YuC73tVL3PfhCA=;
-        b=i/NiRwJL0aJluZg5rY8KsCulRKgc+UIE+SwCY7gUAxgnPZ1DfIy6g+p0imKJ5QTcXP
-         rHXztNfebMNml29UfXm28PtR8/4STJ4lZ5Zndp7+57cfD6oYhY5k7r4uxl2nLK2NFrzb
-         GVmbvB5Jn6H8aq49me8QP2RKQzFDwSpcos382cVgK8t/+hWCBgKCkrrv3G9jyOHYPDP+
-         9YTddxXG16wpfVLk6VXqatc4mquxTBkAQ4hPcNdiUqPfeiOLjt4scvJrn91LLrwRW9s9
-         SRnhWSXu0XrUiJF6hWAajTwzYHYcMPjg5d5iiyWD3h5m93ag9utQnds5R+bI5o1PuBWj
-         bnzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=t3/TP+aeGOrrYIoQsNoDeJwx7Pw16YuC73tVL3PfhCA=;
-        b=KndAaUtmhmMGU4Ly0sIr7vixNRnE5ViHw1+BC41ItNYqTg4q+axo+qm4tGZtx+B+pA
-         JSyV/e1nNzOdLY+OFHHkNEwQ1V9NjIzxcycQ5PrqhWGbTfT5r7cgKbmzeVMlAZz+JpvZ
-         hMbtCTf73VVeO/c1JdZPOq8APHd4plYkb4MrMsncBNdp586JykJaTEg13C//kpD6tzOS
-         AAOvljWMmYEcuo0S97J3ZTiUF4mXLTkuKtZ/NI//nMdGHRRmd7mp8M2Z9ruIN77FUNwC
-         bpb/HXfRbBkVN2a5lnlnuLUf+qVNzgksYdZcfLLtcYelYwQQWXHtEez/AFMgnfnSecGz
-         xhcw==
-X-Gm-Message-State: AOAM531WsCq0Hy//9T85iO4B9n0R7TlrliwlSy+a3iCVQ09rZ6Cj5iav
-        SuHlrnabcw0ALHjhUcg+IQixkvmJ3Q==
-X-Google-Smtp-Source: ABdhPJyi3sQ41pGPGDDNk6GR3kRu1nWMRGVpWjvKEjGZvzaSlIDMjPCg7+tYy46kUauCfGMXwtMg/n0wlg==
-Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
- (user=elver job=sendgmr) by 2002:a0c:b5a6:: with SMTP id g38mr13953823qve.31.1606137786488;
- Mon, 23 Nov 2020 05:23:06 -0800 (PST)
-Date:   Mon, 23 Nov 2020 14:23:00 +0100
-Message-Id: <20201123132300.1759342-1-elver@google.com>
+        Mon, 23 Nov 2020 08:24:59 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AND76aI034959;
+        Mon, 23 Nov 2020 08:24:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=SF2O5ZXVTST15P2rDMbKpT5pSzhsEEPZsi5upw+5tz8=;
+ b=PEMDBFWHjGZ0tz6Xx4aKRQ1C8lU+bjlLYYUUZGRhga9/OYbKePR3B202Aj6PDf5LJALO
+ vwcZBF1hbzRajhGss6LZpETscPUwE2MalYXWVv9G1tHS2/8O1xkc5k+TypmtD8Syxl1i
+ PgNHXFVrpfh5Dl634ARKM6wtrr1zoTtg0mKexj9EOBvX9727yIGHbiuguUOdtsWU22Sq
+ bRFUoX0k2wSXPjXHdZ9H96qhI/V5h4gkJUC38upK9VE/2FdFOOh3pNPiNxXM4uy4YXi6
+ gcD6z6pRUi5jBnNe3eS3thsbrnwKgZg/2vGIfiMS/fPHIiIlRfUGBynaezCAlR7zeHEt mg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34xyrvj5eb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 08:24:42 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ANDMBlj013395;
+        Mon, 23 Nov 2020 13:24:40 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 34xth8jfuf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 13:24:40 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ANDOcqW8061484
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Nov 2020 13:24:38 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2085CA404D;
+        Mon, 23 Nov 2020 13:24:38 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 13057A4055;
+        Mon, 23 Nov 2020 13:24:36 +0000 (GMT)
+Received: from sig-9-65-241-175.ibm.com (unknown [9.65.241.175])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 23 Nov 2020 13:24:35 +0000 (GMT)
+Message-ID: <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: Update LSM selftests for
+ bpf_ima_inode_hash
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Date:   Mon, 23 Nov 2020 08:24:35 -0500
+In-Reply-To: <20201121005054.3467947-3-kpsingh@chromium.org>
+References: <20201121005054.3467947-1-kpsingh@chromium.org>
+         <20201121005054.3467947-3-kpsingh@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2] kcsan: Avoid scheduler recursion by using non-instrumented preempt_{disable,enable}()
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, paulmck@kernel.org
-Cc:     will@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-        mingo@kernel.org, mark.rutland@arm.com, boqun.feng@gmail.com,
-        dvyukov@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_09:2020-11-23,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=3 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011230086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When enabling KCSAN for kernel/sched (remove KCSAN_SANITIZE := n from
-kernel/sched/Makefile), with CONFIG_DEBUG_PREEMPT=y, we can observe
-recursion due to:
+On Sat, 2020-11-21 at 00:50 +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> - Update the IMA policy before executing the test binary (this is not an
+>   override of the policy, just an append that ensures that hashes are
+>   calculated on executions).
 
-	check_access() [via instrumentation]
-	  kcsan_setup_watchpoint()
-	    reset_kcsan_skip()
-	      kcsan_prandom_u32_max()
-	        get_cpu_var()
-		  preempt_disable()
-		    preempt_count_add() [in kernel/sched/core.c]
-		      check_access() [via instrumentation]
+Assuming the builtin policy has been replaced with a custom policy and
+CONFIG_IMA_WRITE_POLICY is enabled, then yes the rule is appended.   If
+a custom policy has not yet been loaded, loading this rule becomes the
+defacto custom policy.
 
-Avoid this by rewriting kcsan_prandom_u32_max() to only use safe
-versions of preempt_disable() and preempt_enable() that do not call into
-scheduler code.
-
-Note, while this currently does not affect an unmodified kernel, it'd be
-good to keep a KCSAN kernel working when KCSAN_SANITIZE := n is removed
-from kernel/sched/Makefile to permit testing scheduler code with KCSAN
-if desired.
-
-Fixes: cd290ec24633 ("kcsan: Use tracing-safe version of prandom")
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* Update comment to also point out preempt_enable().
----
- kernel/kcsan/core.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 3994a217bde7..10513f3e2349 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -284,10 +284,19 @@ should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *
-  */
- static u32 kcsan_prandom_u32_max(u32 ep_ro)
- {
--	struct rnd_state *state = &get_cpu_var(kcsan_rand_state);
--	const u32 res = prandom_u32_state(state);
-+	struct rnd_state *state;
-+	u32 res;
-+
-+	/*
-+	 * Avoid recursion with scheduler by using non-tracing versions of
-+	 * preempt_disable() and preempt_enable() that do not call into
-+	 * scheduler code.
-+	 */
-+	preempt_disable_notrace();
-+	state = raw_cpu_ptr(&kcsan_rand_state);
-+	res = prandom_u32_state(state);
-+	preempt_enable_no_resched_notrace();
+Even if a custom policy has been loaded, potentially additional
+measurements unrelated to this test would be included the measurement
+list.  One way of limiting a rule to a specific test is by loopback
+mounting a file system and defining a policy rule based on the loopback
+mount unique uuid.
  
--	put_cpu_var(kcsan_rand_state);
- 	return (u32)(((u64) res * ep_ro) >> 32);
- }
- 
--- 
-2.29.2.454.gaff20da3a2-goog
+Mimi
 
