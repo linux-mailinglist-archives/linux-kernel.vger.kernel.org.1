@@ -2,135 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453E72C1963
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783F42C196A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 00:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgKWXWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 18:22:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgKWXWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 18:22:14 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE51C0613CF;
-        Mon, 23 Nov 2020 15:22:14 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id d9so18782965qke.8;
-        Mon, 23 Nov 2020 15:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LQnTTbrjFIzQtonW7hPRPMWJaMT5ZjIxqKt5qVmkYec=;
-        b=hG2kRKHlhPCbPwUiY3Bk8iYk0KvL8bcPEFwF10PM3zLxm1J4QjTay3rc53ZxhMMoMM
-         hL07bEpzKfo/u56GAMJZFXD/6MDsKy0fWELnD2aFR8oVvLHmvmXNMcQsPqJunY8kxPxS
-         TGyjuXLLcvry8QHj5am759ylzh/96s7r0Xud7vf9pj8nurL4hm0VDzSX2/DZth9lHlyT
-         HwwTuxVy057oyBcvhx3gSfc2uQ3ZuZ4kmybn3DBccDXQ8dDDAw2XEqRs688eEqphNIH6
-         C4W4RSMROCCluK8wzlsdT/iE8ywRaL6k4CaBByYWxzvNsTRxnYKlkBzDYuvPK6xgF0M4
-         go1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=LQnTTbrjFIzQtonW7hPRPMWJaMT5ZjIxqKt5qVmkYec=;
-        b=tjd5Gj5uyTfDD6ay1tW338X7lVF1UHs++jMh3PMbixlx+tPzohY16Avu9heRg/KOlE
-         2kGnR9JmWfzmJiesLTAev6cpzkJxsIAIzJVNT6FPSJjat+aS3yBpZI9iZYQm0hKZQ21E
-         k7Y8rcGcgUfYTLRyHOmhGXstqnASVsLBw36TkdeMFlj+dwg5JPgoiFuv8mRcdGwnyTpf
-         YtnUS/DDProywPTKQC8iDpMLPNjADM53kDh+ZXOnIs4iiSzAOj/HE+stKJgL1HhairCv
-         gvDcOsmY657FFF8Ak8PLI9sSyBG/WVdT4/2ROP7+KiPo9TeqGa8NCX3fgJDAIW4LMj7S
-         y+og==
-X-Gm-Message-State: AOAM533QzOOdm3S163wmZHPe6NJmpk2mfKRf6AQY4kPy1XhFSd2bl5NR
-        ud4DPuSFwUgQqclfpLZqWf4=
-X-Google-Smtp-Source: ABdhPJxKRe0WUN8BkhUZ39TUrDpXpcsN9G+/in5Ra7Wv4QHpBOniAr2ZNMtMVeCDZoAQemmMYHvGDw==
-X-Received: by 2002:a05:620a:88e:: with SMTP id b14mr1992029qka.195.1606173733142;
-        Mon, 23 Nov 2020 15:22:13 -0800 (PST)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id z73sm7208464qkb.112.2020.11.23.15.22.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 15:22:12 -0800 (PST)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 23 Nov 2020 18:22:10 -0500
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>
-Subject: Re: [PATCH v2 3/4] Kbuild: make DWARF version a choice
-Message-ID: <20201123232210.GA208735@rani.riverdale.lan>
-References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
- <20201104005343.4192504-1-ndesaulniers@google.com>
- <20201104005343.4192504-4-ndesaulniers@google.com>
+        id S1726811AbgKWXZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 18:25:21 -0500
+Received: from ozlabs.org ([203.11.71.1]:35003 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726781AbgKWXZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 18:25:19 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cg3Cw1Vnfz9sSs;
+        Tue, 24 Nov 2020 10:25:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606173916;
+        bh=U0b4WFh9tzIMKyMK25/hRq6XCQdlyVDVgYC507y3xPw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gQHBLv0dG3DYsw7XxirEi1lR6MFTsUytyk079pQ7ZzlkxY/5VDaqwurx/6415i5hJ
+         rLzZF3nu1GneZrE4eZFYG3x38nTTNYEDF84jUC/ryT/KpqSos+cVKIc2fUtQOMW/hw
+         Qr6MeZDFLeqiXQgk/AYjQe58wqUZJ5/WkCwEfLsUPtsmIWX22zwZPJiVgEBblV8yrz
+         YeqRe+U04oAW1OJ6Y8MmH+GdSKsj/sy/vfiqCmr8fOO88dOsL7T1DFOrd8dmqWOgyX
+         ThqXkX5VJQcVvuRz8vLd4J12NRyZoOE+sFda9DspfcTXgcEE0LzTqBq5KiLAFKj5jq
+         +oEa4HEQZbkUQ==
+Date:   Tue, 24 Nov 2020 10:25:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: linux-next: manual merge of the s390 tree with the asm-generic tree
+Message-ID: <20201124102514.0bea1349@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201104005343.4192504-4-ndesaulniers@google.com>
+Content-Type: multipart/signed; boundary="Sig_/j26pNq_K4+qMt.pBWQUb7rc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 04:53:42PM -0800, Nick Desaulniers wrote:
-> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
-> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
-> way that's forward compatible with existing configs, and makes adding
-> future versions more straightforward.
-> 
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  Makefile          | 14 ++++++++------
->  lib/Kconfig.debug | 19 +++++++++++++++----
->  2 files changed, 23 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 75b1a3dcbf30..e23786a4c1c7 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -826,12 +826,14 @@ else
->  DEBUG_CFLAGS	+= -g
->  endif
->  
-> -ifndef LLVM_IAS
-> -KBUILD_AFLAGS	+= -Wa,-gdwarf-2
-> -endif
-> -
-> -ifdef CONFIG_DEBUG_INFO_DWARF4
-> -DEBUG_CFLAGS	+= -gdwarf-4
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
-> +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
-> +# Binutils 2.35+ required for -gdwarf-4+ support.
-> +dwarf-aflag	:= $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
-> +DEBUG_CFLAGS	+= $(dwarf-aflag)
-> +KBUILD_AFLAGS	+= $(dwarf-aflag)
->  endif
->  
+--Sig_/j26pNq_K4+qMt.pBWQUb7rc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-For LLVM_IAS=1, adding dwarf-aflag to DEBUG_CFLAGS should not be
-necessary, no? This seems to add it for dwarf-4.
+Hi all,
 
-The as-option check will only work on binutils 2.35.1 onwards: earlier
-versions will silently accept any -gdwarf-N option. Do we care? I think
-it'll just get dwarf-2 for assembly files even though dwarf-4 might have
-been configured. The earlier versions only error if the double-hyphen
-form --gdwarf-N is used.
+FIXME: Add owner of second tree to To:
+       Add author(s)/SOB of conflicting commits.
 
-More generally, do we want to force this option via -Wa or should we
-leave it up to the compiler driver when we can? For both Clang/IAS and
-gcc/binutils, passing -gdwarf-N in KBUILD_AFLAGS will allow the compiler
-to pass on the appropriate option to the assembler (with gcc you only
-get --gdwarf-2 for the assembler except on trunk though). The only case
-that would absolutely require -Wa is Clang without IAS, might be worth
-adding the ability to pass on the flag to the external assembler?
+Today's linux-next merge of the s390 tree got a conflict in:
 
-Btw, is -gsplit-dwarf at all useful for assembler files?
+  arch/s390/include/asm/mmu_context.h
+
+between commit:
+
+  93e2dfd39438 ("s390: use asm-generic/mmu_context.h for no-op implementati=
+ons")
+
+from the asm-generic tree and commits:
+
+  ab177c5d00cd ("s390/mm: remove unused clear_user_asce()")
+  87d598634521 ("s390/mm: remove set_fs / rework address space handling")
+
+from the s390 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/s390/include/asm/mmu_context.h
+index 66f9cf0a07e3,87a84fc59fc3..000000000000
+--- a/arch/s390/include/asm/mmu_context.h
++++ b/arch/s390/include/asm/mmu_context.h
+@@@ -70,23 -69,8 +70,6 @@@ static inline int init_new_context(stru
+  	return 0;
+  }
+ =20
+- static inline void set_user_asce(struct mm_struct *mm)
+- {
+- 	S390_lowcore.user_asce =3D mm->context.asce;
+- 	__ctl_load(S390_lowcore.user_asce, 1, 1);
+- 	clear_cpu_flag(CIF_ASCE_PRIMARY);
+- }
+-=20
+- static inline void clear_user_asce(void)
+- {
+- 	S390_lowcore.user_asce =3D S390_lowcore.kernel_asce;
+- 	__ctl_load(S390_lowcore.kernel_asce, 1, 1);
+- 	set_cpu_flag(CIF_ASCE_PRIMARY);
+- }
+-=20
+- mm_segment_t enable_sacf_uaccess(void);
+- void disable_sacf_uaccess(mm_segment_t old_fs);
+ -#define destroy_context(mm)             do { } while (0)
+--
+  static inline void switch_mm(struct mm_struct *prev, struct mm_struct *ne=
+xt,
+  			     struct task_struct *tsk)
+  {
+@@@ -121,18 -98,18 +97,18 @@@ static inline void finish_arch_post_loc
+  		__tlb_flush_mm_lazy(mm);
+  		preempt_enable();
+  	}
+- 	set_fs(current->thread.mm_segment);
++ 	__ctl_load(S390_lowcore.user_asce, 7, 7);
+  }
+ =20
+ -#define enter_lazy_tlb(mm,tsk)	do { } while (0)
+ -#define deactivate_mm(tsk,mm)	do { } while (0)
+ -
+ +#define activate_mm activate_mm
+  static inline void activate_mm(struct mm_struct *prev,
+                                 struct mm_struct *next)
+  {
+  	switch_mm(prev, next, current);
+  	cpumask_set_cpu(smp_processor_id(), mm_cpumask(next));
+- 	set_user_asce(next);
++ 	__ctl_load(S390_lowcore.user_asce, 7, 7);
+  }
+ =20
+ +#include <asm-generic/mmu_context.h>
+ +
+  #endif /* __S390_MMU_CONTEXT_H */
+
+--Sig_/j26pNq_K4+qMt.pBWQUb7rc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+8RNoACgkQAVBC80lX
+0GwDMgf/fxU6cyadfi2N0vsOLrSvBOpdjDa7jMDL+DlPEvLfxP5BN6T4QkcaAO77
+tvx5y8PowVdvdgA0Fh7LZlclXc67j0tWhRLUgm7PSC+4iTUyA2t9KcUNukefMmnb
+lgD5rDgMfGORiG34oQuJ0MP6vsR7+w8kmTClHmWdAJ0XVuZiaYqXZdQyHA8nyGmy
+GUPWES5SlQ5TqJ+CfPPzQqm4IAArFRPtNSSlNOMY6/PTfVPiruq2xR66Ntu8vLpK
+pzLoBPJ+L0R7R9yx7YKCJbWj2Le4MiOCYa8baUZX2GcbgfAQzLF07cGf//+yJXZS
+cRoQ1gxud1IgPqNzW0YBKoyFiaCKrw==
+=cvHF
+-----END PGP SIGNATURE-----
+
+--Sig_/j26pNq_K4+qMt.pBWQUb7rc--
