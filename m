@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907F42C07C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339602C07C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733140AbgKWMnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:43:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
+        id S1733188AbgKWMoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:44:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732615AbgKWMmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:42:46 -0500
+        id S1733010AbgKWMnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:43:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 014D82065E;
-        Mon, 23 Nov 2020 12:42:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49D8C208FE;
+        Mon, 23 Nov 2020 12:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135366;
-        bh=piycNsy03/J1vQ/1MjXj/IOfzvJMe0WhR0ID5DYkAEM=;
+        s=korg; t=1606135385;
+        bh=0Afm/hazu4H8kER2bdocDreFZSyhKFRbDTBuhtrpynE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ch6VkwWXu/JzHd5GKj4Vglpv10eas1sbm6ePug377QzosZw2w30+Wah6HikL+/Fo8
-         4bWSQUx7RWVLUgL4xIeJgtjYfBeOnGN0X3UdFoeGYuwPSltOr7LXU82j7vP491rVyd
-         YJU7QbAQzdsJDaef2jvHl9yUWvppjFjYSA+gdkIQ=
+        b=Xf0LmW49PqL70ZAnPuqZKl4WtpM9+zoVmxzie8Y2VvtQnD9J5B4GNkm/SnDS2MUK9
+         qiv1SMdx2E6QiI8Ylw8Dz4WNX/1CBCzaWCxpGRaO/sfJ0ju5cuhn80Q6MibUpQ0k1R
+         dhiPEPVqOopjGOPhfHu2sAfa72pkYIlzASS3193g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Waldekranz <tobias@waldekranz.com>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 015/252] net: dsa: mv88e6xxx: Avoid VTU corruption on 6097
-Date:   Mon, 23 Nov 2020 13:19:25 +0100
-Message-Id: <20201123121836.327753098@linuxfoundation.org>
+Subject: [PATCH 5.9 019/252] net: ethernet: ti: cpsw: fix cpts irq after suspend
+Date:   Mon, 23 Nov 2020 13:19:29 +0100
+Message-Id: <20201123121836.521892556@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -42,140 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tobias Waldekranz <tobias@waldekranz.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit 92307069a96c07d9b6e74b96b79390e7cd7d2111 ]
+[ Upstream commit 2b5668733050fca85f0ab458c5b91732f9496a38 ]
 
-As soon as you add the second port to a VLAN, all other port
-membership configuration is overwritten with zeroes. The HW interprets
-this as all ports being "unmodified members" of the VLAN.
+Depending on the SoC/platform the CPSW can completely lose context after a
+suspend/resume cycle, including CPSW wrapper (WR) which will cause reset of
+WR_C0_MISC_EN register, so CPTS IRQ will became disabled.
 
-In the simple case when all ports belong to the same VLAN, switching
-will still work. But using multiple VLANs or trying to set multiple
-ports as tagged members will not work.
+Fix it by moving CPTS IRQ enabling in cpsw_ndo_open() where CPTS is
+actually started.
 
-On the 6352, doing a VTU GetNext op, followed by an STU GetNext op
-will leave you with both the member- and state- data in the VTU/STU
-data registers. But on the 6097 (which uses the same implementation),
-the STU GetNext will override the information gathered from the VTU
-GetNext.
-
-Separate the two stages, parsing the result of the VTU GetNext before
-doing the STU GetNext.
-
-We opt to update the existing implementation for all applicable chips,
-as opposed to creating a separate callback for 6097, because although
-the previous implementation did work for (at least) 6352, the
-datasheet does not mention the masking behavior.
-
-Fixes: ef6fcea37f01 ("net: dsa: mv88e6xxx: get STU entry on VTU GetNext")
-Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
-Link: https://lore.kernel.org/r/20201112114335.27371-1-tobias@waldekranz.com
+Fixes: 84ea9c0a95d7 ("net: ethernet: ti: cpsw: enable cpts irq")
+Reported-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Tested-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20201112111546.20343-1-grygorii.strashko@ti.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mv88e6xxx/global1_vtu.c |   59 ++++++++++++++++++++++++++------
- 1 file changed, 49 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/ti/cpsw.c     |   10 ++++++----
+ drivers/net/ethernet/ti/cpsw_new.c |    9 ++++++---
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
---- a/drivers/net/dsa/mv88e6xxx/global1_vtu.c
-+++ b/drivers/net/dsa/mv88e6xxx/global1_vtu.c
-@@ -125,11 +125,9 @@ static int mv88e6xxx_g1_vtu_vid_write(st
-  * Offset 0x08: VTU/STU Data Register 2
-  * Offset 0x09: VTU/STU Data Register 3
-  */
+--- a/drivers/net/ethernet/ti/cpsw.c
++++ b/drivers/net/ethernet/ti/cpsw.c
+@@ -838,9 +838,12 @@ static int cpsw_ndo_open(struct net_devi
+ 		if (ret < 0)
+ 			goto err_cleanup;
+ 
+-		if (cpts_register(cpsw->cpts))
+-			dev_err(priv->dev, "error registering cpts device\n");
 -
--static int mv88e6185_g1_vtu_data_read(struct mv88e6xxx_chip *chip,
--				      struct mv88e6xxx_vtu_entry *entry)
-+static int mv88e6185_g1_vtu_stu_data_read(struct mv88e6xxx_chip *chip,
-+					  u16 *regs)
- {
--	u16 regs[3];
- 	int i;
- 
- 	/* Read all 3 VTU/STU Data registers */
-@@ -142,12 +140,45 @@ static int mv88e6185_g1_vtu_data_read(st
- 			return err;
++		if (cpsw->cpts) {
++			if (cpts_register(cpsw->cpts))
++				dev_err(priv->dev, "error registering cpts device\n");
++			else
++				writel(0x10, &cpsw->wr_regs->misc_en);
++		}
  	}
  
--	/* Extract MemberTag and PortState data */
-+	return 0;
-+}
-+
-+static int mv88e6185_g1_vtu_data_read(struct mv88e6xxx_chip *chip,
-+				      struct mv88e6xxx_vtu_entry *entry)
-+{
-+	u16 regs[3];
-+	int err;
-+	int i;
-+
-+	err = mv88e6185_g1_vtu_stu_data_read(chip, regs);
-+	if (err)
-+		return err;
-+
-+	/* Extract MemberTag data */
- 	for (i = 0; i < mv88e6xxx_num_ports(chip); ++i) {
- 		unsigned int member_offset = (i % 4) * 4;
--		unsigned int state_offset = member_offset + 2;
+ 	cpsw_restore(priv);
+@@ -1722,7 +1725,6 @@ static int cpsw_probe(struct platform_de
  
- 		entry->member[i] = (regs[i / 4] >> member_offset) & 0x3;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mv88e6185_g1_stu_data_read(struct mv88e6xxx_chip *chip,
-+				      struct mv88e6xxx_vtu_entry *entry)
-+{
-+	u16 regs[3];
-+	int err;
-+	int i;
-+
-+	err = mv88e6185_g1_vtu_stu_data_read(chip, regs);
-+	if (err)
-+		return err;
-+
-+	/* Extract PortState data */
-+	for (i = 0; i < mv88e6xxx_num_ports(chip); ++i) {
-+		unsigned int state_offset = (i % 4) * 4 + 2;
-+
- 		entry->state[i] = (regs[i / 4] >> state_offset) & 0x3;
- 	}
+ 	/* Enable misc CPTS evnt_pend IRQ */
+ 	cpts_set_irqpoll(cpsw->cpts, false);
+-	writel(0x10, &cpsw->wr_regs->misc_en);
  
-@@ -349,6 +380,10 @@ int mv88e6185_g1_vtu_getnext(struct mv88
- 		if (err)
- 			return err;
+ skip_cpts:
+ 	cpsw_notice(priv, probe,
+--- a/drivers/net/ethernet/ti/cpsw_new.c
++++ b/drivers/net/ethernet/ti/cpsw_new.c
+@@ -873,8 +873,12 @@ static int cpsw_ndo_open(struct net_devi
+ 		if (ret < 0)
+ 			goto err_cleanup;
  
-+		err = mv88e6185_g1_stu_data_read(chip, entry);
-+		if (err)
-+			return err;
-+
- 		/* VTU DBNum[3:0] are located in VTU Operation 3:0
- 		 * VTU DBNum[7:4] are located in VTU Operation 11:8
- 		 */
-@@ -374,16 +409,20 @@ int mv88e6352_g1_vtu_getnext(struct mv88
- 		return err;
+-		if (cpts_register(cpsw->cpts))
+-			dev_err(priv->dev, "error registering cpts device\n");
++		if (cpsw->cpts) {
++			if (cpts_register(cpsw->cpts))
++				dev_err(priv->dev, "error registering cpts device\n");
++			else
++				writel(0x10, &cpsw->wr_regs->misc_en);
++		}
  
- 	if (entry->valid) {
--		/* Fetch (and mask) VLAN PortState data from the STU */
--		err = mv88e6xxx_g1_vtu_stu_get(chip, entry);
-+		err = mv88e6185_g1_vtu_data_read(chip, entry);
- 		if (err)
- 			return err;
+ 		napi_enable(&cpsw->napi_rx);
+ 		napi_enable(&cpsw->napi_tx);
+@@ -2009,7 +2013,6 @@ static int cpsw_probe(struct platform_de
  
--		err = mv88e6185_g1_vtu_data_read(chip, entry);
-+		err = mv88e6xxx_g1_vtu_fid_read(chip, entry);
- 		if (err)
- 			return err;
+ 	/* Enable misc CPTS evnt_pend IRQ */
+ 	cpts_set_irqpoll(cpsw->cpts, false);
+-	writel(0x10, &cpsw->wr_regs->misc_en);
  
--		err = mv88e6xxx_g1_vtu_fid_read(chip, entry);
-+		/* Fetch VLAN PortState data from the STU */
-+		err = mv88e6xxx_g1_vtu_stu_get(chip, entry);
-+		if (err)
-+			return err;
-+
-+		err = mv88e6185_g1_stu_data_read(chip, entry);
- 		if (err)
- 			return err;
- 	}
+ skip_cpts:
+ 	ret = cpsw_register_notifiers(cpsw);
 
 
