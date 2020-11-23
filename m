@@ -2,95 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18BC2C0DAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1652C0DC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388931AbgKWO3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:29:47 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:54172 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730778AbgKWO3r (ORCPT
+        id S1732524AbgKWOfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:35:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731659AbgKWOfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:29:47 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ANEQJWN022746;
-        Mon, 23 Nov 2020 09:29:43 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34y0p850k3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 09:29:43 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0ANETfVB064133
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 23 Nov 2020 09:29:42 -0500
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 23 Nov
- 2020 06:29:40 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 23 Nov 2020 06:29:40 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0ANETbuu024011;
-        Mon, 23 Nov 2020 09:29:37 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>
-CC:     <mst@redhat.com>, <gregkh@linuxfoundation.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2] uio/uio_pci_generic: remove unneeded pci_set_drvdata()
-Date:   Mon, 23 Nov 2020 16:34:47 +0200
-Message-ID: <20201123143447.16829-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119145906.73727-1-alexandru.ardelean@analog.com>
-References: <20201119145906.73727-1-alexandru.ardelean@analog.com>
+        Mon, 23 Nov 2020 09:35:18 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF51FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:35:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JFfSpaqviRXMwocNwPI/bu7hyPZymrOYOob1Afcmx/U=; b=NzO4WjWCaDe2zsvLXIKRN7sAMM
+        hERH+w7z0KCYeVzziESKFLHsiCeENJZEXnQwC6XiinZzXF1S2CONxpfpPeO8TGg1VvuD6C6rohlhx
+        vs7Ay0H6xtNxsR9T6vyPSpcRlhTiOfwuBCgZfrtzrVaUd9vX8QiEo+o1SNl2Ya/mLlW0fpL5IzLb0
+        jfdhNnDMhvOnCGtBFA7pGg0uqTPum98/SGMWIo1D/5AiF7OppKINxvn6JKu//uHVdTa7DSk0q7UQ0
+        AGX1Y2IgrBUTNLMOTJUNUGXtcycEuWkBu6mZhsMLIb7ko4+T2NPtsuIKO1tdcr5803m8vE/+gKhAj
+        JmhZjjvA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khCvw-0008Qw-8W; Mon, 23 Nov 2020 14:35:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD260306E56;
+        Mon, 23 Nov 2020 15:35:10 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C7C30202A3CEC; Mon, 23 Nov 2020 15:35:10 +0100 (CET)
+Date:   Mon, 23 Nov 2020 15:35:10 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, svens@linux.ibm.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] intel_idle: Fix intel_idle() vs tracing
+Message-ID: <20201123143510.GR3021@hirez.programming.kicks-ass.net>
+References: <20201120114145.197714127@infradead.org>
+ <20201120114925.652731270@infradead.org>
+ <CAJZ5v0hhSO36-m-otWp0vqWNNZFiDWPX-xxK-ninRr2d==QOWA@mail.gmail.com>
+ <20201123134618.GL3021@hirez.programming.kicks-ass.net>
+ <CAJZ5v0invgyZ50AHZmbOBYkgvM2uAqqE+t_mvD=ZCxac_gAtUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-23_11:2020-11-23,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1011 priorityscore=1501 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
- mlxlogscore=953 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011230099
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0invgyZ50AHZmbOBYkgvM2uAqqE+t_mvD=ZCxac_gAtUQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pci_get_drvdata() was moved during commit ef84928cff58
-("uio/uio_pci_generic: use device-managed function equivalents").
+On Mon, Nov 23, 2020 at 02:54:47PM +0100, Rafael J. Wysocki wrote:
 
-Storing a private object with pci_set_drvdata() doesn't make sense
-since that change, since there is no more pci_get_drvdata() call in the
-driver to retrieve the information.
+> intel_idle_init_cstates_acpi() needs to be updated too as it doesn't
+> pick up the flags automatically.
 
-This change removes it.
+Ooh, it has two different state init routines :-/, sorry I missed that.
+See below.
 
-Fixes: ef84928cff58 ("io/uio_pci_generic: use device-managed function equivalents")
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> It looks like CPUIDLE_FLAG_RCU_IDLE needs to be copied too.
+
+I might need more clue again; processor_idle() needs this because it
+calls into ACPI (acpi_idle_enter_bm()) for that BM crud. I didn't find
+anything like that here.
+
+
 ---
- drivers/uio/uio_pci_generic.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+Subject: intel_idle: Fix intel_idle() vs tracing
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Fri Nov 20 11:28:35 CET 2020
 
-diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.c
-index 1c6c09e1280d..b8e44d16279f 100644
---- a/drivers/uio/uio_pci_generic.c
-+++ b/drivers/uio/uio_pci_generic.c
-@@ -101,13 +101,7 @@ static int probe(struct pci_dev *pdev,
- 			 "no support for interrupts?\n");
- 	}
+cpuidle->enter() callbacks should not call into tracing because RCU
+has already been disabled. Instead of doing the broadcast thing
+itself, simply advertise to the cpuidle core that those states stop
+the timer.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ drivers/idle/intel_idle.c |   40 +++++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 17 deletions(-)
+
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -126,26 +126,9 @@ static __cpuidle int intel_idle(struct c
+ 	struct cpuidle_state *state = &drv->states[index];
+ 	unsigned long eax = flg2MWAIT(state->flags);
+ 	unsigned long ecx = 1; /* break on interrupt flag */
+-	bool tick;
+-
+-	if (!static_cpu_has(X86_FEATURE_ARAT)) {
+-		/*
+-		 * Switch over to one-shot tick broadcast if the target C-state
+-		 * is deeper than C1.
+-		 */
+-		if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK) {
+-			tick = true;
+-			tick_broadcast_enter();
+-		} else {
+-			tick = false;
+-		}
+-	}
  
--	err = devm_uio_register_device(&pdev->dev, &gdev->info);
--	if (err)
--		return err;
+ 	mwait_idle_with_hints(eax, ecx);
+ 
+-	if (!static_cpu_has(X86_FEATURE_ARAT) && tick)
+-		tick_broadcast_exit();
 -
--	pci_set_drvdata(pdev, gdev);
--
--	return 0;
-+	return devm_uio_register_device(&pdev->dev, &gdev->info);
+ 	return index;
  }
  
- static struct pci_driver uio_pci_driver = {
--- 
-2.17.1
-
+@@ -1227,6 +1210,23 @@ static bool __init intel_idle_acpi_cst_e
+ 	return false;
+ }
+ 
++static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
++{
++	unsigned long eax = flg2MWAIT(state->flags);
++
++	if (boot_cpu_has(X86_FEATURE_ARAT))
++		return false;
++
++	/*
++	 * Switch over to one-shot tick broadcast if the target C-state
++	 * is deeper than C1.
++	 */
++	if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK)
++		return true;
++
++	return false;
++}
++
+ static void __init intel_idle_init_cstates_acpi(struct cpuidle_driver *drv)
+ {
+ 	int cstate, limit = min_t(int, CPUIDLE_STATE_MAX, acpi_state_table.count);
+@@ -1269,6 +1269,9 @@ static void __init intel_idle_init_cstat
+ 		if (disabled_states_mask & BIT(cstate))
+ 			state->flags |= CPUIDLE_FLAG_OFF;
+ 
++		if (intel_idle_state_needs_timer_stop(state))
++			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
++
+ 		state->enter = intel_idle;
+ 		state->enter_s2idle = intel_idle_s2idle;
+ 	}
+@@ -1507,6 +1510,9 @@ static void __init intel_idle_init_cstat
+ 		     !(cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_ALWAYS_ENABLE)))
+ 			drv->states[drv->state_count].flags |= CPUIDLE_FLAG_OFF;
+ 
++		if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
++			drv->states[drv->state_count].flags |= CPUIDLE_FLAG_TIMER_STOP;
++
+ 		drv->state_count++;
+ 	}
+ 
