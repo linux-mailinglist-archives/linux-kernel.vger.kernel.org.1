@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57392C0DA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30662C0DAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388922AbgKWO1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388915AbgKWO1x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:27:53 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CEFC0613CF;
-        Mon, 23 Nov 2020 06:27:53 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0bbc0057986d054fc332b4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:bc00:5798:6d05:4fc3:32b4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388942AbgKWOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:30:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730138AbgKWOaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:30:00 -0500
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C848F1EC0489;
-        Mon, 23 Nov 2020 15:27:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606141671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=YVlMkzHFiusX04YsfOyqGo4uwcFrGk13RNaV6hMxiVY=;
-        b=IbGNT6Z75IQwf/JbHcLWZ7w/bK5OJCWv9Ab0+boxbhWEf1Q+Ec/CPC6eWqOr745J7SLTRn
-        7Ac8hG8Ni3z/FmiHrk5+6i01xwnNhHgIooe//M/ixS7An08Vz13gABUMKgv9BCvGoAfWvY
-        P4+8fJtpQgmH+FJFKEDzDsEHHHP02/o=
-Date:   Mon, 23 Nov 2020 15:27:46 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Gabriele Paoloni <gabriele.paoloni@intel.com>
-Cc:     tony.luck@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        x86@kernel.org, hpa@zytor.com, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH 2/4] x86/mce: move the mce_panic() call and kill_it
- assignments at the right places
-Message-ID: <20201123142746.GC15044@zn.tnic>
-References: <20201118151552.1412-1-gabriele.paoloni@intel.com>
- <20201118151552.1412-3-gabriele.paoloni@intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id CA71520781
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 14:29:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606141799;
+        bh=0PG9sY/7kjLC2BEUJJD7uXQqxRjzgGOvNgsyi7FCsBU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hbbz43XKlcQvVplsZFIcT5hsKkYI9fWwgORdTxxV+osw6Lxxzw5u+ktlCJ8wjrK2/
+         Z5zSxlmHaMmWfbqFe+HZSIXBuGT6FUYg6EYpEmx2ut11nzTVKI1ETPw6z/uCleGzLo
+         zyZk80qz1TpskOwQ8hsOulxq6GA8K//3cFqNdlWw=
+Received: by mail-ed1-f51.google.com with SMTP id q3so17254711edr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:29:58 -0800 (PST)
+X-Gm-Message-State: AOAM5339mdJrgWIIMTsH16QXPuDiVjQEmadvnEq/ZS31FX4qpNU3CAb1
+        MxGq8QrVQ5JecBw92SEr+nvIAEOrJ/a6iJWukA==
+X-Google-Smtp-Source: ABdhPJwHSc8rFuh9ehjBm9YKuZooHOGW+0h0xXZqHkKhXMPDEqgmgVdpEM6Eg0UZfQjSb1pTx0AQWx+IJMvN12Wrf+Q=
+X-Received: by 2002:a50:f1d2:: with SMTP id y18mr13451389edl.166.1606141797356;
+ Mon, 23 Nov 2020 06:29:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201118151552.1412-3-gabriele.paoloni@intel.com>
+References: <20201112190039.2785914-1-lee.jones@linaro.org> <20201112190039.2785914-31-lee.jones@linaro.org>
+In-Reply-To: <20201112190039.2785914-31-lee.jones@linaro.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 23 Nov 2020 22:29:45 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-hTb_yur9QVynKggdY69-E2vJ2-qj3i7+LPzsBJkdy1g@mail.gmail.com>
+Message-ID: <CAAOTY_-hTb_yur9QVynKggdY69-E2vJ2-qj3i7+LPzsBJkdy1g@mail.gmail.com>
+Subject: Re: [PATCH 30/30] drm/mediatek/mtk_disp_ovl: Fix formatting and
+ provide missing member description
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:15:50PM +0000, Gabriele Paoloni wrote:
-> Right now for local MCEs we panic(),if needed, right after lmce is
-> set. For global MCEs mce_reign() takes care of calling mce_panic().
-> Hence this patch:
-> - improves readibility by moving the conditional evaluation of
-> tolerant up to when kill_it is set first
-> - moves the mce_panic() call up into the statement where mce_end()
-> fails
+Hi, Lee:
 
-Pls avoid using "this patch does this and that" in the commit message
-but say directly what it does:
+Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8813=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=883:01=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c:75: warning: Function parameter =
+or member 'ddp_comp' not described in 'mtk_disp_ovl'
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c:75: warning: Function parameter =
+or member 'crtc' not described in 'mtk_disp_ovl'
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c:75: warning: Function parameter =
+or member 'data' not described in 'mtk_disp_ovl'
 
-- Improve readability ...
+Applied to mediatek-drm-next [1], thanks.
 
-- Move mce_panic()...
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
-and so on.
+Regards,
+Chun-Kuang.
 
-> Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
+>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mediatek@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  arch/x86/kernel/cpu/mce/core.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index b990892c6766..e025ff04438f 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -1350,8 +1350,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
->  	 * severity is MCE_AR_SEVERITY we have other options.
->  	 */
->  	if (!(m.mcgstatus & MCG_STATUS_RIPV))
-> -		kill_it = 1;
-> -
-> +		kill_it = (cfg->tolerant == 3) ? 0 : 1;
-
-So you just set kill_it using cfg->tolerant...
-
->  	/*
->  	 * Check if this MCE is signaled to only this logical processor,
->  	 * on Intel, Zhaoxin only.
-> @@ -1384,8 +1383,15 @@ noinstr void do_machine_check(struct pt_regs *regs)
->  	 * When there's any problem use only local no_way_out state.
->  	 */
->  	if (!lmce) {
-> -		if (mce_end(order) < 0)
-> +		if (mce_end(order) < 0) {
->  			no_way_out = no_way_out ? no_way_out : worst >= MCE_PANIC_SEVERITY;
-> +			/*
-> +			 * mce_reign() has probably failed hence evaluate if we need
-> +			 * to panic
-> +			 */
-> +			if (no_way_out && mca_cfg.tolerant < 3)
-
-... but here you're testing cfg->tolerant again.
-
-why not
-
-			if (no_way_out && kill_it)
-
-?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/me=
+diatek/mtk_disp_ovl.c
+> index 28651bc579bc9..74ef6fc0528b6 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> @@ -65,8 +65,9 @@ struct mtk_disp_ovl_data {
+>
+>  /**
+>   * struct mtk_disp_ovl - DISP_OVL driver structure
+> - * @ddp_comp - structure containing type enum and hardware resources
+> - * @crtc - associated crtc to report vblank events to
+> + * @ddp_comp: structure containing type enum and hardware resources
+> + * @crtc: associated crtc to report vblank events to
+> + * @data: platform data
+>   */
+>  struct mtk_disp_ovl {
+>         struct mtk_ddp_comp             ddp_comp;
+> --
+> 2.25.1
+>
