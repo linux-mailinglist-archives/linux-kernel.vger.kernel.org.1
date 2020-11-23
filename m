@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618582C15E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4EAA2C15EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731380AbgKWUJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        id S1731459AbgKWUJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:09:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731309AbgKWUJ1 (ORCPT
+        with ESMTP id S1731324AbgKWUJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:09:27 -0500
+        Mon, 23 Nov 2020 15:09:29 -0500
 Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C2BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:26 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id u123so102521wmu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ABFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:29 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id e15so103452wme.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:09:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=8e63GTlhB9QbGsFBUU3MJ45Yhzqtwy6A04ZDFy/2ryA=;
-        b=hROpr06Af2azW5P0KOMBzJJzAAugwdrKuBphF0Q1s38CbOsluQKYZ69oDwLyH8bvS7
-         Uu49Xj2MQkN9fNDS9NcJ3oTUbBFlaPWTSu+Tx9rP+OyR8PF/tbPgRPSMVDbULAFClvWB
-         BYqQ72HANksQEMCYxsfZBvyVAxPgAuDuM1MHPsOV3sOicUvgHZAtfBi4qHKJg2iEczyl
-         xUw1aR3s2iaFPdiydOxpcNMwl/zs/yiMKZ9865JCmHz62yajS0xUdlI6C2B8T/Gqses7
-         a8xtOxLkBgttbusikCtfgASm6pL9oPtEjOC/QVO6+hOysuwAktSN7QrNK318M48IjzQs
-         qxYw==
+        bh=utlsD1mw0rorOhWh+9V4hpftFWJXg/4VW/2wSqx9Lr0=;
+        b=QghR/2kE9NUz+UPTow/wMUK0um+zciJOn8LYNh3m83vv2prNKjgOeCPk4o4OzDFfUk
+         CDPF0kEnLqcTUfY37m+bkl3Ny3288a3tiAdC2F7W06efThDosRzBdZz+pDjVem5ZuSlR
+         rNn1C6/CJZMBawDF1MijFLVam73dmNA76LXTZ2mIU3OnYtNLgumIatnfm8RqCCelv0Oa
+         XizxZDb2eZZ3kifWxGXqU0uSdCzIrxzopGomlNemoCq5eGHS1cZOSiKyVc1sa5QO4Unr
+         DUUK1pBv305/WqN+WZlppX+12kYK14wV05lTeq98GH2CAdlGedCLvLc8zUgflk+DNM3I
+         jKkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=8e63GTlhB9QbGsFBUU3MJ45Yhzqtwy6A04ZDFy/2ryA=;
-        b=AKNoqc1/258ukZVwvLzB0rthQ6kzMwrJkJx/nMo+giXV+cKJPzwVax0aeQsKy+Iv8b
-         zLBngb6PUIky1rq166ePaM8OM+A2QFhFw1mp66vWHO2ZsO0hIEw/rZdK48tnEmA7AUir
-         5yoPrqLG/PrWMuURfq4Oo/l21M9+HHbONowWWBky80P6nW69RpsIueIeDdzb7A1QAPih
-         OVprrrGGohf0cn/VkD/uJ3BeQPUzZYVDBhBHsmqsle0oYnTTMyN6ee68Des78OviA5Gz
-         evnltKrO+hXGzkr6gu/roeFwBCJiIi9Ecb9lbW+EC6yECnScDXkF5ZXTUug8CL6M5/6s
-         8XnA==
-X-Gm-Message-State: AOAM5321yFmcus7BuK6ymDYRy3HC25PgFoBvBFyAeJ+SH4Dv1BwNDVG5
-        IRou+mZ+ODm7W/DUZdPXvElSwinEr8FOaKGj
-X-Google-Smtp-Source: ABdhPJx+23yuZaLzkgw5W5iy7I2YfVUY21RAjIgQeF58w7+TG79ouc+OTfbSq4R+OK8ML2DJf7vqrB1A2M3VnTGm
+        bh=utlsD1mw0rorOhWh+9V4hpftFWJXg/4VW/2wSqx9Lr0=;
+        b=c0ZMWk3zaMKOBUp1x/rYsOIMpXWKX03L5c1Hlz5WKr2Qw5msevJ56mEnocHlenYKtX
+         J4HTyP9y4ld3ac65F0xgjlB+G2K9a+s44r/DGEcyyc+SwwOuOX/0T2Wwk0Z32vRiffKM
+         60uD8ybmuvHwajFVbV622AzibGmnJwqck59zd44nwTxijNiVwrqmc5CqbF9oMfNl35i/
+         gG39VVFJ2qgLLpsp/95Y2V5Ik/YVkYrKo7GyiXM7w36vwVwMb2KZQ+GcKRIunBGwWqGM
+         RBREdyN8wpN8zZseWLnjGXEnc7oblbrYSORK29d7B92DE3pZlNhQanWdCAa/0F0D/fF8
+         8z3g==
+X-Gm-Message-State: AOAM5315IgVOAn0Ima3Sm1LzHXehtFRATsKHKkaffO1N2NsZuTYaIeq7
+        kzPrPsInfYXojloV0qhmXNp9Bcyzks26NtJU
+X-Google-Smtp-Source: ABdhPJzgONaFTZU/h3JPqsgZz6R2sgr3ZA9iJYvpwZvYvUFgReYxzWPEWMFsJd+B8VTgu3nwC5HgaPBLZj2SDWUW
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a5d:618c:: with SMTP id
- j12mr1465350wru.182.1606162165477; Mon, 23 Nov 2020 12:09:25 -0800 (PST)
-Date:   Mon, 23 Nov 2020 21:07:49 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a7b:c84a:: with SMTP id
+ c10mr612311wml.44.1606162168044; Mon, 23 Nov 2020 12:09:28 -0800 (PST)
+Date:   Mon, 23 Nov 2020 21:07:50 +0100
 In-Reply-To: <cover.1606161801.git.andreyknvl@google.com>
-Message-Id: <c31bf759b4411b2d98cdd801eb928e241584fd1f.1606161801.git.andreyknvl@google.com>
+Message-Id: <9073d4e973747a6f78d5bdd7ebe17f290d087096.1606161801.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1606161801.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH mm v11 25/42] arm64: mte: Add in-kernel MTE helpers
+Subject: [PATCH mm v11 26/42] arm64: mte: Reset the page tag in page->flags
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -75,273 +75,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Provide helper functions to manipulate allocation and pointer tags for
-kernel addresses.
+The hardware tag-based KASAN for compatibility with the other modes
+stores the tag associated to a page in page->flags.
+Due to this the kernel faults on access when it allocates a page with an
+initial tag and the user changes the tags.
 
-Low-level helper functions (mte_assign_*, written in assembly) operate
-tag values from the [0x0, 0xF] range. High-level helper functions
-(mte_get/set_*) use the [0xF0, 0xFF] range to preserve compatibility
-with normal kernel pointers that have 0xFF in their top byte.
+Reset the tag associated by the kernel to a page in all the meaningful
+places to prevent kernel faults on access.
 
-MTE_GRANULE_SIZE and related definitions are moved to mte-def.h header
-that doesn't have any dependencies and is safe to include into any
-low-level header.
+Note: An alternative to this approach could be to modify page_to_virt().
+This though could end up being racy, in fact if a CPU checks the
+PG_mte_tagged bit and decides that the page is not tagged but another
+CPU maps the same with PROT_MTE and becomes tagged the subsequent kernel
+access would fail.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
-Change-Id: I1b5230254f90dc21a913447cb17f07fea7944ece
+Change-Id: I8451d438bb63364de2a3e68041e3a27866921d4e
 ---
- arch/arm64/include/asm/esr.h       |  1 +
- arch/arm64/include/asm/mte-def.h   | 15 ++++++++
- arch/arm64/include/asm/mte-kasan.h | 56 ++++++++++++++++++++++++++++++
- arch/arm64/include/asm/mte.h       | 20 +++++++----
- arch/arm64/kernel/mte.c            | 48 +++++++++++++++++++++++++
- arch/arm64/lib/mte.S               | 16 +++++++++
- 6 files changed, 150 insertions(+), 6 deletions(-)
- create mode 100644 arch/arm64/include/asm/mte-def.h
- create mode 100644 arch/arm64/include/asm/mte-kasan.h
+ arch/arm64/kernel/hibernate.c | 5 +++++
+ arch/arm64/kernel/mte.c       | 9 +++++++++
+ arch/arm64/mm/copypage.c      | 9 +++++++++
+ arch/arm64/mm/mteswap.c       | 9 +++++++++
+ 4 files changed, 32 insertions(+)
 
-diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
-index 22c81f1edda2..971c20ddfed4 100644
---- a/arch/arm64/include/asm/esr.h
-+++ b/arch/arm64/include/asm/esr.h
-@@ -105,6 +105,7 @@
- #define ESR_ELx_FSC		(0x3F)
- #define ESR_ELx_FSC_TYPE	(0x3C)
- #define ESR_ELx_FSC_EXTABT	(0x10)
-+#define ESR_ELx_FSC_MTE		(0x11)
- #define ESR_ELx_FSC_SERROR	(0x11)
- #define ESR_ELx_FSC_ACCESS	(0x08)
- #define ESR_ELx_FSC_FAULT	(0x04)
-diff --git a/arch/arm64/include/asm/mte-def.h b/arch/arm64/include/asm/mte-def.h
-new file mode 100644
-index 000000000000..8401ac5840c7
---- /dev/null
-+++ b/arch/arm64/include/asm/mte-def.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+#ifndef __ASM_MTE_DEF_H
-+#define __ASM_MTE_DEF_H
-+
-+#define MTE_GRANULE_SIZE	UL(16)
-+#define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
-+#define MTE_TAG_SHIFT		56
-+#define MTE_TAG_SIZE		4
-+#define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
-+#define MTE_TAG_MAX		(MTE_TAG_MASK >> MTE_TAG_SHIFT)
-+
-+#endif /* __ASM_MTE_DEF_H  */
-diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
-new file mode 100644
-index 000000000000..3a70fb1807fd
---- /dev/null
-+++ b/arch/arm64/include/asm/mte-kasan.h
-@@ -0,0 +1,56 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+#ifndef __ASM_MTE_KASAN_H
-+#define __ASM_MTE_KASAN_H
-+
-+#include <asm/mte-def.h>
-+
-+#ifndef __ASSEMBLY__
-+
-+#include <linux/types.h>
-+
-+/*
-+ * The functions below are meant to be used only for the
-+ * KASAN_HW_TAGS interface defined in asm/memory.h.
-+ */
-+#ifdef CONFIG_ARM64_MTE
-+
-+static inline u8 mte_get_ptr_tag(void *ptr)
-+{
-+	/* Note: The format of KASAN tags is 0xF<x> */
-+	u8 tag = 0xF0 | (u8)(((u64)(ptr)) >> MTE_TAG_SHIFT);
-+
-+	return tag;
-+}
-+
-+u8 mte_get_mem_tag(void *addr);
-+u8 mte_get_random_tag(void);
-+void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
-+
-+#else /* CONFIG_ARM64_MTE */
-+
-+static inline u8 mte_get_ptr_tag(void *ptr)
-+{
-+	return 0xFF;
-+}
-+
-+static inline u8 mte_get_mem_tag(void *addr)
-+{
-+	return 0xFF;
-+}
-+static inline u8 mte_get_random_tag(void)
-+{
-+	return 0xFF;
-+}
-+static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-+{
-+	return addr;
-+}
-+
-+#endif /* CONFIG_ARM64_MTE */
-+
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* __ASM_MTE_KASAN_H  */
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index 1c99fcadb58c..cf1cd181dcb2 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -5,14 +5,16 @@
- #ifndef __ASM_MTE_H
- #define __ASM_MTE_H
+diff --git a/arch/arm64/kernel/hibernate.c b/arch/arm64/kernel/hibernate.c
+index 42003774d261..9c9f47e9f7f4 100644
+--- a/arch/arm64/kernel/hibernate.c
++++ b/arch/arm64/kernel/hibernate.c
+@@ -371,6 +371,11 @@ static void swsusp_mte_restore_tags(void)
+ 		unsigned long pfn = xa_state.xa_index;
+ 		struct page *page = pfn_to_online_page(pfn);
  
--#define MTE_GRANULE_SIZE	UL(16)
--#define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
--#define MTE_TAG_SHIFT		56
--#define MTE_TAG_SIZE		4
-+#include <asm/compiler.h>
-+#include <asm/mte-def.h>
-+
-+#define __MTE_PREAMBLE		ARM64_ASM_PREAMBLE ".arch_extension memtag\n"
++		/*
++		 * It is not required to invoke page_kasan_tag_reset(page)
++		 * at this point since the tags stored in page->flags are
++		 * already restored.
++		 */
+ 		mte_restore_page_tags(page_address(page), tags);
  
- #ifndef __ASSEMBLY__
- 
-+#include <linux/bitfield.h>
- #include <linux/page-flags.h>
-+#include <linux/types.h>
- 
- #include <asm/pgtable-types.h>
- 
-@@ -45,7 +47,9 @@ long get_mte_ctrl(struct task_struct *task);
- int mte_ptrace_copy_tags(struct task_struct *child, long request,
- 			 unsigned long addr, unsigned long data);
- 
--#else
-+void mte_assign_mem_tag_range(void *addr, size_t size);
-+
-+#else /* CONFIG_ARM64_MTE */
- 
- /* unused if !CONFIG_ARM64_MTE, silence the compiler */
- #define PG_mte_tagged	0
-@@ -80,7 +84,11 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
- 	return -EIO;
- }
- 
--#endif
-+static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-+{
-+}
-+
-+#endif /* CONFIG_ARM64_MTE */
- 
- #endif /* __ASSEMBLY__ */
- #endif /* __ASM_MTE_H  */
+ 		mte_free_tag_storage(tags);
 diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 52a0638ed967..8f99c65837fd 100644
+index 8f99c65837fd..86d554ce98b6 100644
 --- a/arch/arm64/kernel/mte.c
 +++ b/arch/arm64/kernel/mte.c
-@@ -13,10 +13,13 @@
- #include <linux/swap.h>
- #include <linux/swapops.h>
- #include <linux/thread_info.h>
-+#include <linux/types.h>
- #include <linux/uio.h>
+@@ -34,6 +34,15 @@ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+ 			return;
+ 	}
  
-+#include <asm/barrier.h>
- #include <asm/cpufeature.h>
- #include <asm/mte.h>
-+#include <asm/mte-kasan.h>
- #include <asm/ptrace.h>
- #include <asm/sysreg.h>
- 
-@@ -72,6 +75,51 @@ int memcmp_pages(struct page *page1, struct page *page2)
- 	return ret;
++	page_kasan_tag_reset(page);
++	/*
++	 * We need smp_wmb() in between setting the flags and clearing the
++	 * tags because if another thread reads page->flags and builds a
++	 * tagged address out of it, there is an actual dependency to the
++	 * memory access, but on the current thread we do not guarantee that
++	 * the new page->flags are visible before the tags were updated.
++	 */
++	smp_wmb();
+ 	mte_clear_page_tags(page_address(page));
  }
  
-+u8 mte_get_mem_tag(void *addr)
-+{
-+	if (!system_supports_mte())
-+		return 0xFF;
-+
-+	asm(__MTE_PREAMBLE "ldg %0, [%0]"
-+	    : "+r" (addr));
-+
-+	return mte_get_ptr_tag(addr);
-+}
-+
-+u8 mte_get_random_tag(void)
-+{
-+	void *addr;
-+
-+	if (!system_supports_mte())
-+		return 0xFF;
-+
-+	asm(__MTE_PREAMBLE "irg %0, %0"
-+	    : "+r" (addr));
-+
-+	return mte_get_ptr_tag(addr);
-+}
-+
-+void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-+{
-+	void *ptr = addr;
-+
-+	if ((!system_supports_mte()) || (size == 0))
-+		return addr;
-+
-+	/* Make sure that size is MTE granule aligned. */
-+	WARN_ON(size & (MTE_GRANULE_SIZE - 1));
-+
-+	/* Make sure that the address is MTE granule aligned. */
-+	WARN_ON((u64)addr & (MTE_GRANULE_SIZE - 1));
-+
-+	tag = 0xF0 | tag;
-+	ptr = (void *)__tag_set(ptr, tag);
-+
-+	mte_assign_mem_tag_range(ptr, size);
-+
-+	return ptr;
-+}
-+
- static void update_sctlr_el1_tcf0(u64 tcf0)
- {
- 	/* ISB required for the kernel uaccess routines */
-diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
-index cceed41bba15..e63890292bc1 100644
---- a/arch/arm64/lib/mte.S
-+++ b/arch/arm64/lib/mte.S
-@@ -149,3 +149,19 @@ SYM_FUNC_START(mte_restore_page_tags)
+diff --git a/arch/arm64/mm/copypage.c b/arch/arm64/mm/copypage.c
+index 70a71f38b6a9..b5447e53cd73 100644
+--- a/arch/arm64/mm/copypage.c
++++ b/arch/arm64/mm/copypage.c
+@@ -23,6 +23,15 @@ void copy_highpage(struct page *to, struct page *from)
  
- 	ret
- SYM_FUNC_END(mte_restore_page_tags)
-+
-+/*
-+ * Assign allocation tags for a region of memory based on the pointer tag
-+ *   x0 - source pointer
-+ *   x1 - size
-+ *
-+ * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-+ * size must be non-zero and MTE_GRANULE_SIZE aligned.
-+ */
-+SYM_FUNC_START(mte_assign_mem_tag_range)
-+1:	stg	x0, [x0]
-+	add	x0, x0, #MTE_GRANULE_SIZE
-+	subs	x1, x1, #MTE_GRANULE_SIZE
-+	b.gt	1b
-+	ret
-+SYM_FUNC_END(mte_assign_mem_tag_range)
+ 	if (system_supports_mte() && test_bit(PG_mte_tagged, &from->flags)) {
+ 		set_bit(PG_mte_tagged, &to->flags);
++		page_kasan_tag_reset(to);
++		/*
++		 * We need smp_wmb() in between setting the flags and clearing the
++		 * tags because if another thread reads page->flags and builds a
++		 * tagged address out of it, there is an actual dependency to the
++		 * memory access, but on the current thread we do not guarantee that
++		 * the new page->flags are visible before the tags were updated.
++		 */
++		smp_wmb();
+ 		mte_copy_page_tags(kto, kfrom);
+ 	}
+ }
+diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+index c52c1847079c..7c4ef56265ee 100644
+--- a/arch/arm64/mm/mteswap.c
++++ b/arch/arm64/mm/mteswap.c
+@@ -53,6 +53,15 @@ bool mte_restore_tags(swp_entry_t entry, struct page *page)
+ 	if (!tags)
+ 		return false;
+ 
++	page_kasan_tag_reset(page);
++	/*
++	 * We need smp_wmb() in between setting the flags and clearing the
++	 * tags because if another thread reads page->flags and builds a
++	 * tagged address out of it, there is an actual dependency to the
++	 * memory access, but on the current thread we do not guarantee that
++	 * the new page->flags are visible before the tags were updated.
++	 */
++	smp_wmb();
+ 	mte_restore_page_tags(page_address(page), tags);
+ 
+ 	return true;
 -- 
 2.29.2.454.gaff20da3a2-goog
 
