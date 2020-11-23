@@ -2,142 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A69E2C02E9
+	by mail.lfdr.de (Postfix) with ESMTP id F2FF62C02EA
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgKWKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgKWKEA (ORCPT
+        id S1728175AbgKWKES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:04:18 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:43360 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgKWKES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:04:00 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0AFC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:03:59 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id vm3w2300A4C55Sk01m3wuR; Mon, 23 Nov 2020 11:03:56 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kh8hQ-0054ze-3t
-        for linux-kernel@vger.kernel.org; Mon, 23 Nov 2020 11:03:56 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kh8hP-009T08-I1
-        for linux-kernel@vger.kernel.org; Mon, 23 Nov 2020 11:03:55 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.10-rc5
-Date:   Mon, 23 Nov 2020 11:03:55 +0100
-Message-Id: <20201123100355.2256388-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 23 Nov 2020 05:04:18 -0500
+Received: by mail-io1-f70.google.com with SMTP id q8so5981229ioh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:04:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=lSQK3mAUQqWpSVCyehyklfAWXzREsg2z87s+rsm3dyk=;
+        b=ie4JvEt5HDfj4Vfm8Tyfxu99abTAAlM+pJkwsiUI/0/SMNul7xPDWs4PDRbJbgkGBB
+         9qssViAk5O+PPeQTka4OnXISYSAwMJoh7r8gGvWvSqhtuWJ+KGRvRK3KHc6AX5tzgv6n
+         BmCV20lQqLYIqIPYDwps+8MM68eB9X3eUv02tOkj2re0pNhjLfvD+7iOHXCg9eYskC9v
+         uSGY3wzGKW/ZDN3MQ9FP3qeXdpcILJoS0i+pBpTTVzzmt+27lWWie5rWWrlsHwE4UHOK
+         d8jly5iVd1UJaRqmdpxMczFmVz8iuGfyVJWV3Qk+2xO+NdL+Fi5Xz+jRA/cjFtqoAm+B
+         iyxA==
+X-Gm-Message-State: AOAM532Z6kdFPkIrDKyQn6bsYldnMtH2TwRGpB+bukDSpj1w2DCoufbj
+        kt5YXnCmF/yjHNMtHR3Bglz5GNFTKqk9uJV+AzIlUsqkaDOC
+X-Google-Smtp-Source: ABdhPJyeJkAw0NshxGpN4recZHOtKc3vbHMAB9z3HRor/gZCaX9cDMvqpMIU3b6H+Lgd8NLXLE/k5OHTTv44rHbtvmReVe/a6mkG
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:dd91:: with SMTP id g17mr30459785iln.12.1606125856837;
+ Mon, 23 Nov 2020 02:04:16 -0800 (PST)
+Date:   Mon, 23 Nov 2020 02:04:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002953ba05b4c351f4@google.com>
+Subject: general protection fault in ieee80211_subif_start_xmit
+From:   syzbot <syzbot+d7a3b15976bf7de2238a@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.10-rc5[1] compared to v5.9[2].
+Hello,
 
-Summarized:
-  - build errors: +1/-7
-  - build warnings: +23/-27
+syzbot found the following issue on:
 
-JFYI, when comparing v5.10-rc5[1] to v5.10-rc4[3], the summaries are:
-  - build errors: +0/-1
-  - build warnings: +4/-2
+HEAD commit:    a349e4c6 Merge tag 'xfs-5.10-fixes-7' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1427b225500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=330f3436df12fd44
+dashboard link: https://syzkaller.appspot.com/bug?extid=d7a3b15976bf7de2238a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164652f5500000
 
-Happy fixing! ;-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d7a3b15976bf7de2238a@syzkaller.appspotmail.com
 
-Thanks to the linux-next team for providing the build service.
+general protection fault, probably for non-canonical address 0xdffffc0000000034: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000001a0-0x00000000000001a7]
+CPU: 0 PID: 10156 Comm: syz-executor.4 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ieee80211_multicast_to_unicast net/mac80211/tx.c:4070 [inline]
+RIP: 0010:ieee80211_subif_start_xmit+0x24e/0xee0 net/mac80211/tx.c:4154
+Code: 03 80 3c 02 00 0f 85 83 0c 00 00 49 8b 9f 50 17 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb a4 01 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 58 0c 00 00
+RSP: 0018:ffffc90000007588 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8851c61d
+RDX: 0000000000000034 RSI: ffffffff8851c6ad RDI: 00000000000001a4
+RBP: ffff88801b850280 R08: 0000000000000000 R09: ffffffff8cecb9cf
+R10: 0000000000000004 R11: 0000000000000000 R12: ffffffff8a61f1e0
+R13: ffff888012f07042 R14: 000000000000005a R15: ffff8880284b0000
+FS:  00007f1159678700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000016a9e60 CR3: 000000002ca99000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ __netdev_start_xmit include/linux/netdevice.h:4718 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4732 [inline]
+ xmit_one net/core/dev.c:3564 [inline]
+ dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3580
+ sch_direct_xmit+0x2e1/0xbd0 net/sched/sch_generic.c:313
+ qdisc_restart net/sched/sch_generic.c:376 [inline]
+ __qdisc_run+0x4ba/0x15e0 net/sched/sch_generic.c:384
+ qdisc_run include/net/pkt_sched.h:131 [inline]
+ qdisc_run include/net/pkt_sched.h:123 [inline]
+ __dev_xmit_skb net/core/dev.c:3755 [inline]
+ __dev_queue_xmit+0x1453/0x2da0 net/core/dev.c:4108
+ neigh_hh_output include/net/neighbour.h:499 [inline]
+ neigh_output include/net/neighbour.h:508 [inline]
+ ip6_finish_output2+0x8db/0x16c0 net/ipv6/ip6_output.c:117
+ __ip6_finish_output net/ipv6/ip6_output.c:143 [inline]
+ __ip6_finish_output+0x447/0xab0 net/ipv6/ip6_output.c:128
+ ip6_finish_output+0x34/0x1f0 net/ipv6/ip6_output.c:153
+ NF_HOOK_COND include/linux/netfilter.h:290 [inline]
+ ip6_output+0x1db/0x520 net/ipv6/ip6_output.c:176
+ dst_output include/net/dst.h:443 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ mld_sendpack+0x92a/0xdb0 net/ipv6/mcast.c:1679
+ mld_send_cr net/ipv6/mcast.c:1975 [inline]
+ mld_ifc_timer_expire+0x60a/0xf10 net/ipv6/mcast.c:2474
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1410
+ expire_timers kernel/time/timer.c:1455 [inline]
+ __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1747
+ __run_timers kernel/time/timer.c:1728 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1760
+ __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x132/0x200 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/irqflags.h:85 [inline]
+RIP: 0010:lock_acquire kernel/locking/lockdep.c:5438 [inline]
+RIP: 0010:lock_acquire+0x2cd/0x8c0 kernel/locking/lockdep.c:5400
+Code: 48 c7 c7 c0 5e 4b 89 48 83 c4 20 e8 dd 68 8f 07 b8 ff ff ff ff 65 0f c1 05 c0 b2 ab 7e 83 f8 01 0f 85 09 04 00 00 ff 34 24 9d <e9> 37 fe ff ff 65 ff 05 67 a1 ab 7e 48 8b 05 a0 ab 82 0b e8 6b 5d
+RSP: 0018:ffffc9000aaf73e0 EFLAGS: 00000246
+RAX: 0000000000000001 RBX: 1ffff9200155ee7e RCX: ffffffff8155f384
+RDX: 1ffff11004e58121 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffff8ebb166f
+R10: fffffbfff1d762cd R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88803eff20a8 R14: 0000000000000000 R15: 0000000000000000
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ lockref_put_or_lock+0x14/0x80 lib/lockref.c:174
+ fast_dput fs/dcache.c:747 [inline]
+ dput+0x4b9/0xbc0 fs/dcache.c:865
+ simple_recursive_removal+0x411/0x6b0 fs/libfs.c:296
+ debugfs_remove fs/debugfs/inode.c:725 [inline]
+ debugfs_remove+0x59/0x80 fs/debugfs/inode.c:719
+ ieee80211_debugfs_remove_netdev+0x43/0xc0 net/mac80211/debugfs_netdev.c:833
+ ieee80211_teardown_sdata+0x48/0x2d0 net/mac80211/iface.c:687
+ ieee80211_runtime_change_iftype net/mac80211/iface.c:1657 [inline]
+ ieee80211_if_change_type+0x2b4/0x620 net/mac80211/iface.c:1691
+ ieee80211_change_iface+0x26/0x210 net/mac80211/cfg.c:157
+ rdev_change_virtual_intf net/wireless/rdev-ops.h:69 [inline]
+ cfg80211_change_iface+0x2eb/0xef0 net/wireless/util.c:1032
+ nl80211_set_interface+0x65c/0x8d0 net/wireless/nl80211.c:3789
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ __sys_sendto+0x21c/0x320 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto net/socket.c:2000 [inline]
+ __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x417937
+Code: 2c 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 81 19 00 00 c3 48 83 ec 08 e8 e7 fa ff ff 48 89 04 24 49 89 ca b8 2c 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 2d fb ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007f1159676a90 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f1159676be0 RCX: 0000000000417937
+RDX: 0000000000000024 RSI: 00007f1159676c30 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 00007f1159676aa0 R09: 000000000000000c
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f1159676c30 R15: 0000000000000007
+Modules linked in:
+---[ end trace 80d935084a37d7a4 ]---
+RIP: 0010:ieee80211_multicast_to_unicast net/mac80211/tx.c:4070 [inline]
+RIP: 0010:ieee80211_subif_start_xmit+0x24e/0xee0 net/mac80211/tx.c:4154
+Code: 03 80 3c 02 00 0f 85 83 0c 00 00 49 8b 9f 50 17 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb a4 01 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 58 0c 00 00
+RSP: 0018:ffffc90000007588 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8851c61d
+RDX: 0000000000000034 RSI: ffffffff8851c6ad RDI: 00000000000001a4
+RBP: ffff88801b850280 R08: 0000000000000000 R09: ffffffff8cecb9cf
+R10: 0000000000000004 R11: 0000000000000000 R12: ffffffff8a61f1e0
+R13: ffff888012f07042 R14: 000000000000005a R15: ffff8880284b0000
+FS:  00007f1159678700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000016a9e60 CR3: 000000002ca99000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/418baf2c28f3473039f2f7377760bd8f6897ae18/ (all 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bbf5c979011a099af5dc76498918ed7df445635b/ (all 192 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/09162bc32c880a791c6c0668ce0745cf7958f576/ (all 192 configs)
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-*** ERRORS ***
-
-1 error regressions:
-  + {standard input}: Error: inappropriate arguments for opcode 'adc':  => 170
-
-7 error improvements:
-  - error: modpost: "devm_ioremap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
-  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/iio/adc/adi-axi-adc.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!: N/A => 
-
-
-*** WARNINGS ***
-
-23 warning regressions:
-  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13114
-  + /kisskb/src/arch/nds32/kernel/setup.c: warning: unused variable 'region' [-Wunused-variable]:  => 247:26
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: (near initialization for 'nv12_metrics.CurrClock') [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]:  => 22:28
-  + /kisskb/src/drivers/media/platform/marvell-ccic/mmp-driver.c: warning: 'mmpcam_runtime_resume' defined but not used [-Wunused-function]:  => 310:12
-  + /kisskb/src/drivers/media/platform/marvell-ccic/mmp-driver.c: warning: 'mmpcam_runtime_suspend' defined but not used [-Wunused-function]:  => 324:12
-  + /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: (near initialization for 'buf[0]') [-Wmissing-braces]:  => 910:9
-  + /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: missing braces around initializer [-Wmissing-braces]:  => 910:9
-  + /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation:  => 441:1
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: (near initialization for 'etype.value') [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: missing braces around initializer [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation:  => 482:1
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: (near initialization for 'ri.inode') [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation:  => 295:1
-  + /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]:  => 710:13
-  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation:  => 2295:1
-  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation:  => 1992:1
-  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation:  => 2363:1
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA:  => 58
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA_PIIX:  => 59
-  + warning: unmet direct dependencies detected for MFD_CORE:  => N/A
-
-27 warning improvements:
-  - .config: warning: override: reassigning to symbol SMP: 4103 => 
-  - /kisskb/src/arch/mips/include/asm/page.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 249:53 => 
-  - /kisskb/src/drivers/crypto/chelsio/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 435:1 => 
-  - /kisskb/src/drivers/crypto/sa2ul.c: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 1486:33 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "in_be32" redefined: 37 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "out_be32" redefined: 36 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: (near initialization for 'cs_counters.cs_counters') [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: missing braces around initializer [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 197:33 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 198:32 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]: 62:8, 103:8 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: missing braces around initializer [-Wmissing-braces]: 103:8, 62:8 => 
-  - /kisskb/src/drivers/staging/media/tegra-vde/vde.c: warning: 'tegra_vde_runtime_suspend' defined but not used [-Wunused-function]: 916:12 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.39' uses dynamic stack allocation: 482:1 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.15' uses dynamic stack allocation: 298:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin' uses dynamic stack allocation: 283:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin_backward' uses dynamic stack allocation: 275:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin_forward' uses dynamic stack allocation: 269:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.59' uses dynamic stack allocation: 2293:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.58' uses dynamic stack allocation: 1992:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.57' uses dynamic stack allocation: 2361:1 => 
-  - /kisskb/src/net/bridge/br_device.c: warning: 'br_get_stats64' uses dynamic stack allocation: 230:1 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'add_llc.hd') [-Wmissing-braces]: 1212:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'del_llc.hd') [-Wmissing-braces]: 1245:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'delllc.hd') [-Wmissing-braces]: 1317:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: missing braces around initializer [-Wmissing-braces]: 1317:9, 1212:9, 1245:9 => 
-  - warning: 148 bad relocations: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
