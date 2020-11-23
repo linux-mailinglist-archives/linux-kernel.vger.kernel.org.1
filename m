@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6457E2C05F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A862C0627
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729432AbgKWMZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:25:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
+        id S1730419AbgKWM2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:28:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730018AbgKWMZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:25:38 -0500
+        id S1730405AbgKWM2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:28:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0706E20888;
-        Mon, 23 Nov 2020 12:25:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D8C620728;
+        Mon, 23 Nov 2020 12:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134337;
-        bh=g0Z9YKrnT37hyMKFikh2HEqbEut8RzhJW4ly7DsIS9E=;
+        s=korg; t=1606134491;
+        bh=3i3BNRwgTngmXQDGhlJTZWn4AqkcOujRVWgiWIW22+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UQgLUheWW2r+pMfYeQ3p7a7H8yj3TKVc233SzlhCsh5xE7TGhKvdLekufgkjIatfC
-         Et7B32bFlxLsFqAKA5X60lzXxqk6r1IpVxSKpVQB4VHOqNHG2wSFlOXNu7WAnrF0d2
-         YblYL+5+fFdvY9yukKhX1je8P+BldNGEQtZYd+7c=
+        b=hcIzOjSr+ypbt84MfRb6rcKGRdsMpQK1Lx70BqaODG2Ew0pdcWwqbjiZ+cs+8gfOP
+         sIGIn+khdmtjRdrBN7OsVx91MoGQLM/RuQMro1OuywPHzkycwvi//8bGLfvj/wONmc
+         DNaFqapTfL8/4mGtn4Rvlc3pMWLpJX2wMJRpaeSQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 35/47] ALSA: ctl: fix error path at adding user-defined element set
+        stable@vger.kernel.org, Eric Sandeen <sandeen@sandeen.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 39/60] xfs: revert "xfs: fix rmap key and record comparison functions"
 Date:   Mon, 23 Nov 2020 13:22:21 +0100
-Message-Id: <20201123121807.252955915@linuxfoundation.org>
+Message-Id: <20201123121806.937808906@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-commit 95a793c3bc75cf888e0e641d656e7d080f487d8b upstream.
+[ Upstream commit eb8409071a1d47e3593cfe077107ac46853182ab ]
 
-When processing request to add/replace user-defined element set, check
-of given element identifier and decision of numeric identifier is done
-in "__snd_ctl_add_replace()" helper function. When the result of check
-is wrong, the helper function returns error code. The error code shall
-be returned to userspace application.
+This reverts commit 6ff646b2ceb0eec916101877f38da0b73e3a5b7f.
 
-Current implementation includes bug to return zero to userspace application
-regardless of the result. This commit fixes the bug.
+Your maintainer committed a major braino in the rmap code by adding the
+attr fork, bmbt, and unwritten extent usage bits into rmap record key
+comparisons.  While XFS uses the usage bits *in the rmap records* for
+cross-referencing metadata in xfs_scrub and xfs_repair, it only needs
+the owner and offset information to distinguish between reverse mappings
+of the same physical extent into the data fork of a file at multiple
+offsets.  The other bits are not important for key comparisons for index
+lookups, and never have been.
 
-Cc: <stable@vger.kernel.org>
-Fixes: e1a7bfe38079 ("ALSA: control: Fix race between adding and removing a user element")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20201113092043.16148-1-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Eric Sandeen reports that this causes regressions in generic/299, so
+undo this patch before it does more damage.
 
+Reported-by: Eric Sandeen <sandeen@sandeen.net>
+Fixes: 6ff646b2ceb0 ("xfs: fix rmap key and record comparison functions")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Eric Sandeen <sandeen@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/control.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/libxfs/xfs_rmap_btree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1381,7 +1381,7 @@ static int snd_ctl_elem_add(struct snd_c
+diff --git a/fs/xfs/libxfs/xfs_rmap_btree.c b/fs/xfs/libxfs/xfs_rmap_btree.c
+index cd689d21d3af8..9d9c9192584c9 100644
+--- a/fs/xfs/libxfs/xfs_rmap_btree.c
++++ b/fs/xfs/libxfs/xfs_rmap_btree.c
+@@ -262,8 +262,8 @@ xfs_rmapbt_key_diff(
+ 	else if (y > x)
+ 		return -1;
  
-  unlock:
- 	up_write(&card->controls_rwsem);
--	return 0;
-+	return err;
- }
+-	x = be64_to_cpu(kp->rm_offset);
+-	y = xfs_rmap_irec_offset_pack(rec);
++	x = XFS_RMAP_OFF(be64_to_cpu(kp->rm_offset));
++	y = rec->rm_offset;
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -294,8 +294,8 @@ xfs_rmapbt_diff_two_keys(
+ 	else if (y > x)
+ 		return -1;
  
- static int snd_ctl_elem_add_user(struct snd_ctl_file *file,
+-	x = be64_to_cpu(kp1->rm_offset);
+-	y = be64_to_cpu(kp2->rm_offset);
++	x = XFS_RMAP_OFF(be64_to_cpu(kp1->rm_offset));
++	y = XFS_RMAP_OFF(be64_to_cpu(kp2->rm_offset));
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -400,8 +400,8 @@ xfs_rmapbt_keys_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = be64_to_cpu(k1->rmap.rm_offset);
+-	b = be64_to_cpu(k2->rmap.rm_offset);
++	a = XFS_RMAP_OFF(be64_to_cpu(k1->rmap.rm_offset));
++	b = XFS_RMAP_OFF(be64_to_cpu(k2->rmap.rm_offset));
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+@@ -430,8 +430,8 @@ xfs_rmapbt_recs_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = be64_to_cpu(r1->rmap.rm_offset);
+-	b = be64_to_cpu(r2->rmap.rm_offset);
++	a = XFS_RMAP_OFF(be64_to_cpu(r1->rmap.rm_offset));
++	b = XFS_RMAP_OFF(be64_to_cpu(r2->rmap.rm_offset));
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+-- 
+2.27.0
+
 
 
