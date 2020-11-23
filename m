@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD182C113B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD752C113F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 18:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389786AbgKWRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 12:01:54 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:50296 "EHLO
+        id S2390054AbgKWRB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 12:01:58 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:50318 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733083AbgKWRBw (ORCPT
+        by vger.kernel.org with ESMTP id S2388176AbgKWRBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:01:52 -0500
+        Mon, 23 Nov 2020 12:01:54 -0500
 Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ANGwQCB011899;
-        Mon, 23 Nov 2020 18:01:38 +0100
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ANGwP5F011885;
+        Mon, 23 Nov 2020 18:01:40 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=4WIPBWYgKD1BCSicaiG2Sl6ayQrJIpDvtAZmjrD4cVo=;
- b=Dzza8YOzxVfGxTyMcy/rznORnueVgIMIC8ltx1zinVaLj8BrZQ9FMMaPKfReGK7kHcsI
- nwgFxty4q1XxfNqHWr/0eZPNIoB7hUcWg6ASBJ6VAFkpKVl2kLCnT3TmqCCamzmBOOJm
- 0ZYvEPJZdZ8YJkKsmWPt+XBRXYbvxSrGS1zciQza2pq1b3XE7z190mHjyDBlc7uWsDMV
- hihs/l7tHuzubcTbxnXNga7H0eHwq3p/BON4oMxvE5f/kh5YrpGDmBg6rrkhjtfUMlPh
- uR1l/C6ij6oaAetHjjtpzgVWuzLEa62m8C9pbN4NxtKeei9l6tJf9UdpsRO4Im1O4X8j 2A== 
+ bh=h27+U22NP7ldDbS1mhQ0Dxetk1yNVLZJWe63dRldsCo=;
+ b=fUHNAiyXB65akHkEy4rgfcFH5DNxXa8rleL3utKOFHRwLmYXmMRrRCzO01qm/560l0ZN
+ 9qbY/9ZgJlXqGVEsDio+/DzOIprKYB3aIrMqreg1cZpHRuyLnKERDBgB4H27HaY4Wew2
+ EQsyS71FJ3ImAyWtCYoNGVAkg6zTjBi/R3ufPsbv6vIn58cL87SbrWZckrzl4vXgxB/N
+ CFniC/zYkLGCOMq5sO9/WubQ8LhxtM8n1OBcdp7hgVxTsoB0KXdS748KZnCYIQwWo0Wg
+ dvyAgkwPXfmWUtKjawHia6ZsZVmSOF/d6H0eJ1VnClRaZqx+Nwe0kzKy/VHsOKzji4Qm xw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y0fgkmky-1
+        by mx07-00178001.pphosted.com with ESMTP id 34y0fgkmm0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 18:01:38 +0100
+        Mon, 23 Nov 2020 18:01:40 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 63C5910002A;
-        Mon, 23 Nov 2020 18:01:38 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 06E0D10002A;
+        Mon, 23 Nov 2020 18:01:40 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 558292BA2D0;
-        Mon, 23 Nov 2020 18:01:38 +0100 (CET)
-Received: from localhost (10.75.127.46) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov 2020 18:01:37
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DC4582BA2D0;
+        Mon, 23 Nov 2020 18:01:39 +0100 (CET)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov 2020 18:01:39
  +0100
 From:   Amelie Delaunay <amelie.delaunay@st.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
@@ -47,16 +47,16 @@ CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         Amelie Delaunay <amelie.delaunay@st.com>
-Subject: [PATCH 2/6] phy: stm32: manage 1v1 and 1v8 supplies at pll activation/deactivation
-Date:   Mon, 23 Nov 2020 18:01:28 +0100
-Message-ID: <20201123170132.17859-3-amelie.delaunay@st.com>
+Subject: [PATCH 3/6] phy: stm32: replace regulator_bulk* by multiple regulator_*
+Date:   Mon, 23 Nov 2020 18:01:29 +0100
+Message-ID: <20201123170132.17859-4-amelie.delaunay@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201123170132.17859-1-amelie.delaunay@st.com>
 References: <20201123170132.17859-1-amelie.delaunay@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE2.st.com
  (10.75.127.8)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-23_14:2020-11-23,2020-11-23 signatures=0
@@ -64,209 +64,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PLL block requires to be powered with 1v1 and 1v8 supplies to catch
-ENABLE signal.
-Currently, supplies are managed through phy_ops .power_on/off, and PLL
-activation/deactivation is managed through phy_ops .init/exit.
-The sequence of phy_ops .power_on/.phy_init, .power_off/.exit is USB
-drivers dependent.
-To ensure a good behavior of the PLL, supplies have to be managed at PLL
-activation/deactivation. That means the supplies need to be put in usbphyc
-node and not in phy children nodes.
+Due to async_schedule_domain call in regulator_bulk_enable,
+scheduling while atomic bug can raise if regulator_bulk_enable is called
+under atomic context.
+To avoid this issue, this patch replaces all regulator_bulk* by regulator_
+per regulators.
 
 Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
 ---
- drivers/phy/st/phy-stm32-usbphyc.c | 102 +++++++++++++----------------
- 1 file changed, 46 insertions(+), 56 deletions(-)
+ drivers/phy/st/phy-stm32-usbphyc.c | 69 ++++++++++++++++++++++--------
+ 1 file changed, 52 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index a54317e96c41..c78a2c7947ce 100644
+index c78a2c7947ce..8ef97c8806ff 100644
 --- a/drivers/phy/st/phy-stm32-usbphyc.c
 +++ b/drivers/phy/st/phy-stm32-usbphyc.c
-@@ -58,7 +58,6 @@ struct pll_params {
- struct stm32_usbphyc_phy {
- 	struct phy *phy;
- 	struct stm32_usbphyc *usbphyc;
--	struct regulator_bulk_data supplies[NUM_SUPPLIES];
- 	u32 index;
- 	bool active;
- };
-@@ -70,6 +69,7 @@ struct stm32_usbphyc {
+@@ -36,13 +36,6 @@
+ #define MINREV			GENMASK(3, 0)
+ #define MAJREV			GENMASK(7, 4)
+ 
+-static const char * const supplies_names[] = {
+-	"vdda1v1",	/* 1V1 */
+-	"vdda1v8",	/* 1V8 */
+-};
+-
+-#define NUM_SUPPLIES		ARRAY_SIZE(supplies_names)
+-
+ #define PLL_LOCK_TIME_US	100
+ #define PLL_PWR_DOWN_TIME_US	5
+ #define PLL_FVCO_MHZ		2880
+@@ -69,7 +62,8 @@ struct stm32_usbphyc {
  	struct reset_control *rst;
  	struct stm32_usbphyc_phy **phys;
  	int nphys;
-+	struct regulator_bulk_data supplies[NUM_SUPPLIES];
+-	struct regulator_bulk_data supplies[NUM_SUPPLIES];
++	struct regulator *vdda1v1;
++	struct regulator *vdda1v8;
  	int switch_setup;
  };
  
-@@ -153,10 +153,30 @@ static bool stm32_usbphyc_has_one_phy_active(struct stm32_usbphyc *usbphyc)
- 	return false;
+@@ -83,6 +77,41 @@ static inline void stm32_usbphyc_clr_bits(void __iomem *reg, u32 bits)
+ 	writel_relaxed(readl_relaxed(reg) & ~bits, reg);
  }
  
-+static int stm32_usbphyc_pll_disable(struct stm32_usbphyc *usbphyc)
++static int stm32_usbphyc_regulators_enable(struct stm32_usbphyc *usbphyc)
 +{
-+	void __iomem *pll_reg = usbphyc->base + STM32_USBPHYC_PLL;
++	int ret;
 +
-+	/* Check if other phy port active */
-+	if (stm32_usbphyc_has_one_phy_active(usbphyc))
-+		return 0;
++	ret = regulator_enable(usbphyc->vdda1v1);
++	if (ret)
++		return ret;
 +
-+	stm32_usbphyc_clr_bits(pll_reg, PLLEN);
-+	/* Wait for minimum width of powerdown pulse (ENABLE = Low) */
-+	udelay(PLL_PWR_DOWN_TIME_US);
++	ret = regulator_enable(usbphyc->vdda1v8);
++	if (ret)
++		goto vdda1v1_disable;
 +
-+	if (readl_relaxed(pll_reg) & PLLEN) {
-+		dev_err(usbphyc->dev, "PLL not reset\n");
-+		return -EIO;
-+	}
++	return 0;
 +
-+	return regulator_bulk_disable(NUM_SUPPLIES, usbphyc->supplies);
++vdda1v1_disable:
++	regulator_disable(usbphyc->vdda1v1);
++
++	return ret;
 +}
 +
- static int stm32_usbphyc_pll_enable(struct stm32_usbphyc *usbphyc)
++static int stm32_usbphyc_regulators_disable(struct stm32_usbphyc *usbphyc)
++{
++	int ret;
++
++	ret = regulator_disable(usbphyc->vdda1v8);
++	if (ret)
++		return ret;
++
++	ret = regulator_disable(usbphyc->vdda1v1);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
+ static void stm32_usbphyc_get_pll_params(u32 clk_rate,
+ 					 struct pll_params *pll_params)
  {
- 	void __iomem *pll_reg = usbphyc->base + STM32_USBPHYC_PLL;
--	bool pllen = (readl_relaxed(pll_reg) & PLLEN);
-+	bool pllen = readl_relaxed(pll_reg) & PLLEN;
- 	int ret;
- 
- 	/* Check if one phy port has already configured the pll */
-@@ -164,46 +184,35 @@ static int stm32_usbphyc_pll_enable(struct stm32_usbphyc *usbphyc)
- 		return 0;
- 
- 	if (pllen) {
--		stm32_usbphyc_clr_bits(pll_reg, PLLEN);
--		/* Wait for minimum width of powerdown pulse (ENABLE = Low) */
--		udelay(PLL_PWR_DOWN_TIME_US);
-+		ret = stm32_usbphyc_pll_disable(usbphyc);
-+		if (ret)
-+			return ret;
+@@ -170,7 +199,7 @@ static int stm32_usbphyc_pll_disable(struct stm32_usbphyc *usbphyc)
+ 		return -EIO;
  	}
  
--	ret = stm32_usbphyc_pll_init(usbphyc);
-+	ret = regulator_bulk_enable(NUM_SUPPLIES, usbphyc->supplies);
+-	return regulator_bulk_disable(NUM_SUPPLIES, usbphyc->supplies);
++	return stm32_usbphyc_regulators_disable(usbphyc);
+ }
+ 
+ static int stm32_usbphyc_pll_enable(struct stm32_usbphyc *usbphyc)
+@@ -189,7 +218,7 @@ static int stm32_usbphyc_pll_enable(struct stm32_usbphyc *usbphyc)
+ 			return ret;
+ 	}
+ 
+-	ret = regulator_bulk_enable(NUM_SUPPLIES, usbphyc->supplies);
++	ret = stm32_usbphyc_regulators_enable(usbphyc);
  	if (ret)
  		return ret;
  
--	stm32_usbphyc_set_bits(pll_reg, PLLEN);
-+	ret = stm32_usbphyc_pll_init(usbphyc);
-+	if (ret)
-+		goto reg_disable;
- 
-+	stm32_usbphyc_set_bits(pll_reg, PLLEN);
- 	/* Wait for maximum lock time */
- 	udelay(PLL_LOCK_TIME_US);
- 
- 	if (!(readl_relaxed(pll_reg) & PLLEN)) {
- 		dev_err(usbphyc->dev, "PLLEN not set\n");
--		return -EIO;
-+		ret = -EIO;
-+		goto reg_disable;
- 	}
- 
+@@ -210,7 +239,7 @@ static int stm32_usbphyc_pll_enable(struct stm32_usbphyc *usbphyc)
  	return 0;
--}
--
--static int stm32_usbphyc_pll_disable(struct stm32_usbphyc *usbphyc)
--{
--	void __iomem *pll_reg = usbphyc->base + STM32_USBPHYC_PLL;
--
--	/* Check if other phy port active */
--	if (stm32_usbphyc_has_one_phy_active(usbphyc))
--		return 0;
  
--	stm32_usbphyc_clr_bits(pll_reg, PLLEN);
--	/* Wait for minimum width of powerdown pulse (ENABLE = Low) */
--	udelay(PLL_PWR_DOWN_TIME_US);
-+reg_disable:
-+	regulator_bulk_disable(NUM_SUPPLIES, usbphyc->supplies);
+ reg_disable:
+-	regulator_bulk_disable(NUM_SUPPLIES, usbphyc->supplies);
++	stm32_usbphyc_regulators_disable(usbphyc);
  
--	if (readl_relaxed(pll_reg) & PLLEN) {
--		dev_err(usbphyc->dev, "PLL not reset\n");
--		return -EIO;
--	}
--
--	return 0;
-+	return ret;
+ 	return ret;
  }
- 
- static int stm32_usbphyc_phy_init(struct phy *phy)
-@@ -231,25 +240,9 @@ static int stm32_usbphyc_phy_exit(struct phy *phy)
- 	return stm32_usbphyc_pll_disable(usbphyc);
- }
- 
--static int stm32_usbphyc_phy_power_on(struct phy *phy)
--{
--	struct stm32_usbphyc_phy *usbphyc_phy = phy_get_drvdata(phy);
--
--	return regulator_bulk_enable(NUM_SUPPLIES, usbphyc_phy->supplies);
--}
--
--static int stm32_usbphyc_phy_power_off(struct phy *phy)
--{
--	struct stm32_usbphyc_phy *usbphyc_phy = phy_get_drvdata(phy);
--
--	return regulator_bulk_disable(NUM_SUPPLIES, usbphyc_phy->supplies);
--}
--
- static const struct phy_ops stm32_usbphyc_phy_ops = {
- 	.init = stm32_usbphyc_phy_init,
- 	.exit = stm32_usbphyc_phy_exit,
--	.power_on = stm32_usbphyc_phy_power_on,
--	.power_off = stm32_usbphyc_phy_power_off,
- 	.owner = THIS_MODULE,
- };
- 
-@@ -313,7 +306,7 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
+@@ -306,7 +335,7 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
  	struct device_node *child, *np = dev->of_node;
  	struct phy_provider *phy_provider;
  	u32 version;
--	int ret, port = 0;
-+	int ret, i, port = 0;
+-	int ret, i, port = 0;
++	int ret, port = 0;
  
  	usbphyc = devm_kzalloc(dev, sizeof(*usbphyc), GFP_KERNEL);
  	if (!usbphyc)
-@@ -355,11 +348,20 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
+@@ -348,13 +377,19 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
  		goto clk_disable;
  	}
  
-+	for (i = 0; i < NUM_SUPPLIES; i++)
-+		usbphyc->supplies[i].supply = supplies_names[i];
-+
-+	ret = devm_regulator_bulk_get(dev, NUM_SUPPLIES, usbphyc->supplies);
-+	if (ret) {
+-	for (i = 0; i < NUM_SUPPLIES; i++)
+-		usbphyc->supplies[i].supply = supplies_names[i];
++	usbphyc->vdda1v1 = devm_regulator_get(dev, "vdda1v1");
++	if (IS_ERR(usbphyc->vdda1v1)) {
++		ret = PTR_ERR(usbphyc->vdda1v1);
 +		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get regulators: %d\n", ret);
++			dev_err(dev, "failed to get vdda1v1 supply: %d\n", ret);
 +		goto clk_disable;
 +	}
-+
- 	for_each_child_of_node(np, child) {
- 		struct stm32_usbphyc_phy *usbphyc_phy;
- 		struct phy *phy;
- 		u32 index;
--		int i;
  
- 		phy = devm_phy_create(dev, child, &stm32_usbphyc_phy_ops);
- 		if (IS_ERR(phy)) {
-@@ -377,18 +379,6 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
- 			goto put_child;
- 		}
+-	ret = devm_regulator_bulk_get(dev, NUM_SUPPLIES, usbphyc->supplies);
+-	if (ret) {
++	usbphyc->vdda1v8 = devm_regulator_get(dev, "vdda1v8");
++	if (IS_ERR(usbphyc->vdda1v8)) {
++		ret = PTR_ERR(usbphyc->vdda1v8);
+ 		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "failed to get regulators: %d\n", ret);
++			dev_err(dev, "failed to get vdda1v8 supply: %d\n", ret);
+ 		goto clk_disable;
+ 	}
  
--		for (i = 0; i < NUM_SUPPLIES; i++)
--			usbphyc_phy->supplies[i].supply = supplies_names[i];
--
--		ret = devm_regulator_bulk_get(&phy->dev, NUM_SUPPLIES,
--					      usbphyc_phy->supplies);
--		if (ret) {
--			if (ret != -EPROBE_DEFER)
--				dev_err(&phy->dev,
--					"failed to get regulators: %d\n", ret);
--			goto put_child;
--		}
--
- 		ret = of_property_read_u32(child, "reg", &index);
- 		if (ret || index > usbphyc->nphys) {
- 			dev_err(&phy->dev, "invalid reg property: %d\n", ret);
 -- 
 2.17.1
 
