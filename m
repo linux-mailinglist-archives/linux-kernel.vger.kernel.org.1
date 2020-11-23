@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F892C06B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E142C075B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731248AbgKWMdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:33:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
+        id S1732419AbgKWMkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:40:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731222AbgKWMd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:33:29 -0500
+        id S1732400AbgKWMkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:40:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7312820721;
-        Mon, 23 Nov 2020 12:33:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3946620732;
+        Mon, 23 Nov 2020 12:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134808;
-        bh=/dnVIYf5jXgi+VF73XxdBJqtce3ZZNGNPIM9i4+fHns=;
+        s=korg; t=1606135203;
+        bh=oqkeIbWPCbIgmY9+bquH2m/ZuvMZuBZj97pZZzTEU4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ELBi0t3GbsQ6doVSTMU1zT5euLFt0uHFUxbjR1TEO0/qNM/S/EXQ0VtYhxYgRXJ8
-         e1lmsfautDgymMAw2l3/Qa8J1c5tZwdAikOVtzPXFxAk2P6HaN6vf/gRgG0NZzpYfa
-         fSrngmqApBhS7UjWsTqMI7ZKvGQ29jXel+k5Fgb4=
+        b=uB4WbdXo9AKudNX55nvlAwwv0o461RCqfncvnvV8ZfQ+Wb7xzh7n/ggX0l6YU61Cn
+         R0ONFJzpfKdSbvwNdDgRaQsuco3uru7/wKwsZTamBl6ZcHzVfPXU9BtCsZu3XRIuny
+         fzqf5kVyQLwE/IcyFhlhiVc/xBa1jQAUrbcQSAdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Will Drewry <wad@chromium.org>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH 4.19 89/91] seccomp: Set PF_SUPERPRIV when checking capability
-Date:   Mon, 23 Nov 2020 13:22:49 +0100
-Message-Id: <20201123121813.647989372@linuxfoundation.org>
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH 5.4 142/158] xtensa: disable preemption around cache alias management calls
+Date:   Mon, 23 Nov 2020 13:22:50 +0100
+Message-Id: <20201123121826.789722567@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +41,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-commit fb14528e443646dd3fd02df4437fcf5265b66baa upstream.
+commit 3a860d165eb5f4d7cf0bf81ef6a5b5c5e1754422 upstream.
 
-Replace the use of security_capable(current_cred(), ...) with
-ns_capable_noaudit() which set PF_SUPERPRIV.
+Although cache alias management calls set up and tear down TLB entries
+and fast_second_level_miss is able to restore TLB entry should it be
+evicted they absolutely cannot preempt each other because they use the
+same TLBTEMP area for different purposes.
+Disable preemption around all cache alias management calls to enforce
+that.
 
-Since commit 98f368e9e263 ("kernel: Add noaudit variant of
-ns_capable()"), a new ns_capable_noaudit() helper is available.  Let's
-use it!
-
-Cc: Jann Horn <jannh@google.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc: Will Drewry <wad@chromium.org>
 Cc: stable@vger.kernel.org
-Fixes: e2cfabdfd075 ("seccomp: add system call filtering using BPF")
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Reviewed-by: Jann Horn <jannh@google.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20201030123849.770769-3-mic@digikod.net
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/seccomp.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/xtensa/mm/cache.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -36,7 +36,7 @@
- #include <linux/filter.h>
- #include <linux/pid.h>
- #include <linux/ptrace.h>
--#include <linux/security.h>
-+#include <linux/capability.h>
- #include <linux/tracehook.h>
- #include <linux/uaccess.h>
+--- a/arch/xtensa/mm/cache.c
++++ b/arch/xtensa/mm/cache.c
+@@ -71,8 +71,10 @@ static inline void kmap_invalidate_coher
+ 			kvaddr = TLBTEMP_BASE_1 +
+ 				(page_to_phys(page) & DCACHE_ALIAS_MASK);
  
-@@ -383,8 +383,7 @@ static struct seccomp_filter *seccomp_pr
- 	 * behavior of privileged children.
- 	 */
- 	if (!task_no_new_privs(current) &&
--	    security_capable(current_cred(), current_user_ns(),
--				     CAP_SYS_ADMIN, CAP_OPT_NOAUDIT) != 0)
-+			!ns_capable_noaudit(current_user_ns(), CAP_SYS_ADMIN))
- 		return ERR_PTR(-EACCES);
++			preempt_disable();
+ 			__invalidate_dcache_page_alias(kvaddr,
+ 						       page_to_phys(page));
++			preempt_enable();
+ 		}
+ 	}
+ }
+@@ -157,6 +159,7 @@ void flush_dcache_page(struct page *page
+ 		if (!alias && !mapping)
+ 			return;
  
- 	/* Allocate a new seccomp_filter */
++		preempt_disable();
+ 		virt = TLBTEMP_BASE_1 + (phys & DCACHE_ALIAS_MASK);
+ 		__flush_invalidate_dcache_page_alias(virt, phys);
+ 
+@@ -167,6 +170,7 @@ void flush_dcache_page(struct page *page
+ 
+ 		if (mapping)
+ 			__invalidate_icache_page_alias(virt, phys);
++		preempt_enable();
+ 	}
+ 
+ 	/* There shouldn't be an entry in the cache for this page anymore. */
+@@ -200,8 +204,10 @@ void local_flush_cache_page(struct vm_ar
+ 	unsigned long phys = page_to_phys(pfn_to_page(pfn));
+ 	unsigned long virt = TLBTEMP_BASE_1 + (address & DCACHE_ALIAS_MASK);
+ 
++	preempt_disable();
+ 	__flush_invalidate_dcache_page_alias(virt, phys);
+ 	__invalidate_icache_page_alias(virt, phys);
++	preempt_enable();
+ }
+ EXPORT_SYMBOL(local_flush_cache_page);
+ 
+@@ -228,11 +234,13 @@ update_mmu_cache(struct vm_area_struct *
+ 		unsigned long phys = page_to_phys(page);
+ 		unsigned long tmp;
+ 
++		preempt_disable();
+ 		tmp = TLBTEMP_BASE_1 + (phys & DCACHE_ALIAS_MASK);
+ 		__flush_invalidate_dcache_page_alias(tmp, phys);
+ 		tmp = TLBTEMP_BASE_1 + (addr & DCACHE_ALIAS_MASK);
+ 		__flush_invalidate_dcache_page_alias(tmp, phys);
+ 		__invalidate_icache_page_alias(tmp, phys);
++		preempt_enable();
+ 
+ 		clear_bit(PG_arch_1, &page->flags);
+ 	}
+@@ -266,7 +274,9 @@ void copy_to_user_page(struct vm_area_st
+ 
+ 	if (alias) {
+ 		unsigned long t = TLBTEMP_BASE_1 + (vaddr & DCACHE_ALIAS_MASK);
++		preempt_disable();
+ 		__flush_invalidate_dcache_page_alias(t, phys);
++		preempt_enable();
+ 	}
+ 
+ 	/* Copy data */
+@@ -281,9 +291,11 @@ void copy_to_user_page(struct vm_area_st
+ 	if (alias) {
+ 		unsigned long t = TLBTEMP_BASE_1 + (vaddr & DCACHE_ALIAS_MASK);
+ 
++		preempt_disable();
+ 		__flush_invalidate_dcache_range((unsigned long) dst, len);
+ 		if ((vma->vm_flags & VM_EXEC) != 0)
+ 			__invalidate_icache_page_alias(t, phys);
++		preempt_enable();
+ 
+ 	} else if ((vma->vm_flags & VM_EXEC) != 0) {
+ 		__flush_dcache_range((unsigned long)dst,len);
+@@ -305,7 +317,9 @@ extern void copy_from_user_page(struct v
+ 
+ 	if (alias) {
+ 		unsigned long t = TLBTEMP_BASE_1 + (vaddr & DCACHE_ALIAS_MASK);
++		preempt_disable();
+ 		__flush_invalidate_dcache_page_alias(t, phys);
++		preempt_enable();
+ 	}
+ 
+ 	memcpy(dst, src, len);
 
 
