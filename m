@@ -2,73 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0F32C0F3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179202C0F55
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389727AbgKWPrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:47:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730956AbgKWPrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:47:11 -0500
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B142320B1F;
-        Mon, 23 Nov 2020 15:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606146431;
-        bh=liw0vFpQnqcjI3i4phcXrlgXpuoa4Cd0IXbxBoIJ3xE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqvbywYz7pfnV73A8wIB4GNBS+jqx2H8kz1q3qyS8CekS8bvtszw9/CJy8b8rohxU
-         v+x/Wx0bv19xr0FVF/CvxJH4R74RTOMxR6jj4ctN662KjLLkhS73tno/olheOZ+04w
-         b3YQCBsGvdokA8/oR2+l2pcrA8gahGVWlaFDh6Kg=
-From:   Will Deacon <will@kernel.org>
-To:     lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Marc Zyngier <maz@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Lina Iyer <ilina@codeaurora.org>
-Subject: Re: [PATCH 1/2] arm-smmu-qcom: Ensure the qcom_scm driver has finished probing
-Date:   Mon, 23 Nov 2020 15:46:59 +0000
-Message-Id: <160614327473.875458.14207739459234972190.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201112220520.48159-1-john.stultz@linaro.org>
-References: <20201112220520.48159-1-john.stultz@linaro.org>
+        id S1732794AbgKWPvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731987AbgKWPvy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:51:54 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDD6C0613CF;
+        Mon, 23 Nov 2020 07:51:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Bj8IsgcBUP1tMlbxsnt+v78ZaLFATDewDNz07x7jB8E=; b=lNFVhTRmgDvSLwPcVyLjphrWX
+        yrDoxWB9bc32VqepIvRNt0LpSSLM8Mkl+FKitGFVDpiGfHs5tFtiHQpZWgoy952o8fUiyIR7aqDp7
+        +TP/4sppx4NjqKQ5efNUqZQomo8dQv1nYeL1Ug/GGQbFBI0CaV0mqQ1NwX1tJ5cNCmrraHwFB7AhD
+        wWKatgkFf+PfSDGYgL0rZb+vQkOPFhKGgGB1DYkDhoX6lMoqUxXLfU2bXUAd25aSv8QscBo3V3ClO
+        kFg2lic1ywy6UTpm7KbDSEm6q02hsycgkA8JP7kG3BfT6PVj6gfST0p/lPq8jVCs5S09sidbXe/z3
+        m70yNM4aw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35116)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1khE87-0006CQ-Fh; Mon, 23 Nov 2020 15:51:51 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1khE84-0006RU-Ly; Mon, 23 Nov 2020 15:51:48 +0000
+Date:   Mon, 23 Nov 2020 15:51:48 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+Subject: Re: [EXT] Re: [PATCH v1] net: mvpp2: divide fifo for dts-active
+ ports only
+Message-ID: <20201123155148.GX1551@shell.armlinux.org.uk>
+References: <1606143160-25589-1-git-send-email-stefanc@marvell.com>
+ <20201123151049.GV1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873522226E3F9A608371289B0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
+ <20201123153332.GW1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873B4205ECAF2383F9539CCB0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO6PR18MB3873B4205ECAF2383F9539CCB0FC0@CO6PR18MB3873.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 22:05:19 +0000, John Stultz wrote:
-> Robin Murphy pointed out that if the arm-smmu driver probes before
-> the qcom_scm driver, we may call qcom_scm_qsmmu500_wait_safe_toggle()
-> before the __scm is initialized.
+On Mon, Nov 23, 2020 at 03:44:05PM +0000, Stefan Chulski wrote:
+> > > > On Mon, Nov 23, 2020 at 04:52:40PM +0200, stefanc@marvell.com wrote:
+> > > > > From: Stefan Chulski <stefanc@marvell.com>
+> > > > >
+> > > > > Tx/Rx FIFO is a HW resource limited by total size, but shared by
+> > > > > all ports of same CP110 and impacting port-performance.
+> > > > > Do not divide the FIFO for ports which are not enabled in DTS, so
+> > > > > active ports could have more FIFO.
+> > > > >
+> > > > > The active port mapping should be done in probe before FIFO-init.
+> > > >
+> > > > It would be nice to know what the effect is from this - is it a
+> > > > small or large boost in performance?
+> > >
+> > > I didn't saw any significant improvement with LINUX bridge or
+> > > forwarding, but this reduced PPv2 overruns drops, reduced CRC sent errors
+> > with DPDK user space application.
+> > > So this improved zero loss throughput. Probably with XDP we would see a
+> > similar effect.
+> > >
+> > > > What is the effect when the ports on a CP110 are configured for 10G,
+> > > > 1G, and 2.5G in that order, as is the case on the Macchiatobin board?
+> > >
+> > > Macchiatobin has two CP's.  CP1 has 3 ports, so the distribution of FIFO would
+> > be the same as before.
+> > > On CP0 which has a single port, all FIFO would be allocated for 10G port.
+> > 
+> > Your code allocates for CP1:
+> > 
+> > 32K to port 0 (the 10G port on Macchiatobin) 8K to port 1 (the 1G dedicated
+> > ethernet port on Macchiatobin) 4K to port 2 (the 1G/2.5G SFP port on
+> > Macchiatobin)
+> > 
+> > I'm questioning that allocation for port 1 and 2.
 > 
-> Now, getting this to happen is a bit contrived, as in my efforts it
-> required enabling asynchronous probing for both drivers, moving the
-> firmware dts node to the end of the dtsi file, as well as forcing a
-> long delay in the qcom_scm_probe function.
+> Yes, but this allocation exists also in current code.
+> From HW point of view(MAC and PPv2) maximum supported speed
+> in CP110: port 0 - 10G, port 1 - 2.5G, port 2 - 2.5G.
+> in CP115: port 0 - 10G, port 1 - 5G, port 2 - 2.5G.
 > 
-> [...]
+> So this allocation looks correct at least for CP115.
+> Problem that we cannot reallocate FIFO during runtime, after specific speed negotiation.
 
-Applied only the first patch to arm64 (for-next/iommu/fixes), thanks!
+We could do much better. DT has a "max-speed" property for ethernet
+controllers. If we have that property, then I think we should use
+that to determine the initialisation time FIFO allocation.
 
-[1/2] arm-smmu-qcom: Ensure the qcom_scm driver has finished probing
-      https://git.kernel.org/arm64/c/72b55c96f3a5
+As I say, on Macchiatobin, the allocations we end up with are just
+crazy when you consider the port speeds that the hardware supports.
+Maybe that should be done as a follow-on patch - but I think it
+needs to be done.
 
-Cheers,
 -- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
