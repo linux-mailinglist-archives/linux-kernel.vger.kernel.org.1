@@ -2,76 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF182BFEAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 395092BFEB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 04:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgKWDTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 22:19:04 -0500
-Received: from mga02.intel.com ([134.134.136.20]:31117 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727690AbgKWDTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 22:19:03 -0500
-IronPort-SDR: kg7asXXsLhgCG+cuwZrufOP1mdS5AUJM+1VqfPjycRcsHCGY8ZEL/5xgtD1oteRsQPz32q+vwt
- r76xUsM0eiyQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="158737538"
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="158737538"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 19:19:02 -0800
-IronPort-SDR: H4KwNxHQ4teJDChuX0cG4rz6msgqOpfVG+eiOWMjLidMKEogf5wX0XAAwOoC5PJ+IduJ7bVUML
- 40qOkywKjaUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
-   d="scan'208";a="342687886"
-Received: from lkp-server01.sh.intel.com (HELO ce8054c7261d) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 22 Nov 2020 19:19:00 -0800
-Received: from kbuild by ce8054c7261d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kh2NX-0000PQ-Fh; Mon, 23 Nov 2020 03:18:59 +0000
-Date:   Mon, 23 Nov 2020 11:18:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH linux-next] EDAC/igen6: ecclog_llist can be static
-Message-ID: <20201123031850.GA20416@aef56166e5fc>
-References: <202011231120.nLkm6K9s-lkp@intel.com>
+        id S1727667AbgKWDUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 22:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgKWDUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 22:20:13 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8A8C0613CF;
+        Sun, 22 Nov 2020 19:20:13 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id 11so2104897oty.9;
+        Sun, 22 Nov 2020 19:20:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rmUZ/LefwZKjwq5aooyNQE4MC8myDjdpN3Ckl6d1zcs=;
+        b=oEv9koOsTJ2WOd46od2F9FFUSIWNHZbckGQwAdsWs4zZMift70bSlIYBmW6NcPSNFI
+         XpztoiWYbYV4m3jqG/OSoeB49QZPVIVn1jiLAcm2csSnc4bHTOWrW8d453rNs0noabG2
+         N9o/EKno/E5fZ+6BIt8xTEaw/LaiJtng4+KFNXdVeBgw6zS+hb6qvK+adFKA6sIt8QFx
+         jlkzXUFzQYGTCQkjDv/FNFx2zTgvGDOeE7Gat+aUkF8/kdRpzB6wC1M6749W2c9E+2D3
+         nneZ9pEgN3CQxCAfAxeHc+2iJk4t+dxHC7/BX/8RZXi3VcnoAF2F5Y6xD2e6y3z/QGlu
+         5s2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rmUZ/LefwZKjwq5aooyNQE4MC8myDjdpN3Ckl6d1zcs=;
+        b=ToZQ+3B9i90jH7uyNGAjC0X3KspVDwxZWTHpWCJDouF7YS5YsebPhg8I/pmsNmplsF
+         bASPKJ39pefGQsfpfvXJRG0I5UBZ/vPYKiaz4ME77fYYbzYKKNG3C6C3klZe9zVkiNh4
+         x4clRNeyQ8IxPJZq9AUZBP5WrTsH1Mwd42YFqLR0jUuXUkGaUzBJjeB/rNzVpcfeRezJ
+         1E7P4ZQ7TX6DKIx/gB9N4b2aj1NAUK8u4Cbznu9cW3Hyd/lBOS40swIqcPtfYJInDT5g
+         ig5z+toyKDoVcZRjCbh3m2TycvhRnSdb61OXYv2pAklX4TGUuyW2APcd/E7Z6FYiBnCF
+         yEeg==
+X-Gm-Message-State: AOAM531Oh+DuLHrndtuvsquRNY8HOz6XHt4zJmcW1lUYMhpxBaFo88g2
+        NYbHDf3QctRNefaZyO5nVqDLxJanNHuVHNWxzzwozvr3
+X-Google-Smtp-Source: ABdhPJwmZ+yhrflagrOqYCRNj7dnimh/KjhNwCI/2kJH//K6O8faeNXSzM1EAjFZjsIHMzoNWnfnz6XIjOoFTw0qmLY=
+X-Received: by 2002:a9d:6c99:: with SMTP id c25mr22827600otr.327.1606101613081;
+ Sun, 22 Nov 2020 19:20:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202011231120.nLkm6K9s-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605696462-391-2-git-send-email-gene.chen.richtek@gmail.com> <3164b1ed-9e47-88cd-d492-ff5a9243e5ef@gmail.com>
+In-Reply-To: <3164b1ed-9e47-88cd-d492-ff5a9243e5ef@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Mon, 23 Nov 2020 11:20:03 +0800
+Message-ID: <CAE+NS350vuY1qNwn4_7ow8Z22_DfHrJAnKX1dsFM_WbaHziZiw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/5] leds: flash: Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=
+=9C=8820=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=886:29=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> Hi Gene,
+>
+> On 11/18/20 11:47 AM, Gene Chen wrote:
+> > From: Gene Chen <gene_chen@richtek.com>
+> >
+> > Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+> >
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > ---
+> >   include/linux/led-class-flash.h | 36 ++++++++++++++++++++++++++++++++=
+++++
+> >   1 file changed, 36 insertions(+)
+> >
+> > diff --git a/include/linux/led-class-flash.h b/include/linux/led-class-=
+flash.h
+> > index 21a3358..4f56c28 100644
+> > --- a/include/linux/led-class-flash.h
+> > +++ b/include/linux/led-class-flash.h
+> > @@ -85,6 +85,7 @@ static inline struct led_classdev_flash *lcdev_to_flc=
+dev(
+> >       return container_of(lcdev, struct led_classdev_flash, led_cdev);
+> >   }
+> >
+> > +#if IS_ENABLED(CONFIG_LEDS_CLASS_FLASH)
+> >   /**
+> >    * led_classdev_flash_register_ext - register a new object of LED cla=
+ss with
+> >    *                               init data and with support for flash=
+ LEDs
+> > @@ -127,6 +128,41 @@ static inline int devm_led_classdev_flash_register=
+(struct device *parent,
+> >   void devm_led_classdev_flash_unregister(struct device *parent,
+> >                                       struct led_classdev_flash *fled_c=
+dev);
+> >
+> > +#else
+> > +
+> > +static inline int led_classdev_flash_register_ext(struct device *paren=
+t,
+> > +                                 struct led_classdev_flash *fled_cdev,
+> > +                                 struct led_init_data *init_data)
+> > +{
+> > +     return -EINVAL;
+>
+> s/-EINVAL/0/
+>
+> The goal here is to assure that client will not fail when using no-op.
+>
+> > +}
+> > +
+> > +static inline int led_classdev_flash_register(struct device *parent,
+> > +                                        struct led_classdev_flash *fle=
+d_cdev)
+> > +{
+> > +     return led_classdev_flash_register_ext(parent, fled_cdev, NULL);
+> > +}
+>
+> This function should be placed after #ifdef block because its
+> shape is the same for both cases.
+>
+> > +static inline void led_classdev_flash_unregister(struct led_classdev_f=
+lash *fled_cdev) {};
+> > +static inline int devm_led_classdev_flash_register_ext(struct device *=
+parent,
+> > +                                  struct led_classdev_flash *fled_cdev=
+,
+> > +                                  struct led_init_data *init_data)
+> > +{
+> > +     return -EINVAL;
+>
+> /-EINVAL/0/
+>
+> Please do the same fix in all no-ops in the led-class-multicolor.h,
+> as we've discussed.
+>
 
-Fixes: 62a8cb0cbbfe ("EDAC/igen6: Add EDAC driver for Intel client SoCs using IBECC")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- igen6_edac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think return -EINVAL is correct, because I should register flash
+light device if I define FLED in DTS node.
 
-diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
-index b8a6d692c1e4f9..71d29297221054 100644
---- a/drivers/edac/igen6_edac.c
-+++ b/drivers/edac/igen6_edac.c
-@@ -164,7 +164,7 @@ struct ecclog_node {
-  * to EDAC core in a worker.
-  */
- #define ECCLOG_POOL_SIZE	PAGE_SIZE
--LLIST_HEAD(ecclog_llist);
-+static LLIST_HEAD(ecclog_llist);
- static struct gen_pool *ecclog_pool;
- static char ecclog_buf[ECCLOG_POOL_SIZE];
- static struct irq_work ecclog_irq_work;
+> > +}
+> > +
+> > +static inline int devm_led_classdev_flash_register(struct device *pare=
+nt,
+> > +                                  struct led_classdev_flash *fled_cdev=
+)
+> > +{
+> > +     return devm_led_classdev_flash_register_ext(parent, fled_cdev, NU=
+LL);
+> > +}
+>
+>
+> This function should also be placed after #ifdef block.
+> Please make the same optimizations in the led-class-multicolor.h as you
+> are at it.
+>
+> > +
+> > +void devm_led_classdev_flash_unregister(struct device *parent,
+>
+> s/void/static inline void/
+>
+> That's the reason why you got warning from buildbot.
+>
+
+ACK
+
+> > +                                     struct led_classdev_flash *fled_c=
+dev)
+> > +{};
+> > +
+> > +#endif  /* IS_ENABLED(CONFIG_LEDS_CLASS_FLASH) */
+> > +
+> >   /**
+> >    * led_set_flash_strobe - setup flash strobe
+> >    * @fled_cdev: the flash LED to set strobe on
+> >
+>
+> --
+> Best regards,
+> Jacek Anaszewski
