@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AA42C06A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3672C071C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731169AbgKWMdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:33:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44072 "EHLO mail.kernel.org"
+        id S1731959AbgKWMhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:37:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731127AbgKWMcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:32:46 -0500
+        id S1731950AbgKWMhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A643C20728;
-        Mon, 23 Nov 2020 12:32:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6292720721;
+        Mon, 23 Nov 2020 12:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134766;
-        bh=kiwOr0/77xYzymp7bfP38DluIDS/GhoyOW7eHBaxpoY=;
+        s=korg; t=1606135052;
+        bh=fad5RsFsDcYmx3WnNjUYtph/NtbsRCcpG5eDcMmES1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ewjyKhQMhjw6e3EgwOkZJrzxF0G5MqmAU8glN4AErO2R5Iu8e09AKePE6PkuEkk1n
-         VZi/yRdMWRlSdCYUTq2m112C3Tg04333u5mylws0r/fPI8+zZW4jOWDPza9RU1wL28
-         A2f2+sCSpNak82VhsGGdbrxiiL1q6wrTbSTc9S1I=
+        b=krKHszm1YuQZy+c6hQ23X3E5+K3rOcneJTyhd7CQj7YWgZb7Vb/7itoDzFlhmcfGA
+         n8tFs81A5smizW9HlbdizzvTTMz3acG9hlfHTkDFDiFwGyJv/lI7L0jfg7HWatuXdx
+         S11sgCx4okIe/zXqLcYSDL3NsRTJ4ziUPscovHvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 34/91] arm64: dts: allwinner: h5: OrangePi PC2: Fix ethernet node
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Dan Murphy <dmurphy@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 086/158] can: m_can: m_can_class_free_dev(): introduce new function
 Date:   Mon, 23 Nov 2020 13:21:54 +0100
-Message-Id: <20201123121810.976355991@linuxfoundation.org>
+Message-Id: <20201123121824.084377619@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Dan Murphy <dmurphy@ti.com>
 
-[ Upstream commit b34bf9f6a623ddb82600a5ed5c644224122395e1 ]
+[ Upstream commit a8c22f5b0c689a29f45ef4a110d09fd391debcbc ]
 
-RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
-node.
+This patch creates a common function that peripherials can call to free the
+netdev device when failures occur.
 
-Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20201023184858.3272918-1-jernej.skrabec@siol.net
+Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
+Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: http://lore.kernel.org/r/20200227183829.21854-2-dmurphy@ti.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 6 ++++++
+ drivers/net/can/m_can/m_can.h | 1 +
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-index 3e0d5a9c096d3..5fbfa76daae22 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-@@ -157,7 +157,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 20f025b4f6d4c..85e3df24e7bfb 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1764,6 +1764,12 @@ out:
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_allocate_dev);
+ 
++void m_can_class_free_dev(struct net_device *net)
++{
++	free_candev(net);
++}
++EXPORT_SYMBOL_GPL(m_can_class_free_dev);
++
+ int m_can_class_register(struct m_can_classdev *m_can_dev)
+ {
+ 	int ret;
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index 49f42b50627a1..b2699a7c99973 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -99,6 +99,7 @@ struct m_can_classdev {
  };
  
+ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev);
++void m_can_class_free_dev(struct net_device *net);
+ int m_can_class_register(struct m_can_classdev *cdev);
+ void m_can_class_unregister(struct m_can_classdev *cdev);
+ int m_can_class_get_clocks(struct m_can_classdev *cdev);
 -- 
 2.27.0
 
