@@ -2,218 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D5F2C1703
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9312C171A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730382AbgKWUtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:49:15 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:58431 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729256AbgKWUtP (ORCPT
+        id S1730056AbgKWUxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728975AbgKWUxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:49:15 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <dann.frazier@canonical.com>)
-        id 1khIls-0004zx-4E
-        for linux-kernel@vger.kernel.org; Mon, 23 Nov 2020 20:49:12 +0000
-Received: by mail-il1-f199.google.com with SMTP id z8so2465300ilq.21
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 12:49:12 -0800 (PST)
+        Mon, 23 Nov 2020 15:53:00 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D886C0613CF;
+        Mon, 23 Nov 2020 12:53:00 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id p19so663527wmg.0;
+        Mon, 23 Nov 2020 12:53:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TklskZDnCVeTGWPgpS/EioL+kUbmsF81Ea3U/G7UyjM=;
+        b=XalzOCONIhWS9jkNG1EunxZBVEy7yc8msz02bgtym8eiZJFJEZRHy1JQTXBOjyeF9Q
+         4URaCOA6xTWvoKVsf2WQLh1rdy4ArdnXv5iBb3mFok8XX0V3DGk5FVw5OAjUD9h3E3PQ
+         T4sa48kAMq3wdKEePwAUpx9KLTQJ4GBcucX5AM2/c69fVSnP5VSN5Sy1148iyMqgbgPW
+         /tZY3+JA7KqsST89d2tfLGpkdGeZVv4wT84vJKubQBIccNfrdnB85q1SNABgvanqyYts
+         7FXxIzk1A1R4lbI5YbTNDqWtWMHn2hT5Yl/GdwFHBWHG0Ehloqc2VXXD1VngfDCwIJRa
+         oqBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aKKg6wsDaykJhzWuyANPFCAYRxtejbFckP15kDzwPrA=;
-        b=edfAoqi1JpO4fM3O7bpLimrnnl2yhRntzMk+P3ekFhDML28cfY26N0GMeAuoAMictn
-         uvMe4W/mO1wA+9w+x21cMA7ZaEYN1eFeeYpdtIIfcwXPWR6oJXL7gjsVbxyG5Z+Ochz3
-         JcBmzvJBy/MUw2o8sElt+I16Kqqp4sJic9Cksn2UA8z9g0YzilvqOeUKfADIe3zp0924
-         XU80KuejovGo/tuAcsDR0SGFvUOotETQEOQD91lXokV7OH2oprbnkHTrRFkuebUe6r0K
-         2lDelBMK85Rgk9sWxsNc9xhhVHk2L9md8vlqOOF+RZs9BNNyDbYPSg4XO+6o1rnEPvTr
-         iGwQ==
-X-Gm-Message-State: AOAM530RlWsJjtI5+E+q9j0Ggnre/AHkXH5b8UE1HKd7qNkvSAhF+rox
-        IR1B4nykXDtz+Jo9/En+S2F6rlO6lKLZWF+HkO/o8z+am/GdFBcuFDkN9plrEMVjFy3rvIRY53j
-        2ODfZHepuC25imb2+2qaeaOWqO6XMOyDPD6B5enS/iw==
-X-Received: by 2002:a92:d591:: with SMTP id a17mr1441548iln.51.1606164551120;
-        Mon, 23 Nov 2020 12:49:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxsVFmTJQa0sGKLVyLrPs1uS5N1qkeJJ5RbqqqHjnPMsF7w3O/qOHp/r3ZeWE3C7iefdhnW1w==
-X-Received: by 2002:a92:d591:: with SMTP id a17mr1441531iln.51.1606164550824;
-        Mon, 23 Nov 2020 12:49:10 -0800 (PST)
-Received: from xps13.dannf (c-71-56-235-36.hsd1.co.comcast.net. [71.56.235.36])
-        by smtp.gmail.com with ESMTPSA id o3sm8617248ilk.27.2020.11.23.12.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 12:49:09 -0800 (PST)
-Date:   Mon, 23 Nov 2020 13:49:07 -0700
-From:   dann frazier <dann.frazier@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: Re: [PATCH 4.4 17/70] crypto: arm64/sha - avoid non-standard inline
- asm tricks
-Message-ID: <X7wgQ0EW4wKERbkq@xps13.dannf>
-References: <20181126105046.722096341@linuxfoundation.org>
- <20181126105048.515352194@linuxfoundation.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TklskZDnCVeTGWPgpS/EioL+kUbmsF81Ea3U/G7UyjM=;
+        b=BRv1r3o2+hkZnyNAguMIA3GCddEB654RV5WyXkCBxurn2teXFXSobFyZoYor5yES1e
+         lxdUDjsb3i2yQd3i1jR8BK9KWgVey+v9iEJKAmSTMQAahf489V1DPmyGEImtiwO7yXuz
+         Sx/nKgV2tYuCNFX3tnd3MBlvUy5KFBDAMpIDlWUBQbO9zNx2oapeW5NeGj4hmMZmcIBA
+         +RiGNeDejghLmj6fXE72zX1wEC0z6iZLZ1GoHMW+Zkdmqw+xbpLauy7ouBiiXlfljCjP
+         kHs0yhUKC+JTVNDYg++9GGE38EHl+x/FYtyGjOX5VIYXttGk5H7EPb7LICZzgGPtOWvt
+         5mKg==
+X-Gm-Message-State: AOAM531wXf3mJTI7EnQzojBJxbnCrufSJJNt675bJkZtQiCEW2Jrb9m4
+        0Gjrb/HWBe1/Uuie79Ypwhc=
+X-Google-Smtp-Source: ABdhPJzJyKRYbtdA9Cx+e50La8cu1sTApANl+eqq31Z3u2jcpquwGMQrfTZIEq4gm1VUzJpDGUK3FA==
+X-Received: by 2002:a1c:3b07:: with SMTP id i7mr760093wma.118.1606164778848;
+        Mon, 23 Nov 2020 12:52:58 -0800 (PST)
+Received: from ?IPv6:2a01:110f:b59:fd00:7836:e682:dddf:6361? ([2a01:110f:b59:fd00:7836:e682:dddf:6361])
+        by smtp.gmail.com with ESMTPSA id b4sm1109779wmc.1.2020.11.23.12.52.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 12:52:58 -0800 (PST)
+Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT
+ definitions
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
+ <20201118213712.GA22371@amd> <6068b1e3-a4c8-6c7d-d33d-f2238e905e43@gmail.com>
+ <20201119215721.GA5337@amd> <0700c32d-643b-fedb-06f0-21547b18205d@gmail.com>
+ <CAE+NS363BpytNGZzfZHLa7KLKL8gjGj14oNvRi3oaH9KT79REg@mail.gmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <25fef924-634d-7f60-7e1d-0290d1701fab@gmail.com>
+Date:   Mon, 23 Nov 2020 21:52:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181126105048.515352194@linuxfoundation.org>
+In-Reply-To: <CAE+NS363BpytNGZzfZHLa7KLKL8gjGj14oNvRi3oaH9KT79REg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 26, 2018 at 11:50:32AM +0100, Greg Kroah-Hartman wrote:
-> 4.4-stable review patch.  If anyone has any objections, please let me know.
+On 11/23/20 4:00 AM, Gene Chen wrote:
+> Jacek Anaszewski <jacek.anaszewski@gmail.com> 於 2020年11月20日 週五 上午6:26寫道：
+>>
+>> On 11/19/20 10:57 PM, Pavel Machek wrote:
+>>> On Thu 2020-11-19 22:03:14, Jacek Anaszewski wrote:
+>>>> Hi Pavel, Gene,
+>>>>
+>>>> On 11/18/20 10:37 PM, Pavel Machek wrote:
+>>>>> Hi!
+>>>>>
+>>>>>> From: Gene Chen <gene_chen@richtek.com>
+>>>>>>
+>>>>>> Add LED_COLOR_ID_MOONLIGHT definitions
+>>>>>
+>>>>> Why is moonlight a color? Camera flashes are usually white, no?
+>>>>>
+>>>>> At least it needs a comment...
+>>>>
+>>>> That's my fault, In fact I should have asked about adding
+>>>> LED_FUNCTION_MOONLIGHT, it was evidently too late for me that evening...
+>>>
+>>> Aha, that makes more sense.
+>>>
+>>> But please let's call it "torch" if we do that, as that is already
+>>> used in kernel sources... and probably in the interface, too:
+>>
+>> I'd say that torch is something different that moonlight,
+>> but we would need more input from Gene to learn more about
+>> the nature of light emitted by ML LED on his device.
+>>
+>> Please note that torch is usually meant as the other mode of
+>> flash LED (sometimes it is called "movie mode"), which is already
+>> handled by brightness file of LED class flash device (i.e. its LED class
+>> subset), and which also maps to v4l2-flash TORCH mode.
+>>
+> 
+> It's used to front camera fill light.
+> More brightness than screen backlight, and more soft light than flash.
+> I think LED_ID_COLOR_WHITE is okay.
 
-fyi, I bisected a regression down to this commit. This apparently
-causes an ADR_PREL_PG_HI21 relocation to be added to the sha{1,2}_ce
-modules. Back in 4.4 ADR_PREL_PG_HI21 relocations were forbidden if
-built with CONFIG_ARM64_ERRATUM_843419=y, so now the sha{1,2}_ce modules
-fail to load:
+So why in v6 you assigned LED_COLOR_ID_AMBER to it?
 
-[   37.866250] module sha1_ce: unsupported RELA relocation: 275
+Regardless of that, now we're talking about LED function - you chose
+LED_FUNCTION_INDICATOR for it, but inferring from your above description
+- it certainly doesn't fit here.
 
-Looks like it should be an issue for 4.14.y as well, but I haven't yet
-tested it.
+Also register names, containing part "ML" indicate that this LED's
+intended function is moonlinght, which your description somehow
+corroborates.
 
-  -dann
+Moonlight LEDs become ubiquitous nowadays so sooner or later we will
+need to add this function anyway [0].
 
-> From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> 
-> commit f4857f4c2ee9aa4e2aacac1a845352b00197fb57 upstream.
-> 
-> Replace the inline asm which exports struct offsets as ELF symbols
-> with proper const variables exposing the same values. This works
-> around an issue with Clang which does not interpret the "i" (or "I")
-> constraints in the same way as GCC.
-> 
-> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> Tested-by: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  arch/arm64/crypto/sha1-ce-core.S |    6 ++++--
->  arch/arm64/crypto/sha1-ce-glue.c |   11 +++--------
->  arch/arm64/crypto/sha2-ce-core.S |    6 ++++--
->  arch/arm64/crypto/sha2-ce-glue.c |   13 +++++--------
->  4 files changed, 16 insertions(+), 20 deletions(-)
-> 
-> --- a/arch/arm64/crypto/sha1-ce-core.S
-> +++ b/arch/arm64/crypto/sha1-ce-core.S
-> @@ -82,7 +82,8 @@ ENTRY(sha1_ce_transform)
->  	ldr		dgb, [x0, #16]
->  
->  	/* load sha1_ce_state::finalize */
-> -	ldr		w4, [x0, #:lo12:sha1_ce_offsetof_finalize]
-> +	ldr_l		w4, sha1_ce_offsetof_finalize, x4
-> +	ldr		w4, [x0, x4]
->  
->  	/* load input */
->  0:	ld1		{v8.4s-v11.4s}, [x1], #64
-> @@ -132,7 +133,8 @@ CPU_LE(	rev32		v11.16b, v11.16b	)
->  	 * the padding is handled by the C code in that case.
->  	 */
->  	cbz		x4, 3f
-> -	ldr		x4, [x0, #:lo12:sha1_ce_offsetof_count]
-> +	ldr_l		w4, sha1_ce_offsetof_count, x4
-> +	ldr		x4, [x0, x4]
->  	movi		v9.2d, #0
->  	mov		x8, #0x80000000
->  	movi		v10.2d, #0
-> --- a/arch/arm64/crypto/sha1-ce-glue.c
-> +++ b/arch/arm64/crypto/sha1-ce-glue.c
-> @@ -17,9 +17,6 @@
->  #include <linux/crypto.h>
->  #include <linux/module.h>
->  
-> -#define ASM_EXPORT(sym, val) \
-> -	asm(".globl " #sym "; .set " #sym ", %0" :: "I"(val));
-> -
->  MODULE_DESCRIPTION("SHA1 secure hash using ARMv8 Crypto Extensions");
->  MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
->  MODULE_LICENSE("GPL v2");
-> @@ -32,6 +29,9 @@ struct sha1_ce_state {
->  asmlinkage void sha1_ce_transform(struct sha1_ce_state *sst, u8 const *src,
->  				  int blocks);
->  
-> +const u32 sha1_ce_offsetof_count = offsetof(struct sha1_ce_state, sst.count);
-> +const u32 sha1_ce_offsetof_finalize = offsetof(struct sha1_ce_state, finalize);
-> +
->  static int sha1_ce_update(struct shash_desc *desc, const u8 *data,
->  			  unsigned int len)
->  {
-> @@ -52,11 +52,6 @@ static int sha1_ce_finup(struct shash_de
->  	struct sha1_ce_state *sctx = shash_desc_ctx(desc);
->  	bool finalize = !sctx->sst.count && !(len % SHA1_BLOCK_SIZE);
->  
-> -	ASM_EXPORT(sha1_ce_offsetof_count,
-> -		   offsetof(struct sha1_ce_state, sst.count));
-> -	ASM_EXPORT(sha1_ce_offsetof_finalize,
-> -		   offsetof(struct sha1_ce_state, finalize));
-> -
->  	/*
->  	 * Allow the asm code to perform the finalization if there is no
->  	 * partial data and the input is a round multiple of the block size.
-> --- a/arch/arm64/crypto/sha2-ce-core.S
-> +++ b/arch/arm64/crypto/sha2-ce-core.S
-> @@ -88,7 +88,8 @@ ENTRY(sha2_ce_transform)
->  	ld1		{dgav.4s, dgbv.4s}, [x0]
->  
->  	/* load sha256_ce_state::finalize */
-> -	ldr		w4, [x0, #:lo12:sha256_ce_offsetof_finalize]
-> +	ldr_l		w4, sha256_ce_offsetof_finalize, x4
-> +	ldr		w4, [x0, x4]
->  
->  	/* load input */
->  0:	ld1		{v16.4s-v19.4s}, [x1], #64
-> @@ -136,7 +137,8 @@ CPU_LE(	rev32		v19.16b, v19.16b	)
->  	 * the padding is handled by the C code in that case.
->  	 */
->  	cbz		x4, 3f
-> -	ldr		x4, [x0, #:lo12:sha256_ce_offsetof_count]
-> +	ldr_l		w4, sha256_ce_offsetof_count, x4
-> +	ldr		x4, [x0, x4]
->  	movi		v17.2d, #0
->  	mov		x8, #0x80000000
->  	movi		v18.2d, #0
-> --- a/arch/arm64/crypto/sha2-ce-glue.c
-> +++ b/arch/arm64/crypto/sha2-ce-glue.c
-> @@ -17,9 +17,6 @@
->  #include <linux/crypto.h>
->  #include <linux/module.h>
->  
-> -#define ASM_EXPORT(sym, val) \
-> -	asm(".globl " #sym "; .set " #sym ", %0" :: "I"(val));
-> -
->  MODULE_DESCRIPTION("SHA-224/SHA-256 secure hash using ARMv8 Crypto Extensions");
->  MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
->  MODULE_LICENSE("GPL v2");
-> @@ -32,6 +29,11 @@ struct sha256_ce_state {
->  asmlinkage void sha2_ce_transform(struct sha256_ce_state *sst, u8 const *src,
->  				  int blocks);
->  
-> +const u32 sha256_ce_offsetof_count = offsetof(struct sha256_ce_state,
-> +					      sst.count);
-> +const u32 sha256_ce_offsetof_finalize = offsetof(struct sha256_ce_state,
-> +						 finalize);
-> +
->  static int sha256_ce_update(struct shash_desc *desc, const u8 *data,
->  			    unsigned int len)
->  {
-> @@ -52,11 +54,6 @@ static int sha256_ce_finup(struct shash_
->  	struct sha256_ce_state *sctx = shash_desc_ctx(desc);
->  	bool finalize = !sctx->sst.count && !(len % SHA256_BLOCK_SIZE);
->  
-> -	ASM_EXPORT(sha256_ce_offsetof_count,
-> -		   offsetof(struct sha256_ce_state, sst.count));
-> -	ASM_EXPORT(sha256_ce_offsetof_finalize,
-> -		   offsetof(struct sha256_ce_state, finalize));
-> -
->  	/*
->  	 * Allow the asm code to perform the finalization if there is no
->  	 * partial data and the input is a round multiple of the block size.
-> 
-> 
+[0] 
+https://landscapelightingoakville.com/what-is-moon-lighting-and-why-does-it-remain-so-popular/
+
+-- 
+Best regards,
+Jacek Anaszewski
