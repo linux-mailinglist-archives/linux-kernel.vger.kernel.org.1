@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71D82BFE2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 03:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA362BFE33
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 03:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727181AbgKWC3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 21:29:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:51996 "EHLO foss.arm.com"
+        id S1726630AbgKWCeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 21:34:08 -0500
+Received: from mga05.intel.com ([192.55.52.43]:57533 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727092AbgKWC3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 21:29:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79A60106F;
-        Sun, 22 Nov 2020 18:29:24 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.82.200])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6532A3F70D;
-        Sun, 22 Nov 2020 18:29:21 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC 3/3] s390/mm: Define arch_get_addressable_range()
-Date:   Mon, 23 Nov 2020 07:58:49 +0530
-Message-Id: <1606098529-7907-4-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
-References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
+        id S1725831AbgKWCeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 21:34:08 -0500
+IronPort-SDR: qfZlZVOrs6DMaO1ul1duv9WXjl5VO7XEvX1ZlWZb1ExceljQyqZpYPWLq7LSIePgumWEGI3NKE
+ wzA6xaLq8cyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="256398230"
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="256398230"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2020 18:34:07 -0800
+IronPort-SDR: uX9/LfJ/tvobNnVhGIUmL5uJ2TL/nOpCEX8l6OPyJxxDeplYOcuFdLAliYMZ+JAMz87XPtil2x
+ BQSzJU4sHicA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,361,1599548400"; 
+   d="scan'208";a="361273622"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Nov 2020 18:34:04 -0800
+Date:   Mon, 23 Nov 2020 10:29:47 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
+        yilun.xu@intel.com
+Subject: Re: [PATCH v13 0/6] add DFL bus support to MODULE_DEVICE_TABLE()
+Message-ID: <20201123022947.GC12837@yilunxu-OptiPlex-7050>
+References: <1605159759-3439-1-git-send-email-yilun.xu@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605159759-3439-1-git-send-email-yilun.xu@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This overrides arch_get_addressable_range() on s390 platform and drops
-now redudant similar check in vmem_add_mapping().
+Hi Moritz:
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/s390/include/asm/mmu.h |  2 ++
- arch/s390/mm/vmem.c         | 16 ++++++++++++----
- 2 files changed, 14 insertions(+), 4 deletions(-)
+Do you have some suggestion on this patchset? In last pull request,
+there are some comments, I explained for them and fixes some of them.
+I'm wondering if they are ready now.
 
-diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
-index e12ff0f29d1a..f92d3926b188 100644
---- a/arch/s390/include/asm/mmu.h
-+++ b/arch/s390/include/asm/mmu.h
-@@ -55,4 +55,6 @@ static inline int tprot(unsigned long addr)
- 	return rc;
- }
- 
-+#define arch_get_addressable_range arch_get_addressable_range
-+struct range arch_get_addressable_range(bool need_mapping);
- #endif
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index b239f2ba93b0..e03ad0ed13a7 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -532,14 +532,22 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
- 	mutex_unlock(&vmem_mutex);
- }
- 
-+struct range arch_get_addressable_range(bool need_mapping)
-+{
-+	struct range memhp_range;
-+
-+	memhp_range.start = 0;
-+	if (need_mapping)
-+		memhp_range.end =  VMEM_MAX_PHYS;
-+	else
-+		memhp_range.end = (1ULL << (MAX_PHYSMEM_BITS + 1)) - 1;
-+	return memhp_range;
-+}
-+
- int vmem_add_mapping(unsigned long start, unsigned long size)
- {
- 	int ret;
- 
--	if (start + size > VMEM_MAX_PHYS ||
--	    start + size < start)
--		return -ERANGE;
--
- 	mutex_lock(&vmem_mutex);
- 	ret = vmem_add_range(start, size);
- 	if (ret)
--- 
-2.20.1
+Thanks in advance,
+Yilun
 
+On Thu, Nov 12, 2020 at 01:42:33PM +0800, Xu Yilun wrote:
+> Main changes from v1: 
+> - A new patch (Patch #3) to fix the description.
+> - Rename the dfl-bus.h to dfl.h
+> - Updated the MAINTAINERS under FPGA DFL DRIVERS.
+> - Improve comments and minor fixes.
+> 
+> Main changes from v2: 
+> - Change the bus name from "dfl" to "fpga-dfl", also rename related
+>   variables, functions ... 
+> - Changes the data type of fpga_dfl_device_id.type from u8 to u16 
+> - Explicitly defines the values of enum fpga_dfl_id_type
+> - Delete the comments for the valid bits of type & feature_id
+> - changes MODALIAS format for fpga dfl devices
+> 
+> Main changes from v3: 
+> - Change the bus name back to "dfl".
+> - Add 2 patches (#5, 6) for dfl drivers.
+> - Delete the retimer FEC mode configuration via module_parameter for 
+>   Patch #5
+> - Merge the patch "Make m10_n3000_info static" (https://lore.kernel.org/linux-fpga/52d8411e-13d8-1e91-756d-131802f5f445@huawei.com/T/#t)
+>   into Patch #5
+> - Add static prefix for emif attributes macro for Patch #6
+> 
+> Main changes from v9:
+> - Add the description for struct dfl_device_id in mod_devicetable.h
+> - Move the dfl.h from include/linux/fpga to include/linux
+> - some code refactor and minor fixes for dfl-n3000-nios
+> 
+> Main changes from v10:
+> - use sysfs_emit instead of sprintf for both patches
+> - rebase to 5.10-rc1
+> 
+> Main changes from v11:
+> - Fix the type of driver_data from unsigned long to kernel_ulong_t
+> - Fixed up header guards to match filename by Moritz
+> - move the MODULE_DEVICE_TABLE() right after its definition
+> 
+> Main changes from v12:
+> - For patch #5, fix the wrong use of logical'||', should use '|'
+> 
+> Xu Yilun (6):
+>   fpga: dfl: fix the definitions of type & feature_id for dfl devices
+>   fpga: dfl: move dfl_device_id to mod_devicetable.h
+>   fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()
+>   fpga: dfl: move dfl bus related APIs to include/linux/dfl.h
+>   fpga: dfl: add support for N3000 Nios private feature
+>   memory: dfl-emif: add the DFL EMIF private feature driver
+> 
+>  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +
+>  .../ABI/testing/sysfs-bus-dfl-devices-n3000-nios   |  47 ++
+>  MAINTAINERS                                        |   3 +-
+>  drivers/fpga/Kconfig                               |  11 +
+>  drivers/fpga/Makefile                              |   2 +
+>  drivers/fpga/dfl-n3000-nios.c                      | 588 +++++++++++++++++++++
+>  drivers/fpga/dfl.c                                 |   4 +-
+>  drivers/fpga/dfl.h                                 |  85 +--
+>  drivers/memory/Kconfig                             |   9 +
+>  drivers/memory/Makefile                            |   2 +
+>  drivers/memory/dfl-emif.c                          | 207 ++++++++
+>  include/linux/dfl.h                                |  86 +++
+>  include/linux/mod_devicetable.h                    |  24 +
+>  scripts/mod/devicetable-offsets.c                  |   4 +
+>  scripts/mod/file2alias.c                           |  13 +
+>  15 files changed, 1023 insertions(+), 87 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-n3000-nios
+>  create mode 100644 drivers/fpga/dfl-n3000-nios.c
+>  create mode 100644 drivers/memory/dfl-emif.c
+>  create mode 100644 include/linux/dfl.h
+> 
+> -- 
+> 2.7.4
