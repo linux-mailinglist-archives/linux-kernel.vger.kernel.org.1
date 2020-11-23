@@ -2,141 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76BA2C1471
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BEA2C1469
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbgKWTVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 14:21:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34792 "EHLO
+        id S1732169AbgKWTUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 14:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729183AbgKWTVV (ORCPT
+        with ESMTP id S1726953AbgKWTUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:21:21 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2936C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:21:21 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id t13so16974839ilp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 11:21:21 -0800 (PST)
+        Mon, 23 Nov 2020 14:20:46 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D338DC0613CF;
+        Mon, 23 Nov 2020 11:20:45 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id s8so19683661wrw.10;
+        Mon, 23 Nov 2020 11:20:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oz8metO46QbXJuy4PHB2Bj1tfr/+9gTKVTZ9NXLvTQM=;
-        b=vaFqnXwZPjEvSJisaMdQytWcRMZg/6lN0E2LnGCrAWsIQ5+/uU8gOj1v5k/JebeKXc
-         hYW6s6iiCXe1PLt2zd+4r7HgKnNE+9Ptsyw1iN3uZMBBIeAFZJ1/Kt31Us7a8NkTcxna
-         wyIiYb0i5tbg1fveKnK6z5tLz2vJHpGkNRAhprU2BgmEwtAI8mHkeu3bUldOS05iVZP5
-         LK+62kXbfePdrvCtf79iyUHb26mo+NB9Jull4XcxfAhlEQhU5Ux8MYK68yX8rOLZNqJg
-         VS3QMTmh4WninUhXp5/2/52Fjx/D26yuHLT3xAtJ6QeGQYnmCiAgg0LSG5fYnaMpcOaa
-         A2WQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qywik7ZeoNLjOI/OiRzyEWbv5L3UmV1jd3xo8upxDsg=;
+        b=D3LUaTo9sjQT2psf9iOfR5Q+w/hWOKbYJIrGkOwrSKId0+dXBhN2JbAKZrdU51cvlB
+         2TH/BH6AH3DKIlQMdVT/V8i+l/yJ0ztIDwjnuj5ekXsttMcEx45j51pC0OifHlxSPhYg
+         Vk+onO+4dhk/KXF75P7ZKjh+voUOJ9oSQjQwUJDgxbPMNzzW/mCkzUromNJl14ewjTbQ
+         hnFhD+OP+mQd1nGunov0a3cqO2Ge91PFnaB9BUbjoIR7Xh+5gqsSdXq8Qw6VGchsGoGF
+         0vJhoOfb411RYFqRARv8q6FJ4UVj/X+YELsIA4bt6jG6BaYQDZlj6Yq4zmlmJcnYBMzK
+         BWSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oz8metO46QbXJuy4PHB2Bj1tfr/+9gTKVTZ9NXLvTQM=;
-        b=AxXii48DX+foFuOEQN3GT76htgiwaXUfH9P/TNwKFHPmNJBZ/ZTvqIX62y5gHLwEuJ
-         SR7Ycc1xtbQ6gng9PkalrCrlXh/xEQJJTkSUOaX4OFFPRyHzbR1GCx4t3q7Ieo19gJmH
-         uxzEcEgcq3VLkK+p/x91+V5IRslmkxL5dohNlD5OQAofMM4DdXV2Plub/3VVLYiWmgeK
-         amLo1GDLDGvyB6J9UFdJz+FF9WIYAtJu9BArM9eczeWpoebwJrK8/5KPxjBJOYJRC21v
-         aB9rnE5JWbom85gicI6z2sWVjTAxiVjaZFk4HmZPA7rtGP5meahII2NYoiIj9ol3G+OD
-         iyBQ==
-X-Gm-Message-State: AOAM531OVv5DwBssMfmnRIu/OoRgPBvcM2QIuiGegi0waK3axXd+feO9
-        64wO32ndZc8qf7tF3pJm0AHJA8ycoa8VDQ==
-X-Google-Smtp-Source: ABdhPJz181WGW4bS4/y2PxtjF4Dx7I880U/pEY0+FDVndB4ydb0G4uW8ikXwCWoVTBQ3EDl1IRZlwg==
-X-Received: by 2002:a92:d588:: with SMTP id a8mr1210329iln.79.1606159280803;
-        Mon, 23 Nov 2020 11:21:20 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id c7sm5956947ilk.36.2020.11.23.11.21.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 11:21:20 -0800 (PST)
-Date:   Mon, 23 Nov 2020 12:21:16 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/6] mm: proc: Invalidate TLB after clearing soft-dirty
- page state
-Message-ID: <20201123192116.GA3883038@google.com>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-5-will@kernel.org>
- <20201120202253.GB1303870@google.com>
- <20201121024922.GA1363491@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qywik7ZeoNLjOI/OiRzyEWbv5L3UmV1jd3xo8upxDsg=;
+        b=XmPx2hkMrnYUhHcS4S1tEmaYUkZjSGYKuuODpmTqm1+XxaBIo7Af1e2pu4vK6+AOPZ
+         shcAiXCq6C0LkfuRPogcjSJs1tFDCs+VgAHUQqtfA8qma4awxLGbkZM1HmDAI1NuffAw
+         7maoqB3ub9B4BrekEQvjcLs4HoRQexLwALmUUBw5rgFSTeKH7ghv5vIQrLXkz/RGX1rD
+         O1n6vhkm5LJe46n+HXbPavDCrJzliX32C7scDCeZoX48XoIAx+Kr9iZiMSK47JTwkNis
+         wq6UdpptwrMxiiCFgOmyhm80zGbGJdL3uNmS/nzMJUvqX1BGbiVWreUkEujAMrD8HfmY
+         KAQw==
+X-Gm-Message-State: AOAM533FKlzgnZTiOfM/gMdqPg4TmoshbcxmNtG6xS4bK/hY2QW9duxC
+        7caLREG7kcYt6f2Er2bd1xl4lwszS2ySisw7vh8=
+X-Google-Smtp-Source: ABdhPJy8N53HXm9IuUy+KZQkqOt4/pj9ITZPgRIZbKk5Hw32UENtsWfsI7ELNiEQlwY8TBRX7HEq8kOv+802Ag6uHEw=
+X-Received: by 2002:adf:a54d:: with SMTP id j13mr1337431wrb.132.1606159244462;
+ Mon, 23 Nov 2020 11:20:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121024922.GA1363491@google.com>
+References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
+ <20201123152146.GE11033@willie-the-truck> <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
+In-Reply-To: <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 23 Nov 2020 11:22:31 -0800
+Message-ID: <CAF6AEGse=WBAC1WbTi6aD5_m1_NBg91f=veYm-7V=Uds7NA0Lw@mail.gmail.com>
+Subject: Re: [PATCHv8 0/8] System Cache support for GPU and required SMMU support
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 07:49:22PM -0700, Yu Zhao wrote:
-> On Fri, Nov 20, 2020 at 01:22:53PM -0700, Yu Zhao wrote:
-> > On Fri, Nov 20, 2020 at 02:35:55PM +0000, Will Deacon wrote:
-> > > Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double flush"),
-> > > TLB invalidation is elided in tlb_finish_mmu() if no entries were batched
-> > > via the tlb_remove_*() functions. Consequently, the page-table modifications
-> > > performed by clear_refs_write() in response to a write to
-> > > /proc/<pid>/clear_refs do not perform TLB invalidation. Although this is
-> > > fine when simply aging the ptes, in the case of clearing the "soft-dirty"
-> > > state we can end up with entries where pte_write() is false, yet a
-> > > writable mapping remains in the TLB.
+On Mon, Nov 23, 2020 at 9:01 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> On 2020-11-23 20:51, Will Deacon wrote:
+> > On Tue, Nov 17, 2020 at 08:00:39PM +0530, Sai Prakash Ranjan wrote:
+> >> Some hardware variants contain a system cache or the last level
+> >> cache(llc). This cache is typically a large block which is shared
+> >> by multiple clients on the SOC. GPU uses the system cache to cache
+> >> both the GPU data buffers(like textures) as well the SMMU pagetables.
+> >> This helps with improved render performance as well as lower power
+> >> consumption by reducing the bus traffic to the system memory.
+> >>
+> >> The system cache architecture allows the cache to be split into slices
+> >> which then be used by multiple SOC clients. This patch series is an
+> >> effort to enable and use two of those slices preallocated for the GPU,
+> >> one for the GPU data buffers and another for the GPU SMMU hardware
+> >> pagetables.
+> >>
+> >> Patch 1 - Patch 6 adds system cache support in SMMU and GPU driver.
+> >> Patch 7 and 8 are minor cleanups for arm-smmu impl.
+> >>
+> >> Changes in v8:
+> >>  * Introduce a generic domain attribute for pagetable config (Will)
+> >>  * Rename quirk to more generic IO_PGTABLE_QUIRK_ARM_OUTER_WBWA (Will)
+> >>  * Move non-strict mode to use new struct domain_attr_io_pgtbl_config
+> >> (Will)
+> >
+> > Modulo some minor comments I've made, this looks good to me. What is
+> > the
+> > plan for merging it? I can take the IOMMU parts, but patches 4-6 touch
+> > the
+> > MSM GPU driver and I'd like to avoid conflicts with that.
+> >
+>
+> SMMU bits are pretty much independent and GPU relies on the domain
+> attribute
+> and the quirk exposed, so as long as SMMU changes go in first it should
+> be good.
+> Rob?
 
-I double checked my conclusion and I think it holds. But let me
-correct some typos and add a summary.
+I suppose one option would be to split out the patch that adds the
+attribute into it's own patch, and merge that both thru drm and iommu?
 
-> > I don't think we need a TLB flush in this context, same reason as we
-                                ^^^^^ gather
+If Will/Robin dislike that approach, I'll pick up the parts of the drm
+patches which don't depend on the new attribute for v5.11 and the rest
+for v5.12.. or possibly a second late v5.11 pull req if airlied
+doesn't hate me too much for it.
 
-> > don't have one in copy_present_pte() which uses ptep_set_wrprotect()
-> > to write-protect a src PTE.
-> > 
-> > ptep_modify_prot_start/commit() and ptep_set_wrprotect() guarantee
-> > either the dirty bit is set (when a PTE is still writable) or a PF
-> > happens (when a PTE has become r/o) when h/w page table walker races
-> > with kernel that modifies a PTE using the two APIs.
-> 
-> After we remove the writable bit, if we end up with a clean PTE, any
-> subsequent write will trigger a page fault. We can't have a stale
-> writable tlb entry. The architecture-specific APIs guarantee this.
-> 
-> If we end up with a dirty PTE, then yes, there will be a stale
-> writable tlb entry. But this won't be a problem because when we
-> write-protect a page (not PTE), we always check both pte_dirty()
-> and pte_write(), i.e., write_protect_page() and page_mkclean_one().
-> When they see this dirty PTE, they will flush. And generally, only
-> callers of pte_mkclean() should flush tlb; otherwise we end up one
-> extra if callers of pte_mkclean() and pte_wrprotect() both flush.
-> 
-> Now let's take a step back and see why we got
-> tlb_gather/finish_mmu() here in the first place. Commit b3a81d0841a95
-> ("mm: fix KSM data corruption") explains the problem clearly. But
-> to fix a problem created by two threads clearing pte_write() and
-> pte_dirty() independently, we only need one of them to set
-> mm_tlb_flush_pending(). Given only removing the writable bit requires
-                                                  ^^^^^^^^ dirty
+Going forward, I think we will have one or two more co-dependent
+series, like the smmu iova fault handler improvements that Jordan
+posted.  So I would like to hear how Will and Robin prefer to handle
+those.
 
-> tlb flush, that thread should be the one, as I just explained. Adding
-> tlb_gather/finish_mmu() is unnecessary in that fix. And there is no
-> point in having the original flush_tlb_mm() either, given data
-> integrity is already guaranteed.
-(i.e., writable tlb entries are flushed when removing the dirty bit.)
+BR,
+-R
 
-> Of course, with it we have more accurate access tracking.
-> 
-> Does a similar problem exist for page_mkclean_one()? Possibly. It
-> checks pte_dirty() and pte_write() but not mm_tlb_flush_pending().
-> At the moment, madvise_free_pte_range() only supports anonymous
-> memory, which doesn't do writeback. But the missing
-> mm_tlb_flush_pending() just seems to be an accident waiting to happen.
-> E.g., clean_record_pte() calls pte_mkclean() and does batched flush.
-> I don't know what it's for, but if it's called on file VMAs, a similar
-> race involving 4 CPUs can happen. This time CPU 1 runs
-> clean_record_pte() and CPU 3 runs page_mkclean_one().
 
-To summarize, IMO, we should 1) remove tlb_gather/finish_mmu() here;
-2) check mm_tlb_flush_pending() in page_mkclean_one() and
-dax_entry_mkclean().
+> Thanks,
+> Sai
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member
+> of Code Aurora Forum, hosted by The Linux Foundation
