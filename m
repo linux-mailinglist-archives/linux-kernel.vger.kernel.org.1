@@ -2,46 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DF92C07B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E822C07BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733066AbgKWMnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:43:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55488 "EHLO mail.kernel.org"
+        id S1733121AbgKWMnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:43:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732930AbgKWMma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:42:30 -0500
+        id S1732586AbgKWMml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:42:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2309A21D7A;
-        Mon, 23 Nov 2020 12:42:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67B9B2076E;
+        Mon, 23 Nov 2020 12:42:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135349;
-        bh=5sRT05j5UYL8dUuFjLXBr+J4MtGaD12i655VBY05fJM=;
+        s=korg; t=1606135361;
+        bh=t6R4CbITu2uIuaeJ1NJEzxNodkHNClQ8mtBqZzLVrng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iytqLxM+rNtfbrf5Yr2JBT+hO9O34b0G2d/I2hLZ52iV67RFzFw2AGXsRJBMnOsPD
-         D7ptGeCVM1+duXiW/WR5VLeb6rXGAB5CJUXptetUfLny7he4htelvHZhwGAXZHSeAF
-         UR/sgELpvyjyAfS1XVuVMQgtwMnz2dkQSYwkNyzE=
+        b=WGkfMuV0F/ex3qJq/9UAp/mpZKcWzm9GeNTKCeAR3AdHPb2Pv2E7CRHOWkDKGhaa3
+         ETkQT5sa8hiZGVhC2Wgv4ccjXw/BUkyAp9KZPd4eevS6G27SMzKtANYsXh5A0bROkt
+         h//Lp+hJ0CcWyLoJk8SGNC0eLnYqSZiJtPiM18w0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
-        Bert Barbe <bert.barbe@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>,
-        Manjunath Patil <manjunath.b.patil@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>,
-        SRINIVAS <srinivas.eeda@oracle.com>,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Eric Dumazet <edumazet@google.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 036/252] page_frag: Recover from memory pressure
-Date:   Mon, 23 Nov 2020 13:19:46 +0100
-Message-Id: <20201123121837.325261804@linuxfoundation.org>
+Subject: [PATCH 5.9 040/252] sctp: change to hold/put transport for proto_unreach_timer
+Date:   Mon, 23 Nov 2020 13:19:50 +0100
+Message-Id: <20201123121837.517246665@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -53,78 +44,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongli Zhang <dongli.zhang@oracle.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit d8c19014bba8f565d8a2f1f46b4e38d1d97bf1a7 ]
+[ Upstream commit 057a10fa1f73d745c8e69aa54ab147715f5630ae ]
 
-The ethernet driver may allocate skb (and skb->data) via napi_alloc_skb().
-This ends up to page_frag_alloc() to allocate skb->data from
-page_frag_cache->va.
+A call trace was found in Hangbin's Codenomicon testing with debug kernel:
 
-During the memory pressure, page_frag_cache->va may be allocated as
-pfmemalloc page. As a result, the skb->pfmemalloc is always true as
-skb->data is from page_frag_cache->va. The skb will be dropped if the
-sock (receiver) does not have SOCK_MEMALLOC. This is expected behaviour
-under memory pressure.
+  [ 2615.981988] ODEBUG: free active (active state 0) object type: timer_list hint: sctp_generate_proto_unreach_event+0x0/0x3a0 [sctp]
+  [ 2615.995050] WARNING: CPU: 17 PID: 0 at lib/debugobjects.c:328 debug_print_object+0x199/0x2b0
+  [ 2616.095934] RIP: 0010:debug_print_object+0x199/0x2b0
+  [ 2616.191533] Call Trace:
+  [ 2616.194265]  <IRQ>
+  [ 2616.202068]  debug_check_no_obj_freed+0x25e/0x3f0
+  [ 2616.207336]  slab_free_freelist_hook+0xeb/0x140
+  [ 2616.220971]  kfree+0xd6/0x2c0
+  [ 2616.224293]  rcu_do_batch+0x3bd/0xc70
+  [ 2616.243096]  rcu_core+0x8b9/0xd00
+  [ 2616.256065]  __do_softirq+0x23d/0xacd
+  [ 2616.260166]  irq_exit+0x236/0x2a0
+  [ 2616.263879]  smp_apic_timer_interrupt+0x18d/0x620
+  [ 2616.269138]  apic_timer_interrupt+0xf/0x20
+  [ 2616.273711]  </IRQ>
 
-However, once kernel is not under memory pressure any longer (suppose large
-amount of memory pages are just reclaimed), the page_frag_alloc() may still
-re-use the prior pfmemalloc page_frag_cache->va to allocate skb->data. As a
-result, the skb->pfmemalloc is always true unless page_frag_cache->va is
-re-allocated, even if the kernel is not under memory pressure any longer.
+This is because it holds asoc when transport->proto_unreach_timer starts
+and puts asoc when the timer stops, and without holding transport the
+transport could be freed when the timer is still running.
 
-Here is how kernel runs into issue.
+So fix it by holding/putting transport instead for proto_unreach_timer
+in transport, just like other timers in transport.
 
-1. The kernel is under memory pressure and allocation of
-PAGE_FRAG_CACHE_MAX_ORDER in __page_frag_cache_refill() will fail. Instead,
-the pfmemalloc page is allocated for page_frag_cache->va.
+v1->v2:
+  - Also use sctp_transport_put() for the "out_unlock:" path in
+    sctp_generate_proto_unreach_event(), as Marcelo noticed.
 
-2: All skb->data from page_frag_cache->va (pfmemalloc) will have
-skb->pfmemalloc=true. The skb will always be dropped by sock without
-SOCK_MEMALLOC. This is an expected behaviour.
-
-3. Suppose a large amount of pages are reclaimed and kernel is not under
-memory pressure any longer. We expect skb->pfmemalloc drop will not happen.
-
-4. Unfortunately, page_frag_alloc() does not proactively re-allocate
-page_frag_alloc->va and will always re-use the prior pfmemalloc page. The
-skb->pfmemalloc is always true even kernel is not under memory pressure any
-longer.
-
-Fix this by freeing and re-allocating the page instead of recycling it.
-
-Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-Cc: Bert Barbe <bert.barbe@oracle.com>
-Cc: Rama Nichanamatlu <rama.nichanamatlu@oracle.com>
-Cc: Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
-Cc: Manjunath Patil <manjunath.b.patil@oracle.com>
-Cc: Joe Jin <joe.jin@oracle.com>
-Cc: SRINIVAS <srinivas.eeda@oracle.com>
-Fixes: 79930f5892e1 ("net: do not deplete pfmemalloc reserve")
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20201115201029.11903-1-dongli.zhang@oracle.com
+Fixes: 50b5d6ad6382 ("sctp: Fix a race between ICMP protocol unreachable and connect()")
+Reported-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Link: https://lore.kernel.org/r/102788809b554958b13b95d33440f5448113b8d6.1605331373.git.lucien.xin@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/page_alloc.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ net/sctp/input.c         |    4 ++--
+ net/sctp/sm_sideeffect.c |    4 ++--
+ net/sctp/transport.c     |    2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5053,6 +5053,11 @@ refill:
- 		if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
- 			goto refill;
+--- a/net/sctp/input.c
++++ b/net/sctp/input.c
+@@ -449,7 +449,7 @@ void sctp_icmp_proto_unreachable(struct
+ 		else {
+ 			if (!mod_timer(&t->proto_unreach_timer,
+ 						jiffies + (HZ/20)))
+-				sctp_association_hold(asoc);
++				sctp_transport_hold(t);
+ 		}
+ 	} else {
+ 		struct net *net = sock_net(sk);
+@@ -458,7 +458,7 @@ void sctp_icmp_proto_unreachable(struct
+ 			 "encountered!\n", __func__);
  
-+		if (unlikely(nc->pfmemalloc)) {
-+			free_the_page(page, compound_order(page));
-+			goto refill;
-+		}
-+
- #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
- 		/* if size can vary use size else just use PAGE_SIZE */
- 		size = nc->size;
+ 		if (del_timer(&t->proto_unreach_timer))
+-			sctp_association_put(asoc);
++			sctp_transport_put(t);
+ 
+ 		sctp_do_sm(net, SCTP_EVENT_T_OTHER,
+ 			   SCTP_ST_OTHER(SCTP_EVENT_ICMP_PROTO_UNREACH),
+--- a/net/sctp/sm_sideeffect.c
++++ b/net/sctp/sm_sideeffect.c
+@@ -419,7 +419,7 @@ void sctp_generate_proto_unreach_event(s
+ 		/* Try again later.  */
+ 		if (!mod_timer(&transport->proto_unreach_timer,
+ 				jiffies + (HZ/20)))
+-			sctp_association_hold(asoc);
++			sctp_transport_hold(transport);
+ 		goto out_unlock;
+ 	}
+ 
+@@ -435,7 +435,7 @@ void sctp_generate_proto_unreach_event(s
+ 
+ out_unlock:
+ 	bh_unlock_sock(sk);
+-	sctp_association_put(asoc);
++	sctp_transport_put(transport);
+ }
+ 
+  /* Handle the timeout of the RE-CONFIG timer. */
+--- a/net/sctp/transport.c
++++ b/net/sctp/transport.c
+@@ -133,7 +133,7 @@ void sctp_transport_free(struct sctp_tra
+ 
+ 	/* Delete the ICMP proto unreachable timer if it's active. */
+ 	if (del_timer(&transport->proto_unreach_timer))
+-		sctp_association_put(transport->asoc);
++		sctp_transport_put(transport);
+ 
+ 	sctp_transport_put(transport);
+ }
 
 
