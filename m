@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9CF2C0AEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9402C0BCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731050AbgKWMcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:32:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42904 "EHLO mail.kernel.org"
+        id S2389280AbgKWNa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:30:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730955AbgKWMbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:31:46 -0500
+        id S1730356AbgKWM1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:27:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20A0720728;
-        Mon, 23 Nov 2020 12:31:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 868E320781;
+        Mon, 23 Nov 2020 12:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134704;
-        bh=O2zs6xZVKt3P/jhYF3aKxMr2zr6vIlrWT9ptOBoFddo=;
+        s=korg; t=1606134468;
+        bh=ZCJqcz4NK4XgLhHbzm2dmosi4H9y9gxZcvC91eQtnlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W0RQ5puIQtJKKbhCS2YXRsV6bt5rCaMpi6MSEMN1EEz2ko9qeqlXv83BjfO2QTNnd
-         1yV5Ru5QeMVbwrVo4xLjgmEJqB5A/l+yVYS1cQkP5dqMRZ8g3NrvkVnpoR80eWmqaz
-         8KdQLcr1Sp6Z1TpmSfGrkEJqt/eDOKuSZ+dymOYw=
+        b=dLY56uSi2u4w8/cs1WAaT7ml47mNUfABATEjqh1LGB1WG/29eo0oA/fGLrH/kr6oC
+         F2JoEkubK8k3VMfkh/QeKJevfcVKzLBXDRdz8D8Rjig5GywW1oUSTN7nhDiYbD+iBG
+         2Nw9h8fCahBV0KrjTSuF2wNaJL8aqc39LBGlCJd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org,
+        Loris Fauster <loris.fauster@ttcontrol.com>,
+        Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 53/91] can: peak_usb: fix potential integer overflow on shift of a int
+Subject: [PATCH 4.14 31/60] can: dev: can_restart(): post buffer from the right context
 Date:   Mon, 23 Nov 2020 13:22:13 +0100
-Message-Id: <20201123121811.897954128@linuxfoundation.org>
+Message-Id: <20201123121806.548861633@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-References: <20201123121809.285416732@linuxfoundation.org>
+In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
+References: <20201123121805.028396732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Alejandro Concepcion Rodriguez <alejandro@acoro.eu>
 
-[ Upstream commit 8a68cc0d690c9e5730d676b764c6f059343b842c ]
+[ Upstream commit a1e654070a60d5d4f7cce59c38f4ca790bb79121 ]
 
-The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
-arithmetic and then assigned to a signed 64 bit variable. In the case where
-time_ref->adapter->ts_used_bits is 32 or more this can lead to an oveflow.
-Avoid this by shifting using the BIT_ULL macro instead.
+netif_rx() is meant to be called from interrupt contexts. can_restart() may be
+called by can_restart_work(), which is called from a worqueue, so it may run in
+process context. Use netif_rx_ni() instead.
 
-Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20201105112427.40688-1-colin.king@canonical.com
+Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
+Co-developed-by: Loris Fauster <loris.fauster@ttcontrol.com>
+Signed-off-by: Loris Fauster <loris.fauster@ttcontrol.com>
+Signed-off-by: Alejandro Concepcion Rodriguez <alejandro@acoro.eu>
+Link: https://lore.kernel.org/r/4e84162b-fb31-3a73-fa9a-9438b4bd5234@acoro.eu
+[mkl: use netif_rx_ni() instead of netif_rx_any_context()]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index db156a11e6db5..f7d653d48a1e4 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -164,7 +164,7 @@ void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *time)
- 		if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
- 			/* case when event time (tsw) wraps */
- 			if (ts < time_ref->ts_dev_1)
--				delta_ts = 1 << time_ref->adapter->ts_used_bits;
-+				delta_ts = BIT_ULL(time_ref->adapter->ts_used_bits);
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index e79965a390aab..c483c4b787fee 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -578,7 +578,7 @@ static void can_restart(struct net_device *dev)
+ 	}
+ 	cf->can_id |= CAN_ERR_RESTARTED;
  
- 		/* Otherwise, sync time counter (ts_dev_2) has wrapped:
- 		 * handle case when event time (tsn) hasn't.
-@@ -176,7 +176,7 @@ void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *time)
- 		 *              tsn            ts
- 		 */
- 		} else if (time_ref->ts_dev_1 < ts) {
--			delta_ts = -(1 << time_ref->adapter->ts_used_bits);
-+			delta_ts = -BIT_ULL(time_ref->adapter->ts_used_bits);
- 		}
+-	netif_rx(skb);
++	netif_rx_ni(skb);
  
- 		/* add delay between last sync and event timestamps */
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
 -- 
 2.27.0
 
