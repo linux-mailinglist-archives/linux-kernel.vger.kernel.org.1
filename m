@@ -2,130 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F13C2C0EA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0A92C0EAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389484AbgKWPTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389472AbgKWPTA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:19:00 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0997AC0613CF;
-        Mon, 23 Nov 2020 07:19:00 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id m9so14543645pgb.4;
-        Mon, 23 Nov 2020 07:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KvAGWa51N1ldPtAHuumksuzzvbgBB+vz4HpNyK5XNq8=;
-        b=pttiWk7G0OsNNoNv8H1HMCAtiHeFVHSupx1sVGn0yYKliUtOanYK43BTM8uhfU8Yoa
-         bqjFxDC4XuX2bTORpq7EqNbhYvzlMwysVjqzi8huxyofGc6dFOfOh92+pHO6hv32cLk1
-         9fJb0aGhbzLdUb6dXLW9xk2+oodCxxi3Aj1LSKNK0LUDsgNASYr8kcrY2e6UusPIv+XZ
-         jcuW6eDcOrlrDOKb8fH2AFktWr/HAuD+XbUypAxPZ4ajvwSTjsYKmmE5qPOHMg+iP/hk
-         iiLoGQRF+n265YM6nqDaB3ZQr0dHizcDLW2kZoZV+FjB55e6o2thyzpMUy3KDGQzFdDg
-         mBLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KvAGWa51N1ldPtAHuumksuzzvbgBB+vz4HpNyK5XNq8=;
-        b=ZePOa6BHXyZ9Ic9xhmoj9qxOj/b7g2KZf4UhgFagFY2OIreDmAgXa4adfUP/hwjGd2
-         sCgYCgH0lWm/EfrZv59fFamOEkl8WbvKYEEAe57CkCr2m5zIokuw5xbNbTdT8YfI8mAf
-         zLH+DNqM2kDFxorxpcBGGQS9lUoRkNnD0ZosoSLamo8lYThac86u2EFNQtTztKT3XzsO
-         73U1V1AgMgiojJqrVzNkyrDIit6DWnrqAMrO8wfuH30xVqViwnn844LNFyPBzEc81Dol
-         z76rwuWOcknS39L6QsbkwdUk8fsegXk+GuDyPTpl9WAwyg80L2p+jXUFD/gn3+ua5LZL
-         6vnA==
-X-Gm-Message-State: AOAM532psLS7GOF6TZl+2nKqGprY/XuJPs6p6wnXGI132lTNUT1axzl1
-        sZG8u+Nu+fH98gPhTlOmA04=
-X-Google-Smtp-Source: ABdhPJynR4MTzhD1DiVAdK4Yfghxd85RNfiZ1fk4IMivBLcmVO/ErCOnF8baIY/OINebwOPGjLxVew==
-X-Received: by 2002:a63:4e24:: with SMTP id c36mr27514825pgb.171.1606144739596;
-        Mon, 23 Nov 2020 07:18:59 -0800 (PST)
-Received: from localhost.localdomain ([240d:1a:8f0:6c00:89cb:88d1:b6b2:3345])
-        by smtp.gmail.com with ESMTPSA id r130sm5038399pfc.41.2020.11.23.07.18.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 07:18:58 -0800 (PST)
-From:   Alexandre Courbot <gnurou@gmail.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Courbot <gnurou@gmail.com>
-Subject: [PATCH v2 2/2] media: v4l2-mem2mem: always call poll_wait() on queues
-Date:   Tue, 24 Nov 2020 00:18:43 +0900
-Message-Id: <20201123151843.798205-3-gnurou@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123151843.798205-1-gnurou@gmail.com>
-References: <20201123151843.798205-1-gnurou@gmail.com>
+        id S2389493AbgKWPTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:19:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389474AbgKWPTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:19:04 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7936020729;
+        Mon, 23 Nov 2020 15:19:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606144743;
+        bh=BwJ+4Te3bkM4R/A2I2brRrimSjDHYz5ANvg6uPdA8hY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qSdIKrCzWHx787RZVdLuzFX1Ft5Nj6Fk1mf40U7EI2Bv/Xy0Fj9T0dnlMzoTfcblb
+         SpBPZg37qditz5McX6jaEygut/10o/ONgXbWrRjajJ7oI7scw7x7uArzIA3cUrnsLI
+         rlBTV58jW5csEIrzI1bBQZaaHomX0XKaOWvXfkk0=
+Date:   Mon, 23 Nov 2020 15:18:58 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCHv8 2/8] iommu/arm-smmu: Add domain attribute for pagetable
+ configuration
+Message-ID: <20201123151857.GC11033@willie-the-truck>
+References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
+ <3dfbc9d6d4489ca90361fac4e64586434331792f.1605621785.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3dfbc9d6d4489ca90361fac4e64586434331792f.1605621785.git.saiprakash.ranjan@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_poll()/do_select() seem to set the _qproc member of poll_table to
-NULL the first time they are called on a given table, making subsequent
-calls of poll_wait() on that table no-ops. This is a problem for mem2mem
-which calls poll_wait() on the V4L2 queues' waitqueues only when a
-queue-related event is requested, which may not necessarily be the case
-during the first poll.
+On Tue, Nov 17, 2020 at 08:00:41PM +0530, Sai Prakash Ranjan wrote:
+> Add iommu domain attribute for pagetable configuration which
+> initially will be used to set quirks like for system cache aka
+> last level cache to be used by client drivers like GPU to set
+> right attributes for caching the hardware pagetables into the
+> system cache and later can be extended to include other page
+> table configuration data.
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 25 +++++++++++++++++++++++++
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h |  1 +
+>  include/linux/io-pgtable.h            |  4 ++++
+>  include/linux/iommu.h                 |  1 +
+>  4 files changed, 31 insertions(+)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index 0f28a8614da3..7b05782738e2 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -789,6 +789,9 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+>  	if (smmu_domain->non_strict)
+>  		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
+>  
+> +	if (smmu_domain->pgtbl_cfg.quirks)
+> +		pgtbl_cfg.quirks |= smmu_domain->pgtbl_cfg.quirks;
+> +
+>  	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
+>  	if (!pgtbl_ops) {
+>  		ret = -ENOMEM;
+> @@ -1511,6 +1514,12 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
+>  		case DOMAIN_ATTR_NESTING:
+>  			*(int *)data = (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED);
+>  			return 0;
+> +		case DOMAIN_ATTR_IO_PGTABLE_CFG: {
+> +			struct domain_attr_io_pgtbl_cfg *pgtbl_cfg = data;
+> +			*pgtbl_cfg = smmu_domain->pgtbl_cfg;
+> +
+> +			return 0;
+> +		}
+>  		default:
+>  			return -ENODEV;
+>  		}
+> @@ -1551,6 +1560,22 @@ static int arm_smmu_domain_set_attr(struct iommu_domain *domain,
+>  			else
+>  				smmu_domain->stage = ARM_SMMU_DOMAIN_S1;
+>  			break;
+> +		case DOMAIN_ATTR_IO_PGTABLE_CFG: {
+> +			struct domain_attr_io_pgtbl_cfg *pgtbl_cfg = data;
+> +
+> +			if (smmu_domain->smmu) {
+> +				ret = -EPERM;
+> +				goto out_unlock;
+> +			}
+> +
+> +			if (!pgtbl_cfg) {
 
-For instance, a stateful decoder is typically only interested in
-EPOLLPRI events when it starts, and will switch to listening to both
-EPOLLPRI and EPOLLIN after receiving the initial resolution change event
-and configuring the CAPTURE queue. However by the time that switch
-happens and v4l2_m2m_poll_for_data() is called for the first time,
-poll_wait() has become a no-op and the V4L2 queues waitqueues thus
-cannot be registered.
+Do we really need to check this? If somebody passed us a NULL pointer then
+they have a bug and we don't check this for other domain attributes afaict.
 
-Fix this by moving the registration to v4l2_m2m_poll() and do it whether
-or not one of the queue-related events are requested.
+> +				ret = -ENODEV;
+> +				goto out_unlock;
+> +			}
+> +
+> +			smmu_domain->pgtbl_cfg = *pgtbl_cfg;
+> +			break;
+> +		}
+>  		default:
+>  			ret = -ENODEV;
+>  		}
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> index 04288b6fc619..18fbed376afb 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> @@ -364,6 +364,7 @@ enum arm_smmu_domain_stage {
+>  struct arm_smmu_domain {
+>  	struct arm_smmu_device		*smmu;
+>  	struct io_pgtable_ops		*pgtbl_ops;
+> +	struct domain_attr_io_pgtbl_cfg	pgtbl_cfg;
+>  	const struct iommu_flush_ops	*flush_ops;
+>  	struct arm_smmu_cfg		cfg;
+>  	enum arm_smmu_domain_stage	stage;
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index a9a2c59fab37..686b37d48743 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -212,6 +212,10 @@ struct io_pgtable {
+>  
+>  #define io_pgtable_ops_to_pgtable(x) container_of((x), struct io_pgtable, ops)
+>  
+> +struct domain_attr_io_pgtbl_cfg {
+> +	unsigned long quirks;
+> +};
 
-Signed-off-by: Alexandre Courbot <gnurou@gmail.com>
----
- drivers/media/v4l2-core/v4l2-mem2mem.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+nit: Can you rename this to 'struct io_pgtable_domain_attr' please?
 
-diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index b221b4e438a1..e7f4bf5bc8dd 100644
---- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-+++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-@@ -887,9 +887,6 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
- 	src_q = v4l2_m2m_get_src_vq(m2m_ctx);
- 	dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
- 
--	poll_wait(file, &src_q->done_wq, wait);
--	poll_wait(file, &dst_q->done_wq, wait);
--
- 	/*
- 	 * There has to be at least one buffer queued on each queued_list, which
- 	 * means either in driver already or waiting for driver to claim it
-@@ -922,9 +919,21 @@ __poll_t v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- 		       struct poll_table_struct *wait)
- {
- 	struct video_device *vfd = video_devdata(file);
-+	struct vb2_queue *src_q = v4l2_m2m_get_src_vq(m2m_ctx);
-+	struct vb2_queue *dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
- 	__poll_t req_events = poll_requested_events(wait);
- 	__poll_t rc = 0;
- 
-+	/*
-+	 * poll_wait() MUST be called on the first invocation on all the
-+	 * potential queues of interest, even if we are not interested in their
-+	 * events during this first call. Failure to do so will result in
-+	 * queue's events to be ignored because the poll_table won't be capable
-+	 * of adding new wait queues thereafter.
-+	 */
-+	poll_wait(file, &src_q->done_wq, wait);
-+	poll_wait(file, &dst_q->done_wq, wait);
-+
- 	if (req_events & (EPOLLOUT | EPOLLWRNORM | EPOLLIN | EPOLLRDNORM))
- 		rc = v4l2_m2m_poll_for_data(file, m2m_ctx, wait);
- 
--- 
-2.29.2
-
+Will
