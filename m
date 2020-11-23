@@ -2,84 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DDE2C161C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D6C2C1621
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 21:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732639AbgKWULP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 15:11:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732570AbgKWULL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 15:11:11 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728814AbgKWULX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 15:11:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51180 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729094AbgKWULU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 15:11:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606162279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BucjfkTdsu/6qMhVKwCOxP6e6VVAYFVqDMnKbCaFjOI=;
+        b=VmQXdasNQN8GZ3zZZUx4JI/GH+IJXY3yB2aQg3q253rJiiYQciTwaOpKMWBTmLW5Iqw4I/
+        YNetwlG+9q6gi1PIplqfaqPo2TS1VVDU8A90sf5GITFEqSGikLwRRKedBP4JT3gWwGShZh
+        oAmpdheJAi0+jsa7x39wcigZKQNQ8+8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-Z2WovFMLOUCWd9d0-Shb0g-1; Mon, 23 Nov 2020 15:11:17 -0500
+X-MC-Unique: Z2WovFMLOUCWd9d0-Shb0g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E87FB20715;
-        Mon, 23 Nov 2020 20:11:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1606162270;
-        bh=S16KBwhaL/01tGXV0yjo+fhZ/1ZXyYm+GDtWWM3lQiw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s0Z9tEU4SklazDQUZnIX5EresDQad7SkzVV2bA8lAe3AE+57E0+xaXNcttXDY4c3N
-         2DLWeaq2KtP2uKBIu+v5SmBGjWPsJqeNodCJ3t2iSZYrAGR5dAAy9wYfOqec5z79Bc
-         gQMMbWP6RmrFDEd8+nDIcp2R2ji6h62jIynqVV8A=
-Date:   Mon, 23 Nov 2020 12:11:08 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-mm@kvack.kernel.org, Daniel Colascione <dancol@google.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Subject: Re: [PATCH v6 1/2] Add UFFD_USER_MODE_ONLY
-Message-Id: <20201123121108.24d178769cfc9500c7c51317@linux-foundation.org>
-In-Reply-To: <CA+EESO7xnnJAsPneuy1dNj6F47gViGiL-z8rajY5EoGdFWs+-A@mail.gmail.com>
-References: <20201120030411.2690816-1-lokeshgidra@google.com>
-        <20201120030411.2690816-2-lokeshgidra@google.com>
-        <20201120153337.431dc36c1975507bb1e44596@linux-foundation.org>
-        <CA+EESO7xnnJAsPneuy1dNj6F47gViGiL-z8rajY5EoGdFWs+-A@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC07B8030A5;
+        Mon, 23 Nov 2020 20:11:15 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BEEF9CA0;
+        Mon, 23 Nov 2020 20:11:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH net-next 10/17] rxrpc: Make the parsing of xdr payloads more
+ coherent
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 23 Nov 2020 20:11:14 +0000
+Message-ID: <160616227430.830164.6815276950448082758.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk>
+References: <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 11:17:43 -0800 Lokesh Gidra <lokeshgidra@google.com> wrote:
+Make the parsing of xdr-encoded payloads, as passed to add_key, more
+coherent.  Shuttling back and forth between various variables was a bit
+hard to follow.
 
-> > > A future patch adds a knob allowing administrators to give some
-> > > processes the ability to create userfaultfd file objects only if they
-> > > pass UFFD_USER_MODE_ONLY, reducing the likelihood that these processes
-> > > will exploit userfaultfd's ability to delay kernel page faults to open
-> > > timing windows for future exploits.
-> >
-> > Can we assume that an update to the userfaultfd(2) manpage is in the
-> > works?
-> >
-> Yes, I'm working on it. Can the kernel version which will have these
-> patches be known now so that I can mention it in the manpage?
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-5.11, if all proceeds smoothly.
+ net/rxrpc/key.c |   21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
+index ed29ec01237b..a9d8f5b466be 100644
+--- a/net/rxrpc/key.c
++++ b/net/rxrpc/key.c
+@@ -135,7 +135,7 @@ static int rxrpc_preparse_xdr_rxkad(struct key_preparsed_payload *prep,
+  */
+ static int rxrpc_preparse_xdr(struct key_preparsed_payload *prep)
+ {
+-	const __be32 *xdr = prep->data, *token;
++	const __be32 *xdr = prep->data, *token, *p;
+ 	const char *cp;
+ 	unsigned int len, paddedlen, loop, ntoken, toklen, sec_ix;
+ 	size_t datalen = prep->datalen;
+@@ -189,20 +189,20 @@ static int rxrpc_preparse_xdr(struct key_preparsed_payload *prep)
+ 		goto not_xdr;
+ 
+ 	/* check each token wrapper */
+-	token = xdr;
++	p = xdr;
+ 	loop = ntoken;
+ 	do {
+ 		if (datalen < 8)
+ 			goto not_xdr;
+-		toklen = ntohl(*xdr++);
+-		sec_ix = ntohl(*xdr);
++		toklen = ntohl(*p++);
++		sec_ix = ntohl(*p);
+ 		datalen -= 4;
+ 		_debug("token: [%x/%zx] %x", toklen, datalen, sec_ix);
+ 		paddedlen = (toklen + 3) & ~3;
+ 		if (toklen < 20 || toklen > datalen || paddedlen > datalen)
+ 			goto not_xdr;
+ 		datalen -= paddedlen;
+-		xdr += paddedlen >> 2;
++		p += paddedlen >> 2;
+ 
+ 	} while (--loop > 0);
+ 
+@@ -214,17 +214,18 @@ static int rxrpc_preparse_xdr(struct key_preparsed_payload *prep)
+ 	 * - we ignore the cellname, relying on the key to be correctly named
+ 	 */
+ 	do {
+-		xdr = token;
+ 		toklen = ntohl(*xdr++);
+-		token = xdr + ((toklen + 3) >> 2);
+-		sec_ix = ntohl(*xdr++);
++		token = xdr;
++		xdr += (toklen + 3) / 4;
++
++		sec_ix = ntohl(*token++);
+ 		toklen -= 4;
+ 
+-		_debug("TOKEN type=%u [%p-%p]", sec_ix, xdr, token);
++		_debug("TOKEN type=%x len=%x", sec_ix, toklen);
+ 
+ 		switch (sec_ix) {
+ 		case RXRPC_SECURITY_RXKAD:
+-			ret = rxrpc_preparse_xdr_rxkad(prep, datalen, xdr, toklen);
++			ret = rxrpc_preparse_xdr_rxkad(prep, datalen, token, toklen);
+ 			if (ret != 0)
+ 				goto error;
+ 			break;
+
+
