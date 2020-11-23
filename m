@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6AF2C0B1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09A72C0C00
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732223AbgKWMjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:39:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51364 "EHLO mail.kernel.org"
+        id S1730350AbgKWNfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:35:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732127AbgKWMiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:38:46 -0500
+        id S1729713AbgKWMX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:23:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E233C221FB;
-        Mon, 23 Nov 2020 12:38:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 915A92076E;
+        Mon, 23 Nov 2020 12:23:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135126;
-        bh=c4g0HOfMIti52aMBYC1jjrK12V24D2HoGPGU31+DZD4=;
+        s=korg; t=1606134239;
+        bh=aheUR8BdLnRwTwuMCdOH5VMxLk5EdkoELalPBNjEmZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I8ZSwsbSaVMXN8EF3hvkQCShx6nS3speP0phg/F74aStE5/VCHBdsivZ5ZS7nowq+
-         l0wrRihTn9obOfAKIPESd2SwOPzzD5PfmbwWNhEAelA981l9Y87wh4yCsLXxaEYLdb
-         R679qsfeDJNRMXfVXPLXNd10Ea6pfc8tt845k0h4=
+        b=ibujwRDrwB8ZnAeALI1YR6DD2jTKgtX9xGE3yp/9TLz/KUZ9uUeGSco0aZKudQ0iF
+         rh8QMBE2zUtZxXfRsrpitA3Eu16u4mQAedRQi2PUocBjTItbHChh2LYAAc62VH6AAu
+         VWejgXArWfBTRrP0JJCFE2tuLuH+ldARNrrHzF60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Cutts <hcutts@chromium.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 113/158] HID: logitech-hidpp: Add PID for MX Anywhere 2
-Date:   Mon, 23 Nov 2020 13:22:21 +0100
-Message-Id: <20201123121825.393302038@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 4.4 37/38] s390/cpum_sf.c: fix file permission for cpum_sfb_size
+Date:   Mon, 23 Nov 2020 13:22:23 +0100
+Message-Id: <20201123121806.070380991@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
+References: <20201123121804.306030358@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harry Cutts <hcutts@chromium.org>
+From: Thomas Richter <tmricht@linux.ibm.com>
 
-[ Upstream commit b59f38dbfd5d19eb7e03d8b639f0c0d385ba8cc5 ]
+commit 78d732e1f326f74f240d416af9484928303d9951 upstream.
 
-It seems that the PID 0x4072 was missing from the list Logitech gave me
-for this mouse, as I found one with it in the wild (with which I tested
-this patch).
+This file is installed by the s390 CPU Measurement sampling
+facility device driver to export supported minimum and
+maximum sample buffer sizes.
+This file is read by lscpumf tool to display the details
+of the device driver capabilities. The lscpumf tool might
+be invoked by a non-root user. In this case it does not
+print anything because the file contents can not be read.
 
-Fixes: 4435ff2f09a2 ("HID: logitech: Enable high-resolution scrolling on Logitech mice")
-Signed-off-by: Harry Cutts <hcutts@chromium.org>
-Acked-by: Peter Hutterer <peter.hutterer@who-t.net>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by allowing read access for all users. Reading
+the file contents is ok, changing the file contents is
+left to the root user only.
+
+For further reference and details see:
+ [1] https://github.com/ibm-s390-tools/s390-tools/issues/97
+
+Fixes: 69f239ed335a ("s390/cpum_sf: Dynamically extend the sampling buffer if overflows occur")
+Cc: <stable@vger.kernel.org> # 3.14
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/hid/hid-logitech-hidpp.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/s390/kernel/perf_cpum_sf.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-index 60cf806062821..c85070d631da5 100644
---- a/drivers/hid/hid-logitech-hidpp.c
-+++ b/drivers/hid/hid-logitech-hidpp.c
-@@ -3741,6 +3741,7 @@ static const struct hid_device_id hidpp_devices[] = {
- 	  LDJ_DEVICE(0x405e), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
- 	{ /* Mouse Logitech MX Anywhere 2 */
- 	  LDJ_DEVICE(0x404a), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
-+	{ LDJ_DEVICE(0x4072), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
- 	{ LDJ_DEVICE(0xb013), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
- 	{ LDJ_DEVICE(0xb018), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
- 	{ LDJ_DEVICE(0xb01f), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
--- 
-2.27.0
-
+--- a/arch/s390/kernel/perf_cpum_sf.c
++++ b/arch/s390/kernel/perf_cpum_sf.c
+@@ -1666,4 +1666,4 @@ out:
+ 	return err;
+ }
+ arch_initcall(init_cpum_sampling_pmu);
+-core_param(cpum_sfb_size, CPUM_SF_MAX_SDB, sfb_size, 0640);
++core_param(cpum_sfb_size, CPUM_SF_MAX_SDB, sfb_size, 0644);
 
 
