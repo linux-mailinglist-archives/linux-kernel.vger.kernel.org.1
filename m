@@ -2,194 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F34A2C0608
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFCB2C0680
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730196AbgKWM0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:26:45 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8569 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730182AbgKWM0n (ORCPT
+        id S1730861AbgKWMba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:31:30 -0500
+Received: from lgeamrelo11.lge.com ([156.147.23.51]:52125 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730829AbgKWMbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:43 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CfmbQ5z2NzLsR5;
-        Mon, 23 Nov 2020 20:26:10 +0800 (CST)
-Received: from [127.0.0.1] (10.74.185.4) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 23 Nov 2020
- 20:26:25 +0800
-Subject: Re: [PATCH v4] ACPI / APEI: do memory failure on the physical address
- reported by ARM processor error section
-To:     <james.morse@arm.com>, <rafael@kernel.org>, <rjw@rjwysocki.net>,
-        <lenb@kernel.org>, <tony.luck@intel.com>, <bp@alien8.de>,
-        <akpm@linux-foundation.org>, <jroedel@suse.de>,
-        <peterz@infradead.org>
-References: <1603877835-30970-1-git-send-email-tanxiaofei@huawei.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <5FBBAA71.3090101@huawei.com>
-Date:   Mon, 23 Nov 2020 20:26:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        Mon, 23 Nov 2020 07:31:14 -0500
+Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
+        by 156.147.23.51 with ESMTP; 23 Nov 2020 21:31:12 +0900
+X-Original-SENDERIP: 156.147.1.121
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.121 with ESMTP; 23 Nov 2020 21:31:12 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Mon, 23 Nov 2020 21:29:38 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     torvalds@linux-foundation.org, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com
+Subject: Re: [RFC] Dept(Dependency Tracker) Implementation
+Message-ID: <20201123122938.GA10265@X58A-UD3R>
+References: <20201111050559.GA24438@X58A-UD3R>
+ <20201123110527.GB9464@X58A-UD3R>
 MIME-Version: 1.0
-In-Reply-To: <1603877835-30970-1-git-send-email-tanxiaofei@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.74.185.4]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123110527.GB9464@X58A-UD3R>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James，
-Please help to review this new version, thank you very much.
+On Mon, Nov 23, 2020 at 08:05:27PM +0900, Byungchul Park wrote:
+> Hi,
+> 
+> This patchset is too nasty to get reviewed in detail for now.
 
-On 2020/10/28 17:37, Xiaofei Tan wrote:
-> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
-> synchronise with APEI's irq work") applied, do_sea() return directly
-> for user-mode if apei_claim_sea() handled any error record. Therefore,
-> each error record reported by the user-mode SEA must be effectively
-> processed in APEI GHES driver.
-> 
-> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
-> Error Section, as it has nothing to do with SEA). It is not enough.
-> Because ARM Processor Error could also be used for SEA in some hardware
-> platforms, such as Kunpeng9xx series. We can't ask them to switch to
-> use Memory Error Section for two reasons:
-> 1)The server was delivered to customers, and it will introduce
-> compatibility issue.
-> 2)It make sense to use ARM Processor Error Section. Because either
-> cache or memory errors could generate SEA when consumed by a processor.
-> 
-> Do memory failure handling for ARM Processor Error Section just like
-> for Memory Error Section.
-> 
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> ---
-> Changes since v3:
-> - Print unhandled error following James Morse's advice.
-> 
-> Changes since v2:
-> - Updated commit log
-> ---
->  drivers/acpi/apei/ghes.c | 70 ++++++++++++++++++++++++++++++++++++------------
->  1 file changed, 53 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 99df00f..b9cbd33 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
->  	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
->  }
->  
-> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> -				       int sev)
-> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->  {
->  	unsigned long pfn;
-> -	int flags = -1;
-> -	int sec_sev = ghes_severity(gdata->error_severity);
-> -	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
->  
->  	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
->  		return false;
->  
-> -	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> -		return false;
-> -
-> -	pfn = mem_err->physical_addr >> PAGE_SHIFT;
-> +	pfn = PHYS_PFN(physical_addr);
->  	if (!pfn_valid(pfn)) {
->  		pr_warn_ratelimited(FW_WARN GHES_PFX
->  		"Invalid address in generic error data: %#llx\n",
-> -		mem_err->physical_addr);
-> +		physical_addr);
->  		return false;
->  	}
->  
-> +	memory_failure_queue(pfn, flags);
-> +	return true;
-> +}
-> +
-> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> +				       int sev)
-> +{
-> +	int flags = -1;
-> +	int sec_sev = ghes_severity(gdata->error_severity);
-> +	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
-> +
-> +	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> +		return false;
-> +
->  	/* iff following two events can be handled properly by now */
->  	if (sec_sev == GHES_SEV_CORRECTED &&
->  	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
-> @@ -470,14 +477,45 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->  	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
->  		flags = 0;
->  
-> -	if (flags != -1) {
-> -		memory_failure_queue(pfn, flags);
-> -		return true;
-> -	}
-> +	if (flags != -1)
-> +		return ghes_do_memory_failure(mem_err->physical_addr, flags);
->  
->  	return false;
->  }
->  
-> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
-> +{
-> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> +	struct cper_arm_err_info *err_info;
-> +	bool queued = false;
-> +	int sec_sev, i;
-> +
-> +	log_arm_hw_error(err);
-> +
-> +	sec_sev = ghes_severity(gdata->error_severity);
-> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
-> +		return false;
-> +
-> +	err_info = (struct cper_arm_err_info *) (err + 1);
-> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
-> +		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
-> +		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
-> +
-> +		if (!is_cache || !has_pa) {
-> +			pr_warn_ratelimited(FW_WARN GHES_PFX
-> +			"Unhandled processor error type %s\n",
-> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
-> +			cper_proc_error_type_strs[err_info->type] : "unknown error");
-> +			continue;
-> +		}
-> +
-> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
-> +			queued = true;
-> +	}
-> +
-> +	return queued;
-> +}
-> +
->  /*
->   * PCIe AER errors need to be sent to the AER driver for reporting and
->   * recovery. The GHES severities map to the following AER severities and
-> @@ -605,9 +643,7 @@ static bool ghes_do_proc(struct ghes *ghes,
->  			ghes_handle_aer(gdata);
->  		}
->  		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
-> -			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> -
-> -			log_arm_hw_error(err);
-> +			queued = ghes_handle_arm_hw_error(gdata, sev);
->  		} else {
->  			void *err = acpi_hest_get_payload(gdata);
->  
-> 
+I worked Dept against mainline v5.9.
 
--- 
- thanks
-tanxiaofei
+Thanks,
+Byungchul
 
+> This have:
+> 
+>    1. applying Dept to spinlock/mutex/rwlock/completion
+>    2. assigning custom keys or disable maps to avoid false positives
+> 
+> This doesn't have yet (but will be done):
+> 
+>    1. proc interfaces e.g. to see dependecies the tool has built,
+>    2. applying Dept to rw semaphore and the like,
+>    3. applying Dept to lock_page()/unlock_page(),
+>    4. assigning custom keys to more places properly,
+>    5. replace all manual Lockdep annotations,
+>    (and so on..)
+> 
+> But I decided to share it to let others able to test how it works and
+> someone who wants to see the detail able to check the code. The most
+> important thing I'd like to show is what exactly a deadlock detection
+> tool should do.
+> 
+> Turn on CONFIG_DEPT to test it. Feel free to leave any questions if you
+> have.
+> 
+> Thanks,
+> Byungchul
