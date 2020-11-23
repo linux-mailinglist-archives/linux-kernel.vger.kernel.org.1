@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785102C0E6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E702C0E71
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389352AbgKWPGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 10:06:06 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:34145 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729602AbgKWPGE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 10:06:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606143964; x=1637679964;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=SZKdsVisH2xj8OOk97XoqM3QGAQYL5iB0nFf752OqB4=;
-  b=XTq788LlY8yaeKfm2OK0O9PnGilQJU0uEytMVyVmGdE3rQFWTgH0ai26
-   WENqBtGxqwC9ux0NvuTfJwkwbAXiKyte3Ny2LwkaBkfRJG80+P8a2usRh
-   cxY8O1/+ErFdyR7zFWf4c/tda4Xl3j/4TChtbTZu13Zv1Y3FSnvoq65rU
-   JzGajJUlRSzhnUE1tgreqR0ChJhKS1qaxXj9zw3E9BJs/Cmy21x+U8Diw
-   D35ny5W+yZAgWNQMxzpViZXew/jVCVsGrr4E/eclncwbeuTRXDMAqKzlA
-   Nv0ZXMAj2AzGQH09JfiWIc+yqg+DGkgxqSTTlQhRi0+Y1SPx1BAupH+6R
-   g==;
-IronPort-SDR: +ouTkoeXgtdlGkMSfeQmxvFgWWu9hWP9NpkSCwbXthlatuhCXvUxS+z+s+wGVy5h9wFukO6cLs
- yjxHQGNW1g0AvShb1SWodoac6ghYVXBexR15HxdyQRhuUteGYmABL7/Ki9LEGYVWOTfIDVs0/I
- dHI7R6UXBOSThWhFmEyUGoP9lZsG5xfNVxte3MVuEr6bdgPNhi2GOg7RhzzfkZiDhqKIC2FKLo
- 9xlp5qHb4mAZdiTQkv1IiGHjZTNyB+AJZXkvTOTo6HR82mZzbsaSFBmOURL0e/ANiIV8iqfrR3
- /f0=
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="99504032"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2020 08:06:04 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 23 Nov 2020 08:06:03 -0700
-Received: from soft-dev10.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Mon, 23 Nov 2020 08:06:01 -0700
-References: <20201113145151.68900-1-lars.povlsen@microchip.com> <CACRpkdZAc2yKFpngBHCdxjFBpc0XCVAYWyEERMSHX+7sL7Fgrg@mail.gmail.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v10 0/3] Adding support for Microchip/Microsemi serial GPIO controller
-In-Reply-To: <CACRpkdZAc2yKFpngBHCdxjFBpc0XCVAYWyEERMSHX+7sL7Fgrg@mail.gmail.com>
-Date:   Mon, 23 Nov 2020 16:05:56 +0100
-Message-ID: <87pn443ygb.fsf@microchip.com>
+        id S2389365AbgKWPGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 10:06:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731153AbgKWPGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:06:24 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9C382067C;
+        Mon, 23 Nov 2020 15:06:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606143983;
+        bh=XD8rVd28+XoVE6Niy838CzRctkhXNnkgWMtq4ss4S6A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZkN7pEpWrgc47kAtsM1YZxYjF7U4zxCaCMvaBrYkdn38WMmxqNq1bL0QllxbQ2OiI
+         HiVVgNoAN80zM6pFh8rptXYtwoSjorvo383HP4ZmKaNyKlLtUm4yYDEv7oHSU80qlV
+         JUo17ZMRS4dOVbS5+lSI0dfzFlfBTgeAD/kNhuHU=
+Date:   Mon, 23 Nov 2020 15:06:17 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCHv8 1/8] iommu/io-pgtable-arm: Add support to use system
+ cache
+Message-ID: <20201123150616.GB11033@willie-the-truck>
+References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
+ <699f30cd6b3d69cebbefd0e73850694b9852c5da.1605621785.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <699f30cd6b3d69cebbefd0e73850694b9852c5da.1605621785.git.saiprakash.ranjan@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 17, 2020 at 08:00:40PM +0530, Sai Prakash Ranjan wrote:
+> Add a quirk IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to override
+> the attributes set in TCR for the page table walker when
+> using system cache.
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>  drivers/iommu/io-pgtable-arm.c | 10 ++++++++--
+>  include/linux/io-pgtable.h     |  4 ++++
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index a7a9bc08dcd1..7c9ea9d7874a 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -761,7 +761,8 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg *cfg, void *cookie)
+>  
+>  	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
+>  			    IO_PGTABLE_QUIRK_NON_STRICT |
+> -			    IO_PGTABLE_QUIRK_ARM_TTBR1))
+> +			    IO_PGTABLE_QUIRK_ARM_TTBR1 |
+> +			    IO_PGTABLE_QUIRK_ARM_OUTER_WBWA))
+>  		return NULL;
+>  
+>  	data = arm_lpae_alloc_pgtable(cfg);
+> @@ -773,10 +774,15 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg *cfg, void *cookie)
+>  		tcr->sh = ARM_LPAE_TCR_SH_IS;
+>  		tcr->irgn = ARM_LPAE_TCR_RGN_WBWA;
+>  		tcr->orgn = ARM_LPAE_TCR_RGN_WBWA;
+> +		if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
+> +			goto out_free_data;
+>  	} else {
+>  		tcr->sh = ARM_LPAE_TCR_SH_OS;
+>  		tcr->irgn = ARM_LPAE_TCR_RGN_NC;
+> -		tcr->orgn = ARM_LPAE_TCR_RGN_NC;
+> +		if (!(cfg->quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA))
+> +			tcr->orgn = ARM_LPAE_TCR_RGN_NC;
+> +		else
+> +			tcr->orgn = ARM_LPAE_TCR_RGN_WBWA;
+>  	}
+>  
+>  	tg1 = cfg->quirks & IO_PGTABLE_QUIRK_ARM_TTBR1;
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index 4cde111e425b..a9a2c59fab37 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -86,6 +86,9 @@ struct io_pgtable_cfg {
+>  	 *
+>  	 * IO_PGTABLE_QUIRK_ARM_TTBR1: (ARM LPAE format) Configure the table
+>  	 *	for use in the upper half of a split address space.
+> +	 *
+> +	 * IO_PGTABLE_QUIRK_ARM_OUTER_WBWA: Override the attributes set in TCR for
+> +	 *	the page table walker when using system cache.
 
-Linus Walleij writes:
+Please can you reword this to say:
 
-> On Fri, Nov 13, 2020 at 3:52 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
->> The series add support for the serial GPIO controller used by
->> Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
->>
->> v10 changes - anniversary edition (from Andy):
->>  - Fixed "Author" comment
->>  - Added missing "break;" in default switch case
->>  - Return -EINVAL when requesting pin disabled in bitstream
->>  - Change bank consistency check to return -ERANGE if failed (-EINVAL
->>    previously)
->
-> Patches 1 & 2 applied to the GPIO tree!
+  "Override the outer-cacheability attributes set in the TCR for a non-coherent
+   page-table walker."
 
-Excellent!
-
->
-> Patch 3 needs to go to the SoC tree.
->
-
-I'll forward this in a PR for Arnd.
-
-> Thanks for your hard work!
-
-Thank you to both you and Any for good comments.
-
----Lars
-
->
-> Yours,
-> Linus Walleij
-
-
--- 
-Lars Povlsen,
-Microchip
+Will
