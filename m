@@ -2,231 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFA02BFE3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 03:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052432BFE3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 03:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgKWCnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Nov 2020 21:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgKWCnO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Nov 2020 21:43:14 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03135C0613CF;
-        Sun, 22 Nov 2020 18:43:14 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CfWfc0dpQz9sSf;
-        Mon, 23 Nov 2020 13:43:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606099390;
-        bh=hOYEtrEXqQGDGZMWmJodC4zriy8NU5JIkir5pBIrqKw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kEaXdfyuF3CaAhuyujVUpXlKofimCg5lYVSc60o+EmtUAB+8r1Aop61uLwCa8EIMj
-         Q6XqDm884Qdea8aPtdOcIxlWdeHEmRpaDS3Yx/UFwrUG3+cN6okAXOjfzT/qwYvXan
-         YOdIMUtd9qQ2r9X3sztFbFRmguGWvoN5pk7zvUtIXZRABeK+Xnz8uVUL2ahtan5alz
-         6ol4QI6Fh6CIocr0Lvh2QjWPScVS3No9D5xcQ2Ln9UVL8W1G5n8KZ0FkLjFqUGJiGd
-         PNd7yPqhIw7TQhg1FFwomz84WBx8MuzCT3AYXNEgArQbsYGX4syCtd7lVcfBdm4deI
-         Ljty0lJDU5hLw==
-Date:   Mon, 23 Nov 2020 13:42:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Brahadambal Srinivasan <latha@linux.vnet.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: linux-next: manual merge of the tip tree with the cpupower tree
-Message-ID: <20201123134259.2dc63db7@canb.auug.org.au>
+        id S1726875AbgKWCnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Nov 2020 21:43:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:52464 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726407AbgKWCnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Nov 2020 21:43:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB47730E;
+        Sun, 22 Nov 2020 18:43:18 -0800 (PST)
+Received: from [10.163.82.200] (unknown [10.163.82.200])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 028383F70D;
+        Sun, 22 Nov 2020 18:43:16 -0800 (PST)
+Subject: Re: [RFC 00/11] arm64: coresight: Enable ETE and TRBE
+To:     Tingwei Zhang <tingweiz@codeaurora.org>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mike.leach@linaro.org, linux-kernel@vger.kernel.org
+References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
+ <20201114051715.GA23685@codeaurora.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <8f323987-3327-1352-b097-8c018cc8d575@arm.com>
+Date:   Mon, 23 Nov 2020 08:13:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/R7s9RWw92O3/jidyRFPpAsl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201114051715.GA23685@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/R7s9RWw92O3/jidyRFPpAsl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello Tingwei,
 
-Hi all,
+On 11/14/20 10:47 AM, Tingwei Zhang wrote:
+> Hi Anshuman,
+> 
+> On Tue, Nov 10, 2020 at 08:44:58PM +0800, Anshuman Khandual wrote:
+>> This series enables future IP trace features Embedded Trace Extension (ETE)
+>> and Trace Buffer Extension (TRBE). This series depends on the ETM system
+>> register instruction support series [0] and the v8.4 Self hosted tracing
+>> support series (Jonathan Zhou) [1]. The tree is available here [2] for
+>> quick access.
+>>
+>> ETE is the PE (CPU) trace unit for CPUs, implementing future architecture
+>> extensions. ETE overlaps with the ETMv4 architecture, with additions to
+>> support the newer architecture features and some restrictions on the
+>> supported features w.r.t ETMv4. The ETE support is added by extending the
+>> ETMv4 driver to recognise the ETE and handle the features as exposed by the
+>> TRCIDRx registers. ETE only supports system instructions access from the
+>> host CPU. The ETE could be integrated with a TRBE (see below), or with the
+>> legacy CoreSight trace bus (e.g, ETRs). Thus the ETE follows same firmware
+>> description as the ETMs and requires a node per instance.
+>>
+>> Trace Buffer Extensions (TRBE) implements a per CPU trace buffer, which is
+>> accessible via the system registers and can be combined with the ETE to
+>> provide a 1x1 configuration of source & sink. TRBE is being represented
+>> here as a CoreSight sink. Primary reason is that the ETE source could work
+>> with other traditional CoreSight sink devices. As TRBE captures the trace
+>> data which is produced by ETE, it cannot work alone.
+>>
+>> TRBE representation here have some distinct deviations from a traditional
+>> CoreSight sink device. Coresight path between ETE and TRBE are not built
+>> during boot looking at respective DT or ACPI entries. Instead TRBE gets
+>> checked on each available CPU, when found gets connected with respective
+>> ETE source device on the same CPU, after altering its outward connections.
+>> ETE TRBE path connection lasts only till the CPU is online. But ETE-TRBE
+>> coupling/decoupling method implemented here is not optimal and would be
+>> reworked later on.
+> Only perf mode is supported in TRBE in current path. Will you consider
+> support sysfs mode as well in following patch sets?
 
-Today's linux-next merge of the tip tree got a conflict in:
+Yes, either in subsequent versions or later on, after first getting the perf
+based functionality enabled. Nonetheless, sysfs is also on the todo list as
+mentioned in the cover letter.
 
-  tools/power/cpupower/utils/helpers/misc.c
-
-between commit:
-
-  748f0d70087c ("cpupower: Provide online and offline CPU information")
-
-from the cpupower tree and commit:
-
-  8113ab20e850 ("tools/power/cpupower: Read energy_perf_bias from sysfs")
-
-from the tip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/power/cpupower/utils/helpers/misc.c
-index 2ead98169cf5,e8f8f643a627..000000000000
---- a/tools/power/cpupower/utils/helpers/misc.c
-+++ b/tools/power/cpupower/utils/helpers/misc.c
-@@@ -1,12 -1,16 +1,17 @@@
-  // SPDX-License-Identifier: GPL-2.0
- =20
-  #include <stdio.h>
-+ #include <errno.h>
-  #include <stdlib.h>
- =20
- +#include "helpers/helpers.h"
- +
-  #if defined(__i386__) || defined(__x86_64__)
- =20
- -#include "helpers/helpers.h"
-+ #include "helpers/sysfs.h"
-+=20
-+ #include "cpupower_intern.h"
-+=20
-  #define MSR_AMD_HWCR	0xc0010015
- =20
-  int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
-@@@ -44,64 -48,44 +49,104 @@@
-  		*support =3D *active =3D 1;
-  	return 0;
-  }
-+=20
-+ int cpupower_intel_get_perf_bias(unsigned int cpu)
-+ {
-+ 	char linebuf[MAX_LINE_LEN];
-+ 	char path[SYSFS_PATH_MAX];
-+ 	unsigned long val;
-+ 	char *endp;
-+=20
-+ 	if (!(cpupower_cpu_info.caps & CPUPOWER_CAP_PERF_BIAS))
-+ 		return -1;
-+=20
-+ 	snprintf(path, sizeof(path), PATH_TO_CPU "cpu%u/power/energy_perf_bias",=
- cpu);
-+=20
-+ 	if (cpupower_read_sysfs(path, linebuf, MAX_LINE_LEN) =3D=3D 0)
-+ 		return -1;
-+=20
-+ 	val =3D strtol(linebuf, &endp, 0);
-+ 	if (endp =3D=3D linebuf || errno =3D=3D ERANGE)
-+ 		return -1;
-+=20
-+ 	return val;
-+ }
-+=20
-+ int cpupower_intel_set_perf_bias(unsigned int cpu, unsigned int val)
-+ {
-+ 	char path[SYSFS_PATH_MAX];
-+ 	char linebuf[3] =3D {};
-+=20
-+ 	if (!(cpupower_cpu_info.caps & CPUPOWER_CAP_PERF_BIAS))
-+ 		return -1;
-+=20
-+ 	snprintf(path, sizeof(path), PATH_TO_CPU "cpu%u/power/energy_perf_bias",=
- cpu);
-+ 	snprintf(linebuf, sizeof(linebuf), "%d", val);
-+=20
-+ 	if (cpupower_write_sysfs(path, linebuf, 3) <=3D 0)
-+ 		return -1;
-+=20
-+ 	return 0;
-+ }
-+=20
-  #endif /* #if defined(__i386__) || defined(__x86_64__) */
- +
- +/* get_cpustate
- + *
- + * Gather the information of all online CPUs into bitmask struct
- + */
- +void get_cpustate(void)
- +{
- +	unsigned int cpu =3D 0;
- +
- +	bitmask_clearall(online_cpus);
- +	bitmask_clearall(offline_cpus);
- +
- +	for (cpu =3D bitmask_first(cpus_chosen);
- +		cpu <=3D bitmask_last(cpus_chosen); cpu++) {
- +
- +		if (cpupower_is_cpu_online(cpu) =3D=3D 1)
- +			bitmask_setbit(online_cpus, cpu);
- +		else
- +			bitmask_setbit(offline_cpus, cpu);
- +
- +		continue;
- +	}
- +}
- +
- +/* print_online_cpus
- + *
- + * Print the CPU numbers of all CPUs that are online currently
- + */
- +void print_online_cpus(void)
- +{
- +	int str_len =3D 0;
- +	char *online_cpus_str =3D NULL;
- +
- +	str_len =3D online_cpus->size * 5;
- +	online_cpus_str =3D (void *)malloc(sizeof(char) * str_len);
- +
- +	if (!bitmask_isallclear(online_cpus)) {
- +		bitmask_displaylist(online_cpus_str, str_len, online_cpus);
- +		printf(_("Following CPUs are online:\n%s\n"), online_cpus_str);
- +	}
- +}
- +
- +/* print_offline_cpus
- + *
- + * Print the CPU numbers of all CPUs that are offline currently
- + */
- +void print_offline_cpus(void)
- +{
- +	int str_len =3D 0;
- +	char *offline_cpus_str =3D NULL;
- +
- +	str_len =3D offline_cpus->size * 5;
- +	offline_cpus_str =3D (void *)malloc(sizeof(char) * str_len);
- +
- +	if (!bitmask_isallclear(offline_cpus)) {
- +		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
- +		printf(_("Following CPUs are offline:\n%s\n"), offline_cpus_str);
- +		printf(_("cpupower set operation was not performed on them\n"));
- +	}
- +}
-
---Sig_/R7s9RWw92O3/jidyRFPpAsl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+7IbMACgkQAVBC80lX
-0GxsLQgApcXE3lUFRifLu6eaVbdKM2qgMv0Goder8cJnFrUkll2GptVucIYiz963
-a0YSl2IYYxxVz8x96Wt5y9cfz+M4eBl8vux9nfvPs5Vk0vbd8MNa8ZyVJYvCpdoI
-vwhu0/VVnlkKtoIl64ailGZWxony6rMPM8C1rV1hZv1MwKcoccbdSvw+exIzAK6h
-UR23oMaFR1kbgG1rt4aiPkOqPKP5NPZ0Tc/ZukZ7AePeoN1s1Ut7ky0nywUC++AA
-kyCfGoSyKb6ATDlnXf6A/Q8kedGnyn7f3EeQ7lmjz86K2rHlw4CsBExnJLx9edoL
-4zhM+2NQje+rJ7R5jfA+VjLDqULhwQ==
-=Qiqt
------END PGP SIGNATURE-----
-
---Sig_/R7s9RWw92O3/jidyRFPpAsl--
+- Anshuman
