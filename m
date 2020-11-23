@@ -2,194 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09D52C17B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2152C17B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 22:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730933AbgKWVcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 16:32:02 -0500
-Received: from mout.gmx.net ([212.227.15.18]:35725 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729668AbgKWVcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 16:32:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606167075;
-        bh=sCkDsbnNYQ6Pz3/oXpsDLnfnKp/ckhQ+TZMQxjRgd3A=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=SXALL6dkqlmI+G8wKpUobuPezQXOviKE/83S7qWtriuewgq+ufJ+kxT9ve4fjInvI
-         GonNpTmd89Qvh1smmkHwXVIBRZtkr2pVH0IszY8YubSYztbvlkUdp6xgijeNdOk6YZ
-         IFsEsSyuAPGAWEM8oG9sRS+qhDd6RwHi6DqjJnFA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M26vL-1kfNcZ33P7-002WX6; Mon, 23
- Nov 2020 22:31:14 +0100
-Date:   Mon, 23 Nov 2020 22:31:05 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 5/7] rtc: New driver for RTC in Netronix embedded
- controller
-Message-ID: <20201123213105.GC456020@latitude>
-References: <20201122222739.1455132-1-j.neuschaefer@gmx.net>
- <20201122222739.1455132-6-j.neuschaefer@gmx.net>
- <20201122231054.GH348979@piout.net>
+        id S1731044AbgKWVch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 16:32:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729668AbgKWVch (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 16:32:37 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D63C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:32:35 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id 79so17335943otc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 13:32:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YGEsthVs3B3hpcPO96gKAE8/Tbhb2GtyiWxG6X0ff1A=;
+        b=Hpdo+ZH+YbPMZk6AoVaNen/HS0pbiAnyzzkjyUMDAcgyXzkn17RwhboNFC1Dl8NkpW
+         +bukjwN0ku9yq9YXueExtfVSuyO5AjDgKIPgNV/QlqHkjFywNHjsEbYVSVoyKmRg3kyu
+         4UWB2tXO8sSnZAyP3KJO5Wuh7KyuZM/KpWJ8g38FSkNiSwIeyhUMk0gYjNIzSntIP3MP
+         jb9v7nuwsVanx3tqDSPJINnpmJtMRwxxsz6VGrnDeqaP8C8RJLQ4WbCRs2jmwh2zUxB4
+         PJnTiufVA+R99AE/CGY8MUfYb/KvpC6f2I3gLogxSALE+tOjYnG48KBDWTIXfeMecaIG
+         5/8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YGEsthVs3B3hpcPO96gKAE8/Tbhb2GtyiWxG6X0ff1A=;
+        b=fgPkaxAe5JSKfFbOZZzy1gJgXfYnSvEjrP5uzez2FnhUCG+QrDCSC13HUmJ3luEeRx
+         4pd2qxXfyMOVuDf3ZkDTAlWutIipDpm3iDiV46h//lOV9xhuSk0CmLY1011lDw6mXLyM
+         fdPqnpeKOCNVRwL3D1yG7a3mihk8qKTijNEf7ET/ZinWk/tbT7681ntvgwiwOOcklES4
+         I5LuPsU7EzVt80wsA5LPYLZioHC1UOzmb+YRSqCFKmMCbWfcPNf7Bx9BL5/rqPdJElri
+         0gCTLlt7oX/M+NK8UtU7mrc3zz1dgtN5YXx/Cv7qjckq80SpaCwqcX/XFmNEUGKxfXjX
+         5odQ==
+X-Gm-Message-State: AOAM530h5k73fdshnwNrS0TyWze9Slr7DfaMduEvYTeRVm+8UKG3JRd9
+        z70fMoiN8MooA8SJlqDHeFEN4jQ13obUeZTA0CltFQ==
+X-Google-Smtp-Source: ABdhPJydhGbdKp6iLz07GpoW+34/30MyOBfwhaN0lC6Yh83oFAC8Rqv47taP4eKZjQyKSDVmE1UQYTtKAzCLfSuJhIY=
+X-Received: by 2002:a9d:851:: with SMTP id 75mr1132645oty.102.1606167155091;
+ Mon, 23 Nov 2020 13:32:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
-Content-Disposition: inline
-In-Reply-To: <20201122231054.GH348979@piout.net>
-X-Provags-ID: V03:K1:no2Gna2hTxM9N5hL6CMDIOPd7xqpgCHA1PYx+QzCYCYXmJO39aV
- eh7+fejXcNZipfhKMG4JqyZ/n52hEDbvWcp8GOh9WWLAVTxcSPWaY0uyyTIfkOYzsEBa2fN
- vzGT4ccpUzfKb1AZcm6jP/+dmiEo9t1b3E/6l2mASZjnAsCaN0oePm15gRfFyHzFc6bCzGX
- PzaZLnarMAtk6ofOIYwLw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xtB5ZZleEYM=:6oYlbp6ZnPxYRMENT5U0SS
- 4J2O/eVE4/KL5m+Cda1SDfZXXmisRKcJs0HHlkREUhR5df04phBeO/+BG8Yybesk8i/uWEw0k
- l+HWrSz8OyE3/OvkUkzP3C///oqqX0ucMc3DR0b6g48fEwiL6HPDyLQ8i6XpBCqI8BQ98MsgT
- lB74HdiSpOWvj3EzDPNBxFbkpW2mKLxt39ZU77oMiPIOWkDpPhCcPkl1/aH8EtDCzWaZBCnmE
- QpYh0A79fNO5zf9Uf6wJppJMj2Jyht1lCtEZens4jfP5cJVkGZJLcZM48H4i6lAOP4G15rzJz
- +v+muE10se/Pz8Z7d5E0DS0NUoLrUQXKQjZIrbZI3R/5ln8xp7gnbLOnlWmF5ora4KYrq/7ZR
- iyMQN0VF+IOwGbo/CQdJRbGmWBt5bEonEL4aZPB6MXCNrYh4BrYCk+0FV5tTqba3wJr4SgreY
- OSClmWSsmL4B+kldZm9ZctIkhw7mtXR+vWuthkhv25BwObusoB4FbQjQnn4cLu+7edjtzMB6S
- 2jEhEk72s7zQBVnXa9fX/gX8xGIx60uJ2YMFqVHd8n6jdiYrdn6nM8buTpZsuFJLRb9CuloWm
- 3mS9CtS+czTdRcIosoFzZ3Zd/rlKn+dRTx3RhoyZj3HweS1xQ3SP7EoRURuJRIjbYuLzqPSn7
- e10uYatI6jjmSX8OvWyCV/vZfuLm9yuxyNH/rSdit0YL0bbcfXdM2RM1MjFjI00Clg2xNT9kX
- 4p0RDASSbP6uEiDcQ4v+LYMkJ2Y8YiOn6KKcqGg3QF0KcKxi2Y4EkGd6vevxAo6aHfgxUKtml
- 7f8PaEBwMg/VNOovqidzcbBofYpATnBsJgAMT6wd71BVTj2aqrmdP6aVctHUMGT15O67o4hCG
- c6ACLePStWn6+FJHfcXw==
+References: <20201121063302.84090-1-john.stultz@linaro.org> <e860242d-9024-0f68-9b83-ef4938fc17d8@codeaurora.org>
+In-Reply-To: <e860242d-9024-0f68-9b83-ef4938fc17d8@codeaurora.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 23 Nov 2020 13:32:23 -0800
+Message-ID: <CALAqxLU0e=DtZ8UkJPojDEuAw8UAzKW2-jPqQ426FRzSJLLkrw@mail.gmail.com>
+Subject: Re: [PATCH] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies
+ to avoid build error
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, Todd Kjos <tkjos@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 8:55 AM Maulik Shah <mkshah@codeaurora.org> wrote:
+> On 11/21/2020 12:03 PM, John Stultz wrote:
+> > The kernel test robot reported the following build error:
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+> >     qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
+> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+> >     qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
+> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+> >>> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
+> >     xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+> >     qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
+> >
+> > Which is due to REGULATOR_QCOM_RPMH depending on
+> > QCOM_RPMH || COMPILE_TEST. The problem is that QOM_RPMH can now
+> > be a module, which in that case requires REGULATOR_QCOM_RPMH=m
+> > to build.
+> >
+> > However, if COMPILE_TEST is enabled, REGULATOR_QCOM_RPMH can be
+> > set to =y while REGULATOR_QCOM_RPMH=m which will cause build
+> > failures.
+> Seems typo here, you mean to say, REGULATOR_QCOM_RPMH can be set to =y
+> while QCOM_RPMH=m....
 
---hHWLQfXTYDoKhP50
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, yes, thanks for catching that. I'll fix it up.
 
-On Mon, Nov 23, 2020 at 12:10:54AM +0100, Alexandre Belloni wrote:
-> Hi,
->=20
-> On 22/11/2020 23:27:37+0100, Jonathan Neusch=C3=A4fer wrote:
-> > With this driver, mainline Linux can keep its time and date in sync with
-> > the vendor kernel.
-> >=20
-> > Advanced functionality like alarm and automatic power-on is not yet
-> > supported.
-> >=20
-> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
->=20
-> However, two comments below:
->=20
-> > +static int ntxec_set_time(struct device *dev, struct rtc_time *tm)
-> > +{
-> > +	struct ntxec_rtc *rtc =3D dev_get_drvdata(dev);
-> > +	int res =3D 0;
-> > +
-> > +	/*
-> > +	 * To avoid time overflows while we're writing the full date/time,
-> > +	 * set the seconds field to zero before doing anything else. For the
-> > +	 * next 59 seconds (plus however long it takes until the RTC's next
-> > +	 * update of the second field), the seconds field will not overflow
-> > +	 * into the other fields.
-> > +	 */
-> > +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_SECOND, ntxec_r=
-eg8(0));
-> > +	if (res)
-> > +		return res;
-> > +
-> > +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_YEAR, ntxec_reg=
-8(tm->tm_year - 100));
-> > +	if (res)
-> > +		return res;
-> > +
-> > +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MONTH, ntxec_re=
-g8(tm->tm_mon + 1));
-> > +	if (res)
-> > +		return res;
-> > +
-> > +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_DAY, ntxec_reg8=
-(tm->tm_mday));
-> > +	if (res)
-> > +		return res;
-> > +
-> > +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_HOUR, ntxec_reg=
-8(tm->tm_hour));
-> > +	if (res)
-> > +		return res;
-> > +
-> > +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MINUTE, ntxec_r=
-eg8(tm->tm_min));
-> > +	if (res)
-> > +		return res;
-> > +
-> > +	return regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_SECOND, ntxec_re=
-g8(tm->tm_sec));
->=20
-> Couldn't you do a regmap_block_write or a regmap_multi_reg_write which
-> would be more efficient as they would be locking the regmap only once.
+> > The easy fix here is to remove COMPILE_TEST.
+>
+> As config QCOM_RPMH also has COMPILE_TEST, i don't see why it should be
+> removed from REGULATOR_QCOM_RPMH.
+>
+> Can REGULATOR_QCOM_RPMH have depends on ARCH_QCOM set similar to
+> QCOM_RPMH? As test bot reported build errors on other ARCH with
+> regulatore driver of QCOM arch.
 
-I can't find regmap_block_write anywhere, but regmap_multi_reg_write
-looks like a good approach to simplify the code here.
+I think Mark's suggestion of "|| (QCOM_RPMH=n && COMPILE_TEST)" is
+probably better, as you could still trigger the build issue with a
+ARCH_QCOM and compile test.  But I appreciate the suggestion!
 
-
-[...]
-> Note that this won't compile after
-> https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git/commit=
-/?id=3Dfdcfd854333be5b30377dc5daa9cd0fa1643a979
->=20
-> We can solve that with immutable branches though.
-
-Thanks for the heads-up. Please let me know if/when there is any action
-that I need to take here.
-
-
-Jonathan
-
---hHWLQfXTYDoKhP50
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl+8KggACgkQCDBEmo7z
-X9v/Ew//VyQzd+IM6WSdNJfdqhDWx4zMzJPjvhGl5YZsqC82CgOowqAy6GWPkRvN
-4xkwP5r4kH5Do6rN92mpKEGzG9HyDOzS/162ZMCIF9KXUOdpHb7viqRB5+Jq9Tod
-2mFgQT9/foVbge9Muad0H4u59kmRbxp52mbRjF2XohPmD/rPVF8r1VrDaHOSSkx/
-GbBVkLz0YIE6T0Wz4umG6d0+TTlelOuz72zqHy6zE2DHwHR/8vyRKPbdsft6w6f4
-DRjjQrEKwj2LT1yx48PIXu9bDI6g+0syC9bwbf2dc3Nvl/nQpxrxrbrnt0H5+h9R
-OyoSTQunwN/s8ppkdopfcQJVf1H4NAMCxoUXSnIX7zkKoPAeckXqQhsWXoJid2rF
-tVt3HG2ddEvV3xW5fMftLXQWeegx7Wy5wqpQvpQPBJx3hrxC2mv0lIYbVMPPGKyM
-+vF6atGRir3Jv/AYEeVEojBFrM9dG1xQTIvJz3fVRlM0fLqbj73kMFN+eHNmO3gA
-o4H9WZ76TeaGyGoAMZ7KBJbypFfy27GlzHaChw7yqpYKPsi57dy8zLB57PRATAJy
-/0q6gnpkrSNlaTYKwO/TDgR9E7NY0h9ALE34bqalDR5wNy7ec6Fa7iAouAm5lZcX
-HEcbLvr0895GsbLNX8Ep5zg4V4TrCevq0c3x0ur1ZS8LL7n988Q=
-=BhsG
------END PGP SIGNATURE-----
-
---hHWLQfXTYDoKhP50--
+Thanks so much for the review!
+-john
