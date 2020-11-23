@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953462C092A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E332F2C0A43
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388192AbgKWNEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:04:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35426 "EHLO mail.kernel.org"
+        id S1732501AbgKWNSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:18:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387614AbgKWMvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:51:04 -0500
+        id S1732436AbgKWMkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:40:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEFA6204EF;
-        Mon, 23 Nov 2020 12:51:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D96F02065E;
+        Mon, 23 Nov 2020 12:40:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135863;
-        bh=DyV3NMrTf54fo09w7VNMgr1zyAz6enWWvzekMq9V1QY=;
+        s=korg; t=1606135214;
+        bh=KkF4llIZxIHmqqCDGKdjsMJMvpqqizjVO5k2i5DG8ig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qt1E2jMVY2/0+TjcZykeoCLaVh0/COWvX/csTVdPxWbZmT2HQJ00lX9NoILpOI6wC
-         nLDoSOEVX3jAiXfaW2YqK0Kn152HVKPG7LziNm9hP4qAuREn7kmZhebrOWm04Wdfom
-         CyonkjQRFLpjfrmLxxue61vVRX6RcOhX5HoyacLg=
+        b=0xZUKa0dSUAtC4sesTkauzhWqKcRH2ELwXXURDzWanKdNy+nfTy9ajo+14oZN4Fjq
+         n95fnSmPZYyp+AIZflkwxSevkItiKVmKdAjwJpH7g1VIF6nTkzK8Y1wnyXIUCB3aJ6
+         wkXrLOpNMNwyZr3rqOhtlSrld3RoY6XM8Dmp0hxE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Mark Brown <broonie@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: [PATCH 5.9 223/252] regulator: fix memory leak with repeated set_machine_constraints()
-Date:   Mon, 23 Nov 2020 13:22:53 +0100
-Message-Id: <20201123121846.334515356@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.4 146/158] s390/cpum_sf.c: fix file permission for cpum_sfb_size
+Date:   Mon, 23 Nov 2020 13:22:54 +0100
+Message-Id: <20201123121826.978873573@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
-References: <20201123121835.580259631@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,102 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Thomas Richter <tmricht@linux.ibm.com>
 
-commit 57a6ad482af256b2a13de14194fb8f67c1a65f10 upstream.
+commit 78d732e1f326f74f240d416af9484928303d9951 upstream.
 
-Fixed commit introduced a possible second call to
-set_machine_constraints() and that allocates memory for
-rdev->constraints. Move the allocation to the caller so
-it's easier to manage and done once.
+This file is installed by the s390 CPU Measurement sampling
+facility device driver to export supported minimum and
+maximum sample buffer sizes.
+This file is read by lscpumf tool to display the details
+of the device driver capabilities. The lscpumf tool might
+be invoked by a non-root user. In this case it does not
+print anything because the file contents can not be read.
 
-Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
-Cc: stable@vger.kernel.org
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
-Link: https://lore.kernel.org/r/78c3d4016cebc08d441aad18cb924b4e4d9cf9df.1605226675.git.mirq-linux@rere.qmqm.pl
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fix this by allowing read access for all users. Reading
+the file contents is ok, changing the file contents is
+left to the root user only.
+
+For further reference and details see:
+ [1] https://github.com/ibm-s390-tools/s390-tools/issues/97
+
+Fixes: 69f239ed335a ("s390/cpum_sf: Dynamically extend the sampling buffer if overflows occur")
+Cc: <stable@vger.kernel.org> # 3.14
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/regulator/core.c |   29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ arch/s390/kernel/perf_cpum_sf.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1280,7 +1280,6 @@ static int _regulator_do_enable(struct r
- /**
-  * set_machine_constraints - sets regulator constraints
-  * @rdev: regulator source
-- * @constraints: constraints to apply
-  *
-  * Allows platform initialisation code to define and constrain
-  * regulator circuits e.g. valid voltage/current ranges, etc.  NOTE:
-@@ -1288,21 +1287,11 @@ static int _regulator_do_enable(struct r
-  * regulator operations to proceed i.e. set_voltage, set_current_limit,
-  * set_mode.
-  */
--static int set_machine_constraints(struct regulator_dev *rdev,
--	const struct regulation_constraints *constraints)
-+static int set_machine_constraints(struct regulator_dev *rdev)
- {
- 	int ret = 0;
- 	const struct regulator_ops *ops = rdev->desc->ops;
+--- a/arch/s390/kernel/perf_cpum_sf.c
++++ b/arch/s390/kernel/perf_cpum_sf.c
+@@ -2217,4 +2217,4 @@ out:
+ }
  
--	if (constraints)
--		rdev->constraints = kmemdup(constraints, sizeof(*constraints),
--					    GFP_KERNEL);
--	else
--		rdev->constraints = kzalloc(sizeof(*constraints),
--					    GFP_KERNEL);
--	if (!rdev->constraints)
--		return -ENOMEM;
--
- 	ret = machine_constraints_voltage(rdev, rdev->constraints);
- 	if (ret != 0)
- 		return ret;
-@@ -5112,7 +5101,6 @@ struct regulator_dev *
- regulator_register(const struct regulator_desc *regulator_desc,
- 		   const struct regulator_config *cfg)
- {
--	const struct regulation_constraints *constraints = NULL;
- 	const struct regulator_init_data *init_data;
- 	struct regulator_config *config = NULL;
- 	static atomic_t regulator_no = ATOMIC_INIT(-1);
-@@ -5251,14 +5239,23 @@ regulator_register(const struct regulato
- 
- 	/* set regulator constraints */
- 	if (init_data)
--		constraints = &init_data->constraints;
-+		rdev->constraints = kmemdup(&init_data->constraints,
-+					    sizeof(*rdev->constraints),
-+					    GFP_KERNEL);
-+	else
-+		rdev->constraints = kzalloc(sizeof(*rdev->constraints),
-+					    GFP_KERNEL);
-+	if (!rdev->constraints) {
-+		ret = -ENOMEM;
-+		goto wash;
-+	}
- 
- 	if (init_data && init_data->supply_regulator)
- 		rdev->supply_name = init_data->supply_regulator;
- 	else if (regulator_desc->supply_name)
- 		rdev->supply_name = regulator_desc->supply_name;
- 
--	ret = set_machine_constraints(rdev, constraints);
-+	ret = set_machine_constraints(rdev);
- 	if (ret == -EPROBE_DEFER) {
- 		/* Regulator might be in bypass mode and so needs its supply
- 		 * to set the constraints */
-@@ -5267,7 +5264,7 @@ regulator_register(const struct regulato
- 		 * that is just being created */
- 		ret = regulator_resolve_supply(rdev);
- 		if (!ret)
--			ret = set_machine_constraints(rdev, constraints);
-+			ret = set_machine_constraints(rdev);
- 		else
- 			rdev_dbg(rdev, "unable to resolve supply early: %pe\n",
- 				 ERR_PTR(ret));
+ arch_initcall(init_cpum_sampling_pmu);
+-core_param(cpum_sfb_size, CPUM_SF_MAX_SDB, sfb_size, 0640);
++core_param(cpum_sfb_size, CPUM_SF_MAX_SDB, sfb_size, 0644);
 
 
