@@ -2,138 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70A22C0530
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424D52C0537
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbgKWME4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:04:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728728AbgKWME4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:04:56 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF5D02076E;
-        Mon, 23 Nov 2020 12:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606133095;
-        bh=MqVVFAs9pfO9YZNXnnUX8fujL137NJNg36Zjw2SJUyU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X1ToGmIBXyPsLMRMtOH42VDt50r5Tb0w+lXjLm5anz9/DMWckpzkBLKOqMLo9Loz/
-         vaLhnnvpyW42QaW6Z5ArmoWo841eOz1g3mFQWvfS4CV4dDLadravE3w7c58hCwkSq9
-         TEUC9lX86FEg8yjUf31x0ajqnoLtql+gFEwHeRp0=
-Date:   Mon, 23 Nov 2020 12:04:50 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Ashok Raj <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH v9 1/4] iommu: Move def_domain type check for untrusted
- device into core
-Message-ID: <20201123120449.GB10233@willie-the-truck>
-References: <20201121135620.3496419-1-baolu.lu@linux.intel.com>
- <20201121135620.3496419-2-baolu.lu@linux.intel.com>
+        id S1729255AbgKWMID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728701AbgKWMIC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:08:02 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF720C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:08:01 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w4so14049016pgg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:08:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1ZwLi5KRkc7YH23f9Wv8M0kLSaVg1GJ6vD+Tr6xYwho=;
+        b=IiUZbN+TSyDav/TFnZlOF5BIoECPnwKi34wOtfJVV1hSgL+63lDNLN21fJQbf4qfTK
+         kPJsh7mr3uR8ks+wZdJUQXpbGOaI17hhT5b+kxEmFN+7FTu3V4n3A4QEpTwdYQuU6Xdf
+         gs4xdupO8MqvBj2FWG4FK38qeNXAMUKhG3VkJNaKEEsD8HOIpI44K4WdIS9TsDQrd+zg
+         hUCAHvsszcnML/J61XtxKF5JHyhepM7V5vd4Eu4By5qvkhygu9T2Fx+E7E8Ht5ycDFKS
+         uKAMckJC7GOTiLxKFZEg5qNJWunods6f001aPP+OudqhXD7Kk5uXwFxyiWwgT192KQR3
+         8cbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1ZwLi5KRkc7YH23f9Wv8M0kLSaVg1GJ6vD+Tr6xYwho=;
+        b=Ulh5gCMb3oxysDsXxzc0uy2vI1rQyn24dFgSBlRRDOZEM6X3+MRdzQpdtJrzVd23Gu
+         3Ct+mT7MzmWHNxb7+0kwCxgA+9T07k7gmmw7cF+65r4gu8h17f0CLR5J2EPhgl81nOZJ
+         nYGe1lxmMJy2BwHwq7yvIDtCMwquJwyZd+Ym0A8bpT6ZpI0nQ/H8D8UiZ+xmFmf3RwAk
+         vr0uFdqb+FCffXfVX9ZAmNU6b7/D/zg5wXLYJB1YXIq2PO/BFpe/1PSOAreMx03jHRem
+         aRt9AZl1w10Za8lQcaws9yh1i49hmGXcM0g1GjyTcIa5116hyJ/JJ+Zh/0g9QnvR9hWp
+         pB2w==
+X-Gm-Message-State: AOAM533mxP7Y8zYBqqUeg/qy1zFwfwlwAmImm5C/htUTdsCzdtjHn9W8
+        dCaaAvBLerngkri35IX1fY84rOz6JeSOhoNvTtN43w==
+X-Google-Smtp-Source: ABdhPJyt/oW7jZAXAavquDzFIuIBuPiB0sOvy5NAGzdC1kKO5etcNhkUOoZ96fOKjlyJJA3BsgbAHkP+UpOtIt47xjE=
+X-Received: by 2002:a63:ff18:: with SMTP id k24mr26483211pgi.273.1606133281419;
+ Mon, 23 Nov 2020 04:08:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121135620.3496419-2-baolu.lu@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201120084202.GJ3200@dhcp22.suse.cz> <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
+ <20201120131129.GO3200@dhcp22.suse.cz> <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
+ <20201123074046.GB27488@dhcp22.suse.cz> <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
+ <20201123094344.GG27488@dhcp22.suse.cz> <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
+ <20201123104258.GJ27488@dhcp22.suse.cz> <CAMZfGtVzv0qPaK8GALaf8CiaPf2Z9+js24gFtFv5_RfhAyXaRA@mail.gmail.com>
+ <20201123113208.GL27488@dhcp22.suse.cz>
+In-Reply-To: <20201123113208.GL27488@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 23 Nov 2020 20:07:23 +0800
+Message-ID: <CAMZfGtXUNXdqse-tsCFyqePJ65L-1EgkYW416+Hu+_6OVu7FjA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
+ hugetlb page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 09:56:17PM +0800, Lu Baolu wrote:
-> So that the vendor iommu drivers are no more required to provide the
-> def_domain_type callback to always isolate the untrusted devices.
-> 
-> Link: https://lore.kernel.org/linux-iommu/243ce89c33fe4b9da4c56ba35acebf81@huawei.com/
-> Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/intel/iommu.c |  7 -------
->  drivers/iommu/iommu.c       | 21 ++++++++++++++-------
->  2 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index af3abd285214..6711f78141a4 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -2916,13 +2916,6 @@ static int device_def_domain_type(struct device *dev)
->  	if (dev_is_pci(dev)) {
->  		struct pci_dev *pdev = to_pci_dev(dev);
->  
-> -		/*
-> -		 * Prevent any device marked as untrusted from getting
-> -		 * placed into the statically identity mapping domain.
-> -		 */
-> -		if (pdev->untrusted)
-> -			return IOMMU_DOMAIN_DMA;
-> -
->  		if ((iommu_identity_mapping & IDENTMAP_AZALIA) && IS_AZALIA(pdev))
->  			return IOMMU_DOMAIN_IDENTITY;
->  
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 88b0c9192d8c..3256784c0358 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -1457,13 +1457,23 @@ struct iommu_group *fsl_mc_device_group(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(fsl_mc_device_group);
->  
-> -static int iommu_get_def_domain_type(struct device *dev)
-> +/* Get the mandatary def_domain type for device. Otherwise, return 0. */
-> +static int iommu_get_mandatory_def_domain_type(struct device *dev)
->  {
->  	const struct iommu_ops *ops = dev->bus->iommu_ops;
-> -	unsigned int type = 0;
-> +
-> +	if (dev_is_pci(dev) && to_pci_dev(dev)->untrusted)
-> +		return IOMMU_DOMAIN_DMA;
->  
->  	if (ops->def_domain_type)
-> -		type = ops->def_domain_type(dev);
-> +		return ops->def_domain_type(dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int iommu_get_def_domain_type(struct device *dev)
-> +{
-> +	int type = iommu_get_mandatory_def_domain_type(dev);
->  
->  	return (type == 0) ? iommu_def_domain_type : type;
->  }
-> @@ -1645,13 +1655,10 @@ struct __group_domain_type {
->  
->  static int probe_get_default_domain_type(struct device *dev, void *data)
->  {
-> -	const struct iommu_ops *ops = dev->bus->iommu_ops;
->  	struct __group_domain_type *gtype = data;
->  	unsigned int type = 0;
->  
-> -	if (ops->def_domain_type)
-> -		type = ops->def_domain_type(dev);
-> -
-> +	type = iommu_get_mandatory_def_domain_type(dev);
+On Mon, Nov 23, 2020 at 7:32 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 23-11-20 19:16:18, Muchun Song wrote:
+> > On Mon, Nov 23, 2020 at 6:43 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 23-11-20 18:36:33, Muchun Song wrote:
+> > > > On Mon, Nov 23, 2020 at 5:43 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Mon 23-11-20 16:53:53, Muchun Song wrote:
+> > > > > > On Mon, Nov 23, 2020 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > > >
+> > > > > > > On Fri 20-11-20 23:44:26, Muchun Song wrote:
+> > > > > > > > On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Fri 20-11-20 20:40:46, Muchun Song wrote:
+> > > > > > > > > > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
+> > > > > > > > > > > [...]
+> > > > > > > > > > >
+> > > > > > > > > > > Thanks for improving the cover letter and providing some numbers. I have
+> > > > > > > > > > > only glanced through the patchset because I didn't really have more time
+> > > > > > > > > > > to dive depply into them.
+> > > > > > > > > > >
+> > > > > > > > > > > Overall it looks promissing. To summarize. I would prefer to not have
+> > > > > > > > > > > the feature enablement controlled by compile time option and the kernel
+> > > > > > > > > > > command line option should be opt-in. I also do not like that freeing
+> > > > > > > > > > > the pool can trigger the oom killer or even shut the system down if no
+> > > > > > > > > > > oom victim is eligible.
+> > > > > > > > > >
+> > > > > > > > > > Hi Michal,
+> > > > > > > > > >
+> > > > > > > > > > I have replied to you about those questions on the other mail thread.
+> > > > > > > > > >
+> > > > > > > > > > Thanks.
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > One thing that I didn't really get to think hard about is what is the
+> > > > > > > > > > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+> > > > > > > > > > > invalid when racing with the split. How do we enforce that this won't
+> > > > > > > > > > > blow up?
+> > > > > > > > > >
+> > > > > > > > > > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
+> > > > > > > > > > in this case, the pfn_to_page can work. The return value of the
+> > > > > > > > > > pfn_to_page is actually the address of it's struct page struct.
+> > > > > > > > > > I can not figure out where the problem is. Can you describe the
+> > > > > > > > > > problem in detail please? Thanks.
+> > > > > > > > >
+> > > > > > > > > struct page returned by pfn_to_page might get invalid right when it is
+> > > > > > > > > returned because vmemmap could get freed up and the respective memory
+> > > > > > > > > released to the page allocator and reused for something else. See?
+> > > > > > > >
+> > > > > > > > If the HugeTLB page is already allocated from the buddy allocator,
+> > > > > > > > the struct page of the HugeTLB can be freed? Does this exist?
+> > > > > > >
+> > > > > > > Nope, struct pages only ever get deallocated when the respective memory
+> > > > > > > (they describe) is hotremoved via hotplug.
+> > > > > > >
+> > > > > > > > If yes, how to free the HugeTLB page to the buddy allocator
+> > > > > > > > (cannot access the struct page)?
+> > > > > > >
+> > > > > > > But I do not follow how that relates to my concern above.
+> > > > > >
+> > > > > > Sorry. I shouldn't understand your concerns.
+> > > > > >
+> > > > > > vmemmap pages                 page frame
+> > > > > > +-----------+   mapping to   +-----------+
+> > > > > > |           | -------------> |     0     |
+> > > > > > +-----------+                +-----------+
+> > > > > > |           | -------------> |     1     |
+> > > > > > +-----------+                +-----------+
+> > > > > > |           | -------------> |     2     |
+> > > > > > +-----------+                +-----------+
+> > > > > > |           | -------------> |     3     |
+> > > > > > +-----------+                +-----------+
+> > > > > > |           | -------------> |     4     |
+> > > > > > +-----------+                +-----------+
+> > > > > > |           | -------------> |     5     |
+> > > > > > +-----------+                +-----------+
+> > > > > > |           | -------------> |     6     |
+> > > > > > +-----------+                +-----------+
+> > > > > > |           | -------------> |     7     |
+> > > > > > +-----------+                +-----------+
+> > > > > >
+> > > > > > In this patch series, we will free the page frame 2-7 to the
+> > > > > > buddy allocator. You mean that pfn_to_page can return invalid
+> > > > > > value when the pfn is the page frame 2-7? Thanks.
+> > > > >
+> > > > > No I really mean that pfn_to_page will give you a struct page pointer
+> > > > > from pages which you release from the vmemmap page tables. Those pages
+> > > > > might get reused as soon sa they are freed to the page allocator.
+> > > >
+> > > > We will remap vmemmap pages 2-7 (virtual addresses) to page
+> > > > frame 1. And then we free page frame 2-7 to the buddy allocator.
+> > >
+> > > And this doesn't really happen in an atomic fashion from the pfn walker
+> > > POV, right? So it is very well possible that
+> >
+> > Yeah, you are right. But it may not be a problem for HugeTLB pages.
+> > Because in most cases, we only read the tail struct page and get the
+> > head struct page through compound_head() when the pfn is within
+> > a HugeTLB range. Right?
+>
+> Many pfn walkers would encounter the head page first and then skip over
+> the rest. Those should be reasonably safe. But there is no guarantee and
+> the fact that you need a valid page->compound_head which might get
+> scribbled over once you have the struct page makes this extremely
+> subtle.
 
-afaict, this code is only called from probe_alloc_default_domain(), which
-has:
+In this patch series, we can guarantee that the page->compound_head
+is always valid. Because we reuse the first tail page. Maybe you need to
+look closer at this series. Thanks.
 
-        /* Ask for default domain requirements of all devices in the group */
-        __iommu_group_for_each_dev(group, &gtype,
-                                   probe_get_default_domain_type);
 
-        if (!gtype.type)
-                gtype.type = iommu_def_domain_type;
+>
+> --
+>
+> SUSE Labs
 
-so is there actually a need to introduce the new
-iommu_get_mandatory_def_domain_type() function, given that a type of 0
-always ends up resolving to the default domain type?
 
-Will
+
+--
+Yours,
+Muchun
