@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2617F2C0729
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E812C07B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732048AbgKWMiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:38:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732025AbgKWMhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:37:55 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6852E20857;
-        Mon, 23 Nov 2020 12:37:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606135074;
-        bh=E3ZUW9YZtx9seOajOdKsI9RWDaX+VTD1RTCK4Pn1HfU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jc82OpxINzA6CJC9QtsMQkXto1eCPNnZVLgaTuBLQMU+4un/Bq3CEFIdc3tvJj5+y
-         xOF+W3AvJAS9M+8vhlLng4yZg7iD6iu+b/BXl6rumt0EpEVCzAdCtkXDYId/R49ydg
-         TOVDcovB+saJUfi2WEa59QeB8Leu9AgDvQl2avEY=
-Date:   Mon, 23 Nov 2020 12:37:31 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201123123731.GA6322@sirena.org.uk>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120165202.GG6751@sirena.org.uk>
- <20201120194245.GA2925@kozik-lap>
- <20201120200429.GJ6751@sirena.org.uk>
- <20201122105813.GA3780@kozik-lap>
- <20201123104832.GY4077@smile.fi.intel.com>
+        id S1733082AbgKWMn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:43:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732647AbgKWMlS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:41:18 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CE1C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:41:19 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id l11so8798129plt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x/P5N+aOgL+Wbp5LDW9WUHH3BDfKq+6QZULV8RGl/RI=;
+        b=BlokZ/Pz5XeHpSjC+MSruML4P8RkddSgJRa8c6tIXeWoh16b9Wj6x87Q9DtCPdMwzV
+         15wElAT5ukt5h5AZbTm433f/zV+j1s42ItZqY+ezTxmefPyn+cDUFO+938Y5fNBm6stH
+         Y7PCY3iuT3vDa+XurhzV5FRb96TjlAX4yW/Y+L8PuG41s/L4qs6rhCsi2F7u7XmSzFG6
+         RCTbIlXQYthfLHcvJ/vghfpwJJf2qQ3brYryXbJA7dVOUZQ/ColzuRCb9K1wZY+Rj88B
+         2noNhzOhd4CjBMGVd5OyV/uudyuj5lq5gXHufcTlQPJr3TJ2ZqpGlY7hMLHOTUYbwb29
+         IAWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x/P5N+aOgL+Wbp5LDW9WUHH3BDfKq+6QZULV8RGl/RI=;
+        b=rggGPiSTyNRt6S/H7RaXtYWCuW84K6D6kspW1XuvftYESFbEQt3sqHmQUo3Rf7Uk8n
+         6D3EW1l1/yUEraJw2TMKgHYhG4tzTgPoVPcTguZXZL1UOOIiNJ/NV4dtM8igvJPcIBLM
+         t3R1TuKpXzRVLdSm8C4je1LqOH1LV2HiR8axjuA/gB2BAoS9PN5D3wcWPr+JxgsjToum
+         QfrNEw+9l8oz3HU9NnjFlnZiDluadRi4zs3OomrCRB40qko12e+/48cbNjA1W+zdff5h
+         /HR70Q0VCMDdvCyPEDW/EuxGcWSh8uuq75frvQlsqT3cPYvkZOegMmoMZJTVDoEQljan
+         jfeg==
+X-Gm-Message-State: AOAM530mRLUf8YTNjiQJREklildhUIBh7I3qn+9NIcMgcxAioogzBTrX
+        g0xPPf9BBDGo4D5Fp1PUGNtnTk9Gaqb6jEwcrYaEHw==
+X-Google-Smtp-Source: ABdhPJz9qr7a0zkKVT9IfcMthloG1hw4ZSqZsLVrN/ctqcHYcVJjOjMVeC/6+5Fwvq+i7o9PgEnq9csgleUeS3Fpk10=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr18683104plt.34.1606135278722; Mon, 23
+ Nov 2020 04:41:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
-Content-Disposition: inline
-In-Reply-To: <20201123104832.GY4077@smile.fi.intel.com>
-X-Cookie: Dry clean only.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201120131129.GO3200@dhcp22.suse.cz> <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
+ <20201123074046.GB27488@dhcp22.suse.cz> <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
+ <20201123094344.GG27488@dhcp22.suse.cz> <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
+ <20201123104258.GJ27488@dhcp22.suse.cz> <CAMZfGtVzv0qPaK8GALaf8CiaPf2Z9+js24gFtFv5_RfhAyXaRA@mail.gmail.com>
+ <20201123113208.GL27488@dhcp22.suse.cz> <CAMZfGtXUNXdqse-tsCFyqePJ65L-1EgkYW416+Hu+_6OVu7FjA@mail.gmail.com>
+ <20201123121842.GM27488@dhcp22.suse.cz>
+In-Reply-To: <20201123121842.GM27488@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 23 Nov 2020 20:40:40 +0800
+Message-ID: <CAMZfGtVboaBuP_jYHeaQHwQ4gJoXuJC47g1UwTa+aUL4bqo=zw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
+ hugetlb page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 8:18 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 23-11-20 20:07:23, Muchun Song wrote:
+> > On Mon, Nov 23, 2020 at 7:32 PM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > > > > > No I really mean that pfn_to_page will give you a struct page pointer
+> > > > > > > from pages which you release from the vmemmap page tables. Those pages
+> > > > > > > might get reused as soon sa they are freed to the page allocator.
+> > > > > >
+> > > > > > We will remap vmemmap pages 2-7 (virtual addresses) to page
+> > > > > > frame 1. And then we free page frame 2-7 to the buddy allocator.
+> > > > >
+> > > > > And this doesn't really happen in an atomic fashion from the pfn walker
+> > > > > POV, right? So it is very well possible that
+> > > >
+> > > > Yeah, you are right. But it may not be a problem for HugeTLB pages.
+> > > > Because in most cases, we only read the tail struct page and get the
+> > > > head struct page through compound_head() when the pfn is within
+> > > > a HugeTLB range. Right?
+> > >
+> > > Many pfn walkers would encounter the head page first and then skip over
+> > > the rest. Those should be reasonably safe. But there is no guarantee and
+> > > the fact that you need a valid page->compound_head which might get
+> > > scribbled over once you have the struct page makes this extremely
+> > > subtle.
+> >
+> > In this patch series, we can guarantee that the page->compound_head
+> > is always valid. Because we reuse the first tail page. Maybe you need to
+> > look closer at this series. Thanks.
+>
+> I must be really terrible exaplaining my concern. Let me try one last
+> time. It is really _irrelevant_ what you do with tail pages. The
+> underlying problem is that you are changing struct pages under users
+> without any synchronization. What used to be a valid struct page will
+> turn into garbage as soon as you remap vmemmap page tables.
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you very much for your patient explanation. So if the pfn walkers
+always try get the head struct page through compound_head() when it
+encounter a tail struct page. There will be no concerns. Do you agree?
 
-On Mon, Nov 23, 2020 at 12:48:32PM +0200, Andy Shevchenko wrote:
-> On Sun, Nov 22, 2020 at 11:59:20AM +0100, Krzysztof Kozlowski wrote:
-> > On Fri, Nov 20, 2020 at 08:04:29PM +0000, Mark Brown wrote:
+> --
+> Michal Hocko
+> SUSE Labs
 
-> > > Surely if that's the desired outcome the fix is to change the definition
-> > > of of_match_ptr() such that it leaves the reference with CONFIG_ACPI,
-> > > perhaps hidden behind a config option for PRP0001?  That seems better
-> > > than going through the entire tree like this.
 
-> > That could be indeed an easier way to achieve this.
 
-> ...easier and wrong in my opinion. Not all drivers need that.
-> What the point to touch it in the driver which is OF-only?
-> (For IP which will quite unlikely to be present in ACPI world)
-> Or if the device will get the correct ACPI ID?
-
-That feels like something that should be done with Kconfig dependencies
-like a direct OF dependency (possibly a !PRP0001 dependency?) for the
-driver or possibly with having a variant of_match_ptr() for things that
-really don't want to support PRP0001.  Just removing all the use of
-of_match_ptr() is both noisy and confusing in that it looks like it's
-creating issues to fix, it makes it hard to understand when and why one
-should use the macro.
-
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+7rQoACgkQJNaLcl1U
-h9Ab8Af/d/f50Mie+21uU7IEYil1gbm/kfHMT4a3x03IfjU4EMbn9cWpgxbYJZeF
-Ji7PrF9Pz6/uLhc3c92BFVw3CQFz5xm4VupqS4TCaQym5WU8sFjQtknzWYDkW91N
-/IfkuCjG70Kg5Gp9Waa/wY50tF8c6WdnxJJ6XnNjTpwGBTrTZpcQF9sxo3Xp4ZbW
-7KOc49fYkdlcjn1q7qTYv2s0RTGyOxOlBvKyu/hjNbYy3jWifeH2BJ4SOk38FtPS
-FwoSIIR3GdrDqPjaG4seE6rdts4eIoFKzpt/Jhzas5m27n6Gojjs5c6fJ4ch6hrV
-Ms7NDaWTa0cI4iSxV8YUL59UAerGpQ==
-=BTCH
------END PGP SIGNATURE-----
-
---pf9I7BMVVzbSWLtt--
+-- 
+Yours,
+Muchun
