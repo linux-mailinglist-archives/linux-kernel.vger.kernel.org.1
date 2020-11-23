@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EB42C08A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1F42C08A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387977AbgKWM5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2387985AbgKWM5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 23 Nov 2020 07:57:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34960 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:34988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733305AbgKWMuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:50:01 -0500
+        id S1731767AbgKWMuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:50:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEF7A204EF;
-        Mon, 23 Nov 2020 12:49:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E1932100A;
+        Mon, 23 Nov 2020 12:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135800;
-        bh=4tkJfRLL+x/vtIR/vHVvnhcoeEplKQ4liZAcFlzeWA8=;
+        s=korg; t=1606135803;
+        bh=YQxTo3qZOqu7l7wv1ojl0FFp11250/mb0j4+Kd3/Xoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLtV9N/0QPMlkGVL9z+XCxQj9X4AkRsT4NvVmOkr/btlPr1oVjj06IVGovdFv/yFu
-         Fs2FRZuLGpNcZeLRwij9kWS1FrrXy4XSfOnSMWB5SPgKyCv8M1VY34hoDLye+vG+WQ
-         9vtdgGIVHA/1QVLM4WSdbKIV3D27b+XCYiYgBnxk=
+        b=aIvaOMWGYXO2DLgRdybda4SSbYtz8DZ+nssB9STuzFZgsJHmVInYjciSpa+go8WT0
+         hvpx+suQseiKHY7uiSAvs3kmWYgRWxrpmk7/YHyfRL9/QLnxHiKGTRD/wbfcVRPXaj
+         A8cTPcS+ArT//EP6SGa+JaQgEXoER01FBoMME7rw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH 5.9 200/252] HID: logitech-dj: Fix an error in mse_bluetooth_descriptor
-Date:   Mon, 23 Nov 2020 13:22:30 +0100
-Message-Id: <20201123121845.230470502@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.9 201/252] efivarfs: fix memory leak in efivarfs_create()
+Date:   Mon, 23 Nov 2020 13:22:31 +0100
+Message-Id: <20201123121845.278414671@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
 References: <20201123121835.580259631@linuxfoundation.org>
@@ -42,40 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 
-commit eec231e060fb79923c349f6e89f022b286f32c1e upstream.
+commit fe5186cf12e30facfe261e9be6c7904a170bd822 upstream.
 
-Fix an error in the mouse / INPUT(2) descriptor used for quad/bt2.0 combo
-receivers. Replace INPUT with INPUT (Data,Var,Abs) for the field for the
-4 extra buttons which share their report-byte with the low-res hwheel.
+kmemleak report:
+  unreferenced object 0xffff9b8915fcb000 (size 4096):
+  comm "efivarfs.sh", pid 2360, jiffies 4294920096 (age 48.264s)
+  hex dump (first 32 bytes):
+    2d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -...............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000cc4d897c>] kmem_cache_alloc_trace+0x155/0x4b0
+    [<000000007d1dfa72>] efivarfs_create+0x6e/0x1a0
+    [<00000000e6ee18fc>] path_openat+0xe4b/0x1120
+    [<000000000ad0414f>] do_filp_open+0x91/0x100
+    [<00000000ce93a198>] do_sys_openat2+0x20c/0x2d0
+    [<000000002a91be6d>] do_sys_open+0x46/0x80
+    [<000000000a854999>] __x64_sys_openat+0x20/0x30
+    [<00000000c50d89c9>] do_syscall_64+0x38/0x90
+    [<00000000cecd6b5f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-This is likely a copy and paste error. I've verified that the new
-0x81, 0x02 value matches both the mouse descriptor for the currently
-supported MX5000 / MX5500 receivers, as well as the INPUT(2) mouse
-descriptors for the Dinovo receivers for which support is being
-worked on.
+In efivarfs_create(), inode->i_private is setup with efivar_entry
+object which is never freed.
 
-Cc: stable@vger.kernel.org
-Fixes: f2113c3020ef ("HID: logitech-dj: add support for Logitech Bluetooth Mini-Receiver")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Link: https://lore.kernel.org/r/20201023115429.GA2479@cosmos
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hid/hid-logitech-dj.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/efivarfs/super.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/hid/hid-logitech-dj.c
-+++ b/drivers/hid/hid-logitech-dj.c
-@@ -328,7 +328,7 @@ static const char mse_bluetooth_descript
- 	0x25, 0x01,		/*      LOGICAL_MAX (1)                 */
- 	0x75, 0x01,		/*      REPORT_SIZE (1)                 */
- 	0x95, 0x04,		/*      REPORT_COUNT (4)                */
--	0x81, 0x06,		/*      INPUT                           */
-+	0x81, 0x02,		/*      INPUT (Data,Var,Abs)            */
- 	0xC0,			/*    END_COLLECTION                    */
- 	0xC0,			/*  END_COLLECTION                      */
- };
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -21,6 +21,7 @@ LIST_HEAD(efivarfs_list);
+ static void efivarfs_evict_inode(struct inode *inode)
+ {
+ 	clear_inode(inode);
++	kfree(inode->i_private);
+ }
+ 
+ static const struct super_operations efivarfs_ops = {
 
 
