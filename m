@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D482C10C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43452C10C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 17:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390131AbgKWQhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 11:37:17 -0500
-Received: from mail.pqgruber.com ([52.59.78.55]:41326 "EHLO mail.pqgruber.com"
+        id S2390122AbgKWQhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 11:37:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729294AbgKWQhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:37:16 -0500
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id C379CC81EEB;
-        Mon, 23 Nov 2020 17:37:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1606149434;
-        bh=Kc6Fqrrn44fvOnRrUmkrUS9dVkPwBhPEwVaxBFioCTY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w2KhMJOry0PmX39LhN+BBMGxyxy9JWzQCMG1v+5XaCfAVIrYZIV0Ty+vD/kJJ+APP
-         8rtX0g8KBnZiyUd5mrex1WzCeDmMMbWJ3Ku+8QlTq/p5jxSt7HZcv7xprxUf0/vL3H
-         kTn/S4SxAcl7yTudiLbqdDNH3gBqt6BK2fx2x2Fk=
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     linux-pwm@vger.kernel.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        u.kleine-koenig@pengutronix.de, Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>,
-        Clemens Gruber <clemens.gruber@pqgruber.com>
-Subject: [PATCH v2 3/4] pwm: pca9685: Support staggered output ON times
-Date:   Mon, 23 Nov 2020 17:36:22 +0100
-Message-Id: <20201123163622.166048-3-clemens.gruber@pqgruber.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123163622.166048-1-clemens.gruber@pqgruber.com>
-References: <20201123163622.166048-1-clemens.gruber@pqgruber.com>
+        id S1732535AbgKWQhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 11:37:03 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 649D220665;
+        Mon, 23 Nov 2020 16:37:01 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 11:36:59 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201123113659.3d1fd866@gandalf.local.home>
+In-Reply-To: <20201123112812.19e918b3@gandalf.local.home>
+References: <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
+        <20201112161439.GA2989297@elver.google.com>
+        <20201112175406.GF3249@paulmck-ThinkPad-P72>
+        <20201113175754.GA6273@paulmck-ThinkPad-P72>
+        <20201117105236.GA1964407@elver.google.com>
+        <20201117182915.GM1437@paulmck-ThinkPad-P72>
+        <20201118225621.GA1770130@elver.google.com>
+        <20201118233841.GS1437@paulmck-ThinkPad-P72>
+        <20201119125357.GA2084963@elver.google.com>
+        <20201120142734.75af5cd6@gandalf.local.home>
+        <20201123152720.GA2177956@elver.google.com>
+        <20201123112812.19e918b3@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCA9685 supports staggered LED output ON times to minimize current
-surges and reduce EMI.
-When this new option is enabled, the ON times of each channel are
-delayed by channel number x counter range / 16, which avoids asserting
-all enabled outputs at the same counter value while still maintaining
-the configured duty cycle of each output.
+On Mon, 23 Nov 2020 11:28:12 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
----
+> I noticed:
+> 
+> 
+> [  237.650900] enabling event benchmark_event
+> 
+> In both traces. Could you disable CONFIG_TRACEPOINT_BENCHMARK and see if
+> the issue goes away. That event kicks off a thread that spins in a tight
+> loop for some time and could possibly cause some issues.
+> 
+> It still shouldn't break things, we can narrow it down if it is the culprit.
 
-Changes since v1:
-- Rebased
+And it probably is the issue because that thread will never sleep! It runs
+a loop of:
 
- drivers/pwm/pwm-pca9685.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-index eaeadfa853cf..c22268b63fcc 100644
---- a/drivers/pwm/pwm-pca9685.c
-+++ b/drivers/pwm/pwm-pca9685.c
-@@ -75,6 +75,7 @@ struct pca9685 {
- 	struct pwm_chip chip;
- 	struct regmap *regmap;
- 	int prescale;
-+	bool staggered_outputs;
- #if IS_ENABLED(CONFIG_GPIOLIB)
- 	struct mutex lock;
- 	struct gpio_chip gpio;
-@@ -350,7 +351,7 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- {
- 	struct pca9685 *pca = to_pca(chip);
- 	unsigned long long duty, prescale;
--	unsigned int reg;
-+	unsigned int on, off, reg;
- 
- 	if (state->polarity != PWM_POLARITY_NORMAL)
- 		return -EOPNOTSUPP;
-@@ -386,6 +387,32 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	duty = (PCA9685_COUNTER_RANGE - 1) * state->duty_cycle;
- 	duty = DIV_ROUND_UP_ULL(duty, state->period);
- 
-+	if (pca->staggered_outputs) {
-+		if (pwm->hwpwm < PCA9685_MAXCHAN) {
-+			/*
-+			 * To reduce EMI, the ON times of each channel are
-+			 * spread out evenly within the counter range, while
-+			 * still maintaining the configured duty cycle
-+			 */
-+			on = pwm->hwpwm * PCA9685_COUNTER_RANGE /
-+				PCA9685_MAXCHAN;
-+			off = (on + duty) % PCA9685_COUNTER_RANGE;
-+			regmap_write(pca->regmap, LED_N_ON_L(pwm->hwpwm),
-+				     on & 0xff);
-+			regmap_write(pca->regmap, LED_N_ON_H(pwm->hwpwm),
-+				     (on >> 8) & 0xf);
-+			regmap_write(pca->regmap, LED_N_OFF_L(pwm->hwpwm),
-+				     off & 0xff);
-+			regmap_write(pca->regmap, LED_N_OFF_H(pwm->hwpwm),
-+				     (off >> 8) & 0xf);
-+			return 0;
-+		}
-+
-+		/* No staggering possible if "all LEDs" channel is used */
-+		regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
-+		regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
-+	}
-+
- 	if (pwm->hwpwm >= PCA9685_MAXCHAN)
- 		reg = PCA9685_ALL_LED_OFF_L;
- 	else
-@@ -489,6 +516,9 @@ static int pca9685_pwm_probe(struct i2c_client *client,
- 
- 	regmap_write(pca->regmap, PCA9685_MODE2, reg);
- 
-+	pca->staggered_outputs = device_property_read_bool(
-+		&client->dev, "staggered-outputs");
-+
- 	/* Disable all LED ALLCALL and SUBx addresses to avoid bus collisions */
- 	regmap_read(pca->regmap, PCA9685_MODE1, &reg);
- 	reg &= ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
-@@ -497,6 +527,9 @@ static int pca9685_pwm_probe(struct i2c_client *client,
- 	/* Reset OFF registers to HW default (only full OFF bit is set) */
- 	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, 0);
- 	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
-+	/* Reset ON registers to HW default */
-+	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
-+	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
- 
- 	pca->chip.ops = &pca9685_pwm_ops;
- 	/* Add an extra channel for ALL_LED */
--- 
-2.29.2
+static int benchmark_event_kthread(void *arg)
+{
+	/* sleep a bit to make sure the tracepoint gets activated */
+	msleep(100);
 
+	while (!kthread_should_stop()) {
+
+		trace_do_benchmark();
+
+		/*
+		 * We don't go to sleep, but let others run as well.
+		 * This is basically a "yield()" to let any task that
+		 * wants to run, schedule in, but if the CPU is idle,
+		 * we'll keep burning cycles.
+		 *
+		 * Note the tasks_rcu_qs() version of cond_resched() will
+		 * notify synchronize_rcu_tasks() that this thread has
+		 * passed a quiescent state for rcu_tasks. Otherwise
+		 * this thread will never voluntarily schedule which would
+		 * block synchronize_rcu_tasks() indefinitely.
+		 */
+		cond_resched_tasks_rcu_qs();
+	}
+
+	return 0;
+}
+
+
+Did something change, where that "cond_resched_tasks_rcu_qs()" doesn't let
+things progress on ARM64?
+
+I noticed that you have PREEMPT enabled so this will only be preempted when
+its schedule time runs out and something else wants to run. How would that
+affect other threads?
+
+-- Steve
