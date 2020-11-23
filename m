@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB54B2C0D01
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957EB2C0D03
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731570AbgKWOND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:13:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:50980 "EHLO foss.arm.com"
+        id S2388578AbgKWON5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:13:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52562 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729562AbgKWONC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:13:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02278101E;
-        Mon, 23 Nov 2020 06:13:02 -0800 (PST)
-Received: from [10.57.53.209] (unknown [10.57.53.209])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8336C3F718;
-        Mon, 23 Nov 2020 06:13:00 -0800 (PST)
-Subject: Re: [PATCH] coresight: etm4x: Modify core-commit of cpu to avoid the
- overflow of HiSilicon ETM
-To:     Qi Liu <liuqi115@huawei.com>, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org
-Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com
-References: <1606138167-8076-1-git-send-email-liuqi115@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <cfa91a72-6e01-85ce-583a-9a49093a875b@arm.com>
-Date:   Mon, 23 Nov 2020 14:12:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730401AbgKWON5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:13:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606140835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ctnkZidQcbONL2E2GNXaD6vWwJeHp8xZUqynseoO/sA=;
+        b=kd7EHCERweUSVilu2uB4nLfReLStHEYhuU1ziibqx0MG3I0FjP4Wt9AZ7rMZY6GOBfjwfM
+        Zyl+pcYt1NmcZP6J6XfW76nkR6ZxVStM8Dd6qoDNOvKdiKRUEWvYY2UPbA3ZdWmrRwALyL
+        nFUApIeWlgMH/omBSFYOZpv8XfH5Y1g=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8A260AC23;
+        Mon, 23 Nov 2020 14:13:55 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 15:13:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Charan Teja Reddy <charante@codeaurora.org>
+Cc:     akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memory_hotplug: put migration failure information
+ under DEBUG_VM
+Message-ID: <20201123141354.GQ27488@dhcp22.suse.cz>
+References: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1606138167-8076-1-git-send-email-liuqi115@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qi
+On Mon 23-11-20 19:33:16, Charan Teja Reddy wrote:
+> When the pages are failed to get isolate or migrate, the page owner
+> information along with page info is dumped. If there are continuous
+> failures in migration(say page is pinned) or isolation, the log buffer
+> is simply getting flooded with the page owner information. As most of
+> the times page info is sufficient to know the causes for failures of
+> migration or isolation, place the page owner information under DEBUG_VM.
 
-Thanks for the changes. Mostly looks good to me, except for the
-name of the call back.
-
-
-On 11/23/20 1:29 PM, Qi Liu wrote:
-> The ETM device can't keep up with the core pipeline when cpu core
-> is at full speed. This may cause overflow within core and its ETM.
-> This is a common phenomenon on ETM devices.
-> 
-> On HiSilicon Hip08 platform, a specific feature is added to set
-> core pipeline. So commit rate can be reduced manually to avoid ETM
-> overflow.
-> 
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-
-
+I do not see why this path is any different from others that call
+dump_page. Page owner can add a very valuable information to debug
+the underlying reasons for failures here. It is an opt-in debugging
+feature which needs to be enabled explicitly. So I would argue users
+are ready to accept a lot of data in the kernel log.
+ 
+> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
 > ---
-> Change since v1:
-> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
->    to keep specific feature off platforms which don't use it.
-> Change since v2:
-> - remove some unused variable.
-> Change since v3:
-> - use read/write_sysreg_s() to access register.
+>  mm/memory_hotplug.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 > 
->   drivers/hwtracing/coresight/Kconfig                |  9 +++
->   drivers/hwtracing/coresight/coresight-etm4x-core.c | 84 ++++++++++++++++++++++
->   drivers/hwtracing/coresight/coresight-etm4x.h      | 12 ++++
->   3 files changed, 105 insertions(+)
-> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 63b2e46..f48f30d 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1326,7 +1326,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+>  
+>  		} else {
+>  			pr_warn("failed to isolate pfn %lx\n", pfn);
+> -			dump_page(page, "isolation failed");
+> +			__dump_page(page, "isolation failed");
+> +#if defined(CONFIG_DEBUG_VM)
+> +			dump_page_owner(page);
+> +#endif
+>  		}
+>  		put_page(page);
+>  	}
+> @@ -1357,7 +1360,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+>  			list_for_each_entry(page, &source, lru) {
+>  				pr_warn("migrating pfn %lx failed ret:%d ",
+>  				       page_to_pfn(page), ret);
+> -				dump_page(page, "migration failure");
+> +				__dump_page(page, "migration failure");
+> +#if defined(CONFIG_DEBUG_VM)
+> +				dump_page_owner(page);
+> +#endif
+>  			}
+>  			putback_movable_pages(&source);
+>  		}
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member of the Code Aurora Forum, hosted by The Linux Foundation
 
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-> index eefc737..1784975 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-> @@ -8,6 +8,7 @@
-> 
->   #include <asm/local.h>
->   #include <linux/spinlock.h>
-> +#include <linux/types.h>
->   #include "coresight-priv.h"
-> 
->   /*
-> @@ -203,6 +204,11 @@
->   /* Interpretation of resource numbers change at ETM v4.3 architecture */
->   #define ETM4X_ARCH_4V3	0x43
-> 
-> +enum etm_impdef_type {
-> +	ETM4_IMPDEF_HISI_CORE_COMMIT,
-> +	ETM4_IMPDEF_FEATURE_MAX,
-> +};
-> +
->   /**
->    * struct etmv4_config - configuration information related to an ETMv4
->    * @mode:	Controls various modes supported by this ETM.
-> @@ -415,6 +421,7 @@ struct etmv4_save_state {
->    * @state_needs_restore: True when there is context to restore after PM exit
->    * @skip_power_up: Indicates if an implementation can skip powering up
->    *		   the trace unit.
-> + * @arch_features: Bitmap of arch features of etmv4 devices.
->    */
->   struct etmv4_drvdata {
->   	void __iomem			*base;
-> @@ -463,6 +470,11 @@ struct etmv4_drvdata {
->   	struct etmv4_save_state		*save_state;
->   	bool				state_needs_restore;
->   	bool				skip_power_up;
-> +	DECLARE_BITMAP(arch_features, ETM4_IMPDEF_FEATURE_MAX);
-> +};
-> +
-> +struct etm4_arch_features {
-> +	void (*set_commit)(bool enable);
-
-The set_commit is too hisilicon specific :-). Could we please rename
-this to soemthing more generic. The callback for hisilicon etms, could still
-be xx_commit". May be simply call it
-
-	callback() ?
-
-or may be even
-	arch_callback() ?
-
-
->   };
-
-nit: This need not be part of the header file, as it is not used
-outside the etm4x-core.c
-
-Suzuki
+-- 
+Michal Hocko
+SUSE Labs
