@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97192C0319
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA4D2C0318
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgKWKSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:18:18 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:16036 "EHLO m42-4.mailgun.net"
+        id S1727106AbgKWKSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:18:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:40346 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726528AbgKWKSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:18:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606126697; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=xY6uS9noksXzCihG0l44z/ZA9XOGebTNqYxS6RYpRek=; b=FPGNictulUu9HLUkCzY1L13WIpsRYgqCDTl3lqgGWs+kBxfTanVADZF7LrS/H4/D6CJPmgPF
- xcBhzuknGRmtZeCYWdUkkL7H4EJ7CnuWNRRkyJQzlnEnCx9dxGSMHEi0pbt9PBT332p5A1o0
- UguhyHcqAsIKnJyt2rvyvNMhcyQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fbb8c680c9500dc7bab71f4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 10:18:16
- GMT
-Sender: pkondeti=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 769D2C43461; Mon, 23 Nov 2020 10:18:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pkondeti)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61F15C433ED;
-        Mon, 23 Nov 2020 10:18:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 61F15C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
-From:   Pavankumar Kondeti <pkondeti@codeaurora.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Pavankumar Kondeti <pkondeti@codeaurora.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] PM / EM: Micro optimization in em_pd_energy
-Date:   Mon, 23 Nov 2020 15:47:57 +0530
-Message-Id: <1606126679-11799-1-git-send-email-pkondeti@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726528AbgKWKSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:18:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32CED101E;
+        Mon, 23 Nov 2020 02:18:12 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 489743F70D;
+        Mon, 23 Nov 2020 02:18:10 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, broonie@kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, f.fainelli@gmail.com,
+        satyakim@qti.qualcomm.com, souvik.chakravarty@arm.com,
+        etienne.carriere@linaro.org, Jonathan.Cameron@Huawei.com,
+        vincent.guittot@linaro.org, james.quinlan@broadcom.com,
+        lukasz.luba@arm.com, robh@kernel.org
+Subject: Re: [PATCH v6 0/5] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
+Date:   Mon, 23 Nov 2020 10:18:01 +0000
+Message-Id: <160612640234.1278741.10147060324304611609.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201119191051.46363-1-cristian.marussi@arm.com>
+References: <20201119191051.46363-1-cristian.marussi@arm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the sum of the utilization of CPUs in a power domain is zero,
-return the energy as 0 without doing any computations.
+On Thu, 19 Nov 2020 19:10:46 +0000, Cristian Marussi wrote:
+> this series introduces the support for the new SCMI Voltage Domain Protocol
+> defined by the upcoming SCMIv3.0 specification, whose BETA release is
+> available at [1].
+> 
+> Afterwards, a new generic SCMI Regulator driver is developed on top of the
+> new SCMI VD Protocol.
+> 
+> [...]
 
-Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
----
- include/linux/energy_model.h | 3 +++
- 1 file changed, 3 insertions(+)
+Applied to sudeep.holla/linux (for-next/scmi-voltage), thanks!
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index b67a51c..8810f1f 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -103,6 +103,9 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 	struct em_perf_state *ps;
- 	int i, cpu;
- 
-+	if (!sum_util)
-+		return 0;
-+
- 	/*
- 	 * In order to predict the performance state, map the utilization of
- 	 * the most utilized CPU of the performance domain to a requested
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+I will soon send pull request to Mark Brown so tha he can pick by the
+regulator driver patches with these as agreed.
+
+[4/5] dt-bindings: arm: Add support for SCMI Regulators
+      https://git.kernel.org/sudeep.holla/c/0f80fcec08
+[1/5] firmware: arm_scmi: Add voltage domain management protocol support
+      https://git.kernel.org/sudeep.holla/c/2add5cacff
+[2/5] firmware: arm_scmi: Add support to enumerated SCMI voltage domain device
+      https://git.kernel.org/sudeep.holla/c/ec88381936
+
+--
+Regards,
+Sudeep
 
