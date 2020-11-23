@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D962C0A2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090DC2C083A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732919AbgKWMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:42:26 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:43184 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732672AbgKWMld (ORCPT
+        id S2387443AbgKWMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387411AbgKWMps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:41:33 -0500
-Received: by mail-ej1-f66.google.com with SMTP id k27so23019875ejs.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 04:41:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GPrtMY6OwrhTMTFZ3taFyOwaPYmLyv2VpU7rochRReg=;
-        b=tgerCVLPHOfUQV3YAj2fSde0sukRBuKXBc4KJpilGrmOGy2gW+QM/M/iydu7SRQnKa
-         WvHVExDti7CDRAIsCdTeVKkvC6IFPkyP8qxjyNIBI0H4tl9RCVYRAlC5nM9i76xH/pa3
-         1fgQFBBfkkCP+Y7ONVVRrb/xUlm901+Q0pDTu16GZ8eW9v+Gy93Eo03AFpUAKufu7UZG
-         NIiuSuA47o7Mtgu9Dq4nUxi92uGhpg4BWrD6uoq1k/fItjKL14Pl+RWNIk3NyPn2SvZ3
-         dZsUFomiC7RX9DxQL4NNIHCkJjIo4CkBWhgxLE2CnurJwY/mf9mwP1OR5nAzv1eWvJqf
-         uD8A==
-X-Gm-Message-State: AOAM533lTWpg8Ozfo2eimpszh3yRy3sFreNirxMQ57ZElBe2rac2GaQB
-        bc2KSnlpeyJzaEduQ0PGwr0=
-X-Google-Smtp-Source: ABdhPJweTjHhkqFH1VFPyqJ/7+x5kCjNmVPNdbpMvAkswnuUiZsYEq13Ali5w0h7nyDPSgAbrxkeog==
-X-Received: by 2002:a17:906:f8c5:: with SMTP id lh5mr46230675ejb.77.1606135291740;
-        Mon, 23 Nov 2020 04:41:31 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y15sm4946855eds.56.2020.11.23.04.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 04:41:30 -0800 (PST)
-Date:   Mon, 23 Nov 2020 13:41:29 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201123124129.GA170000@kozik-lap>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120165202.GG6751@sirena.org.uk>
- <20201120194245.GA2925@kozik-lap>
- <20201120200429.GJ6751@sirena.org.uk>
- <20201122105813.GA3780@kozik-lap>
- <20201123104832.GY4077@smile.fi.intel.com>
- <20201123123731.GA6322@sirena.org.uk>
+        Mon, 23 Nov 2020 07:45:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35831C0613CF;
+        Mon, 23 Nov 2020 04:45:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D/+uQXuYCHVJTryMNhtIQ0wirxLovQ10MM/7dftfXjA=; b=eeEoYa3psy1tQ0tTz+3MV500iq
+        llvX2Sq8XRxLgLc4WkoFbfknD5IuMj5jxeQbAoExJ8GueJ5c7jbEdBYzy4ZAv5TgoNvzjoYcaAJE2
+        NY3ZUBdJMTt+QbgdfbWC0Blm/oZq+tJsp7r6NZhWe6bK11IlKbXjWJCKokcbLb6f0r0ZWuw98vK33
+        /NgveDC9KrZI+yM1PMYnsRCLpwGDyj5/6DHqZ7Skbu8j1mhFfbLHoFlwy5JPoK7PbBKu1/LoDzr5h
+        M35LHR3GTV8EJpVz41HDlLhuiX/y/RVJPHyPje9sA5X1J9Nwv4d+N89FUyEUsROJ6Ktf+W7q8/u/m
+        6jp0E+bQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khBDV-0000hM-8q; Mon, 23 Nov 2020 12:45:13 +0000
+Date:   Mon, 23 Nov 2020 12:45:13 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
+ hugetlb page
+Message-ID: <20201123124513.GI4327@casper.infradead.org>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz>
+ <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
+ <20201120131129.GO3200@dhcp22.suse.cz>
+ <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
+ <20201123074046.GB27488@dhcp22.suse.cz>
+ <CAMZfGtV9WBu0OVi0fw4ab=t4zzY-uVn3amsa5ZHQhZBy88exFw@mail.gmail.com>
+ <20201123094344.GG27488@dhcp22.suse.cz>
+ <CAMZfGtUjsAKuQ_2NijKGPZYX7OBO_himtBDMKNkYb_0_o5CJGA@mail.gmail.com>
+ <20201123104258.GJ27488@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123123731.GA6322@sirena.org.uk>
+In-Reply-To: <20201123104258.GJ27488@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 12:37:31PM +0000, Mark Brown wrote:
-> On Mon, Nov 23, 2020 at 12:48:32PM +0200, Andy Shevchenko wrote:
-> > On Sun, Nov 22, 2020 at 11:59:20AM +0100, Krzysztof Kozlowski wrote:
-> > > On Fri, Nov 20, 2020 at 08:04:29PM +0000, Mark Brown wrote:
+On Mon, Nov 23, 2020 at 11:42:58AM +0100, Michal Hocko wrote:
+> On Mon 23-11-20 18:36:33, Muchun Song wrote:
+> > > No I really mean that pfn_to_page will give you a struct page pointer
+> > > from pages which you release from the vmemmap page tables. Those pages
+> > > might get reused as soon sa they are freed to the page allocator.
+> > 
+> > We will remap vmemmap pages 2-7 (virtual addresses) to page
+> > frame 1. And then we free page frame 2-7 to the buddy allocator.
 > 
-> > > > Surely if that's the desired outcome the fix is to change the definition
-> > > > of of_match_ptr() such that it leaves the reference with CONFIG_ACPI,
-> > > > perhaps hidden behind a config option for PRP0001?  That seems better
-> > > > than going through the entire tree like this.
+> And this doesn't really happen in an atomic fashion from the pfn walker
+> POV, right? So it is very well possible that 
 > 
-> > > That could be indeed an easier way to achieve this.
-> 
-> > ...easier and wrong in my opinion. Not all drivers need that.
-> > What the point to touch it in the driver which is OF-only?
-> > (For IP which will quite unlikely to be present in ACPI world)
-> > Or if the device will get the correct ACPI ID?
-> 
-> That feels like something that should be done with Kconfig dependencies
-> like a direct OF dependency (possibly a !PRP0001 dependency?) for the
-> driver or possibly with having a variant of_match_ptr() for things that
-> really don't want to support PRP0001.  Just removing all the use of
-> of_match_ptr() is both noisy and confusing in that it looks like it's
-> creating issues to fix, it makes it hard to understand when and why one
-> should use the macro.
+> struct page *page = pfn_to_page();
+> // remapping happens here
+> // page content is no longer valid because its backing memory can be
+> // reused for whatever purpose.
 
-For the OF-only drivers (without other ID table), there is no point to
-use the macro. Driver can bind only with DT, so what is the point of
-of_match_ptr? To skip the OF table when building without OF? Driver
-won't be usable at all in such case. So maybe for compile testing?
-There is no need to remove OF table for simple build tests.
-
-Best regards,
-Krzysztof
-
+pfn_to_page() returns you a virtual address.  That virtual address
+remains a valid pointer to exactly the same contents, it's just that
+the page tables change to point to a different struct page which has
+the same compound_head().
