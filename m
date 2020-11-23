@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5462C075D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817A22C075F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732444AbgKWMkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:40:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52908 "EHLO mail.kernel.org"
+        id S1732453AbgKWMkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:40:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732429AbgKWMkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:40:12 -0500
+        id S1732443AbgKWMkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:40:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 348DC20732;
-        Mon, 23 Nov 2020 12:40:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B71272065E;
+        Mon, 23 Nov 2020 12:40:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135211;
-        bh=xbDw9W3N8VKee/+dPlml5wJDxTAdzFFQ5bOeBv4Cd58=;
+        s=korg; t=1606135217;
+        bh=jUczGZaOyp/m3vsYvk078BiNvDE7dEuLLgs0SyTViYU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gsEeN0S4zfj9cciWeMZxwnJixmyapjFyn/lvnJYgM8voUs5mu2/mdXZdBf/aGMc9l
-         4xWBhiPMb+6Dxo6oBwrqhQgoyCOZnLaymk8WbZAU+rxc0qU/llcDnysQ8Nm5velvXp
-         BdJ+xW8uSvzZhhSquD5XMu5qfpGbWRMHClYWjwtQ=
+        b=eGiDWMOI8XTUZxOh30HoJHsxk706c5lOyStRs89SnE5X1HRvLPNoogPMWyCuuaYLK
+         QX+wSu1IlusgIbof/OTqL2938wYvGsYRXn0Or6rwHKyTrbC2if05iPjCvc99KhdTlE
+         5vIVociuw9X2gBiyYKK+tvLPBr6XRluvSnqgeVw0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com,
-        syzbot+4c81fe92e372d26c4246@syzkaller.appspotmail.com,
-        syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com,
-        syzbot+abed06851c5ffe010921@syzkaller.appspotmail.com,
-        syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com,
-        syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 145/158] mac80211: free sta in sta_info_insert_finish() on errors
-Date:   Mon, 23 Nov 2020 13:22:53 +0100
-Message-Id: <20201123121826.926326711@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 147/158] s390/dasd: fix null pointer dereference for ERP requests
+Date:   Mon, 23 Nov 2020 13:22:55 +0100
+Message-Id: <20201123121827.019690026@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
 References: <20201123121819.943135899@linuxfoundation.org>
@@ -48,72 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 7bc40aedf24d31d8bea80e1161e996ef4299fb10 upstream.
+commit 6f117cb854a44a79898d844e6ae3fd23bd94e786 upstream.
 
-If sta_info_insert_finish() fails, we currently keep the station
-around and free it only in the caller, but there's only one such
-caller and it always frees it immediately.
+When requeueing all requests on the device request queue to the blocklayer
+we might get to an ERP (error recovery) request that is a copy of an
+original CQR.
 
-As syzbot found, another consequence of this split is that we can
-put things that sleep only into __cleanup_single_sta() and not in
-sta_info_free(), but this is the only place that requires such of
-sta_info_free() now.
+Those requests do not have blocklayer request information or a pointer to
+the dasd_queue set. When trying to access those data it will lead to a
+null pointer dereference in dasd_requeue_all_requests().
 
-Change this to free the station in sta_info_insert_finish(), in
-which case we can still sleep. This will also let us unify the
-cleanup code later.
+Fix by checking if the request is an ERP request that can simply be
+ignored. The blocklayer request will be requeued by the original CQR that
+is on the device queue right behind the ERP request.
 
-Cc: stable@vger.kernel.org
-Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
-Reported-by: syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com
-Reported-by: syzbot+4c81fe92e372d26c4246@syzkaller.appspotmail.com
-Reported-by: syzbot+6a7fe9faf0d1d61bc24a@syzkaller.appspotmail.com
-Reported-by: syzbot+abed06851c5ffe010921@syzkaller.appspotmail.com
-Reported-by: syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com
-Reported-by: syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20201112112201.ee6b397b9453.I9c31d667a0ea2151441cc64ed6613d36c18a48e0@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 9487cfd3430d ("s390/dasd: fix handling of internal requests")
+Cc: <stable@vger.kernel.org> #4.16
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/mac80211/sta_info.c |   14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ drivers/s390/block/dasd.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -688,7 +688,7 @@ static int sta_info_insert_finish(struct
-  out_drop_sta:
- 	local->num_sta--;
- 	synchronize_net();
--	__cleanup_single_sta(sta);
-+	cleanup_single_sta(sta);
-  out_err:
- 	mutex_unlock(&local->sta_mtx);
- 	kfree(sinfo);
-@@ -707,19 +707,13 @@ int sta_info_insert_rcu(struct sta_info
+--- a/drivers/s390/block/dasd.c
++++ b/drivers/s390/block/dasd.c
+@@ -2980,6 +2980,12 @@ static int _dasd_requeue_request(struct
  
- 	err = sta_info_insert_check(sta);
- 	if (err) {
-+		sta_info_free(local, sta);
- 		mutex_unlock(&local->sta_mtx);
- 		rcu_read_lock();
--		goto out_free;
-+		return err;
- 	}
- 
--	err = sta_info_insert_finish(sta);
--	if (err)
--		goto out_free;
--
--	return 0;
-- out_free:
--	sta_info_free(local, sta);
--	return err;
-+	return sta_info_insert_finish(sta);
- }
- 
- int sta_info_insert(struct sta_info *sta)
+ 	if (!block)
+ 		return -EINVAL;
++	/*
++	 * If the request is an ERP request there is nothing to requeue.
++	 * This will be done with the remaining original request.
++	 */
++	if (cqr->refers)
++		return 0;
+ 	spin_lock_irq(&cqr->dq->lock);
+ 	req = (struct request *) cqr->callback_data;
+ 	blk_mq_requeue_request(req, false);
 
 
