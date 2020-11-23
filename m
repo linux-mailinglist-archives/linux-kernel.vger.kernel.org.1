@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BAB2C02FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFDF2C0304
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728240AbgKWKId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:08:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgKWKIc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:08:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A476AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:08:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GMC0zoD4ESumTpUR0l7CFso7jCjRLzfG8oaHAbiw8Nw=; b=cUJ1n0nj5UYC6H8uzqFXNKi1sj
-        VJVEgsND3cpDxCRsPqQ5bBuGflv1l5bMovoQ2AU/2kJHb6TKWvpEMLuEyC72YYc6TtxcIyT8suqEf
-        4hLFc9qxeFlZVYf+TGJ2rJ9KKmUQSFyzC2oLgvfvqy4pdlLpIShVXCfo/bZhxzBvX+J6Vv7WNg2my
-        F6gpVj9v06mb46gfYvD82o+K6mq48jXWrAL8bPpTT2ZiWpmJXMPBN3BvCwfLogoc/HIq/OcwMqifE
-        slkh8yn9PgWFg8wu/TPKBu70jzqfjf/qE/Uu+l2tnemGHNvM0Xl1AMIi9vZ6ICa1J2Z73y6VowtlK
-        Z/IeNhqg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kh8lc-0006wE-Sr; Mon, 23 Nov 2020 10:08:16 +0000
-Date:   Mon, 23 Nov 2020 10:08:16 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Logan Gunthorpe <logang@deltatee.com>
-Subject: Re: [PATCH v5 3/7] iommu: Allow the dma-iommu api to use bounce
- buffers
-Message-ID: <20201123100816.GA26619@infradead.org>
-References: <20201120101719.3172693-1-baolu.lu@linux.intel.com>
- <20201120101719.3172693-4-baolu.lu@linux.intel.com>
+        id S1728151AbgKWKKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:10:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726306AbgKWKKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 05:10:49 -0500
+Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D202A21741;
+        Mon, 23 Nov 2020 10:10:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606126248;
+        bh=uHWu3kIpV8Mbwk2+Qh1eukWUnX0uCe01/tG5Im6mE1M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YEP2uQXPQhG9AVbcfvsR1J34jaPU+5ql7yAc31no4mPoiRDVHuv6oRBWLLArhOo6J
+         l2oz6zMVgC4BzJi+sanNeyHtMW5RQOCvVZ2PSGUpRPrgkcyAJa7Ww7QHYM1k8Ow+7w
+         WDmQZLLFszmzpXaGrCthsiRC6xX1DbUOfx6gBVz8=
+Subject: Re: [PATCH] clk: samsung: allow compile testing of Exynos, S3C64xx
+ and S5Pv210
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201119164509.754851-1-krzk@kernel.org>
+ <f44c5f4f-bda4-a1c1-dc6a-dc31efa314c6@kernel.org>
+ <20201122113425.GA6633@kozik-lap>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <e1d25f8d-5d33-3dc9-1af4-4afca7a8a967@kernel.org>
+Date:   Mon, 23 Nov 2020 11:10:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120101719.3172693-4-baolu.lu@linux.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201122113425.GA6633@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	/*
-> +	 * If both the physical buffer start address and size are
-> +	 * page aligned, we don't need to use a bounce page.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
-> +	    iova_offset(iovad, phys | org_size)) {
-> +		aligned_size = iova_align(iovad, org_size);
-> +		phys = swiotlb_tbl_map_single(dev,
-> +				phys_to_dma(dev, io_tlb_start),
-> +				phys, org_size, aligned_size, dir, attrs);
+On 11/22/20 12:34, Krzysztof Kozlowski wrote:
+> On Fri, Nov 20, 2020 at 05:36:35PM +0100, Sylwester Nawrocki wrote:
+>> On 11/19/20 17:45, Krzysztof Kozlowski wrote:
+>>> So far all Exynos, S3C64xx and S5Pv210 clock units were selected by
+>>> respective SOC/ARCH Kconfig option.  On a kernel built for selected
+>>> SoCs, this allowed to build only limited set of matching clock drivers.
+>>> However compile testing was not possible in such case as Makefile object
+>>> depent on SOC/ARCH option.
+>>
+>> "objects depend" or "object depends" ?
+> 
+> "object depends"
+> 
+>>> Add separate Kconfig options for each of them to be able to compile
+>>> test.
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski<krzk@kernel.org>
+>>
+>> The patch look good to me, thanks.
+>> Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>>
+>> I guess it's best now to merge it through your tree as it depends on
+>> patches already sent to arm-soc? Next time it might be better to use
+>> immutable branches right away to keep the clk changes in the clk
+>> maintainer's tree.
+> 
+> At that time I had only one clk patch so I did not put it on separate
+> branch.
+> 
+> Anyway, this does not depend on the clkout patches and only minor patch
+> adjustement is needed. Cherry-pick can solve it (you would need to apply
+> on next/master and then cherry pick) or I can resend you one rebased on
+> linus/master.
+> 
+> There should be no conflicts when merging later into next or linus.
+> 
+> I propose you should take it via clk tree.
 
-swiotlb_tbl_map_single takes one less argument in 5.10-rc now.
+Indeed, the conflict is minimal, I should have checked with git cherry-pick
+once I found a branch where the patch applied cleanly. I have corrected
+the typo an applied, thank you!
+
+--
+Regards,
+Sylwester
