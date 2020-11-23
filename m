@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0AD2C04C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632892C04C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 12:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729127AbgKWLlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 06:41:04 -0500
-Received: from mga02.intel.com ([134.134.136.20]:25882 "EHLO mga02.intel.com"
+        id S1729135AbgKWLl3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Nov 2020 06:41:29 -0500
+Received: from mga03.intel.com ([134.134.136.65]:12280 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726745AbgKWLlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 06:41:04 -0500
-IronPort-SDR: YTCq6leAI94X6SnVX5bxU19SMGCuE9HmxA/11O9gA5RlKrDhflyY+fJua2Wh+z2d5sfr23TaDk
- Ju0AjWwmbQwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="158789395"
+        id S1726745AbgKWLl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 06:41:29 -0500
+IronPort-SDR: AG6W93Bpxo9RNEsjq4Ejd+izKo3I+O6JkASrHXYEjjQvSoIxim0OW7KnUOYCotv+H+TTygFlHx
+ L9JLBv6YlZ/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="171843013"
 X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="158789395"
+   d="scan'208";a="171843013"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 03:41:02 -0800
-IronPort-SDR: VM/Y/pys1hbw4jESWb6trfxWGDg15evZIVcv6B6nIWzChUGTnNsgfRJ5QhDy4cm3U5MicLBemf
- 4ILc9qY8NHZQ==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 03:41:28 -0800
+IronPort-SDR: M0DrrngnZ5QAuafz2LKL8uJJcVxUHY8rHBEDDWflWBO/t/j2ONoT9kuRspRi89yLe6neB+9QDe
+ /oHHqm27B2tA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="546380585"
-Received: from kdinx-mobl.ccr.corp.intel.com (HELO [10.254.210.240]) ([10.254.210.240])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 03:40:59 -0800
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Logan Gunthorpe <logang@deltatee.com>
-To:     Christoph Hellwig <hch@infradead.org>
-References: <20201120101719.3172693-1-baolu.lu@linux.intel.com>
- <20201120101719.3172693-4-baolu.lu@linux.intel.com>
- <20201123100816.GA26619@infradead.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH v5 3/7] iommu: Allow the dma-iommu api to use bounce
- buffers
-Message-ID: <73ac6a6b-ede9-b306-6d8f-c73f22e1e8e3@linux.intel.com>
-Date:   Mon, 23 Nov 2020 19:40:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201123100816.GA26619@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+   d="scan'208";a="536068727"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga005.fm.intel.com with ESMTP; 23 Nov 2020 03:41:28 -0800
+Received: from shsmsx604.ccr.corp.intel.com (10.109.6.214) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 23 Nov 2020 03:41:27 -0800
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ SHSMSX604.ccr.corp.intel.com (10.109.6.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 23 Nov 2020 19:41:25 +0800
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Mon, 23 Nov 2020 11:41:23 +0000
+From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        lkp <lkp@intel.com>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: RE: sound/soc/intel/catpt/loader.c:654 catpt_first_boot_firmware()
+ warn: consider using resource_size() here
+Thread-Topic: sound/soc/intel/catpt/loader.c:654 catpt_first_boot_firmware()
+ warn: consider using resource_size() here
+Thread-Index: AQHWwD/eDLOgu+KuP0GoPmNta8oBHKnVjTKAgAAM/lA=
+Date:   Mon, 23 Nov 2020 11:41:23 +0000
+Message-ID: <8cb2dcbdef2446238c6a1fe8e8b74504@intel.com>
+References: <202011220325.oB7oeTEq-lkp@intel.com>
+ <20201123105317.GZ4077@smile.fi.intel.com>
+In-Reply-To: <20201123105317.GZ4077@smile.fi.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
-
-On 2020/11/23 18:08, Christoph Hellwig wrote:
->> +	/*
->> +	 * If both the physical buffer start address and size are
->> +	 * page aligned, we don't need to use a bounce page.
->> +	 */
->> +	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
->> +	    iova_offset(iovad, phys | org_size)) {
->> +		aligned_size = iova_align(iovad, org_size);
->> +		phys = swiotlb_tbl_map_single(dev,
->> +				phys_to_dma(dev, io_tlb_start),
->> +				phys, org_size, aligned_size, dir, attrs);
+On 2020-11-23 11:53 AM, Andy Shevchenko wrote:
+> On Sun, Nov 22, 2020 at 03:52:27AM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   27bba9c532a8d21050b94224ffd310ad0058c353
+>> commit: 6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1 ASoC: Intel: Select catpt and deprecate haswell
+>> date:   7 weeks ago
+>> config: x86_64-randconfig-m001-20201122 (attached as .config)
+>> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> smatch warnings:
+>> sound/soc/intel/catpt/loader.c:654 catpt_first_boot_firmware() warn: consider using resource_size() here
 > 
-> swiotlb_tbl_map_single takes one less argument in 5.10-rc now.
+> ...
+> 
+>> a9aa6fb3eb6c7e Cezary Rojewski 2020-09-29  652  	for (res = cdev->dram.child; res->sibling; res = res->sibling)
+>> a9aa6fb3eb6c7e Cezary Rojewski 2020-09-29  653  		;
+>> a9aa6fb3eb6c7e Cezary Rojewski 2020-09-29 @654  	__request_region(&cdev->dram, res->end + 1,
+> 
+> 
+> This sounds like false positive. From where it gets the idea of resource_size()
+> for the *start* offset?!
 > 
 
-Yes. But Will's iommu/next branch is based on 5.10-rc3. I synced with
-him, we agreed to keep it 5.10-rc3 and resolve this conflict when
-merging it.
+Indeed it is false positive. I've already explained this in:
 
-Best regards,
-baolu
+RE: [bug report] ASoC: Intel: catpt: Firmware loading and context restore
+https://www.spinics.net/lists/alsa-devel/msg117145.html
+
+Regards,
+Czarek
+
