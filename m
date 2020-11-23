@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652EC2C0B1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EFA2C0B8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732254AbgKWMj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:39:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51566 "EHLO mail.kernel.org"
+        id S2388568AbgKWN0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:26:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732148AbgKWMi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:38:56 -0500
+        id S1731061AbgKWMcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:32:22 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B88920732;
-        Mon, 23 Nov 2020 12:38:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3A422076E;
+        Mon, 23 Nov 2020 12:32:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606135134;
-        bh=S8qnBqdIWsjGrOzv3NoC7r6Vj3YqVQD4bARnwBc9ugI=;
+        s=korg; t=1606134740;
+        bh=Z5JMkm7C9kNof7AufHhAzVITBeL4cSYnwBaAICVj3l0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pHNLca9G+QUia5i83SWiNHYn5YE250jCSEthbRGkz1UVU/vilfsj83uJOUM1WtHQB
-         5zatLIBAmGZ2fYqJRO6GxEKqR7S12pE888/oK2B9nP+lINdiRJzdqjkFSP64DcWt0o
-         SvP4k3vfl0ESSHJj3lJlZ9W1r2c6Iu0Vvh4hMdyU=
+        b=CNbfLpsNohGfdpdOIc6Tph2HVpFf1zCWa3z6rBRELCm+alyzUcGXzlYE9x3HoXD53
+         VtyPwXxMaDU/murl3klOCCIUNKcbwwuGR7CdnJpGIQ8CwjyRUsVHfGvXcwmQ3aeoGf
+         FQ61YwF1M5OIT/4GgejcRFYfP+yT1MLnzXLJbWPY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=E7=A7=A6=E4=B8=96=E6=9D=BE?= <qinshisong1205@gmail.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>
-Subject: [PATCH 5.4 116/158] speakup: Do not let the line discipline be used several times
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 64/91] efi/x86: Free efi_pgd with free_pages()
 Date:   Mon, 23 Nov 2020 13:22:24 +0100
-Message-Id: <20201123121825.536879124@linuxfoundation.org>
+Message-Id: <20201123121812.432161315@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,73 +43,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-commit d4122754442799187d5d537a9c039a49a67e57f1 upstream.
+[ Upstream commit c2fe61d8be491ff8188edaf22e838f819999146b ]
 
-Speakup has only one speakup_tty variable to store the tty it is managing. This
-makes sense since its codebase currently assumes that there is only one user who
-controls the screen reading.
+Commit
 
-That however means that we have to forbid using the line discipline several
-times, otherwise the second closure would try to free a NULL ldisc_data, leading to
+  d9e9a6418065 ("x86/mm/pti: Allocate a separate user PGD")
 
-general protection fault: 0000 [#1] SMP KASAN PTI
-RIP: 0010:spk_ttyio_ldisc_close+0x2c/0x60
-Call Trace:
- tty_ldisc_release+0xa2/0x340
- tty_release_struct+0x17/0xd0
- tty_release+0x9d9/0xcc0
- __fput+0x231/0x740
- task_work_run+0x12c/0x1a0
- do_exit+0x9b5/0x2230
- ? release_task+0x1240/0x1240
- ? __do_page_fault+0x562/0xa30
- do_group_exit+0xd5/0x2a0
- __x64_sys_exit_group+0x35/0x40
- do_syscall_64+0x89/0x2b0
- ? page_fault+0x8/0x30
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+changed the PGD allocation to allocate PGD_ALLOCATION_ORDER pages, so in
+the error path it should be freed using free_pages() rather than
+free_page().
 
-Cc: stable@vger.kernel.org
-Reported-by: 秦世松 <qinshisong1205@gmail.com>
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Tested-by: Shisong Qin <qinshisong1205@gmail.com>
-Link: https://lore.kernel.org/r/20201110183541.fzgnlwhjpgqzjeth@function
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Commit
 
+    06ace26f4e6f ("x86/efi: Free efi_pgd with free_pages()")
+
+fixed one instance of this, but missed another.
+
+Move the freeing out-of-line to avoid code duplication and fix this bug.
+
+Fixes: d9e9a6418065 ("x86/mm/pti: Allocate a separate user PGD")
+Link: https://lore.kernel.org/r/20201110163919.1134431-1-nivedita@alum.mit.edu
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/speakup/spk_ttyio.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ arch/x86/platform/efi/efi_64.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
---- a/drivers/staging/speakup/spk_ttyio.c
-+++ b/drivers/staging/speakup/spk_ttyio.c
-@@ -49,15 +49,25 @@ static int spk_ttyio_ldisc_open(struct t
+diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
+index 52dd59af873ee..77d05b56089a2 100644
+--- a/arch/x86/platform/efi/efi_64.c
++++ b/arch/x86/platform/efi/efi_64.c
+@@ -214,28 +214,30 @@ int __init efi_alloc_page_tables(void)
+ 	gfp_mask = GFP_KERNEL | __GFP_ZERO;
+ 	efi_pgd = (pgd_t *)__get_free_pages(gfp_mask, PGD_ALLOCATION_ORDER);
+ 	if (!efi_pgd)
+-		return -ENOMEM;
++		goto fail;
  
- 	if (!tty->ops->write)
- 		return -EOPNOTSUPP;
-+
-+	mutex_lock(&speakup_tty_mutex);
-+	if (speakup_tty) {
-+		mutex_unlock(&speakup_tty_mutex);
-+		return -EBUSY;
-+	}
- 	speakup_tty = tty;
+ 	pgd = efi_pgd + pgd_index(EFI_VA_END);
+ 	p4d = p4d_alloc(&init_mm, pgd, EFI_VA_END);
+-	if (!p4d) {
+-		free_page((unsigned long)efi_pgd);
+-		return -ENOMEM;
+-	}
++	if (!p4d)
++		goto free_pgd;
  
- 	ldisc_data = kmalloc(sizeof(struct spk_ldisc_data), GFP_KERNEL);
--	if (!ldisc_data)
-+	if (!ldisc_data) {
-+		speakup_tty = NULL;
-+		mutex_unlock(&speakup_tty_mutex);
- 		return -ENOMEM;
-+	}
+ 	pud = pud_alloc(&init_mm, p4d, EFI_VA_END);
+-	if (!pud) {
+-		if (pgtable_l5_enabled())
+-			free_page((unsigned long) pgd_page_vaddr(*pgd));
+-		free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
+-		return -ENOMEM;
+-	}
++	if (!pud)
++		goto free_p4d;
  
- 	init_completion(&ldisc_data->completion);
- 	ldisc_data->buf_free = true;
- 	speakup_tty->disc_data = ldisc_data;
-+	mutex_unlock(&speakup_tty_mutex);
+ 	efi_mm.pgd = efi_pgd;
+ 	mm_init_cpumask(&efi_mm);
+ 	init_new_context(NULL, &efi_mm);
  
  	return 0;
++
++free_p4d:
++	if (pgtable_l5_enabled())
++		free_page((unsigned long)pgd_page_vaddr(*pgd));
++free_pgd:
++	free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
++fail:
++	return -ENOMEM;
  }
+ 
+ /*
+-- 
+2.27.0
+
 
 
