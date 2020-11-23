@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C242C0606
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C7B2C0740
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729617AbgKWM0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:26:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36616 "EHLO mail.kernel.org"
+        id S1732147AbgKWMiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:38:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730161AbgKWM0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:36 -0500
+        id S1732077AbgKWMiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:38:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F16372076E;
-        Mon, 23 Nov 2020 12:26:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D04520732;
+        Mon, 23 Nov 2020 12:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134395;
-        bh=fGuMjDQB6aewA/ah+Bku1v2flQrg5ZmdrHoOCslK4mw=;
+        s=korg; t=1606135097;
+        bh=WnoWaPOliwfCDnB34vVQAmgvOEREp88/2DhlefrORCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9vOlZ0rExRx1NJEwjAxXuDdQc/2UVDAholsXhnCdWGcVLXNetXeL4aU1g3NKeUW3
-         x3FrY56qNf88gRMK2svmMHDOH64jaNonqkt2YwI8YCZ4XROyy22rFVuPjoFAcphhu9
-         W4DNt5yJycxjB0T5Sz8EAt8KkP9nQ7S8MJ/h8JcM=
+        b=xw2th9Xf2TZUFmQHaZq1Gji1sRe7VMxDq7c8/xfnKcdRIUJTO/IJlaBrVa1RH5fAk
+         jVBaTlA+kfDGsJQZmbJLK4evPYs2MAtzkaR94R2KDo9yy3z2nThVj98E2WksHIfNEP
+         DHqCJ1SufwD47rpbifw4Zr5sM6sd8hePcJMmIVnc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Nishanth Menon <nm@ti.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 26/47] perf lock: Dont free "lock_seq_stat" if read_count isnt zero
+Subject: [PATCH 5.4 104/158] regulator: ti-abb: Fix array out of bound read access on the first transition
 Date:   Mon, 23 Nov 2020 13:22:12 +0100
-Message-Id: <20201123121806.814869489@linuxfoundation.org>
+Message-Id: <20201123121824.954536672@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Nishanth Menon <nm@ti.com>
 
-[ Upstream commit b0e5a05cc9e37763c7f19366d94b1a6160c755bc ]
+[ Upstream commit 2ba546ebe0ce2af47833d8912ced9b4a579f13cb ]
 
-When execute command "perf lock report", it hits failure and outputs log
-as follows:
+At the start of driver initialization, we do not know what bias
+setting the bootloader has configured the system for and we only know
+for certain the very first time we do a transition.
 
-  perf: builtin-lock.c:623: report_lock_release_event: Assertion `!(seq->read_count < 0)' failed.
-  Aborted
+However, since the initial value of the comparison index is -EINVAL,
+this negative value results in an array out of bound access on the
+very first transition.
 
-This is an imbalance issue.  The locking sequence structure
-"lock_seq_stat" contains the reader counter and it is used to check if
-the locking sequence is balance or not between acquiring and releasing.
+Since we don't know what the setting is, we just set the bias
+configuration as there is nothing to compare against. This prevents
+the array out of bound access.
 
-If the tool wrongly frees "lock_seq_stat" when "read_count" isn't zero,
-the "read_count" will be reset to zero when allocate a new structure at
-the next time; thus it causes the wrong counting for reader and finally
-results in imbalance issue.
+NOTE: Even though we could use a more relaxed check of "< 0" the only
+valid values(ignoring cosmic ray induced bitflips) are -EINVAL, 0+.
 
-To fix this issue, if detects "read_count" is not zero (means still have
-read user in the locking sequence), goto the "end" tag to skip freeing
-structure "lock_seq_stat".
-
-Fixes: e4cef1f65061 ("perf lock: Fix state machine to recognize lock sequence")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Link: https://lore.kernel.org/r/20201104094229.17509-2-leo.yan@linaro.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 40b1936efebd ("regulator: Introduce TI Adaptive Body Bias(ABB) on-chip LDO driver")
+Link: https://lore.kernel.org/linux-mm/CA+G9fYuk4imvhyCN7D7T6PMDH6oNp6HDCRiTUKMQ6QXXjBa4ag@mail.gmail.com/
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20201118145009.10492-1-nm@ti.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-lock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/ti-abb-regulator.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index ce3bfb48b26f0..956b0aa916cfe 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -616,7 +616,7 @@ static int report_lock_release_event(struct perf_evsel *evsel,
- 	case SEQ_STATE_READ_ACQUIRED:
- 		seq->read_count--;
- 		BUG_ON(seq->read_count < 0);
--		if (!seq->read_count) {
-+		if (seq->read_count) {
- 			ls->nr_release++;
- 			goto end;
- 		}
+diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
+index 89b9314d64c9d..016330f909c09 100644
+--- a/drivers/regulator/ti-abb-regulator.c
++++ b/drivers/regulator/ti-abb-regulator.c
+@@ -342,8 +342,17 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+ 		return ret;
+ 	}
+ 
+-	/* If data is exactly the same, then just update index, no change */
+ 	info = &abb->info[sel];
++	/*
++	 * When Linux kernel is starting up, we are'nt sure of the
++	 * Bias configuration that bootloader has configured.
++	 * So, we get to know the actual setting the first time
++	 * we are asked to transition.
++	 */
++	if (abb->current_info_idx == -EINVAL)
++		goto just_set_abb;
++
++	/* If data is exactly the same, then just update index, no change */
+ 	oinfo = &abb->info[abb->current_info_idx];
+ 	if (!memcmp(info, oinfo, sizeof(*info))) {
+ 		dev_dbg(dev, "%s: Same data new idx=%d, old idx=%d\n", __func__,
+@@ -351,6 +360,7 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+ 		goto out;
+ 	}
+ 
++just_set_abb:
+ 	ret = ti_abb_set_opp(rdev, abb, info);
+ 
+ out:
 -- 
 2.27.0
 
