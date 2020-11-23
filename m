@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FA12C00DB
+	by mail.lfdr.de (Postfix) with ESMTP id A62352C00DC
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 08:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgKWHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728137AbgKWHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 23 Nov 2020 02:48:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48750 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727092AbgKWHsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725998AbgKWHsH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 02:48:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606117686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RLanaZ3gdZrUteNju7bn/RRU6/80UHAv7PtZAR9FPJ4=;
-        b=gaTq90nMzNoR1FE66WTd8Ne8c6vy7QD+gg4sRQA/e/SNnVhXjseBBt3BN5OehN1NN8Qfn/
-        JJBACR5wqMJkn4kEJONCuIm6WyBzkYbYIDqs6oz8IopEmVjXAGcK1xOuGqvTiHuDj3Uai7
-        cq5E3rb3xQtdgqx80bF+NsBNR35gLjM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37E63ABCE;
-        Mon, 23 Nov 2020 07:48:06 +0000 (UTC)
-Date:   Mon, 23 Nov 2020 08:48:04 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v5 13/21] mm/hugetlb: Use PG_slab to
- indicate split pmd
-Message-ID: <20201123074804.GC27488@dhcp22.suse.cz>
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120064325.34492-14-songmuchun@bytedance.com>
- <20201120081638.GD3200@dhcp22.suse.cz>
- <CAMZfGtX3DUJggAzz_06Z2atHPknkCir6a49a983TsWOHt5ZQUQ@mail.gmail.com>
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89977C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:48:07 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id v5so10095882pff.10
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 23:48:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=zJYqWIPUoGFgOzdtE4pG5DhyhdEv2epZGKzleMx7a5M=;
+        b=RHqjvWXLULZI0qiSNSvF/CIhGh9SZOVZAfFVszRYfq7V3m+6FqTQVTVylUPuBKXcVQ
+         vMVrwjcp1Y9oLleDf2oeYpMU6EBLpi7YvuAHR0vjzkinhZ8eKfXUd0Bn+KQiNuMdDvUq
+         2cNzKClrlDIynXd8SB2j1bhI4CIwyEprwpRtGBlrjIw7yk70v+qyxCTBNKW9YEi+zRWn
+         GvPN8lUwN2cm3h21j6z52Ibhzplu0LnRuSw9/k0H0hTBYikNtybACBRShd+piwKhv1zM
+         LVWyU/7gH1cpK+/EZaQzLez9yA9gIgMV+UDbnzcbLObkk+lujxLFnIoIPlFX6K9JZ1oT
+         kiMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=zJYqWIPUoGFgOzdtE4pG5DhyhdEv2epZGKzleMx7a5M=;
+        b=f9SVGRPdAx2vwnmc0KZ9yCyEDHzxXemt9F9+vdXSR3J5W85w0DPPZytkUzR/iJrt9R
+         xStkzBhZExfzF0bF8RFgM6kQoiCeN+ZtMroQi4mMjKzusrMD2n8ijPnE5fSIJNJZedM4
+         Z4XgJo63gLpJeYxChLjhQHpVejPJ9iDkjTSA7icU7cgE6Lflo0XpehiYDu2gwrJVLYzA
+         K2MKKisqAoTCeRMCJ/gBL6eXRxPBdiqHZ9hzOrBHEYprc3kx/0z7mv7HDhFC3xOtzPk2
+         Dq+IdC0PKCQy4HFveqQgtadJqbxOZvAp9UKrx4y5wwlATcBxq3JCR6ad9jobg4zcgA0/
+         VJFQ==
+X-Gm-Message-State: AOAM531yPgk3XatY2p6z+GvBvq9KxZVSBvoQ1SZc6eNh6urDsB1D9KdM
+        IeNxZc3jE4AAmgURM+uztfsV2lWPmjACuig6Pic=
+X-Google-Smtp-Source: ABdhPJxSIrRx1Y+n2abGuQkJAo9yQHrJyqWagOwbl6SdL9Niw2f/u0nEfXRLF4Vt95AXNHxxSVjuTy/jd2NaZ93Giqc=
+X-Received: by 2002:a62:fc11:0:b029:197:cb47:975e with SMTP id
+ e17-20020a62fc110000b0290197cb47975emr15189511pfh.79.1606117687072; Sun, 22
+ Nov 2020 23:48:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtX3DUJggAzz_06Z2atHPknkCir6a49a983TsWOHt5ZQUQ@mail.gmail.com>
+Received: by 2002:a17:90a:fa84:0:0:0:0 with HTTP; Sun, 22 Nov 2020 23:48:04
+ -0800 (PST)
+Reply-To: mrsliaahil@gmail.com
+From:   "Mrs. Lia Ahil" <edeme.lawfirm1@gmail.com>
+Date:   Sun, 22 Nov 2020 23:48:04 -0800
+Message-ID: <CAGfWdWUXvvCkM4PD-+iD+ZwEEvOyQ1BMFuMGJQFMDokA4w2bqQ@mail.gmail.com>
+Subject: Hello dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-11-20 17:30:27, Muchun Song wrote:
-> On Fri, Nov 20, 2020 at 4:16 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 20-11-20 14:43:17, Muchun Song wrote:
-> > > When we allocate hugetlb page from buddy, we may need split huge pmd
-> > > to pte. When we free the hugetlb page, we can merge pte to pmd. So
-> > > we need to distinguish whether the previous pmd has been split. The
-> > > page table is not allocated from slab. So we can reuse the PG_slab
-> > > to indicate that the pmd has been split.
-> >
-> > PageSlab is used outside of the slab allocator proper and that code
-> > might get confused by this AFAICS.
-> 
-> I got your concerns. Maybe we can use PG_private instead of the
-> PG_slab.
+Hello dear,
 
-Reusing a page flag arbitrarily is not that easy. Hugetlb pages have a
-lot of spare room in struct page so I would rather use something else.
--- 
-Michal Hocko
-SUSE Labs
+Attn Sir/Madam
+
+I apologize for the intrusion but this is the only way I can contact
+you. I have something I wanna talk to you about, it's really important
+and I wish and hope you'd respond. I'll wait for your response. Thank
+you!
+
+Regards.
+Mrs. Lia Ahil
