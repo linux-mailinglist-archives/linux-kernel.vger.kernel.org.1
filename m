@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BEA2C1469
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E652C1474
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732169AbgKWTUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 14:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726953AbgKWTUq (ORCPT
+        id S1729968AbgKWTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 14:23:21 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4790 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729048AbgKWTXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:20:46 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D338DC0613CF;
-        Mon, 23 Nov 2020 11:20:45 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id s8so19683661wrw.10;
-        Mon, 23 Nov 2020 11:20:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qywik7ZeoNLjOI/OiRzyEWbv5L3UmV1jd3xo8upxDsg=;
-        b=D3LUaTo9sjQT2psf9iOfR5Q+w/hWOKbYJIrGkOwrSKId0+dXBhN2JbAKZrdU51cvlB
-         2TH/BH6AH3DKIlQMdVT/V8i+l/yJ0ztIDwjnuj5ekXsttMcEx45j51pC0OifHlxSPhYg
-         Vk+onO+4dhk/KXF75P7ZKjh+voUOJ9oSQjQwUJDgxbPMNzzW/mCkzUromNJl14ewjTbQ
-         hnFhD+OP+mQd1nGunov0a3cqO2Ge91PFnaB9BUbjoIR7Xh+5gqsSdXq8Qw6VGchsGoGF
-         0vJhoOfb411RYFqRARv8q6FJ4UVj/X+YELsIA4bt6jG6BaYQDZlj6Yq4zmlmJcnYBMzK
-         BWSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qywik7ZeoNLjOI/OiRzyEWbv5L3UmV1jd3xo8upxDsg=;
-        b=XmPx2hkMrnYUhHcS4S1tEmaYUkZjSGYKuuODpmTqm1+XxaBIo7Af1e2pu4vK6+AOPZ
-         shcAiXCq6C0LkfuRPogcjSJs1tFDCs+VgAHUQqtfA8qma4awxLGbkZM1HmDAI1NuffAw
-         7maoqB3ub9B4BrekEQvjcLs4HoRQexLwALmUUBw5rgFSTeKH7ghv5vIQrLXkz/RGX1rD
-         O1n6vhkm5LJe46n+HXbPavDCrJzliX32C7scDCeZoX48XoIAx+Kr9iZiMSK47JTwkNis
-         wq6UdpptwrMxiiCFgOmyhm80zGbGJdL3uNmS/nzMJUvqX1BGbiVWreUkEujAMrD8HfmY
-         KAQw==
-X-Gm-Message-State: AOAM533FKlzgnZTiOfM/gMdqPg4TmoshbcxmNtG6xS4bK/hY2QW9duxC
-        7caLREG7kcYt6f2Er2bd1xl4lwszS2ySisw7vh8=
-X-Google-Smtp-Source: ABdhPJy8N53HXm9IuUy+KZQkqOt4/pj9ITZPgRIZbKk5Hw32UENtsWfsI7ELNiEQlwY8TBRX7HEq8kOv+802Ag6uHEw=
-X-Received: by 2002:adf:a54d:: with SMTP id j13mr1337431wrb.132.1606159244462;
- Mon, 23 Nov 2020 11:20:44 -0800 (PST)
+        Mon, 23 Nov 2020 14:23:21 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ANJ1W61063256;
+        Mon, 23 Nov 2020 14:23:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=F8eeHvrx+pj+1O7oYmKziQkR7JdrIiMpm+t+rUWYg4M=;
+ b=fSLWf1LsYp1IRZtXtj51cyZ/a7TefeTSIl0rNLsdoy1knQnRdTGeZFGCmsWyEby/01Cm
+ ZdMiOeNvDvttmZC/HW4ElNS4TRb4QHSkXfHjfE5sf9QVPg+oHwYpl/CuLtkKovCpWqMe
+ yUAzrX1gGCDcPBAHq/QKC11pTKpINFvb2BdZqNWoNnGvyNHRrq6+Zr3qtciZn334jliK
+ xhuLMrT1fuO+k48beEGFPp7pOnt5QKuWVluWTV9MI9IDl5MvtkSVztd4KXHPxr/NoDEV
+ 3UxsauzovFeu64W5PdoBc5BEshUJ0lct10OgOee2qC2fTEgBiIutPlKlJFopWX2yuLfP IA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34ygtt3tfs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 14:23:15 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ANJ1mn9063995;
+        Mon, 23 Nov 2020 14:23:14 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34ygtt3tem-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 14:23:14 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ANJC6DX002564;
+        Mon, 23 Nov 2020 19:23:12 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma03dal.us.ibm.com with ESMTP id 34xth95yqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 19:23:12 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ANJN2TO43188502
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Nov 2020 19:23:02 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DFF4FBE053;
+        Mon, 23 Nov 2020 19:23:08 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6162DBE051;
+        Mon, 23 Nov 2020 19:23:07 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.169.207])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 23 Nov 2020 19:23:07 +0000 (GMT)
+Subject: Re: [PATCH v11 05/14] s390/vfio-ap: implement in-use callback for
+ vfio_ap driver
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
+        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+ <20201022171209.19494-6-akrowiak@linux.ibm.com>
+ <20201027142711.1b57825e.pasic@linux.ibm.com>
+ <6a5feb16-46b5-9dca-7e85-7d344b0ffa24@linux.ibm.com>
+ <20201114004722.76c999e0.pasic@linux.ibm.com>
+ <20201123180316.79273751.cohuck@redhat.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <62a22a99-3485-353c-b4e5-e04fcec57778@linux.ibm.com>
+Date:   Mon, 23 Nov 2020 14:23:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
- <20201123152146.GE11033@willie-the-truck> <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
-In-Reply-To: <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 23 Nov 2020 11:22:31 -0800
-Message-ID: <CAF6AEGse=WBAC1WbTi6aD5_m1_NBg91f=veYm-7V=Uds7NA0Lw@mail.gmail.com>
-Subject: Re: [PATCHv8 0/8] System Cache support for GPU and required SMMU support
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201123180316.79273751.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_17:2020-11-23,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999 suspectscore=3
+ bulkscore=0 spamscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011230122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 9:01 AM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
+
+
+On 11/23/20 12:03 PM, Cornelia Huck wrote:
+> On Sat, 14 Nov 2020 00:47:22 +0100
+> Halil Pasic <pasic@linux.ibm.com> wrote:
 >
-> On 2020-11-23 20:51, Will Deacon wrote:
-> > On Tue, Nov 17, 2020 at 08:00:39PM +0530, Sai Prakash Ranjan wrote:
-> >> Some hardware variants contain a system cache or the last level
-> >> cache(llc). This cache is typically a large block which is shared
-> >> by multiple clients on the SOC. GPU uses the system cache to cache
-> >> both the GPU data buffers(like textures) as well the SMMU pagetables.
-> >> This helps with improved render performance as well as lower power
-> >> consumption by reducing the bus traffic to the system memory.
-> >>
-> >> The system cache architecture allows the cache to be split into slices
-> >> which then be used by multiple SOC clients. This patch series is an
-> >> effort to enable and use two of those slices preallocated for the GPU,
-> >> one for the GPU data buffers and another for the GPU SMMU hardware
-> >> pagetables.
-> >>
-> >> Patch 1 - Patch 6 adds system cache support in SMMU and GPU driver.
-> >> Patch 7 and 8 are minor cleanups for arm-smmu impl.
-> >>
-> >> Changes in v8:
-> >>  * Introduce a generic domain attribute for pagetable config (Will)
-> >>  * Rename quirk to more generic IO_PGTABLE_QUIRK_ARM_OUTER_WBWA (Will)
-> >>  * Move non-strict mode to use new struct domain_attr_io_pgtbl_config
-> >> (Will)
-> >
-> > Modulo some minor comments I've made, this looks good to me. What is
-> > the
-> > plan for merging it? I can take the IOMMU parts, but patches 4-6 touch
-> > the
-> > MSM GPU driver and I'd like to avoid conflicts with that.
-> >
+>> On Fri, 13 Nov 2020 12:14:22 -0500
+>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>> [..]
+>>>>>    }
+>>>>>    
+>>>>> +#define MDEV_SHARING_ERR "Userspace may not re-assign queue %02lx.%04lx " \
+>>>>> +			 "already assigned to %s"
+>>>>> +
+>>>>> +static void vfio_ap_mdev_log_sharing_err(const char *mdev_name,
+>>>>> +					 unsigned long *apm,
+>>>>> +					 unsigned long *aqm)
+>>>>> +{
+>>>>> +	unsigned long apid, apqi;
+>>>>> +
+>>>>> +	for_each_set_bit_inv(apid, apm, AP_DEVICES)
+>>>>> +		for_each_set_bit_inv(apqi, aqm, AP_DOMAINS)
+>>>>> +			pr_err(MDEV_SHARING_ERR, apid, apqi, mdev_name);
+>>>> Isn't error rather severe for this? For my taste even warning would be
+>>>> severe for this.
+>>> The user only sees a EADDRINUSE returned from the sysfs interface,
+>>> so Conny asked if I could log a message to indicate which APQNs are
+>>> in use by which mdev. I can change this to an info message, but it
+>>> will be missed if the log level is set higher. Maybe Conny can put in
+>>> her two cents here since she asked for this.
+>>>    
+>> I'm looking forward to Conny's opinion. :)
+> (only just saw this; -ETOOMANYEMAILS)
 >
-> SMMU bits are pretty much independent and GPU relies on the domain
-> attribute
-> and the quirk exposed, so as long as SMMU changes go in first it should
-> be good.
-> Rob?
+> It is probably not an error in the sense of "things are broken, this
+> cannot work"; but I'd consider this at least a warning "this does not
+> work as you intended".
 
-I suppose one option would be to split out the patch that adds the
-attribute into it's own patch, and merge that both thru drm and iommu?
+Okay then, I'll make it a warning.
 
-If Will/Robin dislike that approach, I'll pick up the parts of the drm
-patches which don't depend on the new attribute for v5.11 and the rest
-for v5.12.. or possibly a second late v5.11 pull req if airlied
-doesn't hate me too much for it.
-
-Going forward, I think we will have one or two more co-dependent
-series, like the smmu iova fault handler improvements that Jordan
-posted.  So I would like to hear how Will and Robin prefer to handle
-those.
-
-BR,
--R
-
-
-> Thanks,
-> Sai
 >
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member
-> of Code Aurora Forum, hosted by The Linux Foundation
+
