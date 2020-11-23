@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DE82C033D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8610C2C0343
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728538AbgKWKZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:25:08 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:44227 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728460AbgKWKZB (ORCPT
+        id S1728570AbgKWK0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:26:52 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:41229 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728178AbgKWK0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:25:01 -0500
-Received: by mail-lf1-f65.google.com with SMTP id d20so7105035lfe.11;
-        Mon, 23 Nov 2020 02:24:58 -0800 (PST)
+        Mon, 23 Nov 2020 05:26:52 -0500
+Received: by mail-ot1-f65.google.com with SMTP id o3so15415870ota.8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:26:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MyGoxRTFxoN3CcXdLX3OQwBVVHqEtKepL93LP6Dv6QA=;
-        b=OE+KIeqgCGVJlCOpBED4oW7Ho0krS1kdfAYjCG4J2tTM+dGyH6J50nCrKL9hddNF+A
-         bfMqWw5prwWFwq9MmILkyq6z6tAJYyebKHCkCg5uNFv7KHEEoJNboqZ+Kz/cO70IA8et
-         6wpcvU3U0NE+JsNoCKzik9pEZRkkcSyLekoJt7C0tJaBLYnXwrajDfVuMzno+7qaIwei
-         iPauvfCqBpKNlASI0w4BAnIKsx5PANmNNygE9Jj+6BC9TKk53HxR7V81Skllxws+SHQY
-         5FtIvb43YQKEua0CXBu5cQs4CJebzZxwR92e6dXIFgRCLkeNyqEijUZicDTmv/AeBfi6
-         +0PA==
-X-Gm-Message-State: AOAM5330GtawGKbUnA7ztgGJ1yYnBNr0SyqFKIPoWrK4G2C+QZRphemj
-        fIBgdMHRPQ93WBtapVkemvqFiWbWum5Rog==
-X-Google-Smtp-Source: ABdhPJwl8WMWawBdVsNJWOHAvxz3cvEnNqeVuuYH2D1bUXik+AgYZGIqav0dRAEa9yNytSMyPFebDg==
-X-Received: by 2002:a19:910b:: with SMTP id t11mr1687236lfd.306.1606127097818;
-        Mon, 23 Nov 2020 02:24:57 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id y17sm425927ljc.50.2020.11.23.02.24.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 02:24:54 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1kh91q-00028L-QS; Mon, 23 Nov 2020 11:25:02 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 8/8] params: clean up module-param macros
-Date:   Mon, 23 Nov 2020 11:23:19 +0100
-Message-Id: <20201123102319.8090-9-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201123102319.8090-1-johan@kernel.org>
-References: <20201123102319.8090-1-johan@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5u0xzZz9ImFFa+4Dc6Fet6O4+9bCjJoGhoQNnf3226E=;
+        b=prRPr7kEo6K5TWuT8zbh43M+2bAJlGLFF7YSfZnQFsFbuKEypqQk2k8fKsxtMCH4OR
+         fIjYBKCByMLBYgSNUiv5b1z5Qp7QHmmYxIWR6yJ0S623sMIHz9b8GHn4QK5ciliBD4I4
+         MDky3o1QK4Du6nckPGV7Hb30Yh9K72svco0Rn7GWSGCtH7I68xcMdSn/q4j4LGJ4VRVH
+         sTT6zR0eH6lYnKHwOCOe+exAt5fprZhdmMimQAGu9xokCC1PWXfkHz9pRXAu3YwAvve9
+         qXAgiIe1ip4Bh/wwSlkAAijW+jo7DQNfDl0Kd+KaqTP8WGbdL0G+q+VZ7iKrO4bCZGc8
+         Y8/w==
+X-Gm-Message-State: AOAM533mlBMMqvYPUsdAqSfp9UvPuuteXn/UtzgeqwFyMjtHuFv5rz8l
+        cvqUYCI32xVlYuAqwdH3VZsMMYxbJRdlQi3cIOk=
+X-Google-Smtp-Source: ABdhPJyerjH6lnUTs24LfvLv17KtbjaFsTq+GdntqMGuOKMHsHStLyKZCKTQynSN6e/FcaY0fO59j5f6bIx1ECDWYkg=
+X-Received: by 2002:a05:6830:2385:: with SMTP id l5mr12195105ots.321.1606127211528;
+ Mon, 23 Nov 2020 02:26:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201120114145.197714127@infradead.org> <20201120114925.652731270@infradead.org>
+In-Reply-To: <20201120114925.652731270@infradead.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 23 Nov 2020 11:26:39 +0100
+Message-ID: <CAJZ5v0hhSO36-m-otWp0vqWNNZFiDWPX-xxK-ninRr2d==QOWA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] intel_idle: Fix intel_idle() vs tracing
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, svens@linux.ibm.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the module-param macros by adding some indentation and using
-the __aligned() macro to improve readability.
+On Fri, Nov 20, 2020 at 12:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> cpuidle->enter() callbacks should not call into tracing because RCU
+> has already been disabled. Instead of doing the broadcast thing
+> itself, simply advertise to the cpuidle core that those states stop
+> the timer.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  drivers/idle/intel_idle.c |   37 ++++++++++++++++++++-----------------
+>  1 file changed, 20 insertions(+), 17 deletions(-)
+>
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -126,26 +126,9 @@ static __cpuidle int intel_idle(struct c
+>         struct cpuidle_state *state = &drv->states[index];
+>         unsigned long eax = flg2MWAIT(state->flags);
+>         unsigned long ecx = 1; /* break on interrupt flag */
+> -       bool tick;
+> -
+> -       if (!static_cpu_has(X86_FEATURE_ARAT)) {
+> -               /*
+> -                * Switch over to one-shot tick broadcast if the target C-state
+> -                * is deeper than C1.
+> -                */
+> -               if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK) {
+> -                       tick = true;
+> -                       tick_broadcast_enter();
+> -               } else {
+> -                       tick = false;
+> -               }
+> -       }
+>
+>         mwait_idle_with_hints(eax, ecx);
+>
+> -       if (!static_cpu_has(X86_FEATURE_ARAT) && tick)
+> -               tick_broadcast_exit();
+> -
+>         return index;
+>  }
+>
+> @@ -1460,6 +1443,23 @@ static bool __init intel_idle_verify_cst
+>         return true;
+>  }
+>
+> +static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
+> +{
+> +       unsigned long eax = flg2MWAIT(state->flags);
+> +
+> +       if (boot_cpu_has(X86_FEATURE_ARAT))
+> +               return false;
+> +
+> +       /*
+> +        * Switch over to one-shot tick broadcast if the target C-state
+> +        * is deeper than C1.
+> +        */
+> +       if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK)
+> +               return true;
+> +
+> +       return false;
+> +}
+> +
+>  static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
+>  {
+>         int cstate;
+> @@ -1507,6 +1507,9 @@ static void __init intel_idle_init_cstat
+>                      !(cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_ALWAYS_ENABLE)))
+>                         drv->states[drv->state_count].flags |= CPUIDLE_FLAG_OFF;
+>
+> +               if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
+> +                       drv->states[drv->state_count].flags |= CPUIDLE_FLAG_TIMER_STOP;
+> +
+>                 drv->state_count++;
+>         }
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- include/linux/moduleparam.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index 15ecc6cc3a3b..eed280fae433 100644
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -21,12 +21,12 @@
- #define MAX_PARAM_PREFIX_LEN (64 - sizeof(unsigned long))
- 
- #define __MODULE_INFO(tag, name, info)					  \
--static const char __UNIQUE_ID(name)[]					  \
--  __used __section(".modinfo") __attribute__((aligned(1)))		  \
--  = __MODULE_INFO_PREFIX __stringify(tag) "=" info
-+	static const char __UNIQUE_ID(name)[]				  \
-+		__used __section(".modinfo") __aligned(1)		  \
-+		= __MODULE_INFO_PREFIX __stringify(tag) "=" info
- 
- #define __MODULE_PARM_TYPE(name, _type)					  \
--  __MODULE_INFO(parmtype, name##type, #name ":" _type)
-+	__MODULE_INFO(parmtype, name##type, #name ":" _type)
- 
- /* One for each parameter, describing how to use it.  Some files do
-    multiple of these per line, so can't just use MODULE_INFO. */
--- 
-2.26.2
-
+This doesn't cover the ACPI case AFAICS.
