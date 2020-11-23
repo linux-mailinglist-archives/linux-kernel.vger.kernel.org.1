@@ -2,245 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691C22C1429
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839D72C1427
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 20:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390678AbgKWTCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 14:02:51 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:33876 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729119AbgKWTCv (ORCPT
+        id S2390665AbgKWTBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 14:01:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730868AbgKWTBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:02:51 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0ANJ0StV006159;
-        Mon, 23 Nov 2020 11:00:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : from : to : cc
- : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=o+m1onBTcCjnhKHLFAFPmTiQ2yKpnjLlDUQSXVDzZuE=;
- b=Dm6gdPNrP06b8qgUdzGzvI3gF47wdvRssXSOpQeNCEGMhJuqZV9WSduPLdMLc9UoqvN0
- ADJSnj5ZfInUmLi8Eow8vXxws0RupH+Pi84aIN4pCHfYs9z9KqZ3MOkJ6/22Fxt13Fl0
- l4VwvkmpLyxvVYPL3u37ZuYtqj/UiCKWncI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 34ykstny6n-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 23 Nov 2020 11:00:30 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 23 Nov 2020 11:00:26 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YcYvtvIsF3v4VnH5Xz401MRci5cLJmsfLz/HrjxE5G05cRi/AOd2nncAaqRsNkL0RFcD8RGSGIwwxcZSwnN4Sqd2AZXIDxPU+TUyNhl78KB4LQpl7ksnwkBuIS4QMGeUdBb5iblcn5uYPmGGEtZ1u2eyKMYaK69ei/BL+XRvrnIvAnXCMvQX2aQqRl372PvnVfWNZy2M0u+Ttl0+XnmBexxcxxq2M3S8eTtyvaRZ9KPT6XzHjxpfQxHt9GFr+jLDC6voUF447C1DpCazhFc1bv2+ZxhEYUdnk5T/J7GyzguOvToahzJdad6M5q9LiohS5d0rbt0oB7M0T+ULF4BAvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZisoldRYEitwIM8GJsORWE7EXrrv7ME6lPD8W6KMxuo=;
- b=ex8D6JpMS3Rk8dOLcequWsIYpebOTsSNAAZKkVDx+7n2j/fEerkkF5L0pCScUK9r7UvXfFPEaXJOAHNvvA/c81Gjjld3sJqWeqCiQ+4mtTLg9LYucKVSwb7XSgQt08DMY7A7PrzSjAjtAp0q07QpIDMQN/Qdbe2r/pMJJcdyDa18gMm5Rz4PL9lrYYjJT8kQckZ6egOEghk4LiecfnPOIla4Xff2JwXKMHCciF2ODp8mCsTGGOSdoGFODr5KprhREp0Xy1iT/2kAuLgbKApGdsNO8zYKl8sTDdf/vbggd+kHUwMAhko91rxcNGghT2Aiv160HJE4uNoXymhO0/TrtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZisoldRYEitwIM8GJsORWE7EXrrv7ME6lPD8W6KMxuo=;
- b=afLQY18KiJlgg9OwBj5A5pAux2u7SQxzFSSgVu0q9+GUc+uj0zua1kH/0ALHiz+DIM7bKKqlaNib0Nbx2Nf9S/FdlUZxrdoHFwO/NcJQ0mf4EZ27Sh+OB1UvTIGPnR6xSdY+LrlX39zxyih6taQce29fORJL0f8nwRtVURy5TVY=
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3512.namprd15.prod.outlook.com (2603:10b6:a03:10a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Mon, 23 Nov
- 2020 19:00:25 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3589.029; Mon, 23 Nov 2020
- 19:00:25 +0000
-Subject: Re: [PATCH bpf-next v2 3/3] bpf: Update LSM selftests for
- bpf_ima_inode_hash
-From:   Yonghong Song <yhs@fb.com>
-To:     KP Singh <kpsingh@chromium.org>
-CC:     Mimi Zohar <zohar@linux.ibm.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Petr Vorel <pvorel@suse.cz>
-References: <20201121005054.3467947-1-kpsingh@chromium.org>
- <20201121005054.3467947-3-kpsingh@chromium.org>
- <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
- <CACYkzJ4VkwRV5WKe8WZjXgd1C1erXr_NtZhgKJL3ckTmS1M5VA@mail.gmail.com>
- <0f54c1636b390689031ac48e32b238a83777e09c.camel@linux.ibm.com>
- <CACYkzJ6VEKBJnJZ+CBvpF6C=Kft5A2O5f=Uu4rTMtUiRKN5S-g@mail.gmail.com>
- <cf0d94ca-b6a0-1a1a-6cf2-a641002588bf@fb.com>
- <CACYkzJ6RK=bhdGphbK6VZoLdvEfEo9rtYKCS=-dfyt5F=AujnQ@mail.gmail.com>
- <7f4e1733-175e-288d-8c6c-4adc12f17ad5@fb.com>
-Message-ID: <1aef0681-a19d-cda3-8d64-4f7340045818@fb.com>
-Date:   Mon, 23 Nov 2020 11:00:22 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
-In-Reply-To: <7f4e1733-175e-288d-8c6c-4adc12f17ad5@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:fc96]
-X-ClientProxiedBy: MW2PR16CA0016.namprd16.prod.outlook.com (2603:10b6:907::29)
- To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::1039] (2620:10d:c090:400::5:fc96) by MW2PR16CA0016.namprd16.prod.outlook.com (2603:10b6:907::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Mon, 23 Nov 2020 19:00:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e668745c-dcee-4afd-ae18-08d88fe20955
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3512:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB35128922038C50E4C9DB76A3D3FC0@BYAPR15MB3512.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +Tpjq8gqu6s5BMl20mwngZWrwg9Kygq+swciy5cmC8143hLm8wNl6PeA9l49WvydfF2xEfcxwQxvZxwqQLdH3WZe0W1HCgdTKDjwgp5b1mb100JddmwLN3moiigRgBYXD4ABUEleT/RMOxyI7Jc6vLGz/5nvIW6fwgVRY5CHpmKTyiSSo+EvTvFLQ8dbjikcgmJfv6/Y1Vv7Y2iz5fqm7YAf0/poRrOo1Y/henRN8ah4cqhLwfdmlMGQjnuxTSviZFlrI061x+9bft5zE/Rc3QhlysvV391QyETwmTtySxrTJJAjtlE3zVShL/ldLkzLlCpQGCfRFxdpo1JSsGDfFV4fL2G/p3ROM+L+6VfmElPF3c+cUCoIakv9Oe0eVOwGDCj35zvmKwp9ZxqmbJJNKZxIBSJjKTwjNmwDBfjnhFSQGzDhr4xmn+rePgNoYXaiGFmPgiaanbMpKJZLJqTcZltaTwz4ylHZHNpk15rTasM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(39860400002)(396003)(366004)(53546011)(5660300002)(54906003)(36756003)(4326008)(186003)(6916009)(52116002)(8676002)(6486002)(2906002)(16526019)(966005)(7416002)(31696002)(316002)(15650500001)(86362001)(66946007)(83380400001)(31686004)(66556008)(478600001)(66476007)(8936002)(2616005)(573474001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: YTxD5nKi6ch4GjeLNNauUz1oo9Sqr0l4YixJM6xiUOp/6O5SgXR5W6QoYPQMF83NHVqSVa3eeWL3ckr4rIY51csOpcSZE4NW7T0OPM/6XwzKE/nuP6dEwvnPa47s4UBdtQo4DSdMOcasZd1BuFXqfb4HwSt+a/dINZeDUCvmuxg3o7hBhAOVQJP6XfVdn8zTUK2YUpaD7ZUzfbmgh5VysJWwlErv9X+E8TMekOouXwaL6cHX/GuOOYZssqnFDu3jDF8YTKc/6Zdp8qGsc1n71ayNIuxXbFEJm3mRzGavK4qt9h97UVdqvvK6442WnaHYUezRoqlWdjZpagKuB3id04nnecyY8Frr6JeMRXTUenowjq9cilsnAj+aeXVdmQnG++EI4ERTZzk9TjwntF2m1NFdweERdCeHRr7bjrza/YA+DjHK8Ehkf+NhNlIKHFxf1X4EMMfMV1LFCkzPtjJDPXM4M+MRYOr1FtHrIUGRTTM5caOwQKtlSgHppcT2e1mx7SFAvNsirKnHr6yu+jzLzF9WfQCEgmn6csmK5+/kVPOEeUNa6RdBYyKNj2DJHod+oWXJVDFFIrE6lf8pgVWBybvN8N0T+hVkxyBvCkbX2ICKPGuokRzVAa2qTu4Cjyq7wy3KR5YoEMpUOWb7Anx6gbuXXZwvu3EGnqph9yunKXKcXx/6c3Zuge8aFO45DEdfkYyC7cl96J2J+l0cNF/Sgn5QdIZw5p7n2/X+gJ1hOtqKv/xCNHMTTjEvs4EKoFQl5+ZyDToFFb3YO/1/5XDyOI6v5DMPqDsE1QEYy75510sEHzx8Rb/3sBZov0wiMTSVyCQi9SjCNhmn79EAZFUWMruaxCxN1p6SiT3Yus8CENjC5jTSZA/EBds0MCu4t33hkHCed0gbwzslBPIsKSKux+TLzFmF/udGcBV1mNPfpHA=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e668745c-dcee-4afd-ae18-08d88fe20955
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2020 19:00:25.6345
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jL2KBFX72+yOKwHg2azr7aS/tAFyMcDqNcbOXiyfxEmo3JWbDB1snkk5TjkijZA6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3512
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        Mon, 23 Nov 2020 14:01:42 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817C6C0613CF;
+        Mon, 23 Nov 2020 11:01:42 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id l1so1062391pld.5;
+        Mon, 23 Nov 2020 11:01:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GDahuPRDY9sUNvHhb7QNuuqG8EJHBdjtGS0QzXojzmU=;
+        b=sTgVZAkhh7dB6lO8jXe6q4NBtHSaNlxAbCo5U92Ka6YVwj4/38m49JobOrvK9CPUvC
+         dGOCSBu5QXcjzDviFxMe/0c4jo0K88enc0ckyIJbodknyHTE2LB4nAcz0dV/iNryC9z+
+         RntryzjfCpxa3M+bEEvyQLGOzBQAY06JmQFKehOi2RQXVqnyYKlokn7OEhrkz0FdNmyP
+         kHrCpsITRRJsgRdYroehMyA9E0odj/kWHyDsaIDRmu8aTIMqG8+BHxk7RD+qxjTd0NCz
+         nrw6xIkYO5UmnMvlLhYfJibt0Z6NM/LF/U4Ls5CbXqzg7c7+e9F4apXu5sh4u6CP+744
+         sEJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GDahuPRDY9sUNvHhb7QNuuqG8EJHBdjtGS0QzXojzmU=;
+        b=IQzRmf7jsqs/JUknbRgUun5dgL5Sr2Cm1FEYwyVjPb8phI/7mV40IWGU7Ih4rJ6l1f
+         mFE85JqogL1DXgoTqph/9f7JDMlE3cO3cQW6bjfeAW3tQsY5DGKd4iQkph9ta6/9PXdL
+         hCXrEwNLMWvCo7VM2ji3u+1EldtoXR1dx8bFoU3CoP8K301gyM3M1AwEv6a6S+my0QOo
+         VPHvT7Bjs/sCF1bH++bLdMZIFbK9p41S1h/I4PQ3YjeoLNzskasBYUTpDe2zGuvV1Na7
+         dWbLlRNLvh005KZ9aVWFXsDH+H2TVkqDmRRl4RVjihUS6PDuCGyaj3JKLPVxStzt6dyA
+         w1Vg==
+X-Gm-Message-State: AOAM5318LAtxzF9Wryvgz9Zw6H5ruGRHkIVEPDziLzmECrMo+7weyxF5
+        FxFS+oMrpODkaxddQVEjuAmKOHRtXeWyno4j
+X-Google-Smtp-Source: ABdhPJySfR1lvQTbWqU4vta4VmZWCAoruE/4U1/hh940i+xDfClLuHb5sliQ8Thf+Rea7yLnVRyuuA==
+X-Received: by 2002:a17:902:bd02:b029:da:8fd:af6b with SMTP id p2-20020a170902bd02b02900da08fdaf6bmr911448pls.7.1606158101910;
+        Mon, 23 Nov 2020 11:01:41 -0800 (PST)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id m2sm11710965pgv.0.2020.11.23.11.01.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 23 Nov 2020 11:01:41 -0800 (PST)
+Date:   Mon, 23 Nov 2020 11:01:34 -0800
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        taoren@fb.com, mikechoi@fb.com
+Subject: Re: [PATCH v3 1/2] hwmon: (max127) Add Maxim MAX127 hardware
+ monitoring driver
+Message-ID: <20201123190133.GA7697@taoren-ubuntu-R90MNF91>
+References: <20201119175324.22472-1-rentao.bupt@gmail.com>
+ <20201119175324.22472-2-rentao.bupt@gmail.com>
+ <20201122183342.GA69512@roeck-us.net>
+ <20201123075448.GA3563@taoren-ubuntu-R90MNF91>
+ <20201123131641.GA136636@roeck-us.net>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-23_17:2020-11-23,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- mlxlogscore=999 mlxscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- adultscore=0 phishscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011230124
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123131641.GA136636@roeck-us.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 05:16:41AM -0800, Guenter Roeck wrote:
+> On Sun, Nov 22, 2020 at 11:54:49PM -0800, Tao Ren wrote:
+> > On Sun, Nov 22, 2020 at 10:33:42AM -0800, Guenter Roeck wrote:
+> > > On Thu, Nov 19, 2020 at 09:53:23AM -0800, rentao.bupt@gmail.com wrote:
+> > > > From: Tao Ren <rentao.bupt@gmail.com>
+> > > > 
+> > > > Add hardware monitoring driver for the Maxim MAX127 chip.
+> > > > 
+> > > > MAX127 min/max range handling code is inspired by the max197 driver.
+> > > > 
+> > > > Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+> > > 
+> > > Nice cleanup. Couple of minor comments.
+> > > 
+> > > Thanks,
+> > > Guenter
+> > > 
+> > > > ---
+> > > >  Changes in v3:
+> > > >    - no code change. xdp maintainers were removed from to/cc list.
+> > > >  Changes in v2:
+> > > >    - replace devm_hwmon_device_register_with_groups() with
+> > > >      devm_hwmon_device_register_with_info() API.
+> > > >    - divide min/max read and write methods to separate functions.
+> > > >    - fix raw-to-vin conversion logic.
+> > > >    - refine ctrl_byte handling so mutex is not needed to protect the
+> > > >      byte.
+> > > >    - improve i2c_transfer() error handling.
+> > > >    - a few other improvements (comments, variable naming, and etc.).
+> > > > 
+> > > >  drivers/hwmon/Kconfig  |   9 ++
+> > > >  drivers/hwmon/Makefile |   1 +
+> > > >  drivers/hwmon/max127.c | 346 +++++++++++++++++++++++++++++++++++++++++
+> > > >  3 files changed, 356 insertions(+)
+> > > >  create mode 100644 drivers/hwmon/max127.c
+> > > > 
+> > > > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> > > > index 9d600e0c5584..716df51edc87 100644
+> > > > --- a/drivers/hwmon/Kconfig
+> > > > +++ b/drivers/hwmon/Kconfig
+> > > > @@ -950,6 +950,15 @@ config SENSORS_MAX1111
+> > > >  	  This driver can also be built as a module. If so, the module
+> > > >  	  will be called max1111.
+> > > >  
+> > > > +config SENSORS_MAX127
+> > > > +	tristate "Maxim MAX127 12-bit 8-channel Data Acquisition System"
+> > > > +	depends on I2C
+> > > > +	help
+> > > > +	  Say y here to support Maxim's MAX127 DAS chips.
+> > > > +
+> > > > +	  This driver can also be built as a module. If so, the module
+> > > > +	  will be called max127.
+> > > > +
+> > > >  config SENSORS_MAX16065
+> > > >  	tristate "Maxim MAX16065 System Manager and compatibles"
+> > > >  	depends on I2C
+> > > > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> > > > index 1083bbfac779..01ca5d3fbad4 100644
+> > > > --- a/drivers/hwmon/Makefile
+> > > > +++ b/drivers/hwmon/Makefile
+> > > > @@ -127,6 +127,7 @@ obj-$(CONFIG_SENSORS_LTC4260)	+= ltc4260.o
+> > > >  obj-$(CONFIG_SENSORS_LTC4261)	+= ltc4261.o
+> > > >  obj-$(CONFIG_SENSORS_LTQ_CPUTEMP) += ltq-cputemp.o
+> > > >  obj-$(CONFIG_SENSORS_MAX1111)	+= max1111.o
+> > > > +obj-$(CONFIG_SENSORS_MAX127)	+= max127.o
+> > > >  obj-$(CONFIG_SENSORS_MAX16065)	+= max16065.o
+> > > >  obj-$(CONFIG_SENSORS_MAX1619)	+= max1619.o
+> > > >  obj-$(CONFIG_SENSORS_MAX1668)	+= max1668.o
+> > > > diff --git a/drivers/hwmon/max127.c b/drivers/hwmon/max127.c
+> > > > new file mode 100644
+> > > > index 000000000000..3df4c225a6a2
+> > > > --- /dev/null
+> > > > +++ b/drivers/hwmon/max127.c
+> > > > @@ -0,0 +1,346 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0+
+> > > > +/*
+> > > > + * Hardware monitoring driver for MAX127.
+> > > > + *
+> > > > + * Copyright (c) 2020 Facebook Inc.
+> > > > + */
+> > > > +
+> > > > +#include <linux/err.h>
+> > > > +#include <linux/hwmon.h>
+> > > > +#include <linux/hwmon-sysfs.h>
+> > > 
+> > > Not needed.
+> > > 
+> > > > +#include <linux/i2c.h>
+> > > > +#include <linux/init.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/sysfs.h>
+> > > 
+> > > Not needed.
+> > 
+> > Thanks for pointing it out. Both includes are deleted in v4.
+> > 
+> > > 
+> > > > +
+> > > > +/*
+> > > > + * MAX127 Control Byte. Refer to MAX127 datasheet, Table 1 "Control-Byte
+> > > > + * Format" for details.
+> > > > + */
+> > > > +#define MAX127_CTRL_START	BIT(7)
+> > > > +#define MAX127_CTRL_SEL_SHIFT	4
+> > > > +#define MAX127_CTRL_RNG		BIT(3)
+> > > > +#define MAX127_CTRL_BIP		BIT(2)
+> > > > +#define MAX127_CTRL_PD1		BIT(1)
+> > > > +#define MAX127_CTRL_PD0		BIT(0)
+> > > > +
+> > > > +#define MAX127_NUM_CHANNELS	8
+> > > > +#define MAX127_SET_CHANNEL(ch)	(((ch) & 7) << MAX127_CTRL_SEL_SHIFT)
+> > > > +
+> > > > +/*
+> > > > + * MAX127 channel input ranges. Refer to MAX127 datasheet, Table 3 "Range
+> > > > + * and Polarity Selection" for details.
+> > > > + */
+> > > > +#define MAX127_FULL_RANGE	10000	/* 10V */
+> > > > +#define MAX127_HALF_RANGE	5000	/* 5V */
+> > > > +
+> > > > +/*
+> > > > + * MAX127 returns 2 bytes at read:
+> > > > + *   - the first byte contains data[11:4].
+> > > > + *   - the second byte contains data[3:0] (MSB) and 4 dummy 0s (LSB).
+> > > > + * Refer to MAX127 datasheet, "Read a Conversion (Read Cycle)" section
+> > > > + * for details.
+> > > > + */
+> > > > +#define MAX127_DATA_LEN		2
+> > > > +#define MAX127_DATA_SHIFT	4
+> > > > +
+> > > > +#define MAX127_SIGN_BIT		BIT(11)
+> > > > +
+> > > > +struct max127_data {
+> > > > +	struct mutex lock;
+> > > > +	struct i2c_client *client;
+> > > > +	u8 ctrl_byte[MAX127_NUM_CHANNELS];
+> > > > +};
+> > > > +
+> > > > +static int max127_select_channel(struct i2c_client *client, u8 ctrl_byte)
+> > > > +{
+> > > > +	int status;
+> > > > +	struct i2c_msg msg = {
+> > > > +		.addr = client->addr,
+> > > > +		.flags = 0,
+> > > > +		.len = sizeof(ctrl_byte),
+> > > > +		.buf = &ctrl_byte,
+> > > > +	};
+> > > > +
+> > > > +	status = i2c_transfer(client->adapter, &msg, 1);
+> > > > +	if (status < 0)
+> > > > +		return status;
+> > > > +	else if (status != 1)
+> > > 
+> > > else after return is not needed.
+> > > 
+> > > > +		return -EIO;
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int max127_read_channel(struct i2c_client *client, long *val)
+> > > > +{
+> > > > +	int status;
+> > > > +	u8 i2c_data[MAX127_DATA_LEN];
+> > > > +	struct i2c_msg msg = {
+> > > > +		.addr = client->addr,
+> > > > +		.flags = I2C_M_RD,
+> > > > +		.len = sizeof(i2c_data),
+> > > > +		.buf = i2c_data,
+> > > > +	};
+> > > > +
+> > > > +	status = i2c_transfer(client->adapter, &msg, 1);
+> > > > +	if (status < 0)
+> > > > +		return status;
+> > > > +	else if (status != 1)
+> > > 
+> > > else after return is not needed.
+> > 
+> > I'm not sure if I understand your suggestion correctly, and I added this
+> > branch to handle the case when i2c_transfer() returns 0, which means the
+> > message is not transferred. Perhaps it would never happen? but anyhow, I
+> > just simplified the check in v4; please kindly review and let me know if
+> > you have further suggestions.
+> > 
+> 
+> 	if (status < 0)
+> 		return status;
+> 	if (status != 1)
+> 		return -EIO;
+> 
+> Again, else after return is not needed (and static analyzers will complain
+> about it).
+> 
+> Guenter
+
+Ahh, I get it now (I didn't know static analyzers would complain about
+it). Thanks for the sharing, and it's fixed in v5.
 
 
-On 11/23/20 10:54 AM, Yonghong Song wrote:
-> 
-> 
-> On 11/23/20 10:46 AM, KP Singh wrote:
->> On Mon, Nov 23, 2020 at 7:36 PM Yonghong Song <yhs@fb.com> wrote:
->>>
->>>
->>>
->>> On 11/23/20 10:27 AM, KP Singh wrote:
->>>> [...]
->>>>
->>>>>>>
->>>>>>> Even if a custom policy has been loaded, potentially additional
->>>>>>> measurements unrelated to this test would be included the 
->>>>>>> measurement
->>>>>>> list.  One way of limiting a rule to a specific test is by loopback
->>>>>>> mounting a file system and defining a policy rule based on the 
->>>>>>> loopback
->>>>>>> mount unique uuid.
->>>>>>
->>>>>> Thanks Mimi!
->>>>>>
->>>>>> I wonder if we simply limit this to policy to /tmp and run an 
->>>>>> executable
->>>>>> from /tmp (like test_local_storage.c does).
->>>>>>
->>>>>> The only side effect would be of extra hashes being calculated on
->>>>>> binaries run from /tmp which is not too bad I guess?
->>>>>
->>>>> The builtin measurement policy (ima_policy=tcb") explicitly defines a
->>>>> rule to not measure /tmp files.  Measuring /tmp results in a lot of
->>>>> measurements.
->>>>>
->>>>> {.action = DONT_MEASURE, .fsmagic = TMPFS_MAGIC, .flags = 
->>>>> IMA_FSMAGIC},
->>>>>
->>>>>>
->>>>>> We could do the loop mount too, but I am guessing the most clean way
->>>>>> would be to shell out to mount from the test? Are there some other 
->>>>>> examples
->>>>>> of IMA we could look at?
->>>>>
->>>>> LTP loopback mounts a filesystem, since /tmp is not being measured 
->>>>> with
->>>>> the builtin "tcb" policy.  Defining new policy rules should be limited
->>>>> to the loopback mount.  This would pave the way for defining IMA-
->>>>> appraisal signature verification policy rules, without impacting the
->>>>> running system.
->>>>
->>>> +Andrii
->>>>
->>>> Do you think we can split the IMA test out,
->>>> have a little shell script that does the loopback mount, gets the
->>>> FS UUID, updates the IMA policy and then runs a C program?
->>>>
->>>> This would also allow "test_progs" to be independent of CONFIG_IMA.
->>>>
->>>> I am guessing the structure would be something similar
->>>> to test_xdp_redirect.sh
->>>
->>> Look at sk_assign test.
->>>
->>> sk_assign.c:    if (CHECK_FAIL(system("ip link set dev lo up")))
->>> sk_assign.c:    if (CHECK_FAIL(system("ip route add local default dev 
->>> lo")))
->>> sk_assign.c:    if (CHECK_FAIL(system("ip -6 route add local default dev
->>> lo")))
->>> sk_assign.c:    if (CHECK_FAIL(system("tc qdisc add dev lo clsact")))
->>> sk_assign.c:    if (CHECK(system(tc_cmd), "BPF load failed;"
->>>
->>> You can use "system" to invoke some bash commands to simulate a script
->>> in the tests.
->>
->> Heh, that's what I was trying to avoid, I need to parse the output to 
->> the get
->> the name of which loop device was assigned and then call a command like:
->>
->> # blkid /dev/loop0
->> /dev/loop0: UUID="607ed7ce-3fad-4236-8faf-8ab744f23e01" TYPE="ext3"
->>
->> Running simple commands with "system" seems okay but parsing output
->> is a bit too much :)
->>
->> I read about:
->>
->> https://man7.org/linux/man-pages/man4/loop.4.html 
->>
->> But I still need to create a backing file, format it and then get the 
->> UUID.
->>
->> Any simple trick that I may be missing?
-> 
-> Maybe you can create a bash script on your prog_test files and do
-> system("./<>.sh"). In the shell script, you can use all the bash magic
-> (sed, awk, etc) to parse and store the needed result in a temp file, and
-> after a successful system(""), you just read that temp file. Does this 
-> work?
+Cheers,
 
-I guess under the current framework, you can also create a .sh file
-manually and place it into tools/testing/selftests/bpf directory
-and call it in your prog_tests .c file with system("./<>.sh")...
-
-> 
->> - KP
->>
->>>
->>>>
->>>> - KP
->>>>
->>>>>
->>>>> Mimi
->>>>>
+Tao
