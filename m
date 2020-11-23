@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379B82C0B45
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3872C0B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388981AbgKWNW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 08:22:27 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7667 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731825AbgKWNWV (ORCPT
+        id S2388989AbgKWNWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733009AbgKWNWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:22:21 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cfnqq5QnKz15Qyl;
-        Mon, 23 Nov 2020 21:21:59 +0800 (CST)
-Received: from [10.174.176.199] (10.174.176.199) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 23 Nov 2020 21:22:09 +0800
-To:     <fweisbec@gmail.com>, <tglx@linutronix.de>, <mingo@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Subject: nohz: Update tick instead of restarting tick in tick_nohz_idle_exit()
-Message-ID: <66014fea-7b84-358b-137d-d15190241528@huawei.com>
-Date:   Mon, 23 Nov 2020 21:22:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Mon, 23 Nov 2020 08:22:30 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBB1C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:22:28 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id j15so14302096oih.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 05:22:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/kdqFZeAVjbR1EcrIlFEOxJOMeoTF+Ogzz6G56OSu8M=;
+        b=rTTjlgTIUFSWUW/IC4OxUfYnSqKXdJJ9kqYLU/ZqrJAAi87J+7NiREj6ube4ANvu1g
+         LsHbqdqUqsv1WvcxkWTewmx3DHXB3cakd8AOodJlcSbrVphhStsCFNaDA0bWkye3lKjm
+         AcQllA7rtoChNr8xdo732cLNI+Hy+0pe5oXbIrBYCjn3BPQmXgi82/O1h35cWJqz9T2/
+         edQbz0xLSKOG16+/9MKx49RjIACs+K8INOB7JtBQwPP8geXDKG9gyx9eckuCQ6gpNpdk
+         Y9AZ333KWpIZr4Kza7TJAOnmVPkXgStofyfEhZK7IKJCMoly0/9ynQdr/CGbnQIOU6mh
+         C0xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/kdqFZeAVjbR1EcrIlFEOxJOMeoTF+Ogzz6G56OSu8M=;
+        b=q5RS/RD2EqoKrQ7CBLIDrR+yW9+yhGKLgQ2q4o8e7FvtW2WKoP+/wMR+qF81Hfscaz
+         sr3/4NpLyiMyjIkRX0WrvK93uxXuX9rlzbmwFkhaVZkojyoa+sE4r++cwAdPxv53q/cp
+         pcgkL+8/7xiqxMcMVL77hwC+VeP2X2rx2TpF4CCa4ND8wRRvHjQBcNQWqLqquY5qziN0
+         D999mGiVVUdJb17U5ULMiqF28ElEBy6BlBKqt4aGjMW5sPEsaaCp3jU63GWy8il15gmD
+         fZVdY4p1VE3CfLT0lSnQxY1v1wpGFn/+DAbvzrtkGg/i0263Ct3LAGe04XqRixwlnWns
+         oYiw==
+X-Gm-Message-State: AOAM532Srxi8RBDdz6U3siJjuMWic3u/QHYxWJ2YSatNH67UiIUloP/S
+        QfGa3z6YPlXRdGuAfJzThxTpiA==
+X-Google-Smtp-Source: ABdhPJzEhLvMoLTH89tN1wdaa8/gjQDGQFbkETdg1TT2tpDZ6ILozNTF3nqBtpBt76eWvVSRF6fAZg==
+X-Received: by 2002:a05:6808:301:: with SMTP id i1mr15073703oie.49.1606137747765;
+        Mon, 23 Nov 2020 05:22:27 -0800 (PST)
+Received: from google.com ([2a01:4b00:8523:2d03:acac:b2ef:c7d:fd8a])
+        by smtp.gmail.com with ESMTPSA id s185sm7344774oia.18.2020.11.23.05.22.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 05:22:26 -0800 (PST)
+Date:   Mon, 23 Nov 2020 13:22:23 +0000
+From:   David Brazdil <dbrazdil@google.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>, kernel-team@android.com,
+        android-kvm@google.com
+Subject: Re: [RFC PATCH 13/27] KVM: arm64: Enable access to sanitized CPU
+ features at EL2
+Message-ID: <20201123132223.oohevce4izuoaqi3@google.com>
+References: <20201117181607.1761516-1-qperret@google.com>
+ <20201117181607.1761516-14-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.199]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117181607.1761516-14-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In realtime scenarios, the "nohz_full" parameter is configured. Tick
-interference is not expected when there is only one realtime thread.
-But when the idle thread is switched to the realtime thread, the tick
-timer is restarted always.
+> +int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst)
+> +{
+> +	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(id);
+> +
+> +	if (!regp)
+> +		return -EINVAL;
+> +
+> +	memcpy(dst, regp, sizeof(*regp));
+> +
+> +	return 0;
+> +}
+> +
+>  #define read_sysreg_case(r)	\
+>  	case r:		return read_sysreg_s(r)
+>  
+> diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+> index dd8ccc9efb6a..c35d768672eb 100644
+> --- a/arch/arm64/kernel/image-vars.h
+> +++ b/arch/arm64/kernel/image-vars.h
+> @@ -116,6 +116,8 @@ __kvm_nvhe___memcpy			= __kvm_nvhe___pi_memcpy;
+>  __kvm_nvhe___memset			= __kvm_nvhe___pi_memset;
+>  #endif
+>  
+> +_kvm_nvhe___flush_dcache_area		= __kvm_nvhe___pi___flush_dcache_area;
+> +
 
-So on the nohz full mode, it is unnecessary to restart the tick timer
-when there is only one realtime thread. Adding can_stop_full_tick()
-before restarting the tick, if it return true, keep tick stopped.
-
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
----
- kernel/time/tick-sched.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index cc7cba20382e..f664c7735cab 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -1208,6 +1208,20 @@ void tick_nohz_idle_restart_tick(void)
- 		__tick_nohz_idle_restart_tick(ts, ktime_get());
- }
-
-+static void tick_nohz_update_tick(struct tick_sched *ts, ktime_t now)
-+{
-+#ifdef CONFIG_NO_HZ_FULL
-+	int cpu = smp_processor_id();
-+
-+	if (tick_nohz_full_cpu(cpu) && can_stop_full_tick(cpu, ts)) {
-+		tick_nohz_stop_sched_tick(ts, cpu);
-+		tick_nohz_account_idle_ticks(ts);
-+		return;
-+	}
-+#endif
-+	__tick_nohz_idle_restart_tick(ts, now);
-+}
-+
- /**
-  * tick_nohz_idle_exit - restart the idle tick from the idle task
-  *
-@@ -1237,7 +1251,7 @@ void tick_nohz_idle_exit(void)
- 		tick_nohz_stop_idle(ts, now);
-
- 	if (tick_stopped)
--		__tick_nohz_idle_restart_tick(ts, now);
-+		tick_nohz_update_tick(ts, now);
-
- 	local_irq_enable();
- }
--- 
-2.18.4
+Could you help my understand why we need this?
+* Why do we need PI routines in the first place? Would my series that fixes
+  relocations in hyp code remove the need?
+* You added these aliases for the string routines because you were worried
+  somebody would change the implementation in arch/arm64/lib, right? But this
+  cache flush function is defined in hyp/nvhe. So why do we need to point to
+  the PI alias if we control the implementation?
