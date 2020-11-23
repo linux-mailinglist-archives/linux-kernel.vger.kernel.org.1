@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1BB2BFF5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175FE2BFF5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 06:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgKWFS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 00:18:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgKWFS7 (ORCPT
+        id S1726969AbgKWFUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 00:20:09 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13195 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726620AbgKWFUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 00:18:59 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BD3C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:18:58 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id v12so13784684pfm.13
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Nov 2020 21:18:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pGllVt0YAWrAraB8o/xsjy9zl5s/HURFJ1GGpWvqVCI=;
-        b=H/oQgJaRPzytu+MBgdw2N1oiKsUVlMAQEuLGRg9i6SMRnIhZ6qzxe983pgihLY+CsZ
-         KDhviQ1Z3qoGei9PSflECA7dQo/4+hvkffHmgAUX7nVgpXrE1pY32UlFecFnSRhZNkuZ
-         8vOtmuXOPpJWQP0RpiIC0ldsWhaZ804W40C9imN0n5yksNCavpq0pxAqTVwvKCw+MACC
-         TopDUs/MUQcwZmTrtHF8M2lx0hdfN6J1Ngqt9VcDL5ZfBgfPmeg5M2uoxjv+2b13yepW
-         THgwcaauX8jv0rBTlDSeOAyQCQRKpXy1YNt5R8tjO22yfRRqUFobOP1jR8Z2UV84QowU
-         i0Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pGllVt0YAWrAraB8o/xsjy9zl5s/HURFJ1GGpWvqVCI=;
-        b=nVBPUQ03WgkhgVtX3d4xhkF2JD2sZnaksY6Eht9ZrQ76epw70PqDc+skuuSTKm/QTX
-         2RZkjrIYzsx9qvdOivvwG8jnQnCboAK5eYxbMgDT0smmUJjdhkRVee8hL54V0S2D3hIt
-         uoeJCf3pyX3txfilw8AdsOe9a2puM/9lnJ0ZqPqFIzu1nilFL/l+fJqhGp6KnEqwbvSS
-         OAz9UdgKYknOJl3BIebVYASV5Wbp3vzpkv2EZAYwwFrRc5ZcEIC7MJnrI0GFYckcjv8B
-         8QHnR1cvV10HuEpzPQHX16M0ZCeSUop0Ep8areP/Knh+dFKvfZLp3OmJ4f7/HW3oVo4s
-         4vnw==
-X-Gm-Message-State: AOAM5333xqLhMCQuSytptzPaMOhDO3zAgovfjJueXJPILcWioOzLWs+3
-        q7K6NOJDJdaSAgWNJfFIxb0=
-X-Google-Smtp-Source: ABdhPJyiNdSj5OIIge3kyGIXOgYbubbctnlcgBQqTDktGnqvwdRL50nZQgcezMWuZY5QHoIWtX4wpQ==
-X-Received: by 2002:a17:90a:cb0c:: with SMTP id z12mr8812952pjt.60.1606108738106;
-        Sun, 22 Nov 2020 21:18:58 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id e14sm9298893pga.61.2020.11.22.21.18.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2020 21:18:56 -0800 (PST)
-Date:   Mon, 23 Nov 2020 16:18:53 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 17/32] arch/x86: Add a new TIF flag for untrusted
- tasks
-Message-ID: <20201123051853.GH110669@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-18-joel@joelfernandes.org>
+        Mon, 23 Nov 2020 00:20:09 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbb468b0000>; Sun, 22 Nov 2020 21:20:11 -0800
+Received: from [10.26.75.187] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov
+ 2020 05:19:57 +0000
+Subject: Re: [PATCH net] devlink: Fix reload stats structure
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Moshe Shemesh <moshe@mellanox.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1605879637-6114-1-git-send-email-moshe@mellanox.com>
+ <20201121145349.3824029c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <cfa39a4e-e78e-018d-e51a-0a38407af122@nvidia.com>
+Date:   Mon, 23 Nov 2020 07:19:54 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-18-joel@joelfernandes.org>
+In-Reply-To: <20201121145349.3824029c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606108812; bh=06+rPNg5w4lJEy4I5kbShgd4uXNmVa8vPwOaXftZiZM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=oVAOD31qU4lCx3eX/LSbnQyUXdIxdX+27W13Fk7N752BNSKNKnjOvGxldrBg+39ld
+         t5lqHm67RUGmF8Jc9C2fw7BuA+duzhSstXf4DMCMq4gsQW0dy++f6oDXbpDQ0OmTfT
+         yoQXWsdrXdU6NlJTZTaJ4gP8QSYQy2e7ODRmlGlq2C0mcZphlrKZVRPbYeiOC5VlXm
+         4BypjUlSXpKstsNjhwDiqWvJjsTM/vLiDKvMipVrghrbxXZnzum7toZH2PdwvGass+
+         +r9rQImr4fDRzdaGHZb2OFVawlpNUyZY0JB72NL8CNAWve0qYSBbf04p6imWBoHOpN
+         vG69TG40L6ZNQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:47PM -0500, Joel Fernandes (Google) wrote:
-> Add a new TIF flag to indicate whether the kernel needs to be careful
-> and take additional steps to mitigate micro-architectural issues during
-> entry into user or guest mode.
-> 
-> This new flag will be used by the series to determine if waiting is
-> needed or not, during exit to user or guest mode.
-> 
-> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> Reviewed-by: Aubrey Li <aubrey.intel@gmail.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
 
-Acked-by: Balbir Singh <bsingharora@gmail.com>
+On 11/22/2020 12:53 AM, Jakub Kicinski wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Fri, 20 Nov 2020 15:40:37 +0200 Moshe Shemesh wrote:
+>> Fix reload stats structure exposed to the user. Change stats structure
+>> hierarchy to have the reload action as a parent of the stat entry and
+>> then stat entry includes value per limit. This will also help to avoid
+>> string concatenation on iproute2 output.
+>>
+>> Reload stats structure before this fix:
+>> "stats": {
+>>      "reload": {
+>>          "driver_reinit": 2,
+>>          "fw_activate": 1,
+>>          "fw_activate_no_reset": 0
+>>       }
+>> }
+>>
+>> After this fix:
+>> "stats": {
+>>      "reload": {
+>>          "driver_reinit": {
+>>              "unspecified": 2
+>>          },
+>>          "fw_activate": {
+>>              "unspecified": 1,
+>>              "no_reset": 0
+>>          }
+>> }
+>>
+>> Fixes: a254c264267e ("devlink: Add reload stats")
+>> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> At least try to fold the core networking code at 80 characters *please*.
+>
+> You folded the comments at 86 chars, neither 100 nor 80.
+
+
+Oh, I missed that comment folding while replacing it in this patch. I 
+will fix, thanks.
+
