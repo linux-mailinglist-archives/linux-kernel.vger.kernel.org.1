@@ -2,200 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDEA2C12D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570252C12D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390683AbgKWSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388701AbgKWSAy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390689AbgKWSA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:00:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729686AbgKWSAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 13:00:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2713FC0613CF;
-        Mon, 23 Nov 2020 10:00:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=j/9AeUveHgMPC2fylXvN/FlLEse24q6/y6E43XicMes=; b=Qw4lI9BD/GvRxZauaTYfPurx9e
-        3QPT86LRSNQgFySHm1JrLjxaya1xm0Y9ujFto47OqKRfqBhzbq2zMI/+G/CtuV0KtAKkJp7Nf+lcj
-        fGEfVzQmrmkqQDgOAH9TEkSTitBraF5pOccEKsk+CyytALGYDpLjBmhulg7aaAZiOMp2B6siBecly
-        sAOextB/4WjbqCyGP7DWWKo1EaJqSklGjowz72U9fmFfVwbZTNLu8uuryowaEum2EvFMokCx/ukYX
-        PAyPaaQntB705U9kR12hJa5KayYFlFxDoxzj5HpqzZkHD2ujO4OOWuizLTF5wR1FJ8eNcCYbw9h4k
-        gAbKGfnA==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khG8x-0007Ur-AA; Mon, 23 Nov 2020 18:00:51 +0000
-Subject: Re: [PATCH 6/7] kbuild: doc: clarify the difference between extra-y
- and always-y
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201123045403.63402-1-masahiroy@kernel.org>
- <20201123045403.63402-6-masahiroy@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <92b910de-7039-a260-456c-865201ef7629@infradead.org>
-Date:   Mon, 23 Nov 2020 10:00:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201123045403.63402-6-masahiroy@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC15D20758;
+        Mon, 23 Nov 2020 18:00:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606154453;
+        bh=OgBMsLtKiZ+xCEA9AnmfuQ94yiu816Qd03DhHewUrCs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1D4tJXE6sEFGBsF8kVA3HlliXj3KgnEXEawHA6/WRHrqSQcRMITUw7OZbH6sCVLfD
+         rPiVP6tdn5sbUDLgeIOOfi70Z5rLKo3c1dkasSbpR8jRYbTy62yE6c6gY0vD/ubEjm
+         kRsCwfswlmyX19Ebx9RlhZ7tPtXJYGh6CZ+sgZ1g=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khG8x-00D1ci-Hq; Mon, 23 Nov 2020 18:00:51 +0000
+Date:   Mon, 23 Nov 2020 18:00:50 +0000
+Message-ID: <87a6v854x9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 08/24] kvm: arm64: Add SMC handler in nVHE EL2
+In-Reply-To: <20201116204318.63987-9-dbrazdil@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+        <20201116204318.63987-9-dbrazdil@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/20 8:54 PM, Masahiro Yamada wrote:
-> The difference between extra-y and always-y is obscure.
+On Mon, 16 Nov 2020 20:43:02 +0000,
+David Brazdil <dbrazdil@google.com> wrote:
 > 
-> Basically, Kbuild builds targets listed in extra-y and always-y in
-> visited Makefiles without relying on any dependency.
+> Add handler of host SMCs in KVM nVHE trap handler. Forward all SMCs to
+> EL3 and propagate the result back to EL1. This is done in preparation
+> for validating host SMCs in KVM nVHE protected mode.
 > 
-> The difference is that extra-y is used to list the targets needed for
-> vmlinux whereas always-y is used to list the targets that must be always
-> built irrespective of final targets.
+> The implementation assumes that firmware uses SMCCC v1.2 or older. That
+> means x0-x17 can be used both for arguments and results, other GPRs are
+> preserved.
 > 
-> Kbuild skips extra-y when it is building only modules (i.e.
-> 'make modules'). This is the long-standing behavior since extra-y was
-> introduced in 2003, and it is explained in that commit log [1].
-> 
-> For clarification, this is the extra-y vs always-y table:
-> 
->                   extra-y    always-y
->   'make'             o          o
->   'make vmlinux'     o          o
->   'make modules'     x          o
-
-FWIW, I would find y/n easier to comprehend that x/o here.
-
-> Kbuild skips extra-y also when building external modules since obviously
-> it never builds vmlinux.
-> 
-> Unfortunately, extra-y is wrongly used in many places of upstream code,
-> and even in external modules.
-> 
-> Using extra-y in external module Makefiles is wrong. What you should
-> use is probably always-y or 'targets'.
-> 
-> The current documentation for extra-y is misleading. I rewrote it, and
-> moved it to the section 3.7.
-> 
-> always-y is not documented anywhere. I added.
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?id=f94e5fd7e5d09a56a60670a9bb211a791654bba8
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 > ---
+>  arch/arm64/kvm/hyp/nvhe/host.S     | 38 ++++++++++++++++++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c | 26 ++++++++++++++++++++
+>  2 files changed, 64 insertions(+)
 > 
->  Documentation/kbuild/makefiles.rst | 110 +++++++++++++++++++----------
->  1 file changed, 71 insertions(+), 39 deletions(-)
-> 
-> diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-> index 49afcb1d3695..159e470f2616 100644
-> --- a/Documentation/kbuild/makefiles.rst
-> +++ b/Documentation/kbuild/makefiles.rst
-> @@ -15,13 +15,15 @@ This document describes the Linux kernel Makefiles.
->  	   --- 3.4 Objects which export symbols
->  	   --- 3.5 Library file goals - lib-y
->  	   --- 3.6 Descending down in directories
-> -	   --- 3.7 Compilation flags
-> -	   --- 3.8 Dependency tracking
-> -	   --- 3.9 Custom Rules
-> -	   --- 3.10 Command change detection
-> -	   --- 3.11 $(CC) support functions
-> -	   --- 3.12 $(LD) support functions
-> -	   --- 3.13 Script Invocation
-> +	   --- 3.7 Non-builtin vmlinux targets - extra-y
-> +	   --- 3.8 Always built goals - always-
+> diff --git a/arch/arm64/kvm/hyp/nvhe/host.S b/arch/arm64/kvm/hyp/nvhe/host.S
+> index ed27f06a31ba..52dae5cd5a28 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/host.S
+> +++ b/arch/arm64/kvm/hyp/nvhe/host.S
+> @@ -183,3 +183,41 @@ SYM_CODE_START(__kvm_hyp_host_vector)
+>  	invalid_host_el1_vect			// FIQ 32-bit EL1
+>  	invalid_host_el1_vect			// Error 32-bit EL1
+>  SYM_CODE_END(__kvm_hyp_host_vector)
+> +
+> +/*
+> + * Forward SMC with arguments in struct kvm_cpu_context, and
+> + * store the result into the same struct. Assumes SMCCC 1.2 or older.
+> + *
+> + * x0: struct kvm_cpu_context*
+> + */
+> +SYM_CODE_START(__kvm_hyp_host_forward_smc)
+> +	/*
+> +	 * Use x18 to keep a pointer to the host context because x18
+> +	 * is callee-saved SMCCC but not in AAPCS64.
+> +	 */
+> +	mov	x18, x0
+> +
+> +	ldp	x0, x1,   [x18, #CPU_XREG_OFFSET(0)]
+> +	ldp	x2, x3,   [x18, #CPU_XREG_OFFSET(2)]
+> +	ldp	x4, x5,   [x18, #CPU_XREG_OFFSET(4)]
+> +	ldp	x6, x7,   [x18, #CPU_XREG_OFFSET(6)]
+> +	ldp	x8, x9,   [x18, #CPU_XREG_OFFSET(8)]
+> +	ldp	x10, x11, [x18, #CPU_XREG_OFFSET(10)]
+> +	ldp	x12, x13, [x18, #CPU_XREG_OFFSET(12)]
+> +	ldp	x14, x15, [x18, #CPU_XREG_OFFSET(14)]
+> +	ldp	x16, x17, [x18, #CPU_XREG_OFFSET(16)]
+> +
+> +	smc	#0
+> +
+> +	stp	x0, x1,   [x18, #CPU_XREG_OFFSET(0)]
+> +	stp	x2, x3,   [x18, #CPU_XREG_OFFSET(2)]
+> +	stp	x4, x5,   [x18, #CPU_XREG_OFFSET(4)]
+> +	stp	x6, x7,   [x18, #CPU_XREG_OFFSET(6)]
+> +	stp	x8, x9,   [x18, #CPU_XREG_OFFSET(8)]
+> +	stp	x10, x11, [x18, #CPU_XREG_OFFSET(10)]
+> +	stp	x12, x13, [x18, #CPU_XREG_OFFSET(12)]
+> +	stp	x14, x15, [x18, #CPU_XREG_OFFSET(14)]
+> +	stp	x16, x17, [x18, #CPU_XREG_OFFSET(16)]
 
-	Should that be always-y ?
+This is going to be really good for CPUs that need to use ARCH_WA1 for
+their Spectre-v2 mitigation... :-( If that's too expensive, we may
+have to reduce the number of save/restored registers, but I'm worried
+the battle is already lost by the time we reach this (the host trap
+path is already a huge hammer).
 
-> +	   --- 3.9 Compilation flags
-> +	   --- 3.10 Dependency tracking
-> +	   --- 3.11 Custom Rules
-> +	   --- 3.12 Command change detection
-> +	   --- 3.13 $(CC) support functions
-> +	   --- 3.14 $(LD) support functions
-> +	   --- 3.15 Script Invocation
->  
->  	=== 4 Host Program support
->  	   --- 4.1 Simple Host Program
-> @@ -321,7 +323,60 @@ more details, with real examples.
->  	names. This allows kbuild to totally skip the directory if the
->  	corresponding `CONFIG_` option is neither 'y' nor 'm'.
->  
-> -3.7 Compilation flags
-> +3.7 Non-builtin vmlinux targets - extra-y
-> +-----------------------------------------
-> +
-> +	extra-y specifies targets which are needed for building vmlinux,
-> +	but not combined into built-in.a.
-> +
-> +	Examples are:
-> +
-> +	1) head objects
-> +
-> +	    Some objects must be placed at the head of vmlinux. They are
-> +	    directly linked to vmlinux without going through built-in.a
-> +	    A typical use-case is an object that contains the entry point.
-> +
-> +	    arch/$(SRCARCH)/Makefile should specify such objects as head-y.
-> +
-> +	    Discussion:
-> +	      Given that we can control the section order in our linker script,
-> +	      why do we need head-y?
-> +
-> +	2) vmlinux linker script
-> +
-> +	    The linker script for vmlinux is located at
-> +	    arch/$(SRCARCH)/kernel/vmlinux.lds
-> +
-> +	Example::
-> +
-> +		# arch/x86/kernel/Makefile
-> +		extra-y	:= head_$(BITS).o
-> +		extra-y	+= head$(BITS).o
-> +		extra-y	+= ebda.o
-> +		extra-y	+= platform-quirks.o
-> +		extra-y	+= vmlinux.lds
-> +
-> +	$(extra-y) should only contain targets needed for vmlinux.
-> +
-> +	Kbuild skips extra-y when vmlinux is apparently not a final goal.
-> +	(e.g. 'make modules', or building external modules)
-> +
-> +	If you intend to build targets unconditionally, always-y (explained
-> +	in the next section) is the correct syntax to use.
-> +
-> +3.8 Always built goals - always-y
-> +---------------------------------
-> +
-> +	always-y specifies targets which are literally always built when
-> +	Kbuild visited the Makefile.
+Eventually, we'll have to insert the mitigation in the vectors anyway,
+just like we have on the guest exit path. Boo.
 
-	       visits
+Thanks,
 
-> +
-> +	Example::
-> +	  # ./Kbuild
-> +	  offsets-file := include/generated/asm-offsets.h
-> +	  always-y += $(offsets-file)
-> +
-> +3.9 Compilation flags
->  ---------------------
->  
->      ccflags-y, asflags-y and ldflags-y
+	M.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-thanks.
 -- 
-~Randy
-
+Without deviation from the norm, progress is not possible.
