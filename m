@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A6C2C01F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55392C01DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 10:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbgKWJCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 04:02:33 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:50966 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727948AbgKWJCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:02:21 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AN91lRi022168;
-        Mon, 23 Nov 2020 10:02:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=urZWggzuIM/HzomXlAhlMtATZKXhBngJV7lZxpM9LLo=;
- b=AAWcjokkJJteNl+v3CKyu3eLPpbeD4ILeeHRWxLudP51mUbgtVTvIzVAOFI9x703VjuZ
- EfQv+deCS0Au2eXlczPukBnhiStNT9AaaKImZSyh3c3KInIhSfIL8/oljkJ5DSg24z0F
- ddDD6foHl2GcQFD820gkU63fDnU69ujI34nZyw+V5qSyldT0412wHTsN9fixFcGwJ1vj
- CnnBApxxgvk3pvokQu4linB5OBbH9peoEwcIlCAK1c2d5+ARoln2FD0SlBKD9+mFuUep
- cmPE/6zukq24Qby49sxj6aO/g/uTvFPIdEUjniBJl+2PMx5nHVF1WHD4iLbwI/zOjzjB rA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y01c86eg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 10:02:11 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5909910003B;
-        Mon, 23 Nov 2020 10:02:10 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 45D24231F85;
-        Mon, 23 Nov 2020 10:02:10 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov 2020 10:01:21
- +0100
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>
-Subject: [PATCH 3/3] usb: dwc2: disable Link Power Management on STM32MP15 HS OTG
-Date:   Mon, 23 Nov 2020 10:01:14 +0100
-Message-ID: <20201123090114.12641-4-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201123090114.12641-1-amelie.delaunay@st.com>
-References: <20201123090114.12641-1-amelie.delaunay@st.com>
+        id S1727692AbgKWJBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 04:01:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41878 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726979AbgKWJBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 04:01:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606122090; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fjl5UMVuuyoQfqRCTSDt5soHTVWO5X8L91E971LLf0Y=;
+        b=lCOXuryyJ+Vg74cLIHGG5VUmLp6mJJX5LYrnHYpwgsbBw/rJKy838IqLG35tdwexQ3e7EA
+        0HhQXbrNl3gjoNFoRXqZzMo2rgb5XEtz2PyEyjvxP01tiyquIxDq/X2zAfRwxpfD2xWFuT
+        0du1567VfjVs+Qux8IeR0lVdoEMNLo8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 485BFAD57;
+        Mon, 23 Nov 2020 09:01:30 +0000 (UTC)
+Date:   Mon, 23 Nov 2020 10:01:29 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com
+Subject: Re: Pinning ZONE_MOVABLE pages
+Message-ID: <20201123090129.GD27488@dhcp22.suse.cz>
+References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-23_02:2020-11-20,2020-11-23 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Link Power Management (LPM) on STM32MP15 OTG HS encounters instabilities
-with some Host controllers. OTG core fails to exit L1 state in 200us:
-"dwc2 49000000.usb-otg: Failed to exit L1 sleep state in 200us."
-Then the device is still not enumerated.
+On Fri 20-11-20 15:27:46, Pavel Tatashin wrote:
+> Recently, I encountered a hang that is happening during memory hot
+> remove operation. It turns out that the hang is caused by pinned user
+> pages in ZONE_MOVABLE.
+> 
+> Kernel expects that all pages in ZONE_MOVABLE can be migrated, but
+> this is not the case if a user applications such as through dpdk
+> libraries pinned them via vfio dma map.
 
-To avoid this issue, disable Link Power Management on STM32MP15 HS OTG.
+Long term or effectively time unbound pinning on zone movable is
+fundamentaly broken. The sole reason of ZONE_MOVABLE existence is to
+guarantee migrateability. If the cosumer of this memory cannot guarantee
+that then it shouldn't use __GFP_MOVABLE in the first place.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
----
- drivers/usb/dwc2/params.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> Kernel keeps trying to
+> hot-remove them, but refcnt never gets to zero, so we are looping
+> until the hardware watchdog kicks in.
 
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 9e5dd7f3f2f6..92df3d620f7d 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -194,6 +194,10 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
- 	p->host_perio_tx_fifo_size = 256;
- 	p->ahbcfg = GAHBCFG_HBSTLEN_INCR16 << GAHBCFG_HBSTLEN_SHIFT;
- 	p->power_down = DWC2_POWER_DOWN_PARAM_NONE;
-+	p->lpm = false;
-+	p->lpm_clock_gating = false;
-+	p->besl = false;
-+	p->hird_threshold_en = false;
- }
- 
- const struct of_device_id dwc2_of_match_table[] = {
+Yeah, the existing offlining behavior doesn't stop trying because the
+current implementation of the migration cannot tell a diffence between
+short and long term failures. Maybe the recent ref count for long term
+pinning can be used to help out there.
+
+Anyway, I am wondering what do you mean by watchdog firing. The
+operation should trigger neither of soft, hard or hung detectors.
+
+> We cannot do dma unmaps before hot-remove, because hot-remove is a
+> slow operation, and we have thousands for network flows handled by
+> dpdk that we just cannot suspend for the duration of hot-remove
+> operation.
+> 
+> The solution is for dpdk to allocate pages from a zone below
+> ZONE_MOVAVLE, i.e. ZONE_NORMAL/ZONE_HIGHMEM, but this is not possible.
+> There is no user interface that we have that allows applications to
+> select what zone the memory should come from.
+
+Our existing interface is __GFP_MOVABLE. It is a responsibility of the
+driver to know whether the resulting memory is migratable. Users
+shouldn't even have to think about that.
+
+> I've spoken with Stephen Hemminger, and he said that DPDK is moving in
+> the direction of using transparent huge pages instead of HugeTLBs,
+> which means that we need to allow at least anonymous, and anonymous
+> transparent huge pages to come from non-movable zones on demand.
+
+You can migrate before pinning.
+
+> Here is what I am proposing:
+> 1. Add a new flag that is passed through pin_user_pages_* down to
+> fault handlers, and allow the fault handler to allocate from a
+> non-movable zone.
+
+gup already tries to deal with long term pins on CMA regions and migrate
+to a non CMA region. Have a look at __gup_longterm_locked. Migrating of
+the movable zone sounds like a reasonable solution to me.
+
+> 2. Add an internal move_pages_zone() similar to move_pages() syscall
+> but instead of migrating to a different NUMA node, migrate pages from
+> ZONE_MOVABLE to another zone.
+> Call move_pages_zone() on demand prior to pinning pages from
+> vfio_pin_map_dma() for instance.
+
+Why is the existing migration API insufficient?
+
+> 3. Perhaps, it also makes sense to add madvise() flag, to allocate
+> pages from non-movable zone. When a user application knows that it
+> will do DMA mapping, and pin pages for a long time, the memory that it
+> allocates should never be migrated or hot-removed, so make sure that
+> it comes from the appropriate place.
+> The benefit of adding madvise() flag is that we won't have to deal
+> with slow page migration during pin time, but the disadvantage is that
+> we would need to change the user interface.
+
+No, the MOVABLE_ZONE like other zone types are internal implementation
+detail of the MM. I do not think we want to expose that to the userspace
+and carve this into stone.
+
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
