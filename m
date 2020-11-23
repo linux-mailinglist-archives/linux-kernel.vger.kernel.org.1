@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82072C0ABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252842C0BF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 14:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbgKWM0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:26:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
+        id S1730371AbgKWNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 08:34:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730198AbgKWM0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:47 -0500
+        id S1729765AbgKWMYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:24:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AF112076E;
-        Mon, 23 Nov 2020 12:26:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25EB220781;
+        Mon, 23 Nov 2020 12:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134406;
-        bh=2+XmEO8S4+lvvRzWTX7xb5yQHXcNi5CcYkX10CRXRjQ=;
+        s=korg; t=1606134257;
+        bh=Ngse9KP/8iA9t6jkdoMpqaJR5e5EVQ7uFmB10fruDw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nwimZsnNdLeN+x1rLEQqLzxtOUpvvCJmCVcStW3EJe7vE12RLrGd9mMpLwTieezCS
-         5N6ZHjh8IacYWFy8woIB/UtBtlIeeO5IEDa3JSL00902UKca79otPyYGglqUBv7j59
-         /LKWWZ/pnxr2NLWXKRFZCRacTNxML43rinfpiTiw=
+        b=tkSR69POylKE00q6tWDIKc+/foryDaepp0TEopJUT7PJSwT3NsxCAF1H29u0naJrA
+         /wYHmiD1CFbtdZAFVEZRi8Os7997/kX5WGZCWHBVbUOf2WwFLdEP9WQQAfocw72Bh2
+         xLh+598PvfE7unEfU9zebv4Yo+JGwjG2OyTdmfYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 20/47] arm64: psci: Avoid printing in cpu_psci_cpu_die()
+        stable@vger.kernel.org,
+        Loris Fauster <loris.fauster@ttcontrol.com>,
+        Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 20/38] can: dev: can_restart(): post buffer from the right context
 Date:   Mon, 23 Nov 2020 13:22:06 +0100
-Message-Id: <20201123121806.515821576@linuxfoundation.org>
+Message-Id: <20201123121805.280479467@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
+References: <20201123121804.306030358@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Alejandro Concepcion Rodriguez <alejandro@acoro.eu>
 
-[ Upstream commit 891deb87585017d526b67b59c15d38755b900fea ]
+[ Upstream commit a1e654070a60d5d4f7cce59c38f4ca790bb79121 ]
 
-cpu_psci_cpu_die() is called in the context of the dying CPU, which
-will no longer be online or tracked by RCU. It is therefore not generally
-safe to call printk() if the PSCI "cpu off" request fails, so remove the
-pr_crit() invocation.
+netif_rx() is meant to be called from interrupt contexts. can_restart() may be
+called by can_restart_work(), which is called from a worqueue, so it may run in
+process context. Use netif_rx_ni() instead.
 
-Cc: Qian Cai <cai@redhat.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20201106103602.9849-2-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
+Co-developed-by: Loris Fauster <loris.fauster@ttcontrol.com>
+Signed-off-by: Loris Fauster <loris.fauster@ttcontrol.com>
+Signed-off-by: Alejandro Concepcion Rodriguez <alejandro@acoro.eu>
+Link: https://lore.kernel.org/r/4e84162b-fb31-3a73-fa9a-9438b4bd5234@acoro.eu
+[mkl: use netif_rx_ni() instead of netif_rx_any_context()]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/psci.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/can/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
-index e3713d6fb8e00..bf6142a80cf1a 100644
---- a/arch/arm64/kernel/psci.c
-+++ b/arch/arm64/kernel/psci.c
-@@ -68,7 +68,6 @@ static int cpu_psci_cpu_disable(unsigned int cpu)
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 9579dae54af29..52110017fd401 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -525,7 +525,7 @@ static void can_restart(struct net_device *dev)
+ 	}
+ 	cf->can_id |= CAN_ERR_RESTARTED;
  
- static void cpu_psci_cpu_die(unsigned int cpu)
- {
--	int ret;
- 	/*
- 	 * There are no known implementations of PSCI actually using the
- 	 * power state field, pass a sensible default for now.
-@@ -76,9 +75,7 @@ static void cpu_psci_cpu_die(unsigned int cpu)
- 	u32 state = PSCI_POWER_STATE_TYPE_POWER_DOWN <<
- 		    PSCI_0_2_POWER_STATE_TYPE_SHIFT;
+-	netif_rx(skb);
++	netif_rx_ni(skb);
  
--	ret = psci_ops.cpu_off(state);
--
--	pr_crit("unable to power off CPU%u (%d)\n", cpu, ret);
-+	psci_ops.cpu_off(state);
- }
- 
- static int cpu_psci_cpu_kill(unsigned int cpu)
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
 -- 
 2.27.0
 
