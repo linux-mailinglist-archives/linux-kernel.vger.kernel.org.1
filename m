@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC3C2C02F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8972C02F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 11:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgKWKFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 05:05:22 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:46709 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728349AbgKWKFU (ORCPT
+        id S1728399AbgKWKFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 05:05:19 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:42503 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728315AbgKWKFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:05:20 -0500
-Received: by mail-il1-f199.google.com with SMTP id q5so13394310ilc.13
+        Mon, 23 Nov 2020 05:05:18 -0500
+Received: by mail-il1-f197.google.com with SMTP id t14so13366596ilg.9
         for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 02:05:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=9rX7UbfQr7P3nKEs3rfronzjV+PkIsz7V6NWjhe7k9Q=;
-        b=W7OGDRqk/l4H3ljaQ3KiYXCfd/pyXN5YoKYEMU/e3iGwpeP2ZGDOPQz4Ha2AOMCnpe
-         HZfKHOrg0zcsoxnSp64GR63fOf+VtQ0PqQyPfV5vDY2FwLn37Vw8aXXzi+9XPdyyZ/NJ
-         Yema0Q9JZ7G62mtlQF5v7EgOzrjtsrNmNAWjWiahBFKGPVWyZ2t/GMP82b62FqEF8hpS
-         pNHV8UcOOhMy2OjsPOLWhsQkqAwnI12MURjiVSEAN0cPazAau0MnL5HqtGQ0ZGEHB6jm
-         zfnmbg2hWaZFr7NJHc9y8ax3hPWX61Y5tN4QAZ8t10hvq/IqD/gAdhfwCvXuBg+cyl78
-         bbaA==
-X-Gm-Message-State: AOAM532bhwGRgYApLqDodbVrC7wCgOBh96uiVzsjKvntPFC5CvLDDvuu
-        vJVI4rpDGeZVwzzRexEuFbw3TU20yXhSq9/ExaDVPWkdkrf6
-X-Google-Smtp-Source: ABdhPJxUpFXhr38UyfjXLHpQXsUBd75VpK/B3nuzYpYFtV7M9D2B4a5+CLsWdt1kppdrInzpq6WIqCAIDD/J5aHas1DhPOhhmJV4
+        bh=zBgwzi68qzrXdjI3v6aoG522nFgE68o6wE8yIJVg79k=;
+        b=JvCuxKvhc+JEXPe8KFzsL8I+sY+J5dyUYKOJpVIZivazNXV5cn70LDjV0h3B58kk+n
+         ggCaOyNNYiHO7pR9s+lSPyccELLZpp9IJGM3zXZ1riHriI2Svd4GpPzK8YBRUBiLUEae
+         PdZxfTVutBj8bL0kII8ky5L3psyTn1v5AFLO60yZPpkJIdZHPipaUTiwI7WeaFbAer2w
+         uEeZr9Tdnl3uZ3crBxowiLpJgwZ3wkpQ6jl61Uc5DGXsBS2/pNiqQk1CERi8+Wbhp5Qu
+         b/VDNr0sCy/reuGUmohtF5PwVQoHcYp9evy7+Y/5RU76orW1n5Xa9G2BIT/xsLQq4fQN
+         Yscw==
+X-Gm-Message-State: AOAM533/molsGiEq21XGQsetTgtX41ePQcHXCJlOj5zyK6T7MM/aGPYy
+        lbn9uIgbGaXGSF0qydazcGqfU4rQM8PHUr8V488VcJU2fi6O
+X-Google-Smtp-Source: ABdhPJy/m127PjSfJZCUQU/mwsLeNdRiRvVWiuIaQd1AajQ0eMm2H7W/z3v1a9fEx16vH1FVCnPRPmMkV8o3l0I68CN8QhiikeaB
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:ea1:: with SMTP id u1mr17700208ilj.246.1606125917417;
+X-Received: by 2002:a02:b146:: with SMTP id s6mr29551471jah.10.1606125917639;
  Mon, 23 Nov 2020 02:05:17 -0800 (PST)
 Date:   Mon, 23 Nov 2020 02:05:17 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c5b77105b4c3546e@google.com>
-Subject: possible deadlock in ovl_maybe_copy_up
-From:   syzbot <syzbot+c18f2f6a7b08c51e3025@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000c91a4805b4c354d5@google.com>
+Subject: WARNING in nbd_config_put
+From:   syzbot <syzbot+547e604b2b1c65869d7f@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,141 +48,60 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    a349e4c6 Merge tag 'xfs-5.10-fixes-7' of git://git.kernel...
+HEAD commit:    27bba9c5 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11813299500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a521022462477aea
-dashboard link: https://syzkaller.appspot.com/bug?extid=c18f2f6a7b08c51e3025
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ffd94d500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e7f3c831f4536ec1
+dashboard link: https://syzkaller.appspot.com/bug?extid=547e604b2b1c65869d7f
 compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c18f2f6a7b08c51e3025@syzkaller.appspotmail.com
+Reported-by: syzbot+547e604b2b1c65869d7f@syzkaller.appspotmail.com
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.10.0-rc4-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.4/12280 is trying to acquire lock:
-ffff8881480c8460 (sb_writers#4){.+.+}-{0:0}, at: ovl_maybe_copy_up+0x11f/0x190 fs/overlayfs/copy_up.c:990
-
-but task is already holding lock:
-ffff888011c1a740 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x363/0x1760 security/integrity/ima/ima_main.c:253
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&iint->mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
-       __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
-       process_measurement+0x363/0x1760 security/integrity/ima/ima_main.c:253
-       ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:498
-       do_open fs/namei.c:3254 [inline]
-       path_openat+0x154d/0x2730 fs/namei.c:3369
-       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
-       do_sys_openat2+0x16d/0x420 fs/open.c:1168
-       do_sys_open fs/open.c:1184 [inline]
-       __do_sys_openat fs/open.c:1200 [inline]
-       __se_sys_openat fs/open.c:1195 [inline]
-       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
--> #0 (sb_writers#4){.+.+}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:2866 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2991 [inline]
-       validate_chain kernel/locking/lockdep.c:3606 [inline]
-       __lock_acquire+0x2ca6/0x5c00 kernel/locking/lockdep.c:4830
-       lock_acquire kernel/locking/lockdep.c:5435 [inline]
-       lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1594 [inline]
-       sb_start_write include/linux/fs.h:1664 [inline]
-       mnt_want_write+0x69/0x3d0 fs/namespace.c:354
-       ovl_maybe_copy_up+0x11f/0x190 fs/overlayfs/copy_up.c:990
-       ovl_open+0xba/0x270 fs/overlayfs/file.c:154
-       do_dentry_open+0x4b9/0x11b0 fs/open.c:817
-       vfs_open fs/open.c:931 [inline]
-       dentry_open+0x132/0x1d0 fs/open.c:947
-       ima_calc_file_hash+0x32b/0x5a0 security/integrity/ima/ima_crypto.c:557
-       ima_collect_measurement+0x4ca/0x570 security/integrity/ima/ima_api.c:250
-       process_measurement+0xca6/0x1760 security/integrity/ima/ima_main.c:330
-       ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:498
-       do_open fs/namei.c:3254 [inline]
-       path_openat+0x154d/0x2730 fs/namei.c:3369
-       do_filp_open+0x17e/0x3c0 fs/namei.c:3396
-       do_sys_openat2+0x16d/0x420 fs/open.c:1168
-       do_sys_open fs/open.c:1184 [inline]
-       __do_sys_open fs/open.c:1192 [inline]
-       __se_sys_open fs/open.c:1188 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1188
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&iint->mutex);
-                               lock(sb_writers#4);
-                               lock(&iint->mutex);
-  lock(sb_writers#4);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.4/12280:
- #0: ffff888011c1a740 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x363/0x1760 security/integrity/ima/ima_main.c:253
-
-stack backtrace:
-CPU: 0 PID: 12280 Comm: syz-executor.4 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 27869 at kernel/workqueue.c:4396 destroy_workqueue.cold+0x5/0x71 kernel/workqueue.c:4396
+Modules linked in:
+CPU: 3 PID: 27869 Comm: syz-executor.3 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:destroy_workqueue.cold+0x5/0x71 kernel/workqueue.c:4396
+Code: 00 90 4a 89 f7 f1 89 c6 e8 01 80 00 00 c6 44 24 37 01 e9 a1 a7 9b f8 48 c7 c7 80 f1 00 8b e8 9a f4 04 f9 eb c2 e8 63 76 c3 f8 <0f> 0b 48 c7 c6 00 95 4a 89 48 c7 c7 40 90 4a 89 49 8d 96 60 01 00
+RSP: 0018:ffffc900009f7a30 EFLAGS: 00010046
+RAX: 0000000000040000 RBX: 0000000000000002 RCX: ffffc90023698000
+RDX: 0000000000040000 RSI: ffffffff88acb97d RDI: 0000000000000005
+RBP: 000000000000000f R08: 0000000000000001 R09: 0000000000000003
+R10: 0000000000000001 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888024e1dc00 R14: ffff88801270a000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88802cf00000(0063) knlGS:00000000f5524b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 0000000001991fe8 CR3: 000000001216e000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2115
- check_prev_add kernel/locking/lockdep.c:2866 [inline]
- check_prevs_add kernel/locking/lockdep.c:2991 [inline]
- validate_chain kernel/locking/lockdep.c:3606 [inline]
- __lock_acquire+0x2ca6/0x5c00 kernel/locking/lockdep.c:4830
- lock_acquire kernel/locking/lockdep.c:5435 [inline]
- lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
- percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
- __sb_start_write include/linux/fs.h:1594 [inline]
- sb_start_write include/linux/fs.h:1664 [inline]
- mnt_want_write+0x69/0x3d0 fs/namespace.c:354
- ovl_maybe_copy_up+0x11f/0x190 fs/overlayfs/copy_up.c:990
- ovl_open+0xba/0x270 fs/overlayfs/file.c:154
- do_dentry_open+0x4b9/0x11b0 fs/open.c:817
- vfs_open fs/open.c:931 [inline]
- dentry_open+0x132/0x1d0 fs/open.c:947
- ima_calc_file_hash+0x32b/0x5a0 security/integrity/ima/ima_crypto.c:557
- ima_collect_measurement+0x4ca/0x570 security/integrity/ima/ima_api.c:250
- process_measurement+0xca6/0x1760 security/integrity/ima/ima_main.c:330
- ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:498
- do_open fs/namei.c:3254 [inline]
- path_openat+0x154d/0x2730 fs/namei.c:3369
- do_filp_open+0x17e/0x3c0 fs/namei.c:3396
- do_sys_openat2+0x16d/0x420 fs/open.c:1168
- do_sys_open fs/open.c:1184 [inline]
- __do_sys_open fs/open.c:1192 [inline]
- __se_sys_open fs/open.c:1188 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1188
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fccb9104c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00000000000221c0 RCX: 000000000045deb9
-RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000020000040
-RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffc3967e2bf R14: 00007fccb91059c0 R15: 000000000118bf2c
-overlayfs: upperdir is in-use as upperdir/workdir of another mount, mount with '-o index=off' to override exclusive upperdir protection.
+ nbd_config_put+0x3d3/0x870 drivers/block/nbd.c:1231
+ nbd_release+0x103/0x190 drivers/block/nbd.c:1523
+ __blkdev_put+0x642/0x890 fs/block_dev.c:1782
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1851
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:151
+ get_signal+0xd89/0x1f00 kernel/signal.c:2562
+ arch_do_signal+0x82/0x2390 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x100/0x1a0 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
+ __do_fast_syscall_32+0x62/0x80 arch/x86/entry/common.c:138
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f6c549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f55240bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: fffffffffffffe00 RBX: 0000000000000003 RCX: 000000000000ab03
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
 
 ---
