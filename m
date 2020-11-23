@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7F22C01A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019D12C01AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 09:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgKWIqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 03:46:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34537 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728121AbgKWIqs (ORCPT
+        id S1726799AbgKWIvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 03:51:13 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:21293 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgKWIvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 03:46:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606121207;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0EgyJjhX29A+wOUcHgkoovIGjjiENqeDg1JmKe2gpgE=;
-        b=WPP6pIEWffg3k33N2ZP7d8dcF36Ijgq8A3V+ijQWMLO+Bj+VpVFYHvavBXgVx5Rgwtij+z
-        SKKvRvy3hCFVilztagYpf+ADX01qh5UfrPGWalNaI86LznhvJE1dOxBYb9EsJYMLTPGgdf
-        kot7te6IG2YcDnjgJZheeqOnB/EVeTs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-fbqioZYXOD-lvoF7duujsw-1; Mon, 23 Nov 2020 03:46:44 -0500
-X-MC-Unique: fbqioZYXOD-lvoF7duujsw-1
-Received: by mail-ej1-f71.google.com with SMTP id y23so5375935ejp.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 00:46:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0EgyJjhX29A+wOUcHgkoovIGjjiENqeDg1JmKe2gpgE=;
-        b=kPr3xFi2EAIakOimoX2cechHXwx5Z4uhTXSrBPCz/b8M9GWoxLZnx2AhYDXPZqZFjo
-         Fqa0OansnvadVkcmyi/4qCJHtpDbZuOdaWm4Tz3GVAfxk+LF1VJM1p+DodXja+5FegEF
-         lKYfE2Sdg4yI7XTiSWnp/W4focuGYga/vu51X3pUAW+d/vfPw/7Fa+0mE8o5Z7bqjDrS
-         XvCyL/Bno3VuAip3KORJKoMKnJwYvuzewK74x0KbcLSZ8uA9+avkC7y3j3sEM2Zt4A0Y
-         HTry71/pvPqO2yFWnyJnO+bJ5Qp9DnnxIx95K3B40FhlkhJAHe+B6jz/A8/jn1O9xGia
-         9y2A==
-X-Gm-Message-State: AOAM530N9UsShGRkMKjhyeIbVBUyduVDDcCiSpMdZKmH4u5ENnkKmT+q
-        hrvlC1GuUfDb8RRSTkNVpIfOJC+177NVm+fvYeXO1DPfuifdjnnUOnXN2VFHYCDdIunaWUJvBqO
-        7YeCrxnMmacd3wBeht+Orfl0Eej66KgZOzdTBW6IpYLxYOBdzfMftAPluCpmlcm/1hYi8pfCbx+
-        B2
-X-Received: by 2002:a05:6402:3076:: with SMTP id bs22mr11962049edb.267.1606121203108;
-        Mon, 23 Nov 2020 00:46:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxArviIzq7Y2VUTP/v0eMdhI8XczZlTvXdk7SSJlx1EK9GwksDj+tt0vm8gqre0iudxZE2tfQ==
-X-Received: by 2002:a05:6402:3076:: with SMTP id bs22mr11962038edb.267.1606121202934;
-        Mon, 23 Nov 2020 00:46:42 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id b15sm4545719ejz.114.2020.11.23.00.46.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 00:46:42 -0800 (PST)
-Subject: Re: [PATCH] Input: soc_button_array - add missing include
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20201123061508.GA1009828@dtor-ws>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <017e8b75-4913-ca62-db1d-6c137edf650a@redhat.com>
-Date:   Mon, 23 Nov 2020 09:46:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201123061508.GA1009828@dtor-ws>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 23 Nov 2020 03:51:13 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 23 Nov 2020 00:51:12 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Nov 2020 00:51:11 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 23 Nov 2020 14:20:57 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 0020B21220; Mon, 23 Nov 2020 14:20:55 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
+        nicolas@ndufresne.ca, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v3] media: v4l2-ctrl: Add base layer priority id control.
+Date:   Mon, 23 Nov 2020 14:20:42 +0530
+Message-Id: <1606121442-31074-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This control indicates the priority id to be applied
+to base layer.
 
-On 11/23/20 7:15 AM, Dmitry Torokhov wrote:
-> This fixes the following build errors:
-> 
->   CC [M]  drivers/input/misc/soc_button_array.o
-> drivers/input/misc/soc_button_array.c:156:4: error: implicit declaration of function 'irq_set_irq_type' [-Werror,-Wimplicit-function-declaration]
->                         irq_set_irq_type(irq, IRQ_TYPE_LEVEL_LOW);
->                         ^
-> drivers/input/misc/soc_button_array.c:156:26: error: use of undeclared identifier 'IRQ_TYPE_LEVEL_LOW'
->                         irq_set_irq_type(irq, IRQ_TYPE_LEVEL_LOW);
->                                               ^
-> 2 errors generated.
-> 
-> Fixes: 78a5b53e9fb4 ("Input: soc_button_array - work around DSDTs which modify the irqflags")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+---
+ Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 9 +++++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c                      | 1 +
+ include/uapi/linux/v4l2-controls.h                        | 1 +
+ 3 files changed, 11 insertions(+)
 
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-> ---
->  drivers/input/misc/soc_button_array.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/input/misc/soc_button_array.c b/drivers/input/misc/soc_button_array.c
-> index cae1a3fae83a..d14a65683c5e 100644
-> --- a/drivers/input/misc/soc_button_array.c
-> +++ b/drivers/input/misc/soc_button_array.c
-> @@ -9,6 +9,7 @@
->  #include <linux/module.h>
->  #include <linux/input.h>
->  #include <linux/init.h>
-> +#include <linux/irq.h>
->  #include <linux/kernel.h>
->  #include <linux/acpi.h>
->  #include <linux/dmi.h>
-> 
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index 22222ce..a518d4f 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -4467,3 +4467,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+        This provides a bitmask which consists of bits [0, LTR_COUNT-1].
+        This is applicable to H264 and HEVC encoder and can be applied using
+        Request Api.
++
++``V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID (integer)``
++    Specifies a priority identifier for the NAL unit, which will be applied to
++    the base layer. By default this value is set to 0 for the base layer,
++    and the next layer will have the priority ID assigned as 1, 2, 3 and so on.
++    The video encoder can't decide the priority id to be applied to a layer,
++    so this has to come from client.
++    This is applicable to H264 and valid Range is from 0 to 63.
++    Source Rec. ITU-T H.264 (06/2019); G.7.4.1.1, G.8.8.1
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+index 0b81b39..799ab85 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+@@ -961,6 +961,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
+ 	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "frame LTR index";
+ 	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frame(s)";
++	case V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID:		return "Base Layer Priority ID";
+ 	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
+ 	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
+ 	case V4L2_CID_MPEG_VIDEO_FWHT_PARAMS:			return "FWHT Stateless Parameters";
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index b77fa7d..3c4fdc1 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -424,6 +424,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+ #define V4L2_CID_MPEG_VIDEO_LTR_COUNT                  (V4L2_CID_MPEG_BASE+230)
+ #define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX            (V4L2_CID_MPEG_BASE+231)
+ #define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES             (V4L2_CID_MPEG_BASE+232)
++#define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID      (V4L2_CID_MPEG_BASE + 233)
+ 
+ /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+ #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_MPEG_BASE+270)
+-- 
+2.7.4
 
