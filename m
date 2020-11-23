@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFD62C1308
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8662C130A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 19:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbgKWSXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 13:23:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726514AbgKWSXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:23:45 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E7092080A;
-        Mon, 23 Nov 2020 18:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606155825;
-        bh=PYQrO1BGwjXIU1Ylf2zuckoinqvJ+i7DpaoESpR7uaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OE8UxenWSXFeysEcDGDN48bEh7WWJs5dhyl1XJGLflo9xRAS1c11++0aj6rcGDRQy
-         oZ7p6voJKetrMu8WezqJ7KJ0lCxmfq5S423rpGT49rUNzfuWNpT6HkH7dmd0twvl4Q
-         dTXBq8a01Ee0pyGFPwIo7cGKmttMvKqNvzdMfD+k=
-Date:   Mon, 23 Nov 2020 18:23:40 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/6] mm: proc: Invalidate TLB after clearing soft-dirty
- page state
-Message-ID: <20201123182339.GB11688@willie-the-truck>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-5-will@kernel.org>
- <20201120150023.GH3040@hirez.programming.kicks-ass.net>
- <20201120151523.GA6861@willie-the-truck>
- <20201120152731.GK3021@hirez.programming.kicks-ass.net>
+        id S1728598AbgKWSZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 13:25:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbgKWSZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:25:36 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55B8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:25:34 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id z1so731455ljn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:25:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GqcYLKj/NZRsqtATYR+P+/ypK5dgCZ+R6Ix8LeOTgdM=;
+        b=XOYSyXSCBiFCeiwN5T3mq03mJVEfjBlNTRNj+97JpTIv9QNoYcq4KVTHoZKM0RHUiZ
+         aMU5eBLcUVn2oepe6LrQnnte++28IjEawjsUcGYm7bg7xVWSL0ZVXbri92VAFRnzmk1D
+         ELGEE8c/OC8+MrV/MShiQvK0KfsI5O3l0+7BU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GqcYLKj/NZRsqtATYR+P+/ypK5dgCZ+R6Ix8LeOTgdM=;
+        b=MnumrPsdreGkOwodrdpycd+4g40P8RQhTOPfbnqEPGjZQIIi/2fgnQ4u9Q1cCteN0v
+         /S71UehuydB8Ujn11wK0m/HUrTJ8v3vnpj4FqjjqC8YCgAtid9MflD9WH+xJpA4RW/7r
+         oHW50jO1Hb9E04kwqMw8N5/uF/OSos0zT0Wu2F4iZPtrSPzXj7pa3Bi8Mczewp++s3is
+         0jdpGfZKoeE79xXnj99FmW6P0h65e/CorEQHon2G0ZaGDGEfgMD4TwnXXrqYRFR6GPRW
+         Xrc+MjsVc+n1hLuwTDfsVpqJRV2ONM7aI5cOLmRO5mCbu8YXRhC2oAgIDwnSYX9Q5GdS
+         Zxdg==
+X-Gm-Message-State: AOAM530/kWaYu2KoyXEBAXq4+PWwuY8LvJfn3XjxI1mdL/uARQqEU9GP
+        IbQ/dWnwcNLe8FS873Vm4pLJu9Ii7pOGqg==
+X-Google-Smtp-Source: ABdhPJz8n7o6feaLBEqvEZw6Lm0aOYHDDo3kvSJYtfvR8o99LyXo5eUUp24BXcHMzNjYNH/jESWmGw==
+X-Received: by 2002:a2e:9dd0:: with SMTP id x16mr300756ljj.406.1606155932730;
+        Mon, 23 Nov 2020 10:25:32 -0800 (PST)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id 7sm47144ljq.34.2020.11.23.10.25.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 10:25:31 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id 142so19056577ljj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 10:25:30 -0800 (PST)
+X-Received: by 2002:a2e:8e33:: with SMTP id r19mr281899ljk.102.1606155929844;
+ Mon, 23 Nov 2020 10:25:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120152731.GK3021@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <87r1on1v62.fsf@x220.int.ebiederm.org> <20201120231441.29911-2-ebiederm@xmission.com>
+ <20201123175052.GA20279@redhat.com>
+In-Reply-To: <20201123175052.GA20279@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 23 Nov 2020 10:25:13 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
+Message-ID: <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
+Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, criu@openvz.org,
+        bpf <bpf@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Daniel_P_=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Mon, Nov 23, 2020 at 9:52 AM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> Can anyone explain why does do_coredump() need unshare_files() at all?
 
-On Fri, Nov 20, 2020 at 04:27:31PM +0100, Peter Zijlstra wrote:
-> On Fri, Nov 20, 2020 at 03:15:24PM +0000, Will Deacon wrote:
-> > On Fri, Nov 20, 2020 at 04:00:23PM +0100, Peter Zijlstra wrote:
-> > > On Fri, Nov 20, 2020 at 02:35:55PM +0000, Will Deacon wrote:
-> > > > Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double flush"),
-> > > > TLB invalidation is elided in tlb_finish_mmu() if no entries were batched
-> > > > via the tlb_remove_*() functions. Consequently, the page-table modifications
-> > > > performed by clear_refs_write() in response to a write to
-> > > > /proc/<pid>/clear_refs do not perform TLB invalidation. Although this is
-> > > > fine when simply aging the ptes, in the case of clearing the "soft-dirty"
-> > > > state we can end up with entries where pte_write() is false, yet a
-> > > > writable mapping remains in the TLB.
-> > > > 
-> > > > Fix this by calling tlb_remove_tlb_entry() for each entry being
-> > > > write-protected when cleating soft-dirty.
-> > > > 
-> > > 
-> > > > @@ -1053,6 +1054,7 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
-> > > >  		ptent = pte_wrprotect(old_pte);
-> > > >  		ptent = pte_clear_soft_dirty(ptent);
-> > > >  		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
-> > > > +		tlb_remove_tlb_entry(tlb, pte, addr);
-> > > >  	} else if (is_swap_pte(ptent)) {
-> > > >  		ptent = pte_swp_clear_soft_dirty(ptent);
-> > > >  		set_pte_at(vma->vm_mm, addr, pte, ptent);
-> > > 
-> > > Oh!
-> > > 
-> > > Yesterday when you had me look at this code; I figured the sane thing
-> > > to do was to make it look more like mprotect().
-> > 
-> > Ah, so you mean ditch the mmu_gather altogether?
-> 
-> Yes. Alternatively, if we decide mmu_gather is 'right', then we should
-> probably look at converting mprotect().
-> 
-> That is, I see no reason why this and mprotect should differ on this
-> point.
+Hmm. It goes back to 2012, and it's placed just before calling
+"->core_dump()", so I assume some core dumping function messed with
+the file table back when..
 
-I agree that we should aim for consistency, but it's worth pointing out
-that madvise() uses the gather API in the same way that I'm proposing
-here (see MADV_COLD/MADV_PAGEOUT).
+I can't see anything like that currently.
 
-Another thing to keep in mind is that, unlike mprotect(), we do actually
-want to elide the TLB invalidation clear_refs_write() when all we're
-doing is making the pages old. The gather API lends itself quite nicely
-to this, as we can only update the range when actually doing the write
-protection on the soft-dirty path.
+The alternative is that core-dumping just keeps the file table around
+for a long while, and thus files don't actually close in a timely
+manner. So it might not be a "correctness" issue as much as a latency
+issue.
 
-> > > Why did you chose to make it work with mmu_gather instead? I'll grant
-> > > you that it's probably the smaller patch, but I still think it's weird
-> > > to use mmu_gather here.
-> > > 
-> > > Also, is tlb_remote_tlb_entry() actually correct? If you look at
-> > > __tlb_remove_tlb_entry() you'll find that Power-Hash-32 will clear the
-> > > entry, which might not be what we want here, we want to update the
-> > > entrty.
-> > 
-> > Hmm, I didn't spot that, although ptep_modify_prot_start() does actually
-> > clear the pte so we could just move this up a few lines.
-> 
-> Yes, but hash-entry != pte. If I'm not mistaken (and I could very well
-> be, it's Friday and Power-MMUs being the maze they are), the end result
-> here is an updated PTE but an empty hash-entry.
-
-I had a look at the PPC code and, afaict, this should be fine. The next
-access will fault, and we'll populate the hash entry from the pte afaict.
-
-Am I missing something?
-
-If we _really_ wanted to, then we could extend the mmu gather API to add
-something like tlb_update_tlb_entry(), which would call
-tlb_remove_tlb_entry() under the hood, and set a flag on the gather
-structure so that tlb_finish_mmu() ends up calling update_mmu_cache() to
-preload the hash.
-
-However, I think this is purely a performance thing, and I'm wary about
-pro-actively extending the API to optimise for the PPC hash.
-
-Will
+             Linus
