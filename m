@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20842C0619
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A7B2C0669
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 13:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730344AbgKWM1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 07:27:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37644 "EHLO mail.kernel.org"
+        id S1730763AbgKWMaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 07:30:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730321AbgKWM1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:27:35 -0500
+        id S1730667AbgKWMal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:30:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29EBC208DB;
-        Mon, 23 Nov 2020 12:27:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 654B92100A;
+        Mon, 23 Nov 2020 12:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134454;
-        bh=ssjlf4N4LIzYEDw3kIu3/dakhYIbaVaAErTXHhZXfJM=;
+        s=korg; t=1606134640;
+        bh=YPGXcz0KA9IeQcBH7kA4FbLI+Tgioj/jCy3QwAFE7Xc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BbHOsb5XJBVgEtdvVdI5XSXgzQuXO9ALEeNbMrl0FwJ63PX5UDJADsb87ZxFPBoeS
-         zZ0Itvs4RKyGgkqwv4E9Sst6Q7fOw/e3v5Yq2FDj5mXc+Ywng0ib5TWshlPc2FPIQ5
-         FJ83e2pG5BOMuwunEeF1/aCfvmpnQh6h8vnd8szo=
+        b=QETfh0gnWfFMakQDSoXJ5HpfnyavCcT2ZOXiVi3hV75lg1n2ttfplSwncPjR3eeIP
+         HoJRkE11hEoipU+j5hg7epPUJ0y5JtIp/ZdsnFVc/Lak17DJprR/oufQttYmw1jppO
+         XbLNwk/I5KfqIbAxckZEGLcHUjlbPdRebVAKiUQU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 08/60] net: bridge: add missing counters to ndo_get_stats64 callback
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 30/91] ACPI: button: Add DMI quirk for Medion Akoya E2228T
 Date:   Mon, 23 Nov 2020 13:21:50 +0100
-Message-Id: <20201123121805.439202437@linuxfoundation.org>
+Message-Id: <20201123121810.792749689@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-References: <20201123121805.028396732@linuxfoundation.org>
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,32 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 7a30ecc9237681bb125cbd30eee92bef7e86293d ]
+[ Upstream commit 7daaa06357bf7f1874b62bb1ea9d66a51d4e567e ]
 
-In br_forward.c and br_input.c fields dev->stats.tx_dropped and
-dev->stats.multicast are populated, but they are ignored in
-ndo_get_stats64.
+The Medion Akoya E2228T's ACPI _LID implementation is quite broken,
+it has the same issues as the one from the Medion Akoya E2215T:
 
-Fixes: 28172739f0a2 ("net: fix 64 bit counters on 32 bit arches")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/58ea9963-77ad-a7cf-8dfd-fc95ab95f606@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+1. For notifications it uses an ActiveLow Edge GpioInt, rather then
+   an ActiveBoth one, meaning that the device is only notified when the
+   lid is closed, not when it is opened.
+
+2. Matching with this its _LID method simply always returns 0 (closed)
+
+In order for the Linux LID code to work properly with this implementation,
+the lid_init_state selection needs to be set to ACPI_BUTTON_LID_INIT_OPEN,
+add a DMI quirk for this.
+
+While working on this I also found out that the MD60### part of the model
+number differs per country/batch while all of the E2215T and E2228T models
+have this issue, so also remove the " MD60198" part from the E2215T quirk.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_device.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/button.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -186,6 +186,7 @@ static void br_get_stats64(struct net_de
- 		sum.rx_packets += tmp.rx_packets;
- 	}
- 
-+	netdev_stats_to_stats64(stats, &dev->stats);
- 	stats->tx_bytes   = sum.tx_bytes;
- 	stats->tx_packets = sum.tx_packets;
- 	stats->rx_bytes   = sum.rx_bytes;
+diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+index f43f5adc21b61..abf101451c929 100644
+--- a/drivers/acpi/button.c
++++ b/drivers/acpi/button.c
+@@ -98,7 +98,18 @@ static const struct dmi_system_id lid_blacklst[] = {
+ 		 */
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "MEDION"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "E2215T MD60198"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "E2215T"),
++		},
++		.driver_data = (void *)(long)ACPI_BUTTON_LID_INIT_OPEN,
++	},
++	{
++		/*
++		 * Medion Akoya E2228T, notification of the LID device only
++		 * happens on close, not on open and _LID always returns closed.
++		 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "MEDION"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "E2228T"),
+ 		},
+ 		.driver_data = (void *)(long)ACPI_BUTTON_LID_INIT_OPEN,
+ 	},
+-- 
+2.27.0
+
 
 
