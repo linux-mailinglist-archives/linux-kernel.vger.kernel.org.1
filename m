@@ -2,169 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819792C0DC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712272C0E19
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 15:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388909AbgKWOfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:35:22 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:17504 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733292AbgKWOfW (ORCPT
+        id S1731039AbgKWOsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:48:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730142AbgKWOsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:35:22 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ANEQIm7022742;
-        Mon, 23 Nov 2020 09:35:18 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34y0p8514y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 09:35:17 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0ANEZG7h049467
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 23 Nov 2020 09:35:16 -0500
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 23 Nov 2020 06:35:14 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 23 Nov 2020 06:35:14 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0ANEZAqO024147;
-        Mon, 23 Nov 2020 09:35:12 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <jic23@kernel.org>, <bleung@chromium.org>,
-        <enric.balletbo@collabora.com>, <groeck@chromium.org>,
-        <gwendal@chromium.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 2/2] iio: cros_ec: un-indent block that configures motion sensor fifo
-Date:   Mon, 23 Nov 2020 16:40:17 +0200
-Message-ID: <20201123144017.18311-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201123144017.18311-1-alexandru.ardelean@analog.com>
-References: <20201123144017.18311-1-alexandru.ardelean@analog.com>
+        Mon, 23 Nov 2020 09:48:31 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502B0C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:48:29 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id m6so18843201wrg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:48:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j3w1GqHE08GStM/FLoVxqtcruKl7crLd6tb2/zrsaZo=;
+        b=HBmYLN3XpZuXc+k7o3oPHKUiBOVZVGKMLlUtlZYnuMYguOXjuS7k+Y3qtnx9wY/UmJ
+         a5gcLYQmvATwN3KcQAL2GNy/JOUBnWvNttq0kl0MtuxVaT1Bset1PUM0wRQe7efukfH4
+         zFVekyFAz0HROoZGdmVZrLKicLJNXNXPLmsoyHkar8xpZZhnYl0sOLL5x4QQ+oK7ztYd
+         kvnye4dIrZNljZ5iEWLH6DvobUmKXXjDrKJI3xeAdnQwFGCkrU0WlwNFUhpNbYI+t1t6
+         jOuSI9LT3vYQ+Qo/401gZ84DarbWpSFRzoImCb6m4AlMD+e6gX2ww5L5GHUZ/IyQPs0L
+         Ro8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j3w1GqHE08GStM/FLoVxqtcruKl7crLd6tb2/zrsaZo=;
+        b=oAFTIZz0J6lOnKSneJ3fjJfQCPswKKQbZJXWu9w8U2nSSsdGPi90gAtoeiu4HIGng9
+         ASvVD8HOPUrjCWm1wd7znkyV3ZBIIPdfT6897+vxIMu1Kyj08fJRsrCwf6iUq7zcQAqC
+         GdWWRnoCvuzX/pBNfb0Q5L+76YJxBPcBOKTxchFFoo+ic/9QLBdB3BS3K9m2EJOqNigm
+         jE+xMe/9Nref5Nwjoo7hoFuesAs+BkGpiCoFefXTugUvcKlFXjaU3XavExQMl3MSxcjz
+         c3krz5/KoGWSbPv9ftZtgdKIPHUXpDsO2AYm6UepiZ/HOCFXpNELC7lE4Mxk/qnLwIP+
+         dovA==
+X-Gm-Message-State: AOAM532ZSnpvkaaxm5eaWu4Rg7VoQJzvlSDzUd8qoT5cYcYpdne0SfwY
+        zs1C0OBFnjBaUELigGgXdbfyHg==
+X-Google-Smtp-Source: ABdhPJx6nTEwiFj8zZhxXBuJbb4oSybAB3dPrXTH+w6ewGwc/0dai1XkAj+mvfJ/6d3uF5/5kpr7Hw==
+X-Received: by 2002:adf:e481:: with SMTP id i1mr22651329wrm.282.1606142907911;
+        Mon, 23 Nov 2020 06:48:27 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id x2sm19346846wru.44.2020.11.23.06.48.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 06:48:27 -0800 (PST)
+Date:   Mon, 23 Nov 2020 14:48:24 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 10/14] sched: Introduce arch_cpu_allowed_mask() to
+ limit fallback rq selection
+Message-ID: <20201123144824.GA586782@google.com>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-11-will@kernel.org>
+ <20201119093850.GD2416649@google.com>
+ <20201119110709.GD3946@willie-the-truck>
+ <20201119203906.GA5099@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-23_11:2020-11-23,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011230099
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119203906.GA5099@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change also reverses the condition of the FIFO setup. If the feature
-setup does not include a EC_FEATURE_MOTION_SENSE_FIFO flag, then the
-IIO triggered buffer setup is done and first and early exit is performed.
-It'a done like this because the code block (for the IIO triggered buffer
-setup) is smaller.
+On Thursday 19 Nov 2020 at 20:39:07 (+0000), Will Deacon wrote:
+> Ah, so in doing this I realised I don't like arch_cpu_possible_mask() so
+> much because it makes it sound like a back-end to cpu_possible_mask, but
+> the two are really different things.
+> 
+> arch_task_cpu_possible_mask() might work?
 
-The code block for the EC_FEATURE_MOTION_SENSE_FIFO flag has been
-un-indented.
+Yes, making it explicit in the name that this is a task-specific thing
+doesn't hurt.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- .../cros_ec_sensors/cros_ec_sensors_core.c    | 63 +++++++++----------
- 1 file changed, 28 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-index 9470014936f2..921eccd4f6a6 100644
---- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-+++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-@@ -258,6 +258,7 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
- 	struct cros_ec_sensor_platform *sensor_platform = dev_get_platdata(dev);
- 	u32 ver_mask;
- 	int frequencies[ARRAY_SIZE(state->frequencies) / 2] = { 0 };
-+	struct iio_buffer *buffer;
- 	int ret, i;
- 
- 	platform_set_drvdata(pdev, indio_dev);
-@@ -324,37 +325,7 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
- 			(frequencies[i] % 1000) * 1000;
- 	}
- 
--	if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
--		/*
--		 * Create a software buffer, feed by the EC FIFO.
--		 * We can not use trigger here, as events are generated
--		 * as soon as sample_frequency is set.
--		 */
--		struct iio_buffer *buffer;
--
--		buffer = devm_iio_kfifo_allocate(dev);
--		if (!buffer)
--			return -ENOMEM;
--
--		iio_device_attach_buffer(indio_dev, buffer);
--		indio_dev->modes = INDIO_BUFFER_SOFTWARE;
--
--		ret = cros_ec_sensorhub_register_push_data(
--				sensor_hub, sensor_platform->sensor_num,
--				indio_dev, push_data);
--		if (ret)
--			return ret;
--
--		ret = devm_add_action_or_reset(
--				dev, cros_ec_sensors_core_clean, pdev);
--		if (ret)
--			return ret;
--
--		/* Timestamp coming from FIFO are in ns since boot. */
--		ret = iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
--		if (ret)
--			return ret;
--	} else {
-+	if (!cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
- 		const struct attribute **fifo_attrs;
- 
- 		if (has_hw_fifo)
-@@ -366,14 +337,36 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
- 		 * The only way to get samples in buffer is to set a
- 		 * software trigger (systrig, hrtimer).
- 		 */
--		ret = devm_iio_triggered_buffer_setup_ext(
-+		return devm_iio_triggered_buffer_setup_ext(
- 				dev, indio_dev, NULL, trigger_capture,
- 				NULL, fifo_attrs);
--		if (ret)
--			return ret;
- 	}
- 
--	return 0;
-+	/*
-+	 * Create a software buffer, feed by the EC FIFO.
-+	 * We can not use trigger here, as events are generated
-+	 * as soon as sample_frequency is set.
-+	 */
-+	buffer = devm_iio_kfifo_allocate(dev);
-+	if (!buffer)
-+		return -ENOMEM;
-+
-+	iio_device_attach_buffer(indio_dev, buffer);
-+	indio_dev->modes = INDIO_BUFFER_SOFTWARE;
-+
-+	ret = cros_ec_sensorhub_register_push_data(
-+			sensor_hub, sensor_platform->sensor_num,
-+			indio_dev, push_data);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_add_action_or_reset(
-+			dev, cros_ec_sensors_core_clean, pdev);
-+	if (ret)
-+		return ret;
-+
-+	/* Timestamp coming from FIFO are in ns since boot. */
-+	return iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
- }
- EXPORT_SYMBOL_GPL(cros_ec_sensors_core_init);
- 
--- 
-2.17.1
-
+Thanks,
+Quentin
