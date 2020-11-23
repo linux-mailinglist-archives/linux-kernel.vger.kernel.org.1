@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856E32C0E47
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E0C2C0E4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Nov 2020 16:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389173AbgKWO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 09:56:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727444AbgKWO4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:56:11 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7620420658;
-        Mon, 23 Nov 2020 14:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606143370;
-        bh=XUm8OV+H1ot7qmV/No9ou5eqPJW8U55vgkCpuzquesU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XLvhjSzxb01JFT7bTsyemJ7VwGR2FQh0Nx3EVYr/RQNdLEZjSTfutOLl8yWkJJgCt
-         UToUSkVFwohasfZMWNu27JglVMGGXy7IZMRv5AE5wbWHTia9HHBzGvPSErzFRQsnqF
-         wuOwImNxJG+mc9eUYs8IbGnTbO+hjgsAOQRhDKb8=
-Date:   Mon, 23 Nov 2020 14:56:06 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        joro@8bytes.org, Jon.Grimm@amd.com, bp@suse.de
-Subject: Re: [PATCH v2] iommu/amd: Enforce 4k mapping for certain IOMMU data
- structures
-Message-ID: <20201123145605.GA11033@willie-the-truck>
-References: <20201105145832.3065-1-suravee.suthikulpanit@amd.com>
- <c189684a-27e5-c0c2-1629-063b9fb16957@amd.com>
- <35c6f7d8-f889-8c3c-2e01-1a9226babf0a@amd.com>
+        id S1730251AbgKWO6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 09:58:38 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:33579 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727444AbgKWO6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:58:36 -0500
+Received: by mail-ed1-f65.google.com with SMTP id k4so17419614edl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 06:58:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8PYxqUct+Q9mNYdM8wqPvnUwdPo92AiSu9RZ/r3u+qk=;
+        b=puJ85wHvZF/FWf9t8ZVzkRkvuicst9wtdiRZyviQM9xvujsJuzJ5N5I2OjlQh5Ymwo
+         FkWDY+e8w2QLKTrejfmI1vy93hPip3tx0yZxTGBHrllUcvYi1QKZQ4+A2zlkeVXf9lKb
+         g+A2CRRSnAFyKimHYVD0Jd2DVbzbzRSGAmI+xvtGtTDA/M3VWZeQrpXTlkCbX+TwfuBe
+         kZ+w2VgmF+t/jbmo9hh2InQkqpT15pV9kQmhmwsf2i8c8ZrV7R5od/2aZHOYhBVc6mBO
+         /semlGO/yxJ815xOQ6DSA2Vkv98GlBA8Vi5XDZ4470PgLkBICC90Px/7R63ALJd5pEf0
+         tDaw==
+X-Gm-Message-State: AOAM532oRvxkpKSmwK30KMpps8LYz3R63Zk6Xy2279CnA1Yc02u33wY2
+        qrrEIkiZ7BWQjPpAXbrubC4=
+X-Google-Smtp-Source: ABdhPJy5lpwJxRHqEXprOoNPlghH8kM6ItxjLvP3djlOBLJEk6uuQ6S56QVwCwPzAi/JZKe2jkr+6g==
+X-Received: by 2002:a50:a40f:: with SMTP id u15mr48456599edb.307.1606143514524;
+        Mon, 23 Nov 2020 06:58:34 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id g20sm5224076ejk.3.2020.11.23.06.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 06:58:32 -0800 (PST)
+Date:   Mon, 23 Nov 2020 15:58:31 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
+ table
+Message-ID: <20201123145831.GA202597@kozik-lap>
+References: <20201120161653.445521-1-krzk@kernel.org>
+ <20201120165202.GG6751@sirena.org.uk>
+ <20201120194245.GA2925@kozik-lap>
+ <20201120200429.GJ6751@sirena.org.uk>
+ <20201122105813.GA3780@kozik-lap>
+ <20201123104832.GY4077@smile.fi.intel.com>
+ <20201123123731.GA6322@sirena.org.uk>
+ <20201123124129.GA170000@kozik-lap>
+ <20201123135006.GE6322@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <35c6f7d8-f889-8c3c-2e01-1a9226babf0a@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201123135006.GE6322@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:19:01PM -0600, Brijesh Singh wrote:
-> On 11/19/20 8:30 PM, Suravee Suthikulpanit wrote:
-> > On 11/18/20 5:57 AM, Will Deacon wrote:
-> > > I think I'm missing something here. set_memory_4k() will break the
-> > kernel
-> > > linear mapping up into page granular mappings, but the IOMMU isn't
-> > using
-> > > that mapping, right?
-> >
-> > That's correct. This does not affect the IOMMU, but it affects the PSP
-> > FW.
-> >
-> > > It's just using the physical address returned by
-> > iommu_virt_to_phys(), so why does it matter?
-> > >
-> > > Just be nice to capture some of this rationale in the log,
-> > especially as
-> > > I'm not familiar with this device.
-> >
-> > According to the AMD SEV-SNP white paper
-> > (https://www.amd.com/system/files/TechDocs/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf),
-> > the Reverse Map Table (RMP) contains one entry for every 4K page of
-> > DRAM that may be used by the VM. In this case, the pages allocated by
-> > the IOMMU driver are added as 4K entries in the RMP table by the
-> > SEV-SNP FW.
-> >
-> > During the page table walk, the RMP checks if the page is owned by the
-> > hypervisor. Without calling set_memory_4k() to break the mapping up
-> > into 4K pages, pages could end up being part of large mapping (e.g. 2M
-> > page), in which the page access would be denied and result in #PF.
+On Mon, Nov 23, 2020 at 01:50:06PM +0000, Mark Brown wrote:
+> On Mon, Nov 23, 2020 at 01:41:29PM +0100, Krzysztof Kozlowski wrote:
+> > On Mon, Nov 23, 2020 at 12:37:31PM +0000, Mark Brown wrote:
 > 
+> > > That feels like something that should be done with Kconfig dependencies
+> > > like a direct OF dependency (possibly a !PRP0001 dependency?) for the
+> > > driver or possibly with having a variant of_match_ptr() for things that
+> > > really don't want to support PRP0001.  Just removing all the use of
+> > > of_match_ptr() is both noisy and confusing in that it looks like it's
+> > > creating issues to fix, it makes it hard to understand when and why one
+> > > should use the macro.
 > 
-> Since the page is added as a 4K page in the RMP table by the SEV-SNP FW,
-> so we need to split the physmap to ensure that this page will be access
-> with a 4K mapping from the x86. If the page is part of large page then
-> write access will cause a RMP violation (i.e #PF), this is because SNP
-> hardware enforce that the CPU page level walk must match with page-level
-> programmed in the RMP table.
+> > For the OF-only drivers (without other ID table), there is no point to
+> > use the macro. Driver can bind only with DT, so what is the point of
+> > of_match_ptr? To skip the OF table when building without OF? Driver
+> > won't be usable at all in such case. So maybe for compile testing?
+> > There is no need to remove OF table for simple build tests.
+> 
+> If nothing else it means you don't have to check if the driver is OF
+> only or not.  I can see not bothering to add it but actively going round
+> removing some instances of it doesn't seem great, and it seems like
+> people will constantly be adding new uses on the basis that it's just
+> such an obviously correct thing to do.
 
-Got it; thanks.
+If my patch was not changing anything, I would agree that it might be
+just a churn. But the patch fixes a real warning.
 
-> > >> Fixes: commit c69d89aff393 ("iommu/amd: Use 4K page for completion
-> > wait write-back semaphore")
-> > >
-> > > I couldn't figure out how that commit could cause this problem.
-> > Please can
-> > > you explain that to me?
-> >
-> > Hope this helps clarify. If so, I'll update the commit log and send
-> > out V3.
+The other way of fixing warning is the one you proposed at beginning -
+adding maybe_unused. Here we go to the second reason:
 
-Cheers. No need for a v2, as I've queued this up with a Link: tag.
+Having these of_match_ptr() for OF-only drivers is not the correct way
+but rather something which is copied from existing drivers into new
+ones. This is another reason for removing them - people will stop
+copying this code all over again.
 
-Will
+Best regards,
+Krzysztof
+
