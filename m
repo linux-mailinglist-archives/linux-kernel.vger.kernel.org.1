@@ -2,48 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B412C324C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CA92C3248
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729463AbgKXVFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:05:08 -0500
-Received: from mercur.o2it.ro ([188.214.156.137]:49039 "EHLO mercur.o2it.ro"
+        id S1729265AbgKXVCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:02:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727923AbgKXVFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:05:08 -0500
-X-Greylist: delayed 330 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 16:05:07 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mercur.o2it.ro (Postfix) with ESMTP id 359621C1AB7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 22:59:36 +0200 (EET)
-X-Virus-Scanned: amavisd-new at mercur.o2it.ro
-Received: from mercur.o2it.ro ([127.0.0.1])
-        by localhost (mercur.o2it.ro [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qGZAAiiCCwN3 for <linux-kernel@vger.kernel.org>;
-        Tue, 24 Nov 2020 22:59:35 +0200 (EET)
-Received: by mercur.o2it.ro (Postfix, from userid 5007)
-        id 4ECEC1C1AB2; Tue, 24 Nov 2020 22:59:35 +0200 (EET)
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Continental_Fitness_Spa_Timisoara_"=F0=9F=91=84_Secret_meetings?=  =?UTF-8?Q?_and_single_girls_are_waiting_for_you._Answer_me_here:_http://b?=  =?UTF-8?Q?it.do/fLifv=3Fdmr7_=F0=9F=91=84"?=
-X-PHP-Originating-Script: 5007:class-phpmailer.php
-Date:   Tue, 24 Nov 2020 20:59:35 +0000
-From:   Continental Fitness Spa Timisoara 
-        <donotreply@continental-fitness-spa.ro>
-Reply-To: fitness-spa@hotelcontinental.ro
-Message-ID: <7033f1832918e96f07a3b12204898c24@continental-fitness-spa.ro>
-X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
+        id S1729237AbgKXVCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 16:02:31 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9706A206E0;
+        Tue, 24 Nov 2020 21:02:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606251749;
+        bh=Vv6gJogUgiKM0cCB+Vjosc+BGKDTw/FrAd25jTAaBq4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=c6o9EoPqlr8xKPTXMLa0X2gzGR2WMvhH01H7jmbjyq+c7EGNPSURQ+rcOgs5Cbg2x
+         W4YalLf8/k1lNpYGrfzrzOIzxUaLyjd8wgo+IeQ1yxlO5tK5E1ZQhk7C6O3Odm8KLL
+         bLY/uSObwrYGlYl3CAyWpFSOqfd2YnzymUz89x9I=
+Date:   Tue, 24 Nov 2020 15:02:28 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+Subject: Re: [PATCH V2] PCI: dwc: Add support to configure for ECRC
+Message-ID: <20201124210228.GA589610@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <40a89fcd-7f8f-fd68-2a01-4008be345c32@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ðŸ‘„ Secret meetings and single girls are waiting for you. Answer me here: http://bit.do/fLifv?dmr7 ðŸ‘„,
+On Tue, Nov 24, 2020 at 03:50:01PM +0530, Vidya Sagar wrote:
+> Hi Bjorn,
+> Please let me know if this patch needs any further modifications
 
-VÄƒ mulÈ›umim pentru mesajul dumneavoastrÄƒ. Vom revenim cu un rÄƒspuns Ã®n cel mai scurt timp!
+I'm fine with it, but of course Lorenzo will take care of it.
 
-We thank you for your message. We will get back to you as soon as possible.
-
--- 
-This e-mail was sent from a contact form on Continental Fitness Spa Timisoara (continental-fitness-spa.ro)
-
+> On 11/12/2020 10:32 PM, Vidya Sagar wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On 11/12/2020 3:59 AM, Bjorn Helgaas wrote:
+> > > External email: Use caution opening links or attachments
+> > > 
+> > > 
+> > > On Wed, Nov 11, 2020 at 10:21:46PM +0530, Vidya Sagar wrote:
+> > > > 
+> > > > 
+> > > > On 11/11/2020 9:57 PM, Jingoo Han wrote:
+> > > > > External email: Use caution opening links or attachments
+> > > > > 
+> > > > > 
+> > > > > On 11/11/20, 7:12 AM, Vidya Sagar wrote:
+> > > > > > 
+> > > > > > DesignWare core has a TLP digest (TD) override bit in
+> > > > > > one of the control
+> > > > > > registers of ATU. This bit also needs to be programmed for proper ECRC
+> > > > > > functionality. This is currently identified as an issue
+> > > > > > with DesignWare
+> > > > > > IP version 4.90a.
+> > > > > > 
+> > > > > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> > > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > > ---
+> > > > > > V2:
+> > > > > > * Addressed Bjorn's comments
+> > > > > > 
+> > > > > >    drivers/pci/controller/dwc/pcie-designware.c | 52
+> > > > > > ++++++++++++++++++--
+> > > > > >    drivers/pci/controller/dwc/pcie-designware.h |  1 +
+> > > > > >    2 files changed, 49 insertions(+), 4 deletions(-)
+> > > > > > 
+> > > > > > diff --git
+> > > > > > a/drivers/pci/controller/dwc/pcie-designware.c
+> > > > > > b/drivers/pci/controller/dwc/pcie-designware.c
+> > > > > > index c2dea8fc97c8..ec0d13ab6bad 100644
+> > > > > > --- a/drivers/pci/controller/dwc/pcie-designware.c
+> > > > > > +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> > > > > > @@ -225,6 +225,46 @@ static void
+> > > > > > dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index,
+> > > > > > u32 reg,
+> > > > > >         dw_pcie_writel_atu(pci, offset + reg, val);
+> > > > > >    }
+> > > > > > 
+> > > > > > +static inline u32 dw_pcie_enable_ecrc(u32 val)
+> > > > > 
+> > > > > What is the reason to use inline here?
+> > > > 
+> > > > Actually, I wanted to move the programming part inside the
+> > > > respective APIs
+> > > > but then I wanted to give some details as well in comments so to avoid
+> > > > duplication, I came up with this function. But, I'm making it inline for
+> > > > better code optimization by compiler.
+> > > 
+> > > I don't really care either way, but I'd be surprised if the compiler
+> > > didn't inline this all by itself even without the explicit "inline".
+> > I just checked it and you are right that compiler is indeed inlining it
+> > without explicitly mentioning 'inline'.
+> > I hope it is ok to leave it that way.
+> > 
+> > > 
+> > > > > > +{
+> > > > > > +     /*
+> > > > > > +      * DesignWare core version 4.90A has this strange design issue
+> > > > > > +      * where the 'TD' bit in the Control register-1 of
+> > > > > > the ATU outbound
+> > > > > > +      * region acts like an override for the ECRC
+> > > > > > setting i.e. the presence
+> > > > > > +      * of TLP Digest(ECRC) in the outgoing TLPs is
+> > > > > > solely determined by
+> > > > > > +      * this bit. This is contrary to the PCIe spec
+> > > > > > which says that the
+> > > > > > +      * enablement of the ECRC is solely determined by
+> > > > > > the AER registers.
+> > > > > > +      *
+> > > > > > +      * Because of this, even when the ECRC is enabled through AER
+> > > > > > +      * registers, the transactions going through ATU
+> > > > > > won't have TLP Digest
+> > > > > > +      * as there is no way the AER sub-system could
+> > > > > > program the TD bit which
+> > > > > > +      * is specific to DesignWare core.
+> > > > > > +      *
+> > > > > > +      * The best way to handle this scenario is to program the TD bit
+> > > > > > +      * always. It affects only the traffic from root
+> > > > > > port to downstream
+> > > > > > +      * devices.
+> > > > > > +      *
+> > > > > > +      * At this point,
+> > > > > > +      * When ECRC is enabled in AER registers,
+> > > > > > everything works normally
+> > > > > > +      * When ECRC is NOT enabled in AER registers, then,
+> > > > > > +      * on Root Port:- TLP Digest (DWord size) gets
+> > > > > > appended to each packet
+> > > > > > +      *                even through it is not required.
+> > > > > > Since downstream
+> > > > > > +      *                TLPs are mostly for
+> > > > > > configuration accesses and BAR
+> > > > > > +      *                accesses, they are not in
+> > > > > > critical path and won't
+> > > > > > +      *                have much negative effect on the performance.
+> > > > > > +      * on End Point:- TLP Digest is received for
+> > > > > > some/all the packets coming
+> > > > > > +      *                from the root port. TLP Digest
+> > > > > > is ignored because,
+> > > > > > +      *                as per the PCIe Spec r5.0 v1.0 section 2.2.3
+> > > > > > +      *                "TLP Digest Rules", when an
+> > > > > > endpoint receives TLP
+> > > > > > +      *                Digest when its ECRC check
+> > > > > > functionality is disabled
+> > > > > > +      *                in AER registers, received TLP
+> > > > > > Digest is just ignored.
+> > > > > > +      * Since there is no issue or error reported
+> > > > > > either side, best way to
+> > > > > > +      * handle the scenario is to program TD bit by default.
+> > > > > > +      */
+> > > > > > +
+> > > > > > +     return val | PCIE_ATU_TD;
+> > > > > > +}
