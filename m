@@ -2,444 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6B52C19C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C02A42C19C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgKXAC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:02:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728613AbgKXACW (ORCPT
+        id S1727881AbgKXAGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:06:14 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34506 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725287AbgKXAGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:02:22 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97556C061A4E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:02:22 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id b23so1997323pls.11
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:02:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L89oXQzcinW0XVkoPkY/8VBs+sljP+/OT5KD3oBT6VA=;
-        b=GEjSWduNUiOKDZ327Z36o6TRnl57q/Pg1X0VBsUprtQZqfRdsapmA6Lk8twZOVkLfc
-         SEkPZNNKosLv40o4esKxnKIchpxzAi0eiOdOMccM15oFCyZTgbnGmUyvzGJMZd0KbC/N
-         EvIInLSEhOQ6e0aor7r09MI5VVzzi9rzjjIZk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L89oXQzcinW0XVkoPkY/8VBs+sljP+/OT5KD3oBT6VA=;
-        b=XAV48MKgIKxWSdIXsbDJisb7cIJAJ8dhvh6PSDNak3csU+iQq7UcHxe+xlp2LeuujJ
-         RhhuTXNlju07fTXDurnoOTNfl6PaXO+xBJ85wWiOnyMqTKN1RzCqtBVG7x2qmsLFPBYE
-         VwEdvSBjtzC05hWPv0y8tzBGKdwqFIE8ANc+6ePIccVsHTyrp7UxE6nSYfTKqmMGsN07
-         lJ8ruYLYHeGSLqhP46QVsQdJXZO3w0acQDpyqFREuWmi+P70NWSiyrc1a7aSBzTh2PrX
-         79GMPLCEk2ErK3Ckhv0/76ro6SA+j2HXc44NDOeZ7J0/co5yKcOSx0IhuZG3aYxDOmEe
-         f0og==
-X-Gm-Message-State: AOAM532mecc+hiAWgJ0Z1LjlZPJoYdZgEeerP8tTvlVrXVpLrBdLs9u7
-        otuyWCeV7vDb/9GljWqtKMO1LA==
-X-Google-Smtp-Source: ABdhPJzIt+OXu8ATXhk6OvopLSMTU2ebqBFoV4Yj2uiZ6Tqox41miFCS+XKNLgw9fFBY2CNgMRiecQ==
-X-Received: by 2002:a17:902:c393:b029:d9:6e7:6787 with SMTP id g19-20020a170902c393b02900d906e76787mr1531403plg.78.1606176142049;
-        Mon, 23 Nov 2020 16:02:22 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id l133sm13091945pfd.112.2020.11.23.16.02.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 16:02:21 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] pinctrl: qcom: Clear possible pending irq when remuxing GPIOs
-Date:   Mon, 23 Nov 2020 16:01:53 -0800
-Message-Id: <20201123160139.3.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
-References: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+        Mon, 23 Nov 2020 19:06:13 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AO04Y3F029560;
+        Mon, 23 Nov 2020 16:05:55 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=B4o1/oPUqFd/jw27oUZp09nN4vL3HmDq4Mc6dMu8isY=;
+ b=JD6qsfPIe8gc4IVCDV5u5tp7qaMGyqao6IT0caosb3efkii5dkjJsraXRk9nrT3wUX9/
+ DE/HnoL7NQ3xiRPWgejjN+j+6kXyErYAVVIrqY2O5KcWg0hflkhKhRQShbPKe18JK7P2
+ ceg37AuwRL092Y3iufrmHpuBHuDDt0PLNNU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34ykxgf2s2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 23 Nov 2020 16:05:55 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 23 Nov 2020 16:05:54 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kDFGrtxwQ0ib1AbOVDVaxQpe6kWnXbkkQGuHO1O/k5svqHaUc7zbadlrreCASkbcfWjCkuYkr67vK1NEd1yKjUbmZQ24seK1ZyhzbBsODTpBuakWvcbcVjPpQw0zbGM7vjFbCCnCLzMebNVRcLks8WNHnqIR6guC6VEoFPefF3SbgRN75KCKwqpc0D2vjsqbu4hsyqc0oO2DK/5hhmT1astGmv4yrYxjaX2SI/oI2HlxCWLJUqpS1Sruf+8haUZBXoSpxlSk8jMGjzhBY98T6h+nA8tmdxjfJjnZV8Tz5SFzUcaJAZeMXWU8hIrI1WxF8ZRpWyfQ3rjBXJWNZJQphA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B4o1/oPUqFd/jw27oUZp09nN4vL3HmDq4Mc6dMu8isY=;
+ b=lq69Wj38WdwvH7MDwxQDxWYoV+kY5gNpu6W0UOsygyqcQ9DLdXHKqw8P/IKaD8gfGf36TdmorMDvKxSDn4zaBOYLudWUd8zVJABC2ueFEaq/0mEgh0q/odDAA3vjvjZl6OqYkCfnGQilk9RBUJagEkuDT5N15dDHfvtL6IBupImtaztIHnHiC5wSqVXZ7DvdapYPx1FBd1tl7rdoZ62LKcX3r73rU2qTQ4t1gcblPmVvniBtEAynPcjIfDbEMQ0adxQMUE58v4pP6fO/q71tUX+W2CWTyLGJ4QqqgYj7zeh+K+hQpMHzoRqoponSbXqYplE5EmjqT6T7fxw2c4HwZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B4o1/oPUqFd/jw27oUZp09nN4vL3HmDq4Mc6dMu8isY=;
+ b=IdpSG8tRRMcSWZTL+vBfoqW+LuATMcf7WHm+f0R29+mSwh6EGd8zTVcKchJYZmHX7Gv3jRB+TQkDv9OcpDuNgCz+YTS609dzddfFh9wLF1/xHhwLWFths87imVLWUX2Q3b+USNctN8k82dc5UiPQKnHXu2PST0UCk2LCQem9VbI=
+Authentication-Results: iogearbox.net; dkim=none (message not signed)
+ header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2486.namprd15.prod.outlook.com (2603:10b6:a02:84::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Tue, 24 Nov
+ 2020 00:05:53 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%7]) with mapi id 15.20.3589.021; Tue, 24 Nov 2020
+ 00:05:53 +0000
+Date:   Mon, 23 Nov 2020 16:05:48 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <netdev@vger.kernel.org>,
+        <andrii@kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v7 00/34] bpf: switch to memcg-based memory
+ accounting
+Message-ID: <20201124000548.GE186396@carbon.dhcp.thefacebook.com>
+References: <20201119173754.4125257-1-guro@fb.com>
+ <9134a408-e26c-a7f2-23a7-5fc221bafdde@iogearbox.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9134a408-e26c-a7f2-23a7-5fc221bafdde@iogearbox.net>
+X-Originating-IP: [2620:10d:c090:400::5:91e]
+X-ClientProxiedBy: MWHPR14CA0027.namprd14.prod.outlook.com
+ (2603:10b6:300:12b::13) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:91e) by MWHPR14CA0027.namprd14.prod.outlook.com (2603:10b6:300:12b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 00:05:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: feaa64f1-38b7-440b-65ad-08d8900cb526
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2486:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2486C803EEFF51CC7427AA5BBEFB0@BYAPR15MB2486.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nPLdrBHyOZ2TJlLYYL/IzJSvBi0q9Ak5z22HvOd4B8j9y5NUi8jT9LzkMSmqXonu7CzFMJIrj5FbYTIAZkuqX+Z25NRwhOcJTYjMFKs84gstEfgqq9cYH579pj0E+XfVPpwJEkotJSxTu0RxKpQ3TvYaoGiBroCXQjPE4CFA7YF7iyn6+k6YU6W5rLE+eepH4xi93KUnBbmlA4JRFst8Yuyt853HlUhpv+Wzn0XTaTh2DQ+pZs8UE4mAiVTTAJtAnuq0yq9JJh0yTicXEe5ZChMQxcNj5c0sx1lR33ZCGE5t1OYbBn7v82mO8Mj8Clbmnx8uVMZYjR4huyx+xml5/Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(366004)(376002)(6666004)(4326008)(53546011)(8936002)(6506007)(316002)(16526019)(83380400001)(186003)(6916009)(8676002)(2906002)(9686003)(5660300002)(478600001)(55016002)(86362001)(15650500001)(66556008)(66476007)(1076003)(7696005)(66946007)(33656002)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: yzkGHyKj72N+VLRlFrj6DtvBYXfXX+NOTRIdknIC8zj8I2AHr9xGScDxRKzv6jPNRr0Ws6oKF7CmmSDMIo2KMmiJkwdO9WNsb/bQ//VxYIpMNtO8YMxViurJEsjd+VUqngzlA5JaxVn4rknbhrWL1rGFRhgTbiVV4XBIpSHnm9eQde4E+GEr/jhIWJmAa6rTB1stZmenD0KEVF4HhaJZhiDascNrs+NoRqrhcSLfbzItucrdvkpFxMQxFMmoylG5vax72LiLEaBfzRtLhmZDu1pticqxbdy17q4rjMZSTg7An+kJK20duuAjL35BE5U5qvVOU5+modCaT2nUs6fU8djXs94VTXC56VM3VPVmW0yOIZ1Bv3/Y9CmEnY8C2rBrHph6/sYodtoLPJ8pqH5nntcTYnGjKfMMUes2Ijj65A7K/Og3tvWRAwSCqtRdDLoqN0VyFpuE5hqQVMIfFsEK8yo5CXyy/bHCmxecDOXOHI8qY4cve7eFj7xre7dsXbKXBy5rMGl5TFSPZbaYVl/c0H2FFdzT++yU4hmvBrgARQH0bOT7IEbwlYLp8+7sdJW7ZhgJ/VQuDm1kpbTotLS7q481COu0KIYfHJoN+UdlIZ+BiAOXSGP9deJhIP45+eLQuQLk412ma56FHjtnIvumUcPrZLQPfrwQIruv0lWgWTsikIV5ITrYPZDrN+rw9vDSl4bylbWbiR6GqM38p5vua5goj3dO39YppGt54/3tC7x6hC74SKkSV+l0axUY+pRUgf0ZSH21UG0j+gwWQSxvwCTV7664oWJA4CgoogZpwUkZoEi1GVLGfJsjm7L8Fs77GIcEeAB6u0FybfDxfPf1wSQL1pzJCg3ep9IXcTwbnThSixhdCioXVjsFHV+NiOQxE6tCYJbbwVttNngam/r7Cx/YQQa0KPgfYgnlZqCUG6o=
+X-MS-Exchange-CrossTenant-Network-Message-Id: feaa64f1-38b7-440b-65ad-08d8900cb526
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 00:05:52.8893
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QFRZw1rp/ipSGNeQTklWkS0VHWOJkcOU+VkMmKmLFobFZ4OLXrT+0jIMj6VX2g3q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2486
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_19:2020-11-23,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ lowpriorityscore=0 suspectscore=1 mlxlogscore=967 priorityscore=1501
+ spamscore=0 impostorscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011230155
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Conceptually, we can envision the input on Qualcomm SoCs to pass
-through a bunch of blocks between coming into the chip and becoming a
-GPIO interrupt.  From guessing and running a handful of tests, I
-believe that we can represent the state of the world with a drawing
-that looks something like this:
+On Mon, Nov 23, 2020 at 02:30:09PM +0100, Daniel Borkmann wrote:
+> On 11/19/20 6:37 PM, Roman Gushchin wrote:
+> > Currently bpf is using the memlock rlimit for the memory accounting.
+> > This approach has its downsides and over time has created a significant
+> > amount of problems:
+> > 
+> > 1) The limit is per-user, but because most bpf operations are performed
+> >     as root, the limit has a little value.
+> > 
+> > 2) It's hard to come up with a specific maximum value. Especially because
+> >     the counter is shared with non-bpf users (e.g. memlock() users).
+> >     Any specific value is either too low and creates false failures
+> >     or too high and useless.
+> > 
+> > 3) Charging is not connected to the actual memory allocation. Bpf code
+> >     should manually calculate the estimated cost and precharge the counter,
+> >     and then take care of uncharging, including all fail paths.
+> >     It adds to the code complexity and makes it easy to leak a charge.
+> > 
+> > 4) There is no simple way of getting the current value of the counter.
+> >     We've used drgn for it, but it's far from being convenient.
+> > 
+> > 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+> >     a function to "explain" this case for users.
+> > 
+> > In order to overcome these problems let's switch to the memcg-based
+> > memory accounting of bpf objects. With the recent addition of the percpu
+> > memory accounting, now it's possible to provide a comprehensive accounting
+> > of the memory used by bpf programs and maps.
+> > 
+> > This approach has the following advantages:
+> > 1) The limit is per-cgroup and hierarchical. It's way more flexible and allows
+> >     a better control over memory usage by different workloads. Of course, it
+> >     requires enabled cgroups and kernel memory accounting and properly configured
+> >     cgroup tree, but it's a default configuration for a modern Linux system.
+> > 
+> > 2) The actual memory consumption is taken into account. It happens automatically
+> >     on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is also
+> >     performed automatically on releasing the memory. So the code on the bpf side
+> >     becomes simpler and safer.
+> > 
+> > 3) There is a simple way to get the current value and statistics.
+> > 
+> > In general, if a process performs a bpf operation (e.g. creates or updates
+> > a map), it's memory cgroup is charged. However map updates performed from
+> > an interrupt context are charged to the memory cgroup which contained
+> > the process, which created the map.
+> > 
+> > Providing a 1:1 replacement for the rlimit-based memory accounting is
+> > a non-goal of this patchset. Users and memory cgroups are completely
+> > orthogonal, so it's not possible even in theory.
+> > Memcg-based memory accounting requires a properly configured cgroup tree
+> > to be actually useful. However, it's the way how the memory is managed
+> > on a modern Linux system.
 
- +-----------------+       +-----------------+       +-----------------+
- |      INPUT      |  -->  |      PINMUX     |       |    IS_INPUT     |
- +-----------------+       |                 |  -->  |                 |
-                           | output bogus (?)|       | output bogus (?)|
-                           | if not muxed    |       | if input disab. |
-                           +-----------------+       +-----------------+
-                                                              |
-          +---------------------------------------------------+--> to PDC
-          |
-          V
- +-----------------+       +-----------------+       +-----------------+
- | INTR RAW ENABLE |       | DETECTION LOGIC |       | STATUS REGISTER |
- |                 |       |                 |       |                 |
- | output bogus (?)|  -->  | maybe handles   |       | latches inputs  |
- | if disabled     |       | polarity diffs  |  -->  | that are high   |
- +-----------------+       |                 |       |                 |
-                           | maybe debounces |       | write 1 to clr  |
-                           | level irqs      |       +-----------------+
-                           +-----------------+                |
-                                                              |
-          +---------------------------------------------------+
-          |
-          V
- +-----------------+
- |      ENABLE     |
- |                 |       +-----------------+
- | nothing passes  |  -->  |   SUMMARY IRQ   |
- | through if      |       +-----------------+
- | disabled        |
- +-----------------+
+Hi Daniel!
 
-The above might not be 100% exact, but for the purpose of this
-discussion, the point is that there are a whole bunch of gates and
-transformations on the input before it gets to the circuitry that
-generates interrupts.
+> 
+> The cover letter here only describes the advantages of this series, but leaves
+> out discussion of the disadvantages. They definitely must be part of the series
+> to provide a clear description of the semantic changes to readers.
 
-As you might guess, if you reconfigure one of the gates in the above
-diagram while the system is configured to detect interrupts things get
-a little wacky.  Specifically it appears that if you gate the input at
-any step it can cause various glitches in the later steps because they
-are still paying attention to their input but their input isn't really
-sane anymore.
+Honestly, I don't see them as disadvantages. Cgroups are basic units in which
+resource control limits/guarantees/accounting are expressed. If there are
+no cgroups created and configured in the system, it's obvious (maybe only to me)
+that no limits are applied.
 
-I did some poking and I found that I could generate bogus interrupts
-in the system both when muxing away from GPIO mode and also when
-muxing back to GPIO mode.  When configured to use the PDC path for
-generating interrupts I found that if the external input on the GPIO
-was low that I'd get what looked like a rising edge when unmuxing and
-a falling edge when muxing.  When configured away from the PDC path I
-got slightly different glitch interrupts when changing muxing.
+Users (rlimits) are to some extent similar units, but they do not provide
+a comprehensive resource control system. Some parts are deprecated (like rss limits),
+some parts are just missing. Aside from bpf nobody uses users to control
+the memory as a physical resource. It simple doesn't work (and never did).
+If somebody expects that a non-privileged user can't harm the system by depleting
+it's memory (and other resources), it's simple not correct. There are multiple ways
+for doing it. Accounting or not accounting bpf maps doesn't really change anything.
+If we see them not as a real security mechanism, but as a way to prevent "mistakes",
+which can harm the system, it's to some extent legit. The question is only if
+it justifies the amount of problems we had with these limits.
 
-These glitches when remuxing matter in reality, not just in theory.
-To be concrete, let's take the special "wakeup_irq" in
-qcom_geni_serial.c as an example.  In sc7180-trogdor.dtsi we configure
-the uart3 to have two pinctrl states, sleep and default, and mux
-between the two during runtime PM and system suspend (see
-geni_se_resources_{on,off}() for more details).  The difference
-between the sleep and default state is that the RX pin is muxed to a
-GPIO during sleep and muxed to the UART otherwise.  When we switch
-between these two states we can generate the glitches talked about
-above because we're configured to look for edges but the transition
-from the gated input (which is bogus) to the real input can look like
-an edge.
+Switching to memory cgroups, which are the way how the memory control is expressed,
+IMO doesn't need an additional justification. During the last year I remember 2 or 3
+times when various people (internally in Fb and in public mailing lists) were asking
+why bpf memory is not accounted to memory cgroups. I think it's basically expected
+these days.
 
-Historically the UART case above was handled by the fact that the
-"enable" function in the MSM GPIO driver did an "unmask and clear".
-This relied on the fact that the system happens to have the interrupt
-disabled until suspend time and that it would enable it after the
-pinmux change happened, thus clearing the interrupt.
+I'll try to make more obvious that we're switching from users to cgroups and
+describe the consequences of it on an unconfigured system. I'll update the cover.
 
-The historical solution, however, had a few problems.  The first
-problem (that nobody seemed to have tripped) is that we can still get
-bogus interrupts if we remux when the interrupt isn't disabled during
-the muxing and re-enabled after.  The second problem is that it
-violates how I believe that the interrupt enable path is supposed to
-work.
+> Last time we
+> discussed them, they were i) no mem limits in general on unprivileged users when
+> memory cgroups was not configured in the kernel, and ii) no mem limits by default
+> if not configured in the cgroup specifically.
+> Did we made any progress on these
+> in the meantime? How do we want to address them? What is the concrete justification
+> to not address them?
 
-In Linux, if a driver does disable_irq() and later does enable_irq()
-on its interrupt, I believe it's expecting these properties:
-* If an interrupt was pending when the driver disabled then it will
-  still be pending after the driver re-enables.
-* If an edge-triggered interrupt comes in while an interrupt is
-  disabled it should assert when the interrupt is re-enabled.
+I don't see how they can and should be addressed.
+Cgroups are the way how the resource consumption of a group of processes can be
+limited. If there are no cgroups configured, it means all resources are available
+to everyone. Maybe a user wants to use the whole memory for a bpf map? Why not?
 
-If you think that the above sounds a lot like the disable_irq() and
-enable_irq() are supposed to be masking/unmasking the interrupt
-instead of disabling/enabling it then you've made an astute
-observation.  Specifically when talking about interrupts, "mask"
-usually means to stop posting interrupts but keep tracking them and
-"disable" means to fully shut off interrupt detection.  It's
-unfortunate that this is so confusing, but presumably this is all the
-way it is for historical reasons.
+Do you have any specific use case in your mind?
+If you see a real value in the old system (I don't), which can justify an additional
+complexity of keeping them both in a working state, we can discuss this option too.
+We can make a switch in few steps, if you think it's too risky.
 
-Perhaps more confusing than the above is that, even though clients of
-IRQs themselves don't have a way to request mask/unmask
-vs. disable/enable calls, IRQ chips themselves can implement both.
-...and yet more confusing is that if an IRQ chip implements
-disable/enable then they will be called when a client driver calls
-disable_irq() / enable_irq().
+> 
+> Also I wonder what are the risk of regressions here, for example, if an existing
+> orchestrator has configured memory cgroup limits that are tailored to the application's
+> needs.. now, with kernel upgrade BPF will start to interfere, e.g. if a BPF program
+> attached to cgroups (e.g. connect/sendmsg/recvmsg or general cgroup skb egress hook)
+> starts charging to the process' memcg due to map updates?
 
-It does feel like some of the above could be cleared up.  However,
-without any other core interrupt changes it should be clear that when
-an IRQ chip gets a request to "disable" an IRQ that it has to treat it
-like a mask of that IRQ.
+Well, if somebody has a tight memory limit and large bpf map(s), they can see a "regression".
+However the kernel memory usage and accounting implementation details vary from a version
+to a version, so nobody should expect that limits once set will work forever.
+If for some strange reason it'll create a critical problem, as a workaround it's possible
+to disable the kernel memory accounting as a whole (via a boot option).
 
-In any case, after that long interlude you can see that the "unmask
-and clear" can break things.  Maulik tried to fix it so that we no
-longer did "unmask and clear" in commit 71266d9d3936 ("pinctrl: qcom:
-Move clearing pending IRQ to .irq_request_resources callback"), but it
-didn't work for two reasons:
-* It only tried to address the problem for interrupts that had parents
-  (like the PDC).
-* It regressed the problem that the original clearing was trying to
-  solve.
+Actually, it seems that the usefulness of strict limits is generally limited, because
+it's hard to get and assign any specific value. They are always either too relaxed
+(and have no value), either too strict (and causing production issues). Memory cgroups
+are generally moving towards soft limits and protections. But it's a separate theme...
 
-I think we can safely assume that if someone muxes a pin to be
-something other than a GPIO and then muxes it back that we can clear
-any interrupts that were pending on it without violating any
-assumptions that client drivers are making.  Presumably the client
-drivers are intentionally remuxing the pin away from a dedicated
-purpose to be a plain GPIO so they don't care what the pin state was
-before the mux switch and they don't expect to see the pin change
-level during this switch.  Let's move the clearing of the IRQ to the
-pin muxing routine so that we'll clear a pending IRQ if we're muxing
-from some non-GPIO mode to a GPIO mode.
-
-Fixes: 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to .irq_request_resources callback")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-This is a pretty hairy little patch and presumably needs a good amount
-of testing / discussion before landing.  If this patch is totally
-broken / wrong feel free to consider it as an RFC and suggest how it
-should be better.
-
-Also note: I wanted to put this in the same series as patch #1, but
-IMO that patch can stand on its own.  If it looks Ok but we want to
-have lots of debate about this one, please land patch #1 on its own
-and we can split the series.
-
-I have done most of this patch testing on the Chrome OS 5.4 kernel
-tree (with many backports) but have sanity checked it on mainline.
-
- drivers/pinctrl/qcom/pinctrl-msm.c | 104 ++++++++++++++++++-----------
- 1 file changed, 64 insertions(+), 40 deletions(-)
-
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index 588df91274e2..e7c3927c7d54 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-@@ -166,14 +166,42 @@ static int msm_get_function_groups(struct pinctrl_dev *pctldev,
- 	return 0;
- }
- 
-+static void msm_pinctrl_clear_pending_irq(struct msm_pinctrl *pctrl,
-+					  unsigned int group,
-+					  unsigned int irq)
-+{
-+	struct irq_data *d = irq_get_irq_data(irq);
-+	const struct msm_pingroup *g;
-+	unsigned long flags;
-+	u32 val;
-+
-+	if (!d)
-+		return;
-+
-+	if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
-+		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
-+
-+	g = &pctrl->soc->groups[group];
-+
-+	raw_spin_lock_irqsave(&pctrl->lock, flags);
-+	val = msm_readl_intr_status(pctrl, g);
-+	val &= ~BIT(g->intr_status_bit);
-+	msm_writel_intr_status(val, pctrl, g);
-+	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
-+}
-+
- static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
- 			      unsigned function,
- 			      unsigned group)
- {
- 	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-+	struct gpio_chip *gc = &pctrl->chip;
-+	unsigned int irq = irq_find_mapping(gc->irq.domain, group);
- 	const struct msm_pingroup *g;
- 	unsigned long flags;
- 	u32 val, mask;
-+	u32 oldval;
-+	u32 old_i;
- 	int i;
- 
- 	g = &pctrl->soc->groups[group];
-@@ -187,15 +215,26 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
- 	if (WARN_ON(i == g->nfuncs))
- 		return -EINVAL;
- 
--	raw_spin_lock_irqsave(&pctrl->lock, flags);
-+	disable_irq(irq);
- 
--	val = msm_readl_ctl(pctrl, g);
-+	raw_spin_lock_irqsave(&pctrl->lock, flags);
-+	oldval = val = msm_readl_ctl(pctrl, g);
- 	val &= ~mask;
- 	val |= i << g->mux_bit;
- 	msm_writel_ctl(val, pctrl, g);
--
- 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
- 
-+	/*
-+	 * Clear IRQs if switching to/from GPIO mode since muxing to/from
-+	 * the GPIO path can cause phantom edges.
-+	 */
-+	old_i = (oldval & mask) >> g->mux_bit;
-+	if (old_i != i &&
-+	    (i == pctrl->soc->gpio_func || old_i == pctrl->soc->gpio_func))
-+		msm_pinctrl_clear_pending_irq(pctrl, group, irq);
-+
-+	enable_irq(irq);
-+
- 	return 0;
- }
- 
-@@ -456,32 +495,45 @@ static const struct pinconf_ops msm_pinconf_ops = {
- static int msm_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
- {
- 	const struct msm_pingroup *g;
-+	unsigned int irq = irq_find_mapping(chip->irq.domain, offset);
- 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
- 	unsigned long flags;
-+	u32 oldval;
- 	u32 val;
- 
- 	g = &pctrl->soc->groups[offset];
- 
-+	disable_irq(irq);
-+
- 	raw_spin_lock_irqsave(&pctrl->lock, flags);
- 
--	val = msm_readl_ctl(pctrl, g);
-+	oldval = val = msm_readl_ctl(pctrl, g);
- 	val &= ~BIT(g->oe_bit);
- 	msm_writel_ctl(val, pctrl, g);
- 
- 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
- 
-+	if (oldval != val)
-+		msm_pinctrl_clear_pending_irq(pctrl, offset, irq);
-+
-+	enable_irq(irq);
-+
- 	return 0;
- }
- 
- static int msm_gpio_direction_output(struct gpio_chip *chip, unsigned offset, int value)
- {
- 	const struct msm_pingroup *g;
-+	unsigned int irq = irq_find_mapping(chip->irq.domain, offset);
- 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
- 	unsigned long flags;
-+	u32 oldval;
- 	u32 val;
- 
- 	g = &pctrl->soc->groups[offset];
- 
-+	disable_irq(irq);
-+
- 	raw_spin_lock_irqsave(&pctrl->lock, flags);
- 
- 	val = msm_readl_io(pctrl, g);
-@@ -491,12 +543,17 @@ static int msm_gpio_direction_output(struct gpio_chip *chip, unsigned offset, in
- 		val &= ~BIT(g->out_bit);
- 	msm_writel_io(val, pctrl, g);
- 
--	val = msm_readl_ctl(pctrl, g);
-+	oldval = msm_readl_ctl(pctrl, g);
- 	val |= BIT(g->oe_bit);
- 	msm_writel_ctl(val, pctrl, g);
- 
- 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
- 
-+	if (oldval != val)
-+		msm_pinctrl_clear_pending_irq(pctrl, offset, irq);
-+
-+	enable_irq(irq);
-+
- 	return 0;
- }
- 
-@@ -774,7 +831,7 @@ static void msm_gpio_irq_mask(struct irq_data *d)
- 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
- }
- 
--static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
-+static void msm_gpio_irq_unmask(struct irq_data *d)
- {
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
-@@ -792,17 +849,6 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
- 
- 	raw_spin_lock_irqsave(&pctrl->lock, flags);
- 
--	if (status_clear) {
--		/*
--		 * clear the interrupt status bit before unmask to avoid
--		 * any erroneous interrupts that would have got latched
--		 * when the interrupt is not in use.
--		 */
--		val = msm_readl_intr_status(pctrl, g);
--		val &= ~BIT(g->intr_status_bit);
--		msm_writel_intr_status(val, pctrl, g);
--	}
--
- 	val = msm_readl_intr_cfg(pctrl, g);
- 	val |= BIT(g->intr_raw_status_bit);
- 	val |= BIT(g->intr_enable_bit);
-@@ -815,14 +861,10 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
- 
- static void msm_gpio_irq_enable(struct irq_data *d)
- {
--	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
--	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
--
- 	if (d->parent_data)
- 		irq_chip_enable_parent(d);
- 
--	if (!test_bit(d->hwirq, pctrl->skip_wake_irqs))
--		msm_gpio_irq_clear_unmask(d, true);
-+	msm_gpio_irq_unmask(d);
- }
- 
- static void msm_gpio_irq_disable(struct irq_data *d)
-@@ -837,11 +879,6 @@ static void msm_gpio_irq_disable(struct irq_data *d)
- 		msm_gpio_irq_mask(d);
- }
- 
--static void msm_gpio_irq_unmask(struct irq_data *d)
--{
--	msm_gpio_irq_clear_unmask(d, false);
--}
--
- /**
-  * msm_gpio_update_dual_edge_parent() - Prime next edge for IRQs handled by parent.
-  * @d: The irq dta.
-@@ -1097,19 +1134,6 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
- 		ret = -EINVAL;
- 		goto out;
- 	}
--
--	/*
--	 * Clear the interrupt that may be pending before we enable
--	 * the line.
--	 * This is especially a problem with the GPIOs routed to the
--	 * PDC. These GPIOs are direct-connect interrupts to the GIC.
--	 * Disabling the interrupt line at the PDC does not prevent
--	 * the interrupt from being latched at the GIC. The state at
--	 * GIC needs to be cleared before enabling.
--	 */
--	if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
--		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
--
- 	return 0;
- out:
- 	module_put(gc->owner);
--- 
-2.29.2.454.gaff20da3a2-goog
-
+Thanks!
