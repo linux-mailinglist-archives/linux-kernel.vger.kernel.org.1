@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879AD2C344F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3522D2C3453
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730762AbgKXXDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:03:46 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33783 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729626AbgKXXDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:03:45 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cgfhb1T0mz9sRK;
-        Wed, 25 Nov 2020 10:03:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606259023;
-        bh=4Sw3XF+SknIbrZtfycH1VuQQnCCvYauWpqSV2HXflCw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hwBu8DOvZEaKoSiQ1Tm7TAlDBCEF9jAi9RZTxM8SC/9uX1XgG4BRith70IpBTbo76
-         oCT4eLhfGkk6NtFcXzrPdM3ryCTgAredX4ILraBfWU8xvTJEfvCb2XzvYJOc2kg0Ho
-         UNRlwkaQsb2ch93YUnUCx+kPWA3mEwNvt6HQ9ObuMwoAN1adKfkrIewZF4kvMdQPyf
-         5ZPOZLMQyMfCL+rxpXy/WM/bfuWP1Q03g85OhRn1gwUIAxEkH0skrlNFYF/BFL1Uh8
-         1PHqtRrUr90JU38/TAYfZFtye808WuJOErb6t/UMtQqCOFxRb1MLbGyg4+BuBv9Whx
-         87j7dlG4Th5nw==
-Date:   Wed, 25 Nov 2020 10:03:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the cel tree
-Message-ID: <20201125100342.4a758809@canb.auug.org.au>
+        id S1731498AbgKXXFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731049AbgKXXFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:05:17 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5ADC0613D6;
+        Tue, 24 Nov 2020 15:05:16 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id 142so234561ljj.10;
+        Tue, 24 Nov 2020 15:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/KXHKT0QjGfRLZidy5/lA4rIw7B1CrKKa5AQMFx5E+o=;
+        b=q2hhMGNsiRjmWE7ShOd1r2snZc9B66vAR/fONn6y58IpmTyCv8+hAiUnLmSKpnSTPd
+         L8MAXgH6aNO/aLpS8wUiBCcuwG8jcZLxnsGMva4aUqNDjauM84UrjES/+o2f9MFJCO96
+         61TTbyYBeD7KSNW8+0tu9c5FttT4YCwCbGFb94pCA3g4DO21TM14wpXV+v5zYKDhaNY6
+         JUhdiElC+at3f7FowROvZZkgBSv5i0ps5FlHl+kTP0wrgPlDwF19qLX6QoCnqQj/ZCJt
+         aAd3i9VLuoEADwTg79dLch3n2v26MltCBktsMz0/UapVncQPDTK/b2htk4hQx8DIwZ55
+         1IkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/KXHKT0QjGfRLZidy5/lA4rIw7B1CrKKa5AQMFx5E+o=;
+        b=Mi7/3aEVr/Egd/aJ5B39OqWOCQdBDgM36mMSK/r7bmrul0Qi3XCLZw0o8eHELhm4+p
+         YGj4CK7hzCpKYbNrL6irPhFy48/tsjS0azQhrkF+sT551eTWBLC+c/VO0aElJEACDA/o
+         WM26KCfpOQ78H6OZw8p671LMpFhkCrg0Z7hpmErNuOKcNCMUwXyom7evhSrVZ4IGszEl
+         7s7BmIdq0IGJwO8OxiqzPJhlUVIYXfd8+JFLIZwEsvKBdi9e4Www78HcbAxkgnfBOtwv
+         L8Pisk7I4007UsNLzaz+2LNaYfWgVd609ge7+vhr7DL7xR03cAPwx0C9PG/7+TZiAOmd
+         wXBQ==
+X-Gm-Message-State: AOAM532niqlQkhJpYwzu46qbtm2y2mayvzioajRxzNzkH73qab5KJB9Z
+        ePGymfO4j+JrJTnsAL2sL0y28geh354=
+X-Google-Smtp-Source: ABdhPJxpAqvUllZt+d+tRTNX9DTlqmrNB7dPwsBxupne7kCCr9F7wicJekI5L3d60wRQnhoZ4CbtHw==
+X-Received: by 2002:a2e:878c:: with SMTP id n12mr211314lji.319.1606259115126;
+        Tue, 24 Nov 2020 15:05:15 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id 141sm40313lfi.102.2020.11.24.15.05.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 15:05:14 -0800 (PST)
+Subject: Re: [PATCH RESEND 0/5] iommu/tegra-smmu: Some pending reviewed
+ changes
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
+        jonathanh@nvidia.com, Will Deacon <will@kernel.org>
+References: <20201111222129.15736-1-nicoleotsuka@gmail.com>
+ <20201124212100.GA32108@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <68237d7c-12f7-3053-2e79-75b7e95f0af3@gmail.com>
+Date:   Wed, 25 Nov 2020 02:05:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/SIUKtjzKFTabfPJ4tP=U8G.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201124212100.GA32108@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/SIUKtjzKFTabfPJ4tP=U8G.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+25.11.2020 00:21, Nicolin Chen пишет:
+> Hi Joerg,
+> 
+> These five patches were acked by Thierry and acked-n-tested by
+> Dmitry a while ago. Would it be possible for you to apply them?
+> 
+> Thanks!
 
-Hi all,
+Hi,
 
-Commits
+You probably should try to ping Will Deacon.
 
-  287428e8d11f ("nfsd: skip some unnecessary stats in the v4 case")
-  6f76e787daea ("nfs: use change attribute for NFS re-exports")
-  9fb0a61fedf7 ("nfsd4: don't query change attribute in v2/v3 case")
-
-are missing a Signed-off-by from their committers.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/SIUKtjzKFTabfPJ4tP=U8G.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+9kU4ACgkQAVBC80lX
-0Gy0PAf7BnquXg5j22Eh7gzyQ72l+0C9x8+sPjDG04tnko67KRVgoHX9d+Vme1aM
-PHKnCE56Aq4ktYeDHcZO1y/1E1DcNEiWeZkuZVgXpoL1tRUrOxHbckAPQypM4rgA
-jZSSzxLnIV4KGBn1klZlnKoT/8m774LroElwkrygtCpCTd/48jnxl0MYLYPLzVwG
-6nx02hiIQ74JO4fWl366X25tVDxZm3tfNfr1qCDiBmwVPZ3p+Qay3f1iceLG5F9j
-AB9x4wAGqynwwW9EjEOf9yGdhJ9w7qt10FR0nFeIY2kfhiMHouCluhwtxHL0dFC3
-TT55Q1kPL21Q5Edq5FElGiOyHmzJ9Q==
-=UA2O
------END PGP SIGNATURE-----
-
---Sig_/SIUKtjzKFTabfPJ4tP=U8G.--
+https://lkml.org/lkml/2020/11/17/243
