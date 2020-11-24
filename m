@@ -2,117 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF82F2C2BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF5F2C2BA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389772AbgKXPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:43:04 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45209 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389529AbgKXPnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:43:04 -0500
-Received: by mail-ot1-f66.google.com with SMTP id k3so19721228otp.12;
-        Tue, 24 Nov 2020 07:43:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wGQAm/Habl7BLWd6IdQBk99pbaAhlMirh4N9+XF5FO4=;
-        b=jRBI85/ik5ZhX0H1lSDYU7Ofc4BaNpjTonvBs+UBoLZ2LkUrm33IciRnhkncW7XVHs
-         Y6RN+Dsdkl53p1lIhIJTl87HCSr7gQXjnliWeBrahekcaG9W0EVyCWz7bC+2rCWoXflQ
-         /j75okeCTn7s3hXTHaER3t5iMUkIHZFZnHZSjaZX7bcISpdP6aN9OVmtXObu2qo6CIWh
-         KaZAXvIYltdsM9sVnJ7a/DkvzvefttO3PR4HzhMv59P/ZtTEPCP8cVRNhrghSU47EiY4
-         Vicy5j7AxuVPROXeLU+UYfnd8X+S168fVMP0MCi4cJQuWtVmZ4/h17X+uUqx0iQfddIi
-         pB8A==
-X-Gm-Message-State: AOAM5321KCrj07O9theDu2cGTYm8u8mcbCm6xBzqtt0/DAbOP7WCN2Pm
-        COqZimxkW4z/0XKwWGnzXXmb85WwSmyMcPpPtZ0=
-X-Google-Smtp-Source: ABdhPJxx4mOYcdNxFA+yVyffgNbk2C9v4K201yvdM4+e75s1ZyTs7WLqg4qKp1dArDLWTTOp3JccLLLShI9Mq4OHeiA=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr3727469otc.145.1606232583214;
- Tue, 24 Nov 2020 07:43:03 -0800 (PST)
+        id S2389812AbgKXPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:43:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388337AbgKXPno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:43:44 -0500
+Received: from threadripper.lan (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44AD0206FB;
+        Tue, 24 Nov 2020 15:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606232624;
+        bh=1hK4kNfOK501rKtMxoTeLGsdYaMpKUMPPmYoUz5Kya0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cmmgKB+cCUGt1UqNGEJ+JIFtQ8MIcYONJhF0TrXFS2dIme6DBoZrX+YJzQXa6rzWR
+         L4wUDUmqKja5WxI7o5H2dPehP9VQV32MPOzdM5sl2+WO6Gxt8u4MuO7VsjCwE7qkss
+         xZ8EAq95bA2/S//437viajyg0YV1nzcXkFDQzUr8=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] Makefile.extrawarn: remove -Wnested-externs warning
+Date:   Tue, 24 Nov 2020 16:43:17 +0100
+Message-Id: <20201124154339.173752-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201124112552.26377-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201124112552.26377-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 24 Nov 2020 16:42:52 +0100
-Message-ID: <CAMuHMdVkbMbKdY76XGDGxGwCsY_oHZfF=v9XMLZSjLMN+jKe_Q@mail.gmail.com>
-Subject: Re: [PATCH 2/5] memory: renesas-rpc-if: Make rpcif_enable/disable_rpm()
- as static inline
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Tue, Nov 24, 2020 at 12:27 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Define rpcif_enable_rpm() and rpcif_disable_rpm() as static
-> inline in the header instead of exporting it.
->
-> Suggested-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+The -Wnested-externs warning has become useless with gcc, since
+this warns every time that BUILD_BUG_ON() or similar macros
+are used.
 
-Thanks for your patch, which is an improvement.
+With clang, the warning option does nothing to start with, so
+just remove it entirely.
 
-> --- a/include/memory/renesas-rpc-if.h
-> +++ b/include/memory/renesas-rpc-if.h
-> @@ -10,6 +10,7 @@
->  #ifndef __RENESAS_RPC_IF_H
->  #define __RENESAS_RPC_IF_H
->
-> +#include <linux/pm_runtime.h>
->  #include <linux/types.h>
->
->  enum rpcif_data_dir {
-> @@ -77,11 +78,19 @@ struct      rpcif {
->
->  int  rpcif_sw_init(struct rpcif *rpc, struct device *dev);
->  void rpcif_hw_init(struct rpcif *rpc, bool hyperflash);
-> -void rpcif_enable_rpm(struct rpcif *rpc);
-> -void rpcif_disable_rpm(struct rpcif *rpc);
->  void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
->                    size_t *len);
->  int rpcif_manual_xfer(struct rpcif *rpc);
->  ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf);
->
-> +static inline void rpcif_enable_rpm(struct rpcif *rpc)
-> +{
-> +       pm_runtime_enable(rpc->dev);
-> +}
-> +
-> +static inline void rpcif_disable_rpm(struct rpcif *rpc)
-> +{
-> +       pm_runtime_put_sync(rpc->dev);
+Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ scripts/Makefile.extrawarn | 1 -
+ 1 file changed, 1 deletion(-)
 
-Looking at how this is used, this should call pm_runtime_disable()
-instead.
-
-And probably this should be moved inside the core RPC-IF driver:
-  1. pm_runtime_enable() could be called from rpcif_sw_init(),
-  2. pm_runtime_put_sync() can be called from a new rpc_sw_deinit()
-     function, to be called by the SPI and MTD drivers on probe failure
-     and on remove.
-
-> +}
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index 6baee1200615..d53825503874 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -61,7 +61,6 @@ endif
+ ifneq ($(findstring 2, $(KBUILD_EXTRA_WARN)),)
+ 
+ KBUILD_CFLAGS += -Wdisabled-optimization
+-KBUILD_CFLAGS += -Wnested-externs
+ KBUILD_CFLAGS += -Wshadow
+ KBUILD_CFLAGS += $(call cc-option, -Wlogical-op)
+ KBUILD_CFLAGS += -Wmissing-field-initializers
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
