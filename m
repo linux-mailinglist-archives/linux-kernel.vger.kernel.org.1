@@ -2,88 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DA82C1FEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95C32C2008
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730611AbgKXI2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730601AbgKXI2l (ORCPT
+        id S1730661AbgKXIcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:32:11 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:11202 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730476AbgKXIcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:28:41 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56044C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:28:41 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id u18so27637002lfd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=76ixO5CUxxnke5hcHoMKuBGHklO16fYsnp2OoEmVY9I=;
-        b=G8leHYlsEU5n6pd6cInmCXAoFm6XND5O4pdrrsippB2b/hSgqZUq13wmCTOGN2pDLy
-         0ZvAYGUIfc4uyHL34B8QqHnISCrh8M70dupuPPWYAtGfvXMBw/1cf6zpWHCFw6O+OK2G
-         krv1FyneNA3Y0jR2u/1rVEJcAu/ld4TMQwCgD7hJskxey0PEeUh6uR+2oiI3uEeYU4sL
-         ZmkzsW9ZR7D/e1RjV2b4sXysHEpEFI0pkKwruTz9hbSKYN5nJbbKaxOj97sjf7PMBB4+
-         +jQlRVnus2nmkTYuiJdr9WAEMqesS9FihYhzQrkemhiK3zU/mSBggEyBs6/1uAwu9NeR
-         CaMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=76ixO5CUxxnke5hcHoMKuBGHklO16fYsnp2OoEmVY9I=;
-        b=ukXzldfBLyFzj8ZjXj/9tS7loQD9iTy3azmMWLrMLb78FkJz5mDhxJ4cy9xSOerRNj
-         giW7YsyppCJQBMh4xkZ1pfZvnVOgJTG7KcOG3Dlo3aBLFPqDbxT+HAvF4TpvHqhTUVF0
-         P4Ea3lO8WBMnZHAbGvBQ+r9pDG176F+Uy6XFiZ3CrexNV0inIyVSYJyiI2/3QpK7a113
-         8UAGX09OIFQHIo+tq4NFRud/VdI1GF/XJerzU+9SYOAXhKDHFoZ95O54P8MjrEthU1WT
-         aCpXc49HYfyQp9E/itIFpX6sya3L7G9KpxnrHMikGufztVg7RfSPIz9MV9gRAqsZmg+T
-         asug==
-X-Gm-Message-State: AOAM532dJm6C2BMmb12KlLOkLqjoxMTw0EchbUSUH60575BfOUV6I7ZE
-        GxN6ISZEo/4eqDeZE4BCHe0FammA+PYaXJPecf4mMg==
-X-Google-Smtp-Source: ABdhPJz3m9CR00BmIKNF6LAsWT4dz49Cwq7LJkOtP9XV8CKRYiYZYBE3k32TMZ0OuYePMZmd6DcgVibwKqVVmoHDgEQ=
-X-Received: by 2002:a19:7b06:: with SMTP id w6mr1409605lfc.260.1606206519702;
- Tue, 24 Nov 2020 00:28:39 -0800 (PST)
+        Tue, 24 Nov 2020 03:32:10 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AO8QLmn027376;
+        Tue, 24 Nov 2020 03:31:58 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34y0p87ut2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 03:31:57 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AO8VuMR014699
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 24 Nov 2020 03:31:56 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 24 Nov
+ 2020 03:31:55 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 24 Nov 2020 03:31:55 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AO8VqG2021753;
+        Tue, 24 Nov 2020 03:31:53 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <dmitry.torokhov@gmail.com>, <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 1/3] Input: adp5589-keys - add default platform data
+Date:   Tue, 24 Nov 2020 10:22:53 +0200
+Message-ID: <20201124082255.13427-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
-In-Reply-To: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 24 Nov 2020 09:28:28 +0100
-Message-ID: <CACRpkdamdXCqZa4=qb5MsJtQMw1v53z5HZVv5SHJv84dtVACqQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] irqchip: qcom-pdc: Fix phantom irq when changing
- between rising/falling
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_03:2020-11-24,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 adultscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 1:02 AM Douglas Anderson <dianders@chromium.org> wrote:
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-> We have a problem if we use gpio-keys and configure wakeups such that
-> we only want one edge to wake us up.  AKA:
->   wakeup-event-action = <EV_ACT_DEASSERTED>;
->   wakeup-source;
+If no platform data is supplied use a dummy platform data that configures
+the device in GPIO only mode. This change adds a adp5589_kpad_pdata_get()
+helper that returns the default platform-data. This can be later extended
+to load configuration from device-trees or ACPI.
 
-I would need Marc's ACK to apply this with the other patches
-to the pinctrl tree, but I can't really see if maybe it is OK to
-apply it separately?
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
-Also are these patches supposed to all go in as fixes or
-for v5.11?
+Changelog v1 -> v2:
+* rebased on newer input/next tree; a conflict appeared for this
+  patchset https://lore.kernel.org/r/20201119072440.GA116840@dtor-ws
 
-Yours,
-Linus Walleij
+ drivers/input/keyboard/adp5589-keys.c | 33 +++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
+index e2cdf14d90cd..742bf4b97dbb 100644
+--- a/drivers/input/keyboard/adp5589-keys.c
++++ b/drivers/input/keyboard/adp5589-keys.c
+@@ -369,6 +369,25 @@ static const struct adp_constants const_adp5585 = {
+ 	.reg			= adp5585_reg,
+ };
+ 
++static const struct adp5589_gpio_platform_data adp5589_default_gpio_pdata = {
++	.gpio_start = -1,
++};
++
++static const struct adp5589_kpad_platform_data adp5589_default_pdata = {
++	.gpio_data = &adp5589_default_gpio_pdata,
++};
++
++static const struct adp5589_kpad_platform_data *adp5589_kpad_pdata_get(
++	struct device *dev)
++{
++	const struct adp5589_kpad_platform_data *pdata = dev_get_platdata(dev);
++
++	if (!pdata)
++		pdata = &adp5589_default_pdata;
++
++	return pdata;
++}
++
+ static int adp5589_read(struct i2c_client *client, u8 reg)
+ {
+ 	int ret = i2c_smbus_read_byte_data(client, reg);
+@@ -498,7 +517,8 @@ static int adp5589_build_gpiomap(struct adp5589_kpad *kpad,
+ static int adp5589_gpio_add(struct adp5589_kpad *kpad)
+ {
+ 	struct device *dev = &kpad->client->dev;
+-	const struct adp5589_kpad_platform_data *pdata = dev_get_platdata(dev);
++	const struct adp5589_kpad_platform_data *pdata =
++		adp5589_kpad_pdata_get(dev);
+ 	const struct adp5589_gpio_platform_data *gpio_data = pdata->gpio_data;
+ 	int i, error;
+ 
+@@ -619,7 +639,7 @@ static int adp5589_setup(struct adp5589_kpad *kpad)
+ {
+ 	struct i2c_client *client = kpad->client;
+ 	const struct adp5589_kpad_platform_data *pdata =
+-		dev_get_platdata(&client->dev);
++		adp5589_kpad_pdata_get(&client->dev);
+ 	u8 (*reg) (u8) = kpad->var->reg;
+ 	unsigned char evt_mode1 = 0, evt_mode2 = 0, evt_mode3 = 0;
+ 	unsigned char pull_mask = 0;
+@@ -824,7 +844,7 @@ static int adp5589_keypad_add(struct adp5589_kpad *kpad, unsigned int revid)
+ {
+ 	struct i2c_client *client = kpad->client;
+ 	const struct adp5589_kpad_platform_data *pdata =
+-		dev_get_platdata(&client->dev);
++		adp5589_kpad_pdata_get(&client->dev);
+ 	struct input_dev *input;
+ 	unsigned int i;
+ 	int error;
+@@ -948,7 +968,7 @@ static int adp5589_probe(struct i2c_client *client,
+ {
+ 	struct adp5589_kpad *kpad;
+ 	const struct adp5589_kpad_platform_data *pdata =
+-		dev_get_platdata(&client->dev);
++		adp5589_kpad_pdata_get(&client->dev);
+ 	unsigned int revid;
+ 	int error, ret;
+ 
+@@ -958,11 +978,6 @@ static int adp5589_probe(struct i2c_client *client,
+ 		return -EIO;
+ 	}
+ 
+-	if (!pdata) {
+-		dev_err(&client->dev, "no platform data?\n");
+-		return -EINVAL;
+-	}
+-
+ 	kpad = devm_kzalloc(&client->dev, sizeof(*kpad), GFP_KERNEL);
+ 	if (!kpad)
+ 		return -ENOMEM;
+-- 
+2.17.1
+
