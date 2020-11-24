@@ -2,135 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FF82C26BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF1F2C26B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387833AbgKXNDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:03:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
+        id S2387781AbgKXNBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:01:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387826AbgKXNDO (ORCPT
+        with ESMTP id S1732763AbgKXNBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:03:14 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FABC0613D6;
-        Tue, 24 Nov 2020 05:03:14 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id u12so22304918wrt.0;
-        Tue, 24 Nov 2020 05:03:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zdz5fBa4T11k+5bH3jFX0pTSXtn07jqB+Bz4r2/EDsM=;
-        b=F9VLdJ2wPN4CiqPCtxPPpl2heewrzVMYOxZey7FLAFIBchB174YjrVhg+4d+0n5Dl5
-         l/YjNZZ1cr2Wd/rddAPYAioPog4s22e8TLKWrmVa3XnpPAE/ici7EoCrJagnSs0dvvme
-         ydeYyKHORzbz3j3uOuf60hJVcCn8V+fWd+y84naTp06RCdWTM5KQM8IOJ6YE//xsdnev
-         g0fY49z/x6HxEhoMQ3Ac/dTUAegCWBFcn9skkMN81BuhJydh4y/gyJIVUX+ofnI6/35+
-         1McKAmS2hI9xoGjUw9oio1L/We3+b+ip49LB7XT/VpLOXO58SaDDDn6386459t6DLF8r
-         f3Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Zdz5fBa4T11k+5bH3jFX0pTSXtn07jqB+Bz4r2/EDsM=;
-        b=GXsp6prt0ZxXdEkvL01bQUCeBZs3RawqUdxHQJIYeqhHyh2/nlvPyWFl7PKVd93S/K
-         FQpeaVkCTghXsgUjBI7TerHFfEhzp5Qn1+tl8aNlduz/1udwnYnXnGvmuK1xgK0t8qVV
-         Nl6rmsAdJpvU4iuZ+m4jzM9XUTme1Ihl0SYurye+5UWzm3TDr6XysKcT91xu/wcEr3WE
-         fmD5dFY72CVS/hPyBoDEMq3ExKd8cEuj21d1pJ9oSNxdpUrDdLYM0vcJb6S7Kjk/+v30
-         81rybE1qIWK6aTfwktrkRnpzcjn39BKS6Ms+Flz0PmKLC57TytYK8F+ZwKjkxRE584ss
-         EPPA==
-X-Gm-Message-State: AOAM531DeAPyn06fcrHn0IprkI4tNS/RAIxTYUFS6aJoW0kvO+1udrhT
-        jqmDO8AKK6GMHn7lyFqU7B6Oam1ZEzoJiRgW
-X-Google-Smtp-Source: ABdhPJymsY0sUUEYIPQx0qgzKoQg/iI3TLy3ZkYEivMpquP3qTetLSrpNHh5gfyso/eOrxV6cstSvw==
-X-Received: by 2002:adf:ebc5:: with SMTP id v5mr5391087wrn.392.1606222992046;
-        Tue, 24 Nov 2020 05:03:12 -0800 (PST)
-Received: from [192.168.1.216] (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
-        by smtp.gmail.com with ESMTPSA id f4sm5115072wmb.47.2020.11.24.05.03.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 05:03:11 -0800 (PST)
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        ming.lei@redhat.com, linux-kernel@vger.kernel.org
-References: <60aaa6caab3d061cf7194716c27a10920b5bd7ad.1606212786.git.asml.silence@gmail.com>
- <20201124112249.GB25573@infradead.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 5.11] block: optimise for_each_bvec() advance
-Message-ID: <0b40b474-1aaa-cdaf-567d-572bcb285aa7@gmail.com>
-Date:   Tue, 24 Nov 2020 13:00:01 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        Tue, 24 Nov 2020 08:01:21 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE86EC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 05:01:20 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khXwV-0005u3-A1; Tue, 24 Nov 2020 14:01:11 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khXwT-0006Yl-OX; Tue, 24 Nov 2020 14:01:09 +0100
+Date:   Tue, 24 Nov 2020 14:01:07 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] spi: Use bus_type functions for probe, remove and
+ shutdown
+Message-ID: <20201124130107.2yvgk7kheep5gd6z@pengutronix.de>
+References: <20201119161604.2633521-1-u.kleine-koenig@pengutronix.de>
+ <20201119161604.2633521-2-u.kleine-koenig@pengutronix.de>
+ <CGME20201124120324eucas1p189ec6eed6d6477e27a194f9d75d7b43a@eucas1p1.samsung.com>
+ <9b86504f-c5f4-4c85-9bef-3d1ee4cbaf9c@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20201124112249.GB25573@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eyicznphi2ywjrds"
+Content-Disposition: inline
+In-Reply-To: <9b86504f-c5f4-4c85-9bef-3d1ee4cbaf9c@samsung.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2020 11:22, Christoph Hellwig wrote:
-> On Tue, Nov 24, 2020 at 10:21:23AM +0000, Pavel Begunkov wrote:
->> Because of how for_each_bvec() works it never advances across multiple
->> entries at a time, so bvec_iter_advance() is an overkill. Add
->> specialised bvec_iter_advance_single() that is faster. It also handles
->> zero-len bvecs, so can kill bvec_iter_skip_zero_bvec().
-> 
-> bvec_iter_advance_single needs a comment describing how it can be
 
-agree
+--eyicznphi2ywjrds
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> used.  Also can you take a look at the other callers and see who
-> can be switched over?  If you are not sure ask the relevant maintainers. 
+Hello Marek,
 
-There are bio_advanced*(), that are used all across block layer.
-Considering that all that is inlined it's going to be a good win.
+On Tue, Nov 24, 2020 at 01:03:25PM +0100, Marek Szyprowski wrote:
+> On 19.11.2020 17:16, Uwe Kleine-K=F6nig wrote:
+> > The eventual goal is to get rid of the callbacks in struct
+> > device_driver. Other than not using driver callbacks there should be no
+> > side effect of this patch.
+> >
+> > Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+>=20
+> This patch landed recently in linux-next as commit 9db34ee64ce4 ("spi:=20
+> Use bus_type functions for probe, remove and shutdown").
+>=20
+> It causes a regression on some of my test boards:
+>=20
+> Unable to handle kernel NULL pointer dereference at virtual address=20
+> 0000000000000018
+> Mem abort info:
+>  =A0 ESR =3D 0x96000004
+>  =A0 EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+>  =A0 SET =3D 0, FnV =3D 0
+>  =A0 EA =3D 0, S1PTW =3D 0
+> Data abort info:
+>  =A0 ISV =3D 0, ISS =3D 0x00000004
+>  =A0 CM =3D 0, WnR =3D 0
+> user pgtable: 4k pages, 48-bit VAs, pgdp=3D00000000318ed000
+> [0000000000000018] pgd=3D0000000000000000, p4d=3D0000000000000000
+> Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> Modules linked in: cpufreq_powersave cpufreq_conservative brcmfmac=20
+> brcmutil cfg80211 crct10dif_ce s3fwrn5_i2c s3fwrn5 nci nfc s5p_mfc=20
+> s5p_jpeg hci_uart btqca btbc
+> buf2_dma_contig videobuf2_memops videobuf2_v4l2 bluetooth=20
+> videobuf2_common videodev panfrost gpu_sched ecdh_generic mc ecc rfkill=
+=20
+> ip_tables x_tables ipv6
+> CPU: 0 PID: 1 Comm: systemd-shutdow Not tainted=20
+> 5.10.0-rc5-next-20201124+ #9771
+> Hardware name: Samsung TM2E board (DT)
+> pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=3D--)
+> pc : spi_shutdown+0x10/0x38
+> lr : device_shutdown+0x10c/0x350
+> sp : ffff80001311bc70
+> ...
+> Call trace:
+>  =A0spi_shutdown+0x10/0x38
+>  =A0kernel_restart_prepare+0x34/0x40
+>  =A0kernel_restart+0x14/0x88
+>  =A0__do_sys_reboot+0x148/0x248
+>  =A0__arm64_sys_reboot+0x1c/0x28
+>  =A0el0_svc_common.constprop.3+0x74/0x198
+>  =A0do_el0_svc+0x20/0x98
+>  =A0el0_sync_handler+0x140/0x1a8
+>  =A0el0_sync+0x140/0x180
+> Code: f9403402 d1008041 f100005f 9a9f1021 (f9400c21)
+> ---[ end trace 266c07205a2d632e ]---
+> Kernel panic - not syncing: Oops: Fatal exception
+> Kernel Offset: disabled
+> CPU features: 0x0240022,65006087
+> Memory Limit: none
+> ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+>=20
+> > ---
+> >   drivers/spi/spi.c | 33 ++++++++++++++++-----------------
+> >   1 file changed, 16 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> > index 5becf6c2c409..e8c0a000ee19 100644
+> > --- a/drivers/spi/spi.c
+> > +++ b/drivers/spi/spi.c
+> > @@ -374,16 +374,7 @@ static int spi_uevent(struct device *dev, struct k=
+obj_uevent_env *env)
+> >   	return add_uevent_var(env, "MODALIAS=3D%s%s", SPI_MODULE_PREFIX, spi=
+->modalias);
+> >   }
+> >  =20
+> > -struct bus_type spi_bus_type =3D {
+> > -	.name		=3D "spi",
+> > -	.dev_groups	=3D spi_dev_groups,
+> > -	.match		=3D spi_match_device,
+> > -	.uevent		=3D spi_uevent,
+> > -};
+> > -EXPORT_SYMBOL_GPL(spi_bus_type);
+> > -
+> > -
+> > -static int spi_drv_probe(struct device *dev)
+> > +static int spi_probe(struct device *dev)
+> >   {
+> >   	const struct spi_driver		*sdrv =3D to_spi_driver(dev->driver);
+> >   	struct spi_device		*spi =3D to_spi_device(dev);
+> > @@ -414,7 +405,7 @@ static int spi_drv_probe(struct device *dev)
+> >   	return ret;
+> >   }
+> >  =20
+> > -static int spi_drv_remove(struct device *dev)
+> > +static int spi_remove(struct device *dev)
+> >   {
+> >   	const struct spi_driver		*sdrv =3D to_spi_driver(dev->driver);
+> >   	int ret =3D 0;
+> > @@ -426,13 +417,25 @@ static int spi_drv_remove(struct device *dev)
+> >   	return ret;
+> >   }
+> >  =20
+> > -static void spi_drv_shutdown(struct device *dev)
+> > +static void spi_shutdown(struct device *dev)
+> >   {
+> >   	const struct spi_driver		*sdrv =3D to_spi_driver(dev->driver);
+> >  =20
+> > -	sdrv->shutdown(to_spi_device(dev));
+> > +	if (sdrv->shutdown)
+> > +		sdrv->shutdown(to_spi_device(dev));
+> >   }
+>=20
+> In the above function dev->driver might be NULL, so its use in=20
+> to_spi_driver() and sdrv->shutdown leads to NULL pointer dereference. I=
+=20
+> didn't check the details, but a simple check for NULL dev->driver and=20
+> return is enough to fix this issue. I can send such fix if you want.
 
-I'll resend it as a part of a series converting some users.
-For others like net, I'd rather wait until it lands.
+Ah, I see. shutdown is called for unbound devices, too. Assuming that
+Mark prefers a fix on top instead of an updated patch: Yes, please send
+a fix. Otherwise I can do this, too, as I introduced the problem.
 
--- 
-Pavel Begunkov
+Best regards and thanks,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--eyicznphi2ywjrds
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+9BBEACgkQwfwUeK3K
+7AkUFAf/ZbDu/Bi4tVHfAfDODPomtYgK6blE3EvY5GMT80YIlsyRxUQVRkpCTyJz
+M2HrYnBO5alxW6+qCM6/2hqpOBJfywR0ag06E7e5fN/21GF7yw8frY5jApzAGeRN
+VkHcbToYz6ESuv2+nMQ1mRs9xwY2dkHq+5IqsovDZAOG5obUSMwcSAiAD8Bs/WVl
+NVfjFFnfOlR6HiUs+dGyPAaRBmvwHzGAYcFOK5FXxIDtn9wzmDCOq3xSdhk7Clx1
+rVbYsaRfyet1PVkWIPCrQEJ6zMqzuY5MRKzdnBJ01456hzXMQWHABQ1CfpEGsBh3
+EApqQEK7sa2UNp91XhmmYJ4O+59pVg==
+=UZdV
+-----END PGP SIGNATURE-----
+
+--eyicznphi2ywjrds--
