@@ -2,234 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121BE2C3418
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 757E72C341E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389738AbgKXWgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 17:36:04 -0500
-Received: from mga12.intel.com ([192.55.52.136]:33178 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730041AbgKXWgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:36:04 -0500
-IronPort-SDR: A5G1RpF+pCDsFpTuSgzHueJ83ZYgIt4s1hdAkfii+WfBiKJgZRetbkUWXJ1imzVA22kyjcDVS1
- byNP+tCVzz/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151286810"
-X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="151286810"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 14:36:03 -0800
-IronPort-SDR: D7mBL79UqXqIHebMS83RhBY9sTtANuXbgEblMf+XoNocU0hJG2y6S53NBjnuaITDbfPmdSo/fK
- Vm2ZpOk6VPZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="313404354"
-Received: from lkp-server01.sh.intel.com (HELO 6cfd01e9568c) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 24 Nov 2020 14:36:01 -0800
-Received: from kbuild by 6cfd01e9568c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1khgul-00008v-Uh; Tue, 24 Nov 2020 22:35:59 +0000
-Date:   Wed, 25 Nov 2020 06:35:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/sgx] BUILD SUCCESS
- afe76eca862ccde2a0c30105fc97a46a0b59339b
-Message-ID: <5fbd8ab8.dyDjd/tzlMNFdXX9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2389906AbgKXWim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 17:38:42 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:4686 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731770AbgKXWil (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 17:38:41 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOMc5xj016952;
+        Tue, 24 Nov 2020 23:38:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=STMicroelectronics;
+ bh=MxQtwOp9fgA7AhJtkyo2khTdblmvpYD9H570y7mgSJE=;
+ b=DN49BvJO4Q/LTGaR3sKWMRspPKtFDxS/edBiVz8mxffgCg1VOFi6v/icexlPAcNHmvJR
+ u5HmamPu/Vp8CisqeSVc0DdGZlweeoVte90RknkUPgg9CW8T88unxs231ZmLxTmlT64w
+ 0v5CPTGvTyCR7sQ5ygY4FYisxUQ2WMJCW0wqsrXqQZg63d9yKV319GszZF/Ot8dGTMcF
+ sPPl70fP/XuF02qkmNXoO165vzcVf+8GaA/v2aHa6ZBSU2oKhscu/ScTT5hb1s0vS/2P
+ r9QHQmM8yO4ZGeL90+DuSzx7UKS1eQarBJ4nod/5u67TMIMxPP9X1myxns2fkaNQ8bru Yg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34y0hjc2vh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 23:38:22 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1643210002A;
+        Tue, 24 Nov 2020 23:38:22 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F0BCD20755B;
+        Tue, 24 Nov 2020 23:38:21 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov 2020 23:38:21
+ +0100
+From:   Antonio Borneo <antonio.borneo@st.com>
+To:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Antonio Borneo <antonio.borneo@st.com>, <stable@vger.kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: stmmac: fix incorrect merge of patch upstream
+Date:   Tue, 24 Nov 2020 23:37:29 +0100
+Message-ID: <20201124223729.886992-1-antonio.borneo@st.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
+References: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_10:2020-11-24,2020-11-24 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/sgx
-branch HEAD: afe76eca862ccde2a0c30105fc97a46a0b59339b  x86/sgx: Fix sgx_ioc_enclave_provision() kernel-doc comment
+Commit 757926247836 ("net: stmmac: add flexible PPS to dwmac
+4.10a") was intended to modify the struct dwmac410_ops, but it got
+somehow badly merged and modified the struct dwmac4_ops.
 
-elapsed time: 724m
+Revert the modification in struct dwmac4_ops and re-apply it
+properly in struct dwmac410_ops.
 
-configs tested: 170
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                          axs101_defconfig
-c6x                        evmc6678_defconfig
-mips                          malta_defconfig
-m68k                            q40_defconfig
-powerpc                      walnut_defconfig
-powerpc                      katmai_defconfig
-mips                         mpc30x_defconfig
-arm                         assabet_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                      malta_kvm_defconfig
-riscv                               defconfig
-mips                          ath25_defconfig
-powerpc                 mpc837x_mds_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                        spear6xx_defconfig
-powerpc                    mvme5100_defconfig
-parisc                generic-32bit_defconfig
-c6x                        evmc6472_defconfig
-arm                       multi_v4t_defconfig
-arc                              allyesconfig
-sh                         microdev_defconfig
-c6x                         dsk6455_defconfig
-powerpc                     tqm8560_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                         bigsur_defconfig
-mips                           jazz_defconfig
-powerpc                      pmac32_defconfig
-mips                       lemote2f_defconfig
-mips                      maltasmvp_defconfig
-powerpc                      ppc44x_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                           ip27_defconfig
-powerpc                    socrates_defconfig
-mips                     loongson1b_defconfig
-arm                           sama5_defconfig
-arc                            hsdk_defconfig
-mips                       rbtx49xx_defconfig
-m68k                        m5272c3_defconfig
-powerpc                      ep88xc_defconfig
-parisc                              defconfig
-powerpc                     rainier_defconfig
-powerpc                      acadia_defconfig
-ia64                             alldefconfig
-powerpc                 mpc832x_mds_defconfig
-arm                          badge4_defconfig
-powerpc                     stx_gp3_defconfig
-arm                      integrator_defconfig
-sh                         ecovec24_defconfig
-powerpc                     akebono_defconfig
-sparc                               defconfig
-sh                             shx3_defconfig
-xtensa                         virt_defconfig
-mips                          ath79_defconfig
-mips                        vocore2_defconfig
-sh                           se7750_defconfig
-arm                       imx_v6_v7_defconfig
-sh                          sdk7786_defconfig
-sh                            titan_defconfig
-xtensa                       common_defconfig
-m68k                        stmark2_defconfig
-powerpc                      tqm8xx_defconfig
-openrisc                         alldefconfig
-powerpc                     tqm8555_defconfig
-ia64                      gensparse_defconfig
-arm                       mainstone_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                        edosk7760_defconfig
-arm                           h5000_defconfig
-arm                        oxnas_v6_defconfig
-mips                         tb0287_defconfig
-powerpc                   bluestone_defconfig
-mips                         tb0219_defconfig
-arm                             rpc_defconfig
-arm                        trizeps4_defconfig
-arm                          gemini_defconfig
-sh                               alldefconfig
-m68k                        m5407c3_defconfig
-arm                        cerfcube_defconfig
-arm                        neponset_defconfig
-powerpc                     kmeter1_defconfig
-sh                          rsk7203_defconfig
-m68k                          amiga_defconfig
-arm                           stm32_defconfig
-h8300                     edosk2674_defconfig
-powerpc                      obs600_defconfig
-arm                         vf610m4_defconfig
-arm                  colibri_pxa270_defconfig
-mips                  decstation_64_defconfig
-sh                        sh7757lcr_defconfig
-m68k                          multi_defconfig
-arm                           corgi_defconfig
-arm                            mmp2_defconfig
-arm                          tango4_defconfig
-xtensa                    xip_kc705_defconfig
-mips                            ar7_defconfig
-arm                     am200epdkit_defconfig
-arm                         orion5x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20201124
-x86_64               randconfig-a003-20201124
-x86_64               randconfig-a004-20201124
-x86_64               randconfig-a005-20201124
-x86_64               randconfig-a001-20201124
-x86_64               randconfig-a002-20201124
-i386                 randconfig-a004-20201124
-i386                 randconfig-a003-20201124
-i386                 randconfig-a002-20201124
-i386                 randconfig-a005-20201124
-i386                 randconfig-a001-20201124
-i386                 randconfig-a006-20201124
-i386                 randconfig-a012-20201124
-i386                 randconfig-a013-20201124
-i386                 randconfig-a011-20201124
-i386                 randconfig-a016-20201124
-i386                 randconfig-a014-20201124
-i386                 randconfig-a015-20201124
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20201124
-x86_64               randconfig-a011-20201124
-x86_64               randconfig-a014-20201124
-x86_64               randconfig-a016-20201124
-x86_64               randconfig-a012-20201124
-x86_64               randconfig-a013-20201124
-
+Fixes: 757926247836 ("net: stmmac: add flexible PPS to dwmac 4.10a")
+Cc: stable@vger.kernel.org # v5.6+
+Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+To: Alexandre Torgue <alexandre.torgue@st.com>
+To: Jose Abreu <joabreu@synopsys.com>
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+In-Reply-To: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+index 002791b77356..ced6d76a0d85 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -1171,7 +1171,6 @@ const struct stmmac_ops dwmac4_ops = {
+ 	.pcs_get_adv_lp = dwmac4_get_adv_lp,
+ 	.debug = dwmac4_debug,
+ 	.set_filter = dwmac4_set_filter,
+-	.flex_pps_config = dwmac5_flex_pps_config,
+ 	.set_mac_loopback = dwmac4_set_mac_loopback,
+ 	.update_vlan_hash = dwmac4_update_vlan_hash,
+ 	.sarc_configure = dwmac4_sarc_configure,
+@@ -1213,6 +1212,7 @@ const struct stmmac_ops dwmac410_ops = {
+ 	.pcs_get_adv_lp = dwmac4_get_adv_lp,
+ 	.debug = dwmac4_debug,
+ 	.set_filter = dwmac4_set_filter,
++	.flex_pps_config = dwmac5_flex_pps_config,
+ 	.set_mac_loopback = dwmac4_set_mac_loopback,
+ 	.update_vlan_hash = dwmac4_update_vlan_hash,
+ 	.sarc_configure = dwmac4_sarc_configure,
+
+base-commit: 9bd2702d292cb7b565b09e949d30288ab7a26d51
+-- 
+2.29.2
+
