@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16EA2C2C83
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5772C2C86
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390226AbgKXQOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:14:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
+        id S2390255AbgKXQOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:14:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389424AbgKXQOF (ORCPT
+        with ESMTP id S2390230AbgKXQOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:14:05 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043C4C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:14:05 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 10so2893625wml.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:14:04 -0800 (PST)
+        Tue, 24 Nov 2020 11:14:46 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D0AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:14:46 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id w24so3462488wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:14:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=8rBvHUrzCCm9gVWrU3I91+G5vSuJBwgXqyyisSK9ieo=;
-        b=l6Lu+RcjXtavu4WmmL4nvGSMU4O10Lw8NUXO7J9V4wy3PuzN3MjeK+AHvjZGff1cJg
-         Q5jBUmLOaoqfWCgcQi3TvtNb2ie+Vj75VjHOEoaaMT6ShtTx55XAVII0gn38CUUsVpRU
-         MVFBP5+wkoiDND3/oTWXgfg9bahD8HYmooJTA83IzieEGcm/CkKDggkv3ISb3EWQ2uZa
-         YY/EpeqHAcbaAcFv5hdK9teyXjRgIsICEaw49GJyUN5pD9YL5EXLxHX/5PRDfAHPdiS2
-         JniwIlhIy/LNS0DcinQelv0hdz7zSN45Slj69MhAVP88A4t7W7gRcRYkC9NvXcJyNqkQ
-         kqhg==
+        bh=fnQXOuxdd9Ha+ttePt7McKRgCzdvenHzP3lYYv4e9C8=;
+        b=iQr9hZJarUKN47tSlegz3dfYvVmhXO+wLaLi8i++bYjU3m8ghrvN2H2P5R88XLR5tb
+         xXpvtaMnhOTf1ZnfkoXkK5YW3jJsNNYsAFcc8YobH57HGhbiB14Vven5VWkhDDBWDHk9
+         y+UzYmbx3P9fUyyt4JWCxm5LZGMqHWEM1DmymOb1di3iEtkxnG4AdRzmhOjSWm9UjHhr
+         g+1+8Kqzy1vE4EQDx48Bf1VmH3AGK4+sCbiQe2waRgnLwjk3VMCQwABcgLANjm1xNLl+
+         K3NC2grE4LykHLwpyEBfQfJhYypnPFN6jtnn5cMtkOvy82kUYtqMV/tIjOJ2hbggp9zW
+         i1tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8rBvHUrzCCm9gVWrU3I91+G5vSuJBwgXqyyisSK9ieo=;
-        b=QezL6K/VHKSwFrKNWxkLj/SbOhFvynPZIcx+nrSupHMsop+VdeZK2qTvjIGo6mSR8/
-         oQ27sjSVOFd/AvVAIANr2N+MwAt/US3iXPEddM9fjDWwZEpwPn3UoQ9IaQTq/Md6bhES
-         WRvNVt4EuUXliS2qsIVG59YH7USTj2d6PfbxDeNv2ka7v/htLfeOolJTQ0IFxyYGlUC7
-         aBQ1ccZpwpagsjjd2APTlEzFkwXO/KBOuwGpmtM0dDYH1YxQ6MaOgk+HOkRvwxxAMQWb
-         QHQNHxy0tzuS2bOKc05AqKNP1foNklgMzJrpj/T2N+Df+bwuqpHvYzSATWH3sdCcWVAB
-         NMew==
-X-Gm-Message-State: AOAM531Ruf63CKWjyKfMC6RzG8FarLNIWTWENY6goPrl7RrWCHXPvCzx
-        xbA3Kndf7+7nQq+1nbfTx6a7QsqrOMasz6tNRoY=
-X-Google-Smtp-Source: ABdhPJz0NioSPJlepfSlftukQu1yVMNbUcj2AKbQONE/GCi452Qv8YPxbyRcMRRCtBBkFWafFLNIucH0pvFJguWYECY=
-X-Received: by 2002:a7b:c015:: with SMTP id c21mr5292166wmb.79.1606234443764;
- Tue, 24 Nov 2020 08:14:03 -0800 (PST)
+        bh=fnQXOuxdd9Ha+ttePt7McKRgCzdvenHzP3lYYv4e9C8=;
+        b=ucL/TPFp2k3LbVBqzIokQ4iN3b3lmhnrnt01n77/rmkMnYormK93qBdxdzSpvtoX7H
+         xI4bagusBYJEGfg2pQ9xbLvaLiyQqI7I8JBGiO8ecH8KBti0Gb1Yl8Tt/JEA7mTWFGpi
+         s8OehtI1qlKIKB8VI+PgGXwmZsQiLRtlgVGPTUNzNVlryZR6q7KtiwcLjbg07lZadfZy
+         qdD3vATqOFYHY4i0xoNuje7solTTCC0U0b5lTPCYCrsR3Po1JLPV4GuNDWhuesRs5qjk
+         fmSjL3zx3+jM2xKW/cXnLZykk2rFMB1mFui1RFnbkz+K/KW8vyNwMTwBTaAPtlnr9dus
+         Ck7w==
+X-Gm-Message-State: AOAM530uvo9fJJ+zMYlBMW5oQtDPGblp1sg08U9Lo/Nll4X6wngFKf8g
+        jmwj48bJkJ7+Rw0wTuooN3bYNsO1spxkv8JZwD4=
+X-Google-Smtp-Source: ABdhPJyoL9NCFb0YR56K9kBdE5/l0ByJYqt0ZdToAT+wNNkUCvRJIp2gQxTEuQOFC63surxTV5bT/wYkRBY2Jj/1F5M=
+X-Received: by 2002:a1c:2dc8:: with SMTP id t191mr5215330wmt.73.1606234485281;
+ Tue, 24 Nov 2020 08:14:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-27-lee.jones@linaro.org>
-In-Reply-To: <20201123111919.233376-27-lee.jones@linaro.org>
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-28-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-28-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 24 Nov 2020 11:13:52 -0500
-Message-ID: <CADnq5_NNhyyDvbp5oULdEVwa8bAKqkFGrvujmmyZT7S088GfCg@mail.gmail.com>
-Subject: Re: [PATCH 26/40] drm/amd/include/navi14_ip_offset: Mark top-level
+Date:   Tue, 24 Nov 2020 11:14:34 -0500
+Message-ID: <CADnq5_M7n2PqQq8XUEEHwMbc8H30aYz-sbyhTDiiRDXC_4sFmw@mail.gmail.com>
+Subject: Re: [PATCH 27/40] drm/amd/include/navi12_ip_offset: Mark top-level
  IP_BASE as __maybe_unused
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
@@ -70,20 +70,20 @@ On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  In file included from drivers/gpu/drm/amd/amdgpu/navi14_reg_init.c:27:
->  drivers/gpu/drm/amd/amdgpu/../include/navi14_ip_offset.h:179:29: warning=
+>  In file included from drivers/gpu/drm/amd/amdgpu/navi12_reg_init.c:27:
+>  drivers/gpu/drm/amd/amdgpu/../include/navi12_ip_offset.h:179:29: warning=
 : =E2=80=98USB0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
 =3D]
 >  179 | static const struct IP_BASE USB0_BASE =3D{ { { { 0x0242A800, 0x05B=
 00000, 0, 0, 0 } },
 >  | ^~~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../include/navi14_ip_offset.h:172:29: warning=
+>  drivers/gpu/drm/amd/amdgpu/../include/navi12_ip_offset.h:172:29: warning=
 : =E2=80=98UMC_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
 =3D]
 >  172 | static const struct IP_BASE UMC_BASE =3D{ { { { 0x00014000, 0x0242=
 5800, 0, 0, 0 } },
 >  | ^~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../include/navi14_ip_offset.h:151:29: warning=
+>  drivers/gpu/drm/amd/amdgpu/../include/navi12_ip_offset.h:151:29: warning=
 : =E2=80=98SDMA_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
 =3D]
 >  151 | static const struct IP_BASE SDMA_BASE =3D{ { { { 0x00001260, 0x000=
@@ -105,14 +105,14 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/amd/include/navi14_ip_offset.h | 2 +-
+>  drivers/gpu/drm/amd/include/navi12_ip_offset.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/amd/include/navi14_ip_offset.h b/drivers/gpu=
-/drm/amd/include/navi14_ip_offset.h
-> index ecdd9eabe0dc8..c39ef651adc6f 100644
-> --- a/drivers/gpu/drm/amd/include/navi14_ip_offset.h
-> +++ b/drivers/gpu/drm/amd/include/navi14_ip_offset.h
+> diff --git a/drivers/gpu/drm/amd/include/navi12_ip_offset.h b/drivers/gpu=
+/drm/amd/include/navi12_ip_offset.h
+> index 6c2cc6296c061..d8fc00478b6a0 100644
+> --- a/drivers/gpu/drm/amd/include/navi12_ip_offset.h
+> +++ b/drivers/gpu/drm/amd/include/navi12_ip_offset.h
 > @@ -33,7 +33,7 @@ struct IP_BASE_INSTANCE
 >  struct IP_BASE
 >  {
