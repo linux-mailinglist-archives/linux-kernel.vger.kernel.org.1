@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E5E2C28F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960202C28E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgKXOE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:04:29 -0500
-Received: from mail8130c14.megamailservers.com ([66.226.81.30]:36388 "EHLO
-        mail8130c14.megamailservers.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729631AbgKXOE2 (ORCPT
+        id S1728771AbgKXOAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727161AbgKXOAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:04:28 -0500
-X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 09:04:27 EST
-Received: from laptop-stagiaire.cogeco.local (205-237-37-161.resi.cgocable.ca [205.237.37.161])
-        by mail8130c14.megamailservers.com (mail8130c14) with ESMTP id 71071925B9DFA;
-        Tue, 24 Nov 2020 08:57:39 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cogeco.ca; s=email;
-        t=1606226272; bh=5XvQdPYTylaRI8rioJopVJ3xTlgNPLbCIOmMKOpVpRY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bL8i71xuq3Qz8+1FzpPtEN25syfDxgGSeux/6glbpQiHKRjC2oHn+o+Tx5uTtOcii
-         MwBLo/OsO3hInzJEsXdon+1nIIhT+zUbsqP9AWBvEXybDGwD7uN5VaAzG/18TNX10z
-         XSNhZgIKTVTtyCwjRHt6lp0GxGWa6nJcxevNnXZA=
-Feedback-ID: pduplessis@effi
-From:   Philippe Duplessis-Guindon <pduplessis@efficios.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
-        broonie@kernel.org,
-        Philippe Duplessis-Guindon <pduplessis@efficios.com>
-Subject: [RFC PATCH v2] tracing: Remove duplicate `type` field from regmap `regcache_sync` trace event
-Date:   Tue, 24 Nov 2020 08:57:30 -0500
-Message-Id: <20201124135730.9185-1-pduplessis@efficios.com>
+        Tue, 24 Nov 2020 09:00:24 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC26DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:00:24 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id v21so9478385plo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:00:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wz1ZQP6uCXs7qi6a92QpxjDP7Q4q0QFNKJSTZ9GgIpg=;
+        b=q0CqFe/N2bHDouVmvXJg2CmcpDYcrYnxkM1ztr5yCcahDdIUfjLnGgHKnWG2TDWyAc
+         fdUsGj3V7+C5kDHWEpZwVD8/NnC637Q6qhmAnP4AutWWe/nntQaZc8Za6z4tEopzEzWZ
+         fY6UpUgja45Kra63EqPQnubeVN7Epco+2arAs0HnBcZ0PtuuzSKTCi94Nc0Dvx1cKcFs
+         8Cr9FYkiEy5BlwgShQj1NrDq4Bh6M49pbbjlcDe60oKaxvB0l9HJ58BS+Hp3oo1TPuVm
+         1I2G1UX3JSTXagfikS3p0pE/EFQtK2Y/ulIHiaC0CE2VTtOUxnwIaW2BoR6WhXGpKB7L
+         Yusw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wz1ZQP6uCXs7qi6a92QpxjDP7Q4q0QFNKJSTZ9GgIpg=;
+        b=I0PeqR6UVRPBiIpgC4vjffmczFSz2V/xtfS+DJNnNx6/zYE8cm5mkhnualAbhl/247
+         R/Z09MZpi15k9oMBdppYjj8XjHrHUVuXjY8yIceMEphTh4Il70CZK9HEXNwJaS07gOX/
+         kFtuRq9AFtpq91kn/+L4gohNXx1hJdL4gQ/nL4poihWT9FCGRAsm/6gdTlRZNbokLiFj
+         MJJSm985F5pK3MSh2h9pwSKJSgNJ0RxoPSeaIxCJcY6+3obpbf4C6OVzRn1NjasVoxpp
+         b7opONwN0FTKFo4fCw8k3Md/y0OdvUqz0DX/0C2cGb818DkuTyOKoOFe0HcOBWMweVPL
+         c1lw==
+X-Gm-Message-State: AOAM533uqntGx4BIUgAiLtmp/IdaUFTI/wewg/zkDqjwTOSpqKAXndq+
+        KtzuvSKZ1FNnUYmt+p9XH2l4
+X-Google-Smtp-Source: ABdhPJwV2ZxGORwQLjg9yXA/FyKYMbwb05bi9vAdwITsfIqHF0iNGwJo0RYYIzukOPIo7Mq0JBBtlQ==
+X-Received: by 2002:a17:902:8645:b029:da:1a78:1d16 with SMTP id y5-20020a1709028645b02900da1a781d16mr3005273plt.21.1606226423867;
+        Tue, 24 Nov 2020 06:00:23 -0800 (PST)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id u3sm14485937pfu.47.2020.11.24.06.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 06:00:23 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     vkoul@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/2] Add devicetree support for SDX55 Modem and MTP
+Date:   Tue, 24 Nov 2020 19:30:09 +0530
+Message-Id: <20201124140011.134751-1-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CSC:  0
-X-CHA:  v=2.3 cv=AtiQI91P c=1 sm=1 tr=0 a=f1nIe4+vFTFun24hu6c7KQ==:117
-        a=f1nIe4+vFTFun24hu6c7KQ==:17 a=10vEtgdfLSAA:10 a=7d_E57ReAAAA:8
-        a=0rblXdn-GvIh5LTTVtcA:9 a=jhqOcbufqs7Y1TYCrUUU:22
-X-CTCH-RefID: str=0001.0A742F1A.5FBD1160.0025,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-X-CTCH-VOD: Unknown
-X-CTCH-Spam: Unknown
-X-CTCH-Score: 0.000
-X-CTCH-Rules: 
-X-CTCH-Flags: 0
-X-CTCH-ScoreCust: 0.000
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMSCORE: -100
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgheekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffquffvqffrkfetpdfqfgfvnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheprfhhihhlihhpphgvucffuhhplhgvshhsihhsqdfiuhhinhguohhnuceophguuhhplhgvshhsihhssegvfhhfihgtihhoshdrtghomheqnecuggftrfgrthhtvghrnhepleeugfehfeekieekfeetgfehgefhudevhedtveegkedthefgieeggeeiieekhefhnecukfhppedvtdehrddvfeejrdefjedrudeiudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvtdehrddvfeejrdefjedrudeiuddphhgvlhhopehlrghpthhophdqshhtrghgihgrihhrvgdrtghoghgvtghordhlohgtrghlpdhmrghilhhfrhhomheprfhhihhlihhpphgvucffuhhplhgvshhsihhsqdfiuhhinhguohhnuceophguuhhplhgvshhsihhssegvfhhfihgtihhoshdrtghomheqpdhrtghpthhtoheplhhinhhugidqthhrrggtvgdquggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrohhsthgvughtsehgohhoughmihhsrdhorhhgpdhrtghpthhtohepmhgrthhhihgvuhdruggvshhnohihvghrshesvghffhhitghiohhsrdgtohhmpdhrtghpthhtohep
- lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghrohhonhhivgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphguuhhplhgvshhsihhssegvfhhfihgtihhoshdrtghomh
-X-Origin-Country: CA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have an error saying that `regcache_sync` has 2 fields named `type`
-while using libtraceevent.
+Hello,
 
-Erase the `int field` type, which is not assigned. This field is
-introduced by mistake and this commit removes it.
+This series adds devicetree support for Qualcomm SDX55 Modem and MTP
+board. This series functionally depends on Clock support series [1]
+which is under review.
 
-Fixes commit 593600890110c ("regmap: Add the regcache_sync trace event")
+With the current devicetree support, the MTP can boot into initramfs
+shell.
 
-Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
----
- drivers/base/regmap/trace.h | 1 -
- 1 file changed, 1 deletion(-)
+Thanks,
+Mani
 
-diff --git a/drivers/base/regmap/trace.h b/drivers/base/regmap/trace.h
-index d4066fa079ab..9abee14df9ee 100644
---- a/drivers/base/regmap/trace.h
-+++ b/drivers/base/regmap/trace.h
-@@ -126,7 +126,6 @@ TRACE_EVENT(regcache_sync,
- 		__string(       name,           regmap_name(map)	)
- 		__string(	status,		status			)
- 		__string(	type,		type			)
--		__field(	int,		type			)
- 	),
- 
- 	TP_fast_assign(
+[1] https://lore.kernel.org/linux-arm-msm/20201119072714.14460-1-manivannan.sadhasivam@linaro.org/
+
+Manivannan Sadhasivam (1):
+  ARM: dts: qcom: Add SDX55 Modem and MTP board support
+
+Vinod Koul (1):
+  dt-bindings: arm: qcom: Document SDX55 Modem and boards
+
+ .../devicetree/bindings/arm/qcom.yaml         |   6 +
+ arch/arm/boot/dts/Makefile                    |   3 +-
+ arch/arm/boot/dts/qcom-sdx55-mtp.dts          |  27 +++
+ arch/arm/boot/dts/qcom-sdx55.dtsi             | 205 ++++++++++++++++++
+ 4 files changed, 240 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/qcom-sdx55-mtp.dts
+ create mode 100644 arch/arm/boot/dts/qcom-sdx55.dtsi
+
 -- 
 2.25.1
 
