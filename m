@@ -2,112 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1517C2C23EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CC52C23ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732600AbgKXLKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:10:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732536AbgKXLKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:10:34 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E99E52073C;
-        Tue, 24 Nov 2020 11:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606216234;
-        bh=2uK6gknCKN4AYaBsRSYNpCUpw9VdB72lt/njxbxA6GA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W2t4y8oN8c0g38vhBQq66MuAcmgMMFWcHRYuxyuRtuX8qaVsF+C1CKqA9RJfInMj1
-         qZff1xDjS64XFMDr0/sXiHg0S+ie8s1dELjmSWS9eDscf4ptO9IGUHDT3JkTNVJlbk
-         uKw/lXPS1M5h4yLJHyV+JPEHYysKkMbXjwvEYBvU=
-Date:   Tue, 24 Nov 2020 11:10:28 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
-        <iommu@lists.linux-foundation.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCHv8 0/8] System Cache support for GPU and required SMMU
- support
-Message-ID: <20201124111027.GA13151@willie-the-truck>
-References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
- <20201123152146.GE11033@willie-the-truck>
- <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
- <CAF6AEGse=WBAC1WbTi6aD5_m1_NBg91f=veYm-7V=Uds7NA0Lw@mail.gmail.com>
- <1c665e33d1d27263fb5056c16d30b827@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c665e33d1d27263fb5056c16d30b827@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1732618AbgKXLLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:11:41 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:49768 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732583AbgKXLLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:11:41 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmtBg6rxf6_EVAA--.36017S2;
+        Tue, 24 Nov 2020 19:11:28 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] phy/rockchip: Make PHY_ROCKCHIP_INNO_HDMI depend on HAS_IOMEM to fix build error
+Date:   Tue, 24 Nov 2020 19:11:27 +0800
+Message-Id: <1606216287-14648-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxmtBg6rxf6_EVAA--.36017S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw47Xw13uryDur1kWF15urg_yoWDWFcE9a
+        9Fvr1fXw18Cr1rGw1UZ3yfW3yvk3WYgrZ5GFZ2qF9xZ3W2g3s7t3y8X3W5A3ZrGw4xGFsF
+        g3yv9F129ryUtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8KwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbjYLPUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 09:32:54AM +0530, Sai Prakash Ranjan wrote:
-> On 2020-11-24 00:52, Rob Clark wrote:
-> > On Mon, Nov 23, 2020 at 9:01 AM Sai Prakash Ranjan
-> > <saiprakash.ranjan@codeaurora.org> wrote:
-> > > 
-> > > On 2020-11-23 20:51, Will Deacon wrote:
-> > > > On Tue, Nov 17, 2020 at 08:00:39PM +0530, Sai Prakash Ranjan wrote:
-> > > >> Some hardware variants contain a system cache or the last level
-> > > >> cache(llc). This cache is typically a large block which is shared
-> > > >> by multiple clients on the SOC. GPU uses the system cache to cache
-> > > >> both the GPU data buffers(like textures) as well the SMMU pagetables.
-> > > >> This helps with improved render performance as well as lower power
-> > > >> consumption by reducing the bus traffic to the system memory.
-> > > >>
-> > > >> The system cache architecture allows the cache to be split into slices
-> > > >> which then be used by multiple SOC clients. This patch series is an
-> > > >> effort to enable and use two of those slices preallocated for the GPU,
-> > > >> one for the GPU data buffers and another for the GPU SMMU hardware
-> > > >> pagetables.
-> > > >>
-> > > >> Patch 1 - Patch 6 adds system cache support in SMMU and GPU driver.
-> > > >> Patch 7 and 8 are minor cleanups for arm-smmu impl.
-> > > >>
-> > > >> Changes in v8:
-> > > >>  * Introduce a generic domain attribute for pagetable config (Will)
-> > > >>  * Rename quirk to more generic IO_PGTABLE_QUIRK_ARM_OUTER_WBWA (Will)
-> > > >>  * Move non-strict mode to use new struct domain_attr_io_pgtbl_config
-> > > >> (Will)
-> > > >
-> > > > Modulo some minor comments I've made, this looks good to me. What is
-> > > > the
-> > > > plan for merging it? I can take the IOMMU parts, but patches 4-6 touch
-> > > > the
-> > > > MSM GPU driver and I'd like to avoid conflicts with that.
-> > > >
-> > > 
-> > > SMMU bits are pretty much independent and GPU relies on the domain
-> > > attribute
-> > > and the quirk exposed, so as long as SMMU changes go in first it
-> > > should
-> > > be good.
-> > > Rob?
-> > 
-> > I suppose one option would be to split out the patch that adds the
-> > attribute into it's own patch, and merge that both thru drm and iommu?
-> > 
-> 
-> Ok I can split out domain attr and quirk into its own patch if Will is
-> fine with that approach.
+devm_ioremap_resource() will be not built in lib/devres.c if
+CONFIG_HAS_IOMEM is not set, and then there exists a build
+error about undefined reference to "devm_ioremap_resource"
+in the file phy-rockchip-inno-hdmi.c under COMPILE_TEST and
+CONFIG_PHY_ROCKCHIP_INNO_HDMI, make PHY_ROCKCHIP_INNO_HDMI
+depend on HAS_IOMEM to fix it.
 
-Why don't I just queue the first two patches on their own branch and we
-both pull that?
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/phy/rockchip/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Will
+diff --git a/drivers/phy/rockchip/Kconfig b/drivers/phy/rockchip/Kconfig
+index c2f22f9..159285f 100644
+--- a/drivers/phy/rockchip/Kconfig
++++ b/drivers/phy/rockchip/Kconfig
+@@ -32,6 +32,7 @@ config PHY_ROCKCHIP_INNO_HDMI
+ 	tristate "Rockchip INNO HDMI PHY Driver"
+ 	depends on (ARCH_ROCKCHIP || COMPILE_TEST) && OF
+ 	depends on COMMON_CLK
++	depends on HAS_IOMEM
+ 	select GENERIC_PHY
+ 	help
+ 	  Enable this to support the Rockchip Innosilicon HDMI PHY.
+-- 
+2.1.0
+
