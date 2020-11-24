@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF532C1C63
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148C62C1C65
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbgKXD6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 22:58:30 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:50652 "EHLO
+        id S1728525AbgKXD6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 22:58:34 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:50708 "EHLO
         aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbgKXD63 (ORCPT
+        with ESMTP id S1726762AbgKXD6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 22:58:29 -0500
+        Mon, 23 Nov 2020 22:58:34 -0500
 Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3sciU090554;
-        Tue, 24 Nov 2020 03:58:17 GMT
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3sfqN090566;
+        Tue, 24 Nov 2020 03:58:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=3LBksb9nF957DUMKcEjLnwa75EJQyqUQQQph/qW9HT0=;
- b=CEveVv48Z/Xqe8ZszSWWjk2RjBse1EqCCOuy6HaZ8UZsK0xy3afDLSlfKvBpb8wWbmWZ
- dYhF4gK4BEXGWrQzBHaPGZrHmoQXWu48Q/rDhDtG2boAhTDRH2wkp9Fyq8yiGgb81Lpt
- j1H9WQDRA+772vWnuCPhoaX5Lw0oMfMrHWJ/yQTQtILC2Y0SKSh9aAjm5SC7e/RFuA7D
- 7sWX1j7kebTGpUiGoQAyjEOjmSyTidr7xDSgTPkqGw82lHODScfAZfm4lt8m2aH2HVRz
- 0dJtd79bWuJ+bhJHdPxWHq4wDb4bk0wJY0CcbOdyhouKY3AkHXmSt/jrJduwLTDrJjhY kg== 
+ bh=xZNJjBo/JFIO0hTtFUTzpSzrcGoSQ3D2fS62KAWXM1k=;
+ b=I1gPh6Ctr/ve/2mN5GSjM/L6m8ijtgx3g8tgbG5QqU3gAQTOfNZDR8U5iudYnPBLgOxB
+ 9UYefgV79/m6R65mYc15n9K770enyzhnB1+uyr3PzMDq3ccJ+Kyy2H0L+GRiHGjYiUuC
+ veuGM0uOYeMrcir116zAiTuMQo9sDPn108cg1I8JNwgzT0IuYiWkUXMmTivxOR1tdgpX
+ eCp2n9QIJmzfJnbANKcZ2QCWC5KU9xLbMnJJZHWYPxE2SYwaAJNv/8iNJ+HOVi6/I/aD
+ /aewCL9kV3hpRZl3n91eAPjjkEURiXXxBRuNaJAYKh46ejnt4P/uOOJErlD2Kgt/I0dk fg== 
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34xrdarmc1-1
+        by aserp2130.oracle.com with ESMTP id 34xrdarmc9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Nov 2020 03:58:17 +0000
+        Tue, 24 Nov 2020 03:58:25 +0000
 Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3toIL080886;
-        Tue, 24 Nov 2020 03:58:17 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 34ycnrw00c-1
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3toJQ080995;
+        Tue, 24 Nov 2020 03:58:24 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 34ycnrw033-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 03:58:16 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AO3wE9P006116;
-        Tue, 24 Nov 2020 03:58:14 GMT
+        Tue, 24 Nov 2020 03:58:24 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AO3wJva006678;
+        Tue, 24 Nov 2020 03:58:19 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Nov 2020 19:58:14 -0800
+        with ESMTP ; Mon, 23 Nov 2020 19:58:19 -0800
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>
+To:     james.bottomley@hansenpartnership.com,
+        Tyrel Datwyler <tyreld@linux.ibm.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        avri.altman@wdc.com, cang@codeaurora.org, stanley.chu@mediatek.com,
-        bvanassche@acm.org, alim.akhtar@samsung.com
-Subject: Re: [PATCH v5 0/5] scsi: ufs: add some fixes
-Date:   Mon, 23 Nov 2020 22:58:02 -0500
-Message-Id: <160618683551.24173.10657707378444596650.b4-ty@oracle.com>
+        brking@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/3] ibmvfc: byte swap login_buf.resp values in attribute show functions
+Date:   Mon, 23 Nov 2020 22:58:08 -0500
+Message-Id: <160618683551.24173.15203691222166023615.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117165839.1643377-1-jaegeuk@kernel.org>
-References: <20201117165839.1643377-1-jaegeuk@kernel.org>
+In-Reply-To: <20201117185031.129939-1-tyreld@linux.ibm.com>
+References: <20201117185031.129939-1-tyreld@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -71,35 +71,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 08:58:32 -0800, Jaegeuk Kim wrote:
+On Tue, 17 Nov 2020 12:50:29 -0600, Tyrel Datwyler wrote:
 
-> Change log from v4:
->  - add more fixes
+> Both ibmvfc_show_host_(capabilities|npiv_version) functions retrieve
+> values from vhost->login_buf.resp buffer. This is the MAD response
+> buffer from the VIOS and as such any multi-byte non-string values are in
+> big endian format.
 > 
-> Change log from v3:
->  - use __ufshcd_release with a fix in __ufshcd_release
-> 
-> Change log from v2:
->  - use active_req-- instead of __ufshcd_release to avoid UFS timeout
-> 
-> [...]
+> Byte swap these values to host cpu endian format for better human
+> readability.
 
 Applied to 5.11/scsi-queue, thanks!
 
-[1/7] scsi: ufs: Avoid to call REQ_CLKS_OFF to CLKS_OFF
-      https://git.kernel.org/mkp/scsi/c/fd62de114f8c
-[2/7] scsi: ufs: Atomic update for clkgating_enable
-      https://git.kernel.org/mkp/scsi/c/b66451129764
-[3/7] scsi: ufs: Clear UAC for FFU and RPMB LUNs
-      https://git.kernel.org/mkp/scsi/c/4f3e900b6282
-[4/7] scsi: ufs: Use WQ_HIGHPRI for gating work
-      https://git.kernel.org/mkp/scsi/c/e93e6e49fa31
-[5/7] scsi: ufs: Add more contexts in the ufs tracepoints
-      https://git.kernel.org/mkp/scsi/c/69a314d6a155
-[6/7] scsi: ufs: Fix clkgating on/off
-      https://git.kernel.org/mkp/scsi/c/8eb456be75af
-[7/7] scsi: ufs: Show LBA and length for UNMAP commands
-      https://git.kernel.org/mkp/scsi/c/3754cde8df91
+[1/3] scsi: ibmvfc: Byte swap login_buf.resp values in attribute show functions
+      https://git.kernel.org/mkp/scsi/c/61bdb4eec8d1
+[2/3] scsi: ibmvfc: Remove trailing semicolon
+      https://git.kernel.org/mkp/scsi/c/4e0716199ab6
+[3/3] scsi: ibmvfc: Use correlation token to tag commands
+      https://git.kernel.org/mkp/scsi/c/2aa0102c6688
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
