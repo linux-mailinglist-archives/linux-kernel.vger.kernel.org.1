@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9AB2C26C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6742C26E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387781AbgKXNGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:06:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387665AbgKXNGG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:06:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606223165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R4KDtrnaWEASZaV9k/ZyN6/dmLtE0hhZRztvsR1lW+Q=;
-        b=guJIKqXyMEz32Mbs4Eh1JWGNp2EfwqnzekGo+lgouuNnmCI714Ob8RTIzZF6IsN7oXROlU
-        8hY3ZMme1gMpVHENwlH1L93prdFBshEAWHNq8su4ylUymj2TDKrQB0quRLLMozC6TfyeTO
-        5BsHuLcYhQeI+UWQbCronlmXxGZo4Io=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-222-KSMP2231N5yn3YeQwoFfrg-1; Tue, 24 Nov 2020 08:06:02 -0500
-X-MC-Unique: KSMP2231N5yn3YeQwoFfrg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3DFD1922020;
-        Tue, 24 Nov 2020 13:06:00 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-112-141.ams2.redhat.com [10.36.112.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5E0765C1BD;
-        Tue, 24 Nov 2020 13:05:55 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dev@opencontainers.org,
-        corbet@lwn.net, Carlos O'Donell <carlos@redhat.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
- workaround
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
-        <20201124125806.nud2x5kfvnxdagqk@yavin.dot.cyphar.com>
-Date:   Tue, 24 Nov 2020 14:05:54 +0100
-In-Reply-To: <20201124125806.nud2x5kfvnxdagqk@yavin.dot.cyphar.com> (Aleksa
-        Sarai's message of "Tue, 24 Nov 2020 23:58:06 +1100")
-Message-ID: <874kle3nwt.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S2387891AbgKXNNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:13:31 -0500
+Received: from mga03.intel.com ([134.134.136.65]:18489 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387781AbgKXNNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:13:31 -0500
+IronPort-SDR: 9oZuV1t/H3r8rXJukP2GR85GrDTvR0i4ehccCnWZkzfkt+srmKpqrtMSBoTo4F5xbFJ2P61zvP
+ JGj/Qf4dSFGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="172037938"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="172037938"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 05:13:30 -0800
+IronPort-SDR: /4IoJzqUjN2RdAup2H1oyId6005W/Kv4m0xbrbJMXI/GRTCPdzd4uyEzSO414ugG9+jphPwYrO
+ J36B2FgvuyEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="432602175"
+Received: from allen-box.sh.intel.com ([10.239.159.28])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Nov 2020 05:13:28 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>
+Cc:     Ashok Raj <ashok.raj@intel.com>, Christoph Hellwig <hch@lst.de>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v10 0/4] iommu: Add support to change default domain of an iommu group
+Date:   Tue, 24 Nov 2020 21:06:00 +0800
+Message-Id: <20201124130604.2912899-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Aleksa Sarai:
+Hi,
 
-> As I mentioned in the runc thread[1], this is really down to Docker's
-> default policy configuration. The EPERM-everything behaviour in OCI was
-> inherited from Docker, and it boils down to not having an additional
-> seccomp rule which does ENOSYS for unknown syscall numbers (Docker can
-> just add the rule without modifying the OCI runtime-spec -- so it's
-> something Docker can fix entirely on their own). I'll prepare a patch
-> for Docker this week.
+The last post of this series:
 
-Appreciated, thanks.
+https://lore.kernel.org/linux-iommu/20201121135620.3496419-1-baolu.lu@linux.intel.com/
 
-> IMHO it's also slightly overkill to change the kernel API design
-> guidelines in response to this issue.
->
-> [1]: https://github.com/opencontainers/runc/issues/2151
+Change log in this series:
+ 1. Changes according to comments at
+    https://lore.kernel.org/linux-iommu/20201123120449.GB10233@willie-the-truck/
+    - Remove the unnecessary iommu_get_mandatory_def_domain_type()
 
-Won't this cause docker to lose OCI compliance?  Or is the compliance
-testing not that good?
+Best regards,
+baolu
 
-Thanks,
-Florian
+Lu Baolu (1):
+  iommu: Move def_domain type check for untrusted device into core
+
+Sai Praneeth Prakhya (3):
+  iommu: Add support to change default domain of an iommu group
+  iommu: Take lock before reading iommu group default domain type
+  iommu: Document usage of "/sys/kernel/iommu_groups/<grp_id>/type" file
+
+ .../ABI/testing/sysfs-kernel-iommu_groups     |  29 ++
+ drivers/iommu/intel/iommu.c                   |   7 -
+ drivers/iommu/iommu.c                         | 248 +++++++++++++++++-
+ 3 files changed, 267 insertions(+), 17 deletions(-)
+
 -- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+2.25.1
 
