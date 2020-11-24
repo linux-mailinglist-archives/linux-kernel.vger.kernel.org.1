@@ -2,106 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F109E2C19D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0882C19E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgKXANy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:13:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37490 "EHLO mail.kernel.org"
+        id S1729023AbgKXAR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:17:59 -0500
+Received: from mga07.intel.com ([134.134.136.100]:22729 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgKXANx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:13:53 -0500
-Received: from localhost (unknown [176.167.152.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A3D120757;
-        Tue, 24 Nov 2020 00:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606176832;
-        bh=H1q3NdPA5XVVHKGEKjYQ4s3GAIDuBwFKucV9+lLeoqI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qUq69HdgxnvYd/CJdPSIQdLBWDLXZ4EpnV9+8BlBqGhsbsp6ElmI/dbTn82zkagdx
-         0Yu1OR5EQaVImLPlvD3ZmBwEIUt3b9L/qQoGV4RfIbNQGjQg6vTJ2w9wXaCHMHXORr
-         8ABQTbt0lirfodCOB9pGRMQLt4bC7NbrsKUSZ3sQ=
-Date:   Tue, 24 Nov 2020 01:13:50 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT
- aware
-Message-ID: <20201124001350.GF1751@lothringen>
-References: <20201113140207.499353218@linutronix.de>
- <20201113141734.324061522@linutronix.de>
- <20201123134437.GA95787@lothringen>
- <87r1ojnaai.fsf@nanos.tec.linutronix.de>
- <20201123235801.GE1751@lothringen>
- <87wnyblitk.fsf@nanos.tec.linutronix.de>
+        id S1726745AbgKXAR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 19:17:58 -0500
+IronPort-SDR: h/P8m5SANIsheky63hBHV2HCKKlCQg6Xo5qxkC2nXcmfYR8EmXlGxmx89R02SJA2fWG4h9C0lA
+ CkFGkI8caFZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="236005070"
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="236005070"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 16:17:56 -0800
+IronPort-SDR: qbW+WwGzLA8+eSg5GGNT6me0DMfLWg1G8/paGswTGz2dXhdExFobeq/Qb6sf6WTrtqCA5F8SfF
+ k+MwQe1cGyhw==
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="546615424"
+Received: from laloy-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.93])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 16:17:56 -0800
+Date:   Mon, 23 Nov 2020 16:17:54 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RFC PATCH 5/9] cxl/mem: Find device capabilities
+Message-ID: <20201124001754.465xfzv5r2q4l52o@intel.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-6-ben.widawsky@intel.com>
+ <20201117151519.000069d2@Huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wnyblitk.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201117151519.000069d2@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 01:06:15AM +0100, Thomas Gleixner wrote:
-> On Tue, Nov 24 2020 at 00:58, Frederic Weisbecker wrote:
-> > On Mon, Nov 23, 2020 at 08:27:33PM +0100, Thomas Gleixner wrote:
-> >> On Mon, Nov 23 2020 at 14:44, Frederic Weisbecker wrote:
-> >> > On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
-> >> >> +	/*
-> >> >> +	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
-> >> >> +	 * in_serving_softirq() become true.
-> >> >> +	 */
-> >> >> +	cnt = SOFTIRQ_OFFSET;
-> >> >> +	__local_bh_enable(cnt, false);
-> >> >
-> >> > But then you enter __do_softirq() with softirq_count() == SOFTIRQ_OFFSET.
-> >> > __do_softirq() calls softirq_handle_begin() which then sets it back to
-> >> > SOFTIRQ_DISABLE_OFFSET...
-> >> 
-> >> The RT variant of it added in this very same patch
-> >> > +static inline void softirq_handle_begin(void) { }
-> >> > +static inline void softirq_handle_end(void) { }
-> >
-> > Ah but then account_irq_enter_time() is called with SOFTIRQ_OFFSET (it's
-> > currently called with softirq_count == 0 at this point) and that may mess
-> > up irqtime accounting which relies on it. It could spuriously account all
-> > the time between the last (soft-)IRQ exit until now as softirq time.
+On 20-11-17 15:15:19, Jonathan Cameron wrote:
+> On Tue, 10 Nov 2020 21:43:52 -0800
+> Ben Widawsky <ben.widawsky@intel.com> wrote:
 > 
-> Good point. Haven't thought about that. Let me have a look again.
+> > CXL devices contain an array of capabilities that describe the
+> > interactions software can interact with the device, or firmware running
+> > on the device. A CXL compliant device must implement the device status
+> > and the mailbox capability. A CXL compliant memory device must implement
+> > the memory device capability.
+> > 
+> > Each of the capabilities can [will] provide an offset within the MMIO
+> > region for interacting with the CXL device.
+> > 
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> 
+> A few really minor things in this one.
+> 
+> Jonathan
+> 
+> > ---
+> >  drivers/cxl/cxl.h | 89 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  drivers/cxl/mem.c | 58 +++++++++++++++++++++++++++---
+> >  2 files changed, 143 insertions(+), 4 deletions(-)
+> >  create mode 100644 drivers/cxl/cxl.h
+> > 
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > new file mode 100644
+> > index 000000000000..02858ae63d6d
+> > --- /dev/null
+> > +++ b/drivers/cxl/cxl.h
+> > @@ -0,0 +1,89 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+> > +
+> > +#ifndef __CXL_H__
+> > +#define __CXL_H__
+> > +
+> > +/* Device */
+> > +#define CXLDEV_CAP_ARRAY_REG 0x0
+> > +#define CXLDEV_CAP_ARRAY_CAP_ID 0
+> > +#define CXLDEV_CAP_ARRAY_ID(x) ((x) & 0xffff)
+> > +#define CXLDEV_CAP_ARRAY_COUNT(x) (((x) >> 32) & 0xffff)
+> > +
+> > +#define CXL_CAPABILITIES_CAP_ID_DEVICE_STATUS 1
+> 
+> I'm not sure what you can do about consistent naming, but
+> perhaps this really does need to be 
+> CXLDEV_CAP_CAP_ID_x  however silly that looks.
+> 
+> It's a funny exercise I've only seen done once in a spec, but
+> I wish everyone would try working out what their fully expanded
+> field names will end up as and make sure the long form naming shortens
+> to something sensible.  It definitely helps with clarity!
+> 
+> > +#define CXL_CAPABILITIES_CAP_ID_PRIMARY_MAILBOX 2
+> > +#define CXL_CAPABILITIES_CAP_ID_SECONDARY_MAILBOX 3
+> > +#define CXL_CAPABILITIES_CAP_ID_MEMDEV 0x4000
+> > +
+> > +/* Mailbox */
+> > +#define CXLDEV_MB_CAPS 0x00
+> 
+> Elsewhere you've used _OFFSET postfix. That's useful so I'd do it here
+> as well.  Cross references to the spec section always appreciated as well!
+> 
+> > +#define   CXLDEV_MB_CAP_PAYLOAD_SIZE(cap) ((cap) & 0x1F)
+> > +#define CXLDEV_MB_CTRL 0x04
+> > +#define CXLDEV_MB_CMD 0x08
+> > +#define CXLDEV_MB_STATUS 0x10
+> > +#define CXLDEV_MB_BG_CMD_STATUS 0x18
+> > +
+> > +struct cxl_mem {
+> > +	struct pci_dev *pdev;
+> > +	void __iomem *regs;
+> > +
+> > +	/* Cap 0000h */
+> 
+> What are the numbers here?  These capabilities have too
+> many indexes associated with them in different ways for it
+> to be obvious, so perhaps more detail in the comments?
 
-But I'm cooking a patchset which moves account_irq_enter_time() after
-HARDIRQ_OFFSET or SOFTIRQ_OFFSET is incremented. This will allow us to move
-tick_irq_enter() under this layout:
+This comment was a bug. The cap is 0001h actually. I've added the hash define
+for its cap id as part of the comment.
 
-		 preempt_count_add(HARDIRQ_OFFSET)
-		 lockdep_hardirq_enter()
-		 tick_irq_enter()
-		 account_irq_enter_time()
+Everything else is accepted.
 
-This way tick_irq_enter() can be correctly handled by lockdep and we can remove
-the nasty hack which temporarily disables softirqs around it.
-
-And as a side effect it should also fix your issue.
-
-I should have that ready soonish.
-
-Thanks.
+> 
+> > +	struct {
+> > +		void __iomem *regs;
+> > +	} status;
+> > +
+> > +	/* Cap 0002h */
+> > +	struct {
+> > +		void __iomem *regs;
+> > +		size_t payload_size;
+> > +	} mbox;
+> > +
+> > +	/* Cap 0040h */
+> > +	struct {
+> > +		void __iomem *regs;
+> > +	} mem;
+> > +};
