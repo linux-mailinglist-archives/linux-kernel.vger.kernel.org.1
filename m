@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059412C2047
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D392C204E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730755AbgKXInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:43:09 -0500
-Received: from www381.your-server.de ([78.46.137.84]:49786 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730492AbgKXInI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:43:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=/PJriEbKuBtu1s7B9RLwhifyLDJjChCYoTRFC2wpWEk=; b=dPPeGkRu/MoW93ThXxCexkdM7u
-        V2HaUjTWlQOybg5914q/yQUVMEyajjunPzo8ybmJNYwwy27pqXXOPyE8z3gCRcTE0b9W7KUUsqujT
-        4rir8R38Id+LCFqgf2xaAJfpCs4buoh4OimyTSZHdgyg6nXWbdiyDSnSuAZEpzntZGGF3rhkCPg95
-        5zC2H+Rq8pxyFh5pxyvu4OfESypJxNmzZMHFbubOBv0RdGGjvsY1kFWYC8PJQFLyLmQlASEIi17Bj
-        jrJXXcXKCe/BH4pk3pH5RYNAaUxAIbdvs0fIVRlRQOg/gpggMnQLRXNU517uL1PQ9FDTF+iPTNI0O
-        Jcn1QXVQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1khTuj-0005Go-Tn; Tue, 24 Nov 2020 09:43:06 +0100
-Received: from [62.216.202.98] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1khTuj-000PIe-Q1; Tue, 24 Nov 2020 09:43:05 +0100
-Subject: Re: [PATCH v2 3/3] Input: adp5589-keys - add basic devicetree support
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com
-References: <20201124082255.13427-1-alexandru.ardelean@analog.com>
- <20201124082255.13427-3-alexandru.ardelean@analog.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <d8265d12-0269-a7ed-1f02-ee5679ee1db2@metafoo.de>
-Date:   Tue, 24 Nov 2020 09:43:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730792AbgKXInt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:43:49 -0500
+Received: from mga17.intel.com ([192.55.52.151]:15611 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730492AbgKXIns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:43:48 -0500
+IronPort-SDR: V/EU4lDHnWahsvyPR0H0weK+DDJFq4ffq7VenD1VH8R/uCUEfriRn2Z19PVqSThfcuQhx+z67R
+ IjkN7fQevLLg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="151753019"
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="151753019"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:43:48 -0800
+IronPort-SDR: 1j9zIiz75GIryTsdL/biK5K/G1r8KgHWpcRiZ46wjCIThr8WVk1V8hdaQVcapbctpn4qkhuZxs
+ Hry9mfRMBKcg==
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="358746299"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:43:45 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id E9A9D20461; Tue, 24 Nov 2020 10:43:43 +0200 (EET)
+Date:   Tue, 24 Nov 2020 10:43:43 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Dongchun Zhu <dongchun.zhu@mediatek.com>
+Cc:     Robert Foss <robert.foss@linaro.org>, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Kao <ben.kao@intel.com>, tfiga@google.com,
+        shengnan.wang@mediatek.com
+Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
+Message-ID: <20201124084343.GD3940@paasikivi.fi.intel.com>
+References: <20201116155008.118124-1-robert.foss@linaro.org>
+ <1606203651.4733.134.camel@mhfsdcap03>
 MIME-Version: 1.0
-In-Reply-To: <20201124082255.13427-3-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25997/Mon Nov 23 14:13:38 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606203651.4733.134.camel@mhfsdcap03>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 9:22 AM, Alexandru Ardelean wrote:
->   	error = devm_add_action_or_reset(&client->dev, adp5589_clear_config,
-> @@ -1078,6 +1098,13 @@ static int __maybe_unused adp5589_resume(struct device *dev)
->   
->   static SIMPLE_DEV_PM_OPS(adp5589_dev_pm_ops, adp5589_suspend, adp5589_resume);
->   
-> +static const struct of_device_id adp5589_of_match[] = {
-> +	{ .compatible = "adi,adp5585", .data = &adp5589_chip_info_tbl[ADP5585_01] },
-> +	{ .compatible = "adi,adp5585-02", .data = &adp5589_chip_info_tbl[ADP5585_02] },
-> +	{ .compatible = "adi,adp5589", .data = &adp5589_chip_info_tbl[ADP5589] },
+Hi Dongchun,
 
-I think we need to add these to 
-Documentation/devicetree/bindings/trivial-devices.yaml
+On Tue, Nov 24, 2020 at 03:40:51PM +0800, Dongchun Zhu wrote:
+> >  static const struct ov8856_mode supported_modes[] = {
+> > -	{
+> > -		.width = 3280,
+> > -		.height = 2464,
+> > -		.hts = 1928,
+> > -		.vts_def = 2488,
+> > -		.vts_min = 2488,
+> > -		.reg_list = {
+> > -			.num_of_regs = ARRAY_SIZE(mode_3280x2464_regs),
+> > -			.regs = mode_3280x2464_regs,
+> > -		},
+> > -		.link_freq_index = OV8856_LINK_FREQ_720MBPS,
+> > -	},
+> 
+> If 3280x2464 resolution is removed, bayer order needs to be updated in
+> the meantime. From OV8856's datasheet, bayer order turns to be BGGR if
+> sensor adopts full mode (3264x2448) or binning mode (1632x1224).
 
+How is this related to the patch?
 
+The next largest size is 16 by 16 less, so the Bayer order is the same. If
+it's wrong currently (as it would appear to), it should be a separate
+patch.
+
+-- 
+Sakari Ailus
