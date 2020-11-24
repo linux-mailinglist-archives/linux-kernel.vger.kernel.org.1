@@ -2,251 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933622C2116
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F832C2118
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731152AbgKXJZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:25:04 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:21649 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730978AbgKXJZD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:25:03 -0500
+        id S1731160AbgKXJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:25:10 -0500
+Received: from mail-mw2nam12on2088.outbound.protection.outlook.com ([40.107.244.88]:33344
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730978AbgKXJZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:25:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nRvyW0Bj3qqQactMbo5wZLIXWd+f3RFJNOIQO0B/rmQUyQ7EnMg91H3AQJ+iqx4vNv13y3XGBZU+SLcWm2njtS687zgbYdkjIh0PwKCobWEQKkIuhP1lPeTeTW+GOTpbbt3PP5rJGyC63RfymDIIbeR/ucy5sG6COXx276b7pMo6eoWdidrgJr3OPf74bJseg+lY81DZlbPq3Vnmq8bia9nCJ1LQqhKDO7vb3WKPYLOufXZg6cXpU299trnxeNkNHdvd/2dBYOj3rq22EQeFeZXBcxBJ6BXfH+hURNXcCpEn69xIOwMaYltx1ZrQkwMogW4v0NCtz+zhB10n4fjoMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fECDOE9WVaWnaSkgKEr0epnRuxdnMmt7Uaoip8210pA=;
+ b=Su5NMCDfBnbcC3n2Ju1wqX4Sq/vfbxSDBktna0CsW8UkYq0OGt5OMuS3F+XCc8w1PTgpjeaRPDOEWFt1YwDLja0PB8sWdEoVdSHcea/D2+UV/22L+L9sq6HCCiGPGXSVv6mO2huhImS51kmi+mEwevM94EcWu6LaqBk+PycJV7TLEyr6HFJ7lNm23OcJ0p2Ow4/AUxyvLiUyPCIQNAeTb23k/YgoC+uHaD9k0/L15hM11BRvAXaI+vTi4yiux9zEo9y7uvi+sRaW5XCoCldytI1tHl1Nta19riF8A336bSzhfL4KXMp3/BEKypuo1Bo9H/eoVofCS/ImLkmGUjkyNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1606209901; x=1637745901;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=lNZw1uUZvmxbFzlzMe0Blki4ZEHZ2wPeHOWCvjmyBDI=;
-  b=hUPOnXmrV0c4iyHmA7HHEACkwM5wlpb9Jt4SW9vXrnIJ63+LeUGTYkCX
-   cL5MjXybTvLcS5YYAoXCd6phEzjy5AnZkiYsgQVX1U24Byc2reonap0V4
-   /Vyc+EFR/Q5GB/QxFM0xZTLeFwiXLyMAvSwTGB8W4UM+fboNpJZYrDB7N
-   0=;
-X-IronPort-AV: E=Sophos;i="5.78,365,1599523200"; 
-   d="scan'208";a="66940334"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 24 Nov 2020 09:24:59 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 281D6A06E2;
-        Tue, 24 Nov 2020 09:24:58 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 24 Nov 2020 09:24:57 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.21) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 24 Nov 2020 09:24:53 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 3/8] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-Date:   Tue, 24 Nov 2020 18:24:48 +0900
-Message-ID: <20201124092448.27711-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201123003828.xjpjdtk4ygl6tg6h@kafai-mbp.dhcp.thefacebook.com>
-References: <20201123003828.xjpjdtk4ygl6tg6h@kafai-mbp.dhcp.thefacebook.com>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fECDOE9WVaWnaSkgKEr0epnRuxdnMmt7Uaoip8210pA=;
+ b=3qQF9eQ+R8Ct8NKEGdox9Z/TQfX9hwTRUtsgoe2nf2C2Fr9IQV4yJxdUh18BbX88gxCSttgFmiWvBz8ISNL6Wg4dl3qKs+BX7AfHXiyWxDQMwmt03t1IcY2WiVgkJ+DhHYtASrPVguj2ZFFGv1j5iGDGULq97GVb0cElULF4vkI=
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN1PR12MB2542.namprd12.prod.outlook.com (2603:10b6:802:26::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.30; Tue, 24 Nov
+ 2020 09:25:06 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 24 Nov 2020
+ 09:25:06 +0000
+From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dave.hansen@linux-intel.com" <dave.hansen@linux-intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "Grimm, Jon" <Jon.Grimm@amd.com>,
+        "rientjes@google.com" <rientjes@google.com>
+Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Thread-Topic: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Thread-Index: AQHWvrzaxkxw3OuD2kOZmqVqDk7+x6nV+JOAgAAN5wCAAFPQgIAAqeCAgAAFwPM=
+Date:   Tue, 24 Nov 2020 09:25:06 +0000
+Message-ID: <EF13C80C-42DC-4B51-8AF8-2C1D3859B490@amd.com>
+References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
+ <20201123170647.GE15044@zn.tnic> <20201123175632.GA21539@char.us.oracle.com>
+ <20201123225631.GA16055@ashkalra_ubuntu_server>,<20201124090431.GC4009@zn.tnic>
+In-Reply-To: <20201124090431.GC4009@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [136.49.12.8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 54db38f4-5272-49af-992a-08d8905ad4a4
+x-ms-traffictypediagnostic: SN1PR12MB2542:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN1PR12MB2542921DF8EC51E11FADD7B38EFB0@SN1PR12MB2542.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: y8UvaaVMoWaaJCd5E97k7OGHRovKCZJOv9CP03DoI7P3sCE4pXL3le5sGil2KZI1/MPrmnkXxYVT5+JAbvyHQEGAfEU1/knEWA0sWHiUAFrbG2uAPVKAsnJgy+OUHRqta6yXsGhpgQd9/IiRAsytAXEhP+S7WZ/G8VbZ4TF90zg25HzNLqCJfRtZXXtWz7nKNDrvMKasDG7Mh7AvmqEzTBKlG2VqkXU6YFl3N1c00Cr2zsHXgb3466uwVKpw8VeaSrEpOS7sdHa0oMRU5mzk1I9fPhEV7dwyAClA5uR8Qsk0V5lp26elvp6nponNqp1do5K4ZIAvtACHN3y39SSPLZkfy8AA99CQRIoA1Y4gLdWziEigYwnWG3LZ7YPIEogbrhpnhCcZPyjsc3nT+sJe7g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(366004)(346002)(478600001)(64756008)(5660300002)(7416002)(6916009)(91956017)(45080400002)(76116006)(66556008)(966005)(66946007)(4326008)(66446008)(66476007)(316002)(54906003)(2906002)(8676002)(86362001)(53546011)(26005)(6512007)(36756003)(6486002)(6506007)(71200400001)(2616005)(186003)(33656002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 8i2D/iHfen/0KAey27UuY3/DDRJ4TW1R2lboUQM6cPbA2r+Ou3zaS0q/VAstV9hjv33peOlXk/1lM6AhHxIAAemHMvo5mAKNjFy5096/n6KFFZCfQS/fGnbQuHQy8cErIobEdLoa8ujIScpwgCN8EJmxP5/7/YQu/8BE3bj0EUhASZoOrv20FjxJTycGjs4dML32oVIiRnFlCag1LqiAd+4FGtfF2n8K2gdVBh8KXDm3X9T1/Z2l1TxKsYjH6FuAysEb9NeQHNPG2+m5BO1bf1bQHAXOPvsellKbB7HWnmSlOwk0v3v3OL+Knthi+WuzRo3X21+xYcoOLySqfQgQtLOWgHnIQEyOJ7gWg9KFxNMrExf6L/Zh9MdkNGUMcMkYB/NY4fI1IHVntQKgVB4NFPalh8JujVc3Ju+bn77ecZulkQCEy+HDIHxloJ/AJRFWLPVZp49wdk0b+E7v5JES2f6oS6YBiYcble++dL3D0HfL0V3J3jL4iWiq5wqLF/KRUx1RqfsPSoQ/1rgxCb0cwoTmLAIHarBNh2wakh8J/855vNdB1vVVgLYjIU/iFVfz+fV1cq5JA7PwisthQ17PSxIM+Cs9Ox5M7Uh33Y0m71epEtxZ+Au/8egODqewW01VZpb0H2RFClh/j0BSxv8IGEZarqIdoz2nTwCruucKSVFViblFvW4BRTQBqL5XsXlfXkaDzFLW/LtE/tBoCeifri34SitVoJ4WlJ3G6XS4ZXb9Yq2EqudUyAF6eLpECIC/S56/q5aEubVji9Cs5kwBgQe203JgSPRbrtba2AOntRKcOSQvZG+s1poeZhWvNlBCD6jGLCmgqmhowJjAf6n1jnylCTFsJPIuN2schReQLAVRwZgY/vanNfL7RydHtHng
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.21]
-X-ClientProxiedBy: EX13D39UWA003.ant.amazon.com (10.43.160.235) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54db38f4-5272-49af-992a-08d8905ad4a4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 09:25:06.0819
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: t7VzYFQ+DKvY+qQwk7XsDfH9o0rY1yBiAvfvObb5dxGaT8gaZJKYv8Z/q6j9VfCZ6IjlyO0kjXfEeBlzjItjvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2542
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Sun, 22 Nov 2020 16:40:20 -0800
-> On Sat, Nov 21, 2020 at 07:13:22PM +0900, Kuniyuki Iwashima wrote:
-> > From:   Martin KaFai Lau <kafai@fb.com>
-> > Date:   Thu, 19 Nov 2020 17:53:46 -0800
-> > > On Fri, Nov 20, 2020 at 07:09:22AM +0900, Kuniyuki Iwashima wrote:
-> > > > From: Martin KaFai Lau <kafai@fb.com>
-> > > > Date: Wed, 18 Nov 2020 15:50:17 -0800
-> > > > > On Tue, Nov 17, 2020 at 06:40:18PM +0900, Kuniyuki Iwashima wrote:
-> > > > > > This patch lets reuseport_detach_sock() return a pointer of struct sock,
-> > > > > > which is used only by inet_unhash(). If it is not NULL,
-> > > > > > inet_csk_reqsk_queue_migrate() migrates TCP_ESTABLISHED/TCP_SYN_RECV
-> > > > > > sockets from the closing listener to the selected one.
-> > > > > > 
-> > > > > > Listening sockets hold incoming connections as a linked list of struct
-> > > > > > request_sock in the accept queue, and each request has reference to a full
-> > > > > > socket and its listener. In inet_csk_reqsk_queue_migrate(), we unlink the
-> > > > > > requests from the closing listener's queue and relink them to the head of
-> > > > > > the new listener's queue. We do not process each request, so the migration
-> > > > > > completes in O(1) time complexity. However, in the case of TCP_SYN_RECV
-> > > > > > sockets, we will take special care in the next commit.
-> > > > > > 
-> > > > > > By default, we select the last element of socks[] as the new listener.
-> > > > > > This behaviour is based on how the kernel moves sockets in socks[].
-> > > > > > 
-> > > > > > For example, we call listen() for four sockets (A, B, C, D), and close the
-> > > > > > first two by turns. The sockets move in socks[] like below. (See also [1])
-> > > > > > 
-> > > > > >   socks[0] : A <-.      socks[0] : D          socks[0] : D
-> > > > > >   socks[1] : B   |  =>  socks[1] : B <-.  =>  socks[1] : C
-> > > > > >   socks[2] : C   |      socks[2] : C --'
-> > > > > >   socks[3] : D --'
-> > > > > > 
-> > > > > > Then, if C and D have newer settings than A and B, and each socket has a
-> > > > > > request (a, b, c, d) in their accept queue, we can redistribute old
-> > > > > > requests evenly to new listeners.
-> > > > > I don't think it should emphasize/claim there is a specific way that
-> > > > > the kernel-pick here can redistribute the requests evenly.  It depends on
-> > > > > how the application close/listen.  The userspace can not expect the
-> > > > > ordering of socks[] will behave in a certain way.
-> > > > 
-> > > > I've expected replacing listeners by generations as a general use case.
-> > > > But exactly. Users should not expect the undocumented kernel internal.
-> > > > 
-> > > > 
-> > > > > The primary redistribution policy has to depend on BPF which is the
-> > > > > policy defined by the user based on its application logic (e.g. how
-> > > > > its binary restart work).  The application (and bpf) knows which one
-> > > > > is a dying process and can avoid distributing to it.
-> > > > > 
-> > > > > The kernel-pick could be an optional fallback but not a must.  If the bpf
-> > > > > prog is attached, I would even go further to call bpf to redistribute
-> > > > > regardless of the sysctl, so I think the sysctl is not necessary.
-> > > > 
-> > > > I also think it is just an optional fallback, but to pick out a different
-> > > > listener everytime, choosing the moved socket was reasonable. So the even
-> > > > redistribution for a specific use case is a side effect of such socket
-> > > > selection.
-> > > > 
-> > > > But, users should decide to use either way:
-> > > >   (1) let the kernel select a new listener randomly
-> > > >   (2) select a particular listener by eBPF
-> > > > 
-> > > > I will update the commit message like:
-> > > > The kernel selects a new listener randomly, but as the side effect, it can
-> > > > redistribute packets evenly for a specific case where an application
-> > > > replaces listeners by generations.
-> > > Since there is no feedback on sysctl, so may be something missed
-> > > in the lines.
-> > 
-> > I'm sorry, I have missed this point while thinking about each reply...
-> > 
-> > 
-> > > I don't think this migration logic should depend on a sysctl.
-> > > At least not when a bpf prog is attached that is capable of doing
-> > > migration, it is too fragile to ask user to remember to turn on
-> > > the sysctl before attaching the bpf prog.
-> > > 
-> > > Your use case is to primarily based on bpf prog to pick or only based
-> > > on kernel to do a random pick?
-> Again, what is your primarily use case?
-
-We have so many services and components that I cannot grasp all of their
-implementations, but I have started this series because a service component
-based on the random pick by the kernel suffered from the issue.
-
-
-> > I think we have to care about both cases.
-> > 
-> > I think we can always enable the migration feature if eBPF prog is not
-> > attached. On the other hand, if BPF_PROG_TYPE_SK_REUSEPORT prog is attached
-> > to select a listener by some rules, along updating the kernel,
-> > redistributing requests without user intention can break the application.
-> > So, there is something needed to confirm user intension at least if eBPF
-> > prog is attached.
-> Right, something being able to tell if the bpf prog can do migration
-> can confirm the user intention here.  However, this will not be a
-> sysctl.
-> 
-> A new bpf_attach_type "BPF_SK_REUSEPORT_SELECT_OR_MIGRATE" can be added.
-> "prog->expected_attach_type == BPF_SK_REUSEPORT_SELECT_OR_MIGRATE"
-> can be used to decide if migration can be done by the bpf prog.
-> Although the prog->expected_attach_type has not been checked for
-> BPF_PROG_TYPE_SK_REUSEPORT, there was an earlier discussion
-> that the risk of breaking is very small and is acceptable.
-> 
-> Instead of depending on !reuse_md->data to decide if it
-> is doing migration or not, a clearer signal should be given
-> to the bpf prog.  A "u8 migration" can be added to "struct sk_reuseport_kern"
-> (and to "struct sk_reuseport_md" accordingly).  It can tell
-> the bpf prog that it is doing migration.  It should also tell if it is
-> migrating a list of established sk(s) or an individual req_sk.
-> Accessing "reuse_md->migration" should only be allowed for
-> BPF_SK_REUSEPORT_SELECT_OR_MIGRATE during is_valid_access().
-> 
-> During migration, if skb is not available, an empty skb can be used.
-> Migration is a slow path and does not happen very often, so it will
-> be fine even it has to create a temp skb (or may be a static const skb
-> can be used, not sure but this is implementation details).
-
-I greatly appreciate your detailed idea and explanation!
-I will try to implement this.
-
-
-> > But honestly, I believe such eBPF users can follow this change and
-> > implement migration eBPF prog if we introduce such a breaking change.
-> > 
-> > 
-> > > Also, IIUC, this sysctl setting sticks at "*reuse", there is no way to
-> > > change it until all the listening sockets are closed which is exactly
-> > > the service disruption problem this series is trying to solve here.
-> > 
-> > Oh, exactly...
-> > If we apply this series by live patching, we cannot enable the feature
-> > without service disruption.
-> > 
-> > To enable the migration feature dynamically, how about this logic?
-> > In this logic, we do not save the sysctl value and check it at each time.
-> > 
-> >   1. no eBPF prog attached -> ON
-> >   2. eBPF prog attached and sysctl is 0 -> OFF
-> No.  When bpf prog is attached and it clearly signals (expected_attach_type
-> here) it can do migration, it should not depend on anything else.  It is very
-> confusing to use.  When a prog is successfully loaded, verified
-> and attached, it is expected to run.
-> 
-> This sysctl essentially only disables the bpf prog with
-> type == BPF_PROG_TYPE_SK_REUSEPORT running at a particular point.
-> This is going down a path that having another sysctl in the future
-> to disable another bpf prog type.  If there would be a need to disable
-> bpf prog on a type-by-type bases, it would need a more
-> generic solution on the bpf side and do it in a consistent way
-> for all prog types.  It needs a separate and longer discussion.
-> 
-> All behaviors of the BPF_SK_REUSEPORT_SELECT_OR_MIGRATE bpf prog
-> should not depend on this sysctl at all .
-> 
-> /* Pseudo code to show the idea only.
->  * Actual implementation should try to fit
->  * better into the current code and should look
->  * quite different from here.
->  */
-> 
-> if ((prog && prog->expected_attach_type == BPF_SK_REUSEPORT_SELECT_OR_MIGRATE)) {
-> 	/* call bpf to migrate */
-> 	action = BPF_PROG_RUN(prog, &reuse_kern);
-> 
-> 	if (action == SK_PASS) {
-> 		if (!reuse_kern.selected_sk)
-> 			/* fallback to kernel random pick */
-> 		else
-> 			/* migrate to reuse_kern.selected_sk */
-> 	} else {
-> 		/* action == SK_DROP. don't do migration at all and
-> 		 * don't fallback to kernel random pick.
-> 		 */ 
-> 	}
-> }
-> 
-> Going back to the sysctl, with BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
-> do you still have a need on adding sysctl_tcp_migrate_req?
-
-No, now I do not think the option should be sysctl.
-It will be BPF_SK_REUSEPORT_SELECT_OR_MIGRATE in the next series.
-Thank you!
-
-
-> Regardless, if there is still a need,
-> the document for sysctl_tcp_migrate_req should be something like:
-> "the kernel will do a random pick when there is no bpf prog
->  attached to the reuseport group...."
-> 
-> [ ps, my reply will be slow in this week. ]
+DQoNCj4gT24gTm92IDI0LCAyMDIwLCBhdCAzOjA0IEFNLCBCb3Jpc2xhdiBQZXRrb3YgPGJwQGFs
+aWVuOC5kZT4gd3JvdGU6DQo+IA0KPiDvu79PbiBNb24sIE5vdiAyMywgMjAyMCBhdCAxMDo1Njoz
+MVBNICswMDAwLCBBc2hpc2ggS2FscmEgd3JvdGU6DQo+PiBBcyBpIG1lbnRpb25lZCBlYXJsaWVy
+LCB0aGUgcGF0Y2ggd2FzIGluaXRpYWxseSBiYXNlZCBvbiB1c2luZyBhICUgb2YNCj4+IGd1ZXN0
+IG1lbW9yeSwNCj4gDQo+IENhbiB5b3UgZmlndXJlIG91dCBob3cgbXVjaCB0aGUgZ3Vlc3QgbWVt
+b3J5IGlzIGFuZCB0aGVuIGFsbG9jYXRlIGENCj4gcGVyY2VudGFnZT8NCg0KQnV0IHdoYXQgd2ls
+bCBiZSB0aGUgY3JpdGVyaWEgdG8gZmlndXJlIG91dCB0aGlzIHBlcmNlbnRhZ2U/DQoNCkFzIEkg
+bWVudGlvbmVkIGVhcmxpZXIsIHRoaXMgY2FuIGJlIG1hZGUgYXMgY29tcGxpY2F0ZWQgYXMgcG9z
+c2libGUgYnkgYWRkaW5nIGFsbCBraW5kIG9mIGhldXJpc3RpY3MgYnV0IHdpdGhvdXQgYW55IHBy
+ZWRpY3RhYmxlIHBlcmZvcm1hbmNlIGdhaW4uDQoNCk9yIGl0IGNhbiBiZSBrZXB0IHNpbXBsZSBi
+eSB1c2luZyBhIHN0YXRpYyBwZXJjZW50YWdlIHZhbHVlLg0KDQpUaGFua3MsDQpBc2hpc2gNCg0K
+PiAtLSANCj4gUmVnYXJkcy9HcnVzcywNCj4gICAgQm9yaXMuDQo+IA0KPiBodHRwczovL25hbTEx
+LnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZwZW9w
+bGUua2VybmVsLm9yZyUyRnRnbHglMkZub3Rlcy1hYm91dC1uZXRpcXVldHRlJmFtcDtkYXRhPTA0
+JTdDMDElN0Nhc2hpc2gua2FscmElNDBhbWQuY29tJTdDMDc2NjQyMmJjZWU2NGQyZWI1NzIwOGQ4
+OTA1N2Y2MjAlN0MzZGQ4OTYxZmU0ODg0ZTYwOGUxMWE4MmQ5OTRlMTgzZCU3QzAlN0MwJTdDNjM3
+NDE4MDU0Nzk3OTUwNjk0JTdDVW5rbm93biU3Q1RXRnBiR1pzYjNkOGV5SldJam9pTUM0d0xqQXdN
+REFpTENKUUlqb2lWMmx1TXpJaUxDSkJUaUk2SWsxaGFXd2lMQ0pYVkNJNk1uMCUzRCU3QzEwMDAm
+YW1wO3NkYXRhPSUyRkVGdVJHT01PdTRCWlVrUE9kOXJ4YW0lMkJCQTNuWGo0dGRSRkZqM25RNDdV
+JTNEJmFtcDtyZXNlcnZlZD0wDQo=
