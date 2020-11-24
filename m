@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEDE2C2271
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E43D2C2282
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731001AbgKXKCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:02:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:51038 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728872AbgKXKCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:02:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D8E31396;
-        Tue, 24 Nov 2020 02:02:35 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A47333F71F;
-        Tue, 24 Nov 2020 02:02:31 -0800 (PST)
-Subject: Re: [PATCH 1/6] arm64: pgtable: Fix pte_accessible()
-To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        stable@vger.kernel.org
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-2-will@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <6eb6dead-4c76-d14a-dcc7-0d1411337dc6@arm.com>
-Date:   Tue, 24 Nov 2020 15:32:18 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727923AbgKXKHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726256AbgKXKHr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:07:47 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DB1C0613D6;
+        Tue, 24 Nov 2020 02:07:47 -0800 (PST)
+Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=[192.168.66.101]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1khVEc-0001AA-Ey; Tue, 24 Nov 2020 11:07:42 +0100
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <cover.1606137108.git.linux@leemhuis.info>
+ <c07e51e153f453c83c77a75513ad3d5ec70ef1be.1606137108.git.linux@leemhuis.info>
+ <20201124091852.GB11695@lst.de>
+ <04eae024-811d-d11e-b8bd-52f0dd0e225f@leemhuis.info>
+ <20201124093658.GA13174@lst.de>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [PATCH v3 1/3] LICENSES: Add the CC-BY-4.0 license
+Message-ID: <e424e24f-08d3-0b83-3d5b-ac500c753792@leemhuis.info>
+Date:   Tue, 24 Nov 2020 11:07:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201120143557.6715-2-will@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201124093658.GA13174@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1606212467;8782e6b7;
+X-HE-SMSGID: 1khVEc-0001AA-Ey
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/20/20 8:05 PM, Will Deacon wrote:
-> pte_accessible() is used by ptep_clear_flush() to figure out whether TLB
-> invalidation is necessary when unmapping pages for reclaim. Although our
-> implementation is correct according to the architecture, returning true
-> only for valid, young ptes in the absence of racing page-table
-
-Just curious, a PTE mapping would go into the TLB only if it is an
-young one with PTE_AF bit set per the architecture ?
-
-> modifications, this is in fact flawed due to lazy invalidation of old
-> ptes in ptep_clear_flush_young() where we elide the expensive DSB
-> instruction for completing the TLB invalidation.
-
-IOW, an old PTE might have missed the required TLB invalidation via
-ptep_clear_flush_young() because it's done in lazy mode. Hence just
-include old valid PTEs in pte_accessible() so that TLB invalidation
-could be done in ptep_clear_flush() path instead. May be TLB flush
-could be done for every PTE, irrespective of its PTE_AF bit in
-ptep_clear_flush_young().
-
+Am 24.11.20 um 10:36 schrieb Christoph Hellwig:
+> On Tue, Nov 24, 2020 at 10:31:33AM +0100, Thorsten Leemhuis wrote:
+>> Am 24.11.20 um 10:18 schrieb Christoph Hellwig:
+>>> On Tue, Nov 24, 2020 at 09:00:01AM +0100, Thorsten Leemhuis wrote:
+>>>> For context: Patch 2 of this series adds a text to the Documentation/ directory
+>>>> which (for now) uses "GPL-2.0+ OR CC-BY-4.0", as I want to make it easy and
+>>>> attractive for others to base their work on it. I'm not strongly attached to
+>>>> CC-BY-4.0, but it seemed like the best choice: it's designed for such usage and
+>>>> afaics better than using MIT for text files.
+>>>
+>>> And you've not Cced me on that patch 2 or patch 3, which makes Ccing
+>>> me on this pretty useless as I can't judge the context.
+>>
+>> Argh, sorry, slipped through. You can find it here:
+>>
+>> https://lore.kernel.org/linux-doc/2f314e58cb14c1579f843f8c72bdb4bbb83ac20a.1606137108.git.linux@leemhuis.info/
+>>
+>> FWIW, here it is for easy access (just sent with thunderbird instead of
+>> git send-mail, hopefully should be enough for this):
 > 
-> Rather than penalise the aging path, adjust pte_accessible() to return
-> true for any valid pte, even if the access flag is cleared.
+> So what is so special with this documentation that it needs a
+> (for the kernel tree) unusual license?
 
-But will not this cause more (possibly not required) TLB invalidation
-in normal unmapping paths ? The cover letter mentions that this patch
-fixes a real world crash. Should not the crash also be described here
-in the commit message as this patch is marked for stable and has a
-"Fixes: " tag.
+There is nothing special with this text, it's just that GPL is known to 
+not be really ideal for documentation. That makes it hard for people to 
+reuse parts of the docs outside of the kernel context, say in books or 
+on websites. But it IMHO would be good for us if others could simply use 
+this text as a base in such places. Otherwise they'd often face a 
+situation where they had to write something completely new themselves, 
+which afsics often leads to texts that can be incomplete, inaccurate or 
+actually missleading. That can lead to bad bug reports, which is 
+annoying both for reporters and kernel developers.
 
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 76c714be0e5e ("arm64: pgtable: implement pte_accessible()")
-> Reported-by: Yu Zhao <yuzhao@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  arch/arm64/include/asm/pgtable.h | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 4ff12a7adcfd..1bdf51f01e73 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -115,8 +115,6 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
->  #define pte_valid(pte)		(!!(pte_val(pte) & PTE_VALID))
->  #define pte_valid_not_user(pte) \
->  	((pte_val(pte) & (PTE_VALID | PTE_USER)) == PTE_VALID)
-> -#define pte_valid_young(pte) \
-> -	((pte_val(pte) & (PTE_VALID | PTE_AF)) == (PTE_VALID | PTE_AF))
->  #define pte_valid_user(pte) \
->  	((pte_val(pte) & (PTE_VALID | PTE_USER)) == (PTE_VALID | PTE_USER))
->  
-> @@ -126,7 +124,7 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
->   * remapped as PROT_NONE but are yet to be flushed from the TLB.
->   */
->  #define pte_accessible(mm, pte)	\
-> -	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid_young(pte))
-> +	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid(pte))
->  
->  /*
->   * p??_access_permitted() is true for valid user mappings (subject to the
-> 
+That's why I came up with the thought "make the text available under 
+more liberal license in addition to the GPLv2 is a good idea here". I 
+considered MIT, but from what I see CC-BY 4.0 is a way better choice for 
+documentation that is more known to authors.
+
+And I hope others pick up the idea when they write new documentation for 
+the kernel, so maybe sooner or later it's not unusual anymore.
+
+>  How to we make sure people
+> don't accidentally end up including things they can't?
+
+Well, the license in only specified in the header and not visible in the 
+rendered HTML, which reduces the risk already. To make it even smaller I 
+could add something like this to the header:
+
+```
+In case you want to use this text under CC-BY-4.0, make sure to take the 
+plaintext version
+  straight from the Linux kernel sources as base. This is because 
+processed versions of this text (like one rendered to HTML or PDF) will 
+have text in them
+  that is taken from other files which that are not available under 
+CC-BY-4.0
+  license.
+```
+
+Ciao, Thorsten
