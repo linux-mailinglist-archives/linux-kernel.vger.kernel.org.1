@@ -2,84 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544592C3037
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F62C2C3041
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404370AbgKXSwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:52:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404243AbgKXSwV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:52:21 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A5FC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:52:21 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 62so18271374pgg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:52:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sFK91XydZyXQWY1gobkRf01DMmXQEgpxPXEOFflyrhY=;
-        b=wGHb/mKJwXBv7u/QmzjzG/MALQoIbanNCslwdtiAftMUjmxQA/tSmpHkH1LfnlM5WQ
-         Bgb4vK7OZ01J6Psj4OwntFDMq8R9j8Ns0ZwSrLkO7xjNNGdQDW04KlAgdiCiyD8LNNWQ
-         5aiaY+8GManhjhn+E5aO/tBswdaEw+HM2xRXaLymjZr5oIMM6uH5VL9sNAhxRPFgVgpr
-         4vzldQvxySfqaCH6UzhkfvBpVaAyJRFj3N51hqssxV5l43RuEcShm6lTXyQ4Zi54d7Qf
-         r70QPVWMNYXF7S9rbkgTKIWF47ApUWOgxguUVoBBVU4MHU1pr4TEd5zPuooD6N5PNjIN
-         Or4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sFK91XydZyXQWY1gobkRf01DMmXQEgpxPXEOFflyrhY=;
-        b=brELKPlfo+LmaTCA29AXfmmlQZOtyoDlbKwu6DEVxNwf9i6Oa7EONO9+9tf4Fqi83D
-         12ybVy1eDXe/ue5AWMvcRE0LASiSxVsxx7pgnHvie2d7CnfwtlH3AVr2TDIdlPHlLQx7
-         SCvFmlspSNvduXQ1dqscpew1HC94qqDE1SmxGtFb9mkOkhvfpGEpx0elQQ2Pq80aWkCx
-         zEQyGXCvSGjmTUAN5x2cU32MTlRHCQBKG8Z+Er12XYmvPz56wEhnX4+XjCL9jjFc+Lh8
-         UmiFtOxzs+Q/1qRWesg85cqmw6FaFB0urWXoo7sW9NuoEo842Y32IcaX+TIaDKLnP58+
-         QHHg==
-X-Gm-Message-State: AOAM533qfGLkT+Wz/LvTPBExd4v/szWF2IvQiwBKizCXL5SEfTjSKOhV
-        dcNixo3Os3/o8pq2QdhdXUtF3VhWqw6nnI7N
-X-Google-Smtp-Source: ABdhPJybo0H5UE8SaKWsWUCBD/xp4c5gfAW+uTMZ/XhWwYLinb9fg4R73/Z9DQdE8oxNEfZbE+mB/Q==
-X-Received: by 2002:a17:90b:3781:: with SMTP id mz1mr6463471pjb.229.1606243941279;
-        Tue, 24 Nov 2020 10:52:21 -0800 (PST)
-Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
-        by smtp.gmail.com with ESMTPSA id m13sm5454151pfa.115.2020.11.24.10.52.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 10:52:20 -0800 (PST)
-Date:   Tue, 24 Nov 2020 18:52:16 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v4 00/34] SEV-ES hypervisor support
-Message-ID: <20201124185216.GA235281@google.com>
-References: <cover.1605632857.git.thomas.lendacky@amd.com>
- <347c5571-2141-44e5-4650-f63d93fd394f@amd.com>
+        id S2390963AbgKXS44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:56:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390919AbgKXS4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:56:55 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 585E2208B8;
+        Tue, 24 Nov 2020 18:56:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606244215;
+        bh=9EeXvYxhc+xygm951jAEsP8Q6mZuaqaa24L32cHPcPc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VJZaXlBJHkMCoewgWb8aXdZ1RrA1dJX7Zg1ZTsrOfUsQXQhXL/f+tq6i/n3Xv+sDy
+         yhlkpL7F/7iM2hyfE1vn+ugehJ4gaLx95i8+BaYcWglq9PM9Pno+w8Z6pmM87NokLY
+         hXLVqiFYs6LQnVhEyu8qqbSkssb9l82omiO/pxwk=
+Date:   Tue, 24 Nov 2020 10:56:53 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Antonio Borneo <antonio.borneo@st.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "Jose Abreu" <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        has <has@pengutronix.de>
+Subject: Re: [PATCH] net: stmmac: add flexible PPS to dwmac 4.10a
+Message-ID: <20201124105653.40426fe7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <4a53794f1a0cea5eb009fce0b4b4c4846771f8be.camel@st.com>
+References: <20191007154306.95827-1-antonio.borneo@st.com>
+        <20191007154306.95827-5-antonio.borneo@st.com>
+        <20191009152618.33b45c2d@cakuba.netronome.com>
+        <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
+        <e2b2b623700401538fe91e70495c348c08b5d2e3.camel@st.com>
+        <20201124102022.1a6e6085@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <4a53794f1a0cea5eb009fce0b4b4c4846771f8be.camel@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <347c5571-2141-44e5-4650-f63d93fd394f@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020, Tom Lendacky wrote:
-> On 11/17/20 11:07 AM, Tom Lendacky wrote:
-> > From: Tom Lendacky <thomas.lendacky@amd.com>
-> > 
-> > This patch series provides support for running SEV-ES guests under KVM.
-> 
-> Any comments on this series?
+On Tue, 24 Nov 2020 19:27:03 +0100 Antonio Borneo wrote:
+> On Tue, 2020-11-24 at 10:20 -0800, Jakub Kicinski wrote:
+> > On Tue, 24 Nov 2020 15:23:27 +0100 Antonio Borneo wrote: =20
+> > > On Tue, 2020-11-24 at 15:15 +0100, Ahmad Fatoum wrote: =20
+> > > > On 10.10.19 00:26, Jakub Kicinski wrote:   =20
+> > > > > On Mon, 7 Oct 2019 17:43:06 +0200, Antonio Borneo wrote:   =20
+> > > > > > All the registers and the functionalities used in the callback
+> > > > > > dwmac5_flex_pps_config() are common between dwmac 4.10a [1] and
+> > > > > > 5.00a [2].
+> > > > > >=20
+> > > > > > Reuse the same callback for dwmac 4.10a too.
+> > > > > >=20
+> > > > > > Tested on STM32MP15x, based on dwmac 4.10a.
+> > > > > >=20
+> > > > > > [1] DWC Ethernet QoS Databook 4.10a October 2014
+> > > > > > [2] DWC Ethernet QoS Databook 5.00a September 2017
+> > > > > >=20
+> > > > > > Signed-off-by: Antonio Borneo <antonio.borneo@st.com>   =20
+> > > > >=20
+> > > > > Applied to net-next.   =20
+> > > >=20
+> > > > This patch seems to have been fuzzily applied at the wrong location.
+> > > > The diff describes extension of dwmac 4.10a and so does the @@ line:
+> > > >=20
+> > > > =C2=A0=C2=A0@@ -864,6 +864,7 @@ const struct stmmac_ops dwmac410_op=
+s =3D {
+> > > >=20
+> > > > The patch was applied mainline as 757926247836 ("net: stmmac: add
+> > > > flexible PPS to dwmac 4.10a"), but it extends dwmac4_ops instead:
+> > > >=20
+> > > > =C2=A0=C2=A0@@ -938,6 +938,7 @@ const struct stmmac_ops dwmac4_ops =
+=3D {
+> > > >=20
+> > > > I don't know if dwmac4 actually supports FlexPPS, so I think it's
+> > > > better to be on the safe side and revert 757926247836 and add the
+> > > > change for the correct variant.   =20
+> > >=20
+> > > Agree,
+> > > the patch get applied to the wrong place! =20
+> >=20
+> > :-o
+> >=20
+> > This happens sometimes with stable backports but I've never seen it
+> > happen working on "current" branches.
+> >=20
+> > Sorry about that!
+> >=20
+> > Would you mind sending the appropriate patches? I can do the revert if
+> > you prefer, but since you need to send the fix anyway.. =20
+>=20
+> You mean sending two patches one for revert and one to re-apply the code?
+> Or a single patch for the fix?
 
-I'm planning on doing a thorough review, but it'll probably take me a few more
-weeks to get to it.
+Either way is fine by me. If I was doing it - I'd probably send just one
+patch, but if you prefer to revert first - nothing wrong with that.
