@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7E82C1C9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832F82C1C9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbgKXERL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:17:11 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44230 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727988AbgKXERL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:17:11 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AO4Gxpb108677;
-        Mon, 23 Nov 2020 22:16:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606191419;
-        bh=xT+n8mlJn9Eo903Kfy60kB5HunA+0yDvTT3bwH6YPUo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=bzux2KAEW/eppb98qT0B12Clt2EhwONOpTwWxcsN7ZNtLtlOTY5v3RlKC5Sj00nwq
-         WWXNGlc8UKV5mc19KTFBg6nIwQ4nbWiPOVc54Ot3bs/Hd9hsnm9tI+ZxY2IKbYsp14
-         XhOdD1Vls/0VAWjV7gkoGzEmy6FwKJfhto3WP+6w=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AO4Gxpj043474
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 23 Nov 2020 22:16:59 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 23
- Nov 2020 22:16:59 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 23 Nov 2020 22:16:59 -0600
-Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AO4Gs3L026518;
-        Mon, 23 Nov 2020 22:16:54 -0600
-Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3: squelch warnings regarding no
- #address-cells for interrupt-controller
-To:     Nishanth Menon <nm@ti.com>
-CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Andre Przywara <andre.przywara@arm.com>
-References: <20201117161942.38754-1-nsekhar@ti.com>
- <20201117161942.38754-3-nsekhar@ti.com>
- <ab9658ef-c8a7-155b-acb1-effa872132ca@ti.com>
- <20201118151259.kpag44djji4ssiup@eldest>
- <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
- <20201119132829.sr435jf6s4275q4i@boxlike>
- <313a9cd5-7411-4ae1-cde4-42a2c18d11e6@ti.com>
- <20201124012100.fq7w7bjxvewuhbt2@shirt>
-From:   Sekhar Nori <nsekhar@ti.com>
-Message-ID: <8885dd79-061b-82e3-1aeb-a318f7d8256d@ti.com>
-Date:   Tue, 24 Nov 2020 09:46:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20201124012100.fq7w7bjxvewuhbt2@shirt>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1727068AbgKXESv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:18:51 -0500
+Received: from mga11.intel.com ([192.55.52.93]:8580 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726158AbgKXESu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 23:18:50 -0500
+IronPort-SDR: bZIpqjR0X3A1w8KeVtfJ2dWeWAN+pJaBxSUBLZcxo+c4rtRKitui8BcEr55Sby6tho8tbEhXRN
+ hXfaikrwGlww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="168378648"
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="168378648"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 20:18:49 -0800
+IronPort-SDR: fmeGY2cnWG1z8RzqGKX08iy6zPdPpEkv/HnJTzeTE8KcdaWA22IeAEiJpi67Bf5fPjog1NkGjw
+ P5kN+gd9gT4w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="343029822"
+Received: from sgsxdev004.isng.phoenix.local (HELO localhost) ([10.226.81.179])
+  by orsmga002.jf.intel.com with ESMTP; 23 Nov 2020 20:18:46 -0800
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     broonie@kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Cc:     linux-mtd@lists.infradead.org, vigneshr@ti.com, p.yadav@ti.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v9 0/5] spi: cadence-quadspi: Add QSPI controller support for Intel LGM SoC
+Date:   Tue, 24 Nov 2020 12:18:35 +0800
+Message-Id: <20201124041840.31066-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/20 6:51 AM, Nishanth Menon wrote:
-> On 09:45-20201123, Sekhar Nori wrote:
->>>> The main reason I commented - is hope to get some clarification from DT maintainers.
->>>> 90% of interrupt-controller nodes do not have #address-cells and I never seen in in GPIO nodes
->>>> (most often is present in PCI and GIC nodes).
->>>> and nobody seems fixing it. So, if we are going to move this direction it's reasonable to get clarification to be sure.
->>>>
->>>> And there is no "never" here - #address-cells always can be added if really required.
->>>
->>>
->>> OK - as a GPIO node, but as an interrupt-controller node, I was
->>> looking at [1] and wondering if that was the precedence.
->>>
->>> Yes, will be good to get direction from the DT maintainers on this
->>> topic.
->>
->> Shall I respin this series with 2/4 dropped while we wait for decision
->> on this?
->>
->> #address-cells warnings on interrupt controller can perhaps be handled
->> all at once (there are many of those in existing DT anyway).
->>
->> GPIO is basic support and holds up many other modules (like MMC/SD).
-> 
-> 
-> There are'nt too many new patches in my queue that depends on GPIO, I'd
-> rather not introduce new warnings unless we are completely at a
-> stalemate. I'd rather use this opportunity to understand where what we
-> need to be doing.
-GPIO was originally submitted as part of 8  patch series titled "[PATCH
-0/8] Add support for UHS modes in TI's J721e and J7200 boards"
+Add QSPI controller support for Intel LGM SoC. 
 
-Rest of those patches need to be resubmitted after GPIO is accepted.
+Patches to move move bindings over to
+"Documentation/devicetree/bindings/spi/" directory and also added compatible
+Support for Intel platform.
 
-Can you apply patch 1/4 at least. Its fairly non-controversial. It will
-help reduce patch backlog and fix some warnings too.
+dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
+(earlier patch mail thread and Ack-by)
+link: "https://lore.kernel.org/lkml/5d6d1b85.1c69fb81.96938.0315@mx.google.com/"
 
-Thanks,
-Sekhar
+Reference:
+        https://lkml.org/lkml/2020/6/1/50
+---
+v9:
+  - Vignesh review comments address and update
+  - Retain the patchv4 move the binding documentation from mtd to spi
+    directory.
+  - Add intel's compatible string over the legacy documentation
+  - Remove unused variable, CQSPI_SUPPORTS_MULTI_CHIPSELECT macro and check  
+  - YAML convertion patch alone dropped
+v8:
+  - As Mark suggested to add the dt-bindings documentation patches
+    end of the series , so dropped.
+v7:
+  - Rob's review comments address and fixed dt-schema warning
+  - Pratyush review comments address and update
+  - DAC bit reset to 0 and 1 (enable/disable)
+  - tested QSI-NOR flash mx25l12805d on LGM soc, it's working after disable DAC
+  - Linus suggested to use 'num-cs' prperty instead of 'num-chipselect'
+v6:
+  - Rob's review comments update
+  - add compatible string in properly aligned
+  - remove cadence-qspi extra comaptible string in example
+v5:
+  - Rob's review comments update
+  - const with single compatible string kept
+v4:
+  - Rob's review comments update
+  - remove '|' no formatting to preserve
+  - child node attributes follows under 'properties' under '@[0-9a-f]+$'.
+v3:
+  - Pratyush review comments update
+  - CQSPI_SUPPORTS_MULTI_CHIPSELECT macro used instead of cqspi->use_direct_mode
+  - disable DAC support placed in end of controller_init
+v2:
+  - Rob's review comments update for dt-bindings
+  - add 'oneOf' for compatible selection
+  - drop un-neccessary descriptions
+  - add the cdns,is-decoded-cs and cdns,rclk-en properties as schema
+  - remove 'allOf' in not required place
+  - add AdditionalProperties false
+  - add minItems/maxItems for qspi reset attributes
+
+resend-v1:
+  - As per Mark's suggestion , reorder the patch series 1-3 driver
+    support patches, series 4-6 dt-bindings patches.
+v1:
+  - initial version
+
+Ramuthevar Vadivel Murugan (5):
+  spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
+  spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
+  spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
+  spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
+  dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
+
+ .../bindings/{mtd => spi}/cadence-quadspi.txt      |  1 +
+ drivers/spi/Kconfig                                |  2 +-
+ drivers/spi/spi-cadence-quadspi.c                  | 24 ++++++++++++++++++----
+ 3 files changed, 22 insertions(+), 5 deletions(-)
+ rename Documentation/devicetree/bindings/{mtd => spi}/cadence-quadspi.txt (97%)
+
+-- 
+2.11.0
+
