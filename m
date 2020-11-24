@@ -2,238 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A0C2C2AB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14452C2ABB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389476AbgKXPDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        id S2389488AbgKXPDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389464AbgKXPDq (ORCPT
+        with ESMTP id S2389452AbgKXPDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:03:46 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9024C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:03:43 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id l36so19612813ota.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:03:43 -0800 (PST)
+        Tue, 24 Nov 2020 10:03:50 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F365AC0613D6;
+        Tue, 24 Nov 2020 07:03:49 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 10so2695519wml.2;
+        Tue, 24 Nov 2020 07:03:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=an7lmYlQ2JOBofNnOublbiqlb6XjUqYjFJm3j5tP9c4=;
-        b=GmAYX7vII0ePxodJCg38pWV6sId5pXuZMg77ftgMNd1NN+Zju91rOujGo3Roy5IOfF
-         6zvfJXZgG8L82lvo6J6tFAGdhBkdD+PyklJG2Dr5McD6ffQ/PW0WLSoAvTDCMe9s3xEw
-         vTeGW5zQRezviR7wJGl2yvHn5WE1gk3RXhtmiV6IVv5gV3Zi4RbfWstvX9iEi/bwTzXa
-         hA5SuiUBDJpO01TpkSzBeEu+ANwB1ZA0McRkE6V63AM3Khp4FLipwqgVikynlFCMN3bE
-         Z1dOU2gz02j7Iw1V8wOx5D+HiYzM+6Dnn92SXVyEkfCDpZhhD7jW7w4LPm2plFrTp8wK
-         Y9Mg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=HFdlhJaaYtVAHZoZx+O2cfNnd2v0cgIEGMNjYfyBtsM=;
+        b=ZeuxxeGJizVrTQ8/+drC2BXOjRHNr8TNITrPHM54Kju6SErP4aUNRGzd2no43NToYD
+         GdUOSa+9BSjoQiP7X9sNWQ1giuNJPUv72hBAZXSCVj4MRdTf0HYgdM+tAR3fMuYvagD9
+         aOs6Dsgc8B7gcIHIz3Fenf0FpsxsbUQ4dR0YImjAtUWhpYyJJHznwBpsjgiP7MmQvPtH
+         j2bxpkbKc3T6wGJ6ono2W6k/NDP5bzUzFG9wyD4fI0ps2BZ5QDv73Q4CHF3bZz4iUKSy
+         Cw58Ivn2TvJpbCBhBu+BUT66wspodlZlJu6QPslG71dFXtiDQ10NrADNfnNilXlL8kQS
+         LlkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=an7lmYlQ2JOBofNnOublbiqlb6XjUqYjFJm3j5tP9c4=;
-        b=nDi0kLRduZBrFV8ThCfMjwQiNu4NHmxfjtOEddmxvHiugR7TKHeYIFb4ptzTRqxucA
-         lSNImYqdso3QRASQMAtf4rd3GjuHZI6WHg/n8piWMeLBmX2h+b6vGb1ql6EiNR1Nc+25
-         hOvBRILA5Wd6kH3LXrNje8qckjGA0ODGyAmUNO2vBjz+NxaWZUtHH531SoHERGjKjwo/
-         1frEmB7qDFjjRX6qWlhaF22nq1xYstgpCvAGTpA6H+tD952BzJalPKAVSL5LTcE7Frbd
-         7Y2gkKEU7ivOJ6ujTHGaUrcSt+sB0uVN7pUdZNyKbshRGD0D2PTD050cagSByONkaia2
-         fBOg==
-X-Gm-Message-State: AOAM5304wYLy7l9Qr13MHM0iDDYkWMaNQ4WdmGQH2yqIb89bXwpyO69t
-        YgiluQAfEZNQXSO99BhQq57V/g==
-X-Google-Smtp-Source: ABdhPJwKTQsL5UzaB6j6I0uaoQsdFoaC1oc3lIpTQeMKg6W10ccfDr26MrpEVMALa5JNXtrEpqYnPw==
-X-Received: by 2002:a9d:7392:: with SMTP id j18mr3722795otk.288.1606230223018;
-        Tue, 24 Nov 2020 07:03:43 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z19sm8683974otm.58.2020.11.24.07.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 07:03:42 -0800 (PST)
-Date:   Tue, 24 Nov 2020 09:03:40 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org, vkoul@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=HFdlhJaaYtVAHZoZx+O2cfNnd2v0cgIEGMNjYfyBtsM=;
+        b=tzmJ3Y7sTG9xosC3Hzf2cRBm4/gSE5uoK99S1ss07fuGInruwJwqIrrp8cECX5W0jc
+         sJcy/Bc/4WSeJ0jOR6IDRKbTC36xKRihD7lnSArVhkx/GeLIHnuzK+ZjRiYZqsUK1mKB
+         tMHfrwpEM3UDBaSe4WNuSNdlm89avwy6ExbGPSUMDXGcAYJr4n54BsLLFZTpUSwnkn/0
+         IpJstu+PXbb2n0T5Xpy1IoOSmnSL2B5aMt46YqGTrJZvOCzIEMc/yOBK0vQR4Q4SQRsK
+         Vmi8a2+FA4SFZzh9U0pcu5E09sWhqRDxDkCn0yixznp1/zm87svSuVa7oMw90nRYOotW
+         eWnw==
+X-Gm-Message-State: AOAM531Iy7x9GCtKz1GSUrdv6sSLN+oB/K3n3ehBXG5whtZqrtX52LaK
+        C6E4eB5i5GaFE7iHTfuYPIwBB3VD0urx2g==
+X-Google-Smtp-Source: ABdhPJww+D+Kpjg5W65A9K3BrPYYERd+hjbvhkiesPVWAgqYd7TEqnJVbB08jzGFXDLnyziJPgEzhQ==
+X-Received: by 2002:a1c:3d05:: with SMTP id k5mr5093414wma.151.1606230225625;
+        Tue, 24 Nov 2020 07:03:45 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f23:2800:4cf3:cdf5:5d2a:5c8c? (p200300ea8f2328004cf3cdf55d2a5c8c.dip0.t-ipconnect.de. [2003:ea:8f23:2800:4cf3:cdf5:5d2a:5c8c])
+        by smtp.googlemail.com with ESMTPSA id u5sm5669309wml.13.2020.11.24.07.03.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 07:03:44 -0800 (PST)
+Subject: Re: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
+To:     Antonio Borneo <antonio.borneo@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Yonglong Liu <liuyonglong@huawei.com>
+Cc:     stable@vger.kernel.org, linuxarm@huawei.com,
+        Salil Mehta <salil.mehta@huawei.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ARM: dts: qcom: Add SDX55 Modem and MTP board support
-Message-ID: <20201124150340.GK95182@builder.lan>
-References: <20201124140011.134751-1-manivannan.sadhasivam@linaro.org>
- <20201124140011.134751-3-manivannan.sadhasivam@linaro.org>
+References: <20201124143848.874894-1-antonio.borneo@st.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <4684304a-37f5-e0cd-91cf-3f86318979c3@gmail.com>
+Date:   Tue, 24 Nov 2020 16:03:40 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124140011.134751-3-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24 Nov 08:00 CST 2020, Manivannan Sadhasivam wrote:
-
-> Add basic devicetree support for SDX55 Modem and MTP board from
-
-Again, let's call is "SDX55 platform".
-
-> Qualcomm. The SDX55 modem features an ARM Cortex A7 CPU which forms the
-> Application Processor Sub System (APSS) along with standard Qualcomm
-> peripherals like GCC, TLMM, BLSP, QPIC, BAM etc... Along with these,
-> there exists the networking parts such as IPA, MHI, PCIE-EP, EMAC
-> etc..
-
-And here you can mention that there's a modem.
-
+Am 24.11.2020 um 15:38 schrieb Antonio Borneo:
+> If the auto-negotiation fails to establish a gigabit link, the phy
+> can try to 'down-shift': it resets the bits in MII_CTRL1000 to
+> stop advertising 1Gbps and retries the negotiation at 100Mbps.
 > 
-> Currently, this basic devicetree support includes GCC, RPMh clock, INTC
-> and Debug UART.
+I see that Russell answered already. My 2cts:
+
+Are you sure all PHY's supporting downshift adjust the
+advertisement bits? IIRC an Aquantia PHY I dealt with does not.
+And if a PHY does so I'd consider this problematic:
+Let's say you have a broken cable and the PHY downshifts to
+100Mbps. If you change the cable then the PHY would still negotiate
+100Mbps only.
+
+Also I think phydev->advertising reflects what the user wants to
+advertise, as mentioned by Russell before.
+
+
+>>From commit 5502b218e001 ("net: phy: use phy_resolve_aneg_linkmode
+> in genphy_read_status") the content of MII_CTRL1000 is not checked
+> anymore at the end of the negotiation, preventing the detection of
+> phy 'down-shift'.
+> In case of 'down-shift' phydev->advertising gets out-of-sync wrt
+> MII_CTRL1000 and still includes modes that the phy have already
+> dropped. The link partner could still advertise higher speeds,
+> while the link is established at one of the common lower speeds.
+> The logic 'and' in phy_resolve_aneg_linkmode() between
+> phydev->advertising and phydev->lp_advertising will report an
+> incorrect mode.
 > 
-> Co-developed-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Issue detected with a local phy rtl8211f connected with a gigabit
+> capable router through a two-pairs network cable.
+> 
+> After auto-negotiation, read back MII_CTRL1000 and mask-out from
+> phydev->advertising the modes that have been eventually discarded
+> due to the 'down-shift'.
+> 
+> Fixes: 5502b218e001 ("net: phy: use phy_resolve_aneg_linkmode in genphy_read_status")
+> Cc: stable@vger.kernel.org # v5.1+
+> Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+> Link: https://lore.kernel.org/r/478f871a-583d-01f1-9cc5-2eea56d8c2a7@huawei.com
 > ---
->  arch/arm/boot/dts/Makefile           |   3 +-
->  arch/arm/boot/dts/qcom-sdx55-mtp.dts |  27 ++++
->  arch/arm/boot/dts/qcom-sdx55.dtsi    | 205 +++++++++++++++++++++++++++
->  3 files changed, 234 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm/boot/dts/qcom-sdx55-mtp.dts
->  create mode 100644 arch/arm/boot/dts/qcom-sdx55.dtsi
+> To: Andrew Lunn <andrew@lunn.ch>
+> To: Heiner Kallweit <hkallweit1@gmail.com>
+> To: Russell King <linux@armlinux.org.uk>
+> To: "David S. Miller" <davem@davemloft.net>
+> To: Jakub Kicinski <kuba@kernel.org>
+> To: netdev@vger.kernel.org
+> To: Yonglong Liu <liuyonglong@huawei.com>
+> Cc: linuxarm@huawei.com
+> Cc: Salil Mehta <salil.mehta@huawei.com>
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-kernel@vger.kernel.org
+> Cc: Antonio Borneo <antonio.borneo@st.com>
 > 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index ce66ffd5a1bb..1505c6cdc5ca 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -917,7 +917,8 @@ dtb-$(CONFIG_ARCH_QCOM) += \
->  	qcom-msm8974-sony-xperia-amami.dtb \
->  	qcom-msm8974-sony-xperia-castor.dtb \
->  	qcom-msm8974-sony-xperia-honami.dtb \
-> -	qcom-mdm9615-wp8548-mangoh-green.dtb
-> +	qcom-mdm9615-wp8548-mangoh-green.dtb \
-> +	qcom-sdx55-mtp.dtb
->  dtb-$(CONFIG_ARCH_RDA) += \
->  	rda8810pl-orangepi-2g-iot.dtb \
->  	rda8810pl-orangepi-i96.dtb
-> diff --git a/arch/arm/boot/dts/qcom-sdx55-mtp.dts b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-> new file mode 100644
-> index 000000000000..8c39db4ae792
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2020, Linaro Ltd.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "qcom-sdx55.dtsi"
-> +
-> +/ {
-> +	model = "Qualcomm Technologies, Inc. SDX55 MTP";
-> +	compatible = "qcom,sdx55-mtp", "qcom,sdx55", "qcom,mtp";
+>  drivers/net/phy/phy_device.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index 5dab6be6fc38..5d1060aa1b25 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -2331,7 +2331,7 @@ EXPORT_SYMBOL(genphy_read_status_fixed);
+>   */
+>  int genphy_read_status(struct phy_device *phydev)
+>  {
+> -	int err, old_link = phydev->link;
+> +	int adv, err, old_link = phydev->link;
+>  
+>  	/* Update the link, but return if there was an error */
+>  	err = genphy_update_link(phydev);
+> @@ -2356,6 +2356,14 @@ int genphy_read_status(struct phy_device *phydev)
+>  		return err;
+>  
+>  	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) {
+> +		if (phydev->is_gigabit_capable) {
+> +			adv = phy_read(phydev, MII_CTRL1000);
+> +			if (adv < 0)
+> +				return adv;
+> +			/* update advertising in case of 'down-shift' */
+> +			mii_ctrl1000_mod_linkmode_adv_t(phydev->advertising,
+> +							adv);
+> +		}
+>  		phy_resolve_aneg_linkmode(phydev);
+>  	} else if (phydev->autoneg == AUTONEG_DISABLE) {
+>  		err = genphy_read_status_fixed(phydev);
+> 
+> base-commit: d549699048b4b5c22dd710455bcdb76966e55aa3
+> 
 
-Do we need "qcom,mtp"?
-
-> +	qcom,board-id = <0x5010008 0x0>;
-> +
-> +	aliases {
-> +		serial0 = &blsp1_uart3;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +};
-> +
-> +&blsp1_uart3 {
-> +	status = "ok";
-> +};
-> diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
-> new file mode 100644
-> index 000000000000..9e0b964e4c57
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
-> @@ -0,0 +1,205 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * SDX55 SoC device tree source
-> + *
-> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2020, Linaro Ltd.
-> + */
-> +
-> +/dts-v1/;
-
-We seem to mix a little bit in the arm/qcom dts files, but the general
-pattern is to put this only in the dts files.
-
-> +
-> +#include <dt-bindings/clock/qcom,gcc-sdx55.h>
-> +#include <dt-bindings/clock/qcom,rpmh.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/soc/qcom,rpmh-rsc.h>
-> +
-> +/ {
-> +	#address-cells = <1>;
-> +	#size-cells = <1>;
-> +	model = "Qualcomm Technologies, Inc. SDX55";
-> +	compatible = "qcom,sdx55";
-
-model and compatible should always be specified in the including .dts
-(as you do), so I would prefer if you omit these.
-
-> +	qcom,msm-id = <357 0x10000>, <368 0x10000>, <418 0x10000>;
-> +	interrupt-parent = <&intc>;
-> +
-> +	memory {
-> +		device_type = "memory";
-> +		reg = <0 0>;
-> +	};
-> +
-> +	clocks {
-> +		xo_board: xo-board {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <38400000>;
-> +			clock-output-names = "xo_board";
-> +		};
-> +
-> +		sleep_clk: sleep-clk {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <32000>;
-> +		};
-> +
-> +		pll_test_clk: pll-test-clk {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <400000000>;
-> +		};
-> +	};
-> +
-> +	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a7";
-> +			reg = <0x0>;
-> +			enable-method = "psci";
-> +		};
-> +	};
-> +
-> +	psci {
-> +		compatible = "arm,psci-1.0";
-> +		method = "smc";
-> +	};
-> +
-> +	soc: soc {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges;
-> +		compatible = "simple-bus";
-> +
-> +		timer {
-
-If timer doesn't have a reg, it should go outside soc {}
-
-Regards,
-Bjorn
