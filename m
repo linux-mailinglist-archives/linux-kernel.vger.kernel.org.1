@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD3E2C26D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9462C26D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387814AbgKXNIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387669AbgKXNIq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:08:46 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC61C0613D6;
-        Tue, 24 Nov 2020 05:08:46 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id v3so5048393ilo.5;
-        Tue, 24 Nov 2020 05:08:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lqNaNlyCWsqnQiMyNMSmSk9+lyPrlpC34lNClH2VPBk=;
-        b=VPgob10uvPGhhM2Q/eJ5+M+0zDC4wfaaPqDZtGtPtd0sCX53O1aBXy2270lLE8Su5L
-         x2u0axp+y9VoD7brThljKy1XVaFdMPyAV6zl+eJ1IHFPfTM9vIqNGoJMdYrFkHAHqBUz
-         etpK7OeDGn1FYlRxDsAS5HVzxOR9HqqJ/JH4Eh0iK8EnyO5z7ygHDRf62HIOBs/k4A/4
-         QrpcJ6wXcvSWFcC/CAzfEqRFN8dVI3yw48Zgv3C+NXstnHgWMZ6lnXSiYbUuqhjoGeZw
-         EzmfW78Hd84kexi4oaDm/PvuuvrTqnPBeQGeJYpMmc4dqk4rF4voc3ZbhPuxRWc9a2rn
-         GfGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lqNaNlyCWsqnQiMyNMSmSk9+lyPrlpC34lNClH2VPBk=;
-        b=ZmlIO8MFRUOiX0W2M5zJsCIllIlNuxhJspSD0cyDJnruSX/hMDUtFMSlXI17Rb6AT/
-         j/CPzLB2V5K36Dxkq8xW49UNBEVza9VJyykAXoSVFu8MvWLFrZe6G4+c+WWvQEVI4chL
-         nGeqIfuTf7bDxHp0y+OZeo70cgvanVm3CFsh3uPIMcIvP1Mrbi3ONe5L1/SSU18tZkZr
-         4dBblAABHHPAo38Bc7RzPaIFclYN4sJgMtnU316vxieutyVK8FZ4xW0G13p5pQW7+Qhi
-         dUJ4aREHB2lf/ARrIF0Yl/TvxlpyYoSkqOkVHb/x6tNfG+Z3XvQa36bbWvfw0xdObxz9
-         7tVw==
-X-Gm-Message-State: AOAM533b7is7N1k8NqBpudYxwc8dq5Si1cTFWflpNKKf7YezRE7EAaJV
-        AgN4vNXrwmZDVqNjes4a9wHTuD/gXoqW9WpE0dDEcV/UAeY=
-X-Google-Smtp-Source: ABdhPJyMXKxWGznQOtkmHQ+YyoVZBumfVI7fJ4B7vyP8UL1Si8WDdzm9WOwBiaQMbIKtaNzJWEvRdo9/h2p9kys7czk=
-X-Received: by 2002:a92:ae10:: with SMTP id s16mr4190848ilh.142.1606223325423;
- Tue, 24 Nov 2020 05:08:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20201123125808.50896-1-laoar.shao@gmail.com> <20201123125808.50896-4-laoar.shao@gmail.com>
- <20201124114042.GJ3306@suse.de>
-In-Reply-To: <20201124114042.GJ3306@suse.de>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 24 Nov 2020 21:08:09 +0800
-Message-ID: <CALOAHbATZWTgg2wH+nTz-btzeUgKgqs9s+pWK1XV0HYwptoKwQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/5] sched: make schedstats helper independent of cfs_rq
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, bristot@redhat.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S2387866AbgKXNIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:08:55 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:45306 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387752AbgKXNIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:08:55 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxStDUBb1fLf4VAA--.35257S2;
+        Tue, 24 Nov 2020 21:08:36 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Seth Heasley <seth.heasley@intel.com>,
+        Neil Horman <nhorman@tuxdriver.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: busses: Use dma_set_mask_and_coherent
+Date:   Tue, 24 Nov 2020 21:08:35 +0800
+Message-Id: <1606223315-13390-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxStDUBb1fLf4VAA--.35257S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFW8KFWfJrW8Kw4xAF4Utwb_yoWkCwb_tw
+        10qF92gFsYyr90v347KFW5Xr95t3yrZ34DZF1vy3WI9ry3uwsxJa17uFykAF4UZFsrJFya
+        g3WvyrZ5ArWjvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
+        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW5GwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
+        CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUsw0eDUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 7:40 PM Mel Gorman <mgorman@suse.de> wrote:
->
-> On Mon, Nov 23, 2020 at 08:58:06PM +0800, Yafang Shao wrote:
-> > The 'cfs_rq' in these helpers
-> > update_stats_{wait_start, wait_end, enqueue_sleeper} is only used to get
-> > the rq_clock, so we can pass the rq directly. Then these helpers can be
-> > used by all sched class after being moved into stats.h.
-> >
-> > After that change, the size of vmlinux is increased around 824Bytes.
-> >                       w/o this patch, with this patch
-> > Size of vmlinux:      78443832        78444656
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->
-> The inline helpers are quite large. When I was suggesting that the overhead
-> was minimal, what I expected what that the inline functions would be a
-> schedstat_enabled() followed by a real function call. It would introduce
-> a small additional overhead when schedstats are enabled but avoid vmlinux
-> growing too large
->
-> e.g.
->
-> static inline void
-> update_stats_wait_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> {
->         if (!schedstat_enabled())
->                 return;
->
->         __update_stats_wait_start(cfs_rq, se);
-> }
->
-> where __update_stats_wait_start then lives in kernel/sched/stats.c
->
+'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 
-Good idea!  Now I understand what you mean. Thanks for the detailed explanation.
-I will update it in the next version.
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ drivers/i2c/busses/i2c-ismt.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-
+diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
+index a35a27c..5f49830 100644
+--- a/drivers/i2c/busses/i2c-ismt.c
++++ b/drivers/i2c/busses/i2c-ismt.c
+@@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		return -ENODEV;
+ 	}
+ 
+-	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) != 0) ||
+-	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) != 0)) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) ||
+-		    (pci_set_consistent_dma_mask(pdev,
+-						 DMA_BIT_MASK(32)) != 0)) {
++	if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(64)) != 0)
++		if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32)) != 0) {
+ 			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
+ 				pdev);
+ 			return -ENODEV;
+ 		}
+-	}
+ 
+ 	err = ismt_dev_init(priv);
+ 	if (err)
 -- 
-Thanks
-Yafang
+2.1.0
+
