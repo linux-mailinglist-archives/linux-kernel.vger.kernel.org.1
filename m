@@ -2,139 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322722C2C92
+	by mail.lfdr.de (Postfix) with ESMTP id A12572C2C93
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390273AbgKXQQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:16:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        id S2390302AbgKXQRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:17:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390095AbgKXQQI (ORCPT
+        with ESMTP id S2389794AbgKXQRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:16:08 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7622CC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:16:08 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id l1so22871408wrb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:16:08 -0800 (PST)
+        Tue, 24 Nov 2020 11:17:35 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FB4C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:17:35 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q10so18975823pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:17:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6u3X2EJumnPSVBJDMd67m/oxJY0N46da9Q4A0CHDe4c=;
-        b=GoV+dO27QW2/4gv0cmXmmMNWMAcgCho4b8g3F3I8TEaqEQAWE6XvvOVw28ShJXay9b
-         cctjltNE6yU/bV5WYUfCfy2qy50Dgn1qT/GxiaSYaWa5pxu98JePq7vgXUN53lGradzB
-         1wAP0KYZsCK7//8V5/6lp3bimhzFnV9A5GDIYydjFVcaei8gWKT8cif3nNMe3tiXDHqq
-         UeQ2LQMrssZkAcrkkVhYvaPLIEj6BMtTxQfECyeS/MBW/PSuY2PRPy9H2XLIZ1xP6Ew9
-         xwhATPGnztcovclO7HvAZKPG5PgZth3WoiuJAL/jsTU0wuRbpDrZdBdGLIf3ovuay/4I
-         rtNg==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=neVtOXj4si/s489rQKuJHCDZEMCd0omMkN3LV1cgloY=;
+        b=BUL6tmf5UQW1/m9bV9yMrlorTUs0wrjO7L0AURFOf8REqi++rCLXKPtQ+7vuUNjXaI
+         jdel5M3S1VQbfEprhEvvCh+++GIMMwZ5eEoyVLmUr7IxbYv8UCSsDM0tPsYLfIT8qGd8
+         QBJplCe+GGBlpRolbipS6VT2IMGVhSmjWROyU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6u3X2EJumnPSVBJDMd67m/oxJY0N46da9Q4A0CHDe4c=;
-        b=bdAuzhuxCfv2s3OT7CD6mr+mmfHlxbgrPxD6vzfHyfk0P1Sm1JqJUyfK9UhGeundH+
-         t3/RiuyGHHQDGf53elfpyCqy4d1Ovs83YBsONknMrvyQ6vG3x/lsuaOLblfTyr4hP34t
-         X1NgCkVrGVRbUFr/t1mzdIHpWDX7Yx3LN9sC7AfY2H9HC98WEnJ50XW3g1sfomiZjDlV
-         ek23K9il2ilxSfByCtrgCkHgYb1F8viJFwagg3WAxyhhQ48eLkt7jluXsPFxwaDts3hm
-         kgjpdc0viOFz/a0SsHo8HG2a4aGIGmIma+RXC74Efe6eJ5ZBpR9JTTmFvcZuecDTmfRJ
-         J6yA==
-X-Gm-Message-State: AOAM530e8LfECQxi/X5JjidQgBfj66ttkBdp8+GeHbPLtj2mgNvIxD/m
-        4yp3GtZxhrhpapKdUVCXB1kuhHcr37R2ikTQtiM=
-X-Google-Smtp-Source: ABdhPJwMVElpfSmNpkqDl6RZr9Iq+NMuM32RVXSSv19l9Z5MpoEmkMzM2eVrMZq66oPV4PL4XC8vSkBuzPWvpdZWvEU=
-X-Received: by 2002:adf:8028:: with SMTP id 37mr6158027wrk.111.1606234567277;
- Tue, 24 Nov 2020 08:16:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-30-lee.jones@linaro.org>
-In-Reply-To: <20201123111919.233376-30-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 24 Nov 2020 11:15:56 -0500
-Message-ID: <CADnq5_NAD7-NzLDsLNhZ_PxrujiSXcVyj1uo=h--c2p9sRjXxg@mail.gmail.com>
-Subject: Re: [PATCH 29/40] drm/amd/include/vangogh_ip_offset: Mark top-level
- IP_BASE as __maybe_unused
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Huang Rui <ray.huang@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=neVtOXj4si/s489rQKuJHCDZEMCd0omMkN3LV1cgloY=;
+        b=o1KlCz/yXd8NVeyXxjCWhYiBYFm+adY/0DHqX1y1tpztQpbbBY1sjDhQa4H234jBaQ
+         ERXaFbtN3S/D+DjTbei6LKr/2CCiscq/6gLCJuRdF/7jzYXvfTDu6Qc0nCsgXpWkvm5O
+         PrTGLuLymitCngbeHBPBpCgcOpvU+1Edy6Rfe2y13PW9bi6drG+FUpnl9LT19dCR4mH/
+         mmijIpd28fw3UxjPT+/ticloibzxzZQCeBcvTO2AKw/AMiIS6jmMS9LW6GEFROfVb7/V
+         tB4HvEBArwaGYudikplieVRRRFqFhYe97pEn4+mSDdQwnWeUMO6dQD+0tURBB9L3HIo4
+         JT1A==
+X-Gm-Message-State: AOAM532SrwAC5oARhyKYvVUFd3fJcWNBeu3PSKuhOaKUI8PjOmX7p1Kq
+        CRqB1xrbB3WhbpoaU4AbxP9ujg==
+X-Google-Smtp-Source: ABdhPJwojqBzccB5bu89FllRpPMAi909Yd9PoVZKGKVNFflUAow+6FzaHTA9ezibuYHFF4NgR824TA==
+X-Received: by 2002:a17:90a:fb87:: with SMTP id cp7mr5958416pjb.0.1606234654182;
+        Tue, 24 Nov 2020 08:17:34 -0800 (PST)
+Received: from rahul_yocto_ubuntu18.ibn.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id t9sm2798549pfq.39.2020.11.24.08.17.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 08:17:32 -0800 (PST)
+From:   Vikas Gupta <vikas.gupta@broadcom.com>
+To:     eric.auger@redhat.com, alex.williamson@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
+        ashwin.kamath@broadcom.com, zachary.schroff@broadcom.com,
+        manish.kurup@broadcom.com, Vikas Gupta <vikas.gupta@broadcom.com>
+Subject: [RFC, v2 0/1] msi support for platform devices
+Date:   Tue, 24 Nov 2020 21:46:45 +0530
+Message-Id: <20201124161646.41191-1-vikas.gupta@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201112175852.21572-1-vikas.gupta@broadcom.com>
+References: <20201112175852.21572-1-vikas.gupta@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000005ae6d05b4dca666"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  In file included from drivers/gpu/drm/amd/amdgpu/vangogh_reg_init.c:28:
->  drivers/gpu/drm/amd/amdgpu/../include/vangogh_ip_offset.h:210:29: warnin=
-g: =E2=80=98USB_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  210 | static const struct IP_BASE USB_BASE =3D { { { { 0x0242A800, 0x05B=
-00000, 0, 0, 0, 0 } },
->  | ^~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../include/vangogh_ip_offset.h:202:29: warnin=
-g: =E2=80=98UMC_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  202 | static const struct IP_BASE UMC_BASE =3D { { { { 0x00014000, 0x024=
-25800, 0, 0, 0, 0 } },
->  | ^~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../include/vangogh_ip_offset.h:178:29: warnin=
-g: =E2=80=98PCIE0_BASE=E2=80=99 defined but not used [-Wunused-const-variab=
-le=3D]
->  178 | static const struct IP_BASE PCIE0_BASE =3D { { { { 0x00000000, 0x0=
-0000014, 0x00000D20, 0x00010400, 0x0241B000, 0x04040000 } },
->  | ^~~~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../include/vangogh_ip_offset.h:154:29: warnin=
-g: =E2=80=98MP2_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  154 | static const struct IP_BASE MP2_BASE =3D { { { { 0x00016400, 0x024=
-00800, 0x00F40000, 0x00F80000, 0x00FC0000, 0 } },
->  | ^~~~~~~~
->
-> NB: Snipped lots of these
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Huang Rui <ray.huang@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+--00000000000005ae6d05b4dca666
 
-Applied.  Thanks!
+This RFC adds support for MSI for platform devices.
+MSI block is added as an ext irq along with the existing
+wired interrupt implementation.
 
-Alex
+Changes from:
+-------------
+ v1 to v2:
+	1) IRQ allocation has been implemented as below:
+	       ----------------------------
+	       |IRQ-0|IRQ-1|....|IRQ-n|MSI|
+       	       ----------------------------
+		MSI block has msi contexts and its implemneted
+		as ext irq.
 
-> ---
->  drivers/gpu/drm/amd/include/vangogh_ip_offset.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/include/vangogh_ip_offset.h b/drivers/gp=
-u/drm/amd/include/vangogh_ip_offset.h
-> index 2875574b060e6..691073ed780ec 100644
-> --- a/drivers/gpu/drm/amd/include/vangogh_ip_offset.h
-> +++ b/drivers/gpu/drm/amd/include/vangogh_ip_offset.h
-> @@ -36,7 +36,7 @@ struct IP_BASE_INSTANCE
->  struct IP_BASE
->  {
->      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
-> -};
-> +} __maybe_unused;
->
->
->  static const struct IP_BASE ACP_BASE =3D { { { { 0x02403800, 0x00480000,=
- 0, 0, 0, 0 } },
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+	2) Removed vendor specific module for msi handling so
+	   previously patch2 and patch3 are not required.
+
+	3) MSI related data is exported to userspace using 'caps'.
+	 Please note VFIO_IRQ_INFO_CAP_TYPE in include/uapi/linux/vfio.h implementation
+	is taken from the Eric`s patch
+        https://patchwork.kernel.org/project/kvm/patch/20201116110030.32335-8-eric.auger@redhat.com/
+
+
+ v0 to v1:
+   i)  Removed MSI device flag VFIO_DEVICE_FLAGS_MSI.
+   ii) Add MSI(s) at the end of the irq list of platform IRQs.
+       MSI(s) with first entry of MSI block has count and flag
+       information.
+       IRQ list: Allocation for IRQs + MSIs are allocated as below
+       Example: if there are 'n' IRQs and 'k' MSIs
+       -------------------------------------------------------
+       |IRQ-0|IRQ-1|....|IRQ-n|MSI-0|MSI-1|MSI-2|......|MSI-k|
+       -------------------------------------------------------
+       MSI-0 will have count=k set and flags set accordingly.
+
+Vikas Gupta (1):
+  vfio/platform: add support for msi
+
+ drivers/vfio/platform/vfio_platform_common.c  |  99 ++++++-
+ drivers/vfio/platform/vfio_platform_irq.c     | 260 +++++++++++++++++-
+ drivers/vfio/platform/vfio_platform_private.h |  16 ++
+ include/uapi/linux/vfio.h                     |  43 +++
+ 4 files changed, 401 insertions(+), 17 deletions(-)
+
+-- 
+2.17.1
+
+
+--00000000000005ae6d05b4dca666
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+2lQ6rFUP408r38ha7ieLj9GoHHitwSmKYwUIGObe2Y57xYNj855BF4wx44Z80uM2ugKCZwIDAQAB
+o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
+b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
+bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
+OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
+Y3JsMCMGA1UdEQQcMBqBGHZpa2FzLmd1cHRhQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUnmgVV8btvFtO
+FD3kFjPWxD/aB8MwDQYJKoZIhvcNAQELBQADggEBAGCcuBN7G3mbQ7xMF8g8Lpz6WE+UFmkSSqU3
+FZLC2I92SA5lRIthcdz4AEgte6ywnef3+2mG7HWMoQ1wriSG5qLppAD02Uku6yRD52Sn67DB2Ozk
+yhBJayurzUxN1+R5E/YZtj2fkNajS5+i85e83PZPvVJ8/WnseIADGvDoouWqK7mxU/p8hELdb3PW
+JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
+WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
+Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgxW9gt2xJW+Ni6xA1
+Ii+sjd8wvRwnrMUM2TdTKhkoE1gwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjAxMTI0MTYxNzM0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBADDuJLwYdNIVzw+mMBc/V1svf0sCkY6aeTqW
+DYwsIjc3a2Izb9dfAnj50Dkw0eTOTsC89m1wLhXzh+9GPRbmpJO3p/GR2iw7Rfy5ZPczUn4KZ1/w
+Dujkd8y2D197R6CdCOBP2B7LCuVsdMj0Wd6RX3YHnhAT0U7Shw76hkAm5fitKFUS4VyrXLHPKmk2
+hfLKYZO7d1XMO7dnRMfNZUudz6s6oqap2Pa3TrFlsJ/WKYfgTNWBjzWOWpsDcdl8uFvqwT/bxSxq
+TLOWUk2SO3UB/Zw9mZyVNziJtrBg0whKGVnQ8K6VtFmHM+5499vp3HXJOkmBhtlHLIIBrphz1uTZ
+K8o=
+--00000000000005ae6d05b4dca666--
