@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3BE2C1D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67742C1D8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgKXF1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 00:27:43 -0500
-Received: from mga14.intel.com ([192.55.52.115]:48669 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgKXF1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 00:27:43 -0500
-IronPort-SDR: 4glW/VM9wevnqIbOO5fZaaF/yv5iqcERsxlZp88COaA9ko6qVbmH2PBSxalvN7w9aWhZKAmSm0
- WocJ4+mgLVHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="171111795"
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="171111795"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 21:27:43 -0800
-IronPort-SDR: slVFfxUjVUc5hAVhYANK4q6P8xaOpwCaklMmE441hegdvLl6m4iEchBe6uUU5YnIo5WSePVbu7
- MrTpzDEzBqGg==
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="332439281"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 21:27:42 -0800
-Subject: [PATCH] ACPI: NFIT: Fix input validation of bus-family
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Date:   Mon, 23 Nov 2020 21:27:42 -0800
-Message-ID: <160619566216.201177.9354229595539334957.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1728846AbgKXF3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 00:29:54 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:2586 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKXF3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 00:29:53 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khQtf-000MZZ-Fa; Tue, 24 Nov 2020 06:29:47 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khQte-0001dF-LO; Tue, 24 Nov 2020 06:29:46 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 0E08E240041;
+        Tue, 24 Nov 2020 06:29:46 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 7CF87240040;
+        Tue, 24 Nov 2020 06:29:45 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id EF582204C2;
+        Tue, 24 Nov 2020 06:29:44 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 06:29:44 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v4 2/5] net/lapb: support netdev events
+Organization: TDT AG
+In-Reply-To: <CAJht_EOA4+DSjnKYZX3udrXX9jGHRmFw3OQesUb3AncD2oowwA@mail.gmail.com>
+References: <20201120054036.15199-1-ms@dev.tdt.de>
+ <20201120054036.15199-3-ms@dev.tdt.de>
+ <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
+ <CAJht_EP_oqCDs6mMThBZNtz4sgpbyQgMhKkHeqfS_7JmfEzfQg@mail.gmail.com>
+ <87a620b6a55ea8386bffefca0a1f8b77@dev.tdt.de>
+ <CAJht_EPc8MF1TjznSjWTPyMbsrw3JVqxST5g=eF0yf_zasUdeA@mail.gmail.com>
+ <d85a4543eae46bac1de28ec17a2389dd@dev.tdt.de>
+ <CAJht_EMjO_Tkm93QmAeK_2jg2KbLdv2744kCSHiZLy48aXiHnw@mail.gmail.com>
+ <CAJht_EO+enBOFMkVVB5y6aRnyMEsOZtUBJcAvOFBS91y7CauyQ@mail.gmail.com>
+ <16b7e74e6e221f43420da7836659d7df@dev.tdt.de>
+ <CAJht_EPtPDOSYfwc=9trBMdzLw4BbTzJbGvaEgWoyiy2624Q+Q@mail.gmail.com>
+ <20201123113622.115c474b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EOA4+DSjnKYZX3udrXX9jGHRmFw3OQesUb3AncD2oowwA@mail.gmail.com>
+Message-ID: <39b6386b4ce7462f6cb4448020735ed5@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1606195787-00001F6B-CD377998/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dan reports that smatch thinks userspace can craft an out-of-bound bus
-family number. However, nd_cmd_clear_to_send() blocks all non-zero
-values of bus-family since only the kernel can initiate these commands.
-However, in the speculation path, family is a user controlled array
-index value so mask it for speculation safety. Also, since the
-nd_cmd_clear_to_send() safety is non-obvious and possibly may change in
-the future include input validation is if userspace could get past the
-nd_cmd_clear_to_send() gatekeeper.
+On 2020-11-23 23:09, Xie He wrote:
+> On Mon, Nov 23, 2020 at 11:36 AM Jakub Kicinski <kuba@kernel.org> 
+> wrote:
+>> 
+>> > >  From this point of view it will be the best to handle the NETDEV_UP in
+>> > > the lapb event handler and establish the link analog to the
+>> > > NETDEV_CHANGE event if the carrier is UP.
+>> >
+>> > Thanks! This way we can make sure LAPB would automatically connect in
+>> > all situations.
+>> >
+>> > Since we'll have a netif_carrier_ok check in NETDEV_UP handing, it
+>> > might make the code look prettier to also have a netif_carrier_ok
+>> > check in NETDEV_GOING_DOWN handing (for symmetry). Just a suggestion.
+>> > You can do whatever looks good to you :)
+>> 
+>> Xie other than this the patches look good to you?
+>> 
+>> Martin should I expect a respin to follow Xie's suggestion
+>> or should I apply v4?
+> 
+> There should be a respin because we need to handle the NETDEV_UP
+> event. The lapbether driver (and possibly some HDLC WAN drivers)
+> doesn't generate carrier events so we need to do auto-connect in the
+> NETDEV_UP event.
 
-Link: http://lore.kernel.org/r/20201111113000.GA1237157@mwanda
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 6450ddbd5d8e ("ACPI: NFIT: Define runtime firmware activation commands")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/acpi/nfit/core.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index cda7b6c52504..b11b08a60684 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -5,6 +5,7 @@
- #include <linux/list_sort.h>
- #include <linux/libnvdimm.h>
- #include <linux/module.h>
-+#include <linux/nospec.h>
- #include <linux/mutex.h>
- #include <linux/ndctl.h>
- #include <linux/sysfs.h>
-@@ -479,8 +480,11 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
- 		cmd_mask = nd_desc->cmd_mask;
- 		if (cmd == ND_CMD_CALL && call_pkg->nd_family) {
- 			family = call_pkg->nd_family;
--			if (!test_bit(family, &nd_desc->bus_family_mask))
-+			if (family > NVDIMM_BUS_FAMILY_MAX ||
-+			    !test_bit(family, &nd_desc->bus_family_mask))
- 				return -EINVAL;
-+			family = array_index_nospec(family,
-+						    NVDIMM_BUS_FAMILY_MAX + 1);
- 			dsm_mask = acpi_desc->family_dsm_mask[family];
- 			guid = to_nfit_bus_uuid(family);
- 		} else {
-
+I'll send a v5 with the appropriate change.
