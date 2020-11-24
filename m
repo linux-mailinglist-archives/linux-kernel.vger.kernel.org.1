@@ -2,75 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEEB2C2C05
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B932C2C06
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390097AbgKXPxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:53:08 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:38315 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389842AbgKXPxE (ORCPT
+        id S2389973AbgKXPyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728411AbgKXPyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:53:04 -0500
-X-Originating-IP: 82.255.60.242
-Received: from [192.168.0.28] (lns-bzn-39-82-255-60-242.adsl.proxad.net [82.255.60.242])
-        (Authenticated sender: hadess@hadess.net)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E0D1760003;
-        Tue, 24 Nov 2020 15:53:00 +0000 (UTC)
-Message-ID: <56726c3591feb0a61dd2bf8ffa5dc218af46cbab.camel@hadess.net>
-Subject: Re: How to enable auto-suspend by default
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>
-Date:   Tue, 24 Nov 2020 16:53:00 +0100
-In-Reply-To: <ecd964af-efdb-99c6-45cb-4979397fb324@linux.intel.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
-         <X6p6ubTOoMPUPPXi@kroah.com>
-         <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
-         <20201110172517.GC2495@lahna.fi.intel.com>
-         <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
-         <20201111143143.GV2495@lahna.fi.intel.com>
-         <30aa8c96-1809-8c5f-2305-5e39fbeba434@redhat.com>
-         <ecd964af-efdb-99c6-45cb-4979397fb324@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        Tue, 24 Nov 2020 10:54:09 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03449C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:54:09 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id 64so9404294wra.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:54:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=i7hD3zJ1K3PBBJFnz1T2WxFa77hgAItBpjslem4fkk8=;
+        b=vbh27YuT9OoI623hjwYYHrJplHAelGAu9sW/+87Kru0YRIfnd7PwllrOiw+DOJnTxL
+         wPRlvwZs8eEkXGDGCfN0QWKObgCb78FvVt12/Y4LjkdBHq016nl6iG/9fOP4XDXi8rUh
+         pfAWt2FYQEcWvq039qRJ96EACBGVXHmVV8krQPUQkAsuAzZkih9jOwXjqPngkzi9Z4wZ
+         fw7Y+KcGCnpGWBGySLXQMveWTuGoesajBWINccTkF0UlAO5+wekAxReJeYaftUj55szH
+         aREsN1lTn8sjWLD4GVbPUgmzGnU++cw5/QtzgwZzSaC2+RhdsGVFFTa9Wk5UGDtnqMBC
+         iGCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=i7hD3zJ1K3PBBJFnz1T2WxFa77hgAItBpjslem4fkk8=;
+        b=RsJTfZOSbc+wV4GIlioff+lFs3aVLOaJ16adfqb2nnS3EAR780SH6DomWX90iWm4e0
+         Y0X+yBo5BxgEcm438giRO/3t1V4rR+nBiZdZHFF3aW3cDluTRvHdX6MV74sjx1r3+89W
+         YgRmNfc317uIp+yPqgX3K1rMrj0/vwnih8mE0j3Lp8EdvC9bkyGd1q4/ML9TjlYCbjQ+
+         P/10I8ucf68s4lovJ9xHw5p6txBlTesLR+7mvn0UZI3MtQ+ArZ96LiuA0xQ1Vwq30QMz
+         y5qXJgci/WE/wd1hH9zScUKT1Xqny7RK/K1V5zVH/VeYs4cnZuXHjZRsH1mFg8XAEdxW
+         Q8Yg==
+X-Gm-Message-State: AOAM530R4ncH4bpCwjcBaouRnRM/9uOp9DivLDBYtBLyP0kB9z25xp1p
+        2yuFxKyi4Y12BwLXhmIeV/nGQ7KaM7s9Q9kFnm0=
+X-Google-Smtp-Source: ABdhPJz2ezvid7RSMPd0rUl8+DovXOBC8RTujdJD2aZY/MUsapVxd2mIPeuDI+WsaaWT3QiiZE9XUbB5RuuJGucr8GE=
+X-Received: by 2002:a5d:400a:: with SMTP id n10mr5958542wrp.362.1606233247733;
+ Tue, 24 Nov 2020 07:54:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-5-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-5-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 10:53:56 -0500
+Message-ID: <CADnq5_Ou6R08rcLy_KEZmR3y52yXjtvtzmi8W-BdM3matwOr3w@mail.gmail.com>
+Subject: Re: [PATCH 04/40] drm/amd/amdgpu/amdgpu_virt: Correct possible
+ copy/paste or doc-rot misnaming issue
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 14:37 +0200, Mathias Nyman wrote:
-> <snip>
-> I don't think we are ready to enable runtime pm as default for all
-> Intel xHCI controllers.
-> The risk of xHCI not waking up when user plugs a mouse/keyboard,
-> making the system unusable
-> just seems too high compared to the powersaving benefit.
-> 
-> The powersaving benefit from autosuspending the TCSS xHCI is a lot
-> better, and we, (Mika mostly)
-> has been able to verify they work.
-> 
-> So I propose we for now continue adding TCSS xHCI controllers to the
-> allowlist in kernel.
-> For others I think a userspace allow/denylist makes sense.
-> 
-> Long term goal would be default allow for all, with short denylist in
-> kernel.
+On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:115: warning: Function paramete=
+r or member 'adev' not described in 'amdgpu_virt_request_full_gpu'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:115: warning: Excess function p=
+arameter 'amdgpu' description in 'amdgpu_virt_request_full_gpu'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:138: warning: Function paramete=
+r or member 'adev' not described in 'amdgpu_virt_release_full_gpu'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:138: warning: Excess function p=
+arameter 'amdgpu' description in 'amdgpu_virt_release_full_gpu'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:159: warning: Function paramete=
+r or member 'adev' not described in 'amdgpu_virt_reset_gpu'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:159: warning: Excess function p=
+arameter 'amdgpu' description in 'amdgpu_virt_reset_gpu'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:194: warning: Function paramete=
+r or member 'adev' not described in 'amdgpu_virt_wait_reset'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:194: warning: Excess function p=
+arameter 'amdgpu' description in 'amdgpu_virt_wait_reset'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:210: warning: Function paramete=
+r or member 'adev' not described in 'amdgpu_virt_alloc_mm_table'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:210: warning: Excess function p=
+arameter 'amdgpu' description in 'amdgpu_virt_alloc_mm_table'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:239: warning: Function paramete=
+r or member 'adev' not described in 'amdgpu_virt_free_mm_table'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c:239: warning: Excess function p=
+arameter 'amdgpu' description in 'amdgpu_virt_free_mm_table'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Is there any way to preemptively enable autosuspend for all the _TCSS_
-xHCI controllers?
+Applied.  Thanks!
 
-This was the problem the original post tried to tease out, whether it
-would be easier/better to enable autosuspend by default, and not enable
-it on systems where it breaks something, rather than default to sucking
-battery until somebody notices that a device ID got missed.
+Alex
 
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c b/drivers/gpu/drm/a=
+md/amdgpu/amdgpu_virt.c
+> index 905b85391e64a..462c5dd8ca72c 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+> @@ -106,7 +106,7 @@ void amdgpu_virt_kiq_reg_write_reg_wait(struct amdgpu=
+_device *adev,
+>
+>  /**
+>   * amdgpu_virt_request_full_gpu() - request full gpu access
+> - * @amdgpu:    amdgpu device.
+> + * @adev:      amdgpu device.
+>   * @init:      is driver init time.
+>   * When start to init/fini driver, first need to request full gpu access=
+.
+>   * Return: Zero if request success, otherwise will return error.
+> @@ -129,7 +129,7 @@ int amdgpu_virt_request_full_gpu(struct amdgpu_device=
+ *adev, bool init)
+>
+>  /**
+>   * amdgpu_virt_release_full_gpu() - release full gpu access
+> - * @amdgpu:    amdgpu device.
+> + * @adev:      amdgpu device.
+>   * @init:      is driver init time.
+>   * When finishing driver init/fini, need to release full gpu access.
+>   * Return: Zero if release success, otherwise will returen error.
+> @@ -151,7 +151,7 @@ int amdgpu_virt_release_full_gpu(struct amdgpu_device=
+ *adev, bool init)
+>
+>  /**
+>   * amdgpu_virt_reset_gpu() - reset gpu
+> - * @amdgpu:    amdgpu device.
+> + * @adev:      amdgpu device.
+>   * Send reset command to GPU hypervisor to reset GPU that VM is using
+>   * Return: Zero if reset success, otherwise will return error.
+>   */
+> @@ -186,7 +186,7 @@ void amdgpu_virt_request_init_data(struct amdgpu_devi=
+ce *adev)
+>
+>  /**
+>   * amdgpu_virt_wait_reset() - wait for reset gpu completed
+> - * @amdgpu:    amdgpu device.
+> + * @adev:      amdgpu device.
+>   * Wait for GPU reset completed.
+>   * Return: Zero if reset success, otherwise will return error.
+>   */
+> @@ -202,7 +202,7 @@ int amdgpu_virt_wait_reset(struct amdgpu_device *adev=
+)
+>
+>  /**
+>   * amdgpu_virt_alloc_mm_table() - alloc memory for mm table
+> - * @amdgpu:    amdgpu device.
+> + * @adev:      amdgpu device.
+>   * MM table is used by UVD and VCE for its initialization
+>   * Return: Zero if allocate success.
+>   */
+> @@ -232,7 +232,7 @@ int amdgpu_virt_alloc_mm_table(struct amdgpu_device *=
+adev)
+>
+>  /**
+>   * amdgpu_virt_free_mm_table() - free mm table memory
+> - * @amdgpu:    amdgpu device.
+> + * @adev:      amdgpu device.
+>   * Free MM table memory
+>   */
+>  void amdgpu_virt_free_mm_table(struct amdgpu_device *adev)
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
