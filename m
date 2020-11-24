@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942072C2E2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8024D2C2E39
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390140AbgKXRNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:13:43 -0500
-Received: from mga01.intel.com ([192.55.52.88]:18370 "EHLO mga01.intel.com"
+        id S2390506AbgKXRPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:15:41 -0500
+Received: from mga14.intel.com ([192.55.52.115]:50297 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728342AbgKXRNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:13:43 -0500
-IronPort-SDR: P5KjhBIP+tziHH6WVyRRpZ5qS+TTSdnsWr2a9gk5X17tgmie2TomNMoEemdMDAihDy8ZQ23zIk
- 3AlaQUo+EIvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="190111338"
+        id S2390280AbgKXRPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:15:40 -0500
+IronPort-SDR: PBaeAwh+jpv6Is7fgpM7umK+aIptXBTwBzcz5Cv1uJri68OXhmIMxKH9LubrRPhMw2ptdaYBbw
+ h3xL1K4uCi2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="171201662"
 X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="190111338"
+   d="scan'208";a="171201662"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:13:43 -0800
-IronPort-SDR: EdjZjtpDLYN0KB6oiMHDEt9ItD97Z+85UQW4wc7puUdRqxhKl8sEZqj4i2+txAuxfhaXzmf5vb
- czz+FFw+2VsA==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:15:40 -0800
+IronPort-SDR: BL9/f2x7001UmbRYVr03aocEjYzrMKeRkqA0WVMRbanRqfUVFI6MfBIC0UV/K1vn9ZWv2TP9a/
+ n0E5yflx9oMg==
 X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="358868031"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:13:41 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 1462E20461; Tue, 24 Nov 2020 19:13:39 +0200 (EET)
-Date:   Tue, 24 Nov 2020 19:13:39 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     dongchun.zhu@mediatek.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tomasz Figa <tfiga@google.com>,
-        Bingbu Cao <bingbu.cao@linux.intel.com>
-Subject: Re: [PATCH v1] media: ov8856: Fix Bayer format dependance on mode
-Message-ID: <20201124171338.GF3940@paasikivi.fi.intel.com>
-References: <20201124150332.3026752-1-robert.foss@linaro.org>
+   d="scan'208";a="546910675"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.133.99]) ([10.249.133.99])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:15:35 -0800
+Subject: Re: [PATCH V2] PM / EM: Micro optimization in em_cpu_energy
+To:     Pavankumar Kondeti <pkondeti@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+References: <1606126679-11799-1-git-send-email-pkondeti@codeaurora.org>
+ <1606127371-13828-1-git-send-email-pkondeti@codeaurora.org>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <671427cc-2abb-68eb-5e54-0851785efa84@intel.com>
+Date:   Tue, 24 Nov 2020 18:15:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124150332.3026752-1-robert.foss@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1606127371-13828-1-git-send-email-pkondeti@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
-
-On Tue, Nov 24, 2020 at 04:03:32PM +0100, Robert Foss wrote:
-> The Bayer GRBG10 mode used for earlier modes 3280x2460 and
-> 1640x1232 isn't the mode output by the sensor for the
-> 3264x2448 and 1632x1224 modes.
-> 
-> Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
-> for 3264x2448 & 1632x1224 modes.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+On 11/23/2020 11:29 AM, Pavankumar Kondeti wrote:
+> When the sum of the utilization of CPUs in a power domain is zero,
+> return the energy as 0 without doing any computations.
+>
+> Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
 > ---
-> 
-> This patch is sent out after Dongchun Zhu clarified the Bayer
-> modes used by different sensor configuration in the below thread.
-> 
-> https://lkml.org/lkml/2020/11/24/335
-> 
->  drivers/media/i2c/ov8856.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
-> index 2f4ceaa80593..a2dcbece558c 100644
-> --- a/drivers/media/i2c/ov8856.c
-> +++ b/drivers/media/i2c/ov8856.c
-> @@ -1281,8 +1281,13 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
->  {
->  	fmt->width = mode->width;
->  	fmt->height = mode->height;
-> -	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
->  	fmt->field = V4L2_FIELD_NONE;
+> V2: Fixed the function name in the commit message.
+>
+>   include/linux/energy_model.h | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index b67a51c..8810f1f 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -103,6 +103,9 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>   	struct em_perf_state *ps;
+>   	int i, cpu;
+>   
+> +	if (!sum_util)
+> +		return 0;
 > +
-> +	if (mode->reg_list.regs == mode_3264x2448_regs ||
-> +	    mode->reg_list.regs == mode_1632x1224_regs)
-> +		fmt->code = MEDIA_BUS_FMT_SBGGR10_1X10;
-> +	else
-> +		fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
->  }
->  
->  static int ov8856_start_streaming(struct ov8856 *ov8856)
+>   	/*
+>   	 * In order to predict the performance state, map the utilization of
+>   	 * the most utilized CPU of the performance domain to a requested
 
-Could you instead add the mode information to the ov8856_mode struct?
+If I'm to take this, please resend it with a CC to 
+linux-pm@vger.kernel.org (and with the tags you've received so far).
 
-Also enum_mbus_code needs to be updated.
+Thanks!
 
-The mbus code also has priority in mode selection, thus only the modes for
-the selected mbus code should considered in set_fmt.
 
--- 
-Regards,
-
-Sakari Ailus
