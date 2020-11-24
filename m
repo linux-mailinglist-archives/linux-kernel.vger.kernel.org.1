@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04E92C2021
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB462C2028
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730492AbgKXIhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:37:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726942AbgKXIg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:36:59 -0500
-Received: from localhost (unknown [122.167.149.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2D612073C;
-        Tue, 24 Nov 2020 08:36:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606207018;
-        bh=zmFOvpBWBa8RJeVEtCu1VAf3qwN3zra0rQq98dUkiK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZAGnD/X0u+VvRE8js89J3P8AV9NeUR3LIZ/gmJsv0tjYB1vl09rvNMzh3E7eoxtlS
-         qdjIJY8Fssz5hhqdVG6zTrXFjFTcJkDAuwIgoni9I8c05nazY+mgO/b9dkkdLP5dT7
-         ghMPZgKu2OEuS1F3tY71BlyUX/s4my5YeSeQVJPY=
-Date:   Tue, 24 Nov 2020 14:06:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH 2/5] regmap/SoundWire: sdw: add support for SoundWire 1.2
- MBQ
-Message-ID: <20201124083654.GI8403@vkoul-mobl>
-References: <20201103172226.4278-1-yung-chuan.liao@linux.intel.com>
- <20201103172226.4278-3-yung-chuan.liao@linux.intel.com>
+        id S1730666AbgKXIiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730546AbgKXIh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:37:59 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606E1C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:37:59 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id s9so21010107ljo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2H8XWRLs/cbmJeRBTAh4/48CwYXMne1DsJ3h7TEz2GM=;
+        b=j82cKN347mqaeqLKt04crgSBJJhiSMO8zoQY1YHiSWBV5gT/+AAOjpGTyfh+o9Q3mc
+         KHFXiUvWy4L8mloe3qazA7AGbiCOUmr9MI79Q8Qorm6PeTTm7W3gZgRNltxjOQjEyIaV
+         4yfbQpXwQYNq0j0PqKL1VReBP4VB7paculjpmhWTKHB/ToDqwDyfAMXNgYE7uGXZilfe
+         kMDoIaflhclMeVnN++SvYryLZ1aI9eBBg2U4nzuo2aMqgT4KwU/L0BiEvKj/Gh4JQwfY
+         hrsNjQFpooCvU9CbZVDQUeFqZLbna0MQ08epM/Lx2YIiHqjlHEYsRgzvYxyfT11OnGue
+         MOcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2H8XWRLs/cbmJeRBTAh4/48CwYXMne1DsJ3h7TEz2GM=;
+        b=ZRn+cCJSJcoAyITGXiwMZ3DFLNJhIXagNuBD64rj5z9ha/iQOg5GBDiS5ErUV0ZWqU
+         TfG/vTe7gqs0Ss1theUo1Npd4mQwRQEsnwCEdXCMXvdm/MWstCNXMKlGQVEAPPgFgz/e
+         RsVlsUB5RpqdyNKxUGmVSIdKHqceSCwqmKldipQzcGqxb2G+5fnWpblfgwsb6jrVpdjW
+         8tev9qsWUo5HTXHOaJs6zsMJg9Nn76DYseSI4BJeA99ot2ZfIp7q7LK9XIN6/T7rRGkQ
+         S8cexeSI2yKGFa5OgfV0/oQkCIgFE0f/+rrNSoflgK7XMgHT4P9snfZpOrLQ7v8pu/k7
+         t1Pg==
+X-Gm-Message-State: AOAM533Af4mYnFc0ax1J0+4SUBeYEgOeBdA8b0o55ZpjA8vsJKQtibdT
+        EE+565v9xFs6iebT21tOTUiUITPJSZ18+Bi22W1IfA==
+X-Google-Smtp-Source: ABdhPJxGrELU+sr+1kgkl/qdZ/XZwXL4XRm5dMDFIKZ0RZe+Cq1K9uCu5AlgW+v6i3cT7KOpEXWCGVfu8zUwNKOSIdo=
+X-Received: by 2002:a2e:93cd:: with SMTP id p13mr1323677ljh.144.1606207077648;
+ Tue, 24 Nov 2020 00:37:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103172226.4278-3-yung-chuan.liao@linux.intel.com>
+References: <1604570192-15057-1-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1604570192-15057-1-git-send-email-rnayak@codeaurora.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 09:37:46 +0100
+Message-ID: <CACRpkdYcdrC+xbaoZ6dEePtRcD3hqAdotQq=jddOC8=OMa6EFw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: qcom: Add sc7280 pinctrl bindings
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-11-20, 01:22, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The SoundWire 1.1 specification only allowed for reads and writes of
-> bytes. The SoundWire 1.2 specification adds a new capability to
-> transfer "Multi-Byte Quantities" (MBQ) across the bus. The transfers
-> still happens one-byte-at-a-time, but the update is atomic.
-> 
-> For example when writing a 16-bit volume, the first byte transferred
-> is only taken into account when the second byte is successfully
-> transferred.
-> 
-> The mechanism is symmetrical for read and writes:
-> - On a read, the address of the last byte to be read is modified by
-> setting the MBQ bit
-> - On a write, the address of all but the last byte to be written are
-> modified by setting the MBQ bit. The address for the last byte relies
-> on the MBQ bit being cleared.
-> 
-> The current definitions for MBQ-based controls in the SDCA draft
-> standard are limited to 16 bits for volumes, so for now this is the
-> only supported format. An update will be provided if and when support
-> for 24-bit and 32-bit values is specified by the SDCA standard.
-> 
-> One possible objection is that this code could have been handled with
-> regmap-sdw.c. However this is a new spec addition not handled by every
-> SoundWire 1.1 and non-SDCA device, so there's no reason to load code
-> that will never be used.
-> 
-> Also in practice it's extremely unlikely that CONFIG_REGMAP would not
-> be selected with CONFIG_REGMAP_MBQ selected. However there's no
-> functional dependency between the two modules so they can be selected
-> separately.
+On Thu, Nov 5, 2020 at 10:56 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> Add device tree binding Documentation details for Qualcomm SC7280
+> TLMM block.
+>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+> v2: Consolidated functions under phase_flag and qdss
 
--- 
-~Vinod
+Patch applied.
+
+Yours,
+Linus Walleij
