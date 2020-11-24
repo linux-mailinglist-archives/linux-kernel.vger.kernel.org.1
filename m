@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC0C2C2169
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E04E2C216F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbgKXJ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:29:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38102 "EHLO mail.kernel.org"
+        id S1731179AbgKXJb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:31:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727901AbgKXJ3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:29:38 -0500
-Received: from kernel.org (unknown [77.125.7.142])
+        id S1727901AbgKXJbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:31:25 -0500
+Received: from linux-8ccs (p57a232c3.dip0.t-ipconnect.de [87.162.50.195])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08D202073C;
-        Tue, 24 Nov 2020 09:29:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB3762073C;
+        Tue, 24 Nov 2020 09:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606210177;
-        bh=iTkMZLIpRtTWQfDGIB3Vl3mRtp/b8gkTxfVBLDleW2s=;
+        s=default; t=1606210284;
+        bh=x0XNcCstZjxyoqDI6BWYieEkdE0LoYUSxI5vbd2Ij40=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P3bKeuXgUqKvyJMqI2t3WocMqVtq5rV80ChLv9RkXZobErCnfHPcZXypQS/ff8OIc
-         k9Yt6nSUwbnDnaqXryHrQQDoC3ltsZJwF2Txq8wR9gdzisTN7cFmPk0qphW+f2nwAw
-         8OtVd4ZVVbsESt0E2Fi0gLuo0Co6IDESghVXVkF8=
-Date:   Tue, 24 Nov 2020 11:29:19 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-riscv@lists.infradead.org, X86 ML <x86@kernel.org>
-Subject: Re: [PATCH v10 0/9] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20201124092919.GI8537@kernel.org>
-References: <20201123095432.5860-1-rppt@kernel.org>
- <CALCETrXr-9ABs7rzXcCrh1VXn-15AfpwjA6bQA7aU9Ta7DR+bw@mail.gmail.com>
+        b=jQVvTuFX40PXw2b7BBSRbLHLcLh9+vA1uWMNIV8HgVKyS/T/OHkZMrmq3qat0j0Kr
+         bFC8e8IPoF1vwB3UsqQiZ7zg1QmSbjm0OXZtMZkbkC8/cLMhsBw6uOXA2kiXrgXj9T
+         6z1J7C6OsuwFstdqbNJdn3+HP35jBfpvFNj/kyNY=
+Date:   Tue, 24 Nov 2020 10:31:18 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     William Mcvicker <willmcvicker@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH v1 0/2] Add support to capture external module's SCM
+ version
+Message-ID: <20201124093117.GA21089@linux-8ccs>
+References: <20201121011652.2006613-1-willmcvicker@google.com>
+ <20201123090257.GB6334@infradead.org>
+ <20201123221338.GA2726675@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CALCETrXr-9ABs7rzXcCrh1VXn-15AfpwjA6bQA7aU9Ta7DR+bw@mail.gmail.com>
+In-Reply-To: <20201123221338.GA2726675@google.com>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 07:28:22AM -0800, Andy Lutomirski wrote:
-> On Mon, Nov 23, 2020 at 1:54 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > Hi,
-> >
-> > This is an implementation of "secret" mappings backed by a file descriptor.
-> >
-> > The file descriptor backing secret memory mappings is created using a
-> > dedicated memfd_secret system call The desired protection mode for the
-> > memory is configured using flags parameter of the system call. The mmap()
-> > of the file descriptor created with memfd_secret() will create a "secret"
-> > memory mapping. The pages in that mapping will be marked as not present in
-> > the direct map and will have desired protection bits set in the user page
-> > table. For instance, current implementation allows uncached mappings.
-> 
-> I'm still not ready to ACK uncached mappings on x86.  I'm fine with
-> the concept of allowing privileged users to create UC memory on x86
-> for testing and experimentation, but it's a big can of worms in
-> general. 
++++ William Mcvicker [23/11/20 14:13 -0800]:
+>On Mon, Nov 23, 2020 at 09:02:57AM +0000, Christoph Hellwig wrote:
+>> On Sat, Nov 21, 2020 at 01:16:49AM +0000, Will McVicker wrote:
+>> > These two patches add module support to capture an external module's SCM
+>> > version as a MODULE_INFO() attribute. This allows users to identity the SCM
+>> > version of a given kernel module by using the modinfo tool or on the device
+>> > via sysfs:
+>>
+>> As this obviously is of no use for in-tree modules it falls under the we
+>> don't add code to support things that are not in tree rule and has no
+>> business in the kernel.
+>
+>Hi Christoph,
+>
+>Ah sorry, I didn't intend this to come across as only for external modules.
+>That just seemed like the easiest way to explain how the scmversion attribute
+>can be different from the vermagic. We mainly need this for in-tree kernel
+>modules since that's where most our drivers are. Let me re-phrase this with
+>that in mind. Basically, I like to look at this as an improved version of the
+>existing srcversion module attribute since it allows you to easily identify the
+>module version with a quick SCM version string check instead of doing a full
+>checksum on the module source.
+>
+>For example, we have a setup to test kernel changes on the hikey and db845c
+>devices without updating the kernel modules. Without this scmversion module
+>attribute, you can't identify the original module version using `uname
+>-r`. And for kernel modules in the initramfs, you can't even use modinfo to get
+>the module vermagic.  With this patch, you are able to get the SCM version for
+>*all* kernel modules (on disk and in the initramfs) via the sysfs node:
+>/sys/module/<mod>/scmversion. This also works the other way around when
+>developers update their kernel modules to fix some bug (like a security
+>vulnerability) but don't need to update the full kernel.
 
-Ok, let's move forward without UC. 
+Hi Will,
 
--- 
-Sincerely yours,
-Mike.
+If this were also intended for in-tree kernel modules, then why do
+intree modules only get the UTS_RELEASE string in their scmversion
+field, which basically already exists in the vermagic? Or do you plan
+to change that?
+
+Jessica
