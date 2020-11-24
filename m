@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25512C3459
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7702C346E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732151AbgKXXJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:09:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729256AbgKXXJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:09:06 -0500
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C8B12158C
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 23:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606259345;
-        bh=ahy2k/Gc609ovaeFWrlHHl8K9n5k9vUfX+NgSmPek4E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lf+Kk0OJTqhB/8d2YP7KZu2CybzbV8At1UMbfYN43hc65zEFTMZZuMhTfd6ZYhZz3
-         +v3iFvG1r1b6LondqS7yuhDi8FJspxCp8C2A8RxjPeng2/FDfNE9nejAkBWn5s6l8E
-         4ez3Lo/5/V9hw6A/yygMOoQWXDm3PDfGXilqBx98=
-Received: by mail-wr1-f49.google.com with SMTP id r17so101155wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 15:09:04 -0800 (PST)
-X-Gm-Message-State: AOAM532h5dlXMI7HqE5cwomqeBOWe5dh0Qlia6uZokv9e0pKMNpMd5Xq
-        Zq1DFUBH3o7tfeBTVmoGjSdVUTAViMpsqWomCJi7yg==
-X-Google-Smtp-Source: ABdhPJwDvv+6joZFPg45hAtndpkPQdXY3QBXRKhhnFzmrPdk/pct6xdGmjMNR7iJvJAU3h3KwmuRYk1Dk9uP3tdqfaU=
-X-Received: by 2002:a5d:49ce:: with SMTP id t14mr818826wrs.75.1606259343449;
- Tue, 24 Nov 2020 15:09:03 -0800 (PST)
+        id S1732458AbgKXXNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:13:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732432AbgKXXNp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:13:45 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A1BC0613D6;
+        Tue, 24 Nov 2020 15:13:45 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id k5so105630plt.6;
+        Tue, 24 Nov 2020 15:13:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=6HZ3PXI07xuXCb1u+0sxHyo9e4nW+5uowdj70oCCuBQ=;
+        b=fBCWUH9yp0JVY9KxVwFeRHryKJZSDVHuhLlnDdvwsQrs6gyQx0/kVvV4TBuDFHGHO6
+         ipwq6pAa+eKeBVDCTlw+vVqahU9dXn3HnG6P6GLQZDWC+YGStBXFo7anckfkOqI0jP4X
+         OgL+E45KQwgQUneFLTxI2i/c50aGxKXnM/8brc0nl0+MUAeyg0AptQvMh5oH73DM6NdX
+         oBTrudRcmLzIhSWsehO0VhgudxggXLZgzTg1sUP77s+pt7S7hToCUri+mZT7gV2mT1cZ
+         dr8CHTO2fNOj+CwsbxII28Wj/RaDgKLhHqiIGGRMbeUhBT52XpGK5Jk+QMSWdUyHoO+l
+         1BNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=6HZ3PXI07xuXCb1u+0sxHyo9e4nW+5uowdj70oCCuBQ=;
+        b=keDv/gjmeddnz4JSHRof60k3T+NZ+O1r7OY7KdybRkPf9ossLUXJL9TVUk5ROtBY/h
+         nKilwH9LxlyiY+Bl8ADRVF6B6xujiTdAp/SRTt6oA5/akk8WcShhRRz8QjGiNsuHMz3n
+         z1AfoZQfEy+PylpIDM7q3WMQBqAl5CMzo6+2lAIlUI3BlHZGY1tzKPvKRhXTiAnkk1Mx
+         SYeZPnR8GfKSTo5FBcwev0ihrLeb5nAQ6pFf1bCyFBZALBoeUPTziVJHXLM99pQZAD5l
+         fXM8haqB0hXQzWxfiOjEaB9dfMbdU7JjVgIjsGD43M7B9ElE9sCXrxzu4ZUueouysunX
+         5r5Q==
+X-Gm-Message-State: AOAM531zKcao5lV7PQXXAVMBIgF/7OWd89TfIOxPgPVsQg2dqyrP72nR
+        0P2ckrmEFAqM7m60rvUOqXJdp82En8XJtg==
+X-Google-Smtp-Source: ABdhPJzzb0uF6PYJKfyKmVPNhZ+rW1fV2YpSEtzwFwyogY8RxQZe9lFs38IgZmv8nkYLDgu/C9lIeg==
+X-Received: by 2002:a17:902:9a4c:b029:d6:1f21:8021 with SMTP id x12-20020a1709029a4cb02900d61f218021mr554435plv.58.1606259624726;
+        Tue, 24 Nov 2020 15:13:44 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id g31sm220237pgl.34.2020.11.24.15.13.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 24 Nov 2020 15:13:44 -0800 (PST)
+Date:   Tue, 24 Nov 2020 15:12:16 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>, Will Deacon <will@kernel.org>
+Cc:     joro@8bytes.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, thierry.reding@gmail.com,
+        linux-tegra@vger.kernel.org, jonathanh@nvidia.com
+Subject: Re: [PATCH RESEND 0/5] iommu/tegra-smmu: Some pending reviewed
+ changes
+Message-ID: <20201124231215.GA32405@Asurada-Nvidia>
+References: <20201111222129.15736-1-nicoleotsuka@gmail.com>
+ <20201124212100.GA32108@Asurada-Nvidia>
+ <68237d7c-12f7-3053-2e79-75b7e95f0af3@gmail.com>
 MIME-Version: 1.0
-References: <20201124002932.1220517-1-dima@arista.com> <20201124002932.1220517-13-dima@arista.com>
-In-Reply-To: <20201124002932.1220517-13-dima@arista.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 24 Nov 2020 15:08:49 -0800
-X-Gmail-Original-Message-ID: <CALCETrWMFDqJrOrq3Z1LpryvysMsE=9b_Zm_aDMuqe4uRL8Wyw@mail.gmail.com>
-Message-ID: <CALCETrWMFDqJrOrq3Z1LpryvysMsE=9b_Zm_aDMuqe4uRL8Wyw@mail.gmail.com>
-Subject: Re: [PATCH v2 12/19] x86/signal: Land on &frame->retcode when vdso
- isn't mapped
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <68237d7c-12f7-3053-2e79-75b7e95f0af3@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 4:30 PM Dmitry Safonov <dima@arista.com> wrote:
->
-> Since commit 9fbbd4dd17d0 ("x86: Don't require the vDSO for handling
-> a.out signals") after processing 32-bit signal if there is no vdso
-> mapped frame->retcode is used as a landing.
-> Do the same for rt ia32 signals.
-> It also makes the ia32 compat signals match the native ia32 case.
->
-> This shouldn't be mistaken for encouragement for running binaries with
-> executable stack, rather something to do in hopefully very rare
-> situation with disabled or unmapped vdso and absent SA_RESTORER.
-> For non-executable stack it'll segfault on attempt to land, rather than
-> land on a random address where vdso was previously mapped.
-> For programs with executable stack it'll just do the same for rt signals
-> as for non-rt.
->
-> Discouraging users to run with executable stack is done separately in
-> commit 47a2ebb7f505 ("execve: warn if process starts with executable
-> stack").
->
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
+On Wed, Nov 25, 2020 at 02:05:14AM +0300, Dmitry Osipenko wrote:
+> 25.11.2020 00:21, Nicolin Chen пишет:
+> > Hi Joerg,
+> > 
+> > These five patches were acked by Thierry and acked-n-tested by
+> > Dmitry a while ago. Would it be possible for you to apply them?
+> > 
+> > Thanks!
+> 
+> Hi,
+> 
+> You probably should try to ping Will Deacon.
+> 
+> https://lkml.org/lkml/2020/11/17/243
 
-The new code is more readable than the old code, too.
+Thank you, Dmitry.
+--
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+Will, would it be possible for you to take these changes?
+
+I sent them on Nov 11 to the following lists:
+linux-kernel@vger.kernel.org
+iommu@lists.linux-foundation.org
+
+If you need me to resend it again by adding you in To line,
+please kindly let me know.
+
+Thanks
