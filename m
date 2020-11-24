@@ -2,96 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9F22C1E01
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50E42C1E05
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbgKXGNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:13:49 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:23346 "EHLO pegase1.c-s.fr"
+        id S1728206AbgKXGP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:15:29 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:47840 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbgKXGNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:13:48 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CgDHD3xkbz9tySZ;
-        Tue, 24 Nov 2020 07:13:44 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id GVaSvkZmdBEL; Tue, 24 Nov 2020 07:13:44 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgDHD32l6z9tyST;
-        Tue, 24 Nov 2020 07:13:44 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 389128B7A3;
-        Tue, 24 Nov 2020 07:13:45 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id RQwagSNH0AtJ; Tue, 24 Nov 2020 07:13:45 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 349678B79F;
-        Tue, 24 Nov 2020 07:13:44 +0100 (CET)
-Subject: Re: [PATCH v2 05/19] elf: Remove compat_arch_setup_additional_pages()
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-References: <20201124002932.1220517-1-dima@arista.com>
- <20201124002932.1220517-6-dima@arista.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <77b23c00-13a2-a8bb-6b9e-72980c5d6fca@csgroup.eu>
-Date:   Tue, 24 Nov 2020 07:13:44 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727487AbgKXGP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:15:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606198527; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=O64Bagg91WpXTQ6GYKfVVL/aHTO8730H8ll60EFv4Q0=;
+ b=leuk/gZTKizDNBBtWZeiGhuae/J668Swqs/90uxl71gino1hXDUcgooFoO4ORxX3SMfMGY9Y
+ B2qppXP6AiEISFtuYFP2hFJlHhhrs6D8X5o316+BJwg4SqoJHDRmclsjC4SJwz+CHaProgQC
+ +2SEcMO7N9TPPm7Kp6rIpxjkIcU=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fbca4f6fa67d9becf74d05d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 06:15:18
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 10655C43460; Tue, 24 Nov 2020 06:15:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 112CDC433ED;
+        Tue, 24 Nov 2020 06:15:16 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201124002932.1220517-6-dima@arista.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 14:15:15 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH] scsi: ufs: Don't disable core_clk_unipro if the link is
+ active
+In-Reply-To: <1606195221.17338.6.camel@mtkswgap22>
+References: <1606194312-25378-1-git-send-email-cang@codeaurora.org>
+ <1606195221.17338.6.camel@mtkswgap22>
+Message-ID: <20ae750e562d80f964045c7c44bd94d6@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stanley,
 
+On 2020-11-24 13:20, Stanley Chu wrote:
+> Hi Can,
+> 
+> On Mon, 2020-11-23 at 21:05 -0800, Can Guo wrote:
+>> If we want to disable clocks but still keep the link active, both 
+>> ref_clk
+>> and core_clk_unipro should be skipped.
+>> 
+> 
+> "core_clk_unipro" seems used by ufs-qcom only and not defined in the 
+> UFS
+> platform binding document: ufshcd_pltfrm.txt.
 
-Le 24/11/2020 à 01:29, Dmitry Safonov a écrit :
-> Now that all users rely on detecting bitness of new-born task checking
-> personality, remove compat_arch_setup_additional_pages() macro,
-> simplifying the code.
-
-I understand from cover that you wanted to reword "new-born" ?
+Agree.
 
 > 
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> ---
->   fs/compat_binfmt_elf.c | 5 -----
->   1 file changed, 5 deletions(-)
+> Could you please add the definition first and then it would be
+> reasonable to be used in common driver?
 > 
-> diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
-> index 3606dd3a32f5..da8ee4d6e451 100644
-> --- a/fs/compat_binfmt_elf.c
-> +++ b/fs/compat_binfmt_elf.c
-> @@ -115,11 +115,6 @@
->   #define START_THREAD		COMPAT_START_THREAD
->   #endif
->   
-> -#ifdef	compat_arch_setup_additional_pages
-> -#undef	arch_setup_additional_pages
-> -#define	arch_setup_additional_pages compat_arch_setup_additional_pages
-> -#endif
-> -
->   #ifdef	compat_elf_read_implies_exec
->   #undef	elf_read_implies_exec
->   #define	elf_read_implies_exec compat_elf_read_implies_exec
+> Or, how about add a flag in struct ufs_clk_info indicating if this 
+> clock
+> needs be ON to keep the link active? The flag could be set properly by
+> vendor initialization functions. In this way, we can also remove the
+> hard-coded "ref_clk" in __ufshcd_setup_clocks().
+
+This seems better, I will upload next version to incorporate the idea
+after it is tested.
+
+Thanks,
+
+Can Guo.
+
 > 
+> Thanks.
+> Stanley Chu
+> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index a7857f6..69c2e91 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -222,7 +222,7 @@ static int ufshcd_clear_tm_cmd(struct ufs_hba 
+>> *hba, int tag);
+>>  static void ufshcd_hba_exit(struct ufs_hba *hba);
+>>  static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+>>  static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+>> -				 bool skip_ref_clk);
+>> +				 bool keep_link_active);
+>>  static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
+>>  static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+>>  static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba 
+>> *hba);
+>> @@ -1710,7 +1710,6 @@ static void ufshcd_gate_work(struct work_struct 
+>> *work)
+>>  	if (!ufshcd_is_link_active(hba))
+>>  		ufshcd_setup_clocks(hba, false);
+>>  	else
+>> -		/* If link is active, device ref_clk can't be switched off */
+>>  		__ufshcd_setup_clocks(hba, false, true);
+>> 
+>>  	/*
+>> @@ -7991,7 +7990,7 @@ static int ufshcd_init_hba_vreg(struct ufs_hba 
+>> *hba)
+>>  }
+>> 
+>>  static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+>> -					bool skip_ref_clk)
+>> +					bool keep_link_active)
+>>  {
+>>  	int ret = 0;
+>>  	struct ufs_clk_info *clki;
+>> @@ -8009,7 +8008,13 @@ static int __ufshcd_setup_clocks(struct ufs_hba 
+>> *hba, bool on,
+>> 
+>>  	list_for_each_entry(clki, head, list) {
+>>  		if (!IS_ERR_OR_NULL(clki->clk)) {
+>> -			if (skip_ref_clk && !strcmp(clki->name, "ref_clk"))
+>> +			/*
+>> +			 * To keep link active, ref_clk and core_clk_unipro
+>> +			 * should be kept ON.
+>> +			 */
+>> +			if (keep_link_active &&
+>> +			    (!strcmp(clki->name, "ref_clk") ||
+>> +			     !strcmp(clki->name, "core_clk_unipro")))
+>>  				continue;
+>> 
+>>  			clk_state_changed = on ^ clki->enabled;
+>> @@ -8580,7 +8585,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	if (!ufshcd_is_link_active(hba))
+>>  		ufshcd_setup_clocks(hba, false);
+>>  	else
+>> -		/* If link is active, device ref_clk can't be switched off */
+>>  		__ufshcd_setup_clocks(hba, false, true);
+>> 
+>>  	if (ufshcd_is_clkgating_allowed(hba)) {
