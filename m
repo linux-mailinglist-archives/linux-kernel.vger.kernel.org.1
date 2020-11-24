@@ -2,78 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3982E2C22BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09D82C22BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731990AbgKXKUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731985AbgKXKUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731984AbgKXKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 24 Nov 2020 05:20:37 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F43AC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:20:36 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x24so5773603pfn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:20:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aa9wVaM8Q5G5htOYE8QAYbIy5Fdksi5AaGTsBR4y4oA=;
-        b=cdMmPcjltFHlpI6gksl2/fIsFh/bq+VaUHcbdhE/devIEAQmawCgLno2bE6iZ7pIce
-         5cIF64CvU29pPHCIGXWjf6jAa7fPaV9sl1tES5Zb5qQrsQ8Xm+HDvr2OhbE0lveavydv
-         6xhsUSzwQLPbbIesaT90J5mN0Dj/SVpeghm9DCXXtzrr85HvMF2vyDQAqURubBqr9eo0
-         9Q+UjnYOinXTRh5JM0BR4NmMlfZBHbHhOvfWfuJas3glKPaJ6peSQXvdtvl4AwkteVZ2
-         XRKYYnujZvkWcQKfD7U/G1siM1Op+vGF5ZePDaGyXwnO++V7NlcAYHf3w7tebfffIgOE
-         T1SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aa9wVaM8Q5G5htOYE8QAYbIy5Fdksi5AaGTsBR4y4oA=;
-        b=FyAUWPwESOQroGW+NMrKmA7aI5g6GqVLg36BpbKnEW/xQyNOwTGF61oIZIdNhwcTAa
-         94O9gmKrBPV2083mNqArem2lRH3mKAd9YVowtppj9y5mrsSCBb1MaI/0onj/cJ25Xdik
-         rQHz8Dk5DWLPUU4MhsMj9i5iN5JMM26daaUd7/9K2Oa8B5/x8ZrGk+kUURRLl2HSXCow
-         jqBQYgu2WVFGGKktUzElqWcxdIOqsv4NcI9PXn7GHuhAFuwP9tckqgoESLyFJoZr3zLy
-         sSHgSvYzAwHJVClXITkhA1tZbgewXDTaOd9pY2BD6ffLW+MPI+5J1ouair1PVLCmEHYG
-         azYQ==
-X-Gm-Message-State: AOAM530BEyHcPS6n8Yreb7BhWWmn24kZOSocodIzFcR1g/5A5GjEbqxO
-        auGjFn4s9Nv4MCIyZgrjC6HOChqlFY9sPcA0mKdJww==
-X-Google-Smtp-Source: ABdhPJxHor7IGuJelK1d4M+d7EIxn6vn8x+okbkfDnW+bIIWQwIOXtmWu92du9sRke6kFN6MNd/ZNf4uAIV6Li8N/8c=
-X-Received: by 2002:a17:90a:e604:: with SMTP id j4mr4166491pjy.19.1606213236082;
- Tue, 24 Nov 2020 02:20:36 -0800 (PST)
+Received: from mx2.suse.de ([195.135.220.15]:40396 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731973AbgKXKUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:20:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8CADAC66;
+        Tue, 24 Nov 2020 10:20:33 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4B5A51E130F; Tue, 24 Nov 2020 11:20:33 +0100 (CET)
+Date:   Tue, 24 Nov 2020 11:20:33 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>,
+        Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
+Message-ID: <20201124102033.GA19336@quack2.suse.cz>
+References: <20201101212738.GA16924@gmail.com>
+ <20201102122638.GB23988@quack2.suse.cz>
+ <20201103211747.GA3688@gmail.com>
+ <20201123164622.GJ27294@quack2.suse.cz>
+ <20201123224651.GA27809@gmail.com>
+ <20201124084507.GA4009@zn.tnic>
 MIME-Version: 1.0
-References: <20201116155008.118124-1-robert.foss@linaro.org> <cf0b935d-3ccd-8360-1b52-89fab0b181eb@linux.intel.com>
-In-Reply-To: <cf0b935d-3ccd-8360-1b52-89fab0b181eb@linux.intel.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 24 Nov 2020 11:20:25 +0100
-Message-ID: <CAG3jFyssMMHpi4WgWmeDjuVYKz12UwJoBT0WoOsdB4PZxnuqSw@mail.gmail.com>
-Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
-To:     Bingbu Cao <bingbu.cao@linux.intel.com>
-Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ben Kao <ben.kao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201124084507.GA4009@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 at 10:42, Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
->
-> Hi, Robert
->
-> I remember that the full size of ov8856 image sensor is 3296x2480 and we can get the 3280x2464
-> frames based on current settings.
->
-> Do you have any issues with this mode?
 
-As far as I can tell using the 3280x2464 mode actually yields an
-output resolution that is 3264x2448.
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-What does your hardware setup look like? And which revision of the
-sensor are you using?
+On Tue 24-11-20 09:45:07, Borislav Petkov wrote:
+> On Mon, Nov 23, 2020 at 11:46:51PM +0100, Paweł Jasiak wrote:
+> > On 23/11/20, Jan Kara wrote:
+> > > OK, with a help of Boris Petkov I think I have a fix that looks correct
+> > > (attach). Can you please try whether it works for you? Thanks!
+> > 
+> > Unfortunately I am getting a linker error.
+> > 
+> > ld: arch/x86/entry/syscall_32.o:(.rodata+0x54c): undefined reference to `__ia32_sys_ia32_fanotify_mark'
+> 
+> Because CONFIG_COMPAT is not set in your .config.
+> 
+> Jan, look at 121b32a58a3a and especially this hunk
+> 
+> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+> index 9b294c13809a..b8f89f78b8cd 100644
+> --- a/arch/x86/kernel/Makefile
+> +++ b/arch/x86/kernel/Makefile
+> @@ -53,6 +53,8 @@ obj-y                 += setup.o x86_init.o i8259.o irqinit.o
+>  obj-$(CONFIG_JUMP_LABEL)       += jump_label.o
+>  obj-$(CONFIG_IRQ_WORK)  += irq_work.o
+>  obj-y                  += probe_roms.o
+> +obj-$(CONFIG_X86_32)   += sys_ia32.o
+> +obj-$(CONFIG_IA32_EMULATION)   += sys_ia32.o
+> 
+> how it enables the ia32 syscalls depending on those config items. Now,
+> you have
+> 
+>  #ifdef CONFIG_COMPAT
+> -COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+> +SYSCALL_DEFINE6(ia32_fanotify_mark,
+> 
+> which is under CONFIG_COMPAT which is not set in Paweł's config.
+> 
+> config COMPAT
+>         def_bool y
+>         depends on IA32_EMULATION || X86_X32
+> 
+> but it depends on those two config items.
+> 
+> However, it looks to me like ia32_fanotify_mark's definition should be
+> simply under CONFIG_X86_32 because:
+> 
+> IA32_EMULATION is 32-bit emulation on 64-bit kernels
+> X86_X32 is for the x32 ABI
+
+Thanks for checking! I didn't realize I needed to change the ifdefs as well
+(I missed that bit in 121b32a58a3a). So do I understand correctly that
+whenever the kernel is 64-bit, 64-bit syscall args (e.g. defined as u64) are
+passed just fine regardless of whether the userspace is 32-bit or not?
+
+Also how about other 32-bit archs? Because I now realized that
+CONFIG_COMPAT as well as the COMPAT_SYSCALL_DEFINE6() is also utilized by
+other 32-bit archs (I can see a reference to compat_sys_fanotify_mark e.g.
+in sparc, powerpc, and other args). So I probably need to actually keep
+that for other archs but do the modification only for x86, don't I?
+
+So something like attached patch?
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/x-patch; charset=utf-8
+Content-Disposition: attachment; filename="0001-fanotify-Fix-fanotify_mark-on-32-bit-x86.patch"
+Content-Transfer-Encoding: 8bit
+
+From 20d2ddf37c01e91ca18d415a59b3488a394acd8f Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Mon, 23 Nov 2020 17:37:00 +0100
+Subject: [PATCH] fanotify: Fix fanotify_mark() on 32-bit x86
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Commit converting syscalls taking 64-bit arguments to new scheme of compat
+handlers omitted converting fanotify_mark(2) which then broke the
+syscall for 32-bit x86 builds. Add missed conversion. It is somewhat
+cumbersome since we need to keep the original compat handler for all the
+other 32-bit archs.
+
+CC: Brian Gerst <brgerst@gmail.com>
+Suggested-by: Borislav Petkov <bp@suse.de>
+Reported-by: Paweł Jasiak <pawel@jasiak.xyz>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ arch/x86/entry/syscalls/syscall_32.tbl | 2 +-
+ fs/notify/fanotify/fanotify_user.c     | 6 +++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index 0d0667a9fbd7..b2ec6ff88307 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -350,7 +350,7 @@
+ 336	i386	perf_event_open		sys_perf_event_open
+ 337	i386	recvmmsg		sys_recvmmsg_time32		compat_sys_recvmmsg_time32
+ 338	i386	fanotify_init		sys_fanotify_init
+-339	i386	fanotify_mark		sys_fanotify_mark		compat_sys_fanotify_mark
++339	i386	fanotify_mark		sys_ia32_fanotify_mark
+ 340	i386	prlimit64		sys_prlimit64
+ 341	i386	name_to_handle_at	sys_name_to_handle_at
+ 342	i386	open_by_handle_at	sys_open_by_handle_at		compat_sys_open_by_handle_at
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index 3e01d8f2ab90..54a36d4bd116 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -1292,8 +1292,12 @@ SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
+ 	return do_fanotify_mark(fanotify_fd, flags, mask, dfd, pathname);
+ }
+ 
+-#ifdef CONFIG_COMPAT
++#if defined(CONFIG_COMPAT) || defined(CONFIG_X86_32)
++#ifdef CONFIG_X86_32
++SYSCALL_DEFINE6(ia32_fanotify_mark,
++#elif CONFIG_COMPAT
+ COMPAT_SYSCALL_DEFINE6(fanotify_mark,
++#endif
+ 				int, fanotify_fd, unsigned int, flags,
+ 				__u32, mask0, __u32, mask1, int, dfd,
+ 				const char  __user *, pathname)
+-- 
+2.16.4
+
+
+--OXfL5xGRrasGEqWY--
