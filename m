@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3AF2C26E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C410D2C26DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387909AbgKXNNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:13:02 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:3898 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387675AbgKXNNC (ORCPT
+        id S2387901AbgKXNMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:12:18 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8027 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387781AbgKXNMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:13:02 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AODCD95000701;
-        Tue, 24 Nov 2020 14:12:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=ix/kx7ERmG4i0gfDa9YUOrftv5Xy+RUr3PaZbU4Xkb4=;
- b=DazCYgY32udAr3uRdVPQeBZEdrNhyGnz8SZ0wAUfj48TyKjTwO1l9O9m9DJa3ewF5cDz
- MG2r/w8PDeLEWuqddpxwUHSaIARuZY9oNdvLl83IVKsS2KX2Adfx0anPQ7CCHLJabmml
- ULDx7B4+7kx8jBZexwBMwzYLrK7TBCgEzB01zarSGWSfZH7XoloaNmbMu0HLrewtMnY3
- O4aI7jknWh1hPFS3TBbQW0rS0fNg73U8eSfy2zsZtYfKhuLS7/YpzirQr3A1eiy6/Pk6
- 1LW4Z5Bo6BFLSjQ14YTl7EBJXEmJQ2597bpXnaTzZqTocU8OgrNW0Wt59BbiBXQRNu// bw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y05h7hvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 14:12:53 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 806C4100038;
-        Tue, 24 Nov 2020 14:12:52 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 55DBE26F739;
-        Tue, 24 Nov 2020 14:12:52 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 14:12:51 +0100
-Subject: Re: ARM.STM32 - Mainline stable kernel 5.9.10 hangs indefinitely on a
- STM32MP157A-DK1 board.
-To:     Manuel Reis <mluis.reis@gmail.com>, <mcoquelin.stm32@gmail.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-CC:     <linux-kernel@vger.kernel.org>,
-        Michael Opdenacker <michael.opdenacker@bootlin.com>
-References: <ZZWAKQ.K8IZKPD4L3Z9@gmail.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <4d92399d-db02-a220-fc8e-889405b85ddf@st.com>
-Date:   Tue, 24 Nov 2020 14:11:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 24 Nov 2020 08:12:17 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgPYk74vlzhfq2;
+        Tue, 24 Nov 2020 21:11:54 +0800 (CST)
+Received: from [10.174.187.74] (10.174.187.74) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 24 Nov 2020 21:12:04 +0800
+Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+To:     Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-4-lushenming@huawei.com>
+ <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+ <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
+ <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
+Date:   Tue, 24 Nov 2020 21:12:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <ZZWAKQ.K8IZKPD4L3Z9@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
+X-Originating-IP: [10.174.187.74]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manuel
+On 2020/11/24 16:44, Marc Zyngier wrote:
+> On 2020-11-24 08:10, Shenming Lu wrote:
+>> On 2020/11/23 17:27, Marc Zyngier wrote:
+>>> On 2020-11-23 06:54, Shenming Lu wrote:
+>>>> From: Zenghui Yu <yuzenghui@huawei.com>
+>>>>
+>>>> When setting the forwarding path of a VLPI, it is more consistent to
+>>>
+>>> I'm not sure it is more consistent. It is a *new* behaviour, because it only
+>>> matters for migration, which has been so far unsupported.
+>>
+>> Alright, consistent may not be accurate...
+>> But I have doubt that whether there is really no need to transfer the
+>> pending states
+>> from kvm'vgic to VPT in set_forwarding regardless of migration, and the similar
+>> for unset_forwarding.
+> 
+> If you have to transfer that state outside of the a save/restore, it means that
+> you have missed the programming of the PCI endpoint. This is an established
+> restriction that the MSI programming must occur *after* the translation has
+> been established using MAPI/MAPTI (see the large comment at the beginning of
+> vgic-v4.c).
+> 
+> If you want to revisit this, fair enough. But you will need a lot more than
+> just opportunistically transfer the pending state.
 
-On 11/24/20 1:50 PM, Manuel Reis wrote:
-> To:���� Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> To:���� Alexandre Torgue <alexandre.torgue@st.com>
-> Cc:��� linux-kernel@vger.kernel.org
-> CC:��� Michael Opdenacker <michael.opdenacker@bootlin.com>
-> 
-> Hi there,
-> 
-> Mainline stable kernel 5.9.10 hangs indefinitely on a STM32MP157A-DK1 
-> Discovery Kit board.
-> 
-> Built plain vanilla 5.9.10 stable kernel for multi_v7_defconfig (set 
-> compression to XZ) using arm-linux-gnueabi-gcc (Ubuntu 10.2.0-8ubuntu1) 
-> 10.2.0.
-> 
-> Downloaded it to the board memory via tftp running U-Boot v2020.07. 
-> After boot, kernel initiates and prints several messages until it hangs on:
-> 
-> [ 2.692879] stpmic1 1-0033: PMIC Chip Version: 0x10
-> [ 2.704158] vddcore: supplied by regulator-dummy
-> [ 2.710304] vdd_ddr: supplied by regulator-dummy
-> [ 2.716414] vdd: supplied by regulator-dummy
-> [ 2.722355] v3v3: supplied by regulator-dummy
-> [ 2.728033] v1v8_audio: supplied by v3v3
-> [ 2.734287] v3v3_hdmi: supplied by regulator-dummy
-> [ 2.741035] vtt_ddr: supplied by vdd_ddr
-> [ 2.743833] vdd_usb: supplied by regulator-dummy
-> [ 2.751332] vdda: supplied by regulator-dummy
-> [ 2.757371] v1v2_hdmi: supplied by v3v3
-> 
-> No other information or indication is given, even though I added kernel 
-> debugging features such as the ones in "Kernel hacking ->Debug Oops, 
-> Lockups and Hangs".
-> 
-> Any help would be appreciated. Let me know if I can provide any further 
-> information.
-> 
+Thanks, I will look at what you mentioned.
 
-It has been introduced by commit aea6cb99703e ("regulator: resolve 
-supply after creating regulator") and should fixed by this one:
-
-cf1ad559a20d ("regulator: defer probe when trying to get voltage from 
-unresolved supply").
-
-Should be taken in stable tree.
-
-regards
-alex
-
-
-> Cheers,
-> Manuel
 > 
+>>
+>>>
+>>>> also transfer the pending state from irq->pending_latch to VPT (especially
+>>>> in migration, the pending states of VLPIs are restored into kvm’s vgic
+>>>> first). And we currently send "INT+VSYNC" to trigger a VLPI to pending.
+>>>>
+>>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>>> ---
+>>>>  arch/arm64/kvm/vgic/vgic-v4.c | 12 ++++++++++++
+>>>>  1 file changed, 12 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
+>>>> index b5fa73c9fd35..cc3ab9cea182 100644
+>>>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
+>>>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
+>>>> @@ -418,6 +418,18 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
+>>>>      irq->host_irq    = virq;
+>>>>      atomic_inc(&map.vpe->vlpi_count);
+>>>>
+>>>> +    /* Transfer pending state */
+>>>> +    ret = irq_set_irqchip_state(irq->host_irq,
+>>>> +                    IRQCHIP_STATE_PENDING,
+>>>> +                    irq->pending_latch);
+>>>> +    WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
+>>>> +
+>>>> +    /*
+>>>> +     * Let it be pruned from ap_list later and don't bother
+>>>> +     * the List Register.
+>>>> +     */
+>>>> +    irq->pending_latch = false;
+>>>
+>>> It occurs to me that calling into irq_set_irqchip_state() for a large
+>>> number of interrupts can take a significant amount of time. It is also
+>>> odd that you dump the VPT with the VPE unmapped, but rely on the VPE
+>>> being mapped for the opposite operation.
+>>>
+>>> Shouldn't these be symmetric, all performed while the VPE is unmapped?
+>>> It would also save a lot of ITS traffic.
+>>>
+>>
+>> My thought was to use the existing interface directly without unmapping...
+>>
+>> If you want to unmap the vPE and poke the VPT here, as I said in the cover
+>> letter, set/unset_forwarding might also be called when all devices are running
+>> at normal run time, in which case the unmapping of the vPE is not allowed...
+> 
+> No, I'm suggesting that you don't do anything here, but instead as a by-product
+> of restoring the ITS tables. What goes wrong if you use the
+> KVM_DEV_ARM_ITS_RESTORE_TABLE backend instead?
+
+There is an issue if we do it in the restoring of the ITS tables: the transferring
+of the pending state needs the irq to be marked as hw before, which is done by the
+pass-through device, but the configuring of the forwarding path of the VLPI depends
+on the restoring of the vgic first... It is a circular dependency.
+
+> 
+>> Another possible solution is to add a new dedicated interface to QEMU
+>> to transfer
+>> these pending states to HW in GIC VM state change handler corresponding to
+>> save_pending_tables?
+> 
+> Userspace has no way to know we use GICv4, and I intend to keep it
+> completely out of the loop. The API is already pretty tortuous, and
+> I really don't want to add any extra complexity to it.
+> 
+> Thanks,
+> 
+>         M.
