@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57D52C1A1A
+	by mail.lfdr.de (Postfix) with ESMTP id 48AED2C1A19
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730628AbgKXAcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:32:15 -0500
-Received: from mga11.intel.com ([192.55.52.93]:22890 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728654AbgKXAcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:32:14 -0500
-IronPort-SDR: 0VmygGDkd/fzXaTrPe90NrF91HRqyPrzyTJCaSRyfghZvYJpoUqCob32ZJZhcgGx8Fo+t9NkkH
- sQml2WGUGChA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="168358141"
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="168358141"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 16:32:12 -0800
-IronPort-SDR: aFDIjmEnv5l91rhGRODEcHOmW4Zjzq8UfIEWs3FEMGOjy3Alez342mKSMAv5nqf26VTO46T/Tp
- 9KR9a0eLpVFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="370232786"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2020 16:32:02 -0800
-Subject: Re: [PATCH -tip 13/32] sched: Trivial forced-newidle balancer
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-14-joel@joelfernandes.org>
- <20201123043836.GG110669@balbir-desktop>
- <1de89fd3-fb5f-5aaa-8ea6-7a12d3307fa4@linux.intel.com>
- <20201123233508.GC8893@balbir-desktop>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <2277bfa9-7f67-6b66-b2db-a2130993de53@linux.intel.com>
-Date:   Tue, 24 Nov 2020 08:32:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1730588AbgKXAcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:32:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730538AbgKXAcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 19:32:10 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B8EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:32:10 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id r17so5742103ilo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:32:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9QNZdMH/PA/pHLZjUKOEtHevUVMx4kRepNcO/cQUXhQ=;
+        b=dC7wwsHNtSDev28owu/2qGWi0qbPfBTq/MOGpMRMcG2AKSME+jwKn+xsopuiDLsHu8
+         NGQVouczYF4EVujpdBvlFMGwBgDxOoD9KxH2msv8W3KNV+taIrY1ADU6VVlVYbe+/0UA
+         LL2+toKC1BphKy0rgxfKOBbNC5lZsmD83HFUk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9QNZdMH/PA/pHLZjUKOEtHevUVMx4kRepNcO/cQUXhQ=;
+        b=WjTNif1ldVCYtAKB5UOzEGbEpQmDVfbDm2skHufVtAozB16Jk6sRhCgZd6+N0lcpn+
+         sw7uMTQs4MCZY+Vm5WYpURFLHuTVPXLQVCtgvtwiayCB2NAvMOt9XAdJfuCG7HWRiSb8
+         gs20o17w4a0rfIcbUl6DRKM0u2bSELHV6wCPtRDCoK3W7S9hiBfwsyS5QbnJm2mgWp1b
+         vjvZ9X3187L1Bo7X4ms339+tzyRpIhq0ZXGLmG/XDFr8byn8v+VRo5cet4lhfc80wryB
+         ZHcOHBB9Hu6mOMU98qPG75n3v2kRpu21GQFyjjK1x5IP3goWVvrBEuMv05ZL4v0r1hvQ
+         dL1A==
+X-Gm-Message-State: AOAM531VqD5Q5SFeVf1MldjBAn+aSWIK3jjQbiJqEue6ddufotZ8P3c5
+        Xz4Ggyb+gyFjMHsl8xJzBqjgcQ==
+X-Google-Smtp-Source: ABdhPJxTHJJtMKoBLyeYEsr0bepf7XZ7HOvjtnBC8nCDkhdrb4Wu8TrQUJNOCnWiepzKs2ToSBOaGQ==
+X-Received: by 2002:a92:d04:: with SMTP id 4mr2132128iln.210.1606177929916;
+        Mon, 23 Nov 2020 16:32:09 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t11sm8351052ils.37.2020.11.23.16.32.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 16:32:09 -0800 (PST)
+Subject: Re: [PATCH 4.19 00/91] 4.19.160-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20201123121809.285416732@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <b0f29578-e9e4-a08e-7c0e-20d16ffae8da@linuxfoundation.org>
+Date:   Mon, 23 Nov 2020 17:32:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201123233508.GC8893@balbir-desktop>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/24 7:35, Balbir Singh wrote:
-> On Mon, Nov 23, 2020 at 11:07:27PM +0800, Li, Aubrey wrote:
->> On 2020/11/23 12:38, Balbir Singh wrote:
->>> On Tue, Nov 17, 2020 at 06:19:43PM -0500, Joel Fernandes (Google) wrote:
->>>> From: Peter Zijlstra <peterz@infradead.org>
->>>>
->>>> When a sibling is forced-idle to match the core-cookie; search for
->>>> matching tasks to fill the core.
->>>>
->>>> rcu_read_unlock() can incur an infrequent deadlock in
->>>> sched_core_balance(). Fix this by using the RCU-sched flavor instead.
->>>>
->>> ...
->>>> +
->>>> +		if (p->core_occupation > dst->idle->core_occupation)
->>>> +			goto next;
->>>> +
->>>
->>> I am unable to understand this check, a comment or clarification in the
->>> changelog will help. I presume we are looking at either one or two cpus
->>> to define the core_occupation and we expect to match it against the
->>> destination CPU.
->>
->> IIUC, this check prevents a task from keeping jumping among the cores forever.
->>
->> For example, on a SMT2 platform:
->> - core0 runs taskA and taskB, core_occupation is 2
->> - core1 runs taskC, core_occupation is 1
->>
->> Without this check, taskB could ping-pong between core0 and core1 by core load
->> balance.
+On 11/23/20 5:21 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.160 release.
+> There are 91 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> But the comparison is p->core_occuption (as in tasks core occuptation,
-> not sure what that means, can a task have a core_occupation of > 1?)
->
+> Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.160-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-p->core_occupation is assigned to the core occupation in the last pick_next_task.
-(so yes, it can have a > 1 core_occupation).
+Compiled and booted on my test system. No dmesg regressions.
 
-Thanks,
--Aubrey
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
