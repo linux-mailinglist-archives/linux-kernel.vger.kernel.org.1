@@ -2,159 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E762C3224
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1932C3223
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbgKXUsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:48:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgKXUsP (ORCPT
+        id S1727989AbgKXUsJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 15:48:09 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:51440 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726505AbgKXUsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:48:15 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B42C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:48:15 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id f18so5632745ljg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:48:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3epUm83csRRkQAmpLttIRKsjugTlLX4yDOx4MmdoI9k=;
-        b=DjCc4MN3vMIBSsP3wMB1bLF2wtdbXdnfZxeQ9qPMcxN/OPEf2DicGu828Nlsf1wu9D
-         9LH4T8fYP9cfCnOIPGDY5frb0XXy9n/ULjV8In8XV09w7lu7HXPSB29VJLDdQGrCdjL6
-         p7FbyinBchyxWzJazFdcblKWTiGJEX0HpbhtFjwSd1iHiiupe9yvEETMdkbb24Du3Jax
-         yFSQfuvAPhFUtL2zp7oZRvFxh9BPLBdVrefwdf8xlXfQ6UNUVC0dnwhLBMyxkV1H17ch
-         LWfzRPq7SI5wROFuo961qd1W1GKdYt17MO6YtZ0Feh5a7+5QHGeSMK5lWYOU3nkrCIDM
-         k/xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3epUm83csRRkQAmpLttIRKsjugTlLX4yDOx4MmdoI9k=;
-        b=m4xq48yjZ8AWnfi6bYMXtJ4cdsiKZiLAXR4DyJsz0IqELGPyimRajxYmscFTg2gLGw
-         vEBP3TCHdoh9ji7XkWDc9PPJ2xzGCi5thvOu2WDVEDAOfkoHd9cRgF65ek4hV1VVxFQA
-         IsVpNWCrwSNg64TNaBCbmsDMg93korGGQx/DxPoLUrZHadEd7bIn85U+Oj8v7rSFxOrn
-         oolmsxeJH0MmEWpFTZ+0NLNo6Q8ERJf6f0DXgSYvWP7iuoDIL35PpylosnJTDEIV5Gvl
-         kVNmKt7aDT28XVy3XmuRl0phKt6op05WmBBmmkVzTDxTo6bMQG0ZjILMwegLewXUcAxN
-         iDcg==
-X-Gm-Message-State: AOAM530HY339jFGSqGfHmQAVLHiV75pEqx6pjdmwvRcqqiNLTS1p4uHm
-        G2w6rDldEAhPkTFkG/A07LrFlwmCk8KlCjtB/g/iIQ==
-X-Google-Smtp-Source: ABdhPJy9rSK07pxI0k30vVunlMZK4763KQjWwx2Esh+gUkxGiy0qRGDBofmooW5ebFiAW4nQaGooCZ0Hj/KyFVPB4UE=
-X-Received: by 2002:a2e:6a14:: with SMTP id f20mr29527ljc.377.1606250893439;
- Tue, 24 Nov 2020 12:48:13 -0800 (PST)
+        Tue, 24 Nov 2020 15:48:08 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23096819-1500050 
+        for multiple; Tue, 24 Nov 2020 20:47:54 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201119190237.626-1-chang.seok.bae@intel.com>
- <20201119190237.626-4-chang.seok.bae@intel.com> <CAG48ez1aKtwYMEHfGX6_FuX9fOruwvCqEGYVL8eLdV8bg-wHCQ@mail.gmail.com>
- <B2D7D498-D118-447E-93C6-DB03D42CBA4E@intel.com> <CAG48ez1JK6pMT2UD1v0FwiCQq48FbE5Eb0d3tK=kK4Sg0TG7OQ@mail.gmail.com>
- <15AB5469-3DBD-4518-9C15-DDCE7C70B1B5@intel.com>
-In-Reply-To: <15AB5469-3DBD-4518-9C15-DDCE7C70B1B5@intel.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 24 Nov 2020 21:47:47 +0100
-Message-ID: <CAG48ez3=0P+yiAjxGy=uEZeDUvFh+M2GUnVaGPfRoQHbJ+2qKw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] x86/signal: Prevent an alternate stack overflow
- before a signal delivery
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Dave Martin <Dave.Martin@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Hiroshi Shimamoto <h-shimamoto@ct.jp.nec.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201119072018.GA15197@xsang-OptiPlex-9020>
+References: <20201111155811.GB24657@xsang-OptiPlex-9020> <160527763346.5566.3471508802857132043@jlahtine-mobl.ger.corp.intel.com> <20201119072018.GA15197@xsang-OptiPlex-9020>
+Subject: Re: [Intel-gfx] [drm/i915/gem] 59dd13ad31: phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second -54.0% regression
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     feng.tang@intel.com, tiejun.li@intel.com, frank.du@intel.com,
+        guobing.chen@intel.com, jiebin.sun@intel.com, Shuhua.Fan@intel.com,
+        Matthew Auld <matthew.auld@intel.com>, fan.zhao@intel.com,
+        ying.huang@intel.com, shan.kang@intel.com, zhengjun.xing@intel.com,
+        zhengjun.xing@linux.intel.com, Wenhuan.Huang@intel.com,
+        intel-gfx@lists.freedesktop.org, guangli.li@intel.com,
+        gengxin.xie@intel.com, ming.a.chen@intel.com, yu.ma@intel.com,
+        jessica.ji@intel.com, lkp@lists.01.org, wangyang.guo@intel.com,
+        dapeng1.mi@intel.com, LKML <linux-kernel@vger.kernel.org>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oliver Sang <oliver.sang@intel.com>
+Date:   Tue, 24 Nov 2020 20:47:52 +0000
+Message-ID: <160625087275.29168.7080737993781611765@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 9:43 PM Bae, Chang Seok
-<chang.seok.bae@intel.com> wrote:
-> > On Nov 24, 2020, at 10:41, Jann Horn <jannh@google.com> wrote:
-> > On Tue, Nov 24, 2020 at 7:22 PM Bae, Chang Seok
-> > <chang.seok.bae@intel.com> wrote:
-> >>> On Nov 20, 2020, at 15:04, Jann Horn <jannh@google.com> wrote:
-> >>> On Thu, Nov 19, 2020 at 8:40 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
-> >>>>
-> >>>> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> >>>> index ee6f1ceaa7a2..cee41d684dc2 100644
-> >>>> --- a/arch/x86/kernel/signal.c
-> >>>> +++ b/arch/x86/kernel/signal.c
-> >>>> @@ -251,8 +251,13 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
-> >>>>
-> >>>>       /* This is the X/Open sanctioned signal stack switching.  */
-> >>>>       if (ka->sa.sa_flags & SA_ONSTACK) {
-> >>>> -               if (sas_ss_flags(sp) == 0)
-> >>>> +               if (sas_ss_flags(sp) == 0) {
-> >>>> +                       /* If the altstack might overflow, die with SIGSEGV: */
-> >>>> +                       if (!altstack_size_ok(current))
-> >>>> +                               return (void __user *)-1L;
-> >>>> +
-> >>>>                       sp = current->sas_ss_sp + current->sas_ss_size;
-> >>>> +               }
-> >>>
-> >>> A couple lines further down, we have this (since commit 14fc9fbc700d):
-> >>>
-> >>>       /*
-> >>>        * If we are on the alternate signal stack and would overflow it, don't.
-> >>>        * Return an always-bogus address instead so we will die with SIGSEGV.
-> >>>        */
-> >>>       if (onsigstack && !likely(on_sig_stack(sp)))
-> >>>               return (void __user *)-1L;
-> >>>
-> >>> Is that not working?
-> >>
-> >> onsigstack is set at the beginning here. If a signal hits under normal stack,
-> >> this flag is not set. Then it will miss the overflow.
-> >>
-> >> The added check allows to detect the sigaltstack overflow (always).
-> >
-> > Ah, I think I understand what you're trying to do. But wouldn't the
-> > better approach be to ensure that the existing on_sig_stack() check is
-> > also used if we just switched to the signal stack? Something like:
-> >
-> > diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> > index be0d7d4152ec..2f57842fb4d6 100644
-> > --- a/arch/x86/kernel/signal.c
-> > +++ b/arch/x86/kernel/signal.c
-> > @@ -237,7 +237,7 @@ get_sigframe(struct k_sigaction *ka, struct
-> > pt_regs *regs, size_t frame_size,
-> >        unsigned long math_size = 0;
-> >        unsigned long sp = regs->sp;
-> >        unsigned long buf_fx = 0;
-> > -       int onsigstack = on_sig_stack(sp);
-> > +       bool onsigstack = on_sig_stack(sp);
-> >        int ret;
-> >
-> >        /* redzone */
-> > @@ -246,8 +246,10 @@ get_sigframe(struct k_sigaction *ka, struct
-> > pt_regs *regs, size_t frame_size,
-> >
-> >        /* This is the X/Open sanctioned signal stack switching.  */
-> >        if (ka->sa.sa_flags & SA_ONSTACK) {
-> > -               if (sas_ss_flags(sp) == 0)
-> > +               if (sas_ss_flags(sp) == 0) {
-> >                        sp = current->sas_ss_sp + current->sas_ss_size;
-> > +                       onsigstack = true;
-> > +               }
-> >        } else if (IS_ENABLED(CONFIG_X86_32) &&
-> >                   !onsigstack &&
-> >                   regs->ss != __USER_DS &&
->
-> Yeah, but wouldn't it better to avoid overwriting user data if we can? The old
-> check raises segfault *after* overwritten.
+Quoting Oliver Sang (2020-11-19 07:20:18)
+> On Fri, Nov 13, 2020 at 04:27:13PM +0200, Joonas Lahtinen wrote:
+> > Hi,
+> > 
+> > Could you add intel-gfx@lists.freedesktop.org into reports going
+> > forward.
+> > 
+> > Quoting kernel test robot (2020-11-11 17:58:11)
+> > > 
+> > > Greeting,
+> > > 
+> > > FYI, we noticed a -54.0% regression of phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second due to commit:
+> > 
+> > How many runs are there on the bad version to ensure the bisect is
+> > repeatable?
+> 
+> test 4 times.
+> zxing@inn:/result/phoronix-test-suite/performance-true-Radial_Gradient_Paint-1024x1024-jxrendermark-1.2.4-ucode=0xd6-monitor=da39a3ee/lkp-cfl-d1/debian-x86_64-phoronix/x86_64-rhel-8.3/gcc-9/59dd13ad310793757e34afa489dd6fc8544fc3da$ grep -r "operations_per_second" */stats.json
+> 0/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4133.487932,
+> 1/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4120.421503,
+> 2/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4188.414835,
+> 3/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4068.549514,
 
-Where is that overwrite happening? Between the point where your check
-happens, and the point where the old check is, the only calls are to
-fpu__alloc_mathframe() and align_sigframe(), right?
-fpu__alloc_mathframe() just does some size calculations and doesn't
-write anything. align_sigframe() also just does size calculations. Am
-I missing something?
+a w/o revert (drm-tip)
+b w/ revert
++mB----------------------------------------------------------------------------+
+|                             ..b                                              |
+|                             ..b.aa                                           |
+|                             ....a.a                                          |
+|                             ....a.a                                          |
+|                      b  b  ........a                                         |
+|                   b  b  b b......... a                                       |
+|                   b  bb bbb...........                                       |
+|b               ab bbab.bb.b............ba b a a            ab               a|
+|                             |__A__|                                          |
+|                             |MA_|                                            |
++------------------------------------------------------------------------------+
+    N                Min           Max        Median           Avg        Stddev
+a 120          3621.8761     7356.4442     4606.7895     4607.9132     156.17693
+b 120          2664.0563     6359.9686     4519.5036     4534.4463     95.471121
+
+The patch is not expected to have any impact on the machine you are testing on.
+-Chris
