@@ -2,162 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540D42C302A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1572C3026
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404335AbgKXSp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:45:56 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:57445 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404000AbgKXSpz (ORCPT
+        id S2404317AbgKXSpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:45:12 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36024 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404000AbgKXSpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:45:55 -0500
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 0AOIjaBY023672;
-        Wed, 25 Nov 2020 03:45:37 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0AOIjaBY023672
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606243537;
-        bh=viqmAjpBDNKBM55ep9S4CFsZN2+b8yf9v5jJjKojcF8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rSx0asH0lSiArQDnjFC2er4R/FRVJXeXBlxly1vuVu9fui5fPGG/kAyE2wX6PW9sT
-         gM4EneuvPD3LWnj4DkokC5PS6PVKxwckKntEhSkEGoYQEFVPx71JRT0OXVYQDMAQLv
-         mY708OC1V7c2cVpAkcwP1X0GRouiz/byAxFQkzh7WPAHOUgEPxt15KcWDPobqicS84
-         ZcEC27gV/itbt+IsiCdAnRueqYlLajVgTaXA7b6RXl80gKF9vhafo0HFl3cVxWAVqZ
-         j4KO5UvH6BfyM66Hn/W7JGCpwPrDHioIlIkB4TToHEgK88nZMauBUIOqcszMB8ZmjF
-         GxJhnnjeL1cdA==
-X-Nifty-SrcIP: [209.85.215.178]
-Received: by mail-pg1-f178.google.com with SMTP id m9so18262424pgb.4;
-        Tue, 24 Nov 2020 10:45:36 -0800 (PST)
-X-Gm-Message-State: AOAM532BI3whtecl5nieCjWaHEr+UqzNDw7YWdsTrZoVI9QyAmXEMKL3
-        hURzyZ3v1BPgeB9HDR9KZvPfbZvt53IAYaPBk4k=
-X-Google-Smtp-Source: ABdhPJyWFLMHlbBBpMhdEZbFshFfUlsJyMu2Mylxe1+GMMQvErCNglWmd2xP8x015lcMyx7mEFIg8a8Xv3fw1R0lZXY=
-X-Received: by 2002:a17:90a:5905:: with SMTP id k5mr3606612pji.198.1606243536107;
- Tue, 24 Nov 2020 10:45:36 -0800 (PST)
+        Tue, 24 Nov 2020 13:45:09 -0500
+Received: from mail-qt1-f197.google.com ([209.85.160.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <gpiccoli@canonical.com>)
+        id 1khdJL-0008AM-C1
+        for linux-kernel@vger.kernel.org; Tue, 24 Nov 2020 18:45:07 +0000
+Received: by mail-qt1-f197.google.com with SMTP id t17so4659298qtp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:45:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:autocrypt:in-reply-to
+         :message-id:date:user-agent:mime-version:content-language
+         :content-transfer-encoding;
+        bh=r/r7ULfVekojLsHfSnb9aS6YtiIa7A47tHqm9zQA1j0=;
+        b=X/QRMJTvZlJSNWVaDj3nqLKcVHDDTgP7XxOyVzHW3B7RL7rUH9raF7ryVEk8OWJs1b
+         4l12u5bAGauC+6qzPajfKXMLWm/f1G/KQRliW0UJ18CSrhsULStrlw9apMuXWxQxrTS6
+         CDSsLNaaqM1TTUaSbA4G0dpih66KbHjXpJlyTX3hoEuVTb9fg20lP1K8aM/6PbXxYOsQ
+         1t/zvf6pdDiM6XWtXkSCLCHl9x2XGdxufUXGBS0GxRYfMjngxHghLKEQfBmIAYTJwHA1
+         85aShQ8ISTiZAykKFE3bvFnckWpIL6emDrG9dKA4WjRLmZAC7Svl2an35OXGc19RwX2f
+         YJdg==
+X-Gm-Message-State: AOAM531Zum4hArwxqq8pWHN+lWR6OZm/yzeRJPVaair3paaiHUiUSSUI
+        gxjVSObMXZhpFKHgxJUSEUFD4Os9axCkI6Ui9nEn8PcPnwXvpHFKDIp9ya8a7tNTyFUcR1tZqQF
+        PK3G04PMIgjBnnuFdGBaXpAt2gRMR/SSyTxF1VCqTJQ==
+X-Received: by 2002:ac8:58d1:: with SMTP id u17mr5764789qta.158.1606243506155;
+        Tue, 24 Nov 2020 10:45:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzme549lMfN9A38G6UG77xqRXskQXzbWCOLSaKjdJlep2kO86zF16x9adoSCSLdbEiVbFQoBQ==
+X-Received: by 2002:ac8:58d1:: with SMTP id u17mr5764752qta.158.1606243505869;
+        Tue, 24 Nov 2020 10:45:05 -0800 (PST)
+Received: from [192.168.1.75] (200-158-226-203.dsl.telesp.net.br. [200.158.226.203])
+        by smtp.gmail.com with ESMTPSA id h8sm9263078qka.117.2020.11.24.10.45.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 10:45:05 -0800 (PST)
+To:     sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-pci@vger.kernel.org
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, ashok.raj@intel.com,
+        knsathya@kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Sinan Kaya <okaya@kernel.org>, haifeng.zhao@intel.com,
+        chris.newcomer@canonical.com, gpiccoli@canonical.com
+From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+Subject: Re: [PATCH v7 1/2] PCI/ERR: Call pci_bus_reset() before calling
+ ->slot_reset() callback
+Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
+ xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
+ Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
+ 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
+ irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
+ 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
+ AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
+ AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
+ 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
+ 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
+ q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
+ iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
+ LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
+ aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
+ pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
+ kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
+ nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
+ bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
+ BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
+ 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
+ egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
+ Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
+ kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
+ X18zwLgdiQ==
+In-Reply-To: 
+Message-ID: <6349d22f-cf49-bab4-ad0f-a928e65622af@canonical.com>
+Date:   Tue, 24 Nov 2020 15:45:00 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAKwvOd=9iqLgdtAWe2h-9n=KUWm_rjCCJJYeop8PS6F+AA0VtA@mail.gmail.com>
- <20201109183528.1391885-1-ndesaulniers@google.com> <CAKwvOdnxAr7UdjUiuttj=bz1_voK1qUvpOvSY35qOZ60+E8LBA@mail.gmail.com>
- <CA+SOCLJTg6U+Ddop_5O-baVR42va3vGAvMQ62o9H6rd+10aKrw@mail.gmail.com> <CAKwvOdn0qoa_F-qX10Hu7Cr8eeCjcK23i10zw4fty32u1aBPSw@mail.gmail.com>
-In-Reply-To: <CAKwvOdn0qoa_F-qX10Hu7Cr8eeCjcK23i10zw4fty32u1aBPSw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 25 Nov 2020 03:44:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASatgWjE7MGe-cqU135tKD_Tt31Rouw-HSz6LYrN5hyuw@mail.gmail.com>
-Message-ID: <CAK7LNASatgWjE7MGe-cqU135tKD_Tt31Rouw-HSz6LYrN5hyuw@mail.gmail.com>
-Subject: Re: [PATCH v3] Kbuild: do not emit debug info for assembly with LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>,
-        "# 3.4.x" <stable@vger.kernel.org>, Jian Cai <jiancai@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 3:42 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Hi Masahiro,
-> I would appreciate any feedback you have on this patch.
->
+Hi Kuppuswamy Sathyanarayanan (and all involved here), thanks for the
+patch! I'd like to ask what is the status of this patchset - I just
+"parachuted" in the issue, and by tracking the linux-pci ML, I found
+this V7 (and all previous versions since V2). Also, noticed that Jay's
+email might have gotten lost in translation (he's not CCed in latest
+versions of the patchset).
 
-Applied to linux-kbuild. Thanks.
+I was able to find even another interesting thread that might be
+related, Ethan's patchset. So, if any of the developers can clarify the
+current status of this patchset or if the functionality hereby proposed
+ended-up being implemented in another patch, I appreciate a lot.
 
-
-
-
-> On Fri, Nov 20, 2020 at 3:58 PM Jian Cai <jiancai@google.com> wrote:
-> >
-> > I also verified that with this patch Chrome OS devices booted with eith=
-er GNU assembler or LLVM's integrated assembler. With this patch, IAS no lo=
-nger produces extra warnings compared to GNU as on Chrome OS and would remo=
-ve the last blocker of enabling IAS on it.
-> >
-> > Tested-by: Jian Cai <jiancai@google.com> # Compile-tested on mainline (=
-with defconfig) and boot-tested on ChromeOS (with olddefconfig).
-> >
-> >
-> > On Mon, Nov 16, 2020 at 3:41 PM 'Nick Desaulniers' via Clang Built Linu=
-x <clang-built-linux@googlegroups.com> wrote:
-> >>
-> >> Hi Masahiro, have you had time to review v3 of this patch?
-> >>
-> >> On Mon, Nov 9, 2020 at 10:35 AM Nick Desaulniers
-> >> <ndesaulniers@google.com> wrote:
-> >> >
-> >> > Clang's integrated assembler produces the warning for assembly files=
-:
-> >> >
-> >> > warning: DWARF2 only supports one section per compilation unit
-> >> >
-> >> > If -Wa,-gdwarf-* is unspecified, then debug info is not emitted for
-> >> > assembly sources (it is still emitted for C sources).  This will be
-> >> > re-enabled for newer DWARF versions in a follow up patch.
-> >> >
-> >> > Enables defconfig+CONFIG_DEBUG_INFO to build cleanly with
-> >> > LLVM=3D1 LLVM_IAS=3D1 for x86_64 and arm64.
-> >> >
-> >> > Cc: <stable@vger.kernel.org>
-> >> > Link: https://github.com/ClangBuiltLinux/linux/issues/716
-> >> > Reported-by: Dmitry Golovin <dima@golovin.in>
-> >> > Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> > Suggested-by: Dmitry Golovin <dima@golovin.in>
-> >> > Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> >> > Reviewed-by: Fangrui Song <maskray@google.com>
-> >> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> >> > ---
-> >> >  Makefile | 2 ++
-> >> >  1 file changed, 2 insertions(+)
-> >> >
-> >> > diff --git a/Makefile b/Makefile
-> >> > index f353886dbf44..7e899d356902 100644
-> >> > --- a/Makefile
-> >> > +++ b/Makefile
-> >> > @@ -826,7 +826,9 @@ else
-> >> >  DEBUG_CFLAGS   +=3D -g
-> >> >  endif
-> >> >
-> >> > +ifneq ($(LLVM_IAS),1)
-> >> >  KBUILD_AFLAGS  +=3D -Wa,-gdwarf-2
-> >> > +endif
-> >> >
-> >> >  ifdef CONFIG_DEBUG_INFO_DWARF4
-> >> >  DEBUG_CFLAGS   +=3D -gdwarf-4
-> >> > --
-> >> > 2.29.2.222.g5d2a92d10f8-goog
-> >> >
-> >>
-> >>
-> >> --
-> >> Thanks,
-> >> ~Nick Desaulniers
-> >>
-> >> --
-> >> You received this message because you are subscribed to the Google Gro=
-ups "Clang Built Linux" group.
-> >> To unsubscribe from this group and stop receiving emails from it, send=
- an email to clang-built-linux+unsubscribe@googlegroups.com.
-> >> To view this discussion on the web visit https://groups.google.com/d/m=
-sgid/clang-built-linux/CAKwvOdnxAr7UdjUiuttj%3Dbz1_voK1qUvpOvSY35qOZ60%2BE8=
-LBA%40mail.gmail.com.
->
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+Thanks in advance! Below, some references to lore archives.
+Cheers,
 
 
+Guilherme
 
---=20
-Best Regards
-Masahiro Yamada
+
+References:
+
+This V7 link:
+https://lore.kernel.org/linux-pci/546d346644654915877365b19ea534378db0894d.1602788209.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+
+V6:
+https://lore.kernel.org/linux-pci/546d346644654915877365b19ea534378db0894d.1602663397.git.sathyanarayanan.kuppuswamy@linux.intel.com/#t
+
+V5:
+https://lore.kernel.org/linux-pci/162495c76c391de6e021919e2b69c5cd2dbbc22a.1602632140.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+
+V4:
+https://lore.kernel.org/linux-pci/5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+
+V3:
+https://lore.kernel.org/linux-pci/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+
+V2:
+https://lore.kernel.org/linux-pci/ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com/#t
+
+Ethan's related(?) patchset, V8 :
+https://lore.kernel.org/linux-pci/20201007113158.48933-1-haifeng.zhao@intel.com/#t
+
