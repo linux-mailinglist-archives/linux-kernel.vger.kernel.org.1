@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083B82C2F32
+	by mail.lfdr.de (Postfix) with ESMTP id F172E2C2F34
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404051AbgKXRuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:50:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403994AbgKXRuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:50:15 -0500
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6362D208CA
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606240214;
-        bh=Zs6EQHNJCYjsDUBvn/aU7NkdPNq8mmBy6u3ZYrgbcdw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uJq0NQNdWOoPdjsdOd+82dA0M5WwPUd916W+d2js6jxu3ycgv4SJZFMww2yPF9tyQ
-         t8yDhNVyxuIlvR3y5BhlL00Wxo91Uw//1ZM8Av5+ZXeux5egUV7Z9MrnmTUj+1XXZM
-         OZmujRMlLxxjw+b5FNTq/XDg3m7C2ask7Rrud83s=
-Received: by mail-wm1-f47.google.com with SMTP id 1so3768298wme.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:50:14 -0800 (PST)
-X-Gm-Message-State: AOAM532Spc4EdVwnyksStovDyXUPWLsCrnBHmZAqHQIbQZeAIAg5owBl
-        hfTrLIx9BZqHDSxekjjh57z7AXs1xAv0q9GDpdKpxw==
-X-Google-Smtp-Source: ABdhPJztSaESfwAH1/aRejEPYWeasu3H+2flPGn0gw/HTGKjb5d0CHq2izvTy8vEL8huMDEFbD9KM2+mbalOfiJ1UOk=
-X-Received: by 2002:a7b:c92a:: with SMTP id h10mr5811407wml.138.1606240212832;
- Tue, 24 Nov 2020 09:50:12 -0800 (PST)
+        id S2404065AbgKXRud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403994AbgKXRud (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:50:33 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16A8C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:50:32 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id 11so7618323oty.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:50:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CxnIfXHdix7GS8g6GFHW2wnM4FONLsoFnSqqsSh6GHc=;
+        b=CIAKGGvoM96bHX3qTKMq571WXskFxiweMjicyDzm9KHiiheeWHdpTze+EgY18uIFGx
+         TXFUYqijSsUYaxZiQcM7TYGH3z11FfmFvQNv2y3S2sIjM3xz6X9Dv3/H71SwBzYqqehJ
+         HzjZ8sV6azFHmOF4wsalz23pw0MbUDHblBMgZc1G4Mq3HT85EILFV28n0mWxd09wBj18
+         CBTshWNFG/8o2TuKB972+0ln4ohBt/IOIzkYBfbGgUBtgBnE0DZujjGJ3ECGLzzLonFi
+         a9nA/bXdldgtzi2sb+U0j2TAu+sT8TMQJG0Vwb/FZiGMNGbCzD3f292aS5hLoEeyqePk
+         yKYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CxnIfXHdix7GS8g6GFHW2wnM4FONLsoFnSqqsSh6GHc=;
+        b=s/UgEp7EWjCr1lajpCaWypFLUbEsmt66VWkJ4/4s2A9gUfzt51NHCXY0i8X5F/5mmG
+         cARPd8RHUbUjGaEsSlsKkZTWD0d1s0xI6W/k+nOcP4TfVuEV7Rgn3yV3g12DXLXrw4ni
+         nWzz3p/RWW96W6cxmnw4HSXlHYj0FFokKLhNhI/+yxNl2884EYX63JK0dTCKqjkWVeBJ
+         oc3vdJJ4yzX/sxaitIlwb1KImYRYOt/jRyqIwiPOHxg3oxl4XSkAQ7yaM9sArUWqzPEX
+         ACZoficfkQGZYoamvDw9RevtCqMbnq7yY02h8AxYKcvfE2afFDTMjpj+n2L7IOJtX5nz
+         UJ6Q==
+X-Gm-Message-State: AOAM530fkMA3EYH+NFTQdgaHtdXL3jFvwppaeyB7293uWEdwFgCppOsv
+        CWCSFY/FPegCijZA77SHiDsgfg==
+X-Google-Smtp-Source: ABdhPJyZvx5cnvHRa/z/iiGkOzVz/4uQCaX+SxK6/doJ9JNN3u9FKbqfKaLVCF+7bhrzd4wOCRtp/w==
+X-Received: by 2002:a9d:3d06:: with SMTP id a6mr4103420otc.368.1606240232274;
+        Tue, 24 Nov 2020 09:50:32 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t126sm9735070oih.51.2020.11.24.09.50.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 09:50:31 -0800 (PST)
+Date:   Tue, 24 Nov 2020 11:50:29 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Konrad Dybcio <konradybcio@gmail.com>, Joel S <jo@jsfamily.in>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, phone-devel@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] ath10k: qmi: Skip host capability request for Xiaomi
+ Poco F1
+Message-ID: <20201124175029.GF185852@builder.lan>
+References: <1606127329-6942-1-git-send-email-amit.pundir@linaro.org>
 MIME-Version: 1.0
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201121151259.GA3948@wind.enjellic.com> <5ac4eccb-fcf9-eed3-fcec-b8b6bf56bb39@intel.com>
- <20201124105547.GA19930@wind.enjellic.com>
-In-Reply-To: <20201124105547.GA19930@wind.enjellic.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 24 Nov 2020 09:49:59 -0800
-X-Gmail-Original-Message-ID: <CALCETrVjBtdE7Px2Ra6ZsabWZCLPq5e5tMPOWoYT=k3dSA8o4g@mail.gmail.com>
-Message-ID: <CALCETrVjBtdE7Px2Ra6ZsabWZCLPq5e5tMPOWoYT=k3dSA8o4g@mail.gmail.com>
-Subject: Re: [PATCH v40 00/24] Intel SGX foundations
-To:     "Dr. Greg" <greg@enjellic.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
-        Mikko Ylinen <mikko.ylinen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606127329-6942-1-git-send-email-amit.pundir@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:56 AM Dr. Greg <greg@enjellic.com> wrote:
->
-> On Sat, Nov 21, 2020 at 08:25:23AM -0800, Dave Hansen wrote:
->
+On Mon 23 Nov 04:28 CST 2020, Amit Pundir wrote:
 
-> You will get a fully 'git am' compliant patch, including a changelog.
->
-> The changelog was written in a parlance consistent with someone who
-> would have a basic understanding of the technology under review.  If
-> this entire review and vetting process is being done absent that kind
-> of understanding, then the case can be made that the kernel
-> development process has larger issues on its hands.
+> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> message in ath10k_qmi_host_cap_send_sync(), but we can still
+> bring up WiFi services successfully on AOSP if we ignore it.
+> 
+> We suspect either the host cap is not implemented or there
+> may be firmware specific issues. Firmware version is
+> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
+> 
+> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> quirk, then the host capability request does get accepted,
+> but we run into fatal "msa info req rejected" error and
+> WiFi interface doesn't come up.
+> 
+> Attempts are being made to debug the failure reasons but no
+> luck so far. Hence this device specific workaround instead
+> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> linux-firmware project but it didn't help and neither did
+> building board-2.bin file from stock bdwlan* files.
+> 
+> This workaround will be removed once we have a viable fix.
+> Thanks to postmarketOS guys for catching this.
+> 
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+> ---
+> We dropped this workaround last time in the favor of
+> a generic dts quirk to skip host cap check. But that
+> is under under discussion for a while now,
+> https://lkml.org/lkml/2020/9/25/1119, so resending
+> this short term workaround for the time being.
+> 
 
-No, it wasn't.
+I still want the quirk, because we have this on other machines as well.
 
-I have a fairly good understanding of SGX, and I told you quite
-explicitly what was wrong with your changelog.  Understanding the
-sentences you wrote and having the background is not at all the same
-thing as extracting meaning from your writing.  Your patch conveyed no
-information.  This email you just sent also conveys no information.
+> v2: ath10k-check complained about a too long line last
+>     time, so moved the comment to a new line.
+>     
+>  drivers/net/wireless/ath/ath10k/qmi.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> index ae6b1f402adf..1c58b0ff1d29 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -653,7 +653,9 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
+>  
+>  	/* older FW didn't support this request, which is not fatal */
+>  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+> -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
+> +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
+> +	    /* Xiaomi Poco F1 workaround */
 
+If we go with a temporary approach this comment should describe why this
+is here. (And it probably shouldn't be in the middle of the expression
+list in the conditional.
 
+Regards,
+Bjorn
 
->
-> Lets be honest though, that is not the case here, we have been talking
-> about this issue for over a year, everyone involved with this
-> technology knows what the problem is.
->
-> Since LKML is copied, the basic issue is as follows:
->
-> 1.) SGX as a technology is designed to execute code and operate on
-> data in a manner that is confidential to inspection and impervious to
-> modification and control by the kernel.
->
-> 2.) The mindset of the driver developers is that the kernel should be
-> the ultimate authority on what SGX is allowed to do.
->
-> The two world views are inherently and technically incompatible and
-> lead to a potential security dilemma for the kernel.  We simply
-> advocate for an additional level of cryptographic security that
-> supplements, not replaces, kernel controls to address this issue.
-
-No, they are not.
-
-The kernel can and will enforce policy on what SGX may do.  Your own
-NAKked patch, in fact, does exactly this.  At the same time, SGX
-provides security to the contents of enclaves.  These are not mutually
-exclusive.
-
-
-> Our patch has two external functions of around 30 lines (~1 screen)
-> each that impact the driver.  The bulk of the 700 lines, all in one
-> file, is boilerplate code, largely replicated for each instance,
-> needed to read/write sysfs files and maintain four, nearly identical,
-> linked lists.  If this is an insurmountable review burden then the
-> kernel development process has larger problems on its hands.
-
-Frankly, the largest problem in the kernel development process with
-regards to SGX is the distraction created by your emails.  Please just
-stop.
-
-If you have something useful to say, distill it down to the smallest
-amount of text that actually says what you're trying to say.  And
-don't forget the part about "something useful to say".  If you do not
-have something useful to say, please don't say it.
+> +	    !of_machine_is_compatible("xiaomi,beryllium")) {
+>  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
+>  		ret = -EINVAL;
+>  		goto out;
+> -- 
+> 2.7.4
+> 
