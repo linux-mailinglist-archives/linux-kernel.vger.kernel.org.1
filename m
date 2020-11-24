@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C55C2C1C9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7E82C1C9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbgKXEOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:14:49 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:55211 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728155AbgKXEOs (ORCPT
+        id S1728881AbgKXERL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:17:11 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44230 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbgKXERL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:14:48 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id C4E3415CD;
-        Mon, 23 Nov 2020 23:14:47 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 23 Nov 2020 23:14:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=j
-        A4ah2CMYgsd377/SA0s2RVNHVfzfBJJzqdBqULdqJ8=; b=G6voIAJ+kzoLQKsB7
-        9qvGVriR5E1TG9UNzg0XV80gOiOApQ37SHsDWwNXmrU1N6r8kX1tF5ziZVijvNOY
-        4g8AsePgeG6lTiA2zYkVpuZXN1289B/ViYhIcCCUgBsj5UD5jFDjk2mPeAjF0lqD
-        mnYIvUPG3SC8g6JtFMeLB4gwybi664nL/wwsFx9TjC1hMuyNcUBVcmZRIlHOtPZU
-        v7kXIgoAGBpsoek3C0gSD9Ddgswnx7OMrVYtNuKOwrgkOdSjhS/ikpiJNnWp7qK6
-        fwZlqd7tjY5WoCJ1k+eF9UryIODx5Hwg12k6TXQxILlgQrxmkDunnSnQsvAB1SBk
-        qJbHg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=jA4ah2CMYgsd377/SA0s2RVNHVfzfBJJzqdBqULdq
-        J8=; b=mMVsAErgT9rltMMz6YSqFahh7gX/lX7/1SHSkdBp/7fwSEwNCuIAfLz2M
-        D/8IpM3IqYOTnX/VpzOuXRiP+i60snN9qVJhYilNqZrfAPdlwzZ15iZ5GXmoj4eO
-        oVPvL+0MAfl93XmfiT5EUSHMv+ciKfoWP+odAhjvJ4z1TKFWOEDzxDwJY9E/jY/b
-        CzbXi0ugPM6es0eUlvjR7BTZ7jmj4uNoPytDUVnD12Y1ZlgW/pwjsH/R24mkdUYG
-        V5csy/ScWDETsZj1ZmzwutgQJtlfsRm8EqkGsDIz40PjmIuwN+RRNzx0IKjwmo41
-        ULnxLWIesRx8GAI+IU2Z7lYfkECug==
-X-ME-Sender: <xms:toi8Xxl1ziEUtNvwglL9Vi5GWgwBvgI0o7BfmT0uhcMEbrQBrhtQ5A>
-    <xme:toi8X81tHssvgWqcuDM43ruge2nrK0fm7ZOANEdhVozsQ9664QvOgyLxfhV89Gfm1
-    q7NmL1fcM3LIXPw9Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegjedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
-    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:toi8X3pG98jyQczQWLIVolZZ0thkOsqzRq53YXaMO4hEGcroQFA_lQ>
-    <xmx:toi8XxkK9sM1HorHNbhuMoVloWe-N5MCCXE198K8adp04kyuP1khDw>
-    <xmx:toi8X_2GJLZzhMqsguTFmVm_KXq6hmHVMxWcncY12XSckRnXRo_z5Q>
-    <xmx:t4i8X6QMSlP7uxw8FXLNd_7RUxVjbxgWh3EbRqpFHjOwXWDnjQa9fg>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 215483064AB0;
-        Mon, 23 Nov 2020 23:14:46 -0500 (EST)
-To:     Michael Klein <michael@fossekall.de>,
+        Mon, 23 Nov 2020 23:17:11 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AO4Gxpb108677;
+        Mon, 23 Nov 2020 22:16:59 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606191419;
+        bh=xT+n8mlJn9Eo903Kfy60kB5HunA+0yDvTT3bwH6YPUo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=bzux2KAEW/eppb98qT0B12Clt2EhwONOpTwWxcsN7ZNtLtlOTY5v3RlKC5Sj00nwq
+         WWXNGlc8UKV5mc19KTFBg6nIwQ4nbWiPOVc54Ot3bs/Hd9hsnm9tI+ZxY2IKbYsp14
+         XhOdD1Vls/0VAWjV7gkoGzEmy6FwKJfhto3WP+6w=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AO4Gxpj043474
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 23 Nov 2020 22:16:59 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 23
+ Nov 2020 22:16:59 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 23 Nov 2020 22:16:59 -0600
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AO4Gs3L026518;
+        Mon, 23 Nov 2020 22:16:54 -0600
+Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3: squelch warnings regarding no
+ #address-cells for interrupt-controller
+To:     Nishanth Menon <nm@ti.com>
+CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201123161041.2304766-1-michael@fossekall.de>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add
- gpio-poweroff to DT
-Message-ID: <4bf42c9e-9f70-bc30-1a88-44a127cd989a@sholland.org>
-Date:   Mon, 23 Nov 2020 22:14:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tero Kristo <t-kristo@ti.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Andre Przywara <andre.przywara@arm.com>
+References: <20201117161942.38754-1-nsekhar@ti.com>
+ <20201117161942.38754-3-nsekhar@ti.com>
+ <ab9658ef-c8a7-155b-acb1-effa872132ca@ti.com>
+ <20201118151259.kpag44djji4ssiup@eldest>
+ <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
+ <20201119132829.sr435jf6s4275q4i@boxlike>
+ <313a9cd5-7411-4ae1-cde4-42a2c18d11e6@ti.com>
+ <20201124012100.fq7w7bjxvewuhbt2@shirt>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <8885dd79-061b-82e3-1aeb-a318f7d8256d@ti.com>
+Date:   Tue, 24 Nov 2020 09:46:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201123161041.2304766-1-michael@fossekall.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201124012100.fq7w7bjxvewuhbt2@shirt>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/20 10:10 AM, Michael Klein wrote:
-> Add gpio-poweroff node to allow the board to power itself off after
-> shutdown by disabling the SYSTEM and CPUX regulators (U5 resp. U6).
-> The RST button can be used to restart the board.
-
-The PSCI client will override this driver once the PSCI implementation
-is upgraded to v0.2 or newer functions. So having this around should
-cause no compatibility issues (although it would print an error in dmesg
-at that point). This seems like a reasonable thing to do for the other
-H2+/H3 boards that use a similar regulator layout.
-
-Reviewed-by: Samuel Holland <samuel@sholland.org>
-
-> Signed-off-by: Michael Klein <michael@fossekall.de>
-> ---
->  arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts | 5 +++++
->  1 file changed, 5 insertions(+)
+On 24/11/20 6:51 AM, Nishanth Menon wrote:
+> On 09:45-20201123, Sekhar Nori wrote:
+>>>> The main reason I commented - is hope to get some clarification from DT maintainers.
+>>>> 90% of interrupt-controller nodes do not have #address-cells and I never seen in in GPIO nodes
+>>>> (most often is present in PCI and GIC nodes).
+>>>> and nobody seems fixing it. So, if we are going to move this direction it's reasonable to get clarification to be sure.
+>>>>
+>>>> And there is no "never" here - #address-cells always can be added if really required.
+>>>
+>>>
+>>> OK - as a GPIO node, but as an interrupt-controller node, I was
+>>> looking at [1] and wondering if that was the precedence.
+>>>
+>>> Yes, will be good to get direction from the DT maintainers on this
+>>> topic.
+>>
+>> Shall I respin this series with 2/4 dropped while we wait for decision
+>> on this?
+>>
+>> #address-cells warnings on interrupt controller can perhaps be handled
+>> all at once (there are many of those in existing DT anyway).
+>>
+>> GPIO is basic support and holds up many other modules (like MMC/SD).
 > 
-> diff --git a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
-> index 4c6704e4c57e..76e79e6db733 100644
-> --- a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
-> +++ b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
-> @@ -46,6 +46,11 @@ sw4 {
->  		};
->  	};
->  
-> +	gpio_poweroff {
-> +		compatible = "gpio-poweroff";
-> +		gpios = <&r_pio 0 8 GPIO_ACTIVE_LOW>; /* PL8 */
-> +	};
-> +
->  	reg_vdd_cpux: vdd-cpux-regulator {
->  		compatible = "regulator-gpio";
->  		regulator-name = "vdd-cpux";
 > 
+> There are'nt too many new patches in my queue that depends on GPIO, I'd
+> rather not introduce new warnings unless we are completely at a
+> stalemate. I'd rather use this opportunity to understand where what we
+> need to be doing.
+GPIO was originally submitted as part of 8  patch series titled "[PATCH
+0/8] Add support for UHS modes in TI's J721e and J7200 boards"
 
+Rest of those patches need to be resubmitted after GPIO is accepted.
+
+Can you apply patch 1/4 at least. Its fairly non-controversial. It will
+help reduce patch backlog and fix some warnings too.
+
+Thanks,
+Sekhar
