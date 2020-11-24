@@ -2,166 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2CF2C25C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6D72C25D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387436AbgKXMdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:33:25 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:16908 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729172AbgKXMdO (ORCPT
+        id S2387611AbgKXMiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:38:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41043 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733032AbgKXMiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:33:14 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOCUrmx022152;
-        Tue, 24 Nov 2020 07:33:02 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34y08v0h5c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 07:33:02 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AOCX1D9024675
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 24 Nov 2020 07:33:01 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 24 Nov 2020 07:33:00 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 24 Nov 2020 07:33:00 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 24 Nov 2020 07:33:00 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AOCWwSd003530;
-        Tue, 24 Nov 2020 07:32:58 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <alexandru.tachici@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v3] iio: ad_sigma_delta: Don't put SPI transfer buffer on the stack
-Date:   Tue, 24 Nov 2020 14:38:07 +0200
-Message-ID: <20201124123807.19717-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201113094059.152651-1-alexandru.ardelean@analog.com>
-References: <20201113094059.152651-1-alexandru.ardelean@analog.com>
+        Tue, 24 Nov 2020 07:38:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606221497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Pe4Fv9SOw/e9Pc19WnvG+q2V/PwddrUiSjsAligT8s=;
+        b=PYY390RdHpNgI/HfK1qWbtuU23E5nm/01Bgt2FRr2w2Dz8MXCYEjspQD506buSDx9G7JzX
+        0Itoud00pGi9q3GzysMR/2OOZ+M2eWEC6t6Ahj3fHckUQIStvmnexjeQ8Z9pN40wayBCXT
+        wbHlDhrrPN3g8g6h3wx6lfK5JJTlUPk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-Tmi-rs76NwSCcRdi32f-Aw-1; Tue, 24 Nov 2020 07:38:14 -0500
+X-MC-Unique: Tmi-rs76NwSCcRdi32f-Aw-1
+Received: by mail-ej1-f70.google.com with SMTP id f21so6755672ejf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:38:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0Pe4Fv9SOw/e9Pc19WnvG+q2V/PwddrUiSjsAligT8s=;
+        b=rWDkayjBGJ/c6Au8cdP5jOApnoZH5nCtWrvfb+G2auH+LkwEae48pfRC1URzPnefv6
+         hajDw0SPRe/4aIEtKQsPU5GxBnnf2ZgPPdklspg65EpPn5O1HEkhm3LmPo6TLkD/5mlO
+         /ZIz7BF5zgPdvmilOGk7FHt3NgrJkF/EG8y5n2wCAeg9zaMkomrTT2tiGb9HVieGg318
+         MyYi9X5001sRQdoyl1xajiB4m8XQfqDPcZ/YnVzDX3uDyMdA4qpONc6Kh3ma/qEaXroK
+         +6jFGRsa0jGmnAl5nI8H4LdE3hFvcH+pcbXDb+qhXENeWijnNBTuoZxGx0TBtSjtSXUu
+         xLJQ==
+X-Gm-Message-State: AOAM532rfMYsAFVRtPH9AYy8a/9EoQ4mP6da74sZCtnIvCImmeuAPQKI
+        +XpP+BBBCzXN2/dsmlxHJvt6hF00L89NOuuNqQw+uMsTY/IThTnSiLXZUF/+uSjAu/jYODH+csu
+        kAjffZMxGe8gSKLlnmVm10y3N
+X-Received: by 2002:a17:906:374a:: with SMTP id e10mr3782112ejc.246.1606221492970;
+        Tue, 24 Nov 2020 04:38:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxM9XH8pp5RxuCGvxaI1xqztYV9K1vRQ8/VpIVsgbGZ0rBU3yXQkahFLaFO8cValalDav12BA==
+X-Received: by 2002:a17:906:374a:: with SMTP id e10mr3782094ejc.246.1606221492739;
+        Tue, 24 Nov 2020 04:38:12 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id k11sm6849380edh.72.2020.11.24.04.38.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 04:38:12 -0800 (PST)
+Subject: Re: How to enable auto-suspend by default
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>
+References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+ <X6p6ubTOoMPUPPXi@kroah.com>
+ <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <20201110172517.GC2495@lahna.fi.intel.com>
+ <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
+ <20201111143143.GV2495@lahna.fi.intel.com>
+ <30aa8c96-1809-8c5f-2305-5e39fbeba434@redhat.com>
+ <ecd964af-efdb-99c6-45cb-4979397fb324@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <cfcc7c09-b8c7-c2c9-be0a-84949969d8be@redhat.com>
+Date:   Tue, 24 Nov 2020 13:38:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 impostorscore=0 suspectscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240078
+In-Reply-To: <ecd964af-efdb-99c6-45cb-4979397fb324@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+Hi,
 
-Use a heap allocated memory for the SPI transfer buffer. Using stack memory
-can corrupt stack memory when using DMA on some systems.
+On 11/24/20 1:37 PM, Mathias Nyman wrote:
+> On 23.11.2020 15.54, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 11/11/20 3:31 PM, Mika Westerberg wrote:
+>>> On Wed, Nov 11, 2020 at 12:27:32PM +0100, Hans de Goede wrote:
+>>>> Hi,
+>>>>
+>>>> On 11/10/20 6:25 PM, Mika Westerberg wrote:
+>>>>> On Tue, Nov 10, 2020 at 04:02:33PM +0000, Limonciello, Mario wrote:
+>>>>>>>
+>>>>>>> On Tue, Nov 10, 2020 at 11:57:07AM +0100, Bastien Nocera wrote:
+>>>>>>>> Hey,
+>>>>>>>>
+>>>>>>>> systemd has been shipping this script to enable auto-suspend on a
+>>>>>>>> number of USB and PCI devices:
+>>>>>>>>
+>>>>>>> https://github.com/systemd/systemd/blob/master/tools/chromiumos/gen_autosuspen
+>>>>>>> d_rules.py
+>>>>>>>>
+>>>>>>>> The problem here is twofold. First, the list of devices is updated from
+>>>>>>>> ChromeOS, and the original list obviously won't be updated by ChromeOS
+>>>>>>>> developers unless a device listed exists in a ChromeBook computer,
+>>>>>>>> which means a number of devices that do support autosuspend aren't
+>>>>>>>> listed.
+>>>>>>>>
+>>>>>>>> The other problem is that this list needs to exist at all, and that it
+>>>>>>>> doesn't seem possible for device driver developers (at various levels
+>>>>>>>> of the stack) to opt-in to auto-suspend when all the variants of the
+>>>>>>>> device (or at least detectable ones) support auto-suspend.
+>>>>>>>
+>>>>>>> A driver can say they support autosuspend today, but I think you are
+>>>>>>> concerned about the devices that are controlled by class-compliant
+>>>>>>> drivers, right?  And for those, no, we can't do this in the kernel as
+>>>>>>> there are just too many broken devices out there.
+>>>>>>>
+>>>>>>
+>>>>>> I guess what Bastien is getting at is for newer devices supported by class
+>>>>>> drivers rather than having to store an allowlist in udev rules, can we set
+>>>>>> the allowlist in the kernel instead.  Then distributions that either don't
+>>>>>> use systemd or don't regularly update udev rules from systemd can take
+>>>>>> advantage of better defaults on modern hardware.
+>>>>>>
+>>>>>> The one item that stood out to me in that rules file was 8086:a0ed.
+>>>>>> It's listed as "Volteer XHCI", but that same device ID is actually present
+>>>>>> in an XPS 9310 in front of me as well and used by the xhci-pci kernel module.
+>>>>>>
+>>>>>> Given we're effectively ending up with the combination of runtime PM turned
+>>>>>> on by udev rules, do we need something like this for that ID:
+>>>>>>
+>>>>>> https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400d8a
+>>>>>>
+>>>>>> @Mika Westerberg should 8086:a0ed be quirked like the TCSS xHCI too?
+>>>>>
+>>>>> I think this one is the TGL PCH xHCI. The quirk currently for xHCI
+>>>>> controllers that are part of the TCSS (Type-C SubSystem) where it is
+>>>>> important to put all devices into low power mode whenever possible,
+>>>>> otherwise it keeps the whole block on.
+>>>>
+>>>> Note that there are currently some IDs missing from the xHCIs which
+>>>> are part of the TCSS too. At least the id for the xHCI in the thunderbolt
+>>>> controller on the Lenovo T14 gen 1 is missing. I started a discussion
+>>>> about extending the kernel quirk list for this vs switching to hwdb
+>>>> a while a go:
+>>>>
+>>>> https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-cf8960651086@redhat.com/
+>>>>
+>>>> The conclusion back then was to switch to hwdb, but I never got around to this.
+>>>
+>>> The reason I've added these to the xHCI driver is that it works even if
+>>> you are running some really small userspace (like busybox). Also for the
+>>> xHCI in TCSS we know for sure that it fully supports D3cold.
+>>>
+>>> (The one you refer above is actually mistake from my side as I never
+>>>  tested Alpine Ridge LP controller which I think this is).
+>>
+>> Ok, so I'll submit a patch adding the 15c1 product-id for the
+>> INTEL_ALPINE_RIDGE_LP_2C_XHCI controller to the list of ids for which we
+>> set the XHCI_DEFAULT_PM_RUNTIME_ALLOW quirk. To fix the much too high
+>> idle-power consumption problem on devices with this Alpine Ridge variant.
+> 
+> Thanks
+> 
+>>
+>>>>> Typically we haven't done that for PCH side xHCI controllers though, but
+>>>>> I don't see why not if it works that is. Adding Mathias to comment more
+>>>>> on that since he is the xHCI maintainer.
+>>>>
+>>>> If we are also going to enable this for the non TCSS Intel XHCI controllers,
+>>>> maybe just uncondtionally enable it for all Intel XHCI controllers, or
+>>>> if necessary do a deny-list for some older models and enable it for anything
+>>>> not on the deny-list (so all newer models). That should avoid the game of
+>>>> whack-a-mole which we will have with this otherwise.
+>>>
+>>> This is really up to Mathias to decide. I'm fine either way :)
+>>
+>> Ok, Matthias what do you think about this?
+> 
+> I don't think we are ready to enable runtime pm as default for all Intel xHCI controllers.
+> The risk of xHCI not waking up when user plugs a mouse/keyboard, making the system unusable
+> just seems too high compared to the powersaving benefit.
+> 
+> The powersaving benefit from autosuspending the TCSS xHCI is a lot better, and we, (Mika mostly)
+> has been able to verify they work.
+> 
+> So I propose we for now continue adding TCSS xHCI controllers to the allowlist in kernel.
+> For others I think a userspace allow/denylist makes sense.
+> 
+> Long term goal would be default allow for all, with short denylist in kernel.
 
-This change moves the buffer from the stack of the trigger handler call to
-the heap of the buffer of the state struct. The size increases takes into
-account the alignment for the timestamp, which is 8 bytes.
+Ok, thank you for your input on this.
 
-The 'data' buffer is split into 'tx_buf' and 'rx_buf', to make a clearer
-separation of which part of the buffer should be used for TX & RX.
+Regards,
 
-Fixes: af3008485ea03 ("iio:adc: Add common code for ADI Sigma Delta devices")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/adc/ad_sigma_delta.c       | 18 ++++++++----------
- include/linux/iio/adc/ad_sigma_delta.h |  6 +++++-
- 2 files changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
-index 86039e9ecaca..3a6f239d4acc 100644
---- a/drivers/iio/adc/ad_sigma_delta.c
-+++ b/drivers/iio/adc/ad_sigma_delta.c
-@@ -57,7 +57,7 @@ EXPORT_SYMBOL_GPL(ad_sd_set_comm);
- int ad_sd_write_reg(struct ad_sigma_delta *sigma_delta, unsigned int reg,
- 	unsigned int size, unsigned int val)
- {
--	uint8_t *data = sigma_delta->data;
-+	uint8_t *data = sigma_delta->tx_buf;
- 	struct spi_transfer t = {
- 		.tx_buf		= data,
- 		.len		= size + 1,
-@@ -99,7 +99,7 @@ EXPORT_SYMBOL_GPL(ad_sd_write_reg);
- static int ad_sd_read_reg_raw(struct ad_sigma_delta *sigma_delta,
- 	unsigned int reg, unsigned int size, uint8_t *val)
- {
--	uint8_t *data = sigma_delta->data;
-+	uint8_t *data = sigma_delta->tx_buf;
- 	int ret;
- 	struct spi_transfer t[] = {
- 		{
-@@ -146,22 +146,22 @@ int ad_sd_read_reg(struct ad_sigma_delta *sigma_delta,
- {
- 	int ret;
- 
--	ret = ad_sd_read_reg_raw(sigma_delta, reg, size, sigma_delta->data);
-+	ret = ad_sd_read_reg_raw(sigma_delta, reg, size, sigma_delta->rx_buf);
- 	if (ret < 0)
- 		goto out;
- 
- 	switch (size) {
- 	case 4:
--		*val = get_unaligned_be32(sigma_delta->data);
-+		*val = get_unaligned_be32(sigma_delta->rx_buf);
- 		break;
- 	case 3:
--		*val = get_unaligned_be24(&sigma_delta->data[0]);
-+		*val = get_unaligned_be24(sigma_delta->rx_buf);
- 		break;
- 	case 2:
--		*val = get_unaligned_be16(sigma_delta->data);
-+		*val = get_unaligned_be16(sigma_delta->rx_buf);
- 		break;
- 	case 1:
--		*val = sigma_delta->data[0];
-+		*val = sigma_delta->rx_buf[0];
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -395,11 +395,9 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
-+	uint8_t *data = sigma_delta->rx_buf;
- 	unsigned int reg_size;
- 	unsigned int data_reg;
--	uint8_t data[16];
--
--	memset(data, 0x00, 16);
- 
- 	reg_size = indio_dev->channels[0].scan_type.realbits +
- 			indio_dev->channels[0].scan_type.shift;
-diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
-index a3a838dcf8e4..efc2413abaf4 100644
---- a/include/linux/iio/adc/ad_sigma_delta.h
-+++ b/include/linux/iio/adc/ad_sigma_delta.h
-@@ -79,8 +79,12 @@ struct ad_sigma_delta {
- 	/*
- 	 * DMA (thus cache coherency maintenance) requires the
- 	 * transfer buffers to live in their own cache lines.
-+	 * 'tx_buf' is up to 32 bits.
-+	 * 'rx_buf' is up to 32 bits per sample + 64 bit timestamp,
-+	 * rounded to 16 bytes to take into account padding.
- 	 */
--	uint8_t				data[4] ____cacheline_aligned;
-+	uint8_t				tx_buf[4] ____cacheline_aligned;
-+	uint8_t				rx_buf[16] __aligned(8);
- };
- 
- static inline int ad_sigma_delta_set_channel(struct ad_sigma_delta *sd,
--- 
-2.17.1
+Hans
 
