@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0942C319B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9552C31A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgKXUDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:03:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730001AbgKXUDc (ORCPT
+        id S1730078AbgKXUEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727189AbgKXUEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:03:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606248211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pruzrQouk9MyD9Ysfhx+ZPTNO+LhkPA5Pe+NxzsDRfw=;
-        b=MMucw70O3zkF8z3TLv/ZaUnlQc+TmfVb8+DJbYMiPXI6Jz14qBVYMeeu3cAMwQb05ieJxg
-        kiRQEDocN8Lv1ewXQ4On/8txuWBSwmEL57a4I2hSP/RGQ5I9GGmKE+CUVhDDJxYJWTJrBU
-        BnwkYDSgumFdKCrrZFNPxQe4rta6Wdo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-7YeQ_o1APmq2yKrCeuY72A-1; Tue, 24 Nov 2020 15:03:27 -0500
-X-MC-Unique: 7YeQ_o1APmq2yKrCeuY72A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50C79107AD89;
-        Tue, 24 Nov 2020 20:03:25 +0000 (UTC)
-Received: from thinkpad.redhat.com (ovpn-113-83.ams2.redhat.com [10.36.113.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E5D15D6AB;
-        Tue, 24 Nov 2020 20:03:21 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-block@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH 2/2] powerpc/pseries: pass MSI affinity to irq_create_mapping()
-Date:   Tue, 24 Nov 2020 21:03:08 +0100
-Message-Id: <20201124200308.1110744-3-lvivier@redhat.com>
-In-Reply-To: <20201124200308.1110744-1-lvivier@redhat.com>
-References: <20201124200308.1110744-1-lvivier@redhat.com>
+        Tue, 24 Nov 2020 15:04:09 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05882C0613D6;
+        Tue, 24 Nov 2020 12:04:09 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d17so30616200lfq.10;
+        Tue, 24 Nov 2020 12:04:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yQgYdytsJTWx40vs8O0euMQoqQTcCtKDhAMPimfddKI=;
+        b=cosKrxFY6w+hivTa43r0ylY+uV+RFy+HNc+RCmbsbCdxt7tppl30ly3THnjosC7Xxd
+         OItFN1kWC5JZe1g3DJhuLCNZnvJdMLJ23sNp6M5GRo2+FWLp7i0GhYYt/KYbDxUeHy7f
+         2lkCFsvAqUu5ICKeVt0xr0qNgZI6UUBzcGEXC2MBuGpDnzPkgNyU8jl2QQ/4f4ubg57h
+         vdnuE1FaCYTNpHAohUYfIWBKqzHbERV2b1GbZrfjN2x2Lbbj1JG3IghFWJXBAdSvHxPE
+         pjzvBz6NvjCy5d9OLv0WD/UaSAd1lcXudLuUtXErMMP8HGubThVonaSy4Inc14JMHFHQ
+         Zirw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yQgYdytsJTWx40vs8O0euMQoqQTcCtKDhAMPimfddKI=;
+        b=iQbDt+gu4Wd/OIIbdKJZSeWp/xrmVzbKide7/zjL0aHuTBGq6JSHetRIBkEJegzrGG
+         RtJChCzH+x/cdvTXyhc5CDrBeweCU7UsXcibLyxvUxb0UPsx/RT+jcktOQiBF/mbor31
+         KcHVKqrlSnbxfqp+fL+6TSBtTlTxN3AMh0jUmi5VNflrfTAGzNOii1vEefjEsRwHrP3p
+         rSA457b8uhDBFqeHn0/SrsXmTlW5NIsHHmqere9O4Jad+reKWjJZS9QVUaLtQq91gutv
+         VCVhsXFti/e24CpZjnNlicOiRMOgsgGu6FIHT0eAt8MnYLzSazE++yhdgkNNn8uP5dEg
+         +/+Q==
+X-Gm-Message-State: AOAM532P47wo0NjfpCENW+MoHY5MUs/jX7pmAvX2NRw61mWHRnaK2np2
+        woCur6rnE7TUOp/uhSoQeLo=
+X-Google-Smtp-Source: ABdhPJwG7Ww3zbg4TMYvm6069UG3PkJtckTYIUaBtZFqTTdokEnajSpUitxGVVTZ9tOZILUi0mcbvA==
+X-Received: by 2002:a19:42cd:: with SMTP id p196mr2200173lfa.228.1606248247530;
+        Tue, 24 Nov 2020 12:04:07 -0800 (PST)
+Received: from ?IPv6:2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50? ([2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50])
+        by smtp.gmail.com with ESMTPSA id y132sm1267lfc.8.2020.11.24.12.04.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 12:04:06 -0800 (PST)
+Subject: Re: [PATCH 4/5] memory: renesas-rpc-if: Avoid use of C++ style
+ comments
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201124112552.26377-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <8ddf57ec-c1af-cc20-ecba-c8cd96e56d7a@gmail.com>
+Date:   Tue, 24 Nov 2020 23:04:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201124112552.26377-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With virtio multiqueue, normally each queue IRQ is mapped to a CPU.
+On 11/24/20 2:25 PM, Lad Prabhakar wrote:
 
-But since commit 0d9f0a52c8b9f ("virtio_scsi: use virtio IRQ affinity")
-this is broken on pseries.
+> Replace C++ style comment with C style.
 
-The affinity is correctly computed in msi_desc but this is not applied
-to the system IRQs.
-
-It appears the affinity is correctly passed to rtas_setup_msi_irqs() but
-lost at this point and never passed to irq_domain_alloc_descs()
-(see commit 06ee6d571f0e ("genirq: Add affinity hint to irq allocation"))
-because irq_create_mapping() doesn't take an affinity parameter.
-
-As the previous patch has added the affinity parameter to
-irq_create_mapping() we can forward the affinity from rtas_setup_msi_irqs()
-to irq_domain_alloc_descs().
-
-With this change, the virtqueues are correctly dispatched between the CPUs
-on pseries.
-
-This problem cannot be shown on x86_64 for two reasons:
-
-- the call path traverses arch_setup_msi_irqs() that is arch specific:
-
-   virtscsi_probe()
-      virtscsi_init()
-         vp_modern_find_vqs()
-            vp_find_vqs()
-               vp_find_vqs_msix()
-                  pci_alloc_irq_vectors_affinity()
-                     __pci_enable_msix_range()
-                        pci_msi_setup_msi_irqs()
-                           arch_setup_msi_irqs()
-                              rtas_setup_msi_irqs()
-                                 irq_create_mapping()
-                                    irq_domain_alloc_descs()
-                                      __irq_alloc_descs()
-
-- and x86_64 has CONFIG_PCI_MSI_IRQ_DOMAIN that uses another path:
-
-   virtscsi_probe()
-      virtscsi_init()
-         vp_modern_find_vqs()
-            vp_find_vqs()
-               vp_find_vqs_msix()
-                  pci_alloc_irq_vectors_affinity()
-                     __pci_enable_msix_range()
-                        __msi_domain_alloc_irqs()
-                           __irq_domain_alloc_irqs()
-                              __irq_alloc_descs()
-
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
----
- arch/powerpc/platforms/pseries/msi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/platforms/pseries/msi.c b/arch/powerpc/platforms/pseries/msi.c
-index 42ba08eaea91..58197f92c6a2 100644
---- a/arch/powerpc/platforms/pseries/msi.c
-+++ b/arch/powerpc/platforms/pseries/msi.c
-@@ -458,7 +458,7 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int nvec_in, int type)
- 			return hwirq;
- 		}
+   Thanks, I've overlooked this, and the header files should use C style comment,
+not C++.
  
--		virq = irq_create_mapping(NULL, hwirq, NULL);
-+		virq = irq_create_mapping(NULL, hwirq, entry->affinity);
- 
- 		if (!virq) {
- 			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
--- 
-2.28.0
+> While at it also replace the tab with a space between struct and
+> struct name.
 
+   No connection between these 2 changes, so there should be 2 patches, not 1.
+Also, I'd like to ask you that they're left intact (unless it causes problems
+for you).
+
+> Suggested-by: Pavel Machek <pavel@denx.de>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+[...]
+
+> diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
+> index b8c7cc63065f..30ea6bd969b4 100644
+> --- a/include/memory/renesas-rpc-if.h
+> +++ b/include/memory/renesas-rpc-if.h
+> @@ -19,7 +19,7 @@ enum rpcif_data_dir {
+>  	RPCIF_DATA_OUT,
+>  };
+>  
+> -struct	rpcif_op {
+> +struct rpcif_op {
+>  	struct {
+>  		u8 buswidth;
+>  		u8 opcode;
+> @@ -57,7 +57,7 @@ struct	rpcif_op {
+>  	} data;
+>  };
+>  
+> -struct	rpcif {
+> +struct rpcif {
+>  	struct device *dev;
+>  	void __iomem *dirmap;
+>  	struct regmap *regmap;
+> @@ -93,4 +93,4 @@ static inline void rpcif_disable_rpm(struct rpcif *rpc)
+>  	pm_runtime_put_sync(rpc->dev);
+>  }
+>  
+> -#endif // __RENESAS_RPC_IF_H
+> +#endif /* __RENESAS_RPC_IF_H */
+
+MBR, Sergei
