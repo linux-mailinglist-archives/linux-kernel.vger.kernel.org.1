@@ -2,180 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37962C2004
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DAF2C2006
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730647AbgKXIbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        id S1730550AbgKXIbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:31:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730429AbgKXIbP (ORCPT
+        with ESMTP id S1730476AbgKXIbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:31:15 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35B9C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:31:14 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id k1so7011210eds.13
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:31:14 -0800 (PST)
+        Tue, 24 Nov 2020 03:31:51 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892E5C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:31:49 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id t22so8662419ljk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:31:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I+tOihb6gtEPqqeGzt6Ir1ztTFoDxrJy8P1J3pOhkHg=;
-        b=JYm5KulKQPt8nQlirAOsdfgCSm7m44rifBPRgmawiqnh3peUuIMzvBEvV7bxlo6jRQ
-         NZm0uBTydK3J7L409rO9AJEWGZ7zhZXwinkt5gnaRA6vIEda862Cwu2bcjLFwLujvabk
-         3bXBcMTv/s/qjHHkEvr+goQ7RLayZXF/3tP/Jdhr8l7YwrkAAGk55Dff6fd8BoHqQeiS
-         1tBHHFf5hna7yrVQZ2wwJmL5p/LfYse2+/tZO0mFAW39whBIaUpmV5HcpBvvzuUyviYH
-         GfflnOWXSMILgzGO8ZX25lfuyZsoA4hmxBYt5hCfhm9XFTipVbQUT5zIJrAMuzo1mMGi
-         uZzQ==
+         :cc;
+        bh=16QF7XhShhktCs4QGKdZlDBAWyTS6RGhCF5bhmI9nIU=;
+        b=XKQu+a7MWxQNywkc5tChjFZhLkTlwFMs4SacKOtS1zcg+S92ttYuFtCfH2ATOJ5Zjh
+         6TGaoDqak3t/uLXBEbi/VvoQF8q5/L80yWskqa8quj529FfQIYsOlej1HXriY3wu0CyA
+         KANtvB4KScmqfn/J6zPmZ+KqbFswnARpu0l7sG7Ace0a6SgPhTFNn7U0iX3pxswsJUEZ
+         Kfzi2su+V9351kCnkcnPm5bYeaMy+ZS3M1IyBzJ29qtO6fvza7JEUXOU9S0X8+GFhN85
+         2p8oI+li0YP9v5H72ERFnodmVpDMNM+r0gPWQUeApbiGMx9soN0ay+6I/5Pd0E2rAVxM
+         U81A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I+tOihb6gtEPqqeGzt6Ir1ztTFoDxrJy8P1J3pOhkHg=;
-        b=mMKU+jDyEtpc6c2zlp+VXKGCpdE1kjN2Amrj65q/MpO22QLgxrXCppgF1XTCXKr88u
-         u3HxS8whCfV5xEPfBpyLTArkW2Lcv+OW7slSn8IfzuVxIxSJnaTkrxOjoZjY5PJVruzt
-         YX64q+kTxdh26STnhhcJIArry2eSq3q0RbRvpZMxrYRrAX+zlFrezmTVuQM7PvgpNcYP
-         4sHT9gNk9sCaUjJDtKM02w95PmAyDcldHNW2UNVxbl/nS4qZl6Qe/IE1A/nGGbGqm9Ns
-         m9gy85EEmC3Ry0ZBoWvWzjSHr8gLfsAklW1PDCUTvCKQrJin4Bs/pgo3wl6v9O2x8o0X
-         N4ng==
-X-Gm-Message-State: AOAM530/TA6Qc9KPB2JvXBt+JlURFEt0m9cu4VoFqOIoC5M1H97FM7WW
-        ZTJ+5oGRbB+IzWBQkPjuifP8ao9ztfkSTvbo3x+xcQ==
-X-Google-Smtp-Source: ABdhPJygZ+gZoMZgRnKPpgO7XrvN5whRtFdmmPEAGmLMTOSuWPnIRn9hGoBhhLtQt+EBJ7w+jelhLAXfy6LXrTKCL8s=
-X-Received: by 2002:a05:6402:1644:: with SMTP id s4mr2858092edx.221.1606206673393;
- Tue, 24 Nov 2020 00:31:13 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=16QF7XhShhktCs4QGKdZlDBAWyTS6RGhCF5bhmI9nIU=;
+        b=NmIQ4i8UNb2MbQFA7Tf/S+mvVjYqiZIxWh0+FthMGJNO3E+vurkrE6MutQmGzKzMWR
+         puJGgyl3U1I8J3uqlrlSdI6pwfydWwl8O4qI3yQQU5OjvL65Vz3B0LvnKfbaklSPVsMw
+         8WjeEdMMUcYmOSegnH/w6uF/py4nT0fUpvLBbqHbbUW68KU4oJYD52xZLTSL6axzTZH3
+         3MBm3wto4Lkm62BmligyeI+HRKO50HXtBqrTSVKZaigocRj1r/uEXj/2LL/PrbfEd8Es
+         6IG9ARQ/0MDYZErhX/8nojEqZaPvYU1oqgbU+s2jWI0qbMlMlLIFeg7W02hI7ckhCf47
+         Jsqg==
+X-Gm-Message-State: AOAM531xv9s4kmtK+nTrSkAx6QbLZLwlRDXAG7HHJEscDg37doB4pIQp
+        jAJ4Av71PVea3hzcczMAAS/csNHikEpZ9OnsnL3K0w==
+X-Google-Smtp-Source: ABdhPJzdm74z6S8plIzDqYnOXlksQUFMLdzxuDdR6uL9Sl8hgVbkjIYKdKpoHzgGULA/DXjfo2LC4401wFjtMge48fo=
+X-Received: by 2002:a2e:93cd:: with SMTP id p13mr1315195ljh.144.1606206706953;
+ Tue, 24 Nov 2020 00:31:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20201123121805.530891002@linuxfoundation.org>
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 24 Nov 2020 14:01:01 +0530
-Message-ID: <CA+G9fYsBvH5oFe6eWGXCu95evHy9w=LbvLKgbPouKuXaQ7XMCw@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/47] 4.9.246-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux-stable <stable@vger.kernel.org>
+References: <20201113132429.420940-1-eugen.hristev@microchip.com>
+In-Reply-To: <20201113132429.420940-1-eugen.hristev@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 09:31:36 +0100
+Message-ID: <CACRpkdYdPp_ihSEHkPaLa0_mcX+8ypnPZ4dn0d-PY9Mes1XntQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: at91-pio4: add support for fewer lines on last
+ PIO bank
+To:     Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc:     inux-arm-kernel@lists.infradead.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 at 17:56, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Fri, Nov 13, 2020 at 2:25 PM Eugen Hristev
+<eugen.hristev@microchip.com> wrote:
+
+> Some products, like sama7g5, do not have a full last bank of PIO lines.
+> In this case for example, sama7g5 only has 8 lines for the PE bank.
+> PA0-31, PB0-31, PC0-31, PD0-31, PE0-7, in total 136 lines.
+> To cope with this situation, added a data attribute that is product dependent,
+> to specify the number of lines of the last bank.
+> In case this number is different from the macro ATMEL_PIO_NPINS_PER_BANK,
+> adjust the total number of lines accordingly.
+> This will avoid advertising 160 lines instead of the actual 136, as this
+> product supports, and to avoid reading/writing to invalid register addresses.
 >
-> This is the start of the stable review cycle for the 4.9.246 release.
-> There are 47 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.246-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 
+Nico/Ludovic: can you please look at this patch?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.9.246-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.9.y
-git commit: 1a0738f3aaf5542394e8c7ce9738027a79b26241
-git describe: v4.9.245-48-g1a0738f3aaf5
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.245-48-g1a0738f3aaf5
-
-
-No regressions (compared to build v4.9.245)
-
-
-No fixes (compared to build v4.9.245)
-
-Ran 32932 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- mips
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-cve-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Yours,
+Linus Walleij
