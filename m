@@ -2,228 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD2F2C202C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C6E2C2030
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730701AbgKXIiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:38:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
+        id S1730713AbgKXIjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:39:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgKXIiy (ORCPT
+        with ESMTP id S1730509AbgKXIjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:38:54 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741FCC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:38:54 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id 7so27273563ejm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:38:54 -0800 (PST)
+        Tue, 24 Nov 2020 03:39:08 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE65C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:39:07 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d17so27679857lfq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:39:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=E0c+uWTO4/NEXM6Uw93N6+Y1kNtkiOR85L95Obiq1Po=;
-        b=EsrrJ0uNzGd7s1dOZN2xf0kpDDVMXXyAn6Z+WzjmYRA0rGfU16Cvr8g+XZ5BSyzhG3
-         g4vb7b5CcWZZxqA5bss/h4omNEqr6BSkf0RYNTbAk8FooHtiyObi7sF0whUNcefSYo+2
-         DtKKP9aMCfjYC7pn5Z+XniYaT1SRhnpDxLyiFX5DGTfhNInfMTZtN9975yIF0Fgp7e7x
-         SwJ2+4XqyVeOqtk4Q/mOaDkxx1Nt8qxqYbbkhKnbD9qwc1wd9HjjQn3eQ6/0CHChFVgX
-         hpLEkffbxuLrGchwAeuc2ZfgPxZWlnxlLR42rDTQqzRVf+uahkY3rxduYp2lSMQ80kqm
-         /RkQ==
+         :cc;
+        bh=i8+bYCeKuOJvnepjKUXd1bAXp/xtxeuCkyy0njL/NAA=;
+        b=pM2yYux2OW5DIOxHgUVmKI58b7pM94gtzpow1fv7nhugyA1ylNk6yTjvTfL6Isdxa0
+         RL/fpFvBHQmjRmSqhc9JPxpgv4Hh8ZdWdWI/E3jRb8mDsuIlEa8niLuk/MPJrYGDbpC1
+         ADKmWNH3/BnBsyr72JUrUNzFnzVK/KfPZEgi72Q5YZ4KCmMlzZ47dgHY6QO2za5gPKB5
+         VTGRXum+qhzFRudFxIXNExPBbDtNE8JkFI04gjlMrBOsyvWtsD4l6S422YBS7glv9aTv
+         GVrFYKXL+T7T05X0vlLfSlmzxYxqNnh7dO0mGfiJzBO5zM6/1XhzLSL3OAJaHlc2kx3c
+         9TCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E0c+uWTO4/NEXM6Uw93N6+Y1kNtkiOR85L95Obiq1Po=;
-        b=W2aVsV6YV1fU7UQNU/+mxfI0xAzUyl/rKw4IeOUa62K9xzWUFRoPJIhN4JIB/qMpGF
-         fiBMXULAApAZxBYhm68RHv8mFxj5omAjq1NSNden4Yspi2+o0gI/7ZgNDq0Fdn2yEjaj
-         7YV4+FG+6qTM1vh1LMwfU1tKSVSfpGW0Rb94JKjedEL+uAhaaf+hC0QAOJ1nuyxJu6QJ
-         8+Q7vg6bPqKO/qTXTcmFQXc2TSPZ+9WR3GmhH3bBP1fv63dTKxF9YZkeYJmIVvDShrb4
-         7HxkyQjzC4yekt++zJCdCkIcIo1Qoq1UjnlyTinv5jQnDp8J+YcsFX6+/wI98hHhSd9I
-         CoJA==
-X-Gm-Message-State: AOAM533iHPGJposkGkbnHsSImSXv+VuJHyR9TF58aJ2wzX+4WeH38RYZ
-        T8opMkD15AM27XHx6GtlP0H2oPUNlOY6KPSz5+2rqg==
-X-Google-Smtp-Source: ABdhPJzQSJpvZxsojzWIRpr1KmaF/9YquaKYFCTLHD9hcOj/Nnq5X6Kv43FsbM7JQbVT3NIlqmoSZj+QYeqbKsIoJzk=
-X-Received: by 2002:a17:906:6987:: with SMTP id i7mr3484399ejr.18.1606207133114;
- Tue, 24 Nov 2020 00:38:53 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=i8+bYCeKuOJvnepjKUXd1bAXp/xtxeuCkyy0njL/NAA=;
+        b=QKizo+hc5wbq6jo5F1CD6wRhU9Tz+dFz0EQJmjWRufpguNXGPm4ccjWTkAmDTnjwYr
+         /nJtU/QtqtXXk+Aiq4r1eh+sGmTkBAjb+BlLj8Y/SClkiWVLnYOAZiwr8sgzOwB9PiV3
+         WG4cp/FTwXKgPtoZT1gn/ytRbBg0OsRH3mDKky8wT0iyHAkfBvnl4taE7WEiAmMB/p3r
+         +EbGoEbdcojqv8RKhiwaOxWjX8wHr2rL3N4K+S6r+kvZryzvqjYdYQfXLGp3tyF1XAP8
+         taNiNFPQ9BN54C9pd7RnCXT8UnPd/ofnpJ5g40e3cyPtkuJuqgNR59B1NAGAyfEFm7qh
+         4FtA==
+X-Gm-Message-State: AOAM532R0GBaQoOmucRnLF1mKpcf8yxCR8HtU5XdGUdy4ByPNfI6d9rG
+        zkl1LhPTFD8JLu3yLfIm5j9Rk9n1Hql/j+v6V8OXD0qhYd/kAA==
+X-Google-Smtp-Source: ABdhPJzQT4fDtfKY20ncG9HETAsp8RdTF79Jyc6mRKyoBEhhdyG1qtyOY5kKpTCHvD7v0L+Hn6wSYsEYEGC2qtveh2Q=
+X-Received: by 2002:a19:5f11:: with SMTP id t17mr1212354lfb.572.1606207146303;
+ Tue, 24 Nov 2020 00:39:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201123121804.306030358@linuxfoundation.org>
-In-Reply-To: <20201123121804.306030358@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 24 Nov 2020 14:08:41 +0530
-Message-ID: <CA+G9fYucRX6Y66b5XeCq5c8T5DA4Hqg3BgGpZAAH4uFXELkrnQ@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/38] 4.4.246-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <1604570192-15057-1-git-send-email-rnayak@codeaurora.org> <1604570192-15057-2-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1604570192-15057-2-git-send-email-rnayak@codeaurora.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 09:38:55 +0100
+Message-ID: <CACRpkdbrOKct5v2YY6L8G5fweP=eOFpcS9=Z6nUyA2E4Of+h7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add sc7280 pinctrl driver
+To:     Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 at 17:54, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Thu, Nov 5, 2020 at 10:56 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+
+> Add initial pinctrl driver to support pin configuration with
+> pinctrl framework for SC7280 SoC
 >
-> This is the start of the stable review cycle for the 4.4.246 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.246-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+> v2: Consolidated functions under phase_flag and qdss
+>     Moved ufs reset pin to pin175 so its exposed as a gpio
+>     npios updated from 175 to 176
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Patch applied.
 
-Summary
-------------------------------------------------------------------------
+> +config PINCTRL_SC7280
+> +       tristate "Qualcomm Technologies Inc SC7280 pin controller driver"
+> +       depends on GPIOLIB && OF
+> +       select PINCTRL_MSM
 
-kernel: 4.4.246-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 4524983a35968dbde7b8818db1dd43d7fb215742
-git describe: v4.4.245-39-g4524983a3596
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.245-39-g4524983a3596
+I changed this to depends on PINCTRL_MSM in the process to stay
+consistent with John's changes to modularize the pin controllers.
 
-
-No regressions (compared to build v4.4.245)
-
-
-No fixes (compared to build v4.4.245)
-
-Ran 24777 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-r2 - arm64
-- mips
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* ltp-containers-tests
-* install-android-platform-tools-r2600
-* kvm-unit-tests
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.246-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.246-rc1-hikey-20201123-865
-git commit: 0860acfef9117bf9726adb90dfc46cd717fddd3b
-git describe: 4.4.246-rc1-hikey-20201123-865
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.246-rc1-hikey-20201123-865
-
-No regressions (compared to build 4.4.245-rc1-hikey-20201120-861)
-
-No fixes (compared to build 4.4.245-rc1-hikey-20201120-861)
-
-Ran 1800 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Yours,
+Linus Walleij
