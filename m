@@ -2,148 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3512C34A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA3D2C34AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388480AbgKXX1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:27:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730900AbgKXX1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:27:52 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388633AbgKXXbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:31:14 -0500
+Received: from relay3.mymailcheap.com ([217.182.119.155]:33902 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728429AbgKXXbO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:31:14 -0500
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id 9FEBC3F15F;
+        Wed, 25 Nov 2020 00:31:10 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id C7DEC2A365;
+        Tue, 24 Nov 2020 18:31:09 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1606260669;
+        bh=DBqrNKR/Q9NCMag42Ouvl0axhCcPk0uK6vNXYyoOfbY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=y5J6VaXhTzq4FBHdcIqP3t4Iq0K7g2TQE67DE5OpuW4pozMntpcQpEiSj7z0HSZ7Q
+         4pN89nxcY4D8buJWvmOJmIeD+V9vQgivfCQW1IzoGmrh00vwzklfGMMy6YGkRa79uJ
+         q/MSQl4PLeQi/h+s+0XfWl2F4vYKmaIV1sYxrlxw=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9Bs2ZjAQznoD; Tue, 24 Nov 2020 18:31:09 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3FCE2100A;
-        Tue, 24 Nov 2020 23:27:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606260471;
-        bh=XgAtfv6WFP0E9xGlHVv3nI5eVrHv46Cc7QRVtx6Qwaw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PhITfHR869DfJmDPPM25QIpmd1XYPVhs+4tJPUUy0cW9eRWqzSU9Jml8yTZNmBNSF
-         LpY2lShMLcy4S/RQ8si6KFIBSQBYxhc3C5HgamN/Ah9uZnXVC37MFgtnl3p9qUkPfm
-         9r+Z5NM5xeMMiMrg2dX6uYtvKbP/G1UxV4jw3g3I=
-Date:   Tue, 24 Nov 2020 17:27:49 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] x86/PCI: Convert force_disable_hpet() to standard quirk
-Message-ID: <20201124232749.GA601657@bjorn-Precision-5520>
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Tue, 24 Nov 2020 18:31:08 -0500 (EST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id E04EF40FF4;
+        Tue, 24 Nov 2020 23:31:07 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="tAUYc7AD";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.161.143])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8FC5F40FF4;
+        Tue, 24 Nov 2020 23:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1606260657; bh=DBqrNKR/Q9NCMag42Ouvl0axhCcPk0uK6vNXYyoOfbY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tAUYc7AD+hUA9g9ygr8w6y5fdfmySfroYZHIhZfGMLyDfwGcyBoQHv6uY87E4Rc+y
+         tabaJC/25alqZTRLwhBm2l0LPjZOYAmLnu7iN0EREwissmZpq+LH2NkYNxitzUbL9Y
+         7cB5ReOlrAcuXW3Vg3qO8KXMZtSnu70LN0+RRgOc=
+Message-ID: <86cfbd41fe80b4936f20925aed0c9010806a0316.camel@aosc.io>
+Subject: Re: [PATCH] ARM: dts: sun8i: s3: pinecube: add ethernet alias for
+ Wi-Fi
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Date:   Wed, 25 Nov 2020 07:30:50 +0800
+In-Reply-To: <20201124225940.3750388-1-icenowy@aosc.io>
+References: <20201124225940.3750388-1-icenowy@aosc.io>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119181904.149129-1-helgaas@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: E04EF40FF4
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.143:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         DBL_PROHIBIT(0.00)[0.0.0.1:email];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 12:19:04PM -0600, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> 62187910b0fc ("x86/intel: Add quirk to disable HPET for the Baytrail
-> platform") implemented force_disable_hpet() as a special early quirk.
-> These run before the PCI core is initialized and depend on the
-> x86/pci/early.c accessors that use I/O ports 0xcf8 and 0xcfc.
-> 
-> But force_disable_hpet() doesn't need to be one of these special early
-> quirks.  It merely sets "boot_hpet_disable", which is tested by
-> is_hpet_capable(), which is only used by hpet_enable() and hpet_disable().
-> hpet_enable() is an fs_initcall(), so it runs after the PCI core is
-> initialized.
-> 
-> Convert force_disable_hpet() to the standard PCI quirk mechanism.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Feng Tang <feng.tang@intel.com>
-> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+在 2020-11-25星期三的 06:59 +0800，Icenowy Zheng写道：
+> The PineCube board has a RTL8189ES Wi-Fi module on board, and the
+> module
+> doesn't have any MAC address programmed in.
 
-I applied this to pci/misc for v5.11.  Let me know if you see any
-issues.
+Sorry, but now I'm unsure about this.
 
+The module seems to have MAC address programmed.
+
+> 
+> Add a ethernet alias in the DT, thus the bootloader will then be able
+> to
+> generate a MAC address into the device tree node of Wi-Fi.
+> 
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 > ---
->  arch/x86/kernel/early-quirks.c | 24 ------------------------
->  arch/x86/pci/fixup.c           | 25 +++++++++++++++++++++++++
->  2 files changed, 25 insertions(+), 24 deletions(-)
+>  arch/arm/boot/dts/sun8i-s3-pinecube.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
-> index a4b5af03dcc1..674967fc1071 100644
-> --- a/arch/x86/kernel/early-quirks.c
-> +++ b/arch/x86/kernel/early-quirks.c
-> @@ -604,14 +604,6 @@ static void __init intel_graphics_quirks(int num, int slot, int func)
->  	}
->  }
+> diff --git a/arch/arm/boot/dts/sun8i-s3-pinecube.dts
+> b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
+> index 4aa0ee897a0a..5086f713467a 100644
+> --- a/arch/arm/boot/dts/sun8i-s3-pinecube.dts
+> +++ b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
+> @@ -13,6 +13,7 @@ / {
+>  	compatible = "pine64,pinecube", "sochip,s3", "allwinner,sun8i-
+> v3";
 >  
-> -static void __init force_disable_hpet(int num, int slot, int func)
-> -{
-> -#ifdef CONFIG_HPET_TIMER
-> -	boot_hpet_disable = true;
-> -	pr_info("x86/hpet: Will disable the HPET for this platform because it's not reliable\n");
-> -#endif
-> -}
-> -
->  #define BCM4331_MMIO_SIZE	16384
->  #define BCM4331_PM_CAP		0x40
->  #define bcma_aread32(reg)	ioread32(mmio + 1 * BCMA_CORE_SIZE + reg)
-> @@ -701,22 +693,6 @@ static struct chipset early_qrk[] __initdata = {
->  	  PCI_BASE_CLASS_BRIDGE, 0, intel_remapping_check },
->  	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA, PCI_ANY_ID,
->  	  QFLAG_APPLY_ONCE, intel_graphics_quirks },
-> -	/*
-> -	 * HPET on the current version of the Baytrail platform has accuracy
-> -	 * problems: it will halt in deep idle state - so we disable it.
-> -	 *
-> -	 * More details can be found in section 18.10.1.3 of the datasheet:
-> -	 *
-> -	 *    http://www.intel.com/content/dam/www/public/us/en/documents/datasheets/atom-z8000-datasheet-vol-1.pdf
-> -	 */
-> -	{ PCI_VENDOR_ID_INTEL, 0x0f00,
-> -		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
-> -	{ PCI_VENDOR_ID_INTEL, 0x3e20,
-> -		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
-> -	{ PCI_VENDOR_ID_INTEL, 0x3ec4,
-> -		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
-> -	{ PCI_VENDOR_ID_INTEL, 0x8a12,
-> -		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
->  	{ PCI_VENDOR_ID_BROADCOM, 0x4331,
->  	  PCI_CLASS_NETWORK_OTHER, PCI_ANY_ID, 0, apple_airport_reset},
->  	{}
-> diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
-> index 0a0e168be1cb..865bc3c5188b 100644
-> --- a/arch/x86/pci/fixup.c
-> +++ b/arch/x86/pci/fixup.c
-> @@ -780,3 +780,28 @@ DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_AMD, 0x15b1, pci_amd_enable_64bit_bar);
->  DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_AMD, 0x1601, pci_amd_enable_64bit_bar);
+>  	aliases {
+> +		ethernet0 = &rtl8189es;
+>  		serial0 = &uart2;
+>  	};
 >  
->  #endif
+> @@ -156,6 +157,10 @@ &mmc1 {
+>  	bus-width = <4>;
+>  	non-removable;
+>  	status = "okay";
 > +
-> +/*
-> + * HPET on the current version of the Baytrail platform has accuracy
-> + * problems: it will halt in deep idle state - so we disable it.
-> + *
-> + * More details can be found in section 18.10.1.3 of the datasheet
-> + * (Intel Document Number 332065-003, March 2016):
-> + *
-> + *    http://www.intel.com/content/dam/www/public/us/en/documents/datasheets/atom-z8000-datasheet-vol-1.pdf
-> + */
-> +static void force_disable_hpet(struct pci_dev *dev)
-> +{
-> +#ifdef CONFIG_HPET_TIMER
-> +	boot_hpet_disable = true;
-> +	pci_info(dev, "x86/hpet: Will disable the HPET for this platform because it's not reliable\n");
-> +#endif
-> +}
-> +DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x0f00,
-> +			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
-> +DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x3e20,
-> +			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
-> +DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x3ec4,
-> +			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
-> +DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x8a12,
-> +			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
-> -- 
-> 2.25.1
-> 
+> +	rtl8189es: wifi@1 {
+> +		reg = <1>;
+> +	};
+>  };
+>  
+>  &pio {
