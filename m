@@ -2,134 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1572C3026
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10A2C3030
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404317AbgKXSpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:45:12 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36024 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404000AbgKXSpJ (ORCPT
+        id S2404264AbgKXSvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729281AbgKXSu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:45:09 -0500
-Received: from mail-qt1-f197.google.com ([209.85.160.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <gpiccoli@canonical.com>)
-        id 1khdJL-0008AM-C1
-        for linux-kernel@vger.kernel.org; Tue, 24 Nov 2020 18:45:07 +0000
-Received: by mail-qt1-f197.google.com with SMTP id t17so4659298qtp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:45:07 -0800 (PST)
+        Tue, 24 Nov 2020 13:50:59 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A49C0613D6;
+        Tue, 24 Nov 2020 10:50:59 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id a9so30370056lfh.2;
+        Tue, 24 Nov 2020 10:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R0c/j8cf2nONRA2feQDC3TPehXhvut6OEozhckJatQg=;
+        b=tlV+wnM4g4VAxsaddCvjmefIUTYV9ByW3YpTxHnnHOId0pZny8veyAKKUvd8l2qFOw
+         rHrnvqkXyxskNtCQcu1gVARTckemeR/UTIrlMsv6aaeXLXkCc1qllmZ4M6OCNfa5+cvR
+         hSubX+eoE20ZyG+VDCiK8jUnXF9U2uZHL9qfGII82YZI9vqkRDxjIs57xECz1GuBy59l
+         jGmBnUqAamJVMONCkHS7KhBz+ISXIsMXAAGEZYxdb6zIa/RwcTamE+VGm1gBI0/Ldi3J
+         fMjTGD5X+ybM4TzIldjLXkNzrxx00VayedVMuCljUoxcBPKup05EKZMvox5rCTWjs+GZ
+         cGBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:autocrypt:in-reply-to
-         :message-id:date:user-agent:mime-version:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=r/r7ULfVekojLsHfSnb9aS6YtiIa7A47tHqm9zQA1j0=;
-        b=X/QRMJTvZlJSNWVaDj3nqLKcVHDDTgP7XxOyVzHW3B7RL7rUH9raF7ryVEk8OWJs1b
-         4l12u5bAGauC+6qzPajfKXMLWm/f1G/KQRliW0UJ18CSrhsULStrlw9apMuXWxQxrTS6
-         CDSsLNaaqM1TTUaSbA4G0dpih66KbHjXpJlyTX3hoEuVTb9fg20lP1K8aM/6PbXxYOsQ
-         1t/zvf6pdDiM6XWtXkSCLCHl9x2XGdxufUXGBS0GxRYfMjngxHghLKEQfBmIAYTJwHA1
-         85aShQ8ISTiZAykKFE3bvFnckWpIL6emDrG9dKA4WjRLmZAC7Svl2an35OXGc19RwX2f
-         YJdg==
-X-Gm-Message-State: AOAM531Zum4hArwxqq8pWHN+lWR6OZm/yzeRJPVaair3paaiHUiUSSUI
-        gxjVSObMXZhpFKHgxJUSEUFD4Os9axCkI6Ui9nEn8PcPnwXvpHFKDIp9ya8a7tNTyFUcR1tZqQF
-        PK3G04PMIgjBnnuFdGBaXpAt2gRMR/SSyTxF1VCqTJQ==
-X-Received: by 2002:ac8:58d1:: with SMTP id u17mr5764789qta.158.1606243506155;
-        Tue, 24 Nov 2020 10:45:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzme549lMfN9A38G6UG77xqRXskQXzbWCOLSaKjdJlep2kO86zF16x9adoSCSLdbEiVbFQoBQ==
-X-Received: by 2002:ac8:58d1:: with SMTP id u17mr5764752qta.158.1606243505869;
-        Tue, 24 Nov 2020 10:45:05 -0800 (PST)
-Received: from [192.168.1.75] (200-158-226-203.dsl.telesp.net.br. [200.158.226.203])
-        by smtp.gmail.com with ESMTPSA id h8sm9263078qka.117.2020.11.24.10.45.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 10:45:05 -0800 (PST)
-To:     sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, ashok.raj@intel.com,
-        knsathya@kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Sinan Kaya <okaya@kernel.org>, haifeng.zhao@intel.com,
-        chris.newcomer@canonical.com, gpiccoli@canonical.com
-From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Subject: Re: [PATCH v7 1/2] PCI/ERR: Call pci_bus_reset() before calling
- ->slot_reset() callback
-Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
- xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
- Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
- 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
- irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
- 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
- AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
- AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
- 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
- 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
- q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
- iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
- LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
- aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
- pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
- kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
- nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
- bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
- BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
- 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
- egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
- Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
- kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
- X18zwLgdiQ==
-In-Reply-To: 
-Message-ID: <6349d22f-cf49-bab4-ad0f-a928e65622af@canonical.com>
-Date:   Tue, 24 Nov 2020 15:45:00 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=R0c/j8cf2nONRA2feQDC3TPehXhvut6OEozhckJatQg=;
+        b=VDYnoYYIh3HU2rbZOTPbmHSIG6tcOKT77+inOC9IJtYMupIIXiR/WzkbYLfqj6cMv+
+         qcJkJZ0MuWcV365o5bNphOotDeJMst2r0Tu+OTvyqzPIi4UDYQGELqbupYHsb2kUnzPU
+         cGxTOlDmZb+c0GWf+sUPxsrj3CGjX/xWWnslkZvuog+sahHhvix/YDDTien7sViFMfsm
+         2/JOlMwNVGVpkbqd01NScDm+eZpFr1hyLVWnNjp8kY64AUit6lluqnKjtlrsFUKOYepS
+         TBJxeV47F4OIQnnUmWg3mXWJENzoBts9P77JS2tsmBoTZa6Ftj7PtTiBtAZ4/oTwWbUr
+         rZYg==
+X-Gm-Message-State: AOAM530N88MpccUhG9W5ph3pp/dahyOe6Yj4sOUSycSCvBfpqMXwEvyB
+        3R7N0L0SkGjRPbB0QQvaTcqyFu0PbQqV4WJ7jeo=
+X-Google-Smtp-Source: ABdhPJzt3TLdBN/P4Eq+DV7SDtt4yLBGLaOX/Hm1GZNn2g9gFOHpibQKVx+y8dvkGOMMAHQ8E2lmPw==
+X-Received: by 2002:a19:549:: with SMTP id 70mr2081436lff.112.1606243857364;
+        Tue, 24 Nov 2020 10:50:57 -0800 (PST)
+Received: from localhost.localdomain ([95.153.130.48])
+        by smtp.gmail.com with ESMTPSA id d11sm1820698lfa.143.2020.11.24.10.50.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 10:50:56 -0800 (PST)
+From:   Artem Labazov <123321artyom@gmail.com>
+Cc:     123321artyom@gmail.com, stable@vger.kernel.org,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
+Date:   Tue, 24 Nov 2020 21:50:43 +0300
+Message-Id: <20201124185043.4037182-1-123321artyom@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kuppuswamy Sathyanarayanan (and all involved here), thanks for the
-patch! I'd like to ask what is the status of this patchset - I just
-"parachuted" in the issue, and by tracking the linux-pci ML, I found
-this V7 (and all previous versions since V2). Also, noticed that Jay's
-email might have gotten lost in translation (he's not CCed in latest
-versions of the patchset).
+The table for Unicode upcase conversion requires an order-5 allocation,
+which may fail on a highly-fragmented system:
 
-I was able to find even another interesting thread that might be
-related, Ethan's patchset. So, if any of the developers can clarify the
-current status of this patchset or if the functionality hereby proposed
-ended-up being implemented in another patch, I appreciate a lot.
+ pool-udisksd: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+ CPU: 4 PID: 3756880 Comm: pool-udisksd Tainted: G     U            5.8.10-200.fc32.x86_64 #1
+ Hardware name: Dell Inc. XPS 13 9360/0PVG6D, BIOS 2.13.0 11/14/2019
+ Call Trace:
+  dump_stack+0x6b/0x88
+  warn_alloc.cold+0x75/0xd9
+  ? _cond_resched+0x16/0x40
+  ? __alloc_pages_direct_compact+0x144/0x150
+  __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
+  ? __schedule+0x28a/0x840
+  ? __wait_on_bit_lock+0x92/0xa0
+  __alloc_pages_nodemask+0x2df/0x320
+  kmalloc_order+0x1b/0x80
+  kmalloc_order_trace+0x1d/0xa0
+  exfat_create_upcase_table+0x115/0x390 [exfat]
+  exfat_fill_super+0x3ef/0x7f0 [exfat]
+  ? sget_fc+0x1d0/0x240
+  ? exfat_init_fs_context+0x120/0x120 [exfat]
+  get_tree_bdev+0x15c/0x250
+  vfs_get_tree+0x25/0xb0
+  do_mount+0x7c3/0xaf0
+  ? copy_mount_options+0xab/0x180
+  __x64_sys_mount+0x8e/0xd0
+  do_syscall_64+0x4d/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Thanks in advance! Below, some references to lore archives.
-Cheers,
+Make the driver use vmalloc() to eliminate the issue.
 
+Cc: stable@vger.kernel.org # v5.7+
+Signed-off-by: Artem Labazov <123321artyom@gmail.com>
+---
+ fs/exfat/nls.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Guilherme
-
-
-References:
-
-This V7 link:
-https://lore.kernel.org/linux-pci/546d346644654915877365b19ea534378db0894d.1602788209.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-
-V6:
-https://lore.kernel.org/linux-pci/546d346644654915877365b19ea534378db0894d.1602663397.git.sathyanarayanan.kuppuswamy@linux.intel.com/#t
-
-V5:
-https://lore.kernel.org/linux-pci/162495c76c391de6e021919e2b69c5cd2dbbc22a.1602632140.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-
-V4:
-https://lore.kernel.org/linux-pci/5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-
-V3:
-https://lore.kernel.org/linux-pci/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-
-V2:
-https://lore.kernel.org/linux-pci/ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com/#t
-
-Ethan's related(?) patchset, V8 :
-https://lore.kernel.org/linux-pci/20201007113158.48933-1-haifeng.zhao@intel.com/#t
+diff --git a/fs/exfat/nls.c b/fs/exfat/nls.c
+index 675d0e7058c5..e415794e3ffc 100644
+--- a/fs/exfat/nls.c
++++ b/fs/exfat/nls.c
+@@ -6,6 +6,7 @@
+ #include <linux/string.h>
+ #include <linux/slab.h>
+ #include <linux/buffer_head.h>
++#include <linux/vmalloc.h>
+ #include <asm/unaligned.h>
+ 
+ #include "exfat_raw.h"
+@@ -659,7 +660,7 @@ static int exfat_load_upcase_table(struct super_block *sb,
+ 	unsigned char skip = false;
+ 	unsigned short *upcase_table;
+ 
+-	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
++	upcase_table = vmalloc(UTBL_COUNT * sizeof(unsigned short));
+ 	if (!upcase_table)
+ 		return -ENOMEM;
+ 
+@@ -715,7 +716,7 @@ static int exfat_load_default_upcase_table(struct super_block *sb)
+ 	unsigned short uni = 0, *upcase_table;
+ 	unsigned int index = 0;
+ 
+-	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
++	upcase_table = vmalloc(UTBL_COUNT * sizeof(unsigned short));
+ 	if (!upcase_table)
+ 		return -ENOMEM;
+ 
+-- 
+2.26.2
 
