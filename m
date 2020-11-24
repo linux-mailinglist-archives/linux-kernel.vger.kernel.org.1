@@ -2,166 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE8D2C2D01
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE122C2D0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390323AbgKXQf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:35:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726105AbgKXQf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:35:57 -0500
-Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF5DF206F9;
-        Tue, 24 Nov 2020 16:35:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606235756;
-        bh=foyt3Sdsof8A/tOSmI4RMCw2Prkp9i6MW89/8Yspj+U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E/d2C2Yysn/58BfnYI0yICiGuEG9WNYYNy2Lya4lPQV3EXxYQizTNusGJuOZuFpgR
-         smT90pvfe7sAMC8KXbc3RXoe0UBqJd5CwO4KC7lsHT5P4XgUzlWoSkVaPqnZE83xs2
-         F1XkyvFUk23alo+57M+RsU7hc9w9u230vik4AApc=
-Date:   Tue, 24 Nov 2020 17:35:53 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: How to enable auto-suspend by default
-Message-ID: <X702aZ2x4mRn+Y73@kroah.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
- <X6p6ubTOoMPUPPXi@kroah.com>
- <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
- <20201110172517.GC2495@lahna.fi.intel.com>
- <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
- <DM6PR19MB26366008D59FC94D384A1E3BFAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
- <X6wSFojYLvwGhY/g@kroah.com>
- <2585b668d9452c23902db46cf850ba7fa07167b7.camel@hadess.net>
+        id S2390459AbgKXQgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:36:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47627 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390470AbgKXQgu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 11:36:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606235808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3qViGPvAp3Bdb6AOjvlouT/dVyBQzwDGsvBv6zenTU0=;
+        b=dAF24XkatYRVtQUW8jf1zyQHr7l3u3oN3hV56Uvejrea+bh6BAQpoDqvbXCUkTzN3as3R9
+        bwtzty9OTqyyIYxam3MFulujwXY+tee5Im03J7CTgfzPjal5i1OGsQKBQSbdCpRzHjoPIO
+        jYwPFDopN0rp7mQZLtEGijWc5e/IBNI=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-z0hqIUuhOKGXlx8s0QXqBA-1; Tue, 24 Nov 2020 11:36:46 -0500
+X-MC-Unique: z0hqIUuhOKGXlx8s0QXqBA-1
+Received: by mail-qt1-f198.google.com with SMTP id g12so16576693qtc.15
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:36:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=3qViGPvAp3Bdb6AOjvlouT/dVyBQzwDGsvBv6zenTU0=;
+        b=E/gkb24ZueZmLCBCIWJBajjopHxfagAHmEUnHOXGYBlrjtCc8OiVvZZZkenKGAbEQe
+         l8mAZgIP0ETQHt1r5IvelbNCO9V6d/rNSs92nG6a4FoTDdQYDrb1Rug8NRF64FzyNmxI
+         lwlwgOh/QlvzPp5Da1x13ydGaEqHVv3XS+b7tjKsNX1dwNEYCSVlsLVLIDiy3UIrv5gU
+         VRejO5AbI0D9LCaZ1/gYGey8M71THgqRbDqIbBX9ayNjwfQ6a5jEBkHxLtkUnn3zKoHE
+         /QCMBoo+MQ6+CQzIv1tHJ8F0yjtbvJZY7fDrqeLbOwC6RZFvbxUiG+CGJ086utw0uZ7o
+         wZkQ==
+X-Gm-Message-State: AOAM530sj8gW910dSqhlYP62A1QFZNu6crLeWd/w78/sZRAmbf1S+E1y
+        T/XQXPIFbObRuERI6MrAy0kqKc8N++znbYLA5V8tEXAr/bFJUDCNICF3Q9C0P5vqZoDmCKiVCl4
+        zAJ/FuYZA3b8NnriVUg8v19Pj
+X-Received: by 2002:a37:6892:: with SMTP id d140mr5265891qkc.200.1606235806342;
+        Tue, 24 Nov 2020 08:36:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwzP/zq72cvnSAWEVDqTAda07UHdS5aRMF2LrjfClGVhHpVLSq+wwWTS4eIddRlosB2VneKCw==
+X-Received: by 2002:a37:6892:: with SMTP id d140mr5265862qkc.200.1606235806104;
+        Tue, 24 Nov 2020 08:36:46 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x19sm10252911qtr.65.2020.11.24.08.36.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 08:36:45 -0800 (PST)
+Subject: Re: [PATCH v5 0/9] "Task_isolation" mode
+To:     Alex Belits <abelits@marvell.com>,
+        "nitesh@redhat.com" <nitesh@redhat.com>,
+        "frederic@kernel.org" <frederic@kernel.org>
+Cc:     Prasun Kapoor <pkapoor@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "leon@sidebranch.com" <leon@sidebranch.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pauld@redhat.com" <pauld@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <b0e7afd3-4c11-c8f3-834b-699c20dbdd90@redhat.com>
+Date:   Tue, 24 Nov 2020 08:36:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2585b668d9452c23902db46cf850ba7fa07167b7.camel@hadess.net>
+In-Reply-To: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 05:02:18PM +0100, Bastien Nocera wrote:
-> On Wed, 2020-11-11 at 17:32 +0100, Greg KH wrote:
-> > On Wed, Nov 11, 2020 at 04:03:30PM +0000, Limonciello, Mario wrote:
-> > > > > > Given we're effectively ending up with the combination of
-> > > > > > runtime PM turned
-> > > > > > on by udev rules, do we need something like this for that ID:
-> > > > > > 
-> > > > > > 
-> > > > https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400
-> > > > d8a
-> > > > > > 
-> > > > > > @Mika Westerberg should 8086:a0ed be quirked like the TCSS
-> > > > > > xHCI too?
-> > > > > 
-> > > > > I think this one is the TGL PCH xHCI. The quirk currently for
-> > > > > xHCI
-> > > > > controllers that are part of the TCSS (Type-C SubSystem) where
-> > > > > it is
-> > > > > important to put all devices into low power mode whenever
-> > > > > possible,
-> > > > > otherwise it keeps the whole block on.
-> > > > 
-> > > > Note that there are currently some IDs missing from the xHCIs
-> > > > which
-> > > > are part of the TCSS too. At least the id for the xHCI in the
-> > > > thunderbolt
-> > > > controller on the Lenovo T14 gen 1 is missing. I started a
-> > > > discussion
-> > > > about extending the kernel quirk list for this vs switching to
-> > > > hwdb
-> > > > a while a go:
-> > > > 
-> > > > https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-
-> > > > cf8960651086@redhat.com/
-> > > > 
-> > > > The conclusion back then was to switch to hwdb, but I never got
-> > > > around to
-> > > > this.
-> > > 
-> > > I guess the problem I see with switching to a hwdb for this type of
-> > > thing is
-> > > that if there is a "bug" in your kernel driver around autosuspend
-> > > you will
-> > > then be potentially causing it to occur more regularly on a kernel
-> > > that didn't
-> > > necessarily pick up the fix but does have the newer hwdb.
-> > > 
-> > > I don't know how common that will really be though.
-> > > 
-> > > Since Mika mentioned the really light userspace scenario, what
-> > > about shipping
-> > > the hwdb "with" the kernel in tree?  This could allow evicting all
-> > > these quirk
-> > > scenarios from the kernel at the same time as switching to a hwdb
-> > > and also cover
-> > > the problem I suggested might happen with a bug in older kernel and
-> > > newer userspace.
-> > 
-> > We took things out of the kernel to put it in hwdb years ago as it
-> > was
-> > easier for people to update a "text file" than it was their kernel
-> > image.  I don't think you want to go backwards here :)
-> 
-> There are (unfortunately) a couple of Linux based OSes that don't use
-> systemd, which is one of the problems we see.
 
-You don't have to use systemd to use hwdb.  If you want to handle quirks
-for hardware issues that are done in userspace, the overall solution for
-this in Linux is hwdb.  To try to reverse that decision we all made a
-long time ago is just going to duplicate work for almost no gain that I
-can see.
+On 11/23/20 9:42 AM, Alex Belits wrote:
+> This is an update of task isolation work that was originally done by
+> Chris Metcalf <cmetcalf@mellanox.com> and maintained by him until
+> November 2017. It is adapted to the current kernel and cleaned up to
+> implement its functionality in a more complete and cleaner manner.
 
-What distros need this that can not pick this up from hwdb today?
+I am having problems applying the patchset to today's linux-next.
 
-> I think it might be a good idea to have a repository or directory
-> that's accessible to same contributions as the drivers, where this sort
-> of data is kept, as close to the drivers as possible.
+Which kernel should I be using ?
 
-And who is going to maintain that?  The data that ends up in hwdb
-already comes from multiple places today, why add yet-another-one?  Are
-you going to somehow unify all of those existing data sources into a
-single entity?  Who is going to run that service and what would the end
-output look like (hint, you would have to provide hwdb support, so why
-not just use that?)
+Thanks,
 
-> You could always split off your quirks into separate "works with any
-> kernel" and "works from this version of the kernel" files,
+Tom
 
-We don't have those today, that's not a thing.
-
-> the goal here would be to make sure that there is a canonical list of
-> devices that can be autosuspended, without user-space always playing
-> catch-up (especially as is the case now where systemd is being fed by
-> ChromeOS which is fed in some other way).
-
-There is no way we can ever create such a "canonical list".  Hint,
-another operating system tried it, they failed, and they actually had
-partnerships with most hardware vendors, and paid developers to do this
-work.  What are you going to do differently than they did to solve this
-problem?
-
-> The Venn diagram of folks that contribute to hwdb quirks databases in
-> systemd and that contribute to kernel drivers has a pretty small
-> overlap. Moving much of those quirks to a kernel-controlled repository
-> (whatever format it ends up being in) would make sense so that the
-> "quirk enablement" and the "driver writing" sections overlap.
-
-But they don't overlap today, why make us do more work for no gain?
-
-thanks,
-
-greg k-h
