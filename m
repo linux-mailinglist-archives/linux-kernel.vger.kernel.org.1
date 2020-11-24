@@ -2,152 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6772C324E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18CC2C3250
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgKXVFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+        id S1729510AbgKXVGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:06:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727923AbgKXVFP (ORCPT
+        with ESMTP id S1727946AbgKXVGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:05:15 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35550C0613D6;
-        Tue, 24 Nov 2020 13:05:15 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s8so23710172wrw.10;
-        Tue, 24 Nov 2020 13:05:15 -0800 (PST)
+        Tue, 24 Nov 2020 16:06:38 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B085C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:06:38 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t37so302652pga.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1YhGAyXK8n6pepeYvYtwgBpWdzXPSJrHj4IsMey64hg=;
-        b=UeZdTl51xak6P/TMw3T5lS6KBp+eup2WttsiEHBqGcrB5Bbq1feDNVXX0lCqQVKsju
-         P9MN5E5K8xmx/2PG0XBjeJcFYKn0Rk/eH+PYznDegPZLLvD0+d00DT4zlyzbkXjGhEST
-         e6mNTY84i6D1ic8OYoo00j2Ygn+eBcnerG8LDVK+33fj6fFlBdycPLAvKd3TkRtYC0CW
-         M6OyizSGgIPPlkM4tQEKrGF3yKBz0p6CuCuLCKkkPiwf59vNMRgWwkuMNGdNBhXJA0HD
-         srl3fAstlt/zgspguRSm0C3ZSpm/Wd6bXqi4m8REP7bJPW/uf4Xd2NClOnDBvWKrQXJv
-         OYJw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eby60DJAqSFbj9w7/gp/DIlQjeWe9iOSzRhm+P8blY8=;
+        b=YwZlzwgIRBAYTLlEHx+dtCUWgBfQKC7F1jnK0GN7GswgUFA09tMIP3DnKW3vgiN14O
+         tOrZnz9pEbcSzmLK/eWonTVX1ZvY4h35QTF62qfYsJSoacMuEB+N1VYR/CcQvrmguYb5
+         +C3c6Q8HMyB5FK20RmCrAwChK2AePHgrqldfUCfu2yEw9nmK4iTzPuKAB/veKc40QNFg
+         tI40ZZPZWCPQYu3LjM4iz7xx0TrlDAo2FQMoWs5qy4YPtlzwWCCtK0mnt/s5/FmTzX1h
+         tMdkFZJsrr9geolP88O0iB8MVSKddpSINAJEqnyar3G8OZrT006BGxmnkmDzn5MqorYp
+         VtdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1YhGAyXK8n6pepeYvYtwgBpWdzXPSJrHj4IsMey64hg=;
-        b=RVTDUF2gzPv5HkLy8TzmK5t2FgXAkDcMmbiDs1YjqEzh/QL56VNTL8PvBrvethvdTs
-         Z1mc52TbUKeRbKuOn1sjBBZ6u3FJbmNK48GQWTLHM2g97PRiWxMM4tsKe58HuTdGBk7K
-         ZlvXdVom1qGUQ+DRaMMNcW9sqhKSoDZwQPD54+uj2tllRVq7WvX6L6d+2L3OkZi9+Ntg
-         ON+UAjB5/WkzElXDgbWZRWbqK+yCMCtk9OVnTC56Vipo+tNTRUnUDR9N7//abrF1DV+A
-         vWtKJqF2fptvrWc4HwFBByo06onabYOor84WXU8sSzbwq8JupIjnsDnQp4BYkHyBpBom
-         Q+mg==
-X-Gm-Message-State: AOAM532/e5R9r48FJfVQ70e4lZM/iFqJnOOEiOCAzkBjWsNgldU4dHjl
-        HxziHNO4/EIHWTSobkvCNFqcN46FgsU=
-X-Google-Smtp-Source: ABdhPJx1x1i3xswJqCRetOxjNmPdoHsnpHs5HNS6ZfGjM/dUJEoXH+FbCy/7Rww/fxtoadl/lb02qQ==
-X-Received: by 2002:adf:f349:: with SMTP id e9mr421186wrp.110.1606251913618;
-        Tue, 24 Nov 2020 13:05:13 -0800 (PST)
-Received: from [192.168.1.10] ([46.249.74.23])
-        by smtp.googlemail.com with ESMTPSA id g11sm204083wrq.7.2020.11.24.13.05.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Nov 2020 13:05:12 -0800 (PST)
-Subject: Re: [REGRESSION] omapdrm/N900 display broken
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Cc:     Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200728181412.GA49617@darkstar.musicnaut.iki.fi>
- <660b2fe1-343d-b83e-11d2-5a5eb530b83f@ti.com>
- <448c1441-2cac-44ef-95ef-bb28b512297b@ti.com>
- <20200823162625.GC4313@darkstar.musicnaut.iki.fi>
- <ac42f7f9-2ac2-246e-69c1-3d56cea7e59b@ti.com>
-From:   Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Message-ID: <5072a25d-e885-cdd2-978d-70942406c272@gmail.com>
-Date:   Tue, 24 Nov 2020 23:03:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 Thunderbird/60.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eby60DJAqSFbj9w7/gp/DIlQjeWe9iOSzRhm+P8blY8=;
+        b=mDS9eTOO8Eg8bxh9Jd7MtHv1LWazQrXVEwr/uTsUgfitHjVd7eJTvxaYqxspACHMm6
+         YPHEHOsVG0BrS1DC6sHUml0H+BfPeQ+2kvQNih9ddXPW1A0CGGNPu71fmb58BSCYtSoE
+         4vmt3DGhhB22YDN+kw+HUCqAayZpOb9ks9ye7vYxFQbW/xT1kH+MOeHpyM2g40J76RBA
+         faRBcwR/rA9MBFp2p7WXE3LRFaAEIVa6v/2vBJlGXz4GGQ61E5Bd63Gxkww0gmN4Kw+w
+         FA6NiHLEGt8+xEbA7Aqh4DT5iAmgIuevQ17PvmwJ0vsvhXbTrFceLUcAmOCWHZkvhY/R
+         sNyg==
+X-Gm-Message-State: AOAM531q/3PLWCX4a8WJQoH6QNbtqQC0lO8jxv5IituNVKfbaoglOIMb
+        eHphNHpjcpWkCrVFJjv95w8Vzn15FS+tFH1dxuvuxQ==
+X-Google-Smtp-Source: ABdhPJwpotkX67QsIXT73JsIPnJIWmRmoNO5ExaiapiPtEkmaaC7YbeCBlK9K3izQq5RmIKowNmZGEpQp5pT41R+T6M=
+X-Received: by 2002:a17:90a:dc16:: with SMTP id i22mr142244pjv.32.1606251997276;
+ Tue, 24 Nov 2020 13:06:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ac42f7f9-2ac2-246e-69c1-3d56cea7e59b@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20201123073634.6854-1-swpenim@gmail.com> <20201123181602.GA2637357@ubuntu-m3-large-x86>
+ <20201124074211.GA26157@penyung-VirtualBox> <CAC5oF3W+RkcO-dSiKXGxVvhBGb0n7fQ-KvdjbPNJJVadv6qNBw@mail.gmail.com>
+In-Reply-To: <CAC5oF3W+RkcO-dSiKXGxVvhBGb0n7fQ-KvdjbPNJJVadv6qNBw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 24 Nov 2020 13:06:26 -0800
+Message-ID: <CAKwvOdkE5-OBWjmGwc8qUkj5wuqZTmtYxaMD3sz+4+aNiC2vLg@mail.gmail.com>
+Subject: Re: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with clang
+To:     Antony Yu <swpenim@gmail.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Thanks for the report, it probably was not fun to debug. I'll take a
+closer look at this after the Thanksgiving holiday.
 
-On 25.08.20 г. 16:16 ч., Tomi Valkeinen wrote:
-> Hi Laurent,
-> 
-> On 23/08/2020 19:26, Aaro Koskinen wrote:
->> Hi,
->>
->> On Tue, Aug 04, 2020 at 03:39:37PM +0300, Tomi Valkeinen wrote:
->>> On 04/08/2020 15:13, Tomi Valkeinen wrote:
->>
->>>> Can you try to pinpoint a bit where the hang happens? Maybe add
->>>> DRM/omapdrm debug prints, or perhaps sysrq works and it shows a lock
->>>> that's in deadlock.
->>>
->>> Also, one data point would be to disable venc, e.g. set venc status to
->>> "disabled" in dts.
->>
->> Disabling venc makes no difference.
->>
->> The hang happens in drm_fb_helper_initial_config(). I followed the
->> "HANG DEBUGGING" tips in the function comment text and enabled
->> fb.lockless_register_fb=1 to get more (serial) console output.
->>
->> Now I get this:
->>
->> [    6.514739] omapdss_dss 48050000.dss: supply vdda_video not found, using dummy regulator
->> [    6.566375] DSS: OMAP DSS rev 2.0
->> [    6.571807] omapdss_dss 48050000.dss: bound 48050400.dispc (ops dispc_component_ops)
->> [    6.580749] omapdrm omapdrm.0: DMM not available, disable DMM support
->> [    6.587982] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
->> [    6.626617] ------------[ cut here ]------------
->> [    6.631774] WARNING: CPU: 0 PID: 18 at drivers/gpu/drm/drm_bridge.c:708 drm_atomic_helper_commit_modeset_enables+0x134/0x268
->> [    6.643768] Modules linked in:
->> [    6.647033] CPU: 0 PID: 18 Comm: kworker/0:1 Tainted: G     U            5.8.0-omap3-los_16068+-00004-g2e7d4a7efefd-dirty #2
->> [    6.658966] Hardware name: Nokia RX-51 board
->> [    6.663635] Workqueue: events deferred_probe_work_func
->> [    6.669097] [<c010bf18>] (unwind_backtrace) from [<c010a0f4>] (show_stack+0x10/0x14)
->> [    6.677429] [<c010a0f4>] (show_stack) from [<c0124f18>] (__warn+0xbc/0xd4)
->> [    6.684844] [<c0124f18>] (__warn) from [<c0124f90>] (warn_slowpath_fmt+0x60/0xb8)
->> [    6.692901] [<c0124f90>] (warn_slowpath_fmt) from [<c040c0e8>] (drm_atomic_helper_commit_modeset_enables+0x134/0x268)
->> [    6.704254] [<c040c0e8>] (drm_atomic_helper_commit_modeset_enables) from [<c045442c>] (omap_atomic_commit_tail+0xb4/0xc0)
->> [    6.715972] [<c045442c>] (omap_atomic_commit_tail) from [<c040d1b4>] (commit_tail+0x9c/0x1a8)
->> [    6.725128] [<c040d1b4>] (commit_tail) from [<c040de70>] (drm_atomic_helper_commit+0x134/0x158)
->> [    6.734466] [<c040de70>] (drm_atomic_helper_commit) from [<c043b204>] (drm_client_modeset_commit_atomic+0x16c/0x208)
->> [    6.745727] [<c043b204>] (drm_client_modeset_commit_atomic) from [<c043b2f8>] (drm_client_modeset_commit_locked+0x58/0x184)
->> [    6.757629] [<c043b2f8>] (drm_client_modeset_commit_locked) from [<c043b448>] (drm_client_modeset_commit+0x24/0x40)
->> [    6.768798] [<c043b448>] (drm_client_modeset_commit) from [<c0412778>] (__drm_fb_helper_restore_fbdev_mode_unlocked+0xa0/0xc8)
->> [    6.780975] [<c0412778>] (__drm_fb_helper_restore_fbdev_mode_unlocked) from [<c0412808>] (drm_fb_helper_set_par+0x38/0x64)
->> [    6.792785] [<c0412808>] (drm_fb_helper_set_par) from [<c03a9b24>] (fbcon_init+0x3d4/0x568)
->> [    6.801757] [<c03a9b24>] (fbcon_init) from [<c03eaab0>] (visual_init+0xb8/0xfc)
->> [    6.809631] [<c03eaab0>] (visual_init) from [<c03ec070>] (do_bind_con_driver+0x1e0/0x3bc)
->> [    6.818267] [<c03ec070>] (do_bind_con_driver) from [<c03ec59c>] (do_take_over_console+0x138/0x1d8)
->> [    6.827880] [<c03ec59c>] (do_take_over_console) from [<c03a856c>] (do_fbcon_takeover+0x74/0xd4)
->> [    6.837219] [<c03a856c>] (do_fbcon_takeover) from [<c03a22e0>] (register_framebuffer+0x204/0x2d8)
->> [    6.846740] [<c03a22e0>] (register_framebuffer) from [<c0412228>] (__drm_fb_helper_initial_config_and_unlock+0x3a4/0x554)
->> [    6.858459] [<c0412228>] (__drm_fb_helper_initial_config_and_unlock) from [<c045c230>] (omap_fbdev_init+0x84/0xbc)
->> [    6.869537] [<c045c230>] (omap_fbdev_init) from [<c04549b8>] (pdev_probe+0x580/0x7d8)
->> [    6.877807] [<c04549b8>] (pdev_probe) from [<c04669b4>] (platform_drv_probe+0x48/0x98)
-> 
-> Laurent, does this ring any bells? The WARN comes in drm_atomic_bridge_chain_enable() when
-> drm_atomic_get_old_bridge_state() returns null for (presumably) sdi bridge.
-> 
-> I'm not sure why the bridge state would not be there.
-> 
-> Aaro, you can probably debug easier if you disable CONFIG_FRAMEBUFFER_CONSOLE, or even
-> CONFIG_DRM_FBDEV_EMULATION.
-> 
->   Tomi
-> 
+On Tue, Nov 24, 2020 at 2:14 AM Antony Yu <swpenim@gmail.com> wrote:
+>
+> Antony Yu <swpenim@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=8824=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:43=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > On Mon, Nov 23, 2020 at 11:16:02AM -0700, Nathan Chancellor wrote:
+> > > On Mon, Nov 23, 2020 at 03:36:32PM +0800, Antony Yu wrote:
+> > > > __do_div64 clobbers the input register r0 in little endian system.
+> > > > According to the inline assembly document, if an input operand is
+> > > > modified, it should be tied to a output operand. This patch can
+> > > > prevent compilers from reusing r0 register after asm statements.
+> > > >
+> > > > Signed-off-by: Antony Yu <swpenim@gmail.com>
+> > > > ---
+> > > >  arch/arm/include/asm/div64.h | 5 +++--
+> > > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/di=
+v64.h
+> > > > index 898e9c78a7e7..809efc51e90f 100644
+> > > > --- a/arch/arm/include/asm/div64.h
+> > > > +++ b/arch/arm/include/asm/div64.h
+> > > > @@ -39,9 +39,10 @@ static inline uint32_t __div64_32(uint64_t *n, u=
+int32_t base)
+> > > >     asm(    __asmeq("%0", __xh)
+> > > >             __asmeq("%1", "r2")
+> > > >             __asmeq("%2", "r0")
+> > > > -           __asmeq("%3", "r4")
+> > > > +           __asmeq("%3", "r0")
+> > > > +           __asmeq("%4", "r4")
+> > > >             "bl     __do_div64"
+> > > > -           : "=3Dr" (__rem), "=3Dr" (__res)
+> > > > +           : "=3Dr" (__rem), "=3Dr" (__res), "=3Dr" (__n)
+> > > >             : "r" (__n), "r" (__base)
+> > > >             : "ip", "lr", "cc");
+> > > >     *n =3D __res;
+> > > > --
+> > > > 2.23.0
+> > > >
+> > >
+> > > I am not sure that I am qualified to review this (my assembly knowled=
+ge
+> > > is not the best) but your commit title mentions an error when compili=
+ng
+> > > with clang. What is the exact error, what configuration generates it,
+> > > and what version of clang? We have done fairly decent testing for
+> > > 32-bit ARM, I would like to know what we are missing.
+> > >
+> > > Cheers,
+> > > Nathan
+> >
+> > We have run fail on android R vts vts_libsnapshot_test with kernel 4.14=
+.
+> > This bug is triggered accidently by a workaround patch in our code base=
+.
+> > It is fine on a pure clean 4.14 branch since __do_div64 may not be
+> > executed in skip_metadata.
+> >
+> > The attachment are .i and generated .s file. .s file can be reproduced
+> > with clang -target arm-linux-eabi -march=3Darmv8.2-a -O2.
+> >
+> > In function skip_metadata, it loads some value to r0, calls __do_div64,
+> > adds 1 to r0 and stores it to [r5]. It gets wrong value since __do_div6=
+4
+> > clobbers r0 register.
+> >
+> > We have tried clang-10, clang-11 and android prebuilt clang-r383902b. A=
+ll
+> > of them have the same problem.
+>
+> Sorry for the large attachment.
+> I put .i and .s files on
+> https://gist.github.com/penyung/274b0c697062a1c776994bb40243cfff
+>
+> Antony Yu
 
-Is there any progress on the issue? I tried 5.9.1 and still nothing 
-displayed.
 
-Regards,
-Ivo
+
+--=20
+Thanks,
+~Nick Desaulniers
