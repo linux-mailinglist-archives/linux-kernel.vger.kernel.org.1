@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7032C2874
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C632C2894
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388514AbgKXNmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:42:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40927 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388496AbgKXNmX (ORCPT
+        id S2388560AbgKXNox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:44:53 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34843 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387958AbgKXNo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:42:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606225343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WRSwdJak4MDUgdM4oYuwCfc8hhy9ROBWcZnmVAse6LM=;
-        b=cU44JXORPEi3o3XPL7p0dCL/yexe1O7MDvAMpGncce1V4oTQfwWKcDQH2fIrpP2SS1ccG+
-        /wOUf5OHsNn9y+l35PPksJrJUEz4WbVGkafvifREafxeowNxFCVtv3cPzUyD4a12b+GWJN
-        mf+pak6/S44MxOq+DKGwBLV3OWTRw58=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-Xdhjv9jxPUycYkJDaQ-JWQ-1; Tue, 24 Nov 2020 08:42:18 -0500
-X-MC-Unique: Xdhjv9jxPUycYkJDaQ-JWQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43B72805BEC;
-        Tue, 24 Nov 2020 13:42:15 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.234])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7D7E360875;
-        Tue, 24 Nov 2020 13:42:10 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 24 Nov 2020 14:42:14 +0100 (CET)
-Date:   Tue, 24 Nov 2020 14:42:09 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org, mhocko@suse.com,
-        rientjes@google.com, willy@infradead.org, hannes@cmpxchg.org,
-        guro@fb.com, riel@surriel.com, minchan@kernel.org,
-        christian@brauner.io, timmurray@google.com,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 2/2] mm/madvise: add process_madvise MADV_DONTNEER support
-Message-ID: <20201124134208.GA30125@redhat.com>
-References: <20201124053943.1684874-1-surenb@google.com>
- <20201124053943.1684874-3-surenb@google.com>
+        Tue, 24 Nov 2020 08:44:29 -0500
+Received: by mail-lj1-f196.google.com with SMTP id r18so7289822ljc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 05:44:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j3kc1wXa18BDFunWKfOTVH49kwkIDZe5FcAUUmoO1ss=;
+        b=UEG/4ExMq2+VrigU8nz8w5D06sEHdPEikvj6JATzPuA9T6q97kdZee40NhDCw557Oo
+         lrzJK+q5xSH6eguqEO7LZK62kUbs8DdhUxBp1itIkUzBghmkXQiPkfjkqOTETdwm0axd
+         pQObxd1zbYOkTbdCLjHrmtLqppU0S1M/4GeZ4zbxlwVjI/lPCGDjv9E5+DjAX/cWzGor
+         WYhL4PjbaLLEcfkO37fpCowqOyW/j/2NuduxBlgI2+FwWCe3F0/NYroFuwTgdy78OO8E
+         JTLQknlYhqMeAwZ/OgIrjbWlm6XICmcK2DOP689dw5jnjKL8pBWJrYmYFy5bnTrybG6Q
+         bM4A==
+X-Gm-Message-State: AOAM531F+QX3SCn3sqLDFg/v0Auzf1V48sqnpR777ULvU8xvZl/n6n9O
+        lLXPTHS+eJOvCaq/CBmi3Fs=
+X-Google-Smtp-Source: ABdhPJzVi1v2lHsckFXBOFxn/v30wn5xFmw4vU3BplxG3XuhsHqIxZ1rMHEmbVjjhf1q3sKNhNrY3A==
+X-Received: by 2002:a2e:544e:: with SMTP id y14mr1993474ljd.9.1606225467228;
+        Tue, 24 Nov 2020 05:44:27 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x9sm1737310lfg.93.2020.11.24.05.44.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 05:44:26 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1khYcY-0000i9-B2; Tue, 24 Nov 2020 14:44:39 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH] x86/apic: Fix CPU devicetree-node lookups
+Date:   Tue, 24 Nov 2020 14:42:47 +0100
+Message-Id: <20201124134247.2668-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124053943.1684874-3-surenb@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23, Suren Baghdasaryan wrote:
->
-> +	if (madvise_destructive(behavior)) {
-> +		/* Allow destructive madvise only on a dying processes */
-> +		if (!signal_group_exit(task->signal)) {
+Fix CPU devicetree-node lookups by implementing
+arch_match_cpu_phys_id().
 
-signal_group_exit(task) is true if this task execs and kills other threads,
-see the comment above this helper.
+This allows using of_get_cpu_node() and of_cpu_device_node_get() to look
+up CPU devicetree nodes and specifically makes sure that CPU struct
+devices are linked to the correct devicetree nodes.
 
-I think you need !(task->signal->flags & SIGNAL_GROUP_EXIT).
+Note that CPUs are described in devicetree using their APIC ids and
+that those do not generally coincide with the logical ids (e.g. used by
+the default arch_match_cpu_phys_id() implementation).
 
-Oleg.
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ arch/x86/kernel/apic/apic.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index b3eef1d5c903..19c0119892dd 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2311,6 +2311,11 @@ static int cpuid_to_apicid[] = {
+ 	[0 ... NR_CPUS - 1] = -1,
+ };
+ 
++bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
++{
++	return phys_id == cpuid_to_apicid[cpu];
++}
++
+ #ifdef CONFIG_SMP
+ /**
+  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
+-- 
+2.26.2
 
