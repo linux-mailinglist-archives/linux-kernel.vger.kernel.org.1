@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F71E2C24CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C50912C24D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732963AbgKXLkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:40:10 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2143 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727909AbgKXLkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:40:09 -0500
-Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgMSv0bd0z67GX4;
-        Tue, 24 Nov 2020 19:37:35 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 24 Nov 2020 12:40:07 +0100
-Received: from localhost (10.47.66.130) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 24 Nov
- 2020 11:40:07 +0000
-Date:   Tue, 24 Nov 2020 11:39:51 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Ye, Xiang" <xiang.ye@intel.com>
-CC:     Jonathan Cameron <jic23@kernel.org>, <jikos@kernel.org>,
-        <srinivas.pandruvada@linux.intel.com>,
-        <linux-input@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] iio: hid-sensors: Add hinge sensor driver
-Message-ID: <20201124113951.000009ea@Huawei.com>
-In-Reply-To: <20201124064332.GA21403@host>
-References: <20201119100331.2594-1-xiang.ye@intel.com>
-        <20201119100331.2594-5-xiang.ye@intel.com>
-        <20201121175629.057031af@archlinux>
-        <20201124064332.GA21403@host>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1732980AbgKXLkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:40:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727909AbgKXLkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:40:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A9982AC2E;
+        Tue, 24 Nov 2020 11:40:45 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 11:40:42 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/5] sched: make schedstats helper independent of
+ cfs_rq
+Message-ID: <20201124114042.GJ3306@suse.de>
+References: <20201123125808.50896-1-laoar.shao@gmail.com>
+ <20201123125808.50896-4-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.66.130]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201123125808.50896-4-laoar.shao@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 08:58:06PM +0800, Yafang Shao wrote:
+> The 'cfs_rq' in these helpers
+> update_stats_{wait_start, wait_end, enqueue_sleeper} is only used to get
+> the rq_clock, so we can pass the rq directly. Then these helpers can be
+> used by all sched class after being moved into stats.h.
+> 
+> After that change, the size of vmlinux is increased around 824Bytes.
+> 			w/o this patch, with this patch
+> Size of vmlinux:	78443832	78444656
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-> >   
-> > > +
-> > > +	  To compile this driver as a module, choose M here: the
-> > > +	  module will be called hid-sensor-custom-hinge.
-> > > +
-> > >  endmenu
-> > > diff --git a/drivers/iio/position/Makefile b/drivers/iio/position/Makefile
-> > > index 3cbe7a734352..7a6225977a01 100644
-> > > --- a/drivers/iio/position/Makefile
-> > > +++ b/drivers/iio/position/Makefile
-> > > @@ -5,3 +5,6 @@
-> > >  # When adding new entries keep the list in alphabetical order
-> > >  
-> > >  obj-$(CONFIG_IQS624_POS)	+= iqs624-pos.o
-> > > +
-> > > +obj-$(CONFIG_HID_SENSOR_CUSTOM_HINGE) += hid-sensor-custom-hinge.o  
-> > 
-> > Alphabetical order preferred.
-> >   
-> > > +ccflags-y	+= -I$(srctree)/drivers/iio/common/hid-sensors  
-> > 
-> > Why?  
-> hinge driver need to include #include "hid-sensor-trigger.h", if not using this cflag-y
-> it should be #include "../common/hid-sensors/hid-sensor-trigger.h"
+The inline helpers are quite large. When I was suggesting that the overhead
+was minimal, what I expected what that the inline functions would be a
+schedstat_enabled() followed by a real function call. It would introduce
+a small additional overhead when schedstats are enabled but avoid vmlinux
+growing too large
 
-Even though that looks a bit ugly, I'd prefer that rather than having to realize we
-were doing something not entirely obvious in the Makefile.
+e.g.
+ 
+static inline void
+update_stats_wait_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
+{
+	if (!schedstat_enabled())
+		return;
 
-Thanks,
+	__update_stats_wait_start(cfs_rq, se);
+}
 
-Jonathan
+where __update_stats_wait_start then lives in kernel/sched/stats.c
+
+-- 
+Mel Gorman
+SUSE Labs
