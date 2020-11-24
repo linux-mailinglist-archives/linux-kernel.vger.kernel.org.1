@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6802C2C2FEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7072C2FEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390895AbgKXSYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S2390935AbgKXSZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387957AbgKXSYe (ORCPT
+        with ESMTP id S1729291AbgKXSZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:24:34 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBF0C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:24:34 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id w189so17868971qkd.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:24:34 -0800 (PST)
+        Tue, 24 Nov 2020 13:25:35 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BAF8C0613D6;
+        Tue, 24 Nov 2020 10:25:35 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id u18so30221112lfd.9;
+        Tue, 24 Nov 2020 10:25:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=bd5sh7vQZeJyURROHVUKNFVm+4CMC4yXrKfm9zRiuIw=;
-        b=jtRiTvw4fvJnd8DziMdUXlCVFNCxntTtTEvtSJrNcKeRrhRHR3K7WGYLLYdsza+f4N
-         N/uGa/v/4xLQsMFh7RsLQiVtuG/ZXSiTDwH6O+ALWJbcqXrWWWwQ7Gc3tJtunK/zjxFr
-         kjgSye0YAVBFhS8TrvTa2ZNIRGGM9akI1KCkUnPoOJRydoP2jYuYYYxq98bhA6Y81soc
-         ttScEDR4AP3UcSRGoypJccYQb0thq5eHpjV/mV59aLdmw6NAp3epLeksBsojGYyXxRF7
-         eMEdElBWlvfB35RzG0ijynD/W1zGbtLcLoSzLCZ6wQSivuIrsUmA438/yMznm0Us/uQn
-         X32w==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UJjsUIJzM0L8VpqpnHDH93pDsPibhk+dafDV5ovqlqc=;
+        b=U2WSvA3lpYt48zpIrtTW/gYo3QuW7DKx/OacJA/Y3aLva8d5I/YEhhs3il9mYDQnMi
+         cbwi3qzI8efVdLDujDtg5W5ZiQP4F4MIWAsyCg7lt6YE7fb+p81fBrs7qDBGMLFdC12W
+         ZGRuqtUjhTLen4Qelv8gg/0IlqTSSKuoQNpv7ToiHLE+do8Q7fdZMjqiMeYUusoilkLY
+         6zouTTSIIuM53UEq0k+dDV9dTA4TR50SphZB5L8DpHVSlGK3Z3m3/vLTVnxy5lWIo5ME
+         PKPZ9+tn8CvmKNioHPFFFUvejMtGOYe7lQ+z0DW27R6FA5HncKGenzQw1ooGS6CeLhVn
+         kLSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=bd5sh7vQZeJyURROHVUKNFVm+4CMC4yXrKfm9zRiuIw=;
-        b=fRn3vTd0KW//0P1RnY+sRV6IucfqUQk8d64zAF4hYi6G2klc7Z1zYzajwWSxKO6/KW
-         QGXAEKBCtvqrJ5e5Jopneh1Q8ZTK4SpcUJ7D9xlRjFsX2bzkJygjt2Y+imhPqFZCLHYj
-         BEQuWuwNyfHl/FqlPyUtSsRBqfoVtsxH7EyAUDs2yvildDvgM3akB9aPCHi8uxPkzlYw
-         VVRIUBXK9B+96b8wueTVDGgC/COsaL4ya2jeSK3m+n94fthbrAj/HlIE9qOq3V2jOIKM
-         rZkC0g8iTba3SkMbmW3jpbz8ufImCC7tuGzhw3hmBZCl5teszkAF9fGoV0As138qShTI
-         HbOg==
-X-Gm-Message-State: AOAM533KQB98rPSCTmhM2Oq4/H0AcWLCqxSPaDFhtV+bwqMU/WVtP/yq
-        AyIHR5xTTpkDjcjvOR/GQmCp/ucWHGK1
-X-Google-Smtp-Source: ABdhPJyWTjMfWiYOVU+tE9pGSMeFoQRdhPtgSC6RhFbVbNV7o45purcv6ubLeMy+ZrK1ckQQwFWmaw6YrQZY
-Sender: "qperret via sendgmr" <qperret@luke.lon.corp.google.com>
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
- (user=qperret job=sendgmr) by 2002:a0c:eac4:: with SMTP id
- y4mr6136966qvp.19.1606242273407; Tue, 24 Nov 2020 10:24:33 -0800 (PST)
-Date:   Tue, 24 Nov 2020 18:24:09 +0000
-Message-Id: <20201124182420.2202514-1-qperret@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH] modpost: Make static exports fatal
-From:   Quentin Perret <qperret@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, kernel-team@android.com,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UJjsUIJzM0L8VpqpnHDH93pDsPibhk+dafDV5ovqlqc=;
+        b=tFGvgKT78Y7zLyO/7dvd4yDo6IQBLiVeI47OTNNKQ52foHXczyo7pVy3SpGAK7wYXs
+         LfnnDEStRcrMIfX2cs1nFvgm5hUlFHcdGAlTkCxe2S/mAB2UBo/lIk7KAev2SM3u/khR
+         zY9ape4gxboEsWiWBQ/AqvvFXxkKAXbJSfDPxz4yE7ZIzBBgMS7/l9A66vWUHYigXZ67
+         BClunCvbU/UEhpkGryihhOexQdNUUHq9cChZUYCjkG5v3XTWhEa5sKTjLWJ7OgWQqZLz
+         3d+EoFUe7OMv+zCO4mqJirjs82j+OLie73M2JPOir4wEQa2sbSYnoxwaIbccSZBs444E
+         N41Q==
+X-Gm-Message-State: AOAM530+is0XSsVun0bl0RuD/Oy6E86JmfzCdF7Qe+uhJRBI4K9hPnjv
+        2KLFV5IacfuQrqc6UM4xPxQ=
+X-Google-Smtp-Source: ABdhPJy9+8OYqjiP3vCs5s6cLbl0AVWZ1CAbEIIGjeSM9vsLiwckI8Bq8YMOg9NFtJvOyV2sJXWUBQ==
+X-Received: by 2002:a19:ca13:: with SMTP id a19mr2450470lfg.308.1606242334033;
+        Tue, 24 Nov 2020 10:25:34 -0800 (PST)
+Received: from ?IPv6:2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50? ([2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50])
+        by smtp.gmail.com with ESMTPSA id w4sm409357ljd.28.2020.11.24.10.25.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 10:25:33 -0800 (PST)
+Subject: Re: [PATCH 0/5] memory: renesas-rpc-if: Trivial fixes
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8v5iUcK6Hh=3rPiWbFs32U1TjPqT4AuwQniSFguk9-9bQ@mail.gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <b66509aa-e4fe-1e1f-6261-0f0064db6518@gmail.com>
+Date:   Tue, 24 Nov 2020 21:25:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <CA+V-a8v5iUcK6Hh=3rPiWbFs32U1TjPqT4AuwQniSFguk9-9bQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using EXPORT_SYMBOL*() on static functions is fundamentally wrong.
-Modpost currently reports that as a warning, but clearly this is not a
-pattern we should allow, and all in-tree occurences should have been
-fixed by now. So, promote the warn() message to fatal() to make sure
-this never happens again.
+On 11/24/20 2:34 PM, Lad, Prabhakar wrote:
 
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- scripts/mod/modpost.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+[...]
+>> This patch series fixes trivial issues in RPC-IF driver.
+>>
+>> Cheers,
+>> Prabhakar
+>>
+>> Lad Prabhakar (5):
+>>   memory: renesas-rpc-if: Return correct value to the caller of
+>>     rpcif_manual_xfer()
+>>   memory: renesas-rpc-if: Make rpcif_enable/disable_rpm() as static
+>>     inline
+>>   memory: renesas-rpc-if: Export symbols as GPL
+>>   memory: renesas-rpc-if: Avoid use of C++ style comments
+>>   memory: renesas-rpc-if: Fix a reference leak in rpcif_probe()
+>>
+> Patches sent to sergei.shtylyov@cogentembedded.com have bounced back
+> so including gmail address (patchwork [1]).
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index f882ce0d9327..70b0e825a139 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -2663,9 +2663,9 @@ int main(int argc, char **argv)
- 
- 		for (s = symbolhash[n]; s; s = s->next) {
- 			if (s->is_static)
--				warn("\"%s\" [%s] is a static %s\n",
--				     s->name, s->module->name,
--				     export_str(s->export));
-+				fatal("\"%s\" [%s] is a static %s\n",
-+				      s->name, s->module->name,
-+				      export_str(s->export));
- 		}
- 	}
- 
--- 
-2.29.2.454.gaff20da3a2-goog
+   Sorry, I got laid off by Cogent last May. Thanks for CCing my gmail address...
 
+> [1] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=390163
+> 
+> Cheers,
+> Prabhakar
+
+[...]
+
+MBR, Sergei
