@@ -2,148 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92B92C24B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F71E2C24CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732953AbgKXLjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:39:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727909AbgKXLjw (ORCPT
+        id S1732963AbgKXLkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:40:10 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2143 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727909AbgKXLkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:39:52 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE1CC0613D6;
-        Tue, 24 Nov 2020 03:39:51 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id o11so21556080ioo.11;
-        Tue, 24 Nov 2020 03:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o+pLgnufOu586P5N25km8tKyPfvWEh+E0AYw7VCffmc=;
-        b=fAlU84St8aTSVSdLa7K2XwZARe2D+EuLN2meQQBV4nfKO4qX+KWuvYvessuPsLRGVQ
-         GN29tZ50ReEtksCCcofpdnqRZzJv/7V6CWQCr9tx1nzRTGfVYZX2WdbpytUw8bzZ9Zas
-         5qq9lxwbQngbd77gwvPkPlQTtdajvoxaClGI1hdEXRI6U6mBi4yKYSxCoUV2cX1yWDrC
-         zdhnL1searhMs4HOOYWZgCkoFiJK0TZFLYl9AiFzZRuK20zGfTy4HOLCw3ex1A+eI+I4
-         8U+lgToKbExpLb/YDcmy/Oxsuf5rfumWsV4aSFdbH6o/ZHz+HT3LYhXUnS/nL/pkrkr2
-         mtVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o+pLgnufOu586P5N25km8tKyPfvWEh+E0AYw7VCffmc=;
-        b=UGOz40LTly7X3qUVLYRs10b3Q18MLD83+IeZeV8I4BpB0zvvY2gqCs5Ur+dloqdKn5
-         YuFPeP+fWxOsfzz71uKaI5LpNdvstUo795kqtTUAk6ONGAn3diwhuxPAGM6D6OO8Gzo/
-         mNefqHjP68Nvlo0KsD8fD3TbxIobvlg2grpAs/IWM9XmNpyIdWZJV3l0LJDP4367MT36
-         UFxTDDwyTJglGlx9zc0IQ5nQV4gs4ATbMzqlg40YsJuPWWv0qctdnTC3HudUVZDxydrx
-         3/OlC4WPoz+AnGb+0tS73U41Ta9+J6qI+z4+Cq/ZisPBRoaMACyDpRfTSYlD20rSisu1
-         P2fQ==
-X-Gm-Message-State: AOAM533GrtM1XOTDGHpkB5CZA0KdiLWiCUYF1JCpKs0UG2PUXth9+NSm
-        s7p4f9DiZ7EgXQgu1vsnzSInTb5SBaS4On2Yd0Y=
-X-Google-Smtp-Source: ABdhPJyAuwpxepiQkMqr6HXHH/PjSQ2oJsHlN/rNT/dhgM+V8+l1AuOD348LrUQ2R1isVaXMJMSeQXxPhPCU2I6n07g=
-X-Received: by 2002:a6b:fc16:: with SMTP id r22mr653203ioh.55.1606217991225;
- Tue, 24 Nov 2020 03:39:51 -0800 (PST)
+        Tue, 24 Nov 2020 06:40:09 -0500
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgMSv0bd0z67GX4;
+        Tue, 24 Nov 2020 19:37:35 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 24 Nov 2020 12:40:07 +0100
+Received: from localhost (10.47.66.130) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 24 Nov
+ 2020 11:40:07 +0000
+Date:   Tue, 24 Nov 2020 11:39:51 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Ye, Xiang" <xiang.ye@intel.com>
+CC:     Jonathan Cameron <jic23@kernel.org>, <jikos@kernel.org>,
+        <srinivas.pandruvada@linux.intel.com>,
+        <linux-input@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] iio: hid-sensors: Add hinge sensor driver
+Message-ID: <20201124113951.000009ea@Huawei.com>
+In-Reply-To: <20201124064332.GA21403@host>
+References: <20201119100331.2594-1-xiang.ye@intel.com>
+        <20201119100331.2594-5-xiang.ye@intel.com>
+        <20201121175629.057031af@archlinux>
+        <20201124064332.GA21403@host>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <CGME20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
- <20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5> <20201123080123.GA5656@kozik-lap>
-In-Reply-To: <20201123080123.GA5656@kozik-lap>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Tue, 24 Nov 2020 20:39:40 +0900
-Message-ID: <CACwDmQBh77pqivk=bBv3SJ14HLucY42jZyEaKAX+n=yS3TSqFw@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: nfc: s3fwrn5: Support a
- UART interface
-To:     "krzk@kernel.org" <krzk@kernel.org>
-Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.66.130]
+X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 5:02 PM krzk@kernel.org <krzk@kernel.org> wrote:
->
-> On Mon, Nov 23, 2020 at 04:55:26PM +0900, Bongsu Jeon wrote:
-> > Since S3FWRN82 NFC Chip, The UART interface can be used.
-> > S3FWRN82 supports I2C and UART interface.
-> >
-> > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> > ---
-> >  .../bindings/net/nfc/samsung,s3fwrn5.yaml     | 28 +++++++++++++++++--
-> >  1 file changed, 26 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> > index cb0b8a560282..37b3e5ae5681 100644
-> > --- a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> > +++ b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> > @@ -13,6 +13,7 @@ maintainers:
-> >  properties:
-> >    compatible:
-> >      const: samsung,s3fwrn5-i2c
-> > +    const: samsung,s3fwrn82-uart
->
-> This does not work, you need to use enum. Did you run at least
-> dt_bindings_check?
->
-Sorry. I didn't. I fixed it as below and ran dt_bindings_check.
-    compatible:
-       oneOf:
-           - enum:
-               - samsung,s3fwrn5-i2c
-               - samsung,s3fwrn82
 
+> >   
+> > > +
+> > > +	  To compile this driver as a module, choose M here: the
+> > > +	  module will be called hid-sensor-custom-hinge.
+> > > +
+> > >  endmenu
+> > > diff --git a/drivers/iio/position/Makefile b/drivers/iio/position/Makefile
+> > > index 3cbe7a734352..7a6225977a01 100644
+> > > --- a/drivers/iio/position/Makefile
+> > > +++ b/drivers/iio/position/Makefile
+> > > @@ -5,3 +5,6 @@
+> > >  # When adding new entries keep the list in alphabetical order
+> > >  
+> > >  obj-$(CONFIG_IQS624_POS)	+= iqs624-pos.o
+> > > +
+> > > +obj-$(CONFIG_HID_SENSOR_CUSTOM_HINGE) += hid-sensor-custom-hinge.o  
+> > 
+> > Alphabetical order preferred.
+> >   
+> > > +ccflags-y	+= -I$(srctree)/drivers/iio/common/hid-sensors  
+> > 
+> > Why?  
+> hinge driver need to include #include "hid-sensor-trigger.h", if not using this cflag-y
+> it should be #include "../common/hid-sensors/hid-sensor-trigger.h"
 
-> The compatible should be just "samsung,s3fwrn82". I think it was a
-> mistake in the first s3fwrn5 submission to add a interface to
-> compatible.
->
-Ok. I will change the name.
+Even though that looks a bit ugly, I'd prefer that rather than having to realize we
+were doing something not entirely obvious in the Makefile.
 
-> >
-> >    en-gpios:
-> >      maxItems: 1
-> > @@ -47,10 +48,19 @@ additionalProperties: false
-> >  required:
-> >    - compatible
-> >    - en-gpios
-> > -  - interrupts
-> > -  - reg
-> >    - wake-gpios
-> >
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: samsung,s3fwrn5-i2c
-> > +    then:
-> > +      required:
-> > +        - interrupts
-> > +        - reg
-> > +
-> >  examples:
-> >    - |
-> >      #include <dt-bindings/gpio/gpio.h>
-> > @@ -71,3 +81,17 @@ examples:
-> >              wake-gpios = <&gpj0 2 GPIO_ACTIVE_HIGH>;
-> >          };
-> >      };
-> > +  # UART example on Raspberry Pi
-> > +  - |
-> > +    &uart0 {
-> > +        status = "okay";
-> > +
-> > +        s3fwrn82_uart {
->
-> Just "bluetooth" to follow Devicetree specification.
-Sorry. I don't understand this comment.
-Could you explain it?
-Does it mean i need to refer to the net/broadcom-bluetooth.txt?
+Thanks,
 
->
-> Best regards,
-> Krzysztof
+Jonathan
