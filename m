@@ -2,157 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6609B2C26AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF87A2C270E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387779AbgKXM6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387752AbgKXM6W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:58:22 -0500
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BFFC0613D6;
-        Tue, 24 Nov 2020 04:58:21 -0800 (PST)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4CgPG25vMCzQlXR;
-        Tue, 24 Nov 2020 13:58:18 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
-        with ESMTP id BpMW7ohxcsl4; Tue, 24 Nov 2020 13:58:14 +0100 (CET)
-Date:   Tue, 24 Nov 2020 23:58:06 +1100
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dev@opencontainers.org,
-        corbet@lwn.net, Carlos O'Donell <carlos@redhat.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
- workaround
-Message-ID: <20201124125806.nud2x5kfvnxdagqk@yavin.dot.cyphar.com>
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="menhpnrtnm2uuh3t"
-Content-Disposition: inline
-In-Reply-To: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -9.04 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 07991665
-X-Rspamd-UID: 47ba3d
+        id S2388026AbgKXNZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:25:59 -0500
+Received: from mga03.intel.com ([134.134.136.65]:19615 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728682AbgKXNZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:25:59 -0500
+IronPort-SDR: IdTGzJlXhtMnimGgWGojycQTP8k+IrQcB+CwVsW+q2PGkkdnZX/Em2RGLDz0NcD5OLMxr4MYBl
+ cT9//+LiwYPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="172039529"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="172039529"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 05:25:58 -0800
+IronPort-SDR: gETpOmSBhzL7Gl+IpiZZtP1DJNplQimRg9iyo6QDFx2+wZbrK+EwrOpUnEjUJgX91+VJjSho8t
+ dnpndV72Txew==
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="546830554"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 05:25:54 -0800
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: [PATCH 0/5] soundwire: only clear valid interrupts
+Date:   Tue, 24 Nov 2020 09:33:13 +0800
+Message-Id: <20201124013318.8963-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We wrote 1 to the handled interrupts bits along with 0 to all other bits
+to the SoundWire DPx interrupt register. However, DP0 has reserved fields
+and the read-only SDCA_CASCADE bit. DPN also has reserved fields. We should
+not try to write values in these fields.
+Besides, we deal with pending interrupts in a loop but we didn't reset the
+slave_notify status.
 
---menhpnrtnm2uuh3t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Pierre-Louis Bossart (5):
+  soundwire: bus: add comments to explain interrupt loop filter
+  soundwire: bus: reset slave_notify status at each loop
+  soundwire: registers: add definitions for clearable interrupt fields
+  soundwire: bus: only clear valid DP0 interrupts
+  soundwire: bus: only clear valid DPN interrupts
 
-On 2020-11-24, Florian Weimer <fweimer@redhat.com> wrote:
-> This documents a way to safely use new security-related system calls
-> while preserving compatibility with container runtimes that require
-> insecure emulation (because they filter the system call by default).
-> Admittedly, it is somewhat hackish, but it can be implemented by
-> userspace today, for existing system calls such as faccessat2,
-> without kernel or container runtime changes.
->=20
-> Signed-off-by: Florian Weimer <fweimer@redhat.com>
->=20
-> ---
->  Documentation/process/adding-syscalls.rst | 37 +++++++++++++++++++++++++=
-++++++
->  1 file changed, 37 insertions(+)
->=20
-> diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/pr=
-ocess/adding-syscalls.rst
-> index a3ecb236576c..7d1e578a1df1 100644
-> --- a/Documentation/process/adding-syscalls.rst
-> +++ b/Documentation/process/adding-syscalls.rst
-> @@ -436,6 +436,40 @@ simulates registers etc).  Fixing this is as simple =
-as adding a #define to
-> =20
->      #define stub_xyzzy sys_xyzzy
-> =20
-> +Container Compatibility and seccomp
-> +-----------------------------------
-> +
-> +The Linux Foundation Open Container Initiative Runtime Specification
-> +requires that by default, implementations install seccomp system call
-> +filters which cause system calls to fail with ``EPERM``.  As a result,
-> +all new system calls in such containers fail with ``EPERM`` instead of
-> +``ENOSYS``.  This design is problematic because ``EPERM`` is a
-> +legitimate system call result which should not trigger fallback to a
-> +userspace emulation, particularly for security-related system calls.
-> +(With ``ENOSYS``, it is clear that a fallback implementation has to be
-> +used to maintain compatibility with older kernels or container
-> +runtimes.)
-> +
-> +New system calls should therefore provide a way to reliably trigger an
-> +error distinct from ``EPERM``, without any side effects.  Some ways to
-> +achieve that are:
-> +
-> + - ``EBADFD`` for the invalid file descriptor -1
-> + - ``EFAULT`` for a null pointer
-> + - ``EINVAL`` for a contradictory set of flags that will remain invalid
-> +   in the future
-> +
-> +If a system call has such error behavior, upon encountering an
-> +``EPERM`` error, userspace applications can perform further
-> +invocations of the same system call to check if the ``EPERM`` error
-> +persists for those known error conditions.  If those also fail with
-> +``EPERM``, that likely means that the original ``EPERM`` error was the
-> +result of a seccomp filter, and should be treated like ``ENOSYS``
-> +(e.g., trigger an alternative fallback implementation).  If those
-> +probing system calls do not fail with ``EPERM``, the error likely came
-> +from a real implementation, and should be reported to the caller
-> +directly, without resorting to ``ENOSYS``-style fallback.
-> +
+ drivers/soundwire/bus.c                 | 27 +++++++++++++++++--------
+ include/linux/soundwire/sdw_registers.h | 11 ++++++++++
+ 2 files changed, 30 insertions(+), 8 deletions(-)
 
-As I mentioned in the runc thread[1], this is really down to Docker's
-default policy configuration. The EPERM-everything behaviour in OCI was
-inherited from Docker, and it boils down to not having an additional
-seccomp rule which does ENOSYS for unknown syscall numbers (Docker can
-just add the rule without modifying the OCI runtime-spec -- so it's
-something Docker can fix entirely on their own). I'll prepare a patch
-for Docker this week.
+-- 
+2.17.1
 
-IMHO it's also slightly overkill to change the kernel API design
-guidelines in response to this issue.
-
-[1]: https://github.com/opencontainers/runc/issues/2151
-
->  Other Details
->  -------------
-> @@ -575,3 +609,6 @@ References and Sources
->   - Recommendation from Linus Torvalds that x32 system calls should prefer
->     compatibility with 64-bit versions rather than 32-bit versions:
->     https://lkml.org/lkml/2011/8/31/244
-> + - Linux Configuration section of the Open Container Initiative
-> +   Runtime Specification:
-> +   https://github.com/opencontainers/runtime-spec/blob/master/config-lin=
-ux.md
-
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---menhpnrtnm2uuh3t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCX70DWwAKCRCdlLljIbnQ
-Eh02AQDqe/cbtRujqSD6iqI1h/NzdVqiyVSfQha2lM/csdR84AD/fY8Z+EramNW4
-2GU3nD2K8K/evERqIV3wX4ODDpQFUQ4=
-=8C+9
------END PGP SIGNATURE-----
-
---menhpnrtnm2uuh3t--
