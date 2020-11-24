@@ -2,217 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54C92C2FAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736B72C2FB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404271AbgKXSIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404272AbgKXSIC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:08:02 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D293CC061A4E
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:08:01 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id n12so16825156qta.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=jr6n+gGQ0gPUfD8Udg6Byq8ZbVVPkJmpa2QPyf3HxP0=;
-        b=bRjdXk+YNRs6MGMHpIX7PpUx3mpM9cFJM/71xN+gyLK2BLi19VstuHwyktRYwQoaCS
-         Veb2hjhaqQLqSh6rmORx+hGHxW9/EdaRy+yQ9o42B7NjlGknybT/Og3dvR2PWcTF/Pvd
-         n32vpF3CAPSFFJ84aBNlG+vZvjkVt0y8DULM8AnzYd5sZ/N9K6RiJOBNQdJKi3JrEf8Y
-         KzWIY+rgW5ddA3oMIT78HCvdNlcfT8Q8iNQka59QjBXcs+VMP5DB21kmYnxbhSdGHeyt
-         hKcrx9qIoz8mB8HamXwima6aOi7SweqXE+ia2dMIpj+eV735ZUYhyKFxQ21vPvflyqv9
-         xYsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=jr6n+gGQ0gPUfD8Udg6Byq8ZbVVPkJmpa2QPyf3HxP0=;
-        b=efA+pe5q3ptxigBvSkVjctOGJoj/l6kKrGsn8K/Cx6F26MCWPHbG0XEViW8qbU4PhV
-         IT9xkL1MRtP0Szleq54rDP+1WeZIhMvdx5jTVV8ha472AXbQSU25BnICv4Dzu2sgIQPq
-         cKDEEVH47TjG130G1+KCHi4rFtx0WeptcJrOtngb/5EzAnJnGdnahS4tuVb0ET7KNepm
-         k9XqD4tk3z15dPa2/A2/Q/Tg0MLFk6x01iXjmoCyu0TxK/IKQiW21uN1OO4S9BlzCKtf
-         c4DkHuizk3EoOEJjR9XbsvNrwYAV8hq46h6B1mRZNcVqURcd93RklL/HsoOIjfsSEooz
-         6+UA==
-X-Gm-Message-State: AOAM530kwwSi87fZ9K4HPiXoXYDYjU9hJYSk4NUycmgIu2Oma1nvjbnA
-        7A1ZgcmAiKpc8hnwWIsPiElXtEHg2J6Qfhj8VLRl
-X-Google-Smtp-Source: ABdhPJxU22Xs03oChrUB09+FOvQjo/u+MSGq91eBAAfhOgxcxBhGj5ZQrIVYFaaXRoIWJGq9iyH5G29iSj4a6BNuQOj1
-Sender: "danielwinkler via sendgmr" 
-        <danielwinkler@danielwinkler-linux.mtv.corp.google.com>
-X-Received: from danielwinkler-linux.mtv.corp.google.com ([2620:15c:202:201:f693:9fff:fef4:4e59])
- (user=danielwinkler job=sendgmr) by 2002:a0c:ba20:: with SMTP id
- w32mr6092787qvf.50.1606241281016; Tue, 24 Nov 2020 10:08:01 -0800 (PST)
-Date:   Tue, 24 Nov 2020 10:07:46 -0800
-In-Reply-To: <20201124180746.1773091-1-danielwinkler@google.com>
-Message-Id: <20201124100610.v5.5.I5068c01cae3cea674a96e103a0cf4d8c81425a4f@changeid>
-Mime-Version: 1.0
-References: <20201124180746.1773091-1-danielwinkler@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v5 5/5] Bluetooth: Change MGMT security info CMD to be more generic
-From:   Daniel Winkler <danielwinkler@google.com>
-To:     marcel@holtmann.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        linux-bluetooth@vger.kernel.org,
-        Daniel Winkler <danielwinkler@google.com>,
-        Sonny Sasaka <sonnysasaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S2404307AbgKXSJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:09:34 -0500
+Received: from mg.ssi.bg ([178.16.128.9]:43550 "EHLO mg.ssi.bg"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390797AbgKXSJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:09:33 -0500
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id 2F6A98AA6;
+        Tue, 24 Nov 2020 20:09:30 +0200 (EET)
+Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
+        by mg.ssi.bg (Proxmox) with ESMTP id 3048F8B0F;
+        Tue, 24 Nov 2020 20:09:29 +0200 (EET)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id E69383C09CA;
+        Tue, 24 Nov 2020 20:09:22 +0200 (EET)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 0AOI9Jqm006735;
+        Tue, 24 Nov 2020 20:09:21 +0200
+Date:   Tue, 24 Nov 2020 20:09:19 +0200 (EET)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Wang Hai <wanghai38@huawei.com>
+cc:     horms@verge.net.au, pablo@netfilter.org, kadlec@netfilter.org,
+        fw@strlen.de, davem@davemloft.net, kuba@kernel.org,
+        christian@brauner.io, hans.schillstrom@ericsson.com,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v3] ipvs: fix possible memory leak in
+ ip_vs_control_net_init
+In-Reply-To: <20201124080749.69160-1-wanghai38@huawei.com>
+Message-ID: <3164a9e0-962a-c54-129e-9ad780c454c8@ssi.bg>
+References: <20201124080749.69160-1-wanghai38@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For advertising, we wish to know the LE tx power capabilities of the
-controller in userspace, so this patch edits the Security Info MGMT
-command to be more generic, such that other various controller
-capabilities can be included in the EIR data. This change also includes
-the LE min and max tx power into this newly-named command.
 
-The change was tested by manually verifying that the MGMT command
-returns the tx power range as expected in userspace.
+	Hello,
 
-Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
-Signed-off-by: Daniel Winkler <danielwinkler@google.com>
----
+On Tue, 24 Nov 2020, Wang Hai wrote:
 
-Changes in v5: None
-Changes in v4:
-- Combine LE tx range into a single EIR field for MGMT capabilities cmd
+> kmemleak report a memory leak as follows:
+> 
+> BUG: memory leak
+> unreferenced object 0xffff8880759ea000 (size 256):
+> backtrace:
+> [<00000000c0bf2deb>] kmem_cache_zalloc include/linux/slab.h:656 [inline]
+> [<00000000c0bf2deb>] __proc_create+0x23d/0x7d0 fs/proc/generic.c:421
+> [<000000009d718d02>] proc_create_reg+0x8e/0x140 fs/proc/generic.c:535
+> [<0000000097bbfc4f>] proc_create_net_data+0x8c/0x1b0 fs/proc/proc_net.c:126
+> [<00000000652480fc>] ip_vs_control_net_init+0x308/0x13a0 net/netfilter/ipvs/ip_vs_ctl.c:4169
+> [<000000004c927ebe>] __ip_vs_init+0x211/0x400 net/netfilter/ipvs/ip_vs_core.c:2429
+> [<00000000aa6b72d9>] ops_init+0xa8/0x3c0 net/core/net_namespace.c:151
+> [<00000000153fd114>] setup_net+0x2de/0x7e0 net/core/net_namespace.c:341
+> [<00000000be4e4f07>] copy_net_ns+0x27d/0x530 net/core/net_namespace.c:482
+> [<00000000f1c23ec9>] create_new_namespaces+0x382/0xa30 kernel/nsproxy.c:110
+> [<00000000098a5757>] copy_namespaces+0x2e6/0x3b0 kernel/nsproxy.c:179
+> [<0000000026ce39e9>] copy_process+0x220a/0x5f00 kernel/fork.c:2072
+> [<00000000b71f4efe>] _do_fork+0xc7/0xda0 kernel/fork.c:2428
+> [<000000002974ee96>] __do_sys_clone3+0x18a/0x280 kernel/fork.c:2703
+> [<0000000062ac0a4d>] do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+> [<0000000093f1ce2c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> In the error path of ip_vs_control_net_init(), remove_proc_entry() needs
+> to be called to remove the added proc entry, otherwise a memory leak
+> will occur.
+> 
+> Also, add some '#ifdef CONFIG_PROC_FS' because proc_create_net* return NULL
+> when PROC is not used.
+> 
+> Fixes: b17fc9963f83 ("IPVS: netns, ip_vs_stats and its procfs")
+> Fixes: 61b1ab4583e2 ("IPVS: netns, add basic init per netns.")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-Changes in v3:
-- Re-using security info MGMT command to carry controller capabilities
+	Looks good to me, thanks!
 
-Changes in v2:
-- Fixed sparse error in Capabilities MGMT command
+Acked-by: Julian Anastasov <ja@ssi.bg>
 
- include/net/bluetooth/mgmt.h | 15 +++++++++-----
- net/bluetooth/mgmt.c         | 39 +++++++++++++++++++++++-------------
- 2 files changed, 35 insertions(+), 19 deletions(-)
+> ---
+> v2->v3: improve code format
+> v1->v2: add some '#ifdef CONFIG_PROC_FS' and check the return value of proc_create_net*
+>  net/netfilter/ipvs/ip_vs_ctl.c | 31 +++++++++++++++++++++++++------
+>  1 file changed, 25 insertions(+), 6 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index e279ded4e306..d45dbcba8b49 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -4167,12 +4167,18 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
+>  
+>  	spin_lock_init(&ipvs->tot_stats.lock);
+>  
+> -	proc_create_net("ip_vs", 0, ipvs->net->proc_net, &ip_vs_info_seq_ops,
+> -			sizeof(struct ip_vs_iter));
+> -	proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
+> -			ip_vs_stats_show, NULL);
+> -	proc_create_net_single("ip_vs_stats_percpu", 0, ipvs->net->proc_net,
+> -			ip_vs_stats_percpu_show, NULL);
+> +#ifdef CONFIG_PROC_FS
+> +	if (!proc_create_net("ip_vs", 0, ipvs->net->proc_net,
+> +			     &ip_vs_info_seq_ops, sizeof(struct ip_vs_iter)))
+> +		goto err_vs;
+> +	if (!proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
+> +				    ip_vs_stats_show, NULL))
+> +		goto err_stats;
+> +	if (!proc_create_net_single("ip_vs_stats_percpu", 0,
+> +				    ipvs->net->proc_net,
+> +				    ip_vs_stats_percpu_show, NULL))
+> +		goto err_percpu;
+> +#endif
+>  
+>  	if (ip_vs_control_net_init_sysctl(ipvs))
+>  		goto err;
+> @@ -4180,6 +4186,17 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
+>  	return 0;
+>  
+>  err:
+> +#ifdef CONFIG_PROC_FS
+> +	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
+> +
+> +err_percpu:
+> +	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
+> +
+> +err_stats:
+> +	remove_proc_entry("ip_vs", ipvs->net->proc_net);
+> +
+> +err_vs:
+> +#endif
+>  	free_percpu(ipvs->tot_stats.cpustats);
+>  	return -ENOMEM;
+>  }
+> @@ -4188,9 +4205,11 @@ void __net_exit ip_vs_control_net_cleanup(struct netns_ipvs *ipvs)
+>  {
+>  	ip_vs_trash_cleanup(ipvs);
+>  	ip_vs_control_net_cleanup_sysctl(ipvs);
+> +#ifdef CONFIG_PROC_FS
+>  	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
+>  	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
+>  	remove_proc_entry("ip_vs", ipvs->net->proc_net);
+> +#endif
+>  	free_percpu(ipvs->tot_stats.cpustats);
+>  }
+>  
+> -- 
+> 2.17.1
 
-diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
-index 2e18e4173e2fa5..f9a6638e20b3c6 100644
---- a/include/net/bluetooth/mgmt.h
-+++ b/include/net/bluetooth/mgmt.h
-@@ -686,11 +686,16 @@ struct mgmt_cp_set_blocked_keys {
- 
- #define MGMT_OP_SET_WIDEBAND_SPEECH	0x0047
- 
--#define MGMT_OP_READ_SECURITY_INFO	0x0048
--#define MGMT_READ_SECURITY_INFO_SIZE	0
--struct mgmt_rp_read_security_info {
--	__le16   sec_len;
--	__u8     sec[];
-+#define MGMT_CAP_SEC_FLAGS		0x01
-+#define MGMT_CAP_MAX_ENC_KEY_SIZE	0x02
-+#define MGMT_CAP_SMP_MAX_ENC_KEY_SIZE	0x03
-+#define MGMT_CAP_LE_TX_PWR		0x04
-+
-+#define MGMT_OP_READ_CONTROLLER_CAP	0x0048
-+#define MGMT_READ_CONTROLLER_CAP_SIZE	0
-+struct mgmt_rp_read_controller_cap {
-+	__le16   cap_len;
-+	__u8     cap[0];
- } __packed;
- 
- #define MGMT_OP_READ_EXP_FEATURES_INFO	0x0049
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 668a62c8181eb1..d8adf78a437e0b 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -110,7 +110,7 @@ static const u16 mgmt_commands[] = {
- 	MGMT_OP_SET_APPEARANCE,
- 	MGMT_OP_SET_BLOCKED_KEYS,
- 	MGMT_OP_SET_WIDEBAND_SPEECH,
--	MGMT_OP_READ_SECURITY_INFO,
-+	MGMT_OP_READ_CONTROLLER_CAP,
- 	MGMT_OP_READ_EXP_FEATURES_INFO,
- 	MGMT_OP_SET_EXP_FEATURE,
- 	MGMT_OP_READ_DEF_SYSTEM_CONFIG,
-@@ -176,7 +176,7 @@ static const u16 mgmt_untrusted_commands[] = {
- 	MGMT_OP_READ_CONFIG_INFO,
- 	MGMT_OP_READ_EXT_INDEX_LIST,
- 	MGMT_OP_READ_EXT_INFO,
--	MGMT_OP_READ_SECURITY_INFO,
-+	MGMT_OP_READ_CONTROLLER_CAP,
- 	MGMT_OP_READ_EXP_FEATURES_INFO,
- 	MGMT_OP_READ_DEF_SYSTEM_CONFIG,
- 	MGMT_OP_READ_DEF_RUNTIME_CONFIG,
-@@ -3710,13 +3710,14 @@ static int set_wideband_speech(struct sock *sk, struct hci_dev *hdev,
- 	return err;
- }
- 
--static int read_security_info(struct sock *sk, struct hci_dev *hdev,
--			      void *data, u16 data_len)
-+static int read_controller_cap(struct sock *sk, struct hci_dev *hdev,
-+			       void *data, u16 data_len)
- {
--	char buf[16];
--	struct mgmt_rp_read_security_info *rp = (void *)buf;
--	u16 sec_len = 0;
-+	char buf[20];
-+	struct mgmt_rp_read_controller_cap *rp = (void *)buf;
-+	u16 cap_len = 0;
- 	u8 flags = 0;
-+	u8 tx_power_range[2];
- 
- 	bt_dev_dbg(hdev, "sock %p", sk);
- 
-@@ -3740,23 +3741,33 @@ static int read_security_info(struct sock *sk, struct hci_dev *hdev,
- 
- 	flags |= 0x08;		/* Encryption key size enforcement (LE) */
- 
--	sec_len = eir_append_data(rp->sec, sec_len, 0x01, &flags, 1);
-+	cap_len = eir_append_data(rp->cap, cap_len, MGMT_CAP_SEC_FLAGS,
-+				  &flags, 1);
- 
- 	/* When the Read Simple Pairing Options command is supported, then
- 	 * also max encryption key size information is provided.
- 	 */
- 	if (hdev->commands[41] & 0x08)
--		sec_len = eir_append_le16(rp->sec, sec_len, 0x02,
-+		cap_len = eir_append_le16(rp->cap, cap_len,
-+					  MGMT_CAP_MAX_ENC_KEY_SIZE,
- 					  hdev->max_enc_key_size);
- 
--	sec_len = eir_append_le16(rp->sec, sec_len, 0x03, SMP_MAX_ENC_KEY_SIZE);
-+	cap_len = eir_append_le16(rp->cap, cap_len,
-+				  MGMT_CAP_SMP_MAX_ENC_KEY_SIZE,
-+				  SMP_MAX_ENC_KEY_SIZE);
-+
-+	/* Append the min/max LE tx power parameters */
-+	memcpy(&tx_power_range[0], &hdev->min_le_tx_power, 1);
-+	memcpy(&tx_power_range[1], &hdev->max_le_tx_power, 1);
-+	cap_len = eir_append_data(rp->cap, cap_len, MGMT_CAP_LE_TX_PWR,
-+				  tx_power_range, 2);
- 
--	rp->sec_len = cpu_to_le16(sec_len);
-+	rp->cap_len = cpu_to_le16(cap_len);
- 
- 	hci_dev_unlock(hdev);
- 
--	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_READ_SECURITY_INFO, 0,
--				 rp, sizeof(*rp) + sec_len);
-+	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_READ_CONTROLLER_CAP, 0,
-+				 rp, sizeof(*rp) + cap_len);
- }
- 
- #ifdef CONFIG_BT_FEATURE_DEBUG
-@@ -8193,7 +8204,7 @@ static const struct hci_mgmt_handler mgmt_handlers[] = {
- 	{ set_blocked_keys,	   MGMT_OP_SET_BLOCKED_KEYS_SIZE,
- 						HCI_MGMT_VAR_LEN },
- 	{ set_wideband_speech,	   MGMT_SETTING_SIZE },
--	{ read_security_info,      MGMT_READ_SECURITY_INFO_SIZE,
-+	{ read_controller_cap,     MGMT_READ_CONTROLLER_CAP_SIZE,
- 						HCI_MGMT_UNTRUSTED },
- 	{ read_exp_features_info,  MGMT_READ_EXP_FEATURES_INFO_SIZE,
- 						HCI_MGMT_UNTRUSTED |
--- 
-2.29.2.454.gaff20da3a2-goog
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
 
