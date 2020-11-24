@@ -2,122 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E4C2C2E94
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1511D2C2E9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390796AbgKXRa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390612AbgKXRa5 (ORCPT
+        id S2390829AbgKXRcG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 12:32:06 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:33890 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728749AbgKXRcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:30:57 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA09CC061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:30:56 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id f18so4995913ljg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:30:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OADMwQE1HfwIqpykz3TZHnF1kNpcSHUWVvcwMzNsJSQ=;
-        b=PJShiVFyF1QNS10ZK4hJqy3gWb157c8QAhEOlJGh2WvhpNpcKK4xyS2IJjsn1qT0o9
-         7z5S5VxcVYvqQEhJ+/qHSd+14/OcThKF0xaB0Zrai3oT+DFHkJgtmI/4gbsw2VGDCFTf
-         9lYnYnkuCE+t0kqHdYmUa4AheBKK5giwYdR7ynp4suEuBcxe+TwkKY/2jUjhQmBkwsoi
-         KrHHhun/l4cIx8YdaDMakKI0Op0/sCEYNA/DmDr6zDJD8cdttK+bAs27ymsbZlrhYsXB
-         UX9kzKbv1leE1HsdepaQRJIOVpkmu5ogHpKKcDBoiFcNJnUMu17DN+V02PxWNMwk7zhb
-         Zz4w==
+        Tue, 24 Nov 2020 12:32:05 -0500
+Received: from mail-pf1-f200.google.com ([209.85.210.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1khcAd-00026Z-03
+        for linux-kernel@vger.kernel.org; Tue, 24 Nov 2020 17:32:03 +0000
+Received: by mail-pf1-f200.google.com with SMTP id z28so16159173pfr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:32:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OADMwQE1HfwIqpykz3TZHnF1kNpcSHUWVvcwMzNsJSQ=;
-        b=RvIUwhkKpZUWhTwwKsjEdoEqZXZUtCP7NaHSWa47tN6CrfI3urwiDtAGkrnIfzN2/J
-         cVLFqj6oI7M5TUkCPceTE/7IEJ7kk23Yesfn7qNZXNSPxKClLZo65pReDr77qndHT2eV
-         R+w2Su+7QRcGVP79UroMyh0trlZD5AH25UEuq2Gwzj+bi9LO1KQf+wWFVDhawAlDyweF
-         GeauzpDIW226+VK0IKE8SFQn8WbquK7MdiXhRgcx029N8Tsg6hzzsZndlP49Z2r5S6ZM
-         ThU529jvzaY0E5mmCIQfJ/VV9MruuHm1t2rIKQ9WENZKuhKHWU7W5LTBiqDbEn6H844N
-         ZEmQ==
-X-Gm-Message-State: AOAM530er5fvZK7LmPwV0z6VwuyT8/JHunq/mIlo2UpKad7fbP7uBEZQ
-        T6UcZlECcGTjZ1UqxcDomTqiDUCrQPMt4qO+lxs7hQ==
-X-Google-Smtp-Source: ABdhPJzAUS95IiJtBmLXO44wiBfEN3j6soT+ctyunXlhCZXtXqVbQTF1xIIFi3BAaCvjBNUGriYGAWkADaFGkqIB3QQ=
-X-Received: by 2002:a05:651c:1035:: with SMTP id w21mr100232ljm.326.1606239055088;
- Tue, 24 Nov 2020 09:30:55 -0800 (PST)
-MIME-Version: 1.0
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com> <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
- <878saq3ofx.fsf@oldenburg2.str.redhat.com> <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
- <20201124164546.GA14094@infradead.org> <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
- <X70/uPNt2BA/vUSo@kroah.com>
-In-Reply-To: <X70/uPNt2BA/vUSo@kroah.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 24 Nov 2020 18:30:28 +0100
-Message-ID: <CAG48ez2NH2Esw_55JiwK1FAzr_qFFyGaPrE_A=iH=dNuVvY6GQ@mail.gmail.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions & workaround
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
-        "Carlos O'Donell" <carlos@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=c59NXUKfsVeXI+YuJz0D1TteRrVfduhKNfg9Shm/UEo=;
+        b=G3YnrGgBFnIYMFfM5a5L8PRWwuPELragFwDXOWyVQ04qruoikt9JM2+9WIRxFetKSi
+         juaRn7Xb+pnp6EOmwPRn5qfKlPzXEJ62CNl2GGn7DllVz4Tz7YHJwCIEKp7p/zUWiO8p
+         Nz1RFapRH+I6VwNbcSgfXqNUFdh9p7CkjWUsgt6Btj63u+LVBHcU9iGrDFPQshe8ZJtk
+         Ncpt2zdnej9Jn3bsosmPfGn7cjrBKiVN6I1u6T0DoNORPodq9hpKNSghj0I7JFLP3gT7
+         gzFRLqORUel9k9A08GGPNRDhpVft0f+laiIp4s7uFfjLy95pbrHWBtDTgehgFw9AgIrC
+         WqNA==
+X-Gm-Message-State: AOAM533VJ5crYBAEoxSVUc3ULayHdzi+iq6tYmp7xIaq/D6yUli/oE3s
+        Z+NaMRxgQ1t5ZA6meqoHJGuO9ugcLHDJng22DquGlle+QVOLwSD5u2oHrBUMUol1qUvRRAWvyYl
+        UhUBbUzQM0KsOTj4LTT1ltLHmNrtUT1mTGKX3oX2JKQ==
+X-Received: by 2002:a63:381:: with SMTP id 123mr4637082pgd.112.1606239121625;
+        Tue, 24 Nov 2020 09:32:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx2Ads5zFsLVXiIPD2kWrJR/q50fAinLP4yUQdTy8kjuq6L2IaVbpgGPMCL1AESAO1jbkKzgQ==
+X-Received: by 2002:a63:381:: with SMTP id 123mr4637060pgd.112.1606239121217;
+        Tue, 24 Nov 2020 09:32:01 -0800 (PST)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id c22sm15239170pfo.211.2020.11.24.09.31.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Nov 2020 09:32:00 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH] ACPI: PM: Re-enable ACPI GPE if it's already enabled
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <CAJZ5v0iJ_x5oXL9gG_TvCriNnPwzZYvGkkEK6_HWrH4fmCqBxQ@mail.gmail.com>
+Date:   Wed, 25 Nov 2020 01:31:56 +0800
+Cc:     Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <90E54BA3-FC3A-4538-ACD0-4C4DDF570C7C@canonical.com>
+References: <20201124073619.771940-1-kai.heng.feng@canonical.com>
+ <CAJZ5v0iJ_x5oXL9gG_TvCriNnPwzZYvGkkEK6_HWrH4fmCqBxQ@mail.gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 6:15 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> On Tue, Nov 24, 2020 at 06:06:38PM +0100, Jann Horn wrote:
-> > +seccomp maintainers/reviewers
-> > [thread context is at
-> > https://lore.kernel.org/linux-api/87lfer2c0b.fsf@oldenburg2.str.redhat.com/
-> > ]
-> >
-> > On Tue, Nov 24, 2020 at 5:49 PM Christoph Hellwig <hch@infradead.org> wrote:
-> > > On Tue, Nov 24, 2020 at 03:08:05PM +0100, Mark Wielaard wrote:
-> > > > For valgrind the issue is statx which we try to use before falling back
-> > > > to stat64, fstatat or stat (depending on architecture, not all define
-> > > > all of these). The problem with these fallbacks is that under some
-> > > > containers (libseccomp versions) they might return EPERM instead of
-> > > > ENOSYS. This causes really obscure errors that are really hard to
-> > > > diagnose.
-> > >
-> > > So find a way to detect these completely broken container run times
-> > > and refuse to run under them at all.  After all they've decided to
-> > > deliberately break the syscall ABI.  (and yes, we gave the the rope
-> > > to do that with seccomp :().
-> >
-> > FWIW, if the consensus is that seccomp filters that return -EPERM by
-> > default are categorically wrong, I think it should be fairly easy to
-> > add a check to the seccomp core that detects whether the installed
-> > filter returns EPERM for some fixed unused syscall number and, if so,
-> > prints a warning to dmesg or something along those lines...
->
-> Why?  seccomp is saying "this syscall is not permitted", so -EPERM seems
-> like the correct error to provide here.  It's not -ENOSYS as the syscall
-> is present.
->
-> As everyone knows, there are other ways to have -EPERM be returned from
-> a syscall if you don't have the correct permissions to do something.
-> Why is seccomp being singled out here?  It's doing the correct thing.
 
-AFAIU from what the others have said, it's being singled out because
-it means that for two semantically equivalent operations (e.g.
-openat() vs open()), one can fail while the other works because the
-filter doesn't know about one of the syscalls. Normally semantically
-equivalent syscalls are supposed to be subject to the same checks, and
-if one of them fails, trying the other one won't help.
 
-But if you can't tell whether the more modern syscall failed because
-of a seccomp filter, you may be forced to retry with an older syscall
-even on systems where the new syscall works fine, and such a fallback
-may reduce security or reliability if you're trying to use some flags
-that only the new syscall provides for security, or something like
-that. (As a contrived example, imagine being forced to retry any
-tgkill() that fails with EPERM as a tkill() just in case you're
-running under a seccomp filter.)
+> On Nov 24, 2020, at 22:00, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> 
+> On Tue, Nov 24, 2020 at 8:36 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+>> 
+>> Dell Precision 5550 fails to detect Thunderbolt device hotplug events,
+>> once the Thunderbolt device and its root port are runtime-suspended to
+>> D3cold.
+>> 
+>> While putting the entire hierarchy to D3cold, the root port ACPI GPE is
+>> enabled via acpi_pci_propagate_wakeup() when suspending Thunderbolt
+>> bridges/switches. So when putting the root port to D3cold as last step,
+>> ACPI GPE is untouched as it's already enabled.
+>> 
+>> However, platform may need PCI devices to be in D3hot or PME enabled
+>> prior enabling GPE to make it work.
+> 
+> What platforms and why.
+
+Dell Precision 5550. Its thunderbolt port can't detect newly plugged thunderbolt devices.
+
+> 
+>> So re-enable ACPI GPE to address this.
+>> 
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>> drivers/acpi/device_pm.c | 13 ++++++-------
+>> 1 file changed, 6 insertions(+), 7 deletions(-)
+>> 
+>> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+>> index 94d91c67aeae..dc25d9d204ae 100644
+>> --- a/drivers/acpi/device_pm.c
+>> +++ b/drivers/acpi/device_pm.c
+>> @@ -757,11 +757,10 @@ static int __acpi_device_wakeup_enable(struct acpi_device *adev,
+>> 
+>>        mutex_lock(&acpi_wakeup_lock);
+>> 
+>> -       if (wakeup->enable_count >= max_count)
+>> -               goto out;
+>> -
+>> -       if (wakeup->enable_count > 0)
+>> -               goto inc;
+>> +       if (wakeup->enable_count > 0) {
+>> +               acpi_disable_gpe(wakeup->gpe_device, wakeup->gpe_number);
+>> +               acpi_disable_wakeup_device_power(adev);
+>> +       }
+> 
+> An event occurring at this point may be lost after this patch.
+
+Yes, so this approach is not optimal.
+
+> 
+> It looks like you are trying to work around a hardware issue.  
+
+Windows doesn't have this issue. So I don't think it's hardware issue.
+
+> Can you
+> please describe that issue in detail?
+
+The GPE used by Thunderbolt root port, was previously enabled by Thunderbolt switches/bridges.
+So when the GPE is already enabled when Thunderbolt root port is suspended.
+However, the GPE needs to be enabled after root port is suspended, and that's the approach this patch takes.
+
+Is there any actual hardware benefits from acpi_pci_propagate_wakeup()?
+If there's no actual device benefits from it, we can remove it and only enable GPE for the root port.
+Otherwise we need to quirk off Thunderbolt bridges/switches, since their native PME just work without the need to enable root port GPE.
+
+Kai-Heng
+
+> 
+>> 
+>>        error = acpi_enable_wakeup_device_power(adev, target_state);
+>>        if (error)
+>> @@ -777,8 +776,8 @@ static int __acpi_device_wakeup_enable(struct acpi_device *adev,
+>>        acpi_handle_debug(adev->handle, "GPE%2X enabled for wakeup\n",
+>>                          (unsigned int)wakeup->gpe_number);
+>> 
+>> -inc:
+>> -       wakeup->enable_count++;
+>> +       if (wakeup->enable_count < max_count)
+>> +               wakeup->enable_count++;
+>> 
+>> out:
+>>        mutex_unlock(&acpi_wakeup_lock);
+>> --
+>> 2.29.2
+
