@@ -2,86 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C2B2C2519
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E51D2C251E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733189AbgKXL7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:59:30 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8025 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgKXL7a (ORCPT
+        id S1733026AbgKXMAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:00:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23238 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732630AbgKXMAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:59:30 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgMxX105Czhfxt;
-        Tue, 24 Nov 2020 19:58:56 +0800 (CST)
-Received: from [10.57.101.250] (10.57.101.250) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 24 Nov 2020 19:59:05 +0800
-Subject: Re: [PATCH v2 00/10] clean up all Hisilicon-related errors detected
- by DT schema on arm32
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201012061225.1597-1-thunder.leizhen@huawei.com>
-From:   Wei Xu <xuwei5@hisilicon.com>
-Message-ID: <5FBCF58A.5060608@hisilicon.com>
-Date:   Tue, 24 Nov 2020 19:59:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.2.0
+        Tue, 24 Nov 2020 07:00:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606219200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HqLKkdSNa/eGdRcb+JU0V3lhIwGJU8Y7t6iuocEiAMc=;
+        b=KA4Y2ZuohBcJmD+gwd+4+Me8IV9+tvB1fd04JQRuHyTxvTST5tthr8/Gnwx8KDAIkTFIrH
+        0Ofavhrusr9ebvzW4a5AknHcq097stdXOX+LVeU0HWLAmMt643EgJ5/MdFqzdwHC6zzimX
+        gvyH3eqx6He+C/C0Np4Lj/d75+J86/4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-urEcQY7dO2-fsiEyvPVUeA-1; Tue, 24 Nov 2020 06:59:56 -0500
+X-MC-Unique: urEcQY7dO2-fsiEyvPVUeA-1
+Received: by mail-ej1-f72.google.com with SMTP id e7so6804452eja.15
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:59:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HqLKkdSNa/eGdRcb+JU0V3lhIwGJU8Y7t6iuocEiAMc=;
+        b=byLTLM2530VU+28wCuTZtA2QKUTyEiQ9WC+DN2DkO+QgdFUYfCu2r9g4jIBds9PX0B
+         t4kDmi8wkgsK7zNGLc4xDV6xYyVJ0BpCYqD65WXCdMCTobMI21CowE9PGdmGXl2C5Ap3
+         OaootROKsKGUht4+PCcD8xM5LJ7hc7dsKx1H/hPdd/MQDKpOt9AAZ3XgJcOwMewQx7K5
+         Jp7p/VQ4ZFNhTn6JScmnmkTG0HE2PdDI9y9PJ5MBQD2DxL78+Y9yJ7TGwTIOys2d1k6A
+         Xh69k1Hxe08UCEh1SHfHdbpsJI/Qj1MgtjW2odQ8xhQVmpnJ9sQOwlZ+ucJn5m/nOnI5
+         3e0A==
+X-Gm-Message-State: AOAM531+p3Z4CmbZfwCRciqCF+lwOsJq05kf/+3E/W4PxYU8PzVnytYS
+        IfqqaVz8ibgRb5Ja3egZRXADsomIbvQJWLPWAuE1VzHXvTFexDU2ZSqZyzx6TAwHYGa3C99aC/5
+        7oAh1QD2HpFFO/8lW9fS9hAEc
+X-Received: by 2002:a17:907:aaf:: with SMTP id bz15mr621844ejc.199.1606219195465;
+        Tue, 24 Nov 2020 03:59:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwnCij/SJ7Wd3Me+rHMeQtaycgwouAEEHLWJ7dLsFw1WPkEy5X9jhJ819Edn92e3ucjlyGs6Q==
+X-Received: by 2002:a17:907:aaf:: with SMTP id bz15mr621817ejc.199.1606219195126;
+        Tue, 24 Nov 2020 03:59:55 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id c8sm6843427edr.29.2020.11.24.03.59.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 03:59:54 -0800 (PST)
+Subject: Re: [PATCH 0/9] Add support for Microsoft Surface System Aggregator
+ Module
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20201115192143.21571-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <059069df-c972-5060-1b26-2ddcc842810d@redhat.com>
+Date:   Tue, 24 Nov 2020 12:59:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201012061225.1597-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201115192143.21571-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.57.101.250]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhen,
+Hi,
 
-On 2020/10/12 14:12, Zhen Lei wrote:
-> v1 --> v2:
-> Too deep in arm32. I forgot arm64. Add property "#reset-cells" into sysctrl.yaml (Patch 9).
+On 11/15/20 8:21 PM, Maximilian Luz wrote:
+> Hello,
 > 
+>   N.B.: the following text is mostly a repeat of cover letter from the
+>   previous RFC for the uninitiated, which can be found at
 > 
-> v1:
-> These patches are based on the latest linux-next.
+>   https://lore.kernel.org/linux-serial/20200923151511.3842150-1-luzmaximilian@gmail.com/
 > 
-> Zhen Lei (10):
->   ARM: dts: hisilicon: fix errors detected by snps-dw-apb-uart.yaml
->   ARM: dts: hisilicon: fix errors detected by pl011.yaml
->   ARM: dts: hisilicon: fix errors detected by usb yaml
->   ARM: dts: hisilicon: fix errors detected by simple-bus.yaml
->   ARM: dts: hisilicon: fix errors detected by root-node.yaml
->   ARM: dts: hisilicon: fix errors detected by synopsys-dw-mshc.yaml
->   ARM: dts: hisilicon: fix errors detected by spi-pl022.yaml
->   ARM: dts: hisilicon: fix errors detected by syscon.yaml
+>   See "Changes" below for an overview of differences between the RFC and
+>   this patchset. I hope I have addressed all comments from that in this
+>   version, thank you again for those.
+> 
+> The Surface System Aggregator Module (we'll refer to it as Surface
+> Aggregator or SAM below) is an embedded controller (EC) found on various
+> Microsoft Surface devices. Specifically, all 4th and later generation
+> Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
+> exception of the Surface Go series and the Surface Duo. Notably, it
+> seems like this EC can also be found on the ARM-based Surface Pro X [1].
 
-Thanks!
-Fixed some typos in the commit and applied all the dts changes
-to the hisilicon arm32 dt tree.
+<snip>
 
-Best Regards,
-Wei
+> This patch-set can also be found at the following repository and
+> reference, if you prefer to look at a kernel tree instead of these
+> emails:
+> 
+>   https://github.com/linux-surface/kernel tags/s/surface-aggregator/v1
+> 
+> Thanks,
+> Max
 
->   dt-bindings: arm: hisilicon: add missing properties into sysctrl.yaml
->   dt-bindings: arm: hisilicon: add missing properties into cpuctrl.yaml
+Thank you for your work on this. It would be great if we can get better
+support for the Surface line in the mainline kernel.
+
+Since a lot of people have already commented on this series I think that
+you have enough feedback to do a v2 addressing that feedback right? 
+
+For now I'm going to assume that you will do a v2 addressing the
+initial round of comments and not review this myself (IOW I'll review
+this when v2 is posted).
+
+Let me know if you see things differently.
+
+Regards,
+
+Hans
+
+
+
+
+
+> [1]: The Surface Pro X is, however, currently considered unsupported due
+>      to a lack of test candidates and, as it seems, general lack of
+>      Linux support on other parts. AFAIK there is an issue preventing
+>      serial devices from being registered, on which the core driver in
+>      this series is build on, thus there is no way to even test that at
+>      this point. I'd be happy to work out any issues regarding SAM on
+>      the Pro X at some point in the future, provided someone can/wants
+>      to actually test it.
 > 
->  .../bindings/arm/hisilicon/controller/cpuctrl.yaml | 27 +++++++++++++-
->  .../bindings/arm/hisilicon/controller/sysctrl.yaml | 28 +++++++++++++--
->  arch/arm/boot/dts/hi3519-demb.dts                  |  2 +-
->  arch/arm/boot/dts/hi3519.dtsi                      | 32 ++++++++---------
->  arch/arm/boot/dts/hi3620-hi4511.dts                | 24 ++++++-------
->  arch/arm/boot/dts/hi3620.dtsi                      | 32 ++++++++---------
->  arch/arm/boot/dts/hip01-ca9x2.dts                  |  2 +-
->  arch/arm/boot/dts/hip01.dtsi                       | 26 +++++++-------
->  arch/arm/boot/dts/hip04-d01.dts                    |  2 +-
->  arch/arm/boot/dts/hip04.dtsi                       |  6 ++--
->  arch/arm/boot/dts/hisi-x5hd2-dkb.dts               |  2 +-
->  arch/arm/boot/dts/hisi-x5hd2.dtsi                  | 42 +++++++++++-----------
->  12 files changed, 136 insertions(+), 89 deletions(-)
+> [2]: https://github.com/linux-surface/surface-aggregator-module
+> [3]: https://github.com/linux-surface/linux-surface
 > 
+> 
+> Note: This patch depends on
+> 
+>   [PATCH v4] platform/surface: Create a platform subdirectory for
+>              Microsoft Surface devices
+> 
+> which can be found at
+> 
+>   https://lore.kernel.org/platform-driver-x86/20201009141128.683254-1-luzmaximilian@gmail.com/
+> 
+> and is currently in platform-drivers-x86/for-next.
+> 
+> 
+> Changes from the previous RFC (overview):
+>  - move to platform/surface
+>  - add copyright lines
+>  - change SPDX identifier to GPL-2.0+ (was GPL-2.0-or-later)
+>  - change user-space interface from debugfs to misc-device
+>  - address issues in user-space interface
+>  - fix typos in commit messages and documentation
+>  - fix some bugs, address other issues
+> 
+> Changes regarding specific patches (and more details) can be found on
+> the individual patch.
+> 
+> 
+> Maximilian Luz (9):
+>   platform/surface: Add Surface Aggregator subsystem
+>   platform/surface: aggregator: Add control packet allocation caching
+>   platform/surface: aggregator: Add event item allocation caching
+>   platform/surface: aggregator: Add trace points
+>   platform/surface: aggregator: Add error injection capabilities
+>   platform/surface: aggregator: Add dedicated bus and device type
+>   docs: driver-api: Add Surface Aggregator subsystem documentation
+>   platform/surface: Add Surface Aggregator user-space interface
+>   platform/surface: Add Surface ACPI Notify driver
+> 
+>  Documentation/driver-api/index.rst            |    1 +
+>  .../surface_aggregator/client-api.rst         |   38 +
+>  .../driver-api/surface_aggregator/client.rst  |  394 +++
+>  .../surface_aggregator/clients/cdev.rst       |   85 +
+>  .../surface_aggregator/clients/index.rst      |   21 +
+>  .../surface_aggregator/clients/san.rst        |   44 +
+>  .../driver-api/surface_aggregator/index.rst   |   21 +
+>  .../surface_aggregator/internal-api.rst       |   67 +
+>  .../surface_aggregator/internal.rst           |   50 +
+>  .../surface_aggregator/overview.rst           |   76 +
+>  .../driver-api/surface_aggregator/ssh.rst     |  343 +++
+>  MAINTAINERS                                   |   13 +
+>  drivers/platform/surface/Kconfig              |   39 +
+>  drivers/platform/surface/Makefile             |    3 +
+>  drivers/platform/surface/aggregator/Kconfig   |   65 +
+>  drivers/platform/surface/aggregator/Makefile  |   17 +
+>  drivers/platform/surface/aggregator/bus.c     |  424 +++
+>  drivers/platform/surface/aggregator/bus.h     |   27 +
+>  .../platform/surface/aggregator/controller.c  | 2557 +++++++++++++++++
+>  .../platform/surface/aggregator/controller.h  |  288 ++
+>  drivers/platform/surface/aggregator/core.c    |  831 ++++++
+>  .../platform/surface/aggregator/ssh_msgb.h    |  201 ++
+>  .../surface/aggregator/ssh_packet_layer.c     | 2009 +++++++++++++
+>  .../surface/aggregator/ssh_packet_layer.h     |  175 ++
+>  .../platform/surface/aggregator/ssh_parser.c  |  229 ++
+>  .../platform/surface/aggregator/ssh_parser.h  |  157 +
+>  .../surface/aggregator/ssh_request_layer.c    | 1254 ++++++++
+>  .../surface/aggregator/ssh_request_layer.h    |  142 +
+>  drivers/platform/surface/aggregator/trace.h   |  625 ++++
+>  .../platform/surface/surface_acpi_notify.c    |  884 ++++++
+>  .../surface/surface_aggregator_cdev.c         |  299 ++
+>  include/linux/mod_devicetable.h               |   18 +
+>  include/linux/surface_acpi_notify.h           |   39 +
+>  include/linux/surface_aggregator/controller.h |  832 ++++++
+>  include/linux/surface_aggregator/device.h     |  430 +++
+>  include/linux/surface_aggregator/serial_hub.h |  659 +++++
+>  include/uapi/linux/surface_aggregator/cdev.h  |   58 +
+>  scripts/mod/devicetable-offsets.c             |    8 +
+>  scripts/mod/file2alias.c                      |   23 +
+>  39 files changed, 13446 insertions(+)
+>  create mode 100644 Documentation/driver-api/surface_aggregator/client-api.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/client.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/clients/cdev.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/clients/index.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/clients/san.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/index.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/internal-api.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/internal.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/overview.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/ssh.rst
+>  create mode 100644 drivers/platform/surface/aggregator/Kconfig
+>  create mode 100644 drivers/platform/surface/aggregator/Makefile
+>  create mode 100644 drivers/platform/surface/aggregator/bus.c
+>  create mode 100644 drivers/platform/surface/aggregator/bus.h
+>  create mode 100644 drivers/platform/surface/aggregator/controller.c
+>  create mode 100644 drivers/platform/surface/aggregator/controller.h
+>  create mode 100644 drivers/platform/surface/aggregator/core.c
+>  create mode 100644 drivers/platform/surface/aggregator/ssh_msgb.h
+>  create mode 100644 drivers/platform/surface/aggregator/ssh_packet_layer.c
+>  create mode 100644 drivers/platform/surface/aggregator/ssh_packet_layer.h
+>  create mode 100644 drivers/platform/surface/aggregator/ssh_parser.c
+>  create mode 100644 drivers/platform/surface/aggregator/ssh_parser.h
+>  create mode 100644 drivers/platform/surface/aggregator/ssh_request_layer.c
+>  create mode 100644 drivers/platform/surface/aggregator/ssh_request_layer.h
+>  create mode 100644 drivers/platform/surface/aggregator/trace.h
+>  create mode 100644 drivers/platform/surface/surface_acpi_notify.c
+>  create mode 100644 drivers/platform/surface/surface_aggregator_cdev.c
+>  create mode 100644 include/linux/surface_acpi_notify.h
+>  create mode 100644 include/linux/surface_aggregator/controller.h
+>  create mode 100644 include/linux/surface_aggregator/device.h
+>  create mode 100644 include/linux/surface_aggregator/serial_hub.h
+>  create mode 100644 include/uapi/linux/surface_aggregator/cdev.h
+> 
+
