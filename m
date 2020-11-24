@@ -2,171 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527B22C1ACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 02:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9F72C1AD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 02:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgKXB0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 20:26:14 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:46766 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgKXB0N (ORCPT
+        id S1727840AbgKXB2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 20:28:04 -0500
+Received: from alln-iport-6.cisco.com ([173.37.142.93]:2621 "EHLO
+        alln-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725952AbgKXB2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 20:26:13 -0500
-Received: by mail-oi1-f195.google.com with SMTP id q206so21920914oif.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 17:26:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=en+JssiqProhjdMr0CjlUCY8pgd39iHi9DtH1hOV64c=;
-        b=UN9WorcCfjYC7QIn0M6bZK/6GRuB1y2/fz4Flk8PqoMYJdoAtFYMxda9oAicSP6N7k
-         qctSiNk3xIoAIvnLFgbH6Lbra/I11FaW4xtAVutJNUVYq2B4z3BAjWHzILHi8DHp3Q/o
-         NEHFej5OTQplmiAb8q/prhzogd8SZR4qJ8vDx1m1zh+LXfH5OERlb5J6bQVooGmjuEZZ
-         Qcp9d7qHnJrRfC6z3AofSzYW9NRJc/HnEQMZ1UQNTSZLHgnKwQfgrF0yflnJtmXT6/Nv
-         xh2Tk7qn/JZ6QRJmD6b2aaxgDyeY56NgWc397wKxZ1yCseyGf6dQ6jkebnhm7nLOLm0U
-         9ZYA==
-X-Gm-Message-State: AOAM532YMddQCU3Q77/xpRorM4JozsxVR7qNuSJG+kM+I+8X/CIoWstj
-        IwSRWFYX1t1+RliumSni0mv2yxu3SJ330Q==
-X-Google-Smtp-Source: ABdhPJzwT+ek7Zyqvq698FiD78QfhVCTZkxXxGOHGdOwqNnETx2P6fXbmjQqN8e+Uh66GRBybN6vag==
-X-Received: by 2002:aca:4c4c:: with SMTP id z73mr1168889oia.90.1606181172685;
-        Mon, 23 Nov 2020 17:26:12 -0800 (PST)
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com. [209.85.210.43])
-        by smtp.gmail.com with ESMTPSA id o7sm7653291otk.44.2020.11.23.17.26.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 17:26:12 -0800 (PST)
-Received: by mail-ot1-f43.google.com with SMTP id y24so12305576otk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 17:26:11 -0800 (PST)
-X-Received: by 2002:a05:6830:160d:: with SMTP id g13mr1726753otr.74.1606181171265;
- Mon, 23 Nov 2020 17:26:11 -0800 (PST)
+        Mon, 23 Nov 2020 20:28:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=2502; q=dns/txt; s=iport;
+  t=1606181282; x=1607390882;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=PvQuF+cfWG5NwHQa5N/iwoBxIzxtHBsCnd0ivgrZd2I=;
+  b=kGfelkQEud1SMDxaxSQiLUWmdDFn25vAscw1/qqqt7Fz+gm2cIB0XSPk
+   96BXUQ7ckq+dZyXKwLX0oKtb2Qf006Mqh6qDdwmcTvyZaH9hTDdbtIAHi
+   wd6gYQy2w20mTwK8yxmupv+A/eCwO6kg/r9ss33N3+8a+rJ36r7SXc/GM
+   A=;
+X-IPAS-Result: =?us-ascii?q?A0BZBwApX7xffYkNJK1iHQEBAQEJARIBBQUBQIFPgVJRg?=
+ =?us-ascii?q?VQvFxcKhDODSQONM5kqglMDVAsBAQENAQEtAgQBAYRKAheCFAIlOBMCAwEBA?=
+ =?us-ascii?q?QMCAwEBAQEFAQEBAgEGBBQBAYY8DIVzAgEDEhEEDQwBATcBDwIBCBoCJgICA?=
+ =?us-ascii?q?jAVEAIEAQ0FIoMEglYDLgGjXQKBPIhodn8zgwQBAQWFJhiCEAmBDiqCc4N2h?=
+ =?us-ascii?q?lcbgUE/gTgMEIJPPoQ+F4MAM4IskzQ9pFkKgm6bHgMfogUtky+gYAIEAgQFA?=
+ =?us-ascii?q?g4BAQWBayGBWXAVZQGCPlAXAg2OHwwXg06KWHQ3AgYBCQEBAwl8jDsBgRABA?=
+ =?us-ascii?q?Q?=
+IronPort-PHdr: =?us-ascii?q?9a23=3AFBz/4hFzTHevubaJ4BiGdZ1GYnJ96bzpIg4Y7I?=
+ =?us-ascii?q?YmgLtSc6Oluo7vJ1Hb+e401QObVoTA4PUCgO3T4OjsWm0FtJCGtn1KMJlBTA?=
+ =?us-ascii?q?QMhshemQs8SNWEBkv2IL+PDWQ6Ec1OWUUj8yS9Nk5YS83/fFbV5Ha16G1aFh?=
+ =?us-ascii?q?D2LwEgIOPzF8bbhNi20Obn/ZrVbk1IiTOxbKk0Ig+xqFDat9Idhs1pLaNixw?=
+ =?us-ascii?q?=3D=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.78,364,1599523200"; 
+   d="scan'208";a="635369895"
+Received: from alln-core-4.cisco.com ([173.36.13.137])
+  by alln-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 24 Nov 2020 01:28:01 +0000
+Received: from XCH-ALN-001.cisco.com (xch-aln-001.cisco.com [173.36.7.11])
+        by alln-core-4.cisco.com (8.15.2/8.15.2) with ESMTPS id 0AO1S1dR008080
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Tue, 24 Nov 2020 01:28:01 GMT
+Received: from xhs-rcd-002.cisco.com (173.37.227.247) by XCH-ALN-001.cisco.com
+ (173.36.7.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Nov
+ 2020 19:28:01 -0600
+Received: from xhs-rtp-002.cisco.com (64.101.210.229) by xhs-rcd-002.cisco.com
+ (173.37.227.247) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Nov
+ 2020 19:28:00 -0600
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (64.101.32.56) by
+ xhs-rtp-002.cisco.com (64.101.210.229) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 23 Nov 2020 20:28:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WjZQ6Tr88P1Kh/fnWujwYZC+WkhIbX5tYiN4UX/i7M2zBRe2Q+ItZyZIh7YZpCtHQzGC/VzD5E3d/6W8gRS9XS4B0n8AjRGRvCMiRq2hxjteKi7lIGGcV2sL4FKPdkfk1CU9xn5/OWdPnNizXEvOxs7JSZsCmIFyaDVlLemnK+mY6x0JAPYzKBLrbgUgvMITE0KyjtibwlIynBpe9w+JOj/puyiGg5UWKVfj9F5Fi5V0yU+LAHVYaVdGUeADroVD5Ljtmdsl4S72wHoHkvK+EwYI/QqM7XZ5gK/4rjDQi3k9ZAQkQ9hud79Tiy4BkkXUsiBujXv/fXwnOFVN7+9CTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PvQuF+cfWG5NwHQa5N/iwoBxIzxtHBsCnd0ivgrZd2I=;
+ b=BzdegFJ/Z4OYp1ZDfsfJeZmhPtWZyGkZB1b2Ch/CLcfNFwTSkdrqpdG4FrYeE9nca1qjXfIMknxuDeQlCqwNL7AUyYR0KXrYAx+IYosG5b4eI1xGNIi+F7FX45QZ6LTLlIKVbz78KvzvYG+dM+kHI6Sn/OcKRRcpeXHOxp/VR8TaRLJssex6hXsiKG4vk4ygS9y9+RbilUwNsUVRl153cIDjst7rVyhu5Urb/w4XVf6sduaUhuR6SXRHbcqzZvlXJP3p02D+P4QQKk/VH91d9Id1jccPTaZYThicoS1FYC9EEm5FpqMLJ0c9YSE+5Y6aWn5ibHoJEo0Rdem/RUu5Pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
+ s=selector2-cisco-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PvQuF+cfWG5NwHQa5N/iwoBxIzxtHBsCnd0ivgrZd2I=;
+ b=SCus26uUKrkrVq/1BDPVDsmBFfS8bU1eVAJpwT9W3GkcblQ6542BseGrqBitkcNIVcKQvl3NCgdwCLjWFDTiolawgQARTdmJ8T7fabVyz1IyY0qAnH2NSn3sRC9Vql+ZmjTd9zq08/JwWf+5k3hVXRN61iW992eFKSarACckwZQ=
+Received: from DM6PR11MB3289.namprd11.prod.outlook.com (2603:10b6:5:5f::10) by
+ DM6PR11MB4073.namprd11.prod.outlook.com (2603:10b6:5:19f::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.20; Tue, 24 Nov 2020 01:27:58 +0000
+Received: from DM6PR11MB3289.namprd11.prod.outlook.com
+ ([fe80::dd7d:47e3:8339:16d2]) by DM6PR11MB3289.namprd11.prod.outlook.com
+ ([fe80::dd7d:47e3:8339:16d2%5]) with mapi id 15.20.3589.021; Tue, 24 Nov 2020
+ 01:27:58 +0000
+From:   "Arulprabhu Ponnusamy (arulponn)" <arulponn@cisco.com>
+To:     "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>,
+        "Satish Kharat (satishkh)" <satishkh@cisco.com>
+CC:     "Sesidhar Baddela (sebaddel)" <sebaddel@cisco.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: fnic: set scsi_set_resid only for underflow
+Thread-Topic: [PATCH] scsi: fnic: set scsi_set_resid only for underflow
+Thread-Index: AQHWv6jfbHuAWQ1coEenfIE/GKk8manV/KWA
+Date:   Tue, 24 Nov 2020 01:27:58 +0000
+Message-ID: <72C36CF2-3675-42F0-A87D-7D9A179667EE@cisco.com>
+References: <20201121015134.18872-1-kartilak@cisco.com>
+In-Reply-To: <20201121015134.18872-1-kartilak@cisco.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.43.20110804
+authentication-results: cisco.com; dkim=none (message not signed)
+ header.d=none;cisco.com; dmarc=none action=none header.from=cisco.com;
+x-originating-ip: [98.35.85.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c7887016-1b34-46dd-c317-08d890182d7b
+x-ms-traffictypediagnostic: DM6PR11MB4073:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB4073AC75545A52ABED7B5699D5FB0@DM6PR11MB4073.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:431;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OrNmiQY+NY9FzgYjhj3y4Jg5awTANw8hkH0Z2K1p19HXH4N292hCgbt8EBXx12thOlWGJJGrsOkPq+Hr5D2aE1XuLs+JhHc199Fk19OvxXdLW2xGLulKQRrCXzgWvX3X5LBygzBDQJRmDERk1T3r3QA8qbaKayH/Hww/tOE0wN/RpXCFEvk/eKTnGNZn+106sJHwWGvpfuJyr9tdFXz4R+qVJ7wTDhkdfm0F4Ncwc0QKdfJMRgD0hv+i8PV3g6Z027vruSbTl5lyBlXhf8GAqvA+/iDKUVR/8RhFSEUZCSRVGYTEibMuQ27PD3Djr3TSNSuVkKpLOXaAVeZOVTcPfA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3289.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(366004)(136003)(396003)(66946007)(66446008)(66556008)(6506007)(64756008)(66476007)(76116006)(478600001)(36756003)(91956017)(86362001)(71200400001)(6486002)(186003)(26005)(2906002)(8936002)(8676002)(316002)(4326008)(5660300002)(6636002)(2616005)(110136005)(54906003)(33656002)(6512007)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 9SJo1OxT9atS2piTNzQnJ3Lc19ehfgIOf5kY/CcObXOtnbPpt4c8vj/KyuKohoKMHm10LMr3RKUkTwnPwm5zMftnFruuViBoyLDI6n7OpB9Es4VPqZgMCJd1Y0w3qaLKe3qpXcpY4i/NWRvFEf1n7TJGK8DLK+4HeHGEUY+9dJ17oCjKUZm6WMHi4nbZwrzmuxSfS4NwKwLUZBaOxZGGtBPgh/V2gLPD7kgmuEuTZ4uFUWeu7pgDZ2p4FOyEallHyMKXstg43+6AwN8rnGH2ssbd98w60DKDcVKDY4M4Y9UlGpSe3cjMmIPD9Ogb8Dnm28FJSyZNolmy0W28EmdXL1eTq4qMdWk8iprJi1XXsPFEbULhb3UlsP1olLrJTo56phAPpOlDCuMCoC942RDLn3Go/o/hV52BKAmjSLYbe5EK+qo4XTIP9RU5NQAivbzEzZOKKDOVXMvTYTUSf78DVpygld4ogLKpQaBi/8MC82mV72tyKjJKcYLgOZetiNlhkgoNhDrBPSLl7609U+iodLrn8+5b33zqCJhQCKvBfWKrM3GYdglZyZgP1SMLcl+mOgr6vpJwsbFqTXXbbGDZcd2anlSfdawpvvOSsoGrMR4dZLundb4FT0v+Q+axOdUOBA/+Z7xJfgkqGYl6sYqZCw==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D354B7A28A43754397D3818A71E0B634@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201020021832.36846-1-wang.yi59@zte.com.cn>
-In-Reply-To: <20201020021832.36846-1-wang.yi59@zte.com.cn>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Mon, 23 Nov 2020 19:25:59 -0600
-X-Gmail-Original-Message-ID: <CADRPPNQU2a-OCt6vaax3LbFBuS7+orYF85Ea3GX=TBKRh+9Q-A@mail.gmail.com>
-Message-ID: <CADRPPNQU2a-OCt6vaax3LbFBuS7+orYF85Ea3GX=TBKRh+9Q-A@mail.gmail.com>
-Subject: Re: [PATCH v3] soc: fsl: dpio: Get the cpumask through cpumask_of(cpu)
-To:     Yi Wang <wang.yi59@zte.com.cn>
-Cc:     Roy Pledge <Roy.Pledge@nxp.com>, jiang.xuexin@zte.com.cn,
-        Hao Si <si.hao@zte.com.cn>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Lin Chen <chen.lin5@zte.com.cn>, xue.zhihong@zte.com.cn,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3289.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7887016-1b34-46dd-c317-08d890182d7b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 01:27:58.9195
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aFxI2QDNgAYWzFQnG4ZyiUq9K3K1nf+yW/ARBM80wpbBtBkcRmJnGccfwYS4MFPatNmLW1gCcukMnqFN8O6F0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4073
+X-OriginatorOrg: cisco.com
+X-Outbound-SMTP-Client: 173.36.7.11, xch-aln-001.cisco.com
+X-Outbound-Node: alln-core-4.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 9:15 PM Yi Wang <wang.yi59@zte.com.cn> wrote:
->
-> From: Hao Si <si.hao@zte.com.cn>
->
-> The local variable 'cpumask_t mask' is in the stack memory, and its address
-> is assigned to 'desc->affinity' in 'irq_set_affinity_hint()'.
-> But the memory area where this variable is located is at risk of being
-> modified.
->
-> During LTP testing, the following error was generated:
->
-> Unable to handle kernel paging request at virtual address ffff000012e9b790
-> Mem abort info:
->   ESR = 0x96000007
->   Exception class = DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
-> Data abort info:
->   ISV = 0, ISS = 0x00000007
->   CM = 0, WnR = 0
-> swapper pgtable: 4k pages, 48-bit VAs, pgdp = 0000000075ac5e07
-> [ffff000012e9b790] pgd=00000027dbffe003, pud=00000027dbffd003,
-> pmd=00000027b6d61003, pte=0000000000000000
-> Internal error: Oops: 96000007 [#1] PREEMPT SMP
-> Modules linked in: xt_conntrack
-> Process read_all (pid: 20171, stack limit = 0x0000000044ea4095)
-> CPU: 14 PID: 20171 Comm: read_all Tainted: G    B   W
-> Hardware name: NXP Layerscape LX2160ARDB (DT)
-> pstate: 80000085 (Nzcv daIf -PAN -UAO)
-> pc : irq_affinity_hint_proc_show+0x54/0xb0
-> lr : irq_affinity_hint_proc_show+0x4c/0xb0
-> sp : ffff00001138bc10
-> x29: ffff00001138bc10 x28: 0000ffffd131d1e0
-> x27: 00000000007000c0 x26: ffff8025b9480dc0
-> x25: ffff8025b9480da8 x24: 00000000000003ff
-> x23: ffff8027334f8300 x22: ffff80272e97d000
-> x21: ffff80272e97d0b0 x20: ffff8025b9480d80
-> x19: ffff000009a49000 x18: 0000000000000000
-> x17: 0000000000000000 x16: 0000000000000000
-> x15: 0000000000000000 x14: 0000000000000000
-> x13: 0000000000000000 x12: 0000000000000040
-> x11: 0000000000000000 x10: ffff802735b79b88
-> x9 : 0000000000000000 x8 : 0000000000000000
-> x7 : ffff000009a49848 x6 : 0000000000000003
-> x5 : 0000000000000000 x4 : ffff000008157d6c
-> x3 : ffff00001138bc10 x2 : ffff000012e9b790
-> x1 : 0000000000000000 x0 : 0000000000000000
-> Call trace:
->  irq_affinity_hint_proc_show+0x54/0xb0
->  seq_read+0x1b0/0x440
->  proc_reg_read+0x80/0xd8
->  __vfs_read+0x60/0x178
->  vfs_read+0x94/0x150
->  ksys_read+0x74/0xf0
->  __arm64_sys_read+0x24/0x30
->  el0_svc_common.constprop.0+0xd8/0x1a0
->  el0_svc_handler+0x34/0x88
->  el0_svc+0x10/0x14
-> Code: f9001bbf 943e0732 f94066c2 b4000062 (f9400041)
-> ---[ end trace b495bdcb0b3b732b ]---
-> Kernel panic - not syncing: Fatal exception
-> SMP: stopping secondary CPUs
-> SMP: failed to stop secondary CPUs 0,2-4,6,8,11,13-15
-> Kernel Offset: disabled
-> CPU features: 0x0,21006008
-> Memory Limit: none
-> ---[ end Kernel panic - not syncing: Fatal exception ]---
->
-> Fix it by using 'cpumask_of(cpu)' to get the cpumask.
->
-> Signed-off-by: Hao Si <si.hao@zte.com.cn>
-> Signed-off-by: Lin Chen <chen.lin5@zte.com.cn>
-> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
-
-Applied for fix.  Thanks.
-
-> ---
-> v3: Use cpumask_of(cpu) to get the pre-defined cpumask in the static
-> cpu_bit_bitmap array.
-> v2: Place 'cpumask_t mask' in the driver's private data and while at it,
-> rename it to cpu_mask.
->
->  drivers/soc/fsl/dpio/dpio-driver.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/drivers/soc/fsl/dpio/dpio-driver.c b/drivers/soc/fsl/dpio/dpio-driver.c
-> index 7b642c3..7f397b4 100644
-> --- a/drivers/soc/fsl/dpio/dpio-driver.c
-> +++ b/drivers/soc/fsl/dpio/dpio-driver.c
-> @@ -95,7 +95,6 @@ static int register_dpio_irq_handlers(struct fsl_mc_device *dpio_dev, int cpu)
->  {
->         int error;
->         struct fsl_mc_device_irq *irq;
-> -       cpumask_t mask;
->
->         irq = dpio_dev->irqs[0];
->         error = devm_request_irq(&dpio_dev->dev,
-> @@ -112,9 +111,7 @@ static int register_dpio_irq_handlers(struct fsl_mc_device *dpio_dev, int cpu)
->         }
->
->         /* set the affinity hint */
-> -       cpumask_clear(&mask);
-> -       cpumask_set_cpu(cpu, &mask);
-> -       if (irq_set_affinity_hint(irq->msi_desc->irq, &mask))
-> +       if (irq_set_affinity_hint(irq->msi_desc->irq, cpumask_of(cpu)))
->                 dev_err(&dpio_dev->dev,
->                         "irq_set_affinity failed irq %d cpu %d\n",
->                         irq->msi_desc->irq, cpu);
-> --
-> 2.15.2
+TG9va3MgZ29vZC4NClJldmlld2VkLWJ5OiBBcnVscHJhYmh1IFBvbm51c2FteSA8YXJ1bHBvbm5A
+Y2lzY28uY29tPg0KDQrvu79PbiAxMS8yMC8yMCwgNTo1MSBQTSwgIkthcmFuIFRpbGFrIEt1bWFy
+IiA8a2FydGlsYWtAY2lzY28uY29tPiB3cm90ZToNCg0KICAgIEZpeCB0byBzZXQgc2NzaV9zZXRf
+cmVzaWQoKSBvbmx5IGlmDQogICAgRkNQSU9fSUNNTkRfQ01QTF9SRVNJRF9VTkRFUiBpcyBzZXQu
+DQoNCiAgICBTaWduZWQtb2ZmLWJ5OiBLYXJhbiBUaWxhayBLdW1hciA8a2FydGlsYWtAY2lzY28u
+Y29tPg0KICAgIFNpZ25lZC1vZmYtYnk6IFNhdGlzaCBLaGFyYXQgPHNhdGlzaGtoQGNpc2NvLmNv
+bT4NCiAgICAtLS0NCiAgICAgZHJpdmVycy9zY3NpL2ZuaWMvZm5pYy5oICAgICAgfCAyICstDQog
+ICAgIGRyaXZlcnMvc2NzaS9mbmljL2ZuaWNfc2NzaS5jIHwgNSArKystLQ0KICAgICAyIGZpbGVz
+IGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCg0KICAgIGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL3Njc2kvZm5pYy9mbmljLmggYi9kcml2ZXJzL3Njc2kvZm5pYy9mbmljLmgN
+CiAgICBpbmRleCA3YzVjOTExYjI2NzMuLmU0ZDM5OWY0MWEwYSAxMDA2NDQNCiAgICAtLS0gYS9k
+cml2ZXJzL3Njc2kvZm5pYy9mbmljLmgNCiAgICArKysgYi9kcml2ZXJzL3Njc2kvZm5pYy9mbmlj
+LmgNCiAgICBAQCAtMzksNyArMzksNyBAQA0KDQogICAgICNkZWZpbmUgRFJWX05BTUUJCSJmbmlj
+Ig0KICAgICAjZGVmaW5lIERSVl9ERVNDUklQVElPTgkJIkNpc2NvIEZDb0UgSEJBIERyaXZlciIN
+CiAgICAtI2RlZmluZSBEUlZfVkVSU0lPTgkJIjEuNi4wLjUxIg0KICAgICsjZGVmaW5lIERSVl9W
+RVJTSU9OCQkiMS42LjAuNTIiDQogICAgICNkZWZpbmUgUEZYCQkJRFJWX05BTUUgIjogIg0KICAg
+ICAjZGVmaW5lIERGWCAgICAgICAgICAgICAgICAgICAgIERSVl9OQU1FICIlZDogIg0KDQogICAg
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS9mbmljL2ZuaWNfc2NzaS5jIGIvZHJpdmVycy9zY3Np
+L2ZuaWMvZm5pY19zY3NpLmMNCiAgICBpbmRleCAxNmU2NmY1YjgzM2EuLjUzMmMzYzdhZTM3MiAx
+MDA2NDQNCiAgICAtLS0gYS9kcml2ZXJzL3Njc2kvZm5pYy9mbmljX3Njc2kuYw0KICAgICsrKyBi
+L2RyaXZlcnMvc2NzaS9mbmljL2ZuaWNfc2NzaS5jDQogICAgQEAgLTkyMSwxMCArOTIxLDExIEBA
+IHN0YXRpYyB2b2lkIGZuaWNfZmNwaW9faWNtbmRfY21wbF9oYW5kbGVyKHN0cnVjdCBmbmljICpm
+bmljLA0KICAgICAJY2FzZSBGQ1BJT19TVUNDRVNTOg0KICAgICAJCXNjLT5yZXN1bHQgPSAoRElE
+X09LIDw8IDE2KSB8IGljbW5kX2NtcGwtPnNjc2lfc3RhdHVzOw0KICAgICAJCXhmZXJfbGVuID0g
+c2NzaV9idWZmbGVuKHNjKTsNCiAgICAtCQlzY3NpX3NldF9yZXNpZChzYywgaWNtbmRfY21wbC0+
+cmVzaWR1YWwpOw0KDQogICAgLQkJaWYgKGljbW5kX2NtcGwtPmZsYWdzICYgRkNQSU9fSUNNTkRf
+Q01QTF9SRVNJRF9VTkRFUikNCiAgICArCQlpZiAoaWNtbmRfY21wbC0+ZmxhZ3MgJiBGQ1BJT19J
+Q01ORF9DTVBMX1JFU0lEX1VOREVSKSB7DQogICAgIAkJCXhmZXJfbGVuIC09IGljbW5kX2NtcGwt
+PnJlc2lkdWFsOw0KICAgICsJCQlzY3NpX3NldF9yZXNpZChzYywgaWNtbmRfY21wbC0+cmVzaWR1
+YWwpOw0KICAgICsJCX0NCg0KICAgICAJCWlmIChpY21uZF9jbXBsLT5zY3NpX3N0YXR1cyA9PSBT
+QU1fU1RBVF9DSEVDS19DT05ESVRJT04pDQogICAgIAkJCWF0b21pYzY0X2luYygmZm5pY19zdGF0
+cy0+bWlzY19zdGF0cy5jaGVja19jb25kaXRpb24pOw0KICAgIC0tIA0KICAgIDIuMjkuMg0KDQoN
+Cg==
