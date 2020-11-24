@@ -2,186 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446DB2C1E8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578D72C1E8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729240AbgKXG4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727238AbgKXG4D (ORCPT
+        id S1729283AbgKXG7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:59:51 -0500
+Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:8600 "EHLO
+        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725786AbgKXG7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:56:03 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D923DC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:56:02 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id k27so26845147ejs.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:56:02 -0800 (PST)
+        Tue, 24 Nov 2020 01:59:51 -0500
+Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AO6oEnN011699;
+        Tue, 24 Nov 2020 01:59:48 -0500
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
+        by mx0b-00128a01.pphosted.com with ESMTP id 34y0fh6v73-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 01:59:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SQbU9jp5L5kpUEhHpGpAmwLsiIRboBPMM6wkS+cdEAMO3zKupXLmGL+P3JoaVb32uk7DzZXAr62hS0aziKRSftsd9vSvwwevy7d+7qMBXPCaKXzIwmq9feWnH6lMriD99lo20cnZ97/BQWwb/0EsquJvEwiDymFAQN+VCvO7cMTVgtYmZyUwCiWm2BS/IH94SYY7A91LS+9OqpJ1CaRhhcL2XWVi9Zb7UL2Milb7rwn0C4aHDm+6/Wym1ITko7vUCuZd7Ru2wyPH3WG0r4ol36MmOuyW7A75PkZRrVEtS3T37VJ+tlgBE1taXuwfBZJ7m5yTf2dVa+Gm6ukO9Q8dtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZAqwT7Nc26h/kUwls/rv05fuEBOSmKBY8xz4E9u0qc8=;
+ b=kEH+KrAXw7chkI/w08BSxSsI/wlJqaYR6LG+Ov8gsjhKWN5L3KDP1MlgeixnL8xJ/cV7iyz8aiYSCPV0iJHcFDzp7/5AMvSKsZ5o7ycKYPRhw/ndDHxEviGNqrw/22qputDejuNxKJ8bXpoRjeRmLuYmi5ZPekKNHLb970K0w8DEjR0RN/QK4cA4CJIC0rKPR44v9I9UyGxFw7WqjMJhfp7JgGZXCbe81gQHgwIQxTjpMEDgZ/hYyItZxZe0f5kL806IYl8aYTha/OrZGW9F0qD6cWVHJE88A6kgO8869NTHpN3Brn13gD1w3jva3exuUCx1zq8C5ObUnd5VSDaFUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mBJZ0wwdLwaZ1wTyKtUWo60nHJLkJ5lKlr3wNetCMDw=;
-        b=aP2KLJfagkQB6OY0pj1daVZTnoqOdgM8gfxf/Aod00LNf9RXL7XN0/VFBybRmOhdmR
-         XA/XCudfirllEm1mNwd/HMtFu6n8W+2o5X83qLabY0FzrRFHDJpIC8H+E6Qb0YIRMz7u
-         wroQNk3fWdTROHAyZfKGEBpq+cYJfoyhATdXJWPZrXU30vaVTo4tYvkGm0Lih7o3ooGk
-         XjAsI2dLGVuaaKCVqtTGSJ+bjjW72i3Xrlf4/SQeXevtlQIXx8cF58SgADXpR7OzlE/t
-         nClwXY7uJfK7FoOwNpasSn6Kt7P4grUW+tAxy/cTUD9frlKwwcDvPb1yKRq/rirb59RR
-         PQ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mBJZ0wwdLwaZ1wTyKtUWo60nHJLkJ5lKlr3wNetCMDw=;
-        b=gy6Gt61XJZOkUu8RcE8/8bb3f2PcSgOduvXw2//UeIvsJEHIqXLXl/jkJsBfp4YFn0
-         ap2hxULPQycZxKLr6hJSu0tN5/MkgoNbr6U5OCYwz/LneNMUg72JaEouvNyl270wWp8z
-         8GUT5q3yZcWCY54pHdV/Lwq/15ibHHUBbB/DEWRh+tnFWhuHBhPJM8HlT4bClIZqvzy4
-         7KqK8HaM23jHuFdunAp3rosxUoeJf2I6KpnqZ1N/hX4wDW9vA5YO+CjP03zr+rV3UczK
-         P2ltUn8/tD0dN0pjuwQM1hLFZ8lDO9fkEM1EUD2UCGqGUxqTtE+B/gRqJ9CV0fWG0RSO
-         KNTw==
-X-Gm-Message-State: AOAM533GS6b8WVcTFVpcaGSKhHqtojAr8xvB2CcFPqZpPpd8V/C9FJCj
-        qhInhOlI8skkps27BmLGO+cuPkax6dWDsmkXcZ762w==
-X-Google-Smtp-Source: ABdhPJwF7ny4yZX0pI3tx5wLq6hNBaOjwLfFwHr5ojc+rIvAleiCW+xSIA199fP/dPd2fr5EL5vHslfqWHwcw7Dzie4=
-X-Received: by 2002:a17:906:bd2:: with SMTP id y18mr2746034ejg.503.1606200961345;
- Mon, 23 Nov 2020 22:56:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20201123121809.285416732@linuxfoundation.org>
-In-Reply-To: <20201123121809.285416732@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 24 Nov 2020 12:25:50 +0530
-Message-ID: <CA+G9fYuPHg7x1FzsqniqmAdN+x1f+KY1a52ZsdCMuqyy7y1jgA@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/91] 4.19.160-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZAqwT7Nc26h/kUwls/rv05fuEBOSmKBY8xz4E9u0qc8=;
+ b=h39zRdVHXpo1JwjzQrJVx2Rx5tma2+3hPjpsuo2xyvn/w71c50pgX5gWENEs6Sbq9LMNhBPRmhXSxgj/PII6scunvuK9seOz1y2BnX4boJnd50rvWwXoXAI03ut+RUEiMB25df74jsSbh5vJPhvkSybwoe7jnIqY1d+3xTFbo88=
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
+ by DM5PR03MB3243.namprd03.prod.outlook.com (2603:10b6:4:41::35) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.28; Tue, 24 Nov
+ 2020 06:59:45 +0000
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f99d:8928:7e14:1a62]) by DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f99d:8928:7e14:1a62%6]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 06:59:45 +0000
+From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+CC:     "mst@redhat.com" <mst@redhat.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Subject: RE: [PATCH v2] uio/uio_pci_generic: remove unneeded pci_set_drvdata()
+Thread-Topic: [PATCH v2] uio/uio_pci_generic: remove unneeded
+ pci_set_drvdata()
+Thread-Index: AQHWwaUUIcZryZWIbUiXJB5cBXvgBKnW20eg
+Date:   Tue, 24 Nov 2020 06:59:45 +0000
+Message-ID: <DM6PR03MB441117D7BD9A2A539C2D2480F9FB0@DM6PR03MB4411.namprd03.prod.outlook.com>
+References: <20201119145906.73727-1-alexandru.ardelean@analog.com>
+ <20201123143447.16829-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20201123143447.16829-1-alexandru.ardelean@analog.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcYWFyZGVsZWFc?=
+ =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
+ =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy1hMThmZDdkOS0yZTIyLTExZWItYTVjZC00MTU2?=
+ =?us-ascii?Q?NDUwMDAwMzBcYW1lLXRlc3RcYTE4ZmQ3ZGItMmUyMi0xMWViLWE1Y2QtNDE1?=
+ =?us-ascii?Q?NjQ1MDAwMDMwYm9keS50eHQiIHN6PSIxODI5IiB0PSIxMzI1MDY3NDc4NDk0?=
+ =?us-ascii?Q?MTI3NzMiIGg9InkrYzhuN0RCWlk0TE4xQ0piSUNIWTdHMjkrTT0iIGlkPSIi?=
+ =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUVvQ0FB?=
+ =?us-ascii?Q?Q2xFT2hqTDhMV0FaSWRFbHQwZTFtNGtoMFNXM1I3V2JnREFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQURhQVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFRQUJBQUFBZ3NWMDRRQUFBQUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFh?=
+ =?us-ascii?Q?UUJmQUhNQVpRQmpBSFVBY2dCbEFGOEFjQUJ5QUc4QWFnQmxBR01BZEFCekFG?=
+ =?us-ascii?Q?OEFaZ0JoQUd3QWN3QmxBRjhBWmdCdkFITUFhUUIwQUdrQWRnQmxBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR0VBWkFCcEFGOEFjd0JsQUdNQWRR?=
+ =?us-ascii?Q?QnlBR1VBWHdCd0FISUFid0JxQUdVQVl3QjBBSE1BWHdCMEFHa0FaUUJ5QURF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQVlRQmtBR2tBWHdCekFHVUFZd0IxQUhJQVpRQmZBSEFBY2dC?=
+ =?us-ascii?Q?dkFHb0FaUUJqQUhRQWN3QmZBSFFBYVFCbEFISUFNZ0FBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFBPT0iLz48L21l?=
+ =?us-ascii?Q?dGE+?=
+x-dg-rorf: true
+authentication-results: analog.com; dkim=none (message not signed)
+ header.d=none;analog.com; dmarc=none action=none header.from=analog.com;
+x-originating-ip: [188.27.128.26]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b876e12d-b7ef-4a6f-75e2-08d8904686be
+x-ms-traffictypediagnostic: DM5PR03MB3243:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR03MB3243159AE7A3E29AEB3B518FF9FB0@DM5PR03MB3243.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:480;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +cJD5RHodrAwR9Vjr6EeoGBq55ggR7ebNXD52kiNmCMS2Ypemmve1CJVZFlulqmuxiSOpDN7srbQFGwLUMfltirevmxWRuRiQ7VUVNvYpKEOG3dymW/iCaSQXjD0/NXlQoXLid8A9BKVJCikIRmK/7ZEpqq2YIr4I+FCGAuBKxQct8QW+2hYSzU1yXyFL8kCjQomMxrtd4k5ezE0ybht0ABdryb1TuURZriYoIFsYYhR+RVb9U1qMsqbAddmJyJ00CXJKkgMc+XOs3CYDdV7SmuBQjVZENoZ3F8yDWmrrmHIOPD5TkeLC3nG6dtQII4OX6KeiaiS8ZoSIgKRNC184KbLQfS5CdhhfmQte5Zqh5AurUL7DZ1O/V2taztEpeHW
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(376002)(136003)(346002)(8676002)(2906002)(4326008)(8936002)(186003)(478600001)(33656002)(9686003)(66946007)(55016002)(26005)(52536014)(86362001)(83380400001)(5660300002)(316002)(53546011)(71200400001)(76116006)(66446008)(64756008)(66556008)(66476007)(6506007)(7696005)(110136005)(54906003)(41533002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ARz5hOQCb31fuEVyL7Jt2Jgys8/QApeIxT50nN6X9KMleziUrj5oGgK7im4sgjaE5AixpZnib/92b0rfHoTrgcFwrKvHPqfbGZ5DM2F/f+ivx4tzf8Lx9qt4+vYAqbidkFl007juskjL7sZUoysar1jtnWasrS+Ehwpn1SjbQ1Z6pCivtLXE5obtfIxzSZRsc2UFbI98zwT5vilqE/kPQCqhCmM0LCa6mr19r7fgACun1R2dfdbUpGRMq4VzNs+gSDErjMJwPHU4YTzHFVkjH9MMywEIYyohXiLN1y2gyrRjhC7M7Kn9TvPzXPbj74ftUbL+piMDU+fjBsEH7DWhkZ8+8Zk7GUNLOIFURMyF0PUraWHpftLjm4/ohmLdVFIx8YfWHzZwKrIVdPM7yWQWDiTZroU8t2B9O3wCkOU32zF0QnS3O2NTmq+vVzf3yIPcdIfx6il4dMEbilmoA3SXa5QvWtpvFilBzUiTC0k9CS4i8kHYeEiqDxaFIOXAUJn5NKdTogzWM9pkZOxIsV6PG0rBJSK/fyi/Drn1c5rCnA+HR9CcbRY5HqEk/Bg+25Ul78+I5uBLZNT2QJ5mZDUK4d9wtQSRbcZK+M6+DlnsjWAZbWRoWhFRFblYYRYmA42NVGd9BoGMHbku9iNPNizV0ARAKljOXAjjgW9OtiWv2umw9W/GiZbCqgaS+Wo7GaE9tNsCH2fOyfnYI2tI9uPr+XcFirOM1DCmMHHD7DGDmfwyz/saxqi6YEbzJIR9/uQn6F2WuZaA3/OlN0KRzQ2Rhn/HffWIHGVxFGF2f9btulyNy72tIZFkaVzcYAmH0iiN2U2013T8FExokmutJWJcQnUkitqVvPq9Qpg5IQK7DhOSEOOyRPulSQ+rqoVrzwI+f5SPa0akJVAmQDCJiRJzbw==
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4411.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b876e12d-b7ef-4a6f-75e2-08d8904686be
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 06:59:45.4285
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BP0G8Ucqnorii7SF5P23Ux43Z+0/hFR+hP6hIgeZgDvl20bRkHoKKVkjJlZNV5LgllkpbhLRwkCWdc34Inv4sh/NBg+5xgijb1oo1dq4vD0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB3243
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_03:2020-11-24,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 at 17:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.160 release.
-> There are 91 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.160-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> -----Original Message-----
+> From: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> Sent: Monday, November 23, 2020 4:35 PM
+> To: linux-kernel@vger.kernel.org; kvm@vger.kernel.org
+> Cc: mst@redhat.com; gregkh@linuxfoundation.org; Ardelean, Alexandru
+> <alexandru.Ardelean@analog.com>
+> Subject: [PATCH v2] uio/uio_pci_generic: remove unneeded pci_set_drvdata(=
+)
+>=20
+> The pci_get_drvdata() was moved during commit ef84928cff58
+> ("uio/uio_pci_generic: use device-managed function equivalents").
+>=20
+> Storing a private object with pci_set_drvdata() doesn't make sense since =
+that
+> change, since there is no more pci_get_drvdata() call in the driver to re=
+trieve the
+> information.
+>=20
+> This change removes it.
+>=20
+> Fixes: ef84928cff58 ("io/uio_pci_generic: use device-managed function
+> equivalents")
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Forgot the changelog
+Apologies.
 
-Summary
-------------------------------------------------------------------------
+Changelog v1 -> v2:
+* added Fixes tag
+* updated commit comment a bit from V1
 
-kernel: 4.19.160-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 6f94b70fe8f995a6d337b163e35735f9dc957ef7
-git describe: v4.19.159-92-g6f94b70fe8f9
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.159-92-g6f94b70fe8f9
+>  drivers/uio/uio_pci_generic.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.=
+c index
+> 1c6c09e1280d..b8e44d16279f 100644
+> --- a/drivers/uio/uio_pci_generic.c
+> +++ b/drivers/uio/uio_pci_generic.c
+> @@ -101,13 +101,7 @@ static int probe(struct pci_dev *pdev,
+>  			 "no support for interrupts?\n");
+>  	}
+>=20
+> -	err =3D devm_uio_register_device(&pdev->dev, &gdev->info);
+> -	if (err)
+> -		return err;
+> -
+> -	pci_set_drvdata(pdev, gdev);
+> -
+> -	return 0;
+> +	return devm_uio_register_device(&pdev->dev, &gdev->info);
+>  }
+>=20
+>  static struct pci_driver uio_pci_driver =3D {
+> --
+> 2.17.1
 
-No regressions (compared to build v4.19.159)
-
-No fixes (compared to build v4.19.159)
-
-
-Ran 44060 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- s390
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-math-tests
-* ltp-mm-tests
-* network-basic-tests
-* kselftest
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
