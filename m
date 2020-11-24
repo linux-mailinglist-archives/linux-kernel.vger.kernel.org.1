@@ -2,57 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CAB2C2100
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DE52C2105
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731079AbgKXJSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:18:09 -0500
-Received: from verein.lst.de ([213.95.11.211]:53534 "EHLO verein.lst.de"
+        id S1731107AbgKXJSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:18:55 -0500
+Received: from verein.lst.de ([213.95.11.211]:53538 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727222AbgKXJSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:18:08 -0500
+        id S1729476AbgKXJSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:18:54 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 7D49167373; Tue, 24 Nov 2020 10:18:04 +0100 (CET)
-Date:   Tue, 24 Nov 2020 10:18:04 +0100
+        id 1F1F967373; Tue, 24 Nov 2020 10:18:53 +0100 (CET)
+Date:   Tue, 24 Nov 2020 10:18:52 +0100
 From:   Christoph Hellwig <hch@lst.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the arm-soc tree
-Message-ID: <20201124091804.GA11695@lst.de>
-References: <20201124093115.0f358046@canb.auug.org.au>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 1/3] LICENSES: Add the CC-BY-4.0 license
+Message-ID: <20201124091852.GB11695@lst.de>
+References: <cover.1606137108.git.linux@leemhuis.info> <c07e51e153f453c83c77a75513ad3d5ec70ef1be.1606137108.git.linux@leemhuis.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124093115.0f358046@canb.auug.org.au>
+In-Reply-To: <c07e51e153f453c83c77a75513ad3d5ec70ef1be.1606137108.git.linux@leemhuis.info>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 09:31:15AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the arm-soc tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
-> 
-> drivers/soc/sunxi/sunxi_mbus.c: In function 'sunxi_mbus_notifier':
-> drivers/soc/sunxi/sunxi_mbus.c:93:8: error: implicit declaration of function 'dma_direct_set_offset' [-Werror=implicit-function-declaration]
->    93 |  ret = dma_direct_set_offset(dev, PHYS_OFFSET, 0, SZ_4G);
->       |        ^~~~~~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   b4bdc4fbf8d0 ("soc: sunxi: Deal with the MBUS DMA offsets in a central place")
-> 
-> probably interacting with commit
-> 
->   16fee29b0735 ("dma-mapping: remove the dma_direct_set_offset export")
-> 
-> which is also in the arm-soc tree ...
+On Tue, Nov 24, 2020 at 09:00:01AM +0100, Thorsten Leemhuis wrote:
+> For context: Patch 2 of this series adds a text to the Documentation/ directory
+> which (for now) uses "GPL-2.0+ OR CC-BY-4.0", as I want to make it easy and
+> attractive for others to base their work on it. I'm not strongly attached to
+> CC-BY-4.0, but it seemed like the best choice: it's designed for such usage and
+> afaics better than using MIT for text files.
 
-drivers/soc/sunxi/sunxi_mbus.c now needs an include of <linux/dma-map-ops.h>.
+And you've not Cced me on that patch 2 or patch 3, which makes Ccing
+me on this pretty useless as I can't judge the context.
