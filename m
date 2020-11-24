@@ -2,154 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979A02C29A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAC42C29A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389065AbgKXO3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:29:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388885AbgKXO33 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:29:29 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C936C0613D6;
-        Tue, 24 Nov 2020 06:29:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=f3fcIKxHhOodlzZ3Xl2mDhvARrazRpJYqfbYOY9E1Hg=; b=ZvC48PVvb6e9xxZKtAlWV2gAzm
-        mUu/M9+HXxyILHTsrw0l7U98q4LIzPSu4BCQYvOBP/IRJj3NMaxQ9FTCQcH6x9gfutvdjx9jvbhP0
-        9YYmw1Rn2zqBxQiieOHHsqcR5ELvSuKkbZwgm1mdHR6kyTL1Fyx7Gt4ttm/IzEsuy7i36bpL4XQuT
-        JqJSa9CIBFixmkwA/dhx4C5KSHQzOj7BDzYdpKnY40cF2t7YS+M/rcZIWJfLTeXVPvq9x5McGf8z4
-        L7ROMBXxfyfaw0IKbD3iDSHYgJ9oaoFXTkBjX6TYK2wBxw86yeyoAhOBRNUhOy0cvSH5nP0oep55D
-        uUv4Z5uw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khZJd-0003ca-9P; Tue, 24 Nov 2020 14:29:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S2389074AbgKXOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:30:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388014AbgKXO37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:29:59 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F862307005;
-        Tue, 24 Nov 2020 15:29:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 75D6620222D7E; Tue, 24 Nov 2020 15:29:05 +0100 (CET)
-Date:   Tue, 24 Nov 2020 15:29:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     guoren@kernel.org
-Cc:     arnd@arndb.de, palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Michael Clark <michaeljclark@mac.com>
-Subject: Re: [PATCH 1/5] riscv: Coding convention for xchg
-Message-ID: <20201124142905.GH2414@hirez.programming.kicks-ass.net>
-References: <1606225437-22948-1-git-send-email-guoren@kernel.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73B192076E;
+        Tue, 24 Nov 2020 14:29:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606228199;
+        bh=WVnMFGVgDwBYzrdi0QU1bU9tavRmGvM2q9lX3BwdRMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cyrn05kV9I3Ovr0jbD56E7qkiHgiFipxQB3vtHIO6UguzFxDsrtYBK6iy5NucPGDI
+         haAqgEbZRoGYcExkJ648Areu/FBuy0pQv6JzILwRSvy9PLfW5MA6o8+hcuRQOW0xPN
+         /k4l2rZ/zPaYiaSVt6OK2RBZCssHgRwslE89yHzk=
+Date:   Tue, 24 Nov 2020 08:30:14 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 052/141] security: keys: Fix fall-through warnings for
+ Clang
+Message-ID: <20201124143014.GA16084@embeddedor>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <412e11590b667712c03c1e4d4c7573fda3a4b1cb.1605896059.git.gustavoars@kernel.org>
+ <20201123225402.GB19839@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1606225437-22948-1-git-send-email-guoren@kernel.org>
+In-Reply-To: <20201123225402.GB19839@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 01:43:53PM +0000, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
+On Tue, Nov 24, 2020 at 12:54:02AM +0200, Jarkko Sakkinen wrote:
+> On Fri, Nov 20, 2020 at 12:32:20PM -0600, Gustavo A. R. Silva wrote:
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> > by explicitly adding a break statement instead of letting the code fall
+> > through to the next case.
+> > 
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >  security/keys/process_keys.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/security/keys/process_keys.c b/security/keys/process_keys.c
+> > index 1fe8b934f656..e3d79a7b6db6 100644
+> > --- a/security/keys/process_keys.c
+> > +++ b/security/keys/process_keys.c
+> > @@ -783,6 +783,7 @@ key_ref_t lookup_user_key(key_serial_t id, unsigned long lflags,
+> >  				if (need_perm != KEY_AUTHTOKEN_OVERRIDE &&
+> >  				    need_perm != KEY_DEFER_PERM_CHECK)
+> >  					goto invalid_key;
+> > +				break;
+> >  			case 0:
+> >  				break;
+> >  			}
+> > -- 
+> > 2.27.0
+> > 
+> > 
 > 
-> This is prepare for QUEUED_SPINLOCKS which need xchg support short
-> type value.
->  - Remove unused codes (xchg32, xchg64, cmpxchg32 ...)
->  - Combine xchg_relaxed, xchg_acquire, xchg_release into one asm
->  - Make atomic.aq/rl with seperated fence acquire & release
+> 
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Every time you find yourself doing multiple things, make it multiple
-patches.
-
-> @@ -242,58 +239,58 @@ static __always_inline s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u
->   * atomic_{cmp,}xchg is required to have exactly the same ordering semantics as
->   * {cmp,}xchg and the operations that return, so they need a full barrier.
->   */
-> +#define ATOMIC_OP(c_t, prefix)						\
->  static __always_inline							\
->  c_t atomic##prefix##_xchg_relaxed(atomic##prefix##_t *v, c_t n)		\
->  {									\
-> +	return xchg_relaxed(&(v->counter), n);				\
->  }									\
->  static __always_inline							\
->  c_t atomic##prefix##_xchg_acquire(atomic##prefix##_t *v, c_t n)		\
->  {									\
-> +	return xchg_acquire(&(v->counter), n);				\
->  }									\
->  static __always_inline							\
->  c_t atomic##prefix##_xchg_release(atomic##prefix##_t *v, c_t n)		\
->  {									\
-> +	return xchg_release(&(v->counter), n);				\
->  }									\
->  static __always_inline							\
->  c_t atomic##prefix##_xchg(atomic##prefix##_t *v, c_t n)			\
->  {									\
-> +	return xchg(&(v->counter), n);					\
->  }									\
->  static __always_inline							\
->  c_t atomic##prefix##_cmpxchg_relaxed(atomic##prefix##_t *v,		\
->  				     c_t o, c_t n)			\
->  {									\
-> +	return cmpxchg_relaxed(&(v->counter), o, n);			\
->  }									\
->  static __always_inline							\
->  c_t atomic##prefix##_cmpxchg_acquire(atomic##prefix##_t *v,		\
->  				     c_t o, c_t n)			\
->  {									\
-> +	return cmpxchg_acquire(&(v->counter), o, n);			\
->  }									\
->  static __always_inline							\
->  c_t atomic##prefix##_cmpxchg_release(atomic##prefix##_t *v,		\
->  				     c_t o, c_t n)			\
->  {									\
-> +	return cmpxchg_release(&(v->counter), o, n);			\
->  }									\
->  static __always_inline							\
->  c_t atomic##prefix##_cmpxchg(atomic##prefix##_t *v, c_t o, c_t n)	\
->  {									\
-> +	return cmpxchg(&(v->counter), o, n);				\
->  }
-
-> diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-> index 262e5bb..5609185 100644
-> --- a/arch/riscv/include/asm/cmpxchg.h
-> +++ b/arch/riscv/include/asm/cmpxchg.h
-> @@ -44,118 +44,31 @@
->  					    _x_, sizeof(*(ptr)));	\
->  })
->  
->  #define xchg_acquire(ptr, x)						\
->  ({									\
-> +	__typeof__(*(ptr)) _x_ = (x);					\
-> +	__ret = __xchg_relaxed((ptr), _x_, sizeof(*(ptr)));		\
-> +	__acquire_fence();						\
->  	__ret;								\
->  })
->  
->  #define xchg_release(ptr, x)						\
->  ({									\
->  	__typeof__(*(ptr)) _x_ = (x);					\
-> +	__release_fence();						\
-> +	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
->  					    _x_, sizeof(*(ptr)));	\
->  })
->  
->  #define xchg(ptr, x)							\
->  ({									\
-> +	__typeof__(*(ptr)) __ret;					\
->  	__typeof__(*(ptr)) _x_ = (x);					\
-> +	__smp_mb();							\
-> +	__ret = __xchg_relaxed((ptr), _x_, sizeof(*(ptr)));		\
-> +	__smp_mb();							\
-> +	__ret;								\
->  })
->  
->  /*
-
-Why are you defining *{,_acquire,_release}() at all, doesn't
-atomic-fallback.h DTRT for you?
+Thank you, Jarkko.
+--
+Gustavo
