@@ -2,126 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598132C2F25
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B31E2C2F2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404047AbgKXRrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404040AbgKXRrw (ORCPT
+        id S2403999AbgKXRtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:49:03 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42414 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728945AbgKXRtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:47:52 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F14C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:47:52 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id d8so1271691lfa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:47:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aBvdxE2ZMFJMjEWowg/8vkDR+EJtYbLtmKIhC1tTWa4=;
-        b=eUfyso5qnVBEifJ8Un7AiNAgM3bkJdE3LxUDITLN+Cp7b4V+Hmur6vRsVALDz8z6jM
-         7sUgbX/bPUY+WdI1ID3C4peVma+0/3KoNchjxF54EFV7aCQ0g5dZloVxY/qpercaEzqY
-         8llbSj9cbON+LzLGVLB8NcW+iZkjaf3VMbSAvDnUWuVIBOzw6UYZ2q6RPpISc0F3Ffu8
-         OoQFxGRt9FKL+lxgVfd3FUIljbypXESLb9WOCMv5AsakKM9Xwi76NXlhEdR2i91RpdvC
-         djbyDa2By5GUoZgKn3ggm9XIfWAC9aYPcyu1ZrCG0J0HpUd5jy557qYVmw/JiWiukVb5
-         V4xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aBvdxE2ZMFJMjEWowg/8vkDR+EJtYbLtmKIhC1tTWa4=;
-        b=TFSFKTUMGBnZtuhenHZNmmrww3iwI2fm7EEYOJolzbtrdKO+6NXKfSfxzpsDU2eIoa
-         HGfOA1MGZe6jZckGjrRNc4Cmk8NPvkdATbv5GnqVCZb/BTRNONXkHRx3gW5qZA6uJqKu
-         QyqtnZucEjD4wtd4g9L6y9+DOMAYcYe2fBB3wsQMJRzyqvg3tuamBM9tkTHP3+26oqh1
-         6xPpFX+ZJI9m8+8gyjMeEmXqhnkgU5sDWvwRLMa7WK0v8f4U3VoOz1nx9yLj7vQaYULt
-         aLqnTokFdsHfAStdRFYR1qHOrD2lEN1IVsRjYPGApi4gqvi6bnDNkuoVAfZMmGnexPZU
-         RkOA==
-X-Gm-Message-State: AOAM530c9t/mHjQlL0WhTWv4mwiGsvy1C4kUFQ9GmgNxsIW94qDRJj4J
-        OGe5gos9JlgslFgYCbJN+l4PkHHSrI+XpMxK6ZgzJA==
-X-Google-Smtp-Source: ABdhPJxoj0vRU23tyVRdct6OOAD7fJtx1Mij3ypPETiW6TBLpnkB+WqmeahlnNpDHjI7f0LJfBT01KzmQ91JPe+WijE=
-X-Received: by 2002:a19:4b48:: with SMTP id y69mr2334660lfa.576.1606240070465;
- Tue, 24 Nov 2020 09:47:50 -0800 (PST)
+        Tue, 24 Nov 2020 12:49:02 -0500
+Received: from 89-64-86-188.dynamic.chello.pl (89.64.86.188) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
+ id 93fb59caca3e8d53; Tue, 24 Nov 2020 18:48:59 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ACPI: PM: Re-enable ACPI GPE if it's already enabled
+Date:   Tue, 24 Nov 2020 18:48:58 +0100
+Message-ID: <2176101.IjXNKL1iO1@kreacher>
+In-Reply-To: <90E54BA3-FC3A-4538-ACD0-4C4DDF570C7C@canonical.com>
+References: <20201124073619.771940-1-kai.heng.feng@canonical.com> <CAJZ5v0iJ_x5oXL9gG_TvCriNnPwzZYvGkkEK6_HWrH4fmCqBxQ@mail.gmail.com> <90E54BA3-FC3A-4538-ACD0-4C4DDF570C7C@canonical.com>
 MIME-Version: 1.0
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com> <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
- <878saq3ofx.fsf@oldenburg2.str.redhat.com> <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
- <20201124164546.GA14094@infradead.org> <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
- <X70/uPNt2BA/vUSo@kroah.com> <CAG48ez2NH2Esw_55JiwK1FAzr_qFFyGaPrE_A=iH=dNuVvY6GQ@mail.gmail.com>
- <X71Gbko70D/jedAP@kroah.com>
-In-Reply-To: <X71Gbko70D/jedAP@kroah.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 24 Nov 2020 18:47:24 +0100
-Message-ID: <CAG48ez3fHajON65uuKNx7Q+52X=41-C7=mub=XVmBWSUtBtnpA@mail.gmail.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions & workaround
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
-        "Carlos O'Donell" <carlos@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 6:44 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> On Tue, Nov 24, 2020 at 06:30:28PM +0100, Jann Horn wrote:
-> > On Tue, Nov 24, 2020 at 6:15 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > On Tue, Nov 24, 2020 at 06:06:38PM +0100, Jann Horn wrote:
-> > > > +seccomp maintainers/reviewers
-> > > > [thread context is at
-> > > > https://lore.kernel.org/linux-api/87lfer2c0b.fsf@oldenburg2.str.redhat.com/
-> > > > ]
-> > > >
-> > > > On Tue, Nov 24, 2020 at 5:49 PM Christoph Hellwig <hch@infradead.org> wrote:
-> > > > > On Tue, Nov 24, 2020 at 03:08:05PM +0100, Mark Wielaard wrote:
-> > > > > > For valgrind the issue is statx which we try to use before falling back
-> > > > > > to stat64, fstatat or stat (depending on architecture, not all define
-> > > > > > all of these). The problem with these fallbacks is that under some
-> > > > > > containers (libseccomp versions) they might return EPERM instead of
-> > > > > > ENOSYS. This causes really obscure errors that are really hard to
-> > > > > > diagnose.
-> > > > >
-> > > > > So find a way to detect these completely broken container run times
-> > > > > and refuse to run under them at all.  After all they've decided to
-> > > > > deliberately break the syscall ABI.  (and yes, we gave the the rope
-> > > > > to do that with seccomp :().
-> > > >
-> > > > FWIW, if the consensus is that seccomp filters that return -EPERM by
-> > > > default are categorically wrong, I think it should be fairly easy to
-> > > > add a check to the seccomp core that detects whether the installed
-> > > > filter returns EPERM for some fixed unused syscall number and, if so,
-> > > > prints a warning to dmesg or something along those lines...
-> > >
-> > > Why?  seccomp is saying "this syscall is not permitted", so -EPERM seems
-> > > like the correct error to provide here.  It's not -ENOSYS as the syscall
-> > > is present.
-> > >
-> > > As everyone knows, there are other ways to have -EPERM be returned from
-> > > a syscall if you don't have the correct permissions to do something.
-> > > Why is seccomp being singled out here?  It's doing the correct thing.
-> >
-> > AFAIU from what the others have said, it's being singled out because
-> > it means that for two semantically equivalent operations (e.g.
-> > openat() vs open()), one can fail while the other works because the
-> > filter doesn't know about one of the syscalls. Normally semantically
-> > equivalent syscalls are supposed to be subject to the same checks, and
-> > if one of them fails, trying the other one won't help.
->
-> They aren't being subject to the same checks, if the seccomp permissions
-> are different for both of them, they will get different answers.
->
-> Trying to use this to determine if the syscall is present or not is not
-> ok, and as Christian just said, needs to be fixed in userspace.  We
-> can't change the kernel ABI now, odds are someone else relies on the api
-> we have had in place and it can not be changed :)
+On Tuesday, November 24, 2020 6:31:56 PM CET Kai-Heng Feng wrote:
+> 
+> > On Nov 24, 2020, at 22:00, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > 
+> > On Tue, Nov 24, 2020 at 8:36 AM Kai-Heng Feng
+> > <kai.heng.feng@canonical.com> wrote:
+> >> 
+> >> Dell Precision 5550 fails to detect Thunderbolt device hotplug events,
+> >> once the Thunderbolt device and its root port are runtime-suspended to
+> >> D3cold.
+> >> 
+> >> While putting the entire hierarchy to D3cold, the root port ACPI GPE is
+> >> enabled via acpi_pci_propagate_wakeup() when suspending Thunderbolt
+> >> bridges/switches. So when putting the root port to D3cold as last step,
+> >> ACPI GPE is untouched as it's already enabled.
+> >> 
+> >> However, platform may need PCI devices to be in D3hot or PME enabled
+> >> prior enabling GPE to make it work.
+> > 
+> > What platforms and why.
+> 
+> Dell Precision 5550. Its thunderbolt port can't detect newly plugged thunderbolt devices.
 
-I don't think anyone was proposing changes to existing kernel API.
+OK
+
+> > 
+> >> So re-enable ACPI GPE to address this.
+> >> 
+> >> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> >> ---
+> >> drivers/acpi/device_pm.c | 13 ++++++-------
+> >> 1 file changed, 6 insertions(+), 7 deletions(-)
+> >> 
+> >> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+> >> index 94d91c67aeae..dc25d9d204ae 100644
+> >> --- a/drivers/acpi/device_pm.c
+> >> +++ b/drivers/acpi/device_pm.c
+> >> @@ -757,11 +757,10 @@ static int __acpi_device_wakeup_enable(struct acpi_device *adev,
+> >> 
+> >>        mutex_lock(&acpi_wakeup_lock);
+> >> 
+> >> -       if (wakeup->enable_count >= max_count)
+> >> -               goto out;
+> >> -
+> >> -       if (wakeup->enable_count > 0)
+> >> -               goto inc;
+> >> +       if (wakeup->enable_count > 0) {
+> >> +               acpi_disable_gpe(wakeup->gpe_device, wakeup->gpe_number);
+> >> +               acpi_disable_wakeup_device_power(adev);
+> >> +       }
+> > 
+> > An event occurring at this point may be lost after this patch.
+> 
+> Yes, so this approach is not optimal.
+> 
+> > 
+> > It looks like you are trying to work around a hardware issue.  
+> 
+> Windows doesn't have this issue. So I don't think it's hardware issue.
+
+Windows may exercise the hardware in a different way.
+
+> > Can you
+> > please describe that issue in detail?
+> 
+> The GPE used by Thunderbolt root port, was previously enabled by Thunderbolt switches/bridges.
+
+This shouldn't matter, because enabling a GPE means flipping its bit in the
+"enable" register.  There's no dependency between that and the devices below
+the port.
+
+There may be dependency there for enabling the device wakeup power, however.
+
+> So when the GPE is already enabled when Thunderbolt root port is suspended.
+> However, the GPE needs to be enabled after root port is suspended, and that's the approach this patch takes.
+
+No, it is not.
+
+It still enables the GPE and the device wakeup power before putting the port
+into D3.  Please see pci_finish_runtime_suspend() for details.
+
+However, it enables wakeup for after putting the subordinate device(s) into D3hot
+which may matter in theory.
+
+> Is there any actual hardware benefits from acpi_pci_propagate_wakeup()?
+
+Yes, there is AFAICS.
+
+> If there's no actual device benefits from it, we can remove it and only enable GPE for the root port.
+> Otherwise we need to quirk off Thunderbolt bridges/switches, since their native PME just work without the need to enable root port GPE.
+
+Can you please check if the alternative (untested) patch below still helps?
+
+---
+ drivers/acpi/device_pm.c |   40 ++++++++++++++++++++++++++--------------
+ 1 file changed, 26 insertions(+), 14 deletions(-)
+
+Index: linux-pm/drivers/acpi/device_pm.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/device_pm.c
++++ linux-pm/drivers/acpi/device_pm.c
+@@ -749,7 +749,7 @@ static void acpi_pm_notify_work_func(str
+ static DEFINE_MUTEX(acpi_wakeup_lock);
+ 
+ static int __acpi_device_wakeup_enable(struct acpi_device *adev,
+-				       u32 target_state, int max_count)
++				       u32 target_state)
+ {
+ 	struct acpi_device_wakeup *wakeup = &adev->wakeup;
+ 	acpi_status status;
+@@ -757,15 +757,26 @@ static int __acpi_device_wakeup_enable(s
+ 
+ 	mutex_lock(&acpi_wakeup_lock);
+ 
+-	if (wakeup->enable_count >= max_count)
+-		goto out;
+-
++	/*
++	 * If the device wakeup power is already enabled, disable it and enable
++	 * it again in case it depends on the configuration of subordinate
++	 * devices and the conditions have changed since it was enabled last
++	 * time.
++	 */
+ 	if (wakeup->enable_count > 0)
+-		goto inc;
++		acpi_disable_wakeup_device_power(adev);
+ 
+ 	error = acpi_enable_wakeup_device_power(adev, target_state);
+-	if (error)
++	if (error) {
++		if (wakeup->enable_count > 0) {
++			acpi_disable_gpe(wakeup->gpe_device, wakeup->gpe_number);
++			wakeup->enable_count = 0;
++		}
+ 		goto out;
++	}
++
++	if (wakeup->enable_count > 0)
++		goto inc;
+ 
+ 	status = acpi_enable_gpe(wakeup->gpe_device, wakeup->gpe_number);
+ 	if (ACPI_FAILURE(status)) {
+@@ -778,7 +789,10 @@ static int __acpi_device_wakeup_enable(s
+ 			  (unsigned int)wakeup->gpe_number);
+ 
+ inc:
+-	wakeup->enable_count++;
++	if (wakeup->enable_count < INT_MAX)
++		wakeup->enable_count++;
++	else
++		acpi_handle_info(adev->handle, "Wakeup enable count out of bounds!\n");
+ 
+ out:
+ 	mutex_unlock(&acpi_wakeup_lock);
+@@ -799,7 +813,7 @@ out:
+  */
+ static int acpi_device_wakeup_enable(struct acpi_device *adev, u32 target_state)
+ {
+-	return __acpi_device_wakeup_enable(adev, target_state, 1);
++	return __acpi_device_wakeup_enable(adev, target_state);
+ }
+ 
+ /**
+@@ -829,8 +843,7 @@ out:
+ 	mutex_unlock(&acpi_wakeup_lock);
+ }
+ 
+-static int __acpi_pm_set_device_wakeup(struct device *dev, bool enable,
+-				       int max_count)
++static int __acpi_pm_set_device_wakeup(struct device *dev, bool enable)
+ {
+ 	struct acpi_device *adev;
+ 	int error;
+@@ -850,8 +863,7 @@ static int __acpi_pm_set_device_wakeup(s
+ 		return 0;
+ 	}
+ 
+-	error = __acpi_device_wakeup_enable(adev, acpi_target_system_state(),
+-					    max_count);
++	error = __acpi_device_wakeup_enable(adev, acpi_target_system_state());
+ 	if (!error)
+ 		dev_dbg(dev, "Wakeup enabled by ACPI\n");
+ 
+@@ -865,7 +877,7 @@ static int __acpi_pm_set_device_wakeup(s
+  */
+ int acpi_pm_set_device_wakeup(struct device *dev, bool enable)
+ {
+-	return __acpi_pm_set_device_wakeup(dev, enable, 1);
++	return __acpi_pm_set_device_wakeup(dev, enable);
+ }
+ EXPORT_SYMBOL_GPL(acpi_pm_set_device_wakeup);
+ 
+@@ -876,7 +888,7 @@ EXPORT_SYMBOL_GPL(acpi_pm_set_device_wak
+  */
+ int acpi_pm_set_bridge_wakeup(struct device *dev, bool enable)
+ {
+-	return __acpi_pm_set_device_wakeup(dev, enable, INT_MAX);
++	return __acpi_pm_set_device_wakeup(dev, enable);
+ }
+ EXPORT_SYMBOL_GPL(acpi_pm_set_bridge_wakeup);
+ 
+
+
+
