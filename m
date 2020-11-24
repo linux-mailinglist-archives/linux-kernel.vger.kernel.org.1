@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D05F2C235E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E172C235F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732325AbgKXK5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
+        id S1732335AbgKXK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:57:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbgKXK5V (ORCPT
+        with ESMTP id S1725786AbgKXK51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:57:21 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F8EC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:57:21 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id u16so4667596vkb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:57:21 -0800 (PST)
+        Tue, 24 Nov 2020 05:57:27 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DE5C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:57:26 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id k12so6672220uae.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:57:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=hU262f2HnxuyZTfh5JckIXsgmt3xi8/poiOz2lwFaaA=;
-        b=wk6+VYMguzeNCjGJncZmPFPwpYJGiNgN4zubHvWbUwro66ZSJT6VmfcFA9ZUpFTL/u
-         kJMrUyGDjcIU4N2Q6DpSsGWrbZ2kaWU1+eiG2eMeSKoFooX3Oix7mBB622BstcvbKyKV
-         bRoW1mXbgkgS2MtAjAy76amkuP3IQxqwAAlYSnh8uIELQprOQuaspaVd07jBiXDErQdN
-         LLaPZcO7XZYjRhO73F3AsQJAca7bqF2sARp2kcKCXUW9qfZGr/o1XNBAck+5Krkk229n
-         Yh+ffDDb96f+zcf+qUTjmyfzopt45jNJalkrLQHbrc7iIEtfkqyltCRXh3pszED/WR1D
-         dmbw==
+        bh=tAqRwMIUc4klvn6SlWKiHlnSYstEpCnu5WY0StL4rIg=;
+        b=c6L310/W9WuE8LB46O3wjlbd018o8ulm2iLbojt9gyOYQg4urHc++08p+8PrDXShzC
+         LaOwqqkOxEJyb698vzU4tJqPs8BGFNA0PKcz+7OIXhEwMN5VbqZF9ReQGuDAKiFshKtt
+         lQDRLr6+MVw0K6PZTEufSYpKISykVqRKrB0g67/a7ys9SFYSQljZRENbZHmY/rp4Hdho
+         FBUV0qxk1OZ/NINxs7JFiOhilRwxNzqzC7NqHOuAP2EkRApk8RXbymnlqo9RfaBQORqr
+         J0+rbPvDS8Iq3+WpNH43WjU1YtArB/+j1o/eYEmCqFBcO4gxZeqWm8KMaUj/Luj0K5UN
+         XQVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hU262f2HnxuyZTfh5JckIXsgmt3xi8/poiOz2lwFaaA=;
-        b=sZAmIb5SWfTjgcSuhHFbu9WSt1419imA7nFBEBVGq4qC7/zf0k6VM4bES3Sjy2lmzW
-         Xe79iY+fT65vYLpmIvCQuaOF8SAXcUq/X35DJyqLgwTcLHke3Km0LBQWQmpekdJ8GyxU
-         R+dG9usw1Iaw7n+Q5zaz8KNNhDsTjzj1qTMi5AccLVixcZjny3olAMX5GGMomHZxa+9o
-         1ZkhBG1ffAwVu8g9QtmzUPRk0mjpWOfz2fcmvaBzccfyGXN9S0/qACA+JOdDxljv5zIu
-         KBNJ+0zZbKaf6XGuNA8XxnrRkFeTe/klMhRydkJkx2n2QWCiG0Z1SSFoxOM/hvbC8KQM
-         A0QA==
-X-Gm-Message-State: AOAM532yYtoP+VwHVsIz1PZfYcJ0Fiwhrce6RYIHD6IuHAq82rrKHOen
-        itPLLIeJe0fxkgqM6u396sdO+lALJ5r5I1dBz2g+nTXZSKyhxQ==
-X-Google-Smtp-Source: ABdhPJxQfFu/Vpu7788dZxGuli6si0gWNoMI5GT2W0PAqQMomavKphMlfuJUJGa3lMz21r2ZOHffV9M/D0Na5EMapIE=
-X-Received: by 2002:a1f:2ed2:: with SMTP id u201mr3125274vku.7.1606215440944;
- Tue, 24 Nov 2020 02:57:20 -0800 (PST)
+        bh=tAqRwMIUc4klvn6SlWKiHlnSYstEpCnu5WY0StL4rIg=;
+        b=uRrpHh9X5ZKoiikR4BSLARufvrKgolHyrqKv8fRWfnoMcAJY1bT335bTnKkROh9wp2
+         pumtumyg6+drsV9MPUo9AzBYR9AjnbHgDjYGVxYxo1DsCTo5la2/vtylszSBs+rvyooS
+         PflPoSNPNQeNn1tEOov9pTpc33u0HoLB8w1xLpK8dhLcD8x7w8Z+bsdoEfzoEnnb6BkH
+         QZgw4QTe7WulbQEbtWvGCFq6v7E4MPwVMstV17LqE4ygvJ77sXWaLDbY8X2WLxCLJAQB
+         Hg6LKZEt1YhVDJ4mNk89Ifny7JAR8c532j4yCHLNqmWAhsTP1lKFZg6Row8kiVbw+a4O
+         Kp8Q==
+X-Gm-Message-State: AOAM531WwhK5yKYlJcr3jQXhAjFWUUkMbUYT6Ae6INJ/VFQOs7LmY+A4
+        R7ci8ER+sqpAkE88dVHk3KXCAB1v7/Zod/89Fk+pVNaTByvLBA==
+X-Google-Smtp-Source: ABdhPJxun6aRfYnOh6ghQOI8l08zLoxFL3CrTRWgv/cTKSlHzOkwdsJZum/AIzXFUEL6LVPKACWhojs0DTxBno1GZzM=
+X-Received: by 2002:ab0:c12:: with SMTP id a18mr2538453uak.19.1606215445865;
+ Tue, 24 Nov 2020 02:57:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de> <20201124103242.2971199-2-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20201124103242.2971199-2-u.kleine-koenig@pengutronix.de>
+References: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Nov 2020 11:56:44 +0100
-Message-ID: <CAPDyKFoS60VjCSAqSBmtjpxGrVefHT4xt+O5qzsjBYRmQsJ8OA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] amba: Fix resource leak for drivers without .remove
+Date:   Tue, 24 Nov 2020 11:56:49 +0100
+Message-ID: <CAPDyKFpCu4sJbWEUBTiqQKswX_x1ww4-Qygeva==iejvEKax7g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] amba: reorder functions
 To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 Cc:     Russell King <linux@armlinux.org.uk>,
@@ -70,77 +70,139 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Tue, 24 Nov 2020 at 11:33, Uwe Kleine-K=C3=B6nig
 <u.kleine-koenig@pengutronix.de> wrote:
 >
-> Consider an amba driver with a .probe but without a .remove callback (e.g=
-.
-> pl061_gpio_driver). The function amba_probe() is called to bind a device
-> and so dev_pm_domain_attach() and others are called. As there is no remov=
-e
-> callback amba_remove() isn't called at unbind time however and so calling
-> dev_pm_domain_detach() is missed and the pm domain keeps active.
+> Put helpers (here: amba_get_enable_pclk and amba_put_disable_pclk) at
+> the top of the file and then define callbacks directly before the
+> structs they are used in; in the same order.
 >
-> To fix this always use the core driver callbacks and handle missing amba
-> callbacks there. For probe refuse registration as a driver without probe
-> doesn't make sense.
->
-> Fixes: 7cfe249475fd ("ARM: AMBA: Add pclk support to AMBA bus infrastruct=
-ure")
 > Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
 Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
 
 > ---
->  drivers/amba/bus.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
+>  drivers/amba/bus.c | 77 +++++++++++++++++++++++-----------------------
+>  1 file changed, 39 insertions(+), 38 deletions(-)
 >
 > diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-> index 8658e0533b67..8c4a42df47c6 100644
+> index ecc304149067..8658e0533b67 100644
 > --- a/drivers/amba/bus.c
 > +++ b/drivers/amba/bus.c
-> @@ -300,10 +300,11 @@ static int amba_remove(struct device *dev)
->  {
->         struct amba_device *pcdev =3D to_amba_device(dev);
->         struct amba_driver *drv =3D to_amba_driver(dev->driver);
-> -       int ret;
-> +       int ret =3D 0;
+> @@ -56,31 +56,28 @@ amba_lookup(const struct amba_id *table, struct amba_=
+device *dev)
+>         return NULL;
+>  }
 >
->         pm_runtime_get_sync(dev);
-> -       ret =3D drv->remove(pcdev);
-> +       if (drv->remove)
-> +               ret =3D drv->remove(pcdev);
->         pm_runtime_put_noidle(dev);
->
->         /* Undo the runtime PM settings in amba_probe() */
-> @@ -320,7 +321,9 @@ static int amba_remove(struct device *dev)
->  static void amba_shutdown(struct device *dev)
+> -static int amba_match(struct device *dev, struct device_driver *drv)
+> +static int amba_get_enable_pclk(struct amba_device *pcdev)
 >  {
->         struct amba_driver *drv =3D to_amba_driver(dev->driver);
-> -       drv->shutdown(to_amba_device(dev));
+> -       struct amba_device *pcdev =3D to_amba_device(dev);
+> -       struct amba_driver *pcdrv =3D to_amba_driver(drv);
+> +       int ret;
+>
+> -       /* When driver_override is set, only bind to the matching driver =
+*/
+> -       if (pcdev->driver_override)
+> -               return !strcmp(pcdev->driver_override, drv->name);
+> +       pcdev->pclk =3D clk_get(&pcdev->dev, "apb_pclk");
+> +       if (IS_ERR(pcdev->pclk))
+> +               return PTR_ERR(pcdev->pclk);
+>
+> -       return amba_lookup(pcdrv->id_table, pcdev) !=3D NULL;
+> +       ret =3D clk_prepare_enable(pcdev->pclk);
+> +       if (ret)
+> +               clk_put(pcdev->pclk);
 > +
-> +       if (drv->shutdown)
-> +               drv->shutdown(to_amba_device(dev));
+> +       return ret;
 >  }
 >
->  /**
-> @@ -333,12 +336,13 @@ static void amba_shutdown(struct device *dev)
->   */
->  int amba_driver_register(struct amba_driver *drv)
+> -static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
+> +static void amba_put_disable_pclk(struct amba_device *pcdev)
 >  {
-> -       drv->drv.bus =3D &amba_bustype;
-> +       if (!drv->probe)
-> +               return -EINVAL;
->
-> -#define SETFN(fn)      if (drv->fn) drv->drv.fn =3D amba_##fn
-> -       SETFN(probe);
-> -       SETFN(remove);
-> -       SETFN(shutdown);
-> +       drv->drv.bus =3D &amba_bustype;
-> +       drv->drv.probe =3D amba_probe;
-> +       drv->drv.remove =3D amba_remove;
-> +       drv->drv.shutdown =3D amba_shutdown;
->
->         return driver_register(&drv->drv);
+> -       struct amba_device *pcdev =3D to_amba_device(dev);
+> -       int retval =3D 0;
+> -
+> -       retval =3D add_uevent_var(env, "AMBA_ID=3D%08x", pcdev->periphid)=
+;
+> -       if (retval)
+> -               return retval;
+> -
+> -       retval =3D add_uevent_var(env, "MODALIAS=3Damba:d%08X", pcdev->pe=
+riphid);
+> -       return retval;
+> +       clk_disable_unprepare(pcdev->pclk);
+> +       clk_put(pcdev->pclk);
 >  }
+>
+> +
+>  static ssize_t driver_override_show(struct device *_dev,
+>                                     struct device_attribute *attr, char *=
+buf)
+>  {
+> @@ -152,6 +149,31 @@ static struct attribute *amba_dev_attrs[] =3D {
+>  };
+>  ATTRIBUTE_GROUPS(amba_dev);
+>
+> +static int amba_match(struct device *dev, struct device_driver *drv)
+> +{
+> +       struct amba_device *pcdev =3D to_amba_device(dev);
+> +       struct amba_driver *pcdrv =3D to_amba_driver(drv);
+> +
+> +       /* When driver_override is set, only bind to the matching driver =
+*/
+> +       if (pcdev->driver_override)
+> +               return !strcmp(pcdev->driver_override, drv->name);
+> +
+> +       return amba_lookup(pcdrv->id_table, pcdev) !=3D NULL;
+> +}
+> +
+> +static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
+> +{
+> +       struct amba_device *pcdev =3D to_amba_device(dev);
+> +       int retval =3D 0;
+> +
+> +       retval =3D add_uevent_var(env, "AMBA_ID=3D%08x", pcdev->periphid)=
+;
+> +       if (retval)
+> +               return retval;
+> +
+> +       retval =3D add_uevent_var(env, "MODALIAS=3Damba:d%08X", pcdev->pe=
+riphid);
+> +       return retval;
+> +}
+> +
+>  #ifdef CONFIG_PM
+>  /*
+>   * Hooks to provide runtime PM of the pclk (bus clock).  It is safe to
+> @@ -229,27 +251,6 @@ static int __init amba_init(void)
+>
+>  postcore_initcall(amba_init);
+>
+> -static int amba_get_enable_pclk(struct amba_device *pcdev)
+> -{
+> -       int ret;
+> -
+> -       pcdev->pclk =3D clk_get(&pcdev->dev, "apb_pclk");
+> -       if (IS_ERR(pcdev->pclk))
+> -               return PTR_ERR(pcdev->pclk);
+> -
+> -       ret =3D clk_prepare_enable(pcdev->pclk);
+> -       if (ret)
+> -               clk_put(pcdev->pclk);
+> -
+> -       return ret;
+> -}
+> -
+> -static void amba_put_disable_pclk(struct amba_device *pcdev)
+> -{
+> -       clk_disable_unprepare(pcdev->pclk);
+> -       clk_put(pcdev->pclk);
+> -}
+> -
+>  /*
+>   * These are the device model conversion veneers; they convert the
+>   * device model structures to our more specific structures.
+>
+> base-commit: 95065cb54210eba86bed10cb2118041524d54573
 > --
 > 2.29.2
 >
