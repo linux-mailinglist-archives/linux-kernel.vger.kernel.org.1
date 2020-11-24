@@ -2,132 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892922C255D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1212C255F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387462AbgKXMHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:07:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51370 "EHLO
+        id S2387472AbgKXMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:08:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39362 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729172AbgKXMHu (ORCPT
+        by vger.kernel.org with ESMTP id S1733309AbgKXMIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:07:50 -0500
+        Tue, 24 Nov 2020 07:08:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606219669;
+        s=mimecast20190719; t=1606219713;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SOMM6/UKvaAowB9/50O0goOjLqACWA2H3QoKxNezUPg=;
-        b=PUtCCsfaP/LPrn2ogeU1KHqlinH2jviuiR4yv5QYJE2TrIvJ/fpmU5+mouNd9qxk4Smxo1
-        Q6Fe1UHmbHrHWshw0Zq+V0ZOkK+Pre2bj/ZhJeQDS6L1HiKQHhlOx4lG99rDF2fHsFsc2e
-        X6iVmHc/UVy21TFRC81OszfTigp9TEk=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-uEqckNKTOXa_15K_9SrzSA-1; Tue, 24 Nov 2020 07:07:47 -0500
-X-MC-Unique: uEqckNKTOXa_15K_9SrzSA-1
-Received: by mail-ej1-f70.google.com with SMTP id q2so6642304ejj.16
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:07:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SOMM6/UKvaAowB9/50O0goOjLqACWA2H3QoKxNezUPg=;
-        b=f0fqsym8NvJRAciqBngFLJeWnzpIOhuVFWtgKgSx2pjYmxmqOd0YLkt9yX5VjC+J3Z
-         bXWcLTxUn14dTsIe7s1sG5HQhP7mJBCZMCUUxEj9N4t2TuXb+srMWlI7Xk4PGI5bVzYG
-         UveNBNRpoucNnvKek/amKVrqNmtH4N5AfDIBE0j0XU4B0tUvafmdUfel+gIzsDp3FpCI
-         IeANwfvIEd1cBHwq3CavMPmhJTYNXnWsTKDPFS+69c2SVjZeLauCS+hULLsvJaM9QM1Z
-         AZJ4f2xQ3Xx/R0WjkBApeuG7XTaEt2FRbnjFmQFLsBgv4h92zqHXpwvPQmFkJulWVBB8
-         fBmg==
-X-Gm-Message-State: AOAM532CIeISRmzj1tYzOm5BEjarb0ZkFwR9ZyAV5o70PhOH8o4QTZi9
-        mB0O8Juu+RMwzawip8UsdfnIzZM7/9S+IKPE7AewqZzCf9S0fk3zJ/u3LQHEe6e5roYyKZR68wM
-        K1jLx2IPIjgTrSsAgulOG9xmN
-X-Received: by 2002:a17:906:c24b:: with SMTP id bl11mr3826253ejb.3.1606219665925;
-        Tue, 24 Nov 2020 04:07:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz98Nk2zSdgqN22qWsD6rq4DWW82NG8CBkl8i2giR8popap81e2BivxoWCtDL/2k5dHWhluMA==
-X-Received: by 2002:a17:906:c24b:: with SMTP id bl11mr3826239ejb.3.1606219665759;
-        Tue, 24 Nov 2020 04:07:45 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id c6sm6380279edy.62.2020.11.24.04.07.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 04:07:45 -0800 (PST)
-Subject: Re: [PATCH] platform/x86: toshiba_acpi: Fix the wrong variable
- assignment
-To:     xiakaixu1987@gmail.com, coproscefalo@gmail.com,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-References: <1606024177-16481-1-git-send-email-kaixuxia@tencent.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <543af665-bec9-3407-73cb-0e5b614de810@redhat.com>
-Date:   Tue, 24 Nov 2020 13:07:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=SR++nLqglvDf5ksxZvlzJRe0kfASzgJc07BCkIJGy4A=;
+        b=Wtctg2x1ExY9iXfKzR9axR6qBOU1MX9WAUld0N1FfUtA6KOm9t2pH4nTcCZVO3pcXjJfGv
+        ek6hP8g3RNL8ntiQ29PLEvf0oBXAcnogybXyahsQGj0oL/ZndsBKaR9RqE6xAH/PmREUAp
+        ImpL31K26L3otmcXCfxeFWbG45bTArQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12--yVSxKi1PUCpoadMI73t6A-1; Tue, 24 Nov 2020 07:08:30 -0500
+X-MC-Unique: -yVSxKi1PUCpoadMI73t6A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F14A18C43C8;
+        Tue, 24 Nov 2020 12:08:29 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-112-141.ams2.redhat.com [10.36.112.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C85DE5D9CD;
+        Tue, 24 Nov 2020 12:08:22 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     linux-api@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, dev@opencontainers.org,
+        corbet@lwn.net, Carlos O'Donell <carlos@redhat.com>
+Subject: [PATCH] syscalls: Document OCI seccomp filter interactions &
+ workaround
+Date:   Tue, 24 Nov 2020 13:08:20 +0100
+Message-ID: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <1606024177-16481-1-git-send-email-kaixuxia@tencent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This documents a way to safely use new security-related system calls
+while preserving compatibility with container runtimes that require
+insecure emulation (because they filter the system call by default).
+Admittedly, it is somewhat hackish, but it can be implemented by
+userspace today, for existing system calls such as faccessat2,
+without kernel or container runtime changes.
 
-On 11/22/20 6:49 AM, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
-> 
-> The commit 78429e55e4057 ("platform/x86: toshiba_acpi: Clean up
-> variable declaration") cleans up variable declaration in
-> video_proc_write(). Seems it does the variable assignment in the
-> wrong place, this results in dead code and changes the source code
-> logic. Fix it by doing the assignment at the beginning of the funciton.
-> 
-> Fixes: 78429e55e4057 ("platform/x86: toshiba_acpi: Clean up variable declaration")
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+Signed-off-by: Florian Weimer <fweimer@redhat.com>
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+---
+ Documentation/process/adding-syscalls.rst | 37 +++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/process/adding-syscalls.rst
+index a3ecb236576c..7d1e578a1df1 100644
+--- a/Documentation/process/adding-syscalls.rst
++++ b/Documentation/process/adding-syscalls.rst
+@@ -436,6 +436,40 @@ simulates registers etc).  Fixing this is as simple as adding a #define to
+ 
+     #define stub_xyzzy sys_xyzzy
+ 
++Container Compatibility and seccomp
++-----------------------------------
++
++The Linux Foundation Open Container Initiative Runtime Specification
++requires that by default, implementations install seccomp system call
++filters which cause system calls to fail with ``EPERM``.  As a result,
++all new system calls in such containers fail with ``EPERM`` instead of
++``ENOSYS``.  This design is problematic because ``EPERM`` is a
++legitimate system call result which should not trigger fallback to a
++userspace emulation, particularly for security-related system calls.
++(With ``ENOSYS``, it is clear that a fallback implementation has to be
++used to maintain compatibility with older kernels or container
++runtimes.)
++
++New system calls should therefore provide a way to reliably trigger an
++error distinct from ``EPERM``, without any side effects.  Some ways to
++achieve that are:
++
++ - ``EBADFD`` for the invalid file descriptor -1
++ - ``EFAULT`` for a null pointer
++ - ``EINVAL`` for a contradictory set of flags that will remain invalid
++   in the future
++
++If a system call has such error behavior, upon encountering an
++``EPERM`` error, userspace applications can perform further
++invocations of the same system call to check if the ``EPERM`` error
++persists for those known error conditions.  If those also fail with
++``EPERM``, that likely means that the original ``EPERM`` error was the
++result of a seccomp filter, and should be treated like ``ENOSYS``
++(e.g., trigger an alternative fallback implementation).  If those
++probing system calls do not fail with ``EPERM``, the error likely came
++from a real implementation, and should be reported to the caller
++directly, without resorting to ``ENOSYS``-style fallback.
++
+ 
+ Other Details
+ -------------
+@@ -575,3 +609,6 @@ References and Sources
+  - Recommendation from Linus Torvalds that x32 system calls should prefer
+    compatibility with 64-bit versions rather than 32-bit versions:
+    https://lkml.org/lkml/2011/8/31/244
++ - Linux Configuration section of the Open Container Initiative
++   Runtime Specification:
++   https://github.com/opencontainers/runtime-spec/blob/master/config-linux.md
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-> ---
->  drivers/platform/x86/toshiba_acpi.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
-> index e557d757c647..fa7232ad8c39 100644
-> --- a/drivers/platform/x86/toshiba_acpi.c
-> +++ b/drivers/platform/x86/toshiba_acpi.c
-> @@ -1478,7 +1478,7 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
->  	struct toshiba_acpi_dev *dev = PDE_DATA(file_inode(file));
->  	char *buffer;
->  	char *cmd;
-> -	int lcd_out, crt_out, tv_out;
-> +	int lcd_out = -1, crt_out = -1, tv_out = -1;
->  	int remain = count;
->  	int value;
->  	int ret;
-> @@ -1510,7 +1510,6 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
->  
->  	kfree(cmd);
->  
-> -	lcd_out = crt_out = tv_out = -1;
->  	ret = get_video_status(dev, &video_out);
->  	if (!ret) {
->  		unsigned int new_video_out = video_out;
-> 
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
