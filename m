@@ -2,180 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1A92C31BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916912C31BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgKXUKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:10:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
+        id S1730332AbgKXULf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730194AbgKXUKz (ORCPT
+        with ESMTP id S1727179AbgKXULe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:10:55 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2D4C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:10:55 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id y7so86944pfq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:10:55 -0800 (PST)
+        Tue, 24 Nov 2020 15:11:34 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39D5C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:11:34 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id l17so197742pgk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qXHvK/OQdFwEWt5SUWJrJ46fQLspmFn83cqsVmqt1BU=;
-        b=QI4PaxjxN2vAhg+OzzCQ3PFYhbDfg+UyTEIH05ZVPaLO+VFkql2G49d7KjxHPh0DVr
-         dHSj0/uqq/wUKuf0sXmdr1PhJTiPl0jBPbEsp7gWk7D4CR+bPsHmTne9lUxJ2LnrCAFp
-         mdZfRng7zT84SNt6cFYbE0Mbym9csg7h41+oE=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1/hdw7M3AFf0fe2uiwx12/tHt1BVjyQkwyG+1IC9NuQ=;
+        b=cTKnasuQyLt0e44sOIGu5dr1XYgMEP8iV1qs032POwBRQoftEBJFIKoxO6yex/sRue
+         GiUPGrfSlgvr05+Ob/8xcRt2Aw5G+FrAgFO+k1g642a3NAxa0O4upthmfBY8wDdKsHdK
+         x/fp7Qk+nj5nsoNZVb1vnuTOIK7T7P/xlOkhk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qXHvK/OQdFwEWt5SUWJrJ46fQLspmFn83cqsVmqt1BU=;
-        b=RbsHYYxCa3Fwdl4ugrRZNN1ykmwXIPymtJaTcj7krAUkLCuRtnXuUYfs1B2bHCyS/p
-         gW42z65cumILnTtVfz9e111Bp300LnIYGwq6lmYxCXKYuzq2aJTYLOKtJt3poKZD8Jti
-         8WSZWSOdk0jEgaOPbGGRitvixLKIyPn1TvOkxkTowQx1LBMShJN+hk6Gdo6CiTC/Pj3O
-         uteXHQcXXIrADmUA0tlCOs5+bECoZuudmPNrTYxLHbMGusit685QA/kHSaraA0GbSUV/
-         hSu4TeH+pJlYAKmkLNj0B6B34KwSt0qA/QNs3ybqJLh+FhCM+nVw1AbagKy0eCxI5wmz
-         k3sw==
-X-Gm-Message-State: AOAM531S66qeT+KhLgkH1OXXHQahY+vQ4wj6mMbE5AuImo5z2AA8Gd7n
-        B3rh1T+hs4ys6u+Uxbj1fJS5vx/yCZIaKw==
-X-Google-Smtp-Source: ABdhPJzPGPrQl2aSBij6Hx6yq12Sn9GBxXrDqrwMG1AIB4kaN8wEn2FP5uO73YdJKhnEeqofk/l5zA==
-X-Received: by 2002:a63:554b:: with SMTP id f11mr67878pgm.81.1606248654164;
-        Tue, 24 Nov 2020 12:10:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1/hdw7M3AFf0fe2uiwx12/tHt1BVjyQkwyG+1IC9NuQ=;
+        b=f2hwZRm5Q09VuIGL4gvoXDFk0Tfo/Qteo4XLQRBLdrNSWxJrNxv6dU4RX+seTDeDqW
+         muJkg3XpVPhjjInNhXge/6wx9lw9v9kJaNp2NjYwugY5TwCxYZK/GvI8kcIZIElCfzQ1
+         SItOH48gFaZhQQ5XRrZO/TokKavbRHiaSLssifSa+T3UEqubQMRJeWvFo70LgQvgmo9F
+         bme+SRN3L+ROqw8z6IWp/2rokILzlgphEU1bPEoHSZNyMYYVk7MfSpXlgmsHtqfLTw1Y
+         p4xwJcY8FcLQSSxELoE7esOMM3Wr/ec9zPPzJ5p/Cl/0oKC/ol3XniAs/LKkKZl4oOAn
+         VJRw==
+X-Gm-Message-State: AOAM530XxiNh4+9k33QWkMyRYYCKh6Sjv8G/dNoDOaUQJ+TquUDXFAX0
+        oFYPUFuuGOSQwyuunvTvkhdOkUhTKFBg1Q==
+X-Google-Smtp-Source: ABdhPJwbWqqUcZPrR94ebXIG0QHQ/Qih2vrOAit2auVHZmAFdUgjOulJ2kURFNaBw2+xE+H/3W8cxw==
+X-Received: by 2002:a17:90a:4283:: with SMTP id p3mr335330pjg.174.1606248694106;
+        Tue, 24 Nov 2020 12:11:34 -0800 (PST)
 Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id w15sm53800pjy.47.2020.11.24.12.10.52
+        by smtp.gmail.com with ESMTPSA id w15sm53800pjy.47.2020.11.24.12.11.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 12:10:53 -0800 (PST)
+        Tue, 24 Nov 2020 12:11:33 -0800 (PST)
 From:   Prashant Malani <pmalani@chromium.org>
 To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
         gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com
-Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>,
-        Heikki Krogerus <heikki.krogeurus@linux.intel.com>
-Subject: [PATCH v4 1/2] usb: typec: Consolidate sysfs ABI documentation
-Date:   Tue, 24 Nov 2020 12:10:31 -0800
-Message-Id: <20201124201033.592576-1-pmalani@chromium.org>
+Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>
+Subject: [PATCH v4 2/2] usb: typec: Expose Product Type VDOs via sysfs
+Date:   Tue, 24 Nov 2020 12:10:33 -0800
+Message-Id: <20201124201033.592576-2-pmalani@chromium.org>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+In-Reply-To: <20201124201033.592576-1-pmalani@chromium.org>
+References: <20201124201033.592576-1-pmalani@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both partner and cable have identity VDOs. These are listed separately
-in the Documentation/ABI/testing/sysfs-class-typec. Factor these out
-into a common location to avoid the duplication.
+A PD-capable device can return up to 3 Product Type VDOs as part of its
+DiscoverIdentity Response (USB PD Spec, Rev 3.0, Version 2.0, Section
+6.4.4.3.1). Add sysfs attributes to expose these to userspace.
 
+Cc: Benson Leung <bleung@chromium.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Acked-by: Heikki Krogerus <heikki.krogeurus@linux.intel.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
 
 Changes in v4:
-- Rebased on top of the usb-next tree.
-- Added Acked-by tag from pevious version's review.
-- Corrected a typo ('syfs' -> 'sysfs') in the subject line.
+- Added Reviewed-by tag from v3's review.
+- Rebased on top of usb-next + Patch 1/2
 
-Patch first introduced in v3.
+Changes in v3:
+- Split each product type VDO into a separate attribute.
+- Changed sprintf() to sysfs_emit().
+- Changed ABI documentation based on consolidation of identity VDO
+  descriptions in the previous patch (1/2).
 
- Documentation/ABI/testing/sysfs-class-typec | 59 ++++++---------------
- 1 file changed, 17 insertions(+), 42 deletions(-)
+Changes in v2:
+- Added sysfs_notify() call for the attribute.
+- Added description for the attribute in
+  Documentation/ABI/testing/sysfs-class-typec.
+
+ Documentation/ABI/testing/sysfs-class-typec | 24 +++++++++++++++
+ drivers/usb/typec/class.c                   | 33 +++++++++++++++++++++
+ 2 files changed, 57 insertions(+)
 
 diff --git a/Documentation/ABI/testing/sysfs-class-typec b/Documentation/ABI/testing/sysfs-class-typec
-index 4eccb343fc7b..88ffc14d4cd2 100644
+index 88ffc14d4cd2..619c4c67432b 100644
 --- a/Documentation/ABI/testing/sysfs-class-typec
 +++ b/Documentation/ABI/testing/sysfs-class-typec
-@@ -147,42 +147,6 @@ Description:
- 		during Power Delivery discovery. This file remains hidden until a value
- 		greater than or equal to 0 is set by Type C port driver.
- 
--What:		/sys/class/typec/<port>-partner>/identity/
--Date:		April 2017
--Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
--Description:
--		This directory appears only if the port device driver is capable
--		of showing the result of Discover Identity USB power delivery
--		command. That will not always be possible even when USB power
--		delivery is supported, for example when USB power delivery
--		communication for the port is mostly handled in firmware. If the
--		directory exists, it will have an attribute file for every VDO
--		in Discover Identity command result.
--
--What:		/sys/class/typec/<port>-partner/identity/id_header
--Date:		April 2017
--Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
--Description:
--		ID Header VDO part of Discover Identity command result. The
--		value will show 0 until Discover Identity command result becomes
--		available. The value can be polled.
--
--What:		/sys/class/typec/<port>-partner/identity/cert_stat
--Date:		April 2017
--Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
--Description:
--		Cert Stat VDO part of Discover Identity command result. The
--		value will show 0 until Discover Identity command result becomes
--		available. The value can be polled.
--
--What:		/sys/class/typec/<port>-partner/identity/product
--Date:		April 2017
--Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
--Description:
--		Product VDO part of Discover Identity command result. The value
--		will show 0 until Discover Identity command result becomes
--		available. The value can be polled.
--
- 
- USB Type-C cable devices (eg. /sys/class/typec/port0-cable/)
- 
-@@ -219,17 +183,28 @@ Description:
- 		This file remains hidden until a value greater than or equal to 0
- 		is set by Type C port driver.
- 
--What:		/sys/class/typec/<port>-cable/identity/
-+
-+USB Type-C partner/cable Power Delivery Identity objects
-+
-+NOTE: The following attributes will be applicable to both
-+partner (e.g /sys/class/typec/port0-partner/) and
-+cable (e.g /sys/class/typec/port0-cable/) devices. Consequently, the example file
-+paths below are prefixed with "/sys/class/typec/<port>-{partner|cable}/" to
-+reflect this.
-+
-+What:		/sys/class/typec/<port>-{partner|cable}/identity/
- Date:		April 2017
- Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
- Description:
- 		This directory appears only if the port device driver is capable
- 		of showing the result of Discover Identity USB power delivery
- 		command. That will not always be possible even when USB power
--		delivery is supported. If the directory exists, it will have an
--		attribute for every VDO returned by Discover Identity command.
-+		delivery is supported, for example when USB power delivery
-+		communication for the port is mostly handled in firmware. If the
-+		directory exists, it will have an attribute file for every VDO
-+		in Discover Identity command result.
- 
--What:		/sys/class/typec/<port>-cable/identity/id_header
-+What:		/sys/class/typec/<port>-{partner|cable}/identity/id_header
- Date:		April 2017
- Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
- Description:
-@@ -237,7 +212,7 @@ Description:
- 		value will show 0 until Discover Identity command result becomes
+@@ -228,6 +228,30 @@ Description:
+ 		will show 0 until Discover Identity command result becomes
  		available. The value can be polled.
  
--What:		/sys/class/typec/<port>-cable/identity/cert_stat
-+What:		/sys/class/typec/<port>-{partner|cable}/identity/cert_stat
- Date:		April 2017
- Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
- Description:
-@@ -245,7 +220,7 @@ Description:
- 		value will show 0 until Discover Identity command result becomes
- 		available. The value can be polled.
++What:		/sys/class/typec/<port>-{partner|cable}/identity/product_type_vdo1
++Date:		October 2020
++Contact:	Prashant Malani <pmalani@chromium.org>
++Description:
++		1st Product Type VDO of Discover Identity command result.
++		The value will show 0 until Discover Identity command result becomes
++		available and a valid Product Type VDO is returned.
++
++What:		/sys/class/typec/<port>-{partner|cable}/identity/product_type_vdo2
++Date:		October 2020
++Contact:	Prashant Malani <pmalani@chromium.org>
++Description:
++		2nd Product Type VDO of Discover Identity command result.
++		The value will show 0 until Discover Identity command result becomes
++		available and a valid Product Type VDO is returned.
++
++What:		/sys/class/typec/<port>-{partner|cable}/identity/product_type_vdo3
++Date:		October 2020
++Contact:	Prashant Malani <pmalani@chromium.org>
++Description:
++		3rd Product Type VDO of Discover Identity command result.
++		The value will show 0 until Discover Identity command result becomes
++		available and a valid Product Type VDO is returned.
++
  
--What:		/sys/class/typec/<port>-cable/identity/product
-+What:		/sys/class/typec/<port>-{partner|cable}/identity/product
- Date:		April 2017
- Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
- Description:
+ USB Type-C port alternate mode devices.
+ 
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index cb1362187a7c..df4478baf95b 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -124,10 +124,40 @@ static ssize_t product_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(product);
+ 
++static ssize_t product_type_vdo1_show(struct device *dev, struct device_attribute *attr,
++				      char *buf)
++{
++	struct usb_pd_identity *id = get_pd_identity(dev);
++
++	return sysfs_emit(buf, "0x%08x\n", id->vdo[0]);
++}
++static DEVICE_ATTR_RO(product_type_vdo1);
++
++static ssize_t product_type_vdo2_show(struct device *dev, struct device_attribute *attr,
++				      char *buf)
++{
++	struct usb_pd_identity *id = get_pd_identity(dev);
++
++	return sysfs_emit(buf, "0x%08x\n", id->vdo[1]);
++}
++static DEVICE_ATTR_RO(product_type_vdo2);
++
++static ssize_t product_type_vdo3_show(struct device *dev, struct device_attribute *attr,
++				      char *buf)
++{
++	struct usb_pd_identity *id = get_pd_identity(dev);
++
++	return sysfs_emit(buf, "0x%08x\n", id->vdo[2]);
++}
++static DEVICE_ATTR_RO(product_type_vdo3);
++
+ static struct attribute *usb_pd_id_attrs[] = {
+ 	&dev_attr_id_header.attr,
+ 	&dev_attr_cert_stat.attr,
+ 	&dev_attr_product.attr,
++	&dev_attr_product_type_vdo1.attr,
++	&dev_attr_product_type_vdo2.attr,
++	&dev_attr_product_type_vdo3.attr,
+ 	NULL
+ };
+ 
+@@ -146,6 +176,9 @@ static void typec_report_identity(struct device *dev)
+ 	sysfs_notify(&dev->kobj, "identity", "id_header");
+ 	sysfs_notify(&dev->kobj, "identity", "cert_stat");
+ 	sysfs_notify(&dev->kobj, "identity", "product");
++	sysfs_notify(&dev->kobj, "identity", "product_type_vdo1");
++	sysfs_notify(&dev->kobj, "identity", "product_type_vdo2");
++	sysfs_notify(&dev->kobj, "identity", "product_type_vdo3");
+ }
+ 
+ /* ------------------------------------------------------------------------- */
 -- 
 2.29.2.454.gaff20da3a2-goog
 
