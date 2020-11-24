@@ -2,118 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FC82C22E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0EC2C229A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731832AbgKXKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731772AbgKXKZj (ORCPT
+        id S1731524AbgKXKQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:16:58 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:45536 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731266AbgKXKQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:25:39 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DCEC0613D6;
-        Tue, 24 Nov 2020 02:25:39 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a65so2307538wme.1;
-        Tue, 24 Nov 2020 02:25:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=19GmmXOyRtGmWddN5cf4I3pc9POtzdyHfXPU1+kLG50=;
-        b=FbZLGeszgRtp7HVKEOP8IKYhp17GrR2e6Y7e+enEVuc+Rx22E2REB0kLbHMs1Q882v
-         itKeAGSmMfjD8T6JDQQg4Urovr4P6JPH6KVqCZ5TGX1bEpYJsHU/9VWb45KhKHyq52uE
-         F07+mQGiCmKjqZvWvy/JtlFKqLN8N6dX0kXDl2RKDvd025i/hasKdsXNXioe/2Ly2K1h
-         dqkKGrLFQN41exQSPYlAqwCWZZr1zguaMlL5n+FghwiWCU3+sTDu2sZMtNjdoyHi1lQO
-         GnxfVKWYTpkEBso92s0o5VLZ1kIaSJiFoNCAbK13qkYAAEPlPbcpNwfb3Rg00aHgIAPM
-         QeQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=19GmmXOyRtGmWddN5cf4I3pc9POtzdyHfXPU1+kLG50=;
-        b=pyvF80kkND1BkHaA/5mARKsjlu/89N1STiWYaOcn1o8L9OB4PaDH7oPUnT/ZrAnFNM
-         o+evpvweKpfyXiVdblKbSR0WPde9PVG2iZutN3ODeiz4DEncTAIU5/Qiim5PD6xygGlm
-         4w8efaX5QMejIPVxgfZIvGZbUaaxuNtIrz0cLpVo02PHlBfQKC4zdxSnFwgSC2ZcURpW
-         /PS7e3Xn56tY3WfncpI4bPyXJgj8qH3hKKhFLl63fIRGiZneJVmGMYaKxlVgQ3cxEJAK
-         2Lst8UukGz3BHuDgM8QsgSrq1HRAXPVDqIEuTuJSd5clpFbiQScX4CIyQLkoiIh6Zl8a
-         j25g==
-X-Gm-Message-State: AOAM530CG72x+bXPeCw1jMZlNlOWWCZ/4WPqgmDTuikyhmTWKhiLWyUa
-        22FmUU6D9q7EhuVVemO32zg=
-X-Google-Smtp-Source: ABdhPJw3QTgJ2sp325P4/RCYm22m3Ivkh06vs9WyCgKGziEH/EHw2d8Kladi0gF/dPk3eecMlSxNcA==
-X-Received: by 2002:a1c:6856:: with SMTP id d83mr3673403wmc.13.1606213538064;
-        Tue, 24 Nov 2020 02:25:38 -0800 (PST)
-Received: from localhost.localdomain (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
-        by smtp.gmail.com with ESMTPSA id f23sm4295812wmb.43.2020.11.24.02.25.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 02:25:37 -0800 (PST)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        ming.lei@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 5.11] block: optimise for_each_bvec() advance
-Date:   Tue, 24 Nov 2020 10:21:23 +0000
-Message-Id: <60aaa6caab3d061cf7194716c27a10920b5bd7ad.1606212786.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
+        Tue, 24 Nov 2020 05:16:58 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOAET4c031145;
+        Tue, 24 Nov 2020 05:16:56 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34y0p884gn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 05:16:55 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AOAGs9v022101
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 24 Nov 2020 05:16:54 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 24 Nov 2020 05:16:53 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 24 Nov 2020 05:16:53 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 24 Nov 2020 05:16:53 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AOAGpgw028996;
+        Tue, 24 Nov 2020 05:16:51 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>, <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 1/3] spi: convert to BIT() all spi_device flags
+Date:   Tue, 24 Nov 2020 12:21:50 +0200
+Message-ID: <20201124102152.16548-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_04:2020-11-24,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 adultscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because of how for_each_bvec() works it never advances across multiple
-entries at a time, so bvec_iter_advance() is an overkill. Add
-specialised bvec_iter_advance_single() that is faster. It also handles
-zero-len bvecs, so can kill bvec_iter_skip_zero_bvec().
+This change converts all bit flags for the 'struct spi_device' mode to the
+BIT() macro. The change is mostly for readability. Since adding more bit
+fields, might as well convert it now.
 
-   text    data     bss     dec     hex filename
-before:
-  23977     805       0   24782    60ce lib/iov_iter.o
-before, bvec_iter_advance() w/o WARN_ONCE()
-  22886     600       0   23486    5bbe ./lib/iov_iter.o
-after:
-  21862     600       0   22462    57be lib/iov_iter.o
-
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 ---
- include/linux/bvec.h | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/bvec.h b/include/linux/bvec.h
-index 2efec10bf792..4a304dfafa18 100644
---- a/include/linux/bvec.h
-+++ b/include/linux/bvec.h
-@@ -121,18 +121,24 @@ static inline bool bvec_iter_advance(const struct bio_vec *bv,
- 	return true;
- }
- 
--static inline void bvec_iter_skip_zero_bvec(struct bvec_iter *iter)
-+static inline void bvec_iter_advance_single(const struct bio_vec *bv,
-+				struct bvec_iter *iter, unsigned int bytes)
- {
--	iter->bi_bvec_done = 0;
--	iter->bi_idx++;
-+	unsigned int done = iter->bi_bvec_done + bytes;
-+
-+	if (done == bv[iter->bi_idx].bv_len) {
-+		done = 0;
-+		iter->bi_idx++;
-+	}
-+	iter->bi_bvec_done = done;
-+	iter->bi_size -= bytes;
- }
- 
- #define for_each_bvec(bvl, bio_vec, iter, start)			\
- 	for (iter = (start);						\
- 	     (iter).bi_size &&						\
- 		((bvl = bvec_iter_bvec((bio_vec), (iter))), 1);	\
--	     (bvl).bv_len ? (void)bvec_iter_advance((bio_vec), &(iter),	\
--		     (bvl).bv_len) : bvec_iter_skip_zero_bvec(&(iter)))
-+	     bvec_iter_advance_single((bio_vec), &(iter), (bvl).bv_len))
- 
- /* for iterating one bio from start to end */
- #define BVEC_ITER_ALL_INIT (struct bvec_iter)				\
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-spi/20201111141529.98147-1-alexandru.ardelean@analog.com/
+* add patch 'spi: convert to BIT() all spi_device flags'
+* for patch 'spi: Add SPI_NO_TX/RX support'
+  convert comment to new multi-line format
+* add patch 'spi: dt-bindings: document zero value for spi-{rx,tx}-bus-width properties'
+
+ include/linux/spi/spi.h | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index aa09fdc8042d..66c7d8e45563 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -165,27 +165,27 @@ struct spi_device {
+ 	u8			bits_per_word;
+ 	bool			rt;
+ 	u32			mode;
+-#define	SPI_CPHA	0x01			/* clock phase */
+-#define	SPI_CPOL	0x02			/* clock polarity */
++#define	SPI_CPHA	BIT(0)			/* clock phase */
++#define	SPI_CPOL	BIT(1)			/* clock polarity */
+ #define	SPI_MODE_0	(0|0)			/* (original MicroWire) */
+ #define	SPI_MODE_1	(0|SPI_CPHA)
+ #define	SPI_MODE_2	(SPI_CPOL|0)
+ #define	SPI_MODE_3	(SPI_CPOL|SPI_CPHA)
+ #define	SPI_MODE_X_MASK	(SPI_CPOL|SPI_CPHA)
+-#define	SPI_CS_HIGH	0x04			/* chipselect active high? */
+-#define	SPI_LSB_FIRST	0x08			/* per-word bits-on-wire */
+-#define	SPI_3WIRE	0x10			/* SI/SO signals shared */
+-#define	SPI_LOOP	0x20			/* loopback mode */
+-#define	SPI_NO_CS	0x40			/* 1 dev/bus, no chipselect */
+-#define	SPI_READY	0x80			/* slave pulls low to pause */
+-#define	SPI_TX_DUAL	0x100			/* transmit with 2 wires */
+-#define	SPI_TX_QUAD	0x200			/* transmit with 4 wires */
+-#define	SPI_RX_DUAL	0x400			/* receive with 2 wires */
+-#define	SPI_RX_QUAD	0x800			/* receive with 4 wires */
+-#define	SPI_CS_WORD	0x1000			/* toggle cs after each word */
+-#define	SPI_TX_OCTAL	0x2000			/* transmit with 8 wires */
+-#define	SPI_RX_OCTAL	0x4000			/* receive with 8 wires */
+-#define	SPI_3WIRE_HIZ	0x8000			/* high impedance turnaround */
++#define	SPI_CS_HIGH	BIT(2)			/* chipselect active high? */
++#define	SPI_LSB_FIRST	BIT(3)			/* per-word bits-on-wire */
++#define	SPI_3WIRE	BIT(4)			/* SI/SO signals shared */
++#define	SPI_LOOP	BIT(5)			/* loopback mode */
++#define	SPI_NO_CS	BIT(6)			/* 1 dev/bus, no chipselect */
++#define	SPI_READY	BIT(7)			/* slave pulls low to pause */
++#define	SPI_TX_DUAL	BIT(8)			/* transmit with 2 wires */
++#define	SPI_TX_QUAD	BIT(9)			/* transmit with 4 wires */
++#define	SPI_RX_DUAL	BIT(10)			/* receive with 2 wires */
++#define	SPI_RX_QUAD	BIT(11)			/* receive with 4 wires */
++#define	SPI_CS_WORD	BIT(12)			/* toggle cs after each word */
++#define	SPI_TX_OCTAL	BIT(13)			/* transmit with 8 wires */
++#define	SPI_RX_OCTAL	BIT(14)			/* receive with 8 wires */
++#define	SPI_3WIRE_HIZ	BIT(15)			/* high impedance turnaround */
+ 	int			irq;
+ 	void			*controller_state;
+ 	void			*controller_data;
 -- 
-2.24.0
+2.17.1
 
