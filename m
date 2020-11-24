@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD922C1C6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639EC2C1C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728616AbgKXEAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:00:18 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49540 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgKXEAR (ORCPT
+        id S1728003AbgKXECY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:02:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727438AbgKXECY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:00:17 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3sUKr153270;
-        Tue, 24 Nov 2020 04:00:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=wai7PN+m9rpCxiSYaXn6Er4f3zaHuPQsdQ+NcGDALKE=;
- b=yCNohhaNM5xJmfxwuOwULRE5WwELqowLwkb0Se+IQj+SxZHuYwCJG0yP532j7CcmjPlp
- qdM58d4xzx7CZscnXhQhh4fuC230p3s+GTxCJDBXQ2KuiUNMxIJzyrWlZjBnvmHBTmgz
- vULNGZKlspmbSFXeiSxINnPMJbuK3dKcwokgMzURNWZjKc+3NXASxCVv0ucjX3rzxPOA
- H69s/Zh53SRdFlJ16PjqWHUl/6efo9h4T9Q6kQhGJLnac/6pXUzZcN8gkvWHpyxpfJW/
- LEyfNNm3b/r5t9v8OolbHb+G4D9qG7+XCBBfK5nIDmriFGuP+va+76iJEbH7+D3eznpn Mg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34xtum0e86-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Nov 2020 04:00:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3tdij066535;
-        Tue, 24 Nov 2020 03:58:12 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34yx8ja376-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 03:58:12 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AO3wAES028290;
-        Tue, 24 Nov 2020 03:58:11 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Nov 2020 19:58:10 -0800
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-scsi@vger.kernel.org, James Smart <james.smart@broadcom.com>,
-        Colin King <colin.king@canonical.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: lpfc: Fix memory leak on lcb_context
-Date:   Mon, 23 Nov 2020 22:57:59 -0500
-Message-Id: <160618683552.24173.1098115721701350297.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118141314.462471-1-colin.king@canonical.com>
-References: <20201118141314.462471-1-colin.king@canonical.com>
+        Mon, 23 Nov 2020 23:02:24 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3A7C0613CF;
+        Mon, 23 Nov 2020 20:02:23 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t21so16283336pgl.3;
+        Mon, 23 Nov 2020 20:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g7j9kpyzYVbFqBTp8yoRooFvKTkwE619SUxdNJVGQRQ=;
+        b=vTkVb7PFtRqYIZ5Zv1Jf5dMl/oOBJmbGzi0fYInd/MsVy7sJKhpuagB6ipZMP6PdEV
+         W77wWWisCl7TH/zAfAvEgjkQH/sLXhr9Pp/8lRLkanw9gAs+BYfg1S+iPYEa/Fjvdulo
+         7A4EL1yQBT6S/EoZ/qD5vGya7bmY1OfpDf0wB8oFTmlJv1yZqYXQ9GuaCTSiY/LAoKul
+         o5uo+0ROQOXSZlxaoudePfSlVJP3LVgkdqE8O4tCGhZOQkcL3dvkSQ7I4kGnbHTmUIRy
+         Pv4CBLYTwv+q6Smyb4kYYfrSkWzi6FfLZpPv9jH/7JalJESOeSrHSvGEC6goXB72RHDN
+         EZgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g7j9kpyzYVbFqBTp8yoRooFvKTkwE619SUxdNJVGQRQ=;
+        b=eZIWyIYvdZn6GrlJRXibpdBQhwO/bsr0OWHIuAp9fWdyi88Wt0kD19pTHnhZRoHY5Q
+         aHDvHKPOVlh5g47N/bott8dgpZgLKHAv2ifdlay+KYKBFZFftaefq2FDOrv6rqq5qruw
+         x3kaBgKgq5YvAUVoDBX/WL8eLEH2n5gS1T8tcED+0RInfK3J+TCWFMXv9Ml9AuZK/dTF
+         LOdM5yfGWLlpfC3DYy5dO7PeeR25wPekJVFZ/zHGQEf8DXPUY59ar+K1/M45Q8BvHucC
+         cMnzxjMsgHRLZPVDjpSvpCKr1lHW+DsZMMUhHDvESd+OSqw2r7NnlmvFm5i1pTmG8oXW
+         h1Kg==
+X-Gm-Message-State: AOAM532/l5PSRANFPXj7ym2XntL4Rd011lpo+ftj/QGgLfFb4uX57gdc
+        7O8GENyj+BtQczYhlE7tGebGIhzmuyQ=
+X-Google-Smtp-Source: ABdhPJwU//FvSXnxJzPFDRZODQvETrlbeP3Nqhga/Z6onTA2FrA5loO2hULeH9AJv5mYO1LDt0679A==
+X-Received: by 2002:a62:cd0d:0:b029:18b:a1cc:a5be with SMTP id o13-20020a62cd0d0000b029018ba1cca5bemr2348242pfg.67.1606190543378;
+        Mon, 23 Nov 2020 20:02:23 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:2397])
+        by smtp.gmail.com with ESMTPSA id 145sm11942774pga.11.2020.11.23.20.02.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 20:02:22 -0800 (PST)
+Date:   Mon, 23 Nov 2020 20:02:20 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add a BPF helper for getting the IMA
+ hash of an inode
+Message-ID: <20201124040220.oyajc7wqn7gqgyib@ast-mbp>
+References: <20201120131708.3237864-1-kpsingh@chromium.org>
+ <20201120131708.3237864-2-kpsingh@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240021
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 mlxlogscore=999 impostorscore=0 spamscore=0 mlxscore=0
- phishscore=0 clxscore=1015 suspectscore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240021
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120131708.3237864-2-kpsingh@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 14:13:14 +0000, Colin King wrote:
+On Fri, Nov 20, 2020 at 01:17:07PM +0000, KP Singh wrote:
+> +
+> +static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
+> +{
+> +	return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
+> +}
+> +
+> +BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
+> +
+> +const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
+> +	.func		= bpf_ima_inode_hash,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_BTF_ID,
+> +	.arg1_btf_id	= &bpf_ima_inode_hash_btf_ids[0],
+> +	.arg2_type	= ARG_PTR_TO_UNINIT_MEM,
+> +	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+> +	.allowed	= bpf_ima_inode_hash_allowed,
+> +};
+> +
+>  static const struct bpf_func_proto *
+>  bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  {
+> @@ -97,6 +121,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  		return &bpf_task_storage_delete_proto;
+>  	case BPF_FUNC_bprm_opts_set:
+>  		return &bpf_bprm_opts_set_proto;
+> +	case BPF_FUNC_ima_inode_hash:
+> +		return &bpf_ima_inode_hash_proto;
 
-> Currently there is an error return path that neglects to free the
-> allocation for lcb_context.  Fix this by adding a new error free
-> exit path that kfree's lcb_context before returning.  Use this new
-> kfree exit path in another exit error path that also kfree's the same
-> object, allowing a line of code to be removed.
-
-Applied to 5.11/scsi-queue, thanks!
-
-[1/1] scsi: lpfc: Fix memory leak on lcb_context
-      https://git.kernel.org/mkp/scsi/c/14c1dd950411
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+That's not enough for correctness.
+Not only hook has to sleepable, but the program has to be sleepable too.
+The patch 3 should be causing all sort of kernel warnings
+for calling mutex from preempt disabled.
+There it calls bpf_ima_inode_hash() from SEC("lsm/file_mprotect") program.
+"lsm/" is non-sleepable. "lsm.s/" is.
+please enable CONFIG_DEBUG_ATOMIC_SLEEP=y in your config.
