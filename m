@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5EF2C1D89
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3BE2C1D8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgKXF1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 00:27:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53880 "EHLO mail.kernel.org"
+        id S1727976AbgKXF1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 00:27:43 -0500
+Received: from mga14.intel.com ([192.55.52.115]:48669 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727692AbgKXF1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 00:27:06 -0500
-Received: from localhost (unknown [122.167.149.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2645206FB;
-        Tue, 24 Nov 2020 05:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606195625;
-        bh=9HN+v8e9sNlTVb576LTxtJfY5pbnqjzuXozS//Hk2Ts=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Zg5oUdaWJ1FkaYJQ+VdRf+qRmpBgGxY51zLp7dFrK9T9oh73KMtZvZk3p7haFq9c5
-         iELr7t2f0hYcS1KjdkQjzCKGM+Kn0ziQ1fnnPQzucb2C88T0foDT7MPQXge7Y4HrvV
-         HuLcG8RF+HP3BvX++j/A0lD3tAnTXQpIWcIpS1FE=
-Date:   Tue, 24 Nov 2020 10:57:01 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Olof Johansson <olof@lixom.net>, Rob Herring <robh+dt@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Subject: Reusing DTS from arm64 to arm
-Message-ID: <20201124052701.GF8403@vkoul-mobl>
+        id S1725616AbgKXF1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 00:27:43 -0500
+IronPort-SDR: 4glW/VM9wevnqIbOO5fZaaF/yv5iqcERsxlZp88COaA9ko6qVbmH2PBSxalvN7w9aWhZKAmSm0
+ WocJ4+mgLVHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="171111795"
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="171111795"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 21:27:43 -0800
+IronPort-SDR: slVFfxUjVUc5hAVhYANK4q6P8xaOpwCaklMmE441hegdvLl6m4iEchBe6uUU5YnIo5WSePVbu7
+ MrTpzDEzBqGg==
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="332439281"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 21:27:42 -0800
+Subject: [PATCH] ACPI: NFIT: Fix input validation of bus-family
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Date:   Mon, 23 Nov 2020 21:27:42 -0800
+Message-ID: <160619566216.201177.9354229595539334957.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dan reports that smatch thinks userspace can craft an out-of-bound bus
+family number. However, nd_cmd_clear_to_send() blocks all non-zero
+values of bus-family since only the kernel can initiate these commands.
+However, in the speculation path, family is a user controlled array
+index value so mask it for speculation safety. Also, since the
+nd_cmd_clear_to_send() safety is non-obvious and possibly may change in
+the future include input validation is if userspace could get past the
+nd_cmd_clear_to_send() gatekeeper.
 
---nFreZHaLTZJo0R7j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Link: http://lore.kernel.org/r/20201111113000.GA1237157@mwanda
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 6450ddbd5d8e ("ACPI: NFIT: Define runtime firmware activation commands")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ drivers/acpi/nfit/core.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Hello Olof, Rob,
+diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+index cda7b6c52504..b11b08a60684 100644
+--- a/drivers/acpi/nfit/core.c
++++ b/drivers/acpi/nfit/core.c
+@@ -5,6 +5,7 @@
+ #include <linux/list_sort.h>
+ #include <linux/libnvdimm.h>
+ #include <linux/module.h>
++#include <linux/nospec.h>
+ #include <linux/mutex.h>
+ #include <linux/ndctl.h>
+ #include <linux/sysfs.h>
+@@ -479,8 +480,11 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
+ 		cmd_mask = nd_desc->cmd_mask;
+ 		if (cmd == ND_CMD_CALL && call_pkg->nd_family) {
+ 			family = call_pkg->nd_family;
+-			if (!test_bit(family, &nd_desc->bus_family_mask))
++			if (family > NVDIMM_BUS_FAMILY_MAX ||
++			    !test_bit(family, &nd_desc->bus_family_mask))
+ 				return -EINVAL;
++			family = array_index_nospec(family,
++						    NVDIMM_BUS_FAMILY_MAX + 1);
+ 			dsm_mask = acpi_desc->family_dsm_mask[family];
+ 			guid = to_nfit_bus_uuid(family);
+ 		} else {
 
-We have Qualcomm arm platform which uses PMIC PM8150B. This PMIC was
-also used in SM8150 board and is already upstream [1] but in arm64.
-
-So, what is the guidance to share DTS files between 32 and 64 variants?
-Does a solution already exist which I may not be aware of..?
-
-I can think of following options for this, in case we dont have a
-solution:
-
-1. Hack up arm include paths to also include arm64 path so that we can
-share DTS
-
-2. Use relative path of arm64 directory and include that (seems not
-great to look at)
-
-3. Copy the file (simplest but least preferred)
-
-Or is there a better idea to solve this...?
-
-[1]: arch/arm64/boot/dts/qcom/pm8150b.dtsi
-
-Thanks
---=20
-~Vinod
-
---nFreZHaLTZJo0R7j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl+8maQACgkQfBQHDyUj
-g0fHOw//WNvGDIiqgvWNzo777TL88HGKNVrDZZdHNSNVrSKKeOPCntHu94s/VrGM
-QayMkLoXuZCkmpo204lpSjwQYrDYKd2ovl9vYuSj5N5N3g4TCAJuoNVZC5oofSoB
-QlD3cjVqZSt1p88Jbq/l3BecKWHR2KJlfPOCyM3ulpss8ZBwvM9AOswVNznp+x5T
-VEdS6pOiHG1lsXoK/I+F9TWCoYM6j4lYABsPMC34kFC6BZDJJV4h1WGeKQmughMh
-hHXAmiqUVzFi4J7gympwPGmX5+QJFyFNRW2QKe8BKTEHlwShy4JGxtArDI/1eLQ9
-vTRu+VSLIUKZJyeyFrxrnqNp8DHKDxFc84CTSFWfExT8nN8CrA9TuzRIRqwz7YC3
-BlDCjSVd5JFUir5u+YnmpdtOh4NpCKBnliYKWJTJVzIivqYvC49nlWdm/lHFsqq3
-kH2SXE16gUaLHejJlkVNaQD3UiTQ86U+8YLBr8lztX0Wkw7KFZE6JwKg1gr6lEJ2
-CxakEbI5uA4HuEUk5qpdt6BZpdJEh8YHv2Boapkf2kif05DLnFqBmfCMTe0rVNPM
-QvHDTr3e2GJT9RE0A35fnZweajgs7URlFLXL+MSS/OHYzAsOdzSUEO89HPW10xs4
-R3yd6IxJ/i0ncVgSItaLzyJjJUsR0DdAgYZewjTB/R+mmIYtkes=
-=SGsM
------END PGP SIGNATURE-----
-
---nFreZHaLTZJo0R7j--
