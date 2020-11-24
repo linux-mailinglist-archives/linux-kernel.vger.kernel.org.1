@@ -2,104 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D6E2C2417
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C218C2C2420
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732776AbgKXL0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:26:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33214 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732658AbgKXL0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:26:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606217173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jXr6QneDp2gyWm4z+0ntuKNCFM6noV3BZjgwhMClHvw=;
-        b=NdgHMtdY+WJQriDVpq2qkEw/p6UkfzkpoFswP4Q062cvu8TyFR660jrLhYqSA9GXE2xENf
-        eTiTyuE69WbuGPEe6/F60X1SIO4/DVdj0tmK1gZxZlfmi/DV8artIw2P82QJZl9TS6+VL4
-        9zobRzvA0rtgeB/1ZvaHyVttmRkgnf0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14A43AD21;
-        Tue, 24 Nov 2020 11:26:13 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 12:26:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] memcg: add support to generate the total count of
- children from root
-Message-ID: <20201124112612.GV27488@dhcp22.suse.cz>
-References: <20201124105836.713371-1-atomlin@redhat.com>
+        id S1732694AbgKXL2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732405AbgKXL2N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:28:13 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96E2C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:28:11 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id 7so27970108ejm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:28:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hhvxHqkvhpCtQ6NNZ2UFIum9Umz9gTvQwQEBUmRS/nA=;
+        b=gUd2H9GbGEiqJmI/LicXygK+RomOWc7/9ZBs0LGaljvlsKtBJIGduXf9jJvoD/pmQY
+         JkDOqUaURy4Bidt4Wx85R7dwoP5Q4gw/qtoiS5thVBFwLdxMkNpdeNkNDkENI905K4Lp
+         Qja4rRRPhV6JyJsj0jy1NYcbmh85ZW6/9i168=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hhvxHqkvhpCtQ6NNZ2UFIum9Umz9gTvQwQEBUmRS/nA=;
+        b=iIcNqb10UnPnA5/4DqPiIq9+VJh42fccYdlBopRCDkNWlZFbXL1TQnpNkrpjasiP+x
+         PZuYPxPznnIdJrCyKzJKg/laKDcP2XC9QPelI63J/VM6tj5eGOMVJ9l2aQ6SpxLDWpZ7
+         1gbLBa5CaZrE2v5E5EqQhFdqsNQLWRgqTuozSzMCoueMxv09dMeWuvUhhyC8YmA/rnSa
+         yD6eKtn5Ci18Z3ytA14GQUhxHjsXkPkV4QHpJAHoSd5ngMB34XXIGf558+dSd29O4L9P
+         fT+Wwc20q9vEty1TWdMldTybATwVx0jDWS/biwJUbi12oX5xouNFdETbKUjZk/LrgSyx
+         YAiw==
+X-Gm-Message-State: AOAM530piO2zi/LSbLjOe6LHaHyM0d2JykINOmTNvtr9xstPFBJwnpM2
+        PwPWWseKInWx0uJeDeQ3MS/+lJ+ZYyPWIg==
+X-Google-Smtp-Source: ABdhPJxxFFwILDahTcmJeaPtN7Pu1n43M6DWnt8QYzxBwQbE6HfZ2YcCA/6JcsbOgknhKA7holYEyA==
+X-Received: by 2002:a17:906:5617:: with SMTP id f23mr3679656ejq.352.1606217289984;
+        Tue, 24 Nov 2020 03:28:09 -0800 (PST)
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
+        by smtp.gmail.com with ESMTPSA id s21sm6869882edc.42.2020.11.24.03.28.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 03:28:09 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id a3so2481864wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:28:08 -0800 (PST)
+X-Received: by 2002:a1c:208f:: with SMTP id g137mr3844148wmg.116.1606217288307;
+ Tue, 24 Nov 2020 03:28:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124105836.713371-1-atomlin@redhat.com>
+References: <20201116155008.118124-1-robert.foss@linaro.org>
+In-Reply-To: <20201116155008.118124-1-robert.foss@linaro.org>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 24 Nov 2020 20:27:57 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BeZC9vpcyOZTWTnAwyf=vF5mFmAF6FqLzwej2V_pfWOA@mail.gmail.com>
+Message-ID: <CAAFQd5BeZC9vpcyOZTWTnAwyf=vF5mFmAF6FqLzwej2V_pfWOA@mail.gmail.com>
+Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Ben Kao <ben.kao@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24-11-20 10:58:36, Aaron Tomlin wrote:
-> Each memory-controlled cgroup is assigned a unique ID and the total
-> number of memory cgroups is limited to MEM_CGROUP_ID_MAX.
-> 
-> This patch provides the ability to determine the number of
-> memory cgroups from the root memory cgroup, only.
-> A value of 1 (i.e. self count) is returned if there are no children.
-> For example, the number of memory cgroups can be established by
-> reading the /sys/fs/cgroup/memory/memory.total_cnt file.
+Hi Robert,
 
-Could you add some explanation why is this information useful for
-userspace? Who is going to use it and why a simple scripting on top of
-cgroupfs is insufficient.
+On Tue, Nov 17, 2020 at 12:52 AM Robert Foss <robert.foss@linaro.org> wrote:
+>
+> Remove the 3280x2464 mode as it can't be reproduced and yields
+> an output resolution of 3264x2448 instead of the desired one.
+>
+> Furthermore the 3264x2448 resolution is the highest resolution
+> that the product brief lists.
+>
+> Since 3280x2464 neither works correctly nor seems to be supported
+> by the sensor, let's remove it.
+>
 
-> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+Let me check which modes are used by our projects. For one I'm sure
+it's the 3264, but not sure about the other.
+
+To be fair, 3280 sounds like a valid setup, with black pixels on the
+edges. It's sometimes needed to add the black pixels either due to ISP
+requirements or to obtain the black pixel values.
+
+Best regards,
+Tomasz
+
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
 > ---
->  mm/memcontrol.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 29459a6ce1c7..a4f7cb40e233 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4535,6 +4535,19 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
->  	return 0;
->  }
->  
-> +static int mem_cgroup_total_count_read(struct cgroup_subsys_state *css,
-> +				      struct cftype *cft)
-> +{
-> +	struct mem_cgroup *iter, *memcg = mem_cgroup_from_css(css);
-> +	int num = 0;
-> +
-> +	for_each_mem_cgroup_tree(iter, memcg)
-> +		num++;
-> +
-> +	/* Returns 1 (i.e. self count) if no children. */
-> +	return num;
-> +}
-> +
->  #ifdef CONFIG_CGROUP_WRITEBACK
->  
->  #include <trace/events/writeback.h>
-> @@ -5050,6 +5063,11 @@ static struct cftype mem_cgroup_legacy_files[] = {
->  		.write_u64 = mem_cgroup_oom_control_write,
->  		.private = MEMFILE_PRIVATE(_OOM_TYPE, OOM_CONTROL),
->  	},
-> +	{
-> +		.name = "total_cnt",
-> +		.flags = CFTYPE_ONLY_ON_ROOT,
-> +		.read_u64 = mem_cgroup_total_count_read,
-> +	},
->  	{
->  		.name = "pressure_level",
->  	},
-> -- 
-> 2.26.2
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+>  drivers/media/i2c/ov8856.c | 202 -------------------------------------
+>  1 file changed, 202 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> index 2f4ceaa80593..3365d19a303d 100644
+> --- a/drivers/media/i2c/ov8856.c
+> +++ b/drivers/media/i2c/ov8856.c
+> @@ -148,196 +148,6 @@ static const struct ov8856_reg mipi_data_rate_360mbps[] = {
+>         {0x031e, 0x0c},
+>  };
+>
+> -static const struct ov8856_reg mode_3280x2464_regs[] = {
+> -       {0x3000, 0x20},
+> -       {0x3003, 0x08},
+> -       {0x300e, 0x20},
+> -       {0x3010, 0x00},
+> -       {0x3015, 0x84},
+> -       {0x3018, 0x72},
+> -       {0x3021, 0x23},
+> -       {0x3033, 0x24},
+> -       {0x3500, 0x00},
+> -       {0x3501, 0x9a},
+> -       {0x3502, 0x20},
+> -       {0x3503, 0x08},
+> -       {0x3505, 0x83},
+> -       {0x3508, 0x01},
+> -       {0x3509, 0x80},
+> -       {0x350c, 0x00},
+> -       {0x350d, 0x80},
+> -       {0x350e, 0x04},
+> -       {0x350f, 0x00},
+> -       {0x3510, 0x00},
+> -       {0x3511, 0x02},
+> -       {0x3512, 0x00},
+> -       {0x3600, 0x72},
+> -       {0x3601, 0x40},
+> -       {0x3602, 0x30},
+> -       {0x3610, 0xc5},
+> -       {0x3611, 0x58},
+> -       {0x3612, 0x5c},
+> -       {0x3613, 0xca},
+> -       {0x3614, 0x20},
+> -       {0x3628, 0xff},
+> -       {0x3629, 0xff},
+> -       {0x362a, 0xff},
+> -       {0x3633, 0x10},
+> -       {0x3634, 0x10},
+> -       {0x3635, 0x10},
+> -       {0x3636, 0x10},
+> -       {0x3663, 0x08},
+> -       {0x3669, 0x34},
+> -       {0x366e, 0x10},
+> -       {0x3706, 0x86},
+> -       {0x370b, 0x7e},
+> -       {0x3714, 0x23},
+> -       {0x3730, 0x12},
+> -       {0x3733, 0x10},
+> -       {0x3764, 0x00},
+> -       {0x3765, 0x00},
+> -       {0x3769, 0x62},
+> -       {0x376a, 0x2a},
+> -       {0x376b, 0x30},
+> -       {0x3780, 0x00},
+> -       {0x3781, 0x24},
+> -       {0x3782, 0x00},
+> -       {0x3783, 0x23},
+> -       {0x3798, 0x2f},
+> -       {0x37a1, 0x60},
+> -       {0x37a8, 0x6a},
+> -       {0x37ab, 0x3f},
+> -       {0x37c2, 0x04},
+> -       {0x37c3, 0xf1},
+> -       {0x37c9, 0x80},
+> -       {0x37cb, 0x16},
+> -       {0x37cc, 0x16},
+> -       {0x37cd, 0x16},
+> -       {0x37ce, 0x16},
+> -       {0x3800, 0x00},
+> -       {0x3801, 0x00},
+> -       {0x3802, 0x00},
+> -       {0x3803, 0x06},
+> -       {0x3804, 0x0c},
+> -       {0x3805, 0xdf},
+> -       {0x3806, 0x09},
+> -       {0x3807, 0xa7},
+> -       {0x3808, 0x0c},
+> -       {0x3809, 0xd0},
+> -       {0x380a, 0x09},
+> -       {0x380b, 0xa0},
+> -       {0x380c, 0x07},
+> -       {0x380d, 0x88},
+> -       {0x380e, 0x09},
+> -       {0x380f, 0xb8},
+> -       {0x3810, 0x00},
+> -       {0x3811, 0x00},
+> -       {0x3812, 0x00},
+> -       {0x3813, 0x01},
+> -       {0x3814, 0x01},
+> -       {0x3815, 0x01},
+> -       {0x3816, 0x00},
+> -       {0x3817, 0x00},
+> -       {0x3818, 0x00},
+> -       {0x3819, 0x10},
+> -       {0x3820, 0x80},
+> -       {0x3821, 0x46},
+> -       {0x382a, 0x01},
+> -       {0x382b, 0x01},
+> -       {0x3830, 0x06},
+> -       {0x3836, 0x02},
+> -       {0x3862, 0x04},
+> -       {0x3863, 0x08},
+> -       {0x3cc0, 0x33},
+> -       {0x3d85, 0x17},
+> -       {0x3d8c, 0x73},
+> -       {0x3d8d, 0xde},
+> -       {0x4001, 0xe0},
+> -       {0x4003, 0x40},
+> -       {0x4008, 0x00},
+> -       {0x4009, 0x0b},
+> -       {0x400a, 0x00},
+> -       {0x400b, 0x84},
+> -       {0x400f, 0x80},
+> -       {0x4010, 0xf0},
+> -       {0x4011, 0xff},
+> -       {0x4012, 0x02},
+> -       {0x4013, 0x01},
+> -       {0x4014, 0x01},
+> -       {0x4015, 0x01},
+> -       {0x4042, 0x00},
+> -       {0x4043, 0x80},
+> -       {0x4044, 0x00},
+> -       {0x4045, 0x80},
+> -       {0x4046, 0x00},
+> -       {0x4047, 0x80},
+> -       {0x4048, 0x00},
+> -       {0x4049, 0x80},
+> -       {0x4041, 0x03},
+> -       {0x404c, 0x20},
+> -       {0x404d, 0x00},
+> -       {0x404e, 0x20},
+> -       {0x4203, 0x80},
+> -       {0x4307, 0x30},
+> -       {0x4317, 0x00},
+> -       {0x4503, 0x08},
+> -       {0x4601, 0x80},
+> -       {0x4800, 0x44},
+> -       {0x4816, 0x53},
+> -       {0x481b, 0x58},
+> -       {0x481f, 0x27},
+> -       {0x4837, 0x16},
+> -       {0x483c, 0x0f},
+> -       {0x484b, 0x05},
+> -       {0x5000, 0x57},
+> -       {0x5001, 0x0a},
+> -       {0x5004, 0x04},
+> -       {0x502e, 0x03},
+> -       {0x5030, 0x41},
+> -       {0x5780, 0x14},
+> -       {0x5781, 0x0f},
+> -       {0x5782, 0x44},
+> -       {0x5783, 0x02},
+> -       {0x5784, 0x01},
+> -       {0x5785, 0x01},
+> -       {0x5786, 0x00},
+> -       {0x5787, 0x04},
+> -       {0x5788, 0x02},
+> -       {0x5789, 0x0f},
+> -       {0x578a, 0xfd},
+> -       {0x578b, 0xf5},
+> -       {0x578c, 0xf5},
+> -       {0x578d, 0x03},
+> -       {0x578e, 0x08},
+> -       {0x578f, 0x0c},
+> -       {0x5790, 0x08},
+> -       {0x5791, 0x04},
+> -       {0x5792, 0x00},
+> -       {0x5793, 0x52},
+> -       {0x5794, 0xa3},
+> -       {0x5795, 0x02},
+> -       {0x5796, 0x20},
+> -       {0x5797, 0x20},
+> -       {0x5798, 0xd5},
+> -       {0x5799, 0xd5},
+> -       {0x579a, 0x00},
+> -       {0x579b, 0x50},
+> -       {0x579c, 0x00},
+> -       {0x579d, 0x2c},
+> -       {0x579e, 0x0c},
+> -       {0x579f, 0x40},
+> -       {0x57a0, 0x09},
+> -       {0x57a1, 0x40},
+> -       {0x59f8, 0x3d},
+> -       {0x5a08, 0x02},
+> -       {0x5b00, 0x02},
+> -       {0x5b01, 0x10},
+> -       {0x5b02, 0x03},
+> -       {0x5b03, 0xcf},
+> -       {0x5b05, 0x6c},
+> -       {0x5e00, 0x00}
+> -};
+> -
+>  static const struct ov8856_reg mode_3264x2448_regs[] = {
+>         {0x0103, 0x01},
+>         {0x0302, 0x3c},
+> @@ -963,18 +773,6 @@ static const struct ov8856_link_freq_config link_freq_configs[] = {
+>  };
+>
+>  static const struct ov8856_mode supported_modes[] = {
+> -       {
+> -               .width = 3280,
+> -               .height = 2464,
+> -               .hts = 1928,
+> -               .vts_def = 2488,
+> -               .vts_min = 2488,
+> -               .reg_list = {
+> -                       .num_of_regs = ARRAY_SIZE(mode_3280x2464_regs),
+> -                       .regs = mode_3280x2464_regs,
+> -               },
+> -               .link_freq_index = OV8856_LINK_FREQ_720MBPS,
+> -       },
+>         {
+>                 .width = 3264,
+>                 .height = 2448,
+> --
+> 2.27.0
+>
