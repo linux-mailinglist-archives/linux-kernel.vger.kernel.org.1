@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A52F2C2AE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAB02C2AF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388900AbgKXPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:08:54 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:35495 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389456AbgKXPIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:08:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606230530; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=+JQsvyb2icbWmCQhERdftrZs+Pl9Bj+IJAJ1JKr1yN8=;
- b=f0OSFNwLFEn/M2ijl0ilziCcelyORcZxm1o7Thfq53ymsmzUqcxr/dNc9gwHZO51Kl5Qa6te
- co+YTdsCZWHbY6SoplZ4o1CrRvzPaW4jc4Fk4AjHokA4+BaQbgh1U0Dm1Ac/0DFbViYA1rCg
- n/fnXmyl4hfuprcCnqlY25xC5Zk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fbd21fffa67d9becf801676 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 15:08:47
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08B8EC43460; Tue, 24 Nov 2020 15:08:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AF7EC433ED;
-        Tue, 24 Nov 2020 15:08:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3AF7EC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S2389632AbgKXPMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:12:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732490AbgKXPMP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:12:15 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C8FC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:12:13 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id m6so22658803wrg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:12:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zo/eh4ktsJrvBJDhlleePdIuf6jkuW1NUUnewCNp2aA=;
+        b=S32ef2BvvdYvJXT+dX/Sz/zKAStOA6HlrzJx5QZH8K5801QaZ5/FQXnZtciyBb/7Zm
+         X3xhA/pIpPCD8MLVwrPc47UFcnmABqySOsW6HgVxn5Rbjk3OIxPn5wVsWSfYCqrrhgxn
+         RFEY10+OSbJS2t8gVKAdgBxSABPT1j2NsIFLw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zo/eh4ktsJrvBJDhlleePdIuf6jkuW1NUUnewCNp2aA=;
+        b=OfkG+ndq5U6u+zjIzuB4Ls+gtS69b0Oh6LO7AR0M8iNg+5+4o+kDfM9yjHGaDT7pZq
+         GIT85IQo29tDEdFtUmLT/WkshC3JQcK5a9SDO7Mzg6QsGAHgV0DCbmoQm8yZKr8MRVO1
+         8P9O+Nr99svjQB7VW+X3azSnEkcVEpyfg6LT/ATl3JHg7N5Sgh22vU4gtHu8X9Zx4NIg
+         K41rcCBo2JFQxWwtwp+2o2sjRQ61dBi7szM+56qhMPRh1yU7SJ4YST6VWCGYbyLr+FWw
+         YPndN/2YXNUO/+LYOLe4UivHSzhvh+R45Y5XxG4L6/M+T5468W2PB2IVqqj+N+fqSl+6
+         Cb9w==
+X-Gm-Message-State: AOAM533Xfk5ummX6NvSiTfUA3gT3PbXQeaigWJsATT9eu9J2/ef76nJ5
+        C9frFGeglH6yRQgoV7ZJopg5ng==
+X-Google-Smtp-Source: ABdhPJz7rM/ysBu70throMYID2n092kypArpUlgruAbhh9VP+nhscLS+z5ycOFTueeCRvUwHEWrB1A==
+X-Received: by 2002:a5d:5604:: with SMTP id l4mr5677722wrv.127.1606230732372;
+        Tue, 24 Nov 2020 07:12:12 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id g131sm6353127wma.35.2020.11.24.07.12.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 07:12:11 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH bpf-next v3 0/3] Implement bpf_ima_inode_hash
+Date:   Tue, 24 Nov 2020 15:12:07 +0000
+Message-Id: <20201124151210.1081188-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: cw1200: fix missing destroy_workqueue() on error in
- cw1200_init_common
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201119070842.1011-1-miaoqinglang@huawei.com>
-References: <20201119070842.1011-1-miaoqinglang@huawei.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Solomon Peachy <pizza@shaftnet.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201124150847.08B8EC43460@smtp.codeaurora.org>
-Date:   Tue, 24 Nov 2020 15:08:47 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qinglang Miao <miaoqinglang@huawei.com> wrote:
+From: KP Singh <kpsingh@google.com>
 
-> Add the missing destroy_workqueue() before return from
-> cw1200_init_common in the error handling case.
-> 
-> Fixes: a910e4a94f69 ("cw1200: add driver for the ST-E CW1100 & CW1200 WLAN chipsets")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+# v2 -> v3
 
-Patch applied to wireless-drivers-next.git, thanks.
+- Fixed an issue pointed out by Alexei, the helper should only be
+  exposed to sleepable hooks.
+- Update the selftests to constrain the IMA policy udpate to a loopback
+  filesystem specifically created for the test. Also, split this out
+  from the LSM test. I dropped the Ack from this last patch since this
+  is a re-write.
 
-7ec8a926188e cw1200: fix missing destroy_workqueue() on error in cw1200_init_common
+KP Singh (3):
+  ima: Implement ima_inode_hash
+  bpf: Add a BPF helper for getting the IMA hash of an inode
+  bpf: Add a selftest for bpf_ima_inode_hash
+
+ include/linux/ima.h                           |  6 ++
+ include/uapi/linux/bpf.h                      | 11 +++
+ kernel/bpf/bpf_lsm.c                          | 26 ++++++
+ scripts/bpf_helpers_doc.py                    |  2 +
+ security/integrity/ima/ima_main.c             | 78 ++++++++++++------
+ tools/include/uapi/linux/bpf.h                | 11 +++
+ tools/testing/selftests/bpf/config            |  4 +
+ tools/testing/selftests/bpf/ima_setup.sh      | 80 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/test_ima.c       | 74 +++++++++++++++++
+ tools/testing/selftests/bpf/progs/ima.c       | 28 +++++++
+ 10 files changed, 296 insertions(+), 24 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/ima_setup.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_ima.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ima.c
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201119070842.1011-1-miaoqinglang@huawei.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.29.2.454.gaff20da3a2-goog
 
