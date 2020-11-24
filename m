@@ -2,55 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C722C1CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8885F2C1CBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgKXEdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:33:19 -0500
-Received: from smtprelay0150.hostedemail.com ([216.40.44.150]:53014 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728828AbgKXEdT (ORCPT
+        id S1728977AbgKXEev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728901AbgKXEev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:33:19 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id C1265837F24A;
-        Tue, 24 Nov 2020 04:33:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:1981:2194:2199:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:4321:4362:5007:9040:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14659:14721:21080:21451:21627:30012:30054:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: bread73_1a0b27a2736b
-X-Filterd-Recvd-Size: 1221
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 24 Nov 2020 04:33:16 +0000 (UTC)
-Message-ID: <3b5f1d63666a1cf70143574f75cfb0d7f5d0e0de.camel@perches.com>
-Subject: Re: [PATCH 0/2] scsi: pm8001: logging neatening
-From:   Joe Perches <joe@perches.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 23 Nov 2020 20:33:15 -0800
-In-Reply-To: <yq1r1ojmoa5.fsf@ca-mkp.ca.oracle.com>
-References: <cover.1605914030.git.joe@perches.com>
-         <yq1r1ojmoa5.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 23 Nov 2020 23:34:51 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4743C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:34:50 -0800 (PST)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id B23D3806A8;
+        Tue, 24 Nov 2020 17:34:46 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1606192486;
+        bh=No+LIf58LomnAE7gWTmb7xCffnpADEemc91zfcgX0bo=;
+        h=From:To:Cc:Subject:Date;
+        b=TEZkSfAOKeSFeZ0c3fzEtDCNvx5L3+v3nyint/Hmr30Zm0Ho+v2EXoD0kt4eMPZQp
+         7VyRrod6aHylkoREHcbD90xgLDQl5Mu4mA0Sn1kKt093udKp16j9CV3IXfsYz5Fx3+
+         NVzq/cmiIr247oNLgsjhE13zPXBfSgx4f5DXUhsek2tY8UzJcB9WwF08I40hTF3+Io
+         Lv01zhs+exJqB0/SAP2LaVUQJ0oj4Npz9pfpSCiTmG93ZCWtxAgAKzsadnF+6syKdC
+         CjdFnStFirXRYdEDZDoMiv/IfCA13n1wp+ZoDEGbxP90re8rnC+auTsp76clobiKhp
+         ED/ADEeC8TJJA==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5fbc8d640000>; Tue, 24 Nov 2020 17:34:46 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 33C2213EE9C;
+        Tue, 24 Nov 2020 17:34:44 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id F37702800AA; Tue, 24 Nov 2020 17:34:44 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, pavana.sharma@digi.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [net-next PATCH v5 0/4] net: dsa: mv88e6xxx: serdes link without phy
+Date:   Tue, 24 Nov 2020 17:34:36 +1300
+Message-Id: <20201124043440.28400-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-23 at 22:23 -0500, Martin K. Petersen wrote:
-> > Reduce code duplication and generic neatening of logging macros
-> 
-> Applied to 5.11/scsi-staging, thanks!
+This small series gets my hardware into a working state. The key points a=
+re to
+make sure we don't force the link and that we ask the MAC for the link st=
+atus.
+I also have updated my dts to say `phy-mode =3D "1000base-x";` and `manag=
+ed =3D
+"in-band-status";`
 
-Thanks.
+I've dropped the patch for the 88E6123 as it's a distraction and I lack
+hardware to do any proper testing with it. Earlier versions are on the ma=
+iling
+list if anyone wants to pick it up in the future.
 
-The kernel robot reported an indentation defect here so I will send
-a couple more patches on top of this.
+I notice there's a series for mv88e6393x circulating on the netdev mailin=
+g
+list. As patch #1 is adding a new device specific op either this series w=
+ill
+need updating to cover the mv88e6393x or the mv88e6393x series will need
+updating for the new op depenting on which lands first.
 
+Chris Packham (4):
+  net: dsa: mv88e6xxx: Don't force link when using in-band-status
+  net: dsa: mv88e6xxx: Support serdes ports on MV88E6097/6095/6185
+  net: dsa: mv88e6xxx: Add serdes interrupt support for MV88E6097
+  net: dsa: mv88e6xxx: Handle error in serdes_get_regs
+
+ drivers/net/dsa/mv88e6xxx/chip.c   |  47 ++++++++++-
+ drivers/net/dsa/mv88e6xxx/chip.h   |   4 +
+ drivers/net/dsa/mv88e6xxx/port.c   |  36 +++++++++
+ drivers/net/dsa/mv88e6xxx/port.h   |   3 +
+ drivers/net/dsa/mv88e6xxx/serdes.c | 123 +++++++++++++++++++++++++++--
+ drivers/net/dsa/mv88e6xxx/serdes.h |   9 +++
+ 6 files changed, 213 insertions(+), 9 deletions(-)
+
+--=20
+2.29.2
 
