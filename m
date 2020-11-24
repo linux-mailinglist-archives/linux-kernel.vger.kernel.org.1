@@ -2,156 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FBA2C1D22
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53C52C1D24
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgKXEva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:51:30 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:35509 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgKXEv3 (ORCPT
+        id S1727388AbgKXEwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:52:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgKXEwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:51:29 -0500
-Received: by mail-lj1-f195.google.com with SMTP id r18so5760944ljc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:51:28 -0800 (PST)
+        Mon, 23 Nov 2020 23:52:00 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12849C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:52:00 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id a130so14306263oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:52:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=21wh1RXrzLauQp1Zzrr3Pjj6ApJ/n51jC9LfHbkaKmY=;
+        b=n0+dYK2xtpTlFNg42XEHZZzZwOGGufij+bDtWnHViKF9yePzEKzPJrA1FFYEgwpPa5
+         oY1mB2mJngVy8JAvPrGAdkOOGYIWf0IpD+2BuGlz0nHYpDCJw0xT4yI3kVWay0HCieuC
+         Vi9+iI8TdGRY5o38rbNJsazX19zg4M4jH3+T4W4R/W3YRkHzEEEsArM2jb+1+7fKPaGs
+         iJR0NbItXQCxSoNLYm6SpOQWjRdb/T8PF0uJ7rvRD4Oeq9c6fiEQ01XrEOOV6F6jSGPl
+         YZEYxcgFqWpX+ran3veNjljAXBwO8jST/RrbsAHvIxoU+eHd30V5Rohtq2FErIWTq1xV
+         88EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=602FIqwWhz6vUm0jx2ZcCsqu08FcjrdaJmn8EM3RSdc=;
-        b=Ea0YeT9YgeAlZn9Liv0jiqhNu4sg9x6ibX7Te7iJlYeaRI5yJAVSQIYZDxlX2/s3cJ
-         U1ZG1OMiBR5JYSbE6dLcaymYmTB1R+MsmstBV0CLqIPgU1tjwDqVtq1iR4sGHhEXFFrZ
-         8jX5LvRmV1kRxy7ogjRhv1HXWn9HLNDH5Vg58sMgki2wt4Gh50S2qpUzvtyuCnSIoEDG
-         M0xyzqBqmUijJNwrf5hC5OKtb+0igrYdb6KwUPERxno4K7zAPfKAXT9pY1TvpCiaffhh
-         67pHVCpsSiI6fHeyhQ4FEId3hKzADbJJWZt8chMVq41g5M5O7VVmQ1HThjTK4TZBVqTv
-         ZGxw==
-X-Gm-Message-State: AOAM532rwbRCVdY9s/DqNVigLAgnwRLijDTylJD4nc+QrjEhywUekTkK
-        NCTC8Fqc40mhEn28iULlaJcnSYrKoJqqPVAF7l0=
-X-Google-Smtp-Source: ABdhPJwVYcigqhxUrHcfAiaRJMrRQ6F3yiXnsu1oThwXA9XYiYd015v8VeunzeWChVKXDpC2Ow4uH0jAZl+C2PVsd94=
-X-Received: by 2002:a2e:84c7:: with SMTP id q7mr1051112ljh.415.1606193487259;
- Mon, 23 Nov 2020 20:51:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=21wh1RXrzLauQp1Zzrr3Pjj6ApJ/n51jC9LfHbkaKmY=;
+        b=YCWk6XxIb1fC/al+ArVC7YfqPx+2JtnaJIcsAoru5ZHY9XB10hWcNwLB4O/paLd2vK
+         rNBsii/azYCqTX8tZQL+S906UDoR/lT3O4K8NFSdoEQ1mE25pik2nECLBSDicgufzukm
+         x45aGEtJE4UGezU2f1ocwfB2So8Wo1FNjHcSth+h/4uXktY+OnABjmc1mhJTpE6a743X
+         vH1bomygoYlVu/V8AynwMg6g8sOE6Mv7r9HvLp4g/JmKWRtx6TrEE/6cFgauj1esC/QS
+         LANY6+a6uTHFp5lWWXm02JNBzdGRpa8mnHS+Wb0My32YC0y1Hrui4UKIAs+DDj1lStaH
+         ytXw==
+X-Gm-Message-State: AOAM5308LgkEvAJAZJRBGxPJM7nrOCUIx+Gd10U8CcZlCWA0brGqXUhm
+        KG7/1EZzyoc0N2VDWrUkEbuAeA==
+X-Google-Smtp-Source: ABdhPJxx8PNpFgul9bJq4f9P39PTOZ4UQOaHXVAQ3uMenmz0FcS/8UhRicJEaacMk+6aPMiKDvqJRg==
+X-Received: by 2002:aca:f5c8:: with SMTP id t191mr1678894oih.40.1606193519483;
+        Mon, 23 Nov 2020 20:51:59 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z77sm8670400ooa.37.2020.11.23.20.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 20:51:58 -0800 (PST)
+Date:   Mon, 23 Nov 2020 22:51:56 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, Todd Kjos <tkjos@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH
+ dependencies to avoid build error
+Message-ID: <20201124045156.GI95182@builder.lan>
+References: <20201123222359.103822-1-john.stultz@linaro.org>
 MIME-Version: 1.0
-References: <20201106212935.28943-1-kan.liang@linux.intel.com>
- <20201109095235.GC2594@hirez.programming.kicks-ass.net> <20201109110405.GN2651@hirez.programming.kicks-ass.net>
- <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com> <20201111162509.GW2611@hirez.programming.kicks-ass.net>
- <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com> <CAM9d7cjwFp9JBqs1Ga9n1ojbez9chZLvmOgFv1EE4KDhAa9ryA@mail.gmail.com>
- <CAM9d7chbQE=zkqYsNFMv+uWEYWdXcGD=fNYT_R2ondwR5zVvaQ@mail.gmail.com> <87a6v81gou.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87a6v81gou.fsf@mpe.ellerman.id.au>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 24 Nov 2020 13:51:15 +0900
-Message-ID: <CAM9d7cg8kYMyPHQK_rhEiYQaSddqqt93=pLVNKJm8Y6F=if9ow@mail.gmail.com>
-Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU events
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Gabriel Marin <gmx@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123222359.103822-1-john.stultz@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon 23 Nov 16:23 CST 2020, John Stultz wrote:
 
-On Mon, Nov 23, 2020 at 8:00 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Namhyung Kim <namhyung@kernel.org> writes:
-> > Hi Peter and Kan,
-> >
-> > (Adding PPC folks)
-> >
-> > On Tue, Nov 17, 2020 at 2:01 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >>
-> >> Hello,
-> >>
-> >> On Thu, Nov 12, 2020 at 4:54 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
-> >> >
-> >> >
-> >> >
-> >> > On 11/11/2020 11:25 AM, Peter Zijlstra wrote:
-> >> > > On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
-> >> > >
-> >> > >> - When the large PEBS was introduced (9c964efa4330), the sched_task() should
-> >> > >> be invoked to flush the PEBS buffer in each context switch. However, The
-> >> > >> perf_sched_events in account_event() is not updated accordingly. The
-> >> > >> perf_event_task_sched_* never be invoked for a pure per-CPU context. Only
-> >> > >> per-task event works.
-> >> > >>     At that time, the perf_pmu_sched_task() is outside of
-> >> > >> perf_event_context_sched_in/out. It means that perf has to double
-> >> > >> perf_pmu_disable() for per-task event.
-> >> > >
-> >> > >> - The patch 1 tries to fix broken per-CPU events. The CPU context cannot be
-> >> > >> retrieved from the task->perf_event_ctxp. So it has to be tracked in the
-> >> > >> sched_cb_list. Yes, the code is very similar to the original codes, but it
-> >> > >> is actually the new code for per-CPU events. The optimization for per-task
-> >> > >> events is still kept.
-> >> > >>    For the case, which has both a CPU context and a task context, yes, the
-> >> > >> __perf_pmu_sched_task() in this patch is not invoked. Because the
-> >> > >> sched_task() only need to be invoked once in a context switch. The
-> >> > >> sched_task() will be eventually invoked in the task context.
-> >> > >
-> >> > > The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB and
-> >> > > only set that for large pebs. Are you sure the other users (Intel LBR
-> >> > > and PowerPC BHRB) don't need it?
-> >> >
-> >> > I didn't set it for LBR, because the perf_sched_events is always enabled
-> >> > for LBR. But, yes, we should explicitly set the PERF_ATTACH_SCHED_CB
-> >> > for LBR.
-> >> >
-> >> >         if (has_branch_stack(event))
-> >> >                 inc = true;
-> >> >
-> >> > >
-> >> > > If they indeed do not require the pmu::sched_task() callback for CPU
-> >> > > events, then I still think the whole perf_sched_cb_{inc,dec}() interface
-> >> >
-> >> > No, LBR requires the pmu::sched_task() callback for CPU events.
-> >> >
-> >> > Now, The LBR registers have to be reset in sched in even for CPU events.
-> >> >
-> >> > To fix the shorter LBR callstack issue for CPU events, we also need to
-> >> > save/restore LBRs in pmu::sched_task().
-> >> > https://lore.kernel.org/lkml/1578495789-95006-4-git-send-email-kan.liang@linux.intel.com/
-> >> >
-> >> > > is confusing at best.
-> >> > >
-> >> > > Can't we do something like this instead?
-> >> > >
-> >> > I think the below patch may have two issues.
-> >> > - PERF_ATTACH_SCHED_CB is required for LBR (maybe PowerPC BHRB as well) now.
-> >> > - We may disable the large PEBS later if not all PEBS events support
-> >> > large PEBS. The PMU need a way to notify the generic code to decrease
-> >> > the nr_sched_task.
-> >>
-> >> Any updates on this?  I've reviewed and tested Kan's patches
-> >> and they all look good.
-> >>
-> >> Maybe we can talk to PPC folks to confirm the BHRB case?
-> >
-> > Can we move this forward?  I saw patch 3/3 also adds PERF_ATTACH_SCHED_CB
-> > for PowerPC too.  But it'd be nice if ppc folks can confirm the change.
->
-> Sorry I've read the whole thread, but I'm still not entirely sure I
-> understand the question.
+> The kernel test robot reported the following build error:
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+>    qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+>    qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+> >> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+>    qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
+> 
+> Which is due to REGULATOR_QCOM_RPMH depending on
+> QCOM_RPMH || COMPILE_TEST. The problem is that QOM_RPMH can now
+> be a module, which in that case requires REGULATOR_QCOM_RPMH=m
+> to build.
+> 
+> However, if COMPILE_TEST is enabled, REGULATOR_QCOM_RPMH can be
+> set to =y while QCOM_RPMH=m which will cause build failures.
+> 
+> The fix here is to add (QCOM_RPMH=n && COMPILE_TEST) to the
+> dependency.
+> 
+> Feedback would be appreciated!
 
-Thanks for your time and sorry about not being clear enough.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-We found per-cpu events are not calling pmu::sched_task()
-on context switches.  So PERF_ATTACH_SCHED_CB was
-added to indicate the core logic that it needs to invoke the
-callback.
+Regards,
+Bjorn
 
-The patch 3/3 added the flag to PPC (for BHRB) with other
-changes (I think it should be split like in the patch 2/3) and
-want to get ACKs from the PPC folks.
-
-Thanks,
-Namhyung
+> 
+> Cc: Todd Kjos <tkjos@google.com>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rajendra Nayak <rnayak@codeaurora.org>
+> Cc: Maulik Shah <mkshah@codeaurora.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+> v2: Switch dependency logic as suggested by MarkB
+> ---
+>  drivers/regulator/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+> index 020a00d6696b..481c7b10133b 100644
+> --- a/drivers/regulator/Kconfig
+> +++ b/drivers/regulator/Kconfig
+> @@ -843,7 +843,7 @@ config REGULATOR_QCOM_RPM
+>  
+>  config REGULATOR_QCOM_RPMH
+>  	tristate "Qualcomm Technologies, Inc. RPMh regulator driver"
+> -	depends on QCOM_RPMH || COMPILE_TEST
+> +	depends on QCOM_RPMH || (QCOM_RPMH=n && COMPILE_TEST)
+>  	help
+>  	  This driver supports control of PMIC regulators via the RPMh hardware
+>  	  block found on Qualcomm Technologies Inc. SoCs.  RPMh regulator
+> -- 
+> 2.17.1
+> 
