@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497412C24FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF4D2C24FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733067AbgKXLvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:51:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60154 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728491AbgKXLvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:51:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606218671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R7XL6NbI/L1JqsoaBbCg/8rQlfbuYPIiCpwYgPMu2mg=;
-        b=MIozIeOFbRW5Ry015oTrsjcDq4T7mnxR+twzbUa9fIW9K/f3oqhKhlhZd+LqIaCp5Bbwdy
-        nijaaQDw2prFGMcM7lEa8aBYf85Mkh1wJaKucPhsT2IR+O2zTI6PikuLd2ZRFHhs1JRFJl
-        Z49fqQu/QRyT6EKdt//6TbB8p28+J3o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 04F77ADC5;
-        Tue, 24 Nov 2020 11:51:11 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 12:51:09 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 09/16] mm/hugetlb: Defer freeing of HugeTLB pages
-Message-ID: <20201124115109.GW27488@dhcp22.suse.cz>
-References: <20201124095259.58755-1-songmuchun@bytedance.com>
- <20201124095259.58755-10-songmuchun@bytedance.com>
+        id S1733091AbgKXLvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733083AbgKXLvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:51:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF501C0613D6;
+        Tue, 24 Nov 2020 03:51:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UX8cRRymouOvZ6Oa32+nXpuTvbitXtsyLjlmpwjgQyY=; b=FpLKZmgaaCAalC16+8nlAMLvVw
+        j6btFCUG2nmLwR5z5JLJ6c42vN+ZN0PnPTMo6BaDZ9M0yMp4Y2uwKU/13xvXslHdgok4GUygocuC3
+        kwckLtL1ZTSMerdVE0vJsHxRM8j8t58fo4fc3zElLK0yaQC/jFoQTOxy+n215WiApv/b1Ox1ehPvp
+        SY+Ly5qt3nINcWaXaMumWp1xspANkJDqgIsyez7mcIZZWplK2M+y7yqpQ5uKgSzh2thNt7ZbbwXPl
+        FZlc5GeMP5mZPdjRpgXeOx6lmEMDCemHqEnRaQVAGvuvTR/aMEhzsuL5ldnqnKRuFq65fkcySk4O+
+        uKaz0WMA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khWr6-0000Oh-06; Tue, 24 Nov 2020 11:51:32 +0000
+Date:   Tue, 24 Nov 2020 11:51:31 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] xfs: check the return value of krealloc()
+Message-ID: <20201124115131.GB32060@infradead.org>
+References: <20201124104531.561-1-thunder.leizhen@huawei.com>
+ <20201124104531.561-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124095259.58755-10-songmuchun@bytedance.com>
+In-Reply-To: <20201124104531.561-2-thunder.leizhen@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24-11-20 17:52:52, Muchun Song wrote:
-> In the subsequent patch, we will allocate the vmemmap pages when free
-> HugeTLB pages. But update_and_free_page() is called from a non-task
-> context(and hold hugetlb_lock), so we can defer the actual freeing in
-> a workqueue to prevent use GFP_ATOMIC to allocate the vmemmap pages.
+On Tue, Nov 24, 2020 at 06:45:30PM +0800, Zhen Lei wrote:
+> krealloc() may fail to expand the memory space. Add sanity checks to it,
+> and WARN() if that really happened.
 
-This has been brought up earlier without any satisfying answer. Do we
-really have bother with the freeing from the pool and reconstructing the
-vmemmap page tables? Do existing usecases really require such a dynamic
-behavior? In other words, wouldn't it be much simpler to allow to use
-hugetlb pages with sparse vmemmaps only for the boot time reservations
-and never allow them to be freed back to the allocator. This is pretty
-restrictive, no question about that, but it would drop quite some code
-AFAICS and the resulting series would be much easier to review really
-carefully. Additional enhancements can be done on top with specifics
-about usecases which require more flexibility.
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/hugetlb.c         | 96 ++++++++++++++++++++++++++++++++++++++++++++++------
->  mm/hugetlb_vmemmap.c |  5 ---
->  mm/hugetlb_vmemmap.h | 10 ++++++
->  3 files changed, 95 insertions(+), 16 deletions(-)
--- 
-Michal Hocko
-SUSE Labs
+What part of the __GFP_NOFAIL semantics isn't clear enough?
