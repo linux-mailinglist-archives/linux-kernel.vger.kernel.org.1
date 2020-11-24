@@ -2,199 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D822C3221
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E762C3224
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgKXUpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:45:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45292 "EHLO
+        id S1728532AbgKXUsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:48:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgKXUpx (ORCPT
+        with ESMTP id S1726505AbgKXUsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:45:53 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6F3C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:45:53 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id d9so313945qke.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:45:53 -0800 (PST)
+        Tue, 24 Nov 2020 15:48:15 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B42C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:48:15 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id f18so5632745ljg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:48:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7bnJlg0pCMXaozI88JAYoUf2eoJblsJDXclZcxtC0/M=;
-        b=hwTVUZW81iCSr3MsWXpIZGpVmMSrVSKr+coOsDZm1vYv2MN8GOIncXCu8CPpMTkbrD
-         ytgAa7a0APxzZLUnRUpFzBqGZKtOSti3yEcgMBEyAY48nYbvZSXn53M0ZI/yN5HXP7YF
-         RbuXJSZCltQ09pZOVNVywwQms+Fksq9lXRc/2R22ZrkdBGOUnth0lvy3TFOCTQ7r9baJ
-         633CEiTTEWwm0GzWRh6CHUWJvnojBVB04vDiH5Eo9hPUUMiOX+RvbkQAkqQVIEMpmL0A
-         F5nHVdGNHVgiRq+8DnR9O+ZgsGB2AOyi+4HoIg0CrRLlIJ1cfvZS9cKTSb9ZBByv7inv
-         BIyw==
+        bh=3epUm83csRRkQAmpLttIRKsjugTlLX4yDOx4MmdoI9k=;
+        b=DjCc4MN3vMIBSsP3wMB1bLF2wtdbXdnfZxeQ9qPMcxN/OPEf2DicGu828Nlsf1wu9D
+         9LH4T8fYP9cfCnOIPGDY5frb0XXy9n/ULjV8In8XV09w7lu7HXPSB29VJLDdQGrCdjL6
+         p7FbyinBchyxWzJazFdcblKWTiGJEX0HpbhtFjwSd1iHiiupe9yvEETMdkbb24Du3Jax
+         yFSQfuvAPhFUtL2zp7oZRvFxh9BPLBdVrefwdf8xlXfQ6UNUVC0dnwhLBMyxkV1H17ch
+         LWfzRPq7SI5wROFuo961qd1W1GKdYt17MO6YtZ0Feh5a7+5QHGeSMK5lWYOU3nkrCIDM
+         k/xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7bnJlg0pCMXaozI88JAYoUf2eoJblsJDXclZcxtC0/M=;
-        b=DZ9PSZokJbhfYXa7IWle5BQd1b14Xzrin6tzkFShKexYAf5EfzximIG6T0+zErOGjv
-         u3MOxjWZoTRkipxywhySUiw+r/rmJGDNQ0/VzH81hffCqb0LW8B0DzWyJE6jWpoITE9W
-         aRlxO9G9J02n9O+jrpgFrRnrRtfnZJt5DtyYpqwTPVLIsGzlJuJg3DZq+evKHgkk/U0O
-         P62qq60DKoX6TrDNlNKq/G1cn2d82XkjVL+BPtFbvpQOvDjhFzRIQU7/5Dc/WImI3lTp
-         UTHIbO3ofjmejaegKyjDOGa22Vc9b9ptJ3br5UxnDjrdbPeLnnwvkK78azGrerV3y6or
-         FVXQ==
-X-Gm-Message-State: AOAM531TsVik78QTnaaFnSPYvGo8Bqw+szZZM6pCWnOTsTpJKljgH9wQ
-        SXvXy2QPyF+pd4ivWgSfoVr6vE4uwcCy8o7gssTzvcp+tJe6u7hz
-X-Google-Smtp-Source: ABdhPJxsql7h4UNX9o7XDEJOkLZeMV9cPdUqPr94L2UJCZDSvnu0rPRiOxfzKlw9JaGxm51qnGZoO/ip485E3xRvGFw=
-X-Received: by 2002:a25:e805:: with SMTP id k5mr13198935ybd.32.1606250752514;
- Tue, 24 Nov 2020 12:45:52 -0800 (PST)
+        bh=3epUm83csRRkQAmpLttIRKsjugTlLX4yDOx4MmdoI9k=;
+        b=m4xq48yjZ8AWnfi6bYMXtJ4cdsiKZiLAXR4DyJsz0IqELGPyimRajxYmscFTg2gLGw
+         vEBP3TCHdoh9ji7XkWDc9PPJ2xzGCi5thvOu2WDVEDAOfkoHd9cRgF65ek4hV1VVxFQA
+         IsVpNWCrwSNg64TNaBCbmsDMg93korGGQx/DxPoLUrZHadEd7bIn85U+Oj8v7rSFxOrn
+         oolmsxeJH0MmEWpFTZ+0NLNo6Q8ERJf6f0DXgSYvWP7iuoDIL35PpylosnJTDEIV5Gvl
+         kVNmKt7aDT28XVy3XmuRl0phKt6op05WmBBmmkVzTDxTo6bMQG0ZjILMwegLewXUcAxN
+         iDcg==
+X-Gm-Message-State: AOAM530HY339jFGSqGfHmQAVLHiV75pEqx6pjdmwvRcqqiNLTS1p4uHm
+        G2w6rDldEAhPkTFkG/A07LrFlwmCk8KlCjtB/g/iIQ==
+X-Google-Smtp-Source: ABdhPJy9rSK07pxI0k30vVunlMZK4763KQjWwx2Esh+gUkxGiy0qRGDBofmooW5ebFiAW4nQaGooCZ0Hj/KyFVPB4UE=
+X-Received: by 2002:a2e:6a14:: with SMTP id f20mr29527ljc.377.1606250893439;
+ Tue, 24 Nov 2020 12:48:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121011652.2006613-1-willmcvicker@google.com>
- <20201123090257.GB6334@infradead.org> <20201123221338.GA2726675@google.com>
- <20201124093117.GA21089@linux-8ccs> <20201124180516.GA737971@google.com>
- <X71NGClOP5Lqg6M5@kroah.com> <20201124183139.GB737971@google.com>
- <X71r+kHD87CV9tcL@kroah.com> <20201124204057.GA1145276@google.com>
-In-Reply-To: <20201124204057.GA1145276@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 24 Nov 2020 12:45:16 -0800
-Message-ID: <CAGETcx8unBFUHxM67VdOoaWRENGXYoc4qWq2Oir=2rUyJ7F5nA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Add support to capture external module's SCM version
-To:     William Mcvicker <willmcvicker@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20201119190237.626-1-chang.seok.bae@intel.com>
+ <20201119190237.626-4-chang.seok.bae@intel.com> <CAG48ez1aKtwYMEHfGX6_FuX9fOruwvCqEGYVL8eLdV8bg-wHCQ@mail.gmail.com>
+ <B2D7D498-D118-447E-93C6-DB03D42CBA4E@intel.com> <CAG48ez1JK6pMT2UD1v0FwiCQq48FbE5Eb0d3tK=kK4Sg0TG7OQ@mail.gmail.com>
+ <15AB5469-3DBD-4518-9C15-DDCE7C70B1B5@intel.com>
+In-Reply-To: <15AB5469-3DBD-4518-9C15-DDCE7C70B1B5@intel.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 24 Nov 2020 21:47:47 +0100
+Message-ID: <CAG48ez3=0P+yiAjxGy=uEZeDUvFh+M2GUnVaGPfRoQHbJ+2qKw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] x86/signal: Prevent an alternate stack overflow
+ before a signal delivery
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Dave Martin <Dave.Martin@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Hiroshi Shimamoto <h-shimamoto@ct.jp.nec.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:41 PM William Mcvicker
-<willmcvicker@google.com> wrote:
+On Tue, Nov 24, 2020 at 9:43 PM Bae, Chang Seok
+<chang.seok.bae@intel.com> wrote:
+> > On Nov 24, 2020, at 10:41, Jann Horn <jannh@google.com> wrote:
+> > On Tue, Nov 24, 2020 at 7:22 PM Bae, Chang Seok
+> > <chang.seok.bae@intel.com> wrote:
+> >>> On Nov 20, 2020, at 15:04, Jann Horn <jannh@google.com> wrote:
+> >>> On Thu, Nov 19, 2020 at 8:40 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+> >>>>
+> >>>> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+> >>>> index ee6f1ceaa7a2..cee41d684dc2 100644
+> >>>> --- a/arch/x86/kernel/signal.c
+> >>>> +++ b/arch/x86/kernel/signal.c
+> >>>> @@ -251,8 +251,13 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+> >>>>
+> >>>>       /* This is the X/Open sanctioned signal stack switching.  */
+> >>>>       if (ka->sa.sa_flags & SA_ONSTACK) {
+> >>>> -               if (sas_ss_flags(sp) == 0)
+> >>>> +               if (sas_ss_flags(sp) == 0) {
+> >>>> +                       /* If the altstack might overflow, die with SIGSEGV: */
+> >>>> +                       if (!altstack_size_ok(current))
+> >>>> +                               return (void __user *)-1L;
+> >>>> +
+> >>>>                       sp = current->sas_ss_sp + current->sas_ss_size;
+> >>>> +               }
+> >>>
+> >>> A couple lines further down, we have this (since commit 14fc9fbc700d):
+> >>>
+> >>>       /*
+> >>>        * If we are on the alternate signal stack and would overflow it, don't.
+> >>>        * Return an always-bogus address instead so we will die with SIGSEGV.
+> >>>        */
+> >>>       if (onsigstack && !likely(on_sig_stack(sp)))
+> >>>               return (void __user *)-1L;
+> >>>
+> >>> Is that not working?
+> >>
+> >> onsigstack is set at the beginning here. If a signal hits under normal stack,
+> >> this flag is not set. Then it will miss the overflow.
+> >>
+> >> The added check allows to detect the sigaltstack overflow (always).
+> >
+> > Ah, I think I understand what you're trying to do. But wouldn't the
+> > better approach be to ensure that the existing on_sig_stack() check is
+> > also used if we just switched to the signal stack? Something like:
+> >
+> > diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+> > index be0d7d4152ec..2f57842fb4d6 100644
+> > --- a/arch/x86/kernel/signal.c
+> > +++ b/arch/x86/kernel/signal.c
+> > @@ -237,7 +237,7 @@ get_sigframe(struct k_sigaction *ka, struct
+> > pt_regs *regs, size_t frame_size,
+> >        unsigned long math_size = 0;
+> >        unsigned long sp = regs->sp;
+> >        unsigned long buf_fx = 0;
+> > -       int onsigstack = on_sig_stack(sp);
+> > +       bool onsigstack = on_sig_stack(sp);
+> >        int ret;
+> >
+> >        /* redzone */
+> > @@ -246,8 +246,10 @@ get_sigframe(struct k_sigaction *ka, struct
+> > pt_regs *regs, size_t frame_size,
+> >
+> >        /* This is the X/Open sanctioned signal stack switching.  */
+> >        if (ka->sa.sa_flags & SA_ONSTACK) {
+> > -               if (sas_ss_flags(sp) == 0)
+> > +               if (sas_ss_flags(sp) == 0) {
+> >                        sp = current->sas_ss_sp + current->sas_ss_size;
+> > +                       onsigstack = true;
+> > +               }
+> >        } else if (IS_ENABLED(CONFIG_X86_32) &&
+> >                   !onsigstack &&
+> >                   regs->ss != __USER_DS &&
 >
-> On Tue, Nov 24, 2020 at 09:24:26PM +0100, Greg Kroah-Hartman wrote:
-> > On Tue, Nov 24, 2020 at 10:31:39AM -0800, William Mcvicker wrote:
-> > > On Tue, Nov 24, 2020 at 07:12:40PM +0100, Greg Kroah-Hartman wrote:
-> > > > On Tue, Nov 24, 2020 at 10:05:16AM -0800, William Mcvicker wrote:
-> > > > > On Tue, Nov 24, 2020 at 10:31:18AM +0100, Jessica Yu wrote:
-> > > > > > +++ William Mcvicker [23/11/20 14:13 -0800]:
-> > > > > > > On Mon, Nov 23, 2020 at 09:02:57AM +0000, Christoph Hellwig wrote:
-> > > > > > > > On Sat, Nov 21, 2020 at 01:16:49AM +0000, Will McVicker wrote:
-> > > > > > > > > These two patches add module support to capture an external module's SCM
-> > > > > > > > > version as a MODULE_INFO() attribute. This allows users to identity the SCM
-> > > > > > > > > version of a given kernel module by using the modinfo tool or on the device
-> > > > > > > > > via sysfs:
-> > > > > > > >
-> > > > > > > > As this obviously is of no use for in-tree modules it falls under the we
-> > > > > > > > don't add code to support things that are not in tree rule and has no
-> > > > > > > > business in the kernel.
-> > > > > > >
-> > > > > > > Hi Christoph,
-> > > > > > >
-> > > > > > > Ah sorry, I didn't intend this to come across as only for external modules.
-> > > > > > > That just seemed like the easiest way to explain how the scmversion attribute
-> > > > > > > can be different from the vermagic. We mainly need this for in-tree kernel
-> > > > > > > modules since that's where most our drivers are. Let me re-phrase this with
-> > > > > > > that in mind. Basically, I like to look at this as an improved version of the
-> > > > > > > existing srcversion module attribute since it allows you to easily identify the
-> > > > > > > module version with a quick SCM version string check instead of doing a full
-> > > > > > > checksum on the module source.
-> > > > > > >
-> > > > > > > For example, we have a setup to test kernel changes on the hikey and db845c
-> > > > > > > devices without updating the kernel modules. Without this scmversion module
-> > > > > > > attribute, you can't identify the original module version using `uname
-> > > > > > > -r`. And for kernel modules in the initramfs, you can't even use modinfo to get
-> > > > > > > the module vermagic.  With this patch, you are able to get the SCM version for
-> > > > > > > *all* kernel modules (on disk and in the initramfs) via the sysfs node:
-> > > > > > > /sys/module/<mod>/scmversion. This also works the other way around when
-> > > > > > > developers update their kernel modules to fix some bug (like a security
-> > > > > > > vulnerability) but don't need to update the full kernel.
-> > > > > >
-> > > > > > Hi Will,
-> > > > > >
-> > > > > > If this were also intended for in-tree kernel modules, then why do
-> > > > > > intree modules only get the UTS_RELEASE string in their scmversion
-> > > > > > field, which basically already exists in the vermagic? Or do you plan
-> > > > > > to change that?
-> > > > > >
-> > > > > > Jessica
-> > > > >
-> > > > > Hi Jessica,
-> > > > >
-> > > > > Thanks for asking! The reason in-tree kernel modules get the UTS_RELEASE string
-> > > > > is for a few reasons:
-> > > > >
-> > > > > (1) It contains the SCM version (since UTS_RELEASE has that).
-> > > > > (2) It allows you to get the SCM version via the sysfs node (useful for modules
-> > > > > in the initramfs).
-> > > > > (3) It helps identify that that particular kernel module was in-tree when
-> > > > > originally compiled.
-> > > > > (4) Using UTS_RELEASE also allows us to respect the privacy of kernels with
-> > > > > "# CONFIG_LOCALVERSION_AUTO is not set" by not including the SCM version in the
-> > > > > module scmversion attribute.
-> > > > >
-> > > > > Now, if we don't care about knowing if a module was in-tree or not (since
-> > > > > we only care about in-tree modules here anyway), I can update the patch to have
-> > > > > a consistent format regardless of in-tree or external. Personally, I like the
-> > > > > UTS_RELEASE version better because it gives me more information from the sysfs
-> > > > > node which is useful when debugging issues related to modules loaded in
-> > > > > initramfs.
-> > > >
-> > > > We already know if a module was built in-or-out of tree, the "O" taint
-> > > > flag is set, so that information is already in the module today, right?
-> > > > Can't that be used somehow here?
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > > Hi Greg,
-> > >
-> > > Let me prefix this with this, I do see the benefits of having a consistent
-> > > scmversion format for intree and out-of-tree modules. So I'm happy to fix that
-> > > in the next patchset.
-> > >
-> > > Now, I could be wrong, but I believe the taint flag is only printed when the
-> > > module is loaded:
-> > >
-> > >   XXX: loading out-of-tree module taints kernel.
-> > >
-> > > or when there's a kernel WARNING or kernel crash. But that assumes you have the
-> > > full logs when the kernel booted or you have a full crash stack in the kernel.
-> > >
-> > > Modinfo does have an attribute that indicates if the module is intree or
-> > > not:
-> > >
-> > > $ modinfo -F intree out_dir/./net/netfilter/nf_log_common.ko
-> > > Y
-> > >
-> > > But that is not queriable via sysfs.
-> >
-> > Look at the file in /sys/modules/MODULENAME/taint
-> >
-> > That should show you this value.
-> >
-> > > Ideally, we'd like to be able to get all
-> > > this information via sysfs so that it can be captured in our bug reports.
-> >
-> > I think you already have it :)
-> >
-> > This is independent of your "source code id value" idea though...
-> >
-> > thanks,
-> >
-> > greg k-h
->
-> Thanks for pointing out the taint sysfs node. With that, the only reason I can see
-> using UTS_RELEASE over always using the SCM version is to immediately get the
-> extra version information like the 5.10.0-rc4 part without having to extract
-> that from the SCM version. For scripting reasons and consistency I think it
-> would be best to just stick to using the SCM version alone and not UTS_RELEASE.
-> Unless someone objects, I'll update v2 to use the SCM version (not UTS_RELEASE)
-> always.
+> Yeah, but wouldn't it better to avoid overwriting user data if we can? The old
+> check raises segfault *after* overwritten.
 
-sysfs files are supposed to be simple and follow one value per file in
-general. Also, the documentation needs to be simple too. Documenting
-two different formats for the same file would be very odd. So +1 to
-what Jessica said and +1 to your decision to keep it consistent.
-
--Saravana
+Where is that overwrite happening? Between the point where your check
+happens, and the point where the old check is, the only calls are to
+fpu__alloc_mathframe() and align_sigframe(), right?
+fpu__alloc_mathframe() just does some size calculations and doesn't
+write anything. align_sigframe() also just does size calculations. Am
+I missing something?
