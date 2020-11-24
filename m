@@ -2,128 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC982C2CF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE8D2C2D01
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390410AbgKXQaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389808AbgKXQaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:30:16 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7CAC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:30:16 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id p22so2931287wmg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:30:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=G8IAtlr5m1gYnRAMobJiAIZSerjuCkgbFe4M5d9hPSg=;
-        b=iOHS4wBfvNCggF1/tVIhDzsNrlETd0MbF+Jb7aCaUudrbcubXA/pNWjtFNvNYRqZ3r
-         x8c4do+a7c2KzFNV/uELb3ag5z0UXboovCaP3iM9MK7FmyhQHcnhFiqQ+Pb6NLTaE1ay
-         eHaIC6FOof1qwNxYouhJvJzjoPIviiCPKUQjY6f44VKJ1g3UA3p235BrAq7Z9cKompVZ
-         vB8/y0IV++mlsADdnU9iQwGrwHIwtCTMx+Q65CZbJEp5oZIPJx6AM6cyj+V04IUSC7Rc
-         6W48HQEb7kAcBQfmsfEy3669pUlL3MAzlaOCQk4lAtoey9uFLsi5n488mi+qJfWiXgS2
-         N8SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=G8IAtlr5m1gYnRAMobJiAIZSerjuCkgbFe4M5d9hPSg=;
-        b=QC58bpJ8MbcSYDiiNREZ0YGbqA8XrTLFHrs7wlsf6OF7WphdgIs8C/mFvENPHFP+hQ
-         V6FFRZwH/UkD3yry17GOVeMh+TgA3kB0IkYlfp+tBfrO9pQIjl24LZtzTHx1oiY7JivB
-         wl5G1QRrOuqqr45zkevAwz7LAnWneu6l4RRnk7eRZ6DBfumwKzzbsCu8zwzb0QR8Q5S1
-         L4UGNyBg0rio8P1ld962O5DyfKaRx9c8fI2QtJGb1AWvn7BTqH6NDnQJmKdv076zSKw6
-         vlCyBFwp0V1KNBr9M+oND7PLg2z30tyGpmvcwl4ig7mbvWwruclF1PpHpcSilB/fx2tX
-         224Q==
-X-Gm-Message-State: AOAM531w9fjxMKte5qVc4Qx3NPKITGoj023xBfCloeqdlPoVpFIyTHaH
-        8s18OJysRDThklxHqP79VMuyDtMZ3DtO2JLmxnE=
-X-Google-Smtp-Source: ABdhPJx8GcGOsSIBYK5cUimv6QWYaz7yYoCPmjQWAfTMLBeTCkWj3w0W1q3MnGgjxOgTL5xbim7VpqeTT61jbjsEX1U=
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr5340007wmi.70.1606235414853;
- Tue, 24 Nov 2020 08:30:14 -0800 (PST)
+        id S2390323AbgKXQf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:35:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726105AbgKXQf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 11:35:57 -0500
+Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF5DF206F9;
+        Tue, 24 Nov 2020 16:35:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606235756;
+        bh=foyt3Sdsof8A/tOSmI4RMCw2Prkp9i6MW89/8Yspj+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E/d2C2Yysn/58BfnYI0yICiGuEG9WNYYNy2Lya4lPQV3EXxYQizTNusGJuOZuFpgR
+         smT90pvfe7sAMC8KXbc3RXoe0UBqJd5CwO4KC7lsHT5P4XgUzlWoSkVaPqnZE83xs2
+         F1XkyvFUk23alo+57M+RsU7hc9w9u230vik4AApc=
+Date:   Tue, 24 Nov 2020 17:35:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bastien Nocera <hadess@hadess.net>
+Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: How to enable auto-suspend by default
+Message-ID: <X702aZ2x4mRn+Y73@kroah.com>
+References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+ <X6p6ubTOoMPUPPXi@kroah.com>
+ <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <20201110172517.GC2495@lahna.fi.intel.com>
+ <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
+ <DM6PR19MB26366008D59FC94D384A1E3BFAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <X6wSFojYLvwGhY/g@kroah.com>
+ <2585b668d9452c23902db46cf850ba7fa07167b7.camel@hadess.net>
 MIME-Version: 1.0
-References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-41-lee.jones@linaro.org>
-In-Reply-To: <20201123111919.233376-41-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 24 Nov 2020 11:30:03 -0500
-Message-ID: <CADnq5_OwhSqyfv-vybWM4R-NuNXdT=tF-Af75utcSDRmHBj9DQ@mail.gmail.com>
-Subject: Re: [PATCH 40/40] drm/amd/amdgpu/gmc_v9_0: Suppy some missing
- function doc descriptions
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2585b668d9452c23902db46cf850ba7fa07167b7.camel@hadess.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 6:21 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:382:23: warning: =E2=80=98ecc_umc_=
-mcumc_status_addrs=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:720: warning: Function parameter o=
-r member 'vmhub' not described in 'gmc_v9_0_flush_gpu_tlb'
->  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:836: warning: Function parameter o=
-r member 'flush_type' not described in 'gmc_v9_0_flush_gpu_tlb_pasid'
->  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:836: warning: Function parameter o=
-r member 'all_hub' not described in 'gmc_v9_0_flush_gpu_tlb_pasid'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Tue, Nov 24, 2020 at 05:02:18PM +0100, Bastien Nocera wrote:
+> On Wed, 2020-11-11 at 17:32 +0100, Greg KH wrote:
+> > On Wed, Nov 11, 2020 at 04:03:30PM +0000, Limonciello, Mario wrote:
+> > > > > > Given we're effectively ending up with the combination of
+> > > > > > runtime PM turned
+> > > > > > on by udev rules, do we need something like this for that ID:
+> > > > > > 
+> > > > > > 
+> > > > https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400
+> > > > d8a
+> > > > > > 
+> > > > > > @Mika Westerberg should 8086:a0ed be quirked like the TCSS
+> > > > > > xHCI too?
+> > > > > 
+> > > > > I think this one is the TGL PCH xHCI. The quirk currently for
+> > > > > xHCI
+> > > > > controllers that are part of the TCSS (Type-C SubSystem) where
+> > > > > it is
+> > > > > important to put all devices into low power mode whenever
+> > > > > possible,
+> > > > > otherwise it keeps the whole block on.
+> > > > 
+> > > > Note that there are currently some IDs missing from the xHCIs
+> > > > which
+> > > > are part of the TCSS too. At least the id for the xHCI in the
+> > > > thunderbolt
+> > > > controller on the Lenovo T14 gen 1 is missing. I started a
+> > > > discussion
+> > > > about extending the kernel quirk list for this vs switching to
+> > > > hwdb
+> > > > a while a go:
+> > > > 
+> > > > https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-
+> > > > cf8960651086@redhat.com/
+> > > > 
+> > > > The conclusion back then was to switch to hwdb, but I never got
+> > > > around to
+> > > > this.
+> > > 
+> > > I guess the problem I see with switching to a hwdb for this type of
+> > > thing is
+> > > that if there is a "bug" in your kernel driver around autosuspend
+> > > you will
+> > > then be potentially causing it to occur more regularly on a kernel
+> > > that didn't
+> > > necessarily pick up the fix but does have the newer hwdb.
+> > > 
+> > > I don't know how common that will really be though.
+> > > 
+> > > Since Mika mentioned the really light userspace scenario, what
+> > > about shipping
+> > > the hwdb "with" the kernel in tree?  This could allow evicting all
+> > > these quirk
+> > > scenarios from the kernel at the same time as switching to a hwdb
+> > > and also cover
+> > > the problem I suggested might happen with a bug in older kernel and
+> > > newer userspace.
+> > 
+> > We took things out of the kernel to put it in hwdb years ago as it
+> > was
+> > easier for people to update a "text file" than it was their kernel
+> > image.  I don't think you want to go backwards here :)
+> 
+> There are (unfortunately) a couple of Linux based OSes that don't use
+> systemd, which is one of the problems we see.
 
-Applied with minor changes.  Thanks!
+You don't have to use systemd to use hwdb.  If you want to handle quirks
+for hardware issues that are done in userspace, the overall solution for
+this in Linux is hwdb.  To try to reverse that decision we all made a
+long time ago is just going to duplicate work for almost no gain that I
+can see.
 
-Alex
+What distros need this that can not pick this up from hwdb today?
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/=
-amdgpu/gmc_v9_0.c
-> index fbee43b4ba64d..a83743ab3e8bb 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
-> @@ -675,6 +675,7 @@ static bool gmc_v9_0_get_atc_vmid_pasid_mapping_info(=
-struct amdgpu_device *adev,
->   *
->   * @adev: amdgpu_device pointer
->   * @vmid: vm instance to flush
-> + * @vmhub: vmhub type
->   * @flush_type: the flush type
->   *
->   * Flush the TLB for the requested page table using certain type.
-> @@ -791,6 +792,8 @@ static void gmc_v9_0_flush_gpu_tlb(struct amdgpu_devi=
-ce *adev, uint32_t vmid,
->   *
->   * @adev: amdgpu_device pointer
->   * @pasid: pasid to be flush
-> + * @flush_type: the flush type
-> + * @all_hub: Used with PACKET3_INVALIDATE_TLBS_ALL_HUB()
->   *
->   * Flush the TLB for the requested pasid.
->   */
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> I think it might be a good idea to have a repository or directory
+> that's accessible to same contributions as the drivers, where this sort
+> of data is kept, as close to the drivers as possible.
+
+And who is going to maintain that?  The data that ends up in hwdb
+already comes from multiple places today, why add yet-another-one?  Are
+you going to somehow unify all of those existing data sources into a
+single entity?  Who is going to run that service and what would the end
+output look like (hint, you would have to provide hwdb support, so why
+not just use that?)
+
+> You could always split off your quirks into separate "works with any
+> kernel" and "works from this version of the kernel" files,
+
+We don't have those today, that's not a thing.
+
+> the goal here would be to make sure that there is a canonical list of
+> devices that can be autosuspended, without user-space always playing
+> catch-up (especially as is the case now where systemd is being fed by
+> ChromeOS which is fed in some other way).
+
+There is no way we can ever create such a "canonical list".  Hint,
+another operating system tried it, they failed, and they actually had
+partnerships with most hardware vendors, and paid developers to do this
+work.  What are you going to do differently than they did to solve this
+problem?
+
+> The Venn diagram of folks that contribute to hwdb quirks databases in
+> systemd and that contribute to kernel drivers has a pretty small
+> overlap. Moving much of those quirks to a kernel-controlled repository
+> (whatever format it ends up being in) would make sense so that the
+> "quirk enablement" and the "driver writing" sections overlap.
+
+But they don't overlap today, why make us do more work for no gain?
+
+thanks,
+
+greg k-h
