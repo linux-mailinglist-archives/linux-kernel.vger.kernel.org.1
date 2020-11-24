@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5881C2C297A
+	by mail.lfdr.de (Postfix) with ESMTP id C60702C297B
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388919AbgKXOZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
+        id S2388929AbgKXOZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:25:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388682AbgKXOZy (ORCPT
+        with ESMTP id S2388921AbgKXOZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:25:54 -0500
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EA5C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:25:53 -0800 (PST)
-Received: by mail-vk1-xa41.google.com with SMTP id m6so4804321vkl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:25:53 -0800 (PST)
+        Tue, 24 Nov 2020 09:25:58 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76CEC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:25:57 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id a10so6863093uan.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:25:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pCesLYQPvcEflyfIUi3Jzcp8cmSSQAR6auenD/1XJUc=;
-        b=k0RKmm3+Avs9KAotfN8HlMi+V5Uf/OM7WwUHNctM5x/DwImooVJdkD8YnZTbbnbWUi
-         /UBIy53tGX7ZQHMKlDFWFJF95GBh2IoWCBz1cZIKUPXm1eukhDIv/kqKx++LRaOrRcrL
-         4qfXQkhqHknSpOqq2qXCwwFNuSP33id6GdRaqPhNinbm7TNrI60erMgKozIBGd7WXZ+j
-         Xrz/Frr2n2yUgn0SdpSmv9aH4sqg+YubtQK+M9HdU6h1YwjToRJKiNqZ5j/VWqyI079s
-         l+oUaN9ZwTYKaT4Euj5ZN6riIji3/cQGiiiAUFLnhxpDwGGXen8zRq7UZX/FejD7b6Rx
-         6d3A==
+        bh=ZZpokcrYiNkFKDrqesRHIwMWb2q0UieIyDPrr1PDT0g=;
+        b=A/lVSz2zLoIYzKcnGI4hqoTNYMJi/cuhqeD4LKMoLjhpWJO+dbNTjQ/d0qMCnqzsHf
+         owMFf/AwDR2B20tkqBKHFZ43l44GOqE5g9B4wPxNPbQNFqXhzEKInTc5u4roDg0+6KHs
+         vFzW498O6l9DEzm/+2Io3MtIuOqr+yvAUSRvAE+6aNR2IlPW5gN/0qm7i/NqjUBVppP/
+         EKN80ULQvItx7w5UnO5DieYnoNefjb/4oQKu7Hm+gBUmWIrWUhY7lyJibSj5MMUTNWcT
+         lw3Gkg7NOi2NTNuM/RE63+C0Z9c6J0QY5+JmX6+8dCwRLEPHd94Deha9/zAAK/h/pcwI
+         DpjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pCesLYQPvcEflyfIUi3Jzcp8cmSSQAR6auenD/1XJUc=;
-        b=gEGWzz3kwuR43np1kXgCVG2pt0TjMEDloKQmVRSp1v3FLuk06oyR2ZZIOIIYgdxaPi
-         gmaLIFqjxxufB65HuCmPNPipyuTVe8lx/tvakQBWgo3Oik5ncsN4jlUqyMbAt6FyZOdp
-         i3WZTC0iX/z1wd2JNAw3HFvOAapv2VtXkmNL/6w2WoMoNlTIPKyhFKQHA47f28DRYnKI
-         cBk7GjBeoh16rGJw43YNs0LwhdOQMOzcvj8Ir71P+ckRZG22J299sOpxpEqKgqPKIg53
-         DGPXxgGFp2GA9GAT8nhcrJPV2n6h9SMnaoJ91QHFou59YHmm2MD9xqZdlq3EfND0CTzg
-         nSww==
-X-Gm-Message-State: AOAM533ziqaotizKLxXLUxzWq8+p0R1YmuG/G1/uTTJKWspAEOU+OyT0
-        826GBtAd5PJn+hroa8B+J8bS6ZHgWTBabKYkvswRFw==
-X-Google-Smtp-Source: ABdhPJzGbprwOOPsKb4waIjuvGsDDrtzIVrKJDs5hFpHm85kEr+oGt/ZWkeOKdeHSbO3ywPEKgrJU5kHBVxR8SJV9YU=
-X-Received: by 2002:a1f:9889:: with SMTP id a131mr3881342vke.15.1606227952297;
- Tue, 24 Nov 2020 06:25:52 -0800 (PST)
+        bh=ZZpokcrYiNkFKDrqesRHIwMWb2q0UieIyDPrr1PDT0g=;
+        b=sQy7Y7a33gHv/qB/YskFxmHhO63ZZVEAnIer3zoiuSCHPqS9hN5C1piqzovnS8QEK9
+         DhRt4aCA6M2QY4w+SQ4fdLNThrPXA7awkxJJj3Zp9r/PqUaoNBbefjbP2GHq21DgE6sX
+         mQGgtLT4zO7DmqkpQYGLHe6uyhVq15ZWMiKmhNo4iTg4Ff3KOP+SC8bySYDJOv4hjnL9
+         9ocuysSYKJuA9Cp6LDhB/c52OiHXZJ09CPCprMmHNG+ex3vRZcvAjU/J3lzZ4y6NOfOF
+         om3qt6GjtsJYt0UYB+HkuPQI4yjRkJCeQfqD4Ea38JZvgrEXyrcJcCIOg6VgCsmy+UGJ
+         Mzhw==
+X-Gm-Message-State: AOAM532Nlk1KIF19r4s99GxH2zArIMOZGH+SY61vwWbkVQgHDMWBdWqu
+        DapmoBUDp4s/JbNCxaAry7M6034L7SThfhf9U1IGCg==
+X-Google-Smtp-Source: ABdhPJwGN9h11JcGB0t0T2NXu30qTxAsYUt9sPtNoXKotqtjo05E15lzuOauqFkaV4sGeIXw/BvauQnQWMr8nw/ivP8=
+X-Received: by 2002:ab0:5859:: with SMTP id p25mr5651452uac.100.1606227957134;
+ Tue, 24 Nov 2020 06:25:57 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com> <0556399f1ce8b1255d1f7961f04fcb95c96ab928.1605823502.git.cristian.ciocaltea@gmail.com>
-In-Reply-To: <0556399f1ce8b1255d1f7961f04fcb95c96ab928.1605823502.git.cristian.ciocaltea@gmail.com>
+References: <20201120233831.447365-1-jeremy.linton@arm.com>
+In-Reply-To: <20201120233831.447365-1-jeremy.linton@arm.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Nov 2020 15:25:15 +0100
-Message-ID: <CAPDyKFrBaiqmHbx0MKTv0uusDdLeeAwQuN8NMiVKgaAQBK0x1w@mail.gmail.com>
-Subject: Re: [PATCH v2 09/18] arm: dts: owl-s500: Add MMC support
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-actions@lists.infradead.org,
+Date:   Tue, 24 Nov 2020 15:25:19 +0100
+Message-ID: <CAPDyKFq-pMKAJdS8qPpkR_QZ_QLW70Y7PPGxA=d_HOBRd-Su=A@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci: Update firmware interface API
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+        Adrian Hunter <adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 at 00:56, Cristian Ciocaltea
-<cristian.ciocaltea@gmail.com> wrote:
+On Sat, 21 Nov 2020 at 00:39, Jeremy Linton <jeremy.linton@arm.com> wrote:
 >
-> Add MMC controller nodes for Actions Semi S500 SoC, in order to
-> facilitate access to SD/EMMC/SDIO cards.
+> The device_* calls were added a few years ago to abstract
+> DT/ACPI/fwnode firmware interfaces. Lets convert the two
+> sdhci caps fields to use the generic calls rather than the OF
+> specific ones. This has the side effect of allowing
+> ACPI based devices to quirk themselves when the caps field
+> is broken.
 >
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
->  arch/arm/boot/dts/owl-s500.dtsi | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
+>  drivers/mmc/host/sdhci.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-> index b16172615db0..7af7c9e1119d 100644
-> --- a/arch/arm/boot/dts/owl-s500.dtsi
-> +++ b/arch/arm/boot/dts/owl-s500.dtsi
-> @@ -241,5 +241,38 @@ dma: dma-controller@b0260000 {
->                         clocks = <&cmu CLK_DMAC>;
->                         power-domains = <&sps S500_PD_DMA>;
->                 };
-> +
-> +               mmc0: mmc@b0230000 {
-> +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
-> +                       reg = <0xb0230000 0x38>;
-> +                       interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cmu CLK_SD0>;
-> +                       resets = <&cmu RESET_SD0>;
-> +                       dmas = <&dma 2>;
-> +                       dma-names = "mmc";
-> +                       status = "disabled";
-> +               };
-> +
-> +               mmc1: mmc@b0234000 {
-> +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
-> +                       reg = <0xb0234000 0x38>;
-> +                       interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cmu CLK_SD1>;
-> +                       resets = <&cmu RESET_SD1>;
-> +                       dmas = <&dma 3>;
-> +                       dma-names = "mmc";
-> +                       status = "disabled";
-> +               };
-> +
-> +               mmc2: mmc@b0238000 {
-> +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
-> +                       reg = <0xb0238000 0x38>;
-> +                       interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cmu CLK_SD2>;
-> +                       resets = <&cmu RESET_SD2>;
-> +                       dmas = <&dma 4>;
-> +                       dma-names = "mmc";
-> +                       status = "disabled";
-> +               };
->         };
->  };
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 592a55a34b58..feba64fbde16 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -3992,10 +3992,10 @@ void __sdhci_read_caps(struct sdhci_host *host, const u16 *ver,
+>         if (host->v4_mode)
+>                 sdhci_do_enable_v4_mode(host);
+>
+> -       of_property_read_u64(mmc_dev(host->mmc)->of_node,
+> -                            "sdhci-caps-mask", &dt_caps_mask);
+> -       of_property_read_u64(mmc_dev(host->mmc)->of_node,
+> -                            "sdhci-caps", &dt_caps);
+> +       device_property_read_u64_array(mmc_dev(host->mmc),
+> +                                      "sdhci-caps-mask", &dt_caps_mask, 1);
+> +       device_property_read_u64_array(mmc_dev(host->mmc),
+> +                                      "sdhci-caps", &dt_caps, 1);
+>
+>         v = ver ? *ver : sdhci_readw(host, SDHCI_HOST_VERSION);
+>         host->version = (v & SDHCI_SPEC_VER_MASK) >> SDHCI_SPEC_VER_SHIFT;
 > --
-> 2.29.2
+> 2.26.2
 >
