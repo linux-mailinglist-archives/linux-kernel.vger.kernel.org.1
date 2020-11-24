@@ -2,94 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CC02C19B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4DA2C19D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728549AbgKXAAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728472AbgKXAAA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:00:00 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809CFC0613CF;
-        Mon, 23 Nov 2020 16:00:00 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c66so16594773pfa.4;
-        Mon, 23 Nov 2020 16:00:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tcox38vWgLUDdaMTxv7HfS0wKdBiBL9VU/KlvGDv3U0=;
-        b=HeEMCdjnNPKhtEBtLIIMu6RxGmuo/I/Ws5Q1QHhxO79eNCoVv+9IqfzoF4eMbOaila
-         fd1JspMILxCP2DZIwmXAc+HiLJZMpuypGqRgTXmJbZJjmona070n4KmKY4w2IossjD3c
-         0ZH0Mm6Qx0ZHtrHpaDwCz1mRUiICy7eGbELJN8bP/jMwjuCv6A6nTitO89eZwQ5FLqOu
-         PUKxRiiLYzNNmakpeEFtC+BrMJnSjX3/0NqERZOM3xBJgRMsml+lbSz9XnVWcKJRjf+P
-         hIZFHJK35IcNaXQ1BKWEiyTaTxDbpslKrgfQ89CjAzkkaRrqtpyM6k01rU7W2ZgOaL4Q
-         2Gdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tcox38vWgLUDdaMTxv7HfS0wKdBiBL9VU/KlvGDv3U0=;
-        b=mUWfvgk0Ka6k+AGT4bK9IxWC/Q9rNgaFMsaPNtC8jFINnNp4sBZRGQhebEa+BlqcWc
-         ZK0PaEZcbknttW7Gsb/XbmA3k6ks9gQ5HYVaGTln/4h5hRQ1PwroONAr6+QRGxLd8tfP
-         ZJ477Qi4qoPxjYX5Sx5cFWCDd+9BRlbhIC/XH7weqhpHxPC49JgpxCliWXB1vifcLqNJ
-         17u41ESfs0uSreyptvA00iqv2q1NDSIbXQVzCyis5GklJc/2ai8JSetOjza4SOUe4nI4
-         KZE9ilWOEpNMZvCYCKTDEUFc+PeK+O8MO+x6cXSmCxs6oOIx29ILVlFXtDyHrG3d3tlS
-         eXmg==
-X-Gm-Message-State: AOAM531U66zntNjglF1F+YJp9c3+aBT2w/wp6d/v1IhNROtnXqEw58Ic
-        P8tlUskMNrVQKy83chFPLBrjWOkdQNFu08ez
-X-Google-Smtp-Source: ABdhPJzwHYdkmu7ttNffuwOFExo8lpMrHD7sZfIR1TsMFquzWciGkM/lTlK1p4rGhlLh0egwCi9rjA==
-X-Received: by 2002:a63:8f1b:: with SMTP id n27mr1545531pgd.74.1606176000058;
-        Mon, 23 Nov 2020 16:00:00 -0800 (PST)
-Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
-        by smtp.gmail.com with ESMTPSA id n72sm12795716pfd.202.2020.11.23.15.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 15:59:59 -0800 (PST)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     rjw@rjwysocki.net
-Cc:     lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Punit Agrawal <punitagrawal@gmail.com>
-Subject: [PATCH] ACPI: processor: Drop duplicate setting of shared_cpu_map
-Date:   Tue, 24 Nov 2020 08:59:51 +0900
-Message-Id: <20201123235951.96243-1-punitagrawal@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1728812AbgKXAJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:09:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728340AbgKXAJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 19:09:34 -0500
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59E7720729;
+        Tue, 24 Nov 2020 00:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606176572;
+        bh=g0xSfkYgITYSd4tGE6/gm97fab8pltd36IR4YvsmDOc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t9quzZLb387V9f+P3HZXGJlePtadc4wiwNyDGc8D5QJuDNhOdFfZbOGd883CuwVhB
+         4JtUJUmzwXv2Sltz9SyF0UGTG0WJJFZv6M3pAyvsz4oWo49XYZdq+AI6E5YAcvpmEv
+         gNZhIPmsmG+S7i2jhOjXCQzfsGtmOEOQyzG3L2Ms=
+Received: by pali.im (Postfix)
+        id 4C6ADC30; Tue, 24 Nov 2020 01:01:43 +0100 (CET)
+Date:   Tue, 24 Nov 2020 01:01:43 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Vladimir Vid <vladimir.vid@sartura.hr>
+Cc:     devicetree@vger.kernel.org, a.heider@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        tmn505@gmail.com, sebastian.hesselbarth@gmail.com,
+        gregory.clement@bootlin.com, andrew@lunn.ch, jason@lakedaemon.net,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v5] arm64: dts: marvell: add DT for ESPRESSObin-Ultra
+Message-ID: <20201124000143.zgzzpvcd2is5uh2e@pali>
+References: <20201026184441.96395-1-vladimir.vid@sartura.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026184441.96395-1-vladimir.vid@sartura.hr>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'shared_cpu_map', stored as part of the per-processor
-acpi_processor_performance structre, is used to store cpus that share
-a performance domain. By definition it contains the owning cpu.
+On Monday 26 October 2020 19:44:42 Vladimir Vid wrote:
+> This adds support for ESPRESSObin-Ultra from Globalscale.
+> 
+> Specifications are similar to the base ESPRESSObin board, with main
+> difference being being WAN port with PoE capability and 2 additional ethernet ports.
+> 
+> Full specifications:
+> 
+> 1x Marvell 64 bit Dual Core ARM A53 Armada 3700 SOC clocked up to 1.2Ghz
+> 1x Topaz 6341 Networking Switch
+> 1GB DDR4
+> 8GB eMMC
+> 1x WAN with 30W POE
+> 4x Gb LAN
+> 1x RTC Clock and battery
+> 1x DC Jack
+> 1x USB 3.0 Type A
+> 1x USB 2.0 Type A
+> 1x SIM NanoSIM card Slot
+> 1x Power Button
+> 4x LED
+> 1x Reset button
+> 1x microUSB for UART
+> 1x M.2 2280 slot for memory
+> 1x 2x2 802.11ac Wi-Fi
+> 1x MiniPCIE slot for Wi-Fi (PCIe interface)
+> 
+> Signed-off-by: Vladimir Vid <vladimir.vid@sartura.hr>
 
-While building the 'shared_cpu_map' it is being set twice - once while
-initialising the performance domains and again when matching cpus
-belonging to the same domain.
+Looks good now! The only missing part is to enable usb3 node. Have you
+looked at fixing usb3 port?
 
-Drop the unnecessary initialisation.
-
-Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
----
- drivers/acpi/processor_perflib.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/acpi/processor_perflib.c b/drivers/acpi/processor_perflib.c
-index b04a68950ff1..b0d320f18163 100644
---- a/drivers/acpi/processor_perflib.c
-+++ b/drivers/acpi/processor_perflib.c
-@@ -616,7 +616,6 @@ int acpi_processor_preregister_performance(
- 			continue;
- 
- 		pr->performance = per_cpu_ptr(performance, i);
--		cpumask_set_cpu(i, pr->performance->shared_cpu_map);
- 		pdomain = &(pr->performance->domain_info);
- 		if (acpi_processor_get_psd(pr->handle, pdomain)) {
- 			retval = -EINVAL;
--- 
-2.29.2
-
+> ---
+> 
+> v5 changes:
+> - update ethernet-phy@1 to match reg value
+> 
+> ---
+>  arch/arm64/boot/dts/marvell/Makefile          |   1 +
+>  .../marvell/armada-3720-espressobin-ultra.dts | 165 ++++++++++++++++++
+>  2 files changed, 166 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> 
+> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+> index 3e5f2e7a040c..094f451fdd1d 100644
+> --- a/arch/arm64/boot/dts/marvell/Makefile
+> +++ b/arch/arm64/boot/dts/marvell/Makefile
+> @@ -3,6 +3,7 @@
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-db.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-emmc.dtb
+> +dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-ultra.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> new file mode 100644
+> index 000000000000..c5eb3604dd5b
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> @@ -0,0 +1,165 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Device Tree file for ESPRESSObin-Ultra board.
+> + * Copyright (C) 2019 Globalscale technologies, Inc.
+> + *
+> + * Jason Hung <jhung@globalscaletechnologies.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "armada-3720-espressobin.dtsi"
+> +
+> +/ {
+> +	model = "Globalscale Marvell ESPRESSOBin Ultra Board";
+> +	compatible = "globalscale,espressobin-ultra", "marvell,armada3720",
+> +		     "marvell,armada3710";
+> +
+> +	aliases {
+> +		/* ethernet1 is WAN port */
+> +		ethernet1 = &switch0port5;
+> +		ethernet2 = &switch0port1;
+> +		ethernet3 = &switch0port2;
+> +		ethernet4 = &switch0port3;
+> +		ethernet5 = &switch0port4;
+> +	};
+> +
+> +	reg_usb3_vbus: usb3-vbus {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "usb3-vbus";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		enable-active-high;
+> +		gpio = <&gpionb 19 GPIO_ACTIVE_HIGH>;
+> +	};
+> +
+> +	usb3_phy: usb3-phy {
+> +		compatible = "usb-nop-xceiv";
+> +		vcc-supply = <&reg_usb3_vbus>;
+> +	};
+> +
+> +	gpio-leds {
+> +		pinctrl-names = "default";
+> +		compatible = "gpio-leds";
+> +		/* No assigned functions to the LEDs by default */
+> +		led1 {
+> +			label = "ebin-ultra:blue:led1";
+> +			gpios = <&gpionb 11 GPIO_ACTIVE_LOW>;
+> +		};
+> +		led2 {
+> +			label = "ebin-ultra:green:led2";
+> +			gpios = <&gpionb 12 GPIO_ACTIVE_LOW>;
+> +		};
+> +		led3 {
+> +			label = "ebin-ultra:red:led3";
+> +			gpios = <&gpionb 13 GPIO_ACTIVE_LOW>;
+> +		};
+> +		led4 {
+> +			label = "ebin-ultra:yellow:led4";
+> +			gpios = <&gpionb 14 GPIO_ACTIVE_LOW>;
+> +		};
+> +	};
+> +};
+> +
+> +&sdhci0 {
+> +	status = "okay";
+> +};
+> +
+> +&sdhci1 {
+> +	status = "disabled";
+> +};
+> +
+> +&spi0 {
+> +	flash@0 {
+> +		spi-max-frequency = <108000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "firmware";
+> +				reg = <0x0 0x3e0000>;
+> +			};
+> +			partition@3e0000 {
+> +				label = "hw-info";
+> +				reg = <0x3e0000 0x10000>;
+> +				read-only;
+> +			};
+> +			partition@3f0000 {
+> +				label = "u-boot-env";
+> +				reg = <0x3f0000 0x10000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c1_pins>;
+> +
+> +	clock-frequency = <100000>;
+> +
+> +	rtc@51 {
+> +		compatible = "nxp,pcf8563";
+> +		reg = <0x51>;
+> +	};
+> +};
+> +
+> +&usb3 {
+> +	usb-phy = <&usb3_phy>;
+> +	status = "disabled";
+> +};
+> +
+> +&mdio {
+> +	extphy: ethernet-phy@1 {
+> +		reg = <1>;
+> +	};
+> +};
+> +
+> +&switch0 {
+> +	reg = <3>;
+> +
+> +	ports {
+> +		switch0port1: port@1 {
+> +			reg = <1>;
+> +			label = "lan0";
+> +			phy-handle = <&switch0phy0>;
+> +		};
+> +
+> +		switch0port2: port@2 {
+> +			reg = <2>;
+> +			label = "lan1";
+> +			phy-handle = <&switch0phy1>;
+> +		};
+> +
+> +		switch0port3: port@3 {
+> +			reg = <3>;
+> +			label = "lan2";
+> +			phy-handle = <&switch0phy2>;
+> +		};
+> +
+> +		switch0port4: port@4 {
+> +			reg = <4>;
+> +			label = "lan3";
+> +			phy-handle = <&switch0phy3>;
+> +		};
+> +
+> +		switch0port5: port@5 {
+> +			reg = <5>;
+> +			label = "wan";
+> +			phy-handle = <&extphy>;
+> +			phy-mode = "sgmii";
+> +		};
+> +	};
+> +
+> +	mdio {
+> +		switch0phy3: switch0phy3@14 {
+> +			reg = <0x14>;
+> +		};
+> +	};
+> +};
+> -- 
+> 2.27.0
+> 
