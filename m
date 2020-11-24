@@ -2,81 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EC52C1C42
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9832C1C50
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgKXDtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 22:49:03 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:41806 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgKXDtD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 22:49:03 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3mnis149473;
-        Tue, 24 Nov 2020 03:49:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=6HpbE0r504VsbC5JkrkLgncZBl481poS92wMj+nW6zk=;
- b=ojR/ZMNslWGlfrsJffRwa94XGCG9ItPVS9Hf7kNyq3KoGWJKKHYLyYM5DfvOFcpiI3QF
- pNInUouC+peGzOd0un7LDUXvuJBqBvPxxSm5zvLbNrGXrKvF1TgABZMsaklGWsrJHykE
- tODQywY1VqYmz9x40144PrpEJ9s7V0W8KbXlSTk5WkhrHJ0axR8u6Abz0+us3t/tMHW7
- wpjG2aAK7LZaEym+Z/yNHd69rfsHRgKAFIwudwB+SIBqbwyq+AYHLzHorZKSlxA4oP0X
- h8u/ayHWWPNBv61HeEiPHVVjpn+fzgm8ODjF8Q6NaN06jWK4P5H6I251XLcaSRPrZWfV sQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34xtum0djg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Nov 2020 03:49:00 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3jrxK058272;
-        Tue, 24 Nov 2020 03:48:59 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34ycnrvpb3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 03:48:59 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AO3mwL8023783;
-        Tue, 24 Nov 2020 03:48:59 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Nov 2020 19:48:58 -0800
-To:     Karan Tilak Kumar <kartilak@cisco.com>
-Cc:     satishkh@cisco.com, sebaddel@cisco.com, arulponn@cisco.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: fnic: Validate io_req before others
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1sg8zl8im.fsf@ca-mkp.ca.oracle.com>
-References: <20201121023337.19295-1-kartilak@cisco.com>
-Date:   Mon, 23 Nov 2020 22:48:56 -0500
-In-Reply-To: <20201121023337.19295-1-kartilak@cisco.com> (Karan Tilak Kumar's
-        message of "Fri, 20 Nov 2020 18:33:37 -0800")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=1
- mlxlogscore=835 phishscore=0 spamscore=0 malwarescore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240020
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 mlxlogscore=847 impostorscore=0 spamscore=0 mlxscore=0
- phishscore=0 clxscore=1015 suspectscore=1 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240020
+        id S1727466AbgKXDyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 22:54:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726295AbgKXDyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 22:54:54 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1F0120857;
+        Tue, 24 Nov 2020 03:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1606190093;
+        bh=ptxjFcxlW9+uhwthnOS9ER8MCO3kGADZsj0nK7ZuW3Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Av8Q+R5owcg1Ipxrydv+supopdE5VQkWwrMpMH8NdUft1o0jXqx1xhBURS4p6PJiA
+         OWCHn7BN/IMeRPBRDCIYton7MzfoQjr07bXiJy1KcHBfTFl5SspyD+t3L2ju5w6VAk
+         dMKV0hsbL1xS5BwDSGKJyheDA5kDlpttwug674sc=
+Date:   Mon, 23 Nov 2020 19:54:52 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Subject: Re: INFO: task can't die in shrink_inactive_list (2)
+Message-Id: <20201123195452.8ecd01b1fc2ce287dfd6a0d5@linux-foundation.org>
+In-Reply-To: <0000000000000340a105b49441d3@google.com>
+References: <0000000000000340a105b49441d3@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 20 Nov 2020 17:55:22 -0800 syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com> wrote:
 
-Karan,
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    03430750 Add linux-next specific files for 20201116
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13f80e5e500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c4c3f27041fdb8
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e5a33e700b1dd0da20a2
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f7bc5a500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10934cf2500000
 
-> We need to check for a valid io_req before we check other data. Also,
-> removing redundant checks.
+Alex, your series "per memcg lru lock" changed the vmscan code rather a
+lot.  Could you please take a look at that reproducer?
 
-Applied to 5.11/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com
+> 
+> INFO: task syz-executor880:8534 can't die for more than 143 seconds.
+> task:syz-executor880 state:R  running task     stack:25304 pid: 8534 ppid:  8504 flags:0x00004006
+> Call Trace:
+>  context_switch kernel/sched/core.c:4269 [inline]
+>  __schedule+0x890/0x2030 kernel/sched/core.c:5019
+>  preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5179
+>  preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+>  __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+>  _raw_spin_unlock_irq+0x3c/0x40 kernel/locking/spinlock.c:199
+>  spin_unlock_irq include/linux/spinlock.h:404 [inline]
+>  shrink_inactive_list+0x4b1/0xce0 mm/vmscan.c:1974
+>  shrink_list mm/vmscan.c:2167 [inline]
+>  shrink_lruvec+0x61b/0x11b0 mm/vmscan.c:2462
+>  shrink_node_memcgs mm/vmscan.c:2650 [inline]
+>  shrink_node+0x839/0x1d60 mm/vmscan.c:2767
+>  shrink_zones mm/vmscan.c:2970 [inline]
+>  do_try_to_free_pages+0x38b/0x1440 mm/vmscan.c:3025
+>  try_to_free_pages+0x29f/0x720 mm/vmscan.c:3264
+>  __perform_reclaim mm/page_alloc.c:4360 [inline]
+>  __alloc_pages_direct_reclaim mm/page_alloc.c:4381 [inline]
+>  __alloc_pages_slowpath.constprop.0+0x917/0x2510 mm/page_alloc.c:4785
+>  __alloc_pages_nodemask+0x5f0/0x730 mm/page_alloc.c:4995
+>  alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+>  alloc_pages include/linux/gfp.h:547 [inline]
+>  __page_cache_alloc mm/filemap.c:977 [inline]
+>  __page_cache_alloc+0x2ce/0x360 mm/filemap.c:962
+>  page_cache_ra_unbounded+0x3a1/0x920 mm/readahead.c:216
+>  do_page_cache_ra+0xf9/0x140 mm/readahead.c:267
+>  do_sync_mmap_readahead mm/filemap.c:2721 [inline]
+>  filemap_fault+0x19d0/0x2940 mm/filemap.c:2809
+>  __do_fault+0x10d/0x4d0 mm/memory.c:3623
+>  do_shared_fault mm/memory.c:4071 [inline]
+>  do_fault mm/memory.c:4149 [inline]
+>  handle_pte_fault mm/memory.c:4385 [inline]
+>  __handle_mm_fault mm/memory.c:4520 [inline]
+>  handle_mm_fault+0x3033/0x55d0 mm/memory.c:4618
+>  do_user_addr_fault+0x55b/0xba0 arch/x86/mm/fault.c:1377
+>  handle_page_fault arch/x86/mm/fault.c:1434 [inline]
+>  exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1490
+>  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
+> RIP: 0033:0x400e71
+> Code: Unable to access opcode bytes at RIP 0x400e47.
+> RSP: 002b:00007f8a5353fdc0 EFLAGS: 00010246
+> RAX: 6c756e2f7665642f RBX: 00000000006dbc38 RCX: 0000000000402824
+> RDX: 928195da81441750 RSI: 0000000000000000 RDI: 00000000006dbc30
+> RBP: 00000000006dbc30 R08: 0000000000000000 R09: 00007f8a53540700
+> R10: 00007f8a535409d0 R11: 0000000000000202 R12: 00000000006dbc3c
+> R13: 00007ffe80747a5f R14: 00007f8a535409c0 R15: 0000000000000001
+> 
+> Showing all locks held in the system:
+> 1 lock held by khungtaskd/1659:
+>  #0: ffffffff8b339ce0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6252
+> 1 lock held by kswapd0/2195:
+> 1 lock held by kswapd1/2196:
+> 1 lock held by in:imklog/8191:
+>  #0: ffff8880125b1270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+> 1 lock held by cron/8189:
+> 2 locks held by syz-executor880/8502:
+> 2 locks held by syz-executor880/8505:
+> 2 locks held by syz-executor880/8507:
+> 2 locks held by syz-executor880/11706:
+> 2 locks held by syz-executor880/11709:
+> 3 locks held by syz-executor880/12008:
+> 2 locks held by syz-executor880/12015:
+> 
+> =============================================
+> 
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
