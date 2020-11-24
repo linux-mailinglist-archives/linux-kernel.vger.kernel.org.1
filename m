@@ -2,143 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEBF2C3391
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCD12C3399
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388039AbgKXVxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387709AbgKXVxj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:53:39 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AC2C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:53:39 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 34so394570pgp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:53:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Eeb46OLyUYe8CEL9RCpB8Rjzm+dAvCKxFRLMi+TWzE8=;
-        b=chULQtPyZU6yH7LH9Yp7tHhjqYgjoH/GWfcXYNnyzcsX/9oaZ8SndhKiTvrV5Jl0gf
-         wgqMrusVtyfvKDfRPq5mhhPWcCQMRgB8b+g/UM/D4ETE/soNATagXxJVyIyZBfZDP2xp
-         oj6sM2Etbh5hyxPSxDiNIm9DarFLlh8NJZXQY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Eeb46OLyUYe8CEL9RCpB8Rjzm+dAvCKxFRLMi+TWzE8=;
-        b=JjBJPNq6M+5iUwFX9NGXw8m3JaR1Tbge4akEmGA6XKUCqKwL+baLpuyXR3hS8xH2SJ
-         PYtSSMePfM/gBMZQReGFIur4XmOF6kAAGU4RvFuGv7JKQ5ii/u/GrRx7r0MHWU4Cn48j
-         fRSXFYDrwpJ5daDWFgVIDkCDm7R2A7Z8OwZNbEvsZyKw/8a6cnow5rc3QKgJ4MFk2sYx
-         +W8+GCozLYx7BzFxUJQPW62JhQ5ztLO5yhg2bZuwZ/kB2T/pWl0VYUJQg+hG2LtIPNtp
-         IEIjFop4W6jEWINpqMMtFT/b6BqjBSZ3MHWe1VVRNtcFUlLdOd1iQiDzD5BHVy36uASC
-         me7A==
-X-Gm-Message-State: AOAM533hclWvzIE57QA/RMa6twNvD98z1Gp0G4nVpCk+Xik+FCPrGZX+
-        Dc5vAWKAJII5y0zY7IqjIPnzCg==
-X-Google-Smtp-Source: ABdhPJw6zEGUFL/GNY35Zd2nreZVIKTgxe8pVomSyOaKn+0iiIMFnIMaIInVGOIjVD3bONDpe+e9uw==
-X-Received: by 2002:a63:e0f:: with SMTP id d15mr361557pgl.310.1606254819180;
-        Tue, 24 Nov 2020 13:53:39 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q126sm24093pfc.168.2020.11.24.13.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 13:53:38 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:53:37 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Kernel development list <linux-kernel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Printk specifiers for __user pointers
-Message-ID: <202011241347.4AFCBDF62@keescook>
-References: <20201120164412.GD619708@rowland.harvard.edu>
- <20201120134242.6cae9e72@gandalf.local.home>
- <X7uGlDg88bI6zebS@alley>
+        id S2388275AbgKXV5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:57:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731696AbgKXV5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 16:57:17 -0500
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBB5820715
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 21:57:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606255036;
+        bh=NKTa7dLhb4WX8DpX7xxrijkL1HVS8VWwDbB2EYzcFFE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tF7koIwHqUeAdU8NWI/Ej9UosKw2qWRr+G7VezLm2Ut1X1AZtEUzEoKlI4TV5PwqH
+         Bw/Tp2DNpIvXuxgWuuypsFuvMLNa0Fa5BE3cwQmoMom9lEscuo35I/08SpNcTxkzrW
+         aaPmSsB4q5Zv5pmYvp/7c1DhpM4X37R4HBId+jmA=
+Received: by mail-wr1-f50.google.com with SMTP id t4so10918304wrr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:57:15 -0800 (PST)
+X-Gm-Message-State: AOAM532QQh2LNOSwF6AuRpOD+PKxdy9WK6+phrhu7k6SgN1Tfcb9WuQ6
+        JPBEAexO9msb+fWmxTlByRiXPNK9RIht9fkBaRx7kw==
+X-Google-Smtp-Source: ABdhPJzpjAfkskq+eGhhEjz/1Bf+L0y9f7ytY47+jSjxHLhcliLc+rleBGHbHj5kg0aLz20bkhHnz74/gVM80kgd90E=
+X-Received: by 2002:a5d:4e87:: with SMTP id e7mr634055wru.70.1606255034259;
+ Tue, 24 Nov 2020 13:57:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X7uGlDg88bI6zebS@alley>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201121151259.GA3948@wind.enjellic.com> <CALCETrXTjZSg-ccDKF7yX8y+vCCrcn9C_m6ZCGNdWHq73aUHQQ@mail.gmail.com>
+ <20201124184039.GA22484@wind.enjellic.com>
+In-Reply-To: <20201124184039.GA22484@wind.enjellic.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 24 Nov 2020 13:57:00 -0800
+X-Gmail-Original-Message-ID: <CALCETrUDoMKRsB8EHNo1iZB-KxidWB_LCivReE6DvCT2HQ2PzQ@mail.gmail.com>
+Message-ID: <CALCETrUDoMKRsB8EHNo1iZB-KxidWB_LCivReE6DvCT2HQ2PzQ@mail.gmail.com>
+Subject: Re: [PATCH v40 00/24] Intel SGX foundations
+To:     "Dr. Greg" <greg@enjellic.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Mikko Ylinen <mikko.ylinen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:53:24AM +0100, Petr Mladek wrote:
-> On Fri 2020-11-20 13:42:42, Steven Rostedt wrote:
-> > On Fri, 20 Nov 2020 11:44:12 -0500
-> > Alan Stern <stern@rowland.harvard.edu> wrote:
-> > 
-> > > To the VSPRINTF maintainers:
-> > > 
-> > > Documentation/core-api/printk-formats.rst lists a large number of format 
-> > > specifiers for pointers of various sorts.  Yet as far as I can see, 
-> > > there is no specifier meant for use with __user pointers.
-> > > 
-> > > The security implications of printing the true, unmangled value of a 
-> > > __user pointer are minimal, since doing so does not leak any kernel 
-> > > information.  So %px would work, but tools like checkpatch.pl don't like 
-> > > it.
-> 
-> Just to be sure as I am not a security expert. Is there really that
-> big difference in the risk? The following scenarios come to my mind:
-> 
-> 1. The address would show a well defined location in the userspace
->    application? Could it be used to attack the application?
+On Tue, Nov 24, 2020 at 10:40 AM Dr. Greg <greg@enjellic.com> wrote:
+>
+> On Sat, Nov 21, 2020 at 10:36:58AM -0800, Andy Lutomirski wrote:
+>
 
-Yes -- this is the primary risk in my view. Exposing addresses of any
-kind can be a risk. While an unprivileged user may not have direct
-access to dmesg, there tend to be many indirect ways to see its
-contents. As such, exposing a userspace address (when not then also
-terminating the process, as seen with the segv reporting) poses a
-potential exposure risk. I admit it's not a LARGE risk, but modern
-attacks use these kind of building blocks to construct all the steps to
-reaching their target.
+> Intel SGX developer licensing requires that you provide application
+> recipients with a full and complete runtime along with the signed
+> application.  Our developer license allowed us to substitute our
+> runtime for Intel's.
 
-> 2. The address shows a location that is being accessed by kernel.
->    Could not it be used to pass a value that might be used to attack
->    kernel?
+Upstream Linux wants nothing to do with Intel's developer licensing.
 
-This is also a risk: it provides feedback about where something may be
-as a target within a confused-deputy style attack. (i.e. set up one
-process to confuse the kernel, and exploit it from another).
+> > > Given that this driver is no longer locked to the Intel trust root, by
+> > > virtue of being restricted to run only on platforms which support
+> > > Flexible Launch Control, there is no longer any legitimate technical
+> > > reason to not expose all of the functionality of the hardware.
+>
+> > I read this three times, and I can't tell what functionality you're
+> > referring to.
+>
+> Yes you do, as I mentioned to Dave in my last e-mail, we have been
+> disagreeing about this for a year.
 
-> > > Should a new specifier be added?  If not, should we simply use %px?
-> > 
-> > There's currently no user of '%pu' (although there is a '%pus'. Perhaps we
-> > should have a '%pux'?
-> > 
-> > I would even state that if it is used, that if makes sure that the value is
-> > indeed a user space pointer (goes through the same checks as accessing user
-> > space), before its printed, otherwise it shows "(fault)" or something.
-> 
-> I have mixed feelings about this.
-> 
-> One one hand, it might make sense to mark locations where userspace
-> address is printed. We could easily decide how to print them (hash or
-> value) and we could check that it is really from a userspace one.
-> 
-> But I have few concerns:
-> 
-> 1. The existing "%pus" has a kind of opposite meaning. It says what
->    address space should be used when the kernel and userspace address
->    space is overlapping.
-> 
-> 2. There is the history with "%pk". It did not work because people did
->    not use it.
-> 
-> 3. I am not sure about the output when the address is not from
->    userspace. Printing ("fault") is not much helpful. Printing
->    hashed value might be confusing. Well, I am still not sure
->    that it is really safe to print real userspace addresses
->    by default.
+No, I don't.  It's entirely possible that I'm aware of the
+functionality you're referring to, but that doesn't mean that your
+description quoted above is sufficient for me to have the slightest
+idea which functionality you mean right here.
 
-I think this should just be %px. Or better yet, not printed at all. See
-Linus's prior comments:
-https://www.kernel.org/doc/html/latest/process/deprecated.html#p-format-specifier
+>
+> You were at some kind of seminar where SGX was discussed.  Based on
+> that you developed a 'manifesto' regarding how Linux should implement
+> the technology.  That manifesto indicated there would be no place for
+> cryptographic policy control on enclaves.
 
--- 
-Kees Cook
+That's not what I said.  Paraphrasing myself, I said that there is no
+place for a driver in upstream Linux that allows only Intel-approved
+code to run.  That is not at all the same thing as saying we won't
+support cryptographic policy in a way that allows the platform owner
+an appropriate degree of control.
+
+Actually supporting launch control (the EINIT-enforced kind) in
+upstream Linux will be tricky but is surely possible.  It would
+probably help if Intel or firmware vendors had some clear
+specification of exactly how they intend for platform owners to select
+an SGXLEPUBKEYHASH value.  (A nice spec in which an authenticated UEFI
+variable contained the desired SGXLEPUBKEYHASH and lock state might be
+an excellent start.)  Supporting this in upstream Linux will also
+require decoupling the user code that creates an enclave from the user
+code that invokes the LE.  Jarkko already wrote some code for this,
+and it could be revived.  If this ends up being inconsistent with
+Intel's licensing requirements, then Intel can change their licensing
+requirements or people can just ignore Intel and use a different
+signing key.
+
+Frankly, using Intel's signing key in SGXLEPUBKEYHASH offers a dubious
+degree of protection in the first place -- it assumes that Intel will
+never approve a malware enclave, and it also assumes that the lack of
+functioning EINITTOKEN revocation won't break the whole scheme.
+
+>
+> A well taken and considered point on a locked launch control platform
+> but completely irrelevant for this driver, that only operates on
+> Flexible Launch Control platforms.  By demanding compliance with only
+> that vision you deny platform owners a final measure of defense
+> against anonymous code execution.
+
+I am denying Intel the chance to impose their licensing requirements.
+The fact that Intel chose to poison the well with their licensing
+system and that, as a result, Linux won't support the Intel model of
+launch control to protect platform owners is an unfortunate side
+effect.
+
+>
+> > > The patch that I am including below implements signature based policy
+> > > controls for enclave initialization.  It does so in a manner that is
+> > > completely transparent to the default behavior of the driver, which is
+> > > to initialize any enclave passed to it with the exception of enclaves
+> > > that set the PROVISION_KEY attribute bit.
+>
+> > It's completely unreviewable.  It's an ABI patch, and it does not
+> > document what it does, nor does it document why it does it.  It's
+> > just a bunch of code.  NAK.
+>
+> You can certainly NAK-away Andy[0]. I've had sufficent private
+> feedback from reasoned and informed individuals that I've made my
+> point that this isn't about technical considerations.
+
+Depends on what you mean by "technical".  In the submitting-patches
+guide (https://www.kernel.org/doc/html/v5.9/process/submitting-patches.html),
+you will find instructions to "describe your changes" and "separate
+your changes".  If you can produce a reasonably, reviewable submission
+of your code, I will review it.  But I am not going to dig through
+your diff to try to find the hidden technical merit.
+
+>
+> Here is the link, again, to the patch in 'git am' compliant format.
+>
+> ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-v41.patch
+>
+> I've been watching Linux patches go by for close to 30 years.  If this
+> is completely unreviewable garbage, legitimate concerns can be raised
+> about what is getting pushed into the kernel.
+
+The kernel review process is by no means perfect.  That does not mean
+that you get to apply your unreviewable garbage just because other
+people have pulled it off in the past.
+
+> For the LKML record, absent our patch the driver has an open security
+> issue with respect to anonymous code execution that should be
+> addressed, if that issue is indeed of any concern.
+
+What do you mean?
+
+
+> The only thing that I can think of is that you disagree with the
+> optional capability of blocking the enclave from implementing
+> anonymously executable memory.  Absent that ability there is the
+> security issue that has now been extensively discussed.
+
+You keep sending a patch that blocks mmap and mprotect on an
+initialized enclave.  As far as I can tell, you haven't explained how
+it's any better than the code it replaces.  The code it replaces
+enforces per-page maximum permissions, and all the infrastructure is
+in place for the platform owner to be able to enforce their rules
+without breaking ABI.
+
+Your proposal appears to accomplish something a little bit like what
+the code in -tip does, except without as much room for future
+improvements.  Since you haven't tried to explain why you think it's
+better, I can't really evaluate it.
