@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F9D2C2178
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45772C217C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731150AbgKXJfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:35:09 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14064 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731004AbgKXJfH (ORCPT
+        id S1731201AbgKXJf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:35:57 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:39519 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727901AbgKXJf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:35:07 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AO9XR7P120656;
-        Tue, 24 Nov 2020 04:35:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=NoNyQzr1jquBdTjKz6J3ZBvOvZAC+40G7+eT7V7mZ4Q=;
- b=rjMCEQAMHyGVjpr3oXhEVT4wq/9FZ6LGAFFiLtfLejwT7gOr9mRSUzdgFtQiYOpScigU
- k6XdHPhfIGgVL0B2qG676QYWlrPT2YF9Ug7Ln0ov9Ic3WSXG8INPFcB9OftodtPTUGqK
- 89Or6khfjkpTBQcwrDgM/S4WWdQAo9S7SPPX92+dSff8oTXWK3fR1g2+g/eMhHk2ngO7
- KWvKSye/NYkV9PnRuJMMU5I3IYy6dEhAC2Hn7WgQguin68v5yJazz06We/1iIof6FR3Q
- jAVyjb52UReMKLVIWkSiin8Ic3Lz7WbLRQ20GghP8UJp+gAN3xcybuRLdKd9SzdEpGZl 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 350n10a3nd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 04:35:02 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AO9YSIU127745;
-        Tue, 24 Nov 2020 04:35:02 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 350n10a3m6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 04:35:02 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AO9WB8M025222;
-        Tue, 24 Nov 2020 09:35:00 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 34xt5hbend-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 09:34:59 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AO9YvHh6292200
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 09:34:57 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1497D4C04A;
-        Tue, 24 Nov 2020 09:34:57 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58CEB4C058;
-        Tue, 24 Nov 2020 09:34:54 +0000 (GMT)
-Received: from [9.199.32.189] (unknown [9.199.32.189])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 24 Nov 2020 09:34:54 +0000 (GMT)
-Subject: Re: [PATCH] perf test: Skip test 68 for Powerpc
-To:     Kajol Jain <kjain@linux.ibm.com>, acme@kernel.org
-Cc:     jolsa@redhat.com, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        irogers@google.com, tmricht@linux.ibm.com, rbernon@codeweavers.com,
-        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20201104082954.57338-1-tmricht@linux.ibm.com>
- <20201119135022.36340-1-kjain@linux.ibm.com>
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Message-ID: <4a2908ca-6b75-c688-ec3b-7f37783f08cc@linux.ibm.com>
-Date:   Tue, 24 Nov 2020 15:04:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 24 Nov 2020 04:35:56 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khUjm-0008M0-KM; Tue, 24 Nov 2020 10:35:50 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khUjl-0005kh-Gq; Tue, 24 Nov 2020 10:35:49 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 74089240041;
+        Tue, 24 Nov 2020 10:35:48 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id E5EA2240040;
+        Tue, 24 Nov 2020 10:35:47 +0100 (CET)
+Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 7857B20115;
+        Tue, 24 Nov 2020 10:35:47 +0100 (CET)
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        xie.he.0141@gmail.com
+Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
+Subject: [PATCH net-next v5 0/5] net/x25: netdev event handling
+Date:   Tue, 24 Nov 2020 10:35:33 +0100
+Message-ID: <20201124093538.21177-1-ms@dev.tdt.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201119135022.36340-1-kjain@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_04:2020-11-24,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 clxscore=1011 phishscore=0 bulkscore=0
- mlxscore=0 impostorscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240058
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+Content-Transfer-Encoding: quoted-printable
+X-purgate-type: clean
+X-purgate-ID: 151534::1606210550-000064E4-2563A932/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+---
 
+Changes to v4:
+o also establish layer2 (LAPB) on NETDEV_UP events, if the carrier is
+  already UP.
 
-On 11/19/20 7:20 PM, Kajol Jain wrote:
-> Commit ed21d6d7c48e6e ("perf tests: Add test for PE binary format support")
-> adds a WINDOWS EXE file named tests/pe-file.exe, which is
-> examined by the test case 'PE file support'. As powerpc doesn't support
-> it, we are skipping this test.
-> 
-> Result in power9 platform before this patach:
-> [command]# ./perf test -F 68
-> 68: PE file support                               : Failed!
-> 
-> Result in power9 platform after this patch:
-> [command]# ./perf test -F 68
-> 68: PE file support                               : Skip
-> 
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Changes to v3:
+o another complete rework of the patch-set to split event handling
+  for layer2 (LAPB) and layer3 (X.25)
 
-Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Changes to v2:
+o restructure complete patch-set
+o keep netdev event handling in layer3 (X.25)
+o add patch to fix lapb_connect_request() for DCE
+o add patch to handle carrier loss correctly in lapb
+o drop patch for x25_neighbour param handling
+  this may need fixes/cleanup and will be resubmitted later.
+
+Changes to v1:
+o fix 'subject_prefix' and 'checkpatch' warnings
+
+---
+
+Martin Schiller (5):
+  net/x25: handle additional netdev events
+  net/lapb: support netdev events
+  net/lapb: fix t1 timer handling for LAPB_STATE_0
+  net/x25: fix restart request/confirm handling
+  net/x25: remove x25_kill_by_device()
+
+ net/lapb/lapb_iface.c | 94 +++++++++++++++++++++++++++++++++++++++++++
+ net/lapb/lapb_timer.c | 11 ++++-
+ net/x25/af_x25.c      | 38 ++++++++---------
+ net/x25/x25_link.c    | 47 +++++++++++++++++-----
+ net/x25/x25_route.c   |  3 --
+ 5 files changed, 155 insertions(+), 38 deletions(-)
+
+--=20
+2.20.1
+
