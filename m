@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC262C298A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07592C2966
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389002AbgKXO0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:26:19 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55414 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388969AbgKXO0R (ORCPT
+        id S2388887AbgKXOXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732297AbgKXOXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:26:17 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOEGZiR017030;
-        Tue, 24 Nov 2020 15:24:19 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=STMicroelectronics;
- bh=/Lr2yKdeXEPI/ALwJxE9iloE/mG9CzbQupaWiqLE3wM=;
- b=G38+FG9jP/010Etf8q+4RN8sdlaTwcdjAdhjhmB9/fagRQTrGL4phffCwVXN7RkYUrEF
- AKkoUw57L0qtNJZIU3nJCYOMXt71Rw9WVgD2ZX4dpd/7uq5B5zmLqOIu7RRyFbcYJnCg
- R6QrqiX3rltVYf44Vys7ThcAQjaCYaR1BGzjwCexgHqc/xkKAWkxBtLaxXtQ0aUFlIti
- ZGpAY31DgioYTOVnkpxbR7VhdfA1TcjznugPG1Lm2C+aGYFaInoJkZQH0lMXuD9PxbVU
- VeyyRuP0jgnqvDtv3exNGj96b6CunQNT2nInKWBHy8x+NXFWgv6Db5xtiz+OLvtkg+us qg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y0fgsrnf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 15:24:19 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E17DD10002A;
-        Tue, 24 Nov 2020 15:24:18 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9045E2B8A38;
-        Tue, 24 Nov 2020 15:24:18 +0100 (CET)
-Received: from [10.129.7.42] (10.75.127.48) by SFHDAG1NODE3.st.com
- (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 15:24:15 +0100
-Message-ID: <e2b2b623700401538fe91e70495c348c08b5d2e3.camel@st.com>
-Subject: Re: [PATCH] net: stmmac: add flexible PPS to dwmac 4.10a
-From:   Antonio Borneo <antonio.borneo@st.com>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-CC:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        has <has@pengutronix.de>
-Date:   Tue, 24 Nov 2020 15:23:27 +0100
-In-Reply-To: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
-References: <20191007154306.95827-1-antonio.borneo@st.com>
-         <20191007154306.95827-5-antonio.borneo@st.com>
-         <20191009152618.33b45c2d@cakuba.netronome.com>
-         <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Tue, 24 Nov 2020 09:23:50 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4287DC0613D6;
+        Tue, 24 Nov 2020 06:23:49 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id f23so28777392ejk.2;
+        Tue, 24 Nov 2020 06:23:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6NLbmKhCgsd6W4UoEHa+1d6BvChXX8mDmskXgcWEKV0=;
+        b=FqLNUUsB5RWkYKlRmrFeIluV/yiheGUu5oOfro2MV7r7pdIp7Gv3BBhlNlrXULGT4P
+         NLJaqDRN3o8UOk83GoDFkjvozMmj2kYgP2GEHmJrZ5dnsCr19rkS5bEXLIKLyn78/rRy
+         FOK1KN7v1UGwzV8tJY0SDRZrOJ3nPljNFaLibmF4/uHnlXEE5hxXCa5RynmXBAZzNGGj
+         LarIGn/yfKpWdqi58R5YeohrpiCz45WanAMFSh3vZj4qp2hODLeuSc93+QfVoHSDWXei
+         oA9m3e1c+UdFlHUxAOeZ9MfMFbAcVWwl36X6JyYVvoDI1zkOB4xDdKHKMRzWbE+Fq0A8
+         NKtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6NLbmKhCgsd6W4UoEHa+1d6BvChXX8mDmskXgcWEKV0=;
+        b=S+wOPfbSbda+Xktgpoi5jswLfFa6ptv1l9ppibEckdPsgMcmok6AnT6r2UIpZX8hul
+         NoCkLVFFKHX9MOxm2zvnk7woF8UIuCCAmhamCiFcmZNsghs2O0IIIDvsG+aVOCTtHw+F
+         dEzsHmQV2O72oo2E8L//D5bqxomM+iALep5rggLlJqkw63MhtpwKiRLmJMFldLjWmVhm
+         b/v02XWr6oNMmA2BA48ZeqB1Sb5ROBFveIx3CV9K+xfKpwgbVHqlZAqQOyVyS8g5XkYN
+         2qIYyuCxfjbOUFMtgmIzz0pgvb4b4RiRFhdw8g38jo9BGO/dkxGw7TPqpTtzxFHIxvca
+         4vPA==
+X-Gm-Message-State: AOAM533FKV98O77cIkdxiISRAbg3bQrlNyO+5QleeZ7cQQZtv1lVj5Q2
+        my4/Tg71wax5VqbK1Mk79IOt5/OtszQZ0dUYXa4=
+X-Google-Smtp-Source: ABdhPJzp5LYdqvjZqg29K1AkxD1xP6rqW/nQeEstIRkz4GbMt+5jDkmVFf+/lAK4ue2Kclwd9/VSKM49uB62N4YyiOQ=
+X-Received: by 2002:a17:906:5955:: with SMTP id g21mr4567652ejr.271.1606227828014;
+ Tue, 24 Nov 2020 06:23:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
+References: <1602833947-82021-1-git-send-email-Sanju.Mehta@amd.com>
+ <1602833947-82021-3-git-send-email-Sanju.Mehta@amd.com> <20201118121623.GR50232@vkoul-mobl>
+In-Reply-To: <20201118121623.GR50232@vkoul-mobl>
+From:   Vitaly Mayatskih <v.mayatskih@gmail.com>
+Date:   Tue, 24 Nov 2020 09:23:36 -0500
+Message-ID: <CAGF4SLi1qqj6xSBB6=9rS=M_Wvaj9Zec7XzMc7=9EsgPLM21OQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/3] dmaengine: ptdma: register PTDMA controller as a
+ DMA resource
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Sanjay R Mehta <Sanju.Mehta@amd.com>, gregkh@linuxfoundation.org,
+        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
+        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 15:15 +0100, Ahmad Fatoum wrote:
-> Hello Jakub,
-> 
-> On 10.10.19 00:26, Jakub Kicinski wrote:
-> > On Mon, 7 Oct 2019 17:43:06 +0200, Antonio Borneo wrote:
-> > > All the registers and the functionalities used in the callback
-> > > dwmac5_flex_pps_config() are common between dwmac 4.10a [1] and
-> > > 5.00a [2].
-> > > 
-> > > Reuse the same callback for dwmac 4.10a too.
-> > > 
-> > > Tested on STM32MP15x, based on dwmac 4.10a.
-> > > 
-> > > [1] DWC Ethernet QoS Databook 4.10a October 2014
-> > > [2] DWC Ethernet QoS Databook 5.00a September 2017
-> > > 
-> > > Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-> > 
-> > Applied to net-next.
-> 
-> This patch seems to have been fuzzily applied at the wrong location.
-> The diff describes extension of dwmac 4.10a and so does the @@ line:
-> 
->   @@ -864,6 +864,7 @@ const struct stmmac_ops dwmac410_ops = {
-> 
-> The patch was applied mainline as 757926247836 ("net: stmmac: add
-> flexible PPS to dwmac 4.10a"), but it extends dwmac4_ops instead:
-> 
->   @@ -938,6 +938,7 @@ const struct stmmac_ops dwmac4_ops = {
-> 
-> I don't know if dwmac4 actually supports FlexPPS, so I think it's
-> better to be on the safe side and revert 757926247836 and add the
-> change for the correct variant.
+On Wed, Nov 18, 2020 at 7:20 AM Vinod Koul <vkoul@kernel.org> wrote:
 
-Agree,
-the patch get applied to the wrong place!
+> this should be single line
 
-Antonio
+Vinod, do you see any obvious functional defects still present in the
+driver, or can it be finally merged for us to start testing, while
+Sanjay is working on improvements and style fixes? I'm sure the driver
+has hidden bugs, as any other piece of code on the planet, and Sanjay
+will appreciate bug reports from the actual PTDMA users.
 
-> 
-> Cheers,
-> Ahmad
-> 
-> 
-
-
+Thanks!
+-- 
+wbr, Vitaly
