@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E932C2034
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCFC2C2039
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730728AbgKXIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:39:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbgKXIjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:39:49 -0500
-Received: from localhost (unknown [122.167.149.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C7E8206FA;
-        Tue, 24 Nov 2020 08:39:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606207189;
-        bh=pxqmtk5/OaJeLZ3v+XADzNZmmNxQt38OoL+FYoVFdQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fARV9PljrFrO9MOPpSMv0niQ7g9dGIJw1CQMi+X0IGvaI9tdotf2cUDxNOj0P+cSi
-         QNizqze5/eVlibQ9eivR7isQig4WRSkM4OMwcd7rBOCcE78BxwHGkevMHfMjN5CxYK
-         ESCeNCDyOzXDQHdR3eZAqdAT+qioPbT4+E2/oS4w=
-Date:   Tue, 24 Nov 2020 14:09:44 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: SDCA: detect sdca_cascade interrupt
-Message-ID: <20201124083944.GK8403@vkoul-mobl>
-References: <20201104152358.9518-1-yung-chuan.liao@linux.intel.com>
+        id S1730743AbgKXIko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:40:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730734AbgKXIkn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:40:43 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54329C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:40:43 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id a9so27729615lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:40:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fZZ8f+vcTbXX17RytzeIZCFFJIrA9Nh0Gm+ruQ//k0k=;
+        b=fIbNuHGlb2d+s/+JSsS7jUKosx5QUxc7C77UNyZTA/s+tqMyYJKnaqKbRGv4fF1jgP
+         3yNby0AANnjpRYQ6LV5iTNCYQUf22MpP3JK4nbXzbLykNyNu8yr8hppObevC3qPD9N0A
+         zwE7HYUl21zeQdtHRWX/lw7sww7u9f7DOFY79uz7lGp/lVYglVGPTK9h50Qxt60Qz9H3
+         diheIgaaQnv/ygEBi38QC0M/knSDEcuurdErGnGftOcLGnacoX7uUmC0HARPgYR8EXTi
+         1WBKtMM71n7wiQRfxDFVvYirUh+osCH98rixTtNrUX3qX5rzXzjL9w/sc9FMslwTqVMj
+         6L+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fZZ8f+vcTbXX17RytzeIZCFFJIrA9Nh0Gm+ruQ//k0k=;
+        b=O0l6SlwbK+wPOV1wpMDVMVYULE4xlpbBRcjGQV2l3tF5ge1l1gUcQhnwPKZ+Ca0iq2
+         79jnqg+NDuvgW9PMaWP4oB51rR1pcRYKhRB8eJVWrdQaYK32xUyKYCHtbrv18MA1659J
+         PBaBdGob+uYXMaPmS5OfXXnVu8RaRat/WQZnU/K7Scd84pFd1r5y+uQpbl5s1oNnWEr4
+         a7PoGXPaVBRPCH6A1yHRoXNMMQtcfaDvSoPAf3rLBkOWeAyjNfKUW6vi6BX+23f/+ER3
+         a4Hgw8TyBwhgAyerGb/tDMY/5YZJIPaZbNSaURYKjqeFL2NZhsLot01PDk49UYvlSEvs
+         tKsQ==
+X-Gm-Message-State: AOAM533z1kiNMUJJGAxdkHRWl7xJVNiNQmOodxP+yXG0Rzo1WBJMgvTI
+        WGyK6l1XC6R9n49/t0pFQQhlctZjuGE2CUk0cZtq/A==
+X-Google-Smtp-Source: ABdhPJwNkSDZXLOQfs2Jyn1mrZ2ZkhxO6DJbc3QBwD7p7UL7WlmV7igDmBlc/TAEEwTLPdxo9OUar9ZcG/WmIHjreIo=
+X-Received: by 2002:a19:8d8:: with SMTP id 207mr1221121lfi.441.1606207241846;
+ Tue, 24 Nov 2020 00:40:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104152358.9518-1-yung-chuan.liao@linux.intel.com>
+References: <cover.1604988979.git.frank@allwinnertech.com> <9db51667bf9065be55beafd56e5c319e3bbe8310.1604988979.git.frank@allwinnertech.com>
+In-Reply-To: <9db51667bf9065be55beafd56e5c319e3bbe8310.1604988979.git.frank@allwinnertech.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 09:40:30 +0100
+Message-ID: <CACRpkdYudoTaQfx9jB57xyWkO8a15OCbb8js0X7=3_AJWArUKw@mail.gmail.com>
+Subject: Re: [RESEND PATCH 01/19] pinctrl: sunxi: fix irq bank map for the
+ Allwinner A100 pin controller
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     Frank Lee <tiny.windzz@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-11-20, 23:23, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The SoundWire 1.2 specification defines an "SDCA cascade" bit which
-> handles a logical OR of all SDCA interrupt sources (up to 30 defined).
-> 
-> Due to limitations of the addressing space, this bit is located in the
-> SDW_DP0_INT register when DP0 is used, or alternatively in the
-> DP0_SDCA_Support_INTSTAT register when DP0 is not used.
-> 
-> To allow for both cases to be handled, this bit will be checked in the
-> main device-level interrupt handling code. This will result in the
-> register being read twice if DP0 is enabled, but it's not clear how to
-> optimize this case. It's also more logical to deal with this interrupt
-> at the device than the port level, this bit is really not DP0 specific
-> and its location in the DP0_INTSTAT bit is only due to the lack of
-> free space in SCP_INTSTAT_1.
-> 
-> The SDCA_Cascade bit cannot be masked or cleared, so the interrupt
-> handling only forwards the detection to the Slave driver, which will
-> deal with reading the relevant SDCA status bits and clearing them. The
-> bus driver only signals the detection.
-> 
-> The communication with the Slave driver is based on the same interrupt
-> callback, with only an extension to provide the status of the
-> sdca_cascade bit.
+On Tue, Nov 10, 2020 at 7:23 AM Frank Lee <frank@allwinnertech.com> wrote:
 
-Applied, thanks
+> From: Yangtao Li <frank@allwinnertech.com>
+>
+> A100's pin starts with PB, so it should start with 1.
+>
+> Fixes: 473436e7647d6 ("pinctrl: sunxi: add support for the Allwinner A100 pin controller")
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
 
--- 
-~Vinod
+No response from maintainers for 14 days so patch applied.
+
+Yours,
+Linus Walleij
