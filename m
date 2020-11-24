@@ -2,77 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9342C1FCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122912C1FD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbgKXIYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:24:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33504 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgKXIYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:24:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606206274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5SRGiXX4dxU6UG326yCVJi+Xa49zYVgh4TutwaobuZ0=;
-        b=SVplqW+TiU0cTnmG6Ntf657Uk5Sw6JBrX7TI6Qnjta5Zl4MT6U/FzDecJ+tR8HlC20JFOp
-        Ik3JmkeUjR0fPPXlhJMxRtBgJEBDTd3X0J5gTKIX46SL+4MyHP7HOIzDadFfYQOD8MnvHF
-        1I3j+gP/duMmAofSJ1vP6Q4uw70+uYE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 00B36AC48;
-        Tue, 24 Nov 2020 08:24:33 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 09:24:33 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: Pinning ZONE_MOVABLE pages
-Message-ID: <20201124082433.GT27488@dhcp22.suse.cz>
-References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
- <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
- <CA+CK2bBuEhH7cSEZUKTYE_g9mw_rwEG-v1Jk4BL6WuLWK824Aw@mail.gmail.com>
+        id S1730492AbgKXIZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730376AbgKXIZe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:25:34 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74EDC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:25:34 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id u21so21026189iol.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:25:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KMNdadd9ZvFWTuVoNLHMWm8n/oEimDIAyR8rcds6pZI=;
+        b=ITNkjmgb/YsTR2TlPkZnlmXo0uqq5uhiwHqyCtKh9zv2302HUv0EOxTI6zIuX27HOF
+         Kj33WUb/MHzZGMRvP05GlvHO/yxIvW2dofPEUVo16ucBZLNJ300vkO7ksi0OMvtqhp58
+         pQBKHdVHP75bsR9+H1njI04/dgI2F8y8ocIpw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KMNdadd9ZvFWTuVoNLHMWm8n/oEimDIAyR8rcds6pZI=;
+        b=gnmLYLBJj88+B0ZrVFIwDN9jdpF45Kw58oKDoeHkjPGCObURA6DXUgJ4Gif1gdQdGm
+         7LX3ly0Mp+9KfcZtE+ua9sQhBZiDpBZUiLoyeplzj6+jKTawZ9l3/TEEU4MQMfEqD4FD
+         kJSXJt7JVzCyzDWyVST6ikF8NwyzAy+nXTfkyhRicavS5arHDnkP60A4/HuPtxLLsAyn
+         mFf59Rqw7/fML7ZuJVSdDwGx292VLmU5VTeGExch/bDeWPmbLq4HW/HwJD5mEOfIzoL3
+         +J538FmQXu3tvK7FPq9g/W5oWQsJqUldC7wTILDJHfbX8NozYqlWfdmLkvkhN1t7aV1P
+         KXyg==
+X-Gm-Message-State: AOAM530+FqCzhoUtpzxpeXUK0DN7pvdy6TNF4h06nxfbh02PTkRF0x5s
+        myqoZG8Uzf2wRyFy++gqRVVScgiESPRSm/j3V9MoPw==
+X-Google-Smtp-Source: ABdhPJyva+3URDRSrpHxrcTh7uFP7kWdZNum/UXJ9zFv+P/ZN3AGrq1Y/T6jPrsBuSoVIiiqRr8BGnw2YdEdTuRhZ1w=
+X-Received: by 2002:a05:6602:314c:: with SMTP id m12mr3172286ioy.100.1606206333961;
+ Tue, 24 Nov 2020 00:25:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bBuEhH7cSEZUKTYE_g9mw_rwEG-v1Jk4BL6WuLWK824Aw@mail.gmail.com>
+References: <20201013102358.22588-1-michael.kao@mediatek.com> <20201013102358.22588-3-michael.kao@mediatek.com>
+In-Reply-To: <20201013102358.22588-3-michael.kao@mediatek.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Tue, 24 Nov 2020 16:25:08 +0800
+Message-ID: <CAJMQK-gXFBbpmxugme3U0bJ_7TtWdibWWqQHSZLWy0jyeVuUuw@mail.gmail.com>
+Subject: Re: [v5 2/3] arm64: dts: mt8183: Configure CPU cooling
+To:     Michael Kao <michael.kao@mediatek.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        srv_heupstream@mediatek.com,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 23-11-20 11:31:59, Pavel Tatashin wrote:
-> > Makes sense, as this means no userspace change.
-> >
-> > > 2. Add an internal move_pages_zone() similar to move_pages() syscall
-> > > but instead of migrating to a different NUMA node, migrate pages from
-> > > ZONE_MOVABLE to another zone.
-> > > Call move_pages_zone() on demand prior to pinning pages from
-> > > vfio_pin_map_dma() for instance.
-> >
-> > As others already said, migrating away before the longterm pin should be
-> > the solution. IIRC it was one of the goals of long term pinning api
-> > proposed long time ago by Peter Ziljstra I think? The implementation
-> > that was merged relatively recently doesn't do that (yet?) for all
-> > movable pages, just CMA, but it could.
-> 
-> From what I can tell, CMA is not solving exactly this problem. It
-> migrates pages from CMA before pinning, but it migrates them to
-> ZONE_MOVABLE.
+On Tue, Oct 13, 2020 at 6:24 PM Michael Kao <michael.kao@mediatek.com> wrot=
+e:
+>
+> From: Matthias Kaehlcke <mka@chromium.org>
+>
+> Add two passive trip points at 68=C2=B0C and 80=C2=B0C for the CPU temper=
+ature.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
 
-CMA suffers from a very similar problem. The existing solution is
-migrating out from the CMA region and it allows MOVABLE zones as well
-but that is merely an implementation detail and something that breaks
-movability on its own. So something to fix up, ideally for both cases.
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
--- 
-Michal Hocko
-SUSE Labs
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 56 ++++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt8183.dtsi
+> index 1cd093cf33f3..0614f18a1ea2 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -10,6 +10,7 @@
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/reset-controller/mt8183-resets.h>
+>  #include <dt-bindings/phy/phy.h>
+> +#include <dt-bindings/thermal/thermal.h>
+>  #include "mt8183-pinfunc.h"
+>
+>  / {
+> @@ -450,6 +451,61 @@
+>                                 polling-delay =3D <500>;
+>                                 thermal-sensors =3D <&thermal 0>;
+>                                 sustainable-power =3D <5000>;
+> +
+> +                               trips {
+> +                                       threshold: trip-point@0 {
+> +                                               temperature =3D <68000>;
+> +                                               hysteresis =3D <2000>;
+> +                                               type =3D "passive";
+> +                                       };
+> +
+> +                                       target: trip-point@1 {
+> +                                               temperature =3D <80000>;
+> +                                               hysteresis =3D <2000>;
+> +                                               type =3D "passive";
+> +                                       };
+> +
+> +                                       cpu_crit: cpu-crit {
+> +                                               temperature =3D <115000>;
+> +                                               hysteresis =3D <2000>;
+> +                                               type =3D "critical";
+> +                                       };
+> +                               };
+> +
+> +                               cooling-maps {
+> +                                       map0 {
+> +                                               trip =3D <&target>;
+> +                                               cooling-device =3D <&cpu0
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+,
+> +                                                                <&cpu1
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+,
+> +                                                                <&cpu2
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+,
+> +                                                                <&cpu3
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+;
+> +                                               contribution =3D <3072>;
+> +                                       };
+> +                                       map1 {
+> +                                               trip =3D <&target>;
+> +                                               cooling-device =3D <&cpu4
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+,
+> +                                                                <&cpu5
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+,
+> +                                                                <&cpu6
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+,
+> +                                                                <&cpu7
+> +                                                       THERMAL_NO_LIMIT
+> +                                                       THERMAL_NO_LIMIT>=
+;
+> +                                               contribution =3D <1024>;
+> +                                       };
+> +                               };
+>                         };
+>
+>                         /* The tzts1 ~ tzts6 don't need to polling */
+> --
+> 2.18.0
