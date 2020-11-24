@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754862C2A7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F9C2C2A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389234AbgKXOzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:55:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388165AbgKXOzq (ORCPT
+        id S2389277AbgKXO5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:57:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728352AbgKXO5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:55:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606229744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IDhfVYWGoL+IpVNQ3e9z+GzCQ3AwBmJ5YyBaFP+39/s=;
-        b=NzH85F2xYPSuhTzemjNAZOKzFWzZhBrQtuFHJQKR79udsexoen6XUlWMmr7dgqz8K0gKhQ
-        mHvjewEeQZjNflGvb6d4HdJUzx5njjK3EIsLrBl61iVT6doUDNsp7NmlGNd4Ahmyqhimt+
-        yhCSRpAtIv7ctB7Npt5+4Gz9Qw0SwQw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-uhRFpvSLPfWubnd5bhYaXw-1; Tue, 24 Nov 2020 09:55:42 -0500
-X-MC-Unique: uhRFpvSLPfWubnd5bhYaXw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E98ED9A229;
-        Tue, 24 Nov 2020 14:55:40 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5BDB65D6AB;
-        Tue, 24 Nov 2020 14:55:40 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-nvdimm@lists.01.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH] ACPI: NFIT: Fix input validation of bus-family
-References: <160619566216.201177.9354229595539334957.stgit@dwillia2-desk3.amr.corp.intel.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Tue, 24 Nov 2020 09:55:44 -0500
-In-Reply-To: <160619566216.201177.9354229595539334957.stgit@dwillia2-desk3.amr.corp.intel.com>
-        (Dan Williams's message of "Mon, 23 Nov 2020 21:27:42 -0800")
-Message-ID: <x49ft4yiz2n.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 24 Nov 2020 09:57:00 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C596BC0613D6;
+        Tue, 24 Nov 2020 06:57:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=J0J3E7b9p8oawWwuEj7kpUYKxWq5ce28QVykTXRpMWw=; b=u05sgykDakZ+56Z95sUEBTtjp
+        o6F/rDI/sDO5xwz4tL2EqZb4Nczft02XO9EvJeef0tCFxtkfG3cgkaQo2KgjQLRGhubJNJpywtEIT
+        ZFBFz89nuHKzIvvs8qkcu/caoeaqh24A3ZiVIv2g8JUdxJXbvGt/vnQHJOWj2xkQ4jtCEKb/qbtjb
+        qQO41vt/Sa7p67hJ6Vvg4/cG25PG75Gw5FmDTMwNm/05G0mVRt7tosUcEVMZclmLUoITntUoYBOpV
+        L1GN41vjd/d18I+Y1Sy6FW/DIQl7queUHwgp2UBZzvBBJs6xzJEujOXaF3Vbo/WQEFixU5PWuaWOs
+        KIB7801zQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35532)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1khZkS-0007qo-Q0; Tue, 24 Nov 2020 14:56:52 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1khZkN-0007Qk-I3; Tue, 24 Nov 2020 14:56:47 +0000
+Date:   Tue, 24 Nov 2020 14:56:47 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Antonio Borneo <antonio.borneo@st.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Yonglong Liu <liuyonglong@huawei.com>, stable@vger.kernel.org,
+        linuxarm@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
+Message-ID: <20201124145647.GF1551@shell.armlinux.org.uk>
+References: <20201124143848.874894-1-antonio.borneo@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dan Williams <dan.j.williams@intel.com> writes:
+On Tue, Nov 24, 2020 at 03:38:48PM +0100, Antonio Borneo wrote:
+> If the auto-negotiation fails to establish a gigabit link, the phy
+> can try to 'down-shift': it resets the bits in MII_CTRL1000 to
+> stop advertising 1Gbps and retries the negotiation at 100Mbps.
+> 
+> From commit 5502b218e001 ("net: phy: use phy_resolve_aneg_linkmode
+> in genphy_read_status") the content of MII_CTRL1000 is not checked
+> anymore at the end of the negotiation, preventing the detection of
+> phy 'down-shift'.
+> In case of 'down-shift' phydev->advertising gets out-of-sync wrt
+> MII_CTRL1000 and still includes modes that the phy have already
+> dropped. The link partner could still advertise higher speeds,
+> while the link is established at one of the common lower speeds.
+> The logic 'and' in phy_resolve_aneg_linkmode() between
+> phydev->advertising and phydev->lp_advertising will report an
+> incorrect mode.
+> 
+> Issue detected with a local phy rtl8211f connected with a gigabit
+> capable router through a two-pairs network cable.
+> 
+> After auto-negotiation, read back MII_CTRL1000 and mask-out from
+> phydev->advertising the modes that have been eventually discarded
+> due to the 'down-shift'.
 
-> Dan reports that smatch thinks userspace can craft an out-of-bound bus
-> family number. However, nd_cmd_clear_to_send() blocks all non-zero
-> values of bus-family since only the kernel can initiate these commands.
-> However, in the speculation path, family is a user controlled array
-> index value so mask it for speculation safety. Also, since the
-> nd_cmd_clear_to_send() safety is non-obvious and possibly may change in
-> the future include input validation is if userspace could get past the
-> nd_cmd_clear_to_send() gatekeeper.
->
-> Link: http://lore.kernel.org/r/20201111113000.GA1237157@mwanda
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Fixes: 6450ddbd5d8e ("ACPI: NFIT: Define runtime firmware activation commands")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  drivers/acpi/nfit/core.c |    6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-> index cda7b6c52504..b11b08a60684 100644
-> --- a/drivers/acpi/nfit/core.c
-> +++ b/drivers/acpi/nfit/core.c
-> @@ -5,6 +5,7 @@
->  #include <linux/list_sort.h>
->  #include <linux/libnvdimm.h>
->  #include <linux/module.h>
-> +#include <linux/nospec.h>
->  #include <linux/mutex.h>
->  #include <linux/ndctl.h>
->  #include <linux/sysfs.h>
-> @@ -479,8 +480,11 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
->  		cmd_mask = nd_desc->cmd_mask;
->  		if (cmd == ND_CMD_CALL && call_pkg->nd_family) {
->  			family = call_pkg->nd_family;
-> -			if (!test_bit(family, &nd_desc->bus_family_mask))
-> +			if (family > NVDIMM_BUS_FAMILY_MAX ||
-> +			    !test_bit(family, &nd_desc->bus_family_mask))
->  				return -EINVAL;
-> +			family = array_index_nospec(family,
-> +						    NVDIMM_BUS_FAMILY_MAX + 1);
->  			dsm_mask = acpi_desc->family_dsm_mask[family];
->  			guid = to_nfit_bus_uuid(family);
->  		} else {
+Sorry, but no. While your solution will appear to work, in
+introduces unexpected changes to the user visible APIs.
 
-Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+>  	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) {
+> +		if (phydev->is_gigabit_capable) {
+> +			adv = phy_read(phydev, MII_CTRL1000);
+> +			if (adv < 0)
+> +				return adv;
+> +			/* update advertising in case of 'down-shift' */
+> +			mii_ctrl1000_mod_linkmode_adv_t(phydev->advertising,
+> +							adv);
 
+If a down-shift occurs, this will cause the configured advertising
+mask to lose the 1G speed, which will be visible to userspace.
+Userspace doesn't expect the advertising mask to change beneath it.
+Since updates from userspace are done using a read-modify-write of
+the ksettings, this can have the undesired effect of removing 1G
+from the configured advertising mask.
+
+We've had other PHYs have this behaviour; the correct solution is for
+the PHY driver to implement reading the resolution from the PHY rather
+than relying on the generic implementation if it can down-shift.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
