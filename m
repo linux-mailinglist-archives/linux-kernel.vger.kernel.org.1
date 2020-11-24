@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B082C270F
+	by mail.lfdr.de (Postfix) with ESMTP id E109B2C2710
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388036AbgKXN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:26:07 -0500
+        id S2388044AbgKXN0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:26:10 -0500
 Received: from mga03.intel.com ([134.134.136.65]:19615 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728682AbgKXN0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:26:03 -0500
-IronPort-SDR: LZ6cVZ8EFJlrJC3o9kbp+VdvkW9iX76+OxrFJviOaWFb21drLuX8ABcMHzMeWd1Go9qcMTg+Oj
- wfle1JFUkG9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="172039534"
+        id S1728682AbgKXN0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:26:09 -0500
+IronPort-SDR: bAvoZ2ND8boBhUp6BXupKrJoQGjWisAtPnc/8NcTzCmBgnK7FqzLRyLmqalAmeg0XazIHinPE2
+ yIr50rJoPzbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="172039546"
 X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="172039534"
+   d="scan'208";a="172039546"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 05:26:02 -0800
-IronPort-SDR: P15K+84n5V1KVJuVxYWzDy/ZvAifjRJWVPqU2AXI91CyqvbGYti6bxqQY52QJYsnKPqbO6x9UW
- XNL3nl0jeb/g==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 05:26:06 -0800
+IronPort-SDR: Z79BzXFxMMG9aF5DZvuzBcD+PMBJrwiMM724QUDfhkr9qZfLupN9lZPLLxScMMUuGddpYWwL/u
+ Wxys2rA3CMYg==
 X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="546830578"
+   d="scan'208";a="546830597"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 05:25:58 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 05:26:02 -0800
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH 1/5] soundwire: bus: add comments to explain interrupt loop filter
-Date:   Tue, 24 Nov 2020 09:33:14 +0800
-Message-Id: <20201124013318.8963-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/5] soundwire: bus: reset slave_notify status at each loop
+Date:   Tue, 24 Nov 2020 09:33:15 +0800
+Message-Id: <20201124013318.8963-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201124013318.8963-1-yung-chuan.liao@linux.intel.com>
 References: <20201124013318.8963-1-yung-chuan.liao@linux.intel.com>
@@ -46,54 +46,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The interrupt handling in SoundWire requires software to re-read the
-interrupt status after clearing an interrupt. In case the interrupt is
-still outstanding, the code in bus.c will loop a number of times,
-however that loop is limited to the interrupts detected in the first
-read. This strategy helps meet SoundWire requirements without
-remaining forever in an interrupt handler.
-
-Add a couple of comments to document this design.
+The code loops multiple times to deal with pending interrupts, but we
+never reset the slave_notify status.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/soundwire/bus.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index ffe4600fd95b..45131b9f5080 100644
+index 45131b9f5080..d6e646521819 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -1334,6 +1334,7 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
- 				"SDW_DP0_INT read failed:%d\n", status2);
- 			return status2;
- 		}
-+		/* filter to limit loop to interrupts identified in the first status read */
- 		status &= status2;
+@@ -1425,7 +1425,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 	u8 clear = 0, bit, port_status[15] = {0};
+ 	int port_num, stat, ret, count = 0;
+ 	unsigned long port;
+-	bool slave_notify = false;
++	bool slave_notify;
+ 	u8 sdca_cascade = 0;
+ 	u8 buf, buf2[2], _buf, _buf2[2];
+ 	bool parity_check;
+@@ -1467,6 +1467,8 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 	}
  
- 		count++;
-@@ -1404,6 +1405,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 				"SDW_DPN_INT read failed:%d\n", status2);
- 			return status2;
- 		}
-+		/* filter to limit loop to interrupts identified in the first status read */
- 		status &= status2;
- 
- 		count++;
-@@ -1589,7 +1591,10 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 			sdca_cascade = ret & SDW_DP0_SDCA_CASCADE;
- 		}
- 
--		/* Make sure no interrupts are pending */
-+		/*
-+		 * Make sure no interrupts are pending, but filter to limit loop
-+		 * to interrupts identified in the first status read
-+		 */
- 		buf &= _buf;
- 		buf2[0] &= _buf2[0];
- 		buf2[1] &= _buf2[1];
+ 	do {
++		slave_notify = false;
++
+ 		/*
+ 		 * Check parity, bus clash and Slave (impl defined)
+ 		 * interrupt
 -- 
 2.17.1
 
