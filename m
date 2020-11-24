@@ -2,116 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74552C2944
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79762C2948
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388709AbgKXOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:20:13 -0500
-Received: from mail-db8eur05on2046.outbound.protection.outlook.com ([40.107.20.46]:27489
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388648AbgKXOUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:20:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YE/eJThmzdwyCkFPD2mRkoTKakRU+Yo7Loj1jKFXOBvnSkJxDdO0MBfJlaZA1vHSHf5OHm+YQ2o6Kr1YK8tsanPop6mk5bhl/8+yLwK/GTKduhHzz3yalexgUVJkbQ7tF62UXDeTttEHTxjD8ThDpW2OzWGbiXLz7xuWA0ZjpzqI2JJOAwde2qR7Af+LamDnXRCwjfiLgZGAZQghsCd9uAuidGomycHQPsZRXcdUUjj+s6RJJT6tFzH/nJRGl5xAySdxvO+y55kVtHPvdK6DhalOnPGgDvEe1p495bD8d4fVt/OA+NKJOpeIoiLSRrLLNVRIyyM6Cwa19ENUsjiotw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zj+w74wtYN25gAEpHmTY5oeimflDDhYidr5h3+1uHCE=;
- b=YA3ybpuqOTrdk/w/w4Q2DcWKixIV4rSfV4M8dbdA4D4nLTqecCUbJ0FvrhXjWTVLPww+juzuJtQh6ZjJsEmY3J0xpO2uJRaQy1DeO2UV+nwpnXIOZIKE9RbFeQ64BltoiRBwptqsvj6JZ+d/739542DWccsH61pElcxoYb5WR4z8dT5XFCYBO8fEutmjJOun4rvjW82yYCAaYVx+R4pGjj7T6uWoByEjf0WJgAofnRud1Z4JOi0SeXdLqn2uuxEI2HRwQSerPPFEtwwQsDuqxA2ONUX7LRFglhlFUCTjfinHIrImRF7d2xCtPg5jgTfdqzeoKL+23rOdITkggEIW1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zj+w74wtYN25gAEpHmTY5oeimflDDhYidr5h3+1uHCE=;
- b=NuCjJqotKjc58EsKuaq7D/as3wgYY5VnlKWDcGlXLB4ZwNdvxcjMBteaxoGg1WWeYdtjqyO6pcsCmGpnCvFKk+mnl6fUg0tVkZsRqRJIJ10E9DdK8PP/wEcR0t6l5R1vAL9wpqT6FxSmpnTt9/NpGUlVaFfBihuKPK7NJD7Ncbw=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- (2603:10a6:800:31::12) by VI1PR04MB5984.eurprd04.prod.outlook.com
- (2603:10a6:803:d6::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 24 Nov
- 2020 14:20:09 +0000
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::91f8:d96b:f238:7962]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::91f8:d96b:f238:7962%8]) with mapi id 15.20.3589.025; Tue, 24 Nov 2020
- 14:20:08 +0000
-From:   "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
-To:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Viorel Suman <viorel.suman@nxp.com>
-Subject: [PATCH] ASoC: fsl_xcvr: fix potential resource leak
-Date:   Tue, 24 Nov 2020 16:19:57 +0200
-Message-Id: <20201124141957.20481-1-viorel.suman@oss.nxp.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [188.26.42.16]
-X-ClientProxiedBy: VI1PR08CA0095.eurprd08.prod.outlook.com
- (2603:10a6:800:d3::21) To VI1PR0401MB2272.eurprd04.prod.outlook.com
- (2603:10a6:800:31::12)
+        id S2388790AbgKXOUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:20:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726868AbgKXOUz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:20:55 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE61C0613D6;
+        Tue, 24 Nov 2020 06:20:54 -0800 (PST)
+Date:   Tue, 24 Nov 2020 14:20:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606227652;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QuD9+vE8jHVOe2NGkmEymBs+LyeZyqp9jPSwcx7T1js=;
+        b=HGihpdHY4NwaKeHoOkLclU9EysUCNgkFMcbclaDgMJxw7BPNBJ41/OF3ujv5Dy2rldl7n2
+        b4qGw767bmh1Za2Kies9EysJjA/T/Gvw1qfd7FICn0/PdXDUNZw0GfJ35SYP3zPff43rW8
+        nGvzxvZtXtWvSvL5lVKXr1EipJ0VdCVgQvh3+1+kyX9yerQRg8MtG9KTBIe5pOK3ckfowM
+        NhTzHWNAeOs6LdKRRzj0SPWMuGBcY+T3XvGF4KxV5KaRY54F8MGxr9Utxrd/oIECSOsFfj
+        M7vvWkd0V5cl2BoWQVyx4IL+bzkAW48CGyjPnN9FOsS2SzpLn67/PbpLy/mjEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606227652;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QuD9+vE8jHVOe2NGkmEymBs+LyeZyqp9jPSwcx7T1js=;
+        b=ajdY7g7oWklqmLlvuSyB1kV6jTrfyhKgmEI/Nmb0GkTz6HfwY2oHt5Ys0dgXjGjc1saFIc
+        HsHn1rtNAqgHpMDA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/mm] x86/crashdump/32: Simplify copy_oldmem_page()
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201118204007.670851839@linutronix.de>
+References: <20201118204007.670851839@linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (188.26.42.16) by VI1PR08CA0095.eurprd08.prod.outlook.com (2603:10a6:800:d3::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 14:20:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 867a952b-a8e1-4791-1ee2-08d890840c1e
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5984:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5984ADDAA20FBC28CDB3E087D3FB0@VI1PR04MB5984.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:415;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zMHMS4xUiMpFLVfYJmM+mF8N2oXN4MuKNtNbPV4h28/pWL1F9JyuFxv1NPyD7eI5MhWfE743PbPMsitH9zw5Q0JL1VxVmgFRe1YeCeSBiPZk7tYrOxfZRleMbVnE0o5Zd1jR8J8bSjJfrpGptNsbq1V4rN6CEe9g3ocy7TO5xkRkQn7yaNKucPzntaMGk7OjIjuXL2KNr1Tayr4DUAL9ms/GqtN7mxv6pFead9eTSHES0DwdO/in3ZazuZNBZQAy+S631p7QCmE9H8cidlMR2rypyXaObQcjKD/7LAjRls+klel0dSw2aayZIjWhoxpqInFSTwBGgNUmX243XWLu7270GSVVh/fZd5K8jNORSfsovaWDL+Ow5jHWEMdbWH5Ojq6ybw/2ag6/mEf9hXR5Ug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(6506007)(6512007)(2616005)(956004)(66946007)(26005)(52116002)(66476007)(66556008)(7416002)(6666004)(4744005)(6486002)(5660300002)(498600001)(186003)(16526019)(86362001)(110136005)(921005)(69590400008)(8936002)(4326008)(2906002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: agQvQeo+FmwFwkOgdHcSkHjSfV8aHfuWp1JarBRphbcY02LiwikyKiSzBQWVN87/cjMZGg37GKwSYdug7daUJEAdkAwW3pLnv/vyXxOi5F7sFPhFzSQh0MgotxwgJ+GFraGCBR4jHJi1axdwgZV25g5ySARQ/XhfJWj8yx6mTdq9GHCUtYg2MgSL21zYorOiC20nm/PZG07ytWKqjtmRH1LejyDnK+i37EBUYnyEI4Rf0/kpbQ/QO4ft42RfH2YHLlEOz7IChBRgEQKra9MyrPcbt/kRAyJhr96RTIh2iBEf5D0RjChztNFte1a66PcNtXAbcOJK/ST1oPnfGs7/cmt2YABj23xXtmvrh5YaA5RzG12x66LNSXIpngfA+MgIhQvw3IE++kxg+L615se8TKkI8m/0MoB1wlPSU/iwkC382hb9GDweLlViOVJG+3VPr3acsd8XhVOrFMQCaWtVJ6s6lGLKfaFz6T5LiltMW6iBtsD/EDKwyEuQC1o6ruhIQ9EblMtaR7WIPvjCycKiJ35dTqqyzRZ/tD9DA0m8nLnZh896xv3XKxz1f/sxwkJ68wtap8EAb2KZyiw276S+paTkNd3GXuCJ3UMNzaa2OiOb6QsHQkG3HHMmmf8pU5ElAlTb95W3EKyT1wC3xwx1utb0TRLKqLsluZS82KOjvYFbLn3/lp3LJATl7o0A24ZDR5J0mf9zViUjeMhsHv/7Acn9Ep9xNb4Sh7VVLrkY0w1xQFdOmdBFXT6QQlHCa/UBWtJDPACkjdw+xRsNJS5+TS+r7H5bXvR4F4ayBcqxphV9TJY3Rp4I7oNt6bIJPlBw06ksQ3HPjxr6ba7kSPVTlPIsenjiXM/qRNiy30jNOJZYsD2I61VazWlSLIuW1h1D3FS4e58/amhl3eHE/C1HYQ==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 867a952b-a8e1-4791-1ee2-08d890840c1e
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 14:20:08.8487
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Aq9NwSI1vM1VBkRytpCZulntE2ZNdsW7aNZYTlY7J8GF9rQN79TD3rsvh5JvqBDll8ofbneeUB8dkIPqE23nig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5984
+Message-ID: <160622765151.11115.15024615296192019491.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Viorel Suman <viorel.suman@nxp.com>
+The following commit has been merged into the core/mm branch of tip:
 
-"fw" variable must be relased before return.
+Commit-ID:     7e015a279853e747f5d4f957855ec5310848c501
+Gitweb:        https://git.kernel.org/tip/7e015a279853e747f5d4f957855ec5310848c501
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 18 Nov 2020 20:48:46 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 24 Nov 2020 14:42:09 +01:00
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+x86/crashdump/32: Simplify copy_oldmem_page()
+
+Replace kmap_atomic_pfn() with kmap_local_pfn() which is preemptible and
+can take page faults.
+
+Remove the indirection of the dump page and the related cruft which is not
+longer required.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20201118204007.670851839@linutronix.de
+
 ---
- sound/soc/fsl/fsl_xcvr.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/crash_dump_32.c | 48 ++++++--------------------------
+ 1 file changed, 10 insertions(+), 38 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index 2a28810d0e29..3d58c88ea603 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -706,6 +706,7 @@ static int fsl_xcvr_load_firmware(struct fsl_xcvr *xcvr)
- 	/* RAM is 20KiB = 16KiB code + 4KiB data => max 10 pages 2KiB each */
- 	if (rem > 16384) {
- 		dev_err(dev, "FW size %d is bigger than 16KiB.\n", rem);
-+		release_firmware(fw);
- 		return -ENOMEM;
+diff --git a/arch/x86/kernel/crash_dump_32.c b/arch/x86/kernel/crash_dump_32.c
+index 33ee476..5fcac46 100644
+--- a/arch/x86/kernel/crash_dump_32.c
++++ b/arch/x86/kernel/crash_dump_32.c
+@@ -13,8 +13,6 @@
+ 
+ #include <linux/uaccess.h>
+ 
+-static void *kdump_buf_page;
+-
+ static inline bool is_crashed_pfn_valid(unsigned long pfn)
+ {
+ #ifndef CONFIG_X86_PAE
+@@ -41,15 +39,11 @@ static inline bool is_crashed_pfn_valid(unsigned long pfn)
+  * @userbuf: if set, @buf is in user address space, use copy_to_user(),
+  *	otherwise @buf is in kernel address space, use memcpy().
+  *
+- * Copy a page from "oldmem". For this page, there is no pte mapped
+- * in the current kernel. We stitch up a pte, similar to kmap_atomic.
+- *
+- * Calling copy_to_user() in atomic context is not desirable. Hence first
+- * copying the data to a pre-allocated kernel page and then copying to user
+- * space in non-atomic context.
++ * Copy a page from "oldmem". For this page, there might be no pte mapped
++ * in the current kernel.
+  */
+-ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+-                               size_t csize, unsigned long offset, int userbuf)
++ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
++			 unsigned long offset, int userbuf)
+ {
+ 	void  *vaddr;
+ 
+@@ -59,38 +53,16 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 	if (!is_crashed_pfn_valid(pfn))
+ 		return -EFAULT;
+ 
+-	vaddr = kmap_atomic_pfn(pfn);
++	vaddr = kmap_local_pfn(pfn);
+ 
+ 	if (!userbuf) {
+-		memcpy(buf, (vaddr + offset), csize);
+-		kunmap_atomic(vaddr);
++		memcpy(buf, vaddr + offset, csize);
+ 	} else {
+-		if (!kdump_buf_page) {
+-			printk(KERN_WARNING "Kdump: Kdump buffer page not"
+-				" allocated\n");
+-			kunmap_atomic(vaddr);
+-			return -EFAULT;
+-		}
+-		copy_page(kdump_buf_page, vaddr);
+-		kunmap_atomic(vaddr);
+-		if (copy_to_user(buf, (kdump_buf_page + offset), csize))
+-			return -EFAULT;
++		if (copy_to_user(buf, vaddr + offset, csize))
++			csize = -EFAULT;
  	}
  
--- 
-2.26.2
-
+-	return csize;
+-}
++	kunmap_local(vaddr);
+ 
+-static int __init kdump_buf_page_init(void)
+-{
+-	int ret = 0;
+-
+-	kdump_buf_page = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-	if (!kdump_buf_page) {
+-		printk(KERN_WARNING "Kdump: Failed to allocate kdump buffer"
+-			 " page\n");
+-		ret = -ENOMEM;
+-	}
+-
+-	return ret;
++	return csize;
+ }
+-arch_initcall(kdump_buf_page_init);
