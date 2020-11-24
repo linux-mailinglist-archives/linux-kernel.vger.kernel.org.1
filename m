@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3522D2C3453
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708612C3456
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731498AbgKXXFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:05:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731049AbgKXXFR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:05:17 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5ADC0613D6;
-        Tue, 24 Nov 2020 15:05:16 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 142so234561ljj.10;
-        Tue, 24 Nov 2020 15:05:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/KXHKT0QjGfRLZidy5/lA4rIw7B1CrKKa5AQMFx5E+o=;
-        b=q2hhMGNsiRjmWE7ShOd1r2snZc9B66vAR/fONn6y58IpmTyCv8+hAiUnLmSKpnSTPd
-         L8MAXgH6aNO/aLpS8wUiBCcuwG8jcZLxnsGMva4aUqNDjauM84UrjES/+o2f9MFJCO96
-         61TTbyYBeD7KSNW8+0tu9c5FttT4YCwCbGFb94pCA3g4DO21TM14wpXV+v5zYKDhaNY6
-         JUhdiElC+at3f7FowROvZZkgBSv5i0ps5FlHl+kTP0wrgPlDwF19qLX6QoCnqQj/ZCJt
-         aAd3i9VLuoEADwTg79dLch3n2v26MltCBktsMz0/UapVncQPDTK/b2htk4hQx8DIwZ55
-         1IkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/KXHKT0QjGfRLZidy5/lA4rIw7B1CrKKa5AQMFx5E+o=;
-        b=Mi7/3aEVr/Egd/aJ5B39OqWOCQdBDgM36mMSK/r7bmrul0Qi3XCLZw0o8eHELhm4+p
-         YGj4CK7hzCpKYbNrL6irPhFy48/tsjS0azQhrkF+sT551eTWBLC+c/VO0aElJEACDA/o
-         WM26KCfpOQ78H6OZw8p671LMpFhkCrg0Z7hpmErNuOKcNCMUwXyom7evhSrVZ4IGszEl
-         7s7BmIdq0IGJwO8OxiqzPJhlUVIYXfd8+JFLIZwEsvKBdi9e4Www78HcbAxkgnfBOtwv
-         L8Pisk7I4007UsNLzaz+2LNaYfWgVd609ge7+vhr7DL7xR03cAPwx0C9PG/7+TZiAOmd
-         wXBQ==
-X-Gm-Message-State: AOAM532niqlQkhJpYwzu46qbtm2y2mayvzioajRxzNzkH73qab5KJB9Z
-        ePGymfO4j+JrJTnsAL2sL0y28geh354=
-X-Google-Smtp-Source: ABdhPJxpAqvUllZt+d+tRTNX9DTlqmrNB7dPwsBxupne7kCCr9F7wicJekI5L3d60wRQnhoZ4CbtHw==
-X-Received: by 2002:a2e:878c:: with SMTP id n12mr211314lji.319.1606259115126;
-        Tue, 24 Nov 2020 15:05:15 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id 141sm40313lfi.102.2020.11.24.15.05.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 15:05:14 -0800 (PST)
-Subject: Re: [PATCH RESEND 0/5] iommu/tegra-smmu: Some pending reviewed
- changes
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, Will Deacon <will@kernel.org>
-References: <20201111222129.15736-1-nicoleotsuka@gmail.com>
- <20201124212100.GA32108@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <68237d7c-12f7-3053-2e79-75b7e95f0af3@gmail.com>
-Date:   Wed, 25 Nov 2020 02:05:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1732116AbgKXXHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:07:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731850AbgKXXHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:07:37 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7491206D9;
+        Tue, 24 Nov 2020 23:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606259257;
+        bh=utPGT6bYeWdE0Bd3zt35luqhmW0HdbJ1ldBnmbIGTZY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vlezj0SRB07SwcfPPbtJG7frNuTgxGdCDyozhCHxXz5QkW9NjPAPNeTwR8Z3DOBDe
+         Jx28FnM/UHgSTe26i5AQQq30DaelBENaAp4HaEqtWu18OXHYzpwu7ksvPBEj9SJeGq
+         33SBeXL5d7EuV872PkNCsq3+/DhlPvfaYnoJP1uA=
+Date:   Tue, 24 Nov 2020 15:07:35 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     stefanc@marvell.com, netdev@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, davem@davemloft.net,
+        nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, mw@semihalf.com, andrew@lunn.ch
+Subject: Re: [PATCH v2] net: mvpp2: divide fifo for dts-active ports only
+Message-ID: <20201124150735.2f12b8c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201123201715.GZ1551@shell.armlinux.org.uk>
+References: <1606154073-28267-1-git-send-email-stefanc@marvell.com>
+        <20201123201715.GZ1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201124212100.GA32108@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.11.2020 00:21, Nicolin Chen пишет:
-> Hi Joerg,
+On Mon, 23 Nov 2020 20:17:15 +0000 Russell King - ARM Linux admin wrote:
+> On Mon, Nov 23, 2020 at 07:54:33PM +0200, stefanc@marvell.com wrote:
+> > From: Stefan Chulski <stefanc@marvell.com>
+> > 
+> > Tx/Rx FIFO is a HW resource limited by total size, but shared
+> > by all ports of same CP110 and impacting port-performance.
+> > Do not divide the FIFO for ports which are not enabled in DTS,
+> > so active ports could have more FIFO.
+> > No change in FIFO allocation if all 3 ports on the communication
+> > processor enabled in DTS.
+> > 
+> > The active port mapping should be done in probe before FIFO-init.
+> > 
+> > Signed-off-by: Stefan Chulski <stefanc@marvell.com>  
 > 
-> These five patches were acked by Thierry and acked-n-tested by
-> Dmitry a while ago. Would it be possible for you to apply them?
+> Thanks.
 > 
-> Thanks!
+> Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+> 
+> One thing I didn't point out is that netdev would like patch submissions
+> to indicate which tree they are targetting. Are you intending this for
+> net or net-next?
+> 
+> [PATCH net vX] ...
+> 
+> or
+> 
+> [PATCH net-next vX] ...
+> 
+> in the subject line please.
 
-Hi,
+I'll assume Stefan does not know :) This patches does not appear to
+fix a bug or other user-visible issue, so applying to net-next, it 
+will be part of the next Linux release (5.11) and not queued to LTS.
 
-You probably should try to ping Will Deacon.
-
-https://lkml.org/lkml/2020/11/17/243
+Thanks!
