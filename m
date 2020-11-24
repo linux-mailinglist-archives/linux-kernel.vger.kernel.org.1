@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDF92C1D37
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 112D52C1D39
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgKXFFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 00:05:15 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:6985 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgKXFFO (ORCPT
+        id S1726779AbgKXFGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 00:06:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgKXFGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 00:05:14 -0500
-IronPort-SDR: YuD+uhDPbcBkWH4V/B/ZsrKuO5v+4EaFPWEWcBQN1CDUyttVWDIdPs+eplxSayUaOg1LwAaM5J
- 0JGnuUW7iVvlphQeSSKzm6blxtobQLiqs/ReOkt7A3VJwbuywiNpQds8Cwvr6iG1ueP0PfiYUo
- rwxxe3KKl9d5SgIoX9jh+MFhIamwvoNaW+0DA07HnO/diFaNoUGvSkAqqOet/wcej92RI0nJS4
- qreqUGaH4K+CTsKCKwzkr5PUvB6hzPXMV2TsW1uERT+gUubidAQ1ROT59wfpkDpzkriL7BQuID
- 89c=
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="29298269"
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by labrats.qualcomm.com with ESMTP; 23 Nov 2020 21:05:14 -0800
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg01-sd.qualcomm.com with ESMTP; 23 Nov 2020 21:05:13 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 8082C21855; Mon, 23 Nov 2020 21:05:13 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] scsi: ufs: Don't disable core_clk_unipro if the link is active
-Date:   Mon, 23 Nov 2020 21:05:08 -0800
-Message-Id: <1606194312-25378-1-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 24 Nov 2020 00:06:21 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849F4C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 21:06:21 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t21so16402938pgl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 21:06:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=t84FGtb1zqwFP9+gcpDWOJ23J5kLn0xfIZescE5RdAg=;
+        b=Zc2KdqBNxYB8xjxn5tTvXx63XU9sSiwOQ5bx1m4TeNVcPVAfLror94nHTOVzZ+ZNu3
+         fQu23QQrFlQfzrwzZTPHHkKsCpc/9FMMJzOh2KNyLB8uhpH1ems/YpRfkjPMh74OhPbw
+         242dDi5kxAmJzWCccUwJeYs1NnEPKMyNu7RSKWzTST2C3GE0dNAwKcZow3y0U6KHzjbH
+         hUvNKLBcGloaDU9uGqwLoN4kI9oOFnNXrc/WH9mjhLed1OTx/SYChE6zYCsQuOr9aZ+g
+         blj08t+eSZdSmPRzKvciu4rboNxc0HqFOjt8nXjU0MOMZVWU5dJXU+HkEtzmhesKxOhk
+         pu8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=t84FGtb1zqwFP9+gcpDWOJ23J5kLn0xfIZescE5RdAg=;
+        b=tUfBYnCjXWyG3w2Wnr1I7h1HFJpqTWFnQsgbTmCHjVQ6+eF+rZxfZb7lzqf5YJrRl0
+         Y2yhRvRTiZKE/9aUfPKj6GtSQSULW8kFd2B0zWqWjo5SqEXL1O5eUuW8x8hoHVct+SCu
+         XGXrOQmUHw1X+RfgublUuxnxoD6PeAQz4LSm+/vqx8zMmpFyLdRWEKIC7YN2TURysKQT
+         knADUywxg3zA6pFV+Li3ayvUSdQOwXEcAxswAG93rxu2f4PGsbeSXDX5qHoM4pfZb4oo
+         zkKL/jpsgqKCAWleGmrfQ4SyyzLcSSiTfTId0HHRRRWCAyBbPRTNiaAYiwZ9hCISd40j
+         Puxg==
+X-Gm-Message-State: AOAM531OGvL8L/76ZdxA+8JDiNHAUyXmJLohBFMFHPBU+624SLE3Zzie
+        U0yERi0VHzXHy917Xk5vLGgSyg==
+X-Google-Smtp-Source: ABdhPJz98eS0KOZDEN5ciizxnoNQfjEfuxC2oQL9mIxpr6zyBPi29Dl3a0yZPU/R7DM88WKv9VYqtw==
+X-Received: by 2002:a63:ff18:: with SMTP id k24mr2296838pgi.273.1606194381086;
+        Mon, 23 Nov 2020 21:06:21 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:1bab:7221:4aae:c48d])
+        by smtp.gmail.com with ESMTPSA id e17sm12707727pfm.155.2020.11.23.21.06.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 21:06:20 -0800 (PST)
+Date:   Mon, 23 Nov 2020 21:06:18 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Pawan Gupta <writetopawan@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: core: Fix unused variable build warnings
+Message-ID: <20201124050618.GA337876@x1>
+References: <d1a71663e96239ced28509980ea484cadc10c80a.1606170299.git.writetopawan@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d1a71663e96239ced28509980ea484cadc10c80a.1606170299.git.writetopawan@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we want to disable clocks but still keep the link active, both ref_clk
-and core_clk_unipro should be skipped.
+On Mon, Nov 23, 2020 at 02:33:33PM -0800, Pawan Gupta wrote:
+> A recent commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs
+> file") added build warnings when CONFIG_GPIOLIB=n. Offcourse the kernel
+> fails to build when warnings are treated as errors. Below is the error
+> message:
+> 
+>   $ make CFLAGS_KERNEL+=-Werror
+> 
+>   drivers/pinctrl/core.c: In function ‘pinctrl_pins_show’:
+>   drivers/pinctrl/core.c:1607:20: error: unused variable ‘chip’ [-Werror=unused-variable]
+>    1607 |  struct gpio_chip *chip;
+>         |                    ^~~~
+>   drivers/pinctrl/core.c:1606:15: error: unused variable ‘gpio_num’ [-Werror=unused-variable]
+>    1606 |  unsigned int gpio_num;
+>         |               ^~~~~~~~
+>   drivers/pinctrl/core.c:1605:29: error: unused variable ‘range’ [-Werror=unused-variable]
+>    1605 |  struct pinctrl_gpio_range *range;
+>         |                             ^~~~~
+>   cc1: all warnings being treated as errors
+> 
+> These variables are only used inside #ifdef CONFIG_GPIOLIB, fix the
+> build warnings by wrapping the definition inside the config.
+> 
+> Fixes: f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
+> Signed-off-by: Pawan Gupta <writetopawan@gmail.com>
+> ---
+>  drivers/pinctrl/core.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+> index 3663d87f51a0..1bb371a5cf8d 100644
+> --- a/drivers/pinctrl/core.c
+> +++ b/drivers/pinctrl/core.c
+> @@ -1602,10 +1602,11 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
+>  	struct pinctrl_dev *pctldev = s->private;
+>  	const struct pinctrl_ops *ops = pctldev->desc->pctlops;
+>  	unsigned i, pin;
+> +#ifdef CONFIG_GPIOLIB
+>  	struct pinctrl_gpio_range *range;
+>  	unsigned int gpio_num;
+>  	struct gpio_chip *chip;
+> -
+> +#endif
+>  	seq_printf(s, "registered pins: %d\n", pctldev->desc->npins);
+>  
+>  	mutex_lock(&pctldev->mutex);
+> -- 
+> 2.21.3
+> 
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
+Thanks for pointing this out.  I don't have any systems where I build
+without CONFIG_GPIOLIB so I missed this.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index a7857f6..69c2e91 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -222,7 +222,7 @@ static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
- static void ufshcd_hba_exit(struct ufs_hba *hba);
- static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
- static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
--				 bool skip_ref_clk);
-+				 bool keep_link_active);
- static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
- static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
- static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);
-@@ -1710,7 +1710,6 @@ static void ufshcd_gate_work(struct work_struct *work)
- 	if (!ufshcd_is_link_active(hba))
- 		ufshcd_setup_clocks(hba, false);
- 	else
--		/* If link is active, device ref_clk can't be switched off */
- 		__ufshcd_setup_clocks(hba, false, true);
- 
- 	/*
-@@ -7991,7 +7990,7 @@ static int ufshcd_init_hba_vreg(struct ufs_hba *hba)
- }
- 
- static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
--					bool skip_ref_clk)
-+					bool keep_link_active)
- {
- 	int ret = 0;
- 	struct ufs_clk_info *clki;
-@@ -8009,7 +8008,13 @@ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
- 
- 	list_for_each_entry(clki, head, list) {
- 		if (!IS_ERR_OR_NULL(clki->clk)) {
--			if (skip_ref_clk && !strcmp(clki->name, "ref_clk"))
-+			/*
-+			 * To keep link active, ref_clk and core_clk_unipro
-+			 * should be kept ON.
-+			 */
-+			if (keep_link_active &&
-+			    (!strcmp(clki->name, "ref_clk") ||
-+			     !strcmp(clki->name, "core_clk_unipro")))
- 				continue;
- 
- 			clk_state_changed = on ^ clki->enabled;
-@@ -8580,7 +8585,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	if (!ufshcd_is_link_active(hba))
- 		ufshcd_setup_clocks(hba, false);
- 	else
--		/* If link is active, device ref_clk can't be switched off */
- 		__ufshcd_setup_clocks(hba, false, true);
- 
- 	if (ufshcd_is_clkgating_allowed(hba)) {
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+I'm having trouble figuring out a .config that will reproduce this.  I
+tried tinyconfig but it compiled clean.
 
+Could you share your .config?
+
+Thank you,
+Drew
