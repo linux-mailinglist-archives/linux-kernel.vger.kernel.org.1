@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9FF2C2033
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E932C2034
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730721AbgKXIjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:39:31 -0500
-Received: from mga01.intel.com ([192.55.52.88]:33062 "EHLO mga01.intel.com"
+        id S1730728AbgKXIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:39:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbgKXIja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:39:30 -0500
-IronPort-SDR: O6tZkqRCRbwi1aSzsyTbgcU0gl4R8iCAbaGtWNFNIy0IgrvgzCIte3cc5xGNlyrgZJcoaCFnZ5
- AucUi0VGyW7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="190035133"
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="190035133"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:39:30 -0800
-IronPort-SDR: cKNWzGleNg8s9ZTNZKyg1HfAhsZt2mdGeoa+YbUF+no7uZSsz3ihOGBCXQSzwzgCJXwErcIYJi
- 5sUjZDlkv9lA==
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="327497228"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:39:27 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id CE74920461; Tue, 24 Nov 2020 10:39:25 +0200 (EET)
-Date:   Tue, 24 Nov 2020 10:39:25 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v4 0/2] media: mtk-vcodec: fix builds when remoteproc is
- disabled
-Message-ID: <20201124083925.GC3940@paasikivi.fi.intel.com>
-References: <20201013124428.783025-1-acourbot@chromium.org>
- <CAPBb6MVM81dQyLJANUH7j8b5uhpk8ERdm9gpsGkF4k1Y-ZkYDQ@mail.gmail.com>
+        id S1726326AbgKXIjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:39:49 -0500
+Received: from localhost (unknown [122.167.149.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C7E8206FA;
+        Tue, 24 Nov 2020 08:39:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606207189;
+        bh=pxqmtk5/OaJeLZ3v+XADzNZmmNxQt38OoL+FYoVFdQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fARV9PljrFrO9MOPpSMv0niQ7g9dGIJw1CQMi+X0IGvaI9tdotf2cUDxNOj0P+cSi
+         QNizqze5/eVlibQ9eivR7isQig4WRSkM4OMwcd7rBOCcE78BxwHGkevMHfMjN5CxYK
+         ESCeNCDyOzXDQHdR3eZAqdAT+qioPbT4+E2/oS4w=
+Date:   Tue, 24 Nov 2020 14:09:44 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: SDCA: detect sdca_cascade interrupt
+Message-ID: <20201124083944.GK8403@vkoul-mobl>
+References: <20201104152358.9518-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPBb6MVM81dQyLJANUH7j8b5uhpk8ERdm9gpsGkF4k1Y-ZkYDQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201104152358.9518-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 08:56:00AM +0900, Alexandre Courbot wrote:
-> Gentle ping about this - we are already well into the 5.10 cycle so we
-> don't have much time left if we want to merge this build breakage
-> fix...
+On 04-11-20, 23:23, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+> The SoundWire 1.2 specification defines an "SDCA cascade" bit which
+> handles a logical OR of all SDCA interrupt sources (up to 30 defined).
+> 
+> Due to limitations of the addressing space, this bit is located in the
+> SDW_DP0_INT register when DP0 is used, or alternatively in the
+> DP0_SDCA_Support_INTSTAT register when DP0 is not used.
+> 
+> To allow for both cases to be handled, this bit will be checked in the
+> main device-level interrupt handling code. This will result in the
+> register being read twice if DP0 is enabled, but it's not clear how to
+> optimize this case. It's also more logical to deal with this interrupt
+> at the device than the port level, this bit is really not DP0 specific
+> and its location in the DP0_INTSTAT bit is only due to the lack of
+> free space in SCP_INTSTAT_1.
+> 
+> The SDCA_Cascade bit cannot be masked or cleared, so the interrupt
+> handling only forwards the detection to the Slave driver, which will
+> deal with reading the relevant SDCA status bits and clearing them. The
+> bus driver only signals the detection.
+> 
+> The communication with the Slave driver is based on the same interrupt
+> callback, with only an extension to provide the status of the
+> sdca_cascade bit.
 
-Thanks for the ping.
-
-For the set:
-
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Applied, thanks
 
 -- 
-Sakari Ailus
+~Vinod
