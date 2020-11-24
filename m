@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913282C258B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C8D2C258F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387533AbgKXMTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+        id S2387541AbgKXMTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgKXMTR (ORCPT
+        with ESMTP id S2387521AbgKXMTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:19:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826ACC0613D6;
-        Tue, 24 Nov 2020 04:19:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uvDfFcTJVIdXBGR+joN6zXz154p6r479ClVsKuidpag=; b=AoYEmNwScc3ZhYqB9VycOafUC5
-        2v8rbvnu68twnK4hQ1ICV3Qzd3tbpCIgVcqUSI2A3/4FgAKbdGgoPE3j691S9i44M+3BMOp+ucZpe
-        WYTpbzzzuC8m5I6rqbpj7uJxVy2iPPq4BbrJt3tnjp156mNc79iiEIPR+k4akIFcqQYYTWMEGNmOn
-        GTS+ei+v5ogGFPnIWlWKqtnu9wWzezGV6iDyvZWWbfaK41ZVxjD7qnMAJMwYOli6+LnTRhtDS8F/J
-        ATpzt8UTjj6e/hWbcAEtZdqToH0AwcokShCJbDWUIV5xBWmnCgjfTQnUGBa3qUsMVttttRPptukAc
-        Xc1lNbWw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khXHs-0002FJ-2w; Tue, 24 Nov 2020 12:19:12 +0000
-Date:   Tue, 24 Nov 2020 12:19:12 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-Message-ID: <20201124121912.GZ4327@casper.infradead.org>
-References: <000000000000d3a33205add2f7b2@google.com>
- <20200828100755.GG7072@quack2.suse.cz>
- <20200831100340.GA26519@quack2.suse.cz>
- <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
- <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+        Tue, 24 Nov 2020 07:19:54 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5AAC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:19:53 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khXIQ-0001FJ-1W; Tue, 24 Nov 2020 13:19:46 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khXIO-0005Ik-NF; Tue, 24 Nov 2020 13:19:44 +0100
+Date:   Tue, 24 Nov 2020 13:19:43 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 3/4] amba: Make the remove callback return void
+Message-ID: <20201124121943.72etfmpubis6jw3l@pengutronix.de>
+References: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
+ <20201124103242.2971199-3-u.kleine-koenig@pengutronix.de>
+ <CAK8P3a0xz8Yf37GVntdyP-npKJ5N7jKH16JdcYL-a214KsXaEg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zq5jbqs3ok2srepm"
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+In-Reply-To: <CAK8P3a0xz8Yf37GVntdyP-npKJ5N7jKH16JdcYL-a214KsXaEg@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 08:07:24PM -0800, Hugh Dickins wrote:
-> Twice now, when exercising ext4 looped on shmem huge pages, I have crashed
-> on the PF_ONLY_HEAD check inside PageWaiters(): ext4_finish_bio() calling
-> end_page_writeback() calling wake_up_page() on tail of a shmem huge page,
-> no longer an ext4 page at all.
-> 
-> The problem is that PageWriteback is not accompanied by a page reference
-> (as the NOTE at the end of test_clear_page_writeback() acknowledges): as
-> soon as TestClearPageWriteback has been done, that page could be removed
-> from page cache, freed, and reused for something else by the time that
-> wake_up_page() is reached.
-> 
-> https://lore.kernel.org/linux-mm/20200827122019.GC14765@casper.infradead.org/
-> Matthew Wilcox suggested avoiding or weakening the PageWaiters() tail
-> check; but I'm paranoid about even looking at an unreferenced struct page,
-> lest its memory might itself have already been reused or hotremoved (and
-> wake_up_page_bit() may modify that memory with its ClearPageWaiters()).
-> 
-> Then on crashing a second time, realized there's a stronger reason against
-> that approach.  If my testing just occasionally crashes on that check,
-> when the page is reused for part of a compound page, wouldn't it be much
-> more common for the page to get reused as an order-0 page before reaching
-> wake_up_page()?  And on rare occasions, might that reused page already be
-> marked PageWriteback by its new user, and already be waited upon?  What
-> would that look like?
-> 
-> It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
-> in write_cache_pages() (though I have never seen that crash myself).
 
-I don't think this is it.  write_cache_pages() holds a reference to the
-page -- indeed, it holds the page lock!  So this particular race cannot
-cause the page to get recycled.  I still have no good ideas what this
-is :-(
+--zq5jbqs3ok2srepm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 24, 2020 at 12:48:05PM +0100, Arnd Bergmann wrote:
+> On Tue, Nov 24, 2020 at 11:32 AM Uwe Kleine-K=F6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> >
+> > Most amba drivers return 0 in their remove callback. Together with the
+> > driver core ignoring the return value anyhow, it doesn't make sense to
+> > return a value here.
+> >
+> > So add a warning to the only driver that could return an error code and
+> > change the remove prototype to return void, which makes it explicit that
+> > returning an error value doesn't work as expected. This simplifies chan=
+ging
+> > the core remove callback to return void, too.
+> >
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+>=20
+> Makes sense, I checked that the vfio driver cannot actually return an err=
+or
+> either, the 'if (vdev)' check seems to be done out of unnecessary caution,
+> as the probe would never have succeeded if that was NULL.
+
+Yes I thought this possible, but didn't tried to wrap my head around the
+logic there. IMHO this warrants a cleanup, will address this in v2.
+
+Thanks for your feedback,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--zq5jbqs3ok2srepm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+8+lwACgkQwfwUeK3K
+7Al8rwf/UqPq57uXKYh4PV+Y3o/wPKv35dYocyH9HfrXmi0+4MtUV4p2WRSj/w5y
+SJwUJWSlCHHS4E/htNSAGeMU/4uWQ0hWCVDJeEenPaP7RFC8UZwePSwQw9XM7uL/
+y+DL+yyCxIBtRX7+hbhmMOJqa2Dzmr1XzcFCzRddOOrtRriUQ2LA9tLI8Ql6fuMg
+i/nb84oyw70yHBxqON9d3zOLNFDj+PHxjXaWuKP/GpjqpdcXLpnkn0yCndR6te8c
+qLpsaDfp6/zA18K22t7yfQu251Qd9OUpbOnaCtTEDUeTJtQ6hzYH1QlZwaLwNCeu
++gxFJj3v0yXphIMpmUGRT3IlhTtbVA==
+=qTCK
+-----END PGP SIGNATURE-----
+
+--zq5jbqs3ok2srepm--
