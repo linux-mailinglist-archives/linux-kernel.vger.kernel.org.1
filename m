@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B972C2BBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F2F2C2BBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389902AbgKXPsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:48:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
+        id S2389911AbgKXPsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389629AbgKXPsD (ORCPT
+        with ESMTP id S2388538AbgKXPsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:48:03 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC06C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:48:03 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id e14so10815939qve.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:48:02 -0800 (PST)
+        Tue, 24 Nov 2020 10:48:54 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A69C0613D6;
+        Tue, 24 Nov 2020 07:48:53 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id 64so9387078wra.11;
+        Tue, 24 Nov 2020 07:48:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=ubJInrGSsPLGKGouG7fpjnMRMu6mjU1dee+kkLRQJso=;
-        b=hHQILDw03u/sl9BOCAlhrVjo9pT1JNk1zqKicW8pDpjpdemn2tv0bQrmpqWWp9TJPp
-         9WRL3NIb6Oyo/7pQmptCxsdnzIgS4TZC+smRhtxd34Vj6OvTCQWwuPS7kFj2+UAO0Xgy
-         4/0c9vuOfTsKe5SFMTjEs+G8oz0P5j3G7CxmCLKbzuAE8hevvUEVPk5huxPVSZ4cBm7f
-         JVIG/DOVhd6fUdJA+yPBVPBoMjucv8i/mhsuJdwb+V9mEc8pocbx72lGwXRhFQ7FxBYO
-         c4k508M0ay+aTrTr3wbwrpo4b+kQu5nNDoW/aFjAK/pypvbh7Cby3FBjs7cmT3ChR44g
-         IlVQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YQEzzUsi3ECVy0o2bywn3sPnPcyWGDcKqLpYqiqy8k0=;
+        b=dkuQovPHqgYmce+xjSlOvfhq/8tm/S7wmfsf45pnSCSDwQiLIkzbmZ56hywbMGm+MH
+         fxlrqrTEUEzqyu1kJW4fqyewc3mGf99GkcNDkKe0UWcm6VGoMj1Lq1Bc6kRjUVUqrvVg
+         7p0XZKRRVLw0u3uUo7jrdM7g2/+6J2oJnpVMxSBmiOnBEh3ZmghtDYFRC5JpwVkcff/n
+         W8y8z/deyqJBnpFjobuBBemvIn7+Yx6n/09Y6fzctUws8SYbEzEoh7pRi97nvf3tBRcg
+         IXAGaK4t9TTI3YHoFqUldMcuHN2gPt/Rx9IP2rmMOCvh1oOQYqoc42bI9H1XJxUXkyRd
+         HxTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=ubJInrGSsPLGKGouG7fpjnMRMu6mjU1dee+kkLRQJso=;
-        b=FmWxJt0BAUYd7kZQ2Yld70CLSyztZ5WJypIR0ifw2ZJa5SuNHJz5EPE4T96h5wLgKe
-         CFYXRsuCw07pm0XCa7gv0G7IezmcryGqWoyqUv2hH7u4iqzhfh/Mqq3AJYwB3vbrwUfn
-         U0FQRXd0Prt53JtTLbYFlJx7MKrwQAU/LiDFf1JYflLsc+JXeJilS42/bn5gYjIN3wqJ
-         Wl7H97+ARI/dzUpM0HWziCVwkC7FwRA+c80iJvRikS34e7riG4ike9nVt+gUVmXGBnNA
-         Pb29yohwZ75eKeKS3nZ8SLdb/OJZBQ8Vyrzz2cheyjAhHARHnsY77CrpisQGPNUTodQG
-         DjAA==
-X-Gm-Message-State: AOAM531mK201EEl6TJu+qi1HVh27YggoYbr4ct7HpACAnFCQjimRBWbz
-        A89NXJUTeCef9C61r9XB6VpCyQ==
-X-Google-Smtp-Source: ABdhPJydlpNAWXjt4Gk87KvAf/FoPLdSEj4YPKw88iYN9nz6ZjtmfbEXGr3ZkwuOUekwx2ztrZ7ydg==
-X-Received: by 2002:ad4:524b:: with SMTP id s11mr5485759qvq.3.1606232882237;
-        Tue, 24 Nov 2020 07:48:02 -0800 (PST)
-Received: from xanadu.home (modemcable076.50-203-24.mc.videotron.ca. [24.203.50.76])
-        by smtp.gmail.com with ESMTPSA id i9sm12931180qtp.72.2020.11.24.07.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 07:48:01 -0800 (PST)
-Date:   Tue, 24 Nov 2020 10:48:00 -0500 (EST)
-From:   Nicolas Pitre <npitre@baylibre.com>
-To:     Colin King <colin.king@canonical.com>
-cc:     Boris Brezillon <bbrezillon@kernel.org>,
-        linux-i3c@lists.infradead.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] i3c/master: Fix uninitialized variable next_addr
-In-Reply-To: <20201124123504.396249-1-colin.king@canonical.com>
-Message-ID: <nycvar.YSQ.7.78.906.2011241046530.2184@knanqh.ubzr>
-References: <20201124123504.396249-1-colin.king@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YQEzzUsi3ECVy0o2bywn3sPnPcyWGDcKqLpYqiqy8k0=;
+        b=j+OGlyzgNNwEJP1sMiRCE7kB5hnOc1b4hzs6Q6UmENJhQsieRbCOk/KHr9aeK9kke3
+         KJnut9id6b1Ajnd6rFTS+PKfIquitH5y+zNP4KHQMgHWKhy/hiss/SLdVUlYs/WoSEF0
+         X3Jq6n8yhkA+mwxBd7FPZTgMOV8fatyayegVIjBC7X8vHQPHuTbP3MaGwmk8xvr/Ux6E
+         /fYUcdkHiv1GD3YQSwTJVflAeumNdBPwC8hARUiSTDkUJ+e5MORdmMShK8/P7ASaBi2Z
+         qPtJQCnMMsvZV2iLHH6dtKX0kKu/n4vSQGvpBlomxirjfZ+riTC37/1fb1bpZeNuGFhk
+         i65g==
+X-Gm-Message-State: AOAM532pq1Wlk5F1yWZjPv3+jAaCJ2TDCGWoJmDp4v55sc2sAp0PiT90
+        j8QT7tLQlT9Z3nZtkt2Ix56d923wg9PAENktc1M=
+X-Google-Smtp-Source: ABdhPJwYgYr70cFFo0Y9krfbSn0C7YP63ewXVaD5K8+FsG7eicpQE/XYSITvz9BpjTRXjTOvgEAPxqqfmRX9vlrjQxU=
+X-Received: by 2002:adf:8028:: with SMTP id 37mr6020956wrk.111.1606232932459;
+ Tue, 24 Nov 2020 07:48:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-3-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 10:48:41 -0500
+Message-ID: <CADnq5_PsVND-G1_z++kv+A9B0xOig5XHW0R2nQrb68kCAe1-yA@mail.gmail.com>
+Subject: Re: [PATCH 02/40] drm/amd/amdgpu/amdgpu_ttm: Add description for 'page_flags'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020, Colin King wrote:
+On Mon, Nov 23, 2020 at 6:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c:1214: warning: Function paramete=
+r or member 'page_flags' not described in 'amdgpu_ttm_tt_create'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Jerome Glisse <glisse@freedesktop.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable next_addr is not initialized and is being used in a call
-> to i3c_master_get_free_addr as a starting point to find the next address.
-> Fix this by initializing next_addr to 0 to avoid an uninitialized garbage
-> starting address from being used.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: 9ad9a52cce28 ("i3c/master: introduce the mipi-i3c-hci driver")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Applied.  Thanks!
 
-Acked-by: Nicolas Pitre <npitre@baylibre.com>
-
-
-
+Alex
 
 
 > ---
->  drivers/i3c/master/mipi-i3c-hci/cmd_v1.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i3c/master/mipi-i3c-hci/cmd_v1.c b/drivers/i3c/master/mipi-i3c-hci/cmd_v1.c
-> index 6dd234a82892..d97c3175e0e2 100644
-> --- a/drivers/i3c/master/mipi-i3c-hci/cmd_v1.c
-> +++ b/drivers/i3c/master/mipi-i3c-hci/cmd_v1.c
-> @@ -293,7 +293,7 @@ static int hci_cmd_v1_daa(struct i3c_hci *hci)
->  {
->  	struct hci_xfer *xfer;
->  	int ret, dat_idx = -1;
-> -	u8 next_addr;
-> +	u8 next_addr = 0;
->  	u64 pid;
->  	unsigned int dcr, bcr;
->  	DECLARE_COMPLETION_ONSTACK(done);
-> -- 
-> 2.29.2
-> 
-> 
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu_ttm.c
+> index 5fcdd67e5a913..debbcef961dd5 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> @@ -1199,6 +1199,7 @@ static void amdgpu_ttm_backend_destroy(struct ttm_b=
+o_device *bdev,
+>   * amdgpu_ttm_tt_create - Create a ttm_tt object for a given BO
+>   *
+>   * @bo: The buffer object to create a GTT ttm_tt object around
+> + * @page_flags: Page flags to be added to the ttm_tt object
+>   *
+>   * Called by ttm_tt_create().
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
