@@ -2,213 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F38B2C2B6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DDA2C2B70
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389689AbgKXPe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:34:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40138 "EHLO mail.kernel.org"
+        id S2389768AbgKXPfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:35:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388503AbgKXPe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:34:29 -0500
-Received: from localhost (unknown [122.167.149.197])
+        id S2389340AbgKXPe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:34:59 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21FA7206D9;
-        Tue, 24 Nov 2020 15:34:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1B8A206D9;
+        Tue, 24 Nov 2020 15:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606232068;
-        bh=ygx751/q41x3b/CvIyWP1Woh3mwcQeXt++6JywZvU6g=;
+        s=default; t=1606232099;
+        bh=45SlmfsmIMOXv8O0QZwjwZBCGy0E7RVMW2NesSV/47k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aFle7WQI7jsE9JZrNB3KDIzD95MHptn5s/KPWz5sFxniEFQkSwh2srIQNUw4+1yX7
-         Xnpzj4luHylIDYA+3PKu0PkacnIIizLDhnNaVeAlOMEvV/yAG+0YDyvkEPWy9h5btR
-         Np6wC/xEQxbyGo0sgG2tYkqmYRYCNGEZFNspNr9o=
-Date:   Tue, 24 Nov 2020 21:04:22 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, elder@linaro.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH] soc: qcom: Introduce debugfs interface to smem
-Message-ID: <20201124153422.GO8403@vkoul-mobl>
-References: <20201123052119.157551-1-bjorn.andersson@linaro.org>
+        b=qtn8AkPm7NLigf+bab535CzSZDXbvQYiNvl1bCqgn6CyaE4vavdPmj0+Pd13qa6BB
+         mvMoDajDD5YYUur52dexhzH5Vdr48tEREGqHDd1udWnFygoLLj7zdf2eL2funm4V+M
+         fz6njgbbS82csEYRaK5TeB9sQOUSE2Yilm40QSbs=
+Date:   Tue, 24 Nov 2020 15:34:35 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Philippe Duplessis-Guindon <pduplessis@efficios.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] tracing: Remove duplicate `type` field from
+ regmap `regcache_sync` trace event
+Message-ID: <20201124153118.GE4933@sirena.org.uk>
+References: <20201124135730.9185-1-pduplessis@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vtJ+CqYNzKB4ukR4"
 Content-Disposition: inline
-In-Reply-To: <20201123052119.157551-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20201124135730.9185-1-pduplessis@efficios.com>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-11-20, 23:21, Bjorn Andersson wrote:
-> Every now and then it's convenient to be able to inspect the content of
-> SMEM items. Rather than carrying some hack locally let's upstream a
-> driver that when inserted exposes a debugfs interface for dumping
-> available items.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/soc/qcom/Kconfig        |   7 +++
->  drivers/soc/qcom/Makefile       |   1 +
->  drivers/soc/qcom/smem_debugfs.c | 102 ++++++++++++++++++++++++++++++++
->  3 files changed, 110 insertions(+)
->  create mode 100644 drivers/soc/qcom/smem_debugfs.c
-> 
-> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> index 3dc3e3d61ea3..7e1dd6b3f33a 100644
-> --- a/drivers/soc/qcom/Kconfig
-> +++ b/drivers/soc/qcom/Kconfig
-> @@ -128,6 +128,13 @@ config QCOM_SMEM
->  	  The driver provides an interface to items in a heap shared among all
->  	  processors in a Qualcomm platform.
->  
-> +config QCOM_SMEM_DEBUGFS
-> +	tristate "Qualcomm Shared Memory Manager (SMEM) DebugFS interface"
-> +	depends on QCOM_SMEM
-> +	depends on DEBUG_FS
-> +	help
-> +	  Provides a debugfs interface for inspecting SMEM.
 
-Do we need additional debugfs entry, maybe better to depend on DEBUG_FS
-being enabled and this file part of QCOM_SMEM?
+--vtJ+CqYNzKB4ukR4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
->  config QCOM_SMD_RPM
->  	tristate "Qualcomm Resource Power Manager (RPM) over SMD"
->  	depends on ARCH_QCOM || COMPILE_TEST
-> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-> index 93392d9dc7f7..632eefc5a897 100644
-> --- a/drivers/soc/qcom/Makefile
-> +++ b/drivers/soc/qcom/Makefile
-> @@ -15,6 +15,7 @@ qcom_rpmh-y			+= rpmh-rsc.o
->  qcom_rpmh-y			+= rpmh.o
->  obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
->  obj-$(CONFIG_QCOM_SMEM) +=	smem.o
-> +obj-$(CONFIG_QCOM_SMEM_DEBUGFS) += smem_debugfs.o
->  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
->  obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
->  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
-> diff --git a/drivers/soc/qcom/smem_debugfs.c b/drivers/soc/qcom/smem_debugfs.c
-> new file mode 100644
-> index 000000000000..11ef29a0cada
-> --- /dev/null
-> +++ b/drivers/soc/qcom/smem_debugfs.c
-> @@ -0,0 +1,102 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020, Linaro Ltd.
-> + */
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/soc/qcom/smem.h>
-> +
-> +struct smem_debugfs {
-> +	struct dentry *root;
-> +};
-> +
-> +static int smem_debugfs_item_show(struct seq_file *seq, void *p)
-> +{
-> +	unsigned long data = (unsigned long)seq->private;
-> +	unsigned long item = data & 0xffff;
-> +	unsigned long host = data >> 16;
-> +	size_t len;
-> +	void *ptr;
-> +
-> +	ptr = qcom_smem_get(host, item, &len);
-> +	if (IS_ERR(ptr))
-> +		return PTR_ERR(ptr);
-> +
-> +	seq_hex_dump(seq, "", DUMP_PREFIX_OFFSET, 16, 1, ptr, len, true);
-> +
-> +	return 0;
-> +}
-> +
-> +static int smem_debugfs_item_open(struct inode *inode, struct file *file)
-> +{
-> +	return single_open(file, smem_debugfs_item_show, inode->i_private);
-> +}
-> +
-> +static const struct file_operations smem_debugfs_item_ops = {
-> +	.open = smem_debugfs_item_open,
-> +	.read = seq_read,
-> +	.llseek = seq_lseek,
-> +	.release = single_release,
-> +};
+On Tue, Nov 24, 2020 at 08:57:30AM -0500, Philippe Duplessis-Guindon wrote:
 
-How about using DEFINE_SHOW_ATTRIBUTE() instead? That will help cut down
-this boiler plate code..
+> Fixes commit 593600890110c ("regmap: Add the regcache_sync trace event")
+>=20
+> Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
 
-> +
-> +static int smem_debugfs_rescan(struct seq_file *seq, void *p)
-> +{
-> +	struct dentry *root = seq->private;
-> +	unsigned long item;
-> +	unsigned long host;
-> +	unsigned long data;
-> +	char name[10];
-> +	char *ptr;
-> +
-> +	for (host = 0; host < 10; host++) {
-> +		for (item = 0; item < 512; item++) {
-> +			ptr = qcom_smem_get(host, item, NULL);
-> +			if (IS_ERR(ptr))
-> +				continue;
-> +
-> +			sprintf(name, "%ld-%ld", host, item);
-> +
-> +			data = host << 16 | item;
-> +			debugfs_create_file(name, 0400, root,
-> +					    (void *)data, &smem_debugfs_item_ops);
+Please follow the format for Fixes: tags documented in
+submitting-patches.rst and existing usage in the kernel.
 
-So IIUC user invokes scan file which creates additional files, right?
-Additional invoke will do that as well..?
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int smem_debugfs_rescan_open(struct inode *inode, struct file *file)
-> +{
-> +	return single_open(file, smem_debugfs_rescan, inode->i_private);
-> +}
-> +
-> +static const struct file_operations smem_debugfs_rescan_ops = {
-> +	.open = smem_debugfs_rescan_open,
-> +	.read = seq_read,
-> +	.llseek = seq_lseek,
-> +	.release = single_release,
-> +};
+--vtJ+CqYNzKB4ukR4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Here as well?
+-----BEGIN PGP SIGNATURE-----
 
-> +
-> +static struct dentry *smem_debugfs_root;
-> +
-> +static int __init qcom_smem_debugfs_init(void)
-> +{
-> +	smem_debugfs_root = debugfs_create_dir("qcom_smem", NULL);
-> +	debugfs_create_file("rescan", 0400, smem_debugfs_root,
-> +			    smem_debugfs_root, &smem_debugfs_rescan_ops);
-> +
-> +	return 0;
-> +}
-> +
-> +static void __exit qcom_smem_debugfs_exit(void)
-> +{
-> +	debugfs_remove_recursive(smem_debugfs_root);
-> +}
-> +
-> +module_init(qcom_smem_debugfs_init);
-> +module_exit(qcom_smem_debugfs_exit);
-> +
-> +MODULE_DESCRIPTION("Qualcomm SMEM debugfs driver");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.29.2
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+9KAsACgkQJNaLcl1U
+h9AeFwf+JlXde7alJC/swGRwNTmn9y0Jb1g6/ogpQSusfwXQ1TP0JiKtmfNHUr3f
+aTQv5OTg24HLheO+kO5tc1jniV9c2Gq5Gb+Xi1770xopmhcsu6peAh5mi1PZ9J5U
+jkXHn3OoNCeps1WX1ImQN2AEAOC5iwpqXSeNS6CMqL1BVLr74Uxp5qBbYhnxi7PR
+tzoxDd7xSJzULh6r6a67LfaUjMvnKRGCZEb/UWNKcxWfpyOxQnK1HNO7a4NJDgfF
+ss+AxfhzjitHruncRZCTL1xfUK5pqw/f4GZyxiaE44vWZ0TWocNEmNddUE4RcD1Z
+fCge+hNbXxg0hGVdEWx+JImpG5MVhg==
+=EHsQ
+-----END PGP SIGNATURE-----
 
--- 
-~Vinod
+--vtJ+CqYNzKB4ukR4--
