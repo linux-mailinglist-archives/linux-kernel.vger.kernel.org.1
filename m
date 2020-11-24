@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769562C2FE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB0F2C2FDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390930AbgKXSX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:23:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390922AbgKXSX0 (ORCPT
+        id S2390713AbgKXSRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:17:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31282 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404163AbgKXSRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:23:26 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7C5C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:23:26 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id p22so3244541wmg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:23:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=malat-biz.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=E7iKeDCDBZ7LJEqPWQhYyIDhVTyrdGn4l+s4bIfrllk=;
-        b=1Aow5cj08YgHjdvrfxI6i9PeQ1XPtwW42xCIQbwZyq4KCUWzL0XpWa+Yb5xBaLmxUz
-         1ZO7scWuu8l6aobb6ihOQQ0YbLt4/WnpCXIrqsygMgCcmNy5tLiMbyy6/SAUvOuk34OW
-         QNVQR0TquV0JjNQV+wVOvoVhTt4lnwgPK4ky54RVfowYjmzFdZ5X8ZnEWCsDlVsJKIb6
-         Jw10UTliZjx1t23JwpeFUZWyFOoSI9eXx+lnPJrgMqEdA0FPdQiNWUPlek1VbWeipSpC
-         /uG++JyjkdpXhoVqFJy1mxjhKhmPR86kepUxGuhB3QDd3NISvtpALkqhEd7wKRLWVd0Z
-         xZ1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E7iKeDCDBZ7LJEqPWQhYyIDhVTyrdGn4l+s4bIfrllk=;
-        b=ui23lEkeSOuKpX19EUcuKgucPtOx5mDB7q460Nzn0/iRKcM5ZEQWz4LNqJjzmVWoS2
-         sMSKYRBmEBGfcPTPcRRyFkws017TzFdOS/DejTX2lKRe/TZvuvbEl6w3PFMOLcm4hXnB
-         GwvR1T3VeEnPp8mlOeU68qsKyvvLMAenLzLFt+ubHj69Ot8gJJXCLZ3ln7Zbj9kZc7n/
-         uLbmgcZtXRtEkNIISr6vfbQqX/I48w5zMGsi3ZIAEej0jrMmPfE3njaGJgGaPIKdiSGM
-         OaRUaEtNP0TSwoAjTGCQlT+8E3YWxD0jdAdEVxy2Kl1VZIopper7gAEuuoXDHNBSKRqa
-         4uQA==
-X-Gm-Message-State: AOAM531L8hzSgj6YmvLgFvS30woPRMKEtdEFUdO9oyv1zgJoBTxyjZ1P
-        gBUdLJgi6KxeR9+1YIIsYf8wUQ==
-X-Google-Smtp-Source: ABdhPJz0M1LvQLJvYBVfg1utzJAUjFMfE6zwxq7zZfU686Pzr73wfq7FMMaivbewtTsb0gHgjPOcPA==
-X-Received: by 2002:a1c:7e11:: with SMTP id z17mr6002386wmc.83.1606242204824;
-        Tue, 24 Nov 2020 10:23:24 -0800 (PST)
-Received: from ntb.petris.klfree.czf (snat2.klfree.cz. [81.201.48.25])
-        by smtp.gmail.com with ESMTPSA id g186sm7414649wmf.2.2020.11.24.10.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 10:23:24 -0800 (PST)
-Date:   Tue, 24 Nov 2020 19:15:19 +0100
-From:   Petr Malat <oss@malat.biz>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [PATCH v2 1/3] Revert "perf session: Fix decompression of
- PERF_RECORD_COMPRESSED records"
-Message-ID: <20201124181519.GA29264@ntb.petris.klfree.czf>
-References: <20201124095923.3683-1-oss@malat.biz>
- <20201124102919.15312-1-oss@malat.biz>
- <20201124143645.GD2088148@krava>
+        Tue, 24 Nov 2020 13:17:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606241833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LUJObGYPcxmWCt1F5rpzYy+8ynXVUFmmSX89XWvIPx0=;
+        b=IBs+2YGDR2hhvilYBLNrT23SHZ6eA45UCPVf5n2IsVVEPSI00bmNbwlSZXXrqE2SIhVO0w
+        axjZz04a1/WI1KnHSSMTnVkwDpDaJnT+MgfYzxqzpLT1AEwiCy25X0x65XzQe/NWFOnzPg
+        7PFPLet8FUO4d9Z8DRdw4hCRYw3W9Ig=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-kFERPdGdOIaj_Nega45EAA-1; Tue, 24 Nov 2020 13:17:11 -0500
+X-MC-Unique: kFERPdGdOIaj_Nega45EAA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E83A180364D;
+        Tue, 24 Nov 2020 18:17:08 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-112-141.ams2.redhat.com [10.36.112.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F81760BE5;
+        Tue, 24 Nov 2020 18:17:02 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
+        "Carlos O'Donell" <carlos@redhat.com>
+Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
+ workaround
+References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+        <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
+        <878saq3ofx.fsf@oldenburg2.str.redhat.com>
+        <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
+        <20201124164546.GA14094@infradead.org>
+        <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
+        <X70/uPNt2BA/vUSo@kroah.com>
+        <CAG48ez2NH2Esw_55JiwK1FAzr_qFFyGaPrE_A=iH=dNuVvY6GQ@mail.gmail.com>
+Date:   Tue, 24 Nov 2020 19:17:00 +0100
+In-Reply-To: <CAG48ez2NH2Esw_55JiwK1FAzr_qFFyGaPrE_A=iH=dNuVvY6GQ@mail.gmail.com>
+        (Jann Horn's message of "Tue, 24 Nov 2020 18:30:28 +0100")
+Message-ID: <87h7pezkkj.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124143645.GD2088148@krava>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-On Tue, Nov 24, 2020 at 03:36:45PM +0100, Jiri Olsa wrote:
-> On Tue, Nov 24, 2020 at 11:29:15AM +0100, Petr Malat wrote:
-> > Both mmapped and compressed events can be split by the buffer boundary,
-> > it doesn't make sense to handle them differently.
-> I'm going to need more than this, if there's a problem
-> with current code please share more details, what's
-> broken and how it shows
-It's easy to trigger the problem - make a perf recording larger than
-MMAP_SIZE (32MB on 32-bit platform) and run perf report on it. There
-is a small chance recorded events will be aligned on the 32 MB
-boundary and in that case just repeat the test.
+* Jann Horn:
 
-The problem was introduced by "perf session: Avoid infinite loop when
-seeing invalid header.size", which instead of aborting the execution
-when there is a truncated event at the end of the file just terminated
-execution whenever there is a split event. Later then the problem has
-been noticed for compressed events and fixed by "perf session: Fix
-decompression of PERF_RECORD_COMPRESSED records" by effectively
-reverting "perf session: Avoid infinite loop when seeing invalid
-header.size" for compressed events, which left uncompressed events
-broken.
+> But if you can't tell whether the more modern syscall failed because
+> of a seccomp filter, you may be forced to retry with an older syscall
+> even on systems where the new syscall works fine, and such a fallback
+> may reduce security or reliability if you're trying to use some flags
+> that only the new syscall provides for security, or something like
+> that. (As a contrived example, imagine being forced to retry any
+> tgkill() that fails with EPERM as a tkill() just in case you're
+> running under a seccomp filter.)
 
-I think the best is to revert these 2 changes and fix the original
-problem by aborting when there is no actual shift during remapping - as
-long as we shift, it's clear we must approach the end of the file so
-such an algorithm can't loop forever.
-BR,
-  Petr
+We have exactly this situation with faccessat2 and faccessat today.
+EPERM could mean a reject from a LSM, and we really don't want to do our
+broken fallback in this case because it will mask the EPERM error from
+the LSM (and the sole purpose of faccessat2 is to get that error).
+
+This is why I was so eager to start using faccessat2 in glibc, and we
+are now encountering breakage with container runtimes.  Applications
+call faccessat (with a non-zero flags argument) today, and they now get
+routed to the faccessat2 entry point, without needing recompilation or
+anything like that.
+
+We have the same problem for any new system call, but it's different
+this time because it affects 64-bit hosts *and* existing applications.
+
+And as I explained earlier, I want to take this opportunity to get
+consensus how to solve this properly, so that we are ready for a new
+system call where incorrect fallback would definitely reintroduce a
+security issue.  Whether it's that ugly probing sequence, a change to
+the OCI specification that gets deployed in a reasonable time frame, or
+something else that I haven't thought of=E2=80=94I do not have a very strong
+preference, although I lean towards the spec change myself.  But I do
+feel that we shouldn't throw in a distro-specific patch to paper over
+the current faccessat2 issue and forget about it.
+
+Thanks,
+Florian
+--=20
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'N=
+eill
+
