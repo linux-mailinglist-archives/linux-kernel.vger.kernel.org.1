@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C772C2C0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AD22C2C18
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389653AbgKXPzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:55:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56580 "EHLO
+        id S2390052AbgKXP4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388538AbgKXPzb (ORCPT
+        with ESMTP id S1730760AbgKXP4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:55:31 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D072C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:55:29 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id b144so6334629qkc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:55:29 -0800 (PST)
+        Tue, 24 Nov 2020 10:56:16 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F897C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:56:16 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id o71so19714480ybc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:56:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oaa+hWx1KaHAmS3DtMmmCm5kDyFbE+baLseZRB4QB5M=;
-        b=O5+yyy3ugn3/JU8d8MzJuhxMQSAXmFG+K4qLwFzZz9R/0yzGmphek8afsqJ5XmaX7K
-         QFgr2UTIeMkWtrEUfgUgKbsoR4KB1EzCADhT2doRjFOEg0XNrQLFT7UfegvU6LtETQdH
-         BNfxI2uepF2ckC2z3Hg3jdCWPASQ46yKLRwg1QiNwPCb0sAmz1+AfFialcU6UizGRLb/
-         cFkrXVxqj0abamYnuOiwNBjY7IEIegPAbiNZQupZKDH6jzAd8pc/L3Rexp2KSypUx3WN
-         r58Z5/hOA1lt5wCiVxmAus+J+0CeYWzJLI1kYadqPB7BHX4GvlOoLo7sQ3sz3WRenNdb
-         j0ew==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S2P83nucK526s4MeAO3ef03SmJgQO9NwAX+ho/0bpag=;
+        b=LEiwANAT5RKxUwb530+GU3ngUHfpY4CcH/7rZbALhW6cVviuWshxGFiHTP+cl0CdRW
+         Pls7iBNclidkQ5F04YYBuCVqnF9fohJH7zAu0kaOtMBIJaGPq3uPW6BUzQKgEOQoenUu
+         AbN7w68UNr6flX4vz+agTyomqgPJYU0EkrBkNjxOBnJ0oL2AnZ+ZnidxKLBmC1ranT4L
+         ooj3sv+Eh3pe8uy+14LYseKtBe+c91Kt1w+ZFoP8xebYef9yzUqJTcLf0qWZWX9gF6qt
+         rqKFYKccZtfNV818+JRRz/40qHqcMaDBfoET3sqoC2YeKIomy8e6vrAJ49mBQbNCS16V
+         XoSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oaa+hWx1KaHAmS3DtMmmCm5kDyFbE+baLseZRB4QB5M=;
-        b=EmDzG7RYDGeNamUedtZD63P6a5ultTx/CELe+A/RQO0E2MRIVn8hhldTqJl3XYf3GS
-         7DcEpJfWtzOAciiv3Fobcmo96je11RjNB/W1c8y6uWFqqNIfeXIL8OVCmMly9gpsmPt5
-         Zul4+AvVBrblISvBbzd27RZYueti/CtvrXnHZfvcmp9kv51TspzbS/X5bawjuWhgOmU0
-         0wqLcXk5Y7WeefD1MVW9A9cXTeiJH8USxnO3hAjHetc5KwoyZPXl8JySEF8DJ3aMCuV8
-         6xNdGbZpEWjGtzZQWsxYoP+cx+qNuA6EDlCP2FIWIyIkRc9021IXKGtVJYW+j9In2FQ/
-         VIwA==
-X-Gm-Message-State: AOAM531CixQSNgT1ccNRcVb/vNuCOFGC/WAd87F3laCbThpLH1vH4eEM
-        nCOTBwl8imWx2tj9LOodmxrz6w==
-X-Google-Smtp-Source: ABdhPJzKvpnJwdDviRxMRDTdGK9+HHkdY7h1hzFeJT5r8VTnR/8g0865BSrf5PrqIcB8Qlf6akZbcQ==
-X-Received: by 2002:a05:620a:2106:: with SMTP id l6mr5371085qkl.302.1606233328732;
-        Tue, 24 Nov 2020 07:55:28 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x24sm12795492qkx.23.2020.11.24.07.55.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 07:55:27 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1khaf8-000pJU-UM; Tue, 24 Nov 2020 11:55:26 -0400
-Date:   Tue, 24 Nov 2020 11:55:26 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v6 17/17] RFC: mm: add mmu_notifier argument to follow_pfn
-Message-ID: <20201124155526.GH5487@ziepe.ca>
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
- <20201119144146.1045202-18-daniel.vetter@ffwll.ch>
- <20201120183029.GQ244516@ziepe.ca>
- <20201124142814.GM401619@phenom.ffwll.local>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S2P83nucK526s4MeAO3ef03SmJgQO9NwAX+ho/0bpag=;
+        b=LwMj7HOQYvxHoUJIdOCL6eljD5kyGWBwvEpzkMRB0/Os+rjXkb+HmimwEFin1t8eaw
+         Ol51ZwWZa1RDZvra2Ehi90aQvgo05ZJu2hXXZrYvBRddMRVMyrUKebHixnn0YE++V+vb
+         1LMAtL/Ltl2KFgLlFT0KxO1BRibrBJM0qP07tYkhe0+ptBgnFjuxgmJjROTuFGYS7c5Y
+         gcoWhgcKKO+J7FrUE8/3GJhhIGk6L9t8ssq7ruCK7/eD8HwvEnKZvyF6QTl0e8A/BuHm
+         DPvYGg/78glUJZheQUPH0kZiULFs9vGrvLCW97noY+5aBjB7y1dtoW2AxtiANGmsZIgh
+         QObA==
+X-Gm-Message-State: AOAM533jLaNmrO1EsEAMEebF3DmSvJuRbUjf5P8T7xsglm9M0a3SUbzV
+        w0PPy97aZWKq/geA4w7xtbC7vhqzOq9xPBBXtOfgxQ==
+X-Google-Smtp-Source: ABdhPJw0wHy+GWOIUwTLlmESRTmLRZ/Jnp1OSuSOAtoxUCEZYv5ocbmTHY84rAlt1NUxwHAItTPdwVgoCeM1V0Ar0sY=
+X-Received: by 2002:a25:7481:: with SMTP id p123mr6036490ybc.167.1606233375845;
+ Tue, 24 Nov 2020 07:56:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124142814.GM401619@phenom.ffwll.local>
+References: <5b07a7be8d136392dc7f93933a7ee68e@codeaurora.org>
+In-Reply-To: <5b07a7be8d136392dc7f93933a7ee68e@codeaurora.org>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 24 Nov 2020 21:25:40 +0530
+Message-ID: <CAMi1Hd2vY0OaD=_3E_JBTCPkLGHq9CFOrOQ=OM9eVg=dJ6hbZg@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH 3/3] drm/msm/dpu: add support for clk and bw
+ scaling for display
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Raviteja Tamatam <travitej@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        nganji@codeaurora.org, Sean Paul <seanpaul@chromium.org>,
+        John Stultz <john.stultz@linaro.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        abhinavk@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 03:28:14PM +0100, Daniel Vetter wrote:
-> On Fri, Nov 20, 2020 at 02:30:29PM -0400, Jason Gunthorpe wrote:
-> > On Thu, Nov 19, 2020 at 03:41:46PM +0100, Daniel Vetter wrote:
-> > > @@ -4805,21 +4824,15 @@ EXPORT_SYMBOL(follow_pte_pmd);
-> > >   * Return: zero and the pfn at @pfn on success, -ve otherwise.
-> > >   */
-> > >  int follow_pfn(struct vm_area_struct *vma, unsigned long address,
-> > > -	unsigned long *pfn)
-> > > +	unsigned long *pfn, struct mmu_notifier *subscription)
-> > >  {
-> > > -	int ret = -EINVAL;
-> > > -	spinlock_t *ptl;
-> > > -	pte_t *ptep;
-> > > +	if (WARN_ON(!subscription->mm))
-> > > +		return -EINVAL;
-> > >  
-> > > +	if (WARN_ON(subscription->mm != vma->vm_mm))
-> > > +		return -EINVAL;
-> > 
-> > These two things are redundant right? vma->vm_mm != NULL?
-> 
-> Yup, will remove.
-> 
-> > BTW, why do we even have this for nommu? If the only caller is kvm,
-> > can you even compile kvm on nommu??
-> 
-> Kinda makes sense, but I have no idea how to make sure with compile
-> testing this is really the case. And I didn't see any hard evidence in
-> Kconfig or Makefile that mmu notifiers requires CONFIG_MMU. So not sure
-> what to do here.
+Hi Kalyan,
 
-It looks like only some arches have selectable CONFIG_MMU: arm,
-m68k, microblaze, riscv, sh
+On Tue, 24 Nov 2020 at 18:27, <kalyan_t@codeaurora.org> wrote:
+>
+> On 2020-11-08 23:25, Amit Pundir wrote:
+> > On Tue, 4 Aug 2020 at 21:09, Rob Clark <robdclark@gmail.com> wrote:
+> >>
+> >> On Thu, Jul 16, 2020 at 4:36 AM Kalyan Thota <kalyan_t@codeaurora.org>
+> >> wrote:
+> >> >
+> >> > This change adds support to scale src clk and bandwidth as
+> >> > per composition requirements.
+> >> >
+> >> > Interconnect registration for bw has been moved to mdp
+> >> > device node from mdss to facilitate the scaling.
+> >> >
+> >> > Changes in v1:
+> >> >  - Address armv7 compilation issues with the patch (Rob)
+> >> >
+> >> > Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> >>
+> >> Reviewed-by: Rob Clark <robdclark@chromium.org>
+> >>
+> >
+> > Hi Kalyan, Rob,
+> >
+> > This patch broke the display on the PocoF1 phone
+> > (sdm845-xiaomi-beryllium.dts) running AOSP.
+> > I can boot to UI but the display is frozen soon after that and
+> > dmesg is full of following errors:
+> >
+> > [drm:dpu_core_perf_crtc_update:397] [dpu error]crtc-65: failed to
+> > update bus bw vote
+> > [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
+> > 7649746kb > 6800000kb
+> > [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance
+> > check -7
+> > [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
+> > 7649746kb > 6800000kb
+> > [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance
+> > check -7
+> > [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
+> > 7649746kb > 6800000kb
+> > [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance
+> > check -7
+> >
+> > Here is the full dmesg https://pastebin.ubuntu.com/p/PcSdNgMnYw/.
+> > Georgi pointed out following patch but it didn't help,
+> > https://lore.kernel.org/dri-devel/20201027102304.945424-1-dmitry.baryshkov@linaro.org/
+> > Am I missing any other followup fix?
+> >
+> > Regards,
+> > Amit Pundir
+> > __
+>
+> Hi Amit,
+>
+> Apologies for the delay.
 
-If we look at arches that work with HAVE_KVM, I only see: arm64, mips,
-powerpc, s390, x86
+No worries at all.
 
-So my conclusion is there is no intersection between !MMU and HAVE_KVM?
+>
+> I have gone through the logs and referred to the below panel file for
+> the timings.
+> https://github.com/Matheus-Garbelini/Kernel-Sphinx-Pocophone-F1/blob/master/arch/arm64/boot/dts/qcom/dsi-panel-tianma-fhd-nt36672a-video.dtsi
+>
+> if the above is correct file, then below could be the possible root
+> cause.
+>
+> The panel back porch and pw is less and it is causing the prefill bw
+> requirement to shoot up per layer as currently we are not considering
+> front porch in the calculation. can you please try the attached patch in
+> the email as a solution and provide me the feedback, i'll post it as a
+> formal change.
 
-> Should I just remove the nommu version of follow_pfn and see what happens?
-> We can't remove it earlier since it's still used by other
-> subsystems.
+The attached patch worked for me. Thanks a lot for looking closely
+into this issue.
 
-This is what I was thinking might work
+Regards,
+Amit Pundir
 
-Jason
+>
+> Thanks,
+> Kalyan
+>
+> _____________________________________________
+> > Freedreno mailing list
+> > Freedreno@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/freedreno
