@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA202C22AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3CD2C22C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731832AbgKXKUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731841AbgKXKUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731834AbgKXKUC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Nov 2020 05:20:02 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:50246 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731129AbgKXKUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:20:01 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E14AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:20:02 -0800 (PST)
 Received: from zn.tnic (p200300ec2f0e360052021be21853ebf1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3600:5202:1be2:1853:ebf1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D75E41EC0531;
-        Tue, 24 Nov 2020 11:19:59 +0100 (CET)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A69091EC0532;
+        Tue, 24 Nov 2020 11:20:00 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
         t=1606213200;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=OvO1ckz+5Qb8CZPEpfo9zKfFqJKO2pQXxzTmhAvh87g=;
-        b=Jdt+wcewhT9wRH8f0hKt0Vt8lifydlrwLYXGgb1HO88bwiHPXdGM1f9ErGnAm4BkiEgCwJ
-        oR5WtcRM875MVcaNZbDuvcXLxy7Ea64bflInTqZ6YKedaHvLS5XeCw0kPdM/YnxVYEwtb+
-        nDGZwcU1RY/NHw49Z6v+71umQzKF378=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QDTh3B9uHPHFFJPMJTi8BsUafcIXFSAAaNGvWt8eLZ8=;
+        b=Owt+c9vzKPRwxSEn3d5YrSZFVtiyJz9QsuWYIqlqjD50Sggdl2S7BZDrhMFEjGwOHrO+Uo
+        mDkGZYlJQJ29a4+gIStDbG87BbOk2Ojiln5VQcY8CI67EL0ulcI1NKXvBTFpHw32t2F//r
+        fhuRK7Xm7jtcN4TSlnhzropCmG1LIdo=
 From:   Borislav Petkov <bp@alien8.de>
 To:     Andy Lutomirski <luto@amacapital.net>,
         Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v0 00/19] x86/insn: Add an insn_decode() API
-Date:   Tue, 24 Nov 2020 11:19:33 +0100
-Message-Id: <20201124101952.7909-1-bp@alien8.de>
+Subject: [RFC PATCH v0 01/19] x86/insn: Rename insn_decode() to insn_decode_regs()
+Date:   Tue, 24 Nov 2020 11:19:34 +0100
+Message-Id: <20201124101952.7909-2-bp@alien8.de>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20201124101952.7909-1-bp@alien8.de>
+References: <20201124101952.7909-1-bp@alien8.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -41,155 +48,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Borislav Petkov <bp@suse.de>
 
-Hi,
+Rename insn_decode() to insn_decode_regs() to denote that it receives
+regs as param and free the name for a generic version.
 
-here's what I had in mind, finally split into proper patches. The final
-goal is for all users of the decoder to simply call insn_decode() and
-look at its retval. Simple.
+No functional changes.
 
-As to amluto's question about detecting partial insns, see the diff
-below.
-
-Running that gives:
-
-insn buffer:
-0x48 0xcf 0x48 0x83 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 
-supplied buf size: 15, ret 0
-supplied buf size: 2, ret 0
-supplied buf size: 3, ret 0
-supplied buf size: 4, ret 0
-
-and the return value is always success.
-
-Which means that that buf_len that gets supplied to the decoder
-functions doesn't really work and I need to look into it.
-
-That is, provided this is how we want to control what the instruction
-decoder decodes - by supplying the length of the buffer it should look
-at.
-
-We could also say that probably there should be a way to say "decode
-only the first insn in the buffer and ignore the rest". That is all up
-to the use cases so I'm looking for suggestions here.
-
-In any case, at least the case where I give it
-
-0x48 0xcf 0x48 0x83
-
-and say that buf size is 4, should return an error because the second
-insn is incomplete. So I need to go look at that now.
-
-Thx.
-
+Signed-off-by: Borislav Petkov <bp@suse.de>
 ---
+ arch/x86/include/asm/insn-eval.h | 4 ++--
+ arch/x86/kernel/sev-es.c         | 2 +-
+ arch/x86/kernel/umip.c           | 2 +-
+ arch/x86/lib/insn-eval.c         | 6 +++---
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/tools/insn_sanity.c b/arch/x86/tools/insn_sanity.c
-index 51309df285b4..41e1ae0cd833 100644
---- a/arch/x86/tools/insn_sanity.c
-+++ b/arch/x86/tools/insn_sanity.c
-@@ -220,6 +220,45 @@ static void parse_args(int argc, char **argv)
- 	}
+diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
+index a0f839aa144d..3797497a9270 100644
+--- a/arch/x86/include/asm/insn-eval.h
++++ b/arch/x86/include/asm/insn-eval.h
+@@ -23,7 +23,7 @@ unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx);
+ int insn_get_code_seg_params(struct pt_regs *regs);
+ int insn_fetch_from_user(struct pt_regs *regs,
+ 			 unsigned char buf[MAX_INSN_SIZE]);
+-bool insn_decode(struct insn *insn, struct pt_regs *regs,
+-		 unsigned char buf[MAX_INSN_SIZE], int buf_size);
++bool insn_decode_regs(struct insn *insn, struct pt_regs *regs,
++		      unsigned char buf[MAX_INSN_SIZE], int buf_size);
+ 
+ #endif /* _ASM_X86_INSN_EVAL_H */
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 0bd1a0fc587e..37736486603e 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -256,7 +256,7 @@ static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
+ 			return ES_EXCEPTION;
+ 		}
+ 
+-		if (!insn_decode(&ctxt->insn, ctxt->regs, buffer, res))
++		if (!insn_decode_regs(&ctxt->insn, ctxt->regs, buffer, res))
+ 			return ES_DECODE_FAILED;
+ 	} else {
+ 		res = vc_fetch_insn_kernel(ctxt, buffer);
+diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+index f6225bf22c02..e3584894b074 100644
+--- a/arch/x86/kernel/umip.c
++++ b/arch/x86/kernel/umip.c
+@@ -356,7 +356,7 @@ bool fixup_umip_exception(struct pt_regs *regs)
+ 	if (!nr_copied)
+ 		return false;
+ 
+-	if (!insn_decode(&insn, regs, buf, nr_copied))
++	if (!insn_decode_regs(&insn, regs, buf, nr_copied))
+ 		return false;
+ 
+ 	umip_inst = identify_insn(&insn);
+diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
+index 58f7fb95c7f4..99fafbaf8555 100644
+--- a/arch/x86/lib/insn-eval.c
++++ b/arch/x86/lib/insn-eval.c
+@@ -1454,7 +1454,7 @@ int insn_fetch_from_user(struct pt_regs *regs, unsigned char buf[MAX_INSN_SIZE])
  }
  
-+static void run_insn_limits_test(void)
-+{
-+	unsigned char b[MAX_INSN_SIZE];
-+	struct insn insn;
-+	int ret, i, size;
-+
-+	memset(b, INSN_NOP, MAX_INSN_SIZE);
-+
-+	/* IRETQ */
-+	b[0] = 0x48;
-+	b[1] = 0xcf;
-+
-+	/* partial add $0x8, %rsp */
-+	b[2] = 0x48;
-+	b[3] = 0x83;
-+
-+	printf("insn buffer:\n");
-+
-+	for (i = 0; i < MAX_INSN_SIZE; i++)
-+		printf("0x%hhx ", b[i]);
-+	printf("\n");
-+
-+	size = MAX_INSN_SIZE;
-+	ret = insn_decode(&insn, b, size, INSN_MODE_64);
-+	printf("supplied buf size: %d, ret %d\n", size, ret);
-+
-+	size = 2;
-+	ret = insn_decode(&insn, b, size, INSN_MODE_64);
-+	printf("supplied buf size: %d, ret %d\n", size, ret);
-+
-+	size = 3;
-+	ret = insn_decode(&insn, b, size, INSN_MODE_64);
-+	printf("supplied buf size: %d, ret %d\n", size, ret);
-+
-+	size = 4;
-+	ret = insn_decode(&insn, b, size, INSN_MODE_64);
-+	printf("supplied buf size: %d, ret %d\n", size, ret);
-+}
-+
- int main(int argc, char **argv)
+ /**
+- * insn_decode() - Decode an instruction
++ * insn_decode_regs() - Decode an instruction
+  * @insn:	Structure to store decoded instruction
+  * @regs:	Structure with register values as seen when entering kernel mode
+  * @buf:	Buffer containing the instruction bytes
+@@ -1467,8 +1467,8 @@ int insn_fetch_from_user(struct pt_regs *regs, unsigned char buf[MAX_INSN_SIZE])
+  *
+  * True if instruction was decoded, False otherwise.
+  */
+-bool insn_decode(struct insn *insn, struct pt_regs *regs,
+-		 unsigned char buf[MAX_INSN_SIZE], int buf_size)
++bool insn_decode_regs(struct insn *insn, struct pt_regs *regs,
++		      unsigned char buf[MAX_INSN_SIZE], int buf_size)
  {
- 	int insns = 0, ret;
-@@ -265,5 +304,7 @@ int main(int argc, char **argv)
- 		errors,
- 		seed);
+ 	int seg_defs;
  
-+	run_insn_limits_test();
-+
- 	return errors ? 1 : 0;
- }
-
-Borislav Petkov (19):
-  x86/insn: Rename insn_decode() to insn_decode_regs()
-  x86/insn: Add @buf_len param to insn_init() kernel-doc comment
-  x86/insn: Add an insn_decode() API
-  x86/insn-eval: Handle return values from the decoder
-  x86/boot/compressed/sev-es: Convert to insn_decode()
-  perf/x86/intel/ds: Check insn_get_length() retval
-  perf/x86/intel/ds: Check return values of insn decoder functions
-  x86/alternative: Use insn_decode()
-  x86/mce: Convert to insn_decode()
-  x86/kprobes: Convert to insn_decode()
-  x86/sev-es: Convert to insn_decode()
-  x86/traps: Convert to insn_decode()
-  x86/uprobes: Convert to insn_decode()
-  x86/tools/insn_decoder_test: Convert to insn_decode()
-  tools/objtool: Convert to insn_decode()
-  x86/tools/insn_sanity: Convert to insn_decode()
-  tools/perf: Convert to insn_decode()
-  x86/insn: Remove kernel_insn_init()
-  x86/insn: Make insn_complete() static
-
- arch/x86/boot/compressed/sev-es.c             |  11 +-
- arch/x86/events/intel/ds.c                    |   4 +-
- arch/x86/events/intel/lbr.c                   |  10 +-
- arch/x86/include/asm/insn-eval.h              |   4 +-
- arch/x86/include/asm/insn.h                   |  42 ++--
- arch/x86/kernel/alternative.c                 |   6 +-
- arch/x86/kernel/cpu/mce/severity.c            |  12 +-
- arch/x86/kernel/kprobes/core.c                |  17 +-
- arch/x86/kernel/kprobes/opt.c                 |   9 +-
- arch/x86/kernel/sev-es.c                      |  15 +-
- arch/x86/kernel/traps.c                       |   7 +-
- arch/x86/kernel/umip.c                        |   2 +-
- arch/x86/kernel/uprobes.c                     |   8 +-
- arch/x86/lib/insn-eval.c                      |  20 +-
- arch/x86/lib/insn.c                           | 190 ++++++++++++++----
- arch/x86/tools/insn_decoder_test.c            |  10 +-
- arch/x86/tools/insn_sanity.c                  |   8 +-
- tools/arch/x86/include/asm/insn.h             |  42 ++--
- tools/arch/x86/lib/insn.c                     | 190 ++++++++++++++----
- tools/include/linux/kconfig.h                 |  73 +++++++
- tools/objtool/arch/x86/decode.c               |   9 +-
- tools/perf/arch/x86/tests/insn-x86.c          |   9 +-
- tools/perf/arch/x86/util/archinsn.c           |   9 +-
- .../intel-pt-decoder/intel-pt-insn-decoder.c  |  17 +-
- 24 files changed, 507 insertions(+), 217 deletions(-)
- create mode 100644 tools/include/linux/kconfig.h
-
 -- 
 2.21.0
 
