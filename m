@@ -2,240 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F374B2C299C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1B72C299F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389050AbgKXO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:28:26 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:45157 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389012AbgKXO20 (ORCPT
+        id S2389056AbgKXO3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:29:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31578 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726145AbgKXO3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:28:26 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 128235C0200;
-        Tue, 24 Nov 2020 09:28:24 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 24 Nov 2020 09:28:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=P2IAfRmWgCF6SkLcXVmowUKK1Go
-        leAqmOJddAqal0fU=; b=eGYcI2vuKDh4awYza3S8kuVMmvWz5DZIX/umVoKHwui
-        zKdAu3EwZR85kG4BSZ0TzWbr5RYujb+8nl0h0KgsfkS4mLTV/NFvoDNXrizLalW6
-        vL4O5lcPvgGUF6uuDAWDdR46nfULvOzDY7CCwcNVTboZ5pg9c4Kb7/JSgvPdAwL9
-        qeOJyUa2rzjv5kvzzQFq/IagCKQmmsmMiOFO02sBe3xENUSXePICS1XN4wwV4ajx
-        G6wfAJJ/xjsSZ2mNM9GOvkvYgHmqIhuv6zeVdNXnAoky2IjRwf6weYxq1II3xeuq
-        LeOWri5BTsVeObayvwzERB7ZIzVhWxvxCx96hz1F3Ig==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=P2IAfR
-        mWgCF6SkLcXVmowUKK1GoleAqmOJddAqal0fU=; b=FDuBSqgaEwOyWg20L9O2jd
-        2jEcC0D5MvWlyC0lx0duX8lyBIyeQeN69Iq6gh4MaWb6ySNabnoXc+AQxzjiimno
-        eVNauDdjQanA+z+7pooml+oidS37OvlQOWJ0D4YTdt03R4irBKcChu050d/Ume8p
-        0v7R6iJwtIcQeN3/qmoYboqi0FH7TT2IAIdgXvnUCfXDpJj9m3oO4pn7dGzi+Vmh
-        /2J2A7GRA80R0RhRhCjK9XeCb7HMJrs3/h4ENPIYpbxNNkv4mv7Vla8xTUvuOhK5
-        NTVOi1mPzrxGnrY8suSfqhMe11DC0AQuud26q1gaz2yH5e01hTPeAse50E6Iz/bg
-        ==
-X-ME-Sender: <xms:hxi9X8Vqvpm7kfXikfN1bpJ_Uw4wdpw-xqpelrieQe6xALSS8LvUFA>
-    <xme:hxi9XwmQkhWiGBjZLybTfcFMMCgUekzmSaghU52XFInM1iR0rJmuKirlb65eJo5xC
-    4S8pNYBId7oba_5ES4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveegudetkeethfetgffgtdekkefghefhffefgeduleehgeehieeuveefgedv
-    ieegnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepledtrdekledrieekrd
-    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:hxi9XwbCe2ooJ_B2Ny8ZAa6Tq705newIn-gZEzCtI5k8fhrj78jW9A>
-    <xmx:hxi9X7Vsbt1H_OeYLsWpQq8w5UYu96avW3pkWwyznXDM254rEosXqQ>
-    <xmx:hxi9X2mrzuZNkUKHsCcKCOq6VZBozoPwwtfoLSLCdh1mKQyI5ToRgA>
-    <xmx:iBi9X0YL4HKeJSgxLSN9r3fhwiMD4LNQ3qS9tNUmyYq8UrBZTtJemA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BF0603064AA6;
-        Tue, 24 Nov 2020 09:28:22 -0500 (EST)
-Date:   Tue, 24 Nov 2020 15:28:21 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
-Message-ID: <20201124142821.hevj3qld52qpwnqw@gilmour>
-References: <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
- <20201118153733.jgiokn6jkwu6rv6c@gilmour.lan>
- <20201118203624.7221ba8b@monster.powergraphx.local>
- <20201119071523.5cbpgy2cpo5cmuev@gilmour.lan>
- <20201119111343.74956eae@monster.powergraphx.local>
- <20201120164231.nmzxe5scwnfoyy3o@gilmour>
- <20201121122255.GB22987@debian>
- <20201121164418.hxrxzgob7whgzkpj@gilmour>
- <20201123193206.0b2d1b6d@monster.powergraphx.local>
- <39136764-2b58-f66d-68ea-e1c6b4d74edf@sholland.org>
+        Tue, 24 Nov 2020 09:29:17 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AOE2I7T090896;
+        Tue, 24 Nov 2020 09:28:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+Rzo+UcZrxQVSygpiFP4yvX8SyHUZGUYjgrdUKtnEoQ=;
+ b=Xb+B0nz+nK2qI9P+th/CHifVb13Jgkut/Fm5nIoBEngod98bS2jmEOBVcZW8G0NZ/AUm
+ 0PpN7MvroyKseMV53/d1o6CE+PI5InRFSHhkil2dI5ZTnaRREq0FL9m9rDd6yaoBhoRU
+ unRl0Nalb8pVfev6TImEnXjP1zWwWX56IF8dvNfWc6tVLLykYcmQeMtHYSvAFTQvSUKI
+ TI70ccxBLoeGbNhNXtc7N9ZD6MSz+U8QLzhhfF1AuSdFMaS/ja3CuLmqy2ZHnxzohjjI
+ uAkGn7QKDwfoD//zwRY6hbVJeVsJA4xlrukK1pAleRNgn++Hsna1Q2skZuRkl2+Q8ysU gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 350meqmpht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 09:28:32 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AOE2O0M091371;
+        Tue, 24 Nov 2020 09:28:31 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 350meqmpha-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 09:28:31 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AOER5Ju020080;
+        Tue, 24 Nov 2020 14:28:30 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02dal.us.ibm.com with ESMTP id 34xth9wvm8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 14:28:30 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AOEST2K36110604
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Nov 2020 14:28:29 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B5802805E;
+        Tue, 24 Nov 2020 14:28:29 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 651BC28059;
+        Tue, 24 Nov 2020 14:28:29 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Nov 2020 14:28:29 +0000 (GMT)
+Subject: Re: [PATCH] tpm: ibmvtpm: fix error return code in
+ tpm_ibmvtpm_probe()
+To:     Wang Hai <wanghai38@huawei.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, peterhuewe@gmx.de,
+        jarkko@kernel.org, jgg@ziepe.ca, nayna@linux.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201124135244.31932-1-wanghai38@huawei.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <7faf1b71-2bcb-8133-5fc8-2be96085dfc1@linux.ibm.com>
+Date:   Tue, 24 Nov 2020 09:28:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ys5rq2tpvngb4gox"
-Content-Disposition: inline
-In-Reply-To: <39136764-2b58-f66d-68ea-e1c6b4d74edf@sholland.org>
+In-Reply-To: <20201124135244.31932-1-wanghai38@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ adultscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 priorityscore=1501 clxscore=1011 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011240084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/24/20 8:52 AM, Wang Hai wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+>
+> Fixes: d8d74ea3c002 ("tpm: ibmvtpm: Wait for buffer to be set before proceeding")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
+>   drivers/char/tpm/tpm_ibmvtpm.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
+> index 994385bf37c0..813eb2cac0ce 100644
+> --- a/drivers/char/tpm/tpm_ibmvtpm.c
+> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
+> @@ -687,6 +687,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
+>   				ibmvtpm->rtce_buf != NULL,
+>   				HZ)) {
+>   		dev_err(dev, "CRQ response timed out\n");
+> +		rc = -ETIMEDOUT;
+>   		goto init_irq_cleanup;
+>   	}
+>   
 
---ys5rq2tpvngb4gox
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-On Mon, Nov 23, 2020 at 09:35:52PM -0600, Samuel Holland wrote:
-> On 11/23/20 12:32 PM, Wilken Gottwalt wrote:
-> > On Sat, 21 Nov 2020 17:44:18 +0100
-> > Maxime Ripard <maxime@cerno.tech> wrote:
-> >=20
-> >> On Sat, Nov 21, 2020 at 08:22:55PM +0800, fuyao wrote:
-> >>> On Fri, Nov 20, 2020 at 05:42:31PM +0100, Maxime Ripard wrote:
-> >>>> Hi,
-> >>>>
-> >>>> On Thu, Nov 19, 2020 at 11:13:43AM +0100, Wilken Gottwalt wrote:
-> >>>>> On Thu, 19 Nov 2020 08:15:23 +0100
-> >>>>> Maxime Ripard <maxime@cerno.tech> wrote:
-> >>>>>>> can you help me here a bit? I still try to figure out how to do p=
-atch sets
-> >>>>>>> properly. Some kernel submitting documentation says everything go=
-es into the
-> >>>>>>> coverletter and other documentation only tells how to split the p=
-atches. So
-> >>>>>>> what would be the right way? A quick example based on my patch se=
-t would be
-> >>>>>>> really helpful.
-> >>>>>>
-> >>>>>> I mean, the split between your patches and so on is good, you got =
-that right
-> >>>>>>
-> >>>>>> The thing I wanted better details on is the commit log itself, so =
-the
-> >>>>>> message attached to that patch.
-> >>>>>
-> >>>>> Ah yes, I think I got it now. So basically add a nice summary of th=
-e coverletter
-> >>>>> there.
-> >>>>
-> >>>> Yes, a bit more context as well. Eventually, this should be the
-> >>>> motivation on why this patch is useful. So what it can be used for, =
-what
-> >>>> are the challenges, how it was tested, etc.
-> >>>>
-> >>>> The cover letter is usually here more to provide some meta-context: =
-what
-> >>>> you expect from the maintainers / reviewers if it's an RFC, if there=
-'s
-> >>>> any feature missing or that could be added later on, etc.
-> >>>>
-> >>>>>>>> Most importantly, this hwspinlock is used to synchronize the ARM=
- cores
-> >>>>>>>> and the ARISC. How did you test this driver?
-> >>>>>>>
-> >>>>>>> Yes, you are right, I should have mentioned this. I have a simple=
- test kernel
-> >>>>>>> module for this. But I must admit, testing the ARISC is very hard=
- and I have
-> >>>>>>> no real idea how to do it. Testing the hwspinlocks in general see=
-ms to work
-> >>>>>>> with my test kernel module, but I'm not sure if this is really su=
-fficient. I
-> >>>>>>> can provide the code for it if you like. What would be the best w=
-ay? Github?
-> >>>>>>> Just mailing a patch?
-> >>>>>>>
-> >>>>>>> The test module produces these results:
-> >>>>>>>
-> >>>>>>> # insmod /lib/modules/5.9.8/kernel/drivers/hwspinlock/sunxi_hwspi=
-nlock_test.ko=20
-> >>>>>>> [   45.395672] [init] sunxi hwspinlock test driver start
-> >>>>>>> [   45.400775] [init] start test locks
-> >>>>>>> [   45.404263] [run ] testing 32 locks
-> >>>>>>> [   45.407804] [test] testing lock 0 -----
-> >>>>>>> [   45.411652] [test] taking lock attempt #0 succeded
-> >>>>>>> [   45.416438] [test] try taken lock attempt #0
-> >>>>>>> [   45.420735] [test] unlock/take attempt #0
-> >>>>>>> [   45.424752] [test] taking lock attempt #1 succeded
-> >>>>>>> [   45.429556] [test] try taken lock attempt #1
-> >>>>>>> [   45.433823] [test] unlock/take attempt #1
-> >>>>>>> [   45.437862] [test] testing lock 1 -----
-> >>>>>>
-> >>>>>> That doesn't really test for contention though, and dealing with
-> >>>>>> contention is mostly what this hardware is about. Could you make a=
- small
-> >>>>>> test with crust to see if when the arisc has taken the lock, the A=
-RM
-> >>>>>> cores can't take it?
-> >>>>>
-> >>>>> So the best solution would be to write a bare metal program that ru=
-ns on the
-> >>>>> arisc and can be triggered from the linux side (the test kernel mod=
-ule) to take
-> >>>>> a spinlock ... or at least take spinlocks periodically for a while =
-and watch it
-> >>>>> on the linux side. Okay, I think I can do this. Though, I have to d=
-ig through
-> >>>>> all this new stuff first.
-> >>>>
-> >>>> It doesn't have to be super complicated, just a loop that takes a lo=
-ck,
-> >>>> sleeps for some time, and releases the lock should be enough to at l=
-east
-> >>>> validate that the lock is actually working
-> >>>>
-> >>>
-> >>> I think the difficulty is the bare metal program in arsic has little
-> >>> documentation.
-> >>
-> >> crust has mostly figured it out:
-> >> https://github.com/crust-firmware/crust
-> >=20
-> > I actually have serious trouble to get crust running. It compiles for H=
-2+/H3, but
-> > I can't figure out if it runs at all. I will switch to a H5 based devic=
-e which is
->=20
-> Crust does not yet support the H2+/H3 (it is active WIP). H5 should work
-> well.
->=20
-> > confirmed to work. If I see this correctly crust is doing nothing
-> > with spinlocks yet, so I may end up also working on crust, adding
-> > the spinlocks there too. Don't know yet how long I will take to
-> > understand every detail, but I will report progress.
->=20
-> Correct. There is currently no hwspinlock driver in crust. For testing,
-> you can poke MMIO from the main loop, near the call to scpi_poll() in
-> common/system.c. You can use the timeout.h functions for timing.
-
-Yeah, that would be enough for me. We only really need to make sure that
-the concurrency is properly handled to merge the driver
-
-> If you want to write a full driver, I would like to know how you expect
-> to use the hwspinlocks. Allocating the locks has to be coordinated among
-> all of the users: Linux, U-Boot, crust, any other ARISC firmware, etc.
-
-while that can come as a second step and I wouldn't make it a
-requirement for Linux to merged the hwspinlock driver.
-
-Maxime
-
---ys5rq2tpvngb4gox
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX70YhQAKCRDj7w1vZxhR
-xQgiAQDk186UDnzAxmqSDbg4WOf+lQ5zyamY2pqb9ZwWVEaukQD+Ina0qJYCxzG7
-mNj9gaB28GQxkTK2af4CEp78w5YK/A8=
-=stiI
------END PGP SIGNATURE-----
-
---ys5rq2tpvngb4gox--
