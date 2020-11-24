@@ -2,105 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66042C2D29
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF402C2D2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390545AbgKXQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2390552AbgKXQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390324AbgKXQk6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Nov 2020 11:40:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390275AbgKXQk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:40:57 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59FEF2063A;
-        Tue, 24 Nov 2020 16:40:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606236056;
-        bh=8hRyrH+e9jPA9ADN2yrZ91TecMLNXEDDHVw9OxfQm68=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V4FI692RUTMP1nyquq8bac1/iKDFtWsdrvok+tObajfwGMp17f4VtJuHfydgybk/y
-         nx2oyT1wrGjSCtOZo/ZzZcWXErq4WiPrrPXZeMd8UfUyJZyzHQZI40TkzTphxQ/1xH
-         D9xzKwI39fiQx0ylW3+sQFv56hmnhsyXu4kWkQL8=
-Date:   Tue, 24 Nov 2020 16:40:33 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO
- descriptors
-Message-ID: <20201124164033.GH4933@sirena.org.uk>
-References: <20201106150706.29089-1-TheSven73@gmail.com>
- <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
- <CAGngYiVu3cXtzb5PaoDOoyqjuuohLQ+em6Keg-qgDFFn2tdp=Q@mail.gmail.com>
- <CACRpkdagAK1X6FT=sug5FGA1iipXnOT_ujtMBh9cVnep_DpWyA@mail.gmail.com>
- <20201111123327.GB4847@sirena.org.uk>
- <CACRpkdZW3G48Yj3yGMTKZGwVEQOSs1VeVTTGLgyoJViM3=Yedg@mail.gmail.com>
- <20201116210632.GJ4739@sirena.org.uk>
- <CACRpkdayWzWKHv69cg_GL2O=NWozqi_ZLnH1WdMOHzEb1bU-xA@mail.gmail.com>
- <20201118114049.GA4827@sirena.org.uk>
- <CACRpkdbJsiW_U2hrsT+t5gsbj+ow2t_kEmTQyD2jZxs3LCRfLw@mail.gmail.com>
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FFEC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:40:57 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id f18so4802468ljg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+DR7uSi8hNd/sN4AJW2uBK+0mmU8RkJewoCRx75OxLs=;
+        b=b0U8r42Jyk6+XZBLwCTHI5K4T4S2co5r+QWViAShkFd2rJN+mdbwgSElYt/gghGS1k
+         QAdk5cQQBd6yLybWtgKNq1GQ/2vkes6l4kyCgZN3THCC0Qst+yaoOBKu0PrG+bSCWcV/
+         IXtq1vbAXNEzTBafnWoIIdpQtXDCnA8NQyg9guvGQv9dVq3ZuHlS5UPjkSeC12KvAgii
+         g7hSnI9V4ezYZMkk1uRrgI+2irbQuh3q2dl/4OOlwm3YxpD1Cqq+jVj1yWzaQ1T3W2gl
+         LOLU7M+sfpBjFpii2OUt+CDFRr25BC6Ft+rEb7FmywQpIlV6SCFx4nddfktirABhCrrr
+         o3gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+DR7uSi8hNd/sN4AJW2uBK+0mmU8RkJewoCRx75OxLs=;
+        b=AXxRf67Hq+F0dymhVSvvlvykqwcZ17as4nlEQIoepq45ihKHq3e3dqzmozgsFFXEz4
+         rWaidFxs1pwn0rumdtl3npnGfS34ChRKiJyMq6x4RLVVb6YtKqF/TqMc3D4AbzwsPQLC
+         eRjAFifS2sZkNNSZX5uDYpzHN6WBiXV64kYkuvrzdcGd0kfRxy8kxj9yySav6MkbB80r
+         r2wLRaUHNzay0o6+p1po8YernIJJ9uwjL+jgl3KNwBXVhQH0oMjcmVA94ORLAO8BbEvS
+         Mprljs9fZnhPiypDQ8rsJwSyhMPdvCFulRdZ4lkaAVtAyv7fIhX2jLJ62W916q3jkCRE
+         weDw==
+X-Gm-Message-State: AOAM5308ZpAg/UVbaOo97IUGAWQ6MHalUGPXGo2zViQsXlJPcawkXNZg
+        5JkmlN5ehnRLgeZxWdyTscY=
+X-Google-Smtp-Source: ABdhPJwixI/lEaS2q70h5NoCjKX5FJ4cnY3E1uVaJ80MAA6sm2oT/hfF7rCC9834o/vAOcAb0gPxPg==
+X-Received: by 2002:a2e:6e14:: with SMTP id j20mr2055395ljc.372.1606236056086;
+        Tue, 24 Nov 2020 08:40:56 -0800 (PST)
+Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id 26sm7662lfr.36.2020.11.24.08.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 08:40:55 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 24 Nov 2020 17:40:53 +0100
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/2] mm/vmalloc: rework the drain logic
+Message-ID: <20201124164053.GA23686@pc636>
+References: <20201116220033.1837-2-urezki@gmail.com>
+ <CAC=cRTN77LAn-9-6rGukc2aUZQzx7oP9eKt_hJeb=wbnhGqObQ@mail.gmail.com>
+ <20201117130434.GA10769@pc636>
+ <CAC=cRTN-JyZKyFkRgC0BrBjnu4mMTJ_hXBYszJ9HLXaLqeMfgQ@mail.gmail.com>
+ <20201118161623.GA21171@pc636>
+ <87mtzeunsi.fsf@yhuang-dev.intel.com>
+ <20201119173604.GA991@pc636>
+ <87zh3cu578.fsf@yhuang-dev.intel.com>
+ <20201123135919.GA12236@pc636>
+ <875z5vtrsc.fsf@yhuang-dev.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k18oBAwMkTg3OUap"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdbJsiW_U2hrsT+t5gsbj+ow2t_kEmTQyD2jZxs3LCRfLw@mail.gmail.com>
-X-Cookie: Who was that masked man?
+In-Reply-To: <875z5vtrsc.fsf@yhuang-dev.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> >> >> 
+> >> >> That's the typical long latency avoidance method.
+> >> >> 
+> >> >> > The question is, which value we should use as a batch_threshold: 100, 1000, etc.
+> >> >> 
+> >> >> I think we can do some measurement to determine it?
+> >> >> 
+> >> > Hmm.. looking at it one more time i do not see what batching solves.
+> >> 
+> >> Without batch protection, we may release the lock and CPU anytime during
+> >> looping if "vmap_lazy_nr < resched_threshold".  Too many vmalloc/vfree
+> >> may be done during that.  So I think we can restrict it.  Batching can
+> >> improve the performance of purging itself too.
+> >> 
+> > In theory:
+> > I see your point. It is a trade-off though, to allow faster vmalloc or vfree.
+> > Batching will make alloc more tight, and yes, speed up the process of draining
+> > holding a CPU until batch is drained + introducing latency for other tasks.
+> >
+> > In practical:
+> > I mentioned about that, i think we need to measure the batching approach, say
+> > we set it to 100, providing some figures so we see some evidence from practical
+> > point of view. For example run test_vmalloc.sh to analyze it. If you see some
+> > advantages from performance point of view it would be great. Just share some
+> > data.
+> 
+> Per my understanding, this is the common practice in kernel to satisfy
+> both throughput and latency requirement.  But it may be not important
+> for this specific case.  I am afraid I have no time to work on this now.
+> Just my 2 cents.  If you don't think that's a good idea, just ignore it.
+> 
+I will keep it in mind, thanks for your input.
 
---k18oBAwMkTg3OUap
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> >> > Anyway we need to have some threshold(what we do have), that regulates
+> >> > a priority between vmalloc()/vfree().
+> >> >
+> >> > What we can do more with it are:
+> >> >
+> >> > - purging should be just performed asynchronously in workqueue context.
+> >> > Giving the fact, that now we also do a merge of outstanding areas, the
+> >> > data structure(rb-tree) will not be so fragmented.
+> >> 
+> >> Async works only if there are idle CPU time on other CPUs.  And it may
+> >> punish other innocent workloads instead of the heavy vmalloc/vfree
+> >> users.  So we should be careful about that.
+> >> 
+> > Yep, scheduling latency will be as a side affect of such approach. The question
+> > is if it is negligible and can be considered as a risk. I do not think it would 
+> > be a big problem.
+> >
+> > I have other issue with it though, which i can not explain so far. If i am doing 
+> > the "purge" in the separate worker, i see that a memory leaks after heavy test
+> > runs.
+> >
+> >> > - lazy_max_pages() can slightly be decreased. If there are existing
+> >> > workloads which suffer from such long value. It would be good to get
+> >> > real complains and evidence.
+> >> >
+> >> >> > Apart of it and in regard to CONFIG_KASAN_VMALLOC, it seems that we are not
+> >> >> > allowed to drop the free_vmap_area_lock at all. Because any simultaneous
+> >> >> > allocations are not allowed within a drain region, so it should occur in
+> >> >> > disjoint regions. But i need to double check it.
+> >> >> >
+> >> >> >>
+> >> >> >> And, can we reduce lazy_max_pages() to control the length of the
+> >> >> >> purging list?  It could be > 8K if the vmalloc/vfree size is small.
+> >> >> >>
+> >> >> > We can adjust it for sure. But it will influence on number of global
+> >> >> > TLB flushes that must be performed.
+> >> >> 
+> >> >> Em...  For example, if we set it to 100, then the number of the TLB
+> >> >> flushes can be reduced to 1% of the un-optimized implementation
+> >> >> already.  Do you think so?
+> >> >> 
+> >> > If we set lazy_max_pages() to vague value such as 100, the performance
+> >> > will be just destroyed.
+> >> 
+> >> Sorry, my original words weren't clear enough.  What I really want to
+> >> suggest is to control the length of the purging list instead of reduce
+> >> lazy_max_pages() directly.  That is, we can have a "atomic_t
+> >> nr_purge_item" to record the length of the purging list and start
+> >> purging if (vmap_lazy_nr > lazy_max_pages && nr_purge_item >
+> >> max_purge_item).  vmap_lazy_nr is to control the virtual address space,
+> >> nr_purge_item is to control the batching purging latency.  "100" is just
+> >> an example, the real value should be determined according to the test
+> >> results.
+> >> 
+> > OK. Now i see what you meant. Please note, the merging is in place, so
+> > the list size gets reduced.
+> 
+> Yes.  In theory, even with merging, the length of the purging list may
+> become too long in some cases.  And the code/algorithm changes that are
+> needed by controlling the length of the purging list is much less than
+> that are needed by merging.  So I suggest to do length controlling
+> firstly, then merging.  Again, just my 2 cents.
+> 
+All such kind of tuning parameters work for one case and does not for
+others. Therefore i prefer to have something more generic that tends
+to improve the things, instead of thinking how to tune parameters to
+cover all test cases and workloads.
 
-On Tue, Nov 24, 2020 at 04:21:48PM +0100, Linus Walleij wrote:
+Anyway, thank you for your comments!
 
-> > What people think they were sold was the idea that they shouldn't have
-> > to write driver code or upstream things, something with more AML like
-> > capabilities (not realising that AML works partly because ACPI hugely
-> > constrains system design).
-
-> This makes a lot of sense.
-
-> I suppose what we need to think about is the bigger question of why
-> people/companies/managers are so worried about working upstream
-> that they will go to lengths to avoid it and jump at any chance of
-> raising a wall of abstraction between their internal development and
-> the in-kernel software development.
-
-> I think of this as vendor/community couples therapy or something,
-> there is some form of deep disconnect or mistrust going on at times
-> and having worked on both ends myself I would think I could
-> understand it but I can't.
-
-In this case I think this is partly due to the way people were sold on
-the DT conversion - part of the sales pitch was that you'd not need to
-get board support upstream, which is a useful thing if you want to run
-things like LTS or distro kernels on newer hardware.
-
---k18oBAwMkTg3OUap
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+9N4AACgkQJNaLcl1U
-h9AmLAf8DM61FfpzGM4oQNZas4+G08OBlwKsgGSIdCGWJmARtSNsr/v/gU8uxHl9
-9xHTfsELOPN14KEMMJ/cjbvZYETVFaRY3Awt/hGFyFk8Ry+qIMa8McDuEFk4qOKR
-2JEuuKKXsIC0LS+9CPvK1lDqsAEmPdFjvgv6aKEjMdI60FhZznjqWPTDfDu0vyX8
-/TNgMGhOrcz58URC93saI6+rUKm6QCP/4oY4ptnwQEUxo8U7cG8siurSLIw9kVhq
-jae23kx9bng89T86IXpu8bFnHxw76ke6/Xsb/kwRf0YmgXAOV9e4vdwVb93qBgYU
-Wvpjcfcoe5T50D19Xjt9LuUufb7waw==
-=VuZO
------END PGP SIGNATURE-----
-
---k18oBAwMkTg3OUap--
+--
+Vlad Rezki
