@@ -2,129 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3802C2C31
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF682C2C37
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390140AbgKXQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:02:23 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:47733 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390050AbgKXQCW (ORCPT
+        id S2390071AbgKXQDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:03:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728249AbgKXQDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:02:22 -0500
-X-Originating-IP: 82.255.60.242
-Received: from [192.168.0.28] (lns-bzn-39-82-255-60-242.adsl.proxad.net [82.255.60.242])
-        (Authenticated sender: hadess@hadess.net)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 8FA102000F;
-        Tue, 24 Nov 2020 16:02:18 +0000 (UTC)
-Message-ID: <2585b668d9452c23902db46cf850ba7fa07167b7.camel@hadess.net>
-Subject: Re: How to enable auto-suspend by default
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Date:   Tue, 24 Nov 2020 17:02:18 +0100
-In-Reply-To: <X6wSFojYLvwGhY/g@kroah.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
-         <X6p6ubTOoMPUPPXi@kroah.com>
-         <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
-         <20201110172517.GC2495@lahna.fi.intel.com>
-         <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
-         <DM6PR19MB26366008D59FC94D384A1E3BFAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
-         <X6wSFojYLvwGhY/g@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        Tue, 24 Nov 2020 11:03:44 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED3FC0613D6;
+        Tue, 24 Nov 2020 08:03:44 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id l1so22827894wrb.9;
+        Tue, 24 Nov 2020 08:03:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+WgNCMw+FNVg6++cSxRSVLflzp+gBvU9V7//cGxl2dg=;
+        b=GDWYCIYHTk1YxHXKuu4EPgqgJrZ8YSJVGIxNzER9SkK2Ds19NOuyoXGBhVvMO6W7QA
+         Nslm8jyZNfeQAayvbrW+TNeOHQhKqbiqmM5RBN0uD0ZpABwRxxmkCpBMm1yRm78fZlQ5
+         3achHXMOo03z+KOwLHIYRZuUwXp/h2F/s2KCw/dVDW2tsRaIpjuel3M4wuRV0YT5f76c
+         2YBCOEr9fSu+a+XPJiOUnbf1YhyeGzjBMT87o5F1BaNElLXRwh3a1k9UBPHmgAbm/ouC
+         3aoZY+OkSW8c64lt7i4zHHQ3EEDovrobdLq1ouHXkRB4opN/kkypSgH+BE3Le2In2rrS
+         64sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+WgNCMw+FNVg6++cSxRSVLflzp+gBvU9V7//cGxl2dg=;
+        b=rDEGSKkDWxwYnO6AzzYXFm5d2brE8YhMukDTGjdiyA5WgXky6ljai2/m7At6ArvsRr
+         4ZF1R0VsiwYkxO2Md0VHCIhHOZhtaR14dwP4i0d9MLSladGyAMuM1nWWGbyQ7Gt1CcaP
+         qOrdYLsQ58xl4+nDXBWq+asOGgkJ7nTnZamkPH3HkW4UvVliAQJiEWPYjuVdwEp0f4d3
+         MGYRr24AbN070NmxFG0xByOwACI7jSVxiGEI4kyeFVC8nM7l4qDLmGsz3EO4LzLNBA3O
+         TpVukffRzv3s8DjJt/Jie3D64/N+0VnMiKI1GfkWJKb/Wy+ZoDS26M7k2GQ/ikFO/h3W
+         ZwIA==
+X-Gm-Message-State: AOAM532DcZwdxL0rTicmbjkjxmJzpmGD001zgnKg6nnMVFzDaLqTZy1m
+        6S5PqyhBFVrOLlRq2HdddasB/FcM7yE+hOtcbkw=
+X-Google-Smtp-Source: ABdhPJxGFyGMDXN21iMutA9B1LzeIss3+7anfsorpX/9okzh9f7v7sqbmHHdslmiL1sdby3VOWqRByaO61PfMH9Nr6g=
+X-Received: by 2002:adf:8028:: with SMTP id 37mr6093399wrk.111.1606233822883;
+ Tue, 24 Nov 2020 08:03:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-9-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-9-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 11:03:31 -0500
+Message-ID: <CADnq5_MdzDQVu+BZ=HJxN_Ba-Zct7dQ=hC_=yfu5Ru-SOG_dFQ@mail.gmail.com>
+Subject: Re: [PATCH 08/40] drm/amd/amdgpu/cik_sdma: Supply some missing
+ function param descriptions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-11 at 17:32 +0100, Greg KH wrote:
-> On Wed, Nov 11, 2020 at 04:03:30PM +0000, Limonciello, Mario wrote:
-> > > > > Given we're effectively ending up with the combination of
-> > > > > runtime PM turned
-> > > > > on by udev rules, do we need something like this for that ID:
-> > > > > 
-> > > > > 
-> > > https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400
-> > > d8a
-> > > > > 
-> > > > > @Mika Westerberg should 8086:a0ed be quirked like the TCSS
-> > > > > xHCI too?
-> > > > 
-> > > > I think this one is the TGL PCH xHCI. The quirk currently for
-> > > > xHCI
-> > > > controllers that are part of the TCSS (Type-C SubSystem) where
-> > > > it is
-> > > > important to put all devices into low power mode whenever
-> > > > possible,
-> > > > otherwise it keeps the whole block on.
-> > > 
-> > > Note that there are currently some IDs missing from the xHCIs
-> > > which
-> > > are part of the TCSS too. At least the id for the xHCI in the
-> > > thunderbolt
-> > > controller on the Lenovo T14 gen 1 is missing. I started a
-> > > discussion
-> > > about extending the kernel quirk list for this vs switching to
-> > > hwdb
-> > > a while a go:
-> > > 
-> > > https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-
-> > > cf8960651086@redhat.com/
-> > > 
-> > > The conclusion back then was to switch to hwdb, but I never got
-> > > around to
-> > > this.
-> > 
-> > I guess the problem I see with switching to a hwdb for this type of
-> > thing is
-> > that if there is a "bug" in your kernel driver around autosuspend
-> > you will
-> > then be potentially causing it to occur more regularly on a kernel
-> > that didn't
-> > necessarily pick up the fix but does have the newer hwdb.
-> > 
-> > I don't know how common that will really be though.
-> > 
-> > Since Mika mentioned the really light userspace scenario, what
-> > about shipping
-> > the hwdb "with" the kernel in tree?  This could allow evicting all
-> > these quirk
-> > scenarios from the kernel at the same time as switching to a hwdb
-> > and also cover
-> > the problem I suggested might happen with a bug in older kernel and
-> > newer userspace.
-> 
-> We took things out of the kernel to put it in hwdb years ago as it
-> was
-> easier for people to update a "text file" than it was their kernel
-> image.  I don't think you want to go backwards here :)
+On Mon, Nov 23, 2020 at 6:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:226: warning: Function parameter o=
+r member 'job' not described in 'cik_sdma_ring_emit_ib'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:226: warning: Function parameter o=
+r member 'flags' not described in 'cik_sdma_ring_emit_ib'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Function parameter o=
+r member 'addr' not described in 'cik_sdma_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Function parameter o=
+r member 'seq' not described in 'cik_sdma_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Function parameter o=
+r member 'flags' not described in 'cik_sdma_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Excess function para=
+meter 'fence' description in 'cik_sdma_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:663: warning: Function parameter o=
+r member 'timeout' not described in 'cik_sdma_ring_test_ib'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:808: warning: Function parameter o=
+r member 'ring' not described in 'cik_sdma_ring_pad_ib'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:859: warning: Function parameter o=
+r member 'vmid' not described in 'cik_sdma_ring_emit_vm_flush'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:859: warning: Function parameter o=
+r member 'pd_addr' not described in 'cik_sdma_ring_emit_vm_flush'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:859: warning: Excess function para=
+meter 'vm' description in 'cik_sdma_ring_emit_vm_flush'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1315: warning: Function parameter =
+or member 'ib' not described in 'cik_sdma_emit_copy_buffer'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1315: warning: Function parameter =
+or member 'tmz' not described in 'cik_sdma_emit_copy_buffer'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1315: warning: Excess function par=
+ameter 'ring' description in 'cik_sdma_emit_copy_buffer'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1339: warning: Function parameter =
+or member 'ib' not described in 'cik_sdma_emit_fill_buffer'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1339: warning: Excess function par=
+ameter 'ring' description in 'cik_sdma_emit_fill_buffer'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-There are (unfortunately) a couple of Linux based OSes that don't use
-systemd, which is one of the problems we see.
+Applied with minor changes.  Thanks!
 
-I think it might be a good idea to have a repository or directory
-that's accessible to same contributions as the drivers, where this sort
-of data is kept, as close to the drivers as possible.
+Alex
 
-You could always split off your quirks into separate "works with any
-kernel" and "works from this version of the kernel" files, the goal
-here would be to make sure that there is a canonical list of devices
-that can be autosuspended, without user-space always playing catch-up
-(especially as is the case now where systemd is being fed by ChromeOS
-which is fed in some other way).
 
-The Venn diagram of folks that contribute to hwdb quirks databases in
-systemd and that contribute to kernel drivers has a pretty small
-overlap. Moving much of those quirks to a kernel-controlled repository
-(whatever format it ends up being in) would make sense so that the
-"quirk enablement" and the "driver writing" sections overlap.
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c b/drivers/gpu/drm/amd/=
+amdgpu/cik_sdma.c
+> index 1a6494ea50912..f1e9966e7244e 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+> @@ -215,7 +215,9 @@ static void cik_sdma_ring_insert_nop(struct amdgpu_ri=
+ng *ring, uint32_t count)
+>   * cik_sdma_ring_emit_ib - Schedule an IB on the DMA engine
+>   *
+>   * @ring: amdgpu ring pointer
+> + * @job: job to retrive vmid from
+>   * @ib: IB object to schedule
+> + * @flags: unused
+>   *
+>   * Schedule an IB in the DMA ring (CIK).
+>   */
+> @@ -267,6 +269,8 @@ static void cik_sdma_ring_emit_hdp_flush(struct amdgp=
+u_ring *ring)
+>   * cik_sdma_ring_emit_fence - emit a fence on the DMA ring
+>   *
+>   * @ring: amdgpu ring pointer
+> + * @addr: address
+> + * @seq: sequence number
+>   * @fence: amdgpu fence object
+>   *
+>   * Add a DMA fence packet to the ring to write
+> @@ -655,6 +659,7 @@ static int cik_sdma_ring_test_ring(struct amdgpu_ring=
+ *ring)
+>   * cik_sdma_ring_test_ib - test an IB on the DMA engine
+>   *
+>   * @ring: amdgpu_ring structure holding ring information
+> + * @timeout: timeout value in jiffies, or MAX_SCHEDULE_TIMEOUT
+>   *
+>   * Test a simple IB in the DMA ring (CIK).
+>   * Returns 0 on success, error on failure.
+> @@ -801,6 +806,7 @@ static void cik_sdma_vm_set_pte_pde(struct amdgpu_ib =
+*ib, uint64_t pe,
+>  /**
+>   * cik_sdma_vm_pad_ib - pad the IB to the required number of dw
+>   *
+> + * @ring: amdgpu_ring structure holding ring information
+>   * @ib: indirect buffer to fill with padding
+>   *
+>   */
+> @@ -849,7 +855,8 @@ static void cik_sdma_ring_emit_pipeline_sync(struct a=
+mdgpu_ring *ring)
+>   * cik_sdma_ring_emit_vm_flush - cik vm flush using sDMA
+>   *
+>   * @ring: amdgpu_ring pointer
+> - * @vm: amdgpu_vm pointer
+> + * @vmid: vmid number to use
+> + * @pd_addr: address
+>   *
+>   * Update the page table base and flush the VM TLB
+>   * using sDMA (CIK).
+> @@ -1298,10 +1305,11 @@ static void cik_sdma_set_irq_funcs(struct amdgpu_=
+device *adev)
+>  /**
+>   * cik_sdma_emit_copy_buffer - copy buffer using the sDMA engine
+>   *
+> - * @ring: amdgpu_ring structure holding ring information
+> + * @ib: indirect buffer to copy to
+>   * @src_offset: src GPU address
+>   * @dst_offset: dst GPU address
+>   * @byte_count: number of bytes to xfer
+> + * @tmz: unused
+>   *
+>   * Copy GPU buffers using the DMA engine (CIK).
+>   * Used by the amdgpu ttm implementation to move pages if
+> @@ -1325,7 +1333,7 @@ static void cik_sdma_emit_copy_buffer(struct amdgpu=
+_ib *ib,
+>  /**
+>   * cik_sdma_emit_fill_buffer - fill buffer using the sDMA engine
+>   *
+> - * @ring: amdgpu_ring structure holding ring information
+> + * @ib: indirect buffer to fill
+>   * @src_data: value to write to buffer
+>   * @dst_offset: dst GPU address
+>   * @byte_count: number of bytes to xfer
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
