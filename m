@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26BD2C33BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3F12C33C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389289AbgKXWPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 17:15:20 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:48340 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389230AbgKXWPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:15:19 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1khgaT-008guk-Bs; Tue, 24 Nov 2020 23:15:01 +0100
-Date:   Tue, 24 Nov 2020 23:15:01 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] ARM: dts: mvebu: Add device tree for RD-AC3X-48G4X2XL
- board
-Message-ID: <20201124221501.GI2036992@lunn.ch>
-References: <20201123035215.2239-1-aryan.srivastava@alliedtelesis.co.nz>
- <95016967-257b-e715-c907-0ac396e125ee@alliedtelesis.co.nz>
+        id S2389343AbgKXWRL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 17:17:11 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56237 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731199AbgKXWRK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 17:17:10 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-175-Y51XK0xAPXSbNaFUnwjJqw-1; Tue, 24 Nov 2020 22:17:06 +0000
+X-MC-Unique: Y51XK0xAPXSbNaFUnwjJqw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 22:17:06 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 24 Nov 2020 22:17:06 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Artem Labazov' <123321artyom@gmail.com>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
+Thread-Topic: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
+Thread-Index: AQHWwprkdg3ghuo7zUO/MeBWMbuGy6nX2YQQ
+Date:   Tue, 24 Nov 2020 22:17:06 +0000
+Message-ID: <ebdf1f1769aa45cc8880155a4189f2a6@AcuMS.aculab.com>
+References: <20201124194749.4041176-1-123321artyom@gmail.com>
+In-Reply-To: <20201124194749.4041176-1-123321artyom@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95016967-257b-e715-c907-0ac396e125ee@alliedtelesis.co.nz>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +&i2c0 {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&i2c0_pins>;
-> > +	status = "okay";
-> > +
-> > +	eeprom@53{
-> > +		compatible = "atmel,24c64";
-> > +		reg = <0x53>;
-> > +	};
-> > +//	cpld@3c{
-> > +//		compatible = "marvell,ac3x-cpld";
-> > +//		reg = <0x3c>;
-> > +//	};
-> > +};
+From: Artem Labazov
+> Sent: 24 November 2020 19:48
 > 
-> Question for the mvebu maintainers: We know there is a cpld with that 
-> can be interfaced with over i2c. Other than detecting that it shows up 
-> on the i2c bus we haven't done anything with it. We believe it 
-> interfaces with some discrete IO and might mux the i2c interface towards 
-> the SFP/QSFP cages.
-> 
-> Obviously there isn't a "marvell,ac3x-cpld" driver (yet) so I suggested 
-> to Aryan that we put it in the dts to document its existence but leave 
-> it commented out for now. Is this OK?
+> The table for Unicode upcase conversion requires an order-5 allocation,
+> which may fail on a highly-fragmented system:
 
-Hi Chris
+ISTM that is the wrong way to do the case conversion.
+It is also why having to do it is bloody stupid.
 
-I would just add a text comment, not DT. We have no idea what this
-node will look like until we have the driver.
+	David
 
-Is there an open source 'vendor crap driver'? Do we have anything to
-go on?
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-     Andrew
