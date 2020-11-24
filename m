@@ -2,117 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6118E2C2E3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC992C2E48
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390608AbgKXRQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:16:33 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44554 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728342AbgKXRQd (ORCPT
+        id S2390755AbgKXRRh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 12:17:37 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:33465 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390245AbgKXRRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:16:33 -0500
-Date:   Tue, 24 Nov 2020 18:16:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606238190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=21CneeHv4WjigQFLsDRnBPjDyqomDe8iqs+F8eXUq54=;
-        b=YNuNJPCqi1woBBDIVq9RGDhGKE6iS0zVkDg/F+0aJMJ0GY5xTotuc0YTbaaoOBOj4GJ55+
-        Gq+cffSqonZhuVk0cyn+hqZxeb1PQNAscVhFfR13mG0F6nBjyzWpwWcGWgM9+2bDYlgKGM
-        8aYGROcTmFdhOjzOxKT9NhzhHZiPQkH6B6T04lOXv3sdkt0zcQ1SreZRl4z/KoxQw8DIXw
-        4jJhy4udc8nLLigI1DXPlSR8/lNCeRoSYVRKXLqsfAqELDICFn6jaZvr9MnqvgiGIi6j1b
-        6v0XS65uq0uQUjbeoaKovB4FmWzoCzg3CLVwOdWv9adlVMvh0zcyRqzP3NsM9w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606238190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=21CneeHv4WjigQFLsDRnBPjDyqomDe8iqs+F8eXUq54=;
-        b=5oMOmvZiz3+HJ0TFxE+1+ihsPdEcvXf76vE9EuoLCpFxRMC2ycJ9jAKLjiw2kZYcDmtSfZ
-        4t6U78aUx76DFyCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        LTP List <ltp@lists.linux.it>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        torvalds@linuxfoundation.org, Yang Shi <shy828301@gmail.com>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@suse.de>, Song Liu <songliubraving@fb.com>,
-        Zi Yan <ziy@nvidia.com>, vtolkm@googlemail.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: kernel BUG at mm/highmem.c:417! invalid opcode: 0000 EIP:
- zero_user_segments
-Message-ID: <20201124171628.dk6tle5lh3sx2jxg@linutronix.de>
-References: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
+        Tue, 24 Nov 2020 12:17:36 -0500
+Received: from mail-pg1-f200.google.com ([209.85.215.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1khbwc-00011n-0P
+        for linux-kernel@vger.kernel.org; Tue, 24 Nov 2020 17:17:34 +0000
+Received: by mail-pg1-f200.google.com with SMTP id t1so15469911pgo.23
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:17:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=VRMiJUNLgr9M7h46m/eHssvcueu9oqfWJ7ck5ke8IpY=;
+        b=b0wENxHmK7sYoTbBvC8SynRN7mo7UNvaFq/xAZXU1XjqV8QBzokJhau4ZSDgSvsTtK
+         al9RWluiGMlDK3ChAus5qJdXVUtvFZKYB7lGfkX9GeTn8TDsagQyxrGPjd4Z+BJk9YAD
+         4N2x1mh/ErEyjZYVxJWvNgHFQ6L0r+HddqN71dazBahBcelp3Z8ASfkUlvIqL5BDy1Dj
+         ICKTrkcWX9rysEc2OYoni/5IdWEqb4sDNob1Z7mAhmjO1LlT3iLrKMjrwWw4wo+pwkxB
+         JY+QDYFblpk6GxdEdGalCbJlQR3O/8mmK5V34L5MtXW6nzeNeRP1AdtEcg+zgCnNKi8K
+         8/Ig==
+X-Gm-Message-State: AOAM533CFYVUSM/GnG02RU41BU8hwagAwBdxyLMjjZobBh54Lolql6Lt
+        SV9x8p56DYl9ORcaVSx1dX5Rr4zQxgSLlz9LthnHoyZ+EzVrfFqwyOeqNM5WjFH8GsgfVL/F7mC
+        batUcdlEGuFUFxZ7qJ0tj6bMSKmOlfA/+VQkDgSzr9A==
+X-Received: by 2002:a05:6a00:794:b029:197:e418:ac4d with SMTP id g20-20020a056a000794b0290197e418ac4dmr4887488pfu.47.1606238252494;
+        Tue, 24 Nov 2020 09:17:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzIVyAqIJC5/bha05OEWX9Zk7sJdoBbnLioL22z3QEJ5PX0MShrmdxI3UM/mbFBfxGHgiS6Hg==
+X-Received: by 2002:a05:6a00:794:b029:197:e418:ac4d with SMTP id g20-20020a056a000794b0290197e418ac4dmr4887455pfu.47.1606238252111;
+        Tue, 24 Nov 2020 09:17:32 -0800 (PST)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id o132sm14969443pfg.100.2020.11.24.09.17.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Nov 2020 09:17:31 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH] e1000e: Assign DPM_FLAG_SMART_SUSPEND and
+ DPM_FLAG_MAY_SKIP_RESUME to speed up s2ram
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20201124153221.11265-1-yu.c.chen@intel.com>
+Date:   Wed, 25 Nov 2020 01:17:28 +0800
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <8BA4D1E1-DACF-4E84-A5B8-75A7CEA65F98@canonical.com>
+References: <20201124153221.11265-1-yu.c.chen@intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-24 18:52:44 [+0530], Naresh Kamboju wrote:
-> While running LTP test case access01 the following kernel BUG
-> noticed on linux next 20201124 tag kernel on i386.
+Hi Yu,
+
+> On Nov 24, 2020, at 23:32, Chen Yu <yu.c.chen@intel.com> wrote:
 > 
-> git short log:
-> ----------------
-> git log --oneline next-20201120..next-20201124 -- mm/highmem.c
-> d9927d46febf Merge branch 'akpm-current/current'
-> 72d22a0d0e86 mm: support THPs in zero_user_segments
-> 2a656cad337e mm/highmem: Take kmap_high_get() properly into account
+> The NIC is put in runtime suspend status when there is no wire connected.
+> As a result, it is safe to keep this NIC in runtime suspended during s2ram
+> because the system does not rely on the NIC plug event nor WOL to wake up
+> the system. Unlike the s2idle, s2ram does not need to manipulate S0ix settings
+> during suspend.
+
+Please see below for the reason why I explicitly disable direct-complete in the driver.
+
 > 
-> Please find these easy steps to reproduce the kernel build and boot.
+> This patch assigns DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME
+> to the e1000e driver so that the s2ram could skip the .suspend_late(),
+> .suspend_noirq() and .resume_noirq() .resume_early() when possible.
+> Also skip .suspend() and .resume() if dev_pm_skip_suspend() and
+> dev_pm_skip_resume() return true, so as to speed up the s2ram.
 
-This BUG_ON() is in zero_user_segments() which ash been added in commit
-   72d22a0d0e86 mm: support THPs in zero_user_segments
+If we really want direct-complete here, maybe always set current WoL setting in runtime suspend routine?
 
-> [   50.852189] kernel BUG at mm/highmem.c:417!
+> 
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+> drivers/base/power/main.c                  |  2 ++
+> drivers/net/ethernet/intel/e1000e/netdev.c | 14 +++++++++++++-
+> 2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index c7ac49042cee..9cd8abba8612 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -580,6 +580,7 @@ bool dev_pm_skip_resume(struct device *dev)
+> 
+> 	return !dev->power.must_resume;
+> }
+> +EXPORT_SYMBOL_GPL(dev_pm_skip_resume);
 
-I managed to capture one invocation with:
-zero_user_segments(0xd4367a90,
-		   0x1000, 0x1000,
-		   0x0, 0x50)
-page_compound() -> 1
-page_size() -> 4096
+I don't think it's a good idea to use this predicate out side of PM core, must_resume may change during suspend process.
 
-And at the end it BUGs because end2 is still 0x50.
+> 
+> /**
+>  * device_resume_noirq - Execute a "noirq resume" callback for given device.
+> @@ -2010,3 +2011,4 @@ bool dev_pm_skip_suspend(struct device *dev)
+> 	return dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_SUSPEND) &&
+> 		pm_runtime_status_suspended(dev);
+> }
+> +EXPORT_SYMBOL_GPL(dev_pm_skip_suspend);
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index b30f00891c03..d79fddabc553 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> @@ -6965,6 +6965,14 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+> 	struct e1000_hw *hw = &adapter->hw;
+> 	int rc;
+> 
+> +	/* Runtime suspended means that there is no wired connection
+> +	 * and it has nothing to do with WOL that, we don't need to
+> +	 * adjust the WOL settings. So it is safe to put NIC in
+> +	 * runtime suspend while doing system suspend.
+> +	 */
 
-because:
-|         for (i = 0; i < compound_nr(page); i++) {
-|                 void *kaddr;
-|                 unsigned this_end;
-| 
-|                 if (end1 == 0 && start2 >= PAGE_SIZE) {
-|                         start2 -= PAGE_SIZE;
-|                         end2 -= PAGE_SIZE;
-|                         continue;
-|                 }
-| 
-|                 if (start1 >= PAGE_SIZE) {
-start1 0x1000 is >= PAGE_SIZE.
-|                         start1 -= PAGE_SIZE;
-|                         end1 -= PAGE_SIZE;
-|                         if (start2) {
-start2 is 0.
-|                                 start2 -= PAGE_SIZE;
-|                                 end2 -= PAGE_SIZE;
-|                         }
-|                         continue;
-|                 }
+What about plugging ethernet cable and using WoL after system is suspended?
+Commit "e1000e: Exclude device from suspend direct complete optimization" was to address that scenario.
 
-I don't know why the logic for start1/end1 and start2/end2 is coupled
-here.  Based on how __block_write_begin_int() invokes it seems to zero
-two independent blocks (or it is a bug in caller).
-The generic implementation would do nothing for start1/end1 and for
-second part if would memset(page + 0, 0, 0x50 - 0).
+> +	if (dev_pm_skip_suspend(dev))
+> +		return 0;
+> +
+> 	e1000e_flush_lpic(pdev);
+> 
+> 	e1000e_pm_freeze(dev);
+> @@ -6989,6 +6997,9 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
+> 	struct e1000_hw *hw = &adapter->hw;
+> 	int rc;
+> 
+> +	if (dev_pm_skip_resume(dev))
+> +		return 0;
+> +
+> 	/* Introduce S0ix implementation */
+> 	if (hw->mac.type >= e1000_pch_cnp &&
+> 	    !e1000e_check_me(hw->adapter->pdev->device))
+> @@ -7665,7 +7676,8 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> 
+> 	e1000_print_device_info(adapter);
+> 
+> -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+> +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE |
+> +				DPM_FLAG_SMART_SUSPEND | DPM_FLAG_MAY_SKIP_RESUME);
+> 
+> 	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
+> 		pm_runtime_put_noidle(&pdev->dev);
 
-Sebastian
+Also, most e1000e device on modern platforms doesn't runtime suspend at all after commit "e1000e: Disable runtime PM on CNP+".
+
+Kai-Heng
+
+> -- 
+> 2.25.1
+> 
+
