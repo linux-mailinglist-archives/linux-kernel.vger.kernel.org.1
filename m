@@ -2,140 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53C52C1D24
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 939A12C1D29
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727388AbgKXEwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:52:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        id S1727635AbgKXExn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbgKXEwA (ORCPT
+        with ESMTP id S1726934AbgKXExn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:52:00 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12849C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:52:00 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id a130so14306263oif.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:52:00 -0800 (PST)
+        Mon, 23 Nov 2020 23:53:43 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A5BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:53:42 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d17so26997751lfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:53:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=21wh1RXrzLauQp1Zzrr3Pjj6ApJ/n51jC9LfHbkaKmY=;
-        b=n0+dYK2xtpTlFNg42XEHZZzZwOGGufij+bDtWnHViKF9yePzEKzPJrA1FFYEgwpPa5
-         oY1mB2mJngVy8JAvPrGAdkOOGYIWf0IpD+2BuGlz0nHYpDCJw0xT4yI3kVWay0HCieuC
-         Vi9+iI8TdGRY5o38rbNJsazX19zg4M4jH3+T4W4R/W3YRkHzEEEsArM2jb+1+7fKPaGs
-         iJR0NbItXQCxSoNLYm6SpOQWjRdb/T8PF0uJ7rvRD4Oeq9c6fiEQ01XrEOOV6F6jSGPl
-         YZEYxcgFqWpX+ran3veNjljAXBwO8jST/RrbsAHvIxoU+eHd30V5Rohtq2FErIWTq1xV
-         88EA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=39gr2tFdgeuXdCwWbn22GRnP3K3VvibhIlGf9k17rGw=;
+        b=SwaVIz6ZuT6iXE5tagOrwT7N6KNmmSkcEsDFfOdmzj5yjFEuDkdXhaHbzf22ipogzf
+         zWRWhpolqbEMbnZmb7w8SY8YssaOfvRbra2P6MvkDrdQIcceCNS8eCPycSxvqCyBE/Wt
+         Aogcb79k9z8ri+jJ6nmyXvkP8hv8F792ZSl3g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=21wh1RXrzLauQp1Zzrr3Pjj6ApJ/n51jC9LfHbkaKmY=;
-        b=YCWk6XxIb1fC/al+ArVC7YfqPx+2JtnaJIcsAoru5ZHY9XB10hWcNwLB4O/paLd2vK
-         rNBsii/azYCqTX8tZQL+S906UDoR/lT3O4K8NFSdoEQ1mE25pik2nECLBSDicgufzukm
-         x45aGEtJE4UGezU2f1ocwfB2So8Wo1FNjHcSth+h/4uXktY+OnABjmc1mhJTpE6a743X
-         vH1bomygoYlVu/V8AynwMg6g8sOE6Mv7r9HvLp4g/JmKWRtx6TrEE/6cFgauj1esC/QS
-         LANY6+a6uTHFp5lWWXm02JNBzdGRpa8mnHS+Wb0My32YC0y1Hrui4UKIAs+DDj1lStaH
-         ytXw==
-X-Gm-Message-State: AOAM5308LgkEvAJAZJRBGxPJM7nrOCUIx+Gd10U8CcZlCWA0brGqXUhm
-        KG7/1EZzyoc0N2VDWrUkEbuAeA==
-X-Google-Smtp-Source: ABdhPJxx8PNpFgul9bJq4f9P39PTOZ4UQOaHXVAQ3uMenmz0FcS/8UhRicJEaacMk+6aPMiKDvqJRg==
-X-Received: by 2002:aca:f5c8:: with SMTP id t191mr1678894oih.40.1606193519483;
-        Mon, 23 Nov 2020 20:51:59 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z77sm8670400ooa.37.2020.11.23.20.51.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 20:51:58 -0800 (PST)
-Date:   Mon, 23 Nov 2020 22:51:56 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH
- dependencies to avoid build error
-Message-ID: <20201124045156.GI95182@builder.lan>
-References: <20201123222359.103822-1-john.stultz@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=39gr2tFdgeuXdCwWbn22GRnP3K3VvibhIlGf9k17rGw=;
+        b=Nm49fjrB1Jhcl4o+So53TCynAkSZIfDM333zhMeiylw4KSx1DJsiSjHqANGu9UZAmj
+         0km0HA2Q5uuHzNb57QOgyMcmQQ86PgKVNL7u6vvdFOmuLlZo8DtlPTDCSHjcZnpKXAHf
+         MXFw9Aoot8WF9YTu8B4XQH6Go1kpz2mZ4KFvy2kC5RmawubXah7EwbBR9dE3Dx8LKQgF
+         cpsoJkDFxaLFufjyiCJmocjFf62lNkKXIbK2prJ0EIL7x6sQJ2olK3pO6C2ePUd3i8Q0
+         amRzM7hqRRhgj0tzs2kl514ShJoDjXgj4uxwvESXV6YsuUsE6+mDvBQF37EU78tYcFAk
+         1zcw==
+X-Gm-Message-State: AOAM531dzcXBHRzbOlN2a/wCB+51ETvf4e8XVz8r/Gdh19qIKeK2SXiW
+        7vRVCUgixJ8UPBTybGZIOtn4qqgtIccwYA==
+X-Google-Smtp-Source: ABdhPJwgHRcsPxEUVvwQZtwc5/H1k1TdukQICpivK9JTfXOAcvZ+ujTtBJMn/6E3k9VFcXJNSk/8Uw==
+X-Received: by 2002:a19:f00b:: with SMTP id p11mr1082892lfc.166.1606193621098;
+        Mon, 23 Nov 2020 20:53:41 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id 26sm187386ljg.73.2020.11.23.20.53.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Nov 2020 20:53:38 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id u18so26994927lfd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:53:37 -0800 (PST)
+X-Received: by 2002:a19:ae06:: with SMTP id f6mr1057406lfc.133.1606193616810;
+ Mon, 23 Nov 2020 20:53:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123222359.103822-1-john.stultz@linaro.org>
+References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
+ <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
+ <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 23 Nov 2020 20:53:20 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whYO5v09E8oHoYQDn7qqV0hBu713AjF+zxJ9DCr1+WOtQ@mail.gmail.com>
+Message-ID: <CAHk-=whYO5v09E8oHoYQDn7qqV0hBu713AjF+zxJ9DCr1+WOtQ@mail.gmail.com>
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 23 Nov 16:23 CST 2020, John Stultz wrote:
+On Mon, Nov 23, 2020 at 8:07 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> Then on crashing a second time, realized there's a stronger reason against
+> that approach.  If my testing just occasionally crashes on that check,
+> when the page is reused for part of a compound page, wouldn't it be much
+> more common for the page to get reused as an order-0 page before reaching
+> wake_up_page()?  And on rare occasions, might that reused page already be
+> marked PageWriteback by its new user, and already be waited upon?  What
+> would that look like?
+>
+> It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
+> in write_cache_pages() (though I have never seen that crash myself).
 
-> The kernel test robot reported the following build error:
-> 
-> All errors (new ones prefixed by >>):
-> 
->    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
->    qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
->    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
->    qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
->    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
-> >> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
->    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
->    qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
-> 
-> Which is due to REGULATOR_QCOM_RPMH depending on
-> QCOM_RPMH || COMPILE_TEST. The problem is that QOM_RPMH can now
-> be a module, which in that case requires REGULATOR_QCOM_RPMH=m
-> to build.
-> 
-> However, if COMPILE_TEST is enabled, REGULATOR_QCOM_RPMH can be
-> set to =y while QCOM_RPMH=m which will cause build failures.
-> 
-> The fix here is to add (QCOM_RPMH=n && COMPILE_TEST) to the
-> dependency.
-> 
-> Feedback would be appreciated!
+So looking more at the patch, I started looking at this part:
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> +       writeback = TestClearPageWriteback(page);
+> +       /* No need for smp_mb__after_atomic() after TestClear */
+> +       waiters = PageWaiters(page);
+> +       if (waiters) {
+> +               /*
+> +                * Writeback doesn't hold a page reference on its own, relying
+> +                * on truncation to wait for the clearing of PG_writeback.
+> +                * We could safely wake_up_page_bit(page, PG_writeback) here,
+> +                * while holding i_pages lock: but that would be a poor choice
+> +                * if the page is on a long hash chain; so instead choose to
+> +                * get_page+put_page - though atomics will add some overhead.
+> +                */
+> +               get_page(page);
+> +       }
 
-Regards,
-Bjorn
+and thinking more about this, my first reaction was "but that has the
+same race, just a smaller window".
 
-> 
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rajendra Nayak <rnayak@codeaurora.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
-> v2: Switch dependency logic as suggested by MarkB
-> ---
->  drivers/regulator/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-> index 020a00d6696b..481c7b10133b 100644
-> --- a/drivers/regulator/Kconfig
-> +++ b/drivers/regulator/Kconfig
-> @@ -843,7 +843,7 @@ config REGULATOR_QCOM_RPM
->  
->  config REGULATOR_QCOM_RPMH
->  	tristate "Qualcomm Technologies, Inc. RPMh regulator driver"
-> -	depends on QCOM_RPMH || COMPILE_TEST
-> +	depends on QCOM_RPMH || (QCOM_RPMH=n && COMPILE_TEST)
->  	help
->  	  This driver supports control of PMIC regulators via the RPMh hardware
->  	  block found on Qualcomm Technologies Inc. SoCs.  RPMh regulator
-> -- 
-> 2.17.1
-> 
+And then reading the comment more, I realize you relied on the i_pages
+lock, and that this odd ordering was to avoid the possible latency.
+
+But what about the non-mapping case? I'm not sure how that happens,
+but this does seem very fragile.
+
+I'm wondering why you didn't want to just do the get_page()
+unconditionally and early. Is avoiding the refcount really such a big
+optimization?
+
+            Linus
