@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579E32C2019
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2B62C201B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730692AbgKXIeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:34:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730474AbgKXIeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:34:00 -0500
-Received: from localhost (unknown [122.167.149.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B26920782;
-        Tue, 24 Nov 2020 08:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606206839;
-        bh=h4pTWTrSoOo7rJeNoA0yqc3cBAhJq0j4UBhLaw/3b8E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ubvou44hpIPS8fHyz28TCkI2J1IjbkX7twxtzE7uJILKIH7A8PL0MPNirq26vKITQ
-         EiUtoZIiMogSXheZ36I6bAB4ShlvVyxih4g7GIaUbsBGLx/oIjDEEL2/8+oDMKa68q
-         scOLaz84z4DS9W/nIcujR4gdtAaB0uIRryDWOIF8=
-Date:   Tue, 24 Nov 2020 14:03:53 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH 1/5] soundwire: SDCA: add helper macro to access controls
-Message-ID: <20201124083353.GH8403@vkoul-mobl>
-References: <20201103172226.4278-1-yung-chuan.liao@linux.intel.com>
- <20201103172226.4278-2-yung-chuan.liao@linux.intel.com>
+        id S1730701AbgKXIeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:34:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730582AbgKXIeS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:34:18 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDD1C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:34:18 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id z21so27647382lfe.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:34:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NOsLiTbxYXKFhYn23AnKm0GCKqtrauKi3T2pGJSrzE4=;
+        b=CHpi3zXM+ZBBjFWt8aYVGwBA1uUi15+6FWT6qz27hAldi+pwaVb0kEHyHvVJ9IWDqU
+         78qWvzydSs+QGI4nZKHsOjiUkxhCks2W7zFbtEsqKAYTa6RTZC1qplbbxH9OCZUkkKed
+         hPwnVsxYfLJbg1GSu5+d7iwpLOve5ztHF7PmP71nG4fuEV3rFzbF4CcNmez3CqiUH2xm
+         p3AwMbsnrjuAH9sL7Gw3mdqyzcgoxESpbXsbPxWgGzR50Vma/y970yd5OwyDbjIhbiRm
+         ueIB3bgljndM2dhF8XQzvlS/2Tmt7TwgNyHt9GHTyt1jM2cpi2p9aZXh+575xm60+uwu
+         AM/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NOsLiTbxYXKFhYn23AnKm0GCKqtrauKi3T2pGJSrzE4=;
+        b=q2yncsvwoLDA4ZMYKdgDjDjmWMZzJ13LEK3UbkCMHjVSTo5Jn4Y3Im/VzSKwZMEggk
+         sPnuK8QE9vU3ZSFTH8SwMeiP+V6gELkMADZ9L0GuGYlZ/hw5waP+wa23c0wR5sYt7BZU
+         7QUUv9spCp0dpNi5MslR3SCJ78wblaehx463PGkKsv5NKcWEmbyya+yU/puiQs0G68TJ
+         zZJ/PccelQ0ygLh9nDrC1oGyqVkM6mpdxb95CegWBwco4dbtiJPffZnIVOupOCS2iUNR
+         +x7VJJLXCBT+Dtlnj9qlpWCfFsbS3i4sKTb+UA0ExVFsc2/4tZbP6VZdUThFDsCoeDiE
+         1KMQ==
+X-Gm-Message-State: AOAM53356Jtcm7K5fDeyKqpOW7wZJWedYm4mdvRh90II46Yez3vmSq4f
+        10fNnaOux3lDXNgCQuLznwodSipowULBWC3cft4JFQ==
+X-Google-Smtp-Source: ABdhPJwxXRCbLjcqM5cNFxRoLZTAopE19twHnC2FECcsw9s6HGoSZ1ZUv8r91e1dNjCEe2qNGc+bjQNoHSzhHXZbocs=
+X-Received: by 2002:a05:6512:3e7:: with SMTP id n7mr1218244lfq.585.1606206856836;
+ Tue, 24 Nov 2020 00:34:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103172226.4278-2-yung-chuan.liao@linux.intel.com>
+References: <20201110215619.86076-1-john.stultz@linaro.org>
+In-Reply-To: <20201110215619.86076-1-john.stultz@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 09:34:06 +0100
+Message-ID: <CACRpkdZHufAsjySL7wWb1fSFJTgUhdiNjs_L4He+pHTpKfUy2g@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: qcom: Fix msm8953 Kconfig entry to depend on,
+ not select PINCTRL_MSM
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Vladimir Lypak <junak.pub@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-11-20, 01:22, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The upcoming SDCA (SoundWire Device Class Audio) specification defines
-> a hierarchical encoding to interface with Class-defined capabilities.
-> 
-> The specification is not yet accessible to the general public but this
-> information is released with explicit permission from the MIPI Board
-> to avoid delays with SDCA support on Linux platforms.
-> 
-> A block of 64 MBytes of register addresses are allocated to SDCA
-> controls, starting at address 0x40000000. The 26 LSBs which identify
-> individual controls are set based on the following variables:
-> 
-> - Function Number. An SCDA device can be split in up to 8 independent
->   Functions. Each of these Functions is described in the SDCA
->   specification, e.g. Smart Amplifier, Smart Microphone, Simple
->   Microphone, Jack codec, HID, etc.
-> 
-> - Entity Number.  Within each Function,  an Entity is  an identifiable
->   block.  Up   to  127  Entities   are  connected  in   a  pre-defined
->   graph  (similar to  USB), with  Entity0 reserved  for Function-level
->   configurations.  In  contrast  to  USB, the  SDCA  spec  pre-defines
->   Function Types, topologies, and allowed  options, i.e. the degree of
->   freedom  is not  unlimited to  limit  the possibility  of errors  in
->   descriptors leading to software quirks.
-> 
-> - Control Selector. Within each Entity, the SDCA specification defines
->   48 controls such as Mute, Gain, AGC, etc, and 16 implementation
->   defined ones. Some Control Selectors might be used for low-level
->   platform setup, and other exposed to applications and users. Note
->   that the same Control Selector capability, e.g. Latency control,
->   might be located at different offsets in different entities, the
->   Control Selector mapping is Entity-specific.
-> 
-> - Control Number. Some Control Selectors allow channel-specific values
->   to be set, with up to 64 channels allowed. This is mostly used for
->   volume control.
-> 
-> - Current/Next values. Some Control Selectors are
->   'Dual-Ranked'. Software may either update the Current value directly
->   for immediate effect. Alternatively, software may write into the
->   'Next' values and update the SoundWire 1.2 'Commit Groups' register
->   to copy 'Next' values into 'Current' ones in a synchronized
->   manner. This is different from bank switching which is typically
->   used to change the bus configuration only.
-> 
-> - MBQ. the Multi-Byte Quantity bit is used to provide atomic updates
->   when accessing more that one byte, for example a 16-bit volume
->   control would be updated consistently, the intermediate values
->   mixing old MSB with new LSB are not applied.
-> 
-> These 6 parameters are used to build a 32-bit address to access the
-> desired Controls. Because of address range, paging is required, but
-> the most often used parameter values are placed in the lower 16 bits
-> of the address. This helps to keep the paging registers constant while
-> updating Controls for a specific Device/Function.
-> 
-> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+On Tue, Nov 10, 2020 at 10:56 PM John Stultz <john.stultz@linaro.org> wrote:
+
+> One fixup following my patch commit be117ca32261 ("pinctrl:
+> qcom: Kconfig: Rework PINCTRL_MSM to be a depenency rather then
+> a selected config") being queued in LinusW's tree, as a new
+> config entry was added for the msm8953 that also needs the
+> change.
+>
+> Applies to LinusW's pinctrl devel tree.
+>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Prasad Sodagudi <psodagud@codeaurora.org>
+> Cc: Vladimir Lypak <junak.pub@gmail.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> Change-Id: I9e8e83b1ea57aff338074be9174fce53cef29eff
 > ---
->  include/linux/soundwire/sdw_registers.h | 32 +++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
-> index f420e8059779..e14dff9a9c7f 100644
-> --- a/include/linux/soundwire/sdw_registers.h
-> +++ b/include/linux/soundwire/sdw_registers.h
-> @@ -298,4 +298,36 @@
->  #define SDW_CASC_PORT_MASK_INTSTAT3		1
->  #define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
->  
-> +/*
-> + * v1.2 device - SDCA address mapping
-> + *
-> + * Spec definition
-> + *	Bits		Contents
-> + *	31		0 (required by addressing range)
-> + *	30:26		0b10000 (Control Prefix)
-> + *	25		0 (Reserved)
-> + *	24:22		Function Number [2:0]
-> + *	21		Entity[6]
-> + *	20:19		Control Selector[5:4]
-> + *	18		0 (Reserved)
-> + *	17:15		Control Number[5:3]
-> + *	14		Next
-> + *	13		MBQ
-> + *	12:7		Entity[5:0]
-> + *	6:3		Control Selector[3:0]
-> + *	2:0		Control Number[2:0]
-> + */
-> +
-> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
-> +						 (((fun) & 0x7) << 22) |	\
-> +						 (((ent) & 0x40) << 15) |	\
-> +						 (((ent) & 0x3f) << 7) |	\
-> +						 (((ctl) & 0x30) << 15) |	\
-> +						 (((ctl) & 0x0f) << 3) |	\
-> +						 (((ch) & 0x38) << 12) |	\
-> +						 ((ch) & 0x07))
-> +
-> +#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
-> +#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
+> v2:
+> * Fix flipped numbers in the soc name, pointed out by
+>   Jeffrey Hugo
 
-Ideally would have liked to use defines with GENMASK etc instead of
-numbers, but this is not a strong issue so:
+Patch applied, for some reason this got lost in my inbox.
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
-
--- 
-~Vinod
+Yours,
+Linus Walleij
