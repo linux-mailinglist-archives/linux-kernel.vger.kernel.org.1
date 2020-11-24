@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C42A2C32A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF84A2C3292
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731530AbgKXVWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S1731443AbgKXVVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:21:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731375AbgKXVW2 (ORCPT
+        with ESMTP id S1731414AbgKXVVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:22:28 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454AFC0613D6;
-        Tue, 24 Nov 2020 13:22:28 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id j19so347218pgg.5;
-        Tue, 24 Nov 2020 13:22:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lXcYXoNVYyBl/v8uATa3c6wAjQJYnbcQgq2r1GB/dQM=;
-        b=F9gGuWbMPILK+mWrq2XTN2QS2w9vYFb4ZOquS6WbuWvw+LM/7WzzFQtDuLrnoKchjT
-         TCBmtpGMnzzEAMJJSs5hVkQeB1FdGyD89m8JYO99K69vGnyEpgwG0yvCnvJqZzqyr6GU
-         Mg54/aJGRzJw3p/XabvBfklZ5+09xsJflN99a0vDYxX1E+zWzlQNT0BwON1Wc8M3U0r2
-         R72DFVDrPGeYkN750cKrg8R4DHYNKlGJXBiTJGSARmdqgP++p3sv3rywWBoMnT4SeKow
-         EMSrXyNEbB/kK5ctZGsqFTm3zXumb94MGdxUWQpwO0dbJc5RdkKDNjXb7VPOzoxIvsk9
-         FS3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lXcYXoNVYyBl/v8uATa3c6wAjQJYnbcQgq2r1GB/dQM=;
-        b=qE3CYyPJBk+IoBmWYlfsxPlQn7Ag+YOE3SpZ0Iqp02XmvH7SugNbCt9PbCl8HFT+Q1
-         R8VGmJF920JMtCTTHbtuF+zgNhj+dlYl51Enq+0ymibh23HRBTXttJArTDeSkMYShhcJ
-         Mraz9o8JXtBgtghmBLpyn6rI54WvZvCQrdRmqdrtims/TAf2YGrXgjwo5dBNtsfV8/ng
-         zhVpX1Fs4lGViXKe1bLXqBWGLAV4fp/5r+o7kGz+QFSIw6RgtXvxIvQEVah5jDdxgW1L
-         DqcJkFUpj89JOjaGVviAX4NN+0hU0Yjl9f90Kiec55Xki8I8hGfH6zCJLlaR9tKtf+K6
-         avDg==
-X-Gm-Message-State: AOAM531rkmv9GIDoUQ7zYpVnsPgtJhYAwgrs8a5ENGFhMRMvU2TqJpIM
-        eDiuHwUuXBqHbGdINGZSG6Y=
-X-Google-Smtp-Source: ABdhPJyTW6/NYxqbtf9PHOWGAMel2/Z3XjCTxBGeVzlqahz5Y9lUVWrEOQ//RTskRi1rN9MfmWv9LQ==
-X-Received: by 2002:a62:ddcb:0:b029:197:faf2:e8b4 with SMTP id w194-20020a62ddcb0000b0290197faf2e8b4mr250681pff.75.1606252947842;
-        Tue, 24 Nov 2020 13:22:27 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id w15sm143484pjy.47.2020.11.24.13.22.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 24 Nov 2020 13:22:27 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:21:01 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     joro@8bytes.org
-Cc:     thierry.reding@gmail.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com
-Subject: Re: [PATCH RESEND 0/5] iommu/tegra-smmu: Some pending reviewed
- changes
-Message-ID: <20201124212100.GA32108@Asurada-Nvidia>
-References: <20201111222129.15736-1-nicoleotsuka@gmail.com>
+        Tue, 24 Nov 2020 16:21:43 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1B3C0613D6;
+        Tue, 24 Nov 2020 13:21:43 -0800 (PST)
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id F0F9D23E3F;
+        Tue, 24 Nov 2020 22:21:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1606252898;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wIZr2dT8FfZXEBvU48oDTvepadKi82zYYnSlXuZYz6k=;
+        b=iNsEq/kZPZeUnpgg3mpWD+YwbIBgWYPuDm6PrClGFBPrfmm1RH0PAY6u8HGsDnTn6dbOLn
+        pRkF10yQLO3noUOpd6TMG5J+fTxNQyVYxwQW/n5g1LFebsdrj6bOVY5VliMuwWhYBFR4n/
+        txZFg+6VJ1YKR7iABpmjyWJPOvZFc84=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] arm64: dts: freescale: sl28: correct MMC order
+Date:   Tue, 24 Nov 2020 22:21:26 +0100
+Message-Id: <20201124212126.32218-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111222129.15736-1-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+Commit 342ab37ecaf8 ("arm64: dts: freescale: use fixed index mmcN for
+layerscape") hardcoded the order of the MMC devices. This doesn't fit
+the sl28 boards, which come with an onboard eMMC. Thus use the more
+natural order for the eMMC and SD card. Use /dev/mmcblk0 for the eMMC
+and /dev/mmcblk1 for the SD card which is removable by the user.
 
-These five patches were acked by Thierry and acked-n-tested by
-Dmitry a while ago. Would it be possible for you to apply them?
+Please note, that the images for this board already use root=UUID=,
+therefore the actual device number doesn't matter for booting.
 
-Thanks!
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Wed, Nov 11, 2020 at 02:21:24PM -0800, Nicolin Chen wrote:
-> This is a merged set of resend for previously two series of patches
-> that were reviewed/acked a month ago yet have not got applied.
-> 
-> Series-1: https://lkml.org/lkml/2020/9/29/73
-> "[PATCH v4 0/2] iommu/tegra-smmu: Two followup changes"
-> 
-> Series-2: https://lkml.org/lkml/2020/10/9/808
-> "[PATCH v7 0/3] iommu/tegra-smmu: Add PCI support"
-> 
-> Nicolin Chen (5):
->   iommu/tegra-smmu: Unwrap tegra_smmu_group_get
->   iommu/tegra-smmu: Expand mutex protection range
->   iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
->   iommu/tegra-smmu: Rework tegra_smmu_probe_device()
->   iommu/tegra-smmu: Add PCI support
-> 
->  drivers/iommu/tegra-smmu.c | 240 ++++++++++++++-----------------------
->  1 file changed, 88 insertions(+), 152 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
+index fbaecf285d05..6da4a28c4d19 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
+@@ -18,6 +18,8 @@
+ 
+ 	aliases {
+ 		crypto = &crypto;
++		mmc0 = &esdhc1;
++		mmc1 = &esdhc;
+ 		serial0 = &duart0;
+ 		serial1 = &duart1;
+ 		serial2 = &lpuart1;
+-- 
+2.20.1
+
