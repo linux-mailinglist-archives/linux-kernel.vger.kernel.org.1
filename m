@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD2A2C28CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26352C28CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388643AbgKXNzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:55:09 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:38433 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387631AbgKXNzI (ORCPT
+        id S2388514AbgKXNyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:54:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387631AbgKXNyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:55:08 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UGQEzw8_1606226103;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGQEzw8_1606226103)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 24 Nov 2020 21:55:04 +0800
-Subject: Re: INFO: task can't die in shrink_inactive_list (2)
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, peterz@infradead.org
-References: <0000000000000340a105b49441d3@google.com>
- <20201123195452.8ecd01b1fc2ce287dfd6a0d5@linux-foundation.org>
- <97ca8171-c3eb-6462-fcb6-fee53287868a@linux.alibaba.com>
-Message-ID: <4ff2d017-c9c3-e4fa-2d71-5f000188d3a4@linux.alibaba.com>
-Date:   Tue, 24 Nov 2020 21:53:04 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Tue, 24 Nov 2020 08:54:46 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94395C0613D6;
+        Tue, 24 Nov 2020 05:54:46 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id n137so8524659pfd.3;
+        Tue, 24 Nov 2020 05:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bFiWTt4rZpALfk96ockHBL57Xo1g7R1/SK5/u3ELrPo=;
+        b=R8ne0sI0l2GBu9LhZhD293kTbgsrhybMTsS76z0V/dkcAHOoj3Yds5LyLL9tiG+OpJ
+         Gx1e6u9z2n1NxASuR9/AwcM1cHq0nlvX+pNudrfxAznUtHqt+sJnPCgBF9Wf2NBvcB6c
+         bcsExc2IhEJxqABrgiaZtlNAmXSCG6jwTKvExS9TCbbtzCHcCP8jishZljGcYyIecttG
+         3FdaLTiLeNGDCTrew8CM8PslsDZbQdKQwvdCWcJNdf1lnxamOcrDZMxKXMxjg4bKJOKP
+         Cbrwi7HmgpFjCpk5EagIB3KjFY0iQAM9ljgkJr3I4lLtfHOccOFPpWZGaPVzh2264mcV
+         LsHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bFiWTt4rZpALfk96ockHBL57Xo1g7R1/SK5/u3ELrPo=;
+        b=nJp76Bsei1QLMJ/7tKZbf/OVL5Qj9qYSJCUpvcfZ/NfcLZN92hEgxaa1rQbOOWD8i4
+         /eSxfFwJzjwQb2kN0vFVTltZX3jIhToDn3lvX+46d5zDDwB+iRUTSoAzeDy3O2YJO3v2
+         zXgd7/rmay9cuO4Av3MbRd/Nn0H154PuLQXrSOdFMWk4WnQeZkQT14MbM5LJDNDZsBll
+         CktNTy2eOBaHheB9FHQ5JC4xc7MyeZupeb7555BmCYVxdPb7MevmHSHyi+KkRMdw3iR8
+         w0Xb2J23h/A7S2zfkBNjBDr/R3qHFFkmoJZ81EYARZWGqrPZKVkddzIaQTkqqQP3u7PP
+         5uvg==
+X-Gm-Message-State: AOAM531FUxCsBmJokxrAPdWkb52vftz+QuWieQ/S/1Z2oC12K24QSxIW
+        TWc1mTJhiNir4dZ5Id2OO5klKpRqoZzEmIuUo5A=
+X-Google-Smtp-Source: ABdhPJw27eAo6K7hsc4Xr4GhI6SZcvJOUxCtVuen5OJhSaaFoF1LpsXMRUyUf1y/TPfXkqjSrZJcMoKLEdbL66/Fa0Q=
+X-Received: by 2002:a63:1514:: with SMTP id v20mr3847208pgl.203.1606226086051;
+ Tue, 24 Nov 2020 05:54:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <97ca8171-c3eb-6462-fcb6-fee53287868a@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+References: <20201124102152.16548-1-alexandru.ardelean@analog.com>
+ <202011241901.eIm4FyEB-lkp@intel.com> <CAHp75Vc+M2veG25pehO-8LSj0WcXvotijwaYvkYvAr3LF1n10Q@mail.gmail.com>
+ <DM6PR03MB4411ABE610061A840224159EF9FB0@DM6PR03MB4411.namprd03.prod.outlook.com>
+In-Reply-To: <DM6PR03MB4411ABE610061A840224159EF9FB0@DM6PR03MB4411.namprd03.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 24 Nov 2020 15:55:34 +0200
+Message-ID: <CAHp75VeNEAxgSjpe1A5dvsW_Rqnp5K5FwHk_Zfopr_--raNDXg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] spi: convert to BIT() all spi_device flags
+To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 24, 2020 at 2:03 PM Ardelean, Alexandru
+<alexandru.Ardelean@analog.com> wrote:
+
+> > >    In file included from drivers/spi/spidev.c:26:
+> > > >> include/uapi/linux/spi/spidev.h:33: warning: "SPI_CPHA" redefined
+> > >       33 | #define SPI_CPHA  0x01
+> >
+> > Argh! Can we have only one set of flags?
+> >
+>
+> My bad here for not catching this earlier.
+>
+> It might be an idea to create a "include/uapi/linux/spi/spi.h" and include this in " include/uapi/linux/spi/spidev.h "
+> Then the " include/uapi/linux/spi/spi.h " would also be included in " include/linux/spi/spi.h "
+> We would naturally drop the BIT() macros for the uapi header.
+
+uAPI has its own _BIT*() macros.
 
 
-ÔÚ 2020/11/24 ÏÂÎç8:00, Alex Shi Ð´µÀ:
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    03430750 Add linux-next specific files for 20201116
->>> git tree:       linux-next
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=13f80e5e500000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c4c3f27041fdb8
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=e5a33e700b1dd0da20a2
->>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f7bc5a500000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10934cf2500000
-> CC Peter Zijlstra.
-> 
-> I found next-20200821 had a very very similar ops as this.
-> https://groups.google.com/g/syzkaller-upstream-moderation/c/S0pyqK1dZv8/m/dxMoEhGdAQAJ
-> So does this means the bug exist for long time from 5.9-rc1?
-
-5.8 kernel sometime also failed on this test on my 2 cpus vm guest with 2g memory:
-
-
-Thanks
-Alex
-
-[ 5875.750929][  T946] INFO: task repro:31866 blocked for more than 143 seconds.
-[ 5875.751618][  T946]       Not tainted 5.8.0 #6
-[ 5875.752046][  T946] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables th.
-[ 5875.752845][  T946] repro           D12088 31866      1 0x80004086
-[ 5875.753436][  T946] Call Trace:
-[ 5875.753747][  T946]  __schedule+0x394/0x950
-[ 5875.774033][  T946]  ? __mutex_lock+0x46f/0x9c0
-[ 5875.774481][  T946]  ? blkdev_put+0x18/0x120
-[ 5875.774894][  T946]  schedule+0x37/0xe0
-[ 5875.775260][  T946]  schedule_preempt_disabled+0xf/0x20
-[ 5875.775753][  T946]  __mutex_lock+0x474/0x9c0
-[ 5875.776174][  T946]  ? lock_acquire+0xa7/0x390
-[ 5875.776602][  T946]  ? locks_remove_file+0x1e7/0x2d0
-[ 5875.777079][  T946]  ? blkdev_put+0x18/0x120
-[ 5875.777485][  T946]  blkdev_put+0x18/0x120
-[ 5875.777880][  T946]  blkdev_close+0x1f/0x30
-[ 5875.778281][  T946]  __fput+0xf0/0x260
-[ 5875.778639][  T946]  task_work_run+0x68/0xb0
-[ 5875.779054][  T946]  do_exit+0x3df/0xce0
-[ 5875.779430][  T946]  ? get_signal+0x11d/0xca0
-[ 5875.779846][  T946]  do_group_exit+0x42/0xb0
-[ 5875.780261][  T946]  get_signal+0x16a/0xca0
-[ 5875.780662][  T946]  ? handle_mm_fault+0xc8f/0x19c0
-[ 5875.781134][  T946]  do_signal+0x2b/0x8e0
-[ 5875.781521][  T946]  ? trace_hardirqs_off+0xe/0xf0
-[ 5875.781989][  T946]  __prepare_exit_to_usermode+0xef/0x1f0
-[ 5875.782512][  T946]  ? asm_exc_page_fault+0x8/0x30
-[ 5875.782979][  T946]  prepare_exit_to_usermode+0x5/0x30
-[ 5875.783461][  T946]  asm_exc_page_fault+0x1e/0x30
-[ 5875.783909][  T946] RIP: 0033:0x428dd7
-[ 5875.794899][  T946] Code: Bad RIP value.
-[ 5875.795290][  T946] RSP: 002b:00007f37c99e0d78 EFLAGS: 00010202
-[ 5875.795858][  T946] RAX: 0000000020000080 RBX: 0000000000000000 RCX: 0000000076656f
-[ 5875.796588][  T946] RDX: 000000000000000c RSI: 00000000004b2370 RDI: 00000000200000
-[ 5875.797326][  T946] RBP: 00007f37c99e0da0 R08: 00007f37c99e1700 R09: 00007f37c99e10
-[ 5875.798063][  T946] R10: 00007f37c99e19d0 R11: 0000000000000202 R12: 00000000000000
-[ 5875.798802][  T946] R13: 0000000000021000 R14: 0000000000000000 R15: 00007f37c99e10
+-- 
+With Best Regards,
+Andy Shevchenko
