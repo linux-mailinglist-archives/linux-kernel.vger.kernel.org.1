@@ -2,174 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1F22C26A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:58:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3782C26A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387763AbgKXM5R convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 07:57:17 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52836 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733262AbgKXM5R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:57:17 -0500
-Received: from mail-pg1-f197.google.com ([209.85.215.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1khXsf-0006Os-UL
-        for linux-kernel@vger.kernel.org; Tue, 24 Nov 2020 12:57:14 +0000
-Received: by mail-pg1-f197.google.com with SMTP id i7so9804025pgn.22
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:57:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=X8iDYlGf8nwy/cRec/5+aTzq8vO1DEtqnmOZbXaUW3s=;
-        b=Kxsvx/qfwDIOvKRuWgNhjGDEgvOYAjngD9fvakO0kovVoCcXqtX4in/+TGiuHeAwi6
-         voDxX3FKadiV99dZKvr95cc7BUBHC59JR2gzrL6SH77dpex6X5Z2bSjASXJsQeBO1fUQ
-         BYGPFCNkBmLkpHSiNeAZFRHa1xfWPAqWcEHWsuHngTg/cTFTdz38IuM+lNQvG63ukqng
-         LprycUeEqFQ7Shiqb/fB7Ojsc2lW3OHhK7ln1a1OniyF/gAdojsgi3WVLgqXGqotfoKt
-         Gz8guaiXTNs8rhLXn7O0lYXDJsAMSZrxDWcM424GlQdF3qgcGpkjrUIt11sk4Bxjc71N
-         nyHg==
-X-Gm-Message-State: AOAM530nFBGB4u8KI8HSNQqmD1ggjLv7bpUQiXdkQ48vlmzm/Qu20Pfp
-        XThltSbGSQ3nJEoQOxzUoVQPwibNi+mSbXT7uDfKIFDgeNeW9n52wrJo7QAF4VDNMoGTGqYePRv
-        8/+IxV/2BzsdS26Vp6vWIphxEL5u3VATKNpOkzF1cCQ==
-X-Received: by 2002:a17:902:70cc:b029:d7:e8ad:26d4 with SMTP id l12-20020a17090270ccb02900d7e8ad26d4mr3807233plt.33.1606222632572;
-        Tue, 24 Nov 2020 04:57:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwozB2pCgo1Ni9DdJRatk31M0oTPqAtTl0z7nrnx3WvUiICbsTns3if3MiDh+TKIGCtfwofHg==
-X-Received: by 2002:a17:902:70cc:b029:d7:e8ad:26d4 with SMTP id l12-20020a17090270ccb02900d7e8ad26d4mr3807205plt.33.1606222632167;
-        Tue, 24 Nov 2020 04:57:12 -0800 (PST)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id i19sm13444182pgk.44.2020.11.24.04.57.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Nov 2020 04:57:11 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND
- quirkforLenovo A630Z TIO built-in usb-audio card
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <1503654237.281102.1605875117132.JavaMail.xmail@bj-wm-cp-6>
-Date:   Tue, 24 Nov 2020 20:57:07 +0800
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        johan <johan@kernel.org>, jonathan <jonathan@jdcox.net>,
-        tomasz <tomasz@meresinski.eu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        dlaz <dlaz@chromium.org>,
-        "richard.o.dodd" <richard.o.dodd@gmail.com>,
-        kerneldev <kerneldev@karsmulder.nl>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <484458B3-EADF-48AC-94E0-13C3247783DA@canonical.com>
-References: <20201118123039.11696-1-penghao@uniontech.com>
- <49219711-84BE-44FC-BBFE-DD8D609CA26D@canonical.com>
- <1892790617.185900.1605788248261.JavaMail.xmail@bj-wm-cp-6>
- <7D73C39C-C3E2-4C08-A773-3D7582A6AA7D@canonical.com>
- <X7Z6RKu4T5IrhUFB@kroah.com>
- <FB40A0E5-5E3C-4FC6-B690-02F9785EC7D5@canonical.com>
- <X7Z/+Tehbmx54Fzb@kroah.com>
- <2FEF0396-33A8-4164-AB79-E5B8F87F6ABF@canonical.com>
- <1503654237.281102.1605875117132.JavaMail.xmail@bj-wm-cp-6>
-To:     =?utf-8?B?5b2t5rWp?= <penghao@uniontech.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S2387741AbgKXM6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:58:01 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:48396 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387582AbgKXM6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:58:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606222680; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Type: MIME-Version: Sender;
+ bh=p3o5O2rDOoKz7JnE/QmTS9ZiRoVNLotQeymZMjfvd8Y=; b=J2KXND+qH0eT3o5DzX/XrHxOHHskjulu9rH0DgQIpr9EzaQh6huTRf+N7kMLUwzYbjsUfOpl
+ swIbQSci57o5piomOQnkjTOyyTyimFYUwgKshxn0xTOCb44gYJBYJtqxD+UIHQ+BcnT28eAL
+ B5DHZvb9PweeDOBgIVwAxpAE+Lo=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fbd03477f0cfa6a16006a1b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 12:57:43
+ GMT
+Sender: kalyan_t=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 902ABC43460; Tue, 24 Nov 2020 12:57:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kalyan_t)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 366ACC433ED;
+        Tue, 24 Nov 2020 12:57:41 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="=_b2b938fb10d812d8faa8fd415ac40fd7"
+Date:   Tue, 24 Nov 2020 18:27:41 +0530
+From:   kalyan_t@codeaurora.org
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Raviteja Tamatam <travitej@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        nganji@codeaurora.org, Sean Paul <seanpaul@chromium.org>,
+        John Stultz <john.stultz@linaro.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        abhinavk@codeaurora.org
+Subject: Re: [Freedreno] [PATCH 3/3] drm/msm/dpu: add support for clk and bw
+ scaling for display
+Message-ID: <5b07a7be8d136392dc7f93933a7ee68e@codeaurora.org>
+X-Sender: kalyan_t@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi penghao,
+--=_b2b938fb10d812d8faa8fd415ac40fd7
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 
-> On Nov 20, 2020, at 20:25, 彭浩 <penghao@uniontech.com> wrote:
+On 2020-11-08 23:25, Amit Pundir wrote:
+> On Tue, 4 Aug 2020 at 21:09, Rob Clark <robdclark@gmail.com> wrote:
+>> 
+>> On Thu, Jul 16, 2020 at 4:36 AM Kalyan Thota <kalyan_t@codeaurora.org> 
+>> wrote:
+>> >
+>> > This change adds support to scale src clk and bandwidth as
+>> > per composition requirements.
+>> >
+>> > Interconnect registration for bw has been moved to mdp
+>> > device node from mdss to facilitate the scaling.
+>> >
+>> > Changes in v1:
+>> >  - Address armv7 compilation issues with the patch (Rob)
+>> >
+>> > Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+>> 
+>> Reviewed-by: Rob Clark <robdclark@chromium.org>
+>> 
 > 
+> Hi Kalyan, Rob,
 > 
-> > Seeking a better fix, we've tried a lot of things, including:
-> > - Check that the device's power/wakeup is disabled
-> > - Check that remote wakeup is off at the USB level
-> > - All the quirks in drivers/usb/core/quirks.c
-> Since the machine has been returned to the manufacturer, i can not provide dynamic debugging information.
-> Is there any other way to solve your doubts？
+> This patch broke the display on the PocoF1 phone
+> (sdm845-xiaomi-beryllium.dts) running AOSP.
+> I can boot to UI but the display is frozen soon after that and
+> dmesg is full of following errors:
+> 
+> [drm:dpu_core_perf_crtc_update:397] [dpu error]crtc-65: failed to
+> update bus bw vote
+> [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
+> 7649746kb > 6800000kb
+> [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance 
+> check -7
+> [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
+> 7649746kb > 6800000kb
+> [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance 
+> check -7
+> [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
+> 7649746kb > 6800000kb
+> [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance 
+> check -7
+> 
+> Here is the full dmesg https://pastebin.ubuntu.com/p/PcSdNgMnYw/.
+> Georgi pointed out following patch but it didn't help,
+> https://lore.kernel.org/dri-devel/20201027102304.945424-1-dmitry.baryshkov@linaro.org/
+> Am I missing any other followup fix?
+> 
+> Regards,
+> Amit Pundir
+> __
 
-Basically, no.
+Hi Amit,
 
-It would be great if we can know whether the device is quiesced in U3 before suspend.
-Currently xHCI doesn't poll for U3 for global suspend.
+Apologies for the delay.
 
-Kai-Heng
+I have gone through the logs and referred to the below panel file for 
+the timings.
+https://github.com/Matheus-Garbelini/Kernel-Sphinx-Pocophone-F1/blob/master/arch/arm64/boot/dts/qcom/dsi-panel-tianma-fhd-nt36672a-video.dtsi
 
-> 
-> peng hao 
-> 
-> 统信软件技术有限公司
-> 
-> UnionTech Software Technology Co., Ltd. 　
-> 
-> 官网：www.uniontech.com　　
-> 
-> 
-> 
-> 此电子邮件消息仅供预期收件人使用，其中可能包含保密或特权使用信息。如果您不是预期收件人，请勿使用、传播、分发或复制此电子邮件或信赖此邮件采取任何行动。如果您误收了此邮件，请立即回复邮件通知统信软件技术有限公司发件人，并删除误收电子邮件及其相关附件。感谢配合！
-> 
-> This email message is intended only for the use of the individual or entity who/which is the intended recipient and may contain information that is privileged or confidential. If you are not the intended recipient, you are hereby notified that any use, dissemination, distribution or copying of, or taking any action in reliance on, this e-mail is strictly prohibited. If you have received this email in error, please notify UnionTech Software Technology  immediately by replying to this e-mail and immediately delete and discard all copies of the e-mail and the attachment thereto (if any). Thank you.
-> 
-> 
-> 
-> 
-> ----- Original Message -----
-> From:Kai-Heng Feng <kai.heng.feng@canonical.com> 
-> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>  
-> CC: 彭浩 <penghao@uniontech.com> johan <johan@kernel.org> jonathan <jonathan@jdcox.net> tomasz <tomasz@meresinski.eu> Hans de Goede <hdegoede@redhat.com> dlaz <dlaz@chromium.org> richard.o.dodd <richard.o.dodd@gmail.com> kerneldev <kerneldev@karsmulder.nl> linux-usb <linux-usb@vger.kernel.org> linux-kernel <linux-kernel@vger.kernel.org>  
-> Sent: 2020-11-20 02:27
-> Subject: Re:Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirkforLenovo A630Z TIO built-in usb-audio card
-> 
-> 
-> 
-> > On Nov 19, 2020, at 22:23, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > 
-> > On Thu, Nov 19, 2020 at 10:12:02PM +0800, Kai-Heng Feng wrote:
-> >> 
-> >> 
-> >>> On Nov 19, 2020, at 21:59, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >>> 
-> >>> On Thu, Nov 19, 2020 at 09:41:32PM +0800, Kai-Heng Feng wrote:
-> >>>> Hi penghao,
-> >>>> 
-> >>>>> On Nov 19, 2020, at 20:17, 彭浩 <penghao@uniontech.com> wrote:
-> >>>>> 
-> >>>>> root@uos-PC:/sys/bus/usb/devices/usb7# dmesg
-> >>>>> [ 0.000000] Linux version 4.19.0-6-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 (Debian 8.3.0-6)) #1 SMP Uos 4.19.67-11eagle (2020-03-21)
-> >>>> 
-> >>>> Thanks for the dmesg. But would it be possible to use mainline kernel enable dynamic debug?
-> >>>> 
-> >>>> But anyway, this is not a regular AMD or Intel platform, so I guess we can merge the quirk as is...
-> >>>> 
-> >>>> Kai-Heng
-> >>>> 
-> >>>>> [ 0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-4.19.0-6-amd64 root=UUID=e5a40c4f-d88e-4a4d-9414-a27892a31be7 ro splash console=ttyS0,115200n8 loglevel=7 DEEPIN_GFXMODE=0,1920x1080,1600x1200,1280x1024,1024x768
-> >>>>> [ 0.000000] Zhaoxin Linux Patch Version is V3.0.2 
-> >>>>> [ 0.000000] With Zhaoxin Shanghai CPU patch V2.0.0
-> >>> 
-> >>> What do you mean "not a regular"? This is an x86-variant chip platform,
-> >>> but what does that have to do with the USB quirk detection?
-> >> 
-> >> USB quirk detection should work fine. I was trying to find the root cause, but seeing it's a Zhaoxin CPU, that could be the reason why mainline kernel, which has many USB power management fixes, wasn't used.
-> >> 
-> >> penghao, is it possible to boot mainline kernel on Zhaoxin CPU?
-> > 
-> > There have been a number of small patches for this type of CPU merged
-> > over the past months, so I hope a mainline kernel works here :)
-> > 
-> > That being said, why would the platform matter for a USB device quirk?
-> 
-> No, it doesn't matter at all. 
-> Because I am not sure if it can boot a mainline kernel, and the author doesn't know how to enable dynamic debug to let us understand what really happens here.
-> 
-> Kai-Hen
-> 
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> 
-> 
+if the above is correct file, then below could be the possible root 
+cause.
 
+The panel back porch and pw is less and it is causing the prefill bw 
+requirement to shoot up per layer as currently we are not considering 
+front porch in the calculation. can you please try the attached patch in 
+the email as a solution and provide me the feedback, i'll post it as a 
+formal change.
+
+Thanks,
+Kalyan
+
+_____________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
+
+--=_b2b938fb10d812d8faa8fd415ac40fd7
+Content-Transfer-Encoding: base64
+Content-Type: text/x-diff;
+ name=0001-drm-msm-dpu-consider-front-porch-in-the-prefill-calc.patch
+Content-Disposition: attachment;
+ filename=0001-drm-msm-dpu-consider-front-porch-in-the-prefill-calc.patch;
+ size=2297
+
+RnJvbSAwMjhmYjQ3Y2NjNWEzZjhmOGU1MTUxM2JkMjcxOWFhMTRjNjhhYzA5IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWx5YW4gVGhvdGEgPGthbHlhbl90QGNvZGVhdXJvcmEub3Jn
+PgpEYXRlOiBUdWUsIDI0IE5vdiAyMDIwIDAyOjM5OjUyIC0wODAwClN1YmplY3Q6IFtQQVRDSF0g
+ZHJtOiBtc206IGRwdTogY29uc2lkZXIgZnJvbnQgcG9yY2ggaW4gdGhlIHByZWZpbGwKIGNhbGN1
+bGF0aW9uCgpJbiBjYXNlIG9mIHBhbmVscyB3aXRoIGxvdyB2ZXJ0aWNhbCBiYWNrIHBvcmNoIGFu
+ZCBwdywKdGhlIHByZWZpbGwgYncgd2lsbCBpbmNyZWFzZSBhcyB3ZSB3aWxsIGhhdmUgbGVzcyB0
+aW1lIHRvIGZldGNoCmFuZCBmaWxsIGFsbCB0aGUgaHcgbGF0ZW5jeSBidWZmZXJzLgoKZm9yIGV4
+OiBod19sYXRuZWN5X2xpbmVzID0gMjQsIGFuZCBpZiB2YnArcHcgPSAxMCB0aGVuIHdlIG5lZWQg
+dG8KZmV0Y2ggMjQgbGluZXMgb2YgZGF0YSBpbiAxMCBsaW5lIHRpbWVzLiBUaGlzIHdpbGwgaW5j
+cmVhc2UgcHJlZmlsbApidyByZXF1aXJlbWVudC4KCkRQVSBodyBjYW4gZmV0Y2ggZGF0YSBkdXJp
+bmcgZnJvbnQgcG9yY2ggYWxzbyBwcm92aWRlZCBwcmVmZXRjaCBpcwplbmFibGVkLiBVc2UgZnJv
+bnQgcG9yY2ggYWxzbyBpbnRvIHRoZSBwcmVmaWxsIGNhbHVjdWxhdGlvbiBhcwpkcml2ZXIgZW5h
+YmxlcyBwcmVmZXRjaCBpZiB0aGUgYmxhbmtpbmcgaXMgbm90IHN1ZmZpY2llbnQgdG8gZmlsbAp0
+aGUgbGF0ZW5jeSBsaW5lcy4KClNpZ25lZC1vZmYtYnk6IEthbHlhbiBUaG90YSA8a2FseWFuX3RA
+Y29kZWF1cm9yYS5vcmc+Ci0tLQogZHJpdmVycy9ncHUvZHJtL21zbS9kaXNwL2RwdTEvZHB1X3Bs
+YW5lLmMgfCAxMSArKysrKysrKystLQogMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwg
+MiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbXNtL2Rpc3AvZHB1
+MS9kcHVfcGxhbmUuYyBiL2RyaXZlcnMvZ3B1L2RybS9tc20vZGlzcC9kcHUxL2RwdV9wbGFuZS5j
+CmluZGV4IDdlYTkwZDIuLjMxNWI5OTkgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tc20v
+ZGlzcC9kcHUxL2RwdV9wbGFuZS5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9tc20vZGlzcC9kcHUx
+L2RwdV9wbGFuZS5jCkBAIC0xNTEsNyArMTUxLDcgQEAgc3RhdGljIHZvaWQgX2RwdV9wbGFuZV9j
+YWxjX2J3KHN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lLAogCXU2NCBwbGFuZV9idzsKIAl1MzIgaHdf
+bGF0ZW5jeV9saW5lczsKIAl1NjQgc2NhbGVfZmFjdG9yOwotCWludCB2YnAsIHZwdzsKKwlpbnQg
+dmJwLCB2cHcsIHZmcDsKIAogCXBzdGF0ZSA9IHRvX2RwdV9wbGFuZV9zdGF0ZShwbGFuZS0+c3Rh
+dGUpOwogCW1vZGUgPSAmcGxhbmUtPnN0YXRlLT5jcnRjLT5tb2RlOwpAQCAtMTY0LDYgKzE2NCw3
+IEBAIHN0YXRpYyB2b2lkIF9kcHVfcGxhbmVfY2FsY19idyhzdHJ1Y3QgZHJtX3BsYW5lICpwbGFu
+ZSwKIAlmcHMgPSBkcm1fbW9kZV92cmVmcmVzaChtb2RlKTsKIAl2YnAgPSBtb2RlLT52dG90YWwg
+LSBtb2RlLT52c3luY19lbmQ7CiAJdnB3ID0gbW9kZS0+dnN5bmNfZW5kIC0gbW9kZS0+dnN5bmNf
+c3RhcnQ7CisJdmZwID0gbW9kZS0+dnN5bmNfc3RhcnQgLSBtb2RlLT52ZGlzcGxheTsKIAlod19s
+YXRlbmN5X2xpbmVzID0gIGRwdV9rbXMtPmNhdGFsb2ctPnBlcmYubWluX3ByZWZpbGxfbGluZXM7
+CiAJc2NhbGVfZmFjdG9yID0gc3JjX2hlaWdodCA+IGRzdF9oZWlnaHQgPwogCQltdWx0X2ZyYWMo
+c3JjX2hlaWdodCwgMSwgZHN0X2hlaWdodCkgOiAxOwpAQCAtMTc2LDcgKzE3NywxMyBAQCBzdGF0
+aWMgdm9pZCBfZHB1X3BsYW5lX2NhbGNfYncoc3RydWN0IGRybV9wbGFuZSAqcGxhbmUsCiAJCXNy
+Y193aWR0aCAqIGh3X2xhdGVuY3lfbGluZXMgKiBmcHMgKiBmbXQtPmJwcCAqCiAJCXNjYWxlX2Zh
+Y3RvciAqIG1vZGUtPnZ0b3RhbDsKIAotCWRvX2RpdihwbGFuZV9wcmVmaWxsX2J3LCAodmJwK3Zw
+dykpOworCWlmICgodmJwK3ZwdykgPiBod19sYXRlbmN5X2xpbmVzKQorCQlkb19kaXYocGxhbmVf
+cHJlZmlsbF9idywgKHZicCt2cHcpKTsKKwllbHNlIGlmICgodmJwK3Zwdyt2ZnApIDwgaHdfbGF0
+ZW5jeV9saW5lcykKKwkJZG9fZGl2KHBsYW5lX3ByZWZpbGxfYncsICh2YnArdnB3K3ZmcCkpOwor
+CWVsc2UKKwkJZG9fZGl2KHBsYW5lX3ByZWZpbGxfYncsIGh3X2xhdGVuY3lfbGluZXMpOworCiAK
+IAlwc3RhdGUtPnBsYW5lX2ZldGNoX2J3ID0gbWF4KHBsYW5lX2J3LCBwbGFuZV9wcmVmaWxsX2J3
+KTsKIH0KLS0gCjIuNy40Cgo=
+--=_b2b938fb10d812d8faa8fd415ac40fd7--
