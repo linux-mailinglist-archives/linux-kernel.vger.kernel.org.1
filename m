@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693AE2C1A15
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B57D52C1A1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730550AbgKXAbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:31:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730533AbgKXAbl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:31:41 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EF8C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:31:41 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id z14so15902376ilm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:31:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yW+htXww+ILrfMvpf0DqE8TQUsDLdhNfb2u9ut4JOo0=;
-        b=SA0axGGPWvQjO28vobYFpKR+Yq5zvhsOkQ/XctdcspqN3BCH94LTmlZYHldnJsm3B2
-         2bmOj3yDaTaA20wwEISd31Cnylwrn2r6G0jV7aV4sFblhOBiaqcnBcub2smr/z3PCPRr
-         JKE1dEdWw3PeuJ2kC6QcqmcwFJC834A85f3Sc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yW+htXww+ILrfMvpf0DqE8TQUsDLdhNfb2u9ut4JOo0=;
-        b=iL//T9dyCJfjeqb8cJh87uBY2eUxG6+MrQnRNkomK05KqWiNFIvaWlBzODMydm4/Sm
-         nzVo4mblB0N2/ZkjY0GCRcbHNQ5a8QiQZDfnQJvz+iiMM7B7qClIWAA2XfiEujQOJwh2
-         HMIS0X+eEIGDg63e64mkTYNZlFDA6NW+wTUfwhYGfrTqU6RVMlR1NwDZQX05XmRhZscI
-         5YQDjUATxVuXJ+Aetp4OJhBGfVaR1tiZcIgk1zNrp/+53skh0avJuxGOpWju4EJQFOGF
-         lVYpzxZ7VpoHkkl1RpB2vmB/xTVLXy2vTvOUcsR8w3IakoJyBeliY+w12M7NO1+7f6oL
-         1Klg==
-X-Gm-Message-State: AOAM531TZqDccMo+TvM9S2S/8ie+Cy3ta+Z7himaO50jlMshBwLIStGe
-        P0XkntipMERBYVsPPRxSdOAurQ==
-X-Google-Smtp-Source: ABdhPJwcngZihIMco7RiC13Pgz8eRDJtx1nQqZeyt+lxhHoOqOKu5rSvjv+EvzKNwyRRXKqwgM2OHw==
-X-Received: by 2002:a92:155b:: with SMTP id v88mr2046840ilk.303.1606177900983;
-        Mon, 23 Nov 2020 16:31:40 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o9sm195205ilu.60.2020.11.23.16.31.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 16:31:40 -0800 (PST)
-Subject: Re: [PATCH 5.4 000/158] 5.4.80-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20201123121819.943135899@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <8dbf2a74-c3fe-783e-7155-2ad6a969e500@linuxfoundation.org>
-Date:   Mon, 23 Nov 2020 17:31:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1730628AbgKXAcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:32:15 -0500
+Received: from mga11.intel.com ([192.55.52.93]:22890 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728654AbgKXAcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 19:32:14 -0500
+IronPort-SDR: 0VmygGDkd/fzXaTrPe90NrF91HRqyPrzyTJCaSRyfghZvYJpoUqCob32ZJZhcgGx8Fo+t9NkkH
+ sQml2WGUGChA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="168358141"
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="168358141"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 16:32:12 -0800
+IronPort-SDR: aFDIjmEnv5l91rhGRODEcHOmW4Zjzq8UfIEWs3FEMGOjy3Alez342mKSMAv5nqf26VTO46T/Tp
+ 9KR9a0eLpVFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="370232786"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2020 16:32:02 -0800
+Subject: Re: [PATCH -tip 13/32] sched: Trivial forced-newidle balancer
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-14-joel@joelfernandes.org>
+ <20201123043836.GG110669@balbir-desktop>
+ <1de89fd3-fb5f-5aaa-8ea6-7a12d3307fa4@linux.intel.com>
+ <20201123233508.GC8893@balbir-desktop>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <2277bfa9-7f67-6b66-b2db-a2130993de53@linux.intel.com>
+Date:   Tue, 24 Nov 2020 08:32:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201123233508.GC8893@balbir-desktop>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/20 5:20 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.80 release.
-> There are 158 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2020/11/24 7:35, Balbir Singh wrote:
+> On Mon, Nov 23, 2020 at 11:07:27PM +0800, Li, Aubrey wrote:
+>> On 2020/11/23 12:38, Balbir Singh wrote:
+>>> On Tue, Nov 17, 2020 at 06:19:43PM -0500, Joel Fernandes (Google) wrote:
+>>>> From: Peter Zijlstra <peterz@infradead.org>
+>>>>
+>>>> When a sibling is forced-idle to match the core-cookie; search for
+>>>> matching tasks to fill the core.
+>>>>
+>>>> rcu_read_unlock() can incur an infrequent deadlock in
+>>>> sched_core_balance(). Fix this by using the RCU-sched flavor instead.
+>>>>
+>>> ...
+>>>> +
+>>>> +		if (p->core_occupation > dst->idle->core_occupation)
+>>>> +			goto next;
+>>>> +
+>>>
+>>> I am unable to understand this check, a comment or clarification in the
+>>> changelog will help. I presume we are looking at either one or two cpus
+>>> to define the core_occupation and we expect to match it against the
+>>> destination CPU.
+>>
+>> IIUC, this check prevents a task from keeping jumping among the cores forever.
+>>
+>> For example, on a SMT2 platform:
+>> - core0 runs taskA and taskB, core_occupation is 2
+>> - core1 runs taskC, core_occupation is 1
+>>
+>> Without this check, taskB could ping-pong between core0 and core1 by core load
+>> balance.
 > 
-> Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.80-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> But the comparison is p->core_occuption (as in tasks core occuptation,
+> not sure what that means, can a task have a core_occupation of > 1?)
+>
 
-Compiled and booted on my test system. No dmesg regressions.
+p->core_occupation is assigned to the core occupation in the last pick_next_task.
+(so yes, it can have a > 1 core_occupation).
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Thanks,
+-Aubrey
