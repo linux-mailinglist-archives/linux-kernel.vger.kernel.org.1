@@ -2,56 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F98E2C2EE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E4C2C2E94
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403922AbgKXRih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:38:37 -0500
-Received: from 225yg2h4g.guzel.net.tr ([185.106.208.225]:50980 "EHLO
-        server.inncreawatch.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2403892AbgKXRih (ORCPT
+        id S2390796AbgKXRa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390612AbgKXRa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:38:37 -0500
-X-Greylist: delayed 761 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 12:38:37 EST
-Received: from webmail.inncreawatch.com (localhost.localdomain [IPv6:::1])
-        by server.inncreawatch.com (Postfix) with ESMTPSA id 8C72692163B;
-        Tue, 24 Nov 2020 20:22:21 +0300 (+03)
-Authentication-Results: server;
-        spf=pass (sender IP is ::1) smtp.mailfrom=admin@mail.xa-bank.com smtp.helo=webmail.inncreawatch.com
-Received-SPF: pass (server: connection is authenticated)
+        Tue, 24 Nov 2020 12:30:57 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA09CC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:30:56 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id f18so4995913ljg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:30:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OADMwQE1HfwIqpykz3TZHnF1kNpcSHUWVvcwMzNsJSQ=;
+        b=PJShiVFyF1QNS10ZK4hJqy3gWb157c8QAhEOlJGh2WvhpNpcKK4xyS2IJjsn1qT0o9
+         7z5S5VxcVYvqQEhJ+/qHSd+14/OcThKF0xaB0Zrai3oT+DFHkJgtmI/4gbsw2VGDCFTf
+         9lYnYnkuCE+t0kqHdYmUa4AheBKK5giwYdR7ynp4suEuBcxe+TwkKY/2jUjhQmBkwsoi
+         KrHHhun/l4cIx8YdaDMakKI0Op0/sCEYNA/DmDr6zDJD8cdttK+bAs27ymsbZlrhYsXB
+         UX9kzKbv1leE1HsdepaQRJIOVpkmu5ogHpKKcDBoiFcNJnUMu17DN+V02PxWNMwk7zhb
+         Zz4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OADMwQE1HfwIqpykz3TZHnF1kNpcSHUWVvcwMzNsJSQ=;
+        b=RvIUwhkKpZUWhTwwKsjEdoEqZXZUtCP7NaHSWa47tN6CrfI3urwiDtAGkrnIfzN2/J
+         cVLFqj6oI7M5TUkCPceTE/7IEJ7kk23Yesfn7qNZXNSPxKClLZo65pReDr77qndHT2eV
+         R+w2Su+7QRcGVP79UroMyh0trlZD5AH25UEuq2Gwzj+bi9LO1KQf+wWFVDhawAlDyweF
+         GeauzpDIW226+VK0IKE8SFQn8WbquK7MdiXhRgcx029N8Tsg6hzzsZndlP49Z2r5S6ZM
+         ThU529jvzaY0E5mmCIQfJ/VV9MruuHm1t2rIKQ9WENZKuhKHWU7W5LTBiqDbEn6H844N
+         ZEmQ==
+X-Gm-Message-State: AOAM530er5fvZK7LmPwV0z6VwuyT8/JHunq/mIlo2UpKad7fbP7uBEZQ
+        T6UcZlECcGTjZ1UqxcDomTqiDUCrQPMt4qO+lxs7hQ==
+X-Google-Smtp-Source: ABdhPJzAUS95IiJtBmLXO44wiBfEN3j6soT+ctyunXlhCZXtXqVbQTF1xIIFi3BAaCvjBNUGriYGAWkADaFGkqIB3QQ=
+X-Received: by 2002:a05:651c:1035:: with SMTP id w21mr100232ljm.326.1606239055088;
+ Tue, 24 Nov 2020 09:30:55 -0800 (PST)
 MIME-Version: 1.0
-Date:   Tue, 24 Nov 2020 19:22:21 +0200
-From:   Steve Lenka Thomson <admin@mail.xa-bank.com>
-To:     undisclosed-recipients:;
-Subject: Donation
-Reply-To: steve.foundation009@hotmail.com
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <e5a865ebef9c201a5e41d6db7f975a6f@mail.xa-bank.com>
-X-Sender: admin@mail.xa-bank.com
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <20201124172222.11264.69942@server.inncrealift.com>
-X-PPP-Vhost: inncreawatch.com
+References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com> <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
+ <878saq3ofx.fsf@oldenburg2.str.redhat.com> <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
+ <20201124164546.GA14094@infradead.org> <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
+ <X70/uPNt2BA/vUSo@kroah.com>
+In-Reply-To: <X70/uPNt2BA/vUSo@kroah.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 24 Nov 2020 18:30:28 +0100
+Message-ID: <CAG48ez2NH2Esw_55JiwK1FAzr_qFFyGaPrE_A=iH=dNuVvY6GQ@mail.gmail.com>
+Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions & workaround
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
+        "Carlos O'Donell" <carlos@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 24, 2020 at 6:15 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> On Tue, Nov 24, 2020 at 06:06:38PM +0100, Jann Horn wrote:
+> > +seccomp maintainers/reviewers
+> > [thread context is at
+> > https://lore.kernel.org/linux-api/87lfer2c0b.fsf@oldenburg2.str.redhat.com/
+> > ]
+> >
+> > On Tue, Nov 24, 2020 at 5:49 PM Christoph Hellwig <hch@infradead.org> wrote:
+> > > On Tue, Nov 24, 2020 at 03:08:05PM +0100, Mark Wielaard wrote:
+> > > > For valgrind the issue is statx which we try to use before falling back
+> > > > to stat64, fstatat or stat (depending on architecture, not all define
+> > > > all of these). The problem with these fallbacks is that under some
+> > > > containers (libseccomp versions) they might return EPERM instead of
+> > > > ENOSYS. This causes really obscure errors that are really hard to
+> > > > diagnose.
+> > >
+> > > So find a way to detect these completely broken container run times
+> > > and refuse to run under them at all.  After all they've decided to
+> > > deliberately break the syscall ABI.  (and yes, we gave the the rope
+> > > to do that with seccomp :().
+> >
+> > FWIW, if the consensus is that seccomp filters that return -EPERM by
+> > default are categorically wrong, I think it should be fairly easy to
+> > add a check to the seccomp core that detects whether the installed
+> > filter returns EPERM for some fixed unused syscall number and, if so,
+> > prints a warning to dmesg or something along those lines...
+>
+> Why?  seccomp is saying "this syscall is not permitted", so -EPERM seems
+> like the correct error to provide here.  It's not -ENOSYS as the syscall
+> is present.
+>
+> As everyone knows, there are other ways to have -EPERM be returned from
+> a syscall if you don't have the correct permissions to do something.
+> Why is seccomp being singled out here?  It's doing the correct thing.
 
+AFAIU from what the others have said, it's being singled out because
+it means that for two semantically equivalent operations (e.g.
+openat() vs open()), one can fail while the other works because the
+filter doesn't know about one of the syscalls. Normally semantically
+equivalent syscalls are supposed to be subject to the same checks, and
+if one of them fails, trying the other one won't help.
 
--- 
-Greetings,
-
-We are pleased to inform you that an amount of £500,000.00 (GBP) has 
-been donated and given, gifted to you and your family by Steve & Lenka 
-Thomson, who won the EuroMillions jackpot, lottery of 
-£105,100,701.90 Euro Millions, part of this donation, it is for you and 
-your family. This donation is to help fight against Corona Virus COVID 
--19 pandemic in the world, and help the poor people off the streets, 
-also to contribute to poverty reduction, public donations, public 
-charity, orphanages, less privileged and help poor individuals in your 
-community please contact her to claim the money via email for more 
-details: info@supportfoundation.co.uk
-
-Regards
-Steve Thomson
+But if you can't tell whether the more modern syscall failed because
+of a seccomp filter, you may be forced to retry with an older syscall
+even on systems where the new syscall works fine, and such a fallback
+may reduce security or reliability if you're trying to use some flags
+that only the new syscall provides for security, or something like
+that. (As a contrived example, imagine being forced to retry any
+tgkill() that fails with EPERM as a tkill() just in case you're
+running under a seccomp filter.)
