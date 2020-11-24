@@ -2,69 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D092C2BBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DD42C2BCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389920AbgKXPs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:48:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388538AbgKXPs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:48:57 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B668206F7;
-        Tue, 24 Nov 2020 15:48:55 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 10:48:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Philippe Duplessis-Guindon <pduplessis@efficios.com>
-Cc:     linux-trace-devel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        linux-kernel@vger.kernel.org, broonie@kernel.org
-Subject: Re: [RFC PATCH v2] tracing: Remove duplicate `type` field from
- regmap `regcache_sync` trace event
-Message-ID: <20201124104854.430801a9@gandalf.local.home>
-In-Reply-To: <20201124135730.9185-1-pduplessis@efficios.com>
-References: <20201124135730.9185-1-pduplessis@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2389493AbgKXPuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389441AbgKXPuI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:50:08 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636D5C0613D6;
+        Tue, 24 Nov 2020 07:50:08 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id m6so22789318wrg.7;
+        Tue, 24 Nov 2020 07:50:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vEHV5NzbwJ9itZIOZg0YcV4vFlrMnth6sSMm0U/4U18=;
+        b=HmasDWuex7mGSrEPKku7nbQd9pKEB0VIF/ooeC/H8gEFqGk0eOPrQOD7ULPnDUW1nF
+         SEBqUzIDs3Q/b4NtGdRpz/Rhjt2mKTIMKQ/ifjbi9gBPMU8wshfy2o52ODxvXErCmkHS
+         LSs2gJj3neMlfzcdel0xGs2Utc1QXnq9guR+oZcGhRV1t+vq/PhmAWj5+0XzOBXYJLk0
+         uv5YY4FHNZrt29KHEjCtTqNnmmYAPLqKDfCqwCUejkQfGt9YcZO948F5E0Yw6DVf30zb
+         TxP180NnVt7lApqwkS/V7cOWZq8z9wyZrytoGbrXfWOzu1Nw6Pg+rA2xEfAv8tiyu7Nb
+         73tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vEHV5NzbwJ9itZIOZg0YcV4vFlrMnth6sSMm0U/4U18=;
+        b=X14eWMVHk8jnAemEhpLcVWqLLddSRjuSTv6hOSNEMZdEicMVRoDXXcvf2FGRqEyUl0
+         tAjfgu/4pfxxNTodXWESsMOtp/eMZ/mbWWk5YO6Q097VmpnczkwppgRu5CcE4RyFywtF
+         tnRGefzizoft+gaIO/9RRFPiuXkQKr2J1gQ+finYKfZbIPsoEi9nA3evZgoEAhYRQPgN
+         agL/p5x9Nxt3LcROZMUGMU81bXJmgc+yUgJqEg+B9TRxOxC+HnTdXvtHUW9GfUOiVkwf
+         RzCokUyn7v47fMV7vlvUVyac4bKUoePLYyN5nyVB39xVEpIk9eRWxQUdgtI2M+LzJyLP
+         xDvQ==
+X-Gm-Message-State: AOAM530UCiL9VMM4jatS7i9wn2MPo9PbpXF9WSW7VU3XHFibkyVfkNN2
+        0oruFFtPGmSDABhEgefixrgQgjwvExUcvrpeCT8=
+X-Google-Smtp-Source: ABdhPJzerQP49Kf7yuyCXUUv4/+uMPHMJ+Frw4C4JWUo8vpK1xvcKt1uN5gVCEtR/4wUmA2B3xr5/nsHrOl93j4H360=
+X-Received: by 2002:a5d:400a:: with SMTP id n10mr5940385wrp.362.1606233007147;
+ Tue, 24 Nov 2020 07:50:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-4-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-4-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 10:49:56 -0500
+Message-ID: <CADnq5_P=4f5gq+mS358d0zGEB6yr0PGruAKKLoiiEb9hq30thg@mail.gmail.com>
+Subject: Re: [PATCH 03/40] drm/amd/amdgpu/amdgpu_ib: Provide docs for
+ 'amdgpu_ib_schedule()'s 'job' param
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 08:57:30 -0500
-Philippe Duplessis-Guindon <pduplessis@efficios.com> wrote:
+On Mon, Nov 23, 2020 at 6:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c:127: warning: Function parameter =
+or member 'job' not described in 'amdgpu_ib_schedule'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> I have an error saying that `regcache_sync` has 2 fields named `type`
-> while using libtraceevent.
-> 
-> Erase the `int field` type, which is not assigned. This field is
-> introduced by mistake and this commit removes it.
-> 
-> Fixes commit 593600890110c ("regmap: Add the regcache_sync trace event")
-> 
-> Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
+Applied.  Thanks!
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Alex
 
--- Steve
 
 > ---
->  drivers/base/regmap/trace.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/base/regmap/trace.h b/drivers/base/regmap/trace.h
-> index d4066fa079ab..9abee14df9ee 100644
-> --- a/drivers/base/regmap/trace.h
-> +++ b/drivers/base/regmap/trace.h
-> @@ -126,7 +126,6 @@ TRACE_EVENT(regcache_sync,
->  		__string(       name,           regmap_name(map)	)
->  		__string(	status,		status			)
->  		__string(	type,		type			)
-> -		__field(	int,		type			)
->  	),
->  
->  	TP_fast_assign(
-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c b/drivers/gpu/drm/amd=
+/amdgpu/amdgpu_ib.c
+> index c69af9b86cc60..024d0a563a652 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
+> @@ -106,6 +106,7 @@ void amdgpu_ib_free(struct amdgpu_device *adev, struc=
+t amdgpu_ib *ib,
+>   * @ring: ring index the IB is associated with
+>   * @num_ibs: number of IBs to schedule
+>   * @ibs: IB objects to schedule
+> + * @job: job to schedule
+>   * @f: fence created during this submission
+>   *
+>   * Schedule an IB on the associated ring (all asics).
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
