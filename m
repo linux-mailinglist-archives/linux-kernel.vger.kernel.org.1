@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7B72C1F9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F912C1FA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgKXIKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:10:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgKXIKE (ORCPT
+        id S1730376AbgKXIKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:10:44 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7974 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730299AbgKXIKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:10:04 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AC3C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:10:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Sg0d2W9lIZVXaKPXvUC0vCuRKlWPQr9QqT8INz/yg80=; b=c1/dYbhkt2kl4iCUCaPRlDv/BD
-        eb17+dtyYYfTsjz1A6gFDluM6K0jG/17YKBXAAU1x/uHFzYexx22Yc/yLHTiT5BV4N9wJ2vmTMO/h
-        /hVqveDUbfGzfcNU2NQKvzVCHx+UCG4JHnaQOVlwyVmti1VjbYkB4xnm5SdBoftSD/CL8CbCEETg2
-        oadbfXEfUY8pmzK93wCsQDTwN7NFDJ9WHuJEvlB9DStMttmVItGBw6YKWLCeKvNaAlZ9rRA6r9mav
-        6I2+YUJZtqnyBhm7E7o6sSfdsRaKnLqbTcL7wA0ApniYgDc7bmvPPPulvYK5hDai02Wql64PXpiSb
-        DmsLP5Vw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khTOd-0000ZJ-9N; Tue, 24 Nov 2020 08:09:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72D7E304D28;
-        Tue, 24 Nov 2020 09:09:51 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E1BF20222D66; Tue, 24 Nov 2020 09:09:51 +0100 (CET)
-Date:   Tue, 24 Nov 2020 09:09:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Sperbeck <jsperbeck@google.com>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>
-Subject: Re: [RFC] perf/x86: Fix a warning on x86_pmu_stop()
-Message-ID: <20201124080951.GE2414@hirez.programming.kicks-ass.net>
-References: <20201121025011.227781-1-namhyung@kernel.org>
- <20201123142321.GP3021@hirez.programming.kicks-ass.net>
- <CAM9d7cji+M+qVm4g48Jcgnfjm-=3HVVtv49ntDpksQx8aBdSyQ@mail.gmail.com>
+        Tue, 24 Nov 2020 03:10:44 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CgGsp5vdGzhg5l;
+        Tue, 24 Nov 2020 16:10:22 +0800 (CST)
+Received: from [10.174.187.74] (10.174.187.74) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 24 Nov 2020 16:10:27 +0800
+Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+To:     Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-4-lushenming@huawei.com>
+ <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
+Date:   Tue, 24 Nov 2020 16:10:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cji+M+qVm4g48Jcgnfjm-=3HVVtv49ntDpksQx8aBdSyQ@mail.gmail.com>
+In-Reply-To: <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.74]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 02:01:39PM +0900, Namhyung Kim wrote:
+On 2020/11/23 17:27, Marc Zyngier wrote:
+> On 2020-11-23 06:54, Shenming Lu wrote:
+>> From: Zenghui Yu <yuzenghui@huawei.com>
+>>
+>> When setting the forwarding path of a VLPI, it is more consistent to
+> 
+> I'm not sure it is more consistent. It is a *new* behaviour, because it only
+> matters for migration, which has been so far unsupported.
 
-> Yes, it's not about __intel_pmu_pebs_event().  I'm looking at
-> intel_pmu_drain_pebs_nhm() specifically.  There's code like
-> 
->         /* log dropped samples number */
->         if (error[bit]) {
->             perf_log_lost_samples(event, error[bit]);
-> 
->             if (perf_event_account_interrupt(event))
->                 x86_pmu_stop(event, 0);
->         }
-> 
->         if (counts[bit]) {
->             __intel_pmu_pebs_event(event, iregs, base,
->                            top, bit, counts[bit],
->                            setup_pebs_fixed_sample_data);
->         }
-> 
-> There's a path to x86_pmu_stop() when an error bit is on.
+Alright, consistent may not be accurate...
+But I have doubt that whether there is really no need to transfer the pending states
+from kvm'vgic to VPT in set_forwarding regardless of migration, and the similar
+for unset_forwarding.
 
-That would seem to suggest you try something like this:
+> 
+>> also transfer the pending state from irq->pending_latch to VPT (especially
+>> in migration, the pending states of VLPIs are restored into kvm’s vgic
+>> first). And we currently send "INT+VSYNC" to trigger a VLPI to pending.
+>>
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>> ---
+>>  arch/arm64/kvm/vgic/vgic-v4.c | 12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
+>> index b5fa73c9fd35..cc3ab9cea182 100644
+>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
+>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
+>> @@ -418,6 +418,18 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
+>>      irq->host_irq    = virq;
+>>      atomic_inc(&map.vpe->vlpi_count);
+>>
+>> +    /* Transfer pending state */
+>> +    ret = irq_set_irqchip_state(irq->host_irq,
+>> +                    IRQCHIP_STATE_PENDING,
+>> +                    irq->pending_latch);
+>> +    WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
+>> +
+>> +    /*
+>> +     * Let it be pruned from ap_list later and don't bother
+>> +     * the List Register.
+>> +     */
+>> +    irq->pending_latch = false;
+> 
+> It occurs to me that calling into irq_set_irqchip_state() for a large
+> number of interrupts can take a significant amount of time. It is also
+> odd that you dump the VPT with the VPE unmapped, but rely on the VPE
+> being mapped for the opposite operation.
+> 
+> Shouldn't these be symmetric, all performed while the VPE is unmapped?
+> It would also save a lot of ITS traffic.
+> 
 
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 31b9e58b03fe..8c6ee8be8b6e 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1945,7 +1945,7 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
- 		if (error[bit]) {
- 			perf_log_lost_samples(event, error[bit]);
- 
--			if (perf_event_account_interrupt(event))
-+			if (iregs && perf_event_account_interrupt(event))
- 				x86_pmu_stop(event, 0);
- 		}
- 
+My thought was to use the existing interface directly without unmapping...
+
+If you want to unmap the vPE and poke the VPT here, as I said in the cover
+letter, set/unset_forwarding might also be called when all devices are running
+at normal run time, in which case the unmapping of the vPE is not allowed...
+
+Another possible solution is to add a new dedicated interface to QEMU to transfer
+these pending states to HW in GIC VM state change handler corresponding to
+save_pending_tables?
+
+>> +
+>>  out:
+>>      mutex_unlock(&its->its_lock);
+>>      return ret;
+> 
+> Thanks,
+> 
+>         M.
