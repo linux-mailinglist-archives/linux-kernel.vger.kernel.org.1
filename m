@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659202C26FC
+	by mail.lfdr.de (Postfix) with ESMTP id DC7122C26FD
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387909AbgKXNVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:21:09 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34515 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726714AbgKXNVJ (ORCPT
+        id S2387987AbgKXNVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:21:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37813 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726714AbgKXNVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:21:09 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 082EC5C0107;
-        Tue, 24 Nov 2020 08:21:08 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 24 Nov 2020 08:21:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=lzRzm4KvEYKdIaEdFXpNQf1V5ga
-        7opO7foqqpcsFI7w=; b=AShZo6MPDXx8yioK6yjaWOKFRZRnukoAtWuCTNB/dZH
-        +AwlqIjTKn3Rp3XzCQojew98wZVxiJRYKvliLNd6zjZIRrNB7X7IwgbOsLtXnFw/
-        TVH/aFM95IN9ZRbt8lZadwyJ4CkVZfb1V8nB9HpFY+aF3D0IJGrM9bYu8DpW+vWq
-        JerirhYSsZpNlvM+1qSVLl8TX3ZDEuBhgDgUod/6E4iaeD/Zg0glGMCX6JdPlyWu
-        ZAUVo65xuZw2agWVXaomI5pdUjVp0g6Ff8JKNjtRtHSJ54ghyscwSxbA9R21tx06
-        Sni6DemtRdhTeZ4E1+HnW+hnKI4xwps2webrW3AZhKQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=lzRzm4
-        KvEYKdIaEdFXpNQf1V5ga7opO7foqqpcsFI7w=; b=B+PtIFkrDlKCMcAyJR5V4T
-        yGT6kdkWYNgkm0QciCYTZCJ0rD1vDzwyJd1qwUrJaN9tfJpghX+fK4add7TZ3NBT
-        3Xlp9fQIjgk6BeV9FLf39S+lDH3W5ZzCcc5wHRbWJEs6tztZ5Exs/V3qf00lzIXQ
-        zppyf6YcbebfDfPischlnQM/xyBJ68m/Cdh4jJYFSdqCQjNbLH15zCN9t2oAIBWS
-        NTCupBAgS+z9dJkuZE8wtUglT9WGhUU4g+0ZS5UJb8gIy9dlCik4TuL919+vl1w5
-        MI1O1dRrpp2Y11IjYrrdY4GiPYb+wet9CuKao5PjRJk4C099vn9lhnWdC8AUztfA
-        ==
-X-ME-Sender: <xms:wwi9X-up49qjyT6uX9Z8W_skA_RCd7mPBETjaFB5yXV_IfbiIOAEjA>
-    <xme:wwi9XzeXMnQENC1BR2Bvi8hgCDbXYnMeXOKg8GP-YUg9EZ5puL2mDSrLBIelyPNIS
-    GNZ7JFakyxk4z4XCOs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:wwi9X5wkev2OsE8NG6x297VyNXpnLcIGfiT2gLfZB--EVJFjbGBgXA>
-    <xmx:wwi9X5MqmfbXqtmQfbFAnuVtQqZYN0LQ7p4fAVAtbDdRZrnw60kZIQ>
-    <xmx:wwi9X-_2PpHAT1xrAuSNmcUoPiUw6AcwuPVyuZ6qosHHahXaEPodJg>
-    <xmx:wwi9XyYxQrzDNMHKGad3fQ9jVKo6O-H-xDrKNr1qz80nCzB1xbKgDw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BFF473280059;
-        Tue, 24 Nov 2020 08:21:06 -0500 (EST)
-Date:   Tue, 24 Nov 2020 14:21:05 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Michael Klein <michael@fossekall.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add
- gpio-poweroff to DT
-Message-ID: <20201124132105.oai6gejdvdsnbzyx@gilmour>
-References: <20201123161041.2304766-1-michael@fossekall.de>
- <4bf42c9e-9f70-bc30-1a88-44a127cd989a@sholland.org>
- <CAGb2v65=SoATrLDKvXH-EjdVJT3E4e+yQ6Ad0Nn1BQsB9aJvog@mail.gmail.com>
+        Tue, 24 Nov 2020 08:21:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606224095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MY+7jcCufiMBlnAlm49EA25ZRhXVO7Dk5xiZ2I4LXFQ=;
+        b=YWQJtGPnlfh2nw8Genp0Jqk99fwiyVw0ZNkXnk04kJRQ5KFuE7GEbdNFPUSatvjXc5w/Fe
+        bVCnKYLzh607/Uipeet7NkFjavnlCKLv951doOGNN31YyFeF9EO6jQKmvzfMiwb++XnkEq
+        oIZ6irfdizv4DJrfUinrJbsqjkY8OGs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-wqreApeXPZqstMgo0BABzg-1; Tue, 24 Nov 2020 08:21:33 -0500
+X-MC-Unique: wqreApeXPZqstMgo0BABzg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A2A831087D60;
+        Tue, 24 Nov 2020 13:21:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 76EE75D9CC;
+        Tue, 24 Nov 2020 13:21:31 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <276a532e28d290abaaf9cd5969cbacecd51cabc9.camel@perches.com>
+References: <276a532e28d290abaaf9cd5969cbacecd51cabc9.camel@perches.com> <5e9c1d953c6b6254a3288f1e797064666e82a79d.camel@perches.com> <cover.1605896059.git.gustavoars@kernel.org> <51150b54e0b0431a2c401cd54f2c4e7f50e94601.1605896059.git.gustavoars@kernel.org> <748935.1606147853@warthog.procyon.org.uk>
+To:     Joe Perches <joe@perches.com>
+Cc:     dhowells@redhat.com, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 001/141] afs: Fix fall-through warnings for Clang
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tp5irkdtwqk5souk"
-Content-Disposition: inline
-In-Reply-To: <CAGb2v65=SoATrLDKvXH-EjdVJT3E4e+yQ6Ad0Nn1BQsB9aJvog@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1277741.1606224090.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 24 Nov 2020 13:21:30 +0000
+Message-ID: <1277742.1606224090@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Joe Perches <joe@perches.com> wrote:
 
---tp5irkdtwqk5souk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > My preference would be to fall through.  The case number is the state =
+machine
+> > state, as indexed by call->unmarshall.
+> =
 
-On Tue, Nov 24, 2020 at 12:41:37PM +0800, Chen-Yu Tsai wrote:
-> On Tue, Nov 24, 2020 at 12:14 PM Samuel Holland <samuel@sholland.org> wro=
-te:
-> >
-> > On 11/23/20 10:10 AM, Michael Klein wrote:
-> > > Add gpio-poweroff node to allow the board to power itself off after
-> > > shutdown by disabling the SYSTEM and CPUX regulators (U5 resp. U6).
-> > > The RST button can be used to restart the board.
-> >
-> > The PSCI client will override this driver once the PSCI implementation
-> > is upgraded to v0.2 or newer functions. So having this around should
-> > cause no compatibility issues (although it would print an error in dmesg
-> > at that point). This seems like a reasonable thing to do for the other
-> > H2+/H3 boards that use a similar regulator layout.
->=20
-> I wonder if this (gpio-poweroff) works if those regulators are also in th=
-e DT?
+> Then ideally the state machine states should be enums and not numbers
+> and the compiler should use a default block for unhandled states right?
+> =
 
-It's probably not going to probe at all, since both would claim the
-exclusive usage of the GPIO?
+> Is code like call->marshall++ a common style for kernel state machines?
+> Perhaps not.
 
-I guess we should model this properly using the regulator framework, and
-regulator_force_disable allows to bypass any usage count
+How the value is interpreted is unique to each delivery function, of which
+there are a number, since it counts out the separate parts of the xdr enco=
+ding
+for that particular RPC request or reply block.
 
-Maxime
+Maybe "state machine" isn't the right term.
 
---tp5irkdtwqk5souk
-Content-Type: application/pgp-signature; name="signature.asc"
+David
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX70IwQAKCRDj7w1vZxhR
-xVDgAQDtHkWRvMCy6Xtrt2MCroKwIz7m6pjWGS4rUDmBo/khsgEA+ketyMtNKirF
-of9BbDNLz0A1dy0Lit5yoivYKfNsTwk=
-=OxTb
------END PGP SIGNATURE-----
-
---tp5irkdtwqk5souk--
