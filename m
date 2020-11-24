@@ -2,96 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A382C27FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63CD2C27FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388376AbgKXNcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:32:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388288AbgKXNcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:32:03 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25084204EC;
-        Tue, 24 Nov 2020 13:32:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606224722;
-        bh=BGnFCsRilCxxOmWz7iQ42Ucm36iQboKeAVs9xqB4tOs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eu96mBZF7quamjsgCKq03GBLRZKJSiOwwxUpzQfeWUwa+JZTSKRHJVvxcVwLimCJX
-         R5yeiYPriLNA78j836u6Hafic4LhaMUT0zxeitLJxtkvcDpdvqXcT+KoxKjakFFBm4
-         uvTMMFMZneRyAluqFG7YHOpngjmBkijSLnzs5xx0=
-Date:   Tue, 24 Nov 2020 13:31:39 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        id S2388311AbgKXNcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388331AbgKXNb4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:31:56 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC223C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 05:31:55 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khYQ9-0001NR-5k; Tue, 24 Nov 2020 14:31:49 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khYQ8-0008Gk-NO; Tue, 24 Nov 2020 14:31:48 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Russell King <linux@armlinux.org.uk>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] spi: Use bus_type functions for probe, remove and
- shutdown
-Message-ID: <20201124133139.GB4933@sirena.org.uk>
-References: <20201119161604.2633521-1-u.kleine-koenig@pengutronix.de>
- <20201119161604.2633521-2-u.kleine-koenig@pengutronix.de>
- <CGME20201124120324eucas1p189ec6eed6d6477e27a194f9d75d7b43a@eucas1p1.samsung.com>
- <9b86504f-c5f4-4c85-9bef-3d1ee4cbaf9c@samsung.com>
- <20201124130107.2yvgk7kheep5gd6z@pengutronix.de>
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH v2 5/5] amba: Make use of bus_type functions
+Date:   Tue, 24 Nov 2020 14:31:39 +0100
+Message-Id: <20201124133139.3072124-6-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201124133139.3072124-1-uwe@kleine-koenig.org>
+References: <20201124133139.3072124-1-uwe@kleine-koenig.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
-Content-Disposition: inline
-In-Reply-To: <20201124130107.2yvgk7kheep5gd6z@pengutronix.de>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
---jho1yZJdad60DJr+
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Instead of assigning the needed functions for each driver separately do it
+only once in amba_bustype. Move the definition of the functions to their
+proper place among the other callbacks used there. Note that the bus's
+shutdown function might be called for unbound devices, too, so it needs
+additional guarding.
 
-On Tue, Nov 24, 2020 at 02:01:07PM +0100, Uwe Kleine-K=F6nig wrote:
-> On Tue, Nov 24, 2020 at 01:03:25PM +0100, Marek Szyprowski wrote:
+This prepares getting rid of these callbacks in struct device_driver.
 
-> > > +	if (sdrv->shutdown)
-> > > +		sdrv->shutdown(to_spi_device(dev));
-> > >   }
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/amba/bus.c | 158 +++++++++++++++++++++++----------------------
+ 1 file changed, 81 insertions(+), 77 deletions(-)
 
-> > In the above function dev->driver might be NULL, so its use in=20
-> > to_spi_driver() and sdrv->shutdown leads to NULL pointer dereference. I=
-=20
-> > didn't check the details, but a simple check for NULL dev->driver and=
-=20
-> > return is enough to fix this issue. I can send such fix if you want.
+diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+index 48b5d4b4e889..939ca220bf78 100644
+--- a/drivers/amba/bus.c
++++ b/drivers/amba/bus.c
+@@ -174,6 +174,84 @@ static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	return retval;
+ }
+ 
++/*
++ * These are the device model conversion veneers; they convert the
++ * device model structures to our more specific structures.
++ */
++static int amba_probe(struct device *dev)
++{
++	struct amba_device *pcdev = to_amba_device(dev);
++	struct amba_driver *pcdrv = to_amba_driver(dev->driver);
++	const struct amba_id *id = amba_lookup(pcdrv->id_table, pcdev);
++	int ret;
++
++	do {
++		ret = of_clk_set_defaults(dev->of_node, false);
++		if (ret < 0)
++			break;
++
++		ret = dev_pm_domain_attach(dev, true);
++		if (ret)
++			break;
++
++		ret = amba_get_enable_pclk(pcdev);
++		if (ret) {
++			dev_pm_domain_detach(dev, true);
++			break;
++		}
++
++		pm_runtime_get_noresume(dev);
++		pm_runtime_set_active(dev);
++		pm_runtime_enable(dev);
++
++		ret = pcdrv->probe(pcdev, id);
++		if (ret == 0)
++			break;
++
++		pm_runtime_disable(dev);
++		pm_runtime_set_suspended(dev);
++		pm_runtime_put_noidle(dev);
++
++		amba_put_disable_pclk(pcdev);
++		dev_pm_domain_detach(dev, true);
++	} while (0);
++
++	return ret;
++}
++
++static int amba_remove(struct device *dev)
++{
++	struct amba_device *pcdev = to_amba_device(dev);
++	struct amba_driver *drv = to_amba_driver(dev->driver);
++
++	pm_runtime_get_sync(dev);
++	if (drv->remove)
++		drv->remove(pcdev);
++	pm_runtime_put_noidle(dev);
++
++	/* Undo the runtime PM settings in amba_probe() */
++	pm_runtime_disable(dev);
++	pm_runtime_set_suspended(dev);
++	pm_runtime_put_noidle(dev);
++
++	amba_put_disable_pclk(pcdev);
++	dev_pm_domain_detach(dev, true);
++
++	return 0;
++}
++
++static void amba_shutdown(struct device *dev)
++{
++	struct amba_driver *drv;
++
++	if (!dev->driver)
++		return;
++
++	drv = to_amba_driver(dev->driver);
++	if (drv->shutdown)
++		drv->shutdown(to_amba_device(dev));
++}
++
+ #ifdef CONFIG_PM
+ /*
+  * Hooks to provide runtime PM of the pclk (bus clock).  It is safe to
+@@ -239,6 +317,9 @@ struct bus_type amba_bustype = {
+ 	.dev_groups	= amba_dev_groups,
+ 	.match		= amba_match,
+ 	.uevent		= amba_uevent,
++	.probe		= amba_probe,
++	.remove		= amba_remove,
++	.shutdown	= amba_shutdown,
+ 	.dma_configure	= platform_dma_configure,
+ 	.pm		= &amba_pm,
+ };
+@@ -251,80 +332,6 @@ static int __init amba_init(void)
+ 
+ postcore_initcall(amba_init);
+ 
+-/*
+- * These are the device model conversion veneers; they convert the
+- * device model structures to our more specific structures.
+- */
+-static int amba_probe(struct device *dev)
+-{
+-	struct amba_device *pcdev = to_amba_device(dev);
+-	struct amba_driver *pcdrv = to_amba_driver(dev->driver);
+-	const struct amba_id *id = amba_lookup(pcdrv->id_table, pcdev);
+-	int ret;
+-
+-	do {
+-		ret = of_clk_set_defaults(dev->of_node, false);
+-		if (ret < 0)
+-			break;
+-
+-		ret = dev_pm_domain_attach(dev, true);
+-		if (ret)
+-			break;
+-
+-		ret = amba_get_enable_pclk(pcdev);
+-		if (ret) {
+-			dev_pm_domain_detach(dev, true);
+-			break;
+-		}
+-
+-		pm_runtime_get_noresume(dev);
+-		pm_runtime_set_active(dev);
+-		pm_runtime_enable(dev);
+-
+-		ret = pcdrv->probe(pcdev, id);
+-		if (ret == 0)
+-			break;
+-
+-		pm_runtime_disable(dev);
+-		pm_runtime_set_suspended(dev);
+-		pm_runtime_put_noidle(dev);
+-
+-		amba_put_disable_pclk(pcdev);
+-		dev_pm_domain_detach(dev, true);
+-	} while (0);
+-
+-	return ret;
+-}
+-
+-static int amba_remove(struct device *dev)
+-{
+-	struct amba_device *pcdev = to_amba_device(dev);
+-	struct amba_driver *drv = to_amba_driver(dev->driver);
+-
+-	pm_runtime_get_sync(dev);
+-	if (drv->remove)
+-		drv->remove(pcdev);
+-	pm_runtime_put_noidle(dev);
+-
+-	/* Undo the runtime PM settings in amba_probe() */
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
+-
+-	amba_put_disable_pclk(pcdev);
+-	dev_pm_domain_detach(dev, true);
+-
+-	return 0;
+-}
+-
+-static void amba_shutdown(struct device *dev)
+-{
+-	struct amba_driver *drv = to_amba_driver(dev->driver);
+-
+-	if (drv->shutdown)
+-		drv->shutdown(to_amba_device(dev));
+-}
+-
+ /**
+  *	amba_driver_register - register an AMBA device driver
+  *	@drv: amba device driver structure
+@@ -339,9 +346,6 @@ int amba_driver_register(struct amba_driver *drv)
+ 		return -EINVAL;
+ 
+ 	drv->drv.bus = &amba_bustype;
+-	drv->drv.probe = amba_probe;
+-	drv->drv.remove = amba_remove;
+-	drv->drv.shutdown = amba_shutdown;
+ 
+ 	return driver_register(&drv->drv);
+ }
+-- 
+2.29.2
 
-> Ah, I see. shutdown is called for unbound devices, too. Assuming that
-> Mark prefers a fix on top instead of an updated patch: Yes, please send
-> a fix. Otherwise I can do this, too, as I introduced the problem.
-
-Yes, please send an incremental fix (in general in a situation like this
-I'd just send a fix as part of the original report, it's quicker if the
-fix is OK).
-
---jho1yZJdad60DJr+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+9CzoACgkQJNaLcl1U
-h9D/qAf/UOUyww85zv9XA0vyhU1IeYPoa9Q+LladkX1G22c+xHOQZcI4HnHnUZOn
-KnGrWIQYl3x9ad8T/uxUXZDKaR72iM/tH868n4htLeP5CmYCnOHtvfPBZ2yN77xN
-AABxgxbuIIabfuLuJlVuTzTfv7vPlQ0Rbk59wwy1gaeoaZNYSVE9fBF//kEkFddi
-tuDNtJxGF5CP3VNhowGo36XNxFeFWyhI/+m0EE70l3BvrCT2pHL3vuJ/DcfyZL+j
-AFg8GZ7tjqzX9YIxrY9+Hv34ScZnJ+VZ1lsxgXdL+c3Hh/8i5bsE4rPbKUlHtyhd
-gXLGwFqhr+s0KPfw183NgrVdx3vQpA==
-=Vga9
------END PGP SIGNATURE-----
-
---jho1yZJdad60DJr+--
