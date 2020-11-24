@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB0F2C2FDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B112C2FE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390713AbgKXSRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:17:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31282 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404163AbgKXSRO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:17:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606241833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LUJObGYPcxmWCt1F5rpzYy+8ynXVUFmmSX89XWvIPx0=;
-        b=IBs+2YGDR2hhvilYBLNrT23SHZ6eA45UCPVf5n2IsVVEPSI00bmNbwlSZXXrqE2SIhVO0w
-        axjZz04a1/WI1KnHSSMTnVkwDpDaJnT+MgfYzxqzpLT1AEwiCy25X0x65XzQe/NWFOnzPg
-        7PFPLet8FUO4d9Z8DRdw4hCRYw3W9Ig=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-kFERPdGdOIaj_Nega45EAA-1; Tue, 24 Nov 2020 13:17:11 -0500
-X-MC-Unique: kFERPdGdOIaj_Nega45EAA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2390904AbgKXSU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:20:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390824AbgKXSUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:20:25 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E83A180364D;
-        Tue, 24 Nov 2020 18:17:08 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-112-141.ams2.redhat.com [10.36.112.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F81760BE5;
-        Tue, 24 Nov 2020 18:17:02 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
-        "Carlos O'Donell" <carlos@redhat.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
- workaround
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
-        <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
-        <878saq3ofx.fsf@oldenburg2.str.redhat.com>
-        <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
-        <20201124164546.GA14094@infradead.org>
-        <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
-        <X70/uPNt2BA/vUSo@kroah.com>
-        <CAG48ez2NH2Esw_55JiwK1FAzr_qFFyGaPrE_A=iH=dNuVvY6GQ@mail.gmail.com>
-Date:   Tue, 24 Nov 2020 19:17:00 +0100
-In-Reply-To: <CAG48ez2NH2Esw_55JiwK1FAzr_qFFyGaPrE_A=iH=dNuVvY6GQ@mail.gmail.com>
-        (Jann Horn's message of "Tue, 24 Nov 2020 18:30:28 +0100")
-Message-ID: <87h7pezkkj.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA105206D5;
+        Tue, 24 Nov 2020 18:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606242024;
+        bh=lOXjqWp/EDocUOsHP0psXVvpJIskpYJTvzKYdVMCdtg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vst+HhGN7iL5UenlTFysw1eusW9jH8Xax/gzhxICa8NjweLOyvWFzLZNdH9kOjAGr
+         Ij7vfEkoNGkG0xy1uUCQMz1Agv9yjJX+knDS6zLeB/sq3DfFEsJwC/eXvv7HALqRGK
+         5gCZMNiCWVrWaa/2ateZuxRp+bG566FTQyEw+ncE=
+Date:   Tue, 24 Nov 2020 10:20:22 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Antonio Borneo <antonio.borneo@st.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>, kuba@kernel.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        has <has@pengutronix.de>
+Subject: Re: [PATCH] net: stmmac: add flexible PPS to dwmac 4.10a
+Message-ID: <20201124102022.1a6e6085@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <e2b2b623700401538fe91e70495c348c08b5d2e3.camel@st.com>
+References: <20191007154306.95827-1-antonio.borneo@st.com>
+        <20191007154306.95827-5-antonio.borneo@st.com>
+        <20191009152618.33b45c2d@cakuba.netronome.com>
+        <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
+        <e2b2b623700401538fe91e70495c348c08b5d2e3.camel@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Jann Horn:
+On Tue, 24 Nov 2020 15:23:27 +0100 Antonio Borneo wrote:
+> On Tue, 2020-11-24 at 15:15 +0100, Ahmad Fatoum wrote:
+> > On 10.10.19 00:26, Jakub Kicinski wrote: =20
+> > > On Mon, 7 Oct 2019 17:43:06 +0200, Antonio Borneo wrote: =20
+> > > > All the registers and the functionalities used in the callback
+> > > > dwmac5_flex_pps_config() are common between dwmac 4.10a [1] and
+> > > > 5.00a [2].
+> > > >=20
+> > > > Reuse the same callback for dwmac 4.10a too.
+> > > >=20
+> > > > Tested on STM32MP15x, based on dwmac 4.10a.
+> > > >=20
+> > > > [1] DWC Ethernet QoS Databook 4.10a October 2014
+> > > > [2] DWC Ethernet QoS Databook 5.00a September 2017
+> > > >=20
+> > > > Signed-off-by: Antonio Borneo <antonio.borneo@st.com> =20
+> > >=20
+> > > Applied to net-next. =20
+> >=20
+> > This patch seems to have been fuzzily applied at the wrong location.
+> > The diff describes extension of dwmac 4.10a and so does the @@ line:
+> >=20
+> > =C2=A0=C2=A0@@ -864,6 +864,7 @@ const struct stmmac_ops dwmac410_ops =
+=3D {
+> >=20
+> > The patch was applied mainline as 757926247836 ("net: stmmac: add
+> > flexible PPS to dwmac 4.10a"), but it extends dwmac4_ops instead:
+> >=20
+> > =C2=A0=C2=A0@@ -938,6 +938,7 @@ const struct stmmac_ops dwmac4_ops =3D {
+> >=20
+> > I don't know if dwmac4 actually supports FlexPPS, so I think it's
+> > better to be on the safe side and revert 757926247836 and add the
+> > change for the correct variant. =20
+>=20
+> Agree,
+> the patch get applied to the wrong place!
 
-> But if you can't tell whether the more modern syscall failed because
-> of a seccomp filter, you may be forced to retry with an older syscall
-> even on systems where the new syscall works fine, and such a fallback
-> may reduce security or reliability if you're trying to use some flags
-> that only the new syscall provides for security, or something like
-> that. (As a contrived example, imagine being forced to retry any
-> tgkill() that fails with EPERM as a tkill() just in case you're
-> running under a seccomp filter.)
+:-o
 
-We have exactly this situation with faccessat2 and faccessat today.
-EPERM could mean a reject from a LSM, and we really don't want to do our
-broken fallback in this case because it will mask the EPERM error from
-the LSM (and the sole purpose of faccessat2 is to get that error).
+This happens sometimes with stable backports but I've never seen it
+happen working on "current" branches.
 
-This is why I was so eager to start using faccessat2 in glibc, and we
-are now encountering breakage with container runtimes.  Applications
-call faccessat (with a non-zero flags argument) today, and they now get
-routed to the faccessat2 entry point, without needing recompilation or
-anything like that.
+Sorry about that!
 
-We have the same problem for any new system call, but it's different
-this time because it affects 64-bit hosts *and* existing applications.
-
-And as I explained earlier, I want to take this opportunity to get
-consensus how to solve this properly, so that we are ready for a new
-system call where incorrect fallback would definitely reintroduce a
-security issue.  Whether it's that ugly probing sequence, a change to
-the OCI specification that gets deployed in a reasonable time frame, or
-something else that I haven't thought of=E2=80=94I do not have a very strong
-preference, although I lean towards the spec change myself.  But I do
-feel that we shouldn't throw in a distro-specific patch to paper over
-the current faccessat2 issue and forget about it.
-
-Thanks,
-Florian
---=20
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'N=
-eill
-
+Would you mind sending the appropriate patches? I can do the revert if
+you prefer, but since you need to send the fix anyway..
