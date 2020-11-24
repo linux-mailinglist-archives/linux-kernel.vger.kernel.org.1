@@ -2,66 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7192C2F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687582C2F1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404156AbgKXRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:51:37 -0500
-Received: from gate.crashing.org ([63.228.1.57]:35981 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403999AbgKXRvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:51:36 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AOHkEuE024001;
-        Tue, 24 Nov 2020 11:46:14 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AOHkDC4024000;
-        Tue, 24 Nov 2020 11:46:13 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Tue, 24 Nov 2020 11:46:13 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>
-Subject: Re: [PATCH v2 3/4] Kbuild: make DWARF version a choice
-Message-ID: <20201124174613.GW2672@gate.crashing.org>
-References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com> <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-4-ndesaulniers@google.com> <20201123232210.GA208735@rani.riverdale.lan> <20201124003357.GR2672@gate.crashing.org> <20201124165602.GA343230@rani.riverdale.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S2404006AbgKXRqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:46:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403935AbgKXRqy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:46:54 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DF9C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:46:53 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e3600ab9d18fd60f9afc5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3600:ab9d:18fd:60f9:afc5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4DE011EC04E0;
+        Tue, 24 Nov 2020 18:46:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606240012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=8dJpjvvWO5pfa4XyOgzVakFgWDSeoQj+BLatQT9JhCo=;
+        b=SXY6MlUA2R+/wPdnOwzE9bL99ry2dvmEyLzM8UkcCVpjOYWzI8lNrIGfbTCZiiuwUVMCcO
+        dcRbG3pLU0Uq5Xi9En5FzGyl3LQezVS5R5b7HJUtTjf8uRsbaLr6kyoqSVc+yLFm+gTruW
+        U8+Y17RoDFYGG8nBIPTUF2VYvSi473I=
+Date:   Tue, 24 Nov 2020 18:46:47 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@amacapital.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v0 00/19] x86/insn: Add an insn_decode() API
+Message-ID: <20201124174647.GI4009@zn.tnic>
+References: <20201124101952.7909-1-bp@alien8.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201124165602.GA343230@rani.riverdale.lan>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20201124101952.7909-1-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:56:02AM -0500, Arvind Sankar wrote:
-> On Mon, Nov 23, 2020 at 06:33:57PM -0600, Segher Boessenkool wrote:
-> > On Mon, Nov 23, 2020 at 06:22:10PM -0500, Arvind Sankar wrote:
-> > > Btw, is -gsplit-dwarf at all useful for assembler files?
-> > 
-> > If you invoke the assembler via the compiler, with that flag it still
-> > creates separate .o and .dwo files (via objcopy invocations as usual).
-> > Whether that is useful depends on if you have any debug info that can
-> > be split :-)
+On Tue, Nov 24, 2020 at 11:19:33AM +0100, Borislav Petkov wrote:
+> In any case, at least the case where I give it
 > 
-> Right, the latter was what I was really asking :) We don't currently
-> pass -gsplit-dwarf for assembler and I was wondering if that mattered.
+> 0x48 0xcf 0x48 0x83
+> 
+> and say that buf size is 4, should return an error because the second
+> insn is incomplete. So I need to go look at that now.
 
-If there is any debug info in the .s files, it will all end up in the .o
-file, not a .dwo file.  That may matter aesthetically, and it can cost a
-few bytes of disk space, but it doesn't matter functionally (GDB will
-search in both places).
+Ok, got it:
 
+./arch/x86/tools/insn_sanity: Success: decoded and checked 10000 random instructions with 0 errors (seed:0x826fdf9c)
+insn buffer:
+0x48 0xcf 0x48 0x83 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 
+supplied buf size: 15, ret 0
+supplied buf size: 2, ret 0
+supplied buf size: 3, ret 0
+supplied buf size: 4, ret 0
+supplied buf size: 1, ret -22
 
-Segher
+the current decoder simply decodes the *first* insn in the buffer it
+encounters and that's it.
+
+When you give it a buffer of size smaller than the first instruction:
+
+supplied buf size: 1, ret -22
+
+while the first insn is 2 bytes long:
+
+0x48 0xcf (IRETQ)
+
+then it signals an error.
+
+Andy, does that work for your use cases?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
