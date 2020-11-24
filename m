@@ -2,232 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FFB2C3372
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457142C3375
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733151AbgKXVoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:44:25 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:34236 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729173AbgKXVoZ (ORCPT
+        id S1733202AbgKXVpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:45:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36551 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729173AbgKXVpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:44:25 -0500
-Received: by mail-oi1-f194.google.com with SMTP id s18so383466oih.1;
-        Tue, 24 Nov 2020 13:44:24 -0800 (PST)
+        Tue, 24 Nov 2020 16:45:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606254307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/01D88jyTMdO8ru48uxIMGQv6yUqBjrpOvNUgxnu8cM=;
+        b=g0OTq0uli4XZqS82Ml07DxjQ1Iz5GHI8t284/FvKAXJnVoWKPWww0UU5nNY7oQd4IHuxJy
+        Rr+GONgBH4DIUOID2pckEiHMTh3Cay/sRuZDXuTSC2MADVl8aydVPHLoK7L3Nnezx596BS
+        3PSZK0i5ZNsoZwVPKxGtBHEBLJ5XYWI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-C4SejxuCNW6EmUEgWg7mxg-1; Tue, 24 Nov 2020 16:45:03 -0500
+X-MC-Unique: C4SejxuCNW6EmUEgWg7mxg-1
+Received: by mail-ed1-f70.google.com with SMTP id x15so170632edr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:45:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ynn4WsuenF5rxzvm4PJlKi7riFcaJvh4r7eszSzg7Ac=;
-        b=gHns9CpRO/gUeYtnlWJwIZlGgDnJxuByJHTZXAns2ZqvkU7dgJzQA7UqqBUW63A4P2
-         5DrHgXLltyvqqG6lIlu2LEbyBbkx5LSoQCk7my8vdpYYURrVDYVMZjbrrVW6bGm5lml1
-         Vw1nCJfmr57ugoDmuwXU6KjcK0Hm8TIjqT1bC9o4bRX2g+JTUJug0YG8Y0JQxaNaUccH
-         GawYeMcrajO9ybDsPavwJGk6t34xfbG4/CRcQMu/QR9LrJlw4g3jGk4Pf/iCPlq7Jw/X
-         0p24dF9IrmJWTUnKYYsM9du+gAvda5QIVm9DgXWFmykUscyQdNTpx4w2uVYzABU3uRU8
-         79rw==
-X-Gm-Message-State: AOAM531Oesrw6Uuj79XByfY4j5L45nyivDFciGs66i0R1KByNk3Ea7Ij
-        KmVz4ei3M86s55ierYIJi0tAuUBcNFq/wQ==
-X-Google-Smtp-Source: ABdhPJzGctiO1AiWe+TjXKq0gkjo8ZSE4+2hj5Tr5cmnByARxuAX9+YmAZ6YrB4WNeN4FjqsKtfqTA==
-X-Received: by 2002:aca:4783:: with SMTP id u125mr191171oia.23.1606254254725;
-        Tue, 24 Nov 2020 13:44:14 -0800 (PST)
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com. [209.85.167.178])
-        by smtp.gmail.com with ESMTPSA id w6sm130475otj.12.2020.11.24.13.44.13
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/01D88jyTMdO8ru48uxIMGQv6yUqBjrpOvNUgxnu8cM=;
+        b=ac82gW/r6DEGS1nH+eEqcOz2ygpvOL5Esf4y/qF3oX6ZgecGTe/AAmQztkgtjjzkrn
+         iIzbIc81mHD5DzJXG3W/uYJKgBfm7+sJjbgVcU+S304VFKSGqUvV7U3zRnk+fupFe6RS
+         0vH/WTXZOHYgfwSfdCDNjpcAWaSO+VCFZ4TR7tKgr57AQigCyzZIBcQElfbJzB1QOFuE
+         yQy4cWPKMDFypb9vmfqsE9DI0D5eVTborLsbjy55VWlHPRPEMfNsqPT9ElYIJRSpgnsU
+         R+ZAkmVhDxKzgAo1MeTjagCklIhJm+pJgKTejNP25UJj+dv/SSbES5IBFSRtOZl04UY6
+         oBQA==
+X-Gm-Message-State: AOAM533jVE116fkysjqxNTKiDVCx4TXZ36jJ7HafG85AF1gfQGbEZWLX
+        H5jgvIpxuEj3xWiYAcr2Udetx6XR7zAfbfa6KaEf41LUVQ5eToVEzdvKzRtdHB2fBa3hyQA7DTR
+        1HHIy2pV3v96bhcSP3WFDl3He
+X-Received: by 2002:a17:906:86ca:: with SMTP id j10mr385030ejy.507.1606254302670;
+        Tue, 24 Nov 2020 13:45:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzgUr/8n9j9f3MJR095+6mF/OIbHa1SPfLLggt7GZEZ7hiAVDFRG9jf5/qfU/S2TuZyF/Hw2Q==
+X-Received: by 2002:a17:906:86ca:: with SMTP id j10mr385018ejy.507.1606254302453;
+        Tue, 24 Nov 2020 13:45:02 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id y24sm88296edt.15.2020.11.24.13.45.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 13:44:13 -0800 (PST)
-Received: by mail-oi1-f178.google.com with SMTP id s18so382921oih.1;
-        Tue, 24 Nov 2020 13:44:13 -0800 (PST)
-X-Received: by 2002:aca:db0b:: with SMTP id s11mr180582oig.51.1606254252864;
- Tue, 24 Nov 2020 13:44:12 -0800 (PST)
+        Tue, 24 Nov 2020 13:45:01 -0800 (PST)
+Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
+To:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Matthew Garrett <mjg59@google.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+References: <20201015214430.17937-1-jsnitsel@redhat.com>
+ <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
+ <87d009c0pn.fsf@redhat.com> <20201124032623.GA40007@kernel.org>
+ <871rgiod53.fsf@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7779bfbc-f96b-dd81-313f-36f451ce9c32@redhat.com>
+Date:   Tue, 24 Nov 2020 22:45:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201124062234.678-1-liwei391@huawei.com>
-In-Reply-To: <20201124062234.678-1-liwei391@huawei.com>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Tue, 24 Nov 2020 15:44:01 -0600
-X-Gmail-Original-Message-ID: <CADRPPNQDW4w-4so=smxqLnkBpDzF82NPXmpZ-pyVz_aTwVzREw@mail.gmail.com>
-Message-ID: <CADRPPNQDW4w-4so=smxqLnkBpDzF82NPXmpZ-pyVz_aTwVzREw@mail.gmail.com>
-Subject: Re: [PATCH] net/ethernet/freescale: Fix incorrect IS_ERR_VALUE macro usages
-To:     Wei Li <liwei391@huawei.com>, Zhao Qiang <qiang.zhao@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Kumar Gala <galak@kernel.crashing.org>,
-        Timur Tabi <timur@freescale.com>,
-        Netdev <netdev@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        lkml <linux-kernel@vger.kernel.org>, guohanjun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <871rgiod53.fsf@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:24 AM Wei Li <liwei391@huawei.com> wrote:
->
-> IS_ERR_VALUE macro should be used only with unsigned long type.
-> Especially it works incorrectly with unsigned shorter types on
-> 64bit machines.
+Hi,
 
-This is truly a problem for the driver to run on 64-bit architectures.
-But from an earlier discussion
-https://patchwork.kernel.org/project/linux-kbuild/patch/1464384685-347275-1-git-send-email-arnd@arndb.de/,
-the preferred solution would be removing the IS_ERR_VALUE() usage or
-make the values to be unsigned long.
+On 11/24/20 6:52 PM, Jerry Snitselaar wrote:
+> 
+> Jarkko Sakkinen @ 2020-11-23 20:26 MST:
+> 
+>> On Wed, Nov 18, 2020 at 11:36:20PM -0700, Jerry Snitselaar wrote:
+>>>
+>>> Matthew Garrett @ 2020-10-15 15:39 MST:
+>>>
+>>>> On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
+>>>>>
+>>>>> There is a misconfiguration in the bios of the gpio pin used for the
+>>>>> interrupt in the T490s. When interrupts are enabled in the tpm_tis
+>>>>> driver code this results in an interrupt storm. This was initially
+>>>>> reported when we attempted to enable the interrupt code in the tpm_tis
+>>>>> driver, which previously wasn't setting a flag to enable it. Due to
+>>>>> the reports of the interrupt storm that code was reverted and we went back
+>>>>> to polling instead of using interrupts. Now that we know the T490s problem
+>>>>> is a firmware issue, add code to check if the system is a T490s and
+>>>>> disable interrupts if that is the case. This will allow us to enable
+>>>>> interrupts for everyone else. If the user has a fixed bios they can
+>>>>> force the enabling of interrupts with tpm_tis.interrupts=1 on the
+>>>>> kernel command line.
+>>>>
+>>>> I think an implication of this is that systems haven't been
+>>>> well-tested with interrupts enabled. In general when we've found a
+>>>> firmware issue in one place it ends up happening elsewhere as well, so
+>>>> it wouldn't surprise me if there are other machines that will also be
+>>>> unhappy with interrupts enabled. Would it be possible to automatically
+>>>> detect this case (eg, if we get more than a certain number of
+>>>> interrupts in a certain timeframe immediately after enabling the
+>>>> interrupt) and automatically fall back to polling in that case? It
+>>>> would also mean that users with fixed firmware wouldn't need to pass a
+>>>> parameter.
+>>>
+>>> I believe Matthew is correct here. I found another system today
+>>> with completely different vendor for both the system and the tpm chip.
+>>> In addition another Lenovo model, the L490, has the issue.
+>>>
+>>> This initial attempt at a solution like Matthew suggested works on
+>>> the system I found today, but I imagine it is all sorts of wrong.
+>>> In the 2 systems where I've seen it, there are about 100000 interrupts
+>>> in around 1.5 seconds, and then the irq code shuts down the interrupt
+>>> because they aren't being handled.
+>>>
+>>>
+>>> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+>>> index 49ae09ac604f..478e9d02a3fa 100644
+>>> --- a/drivers/char/tpm/tpm_tis_core.c
+>>> +++ b/drivers/char/tpm/tpm_tis_core.c
+>>> @@ -27,6 +27,11 @@
+>>>  #include "tpm.h"
+>>>  #include "tpm_tis_core.h"
+>>>
+>>> +static unsigned int time_start = 0;
+>>> +static bool storm_check = true;
+>>> +static bool storm_killed = false;
+>>> +static u32 irqs_fired = 0;
+>>
+>> Maybe kstat_irqs() would be a better idea than ad hoc stats.
+>>
+> 
+> Thanks, yes that would be better.
+> 
+>>> +
+>>>  static void tpm_tis_clkrun_enable(struct tpm_chip *chip, bool value);
+>>>
+>>>  static void tpm_tis_enable_interrupt(struct tpm_chip *chip, u8 mask)
+>>> @@ -464,25 +469,31 @@ static int tpm_tis_send_data(struct tpm_chip *chip, const u8 *buf, size_t len)
+>>>         return rc;
+>>>  }
+>>>
+>>> -static void disable_interrupts(struct tpm_chip *chip)
+>>> +static void __disable_interrupts(struct tpm_chip *chip)
+>>>  {
+>>>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>>>         u32 intmask;
+>>>         int rc;
+>>>
+>>> -       if (priv->irq == 0)
+>>> -               return;
+>>> -
+>>>         rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
+>>>         if (rc < 0)
+>>>                 intmask = 0;
+>>>
+>>>         intmask &= ~TPM_GLOBAL_INT_ENABLE;
+>>>         rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
+>>> +       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
+>>> +}
+>>> +
+>>> +static void disable_interrupts(struct tpm_chip *chip)
+>>> +{
+>>> +       struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>>>
+>>> +       if (priv->irq == 0)
+>>> +               return;
+>>> +
+>>> +       __disable_interrupts(chip);
+>>>         devm_free_irq(chip->dev.parent, priv->irq, chip);
+>>>         priv->irq = 0;
+>>> -       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
+>>>  }
+>>>
+>>>  /*
+>>> @@ -528,6 +539,12 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
+>>>         int rc, irq;
+>>>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>>>
+>>> +       if (unlikely(storm_killed)) {
+>>> +               devm_free_irq(chip->dev.parent, priv->irq, chip);
+>>> +               priv->irq = 0;
+>>> +               storm_killed = false;
+>>> +       }
+>>
+>> OK this kind of bad solution because if tpm_tis_send() is not called,
+>> then IRQ is never freed. AFAIK, devres_* do not sleep but use spin
+>> lock, i.e. you could render out both storm_check and storm_killed.
+>>
+> 
+> Is there a way to flag it for freeing later while in an interrupt
+> context? I'm not sure where to clean it up since devm_free_irq can't be
+> called in tis_int_handler.
 
-It looks like we are having a bigger problem with the 64-bit support
-for the driver that the offset variables can also be real pointers
-which cannot be held with 32-bit data types(when uf_info->bd_mem_part
-== MEM_PART_SYSTEM).  So actually we have to change these offsets to
-unsigned long, otherwise we are having more serious issues on 64-bit
-systems.  Are you willing to make such changes or you want us to deal
-with it?
+You could add a workqueue work-struct just for this and queue that up
+to do the free when you detect the storm. That will then run pretty much
+immediately, avoiding the storm going on for (much) longer.
+
+> Before diving further into that though, does anyone else have an opinion
+> on ripping out the irq code, and just using polling? We've been only
+> polling since 2015 anyways.
+
+Given James Bottomley's reply I guess it would be worthwhile to get the
+storm detection to work.
 
 Regards,
-Leo
->
-> Fixes: 4c35630ccda5 ("[POWERPC] Change rheap functions to use ulongs instead of pointers")
-> Signed-off-by: Wei Li <liwei391@huawei.com>
-> ---
->  drivers/net/ethernet/freescale/ucc_geth.c | 30 +++++++++++------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
-> index 714b501be7d0..8656d9be256a 100644
-> --- a/drivers/net/ethernet/freescale/ucc_geth.c
-> +++ b/drivers/net/ethernet/freescale/ucc_geth.c
-> @@ -286,7 +286,7 @@ static int fill_init_enet_entries(struct ucc_geth_private *ugeth,
->                 else {
->                         init_enet_offset =
->                             qe_muram_alloc(thread_size, thread_alignment);
-> -                       if (IS_ERR_VALUE(init_enet_offset)) {
-> +                       if (IS_ERR_VALUE((unsigned long)(int)init_enet_offset)) {
->                                 if (netif_msg_ifup(ugeth))
->                                         pr_err("Can not allocate DPRAM memory\n");
->                                 qe_put_snum((u8) snum);
-> @@ -2223,7 +2223,7 @@ static int ucc_geth_alloc_tx(struct ucc_geth_private *ugeth)
->                         ugeth->tx_bd_ring_offset[j] =
->                             qe_muram_alloc(length,
->                                            UCC_GETH_TX_BD_RING_ALIGNMENT);
-> -                       if (!IS_ERR_VALUE(ugeth->tx_bd_ring_offset[j]))
-> +                       if (!IS_ERR_VALUE((unsigned long)(int)ugeth->tx_bd_ring_offset[j]))
->                                 ugeth->p_tx_bd_ring[j] =
->                                     (u8 __iomem *) qe_muram_addr(ugeth->
->                                                          tx_bd_ring_offset[j]);
-> @@ -2300,7 +2300,7 @@ static int ucc_geth_alloc_rx(struct ucc_geth_private *ugeth)
->                         ugeth->rx_bd_ring_offset[j] =
->                             qe_muram_alloc(length,
->                                            UCC_GETH_RX_BD_RING_ALIGNMENT);
-> -                       if (!IS_ERR_VALUE(ugeth->rx_bd_ring_offset[j]))
-> +                       if (!IS_ERR_VALUE((unsigned long)(int)ugeth->rx_bd_ring_offset[j]))
->                                 ugeth->p_rx_bd_ring[j] =
->                                     (u8 __iomem *) qe_muram_addr(ugeth->
->                                                          rx_bd_ring_offset[j]);
-> @@ -2510,7 +2510,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->         ugeth->tx_glbl_pram_offset =
->             qe_muram_alloc(sizeof(struct ucc_geth_tx_global_pram),
->                            UCC_GETH_TX_GLOBAL_PRAM_ALIGNMENT);
-> -       if (IS_ERR_VALUE(ugeth->tx_glbl_pram_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)ugeth->tx_glbl_pram_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_tx_glbl_pram\n");
->                 return -ENOMEM;
-> @@ -2530,7 +2530,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->                            sizeof(struct ucc_geth_thread_data_tx) +
->                            32 * (numThreadsTxNumerical == 1),
->                            UCC_GETH_THREAD_DATA_ALIGNMENT);
-> -       if (IS_ERR_VALUE(ugeth->thread_dat_tx_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)ugeth->thread_dat_tx_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_thread_data_tx\n");
->                 return -ENOMEM;
-> @@ -2557,7 +2557,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->             qe_muram_alloc(ug_info->numQueuesTx *
->                            sizeof(struct ucc_geth_send_queue_qd),
->                            UCC_GETH_SEND_QUEUE_QUEUE_DESCRIPTOR_ALIGNMENT);
-> -       if (IS_ERR_VALUE(ugeth->send_q_mem_reg_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)ugeth->send_q_mem_reg_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_send_q_mem_reg\n");
->                 return -ENOMEM;
-> @@ -2597,7 +2597,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->                 ugeth->scheduler_offset =
->                     qe_muram_alloc(sizeof(struct ucc_geth_scheduler),
->                                    UCC_GETH_SCHEDULER_ALIGNMENT);
-> -               if (IS_ERR_VALUE(ugeth->scheduler_offset)) {
-> +               if (IS_ERR_VALUE((unsigned long)(int)ugeth->scheduler_offset)) {
->                         if (netif_msg_ifup(ugeth))
->                                 pr_err("Can not allocate DPRAM memory for p_scheduler\n");
->                         return -ENOMEM;
-> @@ -2644,7 +2644,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->                     qe_muram_alloc(sizeof
->                                    (struct ucc_geth_tx_firmware_statistics_pram),
->                                    UCC_GETH_TX_STATISTICS_ALIGNMENT);
-> -               if (IS_ERR_VALUE(ugeth->tx_fw_statistics_pram_offset)) {
-> +               if (IS_ERR_VALUE((unsigned long)(int)ugeth->tx_fw_statistics_pram_offset)) {
->                         if (netif_msg_ifup(ugeth))
->                                 pr_err("Can not allocate DPRAM memory for p_tx_fw_statistics_pram\n");
->                         return -ENOMEM;
-> @@ -2681,7 +2681,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->         ugeth->rx_glbl_pram_offset =
->             qe_muram_alloc(sizeof(struct ucc_geth_rx_global_pram),
->                            UCC_GETH_RX_GLOBAL_PRAM_ALIGNMENT);
-> -       if (IS_ERR_VALUE(ugeth->rx_glbl_pram_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)ugeth->rx_glbl_pram_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_rx_glbl_pram\n");
->                 return -ENOMEM;
-> @@ -2700,7 +2700,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->             qe_muram_alloc(numThreadsRxNumerical *
->                            sizeof(struct ucc_geth_thread_data_rx),
->                            UCC_GETH_THREAD_DATA_ALIGNMENT);
-> -       if (IS_ERR_VALUE(ugeth->thread_dat_rx_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)ugeth->thread_dat_rx_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_thread_data_rx\n");
->                 return -ENOMEM;
-> @@ -2721,7 +2721,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->                     qe_muram_alloc(sizeof
->                                    (struct ucc_geth_rx_firmware_statistics_pram),
->                                    UCC_GETH_RX_STATISTICS_ALIGNMENT);
-> -               if (IS_ERR_VALUE(ugeth->rx_fw_statistics_pram_offset)) {
-> +               if (IS_ERR_VALUE((unsigned long)(int)ugeth->rx_fw_statistics_pram_offset)) {
->                         if (netif_msg_ifup(ugeth))
->                                 pr_err("Can not allocate DPRAM memory for p_rx_fw_statistics_pram\n");
->                         return -ENOMEM;
-> @@ -2741,7 +2741,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->             qe_muram_alloc(ug_info->numQueuesRx *
->                            sizeof(struct ucc_geth_rx_interrupt_coalescing_entry)
->                            + 4, UCC_GETH_RX_INTERRUPT_COALESCING_ALIGNMENT);
-> -       if (IS_ERR_VALUE(ugeth->rx_irq_coalescing_tbl_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)ugeth->rx_irq_coalescing_tbl_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_rx_irq_coalescing_tbl\n");
->                 return -ENOMEM;
-> @@ -2807,7 +2807,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->                            (sizeof(struct ucc_geth_rx_bd_queues_entry) +
->                             sizeof(struct ucc_geth_rx_prefetched_bds)),
->                            UCC_GETH_RX_BD_QUEUES_ALIGNMENT);
-> -       if (IS_ERR_VALUE(ugeth->rx_bd_qs_tbl_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)ugeth->rx_bd_qs_tbl_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_rx_bd_qs_tbl\n");
->                 return -ENOMEM;
-> @@ -2892,7 +2892,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->                 ugeth->exf_glbl_param_offset =
->                     qe_muram_alloc(sizeof(struct ucc_geth_exf_global_pram),
->                 UCC_GETH_RX_EXTENDED_FILTERING_GLOBAL_PARAMETERS_ALIGNMENT);
-> -               if (IS_ERR_VALUE(ugeth->exf_glbl_param_offset)) {
-> +               if (IS_ERR_VALUE((unsigned long)(int)ugeth->exf_glbl_param_offset)) {
->                         if (netif_msg_ifup(ugeth))
->                                 pr_err("Can not allocate DPRAM memory for p_exf_glbl_param\n");
->                         return -ENOMEM;
-> @@ -3026,7 +3026,7 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->
->         /* Allocate InitEnet command parameter structure */
->         init_enet_pram_offset = qe_muram_alloc(sizeof(struct ucc_geth_init_pram), 4);
-> -       if (IS_ERR_VALUE(init_enet_pram_offset)) {
-> +       if (IS_ERR_VALUE((unsigned long)(int)init_enet_pram_offset)) {
->                 if (netif_msg_ifup(ugeth))
->                         pr_err("Can not allocate DPRAM memory for p_init_enet_pram\n");
->                 return -ENOMEM;
-> --
-> 2.17.1
->
+
+Hans
+
+
+> 
+>>> +
+>>>         if (!(chip->flags & TPM_CHIP_FLAG_IRQ) || priv->irq_tested)
+>>>                 return tpm_tis_send_main(chip, buf, len);
+>>>
+>>> @@ -748,6 +765,21 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+>>>         u32 interrupt;
+>>>         int i, rc;
+>>>
+>>> +       if (storm_check) {
+>>> +               irqs_fired++;
+>>> +
+>>> +               if (!time_start) {
+>>> +                       time_start = jiffies_to_msecs(jiffies);
+>>> +               } else if ((irqs_fired > 1000) && (jiffies_to_msecs(jiffies) - jiffies < 500)) {
+>>> +                       __disable_interrupts(chip);
+>>> +                       storm_check = false;
+>>> +                       storm_killed = true;
+>>> +                       return IRQ_HANDLED;
+>>> +               } else if ((jiffies_to_msecs(jiffies) - time_start > 500) && (irqs_fired < 1000)) {
+>>> +                       storm_check = false;
+>>> +               }
+>>> +       }
+>>> +
+>>>         rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
+>>>         if (rc < 0)
+>>>                 return IRQ_NONE;
+>>>
+>>>
+>>
+>> /Jarkko
+> 
+
