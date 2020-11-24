@@ -2,142 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289652C315B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1022C315E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgKXTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
+        id S1727946AbgKXTtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:49:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgKXTs4 (ORCPT
+        with ESMTP id S1725950AbgKXTtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:48:56 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0970FC0613D6;
-        Tue, 24 Nov 2020 11:48:55 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id l11so30651028lfg.0;
-        Tue, 24 Nov 2020 11:48:54 -0800 (PST)
+        Tue, 24 Nov 2020 14:49:08 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC1DC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:49:08 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id z24so6516739oto.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:49:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0ABczXePjWBXVIgsHwJzVxBg/ziA6ahdg050i6s0ToQ=;
-        b=vJBXe9q4Zp32NaiUYF3dR8NC6Vb6CZGE6HXje6hPOVG+BTWi9h7q/G6NeNY32UHhyH
-         wv8SG+Riq/WygAE6bVhFUoOCczobyiqzYPdBk8No8vAD/WrrTkDKSejZx+kKeG4LuCeL
-         Ngc9GzWptvm7UOXIr6RA0WIO94TUcHfqsrKwMfLngDTPNDdLfxygcf1rgTVNDUo7ngd7
-         Oea/TBG5pF03LgACcpdkTPX9uC+CjeAL1Uh8FrwAc1W3LgW4CcKUzyyQ+XxE5wsdJjrH
-         CSqoxgdQCJkhtQ2bsAYABhbOLDXS9NvQGVZVWKaKdYsyEbtyhsnTde5VvSs8fI34ZGZG
-         BGCg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TXr8f8KOoI62ZBAydM3E3l/NgJex/Hfj9ohTottMWUE=;
+        b=RMgHV+/3+RvR2X+FQ9eY0QVuyCd0SZFtcmLoT61HRvOKcvx2GyQNn7aFeGe3D4lzHm
+         Tjpn1qJEcr4Zb4hWR9xbZgn33DgzHBqZrP7fMEeu49Hw3ErYmQk79Yz5dqFqCVZkiNLM
+         69DiHFhCeOwTDjGDzVoWrIf9kMcdXRugVjOI54CL3TRfEF3HccG2Bzn1DJD6qVdqXir8
+         syy5Ae4BaEJfJz2asOlxFR6F7A5H89LVqNy0hKStOscU8bBFVzRMioQj4iKrc/91jJ4M
+         HsQnjP0erBfRWPXRw86dFVO0+HHaA/LlYuibgJoRaqhBq5jeBVnwFpGX6w8Jc1e+Q74I
+         hO0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0ABczXePjWBXVIgsHwJzVxBg/ziA6ahdg050i6s0ToQ=;
-        b=bM0agFCUHj1EmuUfPRNNiymQjOUi9yAFbFgHz+9zoW4kw0uMBGcytDtIzSSgmxDHbe
-         L/lJxmAfNvjoUvMhSOZhHYk7BbjJMAwI+hgtUj+Get+Kkd1QGe90i6eZYbszSOoFSYrU
-         pcC4zlMyfRwH311lte3uztgXpXBo4l/rlC8oJSLEtH4F0RZzIxgQSWH28n7crTFbxfqP
-         BEhu/NPSU6oP3ET6av6GAZiolv4Hpyxt07XciqLaOgRo0ZgpffMBrkr28NvDUg69iIec
-         2wF+6xw8sZbLheYnbBCkDCFDLPPndAaqh6SME0bnuEyV4YckXMkNMlriaUui+HbXYBh6
-         lfvA==
-X-Gm-Message-State: AOAM533Z3v2/CAjU+Xqo0xZluo1tB0uVpdW5UJ4CZk6Vw6WQBiPNcdRJ
-        B4UkZAW4wLd4ezZfM6Iai84=
-X-Google-Smtp-Source: ABdhPJxBjXEKhp5+OLH51KVWid1l1B3nwnTj57EAEXlliB9/hvXXKRA7BVKGdv5VkOKDzpknbhSwSg==
-X-Received: by 2002:a19:98d:: with SMTP id 135mr2592195lfj.357.1606247333515;
-        Tue, 24 Nov 2020 11:48:53 -0800 (PST)
-Received: from localhost.localdomain ([95.153.130.48])
-        by smtp.gmail.com with ESMTPSA id f17sm1833232lfc.158.2020.11.24.11.48.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TXr8f8KOoI62ZBAydM3E3l/NgJex/Hfj9ohTottMWUE=;
+        b=Zs+KIm3JPytjeDImL+Ct3y/+NBTQ1XO+9kHh99hT+1xeOzjj+q9H5hs/aM5487hAJO
+         OOqjhxsKo6K84VQTn9+jdVsIT6zUIQ1fmluGpuQVCWdzUuubvgrLMrX7ghvZQVCsnFsw
+         /8ACK53BU5ZcLF505CTUKpUx+4rOFbaYqfB2WXYO0/lbZ5SP7Sa1cdU9K7MmAncS6osi
+         vFz9XxnAsZiOniMbJrIp7MGupiQNDpGXI371GfCdQqOsakbxQv7uCjZIjWyBOlFiVdG3
+         Gjl+gKvEsMUtic+PLG0s6PZeceErkTAyZCGoBrbo0Nta/kqfaPJ6M5iIdcADQfIIieUA
+         PIsA==
+X-Gm-Message-State: AOAM531S81BtSnSr1m7lv8KGKUMCR1Rjn3SeGg75s6bptSKE6FZkagJt
+        Grth4zK+OKBYMS+UdBKzJ5BoYA==
+X-Google-Smtp-Source: ABdhPJyusGtfRjGJ4lcgyE01H/iy94nD3Y2WEPej9FMsoX7HL5KvNUPdRwY0jP1hVYoc4m3+kyf26Q==
+X-Received: by 2002:a9d:171a:: with SMTP id i26mr113338ota.313.1606247346186;
+        Tue, 24 Nov 2020 11:49:06 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t199sm40519oif.25.2020.11.24.11.49.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 11:48:52 -0800 (PST)
-From:   Artem Labazov <123321artyom@gmail.com>
-Cc:     123321artyom@gmail.com, stable@vger.kernel.org,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
-Date:   Tue, 24 Nov 2020 22:47:49 +0300
-Message-Id: <20201124194749.4041176-1-123321artyom@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 24 Nov 2020 11:49:05 -0800 (PST)
+Date:   Tue, 24 Nov 2020 13:49:03 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alex Elder <elder@ieee.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Alex Elder <elder@linaro.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845: Limit ipa iommu streams
+Message-ID: <20201124194903.GH185852@builder.lan>
+References: <20201123052305.157686-1-bjorn.andersson@linaro.org>
+ <ecf7f5b6-a5ba-e370-d716-89272ad3c67b@ieee.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecf7f5b6-a5ba-e370-d716-89272ad3c67b@ieee.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The table for Unicode upcase conversion requires an order-5 allocation,
-which may fail on a highly-fragmented system:
+On Tue 24 Nov 13:18 CST 2020, Alex Elder wrote:
 
- pool-udisksd: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
- CPU: 4 PID: 3756880 Comm: pool-udisksd Tainted: G     U            5.8.10-200.fc32.x86_64 #1
- Hardware name: Dell Inc. XPS 13 9360/0PVG6D, BIOS 2.13.0 11/14/2019
- Call Trace:
-  dump_stack+0x6b/0x88
-  warn_alloc.cold+0x75/0xd9
-  ? _cond_resched+0x16/0x40
-  ? __alloc_pages_direct_compact+0x144/0x150
-  __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
-  ? __schedule+0x28a/0x840
-  ? __wait_on_bit_lock+0x92/0xa0
-  __alloc_pages_nodemask+0x2df/0x320
-  kmalloc_order+0x1b/0x80
-  kmalloc_order_trace+0x1d/0xa0
-  exfat_create_upcase_table+0x115/0x390 [exfat]
-  exfat_fill_super+0x3ef/0x7f0 [exfat]
-  ? sget_fc+0x1d0/0x240
-  ? exfat_init_fs_context+0x120/0x120 [exfat]
-  get_tree_bdev+0x15c/0x250
-  vfs_get_tree+0x25/0xb0
-  do_mount+0x7c3/0xaf0
-  ? copy_mount_options+0xab/0x180
-  __x64_sys_mount+0x8e/0xd0
-  do_syscall_64+0x4d/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> On 11/22/20 11:23 PM, Bjorn Andersson wrote:
+> > The Android and Windows firmware does not accept the use of 3 as a mask
+> > to cover the IPA streams. But with 0x721 being related to WiFi and 0x723
+> > being unsed the mapping can be reduced to just cover 0x720 and 0x722,
+> > which is accepted.
+> 
+> Do you want to update sc7180.dtsi too?
+> 
 
-Make the driver use vmalloc() to eliminate the issue.
+We probably want that too, but currently we don't have any sc7180
+devices that shows this problem...
 
-Cc: stable@vger.kernel.org # v5.7+
-Signed-off-by: Artem Labazov <123321artyom@gmail.com>
----
- fs/exfat/nls.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> I tried your change on my SDM845 machine and observed no
+> problem.   I tried the comparable change in "sc7180.dtsi"
+> (using 440 and 442) and that seemed to work as before also.
+> 
+> If you think that's sufficient, you can add:
+> 
+> Tested-by: Alex Elder <elder@linaro.org>
+> 
+> Otherwise:
+> 
+> Acked-by: Alex Elder <elder@linaro.org>
+> 
 
-diff --git a/fs/exfat/nls.c b/fs/exfat/nls.c
-index 675d0e7058c5..0582faf8de77 100644
---- a/fs/exfat/nls.c
-+++ b/fs/exfat/nls.c
-@@ -6,6 +6,7 @@
- #include <linux/string.h>
- #include <linux/slab.h>
- #include <linux/buffer_head.h>
-+#include <linux/vmalloc.h>
- #include <asm/unaligned.h>
- 
- #include "exfat_raw.h"
-@@ -659,7 +660,7 @@ static int exfat_load_upcase_table(struct super_block *sb,
- 	unsigned char skip = false;
- 	unsigned short *upcase_table;
- 
--	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
-+	upcase_table = vmalloc(UTBL_COUNT*sizeof(unsigned short));
- 	if (!upcase_table)
- 		return -ENOMEM;
- 
-@@ -715,7 +716,7 @@ static int exfat_load_default_upcase_table(struct super_block *sb)
- 	unsigned short uni = 0, *upcase_table;
- 	unsigned int index = 0;
- 
--	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
-+	upcase_table = vmalloc(UTBL_COUNT*sizeof(unsigned short));
- 	if (!upcase_table)
- 		return -ENOMEM;
- 
-@@ -803,5 +804,5 @@ int exfat_create_upcase_table(struct super_block *sb)
- 
- void exfat_free_upcase_table(struct exfat_sb_info *sbi)
- {
--	kfree(sbi->vol_utbl);
-+	vfree(sbi->vol_utbl);
- }
--- 
-2.26.2
+Thank you,
+Bjorn
 
+> 
+> > Fixes: e9e89c45bfeb ("arm64: dts: sdm845: add IPA iommus property")
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >   arch/arm64/boot/dts/qcom/sdm845.dtsi | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > index 0da27b065761..a6147bd54cdf 100644
+> > --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > @@ -2136,7 +2136,8 @@ ufs_mem_phy_lanes: lanes@1d87400 {
+> >   		ipa: ipa@1e40000 {
+> >   			compatible = "qcom,sdm845-ipa";
+> > -			iommus = <&apps_smmu 0x720 0x3>;
+> > +			iommus = <&apps_smmu 0x720 0x0>,
+> > +				 <&apps_smmu 0x722 0x0>;
+> >   			reg = <0 0x1e40000 0 0x7000>,
+> >   			      <0 0x1e47000 0 0x2000>,
+> >   			      <0 0x1e04000 0 0x2c000>;
+> > 
+> 
