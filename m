@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DAE2C2E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942072C2E2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390637AbgKXRUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:20:42 -0500
-Received: from softboy.mntmn.com ([91.250.115.15]:59012 "EHLO
-        softboy.mntmn.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390140AbgKXRUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:20:41 -0500
-X-Greylist: delayed 470 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 12:20:40 EST
-From:   "Lukas F. Hartmann" <lukas@mntre.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 softboy.mntmn.com 5B16A720718
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mntre.com;
-        s=mntremail; t=1606237969;
-        bh=UEu8QDWrOSRJQOojTYBi65+7G2OU5JZ5f4MfrL5efs4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dixofOlgFN3BMeNmGaGzbvnWgAxoJfqMfxmQGjJlXm6NW6rNfIzUI0nUj1mVJoOpI
-         s6Dui+LI4tSjA2/O6aQ5BEUoQ+nmtC29fz3yrj8ZGQB8iuHHEf8kBeCefUIdoGGuuk
-         QgpYOEPaNk8WJ7vTtpuHL/OjHjz6HX4pn9iqlrKDxGBHsT2zBZ/87uMHrad0yEgMEe
-         BQ+sxgKnumrAuomnP97wG3hRT3PS/dR/5pwr9WdPPfMudy04jRhYg78amxfZvwlwK0
-         JVQu4qxE1Kb990gFE09o7bwA1LzzqL8Y4F1gyM+6z2X4asoVAEMdTuErwflzz8XaGE
-         ubx5BaDwVnmkg==
-To:     lukas@mntre.com
-Cc:     agx@sigxcpu.org, laurentiu.palcu@nxp.com,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: nwl-dsi: fixup mode only for LCDIF input, not DCSS
-Date:   Tue, 24 Nov 2020 18:12:17 +0100
-Message-Id: <20201124171216.980628-1-lukas@mntre.com>
-X-Mailer: git-send-email 2.29.2
+        id S2390140AbgKXRNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:13:43 -0500
+Received: from mga01.intel.com ([192.55.52.88]:18370 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728342AbgKXRNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:13:43 -0500
+IronPort-SDR: P5KjhBIP+tziHH6WVyRRpZ5qS+TTSdnsWr2a9gk5X17tgmie2TomNMoEemdMDAihDy8ZQ23zIk
+ 3AlaQUo+EIvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="190111338"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="190111338"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:13:43 -0800
+IronPort-SDR: EdjZjtpDLYN0KB6oiMHDEt9ItD97Z+85UQW4wc7puUdRqxhKl8sEZqj4i2+txAuxfhaXzmf5vb
+ czz+FFw+2VsA==
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="358868031"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:13:41 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 1462E20461; Tue, 24 Nov 2020 19:13:39 +0200 (EET)
+Date:   Tue, 24 Nov 2020 19:13:39 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     dongchun.zhu@mediatek.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tfiga@google.com>,
+        Bingbu Cao <bingbu.cao@linux.intel.com>
+Subject: Re: [PATCH v1] media: ov8856: Fix Bayer format dependance on mode
+Message-ID: <20201124171338.GF3940@paasikivi.fi.intel.com>
+References: <20201124150332.3026752-1-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124150332.3026752-1-robert.foss@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fixup of HSYNC and VSYNC should not be done when the input source is
-DCSS, or internal display does not work on MNT Reform 2 (open hardware 
-laptop based on NXP i.MX8M using DCSS->DSI->eDP for internal display).
+Hi Robert,
 
-Signed-off-by: Lukas F. Hartmann <lukas@mntre.com>
----
- drivers/gpu/drm/bridge/nwl-dsi.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+On Tue, Nov 24, 2020 at 04:03:32PM +0100, Robert Foss wrote:
+> The Bayer GRBG10 mode used for earlier modes 3280x2460 and
+> 1640x1232 isn't the mode output by the sensor for the
+> 3264x2448 and 1632x1224 modes.
+> 
+> Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
+> for 3264x2448 & 1632x1224 modes.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+> 
+> This patch is sent out after Dongchun Zhu clarified the Bayer
+> modes used by different sensor configuration in the below thread.
+> 
+> https://lkml.org/lkml/2020/11/24/335
+> 
+>  drivers/media/i2c/ov8856.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> index 2f4ceaa80593..a2dcbece558c 100644
+> --- a/drivers/media/i2c/ov8856.c
+> +++ b/drivers/media/i2c/ov8856.c
+> @@ -1281,8 +1281,13 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
+>  {
+>  	fmt->width = mode->width;
+>  	fmt->height = mode->height;
+> -	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+>  	fmt->field = V4L2_FIELD_NONE;
+> +
+> +	if (mode->reg_list.regs == mode_3264x2448_regs ||
+> +	    mode->reg_list.regs == mode_1632x1224_regs)
+> +		fmt->code = MEDIA_BUS_FMT_SBGGR10_1X10;
+> +	else
+> +		fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+>  }
+>  
+>  static int ov8856_start_streaming(struct ov8856 *ov8856)
 
-diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
-index 66b67402f..6735ab2a2 100644
---- a/drivers/gpu/drm/bridge/nwl-dsi.c
-+++ b/drivers/gpu/drm/bridge/nwl-dsi.c
-@@ -807,10 +807,16 @@ static bool nwl_dsi_bridge_mode_fixup(struct drm_bridge *bridge,
- 				      const struct drm_display_mode *mode,
- 				      struct drm_display_mode *adjusted_mode)
- {
--	/* At least LCDIF + NWL needs active high sync */
--	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
--	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
-+	struct device_node *remote;
-+	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
-+
-+	remote = of_graph_get_remote_node(dsi->dev->of_node, 0,
-+						NWL_DSI_ENDPOINT_LCDIF);
-+	if (remote) {
-+		/* At least LCDIF + NWL needs active high sync */
-+		adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
-+		adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
-+	}
+Could you instead add the mode information to the ov8856_mode struct?
 
- 	return true;
- }
---
-2.28.0
+Also enum_mbus_code needs to be updated.
+
+The mbus code also has priority in mode selection, thus only the modes for
+the selected mbus code should considered in set_fmt.
+
+-- 
+Regards,
+
+Sakari Ailus
