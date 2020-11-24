@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBA32C2338
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A17A2C2333
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732241AbgKXKqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:46:00 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8023 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731939AbgKXKp7 (ORCPT
+        id S1732077AbgKXKpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:45:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726775AbgKXKpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:45:59 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgLJy2dMSzhYvw;
-        Tue, 24 Nov 2020 18:45:38 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.178.208) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 24 Nov 2020 18:45:47 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/2] xfs: check the return value of krealloc()
-Date:   Tue, 24 Nov 2020 18:45:30 +0800
-Message-ID: <20201124104531.561-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201124104531.561-1-thunder.leizhen@huawei.com>
-References: <20201124104531.561-1-thunder.leizhen@huawei.com>
+        Tue, 24 Nov 2020 05:45:42 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D40C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:45:42 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 81so17118828pgf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:45:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3kwegyRqAw46aqWt+s2hHGKYwjk1qlvqH33gfukWNu4=;
+        b=eiVKagnSnyv2tiR2Et7Ql7AZP/9w9jlLNqQTHS3fRI9E4/SO+rwqGhlA+DkIvTcsGL
+         GvP3Hbn/TFHAdKlTlh4r3TdYArZkggVbz9uC3/wr8TuEJkpUg77iFOhPRCSdFmL7yiFg
+         ccSP9+rsqwf7PsbDC0GfR7NOovBce7xUPfKYzxtdh2pq5mGIc7I68tx70c38KTIZn/Br
+         Rrz8Quw45lUlPaH+CWus9LpFO5surp/ggMPdemQ+8ijF5G5Ro3bqOV1Stf4zIeEXhJeI
+         oNkJglxsxCrPf8eDQ9NLYeb0jyZeBdT+rhxrJ4nMBDtV1qApdxlSoHDJH3LWPeObwOVa
+         IfSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3kwegyRqAw46aqWt+s2hHGKYwjk1qlvqH33gfukWNu4=;
+        b=uL81+IdyGhsMcdoMjvsMQjlSSDU7Y0ALWQI6WuwPLbOA4CRLVQYhZrx8zmGx2p6v4g
+         kPM1gsjDCOlA32+91S3l8zH8XUqhTL+H3/pEzJAyXenjkB6z8Ub0wnlm+E0CoQgw5iD2
+         rGL6CwxktxR0mFL8+357P91zAQlOaxU4BOCQqH3+N2ajzOxsuX9Ccw4v+XrVowcwoDS9
+         DeErVBWaeaL7LchT7Y65AQDCfo5OLcxzXsJJzicgje92IW25DjAnGj36n4EoVSl1qIqm
+         r4fw11x79heVfr2ODlAlC+uMk67UnFqa6n4WUbyerYScE8ZWvV+42b1WzzM7ibq+u9Vi
+         yg5A==
+X-Gm-Message-State: AOAM532OT575FmYf0SLMuKDTKRDPsStd0foHgw7Tlzne+RWUys/BhF9k
+        vuQGqabnahuSiL0sEmWuhkLx5eFFxcEVD7JHVG3juQ==
+X-Google-Smtp-Source: ABdhPJwmGsSGTzfqADPhJaLR24JRKMUHU5sMY1UkaytHFUOVKZaQLOE6xRAFTRUNVPEkSd3eETejD2b4SxoTIHmKwtU=
+X-Received: by 2002:a65:6a04:: with SMTP id m4mr3118476pgu.265.1606214741881;
+ Tue, 24 Nov 2020 02:45:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
+References: <20201116155008.118124-1-robert.foss@linaro.org>
+ <1606203651.4733.134.camel@mhfsdcap03> <20201124084343.GD3940@paasikivi.fi.intel.com>
+ <1606212616.4733.157.camel@mhfsdcap03>
+In-Reply-To: <1606212616.4733.157.camel@mhfsdcap03>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 24 Nov 2020 11:45:30 +0100
+Message-ID: <CAG3jFyuBvjpbhNUOqH1dOX=9WZG4avG7vAHgXThoim4LeruXyA@mail.gmail.com>
+Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
+To:     Dongchun Zhu <dongchun.zhu@mediatek.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ben Kao <ben.kao@intel.com>, Tomasz Figa <tfiga@google.com>,
+        =?UTF-8?B?U2hlbmduYW4gV2FuZyAo546L5Zyj55S3KQ==?= 
+        <shengnan.wang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-krealloc() may fail to expand the memory space. Add sanity checks to it,
-and WARN() if that really happened.
+>
+> OV8856 sensor array region consists of 3 main window settings.
+> The inner window is controlled by [H_win_off, V_win_off].
+> From the old unusual 3280x2464 and 1640x1232 setting,
+> H_win_off(R3810-R3811) is 0, V_win_off(R3812-R3813) is 1.
+>
+> Considering that the register TEST_PATTERN_CTRL(R4320) controlling pixel
+> order is not set (default: 0x80, meaning BG/GR) and mirror/flip are both
+> OFF, the absolute coordinate of crop_start is expressed as:
+> [H_crop_start+H_win_off, V_crop_start+V_win_off] = [0, 7]
+>
+> Thus the first pixel shall start with G channel(according to datasheet).
+> This is different with current resolutions (3264x2448 and 1632x1224).
+>
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- fs/xfs/libxfs/xfs_inode_fork.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/fs/xfs/libxfs/xfs_inode_fork.c b/fs/xfs/libxfs/xfs_inode_fork.c
-index 7575de5cecb1..4e457aea8493 100644
---- a/fs/xfs/libxfs/xfs_inode_fork.c
-+++ b/fs/xfs/libxfs/xfs_inode_fork.c
-@@ -366,6 +366,8 @@ xfs_iroot_realloc(
- 
- 	ifp = XFS_IFORK_PTR(ip, whichfork);
- 	if (rec_diff > 0) {
-+		struct xfs_btree_block *if_broot;
-+
- 		/*
- 		 * If there wasn't any memory allocated before, just
- 		 * allocate it now and get out.
-@@ -386,8 +388,13 @@ xfs_iroot_realloc(
- 		cur_max = xfs_bmbt_maxrecs(mp, ifp->if_broot_bytes, 0);
- 		new_max = cur_max + rec_diff;
- 		new_size = XFS_BMAP_BROOT_SPACE_CALC(mp, new_max);
--		ifp->if_broot = krealloc(ifp->if_broot, new_size,
--					 GFP_NOFS | __GFP_NOFAIL);
-+		if_broot = krealloc(ifp->if_broot, new_size,
-+				    GFP_NOFS | __GFP_NOFAIL);
-+		if (!if_broot) {
-+			WARN(1, "if_broot realloc failed\n");
-+			return;
-+		}
-+		ifp->if_broot = if_broot;
- 		op = (char *)XFS_BMAP_BROOT_PTR_ADDR(mp, ifp->if_broot, 1,
- 						     ifp->if_broot_bytes);
- 		np = (char *)XFS_BMAP_BROOT_PTR_ADDR(mp, ifp->if_broot, 1,
-@@ -477,6 +484,7 @@ xfs_idata_realloc(
- {
- 	struct xfs_ifork	*ifp = XFS_IFORK_PTR(ip, whichfork);
- 	int64_t			new_size = ifp->if_bytes + byte_diff;
-+	char *if_data;
- 
- 	ASSERT(new_size >= 0);
- 	ASSERT(new_size <= XFS_IFORK_SIZE(ip, whichfork));
-@@ -496,8 +504,13 @@ xfs_idata_realloc(
- 	 * in size so that it can be logged and stay on word boundaries.
- 	 * We enforce that here.
- 	 */
--	ifp->if_u1.if_data = krealloc(ifp->if_u1.if_data, roundup(new_size, 4),
-+	if_data = krealloc(ifp->if_u1.if_data, roundup(new_size, 4),
- 				      GFP_NOFS | __GFP_NOFAIL);
-+	if (!if_data) {
-+		WARN(1, "if_data realloc failed\n");
-+		return;
-+	}
-+	ifp->if_u1.if_data = if_data;
- 	ifp->if_bytes = new_size;
- }
- 
--- 
-2.26.0.106.g9fadedd
-
-
+Sakari: So this means that the patches introducing 3264x2448 and
+1632x1224 modes really should have included code for configuring BGGR
+format for those two specific modes only. Let me whip up another patch
+for that, and put a pin in the bayer mode part of this conversation.
