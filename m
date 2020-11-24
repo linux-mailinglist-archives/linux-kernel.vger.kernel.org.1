@@ -2,184 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DA42C1B1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 03:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25C52C1B1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 03:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgKXB7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 20:59:03 -0500
-Received: from mga09.intel.com ([134.134.136.24]:28258 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726765AbgKXB7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 20:59:02 -0500
-IronPort-SDR: 94yQUREVUOBEWxW4mB3yGiqF561E6oIN+LdUv15yM8G7NsjffB1d5O7ziz1fkI/phWir045vR1
- yq1tRuyIY0Rw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="172033464"
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="172033464"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 17:59:02 -0800
-IronPort-SDR: CaDAt9UDhGHqufvBvoa2tWzXJH2+gmjDSyzErutaX0KETUJfRMe9dBT44e6c4RKVoGnROpXyEF
- vjfQqSpUb9Zw==
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="478335191"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 17:58:58 -0800
-Subject: Re: [drm/fb] 6a1b34c0a3:
- WARNING:at_drivers/gpu/drm/drm_fb_helper.c:#drm_fb_helper_damage_work
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        kernel test robot <oliver.sang@intel.com>
-Cc:     daniel@ffwll.ch, airlied@linux.ie, sam@ravnborg.org,
-        mripard@kernel.org, maarten.lankhorst@linux.intel.com,
-        christian.koenig@amd.com, ville.syrjala@linux.intel.com,
-        dri-devel@lists.freedesktop.org, 0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20201122141849.GH2390@xsang-OptiPlex-9020>
- <5dddb55b-cbe1-7778-3109-b84624bac407@suse.de>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <aa34dc60-96c1-e188-a0f8-51b7f8275e69@linux.intel.com>
-Date:   Tue, 24 Nov 2020 09:58:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727072AbgKXCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 21:00:03 -0500
+Received: from mail-eopbgr70048.outbound.protection.outlook.com ([40.107.7.48]:58572
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726904AbgKXCAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 21:00:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EyB9VpU15UBbsei+2bMa+SYk5vjb7KCor3qjZSh23C6UjUFRU/MzV5J+FFtjJgA+/XCn+S0e0hqG2IeTWl4XbmVXMH/5YidABulSNeFCvKyM5uzX+h29/ZdEK+5Wtxdt4gCUqPme2pRlj0jZdGv+Fe6zn5l2x9FKskqklDn2eaT1ru2+6zRQP/lOnQmNZeHi+OJaDiDM7f//NPx5D3XXZhAxqFcYgzyTj3eEgOOJAhWZUOSu7sueUHOuh4yApE+a43VXw+rUQWbozVNcSbCS0DzBNbZ4yZ/7N8B0t5Y9AJ3/iBvczOXgkOtHa6Os8ugsAkDpvguU3ghgaVB05TfL+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BvrBEwp0KWEfnEV+BosvPVS4dz9eZWKBNU7ttKza4ko=;
+ b=cCNSuKwv4SzMOebFNeBJ+YW63Wdz3+K4mjSlk5PjWj3ynX6XjsWrBMgjHUXd8WLF0uzcpsx9L2KB/5EIGGVOWsv2PLMVMiAHzZ46CFY043UYj1wlJXrIcsBBhprZiTkCADg6OU5x9zPQX2w1HTejS8X2wXeD9KHaoKZRmZ9D83fpoGEm45cwIdbVHj+KdiE7NKQpkpUQGrbIMAi9Kx/B83EJ9D7TnBD507yyXE/TCeapn5w3Ge6FFV4wmGpPdDK5sqVN/GIELVHw5BAAp8fBNHkxSz0+Iet02VKfPTkbTPHVTrjuRMEfJBBtAVReMqVNJwRLCWQXnZy3UO421NoSCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BvrBEwp0KWEfnEV+BosvPVS4dz9eZWKBNU7ttKza4ko=;
+ b=ZKBjLXziQz1C8J5LT0mhFL9bPLR8Za/EVI/KYIW5l7HSnzy/M4xhnzYnTgT8EyYckMstH0JZpWA13knzTwO9E5HO60DSfVx8WQRulC0L33YQnJayKKQV/IN2bwBrLTSPfROXboZWK7K27RrhZZdJfDZprMVem22oLVSRTPzlI8c=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
+ by AM7PR04MB7096.eurprd04.prod.outlook.com (2603:10a6:20b:113::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
+ 2020 01:59:58 +0000
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::78fe:9b7a:a2ac:9631]) by AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::78fe:9b7a:a2ac:9631%7]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 01:59:58 +0000
+From:   Alice Guo <alice.guo@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        krzk@kernel.org
+Cc:     linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v6 1/4] dt-bindings: soc: imx8m: add DT Binding doc for soc unique ID
+Date:   Tue, 24 Nov 2020 09:59:46 +0800
+Message-Id: <20201124015949.29262-1-alice.guo@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR04CA0188.apcprd04.prod.outlook.com
+ (2603:1096:4:14::26) To AM6PR04MB6053.eurprd04.prod.outlook.com
+ (2603:10a6:20b:b9::10)
 MIME-Version: 1.0
-In-Reply-To: <5dddb55b-cbe1-7778-3109-b84624bac407@suse.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by SG2PR04CA0188.apcprd04.prod.outlook.com (2603:1096:4:14::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 01:59:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5573adf9-4bb9-46da-c9e7-08d8901ca569
+X-MS-TrafficTypeDiagnostic: AM7PR04MB7096:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM7PR04MB7096A834423E7D9670199CD4E2FB0@AM7PR04MB7096.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: el7b0zI9ZdBnaE4ti9xZ58BnPHC+BXUs6UjCsXRwsGqM68MvZFIa7CIJO6f+a0uS9ErnVhQo/NqKixf5vkdGZ+OvMMCa5Rfq6yTPSmnfk8QQqFR3ngW+9Q13w2wWfpEP5kn2YZvxpVXTQ0xeB1F/wK+N9Y2Ng7gNaECKv28YgPC3Fx9RjZjp7jSJbX3UqAkAoaUK8Y0rNEUh4QRYqpSWuI5ZVBtC7GxNXn48LITFl2DD+G5Tg7MxAGRZFQMT6s2kYNoaMzL50Wqg4ADdhejyf7YHa54lucMyQe1ikN16jRoHyYJbHfhpnmguzbv75ixwoqgVNDQcxXm93NFnM6XfwNQVy/UZHZR2izus7IAtRoEHUxV/VaSOP2jCPwAPjEbQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(366004)(136003)(346002)(956004)(478600001)(36756003)(2616005)(6512007)(8936002)(44832011)(4326008)(316002)(6486002)(26005)(8676002)(52116002)(2906002)(6506007)(16526019)(186003)(66476007)(66556008)(6666004)(66946007)(83380400001)(1076003)(86362001)(5660300002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: xJ5nD/wdJyUAgCAdb65xrxlndB3cyPEsPILBJMwOqcTntuM2XiO3vn8PkcZCgVZ95lCZDgkp2ZLKIBdGqJT9D+ZtGlgQkRi7a0TDSiVINUgnQOno+OZkyQ1AmAW2ux9yg9R6p+raNH79QgqF/cIWd7wW5H/KdtwZdsKucfpg/fUDGDqVmCS8uVy9HWlxTYE7pyQOo8NbPRLu49H+XNqQzMO+Q0o0fhUSWdTSWNW1w17KiixaMvD59TfzYH4KEeyx7miep3Swv5QrxGZLWiVCkThd56BDd+O5t3DxkuWqhoZWre2nA79TPqHkTobsqN4MAvo4CVcdIMXZk54ZlwkXy+obfaF/xB0AFV0dZ9Yc9A7XeoVaYnGOeOCxWNoQ9HA0djfgMudk4lVReke31cHJpSlB3xLBI/59ZZFSTyAUIWNrZFwZo7QmxmjnQJHngFzLs4CnPNNa6FQiRqO2y3kDxcAT2wRqp24EFrv4WrCCJa/JdzVmUJcQm++mAHuq8TsKii2Zy5UW0Nt8A8Ns+bU7mCdkB2ACdthWfrprQl+3QaXmkwvF/O5m4M8AswwrdlQX9coRQA4uOL+nRTV6oTi13Pwr9/XNA1LViFww2L5ZEe+k7nNRnAartSZ9CD5IsuGkOYt3OXqx09mxT9GNe8BpD/cGOfbNEVE2hoVv3GbDMSBXb3RGDeEAEgsH95DbaC+AegTAndNGxvE0LD4NrPvqT0e3Y4nVAX/bWr8XZJ2LJtLetFWAWXDrhnOyWDwXCGV1o/QTy8/Gc+lbW54KH/eWASN8lsLJ81/6YTLvTHCkpxC5dA8vxN+e9FdaGAJV7eIRHXXNYM5nsmErKaORMa3bW5SsTz21tw8PhRR7s0VtsDo/aJLZulIwkYKoVoooPh80deIwDwnmgBnHwdNnadgFAg==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5573adf9-4bb9-46da-c9e7-08d8901ca569
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 01:59:58.3691
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nGptwQQFotYxSzpkAsrCtgxzxCWeSBgwkUY6+OQQ1mV2r5H9eTudAdRIi116FEcxydOFJcWGblo/Vi3nD4L3Ww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add DT Binding doc for the Unique ID of i.MX 8M series.
 
+Signed-off-by: Alice Guo <alice.guo@nxp.com>
+---
 
-On 11/23/2020 4:04 PM, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 22.11.20 um 15:18 schrieb kernel test robot:
->>
->> Greeting,
->>
->> FYI, we noticed the following commit (built with gcc-9):
->>
->> commit: 6a1b34c0a339fdc75d7932ad5702f2177c9d7a1c ("drm/fb-helper: Move 
->> damage blit code and its setup into separate routine")
->> url: 
->> https://github.com/0day-ci/linux/commits/Thomas-Zimmermann/drm-fb-helper-Various-fixes-and-cleanups/20201120-182750 
->>
->>
->>
->> in testcase: trinity
->> version: trinity-static-i386-x86_64-f93256fb_2019-08-28
->> with following parameters:
->>
->>     runtime: 300s
->>
->> test-description: Trinity is a linux system call fuzz tester.
->> test-url: http://codemonkey.org.uk/projects/trinity/
->>
->>
->> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 
->> -m 8G
->>
->> caused below changes (please refer to attached dmesg/kmsg for entire 
->> log/backtrace):
-> 
-> That dmesg is full of messages like
-> 
-> [  696.323556] alloc_vmap_area: 24 callbacks suppressed
-> [  696.323562] vmap allocation for size 3149824 failed: use 
-> vmalloc=<size> to increase size
-> 
-> I think the test system needs to be reconfigured first.
-> 
+v2: remove the subject prefix "LF-2571-1"
+v3: put it into Documentation/devicetree/bindings/arm/fsl.yaml
+    modify the description of nvmem-cells
+    use "make ARCH=arm64 dtbs_check" to test it and fix errors
+v4: use allOf to limit new version DTS files for i.MX8M to include
+    "fsl,imx8mm/n/p/q-soc", nvmem-cells and nvmem-cells-names
+v5: correct the error of using allOf
+v6: none
 
-We have tried "vmalloc=256M" and "vmalloc=512M", the same warning still 
-happened.
+ .../devicetree/bindings/arm/fsl.yaml          | 47 +++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 67980dcef66d..7132ffd41abb 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -918,6 +918,53 @@ properties:
+               - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
+           - const: fsl,s32v234
 
-> Best regards
-> Thomas
-> 
->>
->>
->> +-----------------------------------------------------------------------+------------+------------+ 
->>
->> |                                                                       | 
->> 154f2d1afd | 6a1b34c0a3 |
->> +-----------------------------------------------------------------------+------------+------------+ 
->>
->> | 
->> WARNING:at_drivers/gpu/drm/drm_fb_helper.c:#drm_fb_helper_damage_work 
->> | 0          | 36         |
->> | 
->> EIP:drm_fb_helper_damage_work                                         
->> | 0          | 36         |
->> +-----------------------------------------------------------------------+------------+------------+ 
->>
->>
->>
->> If you fix the issue, kindly add following tag
->> Reported-by: kernel test robot <oliver.sang@intel.com>
->>
->>
->> [  106.616652] WARNING: CPU: 1 PID: 173 at 
->> drivers/gpu/drm/drm_fb_helper.c:434 drm_fb_helper_damage_work+0x371/0x390
->> [  106.627732] Modules linked in:
->> [  106.632419] CPU: 1 PID: 173 Comm: kworker/1:2 Not tainted 
->> 5.10.0-rc4-next-20201120-00007-g6a1b34c0a339 #3
->> [  106.637806] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
->> BIOS 1.12.0-1 04/01/2014
->> [  106.642853] Workqueue: events drm_fb_helper_damage_work
->> [  106.647664] EIP: drm_fb_helper_damage_work+0x371/0x390
->> [  106.652305] Code: b1 17 c7 01 68 bd 5b 2d c5 53 50 68 55 21 2d c5 
->> 83 15 44 b1 17 c7 00 e8 ae bc b1 01 83 05 48 b1 17 c7 01 83 15 4c b1 
->> 17 c7 00 <0f> 0b 83 05 50 b1 17 c7 01 83 15 54 b1 17 c7 00 83 c4 10 e9 
->> 78 fd
->> [  106.663517] EAX: 0000002d EBX: c8730520 ECX: 00000847 EDX: 00000000
->> [  106.668423] ESI: ca987000 EDI: cab274d8 EBP: f62f5f20 ESP: f62f5ee8
->> [  106.673214] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 
->> 00010246
->> [  106.678295] CR0: 80050033 CR2: 00000000 CR3: 063a7000 CR4: 000406d0
->> [  106.683160] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
->> [  106.687967] DR6: fffe0ff0 DR7: 00000400
->> [  106.690763] Call Trace:
->> [  106.693394]  process_one_work+0x3ea/0xaa0
->> [  106.693501] ixgbevf: Intel(R) 10 Gigabit PCI Express Virtual 
->> Function Network Driver
->> [  106.695300]  worker_thread+0x330/0x900
->> [  106.697406] ixgbevf: Copyright (c) 2009 - 2018 Intel Corporation.
->> [  106.702963]  kthread+0x190/0x210
->> [  106.705709]  ? rescuer_thread+0x650/0x650
->> [  106.708379]  ? kthread_insert_work_sanity_check+0x120/0x120
->> [  106.711271]  ret_from_fork+0x1c/0x30
->> [  106.713973] ---[ end trace dd528799d3369ac1 ]---
->>
->>
->> To reproduce:
->>
->>          # build kernel
->>     cd linux
->>     cp config-5.10.0-rc4-next-20201120-00007-g6a1b34c0a339 .config
->>     make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare 
->> modules_prepare bzImage
->>
->>          git clone https://github.com/intel/lkp-tests.git
->>          cd lkp-tests
->>          bin/lkp qemu -k <bzImage> job-script # job-script is attached 
->> in this email
->>
->>
->>
->> Thanks,
->> Oliver Sang
->>
-> 
-> 
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
-> 
++  soc:
++    type: object
++    properties:
++      compatible:
++        oneOf:
++          - description: new version compatible for i.MX8M SoCs
++            items:
++              - enum:
++                  - fsl,imx8mm-soc
++                  - fsl,imx8mn-soc
++                  - fsl,imx8mp-soc
++                  - fsl,imx8mq-soc
++              - const: simple-bus
++
++          - description: old version compatible for i.MX8M SoCs
++            items:
++              - const: simple-bus
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - fsl,imx8mm
++              - fsl,imx8mn
++              - fsl,imx8mp
++              - fsl,imx8mq
++
++    then:
++      patternProperties:
++        "^soc@[0-9a-f]+$":
++          properties:
++            compatible:
++              items:
++                - enum:
++                    - fsl,imx8mm-soc
++                    - fsl,imx8mn-soc
++                    - fsl,imx8mp-soc
++                    - fsl,imx8mq-soc
++                - const: simple-bus
++
++          required:
++            - compatible
++            - nvmem-cells
++            - nvmem-cell-names
++
+ additionalProperties: true
 
--- 
-Zhengjun Xing
+ ...
+--
+2.17.1
+
