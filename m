@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8024D2C2E39
+	by mail.lfdr.de (Postfix) with ESMTP id 0B22D2C2E38
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390506AbgKXRPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2390584AbgKXRPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 24 Nov 2020 12:15:41 -0500
-Received: from mga14.intel.com ([192.55.52.115]:50297 "EHLO mga14.intel.com"
+Received: from mail.kernel.org ([198.145.29.99]:49264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390280AbgKXRPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390308AbgKXRPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Nov 2020 12:15:40 -0500
-IronPort-SDR: PBaeAwh+jpv6Is7fgpM7umK+aIptXBTwBzcz5Cv1uJri68OXhmIMxKH9LubrRPhMw2ptdaYBbw
- h3xL1K4uCi2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="171201662"
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="171201662"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:15:40 -0800
-IronPort-SDR: BL9/f2x7001UmbRYVr03aocEjYzrMKeRkqA0WVMRbanRqfUVFI6MfBIC0UV/K1vn9ZWv2TP9a/
- n0E5yflx9oMg==
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="546910675"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.133.99]) ([10.249.133.99])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 09:15:35 -0800
-Subject: Re: [PATCH V2] PM / EM: Micro optimization in em_cpu_energy
-To:     Pavankumar Kondeti <pkondeti@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-References: <1606126679-11799-1-git-send-email-pkondeti@codeaurora.org>
- <1606127371-13828-1-git-send-email-pkondeti@codeaurora.org>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <671427cc-2abb-68eb-5e54-0851785efa84@intel.com>
-Date:   Tue, 24 Nov 2020 18:15:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99F95206E5;
+        Tue, 24 Nov 2020 17:15:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606238139;
+        bh=J0afl+2LLskLIWwsKBm6ugjEsGEPidJcN2s83PAH1r8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gKz9tVfElOsxRj4E39Sw9bNOpcDs0K6NqDUiZ26523s5kVYVtCbqgMrYBjJcJ9C8U
+         g8wHYWoFUcp/3MnWIvapgjlc2xkmOghOIjzIiAVFRW0wiDAZt4oDVD9jglryLBR2e/
+         etGuqA4ACTpJq6tc8SL/y6I3eWS1GMMVNydlwpW8=
+Date:   Tue, 24 Nov 2020 18:15:36 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
+        Carlos O'Donell <carlos@redhat.com>
+Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
+ workaround
+Message-ID: <X70/uPNt2BA/vUSo@kroah.com>
+References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+ <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
+ <878saq3ofx.fsf@oldenburg2.str.redhat.com>
+ <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
+ <20201124164546.GA14094@infradead.org>
+ <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1606127371-13828-1-git-send-email-pkondeti@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/2020 11:29 AM, Pavankumar Kondeti wrote:
-> When the sum of the utilization of CPUs in a power domain is zero,
-> return the energy as 0 without doing any computations.
->
-> Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
-> ---
-> V2: Fixed the function name in the commit message.
->
->   include/linux/energy_model.h | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> index b67a51c..8810f1f 100644
-> --- a/include/linux/energy_model.h
-> +++ b/include/linux/energy_model.h
-> @@ -103,6 +103,9 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->   	struct em_perf_state *ps;
->   	int i, cpu;
->   
-> +	if (!sum_util)
-> +		return 0;
-> +
->   	/*
->   	 * In order to predict the performance state, map the utilization of
->   	 * the most utilized CPU of the performance domain to a requested
+On Tue, Nov 24, 2020 at 06:06:38PM +0100, Jann Horn wrote:
+> +seccomp maintainers/reviewers
+> [thread context is at
+> https://lore.kernel.org/linux-api/87lfer2c0b.fsf@oldenburg2.str.redhat.com/
+> ]
+> 
+> On Tue, Nov 24, 2020 at 5:49 PM Christoph Hellwig <hch@infradead.org> wrote:
+> > On Tue, Nov 24, 2020 at 03:08:05PM +0100, Mark Wielaard wrote:
+> > > For valgrind the issue is statx which we try to use before falling back
+> > > to stat64, fstatat or stat (depending on architecture, not all define
+> > > all of these). The problem with these fallbacks is that under some
+> > > containers (libseccomp versions) they might return EPERM instead of
+> > > ENOSYS. This causes really obscure errors that are really hard to
+> > > diagnose.
+> >
+> > So find a way to detect these completely broken container run times
+> > and refuse to run under them at all.  After all they've decided to
+> > deliberately break the syscall ABI.  (and yes, we gave the the rope
+> > to do that with seccomp :().
+> 
+> FWIW, if the consensus is that seccomp filters that return -EPERM by
+> default are categorically wrong, I think it should be fairly easy to
+> add a check to the seccomp core that detects whether the installed
+> filter returns EPERM for some fixed unused syscall number and, if so,
+> prints a warning to dmesg or something along those lines...
 
-If I'm to take this, please resend it with a CC to 
-linux-pm@vger.kernel.org (and with the tags you've received so far).
+Why?  seccomp is saying "this syscall is not permitted", so -EPERM seems
+like the correct error to provide here.  It's not -ENOSYS as the syscall
+is present.
 
-Thanks!
+As everyone knows, there are other ways to have -EPERM be returned from
+a syscall if you don't have the correct permissions to do something.
+Why is seccomp being singled out here?  It's doing the correct thing.
 
+thanks,
 
+greg k-h
