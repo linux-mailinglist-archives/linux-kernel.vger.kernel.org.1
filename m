@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546562C19FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A886F2C1A02
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbgKXA3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:29:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
+        id S1729852AbgKXA3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:29:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729659AbgKXA3u (ORCPT
+        with ESMTP id S1729807AbgKXA3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:29:50 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C00C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:50 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id p19so931768wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:49 -0800 (PST)
+        Mon, 23 Nov 2020 19:29:52 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3160C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:51 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id s13so1185475wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GtpVEK2AhHht05u643nAzhNZYWjkRP1wpDVNSCUXwZw=;
-        b=O+0wOeauQiRoFtf5fWf0wut4YMeQpaWBddIFsHi6nl2vcIYj9MDyOxkfSo8pNEn56p
-         r9PqkfR/sDYCk84fGKpIQ5whwKdu5lO2F9lVEQv5j5fPRPWSqaxcq9R14ModUev+o9ei
-         mCQL/y6F6qfz9/sfj8clYBc3iuMJj95KiNNA5fJNybQUnBhh54w92d/CcWNhxjvX9LdZ
-         GPFsIBATIdW+G2EOTLzDGJEYJealPW9XBsJpFAVS40DiRFyItQh+r2AFLGETqjFhe5h4
-         LuQmk471OYld9+pa2y0bcHUT98Rk23LToYeGjVtMXizDdkI0k/VlQq+oLFP3FshD49X+
-         ulyA==
+        bh=m/kFRqUqwxijt/DGbS3WOuCvqMr9UHx0WnOtO3sm9XE=;
+        b=b54pIT41AYJZEExrHBSx9U6mfbeW+EjiTmxg3rqOzonVYS+1OcU+vD34fyG5Gpi1ca
+         257/tXsGXDh+xOjHQ/x/O/XiqQcsExngL27Earq8QRMU+TECAMsfdOI4rMRDeOB65jUX
+         TJT2H/+ujKc3g2moWNQiS4R/cPj6Y3YMytVuQWuqwaLGMC9SqbJZbbaNFlb04t1EJJ6X
+         KFFRrIr6NxK+jEsFzqA5RDzbo4N9dF7COi3ZjoFYCSeax3nnDqJnkhHUFYbatZhxHBGR
+         1vFSIR2fU19xnpxi/v01k+dX1EXVcuCQxBoog+hbJUgfkRGeeV59dmqGVM62tpvBaKgr
+         MgqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GtpVEK2AhHht05u643nAzhNZYWjkRP1wpDVNSCUXwZw=;
-        b=n9V8E0hxiHXGoFL5v4DPAdpiShn3q6X5w4fL0kHLjmNZUPrGE/j+j4U/EX3XRmrp1/
-         ckcWOWAvFHgSOAtIPzOxyzjy6ue015IHtiKLlzQKu7lsFJCOXvJSWrC3gyomtaYJ9Vgj
-         a7VL0AUT7b9YDQvOEIxNyDUEtbkQHH2GtkN0//NzR8odfSbtQyJ0NxHr4fjKAIOCqN0v
-         8g23QavZ/rkEVqvvMTZuEP2bAJJbsw/VHdfu56lhinmk8zHOXUhvcjWbOdD6K474hTb3
-         jgbv8iG2PZmAjXtOBaAmMI/tIk7H+TwLxHkGRWCiVgQoiEBy7F09Q1CDOYO6dneHb8Sh
-         XMag==
-X-Gm-Message-State: AOAM533ru3DQNW1e4US7y8Hw72dIm92qoYr+7crYYMSRFlagW6kHiVT8
-        ChSIYrHShTZ9CWIA7qrep0vrbsMsGQpAGtA9
-X-Google-Smtp-Source: ABdhPJzMYZsaDRK/zbSVz8/fZ8oCg+qyvVslwcd9K9TbXnww3vHWJVyYPt+y4z0lfYFFoOskgj28dg==
-X-Received: by 2002:a1c:a9c4:: with SMTP id s187mr1437405wme.180.1606177788611;
-        Mon, 23 Nov 2020 16:29:48 -0800 (PST)
+        bh=m/kFRqUqwxijt/DGbS3WOuCvqMr9UHx0WnOtO3sm9XE=;
+        b=EeQJ+ic1jfkRc+Eg6nweEDq0XLYHjErRA5KtgFqem6ExsLpELbiMqH+WUwqoZDnQZJ
+         j74DgeF0K5cGCIZaIgNsmI6WPZudUFwcly3J+2L2BxlLeHR3TQmGjJZ8T/xZolAU66nD
+         w4R7esPsaH4yMG+MpkyYCPRddSQB+RDbAcH/GxzNhU+TelSAh2j7icFfiGne9MrxGZAM
+         2T0YhHEPeyw74FIz6I7DMt0ajC5u+JlTCRTMo2cE7sUZbOA6dTzqLIy+5Fhjn/CXIUG3
+         qIDXtqiAy5Jsw1lDDB9V5yM3HstX8ZlOni1pyxHkyZvKnL+UuWFu1nthtNvyBqfkqkBf
+         QCdg==
+X-Gm-Message-State: AOAM5324ByzH5rr17pMuN2WAJTPrl4mLzvzC6wMEe3801xk9HVlg/cL3
+        zd3YUqmW21miiyPoyzRo2/BvSG20Y7WrNl2R
+X-Google-Smtp-Source: ABdhPJxxJF3XMzaU9a8FkG0PfgkwlbKF5WIGqMSsecPkybQrZkYA+btTNXLgry0Ef11zEbtDNHZh1w==
+X-Received: by 2002:a05:600c:2197:: with SMTP id e23mr1406145wme.42.1606177790120;
+        Mon, 23 Nov 2020 16:29:50 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.46
+        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 16:29:48 -0800 (PST)
+        Mon, 23 Nov 2020 16:29:49 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -66,12 +66,10 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Will Deacon <will@kernel.org>, x86@kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: [PATCH v2 09/19] s390/vdso: Remove vdso_base pointer from mm->context
-Date:   Tue, 24 Nov 2020 00:29:22 +0000
-Message-Id: <20201124002932.1220517-10-dima@arista.com>
+        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: [PATCH v2 10/19] sparc/vdso: Remove vdso pointer from mm->context
+Date:   Tue, 24 Nov 2020 00:29:23 +0000
+Message-Id: <20201124002932.1220517-11-dima@arista.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124002932.1220517-1-dima@arista.com>
 References: <20201124002932.1220517-1-dima@arista.com>
@@ -83,59 +81,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Not used any more.
 
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/s390/include/asm/mmu.h |  1 -
- arch/s390/kernel/vdso.c     | 10 ----------
- 2 files changed, 11 deletions(-)
+ arch/sparc/include/asm/mmu_64.h | 1 -
+ arch/sparc/vdso/vma.c           | 5 +----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
-index e12ff0f29d1a..095d0596f700 100644
---- a/arch/s390/include/asm/mmu.h
-+++ b/arch/s390/include/asm/mmu.h
-@@ -15,7 +15,6 @@ typedef struct {
- 	unsigned long gmap_asce;
- 	unsigned long asce;
- 	unsigned long asce_limit;
--	unsigned long vdso_base;
- 	/* The mmu context belongs to a secure guest. */
- 	atomic_t is_protected;
- 	/*
-diff --git a/arch/s390/kernel/vdso.c b/arch/s390/kernel/vdso.c
-index 810b72f8985c..3f07711a07c1 100644
---- a/arch/s390/kernel/vdso.c
-+++ b/arch/s390/kernel/vdso.c
-@@ -58,18 +58,9 @@ static vm_fault_t vdso_fault(const struct vm_special_mapping *sm,
- 	return 0;
- }
- 
--static int vdso_mremap(const struct vm_special_mapping *sm,
--		       struct vm_area_struct *vma)
--{
--	current->mm->context.vdso_base = vma->vm_start;
--
--	return 0;
--}
--
- static const struct vm_special_mapping vdso_mapping = {
- 	.name = "[vdso]",
- 	.fault = vdso_fault,
--	.mremap = vdso_mremap,
- };
- 
- static int __init vdso_setup(char *str)
-@@ -204,7 +195,6 @@ int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- 		goto out_up;
+diff --git a/arch/sparc/include/asm/mmu_64.h b/arch/sparc/include/asm/mmu_64.h
+index 7e2704c770e9..8e7892890d14 100644
+--- a/arch/sparc/include/asm/mmu_64.h
++++ b/arch/sparc/include/asm/mmu_64.h
+@@ -111,7 +111,6 @@ typedef struct {
+ 	unsigned long		thp_pte_count;
+ 	struct tsb_config	tsb_block[MM_NUM_TSBS];
+ 	struct hv_tsb_descr	tsb_descr[MM_NUM_TSBS];
+-	void			*vdso;
+ 	bool			adi;
+ 	tag_storage_desc_t	*tag_store;
+ 	spinlock_t		tag_lock;
+diff --git a/arch/sparc/vdso/vma.c b/arch/sparc/vdso/vma.c
+index bf9195fe9bcc..255e052223ca 100644
+--- a/arch/sparc/vdso/vma.c
++++ b/arch/sparc/vdso/vma.c
+@@ -389,7 +389,6 @@ static int map_vdso(const struct vdso_image *image,
  	}
  
--	current->mm->context.vdso_base = vdso_base;
- 	*sysinfo_ehdr = vdso_base;
- 	rc = 0;
+ 	text_start = addr - image->sym_vvar_start;
+-	current->mm->context.vdso = (void __user *)text_start;
  
+ 	/*
+ 	 * MAYWRITE to allow gdb to COW and set breakpoints
+@@ -418,9 +417,7 @@ static int map_vdso(const struct vdso_image *image,
+ 	}
+ 
+ up_fail:
+-	if (ret)
+-		current->mm->context.vdso = NULL;
+-	else
++	if (!ret)
+ 		*sysinfo_ehdr = text_start;
+ 
+ 	mmap_write_unlock(mm);
 -- 
 2.29.2
 
