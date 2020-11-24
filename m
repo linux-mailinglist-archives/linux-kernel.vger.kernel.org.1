@@ -2,120 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1352C2367
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681192C2368
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732362AbgKXK6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:58:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32258 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732356AbgKXK6n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:58:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606215521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=93iiWXlJJ6IXGgnGTBAqbCv2bSJUjXfqZiq9BMzLTt8=;
-        b=U/is7sloglMBZMt3jdw1KgxWeNHZU3N8l+xPagEIp6xVArivT3+R7PlwZXDOSXAnNCkmGB
-        NBSPkdZaPqLGS3R4eSru7DP69uQKNdKsqp0DN6XFmk5FIXYkQ5hZuzRh7H+1oBzlhJFffq
-        XeWivHlDTIJCJCq0gzmVtQY3c1sjw1k=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-yzR7MhEfNU6IMJbUFMW0uQ-1; Tue, 24 Nov 2020 05:58:39 -0500
-X-MC-Unique: yzR7MhEfNU6IMJbUFMW0uQ-1
-Received: by mail-wm1-f71.google.com with SMTP id y21so737113wma.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:58:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=93iiWXlJJ6IXGgnGTBAqbCv2bSJUjXfqZiq9BMzLTt8=;
-        b=QdYtlSmuvOlCiyMiMERFf6vATTGhwvyXCVEFePGJj9jgvV71YWaHYExYUW1PFXT29N
-         rc9sBUp/W3Bkj9Rgk6GBhFL+B2aImbLL2VbSUpMvXl2z4Zrn8481uADj05lY0vt4hdEn
-         5BwM5j1upA8PdoygjCs+GPxGl6crXdDm0DgmXYcJZUmpcUkTObosLm3tfHS3G7vJsjOs
-         etaOu60hhvq7f4VpH3GCjawhf2KzD/PC65p+0OMuywa6Bg4Iw+3SyyM6Bl2JLK5XZhMZ
-         fhQvfSbGBOCWgvbK/IW2xWOcJ/2iypeiYt4HEchtqegQbAY6RdyBMLtJgYIZars7ZRXZ
-         H7+g==
-X-Gm-Message-State: AOAM532ns+J1Cty/fBgO3WBa+SIZH/5JYz4fY2ziDLeR9mFKVu3H7e2J
-        k+dJfQWjXMcsmz8aAoXuVpvOJT3GjIMc1ulpzuJGkLctLytZAnwxME5fJcxSLxCDJN56lqLyAim
-        jnOoTQNERpoHTATj7frlr26zZBHU9pELlbv1lvua6J0ctS9xeaQAoxqoLmJp/w6yTKLVtYkrLZw
-        ==
-X-Received: by 2002:adf:b78d:: with SMTP id s13mr4473679wre.383.1606215518066;
-        Tue, 24 Nov 2020 02:58:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyEy0NaSDK6xRfNiQMCFfdk60eQ8DmNfigWwS2jLBAhm8rLw3v70xbgbAFeeO+jjelCbnI1dg==
-X-Received: by 2002:adf:b78d:: with SMTP id s13mr4473660wre.383.1606215517859;
-        Tue, 24 Nov 2020 02:58:37 -0800 (PST)
-Received: from localhost (cpc111767-lutn13-2-0-cust344.9-3.cable.virginm.net. [86.5.41.89])
-        by smtp.gmail.com with ESMTPSA id p4sm25611598wrm.51.2020.11.24.02.58.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 02:58:37 -0800 (PST)
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] memcg: add support to generate the total count of children from root
-Date:   Tue, 24 Nov 2020 10:58:36 +0000
-Message-Id: <20201124105836.713371-1-atomlin@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        id S1732365AbgKXK7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:59:42 -0500
+Received: from mga14.intel.com ([192.55.52.115]:12036 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731787AbgKXK7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:59:41 -0500
+IronPort-SDR: RVNNCm+VjX9PmWeLizO5iQb4LmhAZ4mu4MnztJbSkX7ntpMaImWH2Q+Sbchma2NbAPSgB3JXuQ
+ XFuHCUNepgoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="171144410"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="171144410"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 02:59:41 -0800
+IronPort-SDR: n63bgkDPVCX4FAaiOcuOXiXLNipkCPBhhZ9Tvxc6Fg443KUNK0vam1x8NVbecWu0K+0JSPHJfI
+ 5cOINnLeXDNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="546786548"
+Received: from lkp-server01.sh.intel.com (HELO 2820ec516a85) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 24 Nov 2020 02:59:39 -0800
+Received: from kbuild by 2820ec516a85 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1khW2s-00004Z-Vw; Tue, 24 Nov 2020 10:59:38 +0000
+Date:   Tue, 24 Nov 2020 18:58:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ ae9ef58996a4447dd44aa638759f913c883ba816
+Message-ID: <5fbce76f.HVCFYxIXpVnATwD1%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each memory-controlled cgroup is assigned a unique ID and the total
-number of memory cgroups is limited to MEM_CGROUP_ID_MAX.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
+branch HEAD: ae9ef58996a4447dd44aa638759f913c883ba816  softirq: Move related code into one section
 
-This patch provides the ability to determine the number of
-memory cgroups from the root memory cgroup, only.
-A value of 1 (i.e. self count) is returned if there are no children.
-For example, the number of memory cgroups can be established by
-reading the /sys/fs/cgroup/memory/memory.total_cnt file.
+elapsed time: 727m
 
-Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+configs tested: 169
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                          axs101_defconfig
+c6x                        evmc6678_defconfig
+mips                          malta_defconfig
+sh                                  defconfig
+arm                     eseries_pxa_defconfig
+arm                      tct_hammer_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         s5pv210_defconfig
+arm                        keystone_defconfig
+mips                           ip32_defconfig
+arm                            u300_defconfig
+mips                         bigsur_defconfig
+mips                           jazz_defconfig
+powerpc                      pmac32_defconfig
+mips                       lemote2f_defconfig
+mips                      maltasmvp_defconfig
+powerpc                      ppc44x_defconfig
+mips                     loongson1b_defconfig
+arm                           sama5_defconfig
+arc                            hsdk_defconfig
+mips                       rbtx49xx_defconfig
+m68k                        m5272c3_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                        multi_v5_defconfig
+powerpc                 mpc837x_mds_defconfig
+sh                           se7619_defconfig
+powerpc                     akebono_defconfig
+sh                             shx3_defconfig
+sparc                               defconfig
+sh                           se7750_defconfig
+arm                       imx_v6_v7_defconfig
+sh                          sdk7786_defconfig
+sh                            titan_defconfig
+xtensa                       common_defconfig
+m68k                        stmark2_defconfig
+mips                  cavium_octeon_defconfig
+sh                          landisk_defconfig
+arm                         bcm2835_defconfig
+powerpc                 mpc8272_ads_defconfig
+sh                        edosk7760_defconfig
+powerpc                    socrates_defconfig
+m68k                         apollo_defconfig
+arm                             rpc_defconfig
+arm                           viper_defconfig
+sh                        edosk7705_defconfig
+m68k                        m5407c3_defconfig
+arm                            lart_defconfig
+m68k                          amiga_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                      makalu_defconfig
+arm                         at91_dt_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                         nhk8815_defconfig
+arm                       mainstone_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                           h5000_defconfig
+arm                        oxnas_v6_defconfig
+mips                         rt305x_defconfig
+arc                      axs103_smp_defconfig
+powerpc                      arches_defconfig
+powerpc                      ppc64e_defconfig
+arm                          collie_defconfig
+powerpc                    sam440ep_defconfig
+xtensa                         virt_defconfig
+mips                         tb0226_defconfig
+sh                         ecovec24_defconfig
+xtensa                    xip_kc705_defconfig
+mips                            ar7_defconfig
+arm                     am200epdkit_defconfig
+arm                         orion5x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20201124
+x86_64               randconfig-a003-20201124
+x86_64               randconfig-a004-20201124
+x86_64               randconfig-a005-20201124
+x86_64               randconfig-a001-20201124
+x86_64               randconfig-a002-20201124
+i386                 randconfig-a004-20201123
+i386                 randconfig-a003-20201123
+i386                 randconfig-a002-20201123
+i386                 randconfig-a005-20201123
+i386                 randconfig-a001-20201123
+i386                 randconfig-a006-20201123
+i386                 randconfig-a004-20201124
+i386                 randconfig-a003-20201124
+i386                 randconfig-a002-20201124
+i386                 randconfig-a005-20201124
+i386                 randconfig-a001-20201124
+i386                 randconfig-a006-20201124
+x86_64               randconfig-a015-20201123
+x86_64               randconfig-a011-20201123
+x86_64               randconfig-a014-20201123
+x86_64               randconfig-a016-20201123
+x86_64               randconfig-a012-20201123
+x86_64               randconfig-a013-20201123
+i386                 randconfig-a012-20201124
+i386                 randconfig-a013-20201124
+i386                 randconfig-a011-20201124
+i386                 randconfig-a016-20201124
+i386                 randconfig-a014-20201124
+i386                 randconfig-a015-20201124
+i386                 randconfig-a012-20201123
+i386                 randconfig-a013-20201123
+i386                 randconfig-a011-20201123
+i386                 randconfig-a016-20201123
+i386                 randconfig-a014-20201123
+i386                 randconfig-a015-20201123
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20201123
+x86_64               randconfig-a003-20201123
+x86_64               randconfig-a004-20201123
+x86_64               randconfig-a005-20201123
+x86_64               randconfig-a002-20201123
+x86_64               randconfig-a001-20201123
+x86_64               randconfig-a015-20201124
+x86_64               randconfig-a011-20201124
+x86_64               randconfig-a014-20201124
+x86_64               randconfig-a016-20201124
+x86_64               randconfig-a012-20201124
+x86_64               randconfig-a013-20201124
+
 ---
- mm/memcontrol.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 29459a6ce1c7..a4f7cb40e233 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4535,6 +4535,19 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
- 	return 0;
- }
- 
-+static int mem_cgroup_total_count_read(struct cgroup_subsys_state *css,
-+				      struct cftype *cft)
-+{
-+	struct mem_cgroup *iter, *memcg = mem_cgroup_from_css(css);
-+	int num = 0;
-+
-+	for_each_mem_cgroup_tree(iter, memcg)
-+		num++;
-+
-+	/* Returns 1 (i.e. self count) if no children. */
-+	return num;
-+}
-+
- #ifdef CONFIG_CGROUP_WRITEBACK
- 
- #include <trace/events/writeback.h>
-@@ -5050,6 +5063,11 @@ static struct cftype mem_cgroup_legacy_files[] = {
- 		.write_u64 = mem_cgroup_oom_control_write,
- 		.private = MEMFILE_PRIVATE(_OOM_TYPE, OOM_CONTROL),
- 	},
-+	{
-+		.name = "total_cnt",
-+		.flags = CFTYPE_ONLY_ON_ROOT,
-+		.read_u64 = mem_cgroup_total_count_read,
-+	},
- 	{
- 		.name = "pressure_level",
- 	},
--- 
-2.26.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
