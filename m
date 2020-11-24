@@ -2,147 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5612C2DD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61C32C2E04
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390345AbgKXRHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729093AbgKXRHq (ORCPT
+        id S2403883AbgKXRIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:08:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390452AbgKXRIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:07:46 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4A6C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:07:46 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id y197so21288856qkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:07:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aNXvn4/3k/XGywoP6C9b+pZ0yxAKPIO0oxQPosS4HbM=;
-        b=iA9+PAPTrP4eD0qcD8/sTZZ34g/wH3oACYjBdIASYZcCxL49ZUOofi0apyQp7Z0qfY
-         G2OjvCROWNo0t0oFvMyA0licDrxsoTLCk5mgrVipL3MtWghrB+s8QDfwuS1s4WudA8KZ
-         vT7P7ZnMB2jy/vAlGlvggc3aYgkfSWsquagCs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aNXvn4/3k/XGywoP6C9b+pZ0yxAKPIO0oxQPosS4HbM=;
-        b=Fg9w+HUoUWgXPDMBvoas+TBntedM7MGmrr7hB6nak4Tqz6gYU1qeMTgM69uPIFFf9Z
-         espQzN0tf1lE69aHlp4kRDDVsOY+KVo8gHmqgn6vg0JPu27O5ULdw7uth1MhmvkZn/gb
-         SX7821vHLV1e4kG5i9Abbdj4v3WBvuAy4IQq5TKnn0AR+/YdIfm/My6gj00EmhSkmkih
-         WBnudcDw/IT4xAAC7EklBvh2SyyOqtyb+iHwKmelEeA+9ciXAX93ymw3yeu52Ewicj3h
-         OVyf2yRT2Oxtz0S5nQOU6ElhNeIJ+A0n5H6USGX3uilfchLIfogZPlocTjMoT19fn1EY
-         CxXg==
-X-Gm-Message-State: AOAM530l0YuLOhzoI26yQ5TwoO3zIJtiJJaxN/hjdJSze61/b+zjFUJj
-        /JOaOFT90XGUZdFzxWWGS4wV2w==
-X-Google-Smtp-Source: ABdhPJx2meuls0roa8BOeAtgpkESmOYElu8i+vto2kzhW0faz+N3ss8u4ZdB6w6wKM7CdZBd8yQlRg==
-X-Received: by 2002:ae9:c211:: with SMTP id j17mr5759635qkg.458.1606237665494;
-        Tue, 24 Nov 2020 09:07:45 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t56sm12686345qth.27.2020.11.24.09.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 09:07:44 -0800 (PST)
-Date:   Tue, 24 Nov 2020 12:07:44 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 15/32] sched: Improve snapshotting of min_vruntime
- for CGroups
-Message-ID: <20201124170744.GD1021337@google.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-16-joel@joelfernandes.org>
- <20201124102741.GW3021@hirez.programming.kicks-ass.net>
+        Tue, 24 Nov 2020 12:08:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606237731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z5atMwpKAatS9hTVo/mzcGTzZMJlv8pILYgqT1sV3tI=;
+        b=NUw1v4JS+EIng6iEUqceRld+3sU27hYrpZnOUQk1qcDvdAGemtb40vHPuqorcuDYdvzwqb
+        HJ8hRaFI7wkp+lbsEyMG+pV5MXh7Ob89I1QBGsG06QE29PMTX0R8Rm56MCH/ijQGNaUEUK
+        izrM2m4kwkB02nNws7H2Zfjmp+uQqHk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-rf_htEO7MVGLXq5-13Ms2Q-1; Tue, 24 Nov 2020 12:08:48 -0500
+X-MC-Unique: rf_htEO7MVGLXq5-13Ms2Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9824D1016E60;
+        Tue, 24 Nov 2020 17:07:55 +0000 (UTC)
+Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 761B15C1A3;
+        Tue, 24 Nov 2020 17:07:51 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 10:07:51 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
+ vfio_pin_pages_remote()
+Message-ID: <20201124100751.793c671f@w520.home>
+In-Reply-To: <AM6PR08MB32248D873EDD8923675F2D3BF7FC0@AM6PR08MB3224.eurprd08.prod.outlook.com>
+References: <20201119142737.17574-1-justin.he@arm.com>
+        <20201119100508.483c6503@w520.home>
+        <AM6PR08MB32248D873EDD8923675F2D3BF7FC0@AM6PR08MB3224.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124102741.GW3021@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Mon, 23 Nov 2020 02:37:32 +0000
+Justin He <Justin.He@arm.com> wrote:
 
-On Tue, Nov 24, 2020 at 11:27:41AM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 17, 2020 at 06:19:45PM -0500, Joel Fernandes (Google) wrote:
-> > A previous patch improved cross-cpu vruntime comparison opertations in
-> > pick_next_task(). Improve it further for tasks in CGroups.
-> > 
-> > In particular, for cross-CPU comparisons, we were previously going to
-> > the root-level se(s) for both the task being compared. That was strange.
-> > This patch instead finds the se(s) for both tasks that have the same
-> > parent (which may be different from root).
-> > 
-> > A note about the min_vruntime snapshot and force idling:
-> > Abbreviations: fi: force-idled now? ; fib: force-idled before?
-> > During selection:
-> > When we're not fi, we need to update snapshot.
-> > when we're fi and we were not fi, we must update snapshot.
-> > When we're fi and we were already fi, we must not update snapshot.
-> > 
-> > Which gives:
-> >         fib     fi      update?
-> >         0       0       1
-> >         0       1       1
-> >         1       0       1
-> >         1       1       0
-> > So the min_vruntime snapshot needs to be updated when: !(fib && fi).
-> > 
-> > Also, the cfs_prio_less() function needs to be aware of whether the core
-> > is in force idle or not, since it will be use this information to know
-> > whether to advance a cfs_rq's min_vruntime_fi in the hierarchy. So pass
-> > this information along via pick_task() -> prio_less().
+> Hi Alex, thanks for the comments.
+> See mine below:
 > 
-> Hurmph.. so I'm tempted to smash a bunch of patches together.
-> 
->  2 <- 3 (already done - bisection crashes are daft)
->  6 <- 11
->  7 <- {10, 12}
->  9 <- 15
-> 
-> I'm thinking that would result in an easier to read series, or do we
-> want to preserve this history?
-> 
-> (fwiw, I pulled 15 before 13,14, as I think that makes more sense
-> anyway).
+> > -----Original Message-----
+> > From: Alex Williamson <alex.williamson@redhat.com>
+> > Sent: Friday, November 20, 2020 1:05 AM
+> > To: Justin He <Justin.He@arm.com>
+> > Cc: Cornelia Huck <cohuck@redhat.com>; kvm@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
+> > vfio_pin_pages_remote()
+> >
+> > On Thu, 19 Nov 2020 22:27:37 +0800
+> > Jia He <justin.he@arm.com> wrote:
+> >  
+> > > The permission of vfio iommu is different and incompatible with vma
+> > > permission. If the iotlb->perm is IOMMU_NONE (e.g. qemu side), qemu will
+> > > simply call unmap ioctl() instead of mapping. Hence vfio_dma_map() can't
+> > > map a dma region with NONE permission.
+> > >
+> > > This corner case will be exposed in coming virtio_fs cache_size
+> > > commit [1]
+> > >  - mmap(NULL, size, PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+> > >    memory_region_init_ram_ptr()
+> > >  - re-mmap the above area with read/write authority.
+> > >  - vfio_dma_map() will be invoked when vfio device is hotplug added.
+> > >
+> > > qemu:
+> > > vfio_listener_region_add()
+> > > vfio_dma_map(..., readonly=false)
+> > > map.flags is set to VFIO_DMA_MAP_FLAG_READ|VFIO_..._WRITE
+> > > ioctl(VFIO_IOMMU_MAP_DMA)
+> > >
+> > > kernel:
+> > > vfio_dma_do_map()
+> > > vfio_pin_map_dma()
+> > > vfio_pin_pages_remote()
+> > > vaddr_get_pfn()
+> > > ...
+> > > check_vma_flags() failed! because
+> > > vm_flags hasn't VM_WRITE && gup_flags
+> > > has FOLL_WRITE
+> > >
+> > > It will report error in qemu log when hotplug adding(vfio) a nvme disk
+> > > to qemu guest on an Ampere EMAG server:
+> > > "VFIO_MAP_DMA failed: Bad address"  
+> >
+> > I don't fully understand the argument here, I think this is suggesting
+> > that because QEMU won't call VFIO_IOMMU_MAP_DMA on a region that has
+> > NONE permission, the kernel can ignore read/write permission by using
+> > FOLL_FORCE.  Not only is QEMU not the only userspace driver for vfio,
+> > but regardless of that, we can't trust the behavior of any given
+> > userspace driver.  Bypassing the permission check with FOLL_FORCE seems
+> > like it's placing the trust in the user, which seems like a security
+> > issue.  Thanks,  
+> Yes, this might have side impact on security.
+> But besides this simple fix(adding FOLL_FORCE), do you think it is a good
+> idea that:
+> Qemu provides a special vfio_dma_map_none_perm() to allow mapping a
+> region with NONE permission?
 
-Either way would be Ok with me, I would suggest retaining the history though
-so that the details in the changelog are preserved of the issues we faced,
-and in the future we can refer back to them.
+If NONE permission implies that we use FOLL_FORCE as described here to
+ignore the r+w permissions and trust that the user knows what they're
+doing, that seems like a non-starter.  Ultimately I think what you're
+describing is a scenario where our current permission check fails and
+the solution is probably to extend the check to account for other ways
+that a user may have access to a vma rather than bypass the check.
+Thanks,
 
-thanks,
-
- - Joel
+Alex
 
