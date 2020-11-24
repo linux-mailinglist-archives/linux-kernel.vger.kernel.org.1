@@ -2,177 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE12C2581
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5802C2586
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387499AbgKXMRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733194AbgKXMRs (ORCPT
+        id S2387513AbgKXMRt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 07:17:49 -0500
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:43275 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729172AbgKXMRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Nov 2020 07:17:48 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5868DC0613D6;
+Received: by mail-ej1-f68.google.com with SMTP id k27so28112790ejs.10;
         Tue, 24 Nov 2020 04:17:46 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id g14so6902735wrm.13;
-        Tue, 24 Nov 2020 04:17:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=2ze0FxjajqB9xsntXc3VBzUcaN4KJqWiZjSyHlQppPA=;
-        b=LYglDP4Go4I1gx4f0SE8o1rFgXGJwISGeVThoyl+0T6t9Z0sFC2RUXzqeE6hKI7NdU
-         AgQ/W13W8623wHeZLEWm9n9x5y7jv0/UAZHDIRJBzxarzpdd7SDVm2V/uONDHCO3sWT6
-         nlzEflhPch9A5r4eJ2OU5DqWrILBW1SrVetNTV5KF9if2XQaR7/nHfuuhat0JK0EJo4o
-         Mi77k5Asb/t9VrA2Ks4D+y4iTIM0R5pbuxXL81Le/ITrHrE7zovhb3U5G4/xUIOuRj1s
-         gUPvVO97FYPiSR1rLJ48YA5UKz+1FFykF0CeLpuowMBO2D4Rnv6MAPgP6hcB9fPNn2Ud
-         KDEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=2ze0FxjajqB9xsntXc3VBzUcaN4KJqWiZjSyHlQppPA=;
-        b=oXFfE5hMbOKyrBYvcT5tvtoQ2PJK5JI9F3z/yHx/ZWnn8RahuV6gfLMC8bLfS2GUvW
-         scVTjqvG4Y/loERckRQTwtxZKDjOSb5YQZOelX6hkjBdGZ2palH4Vs0EpxSbwo6DXxeT
-         uGhpBGb0vcgMo3PMOy6cAylt2f0KP5QDqpNVbWHN23Ecu2cUYwY0okseBc1ue56p+6/1
-         OibRnkuQR2Hn+4GVckKjydL1fDZ4s1TM2UsVQajQHjmQI2fYPPsNoOex/q+R5wa1p6oP
-         iiiQyXAp6ax/iFQ1eyR1Qx3C3s43kuHreKOEY5W4G/az72nsJAytivdeX92pI/sSVNl1
-         9O2Q==
-X-Gm-Message-State: AOAM532NznIOpfbkw7XdMySytyYzPayTLfmlsPWGWFdNnaD8cuq2Juai
-        ZgY0nwa0M7fD/hZmj4RqH7w=
-X-Google-Smtp-Source: ABdhPJyT5ODyn5nQtch+qDirLFfOJdv9xEUlNm14hIaS36eTvBVPVunz3OQgV58Kag+47+gNcgPoXQ==
-X-Received: by 2002:adf:e7d0:: with SMTP id e16mr5072246wrn.114.1606220265112;
-        Tue, 24 Nov 2020 04:17:45 -0800 (PST)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id p21sm5141572wma.41.2020.11.24.04.17.42
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VUOwed7/avy6Sfz8h2pEiBST+7n37x1MRVNbS7uJ1/c=;
+        b=AUIz8s49eJQg6vWRozBalrD4GfY8DTzT7qzUNiqapb9+0o7yAJ3f98gu5asTYww4ml
+         5flgpeG2wrNOfNfqcHOWWBSC5/zfPjAHooaWHr5nF2PXz8RxFvgGYrV5L9o/RpQn7Scn
+         mDcNa+TYklb0SEkFSbaO4Ga9yxXm0Gt1hpMhKkNC7cYMGxx60S1i+M7IdlUaL5nMuGe6
+         2ZrlAheHbN+NLR9tRTDkK5RIrQPmh+G1AsOUyk6UPaOzZy4OA6CYh1okPH7yl2u7jn1Q
+         4Hm+I3rInHmrsqoAU7mNell8ai8epY98wgWc07g4n3aVHY+Qtqy3TSPApD//14bjRmFB
+         /FLw==
+X-Gm-Message-State: AOAM530BCpN2ybaGuL++cUQ91ASS9xg7kiQMohB9ZQCfgJ+6CI+zw7Dv
+        3whNC+j8g1xlOSpjfmDY1/k=
+X-Google-Smtp-Source: ABdhPJyFvPWTFflUiBH2trFrIJCnrRiTpXbadgQlvJnJj6jm3c56JHDp0y58SUwUeKMKS2nz+qlf9A==
+X-Received: by 2002:a17:906:a856:: with SMTP id dx22mr4164864ejb.134.1606220266162;
+        Tue, 24 Nov 2020 04:17:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id g20sm6898192ejk.3.2020.11.24.04.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 24 Nov 2020 04:17:44 -0800 (PST)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH] arm64: dts: meson: Add capacity-dmips-mhz attributes to GXM
-Date:   Tue, 24 Nov 2020 12:17:40 +0000
-Message-Id: <20201124121740.25704-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Date:   Tue, 24 Nov 2020 13:17:42 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v7 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
+ Driver
+Message-ID: <20201124121742.GA35334@kozik-lap>
+References: <20201124120330.32445-1-l.stelmach@samsung.com>
+ <CGME20201124120337eucas1p268c7e3147ea36e62d40d252278c5dcb7@eucas1p2.samsung.com>
+ <20201124120330.32445-4-l.stelmach@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201124120330.32445-4-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GXM (S912) is a big-little design with CPUs 0-3 clocked at 1.5GHz
-and CPUs 4-7 at 1.0GHz. Adding capacity-dmips-mhz attributes allows
-the scheduler to factor the different clock speeds into capacity
-calculations and prefer the higher-clocked cluster to improve
-overall performance.
+On Tue, Nov 24, 2020 at 01:03:30PM +0100, Łukasz Stelmach wrote:
+> ASIX AX88796[1] is a versatile ethernet adapter chip, that can be
+> connected to a CPU with a 8/16-bit bus or with an SPI. This driver
+> supports SPI connection.
+> 
+> The driver has been ported from the vendor kernel for ARTIK5[2]
+> boards. Several changes were made to adapt it to the current kernel
+> which include:
+> 
+> + updated DT configuration,
+> + clock configuration moved to DT,
+> + new timer, ethtool and gpio APIs,
+> + dev_* instead of pr_* and custom printk() wrappers,
+> + removed awkward vendor power managemtn.
+> + introduced ethtool tunable to control SPI compression
+> 
+> [1] https://www.asix.com.tw/products.php?op=pItemdetail&PItemID=104;65;86&PLine=65
+> [2] https://git.tizen.org/cgit/profile/common/platform/kernel/linux-3.10-artik/
+> 
+> The other ax88796 driver is for NE2000 compatible AX88796L chip. These
+> chips are not compatible. Hence, two separate drivers are required.
+> 
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+>  MAINTAINERS                                |    6 +
+>  drivers/net/ethernet/Kconfig               |    1 +
+>  drivers/net/ethernet/Makefile              |    1 +
+>  drivers/net/ethernet/asix/Kconfig          |   35 +
+>  drivers/net/ethernet/asix/Makefile         |    6 +
+>  drivers/net/ethernet/asix/ax88796c_ioctl.c |  221 ++++
+>  drivers/net/ethernet/asix/ax88796c_ioctl.h |   26 +
+>  drivers/net/ethernet/asix/ax88796c_main.c  | 1132 ++++++++++++++++++++
+>  drivers/net/ethernet/asix/ax88796c_main.h  |  561 ++++++++++
+>  drivers/net/ethernet/asix/ax88796c_spi.c   |  112 ++
+>  drivers/net/ethernet/asix/ax88796c_spi.h   |   69 ++
+>  include/uapi/linux/ethtool.h               |    1 +
+>  net/ethtool/common.c                       |    1 +
+>  13 files changed, 2172 insertions(+)
+>  create mode 100644 drivers/net/ethernet/asix/Kconfig
+>  create mode 100644 drivers/net/ethernet/asix/Makefile
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 14b8ec0bb58b..930dc859d4f7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2812,6 +2812,12 @@ S:	Maintained
+>  F:	Documentation/hwmon/asc7621.rst
+>  F:	drivers/hwmon/asc7621.c
+>  
+> +ASIX AX88796C SPI ETHERNET ADAPTER
+> +M:	Łukasz Stelmach <l.stelmach@samsung.com>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/net/asix,ax99706c-spi.yaml
 
-This was inspired by the similar change for G12B [0] boards. The
-diference here is that all cores are A53's so the same dmips-mhz
-value is used.
+Wrong file name.
 
-VIM2:~ # cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
-1512000
-1512000
-1512000
-1512000
-1000000
-1000000
-1000000
-1000000
+Best regards,
+Krzysztof
 
-before:
 
-VIM2:~ # cat /sys/devices/system/cpu/cpu*/cpu_capacity
-1024
-1024
-1024
-1024
-1024
-1024
-1024
-1024
-
-after:
-
-VIM2:~ # cat /sys/devices/system/cpu/cpu*/cpu_capacity
-1024
-1024
-1024
-1024
-677
-677
-677
-677
-
-The after value matches my table-napkin calculation:
-
-(1000000 / 1512000 = 0.661) * 1024 = 677
-
-[0] https://github.com/torvalds/linux/commit/6eeaf4d2452ec8b1ece58776812140734fc2e088
-
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- arch/arm64/boot/dts/amlogic/meson-gxm.dtsi | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
-index fe4145112295..411cc312fc62 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm.dtsi
-@@ -42,11 +42,28 @@
- 			};
- 		};
- 
-+		cpu0: cpu@0 {
-+			capacity-dmips-mhz = <1024>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			capacity-dmips-mhz = <1024>;
-+		};
-+
-+		cpu2: cpu@2 {
-+			capacity-dmips-mhz = <1024>;
-+		};
-+
-+		cpu3: cpu@3 {
-+			capacity-dmips-mhz = <1024>;
-+		};
-+
- 		cpu4: cpu@100 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a53";
- 			reg = <0x0 0x100>;
- 			enable-method = "psci";
-+			capacity-dmips-mhz = <1024>;
- 			next-level-cache = <&l2>;
- 			clocks = <&scpi_dvfs 1>;
- 			#cooling-cells = <2>;
-@@ -57,6 +74,7 @@
- 			compatible = "arm,cortex-a53";
- 			reg = <0x0 0x101>;
- 			enable-method = "psci";
-+			capacity-dmips-mhz = <1024>;
- 			next-level-cache = <&l2>;
- 			clocks = <&scpi_dvfs 1>;
- 			#cooling-cells = <2>;
-@@ -67,6 +85,7 @@
- 			compatible = "arm,cortex-a53";
- 			reg = <0x0 0x102>;
- 			enable-method = "psci";
-+			capacity-dmips-mhz = <1024>;
- 			next-level-cache = <&l2>;
- 			clocks = <&scpi_dvfs 1>;
- 			#cooling-cells = <2>;
-@@ -77,6 +96,7 @@
- 			compatible = "arm,cortex-a53";
- 			reg = <0x0 0x103>;
- 			enable-method = "psci";
-+			capacity-dmips-mhz = <1024>;
- 			next-level-cache = <&l2>;
- 			clocks = <&scpi_dvfs 1>;
- 			#cooling-cells = <2>;
--- 
-2.17.1
-
+> +F:	drivers/net/ethernet/asix/ax88796c_*
+> +
