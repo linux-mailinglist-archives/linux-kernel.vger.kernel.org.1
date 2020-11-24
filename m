@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A237E2C2B7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 979072C2B7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389772AbgKXPhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:37:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
+        id S2389781AbgKXPhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:37:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389277AbgKXPhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:37:32 -0500
+        id S2389277AbgKXPhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:37:39 -0500
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6713206D9;
-        Tue, 24 Nov 2020 15:37:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4881220715;
+        Tue, 24 Nov 2020 15:37:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606232252;
-        bh=IFQDOQcne/owwjCkX5+QGdYdd5nPT/w1ifsPEHT2KQs=;
+        s=default; t=1606232258;
+        bh=wH23yziWLfTWcklO4bp7dINMvSOovpGSoIUHdH8rBmo=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=JJjTuV53I47R44w4DYywyIiuphe4JHl4wV0GHV97/c9j1ZXuhJLWNSTvPGGkkqNQk
-         TMi1E3rOsg0i6N4KLGa5PdcxRU9EPD/A19d8ds7m04ubJAfPeN+m+gNHFQmvET/HJO
-         sU1gPyOXna59QIT1TD3ctSrwAFx3hMKAiOW6gES4=
-Date:   Tue, 24 Nov 2020 15:37:09 +0000
+        b=BN/6oC9oYh7tbbYQQNSvqLyp6GIjE3qbGY4+4+oGMKxeKWQ2Pjg1PpXIXUMk8cqnD
+         RF0f0PtilokY1Dzxjd1JoatlgjWvVdmTC8/rBbpWmMvoLrnsdf42bR0NobZ/q9qn3g
+         ACYfXUQxIjioeFRsRU9Q8lLy9gNEHdBiMYUwC7VI=
+Date:   Tue, 24 Nov 2020 15:37:15 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Philippe Duplessis-Guindon <pduplessis@efficios.com>,
-        linux-trace-devel@vger.kernel.org
-Cc:     mathieu.desnoyers@efficios.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201124135730.9185-1-pduplessis@efficios.com>
-References: <20201124135730.9185-1-pduplessis@efficios.com>
-Subject: Re: [RFC PATCH v2] tracing: Remove duplicate `type` field from regmap `regcache_sync` trace event
-Message-Id: <160623222905.5095.18294249015305684225.b4-ty@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+In-Reply-To: <20201123222359.103822-1-john.stultz@linaro.org>
+References: <20201123222359.103822-1-john.stultz@linaro.org>
+Subject: Re: [PATCH v2] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies to avoid build error
+Message-Id: <160623223531.5119.17981946485400763449.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,23 +47,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 08:57:30 -0500, Philippe Duplessis-Guindon wrote:
-> I have an error saying that `regcache_sync` has 2 fields named `type`
-> while using libtraceevent.
+On Mon, 23 Nov 2020 22:23:59 +0000, John Stultz wrote:
+> The kernel test robot reported the following build error:
 > 
-> Erase the `int field` type, which is not assigned. This field is
-> introduced by mistake and this commit removes it.
+> All errors (new ones prefixed by >>):
 > 
-> Fixes commit 593600890110c ("regmap: Add the regcache_sync trace event")
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+>    qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+>    qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+> >> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
+>    xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+>    qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] regmap: Remove duplicate `type` field from regmap `regcache_sync` trace event
-      commit: e6e9354b58307c120afbdc2719a6093638c37446
+[1/1] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies to avoid build error
+      commit: 34c5aa2666db54c4bd330fb2759f6e4d4544ad7a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
