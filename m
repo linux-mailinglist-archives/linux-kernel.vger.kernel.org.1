@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BDE2C2FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177FB2C2FCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390846AbgKXSMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:12:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22938 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390718AbgKXSMf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:12:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606241554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2oBIff2vrXptsOCDgJqXcxsBYnjbQeRRHymVbCela8Y=;
-        b=X+oLQ9pnJ2bDthSAi3HXuDzwY5KfJhI/skkexk5Rx9Pn2nNkdrDwmVdDJvfhFhQz8Kvs3z
-        Xd5jORpE+S311cC2TnnGEv4lvoOTQDqPas1+3PDBB5uAp/WNAj8VhtdZ7eIlq9BkcvJyAy
-        41x88GeO8ZNFT7TtLb8I3Vr2/Ns2uLw=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-1b57qiFUPluPtKnuAz8pVA-1; Tue, 24 Nov 2020 13:12:31 -0500
-X-MC-Unique: 1b57qiFUPluPtKnuAz8pVA-1
-Received: by mail-qt1-f200.google.com with SMTP id 100so16874028qtf.14
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:12:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2oBIff2vrXptsOCDgJqXcxsBYnjbQeRRHymVbCela8Y=;
-        b=hUQaAUsg2meQce8eMrOGk1U8saXRl07WgsFrV4hqnfEkXYn7ZH0+8Xu+BSEFJw7o82
-         RUwgU2EPg3cRJsiVYbDw3gXDb11HQAu/+ndOsccUmfjLF5NRSJUDm/P2lPWvABijnCDQ
-         jhWoCyWIvK24jkxrUk51higQIKhcHiu8RWghPlu1cUtd8xGJSPi9fWkGNe6qwHoLOjXV
-         ezkKCxnYDgMlatJwsoMHw+N9J7oMOCrL2Nf/+6h1wiSr2NAbGo0Y//kRe0ML/kGlslrt
-         ZqGZCOEhPeAFyiXt3OLnAyCcL2BUtxQMPESceQNJrQ2KItqPo87e0GSw4sTGs8v5NoZG
-         TdUA==
-X-Gm-Message-State: AOAM5304nGWWGA1pi9t/iC3YpfR4+nySUaxndtMGNgKdFIwkYYu1SARn
-        8oEMDh9RSilhYnhnUwXjKsygsZxLfAyCs/4MSZ87NmRHZvvfWKAb1FAJNf4Inz9TVhExcX3rbyn
-        J8Ltcn4zBw2+1MPc23ZBcICL9
-X-Received: by 2002:a0c:eec4:: with SMTP id h4mr6166752qvs.35.1606241551010;
-        Tue, 24 Nov 2020 10:12:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyYkcubJCjDfr3L92syDxFxlSzaLINmTiYCYOGr9X/iVg27guubvICQfcGQ1RnmdVIfefltCQ==
-X-Received: by 2002:a0c:eec4:: with SMTP id h4mr6166727qvs.35.1606241550714;
-        Tue, 24 Nov 2020 10:12:30 -0800 (PST)
-Received: from xz-x1 ([142.126.81.247])
-        by smtp.gmail.com with ESMTPSA id q32sm14116193qtb.71.2020.11.24.10.12.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 10:12:29 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:12:28 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
- vfio_pin_pages_remote()
-Message-ID: <20201124181228.GA276043@xz-x1>
-References: <20201119142737.17574-1-justin.he@arm.com>
+        id S2404288AbgKXSMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:12:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729291AbgKXSMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:12:44 -0500
+Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D86A420684;
+        Tue, 24 Nov 2020 18:12:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606241563;
+        bh=6ueb6PQc/kg1g7WGD1geVPCHnT05IVlvxmtC1abRplI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tLy8IsjZVJ9Ah+G1T/xIxZLVB3SeDio4nhXvlWYyPAQy4GxEFFe2qb8tYSOnmmjpi
+         S2N84jZexq5SWpWWrBw916LNvMRMYlvNwRlODPhydxa9d/NJdCiV7bY4Uwhjajc56g
+         Nd3hY8hwZXFHuukoPhrTjf1sGuZMPLhKTihwFY+k=
+Date:   Tue, 24 Nov 2020 19:12:40 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     William Mcvicker <willmcvicker@google.com>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com, Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH v1 0/2] Add support to capture external module's SCM
+ version
+Message-ID: <X71NGClOP5Lqg6M5@kroah.com>
+References: <20201121011652.2006613-1-willmcvicker@google.com>
+ <20201123090257.GB6334@infradead.org>
+ <20201123221338.GA2726675@google.com>
+ <20201124093117.GA21089@linux-8ccs>
+ <20201124180516.GA737971@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119142737.17574-1-justin.he@arm.com>
+In-Reply-To: <20201124180516.GA737971@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jia,
-
-On Thu, Nov 19, 2020 at 10:27:37PM +0800, Jia He wrote:
-> The permission of vfio iommu is different and incompatible with vma
-> permission. If the iotlb->perm is IOMMU_NONE (e.g. qemu side), qemu will
-> simply call unmap ioctl() instead of mapping. Hence vfio_dma_map() can't
-> map a dma region with NONE permission.
+On Tue, Nov 24, 2020 at 10:05:16AM -0800, William Mcvicker wrote:
+> On Tue, Nov 24, 2020 at 10:31:18AM +0100, Jessica Yu wrote:
+> > +++ William Mcvicker [23/11/20 14:13 -0800]:
+> > > On Mon, Nov 23, 2020 at 09:02:57AM +0000, Christoph Hellwig wrote:
+> > > > On Sat, Nov 21, 2020 at 01:16:49AM +0000, Will McVicker wrote:
+> > > > > These two patches add module support to capture an external module's SCM
+> > > > > version as a MODULE_INFO() attribute. This allows users to identity the SCM
+> > > > > version of a given kernel module by using the modinfo tool or on the device
+> > > > > via sysfs:
+> > > > 
+> > > > As this obviously is of no use for in-tree modules it falls under the we
+> > > > don't add code to support things that are not in tree rule and has no
+> > > > business in the kernel.
+> > > 
+> > > Hi Christoph,
+> > > 
+> > > Ah sorry, I didn't intend this to come across as only for external modules.
+> > > That just seemed like the easiest way to explain how the scmversion attribute
+> > > can be different from the vermagic. We mainly need this for in-tree kernel
+> > > modules since that's where most our drivers are. Let me re-phrase this with
+> > > that in mind. Basically, I like to look at this as an improved version of the
+> > > existing srcversion module attribute since it allows you to easily identify the
+> > > module version with a quick SCM version string check instead of doing a full
+> > > checksum on the module source.
+> > > 
+> > > For example, we have a setup to test kernel changes on the hikey and db845c
+> > > devices without updating the kernel modules. Without this scmversion module
+> > > attribute, you can't identify the original module version using `uname
+> > > -r`. And for kernel modules in the initramfs, you can't even use modinfo to get
+> > > the module vermagic.  With this patch, you are able to get the SCM version for
+> > > *all* kernel modules (on disk and in the initramfs) via the sysfs node:
+> > > /sys/module/<mod>/scmversion. This also works the other way around when
+> > > developers update their kernel modules to fix some bug (like a security
+> > > vulnerability) but don't need to update the full kernel.
+> > 
+> > Hi Will,
+> > 
+> > If this were also intended for in-tree kernel modules, then why do
+> > intree modules only get the UTS_RELEASE string in their scmversion
+> > field, which basically already exists in the vermagic? Or do you plan
+> > to change that?
+> > 
+> > Jessica
 > 
-> This corner case will be exposed in coming virtio_fs cache_size
-> commit [1]
->  - mmap(NULL, size, PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
->    memory_region_init_ram_ptr()
->  - re-mmap the above area with read/write authority.
+> Hi Jessica,
+> 
+> Thanks for asking! The reason in-tree kernel modules get the UTS_RELEASE string
+> is for a few reasons:
+> 
+> (1) It contains the SCM version (since UTS_RELEASE has that).
+> (2) It allows you to get the SCM version via the sysfs node (useful for modules
+> in the initramfs).
+> (3) It helps identify that that particular kernel module was in-tree when
+> originally compiled.
+> (4) Using UTS_RELEASE also allows us to respect the privacy of kernels with
+> "# CONFIG_LOCALVERSION_AUTO is not set" by not including the SCM version in the
+> module scmversion attribute.
+> 
+> Now, if we don't care about knowing if a module was in-tree or not (since
+> we only care about in-tree modules here anyway), I can update the patch to have
+> a consistent format regardless of in-tree or external. Personally, I like the
+> UTS_RELEASE version better because it gives me more information from the sysfs
+> node which is useful when debugging issues related to modules loaded in
+> initramfs.
 
-If iiuc here we'll remap the above PROT_NONE into PROT_READ|PROT_WRITE, then...
+We already know if a module was built in-or-out of tree, the "O" taint
+flag is set, so that information is already in the module today, right?
+Can't that be used somehow here?
 
->  - vfio_dma_map() will be invoked when vfio device is hotplug added.
+thanks,
 
-... here I'm slightly confused on why VFIO_IOMMU_MAP_DMA would encounter vma
-check fail - aren't they already get rw permissions?
-
-I'd appreciate if you could explain why vfio needs to dma map some PROT_NONE
-pages after all, and whether QEMU would be able to postpone the vfio map of
-those PROT_NONE pages until they got to become with RW permissions.
-
-Thanks,
-
--- 
-Peter Xu
-
+greg k-h
