@@ -2,329 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657FE2C2934
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B801E2C2937
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388743AbgKXOP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:15:57 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:45684 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388732AbgKXOP4 (ORCPT
+        id S2388764AbgKXORA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388750AbgKXOQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:15:56 -0500
-Received: by mail-ed1-f65.google.com with SMTP id q3so20993129edr.12;
-        Tue, 24 Nov 2020 06:15:51 -0800 (PST)
+        Tue, 24 Nov 2020 09:16:58 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52CFC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:16:57 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id g14so7285870wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:16:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=lxaE8Not9jvLvGdPE1uCtN/cVkn9pPEtSLdbQyT9QXw=;
+        b=Jqu3MmOxKtv9AEVJ44kKeuVO3gO1NOKfm+ACsbPcrxj2eHlEcRRMnE0TnNyC+zJYnI
+         MKrPTvaoz4din/kg4k7SyOw5E6Rymxd/rfxXl/XrvCFIkFNXPpHJXYjcLwa+ea5x8oiU
+         SW2i+f/oPr9w2wLEKdEgW7VtTgihlydGLaYjg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UV5dAkTriHZWlO3RZNeKzyPFwM32bAdjh6TvkdygNLU=;
-        b=iZLbxa6RVLQ/eGQQUr6tQnhewRxsLVz4WSBlxhG9soMsum1SJoVaZdhJGEtcjxheWy
-         wKRP+fOtvEqU+EJfCsWXjC7RYvy3kS5LnqjJzUQSNSLmK4WzvR8LAdxFqurb3w2bxk33
-         yRhuG/jVKWo+sPpA+TwVR5c1YvHcBxu4zSCbriBREGg48/kZop2tJorj3d85y/G00+A5
-         E2WYxUdfYpI6Tf8sHFrdbG2CYqfqdrirVbMvAtjN3FFF71ayC1Kh56qrV6MXdXXP8dpO
-         yeB/Wuz5Ry+R2U47SmSo/nE6XBtHPmWyCgNF3Pizpqhi6POMLDCJT44s75O5C8SDQLy3
-         ur+A==
-X-Gm-Message-State: AOAM532ezJ3KEOBsXgGE/EO3LuQaogvj/9ape5QjJvktz2yTMkbjIbML
-        1ypE4xEBAgyRSoZ47nJaKpCJyRcJqlE=
-X-Google-Smtp-Source: ABdhPJwCPOnZBHCBRyU2XlZnrELUeUs/gXWwVcObQOhu4EYr+lV+0kodGtKSo/qsdsRfC8kU2V0qZA==
-X-Received: by 2002:a05:6402:32c:: with SMTP id q12mr4192496edw.85.1606227350694;
-        Tue, 24 Nov 2020 06:15:50 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id m3sm7039993edj.22.2020.11.24.06.15.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=lxaE8Not9jvLvGdPE1uCtN/cVkn9pPEtSLdbQyT9QXw=;
+        b=mxfNaliQV6dm5P+r0EAX3nk6gaVHZ5kWoIweovxOLURKRjbHvwW2tHxkWtoz2owGs7
+         sOoRNShy1DqtnpIw2MhA2haeoYA1SKRBuOhLDS90t/CS3BhZQxKyLcDbopdr9YU/xbZg
+         6Y3mLEYo6AqztPFy/AIY3IoxUW3gVaPdNjOqhb9tpUj7AlFnejwhcPE0OXvqnNojlO2w
+         4lvIf564iXWo/nz1bUc3+T9PdLLpVPJ9NXS4KXkQm9nqOGMutNgf016zge4x+eXi+a7j
+         m8wAtSLVTCg+PkoRnWCRnaLR2izjGP9xBqvcBTEZkq9aM/PFmdUKxGF1M6QXm45vRV2t
+         6T+w==
+X-Gm-Message-State: AOAM531HHwEKkV29LNROYvtY69QIb2soiIKloVmkYwurRySLuetSE/Ot
+        aa/Z2uXPyEOAkH83AG0tRGe0JA==
+X-Google-Smtp-Source: ABdhPJyvnAcNxBa7hPAnh3R0lC3dqHK5F5aliN5y0/6utGHWrgRKu8r7ObJFr2IEqd22MvzLgTn5ig==
+X-Received: by 2002:adf:9cc6:: with SMTP id h6mr5554394wre.341.1606227416430;
+        Tue, 24 Nov 2020 06:16:56 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id h2sm6243879wme.45.2020.11.24.06.16.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 06:15:49 -0800 (PST)
-Date:   Tue, 24 Nov 2020 15:15:47 +0100
-From:   "krzk@kernel.org" <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next 2/2] net: nfc: s3fwrn5: Support a UART interface
-Message-ID: <20201124141547.GA3316@kozik-lap>
-References: <CGME20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93@epcms2p5>
- <20201123075658epcms2p5a6237314f7a72a2556545d3f96261c93@epcms2p5>
- <20201123081940.GA9323@kozik-lap>
- <CACwDmQDOm6PAyphMiUFizueENMdW3Bo5PvdP_VC_sfBEHc9pMQ@mail.gmail.com>
+        Tue, 24 Nov 2020 06:16:55 -0800 (PST)
+Date:   Tue, 24 Nov 2020 15:16:52 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v6 09/17] media/videbuf1|2: Mark follow_pfn usage as
+ unsafe
+Message-ID: <20201124141652.GL401619@phenom.ffwll.local>
+Mail-Followup-To: Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, KVM list <kvm@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
+ <20201119144146.1045202-10-daniel.vetter@ffwll.ch>
+ <f1f3a1d8-d62a-6e93-afc1-87a8e51081e9@xs4all.nl>
+ <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
+ <CAKMK7uEzFAtr9yxjaxi-kiuZhb+hWT3q6E41OegJr+J2-zkT8w@mail.gmail.com>
+ <9035555a-af6b-e2dd-dbad-41ca70235e21@xs4all.nl>
+ <CAKMK7uFrXJh9jc5-v02A=JE8B3aThbYtTxFN-CGQUB=0TGmKgQ@mail.gmail.com>
+ <d44c6518-bd9c-87e0-dce4-2b63890e0f7e@xs4all.nl>
+ <CAAFQd5DMTwUKE0B5L-WC5ehrrQVeRD_af+TG0FpYiPg0g=89Hg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CACwDmQDOm6PAyphMiUFizueENMdW3Bo5PvdP_VC_sfBEHc9pMQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAFQd5DMTwUKE0B5L-WC5ehrrQVeRD_af+TG0FpYiPg0g=89Hg@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 09:05:52PM +0900, Bongsu Jeon wrote:
-> On Mon, Nov 23, 2020 at 5:55 PM krzk@kernel.org <krzk@kernel.org> wrote:
-> > > +static enum s3fwrn5_mode s3fwrn82_uart_get_mode(void *phy_id)
-> > > +{
-> > > +     struct s3fwrn82_uart_phy *phy = phy_id;
-> > > +     enum s3fwrn5_mode mode;
-> > > +
-> > > +     mutex_lock(&phy->mutex);
-> > > +     mode = phy->mode;
-> > > +     mutex_unlock(&phy->mutex);
-> > > +     return mode;
-> > > +}
+On Fri, Nov 20, 2020 at 09:23:12PM +0900, Tomasz Figa wrote:
+> On Fri, Nov 20, 2020 at 9:08 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
 > >
-> > All this duplicates I2C version. You need to start either reusing common
-> > blocks.
+> > On 20/11/2020 11:51, Daniel Vetter wrote:
+> > > On Fri, Nov 20, 2020 at 11:39 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> > >>
+> > >> On 20/11/2020 10:18, Daniel Vetter wrote:
+> > >>> On Fri, Nov 20, 2020 at 9:28 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> > >>>>
+> > >>>> On 20/11/2020 09:06, Hans Verkuil wrote:
+> > >>>>> On 19/11/2020 15:41, Daniel Vetter wrote:
+> > >>>>>> The media model assumes that buffers are all preallocated, so that
+> > >>>>>> when a media pipeline is running we never miss a deadline because the
+> > >>>>>> buffers aren't allocated or available.
+> > >>>>>>
+> > >>>>>> This means we cannot fix the v4l follow_pfn usage through
+> > >>>>>> mmu_notifier, without breaking how this all works. The only real fix
+> > >>>>>> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
+> > >>>>>> tell everyone to cut over to dma-buf memory sharing for zerocopy.
+> > >>>>>>
+> > >>>>>> userptr for normal memory will keep working as-is, this only affects
+> > >>>>>> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
+> > >>>>>> videobuf2-dma-sg: Support io userptr operations on io memory").
+> > >>>>>>
+> > >>>>>> Acked-by: Tomasz Figa <tfiga@chromium.org>
+> > >>>>>
+> > >>>>> Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > >>>>
+> > >>>> Actually, cancel this Acked-by.
+> > >>>>
+> > >>>> So let me see if I understand this right: VM_IO | VM_PFNMAP mappings can
+> > >>>> move around. There is a mmu_notifier that can be used to be notified when
+> > >>>> that happens, but that can't be used with media buffers since those buffers
+> > >>>> must always be available and in the same place.
+> > >>>>
+> > >>>> So follow_pfn is replaced by unsafe_follow_pfn to signal that what is attempted
+> > >>>> is unsafe and unreliable.
+> > >>>>
+> > >>>> If CONFIG_STRICT_FOLLOW_PFN is set, then unsafe_follow_pfn will fail, if it
+> > >>>> is unset, then it writes a warning to the kernel log but just continues while
+> > >>>> still unsafe.
+> > >>>>
+> > >>>> I am very much inclined to just drop VM_IO | VM_PFNMAP support in the media
+> > >>>> subsystem. For vb2 there is a working alternative in the form of dmabuf, and
+> > >>>> frankly for vb1 I don't care. If someone really needs this for a vb1 driver,
+> > >>>> then they can do the work to convert that driver to vb2.
+> > >>>>
+> > >>>> I've added Mauro to the CC list and I'll ping a few more people to see what
+> > >>>> they think, but in my opinion support for USERPTR + VM_IO | VM_PFNMAP
+> > >>>> should just be killed off.
+> > >>>>
+> > >>>> If others would like to keep it, then frame_vector.c needs a comment before
+> > >>>> the 'while' explaining why the unsafe_follow_pfn is there and that using
+> > >>>> dmabuf is the proper alternative to use. That will make it easier for
+> > >>>> developers to figure out why they see a kernel warning and what to do to
+> > >>>> fix it, rather than having to dig through the git history for the reason.
+> > >>>
+> > >>> I'm happy to add a comment, but otherwise if you all want to ditch
+> > >>> this, can we do this as a follow up on top? There's quite a bit of
+> > >>> code that can be deleted and I'd like to not hold up this patch set
+> > >>> here on that - it's already a fairly sprawling pain touching about 7
+> > >>> different subsystems (ok only 6-ish now since the s390 patch landed).
+> > >>> For the comment, is the explanation next to unsafe_follow_pfn not good
+> > >>> enough?
+> > >>
+> > >> No, because that doesn't mention that you should use dma-buf as a replacement.
+> > >> That's really the critical piece of information I'd like to see. That doesn't
+> > >> belong in unsafe_follow_pfn, it needs to be in frame_vector.c since it's
+> > >> vb2 specific.
+> > >
+> > > Ah makes sense, I'll add that.
+> > >
+> > >>>
+> > >>> So ... can I get you to un-cancel your ack?
+> > >>
+> > >> Hmm, I really would like to see support for this to be dropped completely.
+> > >>
+> > >> How about this: just replace follow_pfn() by -EINVAL instead of unsafe_follow_pfn().
+> > >>
+> > >> Add a TODO comment that this code now can be cleaned up a lot. Such a clean up patch
+> > >> can be added on top later, and actually that is something that I can do once this
+> > >> series has landed.
+> > >>
+> > >> Regardless, frame_vector.c should mention dma-buf as a replacement in a comment
+> > >> since I don't want users who hit this issue to have to dig through git logs
+> > >> to find that dma-buf is the right approach.
+> > >>
+> > >> BTW, nitpick: the subject line of this patch says 'videbuf' instead of 'videobuf'.
+> > >
+> > > Will fix to, and next round will have the additional -EINVAL on top.
+> > > Iirc Mauro was pretty clear that we can't just delete this, so I kinda
+> > > don't want to get stuck in this discussion with my patches :-)
 > >
-> 
-> Okay. I will do refactoring on i2c.c and uart.c to make common blocks.
->  is it okay to separate a patch for it?
-
-Yes, that would be the best - refactor the driver to split some common
-methods and then in next patch add new s3fwrn82 UART driver.
-
-> > > +
-> > > +static int s3fwrn82_uart_write(void *phy_id, struct sk_buff *out)
-> > > +{
-> > > +     struct s3fwrn82_uart_phy *phy = phy_id;
-> > > +     int err;
-> > > +
-> > > +     err = serdev_device_write(phy->ser_dev,
-> > > +                               out->data, out->len,
-> > > +                               MAX_SCHEDULE_TIMEOUT);
-> > > +     if (err < 0)
-> > > +             return err;
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static const struct s3fwrn5_phy_ops uart_phy_ops = {
-> > > +     .set_wake = s3fwrn82_uart_set_wake,
-> > > +     .set_mode = s3fwrn82_uart_set_mode,
-> > > +     .get_mode = s3fwrn82_uart_get_mode,
-> > > +     .write = s3fwrn82_uart_write,
-> > > +};
-> > > +
-> > > +static int s3fwrn82_uart_read(struct serdev_device *serdev,
-> > > +                           const unsigned char *data,
-> > > +                           size_t count)
-> > > +{
-> > > +     struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-> > > +     size_t i;
-> > > +
-> > > +     for (i = 0; i < count; i++) {
-> > > +             skb_put_u8(phy->recv_skb, *data++);
-> > > +
-> > > +             if (phy->recv_skb->len < S3FWRN82_NCI_HEADER)
-> > > +                     continue;
-> > > +
-> > > +             if ((phy->recv_skb->len - S3FWRN82_NCI_HEADER)
-> > > +                             < phy->recv_skb->data[S3FWRN82_NCI_IDX])
-> > > +                     continue;
-> > > +
-> > > +             s3fwrn5_recv_frame(phy->ndev, phy->recv_skb, phy->mode);
-> > > +             phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-> > > +             if (!phy->recv_skb)
-> > > +                     return 0;
-> > > +     }
-> > > +
-> > > +     return i;
-> > > +}
-> > > +
-> > > +static struct serdev_device_ops s3fwrn82_serdev_ops = {
+> > Ah, I found that discussion for the v2 of this series.
 > >
-> > const
+> > Yes, add that on top and we can discuss whether to Ack that -EINVAL patch or
+> > not.
 > >
-> > > +     .receive_buf = s3fwrn82_uart_read,
-> > > +     .write_wakeup = serdev_device_write_wakeup,
-> > > +};
-> > > +
-> > > +static const struct of_device_id s3fwrn82_uart_of_match[] = {
-> > > +     { .compatible = "samsung,s3fwrn82-uart", },
-> > > +     {},
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, s3fwrn82_uart_of_match);
-> > > +
-> > > +static int s3fwrn82_uart_parse_dt(struct serdev_device *serdev)
-> > > +{
-> > > +     struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-> > > +     struct device_node *np = serdev->dev.of_node;
-> > > +
-> > > +     if (!np)
-> > > +             return -ENODEV;
-> > > +
-> > > +     phy->gpio_en = of_get_named_gpio(np, "en-gpios", 0);
-> > > +     if (!gpio_is_valid(phy->gpio_en))
-> > > +             return -ENODEV;
-> > > +
-> > > +     phy->gpio_fw_wake = of_get_named_gpio(np, "wake-gpios", 0);
+> > I don't see why we would want to continue supporting a broken model that is
+> > also a security risk, as I understand it.
 > >
-> > You should not cast it it unsigned int. I'll fix the s3fwrn5 from which
-> > you copied this apparently.
+> > Tomasz, can you look at the discussion for this old RFC patch of mine:
 > >
-> 
-> Okay. I will fix it.
-> 
-> > > +     if (!gpio_is_valid(phy->gpio_fw_wake))
-> > > +             return -ENODEV;
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static int s3fwrn82_uart_probe(struct serdev_device *serdev)
-> > > +{
-> > > +     struct s3fwrn82_uart_phy *phy;
-> > > +     int ret = -ENOMEM;
-> > > +
-> > > +     phy = devm_kzalloc(&serdev->dev, sizeof(*phy), GFP_KERNEL);
-> > > +     if (!phy)
-> > > +             goto err_exit;
-> > > +
-> > > +     phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-> > > +     if (!phy->recv_skb)
-> > > +             goto err_free;
-> > > +
-> > > +     mutex_init(&phy->mutex);
-> > > +     phy->mode = S3FWRN5_MODE_COLD;
-> > > +
-> > > +     phy->ser_dev = serdev;
-> > > +     serdev_device_set_drvdata(serdev, phy);
-> > > +     serdev_device_set_client_ops(serdev, &s3fwrn82_serdev_ops);
-> > > +     ret = serdev_device_open(serdev);
-> > > +     if (ret) {
-> > > +             dev_err(&serdev->dev, "Unable to open device\n");
-> > > +             goto err_skb;
-> > > +     }
-> > > +
-> > > +     ret = serdev_device_set_baudrate(serdev, 115200);
+> > https://patchwork.linuxtv.org/project/linux-media/patch/20200221084531.576156-9-hverkuil-cisco@xs4all.nl/
 > >
-> > Why baudrate is fixed?
+> > Specifically, if we just drop support for follow_pfn(), would that cause
+> > problems for Chromium since that is apparently still using USERPTR for encoders?
 > >
 > 
-> RN82 NFC chip only supports 115200 baudrate for UART.
+> Nope, we use regular page-backed user pointers and not IO/PFNMAP ones.
+> 
+> By the way, for any inter-device sharing we're using DMABUF. USERPTR
+> is left only in case of the data coming from the CPU, e.g. network.
 
-OK, I guess it could be extended in the future for other frequencies, if
-needed.
+Yeah Mauro wasn't too enthusiastic even about this patch here, so I think
+I'll just leave it as-is. I fixed the typo in the commit message subject.
+-Daniel
 
 > 
-> > > +     if (ret != 115200) {
-> > > +             ret = -EINVAL;
-> > > +             goto err_serdev;
-> > > +     }
-> > > +
-> > > +     serdev_device_set_flow_control(serdev, false);
-> > > +
-> > > +     ret = s3fwrn82_uart_parse_dt(serdev);
-> > > +     if (ret < 0)
-> > > +             goto err_serdev;
-> > > +
-> > > +     ret = devm_gpio_request_one(&phy->ser_dev->dev,
-> > > +                                 phy->gpio_en,
-> > > +                                 GPIOF_OUT_INIT_HIGH,
-> > > +                                 "s3fwrn82_en");
+> > Regards,
 > >
-> > This is weirdly wrapped.
+> >         Hans
 > >
-> 
-> Did you ask about devem_gpio_request_one function's parenthesis and parameters?
-> If it is right, I changed it after i ran the checkpatch.pl --strict and
-> i saw message like the alignment should match open parenthesis.
-
-Yeah, but it does not mean to wrap after each argument. It should be
-something like:
-
-        ret = devm_gpio_request_one(&phy->ser_dev->dev, phy->gpio_en,
-                                    GPIOF_OUT_INIT_HIGH, "s3fwrn82_en");
-
-> 
-> > > +     if (ret < 0)
-> > > +             goto err_serdev;
-> > > +
-> > > +     ret = devm_gpio_request_one(&phy->ser_dev->dev,
-> > > +                                 phy->gpio_fw_wake,
-> > > +                                 GPIOF_OUT_INIT_LOW,
-> > > +                                 "s3fwrn82_fw_wake");
-> > > +     if (ret < 0)
-> > > +             goto err_serdev;
-> > > +
-> > > +     ret = s3fwrn5_probe(&phy->ndev, phy, &phy->ser_dev->dev, &uart_phy_ops);
-> > > +     if (ret < 0)
-> > > +             goto err_serdev;
-> > > +
-> > > +     return ret;
-> > > +
-> > > +err_serdev:
-> > > +     serdev_device_close(serdev);
-> > > +err_skb:
-> > > +     kfree_skb(phy->recv_skb);
-> > > +err_free:
-> > > +     kfree(phy);
+> > > -Daniel
+> > >
+> > >>
+> > >> Regards,
+> > >>
+> > >>         Hans
+> > >>
+> > >>>
+> > >>> Thanks, Daniel
+> > >>>
+> > >>>>
+> > >>>> Regards,
+> > >>>>
+> > >>>>         Hans
+> > >>>>
+> > >>>>>
+> > >>>>> Thanks!
+> > >>>>>
+> > >>>>>       Hans
+> > >>>>>
+> > >>>>>> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > >>>>>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > >>>>>> Cc: Kees Cook <keescook@chromium.org>
+> > >>>>>> Cc: Dan Williams <dan.j.williams@intel.com>
+> > >>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+> > >>>>>> Cc: John Hubbard <jhubbard@nvidia.com>
+> > >>>>>> Cc: Jérôme Glisse <jglisse@redhat.com>
+> > >>>>>> Cc: Jan Kara <jack@suse.cz>
+> > >>>>>> Cc: Dan Williams <dan.j.williams@intel.com>
+> > >>>>>> Cc: linux-mm@kvack.org
+> > >>>>>> Cc: linux-arm-kernel@lists.infradead.org
+> > >>>>>> Cc: linux-samsung-soc@vger.kernel.org
+> > >>>>>> Cc: linux-media@vger.kernel.org
+> > >>>>>> Cc: Pawel Osciak <pawel@osciak.com>
+> > >>>>>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > >>>>>> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> > >>>>>> Cc: Tomasz Figa <tfiga@chromium.org>
+> > >>>>>> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+> > >>>>>> Cc: Vlastimil Babka <vbabka@suse.cz>
+> > >>>>>> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+> > >>>>>> Cc: Michel Lespinasse <walken@google.com>
+> > >>>>>> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > >>>>>> --
+> > >>>>>> v3:
+> > >>>>>> - Reference the commit that enabled the zerocopy userptr use case to
+> > >>>>>>   make it abundandtly clear that this patch only affects that, and not
+> > >>>>>>   normal memory userptr. The old commit message already explained that
+> > >>>>>>   normal memory userptr is unaffected, but I guess that was not clear
+> > >>>>>>   enough.
+> > >>>>>> ---
+> > >>>>>>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+> > >>>>>>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
+> > >>>>>>  2 files changed, 2 insertions(+), 2 deletions(-)
+> > >>>>>>
+> > >>>>>> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+> > >>>>>> index a0e65481a201..1a82ec13ea00 100644
+> > >>>>>> --- a/drivers/media/common/videobuf2/frame_vector.c
+> > >>>>>> +++ b/drivers/media/common/videobuf2/frame_vector.c
+> > >>>>>> @@ -70,7 +70,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+> > >>>>>>                      break;
+> > >>>>>>
+> > >>>>>>              while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
+> > >>>>>> -                    err = follow_pfn(vma, start, &nums[ret]);
+> > >>>>>> +                    err = unsafe_follow_pfn(vma, start, &nums[ret]);
+> > >>>>>>                      if (err) {
+> > >>>>>>                              if (ret == 0)
+> > >>>>>>                                      ret = err;
+> > >>>>>> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> > >>>>>> index 52312ce2ba05..821c4a76ab96 100644
+> > >>>>>> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
+> > >>>>>> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> > >>>>>> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
+> > >>>>>>      user_address = untagged_baddr;
+> > >>>>>>
+> > >>>>>>      while (pages_done < (mem->size >> PAGE_SHIFT)) {
+> > >>>>>> -            ret = follow_pfn(vma, user_address, &this_pfn);
+> > >>>>>> +            ret = unsafe_follow_pfn(vma, user_address, &this_pfn);
+> > >>>>>>              if (ret)
+> > >>>>>>                      break;
+> > >>>>>>
+> > >>>>>>
+> > >>>>>
+> > >>>>
+> > >>>
+> > >>>
+> > >>
+> > >
+> > >
 > >
-> > Eee.... why? Did you test this code?
-> >
-> 
-> I didn't test this code. i just added this code as defense code.
-> If the error happens, then allocated memory and device will be free
-> according to the fail case.
 
-Really, this won't work. It's kind of obvious why... You cannot use
-kfree() on memory which is not allocated with kzalloc(). Or IOW, you
-cannot use it if it is being freed by devm.
-
-I doubt that you tested either this or the remove callback because if
-you did test it, you would see easily:
-
-[  145.018200] Unable to handle kernel paging request at virtual address ffffffed
-[  145.025428] pgd = 67e71ef8
-[  145.027774] [ffffffed] *pgd=6fffd861, *pte=00000000, *ppte=00000000
-[  145.034052] Internal error: Oops: 837 [#1] PREEMPT SMP ARM
-[  145.039278] Modules linked in: s5p_mfc exynos_gsc s5p_jpeg v4l2_mem2mem videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common videodev mc
-[  145.052987] CPU: 2 PID: 325 Comm: bash Tainted: G        W         5.10.0-rc3-next-20201113-00008-g62dd0da04641-dirty #79
-[  145.063883] Hardware name: Samsung Exynos (Flattened Device Tree)
-[  145.069971] PC is at devres_remove+0x9c/0xb4
-[  145.074180] LR is at devres_remove+0x78/0xb4
-[  145.078418] pc : [<c06a6134>]    lr : [<c06a6110>]    psr: a0010093
-[  145.084666] sp : c6af7de0  ip : 00000001  fp : c2dd16e4
-[  145.089861] r10: c2dd16c0  r9 : 60010013  r8 : c05894a8
-[  145.095060] r7 : c058b128  r6 : c4bbc100  r5 : c2dd1410  r4 : c440d5c0
-[  145.101564] r3 : ffffffed  r2 : c4bbc100  r1 : 60010013  r0 : c2dd16c0
-[  145.108068] Flags: NzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[  145.115260] Control: 10c5387d  Table: 46aa006a  DAC: 00000051
-[  145.120979] Process bash (pid: 325, stack limit = 0x97d30bf6)
-[  145.126696] Stack: (0xc6af7de0 to 0xc6af8000)
-[  145.131039] 7de0: c4bbc100 c2dd1410 c058b128 c2dd1410 c440d5c0 c39a3400 c1305f08 c1348d28
-[  145.139185] 7e00: 0000002b c06a6a54 c2dd1410 00000000 c440d5c0 c058ab94 c2dd1410 c06ccd04
-[  145.147333] 7e20: c2dd1410 c19ab618 00000000 c19ab620 c39a3400 c06a1ff8 00000000 c2dd1524
-[  145.155476] 7e40: c1c16800 c2dd1410 c1305f08 c1305f08 c1348d28 c39a3400 c6af7f78 c39a3410
-[  145.163621] 7e60: c1c16800 c06a2624 c1305f08 c1305f08 0000000c c2dd1410 00000000 c1305f08
-[  145.171769] 7e80: 0000000c c39a3400 c6af7f78 c39a3410 c1c16800 c06a29ec c2dd1410 c1305f08
-[  145.179914] 7ea0: c12f0410 c06a0728 0000000c c4bbc140 00000000 00000000 c39a3400 c0381968
-[  145.188058] 7ec0: 00000000 00000000 00000000 c5164640 0000000c 005e0da0 c6af7f78 c02d6120
-[  145.196202] 7ee0: c038185c c02d5b70 00000001 00000000 c02d6120 00000000 00000000 c133c27a
-[  145.204353] 7f00: c39f5690 c127b15c c116e588 c0b40ef0 c133c14f c3af4450 c39f5670 00000000
-[  145.212497] 7f20: c3af4450 c018ea90 c120958c c39f5670 c3af4450 c116e588 c02f9988 c0197a00
-[  145.220639] 7f40: c116e588 c0b40ef0 00000003 c1208ec8 00000000 c5164640 c5164640 00000000
-[  145.228784] 7f60: 00000000 005e0da0 0000000c 00000004 00000000 c02d6120 00000000 00000000
-[  145.236931] 7f80: 00000006 c1208ec8 c5164640 0000000c 005e0da0 b6fec680 00000004 c0100244
-[  145.245077] 7fa0: c6af6000 c0100060 0000000c 005e0da0 00000001 005e0da0 0000000c 00000000
-[  145.253222] 7fc0: 0000000c 005e0da0 b6fec680 00000004 b6f6310c b6f62c74 00000000 00000000
-[  145.261370] 7fe0: 00000498 bef78290 b6e84ea4 b6ee2300 60010010 00000001 00000000 00000000
-[  145.269555] [<c06a6134>] (devres_remove) from [<c06a6a54>] (devres_release+0x10/0x3c)
-[  145.277340] [<c06a6a54>] (devres_release) from [<c058ab94>] (devm_pinctrl_put+0x20/0x44)
-[  145.285388] [<c058ab94>] (devm_pinctrl_put) from [<c06ccd04>] (pinctrl_bind_pins+0xd0/0x27c)
-[  145.293786] [<c06ccd04>] (pinctrl_bind_pins) from [<c06a1ff8>] (really_probe+0x90/0x4f0)
-[  145.301842] [<c06a1ff8>] (really_probe) from [<c06a2624>] (driver_probe_device+0x78/0x1e0)
-[  145.310069] [<c06a2624>] (driver_probe_device) from [<c06a29ec>] (device_driver_attach+0x58/0x60)
-[  145.318936] [<c06a29ec>] (device_driver_attach) from [<c06a0728>] (bind_store+0x8c/0x100)
-[  145.327074] [<c06a0728>] (bind_store) from [<c0381968>] (kernfs_fop_write+0x10c/0x230)
-[  145.334960] [<c0381968>] (kernfs_fop_write) from [<c02d5b70>] (vfs_write+0xcc/0x524)
-[  145.342658] [<c02d5b70>] (vfs_write) from [<c02d6120>] (ksys_write+0x64/0xf0)
-[  145.349759] [<c02d6120>] (ksys_write) from [<c0100060>] (ret_fast_syscall+0x0/0x2c)
-[  145.357377] Exception stack(0xc6af7fa8 to 0xc6af7ff0)
-[  145.362395] 7fa0:                   0000000c 005e0da0 00000001 005e0da0 0000000c 00000000
-[  145.370551] 7fc0: 0000000c 005e0da0 b6fec680 00000004 b6f6310c b6f62c74 00000000 00000000
-[  145.378699] 7fe0: 00000498 bef78290 b6e84ea4 b6ee2300
-[  145.383719] Code: e1a0000a e5942000 e1a01009 e5823004 (e5832000)
-[  145.389795] ---[ end trace 769f050185612ec3 ]---
-
-Please fix the double-free.
-
-Best regards,
-Krzysztof
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
