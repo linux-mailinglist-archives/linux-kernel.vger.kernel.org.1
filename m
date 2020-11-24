@@ -2,76 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13C02C2EC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A7F2C2EDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403855AbgKXRhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403840AbgKXRhO (ORCPT
+        id S2403909AbgKXRie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:38:34 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2148 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403894AbgKXRie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:37:14 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD35C0613D6;
-        Tue, 24 Nov 2020 09:37:14 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id m16so21790687edr.3;
-        Tue, 24 Nov 2020 09:37:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hry/OBR2/hK4u0SfunHDX/gcj9N95Fp8cXcywNOglMY=;
-        b=VaySMti4KbVGeydmgmZ/XKz8gGuNaxeHEhuAopXBW0koyGPIztQawVLxbY4w2IcEg8
-         zcUmn/ulzlUlnxduhlesA1NpoTbZuMSvYCYul/a2vOHFso3Acg8f18IF9fHumDnKW/Xm
-         ARHE2DH39+S2kd+A9hpmnAQuzP8bmLnqhdpq6lwmgbvMCWseZIC0YhL5Yhc9HjgEG4vB
-         gjaqofr3Pyz84QyHFYNyrL+ySPDUDRlOrbvZKL6p8COE8NHbYMvC3ULUUVkNv0+YX3y1
-         WZBkBEXrj+J4U4VlCQRNseeMxzN65qAKa/epUJV4lYI6mlRFLQt1qtYka8QEVntEiMLq
-         4e3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hry/OBR2/hK4u0SfunHDX/gcj9N95Fp8cXcywNOglMY=;
-        b=IvT3fc7b8RKgAoOVjwjoTiRTSnxXYR2P5OU1CM9fIET6EizcKEkpedZUGp8BHniC+y
-         H16kadYqwStq2I1ZSp1xa27gtBrIGkmhuabGP5TWMiEkwMrhJqh7G/suJV+U9DNUEU4p
-         bCbxe8NpGcxT9XSen8jGHqkeG7CLeFCzZVzUJ4/46jkzRdEb7X+MXjspso9r1VsCWqI4
-         u9JQDobpMR9cA8XByMkm1xUtUDy1Ipo6uZSmTSfVbpj9kyAFgS7SUzf1qzVan2X3FqQm
-         8iQj5tl2KNiJMrUSp2vYagi4ZYCwHUqh7dCT/r+wR5CMdS+/ZZ4/XLfNfA+hYVHTn1dF
-         BIEg==
-X-Gm-Message-State: AOAM532P3CoVUAgI7WZkPNYjYuSq/vMYaMZhTHGRUtaahG94/nZqcRie
-        Lz1ge/Koa8SGhz4Xs5/1JES0RXZsOUVpsuqWS50=
-X-Google-Smtp-Source: ABdhPJxj1gRJSd4rteeYBc8GdCGX2hG/xL1PbiT+qdRQbLGYlSIs77NjcwqnvPzcIWB8RQyC2/r4wZK7gjKbYPznS1c=
-X-Received: by 2002:a50:9f6c:: with SMTP id b99mr5214327edf.90.1606239432975;
- Tue, 24 Nov 2020 09:37:12 -0800 (PST)
+        Tue, 24 Nov 2020 12:38:34 -0500
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgWQQ33H6z67H3h;
+        Wed, 25 Nov 2020 01:35:58 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 24 Nov 2020 18:38:32 +0100
+Received: from [10.210.169.36] (10.210.169.36) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 24 Nov 2020 17:38:31 +0000
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>, <linuxarm@huawei.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+ <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+ <874klmqu2r.fsf@nanos.tec.linutronix.de>
+ <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
+ <87lfexp6am.fsf@nanos.tec.linutronix.de>
+ <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
+ <873615oy8a.fsf@nanos.tec.linutronix.de>
+ <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
+ <87sg91ik9e.wl-maz@kernel.org>
+ <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
+ <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
+ <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
+ <0525a4bcf17a355cd141632d4f3714be@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
+Date:   Tue, 24 Nov 2020 17:38:10 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <1602833947-82021-1-git-send-email-Sanju.Mehta@amd.com>
- <1602833947-82021-3-git-send-email-Sanju.Mehta@amd.com> <20201118121623.GR50232@vkoul-mobl>
- <CAGF4SLi1qqj6xSBB6=9rS=M_Wvaj9Zec7XzMc7=9EsgPLM21OQ@mail.gmail.com> <20201124171813.GS8403@vkoul-mobl>
-In-Reply-To: <20201124171813.GS8403@vkoul-mobl>
-From:   Vitaly Mayatskih <v.mayatskih@gmail.com>
-Date:   Tue, 24 Nov 2020 12:37:01 -0500
-Message-ID: <CAGF4SLiL8+=atY6A8M7tZUPOEeZfL61b0AucjeNoFfp8yGFfsQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/3] dmaengine: ptdma: register PTDMA controller as a
- DMA resource
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Sanjay R Mehta <Sanju.Mehta@amd.com>, gregkh@linuxfoundation.org,
-        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
-        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
-        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0525a4bcf17a355cd141632d4f3714be@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.36]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:18 PM Vinod Koul <vkoul@kernel.org> wrote:
+Hi Marc,
 
-> IIRC there were few issues that I would like to get fixed before we can
-> apply.. I hope authors can reply to the comments received and we can
-> discuss on this.
+>> So initially in the msi_prepare method we setup the its dev - this is
+>> from the mbigen probe. Then when all the irqs are unmapped later for
+>> end device driver removal, we release this its device in
+>> its_irq_domain_free(). But I don't see anything to set it up again. Is
+>> it improper to have released the its device in this scenario?
+>> Commenting out the release makes things "good" again.
+> 
+> Huh, that's ugly. The issue is that the device that deals with the
+> interrupts isn't the device that the ITS knows about (there isn't a
+> 1:1 mapping between mbigen and the endpoint).
+> 
+> The mbigen is responsible for the creation of the corresponding
+> irqdomain, and and crucially for the "prepare" phase, which results
+> in storing the its_dev pointer in info->scratchpad[0].
+> 
+> As we free all the interrupts associated with the endpoint, we
+> free the its_dev (nothing else needs it at this point). On the
+> next allocation, we reuse the damn its_dev pointer, and we're SOL.
+> This is wrong, because we haven't removed the mbigen, only the
+> device *connected* to the mbigen. And since the mbigen can be shared
+> across endpoints, we can't reliably tear it down at all. Boo.
+> 
+> The only thing to do is to convey that by marking the its_dev as
+> shared so that it isn't deleted when no LPIs are being used. After
+> all, it isn't like the mbigen is going anywhere.
 
-Sounds like a plan, thanks!
+Right, I did consider this.
 
--- 
-wbr, Vitaly
+> 
+> It is just that passing that information down isn't a simple affair,
+> as msi_alloc_info_t isn't a generic type... Let me have a think.
+
+I think that there is a way to circumvent the problem, which you might 
+call hacky, but OTOH, not sure if there's much point changing mbigen or 
+related infrastructure at this stage.
+
+Anyway, so we have 128 irqs in total for the mbigen domain, but the 
+driver only is interesting in something like irq indexes 1,2,72-81, and 
+96-112. So we can just dispose the mappings for irq index 0-112 at 
+removal stage, thereby keeping the its device around. We do still call 
+platform_irq_count(), which sets up all 128 mappings, so maybe we should 
+be unmapping all of these - this would be the contentious part. But 
+maybe not, as the device driver is only interested in that subset, and 
+has no business unmapping the rest.
+
+With that change, the platform.c API would work a bit more like the pci 
+msi code equivalent, where we request a min and max number of vectors. 
+In fact, that platform.c change needs to be made anyway as 
+platform_get_irqs_affinity() is broken currently for when nr_cpus < #hw 
+queues.
+
+Thoughts?
+
+Thanks,
+John
+
