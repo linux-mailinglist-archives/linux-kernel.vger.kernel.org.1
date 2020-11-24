@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620602C31C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3782C31C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730393AbgKXUNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:13:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730373AbgKXUNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:13:40 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393D5C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:13:40 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id 7so18510qtp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:13:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WjrwSOgmK7tVwq8WvjS7LthFjsI+tsu+eyf3qqK2kfM=;
-        b=ceTg5YmP47arROPC2Liz0mYMSHnqW9GuA7oK8Rrd2PPEJ6Ygre/fslMEfKH3xZsJZf
-         ykvg8b30xjvim60a6CElFs8iOw4ZI//fFlxOOqxblxur0TFoMDOTb0Go45xUss3spoIB
-         h9rtxVpDXmitlMiPFuUZXO8jJ07wAyt4EU4WI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WjrwSOgmK7tVwq8WvjS7LthFjsI+tsu+eyf3qqK2kfM=;
-        b=DnM5f9ZVdtbxZKekYCdpBoW0HUZGtfob//CRjAWloAkCNo2v+F/oiLJx4B+SAs4ayg
-         C+dTviktbsSi6ovaG28HdzEUfvh64b8T8ddM88IYk1wA29mO+4Dlwv8K1iNpNIw2Bruw
-         cHuHz654RufnlrAt3o7b+ygR+8WtTjyeWnkdt7dqmL3978Dek3x3cqAcQPRmjJQtDFGN
-         eyqYaG0K/OJmvJ0L4AlIz8V/swGP7ffMM+YqFKluq4iYTuWmkQrbNhKvqc0yhgFeggol
-         UNqqvgQt+ictBieR8nLqyhnI8SWBy8ejvX8GzeM3Q3UmpDCplL/aeIXpcBJPb8UkyFz+
-         b0Ag==
-X-Gm-Message-State: AOAM5337rTaDkOPyZGXhEk/9xWz4sHecni4UGboJ5z63502ClEw6GDtB
-        ezf0uwoi3BInSGYLVoIBg5OhcejnsHzsMXwl1PNlxw==
-X-Google-Smtp-Source: ABdhPJyXA5fvd1TsMQp2qugJ5lv7k71ebl0ixrjc/JxV/SYTBZkFvEQGWkEXlTiBSFyS83C0bxAjnlW04S92/pKDkQY=
-X-Received: by 2002:ac8:7345:: with SMTP id q5mr6306085qtp.297.1606248819400;
- Tue, 24 Nov 2020 12:13:39 -0800 (PST)
+        id S1730426AbgKXUPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:15:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730408AbgKXUPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 15:15:05 -0500
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A96220897;
+        Tue, 24 Nov 2020 20:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606248905;
+        bh=1uE3OiCzLGLIZAGr9pL2rVM5ax6NdKMufsqI16g8Phg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kahRTY2xTKQf43H0i9dFH/aINLhMv6NuS/vq6a+aQuaTi7qLRIMUtLP4a4cL/6fxk
+         /KL5zcGhnJ01ZqG0PIAca5aZmFgvZ3Slwyxp4ktgBUZuJ9C8WVdzkL0+DwrdZpeDPn
+         dYCJq7IwG3QdYXMfmh0C5MIY8kveD/o5wslo4rQc=
+Received: by mail-ot1-f50.google.com with SMTP id 79so36648otc.7;
+        Tue, 24 Nov 2020 12:15:05 -0800 (PST)
+X-Gm-Message-State: AOAM531fZ1HYWE4E5ABbH0qmQizNC9QAcf7qWLZYl6ghTX2kYDQ/BscF
+        HagtWlBT5rIWY3SiDWyUcAj3zitab3xJBAHAtAM=
+X-Google-Smtp-Source: ABdhPJzCz6LUoJRBkoGcpndiBFsOlruR8AoE+WOG4FWfG4gad/1eooLu5DK7ErHqUIxy141UTZnr9Dys81t4JI1eD3o=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr203752otk.251.1606248904500;
+ Tue, 24 Nov 2020 12:15:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20201023214328.1262883-1-pmalani@chromium.org> <20201124132301.GC1008337@kuha.fi.intel.com>
-In-Reply-To: <20201124132301.GC1008337@kuha.fi.intel.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Tue, 24 Nov 2020 12:13:28 -0800
-Message-ID: <CACeCKackFrrtvkxma0acBP-mv_f7nGKtOuknCmy_YHynS38+Bg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] usb: typec: Consolidate syfs ABI documentation
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org> <20201120231441.29911-2-ebiederm@xmission.com>
+ <20201123175052.GA20279@redhat.com> <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
+ <87im9vx08i.fsf@x220.int.ebiederm.org> <87pn42r0n7.fsf@x220.int.ebiederm.org> <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
+In-Reply-To: <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 24 Nov 2020 21:14:48 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
+Message-ID: <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
+Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geoff Levand <geoff@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
-
-On Tue, Nov 24, 2020 at 5:23 AM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
+On Tue, Nov 24, 2020 at 8:58 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Fri, Oct 23, 2020 at 02:43:26PM -0700, Prashant Malani wrote:
-> > Both partner and cable have identity VDOs. These are listed separately
-> > in the Documentation/ABI/testing/sysfs-class-typec. Factor these out
-> > into a common location to avoid the duplication.
+> On Tue, Nov 24, 2020 at 11:55 AM Eric W. Biederman
+> <ebiederm@xmission.com> wrote:
+> >
+> > If cell happens to be dead we can remove a fair amount of generic kernel
+> > code that only exists to support cell.
 >
-> This does not apply any more. Cany you resend these.
-Thanks for the heads up. Resent here [1]
+> Even if some people might still use cell (which sounds unlikely), I
+> think we can remove the spu core dumping code.
 
-[1]: https://lore.kernel.org/linux-usb/20201124201033.592576-2-pmalani@chromium.org/
+The Cell blade hardware (arch/powerpc/platforms/cell/) that I'm listed
+as a maintainer for is very much dead, but there is apparently still some
+activity on the Playstation 3 that Geoff Levand maintains.
 
-BR,
+Eric correctly points out that the PS3 firmware no longer boots
+Linux (OtherOS), but AFAIK there are both users with old firmware
+and those that use a firmware exploit to run homebrew code including
+Linux.
 
--Prashant
+I would assume they still use the SPU and might also use the core
+dump code in particular. Let's see what Geoff thinks.
+
+       Arnd
