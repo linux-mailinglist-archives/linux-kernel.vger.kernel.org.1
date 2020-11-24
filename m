@@ -2,94 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B63D2C3021
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540D42C302A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390966AbgKXSoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:44:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730160AbgKXSoS (ORCPT
+        id S2404335AbgKXSp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:45:56 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:57445 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404000AbgKXSpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:44:18 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1A4C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:44:18 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id 92so17257590otd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:44:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z50zrczk/HXT3wMf0LhtTgKjujoLdfzrjXHxy6jadvU=;
-        b=BUsry8dXUyq6qvH12+S8uwdIvLqe47yNySt4CQBM/hhHB87Oyc9x7pntTUnLGORUqr
-         NNSsIGUhtiOxgn4o6pQqsfQpM05xC7XvoCOhW4QbJb6IVm8ZPHeh2mepfyScK8CS3Baw
-         dv/+IPESAIh2X71+UL5+oSEdZFxaBMrDtH6hs6W+HOCygkxEdoThZJ7LFg7+ucKkC6Dh
-         7bry1X8B275f9C/S1Y/7qrRnGJrU2JL/K6eopL6Qu9PXt+lPuiyoSoeeZq6cpTdlF081
-         P4T4aFBfXxbb4IXGoCzk6/lUSsYHs79NtnJ3N41yDXmW0k4lFCMedgofKqhd9ToLT0h+
-         JSKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z50zrczk/HXT3wMf0LhtTgKjujoLdfzrjXHxy6jadvU=;
-        b=OAUe2v15HDe4pNpyBTQlJ8RHmLLSPe08vPevDrkzUd1ZhAzOKdnwb90HtQ/b0rKhBL
-         QFSAIVAIz8wJmezwUptTc1Of8VA3esAMZGfb9rq++fpFVwPnJxKEccdh2E83oU1lzj65
-         PUcCu2SBY7SgQUsAf5pmR7Ct7WkofV1lyUt1miYFuLfau+rT+KrSlkEItwBb4UvSxDGG
-         EaEIoSLkKlM0//chY78mGGdT65SM8+mTKW4p4stOs8fwqls8vH855Ru0ohmXgPlsLlq0
-         o7X7e75gxncbyKyFYrvw9n8HdIIEckvI5GuiXbSuj0ImHfAWCfUwmFhf25X8VPA8zKL7
-         J2mA==
-X-Gm-Message-State: AOAM5330ynBmeDgsp9+GVUi77wdVxe6hNptVBQ4tykbgywxP/qs6b2Gu
-        t7cmK+Mz/cGP0R33Br8LCPcZWg==
-X-Google-Smtp-Source: ABdhPJzuUNL2hALito6AJog35PnicqoPfOTu0soQCA+H2qKVW4zlwU8MRsrtI1pCWL1vVO8keKN8nQ==
-X-Received: by 2002:a9d:6641:: with SMTP id q1mr4553514otm.190.1606243456575;
-        Tue, 24 Nov 2020 10:44:16 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t25sm9024376otj.13.2020.11.24.10.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 10:44:15 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: c630: Re-enable apps_smmu
-Date:   Tue, 24 Nov 2020 12:44:14 -0600
-Message-Id: <20201124184414.380796-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Tue, 24 Nov 2020 13:45:55 -0500
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 0AOIjaBY023672;
+        Wed, 25 Nov 2020 03:45:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0AOIjaBY023672
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606243537;
+        bh=viqmAjpBDNKBM55ep9S4CFsZN2+b8yf9v5jJjKojcF8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rSx0asH0lSiArQDnjFC2er4R/FRVJXeXBlxly1vuVu9fui5fPGG/kAyE2wX6PW9sT
+         gM4EneuvPD3LWnj4DkokC5PS6PVKxwckKntEhSkEGoYQEFVPx71JRT0OXVYQDMAQLv
+         mY708OC1V7c2cVpAkcwP1X0GRouiz/byAxFQkzh7WPAHOUgEPxt15KcWDPobqicS84
+         ZcEC27gV/itbt+IsiCdAnRueqYlLajVgTaXA7b6RXl80gKF9vhafo0HFl3cVxWAVqZ
+         j4KO5UvH6BfyM66Hn/W7JGCpwPrDHioIlIkB4TToHEgK88nZMauBUIOqcszMB8ZmjF
+         GxJhnnjeL1cdA==
+X-Nifty-SrcIP: [209.85.215.178]
+Received: by mail-pg1-f178.google.com with SMTP id m9so18262424pgb.4;
+        Tue, 24 Nov 2020 10:45:36 -0800 (PST)
+X-Gm-Message-State: AOAM532BI3whtecl5nieCjWaHEr+UqzNDw7YWdsTrZoVI9QyAmXEMKL3
+        hURzyZ3v1BPgeB9HDR9KZvPfbZvt53IAYaPBk4k=
+X-Google-Smtp-Source: ABdhPJyWFLMHlbBBpMhdEZbFshFfUlsJyMu2Mylxe1+GMMQvErCNglWmd2xP8x015lcMyx7mEFIg8a8Xv3fw1R0lZXY=
+X-Received: by 2002:a17:90a:5905:: with SMTP id k5mr3606612pji.198.1606243536107;
+ Tue, 24 Nov 2020 10:45:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAKwvOd=9iqLgdtAWe2h-9n=KUWm_rjCCJJYeop8PS6F+AA0VtA@mail.gmail.com>
+ <20201109183528.1391885-1-ndesaulniers@google.com> <CAKwvOdnxAr7UdjUiuttj=bz1_voK1qUvpOvSY35qOZ60+E8LBA@mail.gmail.com>
+ <CA+SOCLJTg6U+Ddop_5O-baVR42va3vGAvMQ62o9H6rd+10aKrw@mail.gmail.com> <CAKwvOdn0qoa_F-qX10Hu7Cr8eeCjcK23i10zw4fty32u1aBPSw@mail.gmail.com>
+In-Reply-To: <CAKwvOdn0qoa_F-qX10Hu7Cr8eeCjcK23i10zw4fty32u1aBPSw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 25 Nov 2020 03:44:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASatgWjE7MGe-cqU135tKD_Tt31Rouw-HSz6LYrN5hyuw@mail.gmail.com>
+Message-ID: <CAK7LNASatgWjE7MGe-cqU135tKD_Tt31Rouw-HSz6LYrN5hyuw@mail.gmail.com>
+Subject: Re: [PATCH v3] Kbuild: do not emit debug info for assembly with LLVM_IAS=1
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>,
+        "# 3.4.x" <stable@vger.kernel.org>, Jian Cai <jiancai@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Re-enable the apps_smmu now that the arm-smmu driver supports stream
-mapping handoff from firmware.
+On Tue, Nov 24, 2020 at 3:42 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Hi Masahiro,
+> I would appreciate any feedback you have on this patch.
+>
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 5 -----
- 1 file changed, 5 deletions(-)
+Applied to linux-kbuild. Thanks.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index d03ca3190746..f5b98845fa90 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -232,11 +232,6 @@ vreg_lvs2a_1p8: lvs2 {
- 	};
- };
- 
--&apps_smmu {
--	/* TODO: Figure out how to survive booting with this enabled */
--	status = "disabled";
--};
--
- &cdsp_pas {
- 	firmware-name = "qcom/LENOVO/81JL/qccdsp850.mbn";
- 	status = "okay";
--- 
-2.29.2
 
+
+
+> On Fri, Nov 20, 2020 at 3:58 PM Jian Cai <jiancai@google.com> wrote:
+> >
+> > I also verified that with this patch Chrome OS devices booted with eith=
+er GNU assembler or LLVM's integrated assembler. With this patch, IAS no lo=
+nger produces extra warnings compared to GNU as on Chrome OS and would remo=
+ve the last blocker of enabling IAS on it.
+> >
+> > Tested-by: Jian Cai <jiancai@google.com> # Compile-tested on mainline (=
+with defconfig) and boot-tested on ChromeOS (with olddefconfig).
+> >
+> >
+> > On Mon, Nov 16, 2020 at 3:41 PM 'Nick Desaulniers' via Clang Built Linu=
+x <clang-built-linux@googlegroups.com> wrote:
+> >>
+> >> Hi Masahiro, have you had time to review v3 of this patch?
+> >>
+> >> On Mon, Nov 9, 2020 at 10:35 AM Nick Desaulniers
+> >> <ndesaulniers@google.com> wrote:
+> >> >
+> >> > Clang's integrated assembler produces the warning for assembly files=
+:
+> >> >
+> >> > warning: DWARF2 only supports one section per compilation unit
+> >> >
+> >> > If -Wa,-gdwarf-* is unspecified, then debug info is not emitted for
+> >> > assembly sources (it is still emitted for C sources).  This will be
+> >> > re-enabled for newer DWARF versions in a follow up patch.
+> >> >
+> >> > Enables defconfig+CONFIG_DEBUG_INFO to build cleanly with
+> >> > LLVM=3D1 LLVM_IAS=3D1 for x86_64 and arm64.
+> >> >
+> >> > Cc: <stable@vger.kernel.org>
+> >> > Link: https://github.com/ClangBuiltLinux/linux/issues/716
+> >> > Reported-by: Dmitry Golovin <dima@golovin.in>
+> >> > Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+> >> > Suggested-by: Dmitry Golovin <dima@golovin.in>
+> >> > Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+> >> > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> >> > Reviewed-by: Fangrui Song <maskray@google.com>
+> >> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> >> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> >> > ---
+> >> >  Makefile | 2 ++
+> >> >  1 file changed, 2 insertions(+)
+> >> >
+> >> > diff --git a/Makefile b/Makefile
+> >> > index f353886dbf44..7e899d356902 100644
+> >> > --- a/Makefile
+> >> > +++ b/Makefile
+> >> > @@ -826,7 +826,9 @@ else
+> >> >  DEBUG_CFLAGS   +=3D -g
+> >> >  endif
+> >> >
+> >> > +ifneq ($(LLVM_IAS),1)
+> >> >  KBUILD_AFLAGS  +=3D -Wa,-gdwarf-2
+> >> > +endif
+> >> >
+> >> >  ifdef CONFIG_DEBUG_INFO_DWARF4
+> >> >  DEBUG_CFLAGS   +=3D -gdwarf-4
+> >> > --
+> >> > 2.29.2.222.g5d2a92d10f8-goog
+> >> >
+> >>
+> >>
+> >> --
+> >> Thanks,
+> >> ~Nick Desaulniers
+> >>
+> >> --
+> >> You received this message because you are subscribed to the Google Gro=
+ups "Clang Built Linux" group.
+> >> To unsubscribe from this group and stop receiving emails from it, send=
+ an email to clang-built-linux+unsubscribe@googlegroups.com.
+> >> To view this discussion on the web visit https://groups.google.com/d/m=
+sgid/clang-built-linux/CAKwvOdnxAr7UdjUiuttj%3Dbz1_voK1qUvpOvSY35qOZ60%2BE8=
+LBA%40mail.gmail.com.
+>
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
