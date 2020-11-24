@@ -2,77 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373212C31F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6D12C31FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731072AbgKXU2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:28:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726631AbgKXU2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:28:49 -0500
-Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C65AB20678;
-        Tue, 24 Nov 2020 20:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606249729;
-        bh=q4n6b3EZ69vbVGXxe0Kg1aJMnwwDL2ELyWBvL2w2+tg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NSVFrGy6lHGIEswzIfk1ZyONk6m+YvCZjhXu5GcVtBgS4df9UxSMAkCzu3ixN6XHT
-         vbhPft+48YQ8zUEW6kyo2+wmH/hJu9f89LrmXZQTZPRhiJFMQZ2ft3N5/ggyriTqb/
-         YHspL/4j/Gi90FmqupyK2WbxvAJbKL3LEQduDtY8=
-Date:   Tue, 24 Nov 2020 21:28:47 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux-stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.9 000/252] 5.9.11-rc1 review
-Message-ID: <X71s/0vcxSuYRZ+3@kroah.com>
-References: <20201123121835.580259631@linuxfoundation.org>
- <CA+G9fYtOd8pajJ4aDYjMqScyfd_VCtvudzhKzPybuNiJOWSKJQ@mail.gmail.com>
+        id S1731102AbgKXUcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbgKXUcS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 15:32:18 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EC2C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:32:18 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id f17so224068pge.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:32:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=27455kkYZ9lPDJYvnYh5LLVgC7lrUgf8EO+9xKtt6bA=;
+        b=Cd4dV4OKIQBWdm7uTqh4V2SjRc1TMtpkyqDU5FqH1Ft24qwESpO32ds5mh+x0jjYVT
+         in1ThNq11w3txAOHjQnB2yMBha4Sq0pEtR8nM8CiVNigWUBC4BvHUST0FLgf7rbmnRPZ
+         dbBRLe+YLNDvMkq9birGws6moRAYDLMGD9hr9YCxbHdLla/P009lr8yDrGk4T2uRQPXE
+         wOqnGj892rdKNSGM9yxHZkettz/NuBc1PM9YJ7OPQoNy4lNO6/wZdUklEucDAtjLQwET
+         WR3tgv22j5A/dgbJP6LZGnNErDTeIJVQigsuoLiqmw5U2Jah/eD7yFQLfwD+UnMXEOU5
+         kkAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=27455kkYZ9lPDJYvnYh5LLVgC7lrUgf8EO+9xKtt6bA=;
+        b=VYL0cpoBlc7vSEZ75QKZ8/G5gWuQ2DORttMrnia2cNl0Vzs0ydYkPQHCwzi5YqD0kz
+         3eQRX/uEdeRSW16NtvNY3KvfaT8hCdO6hKNPti8ue2tIUeLtxazCtibgoN7kzih8aaTd
+         PYUF32WVX3iJryrZ2KLkAcrVNJJYeuRQIqMCs5tP/2HufFgxDwHZRm7iW5dIb8MzJmbB
+         AJ3oHawvGIIXxRqnjdcV0+4ElWUgwZwR4V0O6roOo1OaaK53LEcwLUpOojPijLLKMXAl
+         qQtD30tQy6hv74vbRSdHDW/ttNDSA56IduKUlhjpLEpJf0Efum6OJPcBZPPeUpOUntyd
+         f35Q==
+X-Gm-Message-State: AOAM532/nYoAXb7pS8WwlzcwrOIa5Zvo4YEmwrEcrUHEeSLwm7ahUijU
+        Pdt1l+zCUsnhhSOKJxj/geA=
+X-Google-Smtp-Source: ABdhPJw5ai/TK2pCNJPuRtFJQNIWH6Rfeudvu4xJNAxJgnpXe6CIbx37Aa546osc3FVJHpHGcFDxzw==
+X-Received: by 2002:a62:5b05:0:b029:197:fafb:50f3 with SMTP id p5-20020a625b050000b0290197fafb50f3mr131117pfb.76.1606249937975;
+        Tue, 24 Nov 2020 12:32:17 -0800 (PST)
+Received: from adolin ([49.207.219.221])
+        by smtp.gmail.com with ESMTPSA id z22sm6005999pfn.153.2020.11.24.12.32.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 12:32:17 -0800 (PST)
+Date:   Wed, 25 Nov 2020 02:02:12 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     Julia.Lawall@lip6.fr
+Cc:     linux-kernel@vger.kernel.org, michal.lkml@markovi.net,
+        nicolas.palix@imag.fr, cocci@systeme.lip6.fr, Gilles.Muller@lip6.fr
+Subject: [PATCH v3] scripts: coccicheck: Correct usage of make coccicheck
+Message-ID: <20201124203212.tlvj7dvpmeql6spc@adolin>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYtOd8pajJ4aDYjMqScyfd_VCtvudzhKzPybuNiJOWSKJQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:41:57AM +0530, Naresh Kamboju wrote:
-> On Mon, 23 Nov 2020 at 18:14, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.9.11 release.
-> > There are 252 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.11-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
-> 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The command "make coccicheck C=1 CHECK=scripts/coccicheck" results in the
+error:
+        ./scripts/coccicheck: line 65: -1: shift count out of range
 
-Thanks for testing and letting me know.
+This happens because every time the C variable is specified,
+the shell arguments need to be "shifted" in order to take only
+the last argument, which is the C file to test. These shell arguments
+mostly comprise flags that have been set in the Makefile. However,
+when coccicheck is specified in the make command as a rule, the
+number of shell arguments is zero, thus passing the invalid value -1
+to the shift command, resulting in an error.
 
-greg k-h
+Modify coccicheck to print correct usage of make coccicheck so as to
+avoid the error.
+
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+---
+Changes in v2:
+- Move test to only display error message
+
+Changes in v3:
+- Update example with latest file
+---
+ scripts/coccicheck | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/scripts/coccicheck b/scripts/coccicheck
+index 209bb0427b43..d1aaa1dc0a69 100755
+--- a/scripts/coccicheck
++++ b/scripts/coccicheck
+@@ -61,6 +61,18 @@ COCCIINCLUDE=${COCCIINCLUDE// -include/ --include}
+ if [ "$C" = "1" -o "$C" = "2" ]; then
+     ONLINE=1
+ 
++    if [[ $# -le 0 ]]; then
++	    echo ''
++	    echo 'Specifying both the variable "C" and rule "coccicheck" in the make
++command results in a shift count error.'
++	    echo ''
++	    echo 'Try specifying "scripts/coccicheck" as a value for the CHECK variable instead.'
++	    echo ''
++	    echo 'Example:	make C=2 CHECK=scripts/coccicheck drivers/net/ethernet/ethoc.o'
++	    echo ''
++	    exit 1
++    fi
++
+     # Take only the last argument, which is the C file to test
+     shift $(( $# - 1 ))
+     OPTIONS="$COCCIINCLUDE $1"
+-- 
+2.25.1
+
