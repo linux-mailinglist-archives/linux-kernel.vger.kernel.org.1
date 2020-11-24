@@ -2,275 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4DA2C19D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7FF2C19BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728812AbgKXAJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:09:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728340AbgKXAJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:09:34 -0500
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59E7720729;
-        Tue, 24 Nov 2020 00:09:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606176572;
-        bh=g0xSfkYgITYSd4tGE6/gm97fab8pltd36IR4YvsmDOc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t9quzZLb387V9f+P3HZXGJlePtadc4wiwNyDGc8D5QJuDNhOdFfZbOGd883CuwVhB
-         4JtUJUmzwXv2Sltz9SyF0UGTG0WJJFZv6M3pAyvsz4oWo49XYZdq+AI6E5YAcvpmEv
-         gNZhIPmsmG+S7i2jhOjXCQzfsGtmOEOQyzG3L2Ms=
-Received: by pali.im (Postfix)
-        id 4C6ADC30; Tue, 24 Nov 2020 01:01:43 +0100 (CET)
-Date:   Tue, 24 Nov 2020 01:01:43 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Vladimir Vid <vladimir.vid@sartura.hr>
-Cc:     devicetree@vger.kernel.org, a.heider@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        tmn505@gmail.com, sebastian.hesselbarth@gmail.com,
-        gregory.clement@bootlin.com, andrew@lunn.ch, jason@lakedaemon.net,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v5] arm64: dts: marvell: add DT for ESPRESSObin-Ultra
-Message-ID: <20201124000143.zgzzpvcd2is5uh2e@pali>
-References: <20201026184441.96395-1-vladimir.vid@sartura.hr>
+        id S1728602AbgKXACU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728567AbgKXACT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 19:02:19 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3819CC061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:02:19 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id v21so15805436pgi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:02:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dVZAZuhnHNDw7eBlpqaNTuLy1qB5NlqAynArFyBMzdU=;
+        b=oMy+quRSFEMEHuIZhuSvFxsJnohoLaGB1uP5Yc2aYTkic1+FuPSrNECJ/ysK1f6gWT
+         ers6BO0+t5vhO1N1mWWI/Weilyqpvb2RNRGU8ocpD7IWHTijus14RXUthJJlRX5ZiOt8
+         0wb18gTlJlXBwbt2oaLqZ9kgPv/QZWZlenQfM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dVZAZuhnHNDw7eBlpqaNTuLy1qB5NlqAynArFyBMzdU=;
+        b=QKWTjNwleboHSfWCtGLomjfZxdxLiAyCNw/bqY2QSuayeyByIS6poC6m8BoOq4XIgC
+         yDSua9Si0K+tll7/DXdSQDy7nWJ19SxM+fYxbpYSULAAUdHNFAWji1cxwOW9eVnFBjyd
+         5avcgRqu+rwvInKmgAfd0kYDBE8Y6yIkdfGqLWIvU9FalXVPzo+lOOe584jAN4123vND
+         k+WdwoNJbJJ7POwicIGU6VbHJDQO7/BWxEoL51CFdOFsbZCbdOPx+zA5y4eVnrTNtevQ
+         9qU2f2ewOijAwrLMjRfzrtFnbsNyGeqPqhtJpkeXbQEg/orTfSta/iNI4lvGE9cZjKn5
+         UiFw==
+X-Gm-Message-State: AOAM533IU+ASPPQCf0wUfypYcTDfsK9/2F+fTgAiGyM6q3ycv5dX9XW4
+        rzgU9P4hr2dMI9cZB1+cx0PdPQ==
+X-Google-Smtp-Source: ABdhPJyPk8xbY5YVwigff7KJFU/YiJcXqrjKKsxb1ubCLKovQVsaw+FkeVdl3VD2BcK+j4hLt4IA0Q==
+X-Received: by 2002:a63:215f:: with SMTP id s31mr1567453pgm.258.1606176138623;
+        Mon, 23 Nov 2020 16:02:18 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id l133sm13091945pfd.112.2020.11.23.16.02.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 16:02:18 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Maulik Shah <mkshah@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] irqchip: qcom-pdc: Fix phantom irq when changing between rising/falling
+Date:   Mon, 23 Nov 2020 16:01:51 -0800
+Message-Id: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026184441.96395-1-vladimir.vid@sartura.hr>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 26 October 2020 19:44:42 Vladimir Vid wrote:
-> This adds support for ESPRESSObin-Ultra from Globalscale.
-> 
-> Specifications are similar to the base ESPRESSObin board, with main
-> difference being being WAN port with PoE capability and 2 additional ethernet ports.
-> 
-> Full specifications:
-> 
-> 1x Marvell 64 bit Dual Core ARM A53 Armada 3700 SOC clocked up to 1.2Ghz
-> 1x Topaz 6341 Networking Switch
-> 1GB DDR4
-> 8GB eMMC
-> 1x WAN with 30W POE
-> 4x Gb LAN
-> 1x RTC Clock and battery
-> 1x DC Jack
-> 1x USB 3.0 Type A
-> 1x USB 2.0 Type A
-> 1x SIM NanoSIM card Slot
-> 1x Power Button
-> 4x LED
-> 1x Reset button
-> 1x microUSB for UART
-> 1x M.2 2280 slot for memory
-> 1x 2x2 802.11ac Wi-Fi
-> 1x MiniPCIE slot for Wi-Fi (PCIe interface)
-> 
-> Signed-off-by: Vladimir Vid <vladimir.vid@sartura.hr>
+We have a problem if we use gpio-keys and configure wakeups such that
+we only want one edge to wake us up.  AKA:
+  wakeup-event-action = <EV_ACT_DEASSERTED>;
+  wakeup-source;
 
-Looks good now! The only missing part is to enable usb3 node. Have you
-looked at fixing usb3 port?
+Specifically we end up with a phantom interrupt that blocks suspend if
+the line was already high and we want wakeups on rising edges (AKA we
+want the GPIO to go low and then high again before we wake up).  The
+opposite is also problematic.
 
-> ---
-> 
-> v5 changes:
-> - update ethernet-phy@1 to match reg value
-> 
-> ---
->  arch/arm64/boot/dts/marvell/Makefile          |   1 +
->  .../marvell/armada-3720-espressobin-ultra.dts | 165 ++++++++++++++++++
->  2 files changed, 166 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> 
-> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-> index 3e5f2e7a040c..094f451fdd1d 100644
-> --- a/arch/arm64/boot/dts/marvell/Makefile
-> +++ b/arch/arm64/boot/dts/marvell/Makefile
-> @@ -3,6 +3,7 @@
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-db.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-emmc.dtb
-> +dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-ultra.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> new file mode 100644
-> index 000000000000..c5eb3604dd5b
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> @@ -0,0 +1,165 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Device Tree file for ESPRESSObin-Ultra board.
-> + * Copyright (C) 2019 Globalscale technologies, Inc.
-> + *
-> + * Jason Hung <jhung@globalscaletechnologies.com>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "armada-3720-espressobin.dtsi"
-> +
-> +/ {
-> +	model = "Globalscale Marvell ESPRESSOBin Ultra Board";
-> +	compatible = "globalscale,espressobin-ultra", "marvell,armada3720",
-> +		     "marvell,armada3710";
-> +
-> +	aliases {
-> +		/* ethernet1 is WAN port */
-> +		ethernet1 = &switch0port5;
-> +		ethernet2 = &switch0port1;
-> +		ethernet3 = &switch0port2;
-> +		ethernet4 = &switch0port3;
-> +		ethernet5 = &switch0port4;
-> +	};
-> +
-> +	reg_usb3_vbus: usb3-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "usb3-vbus";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		gpio = <&gpionb 19 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	usb3_phy: usb3-phy {
-> +		compatible = "usb-nop-xceiv";
-> +		vcc-supply = <&reg_usb3_vbus>;
-> +	};
-> +
-> +	gpio-leds {
-> +		pinctrl-names = "default";
-> +		compatible = "gpio-leds";
-> +		/* No assigned functions to the LEDs by default */
-> +		led1 {
-> +			label = "ebin-ultra:blue:led1";
-> +			gpios = <&gpionb 11 GPIO_ACTIVE_LOW>;
-> +		};
-> +		led2 {
-> +			label = "ebin-ultra:green:led2";
-> +			gpios = <&gpionb 12 GPIO_ACTIVE_LOW>;
-> +		};
-> +		led3 {
-> +			label = "ebin-ultra:red:led3";
-> +			gpios = <&gpionb 13 GPIO_ACTIVE_LOW>;
-> +		};
-> +		led4 {
-> +			label = "ebin-ultra:yellow:led4";
-> +			gpios = <&gpionb 14 GPIO_ACTIVE_LOW>;
-> +		};
-> +	};
-> +};
-> +
-> +&sdhci0 {
-> +	status = "okay";
-> +};
-> +
-> +&sdhci1 {
-> +	status = "disabled";
-> +};
-> +
-> +&spi0 {
-> +	flash@0 {
-> +		spi-max-frequency = <108000000>;
-> +		spi-rx-bus-width = <4>;
-> +		spi-tx-bus-width = <4>;
-> +
-> +		partitions {
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			partition@0 {
-> +				label = "firmware";
-> +				reg = <0x0 0x3e0000>;
-> +			};
-> +			partition@3e0000 {
-> +				label = "hw-info";
-> +				reg = <0x3e0000 0x10000>;
-> +				read-only;
-> +			};
-> +			partition@3f0000 {
-> +				label = "u-boot-env";
-> +				reg = <0x3f0000 0x10000>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2c0 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c1_pins>;
-> +
-> +	clock-frequency = <100000>;
-> +
-> +	rtc@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +	};
-> +};
-> +
-> +&usb3 {
-> +	usb-phy = <&usb3_phy>;
-> +	status = "disabled";
-> +};
-> +
-> +&mdio {
-> +	extphy: ethernet-phy@1 {
-> +		reg = <1>;
-> +	};
-> +};
-> +
-> +&switch0 {
-> +	reg = <3>;
-> +
-> +	ports {
-> +		switch0port1: port@1 {
-> +			reg = <1>;
-> +			label = "lan0";
-> +			phy-handle = <&switch0phy0>;
-> +		};
-> +
-> +		switch0port2: port@2 {
-> +			reg = <2>;
-> +			label = "lan1";
-> +			phy-handle = <&switch0phy1>;
-> +		};
-> +
-> +		switch0port3: port@3 {
-> +			reg = <3>;
-> +			label = "lan2";
-> +			phy-handle = <&switch0phy2>;
-> +		};
-> +
-> +		switch0port4: port@4 {
-> +			reg = <4>;
-> +			label = "lan3";
-> +			phy-handle = <&switch0phy3>;
-> +		};
-> +
-> +		switch0port5: port@5 {
-> +			reg = <5>;
-> +			label = "wan";
-> +			phy-handle = <&extphy>;
-> +			phy-mode = "sgmii";
-> +		};
-> +	};
-> +
-> +	mdio {
-> +		switch0phy3: switch0phy3@14 {
-> +			reg = <0x14>;
-> +		};
-> +	};
-> +};
-> -- 
-> 2.27.0
-> 
+Specifically, here's what's happening today:
+1. Normally, gpio-keys configures to look for both edges.  Due to the
+   current workaround introduced in commit c3c0c2e18d94 ("pinctrl:
+   qcom: Handle broken/missing PDC dual edge IRQs on sc7180"), if the
+   line was high we'd configure for falling edges.
+2. At suspend time, we change to look for rising edges.
+3. After qcom_pdc_gic_set_type() runs, we get a phantom interrupt.
+
+We can solve this by just clearing the phantom interrupt.
+
+NOTE: it is possible that this could cause problems for a client with
+very specific needs, but there's not much we can do with this
+hardware.  As an example, let's say the interrupt signal is currently
+high and the client is looking for falling edges.  The client now
+changes to look for rising edges.  The client could possibly expect
+that if the line has a short pulse low (and back high) that it would
+always be detected.  Specifically no matter when the pulse happened,
+it should either have tripped the (old) falling edge trigger or the
+(new) rising edge trigger.  We will simply not trip it.  We could
+narrow down the race a bit by polling our parent before changing
+types, but no matter what we do there will still be a period of time
+where we can't tell the difference between a real transition (or more
+than one transition) and the phantom.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ drivers/irqchip/qcom-pdc.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+index bd39e9de6ecf..7d097164aadc 100644
+--- a/drivers/irqchip/qcom-pdc.c
++++ b/drivers/irqchip/qcom-pdc.c
+@@ -159,6 +159,8 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
+ {
+ 	int pin_out = d->hwirq;
+ 	enum pdc_irq_config_bits pdc_type;
++	enum pdc_irq_config_bits old_pdc_type;
++	int ret;
+ 
+ 	if (pin_out == GPIO_NO_WAKE_IRQ)
+ 		return 0;
+@@ -187,9 +189,24 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
+ 		return -EINVAL;
+ 	}
+ 
++	old_pdc_type = pdc_reg_read(IRQ_i_CFG, pin_out);
+ 	pdc_reg_write(IRQ_i_CFG, pin_out, pdc_type);
+ 
+-	return irq_chip_set_type_parent(d, type);
++	ret = irq_chip_set_type_parent(d, type);
++
++	/*
++	 * When we change types the PDC can give a phantom interrupt.
++	 * Clear it.  Specifically the phantom shows up if a line is already
++	 * high and we change to rising or if a line is already low and we
++	 * change to falling but let's be consistent and clear it always.
++	 *
++	 * Doing this works because we have IRQCHIP_SET_TYPE_MASKED so the
++	 * interrupt will be cleared before the rest of the system sees it.
++	 */
++	if (old_pdc_type != pdc_type)
++		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
++
++	return ret;
+ }
+ 
+ static struct irq_chip qcom_pdc_gic_chip = {
+-- 
+2.29.2.454.gaff20da3a2-goog
+
