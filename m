@@ -2,121 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40602C2B60
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F38B2C2B6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389760AbgKXPcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:32:52 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58121 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389078AbgKXPcv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:32:51 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOFWFUL031036;
-        Tue, 24 Nov 2020 16:32:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=STMicroelectronics;
- bh=Ypt08g8yC5E1a0xePLAiZgQfojweHehBCCzNvuLtWM8=;
- b=ct7IcYWFG9R1S++YtI/eB2Q8vNwL6mXtwZlS2wUZq07usEjhSZD7BLNSBiVxQgI0YE6H
- 50lJkKkHklPp1rD9O+aZhvbEGPFdmniLjpQjP4Wns0NEuLQEUlLdm7z7cUWH8Fg/t5oR
- /Wf+o7sMQr29/Ks6YbiDniNXGqF/tWNDE3u9i72WtV4mVxe6DXg50Y4OcKG7DMkLXl6u
- cHalXrkDGDXFofZnexU1DdnXaJ+A6K7Namw3ZmD3tbzRNbmXo4srOuXSqDWpWAMwoZPK
- xRA8Uys5hcX8RKXplwdNcgGh0HO9ZvL+Gfj39jTMBSkm8L37ycix4du1ZtEdtuAdqnWi mw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y05h898p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 16:32:33 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7000F10002A;
-        Tue, 24 Nov 2020 16:32:32 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 562A52568E0;
-        Tue, 24 Nov 2020 16:32:32 +0100 (CET)
-Received: from [10.129.7.42] (10.75.127.50) by SFHDAG1NODE3.st.com
- (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 16:32:30 +0100
-Message-ID: <e6cd5bdc3b50dedc4b751f86b8769dad6219591e.camel@st.com>
-Subject: Re: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
-From:   Antonio Borneo <antonio.borneo@st.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        Yonglong Liu <liuyonglong@huawei.com>,
-        <stable@vger.kernel.org>, <linuxarm@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>
-Date:   Tue, 24 Nov 2020 16:31:40 +0100
-In-Reply-To: <20201124151716.GG1551@shell.armlinux.org.uk>
-References: <20201124143848.874894-1-antonio.borneo@st.com>
-         <4684304a-37f5-e0cd-91cf-3f86318979c3@gmail.com>
-         <20201124151716.GG1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        id S2389689AbgKXPe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:34:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388503AbgKXPe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:34:29 -0500
+Received: from localhost (unknown [122.167.149.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21FA7206D9;
+        Tue, 24 Nov 2020 15:34:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606232068;
+        bh=ygx751/q41x3b/CvIyWP1Woh3mwcQeXt++6JywZvU6g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aFle7WQI7jsE9JZrNB3KDIzD95MHptn5s/KPWz5sFxniEFQkSwh2srIQNUw4+1yX7
+         Xnpzj4luHylIDYA+3PKu0PkacnIIizLDhnNaVeAlOMEvV/yAG+0YDyvkEPWy9h5btR
+         Np6wC/xEQxbyGo0sgG2tYkqmYRYCNGEZFNspNr9o=
+Date:   Tue, 24 Nov 2020 21:04:22 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, elder@linaro.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH] soc: qcom: Introduce debugfs interface to smem
+Message-ID: <20201124153422.GO8403@vkoul-mobl>
+References: <20201123052119.157551-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123052119.157551-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 15:17 +0000, Russell King - ARM Linux admin wrote:
-> On Tue, Nov 24, 2020 at 04:03:40PM +0100, Heiner Kallweit wrote:
-> > Am 24.11.2020 um 15:38 schrieb Antonio Borneo:
-> > > If the auto-negotiation fails to establish a gigabit link, the phy
-> > > can try to 'down-shift': it resets the bits in MII_CTRL1000 to
-> > > stop advertising 1Gbps and retries the negotiation at 100Mbps.
-> > > 
-> > I see that Russell answered already. My 2cts:
-> > 
-> > Are you sure all PHY's supporting downshift adjust the
-> > advertisement bits? IIRC an Aquantia PHY I dealt with does not.
-> > And if a PHY does so I'd consider this problematic:
-> > Let's say you have a broken cable and the PHY downshifts to
-> > 100Mbps. If you change the cable then the PHY would still negotiate
-> > 100Mbps only.
+On 22-11-20, 23:21, Bjorn Andersson wrote:
+> Every now and then it's convenient to be able to inspect the content of
+> SMEM items. Rather than carrying some hack locally let's upstream a
+> driver that when inserted exposes a debugfs interface for dumping
+> available items.
 > 
-> From what I've seen, that is not how downshift works, at least on
-> the PHYs I've seen.
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/soc/qcom/Kconfig        |   7 +++
+>  drivers/soc/qcom/Makefile       |   1 +
+>  drivers/soc/qcom/smem_debugfs.c | 102 ++++++++++++++++++++++++++++++++
+>  3 files changed, 110 insertions(+)
+>  create mode 100644 drivers/soc/qcom/smem_debugfs.c
 > 
-> When the PHY downshifts, it modifies the advertisement registers,
-> but it also remembers the original value. When the cable is
-> unplugged, it restores the setting to what was previously set.
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 3dc3e3d61ea3..7e1dd6b3f33a 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -128,6 +128,13 @@ config QCOM_SMEM
+>  	  The driver provides an interface to items in a heap shared among all
+>  	  processors in a Qualcomm platform.
+>  
+> +config QCOM_SMEM_DEBUGFS
+> +	tristate "Qualcomm Shared Memory Manager (SMEM) DebugFS interface"
+> +	depends on QCOM_SMEM
+> +	depends on DEBUG_FS
+> +	help
+> +	  Provides a debugfs interface for inspecting SMEM.
 
-In fact, at least rtl8211f is able to recover the original settings and
-returns to 1Gbps once a decent cable gets plugged-in.
+Do we need additional debugfs entry, maybe better to depend on DEBUG_FS
+being enabled and this file part of QCOM_SMEM?
 
-> 
-> It is _far_ from nice, but the fact is that your patch that Antonio
-> identified has broken previously working support, something that I
-> brought up when I patched one of the PHY drivers that was broken by
-> this very same problem by your patch.
+> +
+>  config QCOM_SMD_RPM
+>  	tristate "Qualcomm Resource Power Manager (RPM) over SMD"
+>  	depends on ARCH_QCOM || COMPILE_TEST
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index 93392d9dc7f7..632eefc5a897 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -15,6 +15,7 @@ qcom_rpmh-y			+= rpmh-rsc.o
+>  qcom_rpmh-y			+= rpmh.o
+>  obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
+>  obj-$(CONFIG_QCOM_SMEM) +=	smem.o
+> +obj-$(CONFIG_QCOM_SMEM_DEBUGFS) += smem_debugfs.o
+>  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+>  obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+> diff --git a/drivers/soc/qcom/smem_debugfs.c b/drivers/soc/qcom/smem_debugfs.c
+> new file mode 100644
+> index 000000000000..11ef29a0cada
+> --- /dev/null
+> +++ b/drivers/soc/qcom/smem_debugfs.c
+> @@ -0,0 +1,102 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2020, Linaro Ltd.
+> + */
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/soc/qcom/smem.h>
+> +
+> +struct smem_debugfs {
+> +	struct dentry *root;
+> +};
+> +
+> +static int smem_debugfs_item_show(struct seq_file *seq, void *p)
+> +{
+> +	unsigned long data = (unsigned long)seq->private;
+> +	unsigned long item = data & 0xffff;
+> +	unsigned long host = data >> 16;
+> +	size_t len;
+> +	void *ptr;
+> +
+> +	ptr = qcom_smem_get(host, item, &len);
+> +	if (IS_ERR(ptr))
+> +		return PTR_ERR(ptr);
+> +
+> +	seq_hex_dump(seq, "", DUMP_PREFIX_OFFSET, 16, 1, ptr, len, true);
+> +
+> +	return 0;
+> +}
+> +
+> +static int smem_debugfs_item_open(struct inode *inode, struct file *file)
+> +{
+> +	return single_open(file, smem_debugfs_item_show, inode->i_private);
+> +}
+> +
+> +static const struct file_operations smem_debugfs_item_ops = {
+> +	.open = smem_debugfs_item_open,
+> +	.read = seq_read,
+> +	.llseek = seq_lseek,
+> +	.release = single_release,
+> +};
 
-The idea to fix it for a general case was indeed triggered by the fact that
-before commit 5502b218e001 this was the norm. I considered it as a
-regression.
+How about using DEFINE_SHOW_ATTRIBUTE() instead? That will help cut down
+this boiler plate code..
 
-> 
-> That said, _if_ the PHY has a way to read the resolved state rather
-> than reading the advertisement registers, that is what should be
-> used (as I said previously) rather than trying to decode the
-> advertisement registers ourselves. That is normally more reliable
-> for speed and duplex.
-> 
+> +
+> +static int smem_debugfs_rescan(struct seq_file *seq, void *p)
+> +{
+> +	struct dentry *root = seq->private;
+> +	unsigned long item;
+> +	unsigned long host;
+> +	unsigned long data;
+> +	char name[10];
+> +	char *ptr;
+> +
+> +	for (host = 0; host < 10; host++) {
+> +		for (item = 0; item < 512; item++) {
+> +			ptr = qcom_smem_get(host, item, NULL);
+> +			if (IS_ERR(ptr))
+> +				continue;
+> +
+> +			sprintf(name, "%ld-%ld", host, item);
+> +
+> +			data = host << 16 | item;
+> +			debugfs_create_file(name, 0400, root,
+> +					    (void *)data, &smem_debugfs_item_ops);
 
-Wrt rtl8211f I don't have info other then the public datasheet, and there I
-didn't found any way other than reading the advertisement register.
+So IIUC user invokes scan file which creates additional files, right?
+Additional invoke will do that as well..?
 
-I have read the latest comment from Heiner. I will check aqr107!
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int smem_debugfs_rescan_open(struct inode *inode, struct file *file)
+> +{
+> +	return single_open(file, smem_debugfs_rescan, inode->i_private);
+> +}
+> +
+> +static const struct file_operations smem_debugfs_rescan_ops = {
+> +	.open = smem_debugfs_rescan_open,
+> +	.read = seq_read,
+> +	.llseek = seq_lseek,
+> +	.release = single_release,
+> +};
 
-Thanks
-Antonio
+Here as well?
 
+> +
+> +static struct dentry *smem_debugfs_root;
+> +
+> +static int __init qcom_smem_debugfs_init(void)
+> +{
+> +	smem_debugfs_root = debugfs_create_dir("qcom_smem", NULL);
+> +	debugfs_create_file("rescan", 0400, smem_debugfs_root,
+> +			    smem_debugfs_root, &smem_debugfs_rescan_ops);
+> +
+> +	return 0;
+> +}
+> +
+> +static void __exit qcom_smem_debugfs_exit(void)
+> +{
+> +	debugfs_remove_recursive(smem_debugfs_root);
+> +}
+> +
+> +module_init(qcom_smem_debugfs_init);
+> +module_exit(qcom_smem_debugfs_exit);
+> +
+> +MODULE_DESCRIPTION("Qualcomm SMEM debugfs driver");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.29.2
+
+-- 
+~Vinod
