@@ -2,159 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245222C30A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA982C30A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391005AbgKXTQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        id S2391014AbgKXTQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390997AbgKXTQg (ORCPT
+        with ESMTP id S2390996AbgKXTQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:16:36 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A125C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:16:34 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w4so18310886pgg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:16:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=pJAA+910//zkOrL+GZT4fayjhef5fPiRUZKFa+bHFto=;
-        b=jTQQN0yKgoHMjObT8c6z3ir7J5qbZ+HlYkbU0CHXWDtNyE2FtKAxO+njeutCJkOaTm
-         ab+BpneBPyX9fvpRdbOKUPvBB1WIvXa4Mzq6etB41U+hcdIlIqe82okpYouL15RRyvB3
-         Oda47hlDQJ6j06HyWdb4IPVUqbzadTBTrMdi0ZR31xMDtT18CUsel67bRXs/jVTB+sbl
-         3KHk4Tg6NXwYjzXl96x1LuvcNCL6ux2+BocDP2Fx0790aSq2+qHkeavl41niRzi1JTE8
-         y0qd0g3iwMnXbiXGreSVhMLDzATcHLq/rlS51+h2q9E5DogrpwiGedNJa3Ke3G/UcsU9
-         P4nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=pJAA+910//zkOrL+GZT4fayjhef5fPiRUZKFa+bHFto=;
-        b=DFsBVjCwRChFb/4Q1JDmGtDMjILjC5Rp8BvsuPH4I9dCWCBa0oQ756opAMSTOJcRbD
-         v6g+zuooHT5rGmRcTys+EdSO4Pl4dlYiOVbHoO2krAOALmPnLAWuwPpetgWFSLGyyqvM
-         E5i/8qdXVNjDxBkLrdtK5t/seUo/yOdzeN3VisvTlEhL6LJDirBd2GgfVH+RNnsHQruY
-         r7C6Wfuf8X9zgC8gqR0E1gNSWUa28FDdI6qFwMU+0fapuu2WRUj5hzltTvF8phmOpmpv
-         VD5UB5tREXHAr6B8FN+exB0Fg0lI4hGXJxBZp1qC94Kk8FNakFLi6VHYJd4fzIgTkZQR
-         CAaA==
-X-Gm-Message-State: AOAM5302hWD8u8DEb2bloyKUsnz2KJrpJK3xYiYutZrEa7AdY6DKQ7sm
-        wxVpwyz8blh5oSq2DUUgc5cYsw==
-X-Google-Smtp-Source: ABdhPJxln9/MnFj9z5/qDERpAmj+/1EFQ7n2dmHAbvctCUA4pSc5AcEYAUh0jCxlDcCE2GB+epy9zQ==
-X-Received: by 2002:a17:90b:b15:: with SMTP id bf21mr64410pjb.21.1606245393777;
-        Tue, 24 Nov 2020 11:16:33 -0800 (PST)
-Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
-        by smtp.gmail.com with ESMTPSA id 35sm16827pgp.26.2020.11.24.11.16.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 11:16:32 -0800 (PST)
-Date:   Tue, 24 Nov 2020 19:16:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vipin Sharma <vipinsh@google.com>, Lendacky@google.com,
-        Thomas <thomas.lendacky@amd.com>, pbonzini@redhat.com,
-        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
-        Singh@google.com, Brijesh <brijesh.singh@amd.com>,
-        Grimm@google.com, Jon <jon.grimm@amd.com>, VanTassell@google.com,
-        Eric <eric.vantassell@amd.com>, gingell@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20201124191629.GB235281@google.com>
+        Tue, 24 Nov 2020 14:16:53 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AAFC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:16:53 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id wKGo2300Y4C55Sk01KGpEU; Tue, 24 Nov 2020 20:16:51 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1khdo0-005XKS-NH; Tue, 24 Nov 2020 20:16:48 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1khdnz-00Ew4C-S7; Tue, 24 Nov 2020 20:16:47 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Alexander Graf <agraf@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-efi@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] efi: EFI_EARLYCON should depend on EFI
+Date:   Tue, 24 Nov 2020 20:16:46 +0100
+Message-Id: <20201124191646.3559757-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020, David Rientjes wrote:                                     
->                                                                               
-> On Mon, 2 Nov 2020, Sean Christopherson wrote:                                
->                                                                               
-> > On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:               
-> > > On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:             
-> > > > I agree with you that the abstract name is better than the concrete     
-> > > > name, I also feel that we must provide HW extensions. Here is one       
-> > > > approach:                                                               
-> > > >                                                                         
-> > > > Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to     
-> > > > suggestions)                                                            
-> > > >                                                                         
-> > > > Control files: slots.{max, current, events}                             
-> >                                                                             
-> > I don't particularly like the "slots" name, mostly because it could be confused
-> > with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
-> > love those names either, but "encryption" and "IDs" are the two obvious     
-> > commonalities betwee TDX's encryption key IDs and SEV's encryption address  
-> > space IDs.                                                                  
-> >                                                                             
->                                                                               
-> Looping Janosch and Christian back into the thread.                           
->                                                                               
-> I interpret this suggestion as                                                
-> encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
+CONFIG_EFI_EARLYCON defaults to yes, and thus is enabled on systems that
+do not support EFI, or do not have EFI support enabled, but do satisfy
+the symbol's other dependencies.
 
-I think it makes sense to use encryption_ids instead of simply encryption, that
-way it's clear the cgroup is accounting ids as opposed to restricting what
-techs can be used on yes/no basis.
+While drivers/firmware/efi/ won't be entered during the build phase if
+CONFIG_EFI=n, and drivers/firmware/efi/earlycon.c itself thus won't be
+built, enabling EFI_EARLYCON does force-enable CONFIG_FONT_SUPPORT and
+CONFIG_ARCH_USE_MEMREMAP_PROT, and CONFIG_FONT_8x16, which is
+undesirable.
 
-> offerings, which was my thought on this as well.                              
->                                                                               
-> Certainly the kernel could provide a single interface for all of these and    
-> key value pairs depending on the underlying encryption technology but it      
-> seems to only introduce additional complexity in the kernel in string         
-> parsing that can otherwise be avoided.  I think we all agree that a single    
-> interface for all encryption keys or one-value-per-file could be done in      
-> the kernel and handled by any userspace agent that is configuring these       
-> values.                                                                       
->                                                                               
-> I think Vipin is adding a root level file that describes how many keys we     
-> have available on the platform for each technology.  So I think this comes    
-> down to, for example, a single encryption.max file vs                         
-> encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
+Fix this by making CONFIG_EFI_EARLYCON depend on CONFIG_EFI.
 
-Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
-no need to enumerate platform total, but not knowing how many of the allowed IDs
-have been allocated seems problematic.
+This reduces kernel size on headless systems by more than 4 KiB.
 
-> separately so we treat them as their own resource here.                       
->                                                                               
-> So which is easier?                                                           
->                                                                               
-> $ cat encryption.sev.max                                                      
-> 10                                                                            
-> $ echo -n 15 > encryption.sev.max                                             
->                                                                               
-> or                                                                            
->                                                                               
-> $ cat encryption.max                                                          
-> sev 10                                                                        
-> sev_es 10                                                                     
-> keyid 0                                                                       
-> $ echo -n "sev 10" > encryption.max                                           
->                                                                               
-> I would argue the former is simplest (always preferring                       
-> one-value-per-file) and avoids any string parsing or resource controller      
-> lookups that need to match on that string in the kernel.                      
+Fixes: 69c1f396f25b805a ("efi/x86: Convert x86 EFI earlyprintk into generic earlycon implementation")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/firmware/efi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ya, I prefer individual files as well.
+diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
+index b452cfa2100b401c..1dd1f7784f0888ff 100644
+--- a/drivers/firmware/efi/Kconfig
++++ b/drivers/firmware/efi/Kconfig
+@@ -270,7 +270,7 @@ config EFI_DEV_PATH_PARSER
+ 
+ config EFI_EARLYCON
+ 	def_bool y
+-	depends on SERIAL_EARLYCON && !ARM && !IA64
++	depends on EFI && SERIAL_EARLYCON && !ARM && !IA64
+ 	select FONT_SUPPORT
+ 	select ARCH_USE_MEMREMAP_PROT
+ 
+-- 
+2.25.1
 
-I don't think "keyid" is the best name for TDX, it doesn't leave any wiggle room
-if there are other flavors of key IDs on Intel platform, e.g. private vs. shared
-in the future.  It's also inconsistent with the SEV names, e.g. "asid" isn't
-mentioned anywhere.  And "keyid" sort of reads as "max key id", rather than "max
-number of keyids".  Maybe "tdx_private", or simply "tdx"?  Doesn't have to be
-solved now though, there's plenty of time before TDX will be upstream. :-)
-
-> The set of encryption.{sev,sev_es,keyid} files that exist would depend on     
-> CONFIG_CGROUP_ENCRYPTION and whether CONFIG_AMD_MEM_ENCRYPT or                
-> CONFIG_INTEL_TDX is configured.  Both can be configured so we have all        
-> three files, but the root file will obviously indicate 0 keys available       
-> for one of them (can't run on AMD and Intel at the same time :).              
->                                                                               
-> So I'm inclined to suggest that the one-value-per-file format is the ideal    
-> way to go unless there are objections to it.
