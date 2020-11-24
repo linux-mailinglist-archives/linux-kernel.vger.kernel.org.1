@@ -2,37 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473482C19CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F109E2C19D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbgKXAGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:06:19 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39268 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgKXAGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:06:18 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606176375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHgX8+4TV9Nw2BiY/0kJVALhIqoS3Bge9Gph+T2lLis=;
-        b=HJTyhrP2bJioLD+987Ys70sntmISGX+DLi5zSWQWyOeNYxGw+Rcgcp96xJXkNql5saR4b1
-        mtRJeCQMIYNOQc5bGK9o3cjSFHmd0XwO5JzY9Ed97ukjc9tLjn2NVQpjFv7Tl1UCWJyJxP
-        4r4pyVX89yJRly+FJ1p9pSNf87sDfHyqh8WflOfzH0e+r9XFjgJp1ILEUFI98Q3jUGqNI8
-        ZIdelFQeSVJ7UVhprV3dNRgYyMF3dgl3qia6vzgckrcgkrsKzdV18WnWbwxPPhOYtVJGWc
-        cr5Duzs/vYWkaaAOPuJb9Qv9vdNI3WJRAwaCR1OTmFq2ePRtPZnRbJJzycwJsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606176375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHgX8+4TV9Nw2BiY/0kJVALhIqoS3Bge9Gph+T2lLis=;
-        b=j6SecNH3mtXRZPPLBTkvtl4Q11WTEjpfetY9og3uuduZGYkJQlpXdvg4Dnk0hrMtUfud6O
-        7Ako8/dL7EVU3NCg==
-To:     Frederic Weisbecker <frederic@kernel.org>
+        id S1728727AbgKXANy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:13:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgKXANx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 19:13:53 -0500
+Received: from localhost (unknown [176.167.152.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A3D120757;
+        Tue, 24 Nov 2020 00:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606176832;
+        bh=H1q3NdPA5XVVHKGEKjYQ4s3GAIDuBwFKucV9+lLeoqI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qUq69HdgxnvYd/CJdPSIQdLBWDLXZ4EpnV9+8BlBqGhsbsp6ElmI/dbTn82zkagdx
+         0Yu1OR5EQaVImLPlvD3ZmBwEIUt3b9L/qQoGV4RfIbNQGjQg6vTJ2w9wXaCHMHXORr
+         8ABQTbt0lirfodCOB9pGRMQLt4bC7NbrsKUSZ3sQ=
+Date:   Tue, 24 Nov 2020 01:13:50 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Paul McKenney <paulmck@kernel.org>,
@@ -51,43 +44,64 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT aware
-In-Reply-To: <20201123235801.GE1751@lothringen>
-References: <20201113140207.499353218@linutronix.de> <20201113141734.324061522@linutronix.de> <20201123134437.GA95787@lothringen> <87r1ojnaai.fsf@nanos.tec.linutronix.de> <20201123235801.GE1751@lothringen>
-Date:   Tue, 24 Nov 2020 01:06:15 +0100
-Message-ID: <87wnyblitk.fsf@nanos.tec.linutronix.de>
+Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT
+ aware
+Message-ID: <20201124001350.GF1751@lothringen>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141734.324061522@linutronix.de>
+ <20201123134437.GA95787@lothringen>
+ <87r1ojnaai.fsf@nanos.tec.linutronix.de>
+ <20201123235801.GE1751@lothringen>
+ <87wnyblitk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wnyblitk.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24 2020 at 00:58, Frederic Weisbecker wrote:
-> On Mon, Nov 23, 2020 at 08:27:33PM +0100, Thomas Gleixner wrote:
->> On Mon, Nov 23 2020 at 14:44, Frederic Weisbecker wrote:
->> > On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
->> >> +	/*
->> >> +	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
->> >> +	 * in_serving_softirq() become true.
->> >> +	 */
->> >> +	cnt = SOFTIRQ_OFFSET;
->> >> +	__local_bh_enable(cnt, false);
->> >
->> > But then you enter __do_softirq() with softirq_count() == SOFTIRQ_OFFSET.
->> > __do_softirq() calls softirq_handle_begin() which then sets it back to
->> > SOFTIRQ_DISABLE_OFFSET...
->> 
->> The RT variant of it added in this very same patch
->> > +static inline void softirq_handle_begin(void) { }
->> > +static inline void softirq_handle_end(void) { }
->
-> Ah but then account_irq_enter_time() is called with SOFTIRQ_OFFSET (it's
-> currently called with softirq_count == 0 at this point) and that may mess
-> up irqtime accounting which relies on it. It could spuriously account all
-> the time between the last (soft-)IRQ exit until now as softirq time.
+On Tue, Nov 24, 2020 at 01:06:15AM +0100, Thomas Gleixner wrote:
+> On Tue, Nov 24 2020 at 00:58, Frederic Weisbecker wrote:
+> > On Mon, Nov 23, 2020 at 08:27:33PM +0100, Thomas Gleixner wrote:
+> >> On Mon, Nov 23 2020 at 14:44, Frederic Weisbecker wrote:
+> >> > On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
+> >> >> +	/*
+> >> >> +	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
+> >> >> +	 * in_serving_softirq() become true.
+> >> >> +	 */
+> >> >> +	cnt = SOFTIRQ_OFFSET;
+> >> >> +	__local_bh_enable(cnt, false);
+> >> >
+> >> > But then you enter __do_softirq() with softirq_count() == SOFTIRQ_OFFSET.
+> >> > __do_softirq() calls softirq_handle_begin() which then sets it back to
+> >> > SOFTIRQ_DISABLE_OFFSET...
+> >> 
+> >> The RT variant of it added in this very same patch
+> >> > +static inline void softirq_handle_begin(void) { }
+> >> > +static inline void softirq_handle_end(void) { }
+> >
+> > Ah but then account_irq_enter_time() is called with SOFTIRQ_OFFSET (it's
+> > currently called with softirq_count == 0 at this point) and that may mess
+> > up irqtime accounting which relies on it. It could spuriously account all
+> > the time between the last (soft-)IRQ exit until now as softirq time.
+> 
+> Good point. Haven't thought about that. Let me have a look again.
 
-Good point. Haven't thought about that. Let me have a look again.
+But I'm cooking a patchset which moves account_irq_enter_time() after
+HARDIRQ_OFFSET or SOFTIRQ_OFFSET is incremented. This will allow us to move
+tick_irq_enter() under this layout:
 
-Thanks,
+		 preempt_count_add(HARDIRQ_OFFSET)
+		 lockdep_hardirq_enter()
+		 tick_irq_enter()
+		 account_irq_enter_time()
 
-        tglx
+This way tick_irq_enter() can be correctly handled by lockdep and we can remove
+the nasty hack which temporarily disables softirqs around it.
+
+And as a side effect it should also fix your issue.
+
+I should have that ready soonish.
+
+Thanks.
