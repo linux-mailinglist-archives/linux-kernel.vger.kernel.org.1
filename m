@@ -2,121 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F832C2118
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822012C2123
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbgKXJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:25:10 -0500
-Received: from mail-mw2nam12on2088.outbound.protection.outlook.com ([40.107.244.88]:33344
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730978AbgKXJZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:25:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nRvyW0Bj3qqQactMbo5wZLIXWd+f3RFJNOIQO0B/rmQUyQ7EnMg91H3AQJ+iqx4vNv13y3XGBZU+SLcWm2njtS687zgbYdkjIh0PwKCobWEQKkIuhP1lPeTeTW+GOTpbbt3PP5rJGyC63RfymDIIbeR/ucy5sG6COXx276b7pMo6eoWdidrgJr3OPf74bJseg+lY81DZlbPq3Vnmq8bia9nCJ1LQqhKDO7vb3WKPYLOufXZg6cXpU299trnxeNkNHdvd/2dBYOj3rq22EQeFeZXBcxBJ6BXfH+hURNXcCpEn69xIOwMaYltx1ZrQkwMogW4v0NCtz+zhB10n4fjoMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fECDOE9WVaWnaSkgKEr0epnRuxdnMmt7Uaoip8210pA=;
- b=Su5NMCDfBnbcC3n2Ju1wqX4Sq/vfbxSDBktna0CsW8UkYq0OGt5OMuS3F+XCc8w1PTgpjeaRPDOEWFt1YwDLja0PB8sWdEoVdSHcea/D2+UV/22L+L9sq6HCCiGPGXSVv6mO2huhImS51kmi+mEwevM94EcWu6LaqBk+PycJV7TLEyr6HFJ7lNm23OcJ0p2Ow4/AUxyvLiUyPCIQNAeTb23k/YgoC+uHaD9k0/L15hM11BRvAXaI+vTi4yiux9zEo9y7uvi+sRaW5XCoCldytI1tHl1Nta19riF8A336bSzhfL4KXMp3/BEKypuo1Bo9H/eoVofCS/ImLkmGUjkyNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fECDOE9WVaWnaSkgKEr0epnRuxdnMmt7Uaoip8210pA=;
- b=3qQF9eQ+R8Ct8NKEGdox9Z/TQfX9hwTRUtsgoe2nf2C2Fr9IQV4yJxdUh18BbX88gxCSttgFmiWvBz8ISNL6Wg4dl3qKs+BX7AfHXiyWxDQMwmt03t1IcY2WiVgkJ+DhHYtASrPVguj2ZFFGv1j5iGDGULq97GVb0cElULF4vkI=
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN1PR12MB2542.namprd12.prod.outlook.com (2603:10b6:802:26::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.30; Tue, 24 Nov
- 2020 09:25:06 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 24 Nov 2020
- 09:25:06 +0000
-From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "dave.hansen@linux-intel.com" <dave.hansen@linux-intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "Grimm, Jon" <Jon.Grimm@amd.com>,
-        "rientjes@google.com" <rientjes@google.com>
-Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Thread-Topic: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Thread-Index: AQHWvrzaxkxw3OuD2kOZmqVqDk7+x6nV+JOAgAAN5wCAAFPQgIAAqeCAgAAFwPM=
-Date:   Tue, 24 Nov 2020 09:25:06 +0000
-Message-ID: <EF13C80C-42DC-4B51-8AF8-2C1D3859B490@amd.com>
-References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
- <20201123170647.GE15044@zn.tnic> <20201123175632.GA21539@char.us.oracle.com>
- <20201123225631.GA16055@ashkalra_ubuntu_server>,<20201124090431.GC4009@zn.tnic>
-In-Reply-To: <20201124090431.GC4009@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [136.49.12.8]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 54db38f4-5272-49af-992a-08d8905ad4a4
-x-ms-traffictypediagnostic: SN1PR12MB2542:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN1PR12MB2542921DF8EC51E11FADD7B38EFB0@SN1PR12MB2542.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: y8UvaaVMoWaaJCd5E97k7OGHRovKCZJOv9CP03DoI7P3sCE4pXL3le5sGil2KZI1/MPrmnkXxYVT5+JAbvyHQEGAfEU1/knEWA0sWHiUAFrbG2uAPVKAsnJgy+OUHRqta6yXsGhpgQd9/IiRAsytAXEhP+S7WZ/G8VbZ4TF90zg25HzNLqCJfRtZXXtWz7nKNDrvMKasDG7Mh7AvmqEzTBKlG2VqkXU6YFl3N1c00Cr2zsHXgb3466uwVKpw8VeaSrEpOS7sdHa0oMRU5mzk1I9fPhEV7dwyAClA5uR8Qsk0V5lp26elvp6nponNqp1do5K4ZIAvtACHN3y39SSPLZkfy8AA99CQRIoA1Y4gLdWziEigYwnWG3LZ7YPIEogbrhpnhCcZPyjsc3nT+sJe7g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(366004)(346002)(478600001)(64756008)(5660300002)(7416002)(6916009)(91956017)(45080400002)(76116006)(66556008)(966005)(66946007)(4326008)(66446008)(66476007)(316002)(54906003)(2906002)(8676002)(86362001)(53546011)(26005)(6512007)(36756003)(6486002)(6506007)(71200400001)(2616005)(186003)(33656002)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 8i2D/iHfen/0KAey27UuY3/DDRJ4TW1R2lboUQM6cPbA2r+Ou3zaS0q/VAstV9hjv33peOlXk/1lM6AhHxIAAemHMvo5mAKNjFy5096/n6KFFZCfQS/fGnbQuHQy8cErIobEdLoa8ujIScpwgCN8EJmxP5/7/YQu/8BE3bj0EUhASZoOrv20FjxJTycGjs4dML32oVIiRnFlCag1LqiAd+4FGtfF2n8K2gdVBh8KXDm3X9T1/Z2l1TxKsYjH6FuAysEb9NeQHNPG2+m5BO1bf1bQHAXOPvsellKbB7HWnmSlOwk0v3v3OL+Knthi+WuzRo3X21+xYcoOLySqfQgQtLOWgHnIQEyOJ7gWg9KFxNMrExf6L/Zh9MdkNGUMcMkYB/NY4fI1IHVntQKgVB4NFPalh8JujVc3Ju+bn77ecZulkQCEy+HDIHxloJ/AJRFWLPVZp49wdk0b+E7v5JES2f6oS6YBiYcble++dL3D0HfL0V3J3jL4iWiq5wqLF/KRUx1RqfsPSoQ/1rgxCb0cwoTmLAIHarBNh2wakh8J/855vNdB1vVVgLYjIU/iFVfz+fV1cq5JA7PwisthQ17PSxIM+Cs9Ox5M7Uh33Y0m71epEtxZ+Au/8egODqewW01VZpb0H2RFClh/j0BSxv8IGEZarqIdoz2nTwCruucKSVFViblFvW4BRTQBqL5XsXlfXkaDzFLW/LtE/tBoCeifri34SitVoJ4WlJ3G6XS4ZXb9Yq2EqudUyAF6eLpECIC/S56/q5aEubVji9Cs5kwBgQe203JgSPRbrtba2AOntRKcOSQvZG+s1poeZhWvNlBCD6jGLCmgqmhowJjAf6n1jnylCTFsJPIuN2schReQLAVRwZgY/vanNfL7RydHtHng
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1731170AbgKXJ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:26:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730978AbgKXJ0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:26:13 -0500
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B4272073C;
+        Tue, 24 Nov 2020 09:26:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606209971;
+        bh=Vu/loiJSNRrO77MACnjmjt+n1JsAIxW9sPzEI8Ph9s4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yArC+oqs8UwMhkE4s7VBNMygmdJaXflqzzY4kzd8LiaNHcOU3eoinTB5Cfatt1YGu
+         ku7ryee1J1HtCFoVbBOueT+EtRc9zRXgf5egSMTHgM+vu/gHMH5yEhWHxoumvG0ktT
+         xirR2t8mG+6ImIcI4MrCjuAeIRpTEQ29ujzMRs68=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH v11 0/9] mm: introduce memfd_secret system call to create "secret" memory areas
+Date:   Tue, 24 Nov 2020 11:25:47 +0200
+Message-Id: <20201124092556.12009-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54db38f4-5272-49af-992a-08d8905ad4a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 09:25:06.0819
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t7VzYFQ+DKvY+qQwk7XsDfH9o0rY1yBiAvfvObb5dxGaT8gaZJKYv8Z/q6j9VfCZ6IjlyO0kjXfEeBlzjItjvQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2542
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gT24gTm92IDI0LCAyMDIwLCBhdCAzOjA0IEFNLCBCb3Jpc2xhdiBQZXRrb3YgPGJwQGFs
-aWVuOC5kZT4gd3JvdGU6DQo+IA0KPiDvu79PbiBNb24sIE5vdiAyMywgMjAyMCBhdCAxMDo1Njoz
-MVBNICswMDAwLCBBc2hpc2ggS2FscmEgd3JvdGU6DQo+PiBBcyBpIG1lbnRpb25lZCBlYXJsaWVy
-LCB0aGUgcGF0Y2ggd2FzIGluaXRpYWxseSBiYXNlZCBvbiB1c2luZyBhICUgb2YNCj4+IGd1ZXN0
-IG1lbW9yeSwNCj4gDQo+IENhbiB5b3UgZmlndXJlIG91dCBob3cgbXVjaCB0aGUgZ3Vlc3QgbWVt
-b3J5IGlzIGFuZCB0aGVuIGFsbG9jYXRlIGENCj4gcGVyY2VudGFnZT8NCg0KQnV0IHdoYXQgd2ls
-bCBiZSB0aGUgY3JpdGVyaWEgdG8gZmlndXJlIG91dCB0aGlzIHBlcmNlbnRhZ2U/DQoNCkFzIEkg
-bWVudGlvbmVkIGVhcmxpZXIsIHRoaXMgY2FuIGJlIG1hZGUgYXMgY29tcGxpY2F0ZWQgYXMgcG9z
-c2libGUgYnkgYWRkaW5nIGFsbCBraW5kIG9mIGhldXJpc3RpY3MgYnV0IHdpdGhvdXQgYW55IHBy
-ZWRpY3RhYmxlIHBlcmZvcm1hbmNlIGdhaW4uDQoNCk9yIGl0IGNhbiBiZSBrZXB0IHNpbXBsZSBi
-eSB1c2luZyBhIHN0YXRpYyBwZXJjZW50YWdlIHZhbHVlLg0KDQpUaGFua3MsDQpBc2hpc2gNCg0K
-PiAtLSANCj4gUmVnYXJkcy9HcnVzcywNCj4gICAgQm9yaXMuDQo+IA0KPiBodHRwczovL25hbTEx
-LnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZwZW9w
-bGUua2VybmVsLm9yZyUyRnRnbHglMkZub3Rlcy1hYm91dC1uZXRpcXVldHRlJmFtcDtkYXRhPTA0
-JTdDMDElN0Nhc2hpc2gua2FscmElNDBhbWQuY29tJTdDMDc2NjQyMmJjZWU2NGQyZWI1NzIwOGQ4
-OTA1N2Y2MjAlN0MzZGQ4OTYxZmU0ODg0ZTYwOGUxMWE4MmQ5OTRlMTgzZCU3QzAlN0MwJTdDNjM3
-NDE4MDU0Nzk3OTUwNjk0JTdDVW5rbm93biU3Q1RXRnBiR1pzYjNkOGV5SldJam9pTUM0d0xqQXdN
-REFpTENKUUlqb2lWMmx1TXpJaUxDSkJUaUk2SWsxaGFXd2lMQ0pYVkNJNk1uMCUzRCU3QzEwMDAm
-YW1wO3NkYXRhPSUyRkVGdVJHT01PdTRCWlVrUE9kOXJ4YW0lMkJCQTNuWGo0dGRSRkZqM25RNDdV
-JTNEJmFtcDtyZXNlcnZlZD0wDQo=
+From: Mike Rapoport <rppt@linux.ibm.com>
+
+Hi,
+
+This is an implementation of "secret" mappings backed by a file descriptor.
+
+The file descriptor backing secret memory mappings is created using a
+dedicated memfd_secret system call The desired protection mode for the
+memory is configured using flags parameter of the system call. The mmap()
+of the file descriptor created with memfd_secret() will create a "secret"
+memory mapping. The pages in that mapping will be marked as not present in
+the direct map and will be present only in the page table of the owning mm.
+
+Although normally Linux userspace mappings are protected from other users,
+such secret mappings are useful for environments where a hostile tenant is
+trying to trick the kernel into giving them access to other tenants
+mappings.
+
+Additionally, in the future the secret mappings may be used as a mean to
+protect guest memory in a virtual machine host.
+
+For demonstration of secret memory usage we've created a userspace library
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git
+
+that does two things: the first is act as a preloader for openssl to
+redirect all the OPENSSL_malloc calls to secret memory meaning any secret
+keys get automatically protected this way and the other thing it does is
+expose the API to the user who needs it. We anticipate that a lot of the
+use cases would be like the openssl one: many toolkits that deal with
+secret keys already have special handling for the memory to try to give
+them greater protection, so this would simply be pluggable into the
+toolkits without any need for user application modification.
+
+Hiding secret memory mappings behind an anonymous file allows (ab)use of
+the page cache for tracking pages allocated for the "secret" mappings as
+well as using address_space_operations for e.g. page migration callbacks.
+
+The anonymous file may be also used implicitly, like hugetlb files, to
+implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
+ABIs in the future.
+
+To limit fragmentation of the direct map to splitting only PUD-size pages,
+I've added an amortizing cache of PMD-size pages to each file descriptor
+that is used as an allocation pool for the secret memory areas.
+
+As the memory allocated by secretmem becomes unmovable, we use CMA to back
+large page caches so that page allocator won't be surprised by failing attempt
+to migrate these pages.
+
+v11:
+* Drop support for uncached mappings
+
+v10: https://lore.kernel.org/lkml/20201123095432.5860-1-rppt@kernel.org
+* Drop changes to arm64 compatibility layer
+* Add Roman's Ack for memcg accounting
+
+v9: https://lore.kernel.org/lkml/20201117162932.13649-1-rppt@kernel.org
+* Fix build with and without CONFIG_MEMCG
+* Update memcg accounting to avoid copying memcg_data, per Roman comments
+* Fix issues in secretmem_fault(), thanks Matthew
+* Do not wire up syscall in arm64 compatibility layer
+
+v8: https://lore.kernel.org/lkml/20201110151444.20662-1-rppt@kernel.org
+* Use CMA for all secretmem allocations as David suggested
+* Update memcg accounting after transtion to CMA
+* Prevent hibernation when there are active secretmem users
+* Add zeroing of the memory before releasing it back to cma/page allocator
+* Rebase on v5.10-rc2-mmotm-2020-11-07-21-40
+
+v7: https://lore.kernel.org/lkml/20201026083752.13267-1-rppt@kernel.org
+* Use set_direct_map() instead of __kernel_map_pages() to ensure error
+  handling in case the direct map update fails
+* Add accounting of large pages used to reduce the direct map fragmentation
+* Teach get_user_pages() and frieds to refuse get/pin secretmem pages
+
+v6: https://lore.kernel.org/lkml/20200924132904.1391-1-rppt@kernel.org
+* Silence the warning about missing syscall, thanks to Qian Cai
+* Replace spaces with tabs in Kconfig additions, per Randy
+* Add a selftest.
+
+Older history:
+v5: https://lore.kernel.org/lkml/20200916073539.3552-1-rppt@kernel.org
+v4: https://lore.kernel.org/lkml/20200818141554.13945-1-rppt@kernel.org
+v3: https://lore.kernel.org/lkml/20200804095035.18778-1-rppt@kernel.org
+v2: https://lore.kernel.org/lkml/20200727162935.31714-1-rppt@kernel.org
+v1: https://lore.kernel.org/lkml/20200720092435.17469-1-rppt@kernel.org
+
+Mike Rapoport (9):
+  mm: add definition of PMD_PAGE_ORDER
+  mmap: make mlock_future_check() global
+  set_memory: allow set_direct_map_*_noflush() for multiple pages
+  mm: introduce memfd_secret system call to create "secret" memory areas
+  secretmem: use PMD-size pages to amortize direct map fragmentation
+  secretmem: add memcg accounting
+  PM: hibernate: disable when there are active secretmem users
+  arch, mm: wire up memfd_secret system call were relevant
+  secretmem: test: add basic selftest for memfd_secret(2)
+
+ arch/arm64/include/asm/cacheflush.h       |   4 +-
+ arch/arm64/include/uapi/asm/unistd.h      |   1 +
+ arch/arm64/mm/pageattr.c                  |  10 +-
+ arch/riscv/include/asm/set_memory.h       |   4 +-
+ arch/riscv/include/asm/unistd.h           |   1 +
+ arch/riscv/mm/pageattr.c                  |   8 +-
+ arch/x86/Kconfig                          |   2 +-
+ arch/x86/entry/syscalls/syscall_32.tbl    |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl    |   1 +
+ arch/x86/include/asm/set_memory.h         |   4 +-
+ arch/x86/mm/pat/set_memory.c              |   8 +-
+ fs/dax.c                                  |  11 +-
+ include/linux/pgtable.h                   |   3 +
+ include/linux/secretmem.h                 |  30 ++
+ include/linux/set_memory.h                |   4 +-
+ include/linux/syscalls.h                  |   1 +
+ include/uapi/asm-generic/unistd.h         |   6 +-
+ include/uapi/linux/magic.h                |   1 +
+ kernel/power/hibernate.c                  |   5 +-
+ kernel/power/snapshot.c                   |   4 +-
+ kernel/sys_ni.c                           |   2 +
+ mm/Kconfig                                |   5 +
+ mm/Makefile                               |   1 +
+ mm/filemap.c                              |   3 +-
+ mm/gup.c                                  |  10 +
+ mm/internal.h                             |   3 +
+ mm/mmap.c                                 |   5 +-
+ mm/secretmem.c                            | 436 ++++++++++++++++++++++
+ mm/vmalloc.c                              |   5 +-
+ scripts/checksyscalls.sh                  |   4 +
+ tools/testing/selftests/vm/.gitignore     |   1 +
+ tools/testing/selftests/vm/Makefile       |   3 +-
+ tools/testing/selftests/vm/memfd_secret.c | 298 +++++++++++++++
+ tools/testing/selftests/vm/run_vmtests    |  17 +
+ 34 files changed, 863 insertions(+), 39 deletions(-)
+ create mode 100644 include/linux/secretmem.h
+ create mode 100644 mm/secretmem.c
+ create mode 100644 tools/testing/selftests/vm/memfd_secret.c
+
+
+base-commit: 9f8ce377d420db12b19d6a4f636fecbd88a725a5
+-- 
+2.28.0
+
