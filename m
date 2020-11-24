@@ -2,130 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6C72C2961
+	by mail.lfdr.de (Postfix) with ESMTP id CB1732C2962
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388836AbgKXOXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:23:09 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2147 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731656AbgKXOXI (ORCPT
+        id S2388873AbgKXOXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731656AbgKXOXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:23:08 -0500
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgR5V2j7rz67H9R;
-        Tue, 24 Nov 2020 22:21:02 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 24 Nov 2020 15:23:06 +0100
-Received: from [10.210.169.36] (10.210.169.36) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 24 Nov 2020 14:23:05 +0000
-Subject: Re: [PATCH v2 2/4] sbitmap: remove swap_lock
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>
-CC:     <linux-kernel@vger.kernel.org>
-References: <cover.1606058975.git.asml.silence@gmail.com>
- <488177c02dccda60c5e8af2e53156c42b7f1acc0.1606058975.git.asml.silence@gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <17b6011c-b519-3332-e9b7-de36109db85a@huawei.com>
-Date:   Tue, 24 Nov 2020 14:22:45 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 24 Nov 2020 09:23:12 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5927FC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:23:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+Y3Hzccj3kNWKA+Fq9a4rpUhCDRfohJChJu1uJl6Seg=; b=RgNIne4l9wuC60z2fu3qXgNqcH
+        FZTMUCHC3N8oCnMaprN0X5+4we+QC23CMXd3MOKrSiHoKcqLDHpv4xiMPJs3bQFTxi3id1lSa8lJb
+        S9b0M0WR8m3guGciSqOEV+XplQ22XPtjedPg8KKvIFpo+QohoqOVJsKvf4j0qW6ClNeL06avn+emy
+        rkI/gz16MZPgG1x/H5gCY+nxejQ/TFKta8db2s3dgv9d97V/hPmQ8klaxtsQNBKqrPHVh2h8vmEEK
+        aW820X/AQWl+yj7y8AbFFz33PkekoEUgu7FsY3z2xxAekvZofjhZNUJTxnrLt2GZziejnx0ZBBQYX
+        yyJ0g4fQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khZDk-00072H-Pt; Tue, 24 Nov 2020 14:23:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9CA41306E56;
+        Tue, 24 Nov 2020 15:23:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5E3CD20222D7E; Tue, 24 Nov 2020 15:23:03 +0100 (CET)
+Date:   Tue, 24 Nov 2020 15:23:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@kernel.org,
+        x86@kernel.org, mark.rutland@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] More RCU vs idle fixes
+Message-ID: <20201124142303.GF3092@hirez.programming.kicks-ass.net>
+References: <20201120114145.197714127@infradead.org>
+ <yt9dv9du7tow.fsf@linux.ibm.com>
+ <20201124141853.GG2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <488177c02dccda60c5e8af2e53156c42b7f1acc0.1606058975.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.169.36]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124141853.GG2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2020 15:35, Pavel Begunkov wrote:
-> map->swap_lock protects map->cleared from concurrent modification,
-> however sbitmap_deferred_clear() is already atomically drains it, so
-> it's guaranteed to not loose bits on concurrent
-> sbitmap_deferred_clear().
+On Tue, Nov 24, 2020 at 03:18:53PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 24, 2020 at 02:47:27PM +0100, Sven Schnelle wrote:
+> > Peter Zijlstra <peterz@infradead.org> writes:
+> > 
+> > > Both arm64 and s390 are tripping over arch_cpu_idle() RCU,tracing,lockdep
+> > > interaction. While looking at that I also found fail in inte_idle.
+> > >
+> > > Please consider for this cycle.
+> > 
+> > Is anyone taking this patchset?
 > 
-> A one threaded tag heavy test on top of nullbk showed ~1.5% t-put
-> increase, and 3% -> 1% cycle reduction of sbitmap_get() according to perf.
-> 
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->   include/linux/sbitmap.h |  5 -----
->   lib/sbitmap.c           | 14 +++-----------
->   2 files changed, 3 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h
-> index e40d019c3d9d..74cc6384715e 100644
-> --- a/include/linux/sbitmap.h
-> +++ b/include/linux/sbitmap.h
-> @@ -32,11 +32,6 @@ struct sbitmap_word {
->   	 * @cleared: word holding cleared bits
->   	 */
->   	unsigned long cleared ____cacheline_aligned_in_smp;
-> -
-> -	/**
-> -	 * @swap_lock: Held while swapping word <-> cleared
-> -	 */
-> -	spinlock_t swap_lock;
->   } ____cacheline_aligned_in_smp;
->   
->   /**
-> diff --git a/lib/sbitmap.c b/lib/sbitmap.c
-> index c1c8a4e69325..4fd877048ba8 100644
-> --- a/lib/sbitmap.c
-> +++ b/lib/sbitmap.c
-> @@ -15,13 +15,9 @@
->   static inline bool sbitmap_deferred_clear(struct sbitmap_word *map)
->   {
->   	unsigned long mask, val;
-> -	bool ret = false;
-> -	unsigned long flags;
->   
-> -	spin_lock_irqsave(&map->swap_lock, flags);
-> -
-> -	if (!map->cleared)
-> -		goto out_unlock;
-> +	if (!READ_ONCE(map->cleared))
-> +		return false;
+> I think I'll stuff it in x86/urgent for lack of a better place.
 
-So if we race with another cpu, won't the 2nd cpu see that the mask is 0 
-returned from the xchg (not shown)? If so, it's odd to continue to do 
-the CAS - or atomic not, from later patch - on a mask of 0.
-
-Thanks,
-John
-
->   
->   	/*
->   	 * First get a stable cleared mask, setting the old mask to 0.
-> @@ -35,10 +31,7 @@ static inline bool sbitmap_deferred_clear(struct sbitmap_word *map)
->   		val = map->word;
->   	} while (cmpxchg(&map->word, val, val & ~mask) != val);
->   
-> -	ret = true;
-> -out_unlock:
-> -	spin_unlock_irqrestore(&map->swap_lock, flags);
-> -	return ret;
-> +	return true;
->   }
->   
->   int sbitmap_init_node(struct sbitmap *sb, unsigned int depth, int shift,
-> @@ -80,7 +73,6 @@ int sbitmap_init_node(struct sbitmap *sb, unsigned int depth, int shift,
->   	for (i = 0; i < sb->map_nr; i++) {
->   		sb->map[i].depth = min(depth, bits_per_word);
->   		depth -= sb->map[i].depth;
-> -		spin_lock_init(&sb->map[i].swap_lock);
->   	}
->   	return 0;
->   }
-> 
-
+Ah, locking/urgent might be a better place I suppose.
