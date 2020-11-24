@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659652C2BAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F082C2BB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389854AbgKXPqL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 10:46:11 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:53587 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389653AbgKXPqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:46:10 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-188-sRZs1I9bOyajyYLjdda6pA-1; Tue, 24 Nov 2020 15:46:07 +0000
-X-MC-Unique: sRZs1I9bOyajyYLjdda6pA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 15:46:06 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 24 Nov 2020 15:46:06 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Russell King - ARM Linux admin' <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-CC:     Antonio Borneo <antonio.borneo@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Yonglong Liu <liuyonglong@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linuxarm@huawei.com" <linuxarm@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
-Thread-Topic: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
-Thread-Index: AQHWwnVdqICvBLQKe06JRpLbFKofpqnXaXCA
-Date:   Tue, 24 Nov 2020 15:46:06 +0000
-Message-ID: <1e3bfaa519954b3586bbf59c065bca6a@AcuMS.aculab.com>
-References: <20201124143848.874894-1-antonio.borneo@st.com>
- <4684304a-37f5-e0cd-91cf-3f86318979c3@gmail.com>
- <20201124151716.GG1551@shell.armlinux.org.uk>
-In-Reply-To: <20201124151716.GG1551@shell.armlinux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S2389898AbgKXPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:47:35 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:43397 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389383AbgKXPrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:47:35 -0500
+Received: from [192.168.0.3] (ip5f5af1dc.dynamic.kabel-deutschland.de [95.90.241.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 5A77420646221;
+        Tue, 24 Nov 2020 16:47:31 +0100 (CET)
+Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Assign DPM_FLAG_SMART_SUSPEND
+ and DPM_FLAG_MAY_SKIP_RESUME to speed up s2ram
+To:     Chen Yu <yu.c.chen@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        intel-wired-lan@lists.osuosl.org
+References: <20201124153221.11265-1-yu.c.chen@intel.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <a8058c17-141d-986e-903d-462dc72999f1@molgen.mpg.de>
+Date:   Tue, 24 Nov 2020 16:47:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20201124153221.11265-1-yu.c.chen@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King
-> Sent: 24 November 2020 15:17
-...
-> That said, _if_ the PHY has a way to read the resolved state rather
-> than reading the advertisement registers, that is what should be
-> used (as I said previously) rather than trying to decode the
-> advertisement registers ourselves. That is normally more reliable
-> for speed and duplex.
+Dear Chen,
 
-Determining the speed and duplux from the ANAR and ANRR (I can't
-remember the name of the response register) has always been
-completely broken.
 
-The problems arise when you connect to either a 10M hub or
-a 10/100M autodetecting hub (these are a 10M hub and a 100M hub
-connected by a bridge).
-The PHY will either see single link test pulses (10M hub) or
-a simple burst of link test pulses (10/100 hub) and fall back
-to 10M HDX or 100M HDX.
-Both the 10M hub and 10/100 hub are happy with the link test
-pulse stream that contains the ANAR.
-However the ANRR register will (typically) contain the value
-from the last system that sent it one.
-So if you unplug from something that does 100M FDX and plug into
-a hub the MAC unit is likely to be misconfigured and do FDX.
+Thank you for the patch.
 
-Of course, there is no generic way to get the actual mode.
-I'm not sure the PHY I was using (a long time ago) even had
-any private register that could tell you.
+Am 24.11.20 um 16:32 schrieb Chen Yu:
+> The NIC is put in runtime suspend status when there is no wire connected.
+> As a result, it is safe to keep this NIC in runtime suspended during s2ram
+> because the system does not rely on the NIC plug event nor WOL to wake up
+> the system. Unlike the s2idle, s2ram does not need to manipulate S0ix settings
+> during suspend.
 
-For one system (which was never going to do anything fast)
-I just removed the FDX modes from the ANAR.
-The MAC didn't care whether it was 10M or 100M.
+what happens, when I plug in a cable, when the suspend is in ACPI S3 
+state? I guess it’s ignored?
 
-	David
+> This patch assigns DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME
+> to the e1000e driver so that the s2ram could skip the .suspend_late(),
+> .suspend_noirq() and .resume_noirq() .resume_early() when possible.
+> Also skip .suspend() and .resume() if dev_pm_skip_suspend() and
+> dev_pm_skip_resume() return true, so as to speed up the s2ram.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+What is sped up? Suspend or resume?
 
+Please also document, what system you tested this on, and what the 
+numbers before and after are.
+
+If there is a bug report, please note it too.
+
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>   drivers/base/power/main.c                  |  2 ++
+>   drivers/net/ethernet/intel/e1000e/netdev.c | 14 +++++++++++++-
+>   2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index c7ac49042cee..9cd8abba8612 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -580,6 +580,7 @@ bool dev_pm_skip_resume(struct device *dev)
+>   
+>   	return !dev->power.must_resume;
+>   }
+> +EXPORT_SYMBOL_GPL(dev_pm_skip_resume);
+>   
+>   /**
+>    * device_resume_noirq - Execute a "noirq resume" callback for given device.
+> @@ -2010,3 +2011,4 @@ bool dev_pm_skip_suspend(struct device *dev)
+>   	return dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_SUSPEND) &&
+>   		pm_runtime_status_suspended(dev);
+>   }
+> +EXPORT_SYMBOL_GPL(dev_pm_skip_suspend);
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index b30f00891c03..d79fddabc553 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> @@ -6965,6 +6965,14 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+>   	struct e1000_hw *hw = &adapter->hw;
+>   	int rc;
+>   
+> +	/* Runtime suspended means that there is no wired connection
+
+Maybe explicitly use *cable* in here to avoid confusion?
+
+> +	 * and it has nothing to do with WOL that, we don't need to
+
+Move the comma before *that*?
+
+> +	 * adjust the WOL settings. So it is safe to put NIC in
+> +	 * runtime suspend while doing system suspend.
+
+I understood, that the NIC is already in runtime suspend? Could you 
+please clarify the comment?
+
+> +	 */
+> +	if (dev_pm_skip_suspend(dev))
+> +		return 0;
+> +
+>   	e1000e_flush_lpic(pdev);
+>   
+>   	e1000e_pm_freeze(dev);
+> @@ -6989,6 +6997,9 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
+>   	struct e1000_hw *hw = &adapter->hw;
+>   	int rc;
+>   
+> +	if (dev_pm_skip_resume(dev))
+> +		return 0;
+> +
+>   	/* Introduce S0ix implementation */
+>   	if (hw->mac.type >= e1000_pch_cnp &&
+>   	    !e1000e_check_me(hw->adapter->pdev->device))
+> @@ -7665,7 +7676,8 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>   
+>   	e1000_print_device_info(adapter);
+>   
+> -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+> +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE |
+> +				DPM_FLAG_SMART_SUSPEND | DPM_FLAG_MAY_SKIP_RESUME);
+>   
+>   	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
+>   		pm_runtime_put_noidle(&pdev->dev);
+
+
+Kind regards,
+
+Paul
