@@ -2,122 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1542C2C2CE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3402C2CE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390481AbgKXQ2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
+        id S2390468AbgKXQ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:28:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390348AbgKXQ2c (ORCPT
+        with ESMTP id S1728539AbgKXQ22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:28:32 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B4FC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:28:32 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id n12so16374107otk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:28:32 -0800 (PST)
+        Tue, 24 Nov 2020 11:28:28 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2E9C0613D6;
+        Tue, 24 Nov 2020 08:28:28 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id y7so7811130lji.8;
+        Tue, 24 Nov 2020 08:28:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=ah+J2wD/1faDZjYB3Zrgws96wmPFn4mzRk/eDM0VpfE=;
-        b=h2tPcALcjB1t4yCELbdTsVIXBflLhIBZpuIe7YEIWaqMrErciI4oYibsR4PuSR3eBm
-         a1HQUDkbKIXT7dw2dF1osk+Ewd3ry8H3qWPqrsnSSvpwphmnYiduGvPC/acc89Z4HoBF
-         dQR/Qust/cntC0l8MxoB01tlPMhZdg1GZvFe3YCRbX0EKSlHwbCzgWJ+8KF8ujYqRMcW
-         p809jw2U5Nyr4t7ccXvc7ZQ/lpTlBodFDk0ppPG9Td5VTTRT1dKl5zZ+op8i964Uwmcn
-         oQyidKfqYMNIuIxyBYIQwwGDr7gMOmgSS8FTpPSS8SBScIpqSj6pDarOKlRo1GGyy13e
-         DtPg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L/WTciL200KuzPXNNyWqR+3bYdqz/jfmbk7jc3OEM2Y=;
+        b=mbG/IE5YbXI1u9xO3V9+lkskzWsD3gTjNtlXgxbBlr1viFpDoFh5Fx/CY8FHCZkii5
+         omvpE8i0SmjnlRQ1lxYuK1gKFiLLScVQ3DEn4RhpJXsj3cDGzOJF+1NQVNrs7rvewDsh
+         CG7c+8aciBB4NpVbPIenHJTgQ+bbeHATqMkiKEKi8t3zL6JaeelCAdQpwjj35HEoVvSU
+         jARwyjY6L1l/MZifcezWOitUpWFh86GYkPLIl4HIShWyls2JZG8C43HM1HkDc44f4w9t
+         7WsH4mFGx5Au7KyAd8K1EZ19T6Tp8vCBX0Bm6UYYSZVgp60u66bqHx9G3bcLyt2QASUQ
+         qBUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=ah+J2wD/1faDZjYB3Zrgws96wmPFn4mzRk/eDM0VpfE=;
-        b=Mv/kQJXi1tBBvU8KlrmC/kud0yblwEA5+VEs443g863kHDt+BYxmKTXbxYLKFwJAR+
-         GPcxVa1icJH0RbN2vHzieJ0RkjYyi1ebvVJdEpMirXE/qQB5NAD+ErR43qLRafP4ZwOo
-         161aFupiSk7MM0hH0+dlsOytF5kmeVlwLqG+6502uuaorJ2nbsmi1Q0bBxaUJx1AJHj8
-         K+D0XogGmOPJ8vZ7zx9S7LFXMEwv71YMYzVX7y+HxuRnE9+AghuV90rROiCFwEMdHsE3
-         I00BZ/xreeK7YuFztOxpchJMHdltBByZ9JlpZvQW9+IbebmyFfs9pFag/723sxtM6mp1
-         Slqg==
-X-Gm-Message-State: AOAM532oaX6+epR4fifjDOwfCf123U6eQ9vQbVjfGDJqSU8vJsbuv2F7
-        ehaX8/4DJXnsEgMLRSZFf96zVw==
-X-Google-Smtp-Source: ABdhPJwD6ulzDfoJYVk98EDsBubLOjkB0ZnaCfJOcW8zo99O0ipagto7b7cafmz/JIb+EReFJU1LvA==
-X-Received: by 2002:a05:6830:1f11:: with SMTP id u17mr4030280otg.287.1606235311779;
-        Tue, 24 Nov 2020 08:28:31 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id u4sm7428592ote.71.2020.11.24.08.28.29
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 24 Nov 2020 08:28:30 -0800 (PST)
-Date:   Tue, 24 Nov 2020 08:28:16 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-In-Reply-To: <20201124121912.GZ4327@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2011240810470.1029@eggly.anvils>
-References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz> <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com> <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
- <20201124121912.GZ4327@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L/WTciL200KuzPXNNyWqR+3bYdqz/jfmbk7jc3OEM2Y=;
+        b=tkfkAL6MgDE73yJZp5XJ7xyNC2tf1MdOKu6Hp7VDjNU43juopmvi2E0ZyPTkX8oJHa
+         H4milHD6u70CxRiYmwLJ5yTQ7pDf/Jpgv5rOU/AHagsVlSqeXraF4o6e/A/I+H5JeTD2
+         ixf0r6AoEsk/9kSSMcLXMToYxkRvxaRJO6YGzsJK4QMT2y5iWOlmfvTPCmInXJzMASMe
+         M3Cg+VpqSI0gqyrXcUqIT2a/bdsQuHOan8Q2DXpWFZNsXha2Rc5jOsB6GX1gqG8ngPD8
+         KiwjhQB2TZukVsYRB+7g89MqQyppZh0A0zA2MD5fsDmoB59BjlQLPiCrAbQFZ2WsIv/R
+         SUlQ==
+X-Gm-Message-State: AOAM532BfKc13EwtmgiJPLGS1snHnCdd6ZEkPLZU9jMm1l+VLwakyi7h
+        tih3XNfcH8iyiSWgX4fpxJQ=
+X-Google-Smtp-Source: ABdhPJzxoahaP3kzK+1IjAJX5x8xEKt8vbhiJVqE6nIVipvrEecVl3fqGf03pNOrI4NAtFKJZd651g==
+X-Received: by 2002:a2e:84c7:: with SMTP id q7mr2161531ljh.415.1606235306672;
+        Tue, 24 Nov 2020 08:28:26 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id b79sm1787218lfg.243.2020.11.24.08.28.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 08:28:25 -0800 (PST)
+Subject: Re: [PATCH v2 04/10] seccomp: Migrate to use SYSCALL_WORK flag
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>, tglx@linutronix.de
+Cc:     hch@infradead.org, mingo@redhat.com, keescook@chromium.org,
+        arnd@arndb.de, luto@amacapital.net, wad@chromium.org,
+        rostedt@goodmis.org, paul@paul-moore.com, eparis@redhat.com,
+        oleg@redhat.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kernel@collabora.com,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>
+References: <20201116174206.2639648-1-krisman@collabora.com>
+ <20201116174206.2639648-5-krisman@collabora.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <20646400-0e16-0eb5-c829-3b77df8c38e3@gmail.com>
+Date:   Tue, 24 Nov 2020 19:28:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20201116174206.2639648-5-krisman@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020, Matthew Wilcox wrote:
-> On Mon, Nov 23, 2020 at 08:07:24PM -0800, Hugh Dickins wrote:
-> > 
-> > Then on crashing a second time, realized there's a stronger reason against
-> > that approach.  If my testing just occasionally crashes on that check,
-> > when the page is reused for part of a compound page, wouldn't it be much
-> > more common for the page to get reused as an order-0 page before reaching
-> > wake_up_page()?  And on rare occasions, might that reused page already be
-> > marked PageWriteback by its new user, and already be waited upon?  What
-> > would that look like?
-> > 
-> > It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
-> > in write_cache_pages() (though I have never seen that crash myself).
+16.11.2020 20:42, Gabriel Krisman Bertazi пишет:
+> When one the generic syscall entry code, use the syscall_work field in
+> struct thread_info and specific SYSCALL_WORK flags to setup this syscall
+> work.  This flag has the advantage of being architecture independent.
 > 
-> I don't think this is it.  write_cache_pages() holds a reference to the
-> page -- indeed, it holds the page lock!  So this particular race cannot
-> cause the page to get recycled.  I still have no good ideas what this
-> is :-(
+> Users of the flag outside of the generic entry code should rely on the
+> accessor macros, such that the flag is still correctly resolved for
+> architectures that don't use the generic entry code and still rely on
+> TIF flags for system call work.
+> 
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> 
+> ---
+> Changes since v2:
+>   - Drop explicit value assignment in enum (tglx)
+>   - Avoid FLAG/_FLAG defines (tglx)
+>   - Fix comment to refer to SYSCALL_WORK_SECCOMP (me)
+> ---
+>  include/asm-generic/syscall.h | 2 +-
+>  include/linux/entry-common.h  | 8 ++------
+>  include/linux/seccomp.h       | 2 +-
+>  include/linux/thread_info.h   | 6 ++++++
+>  kernel/entry/common.c         | 2 +-
+>  kernel/fork.c                 | 2 +-
+>  kernel/seccomp.c              | 6 +++---
+>  7 files changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/asm-generic/syscall.h b/include/asm-generic/syscall.h
+> index f3135e734387..524d8e68ff5e 100644
+> --- a/include/asm-generic/syscall.h
+> +++ b/include/asm-generic/syscall.h
+> @@ -135,7 +135,7 @@ void syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
+>   * Returns the AUDIT_ARCH_* based on the system call convention in use.
+>   *
+>   * It's only valid to call this when @task is stopped on entry to a system
+> - * call, due to %TIF_SYSCALL_TRACE, %TIF_SYSCALL_AUDIT, or %TIF_SECCOMP.
+> + * call, due to %TIF_SYSCALL_TRACE, %TIF_SYSCALL_AUDIT, or %SYSCALL_WORK_SECCOMP.
+>   *
+>   * Architectures which permit CONFIG_HAVE_ARCH_SECCOMP_FILTER must
+>   * provide an implementation of this.
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index cbc5c702ee4d..f3fc4457f63f 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -21,10 +21,6 @@
+>  # define _TIF_SYSCALL_TRACEPOINT	(0)
+>  #endif
+>  
+> -#ifndef _TIF_SECCOMP
+> -# define _TIF_SECCOMP			(0)
+> -#endif
+> -
+>  #ifndef _TIF_SYSCALL_AUDIT
+>  # define _TIF_SYSCALL_AUDIT		(0)
+>  #endif
+> @@ -49,7 +45,7 @@
+>  #endif
+>  
+>  #define SYSCALL_ENTER_WORK						\
+> -	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP |	\
+> +	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT  |			\
+>  	 _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_EMU |			\
+>  	 ARCH_SYSCALL_ENTER_WORK)
+>  
+> @@ -64,7 +60,7 @@
+>  	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT |			\
+>  	 _TIF_SYSCALL_TRACEPOINT | ARCH_SYSCALL_EXIT_WORK)
+>  
+> -#define SYSCALL_WORK_ENTER	(0)
+> +#define SYSCALL_WORK_ENTER	(SYSCALL_WORK_SECCOMP)
+>  #define SYSCALL_WORK_EXIT	(0)
+>  
+>  /*
+> diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
+> index 02aef2844c38..47763f3999f7 100644
+> --- a/include/linux/seccomp.h
+> +++ b/include/linux/seccomp.h
+> @@ -42,7 +42,7 @@ struct seccomp {
+>  extern int __secure_computing(const struct seccomp_data *sd);
+>  static inline int secure_computing(void)
+>  {
+> -	if (unlikely(test_thread_flag(TIF_SECCOMP)))
+> +	if (unlikely(test_syscall_work(SECCOMP)))
+>  		return  __secure_computing(NULL);
+>  	return 0;
+>  }
+> diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+> index f2d78de55840..1d6488130b5c 100644
+> --- a/include/linux/thread_info.h
+> +++ b/include/linux/thread_info.h
+> @@ -35,6 +35,12 @@ enum {
+>  	GOOD_STACK,
+>  };
+>  
+> +enum syscall_work_bit {
+> +	SYSCALL_WORK_BIT_SECCOMP,
+> +};
+> +
+> +#define SYSCALL_WORK_SECCOMP		BIT(SYSCALL_WORK_BIT_SECCOMP)
+> +
+>  #include <asm/thread_info.h>
+>  
+>  #ifdef __KERNEL__
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index 51c25f774791..c321056c73d7 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -54,7 +54,7 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+>  	}
+>  
+>  	/* Do seccomp after ptrace, to catch any tracer changes. */
+> -	if (ti_work & _TIF_SECCOMP) {
+> +	if (work & SYSCALL_WORK_SECCOMP) {
+>  		ret = __secure_computing(NULL);
+>  		if (ret == -1L)
+>  			return ret;
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 7199d359690c..4433c9c60100 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1625,7 +1625,7 @@ static void copy_seccomp(struct task_struct *p)
+>  	 * to manually enable the seccomp thread flag here.
+>  	 */
+>  	if (p->seccomp.mode != SECCOMP_MODE_DISABLED)
+> -		set_tsk_thread_flag(p, TIF_SECCOMP);
+> +		set_task_syscall_work(p, SECCOMP);
+>  #endif
+>  }
+>  
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 8ad7a293255a..f67e92d11ad7 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -356,14 +356,14 @@ static inline void seccomp_assign_mode(struct task_struct *task,
+>  
+>  	task->seccomp.mode = seccomp_mode;
+>  	/*
+> -	 * Make sure TIF_SECCOMP cannot be set before the mode (and
+> +	 * Make sure SYSCALL_WORK_SECCOMP cannot be set before the mode (and
+>  	 * filter) is set.
+>  	 */
+>  	smp_mb__before_atomic();
+>  	/* Assume default seccomp processes want spec flaw mitigation. */
+>  	if ((flags & SECCOMP_FILTER_FLAG_SPEC_ALLOW) == 0)
+>  		arch_seccomp_spec_mitigate(task);
+> -	set_tsk_thread_flag(task, TIF_SECCOMP);
+> +	set_task_syscall_work(task, SECCOMP);
+>  }
+>  
+>  #ifdef CONFIG_SECCOMP_FILTER
+> @@ -929,7 +929,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  
+>  	/*
+>  	 * Make sure that any changes to mode from another thread have
+> -	 * been seen after TIF_SECCOMP was seen.
+> +	 * been seen after SYSCALL_WORK_SECCOMP was seen.
+>  	 */
+>  	rmb();
+>  
+> 
 
-It is confusing. I tried to explain that in the final paragraph:
+Hi,
 
-> > Was there a chance of missed wakeups before, since a page freed before
-> > reaching wake_up_page() would have PageWaiters cleared?  I think not,
-> > because each waiter does hold a reference on the page: this bug comes
-> > not from real waiters, but from when PageWaiters is a false positive.
+This patch broke seccomp on arm32 using linux-next, chromium browser
+doesn't work anymore and there are these errors in KMSG:
 
-but got lost in between the original end_page_writeback() and the patched
-version when writing that last part - false positive PageWaiters are not
-relevant.  I'll try rewording that in the simpler version, following.
+Unhandled prefetch abort: breakpoint debug exception (0x002) at ...
 
-The BUG_ON(PageWriteback) would occur when the old use of the page, the
-one we do TestClearPageWriteback on, had *no* waiters, so no additional
-page reference beyond the page cache (and whoever racily frees it). The
-reuse of the page definitely has a waiter holding a reference, as you
-point out, and PageWriteback still set; but our belated wake_up_page()
-has woken it to hit the BUG_ON.
-
-Hugh
+Note that arm doesn't use CONFIG_GENERIC_ENTRY. Please fix, thanks in
+advance.
