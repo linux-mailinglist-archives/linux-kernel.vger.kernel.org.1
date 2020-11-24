@@ -2,267 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875F62C296F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435A62C2971
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388900AbgKXOZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:25:22 -0500
-Received: from mail-eopbgr750050.outbound.protection.outlook.com ([40.107.75.50]:52454
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388703AbgKXOZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:25:21 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PJ6iU2xDenxzPSuPxGFwx9B0XjvxqUtu9nI86pSnHS3tXa0QgILhEs5cLrz4SXLc5PqlupAfkC2QX1Cy93Id/8hlBMdLXhUrp+4Ue6tHDqhB60CikkRD+a8v0xQp4KSUqROvYGaNs2I3jCroyxbm6MWzxO9lBMI01jP4y9ws4SsK93UjgPGX6rTHb6AA62UxM+j22m+QVYT7Nt1hevpDzdV+ojWTtTkyKlgpsUzF35SifeQy6aZvjK1xMbFrUAMT+mjFzCyeDLG7kmq2yMgGxULNkLg+utJpXx1McGXAelOu15PhbSLADnaOq2ks6eEIIG9V/W+yhCnFlFgt/UC74Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lu8lZOI9jEZQ/Esk3TfWjJXUEpfcJOF2yGlOZJbMPiY=;
- b=RDki0jiYFE1NPLpAhhKFYE+pM1/Rg6N1NfBWAaa6/lX3jBi7257Qp44WyP7zFMvyD8XMKrFs8k0aAP/gpDK/uJbXu14tV8DStdyCm0Foj7KORD9I5EU20TKGLOXd1bs5IswvvQNgIQsmoczereVE+FupFBXpvzlmB4PPSIS5pKCG7W5CpAdx3T6sfKW1aMH4kAtL1SUkIkvLquSMAV0IU3eis4oVtkgFc/kZafnTNN/u20N7DhpW/ZqkQ6il8PGtS5XLCC/F7FymtkuM/vXcUQwdhtUfd2RNE3awHl4lurbjyEK67GlTMiAnqA85EyfG+fAQSg4JaYrfXAssv/Pwqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=arndb.de smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lu8lZOI9jEZQ/Esk3TfWjJXUEpfcJOF2yGlOZJbMPiY=;
- b=UOhetylGOqdAikNbXgt+8lDSxh6Bv8exfeXCWOh91y6SZ6PcxQHJf57Q76+YH4OpfSQKECq0Pk2Fm8uUVk1RaXBb44JJobdvCMS9nkn3BmQO4Q3g9gH4gK7ihtLoObyhEbZjToduFxGRUNsz3KdEy3To3ieqGJeHBZoTOKKEdBU=
-Received: from SN4PR0501CA0057.namprd05.prod.outlook.com
- (2603:10b6:803:41::34) by BN6PR02MB2755.namprd02.prod.outlook.com
- (2603:10b6:404:fb::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 24 Nov
- 2020 14:25:17 +0000
-Received: from SN1NAM02FT046.eop-nam02.prod.protection.outlook.com
- (2603:10b6:803:41:cafe::39) by SN4PR0501CA0057.outlook.office365.com
- (2603:10b6:803:41::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.13 via Frontend
- Transport; Tue, 24 Nov 2020 14:25:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT046.mail.protection.outlook.com (10.152.72.191) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 14:25:17 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 24 Nov 2020 06:25:15 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 24 Nov 2020 06:25:15 -0800
-Envelope-to: ravi.patel@xilinx.com,
- amit.sunil.dhamne@xilinx.com,
- michal.simek@xilinx.com,
- rajan.vaja@xilinx.com,
- TEJASP@xilinx.com,
- arnd@arndb.de,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Received: from [172.30.17.109] (port=59504)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1khZFq-0001Yx-MR; Tue, 24 Nov 2020 06:25:15 -0800
-Subject: Re: [PATCH] firmware: xilinx: Use hash-table for api feature check
-To:     Rajan Vaja <rajan.vaja@xilinx.com>, <michal.simek@xilinx.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <TEJASP@xilinx.com>,
-        <arnd@arndb.de>, Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>,
-        Ravi Patel <ravi.patel@xilinx.com>
-References: <1606197161-25976-1-git-send-email-rajan.vaja@xilinx.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <69c290b6-a63b-11a1-90f3-c3685d733ee8@xilinx.com>
+        id S2388695AbgKXOZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:25:15 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52725 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730558AbgKXOZO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:25:14 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9361D5C01E1;
+        Tue, 24 Nov 2020 09:25:13 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 24 Nov 2020 09:25:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=sitk3GTsxspTPI3ycVReJOlcRgA
+        UlRjje2GEEm0ppZk=; b=WWWRBfdNLyhpXLr9rE1tCZAaVuR94z4qSBa0qZHK+/u
+        9UPg/JCSyKbb8fmTMA1Fin+JCD8CTtZ5OHGz+HapiFTy8rVv4fRw/g06V4OnJcNU
+        u8rZ4AUkzJKWMlLNMf3pZdF/xewH9jX8aI0AGWvTJXH5BTnRfawUS3DkrTkRps/f
+        D3Bh6O29REy8lllyIfalQFbGKW+C9/tBhY0wg8GSRoKVNh5Ubi7uFGC+O4AkIc74
+        LoGOLltmVmJS4D/gmCsHe+XDSsLxSzAJL6Egi4yy3E2cdV6ud/0BTFk3CEwygTwi
+        uCDnrjB/FoWEsMx5gjTcyOgZwe7xo1jOmZTx1zRNqOg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sitk3G
+        TsxspTPI3ycVReJOlcRgAUlRjje2GEEm0ppZk=; b=akhWCepZn/1XRJQ7ET60x6
+        Vz+Q8szVOrppPb4G3A4xzGZNOQHTJZ0eEJN/ShtHmQsfj3TDRYfk36pTfgJywnkC
+        LdMOVsXq9k7Un7pgn6dT61y6fRIOtSh9FhG1+q9dbvq40emlXsVvGqARRY4KARiF
+        SbsVlKYJ9r/Q6ZEZgd+fxoTwgnYfXkQ5JO+15Je5KGUDKT/t//JDWaDtJy7klzhZ
+        Hsf7/KTwzPPGEuA1mWKFV/TuaU336TUnZZLovQeAh2xHN7dMw63sR5+9lHUIS5Ty
+        fKBFD8SPtUADumJWyDCd+7lROOKSiWfYtmnhS7XCJZd5jSrhhuFhQI/Bz1qCYWJA
+        ==
+X-ME-Sender: <xms:yBe9XyWZfV1ecWMslUWoJKlCBZMzHaxEAA0zp63RFCTqA_gnWzKazQ>
+    <xme:yBe9X-mOIzJpbF4mM7tl8wZI0_BD_ccziDopjcwH2biIKZkktuaBfLYUSZJBztjNe
+    RhSgDDBXgaBIO-1NSo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehgtderredttddvnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimh
+    gvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnhepgfffieeiudduveefjeel
+    geelhefgtdelgffhkeefjeefvdeviefhheekgeeivddunecuffhomhgrihhnpegsrghnrg
+    hnrgdqphhirdhorhhgpdhgohhoghhlvgdrtghomhenucfkphepledtrdekledrieekrdej
+    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:yBe9X2aHtQ88nTnDcGWZxdqMnhyeYRcAJcLspr-1nf0AMXJSW35GRw>
+    <xmx:yBe9X5W221I4I6eRtVqXZwliNxQLtNL3NcTIKNPiaTsDWazNN_EoRQ>
+    <xmx:yBe9X8lfNnGQ-iIyaFY25fkT07_xVQf33PPo7f_fh53rjRcS4xMsGQ>
+    <xmx:yRe9X2g2SK7wdVEKK9_Wj_S9_b6z40OweVzVoVOePb_AV4RKhKRDog>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 89BB33064AB6;
+        Tue, 24 Nov 2020 09:25:12 -0500 (EST)
 Date:   Tue, 24 Nov 2020 15:25:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Michael Klein <michael@fossekall.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add
+ gpio-line-names
+Message-ID: <20201124142511.rbzzrsmjx55ykgjm@gilmour>
+References: <20201123094300.GA3699@a98shuttle.de>
+ <20201123114535.1605939-1-michael@fossekall.de>
 MIME-Version: 1.0
-In-Reply-To: <1606197161-25976-1-git-send-email-rajan.vaja@xilinx.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ffc20909-2666-45ea-823f-08d89084c446
-X-MS-TrafficTypeDiagnostic: BN6PR02MB2755:
-X-Microsoft-Antispam-PRVS: <BN6PR02MB27559A034DCF0E74278A26B8C6FB0@BN6PR02MB2755.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J6zy93oyMj2jJeOekr+rTTgRRVx8MX+NZcos8sJgGnPcbVNMfurRuT8/RahgAyR96zKnSejljK0XO1ehLPFYh993/71IUc1Ma4ejIiCQkoviUwg5FFCNov0VzpLWzmlnrivOSMY4z8QSrC5sntpYNcoa+nLUzlutlEVF9FIsBWwN1CgdQ2PJao46qBdX1xz3NQ0Cg2WNA0vEWDkUcDUYKZXwbOe1KNBNAPKWou8LpthNr3gLzJujDfrPWyHmQnJYGH8yHVjQmCamzbtvgRTuOLWBqJU/hvJl+jc38hGIiEb/Hp+doxWp6VZUBAgiujucpJIRm33+j+UxwNxbNQrdF6HMg3h5fmBJvzBfbmtb60tZu6ggkGaG4gAgj+yBzKr937cgsX8R0IvR/1O46+EwzH5DwhAdMr4VNjkKt6o7tY6bNU/dTkeyGCBCp+aIWEM8BTj0cHriU0R8+/NapC3CIA==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(39860400002)(46966005)(82740400003)(44832011)(316002)(36906005)(107886003)(70206006)(70586007)(110136005)(336012)(2616005)(54906003)(7636003)(31686004)(6666004)(9786002)(5660300002)(83380400001)(36756003)(186003)(82310400003)(47076004)(4326008)(31696002)(478600001)(8936002)(426003)(26005)(356005)(2906002)(8676002)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 14:25:17.5153
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffc20909-2666-45ea-823f-08d89084c446
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT046.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2755
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6sbmkps4knxhdg62"
+Content-Disposition: inline
+In-Reply-To: <20201123114535.1605939-1-michael@fossekall.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--6sbmkps4knxhdg62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 24. 11. 20 6:52, Rajan Vaja wrote:
-> From: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-> 
-> Currently array of fix length PM_API_MAX is used to cache
-> the pm_api version (valid or invalid). However ATF based
-> PM APIs values are much higher then PM_API_MAX.
-> So to include ATF based PM APIs also, use hash-table to
-> store the pm_api version status.
-> 
-> Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Ravi Patel <ravi.patel@xilinx.com>
-> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
-> ---
->  drivers/firmware/xilinx/zynqmp.c     | 63 ++++++++++++++++++++++++++++--------
->  include/linux/firmware/xlnx-zynqmp.h |  4 ---
->  2 files changed, 49 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-> index efb8a66..349ab39 100644
-> --- a/drivers/firmware/xilinx/zynqmp.c
-> +++ b/drivers/firmware/xilinx/zynqmp.c
-> @@ -20,12 +20,28 @@
->  #include <linux/of_platform.h>
->  #include <linux/slab.h>
->  #include <linux/uaccess.h>
-> +#include <linux/hashtable.h>
->  
->  #include <linux/firmware/xlnx-zynqmp.h>
->  #include "zynqmp-debug.h"
->  
-> +/* Max HashMap Order for PM API feature check (1<<7 = 128) */
-> +#define PM_API_FEATURE_CHECK_MAX_ORDER  7
-> +
->  static bool feature_check_enabled;
-> -static u32 zynqmp_pm_features[PM_API_MAX];
-> +DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
-> +
-> +/**
-> + * struct pm_api_feature_data - PM API Feature data
-> + * @pm_api_id:		PM API Id, used as key to index into hashmap
-> + * @feature_status:	status of PM API feature: valid, invalid
-> + * @hentry:		hlist_node that hooks this entry into hashtable
-> + */
-> +struct pm_api_feature_data {
-> +	u32 pm_api_id;
-> +	int feature_status;
-> +	struct hlist_node hentry;
-> +};
->  
->  static const struct mfd_cell firmware_devs[] = {
->  	{
-> @@ -142,29 +158,37 @@ static int zynqmp_pm_feature(u32 api_id)
->  	int ret;
->  	u32 ret_payload[PAYLOAD_ARG_CNT];
->  	u64 smc_arg[2];
-> +	struct pm_api_feature_data *feature_data;
->  
->  	if (!feature_check_enabled)
->  		return 0;
->  
-> -	/* Return value if feature is already checked */
-> -	if (api_id > ARRAY_SIZE(zynqmp_pm_features))
-> -		return PM_FEATURE_INVALID;
-> +	/* Check for existing entry in hash table for given api */
-> +	hash_for_each_possible(pm_api_features_map, feature_data, hentry,
-> +			       api_id) {
-> +		if (feature_data->pm_api_id == api_id)
-> +			return feature_data->feature_status;
-> +	}
->  
-> -	if (zynqmp_pm_features[api_id] != PM_FEATURE_UNCHECKED)
-> -		return zynqmp_pm_features[api_id];
-> +	/* Add new entry if not present */
-> +	feature_data = kmalloc(sizeof(*feature_data), GFP_KERNEL);
-> +	if (!feature_data)
-> +		return -ENOMEM;
->  
-> +	feature_data->pm_api_id = api_id;
->  	smc_arg[0] = PM_SIP_SVC | PM_FEATURE_CHECK;
->  	smc_arg[1] = api_id;
->  
->  	ret = do_fw_call(smc_arg[0], smc_arg[1], 0, ret_payload);
-> -	if (ret) {
-> -		zynqmp_pm_features[api_id] = PM_FEATURE_INVALID;
-> -		return PM_FEATURE_INVALID;
-> -	}
-> +	if (ret)
-> +		ret = -EOPNOTSUPP;
-> +	else
-> +		ret = ret_payload[1];
->  
-> -	zynqmp_pm_features[api_id] = ret_payload[1];
-> +	feature_data->feature_status = ret;
-> +	hash_add(pm_api_features_map, &feature_data->hentry, api_id);
->  
-> -	return zynqmp_pm_features[api_id];
-> +	return ret;
->  }
->  
->  /**
-> @@ -200,9 +224,12 @@ int zynqmp_pm_invoke_fn(u32 pm_api_id, u32 arg0, u32 arg1,
->  	 * Make sure to stay in x0 register
->  	 */
->  	u64 smc_arg[4];
-> +	int ret;
->  
-> -	if (zynqmp_pm_feature(pm_api_id) == PM_FEATURE_INVALID)
-> -		return -ENOTSUPP;
-> +	/* Check if feature is supported or not */
-> +	ret = zynqmp_pm_feature(pm_api_id);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	smc_arg[0] = PM_SIP_SVC | pm_api_id;
->  	smc_arg[1] = ((u64)arg1 << 32) | arg0;
-> @@ -1252,9 +1279,17 @@ static int zynqmp_firmware_probe(struct platform_device *pdev)
->  
->  static int zynqmp_firmware_remove(struct platform_device *pdev)
->  {
-> +	struct pm_api_feature_data *feature_data;
-> +	int i;
-> +
->  	mfd_remove_devices(&pdev->dev);
->  	zynqmp_pm_api_debugfs_exit();
->  
-> +	hash_for_each(pm_api_features_map, i, feature_data, hentry) {
-> +		hash_del(&feature_data->hentry);
-> +		kfree(feature_data);
-> +	}
-> +
->  	return 0;
->  }
->  
-> diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-> index 5968df8..41a1bab 100644
-> --- a/include/linux/firmware/xlnx-zynqmp.h
-> +++ b/include/linux/firmware/xlnx-zynqmp.h
-> @@ -50,10 +50,6 @@
->  #define	ZYNQMP_PM_CAPABILITY_WAKEUP	0x4U
->  #define	ZYNQMP_PM_CAPABILITY_UNUSABLE	0x8U
->  
-> -/* Feature check status */
-> -#define PM_FEATURE_INVALID		-1
-> -#define PM_FEATURE_UNCHECKED		0
-> -
->  /*
->   * Firmware FPGA Manager flags
->   * XILINX_ZYNQMP_PM_FPGA_FULL:	FPGA full reconfiguration
-> 
+On Mon, Nov 23, 2020 at 12:45:35PM +0100, Michael Klein wrote:
+> Add gpio-line-names as documented in the Banana Pi wiki [1] and in the
+> schematics [2].
+>=20
+> [1]: http://wiki.banana-pi.org/Banana_Pi_BPI-M2_ZERO#GPIO_PIN_define
+> [2]: https://drive.google.com/file/d/0B4PAo2nW2KfnMW5sVkxWSW9qa28/view
+>=20
+> Signed-off-by: Michael Klein <michael@fossekall.de>
 
-Applied.
-M
+Applied, thanks
+
+Maxime
+
+--6sbmkps4knxhdg62
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX70XxwAKCRDj7w1vZxhR
+xQ8JAQDog3kxhpSUVogruy/T1cwOfvj965+eQQo54PuVRUsXZgD7Boo/5JqErY8/
+TPeA00zvD/njGPRzZMLsmj6fXKFWpQw=
+=K0ff
+-----END PGP SIGNATURE-----
+
+--6sbmkps4knxhdg62--
