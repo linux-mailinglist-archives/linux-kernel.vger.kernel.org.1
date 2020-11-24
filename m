@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071922C3189
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB4E2C3188
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729835AbgKXT7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:59:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
+        id S1729817AbgKXT7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:59:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729774AbgKXT7t (ORCPT
+        with ESMTP id S1729752AbgKXT7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:59:49 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F58C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:59:49 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id 202so18203921qkl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:59:49 -0800 (PST)
+        Tue, 24 Nov 2020 14:59:51 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E33C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:59:51 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id t22so12479636qtq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:59:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=rWgaVCW+QceCYmZ+e8PPcTXSX7aed0mfmYVc7ooA0KU=;
-        b=v3ZxLsvQ9xr4M8QHnQqG0QWYZCUqCJqOdA+Cf+CqWHZqPXEvpsSuwMRsOxCarRAh4X
-         LiKfMXGsyi3GYu1vqWadscL76UG0ErAYr+hVn80tOX9nnCsdG2omk3YljX0cvKH0kYfC
-         aJsD1ntuBJIEQHOV1xvRN6afe66OZI0BiJVeT2mTpoF70kPjvdusx5EKyWfeyDLfGvBs
-         cf6OWdJHqfA1u1usZzN0KTU1IR5puJMxPhHWeSCoyo+MDv/9dC5ePcBAZRWn8+mjsgHZ
-         s5ZUAryVwDDM5ASX19Q3Hwn7e1/7EnAFAUCwLdAoGc9ZxEOH1G1KeVcwdTr80vRjdiGk
-         Mgrg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=FVQS1M4KVeXjKNOKRHPJrd8BR6PbfTKPcKqR0T4EXVc=;
+        b=SUk5JlyxWBeBNn8+bH/u3kAph5z8l4gaT+wrbmymdEUfN4CzkWGEURqr1fR+ga0Lvd
+         f7Y97E940hOXcDcMbiNZZ/rxDnvWj1Y6iNMO5BLW/1tk5nM1iCphRbc62/0Wyg0z7cgk
+         zLMLN/jgDkXowvVhtCVd3kaoUaveblswuMxyJUTWYafxvClxVVpWnCkRvI9UhaPTPucA
+         qsA/8c6VHLcn1tGWWd8xtlFaubTN/cA2IdggdQBeIhiSvhSjn/vsxE546JHhqjAXLcZJ
+         eBPXoqi4sIa6ueb3T9XSXpZT7pHcCCXShxm9NgBWaYGKLkeN0U/ZxTEr/5Fz+4p8drZn
+         uSQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=rWgaVCW+QceCYmZ+e8PPcTXSX7aed0mfmYVc7ooA0KU=;
-        b=t8PvUTOKevgomWO5buHEMnJ+rWZhFSOpvOo7ub4Y+7ABokO88cO/BS/o2RYL4W9/3F
-         BeazMGjnEJTG3SCoI8H4NOdl3Byev9seyrQ+Xu3aBiwO2992JesxlOknYt/XV8vOkZS5
-         Fz+Q239jlWBM63kweHzDcAndApfuYJQGEbclJwJq2qZGIfNvf7i/e5F5kyVBsyFdv+5L
-         IAumktWVl3/I58VgibxB2gp00qEwI7800Qz1PN4NDDILg9QYpYsWbEmeRkZr0mfX9PgW
-         aN8Xx28DrHxrnQe5qvm1WlmJq3E+mvn3C0q9l10GXAsl2m4IuAB9Vax+9/0nPGvesxYH
-         tSkw==
-X-Gm-Message-State: AOAM533Cg0i/YA6uPZerkrSTp/hGsZF07BkUE1QXeC3HcMphSPOA2ijG
-        M5nHtYHLdYRM4UNpHXj59gPtYRD9ncr5Hq9RZTk=
-X-Google-Smtp-Source: ABdhPJwKSq/Y/s8hSuqpDDA2NvpgjaDe14765SIGecYkH9SScEVCVzmrsSw64L3IWSbCGHlpcNbkzcDsvUdPjJE0hQQ=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=FVQS1M4KVeXjKNOKRHPJrd8BR6PbfTKPcKqR0T4EXVc=;
+        b=Ux1n81pFwQjNM6pzClyc8Y7tcMuXuUkOgPGX6QYJpv3iWaSwS3iWkOAk5eheDoNxpi
+         NDz1UU+9oBVtP4bO7IMQoG0hzXw3tAf66A8kWLm5BuGBOFd2ZJJtxo+xQLIS9jvFD0iq
+         CqLfpumQEh1fd6uCDs+Vp9X9FtrQ81X8T5dICBuMTRNDKSNx1liYc9JJG6ne8znHoLwz
+         CVtr23jXFUF/07R+bW6jqRt90kCTJ5a1SlLqED6RGsQzniNjFeE7enL5ncuGe6D3zTGo
+         1kghcdRiE7hkGDhn8ljsIbwP3516Q4/WD8jWPpEld9VN6JnrZq3aoAAf2GK+If34Ojlo
+         yYgw==
+X-Gm-Message-State: AOAM532adAfDRj0gBzDofIyhLmJ75YpDlLT4er/av7aZ6L5jv50LSDGx
+        C2BWe6YnIs4PjROreSjJVE1MdRkOC37G5r2l1cQ=
+X-Google-Smtp-Source: ABdhPJzLjM7X2Za0sQ5cQHWDCE2TBUvGheAojN48CLbofUImKRKHKdYP2ZPepyS89daNUYx7h3wNQP8vgae/UweoEbE=
 Sender: "samitolvanen via sendgmr" 
         <samitolvanen@samitolvanen1.mtv.corp.google.com>
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:ad4:484c:: with SMTP id
- t12mr246309qvy.15.1606247988958; Tue, 24 Nov 2020 11:59:48 -0800 (PST)
-Date:   Tue, 24 Nov 2020 11:59:38 -0800
-Message-Id: <20201124195940.27061-1-samitolvanen@google.com>
+ (user=samitolvanen job=sendgmr) by 2002:a25:6e43:: with SMTP id
+ j64mr7692153ybc.183.1606247990853; Tue, 24 Nov 2020 11:59:50 -0800 (PST)
+Date:   Tue, 24 Nov 2020 11:59:39 -0800
+In-Reply-To: <20201124195940.27061-1-samitolvanen@google.com>
+Message-Id: <20201124195940.27061-2-samitolvanen@google.com>
 Mime-Version: 1.0
+References: <20201124195940.27061-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2 0/2] scs: switch to vmapped shadow stacks
+Subject: [PATCH v2 1/2] scs: switch to vmapped shadow stacks
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
@@ -65,39 +68,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As discussed a few months ago [1][2], virtually mapped shadow call stacks
-are better for safety and robustness. This series dusts off the VMAP
-option from the original SCS patch series and switches the kernel to use
-virtually mapped shadow stacks unconditionally when SCS is enabled.
+The kernel currently uses kmem_cache to allocate shadow call stacks,
+which means an overflows may not be immediately detected and can
+potentially result in another task's shadow stack to be overwritten.
 
- [1] https://lore.kernel.org/lkml/20200515172355.GD23334@willie-the-truck/
- [2] https://lore.kernel.org/lkml/20200427220942.GB80713@google.com/
+This change switches SCS to use virtually mapped shadow stacks for
+tasks, which increases shadow stack size to a full page and provides
+more robust overflow detection, similarly to VMAP_STACK.
 
-Changes in v2:
-- Added SCS_ORDER and used it to define SCS_SIZE, switched vmalloc() to
-  use SCS_SIZE and removed the alignment.
-- Moved the kasan_unpoison_vmalloc() to scs_alloc() when using a cached
-  shadow stack instead of calling it in scs_free().
-- Added a comment to scs_free().
-- Moved arm64 IRQ and SDEI shadow stack initialization to irq/sdei.c,
-  and removed the now unneeded scs.c.
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ include/linux/scs.h | 12 ++++-----
+ kernel/scs.c        | 66 +++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 61 insertions(+), 17 deletions(-)
 
-Sami Tolvanen (2):
-  scs: switch to vmapped shadow stacks
-  arm64: scs: use vmapped IRQ and SDEI shadow stacks
-
- arch/arm64/kernel/Makefile |  1 -
- arch/arm64/kernel/entry.S  |  6 ++--
- arch/arm64/kernel/irq.c    | 19 ++++++++++
- arch/arm64/kernel/scs.c    | 16 ---------
- arch/arm64/kernel/sdei.c   | 71 +++++++++++++++++++++++++++++++-------
- include/linux/scs.h        | 16 ++++-----
- kernel/scs.c               | 66 +++++++++++++++++++++++++++++------
- 7 files changed, 142 insertions(+), 53 deletions(-)
- delete mode 100644 arch/arm64/kernel/scs.c
-
-
-base-commit: d5beb3140f91b1c8a3d41b14d729aefa4dcc58bc
+diff --git a/include/linux/scs.h b/include/linux/scs.h
+index 6dec390cf154..2a506c2a16f4 100644
+--- a/include/linux/scs.h
++++ b/include/linux/scs.h
+@@ -15,12 +15,8 @@
+ 
+ #ifdef CONFIG_SHADOW_CALL_STACK
+ 
+-/*
+- * In testing, 1 KiB shadow stack size (i.e. 128 stack frames on a 64-bit
+- * architecture) provided ~40% safety margin on stack usage while keeping
+- * memory allocation overhead reasonable.
+- */
+-#define SCS_SIZE		SZ_1K
++#define SCS_ORDER		0
++#define SCS_SIZE		(PAGE_SIZE << SCS_ORDER)
+ #define GFP_SCS			(GFP_KERNEL | __GFP_ZERO)
+ 
+ /* An illegal pointer value to mark the end of the shadow stack. */
+@@ -33,6 +29,8 @@
+ #define task_scs(tsk)		(task_thread_info(tsk)->scs_base)
+ #define task_scs_sp(tsk)	(task_thread_info(tsk)->scs_sp)
+ 
++void *scs_alloc(int node);
++void scs_free(void *s);
+ void scs_init(void);
+ int scs_prepare(struct task_struct *tsk, int node);
+ void scs_release(struct task_struct *tsk);
+@@ -61,6 +59,8 @@ static inline bool task_scs_end_corrupted(struct task_struct *tsk)
+ 
+ #else /* CONFIG_SHADOW_CALL_STACK */
+ 
++static inline void *scs_alloc(int node) { return NULL; }
++static inline void scs_free(void *s) {}
+ static inline void scs_init(void) {}
+ static inline void scs_task_reset(struct task_struct *tsk) {}
+ static inline int scs_prepare(struct task_struct *tsk, int node) { return 0; }
+diff --git a/kernel/scs.c b/kernel/scs.c
+index 4ff4a7ba0094..25b0dd5aa0e2 100644
+--- a/kernel/scs.c
++++ b/kernel/scs.c
+@@ -5,50 +5,94 @@
+  * Copyright (C) 2019 Google LLC
+  */
+ 
++#include <linux/cpuhotplug.h>
+ #include <linux/kasan.h>
+ #include <linux/mm.h>
+ #include <linux/scs.h>
+-#include <linux/slab.h>
++#include <linux/vmalloc.h>
+ #include <linux/vmstat.h>
+ 
+-static struct kmem_cache *scs_cache;
+-
+ static void __scs_account(void *s, int account)
+ {
+-	struct page *scs_page = virt_to_page(s);
++	struct page *scs_page = vmalloc_to_page(s);
+ 
+ 	mod_node_page_state(page_pgdat(scs_page), NR_KERNEL_SCS_KB,
+ 			    account * (SCS_SIZE / SZ_1K));
+ }
+ 
+-static void *scs_alloc(int node)
++/* Matches NR_CACHED_STACKS for VMAP_STACK */
++#define NR_CACHED_SCS 2
++static DEFINE_PER_CPU(void *, scs_cache[NR_CACHED_SCS]);
++
++void *scs_alloc(int node)
+ {
+-	void *s = kmem_cache_alloc_node(scs_cache, GFP_SCS, node);
++	int i;
++	void *s;
++
++	for (i = 0; i < NR_CACHED_SCS; i++) {
++		s = this_cpu_xchg(scs_cache[i], NULL);
++		if (s) {
++			kasan_unpoison_vmalloc(s, SCS_SIZE);
++			memset(s, 0, SCS_SIZE);
++			goto out;
++		}
++	}
++
++	s = __vmalloc_node_range(SCS_SIZE, 1, VMALLOC_START, VMALLOC_END,
++				 GFP_SCS, PAGE_KERNEL, 0, node,
++				 __builtin_return_address(0));
+ 
+ 	if (!s)
+ 		return NULL;
+ 
++out:
+ 	*__scs_magic(s) = SCS_END_MAGIC;
+ 
+ 	/*
+ 	 * Poison the allocation to catch unintentional accesses to
+ 	 * the shadow stack when KASAN is enabled.
+ 	 */
+-	kasan_poison_object_data(scs_cache, s);
++	kasan_poison_vmalloc(s, SCS_SIZE);
+ 	__scs_account(s, 1);
+ 	return s;
+ }
+ 
+-static void scs_free(void *s)
++void scs_free(void *s)
+ {
++	int i;
++
+ 	__scs_account(s, -1);
+-	kasan_unpoison_object_data(scs_cache, s);
+-	kmem_cache_free(scs_cache, s);
++
++	/*
++	 * We cannot sleep as this can be called in interrupt context,
++	 * so use this_cpu_cmpxchg to update the cache, and vfree_atomic
++	 * to free the stack.
++	 */
++
++	for (i = 0; i < NR_CACHED_SCS; i++)
++		if (this_cpu_cmpxchg(scs_cache[i], 0, s) == NULL)
++			return;
++
++	vfree_atomic(s);
++}
++
++static int scs_cleanup(unsigned int cpu)
++{
++	int i;
++	void **cache = per_cpu_ptr(scs_cache, cpu);
++
++	for (i = 0; i < NR_CACHED_SCS; i++) {
++		vfree(cache[i]);
++		cache[i] = NULL;
++	}
++
++	return 0;
+ }
+ 
+ void __init scs_init(void)
+ {
+-	scs_cache = kmem_cache_create("scs_cache", SCS_SIZE, 0, 0, NULL);
++	cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "scs:scs_cache", NULL,
++			  scs_cleanup);
+ }
+ 
+ int scs_prepare(struct task_struct *tsk, int node)
 -- 
 2.29.2.454.gaff20da3a2-goog
 
