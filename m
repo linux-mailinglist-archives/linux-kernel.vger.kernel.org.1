@@ -2,51 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E472C24F3
+	by mail.lfdr.de (Postfix) with ESMTP id A2FC02C24F4
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733029AbgKXLtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:49:12 -0500
-Received: from verein.lst.de ([213.95.11.211]:54156 "EHLO verein.lst.de"
+        id S1733048AbgKXLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:49:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728491AbgKXLtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:49:11 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E3A5F6736F; Tue, 24 Nov 2020 12:49:06 +0100 (CET)
-Date:   Tue, 24 Nov 2020 12:49:06 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jianxiong Gao <jxgao@google.com>
-Cc:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        konrad.wilk@oracle.com, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH] [PATCH] Adding offset keeping option when mapping data
- via SWIOTLB.
-Message-ID: <20201124114906.GA22619@lst.de>
-References: <20201123221807.3344263-1-jxgao@google.com>
+        id S1728491AbgKXLtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:49:40 -0500
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E18CD20857
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:49:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606218580;
+        bh=PUBX3pg96iPTmC+3ajxfCSWd3GB4JF9umJhidh4JYJQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nQfU56ROXDVHIurupdILBePZen1/uVeHEm/0DLxWG2v7+s7F+4eTCATK2V5DhvJZc
+         HJNPaOBdZj33efQR7+itzU9K7JxjCZ5MBID2FP6iUJE53q4DuT56zOZrlgXruQOtb/
+         ISxeAF36yLCE3PrqLuWeZftLHrHsK4WwkZL5vcgU=
+Received: by mail-ot1-f53.google.com with SMTP id n11so19046294ota.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:49:39 -0800 (PST)
+X-Gm-Message-State: AOAM5337o1wVkOp2RWvVuWtz64RY/1ZtcDj41/1/BtE7nmw1woFN2Qfh
+        5ezsn3hGSE4syXRge//7XrfxK+Nv1G9RdFc1Ms8=
+X-Google-Smtp-Source: ABdhPJy9c3s/Jeb9nfLEN+BPcVb1IbuR24GoD2eAR6YCiec9vq6xxo/J70frTg0AHuEAYwvM+JTd6bTj8JpwCLoCBXM=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr2674436otc.305.1606218579150;
+ Tue, 24 Nov 2020 03:49:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123221807.3344263-1-jxgao@google.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 24 Nov 2020 12:49:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0xDQhbzZoZ6qvpQg6zRU20-ZtJRkPq5Gjw0+2LGs71tw@mail.gmail.com>
+Message-ID: <CAK8P3a0xDQhbzZoZ6qvpQg6zRU20-ZtJRkPq5Gjw0+2LGs71tw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] amba: reorder functions
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 02:18:07PM -0800, Jianxiong Gao wrote:
-> NVMe driver and other applications may depend on the data offset
-> to operate correctly. Currently when unaligned data is mapped via
-> SWIOTLB, the data is mapped as slab aligned with the SWIOTLB. When
-> booting with --swiotlb=force option and using NVMe as interface,
-> running mkfs.xfs on Rhel fails because of the unalignment issue.
-> This patch adds an option to make sure the mapped data preserves
-> its offset of the orginal addrss. Tested on latest kernel that
-> this patch fixes the issue.
-> 
-> Signed-off-by: Jianxiong Gao <jxgao@google.com>
-> Acked-by: David Rientjes <rientjes@google.com>
+On Tue, Nov 24, 2020 at 11:32 AM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> Put helpers (here: amba_get_enable_pclk and amba_put_disable_pclk) at
+> the top of the file and then define callbacks directly before the
+> structs they are used in; in the same order.
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-I think we actually need to do this by default.  There are plenty
-of other hardware designs that rely on dma mapping not adding
-offsets that did not exist, e.g. ahci and various RDMA NICs.
+Looks good, I checked the whole series and this seems like a useful
+cleanup. All four patches:
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
