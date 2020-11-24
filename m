@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791512C2C66
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9483D2C2C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390178AbgKXQKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:10:53 -0500
-Received: from sonic303-2.consmr.mail.bf2.yahoo.com ([74.6.131.41]:43142 "EHLO
-        sonic303-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728249AbgKXQKw (ORCPT
+        id S2390235AbgKXQLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:11:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390105AbgKXQLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:10:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.nz; s=s2048; t=1606234251; bh=U5knVWLcGp1uiWoy67pL6OYsdibrgmoNRLOsBH6Ohco=; h=Date:From:Reply-To:Subject:References:From:Subject; b=AXa7VEfMh7NB7F/JangFBKggJNlaS8bG04rAkwyZ2Ac1sfdkIDHtSzctyU+xfeeUfO8GWbZJkaoRf62EmWVKK34OhmI4gcgGjfzE+/KBV83Lz2rrfqj1JlrBl6eeTG4ltHCX5MiiCc3i2Wl4hL6Mdga6OXrbmYogZUNf6UIYDffADpAZHXdJKnu09Xd8f7x10TSKktJYEtRuE0inpwrD+tZBc68NMvDvdhRxiUpZEoY/dv8vDuG9nk3w0F8y7oxnoC2lkIkDGT9N5RCND4a0IJ6mARIYoqOkcvR00bacIcnzH7czvB/Z+oiG17W7TiS/pi53whbWrpdaZd9oeyYZMA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1606234251; bh=rc8CETQhSya2PpRSuUHOcDPL/xvWv/H8nJBekEJF5Pp=; h=Date:From:Subject:From:Subject; b=tMYw30+nkk2ptNZD8iV3hlDlbJfQ/DZfB6tmYExnEpAxrntQcTJ91mBM+Y7p/N1c8fBAlaNQGBbQlnKdphQfdwIIuzara7kDAtF/UvCOwvHSV9Q8yDLg+CAW0sbprkZ569F112aeDRHbTd4v5q09OIb7sK+Abixeow6ZlaO4P2F6Mb9Vh8wtACeaoC9Ed+oNsCW61yBBUMno0NRIVx7roknY7r+jakOe4/z5IcZragufYfv4EeiTbGcrOrSQL3MxPc4uY4WFhO88IrhZldAHjbu52FAj2qiuFixAGUQSfymSvqsHvo5wBpk28CAWgkJrkNv0EVsIyu2EoDqCz9SJUQ==
-X-YMail-OSG: .zI5jQMVM1mDtHVFbhUsA9CNY5T0DSVV_tJ7xFHUpPZn9yzLFPWwQkZiCbKvKK4
- Kl1o7uJTvQ_0JgWPDzSvO6PquwAq8baeJc92r1q7Yn.X3IpaqlJrpSzvj70XuPoTl5HWtfONfjI_
- vjzhhD4uR9fU8wdRVeCtG1AlcLRGIZ7xHEsGLSj7jp2gphkqz9cT3aUSmUmdfrcLeWZqIckY5Mgg
- rYjxWOTh7qvfYMGbNw2zXZTmiXgOs5DGUjLHnb_.9nj3lGfrXxIlXV1a7Jccm4r5qGb69IPxZakh
- sSBl_bfCkkPxal2ObU49kZNq8dL8f9CQkzPihHW7y1pW1IfYvFbRnC5wRyMpi2rTccxaio_PIndb
- .oA0_xkvxnIR06W869pyAj4sN4_cbs4a54mE_lbnJywM1tzfVGAs2.zBJ0ZvVnchP4diB_GAV9vg
- AOt3kzCyQJMjtQ.IWIzISW.6ZTswlQUExDYaVmeEZfma4lQ7vku_9PIa04rdBSU5.YMaSDygY.RB
- LjaRRpn8hqI6pc_R.ozhXQVtjTH8B0Gt8E5wr3Nzq5POe1Bnlf6bPtrwMx1uydzO.HJdMgs3suku
- 3NdViaYUzx4RL7_flbjUA3wzeg9T8vrbOI6URZevsRTYYAffmPrRYOa8JllZlPqfVoJRCJ_QZa4_
- TRF6i591QswGnn1bc5gJB7keaokIcLaYvzzw4cFTczOWkSSdaQnQXCrnn1ZKCXH1Y4tkeh5fd5m6
- .mSynMq9RlqpSLxPKsQVm7Zz_SRafs8MQc0jrCANNURDcMVXmbdTJWjYpBn3n0yhHqhe81IO47HV
- JvEjL5HCG89Q4OobDoLOp4PZP6RGF8uJALpAAIVdwQ7ptAT8JTaYYZMtO84eS1j6Iut6kXSaKbwk
- 6HxAFb6mTl9aOond0qyMN.eeu3x5IGVDfIG4XLYaVGiWUX4wWuIXd0RmNJyd2DfQ89WCrWHVbFXq
- c_EZKO78Sy61jLM7E9xL3XN7cbWq97jHYt7S4_NlyCSVC8EOLLf.aK4cW208GrRWI_aX8aDdtSfC
- tQKJR8IAN7WnjKG1Rmi64xIx4odYEtc4gsBV_EYyLSvkXlm2H3dzo8aHGSX08kCQmUi0A88KZT74
- RqI0T2hanuP2ozjoIOEtqJw1WrWNqpuzls1WnkaHWYirTXGaknikiDuPEf.6GhDjZQ68DJsiFgiY
- yMj5_lJrhyZxm301yfBLbgHvwZMfCFfwYC.Aj2_AnkJmunKWMAwkoU0UD7_SHSp_NikbOTXj2ix9
- Ky_lV0SNbk6MI4_.wrDfkQUU3cMYZuAwFNp2mkzQEbeHhK_4IJ2kOnGnc8QO9q9jhnwCCaMii5FP
- yzUahxJIQPPYHLhza0JkWyyIHKhtWyX7KEy5Wvy3UCZBQQnK0N9hUYfGhGK.cDdts1cpQR9sm1oN
- _twRKCvq.D0rQrcyaMw7MHjtjGc87l65T7LDKE30n_plKl0TQjpy7hK7ewev53wKTqbg1RktEtQr
- Gfa3cXkzVDhoNyMLN18wJdxsCtJ.JkH_vqksnkNWYXGw9x9.agiGjwNOAiUQrC4ylbJVYsrh8LgK
- FtpZezZJPWT.SVIqz0HPbKoWHYaUCshF4okLaqP1EPbiMrfHDhiKVXJ3GAOWZ8V2ZgVyL17BDhrC
- rGBiYnIucDJbLh8tro_h1vXpb7ahksDxb4ShoZUYMc5zjax7TSMNYLP4tQdapz7UQnWcBB2AGdm0
- Iw4j.xBZkrgG4yoeSB_JfsGinqXUv_.A_zEy0XKYkILXpCKfQve3iN.VWO_LwDGUyGChJfdNaGk9
- dGFh6aOtVOgJY1uYXWeicCXthrdHe9cZAQkk3U8j4nUx7Dwrsc4hiyPab8NIZt5c6FPUfTv64Txs
- WUcJztpkyZfxtjcjty1Px2yP5Qup27E92cDvj8WivqyjFWCNQY_VFOJ1zh6.nNQGyWmqWrheJ2UQ
- 3gjCfatjRJURSnV08K6UfLg0p6JsKTM51ha1SjCJpKykbwekOYtDA3s8k5oo.Jmt4N1wSxGi6orS
- suLAggolavY_9kMlknoG4ejpB1gEyjWw9ENHCb04zKErAxH3FjxOR74jfVESKULq3Jsht.P4n2u6
- xjSkWaYJmUdio4Vw7OuZNogJGja10.ep4849vOxO0JDIaW17iXCGsBqL4NaYL8m.5hjH0e2_UjAB
- rGHkMurq39CCLNBK_cRxnMJmhXGX6DC4a5rd2ly_2knRmAnDmiaRJOSwXk_0BmDWOetZQJQs4VDF
- 1py55j.zlNvV8CoP0Kbf9mS3aAOWunzTc.bp014QxnsILK4be4LxdtrnI2Un6zhYsT8NTjnW1MWc
- ki0.Bv_vHSv7aVzOqcOK_tGTf2ZMXGXiRctdN5a6FIUAZS_X5o9zqjg5sJffFt5D.j4kXcq4AFvf
- 4PCCvs9IdbNsKuR1wIpNVZ9HbmdfxhaJNCd_4yu0CoRXkIXf5oRxL9x9RV693diYs2JOTcUAGT8f
- mhJWimB5iLWyCEIi_nhJH3rdOyCFeGB6eRHBYXfsXBTfTb6xzo9pcho1FYb1yQsfb6nnp9_IkK4u
- qrYY8QJT8GVI0eZYX76IMhLBKrkEQgsCiiylp0NXD5zNtc0Ldt_bHPSIE7J6uLqcaaTaxGkp.UIM
- siq.oew9U_uwXaQAsMzsfScmtuINtf84p6.foUEMI2uGBQvZcFLrdotESzmyU7uAQfG_tn1UJ16G
- r0_JwHPFpXOiIc8PJjbTNp3lfgHqMMoZXM9s7AhYK0OBD6C5d1V6pLwx776irLytFFOm.e4PnXWE
- koVQ_YLoyOIFyKlUp3kSazM_HHl2.J1.6UeK3o5wwAL0tvvkk9SeX4ngRkXqIat._i5cqk3yAPcD
- 5MgJGNJqlNCzx9vur3ie5g0a_gyu0Rj.8cM52PKE0AOgAvjKpVlDOmaUIyIseBi9.SByjmNUiUG_
- fk1uggwkm9TMlWNuBlh..ixe56c3whAcnvhGvUERpRisSSUn3SjXI0wICtygroDBvIEYi_X5Pcs_
- nSa.864_uIu6r61VohCx7CMHdUqBnG5a_qeLnmtsSx01aoOeZG3RC0ePsX4sZrkfbqz_uIoAvVLM
- 13nf7EFfqd.3fJ61Cgk4TiewC_qIWvm1pxVqFyXVEnR5b4HDdN_fPJH9yD17e8.Av7PWageQdrBJ
- rmXXhIVvGjwVEw621YtbChUUz691vnrp6zVFP4_XWyu6gFxqrdxpeUD5_g4H6rYS04cCUxekcCKx
- skjbKIY2W6jg5nS93iGAKmcxfBlFxXB730wolEgkvK18dDx5XuRqcpeNOVMvhX0ceQNvUuyiny.9
- AcSCAAXfXF6c53qg5HpfIkDRVO.GICsWaQ2J.JQL5kRtXBPshhjxvCQgoz1EikkBuJmiM6plKPrU
- 2MJ6_gGLwPVeEcJP6OjPGsgU30ndMFkY1JNSNTWL5CthBxdY7V0CBcSXICCKTdndUygVAKURQkKE
- PT8LIjxQVsWix3H1ShJf671AiaTYxNYYBQEwDHfJKCW32ussHnYeb7VmhtIGA3s7RN8TQQ.djPMB
- MhgiQ1GaTm8YdhCH1RFW2gQFpWkxMYGIv9hGhjhvZHALCikeLnZeLAIJe9EGcMz6dHc6aA.WmKLI
- T68ziWEmxYFlXeERYsy8diUgpXhc6P3DRYjySKSwMar1PusmmH9fdanaJjiVhQgKISQjx5vuKtl3
- bWipMzMH8BYSw323GqDvDjGIAZdP128LiXmBIJqc.3XFKUnCBgYNzXOBpw3WOq8bNgPxAUJSnMxS
- aShXarFcP0w3UE6WpGazyCgUzKnNGguhc6xsQwSJp.E3ZLgWJsu2wo3LFBMjZuuqxpKbCRP8.RLg
- YjRDidcbWTA_F4wNLqYZWp_oZdOpxlYpQxby3Kwf7GcAkLrLmF645KqWgz0pIH3Tp4awPyUbh6QX
- EDShWhNmaqIiFzYNd0ejFcR9bit3ap0UoTMMscB.wh0qwKR6LHF3OIEasMendD9iQxw2qOnpr4iv
- 91mvtWG7v23RtaLlG7JtTu2diOWerEkkIiXuLybAZg9D7YkaS9J2GSKlj9_Fb3wgSAIfDOA1CAFO
- .jvi7Fqy6u.DiFNnD.EhS_CZWEWpLTS_a7c3HGOcIlQaeHlKO5PJfWCtd47totXQKBc1DzB1cN0f
- 0f6kiDO_Z23Y8Zc3VWkVgutOlDASgK931t_pZtk9r4Tudgt0mL25oenPxNRRnxeU_7NoiCFyyY29
- vOCTfRAb105P3_IZtaxHc5IcgEBjdU5a_.pJEsU211joAwpDR4IH1PTuBqvD9AIQiiaf1yvMsg0L
- BwMinxaRZZXs7Fv0bo8oEa.F8AVr6sCLX.QLhw8UOMt3MQJvRPh.ozLEFwmZvEptbtPWcNAiAubJ
- xX5aujcc3FuSIOCDI4Fao1B.zyeza23Ik4dBe0kS15pEGSyI_xsKYoKNjSW81Vrtceb3rVMYGS_V
- huvhM8r4bGmJv8VhYrWaUObZYKWZ7MiGD_g_Hbo3lSSBjWTaFDQW3Nw8t9wcOSPCJUjJh5fXpqs5
- 6NlZ8a2duKhmt57mJyq3XazhRqtDw1taVrCQF8bAe_.MKNGdOecGBPvF79aHejpe7Yb38fgX5OJd
- RFlHzYJGAuRwC4TtKViE59Y1fFJtD0iHFYkpOvqTyAFZ_98Iey4k3C6FGq_f0EGNWVUHuLhRSd6w
- 1RBfbnys8a90yc1fbVw3EpJ3uTxqGYRGsFEXIlMFzjyWlANo5D4w0UPT4ewiZQrbTT_A8.SOhDJx
- 6eBUAEJlClcEvexXi.LD7682_UliapG9Lmgj2_bZH99joIjhBFWLQFAhjX_X37JJSvrB7enc2_G9
- MMwD7yzVr7.hYDVcUSQGDlv6tKFdAwonoAnNOpcMtv8CGie.ZxUIgx9.tt8M1ORoV7_yMoUQB7Uh
- 3YLB6BZ5BiTSNMTpl3pxnvKat.xYcZxfMjblO1jcrPf45O83dZ8jNWw01TINBMJu6limR4H4OSEZ
- us1T0oX8Y6.Ra2wcHNfCi380IFWC.4EqxMfU458uqTluODw9el5x5zgGgy1W3cq5IjSLl0cMA8V2
- zKBixQneJNb6LBX4kv5du7ZKvEiwptSUjC5PCD1tRRuEcADttoOAYusXCF0O3gYriw4F9Ioo_mQ2
- nLAb.SPNgNS73LEyhqFkILZeTkpxtaDBm14LH_TDohStH_y2xm2rF54cWRDGsuzjGx7LjyDoUxi8
- IG5xwYMs9d4V.cjahNIWaLYG2Y41_IgljrkXQ.T_oJveoNqxg4BnSE08rTjHNETxRRYe28avQNxm
- BAAlu0s68qKf.Sc8KH0LbUNaVZfbde80uSA74gkDFHBBLUMSLe5C9NaQv.G5a1fB3j2s9CF1M8V2
- Bvq5NSb7tcXaIwwd_I3VvAjo7W5AZNL_u8AFRiF777VKR48Cxblv9wlvGtUDVkXwXvzahWB1a3lA
- ARHHdSb.07RJSld3ELPjZ9L8M1ZEuqt92EvvLbAexKJaWjV7_f1gAilWtLr.4IKSjzYs5AF3UC89
- TB_uBkkM9EL.Ofg_zJdOcuU3sqpramx8PikPVMw--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Tue, 24 Nov 2020 16:10:51 +0000
-Date:   Tue, 24 Nov 2020 16:10:47 +0000 (UTC)
-From:   Mary Jane Kallon <majanekallo@yahoo.co.nz>
-Reply-To: mmjaneekal@gmail.com
-Message-ID: <654296050.679292.1606234247201@mail.yahoo.com>
-Subject: REASON FOR WRITING YOU
+        Tue, 24 Nov 2020 11:11:49 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7D0C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:11:48 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id g14so7690648wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yWBnAsL35h7coYRmd6KCcPiuKL0mldpz6aVNraU0pGg=;
+        b=NP4SypGli7x9DynJs7n+UT0Qu+QOMiTALxeTz9iK20T5BS3LeIvpDRXBPeIou2Mfb0
+         LOsUwxRA7ufIXwSrtzMrEhSo9J54a6YDU9tOIOAxJGR5yYxkNEWx0sQuPt06gKjS3E2T
+         nGh+/Hlksh2xzQj2ZgwAq6hjD2m7aMthGFTLnIuu+///meA/TrJvjqoIRu0Ce6LJkZsS
+         UuVI3FFbdMRRjehN67dbdCElKxiN2q96KX78eEugHCYendp+CNPjGw7V+KJ56nLkJskj
+         iMKWDD7giCwO6og0jNBCqbatSUBBVt5Ao0zwsjD2yuN9Fn7VL2jPjzMkyg/8I5B1tI68
+         3GSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yWBnAsL35h7coYRmd6KCcPiuKL0mldpz6aVNraU0pGg=;
+        b=d1JFN8coTCSr7mxBYh4QmZApBvPJ4XS06xm0/jaZLwnmbClZQJklJmyCQe/jpAaL0p
+         5aYK7aL754Xx36OsiQXMX0LcJJK6vw5HX8Ten2vBphYHWW27qv15i+wMjgcqmfFCjPyH
+         XaIowqq5jrNJ8Mrd2nmpjTp0odMQ3H5dCuarTUuoDxQJuNzVmzr8TfktQ7q2btRKfDYf
+         V8vKrAbbGMeAqVVTqsQNtWv0T38JBjc4mSL0yJ8ciKvD2+j9K9g/2t1efSteL1/hdjE+
+         GTqoMATaft2PXYHHogJ+A7e+kvJ8Iic9v49lRZKORp9zCN9Trhi4W8MuxPb7H4rZ3Z/1
+         T7dA==
+X-Gm-Message-State: AOAM533xlSaHAH/d9aI1CqOZzdhJRbzy433MZkQWPWhlipv5tZVtywR3
+        1gfI0rHUOhb9gIS27J6DVq6HRr/+ueC4r1n7mHU=
+X-Google-Smtp-Source: ABdhPJw0msurlCJdUlLz8FT84ifhdXHmaoi1gvjtUeAEEZQg/e1bujCJGzGlPH6KS6IgPPLj3bFCVDTL+bjy7xBSEG8=
+X-Received: by 2002:adf:8028:: with SMTP id 37mr6136762wrk.111.1606234306840;
+ Tue, 24 Nov 2020 08:11:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <654296050.679292.1606234247201.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.17111 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:83.0) Gecko/20100101 Firefox/83.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-24-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-24-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 11:11:35 -0500
+Message-ID: <CADnq5_OdaPQrzCMdr3vPs6WOWvbKWhgAV8RvQ6M5roZq3jQ1Xg@mail.gmail.com>
+Subject: Re: [PATCH 23/40] drm/amd/include/vega20_ip_offset: Mark top-level
+ IP_BASE definition as __maybe_unused
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+>  In file included from drivers/gpu/drm/amd/amdgpu/vega20_reg_init.c:27:
+>  drivers/gpu/drm/amd/amdgpu/../include/vega20_ip_offset.h:154:29: warning=
+: =E2=80=98XDMA_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D
+>  154 | static const struct IP_BASE XDMA_BASE =3D{ { { { 0x00003400, 0, 0,=
+ 0, 0, 0 } },
+>  | ^~~~~~~~~
+>  drivers/gpu/drm/amd/amdgpu/../include/vega20_ip_offset.h:63:29: warning:=
+ =E2=80=98FUSE_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  63 | static const struct IP_BASE FUSE_BASE =3D{ { { { 0x00017400, 0, 0, =
+0, 0, 0 } },
+>  | ^~~~~~~~~
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Applied.  Thanks!
 
-Dear,
-How is everything with you today? I got your contact from a directory and picked interest to communicate you by faith, though we have not met before, I believe we can achieve something together. My husband died few years ago after battling with brain cancer, before his death, he deposited ($10.5 Million) in one of the financial institutions. He wanted to establish coco processing factory and also real estate business.
+Alex
 
-After the death of my husband, I have been receiving all manner of life threats from the family members, now the pressure is getting more severe I decided to leave this country. Please can you partner with me and receive the fund in your account while I come over there with my son for investment. If you agree, get back for more details and what will be your commission for the assistance.
-I wait for your reply,
-Mary Jane Kallon
+> ---
+>  drivers/gpu/drm/amd/include/vega20_ip_offset.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/include/vega20_ip_offset.h b/drivers/gpu=
+/drm/amd/include/vega20_ip_offset.h
+> index 2a2a9cc8bedb6..1deb68f3d3341 100644
+> --- a/drivers/gpu/drm/amd/include/vega20_ip_offset.h
+> +++ b/drivers/gpu/drm/amd/include/vega20_ip_offset.h
+> @@ -33,7 +33,7 @@ struct IP_BASE_INSTANCE
+>  struct IP_BASE
+>  {
+>      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+> -};
+> +} __maybe_unused;
+>
+>
+>  static const struct IP_BASE ATHUB_BASE            =3D{ { { { 0x00000C20,=
+ 0, 0, 0, 0, 0 } },
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
