@@ -2,109 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BE22C295F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6C72C2961
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388866AbgKXOW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:22:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388858AbgKXOW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:22:58 -0500
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB0A1206FB
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606227776;
-        bh=gwenMUOmNagaP0XqHbf89PGPh3jSG2hwNgJOa/BbCQ0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EAf6jGMy4CBEMU9eN7CfNopNd0hKIz3yZ0YUrLjNWWUtmFqsN0G7zrO2UIEMRq1b6
-         ys9lhaIBaAnNptIvpt5pEZYyr05k/Lcd1F/Jj0yeqE/qEYgBukNP7TFUcKpYRWc/qW
-         cNGNwRQZ1vgwKNTUd9vTXvW0d1JwDO3nzU8xTzzY=
-Received: by mail-ot1-f50.google.com with SMTP id f12so8021611oto.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:22:56 -0800 (PST)
-X-Gm-Message-State: AOAM533M6E5tCn/+GtKwN/dtk2hCn45izDtcXVvFFfWiKzMi4t1cmhSh
-        GLEeRqdnFC4DiruZDGlKzjPko+M0SMR5+iqHre8=
-X-Google-Smtp-Source: ABdhPJzZ1VfHk6RC6yuxrJKJcrkEyLIGQOV5ruxWpiVmuampsRp5CDDBSfh35GBzq3iZjOH4XKLhSXFvJE8McTfXya8=
-X-Received: by 2002:a9d:be1:: with SMTP id 88mr3320516oth.210.1606227776073;
- Tue, 24 Nov 2020 06:22:56 -0800 (PST)
+        id S2388836AbgKXOXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:23:09 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2147 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731656AbgKXOXI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:23:08 -0500
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgR5V2j7rz67H9R;
+        Tue, 24 Nov 2020 22:21:02 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 24 Nov 2020 15:23:06 +0100
+Received: from [10.210.169.36] (10.210.169.36) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 24 Nov 2020 14:23:05 +0000
+Subject: Re: [PATCH v2 2/4] sbitmap: remove swap_lock
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <cover.1606058975.git.asml.silence@gmail.com>
+ <488177c02dccda60c5e8af2e53156c42b7f1acc0.1606058975.git.asml.silence@gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <17b6011c-b519-3332-e9b7-de36109db85a@huawei.com>
+Date:   Tue, 24 Nov 2020 14:22:45 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20201119114029.183828-1-juant.aldea@gmail.com> <20201119122737.189675-1-juant.aldea@gmail.com>
-In-Reply-To: <20201119122737.189675-1-juant.aldea@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 24 Nov 2020 15:22:40 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3S+nR0tupEvk7bd0SsMYAd90YtMnL9R3JzzzV-m0pNwA@mail.gmail.com>
-Message-ID: <CAK8P3a3S+nR0tupEvk7bd0SsMYAd90YtMnL9R3JzzzV-m0pNwA@mail.gmail.com>
-Subject: Re: [PATCH v2] staging: trivial: hikey9xx: fix be32<->u32 casting warnings
-To:     Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>
-Cc:     Jiri Kosina <trivial@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <488177c02dccda60c5e8af2e53156c42b7f1acc0.1606058975.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.36]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 1:31 PM Juan Antonio Aldea-Armenteros
-<juant.aldea@gmail.com> wrote:
->
-> This patch fixes the following warnings reported by sparse, by adding
-> missing __force annotations.
->
-> drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
-> drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
-> drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
-> drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
-> drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
-> drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
->
-> drivers/staging/hikey9xx/hisi-spmi-controller.c:239:25: warning: cast from restricted __be32
->
-> Rationale for #164:
-> data is declared as u32, and it is read and then converted by means of
-> be32_to_cpu(). Said function expects a __be32 but data is u32, therefore
-> there's a type missmatch here.
->
-> Rationale for #239:
-> Is the dual of #164. This time data going to be  written so it
-> needs to be converted from cpu to __be32, but writel() expects u32 and the
-> output of cpu_to_be32 returns a __be32.
+On 22/11/2020 15:35, Pavel Begunkov wrote:
+> map->swap_lock protects map->cleared from concurrent modification,
+> however sbitmap_deferred_clear() is already atomically drains it, so
+> it's guaranteed to not loose bits on concurrent
+> sbitmap_deferred_clear().
+> 
+> A one threaded tag heavy test on top of nullbk showed ~1.5% t-put
+> increase, and 3% -> 1% cycle reduction of sbitmap_get() according to perf.
+> 
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>   include/linux/sbitmap.h |  5 -----
+>   lib/sbitmap.c           | 14 +++-----------
+>   2 files changed, 3 insertions(+), 16 deletions(-)
+> 
+> diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h
+> index e40d019c3d9d..74cc6384715e 100644
+> --- a/include/linux/sbitmap.h
+> +++ b/include/linux/sbitmap.h
+> @@ -32,11 +32,6 @@ struct sbitmap_word {
+>   	 * @cleared: word holding cleared bits
+>   	 */
+>   	unsigned long cleared ____cacheline_aligned_in_smp;
+> -
+> -	/**
+> -	 * @swap_lock: Held while swapping word <-> cleared
+> -	 */
+> -	spinlock_t swap_lock;
+>   } ____cacheline_aligned_in_smp;
+>   
+>   /**
+> diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+> index c1c8a4e69325..4fd877048ba8 100644
+> --- a/lib/sbitmap.c
+> +++ b/lib/sbitmap.c
+> @@ -15,13 +15,9 @@
+>   static inline bool sbitmap_deferred_clear(struct sbitmap_word *map)
+>   {
+>   	unsigned long mask, val;
+> -	bool ret = false;
+> -	unsigned long flags;
+>   
+> -	spin_lock_irqsave(&map->swap_lock, flags);
+> -
+> -	if (!map->cleared)
+> -		goto out_unlock;
+> +	if (!READ_ONCE(map->cleared))
+> +		return false;
 
-Both of the casts look very suspicious, I'd leave these in unless
-someone can confirm what the actual desired behavior is.
+So if we race with another cpu, won't the 2nd cpu see that the mask is 0 
+returned from the xchg (not shown)? If so, it's odd to continue to do 
+the CAS - or atomic not, from later patch - on a mask of 0.
 
->                              SPMI_SLAVE_OFFSET * slave_id +
->                              SPMI_APB_SPMI_RDATA0_BASE_ADDR +
->                              i * SPMI_PER_DATAREG_BYTE);
-> -               data = be32_to_cpu((__be32)data);
-> +               data = be32_to_cpu((__be32 __force)data);
->                 if ((bc - i * SPMI_PER_DATAREG_BYTE) >> 2) {
->                         memcpy(buf, &data, sizeof(data));
->                         buf += sizeof(data);
+Thanks,
+John
 
-The data comes from a readl(), which contains an endian conversion
-on architectures that need it, such as when running the board
-in big-endian arm64 mode. Having a second endian-conversion
-on little-endian architectures means that the data is always swapped
-when it gets written to the register.
+>   
+>   	/*
+>   	 * First get a stable cleared mask, setting the old mask to 0.
+> @@ -35,10 +31,7 @@ static inline bool sbitmap_deferred_clear(struct sbitmap_word *map)
+>   		val = map->word;
+>   	} while (cmpxchg(&map->word, val, val & ~mask) != val);
+>   
+> -	ret = true;
+> -out_unlock:
+> -	spin_unlock_irqrestore(&map->swap_lock, flags);
+> -	return ret;
+> +	return true;
+>   }
+>   
+>   int sbitmap_init_node(struct sbitmap *sb, unsigned int depth, int shift,
+> @@ -80,7 +73,6 @@ int sbitmap_init_node(struct sbitmap *sb, unsigned int depth, int shift,
+>   	for (i = 0; i < sb->map_nr; i++) {
+>   		sb->map[i].depth = min(depth, bits_per_word);
+>   		depth -= sb->map[i].depth;
+> -		spin_lock_init(&sb->map[i].swap_lock);
+>   	}
+>   	return 0;
+>   }
+> 
 
-In the original code before Mauro's commit 8788a30c12c7 ("staging:
-spmi: hisi-spmi-controller: use le32 macros where needed"), the data
-was byteswapped, and then written into the fifo register, which
-produced no warning but would do a double-swap on a big-endian
-kernel, and change the behavior from what it was before.
-
-My guess is that Mauro inadvertently fixed this driver for big-endian
-mode, without noticing that it was broken to start with, and that
-he did not actually try it with CONFIG_CPU_BIG_ENDIAN.
-
-I think the best way would be to go back to to using swab32p()
-(not the open-coded version) and then use writesl() or
-iowrite32_rep() with count=1 to write the byteswapped FIFO
-register without swapping it again.
-
-      Arnd
