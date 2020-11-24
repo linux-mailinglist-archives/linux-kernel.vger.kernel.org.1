@@ -2,78 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018762C2946
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D74552C2944
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388782AbgKXOUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:20:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgKXOUc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:20:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB43CC0613D6;
-        Tue, 24 Nov 2020 06:20:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lCJuGvEXhGVtkMxPpM35X/PsPMXYs4s7j54JBm6CPhQ=; b=as4wsJEPyN7AbT6hYhmyY71R4/
-        EUgHBRcOa+6QHUb2uTS1FNVr35DuEHom7w8q5+vfEy1lfsSMja4EnUl07Ioaw/BVvP3g3dX/Fz3jj
-        n8O4DzrOrycv7GgS8yqUG+x7+kRiHeqR/qAyDBrQfYU+y9GuoOMUpjXcVqgra+EGGrTk6yfhCZQhm
-        JK+Se6heZvGAqndPAwFIIcvJtszvPPz1W/NM9WYZ8sjDKSaUyDo6xoHuGI7qbDj09QUL1bjVLAVfp
-        RkyEwVRZker2pYu9SW++MxaftZETRaN/+HyshNONSP1z02VgbtexthQvBdVe23RWL2ehe6+ecz8uu
-        YuqMBXRg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khZAT-0002uo-EZ; Tue, 24 Nov 2020 14:19:41 +0000
-Date:   Tue, 24 Nov 2020 14:19:41 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Steve French <sfrench@samba.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Brian King <brking@us.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 01/17] mm/highmem: Lift memcpy_[to|from]_page and
- memset_page to core
-Message-ID: <20201124141941.GB4327@casper.infradead.org>
-References: <20201124060755.1405602-1-ira.weiny@intel.com>
- <20201124060755.1405602-2-ira.weiny@intel.com>
+        id S2388709AbgKXOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:20:13 -0500
+Received: from mail-db8eur05on2046.outbound.protection.outlook.com ([40.107.20.46]:27489
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388648AbgKXOUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:20:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YE/eJThmzdwyCkFPD2mRkoTKakRU+Yo7Loj1jKFXOBvnSkJxDdO0MBfJlaZA1vHSHf5OHm+YQ2o6Kr1YK8tsanPop6mk5bhl/8+yLwK/GTKduhHzz3yalexgUVJkbQ7tF62UXDeTttEHTxjD8ThDpW2OzWGbiXLz7xuWA0ZjpzqI2JJOAwde2qR7Af+LamDnXRCwjfiLgZGAZQghsCd9uAuidGomycHQPsZRXcdUUjj+s6RJJT6tFzH/nJRGl5xAySdxvO+y55kVtHPvdK6DhalOnPGgDvEe1p495bD8d4fVt/OA+NKJOpeIoiLSRrLLNVRIyyM6Cwa19ENUsjiotw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zj+w74wtYN25gAEpHmTY5oeimflDDhYidr5h3+1uHCE=;
+ b=YA3ybpuqOTrdk/w/w4Q2DcWKixIV4rSfV4M8dbdA4D4nLTqecCUbJ0FvrhXjWTVLPww+juzuJtQh6ZjJsEmY3J0xpO2uJRaQy1DeO2UV+nwpnXIOZIKE9RbFeQ64BltoiRBwptqsvj6JZ+d/739542DWccsH61pElcxoYb5WR4z8dT5XFCYBO8fEutmjJOun4rvjW82yYCAaYVx+R4pGjj7T6uWoByEjf0WJgAofnRud1Z4JOi0SeXdLqn2uuxEI2HRwQSerPPFEtwwQsDuqxA2ONUX7LRFglhlFUCTjfinHIrImRF7d2xCtPg5jgTfdqzeoKL+23rOdITkggEIW1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zj+w74wtYN25gAEpHmTY5oeimflDDhYidr5h3+1uHCE=;
+ b=NuCjJqotKjc58EsKuaq7D/as3wgYY5VnlKWDcGlXLB4ZwNdvxcjMBteaxoGg1WWeYdtjqyO6pcsCmGpnCvFKk+mnl6fUg0tVkZsRqRJIJ10E9DdK8PP/wEcR0t6l5R1vAL9wpqT6FxSmpnTt9/NpGUlVaFfBihuKPK7NJD7Ncbw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB5984.eurprd04.prod.outlook.com
+ (2603:10a6:803:d6::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 24 Nov
+ 2020 14:20:09 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::91f8:d96b:f238:7962]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::91f8:d96b:f238:7962%8]) with mapi id 15.20.3589.025; Tue, 24 Nov 2020
+ 14:20:08 +0000
+From:   "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Viorel Suman <viorel.suman@nxp.com>
+Subject: [PATCH] ASoC: fsl_xcvr: fix potential resource leak
+Date:   Tue, 24 Nov 2020 16:19:57 +0200
+Message-Id: <20201124141957.20481-1-viorel.suman@oss.nxp.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [188.26.42.16]
+X-ClientProxiedBy: VI1PR08CA0095.eurprd08.prod.outlook.com
+ (2603:10a6:800:d3::21) To VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124060755.1405602-2-ira.weiny@intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (188.26.42.16) by VI1PR08CA0095.eurprd08.prod.outlook.com (2603:10a6:800:d3::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 14:20:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 867a952b-a8e1-4791-1ee2-08d890840c1e
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5984:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB5984ADDAA20FBC28CDB3E087D3FB0@VI1PR04MB5984.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:415;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zMHMS4xUiMpFLVfYJmM+mF8N2oXN4MuKNtNbPV4h28/pWL1F9JyuFxv1NPyD7eI5MhWfE743PbPMsitH9zw5Q0JL1VxVmgFRe1YeCeSBiPZk7tYrOxfZRleMbVnE0o5Zd1jR8J8bSjJfrpGptNsbq1V4rN6CEe9g3ocy7TO5xkRkQn7yaNKucPzntaMGk7OjIjuXL2KNr1Tayr4DUAL9ms/GqtN7mxv6pFead9eTSHES0DwdO/in3ZazuZNBZQAy+S631p7QCmE9H8cidlMR2rypyXaObQcjKD/7LAjRls+klel0dSw2aayZIjWhoxpqInFSTwBGgNUmX243XWLu7270GSVVh/fZd5K8jNORSfsovaWDL+Ow5jHWEMdbWH5Ojq6ybw/2ag6/mEf9hXR5Ug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(6506007)(6512007)(2616005)(956004)(66946007)(26005)(52116002)(66476007)(66556008)(7416002)(6666004)(4744005)(6486002)(5660300002)(498600001)(186003)(16526019)(86362001)(110136005)(921005)(69590400008)(8936002)(4326008)(2906002)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: agQvQeo+FmwFwkOgdHcSkHjSfV8aHfuWp1JarBRphbcY02LiwikyKiSzBQWVN87/cjMZGg37GKwSYdug7daUJEAdkAwW3pLnv/vyXxOi5F7sFPhFzSQh0MgotxwgJ+GFraGCBR4jHJi1axdwgZV25g5ySARQ/XhfJWj8yx6mTdq9GHCUtYg2MgSL21zYorOiC20nm/PZG07ytWKqjtmRH1LejyDnK+i37EBUYnyEI4Rf0/kpbQ/QO4ft42RfH2YHLlEOz7IChBRgEQKra9MyrPcbt/kRAyJhr96RTIh2iBEf5D0RjChztNFte1a66PcNtXAbcOJK/ST1oPnfGs7/cmt2YABj23xXtmvrh5YaA5RzG12x66LNSXIpngfA+MgIhQvw3IE++kxg+L615se8TKkI8m/0MoB1wlPSU/iwkC382hb9GDweLlViOVJG+3VPr3acsd8XhVOrFMQCaWtVJ6s6lGLKfaFz6T5LiltMW6iBtsD/EDKwyEuQC1o6ruhIQ9EblMtaR7WIPvjCycKiJ35dTqqyzRZ/tD9DA0m8nLnZh896xv3XKxz1f/sxwkJ68wtap8EAb2KZyiw276S+paTkNd3GXuCJ3UMNzaa2OiOb6QsHQkG3HHMmmf8pU5ElAlTb95W3EKyT1wC3xwx1utb0TRLKqLsluZS82KOjvYFbLn3/lp3LJATl7o0A24ZDR5J0mf9zViUjeMhsHv/7Acn9Ep9xNb4Sh7VVLrkY0w1xQFdOmdBFXT6QQlHCa/UBWtJDPACkjdw+xRsNJS5+TS+r7H5bXvR4F4ayBcqxphV9TJY3Rp4I7oNt6bIJPlBw06ksQ3HPjxr6ba7kSPVTlPIsenjiXM/qRNiy30jNOJZYsD2I61VazWlSLIuW1h1D3FS4e58/amhl3eHE/C1HYQ==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 867a952b-a8e1-4791-1ee2-08d890840c1e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 14:20:08.8487
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Aq9NwSI1vM1VBkRytpCZulntE2ZNdsW7aNZYTlY7J8GF9rQN79TD3rsvh5JvqBDll8ofbneeUB8dkIPqE23nig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5984
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:07:39PM -0800, ira.weiny@intel.com wrote:
-> +static inline void memzero_page(struct page *page, size_t offset, size_t len)
-> +{
-> +	memset_page(page, 0, offset, len);
-> +}
+From: Viorel Suman <viorel.suman@nxp.com>
 
-This is a less-capable zero_user_segments().
+"fw" variable must be relased before return.
+
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 2a28810d0e29..3d58c88ea603 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -706,6 +706,7 @@ static int fsl_xcvr_load_firmware(struct fsl_xcvr *xcvr)
+ 	/* RAM is 20KiB = 16KiB code + 4KiB data => max 10 pages 2KiB each */
+ 	if (rem > 16384) {
+ 		dev_err(dev, "FW size %d is bigger than 16KiB.\n", rem);
++		release_firmware(fw);
+ 		return -ENOMEM;
+ 	}
+ 
+-- 
+2.26.2
 
