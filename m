@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E452C226C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEDE2C2271
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731830AbgKXKAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731828AbgKXKAI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:00:08 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7C6C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:00:07 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id t4so8708984wrr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:00:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=malat-biz.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=P5Qh18Xc6zjNeLbPQ4HFWqP/SYz2kcEjQmnK6oh7uk8=;
-        b=P0IzXh98GNUDZhhFHZLztFXbagF40y1+BUJSBMnTs0fVmKVGfKS7oiWDpfJGdC7myT
-         xcv3bs0vT5KO9h3lIzf4XNhkXUFxfeunR1rhhZCeOXAjZMiAlWxRi+LT+oFc9RMmZugN
-         ldgDos2P7kUcaL06BpfavUOL7FOYGn7j4gT5iQFUKOq8SO+wiCvYqZY4ttuu+VCqj7it
-         WG03XtwVJe0sBkb8Gz/+Kemrx7453VODFu1lQlsh0aUeZFYrzVqxEZlJcclQvAdJG9Jm
-         RWHfKT05wDg2UAclBouOa2yZcinbHHvH+pgL3Xab1/jS63i9w9bpl5pIEMeaYuo6/st1
-         Pdvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=P5Qh18Xc6zjNeLbPQ4HFWqP/SYz2kcEjQmnK6oh7uk8=;
-        b=UlszkKVd92se9I7BAGA1Z0nxB241PDaw+T7WaoworiLkWYvZ+X9U476jQwNeGlKe5r
-         1+B7d4ob9ZCX+WgOT5oNuX7eEPOtB37zKedI7lm/AtOxCJpWVYSku8bv+ptBamvrbD+/
-         YZrBW/GhLOpkI2Wa/CiVtGZFZN/jsi7JnljqES5dcVb7Z5fS6SH1sZW3deR7Teqrw2Bl
-         WkFDt6B2ssDE+2bArWPBwBHaa8ykEdu0aVJl5oE8XWlNZCUtlG/yCzlgwqv0hcOQYzJm
-         mR6msQLJalFO5GcaO55CDbihWYYAiC7EHeden7WTgL6GGHXhE+8FAvzSEUWseBps+K5h
-         D8iQ==
-X-Gm-Message-State: AOAM531+SSns7dyhkwO8zDA3PaiYNKiOwS4r8KVZAeDYoXRcwNiUbXjc
-        3aMWuXy7LSChrNIGDt9ZM1733gMxdO0WgUHK
-X-Google-Smtp-Source: ABdhPJyVTOuOky+hBCBloay0R7dtjKRQ0/bnAMHvP4I14OXyyaLI44sMrPePud80PtsnnXeZwpV/HA==
-X-Received: by 2002:adf:9043:: with SMTP id h61mr4397897wrh.237.1606212005532;
-        Tue, 24 Nov 2020 02:00:05 -0800 (PST)
-Received: from ntb.petris.klfree.cz (snat2.klfree.cz. [81.201.48.25])
-        by smtp.googlemail.com with ESMTPSA id g186sm5565168wma.1.2020.11.24.02.00.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 02:00:04 -0800 (PST)
-From:   Petr Malat <oss@malat.biz>
-To:     linux-kernel@vger.kernel.org
-Cc:     Petr Malat <oss@malat.biz>, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: [PATCH 3/3] perf session: Avoid infinite loop if an event is truncated
-Date:   Tue, 24 Nov 2020 10:59:21 +0100
-Message-Id: <20201124095923.3683-3-oss@malat.biz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201124095923.3683-1-oss@malat.biz>
-References: <20201124095923.3683-1-oss@malat.biz>
+        id S1731001AbgKXKCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:02:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:51038 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728872AbgKXKCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:02:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D8E31396;
+        Tue, 24 Nov 2020 02:02:35 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A47333F71F;
+        Tue, 24 Nov 2020 02:02:31 -0800 (PST)
+Subject: Re: [PATCH 1/6] arm64: pgtable: Fix pte_accessible()
+To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Catalin Marinas <catalin.marinas@arm.com>,
+        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org
+References: <20201120143557.6715-1-will@kernel.org>
+ <20201120143557.6715-2-will@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <6eb6dead-4c76-d14a-dcc7-0d1411337dc6@arm.com>
+Date:   Tue, 24 Nov 2020 15:32:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201120143557.6715-2-will@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an event was truncated at the end of a perf.data file larger than
-MAP_SIZE, the event reading code ended up in an infinite loop. Break
-this loop by making sure the mapping window is always shifting
-towards the end of the file.
 
-Fixes: bb1835a3b86c ("perf session: Fix decompression of PERF_RECORD_COMPRESSED records")
-Fixes: 57fc032ad643 ("perf session: Avoid infinite loop when seeing invalid header.size")
-Signed-off-by: Petr Malat <oss@malat.biz>
----
- tools/perf/util/session.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On 11/20/20 8:05 PM, Will Deacon wrote:
+> pte_accessible() is used by ptep_clear_flush() to figure out whether TLB
+> invalidation is necessary when unmapping pages for reclaim. Although our
+> implementation is correct according to the architecture, returning true
+> only for valid, young ptes in the absence of racing page-table
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index e57b0d09d196..b73b85d99628 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -2168,6 +2168,12 @@ reader__process_events(struct reader *rd, struct perf_session *session,
- 		}
- 
- 		page_offset = page_size * (head / page_size);
-+		if (!page_offset) {
-+			pr_err("%#" PRIx64 " [%#x]: truncated event\n",
-+					file_offset + head);
-+			err = -EINVAL;
-+			goto out;
-+		}
- 		file_offset += page_offset;
- 		head -= page_offset;
- 		goto remap;
--- 
-2.20.1
+Just curious, a PTE mapping would go into the TLB only if it is an
+young one with PTE_AF bit set per the architecture ?
 
+> modifications, this is in fact flawed due to lazy invalidation of old
+> ptes in ptep_clear_flush_young() where we elide the expensive DSB
+> instruction for completing the TLB invalidation.
+
+IOW, an old PTE might have missed the required TLB invalidation via
+ptep_clear_flush_young() because it's done in lazy mode. Hence just
+include old valid PTEs in pte_accessible() so that TLB invalidation
+could be done in ptep_clear_flush() path instead. May be TLB flush
+could be done for every PTE, irrespective of its PTE_AF bit in
+ptep_clear_flush_young().
+
+> 
+> Rather than penalise the aging path, adjust pte_accessible() to return
+> true for any valid pte, even if the access flag is cleared.
+
+But will not this cause more (possibly not required) TLB invalidation
+in normal unmapping paths ? The cover letter mentions that this patch
+fixes a real world crash. Should not the crash also be described here
+in the commit message as this patch is marked for stable and has a
+"Fixes: " tag.
+
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 76c714be0e5e ("arm64: pgtable: implement pte_accessible()")
+> Reported-by: Yu Zhao <yuzhao@google.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm64/include/asm/pgtable.h | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 4ff12a7adcfd..1bdf51f01e73 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -115,8 +115,6 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+>  #define pte_valid(pte)		(!!(pte_val(pte) & PTE_VALID))
+>  #define pte_valid_not_user(pte) \
+>  	((pte_val(pte) & (PTE_VALID | PTE_USER)) == PTE_VALID)
+> -#define pte_valid_young(pte) \
+> -	((pte_val(pte) & (PTE_VALID | PTE_AF)) == (PTE_VALID | PTE_AF))
+>  #define pte_valid_user(pte) \
+>  	((pte_val(pte) & (PTE_VALID | PTE_USER)) == (PTE_VALID | PTE_USER))
+>  
+> @@ -126,7 +124,7 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+>   * remapped as PROT_NONE but are yet to be flushed from the TLB.
+>   */
+>  #define pte_accessible(mm, pte)	\
+> -	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid_young(pte))
+> +	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid(pte))
+>  
+>  /*
+>   * p??_access_permitted() is true for valid user mappings (subject to the
+> 
