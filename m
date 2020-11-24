@@ -2,171 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC992C2E48
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:19:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0B82C2E4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390755AbgKXRRh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 12:17:37 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:33465 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390245AbgKXRRg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:17:36 -0500
-Received: from mail-pg1-f200.google.com ([209.85.215.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1khbwc-00011n-0P
-        for linux-kernel@vger.kernel.org; Tue, 24 Nov 2020 17:17:34 +0000
-Received: by mail-pg1-f200.google.com with SMTP id t1so15469911pgo.23
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:17:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=VRMiJUNLgr9M7h46m/eHssvcueu9oqfWJ7ck5ke8IpY=;
-        b=b0wENxHmK7sYoTbBvC8SynRN7mo7UNvaFq/xAZXU1XjqV8QBzokJhau4ZSDgSvsTtK
-         al9RWluiGMlDK3ChAus5qJdXVUtvFZKYB7lGfkX9GeTn8TDsagQyxrGPjd4Z+BJk9YAD
-         4N2x1mh/ErEyjZYVxJWvNgHFQ6L0r+HddqN71dazBahBcelp3Z8ASfkUlvIqL5BDy1Dj
-         ICKTrkcWX9rysEc2OYoni/5IdWEqb4sDNob1Z7mAhmjO1LlT3iLrKMjrwWw4wo+pwkxB
-         JY+QDYFblpk6GxdEdGalCbJlQR3O/8mmK5V34L5MtXW6nzeNeRP1AdtEcg+zgCnNKi8K
-         8/Ig==
-X-Gm-Message-State: AOAM533CFYVUSM/GnG02RU41BU8hwagAwBdxyLMjjZobBh54Lolql6Lt
-        SV9x8p56DYl9ORcaVSx1dX5Rr4zQxgSLlz9LthnHoyZ+EzVrfFqwyOeqNM5WjFH8GsgfVL/F7mC
-        batUcdlEGuFUFxZ7qJ0tj6bMSKmOlfA/+VQkDgSzr9A==
-X-Received: by 2002:a05:6a00:794:b029:197:e418:ac4d with SMTP id g20-20020a056a000794b0290197e418ac4dmr4887488pfu.47.1606238252494;
-        Tue, 24 Nov 2020 09:17:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzIVyAqIJC5/bha05OEWX9Zk7sJdoBbnLioL22z3QEJ5PX0MShrmdxI3UM/mbFBfxGHgiS6Hg==
-X-Received: by 2002:a05:6a00:794:b029:197:e418:ac4d with SMTP id g20-20020a056a000794b0290197e418ac4dmr4887455pfu.47.1606238252111;
-        Tue, 24 Nov 2020 09:17:32 -0800 (PST)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id o132sm14969443pfg.100.2020.11.24.09.17.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Nov 2020 09:17:31 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH] e1000e: Assign DPM_FLAG_SMART_SUSPEND and
- DPM_FLAG_MAY_SKIP_RESUME to speed up s2ram
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20201124153221.11265-1-yu.c.chen@intel.com>
-Date:   Wed, 25 Nov 2020 01:17:28 +0800
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <8BA4D1E1-DACF-4E84-A5B8-75A7CEA65F98@canonical.com>
-References: <20201124153221.11265-1-yu.c.chen@intel.com>
-To:     Chen Yu <yu.c.chen@intel.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S2390765AbgKXRRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:17:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390255AbgKXRRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:17:48 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 963B8206F7;
+        Tue, 24 Nov 2020 17:17:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606238268;
+        bh=yKPTzHntmG3todINsm3YIWKJ8EZMzP+0TRmukNQeEfg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Ys7p0VlQ3pSBuRRJRSuUng9/D09E8iVuacSyIy0hvqVf6+t1nlP86rjurboVbNh9e
+         ItJ4XbG5t/tV3NjccYTOEQwrpsVCK4serhVxryId/m6iN49yj2FXjdMbEKxJ/ngDrt
+         tG/478uOA6oD01Z/UljAP+YQ8qNsMcdkdP25dUGs=
+Date:   Tue, 24 Nov 2020 11:17:46 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kelley, Sean V" <sean.v.kelley@intel.com>
+Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "xerces.zhao@gmail.com" <xerces.zhao@gmail.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
+        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 10/15] PCI/ERR: Limit AER resets in pcie_do_recovery()
+Message-ID: <20201124171746.GA565099@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <93D815E0-3100-4AAC-B9EE-AA6736A0419F@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yu,
-
-> On Nov 24, 2020, at 23:32, Chen Yu <yu.c.chen@intel.com> wrote:
+On Mon, Nov 23, 2020 at 11:57:35PM +0000, Kelley, Sean V wrote:
+> > On Nov 23, 2020, at 3:28 PM, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Nov 20, 2020 at 04:10:31PM -0800, Sean V Kelley wrote:
+> >> In some cases a bridge may not exist as the hardware controlling may be
+> >> handled only by firmware and so is not visible to the OS. This scenario is
+> >> also possible in future use cases involving non-native use of RCECs by
+> >> firmware.
+> >> 
+> >> Explicitly apply conditional logic around these resets by limiting them to
+> >> Root Ports and Downstream Ports.
+> > 
+> > Can you help me understand this?  The subject says "Limit AER resets"
+> > and here you say "limit them to RPs and DPs", but it's not completely
+> > obvious how the resets are being limited, i.e., the patch doesn't add
+> > anything like:
+> > 
+> > +  if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> > +      type == PCI_EXP_TYPE_DOWNSTREAM)
+> >      reset_subordinates(bridge);
+> > 
+> > It *does* add checks around pcie_clear_device_status(), but that also
+> > includes RC_EC.  And that's not a reset, so I don't think that's
+> > explicitly mentioned in the commit log.
 > 
-> The NIC is put in runtime suspend status when there is no wire connected.
-> As a result, it is safe to keep this NIC in runtime suspended during s2ram
-> because the system does not rely on the NIC plug event nor WOL to wake up
-> the system. Unlike the s2idle, s2ram does not need to manipulate S0ix settings
-> during suspend.
-
-Please see below for the reason why I explicitly disable direct-complete in the driver.
-
+> The subject should have referred to the clearing of the device status rather than resets.
+> It originally came from this simpler patch in which I made use of reset instead of clear:
 > 
-> This patch assigns DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME
-> to the e1000e driver so that the s2ram could skip the .suspend_late(),
-> .suspend_noirq() and .resume_noirq() .resume_early() when possible.
-> Also skip .suspend() and .resume() if dev_pm_skip_suspend() and
-> dev_pm_skip_resume() return true, so as to speed up the s2ram.
+> https://lore.kernel.org/linux-pci/20201002184735.1229220-8-seanvk.dev@oregontracks.org/
+> 
+> So a rephrase of clearing in place of resets would be more appropriate.
+> 
+> Then we added the notion of bridges…below
+> 
+> > 
+> > Also see the question below.
+> > 
+> >> Link: https://lore.kernel.org/r/20201002184735.1229220-8-seanvk.dev@oregontracks.org
+> >> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> >> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> >> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >> ---
+> >> drivers/pci/pcie/err.c | 31 +++++++++++++++++++++++++------
+> >> 1 file changed, 25 insertions(+), 6 deletions(-)
+> >> 
+> >> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> >> index 8b53aecdb43d..7883c9791562 100644
+> >> --- a/drivers/pci/pcie/err.c
+> >> +++ b/drivers/pci/pcie/err.c
+> >> @@ -148,13 +148,17 @@ static int report_resume(struct pci_dev *dev, void *data)
+> >> 
+> >> /**
+> >>  * pci_walk_bridge - walk bridges potentially AER affected
+> >> - * @bridge:	bridge which may be a Port
+> >> + * @bridge:	bridge which may be a Port, an RCEC with associated RCiEPs,
+> >> + *		or an RCiEP associated with an RCEC
+> >>  * @cb:		callback to be called for each device found
+> >>  * @userdata:	arbitrary pointer to be passed to callback
+> >>  *
+> >>  * If the device provided is a bridge, walk the subordinate bus, including
+> >>  * any bridged devices on buses under this bus.  Call the provided callback
+> >>  * on each device found.
+> >> + *
+> >> + * If the device provided has no subordinate bus, call the callback on the
+> >> + * device itself.
+> >>  */
+> >> static void pci_walk_bridge(struct pci_dev *bridge,
+> >> 			    int (*cb)(struct pci_dev *, void *),
+> >> @@ -162,6 +166,8 @@ static void pci_walk_bridge(struct pci_dev *bridge,
+> >> {
+> >> 	if (bridge->subordinate)
+> >> 		pci_walk_bus(bridge->subordinate, cb, userdata);
+> >> +	else
+> >> +		cb(bridge, userdata);
+> >> }
+> >> 
+> >> pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> >> @@ -174,10 +180,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> >> 
+> >> 	/*
+> >> 	 * Error recovery runs on all subordinates of the bridge.  If the
+> >> -	 * bridge detected the error, it is cleared at the end.
+> >> +	 * bridge detected the error, it is cleared at the end.  For RCiEPs
+> >> +	 * we should reset just the RCiEP itself.
+> >> 	 */
+> >> 	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> >> -	    type == PCI_EXP_TYPE_DOWNSTREAM)
+> >> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> >> +	    type == PCI_EXP_TYPE_RC_EC ||
+> >> +	    type == PCI_EXP_TYPE_RC_END)
+> >> 		bridge = dev;
+> >> 	else
+> >> 		bridge = pci_upstream_bridge(dev);
+> >> @@ -185,6 +194,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> >> 	pci_dbg(bridge, "broadcast error_detected message\n");
+> >> 	if (state == pci_channel_io_frozen) {
+> >> 		pci_walk_bridge(bridge, report_frozen_detected, &status);
+> >> +		if (type == PCI_EXP_TYPE_RC_END) {
+> >> +			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
+> >> +			status = PCI_ERS_RESULT_NONE;
+> >> +			goto failed;
+> >> +		}
+> >> +
+> >> 		status = reset_subordinates(bridge);
+> >> 		if (status != PCI_ERS_RESULT_RECOVERED) {
+> >> 			pci_warn(bridge, "subordinate device reset failed\n");
+> >> @@ -217,9 +232,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> >> 	pci_dbg(bridge, "broadcast resume message\n");
+> >> 	pci_walk_bridge(bridge, report_resume, &status);
+> >> 
+> >> -	if (pcie_aer_is_native(bridge))
+> >> -		pcie_clear_device_status(bridge);
+> >> -	pci_aer_clear_nonfatal_status(bridge);
+> >> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> >> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> >> +	    type == PCI_EXP_TYPE_RC_EC) {
+> >> +		if (pcie_aer_is_native(bridge))
+> >> +			pcie_clear_device_status(bridge);
+> >> +		pci_aer_clear_nonfatal_status(bridge);
+> > 
+> > This is hard to understand because "type" is from "dev", but "bridge"
+> > is not necessarily the same device.  Should it be this?
+> > 
+> >  type = pci_pcie_type(bridge);
+> >  if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> >      ...)
+> 
+> Correct, it would be better if the type was based on the ‘bridge’.
 
-If we really want direct-complete here, maybe always set current WoL setting in runtime suspend routine?
+OK.  This is similar to
+https://lore.kernel.org/linux-pci/20201002184735.1229220-8-seanvk.dev@oregontracks.org/,
+which you cited above except for the bridge/dev question and the
+addition here of RC_EC.
 
-> 
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
-> drivers/base/power/main.c                  |  2 ++
-> drivers/net/ethernet/intel/e1000e/netdev.c | 14 +++++++++++++-
-> 2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index c7ac49042cee..9cd8abba8612 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -580,6 +580,7 @@ bool dev_pm_skip_resume(struct device *dev)
-> 
-> 	return !dev->power.must_resume;
-> }
-> +EXPORT_SYMBOL_GPL(dev_pm_skip_resume);
+I tried to split that back into its own patch and started with the
+commit message from that patch.  But I got stuck on the commit
+message.  I got as far as:
 
-I don't think it's a good idea to use this predicate out side of PM core, must_resume may change during suspend process.
+  In some cases an error may be reported by a device not visible to
+  the OS, e.g., if firmware manages the device and passes error
+  information to the OS via ACPI APEI.
 
-> 
-> /**
->  * device_resume_noirq - Execute a "noirq resume" callback for given device.
-> @@ -2010,3 +2011,4 @@ bool dev_pm_skip_suspend(struct device *dev)
-> 	return dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_SUSPEND) &&
-> 		pm_runtime_status_suspended(dev);
-> }
-> +EXPORT_SYMBOL_GPL(dev_pm_skip_suspend);
-> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-> index b30f00891c03..d79fddabc553 100644
-> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
-> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-> @@ -6965,6 +6965,14 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
-> 	struct e1000_hw *hw = &adapter->hw;
-> 	int rc;
-> 
-> +	/* Runtime suspended means that there is no wired connection
-> +	 * and it has nothing to do with WOL that, we don't need to
-> +	 * adjust the WOL settings. So it is safe to put NIC in
-> +	 * runtime suspend while doing system suspend.
-> +	 */
+But I still can't quite connect that to the patch.  "bridge" is
+clearly a device visible to Linux.
 
-What about plugging ethernet cable and using WoL after system is suspended?
-Commit "e1000e: Exclude device from suspend direct complete optimization" was to address that scenario.
+I guess we're trying to assert that if "bridge" is not a Root Port,
+Downstream Port, or RCEC, we shouldn't clear the error status because 
+the error came from a device Linux doesn't know about.  But I think
+"bridge" is *always* either a Root Port or a Downstream Port:
 
-> +	if (dev_pm_skip_suspend(dev))
-> +		return 0;
-> +
-> 	e1000e_flush_lpic(pdev);
-> 
-> 	e1000e_pm_freeze(dev);
-> @@ -6989,6 +6997,9 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
-> 	struct e1000_hw *hw = &adapter->hw;
-> 	int rc;
-> 
-> +	if (dev_pm_skip_resume(dev))
-> +		return 0;
-> +
-> 	/* Introduce S0ix implementation */
-> 	if (hw->mac.type >= e1000_pch_cnp &&
-> 	    !e1000e_check_me(hw->adapter->pdev->device))
-> @@ -7665,7 +7676,8 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> 
-> 	e1000_print_device_info(adapter);
-> 
-> -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
-> +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE |
-> +				DPM_FLAG_SMART_SUSPEND | DPM_FLAG_MAY_SKIP_RESUME);
-> 
-> 	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
-> 		pm_runtime_put_noidle(&pdev->dev);
+  if (type == PCI_EXP_TYPE_ROOT_PORT ||
+      type == PCI_EXP_TYPE_DOWNSTREAM)
+	  bridge = dev;
+  else
+	  bridge = pci_upstream_bridge(dev);
 
-Also, most e1000e device on modern platforms doesn't runtime suspend at all after commit "e1000e: Disable runtime PM on CNP+".
+pci_upstream_bridge() returns either NULL (in which case previous uses
+dereference a NULL pointer), or dev->bus->self, which is always a Root
+Port, Switch Downstream Port, or Switch Upstream Port (or NULL for the
+special case of VFs).
 
-Kai-Heng
-
-> -- 
-> 2.25.1
+> >> +	}
+> >> 	pci_info(bridge, "device recovery successful\n");
+> >> 	return status;
+> >> 
+> >> -- 
+> >> 2.29.2
 > 
-
