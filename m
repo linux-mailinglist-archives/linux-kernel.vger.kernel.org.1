@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343842C1A83
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 02:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043B62C1AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 02:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgKXBDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 20:03:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKXBDq (ORCPT
+        id S1728893AbgKXBFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 20:05:50 -0500
+Received: from smtprelay0070.hostedemail.com ([216.40.44.70]:34022 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728137AbgKXBFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 20:03:46 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD26AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 17:03:45 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v14so4318479lfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 17:03:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0vzXw+/uxksrYSQi7P32GugamvpCbRVeit1O2RKCjC8=;
-        b=EF1azQY4IzEj9jf33+wizwLb9UX45vSEYoFf2iwNgKTZGwbS+KxINRZEnRRocnfdlU
-         IhSXD+t6wzk0HhlurTGK5mQiOlzilaiFOF8Fm5y4WtY1+k+JY0eWAIbLr0QA6y40h3zm
-         1j5RdKHOzxe7to5SM0JgLz5hyvAHuC4cymOEPx9FyZ/da74tUA7dGWxl2UnSitL3/QDz
-         QOnZLFk9m5byAiGhndXd02N+gSUNyI+6poo1I3NMfKhGRsK/BjCfnQxQKOCtsDjxkvDn
-         kDDYwDExctxD2JhAH19FRFqc7jFh2VsJOG3m15c1h/I3CNrPX6omgb9PTy+UKVL1MOBB
-         EgDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0vzXw+/uxksrYSQi7P32GugamvpCbRVeit1O2RKCjC8=;
-        b=hziw0Mgy0z+PBzi4AEWjKOwkvMB6jKmD018vxd9OKw9dho99owQluqiIMVm5h7PnYb
-         EKraK3O+lJgRJjRcdND4k+lBE1xvmW0ZoKOAjyGjtAskwV8CEXBjDnDpwiQ99M5Ug0iM
-         XW29IBzg56mYCZEiGLPzUlTFHBLT9asCjK8IHgMbZJQnc8IxMddIwOcC8DSQuL+k653O
-         edh3p9miebiIQYAcIxsTA76dDjzi8PHCvD8HgBwzaMqQbCBlKLSdszg7dbSljUByBBDW
-         kG2sxNMHunJcOTYLx7vV75hVdGDzV6zAl8XMVL4/MV0q/v2HSlU0er6J+X6InZl1hwK2
-         FRFA==
-X-Gm-Message-State: AOAM533ExkdOqG/xI0BOjXWTNY/VIslbyxDqWBXgYNc69R6vLhSKXd/x
-        lLKiGD9NRkWmcj05PKK/zDgDBGCS8URvNCYHDtI=
-X-Google-Smtp-Source: ABdhPJwxi5ptN3FzIcuUewgPmFTiqPCpFHSxU/1rs3GHbeP2Zexr0ylqQwybqVY8YHntbJmqEze4c7lK7nOcT9grK0I=
-X-Received: by 2002:ac2:51b4:: with SMTP id f20mr740123lfk.338.1606179824105;
- Mon, 23 Nov 2020 17:03:44 -0800 (PST)
+        Mon, 23 Nov 2020 20:05:46 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id C6794182CED28;
+        Tue, 24 Nov 2020 01:05:42 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3868:3872:3874:4321:5007:6119:6742:6743:7903:10004:10400:10848:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21627:30012:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: sea70_4d178da27369
+X-Filterd-Recvd-Size: 4565
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 24 Nov 2020 01:05:31 +0000 (UTC)
+Message-ID: <e72a1aaef8673553a3ee9dfa033d6e893e00abcd.camel@perches.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+From:   Joe Perches <joe@perches.com>
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>
+Date:   Mon, 23 Nov 2020 17:05:30 -0800
+In-Reply-To: <alpine.LNX.2.23.453.2011241036520.7@nippy.intranet>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+         <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <202011201129.B13FDB3C@keescook>
+         <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <202011220816.8B6591A@keescook>
+         <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+         <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+         <alpine.LNX.2.23.453.2011230938390.7@nippy.intranet>
+         <CANiq72=z+tmuey9wj3Kk7wX5s0hTHpsQdLhAqcOVNrHon6xn5Q@mail.gmail.com>
+         <alpine.LNX.2.23.453.2011241036520.7@nippy.intranet>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20201123031751.36811-1-daeho43@gmail.com> <20201123031751.36811-2-daeho43@gmail.com>
- <20201123184821.GB3694916@gmail.com> <CACOAw_xEe=3H60njSfwJSToFnVbOHabUd2Nt=uZJLvCfxFgM4Q@mail.gmail.com>
- <X7xF8+jko5d71CKq@sol.localdomain>
-In-Reply-To: <X7xF8+jko5d71CKq@sol.localdomain>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Tue, 24 Nov 2020 10:03:33 +0900
-Message-ID: <CACOAw_xZCC3u08=ZB_Ugk-LJs1wJL3ByJhuxwNK9zOYqU46Jzg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 11=EC=9B=94 24=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 8:29, =
-Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Tue, Nov 24, 2020 at 08:02:21AM +0900, Daeho Jeong wrote:
-> > Jaegeuk,
-> >
-> > My mistake~
-> >
-> > Eric,
-> >
-> > What I want is like do_page_cache_ra(), but I used
-> > page_cache_ra_unbounded() directly, because we already checked that
-> > read is within i_size.
-> >
-> > Or we could use do_page_cache_ra(), but it might do the same check in i=
-t again.
-> > What do you think?
->
-> page_cache_ra_unbounded() is basically a quirk for how fs-verity is imple=
-mented
-> in ext4 and f2fs.  I don't think people would be happy if it's used in ot=
-her
-> cases, where it's not needed.  Checking against i_size multiple times is =
-fine.
->
+On Tue, 2020-11-24 at 11:58 +1100, Finn Thain wrote:
+> it's not for me to prove that such patches don't affect code 
+> generation. That's for the patch author and (unfortunately) for reviewers.
 
-Got your point. Thanks.
+Ideally, that proof would be provided by the compilation system itself
+and not patch authors nor reviewers nor maintainers.
 
-> >
-> > I could add some description about these in
-> > Documentation/filesystems/f2fs.rst and I implemented tests internally.
->
-> Documentation in f2fs.rst sounds good.  All the f2fs ioctls should be
-> documented there.
->
-> The tests should be runnable by any kernel developer; "internal" tests ar=
-en't
-> very useful.  Could you add tests to xfstests?
->
+Unfortunately gcc does not guarantee repeatability or deterministic output.
+To my knowledge, neither does clang.
 
-Yes, I'll add all the internal test cases to xfstests soon~
 
-> - Eric
