@@ -2,199 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B212C2351
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 835BA2C2354
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732307AbgKXKyC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 05:54:02 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2503 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731755AbgKXKyB (ORCPT
+        id S1732317AbgKXKyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:54:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732309AbgKXKyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:54:01 -0500
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CgLVC6nDmzQjFt;
-        Tue, 24 Nov 2020 18:53:39 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 24 Nov 2020 18:53:56 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 24 Nov 2020 18:53:56 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Tue, 24 Nov 2020 18:53:56 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Muchun Song <songmuchun@bytedance.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "pawan.kumar.gupta@linux.intel.com" 
-        <pawan.kumar.gupta@linux.intel.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "almasrymina@google.com" <almasrymina@google.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "mhocko@suse.com" <mhocko@suse.com>
-CC:     "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH v6 14/16] mm/hugetlb: Add a kernel parameter
- hugetlb_free_vmemmap
-Thread-Topic: [PATCH v6 14/16] mm/hugetlb: Add a kernel parameter
- hugetlb_free_vmemmap
-Thread-Index: AQHWwkh5Ms2jMqVne0ipo7HFEJnHCanXGbPg
-Date:   Tue, 24 Nov 2020 10:53:56 +0000
-Message-ID: <5f6443f10292405d813ffb444ef315fc@hisilicon.com>
-References: <20201124095259.58755-1-songmuchun@bytedance.com>
- <20201124095259.58755-15-songmuchun@bytedance.com>
-In-Reply-To: <20201124095259.58755-15-songmuchun@bytedance.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.209]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 24 Nov 2020 05:54:08 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF92C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:54:07 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a186so2013327wme.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Kvdr8KP4BhHPunB6/HiX28Sf9PSdmI9kMBfi8vaUsaQ=;
+        b=Al1ICsudCsEbcON7RNT7a0Aq78qbaIjzkhprm1rz6a59jc1X7l9uuJitKRcl/SxyGM
+         3RadN3gB39d3VNCKxPPNecy9fP1t9roSKy8Bnyrv1s26sin9R9GPRKSv37d7pn9zfDKu
+         YV9HGC59lYbc3LsGq3TFTSt7MM2h6gUeTGAD7YcWL7Sv6G6x3hJ2iUUHMQ/B5Qh09KCg
+         /ScovBicjTLEts2r89XApTzbaljzMdjLcFFP9o9TsYEA/tQys8UKzWbbqEgFAhW6ci0x
+         YLTt4F8odZQmK+5KeZazDes3cq4gk1EOTq0sNTS7PitYkQe8hIsdF+UKlhlJyp+lFmBx
+         wvvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Kvdr8KP4BhHPunB6/HiX28Sf9PSdmI9kMBfi8vaUsaQ=;
+        b=ugHYzaRqFyMkFt7Ux7QBVqTWwyrBUERFI9plWitF021mQ3uCZojjbWI9GQnZ6oKGwL
+         IXwsxx7JAHUyjxlV7zKpn6IWkpBifUhjO3p9jZAQtVJA/TT9gZ9yehqjuiK+BilhXlo7
+         6X4feUnSqaE8HDosSudtz+w5dNwXqIEJpaBwdi/+l6JbiXQg3HVNq3aDQQ65ljis3k30
+         MCz+0EXOm1vBJ9Z0UsKgRDqJRHQX5U59pvBq7EU0WhosE4fJU1Mxz72bXVavK8igCPHp
+         0H0l6i6CNpqK2E12tIl0yICzlvYPzO0r8Ij59gOP5ipJcTarvvVyg2RrhXP5FafO/AAZ
+         PWdA==
+X-Gm-Message-State: AOAM532/BBhG71gsZ2eL0LVpSaUzpjYyEm6TlD7cE5D+pUVvFG5ED/YG
+        hQCftK1+dEIE9PzKeCbHCO14Wg==
+X-Google-Smtp-Source: ABdhPJxdsl2r1PW9eMx03bqdIbiAzAu599V8F/cQEp3EzXU3lEc4g9vLOKzCqj4J2BCsZVy4Ht54Ig==
+X-Received: by 2002:a1c:2c88:: with SMTP id s130mr3773241wms.79.1606215246270;
+        Tue, 24 Nov 2020 02:54:06 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id z8sm18928761wrv.0.2020.11.24.02.54.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Nov 2020 02:54:05 -0800 (PST)
+Subject: Re: [PATCH 1/2] dt-bindings: nvmem: mtk-efuse: add documentation for
+ MT8516 SoC
+To:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org
+References: <20201016171837.3261310-1-fparent@baylibre.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <d5cade4b-de2e-9137-ef0d-afd3c11d1884@linaro.org>
+Date:   Tue, 24 Nov 2020 10:54:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201016171837.3261310-1-fparent@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> -----Original Message-----
-> From: Muchun Song [mailto:songmuchun@bytedance.com]
-> Sent: Tuesday, November 24, 2020 10:53 PM
-> To: corbet@lwn.net; mike.kravetz@oracle.com; tglx@linutronix.de;
-> mingo@redhat.com; bp@alien8.de; x86@kernel.org; hpa@zytor.com;
-> dave.hansen@linux.intel.com; luto@kernel.org; peterz@infradead.org;
-> viro@zeniv.linux.org.uk; akpm@linux-foundation.org; paulmck@kernel.org;
-> mchehab+huawei@kernel.org; pawan.kumar.gupta@linux.intel.com;
-> rdunlap@infradead.org; oneukum@suse.com; anshuman.khandual@arm.com;
-> jroedel@suse.de; almasrymina@google.com; rientjes@google.com;
-> willy@infradead.org; osalvador@suse.de; mhocko@suse.com; Song Bao Hua
-> (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: duanxiongchun@bytedance.com; linux-doc@vger.kernel.org;
-> linux-kernel@vger.kernel.org; linux-mm@kvack.org;
-> linux-fsdevel@vger.kernel.org; Muchun Song <songmuchun@bytedance.com>
-> Subject: [PATCH v6 14/16] mm/hugetlb: Add a kernel parameter
-> hugetlb_free_vmemmap
+On 16/10/2020 18:18, Fabien Parent wrote:
+> Add binding documentation for MT8516 SoCs.
 > 
-> Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
-> freeing unused vmemmap pages associated with each hugetlb page on boot.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
->  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
->  mm/hugetlb_vmemmap.c                            | 19
-> ++++++++++++++++++-
->  3 files changed, 30 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt
-> b/Documentation/admin-guide/kernel-parameters.txt
-> index 5debfe238027..d28c3acde965 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1551,6 +1551,15 @@
->  			Documentation/admin-guide/mm/hugetlbpage.rst.
->  			Format: size[KMG]
-> 
-> +	hugetlb_free_vmemmap=
-> +			[KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
-> +			this controls freeing unused vmemmap pages associated
-> +			with each HugeTLB page.
-> +			Format: { on | off (default) }
-> +
-> +			on:  enable the feature
-> +			off: disable the feature
-> +
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 
-We've a parameter here. but wouldn't it be applied to "x86/mm/64/:disable
-Pmd page mapping of vmemmap" as well?
-If (hugetlb_free_vmemmap_enabled)
-	Do Basepage mapping?
+I have picked up the dt-bindings patch, but dts changes have to go via 
+arm-soc tree!
 
->  	hung_task_panic=
->  			[KNL] Should the hung task detector generate panics.
->  			Format: 0 | 1
-> diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst
-> b/Documentation/admin-guide/mm/hugetlbpage.rst
-> index f7b1c7462991..6a8b57f6d3b7 100644
-> --- a/Documentation/admin-guide/mm/hugetlbpage.rst
-> +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-> @@ -145,6 +145,9 @@ default_hugepagesz
-> 
->  	will all result in 256 2M huge pages being allocated.  Valid default
->  	huge page size is architecture dependent.
-> +hugetlb_free_vmemmap
-> +	When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this enables
-> freeing
-> +	unused vmemmap pages associated each HugeTLB page.
-> 
->  When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
->  indicates the current number of pre-allocated huge pages of the default size.
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 509ca451e232..b2222f8d1245 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -131,6 +131,22 @@ typedef void (*vmemmap_pte_remap_func_t)(struct
-> page *reuse, pte_t *ptep,
->  					 unsigned long start, unsigned long end,
->  					 void *priv);
-> 
-> +static bool hugetlb_free_vmemmap_enabled __initdata;
-> +
-> +static int __init early_hugetlb_free_vmemmap_param(char *buf)
-> +{
-> +	if (!buf)
-> +		return -EINVAL;
-> +
-> +	if (!strcmp(buf, "on"))
-> +		hugetlb_free_vmemmap_enabled = true;
-> +	else if (strcmp(buf, "off"))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +early_param("hugetlb_free_vmemmap",
-> early_hugetlb_free_vmemmap_param);
-> +
->  static inline unsigned int vmemmap_pages_per_hpage(struct hstate *h)
->  {
->  	return free_vmemmap_pages_per_hpage(h) + RESERVE_VMEMMAP_NR;
-> @@ -322,7 +338,8 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
->  	unsigned int order = huge_page_order(h);
->  	unsigned int vmemmap_pages;
-> 
-> -	if (!is_power_of_2(sizeof(struct page))) {
-> +	if (!is_power_of_2(sizeof(struct page)) ||
-> +	    !hugetlb_free_vmemmap_enabled) {
->  		pr_info("disable freeing vmemmap pages for %s\n", h->name);
->  		return;
->  	}
-> --
-> 2.11.0
-
-Thanks
-Barry
-
+--srini
