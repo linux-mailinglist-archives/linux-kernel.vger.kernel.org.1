@@ -2,165 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F032C3061
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9362C3060
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404359AbgKXTCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S2404232AbgKXTCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:02:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404264AbgKXTCP (ORCPT
+        with ESMTP id S2404154AbgKXTCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:02:15 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69703C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:02:15 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id r14so11655362vsa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:02:15 -0800 (PST)
+        Tue, 24 Nov 2020 14:02:09 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD09FC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:02:08 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id a3so2015wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:02:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kc8KsgesSQBcYK6Gf282xpdD2zcj++JCOXz1+UYSV2k=;
-        b=IjcDFxlfcHV4pz4eTgNuT8AouoGXtbtDX16v7bgZ20+KdKkXUG565iyB1gSAbLBIS9
-         o00eH5ygcnQ5EU91bEdZep8QGzdCDZLJM/7GbSGkkvdyV1/DVs4+QIM4ZBxHSsUNEVMy
-         HNyfKouSspCNkAN+qbmSyv86Solcpejg3l6h0=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Iqfo9keS2TpK9GfS0c0b6OiBQlmC8pD8aAHf7OaR9CI=;
+        b=HpLbM+V0jq7UNWv0s31h85bdrOxL/5xJyr4X+waMFda7d4JHut00b11AorcytoyUtN
+         yc05zp19+B6hk0tcP5+pMqJW6JswuODpPbEiJIrRNS8f3syEKd3rfr/jJJso5oMeC8U6
+         toNcyx5kAUZ0sZwYUj1VDTelp9sf1KXX8OWxt5lMwnhDHg9NB+XkCDYJFBaDtvrUIIJn
+         lkAjiRQKIgi6BESygC6wxEjIv+fHTgdVrbELD+HhjlZTR0NcST3xGIweqIg3nxffRm2m
+         8H6X49MT1ec7hpZFwM1o2lNu1czV1fdnifqMxZ1ofEc2KOSHxeT6myWUPRhjnAI9EfND
+         LVDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kc8KsgesSQBcYK6Gf282xpdD2zcj++JCOXz1+UYSV2k=;
-        b=nlJ8cjGl5nRsJLL+fvdgpkBxQAA9BlTXO7zsL6n2xtugXFEFSa9Tw6Cv/OfgxJnkOd
-         hO6NorjYTzlyQj1z95Hgf4qnuKAqeayirhx10+21zlnyyxS2pLe63hZfV+hIZpjRV69n
-         Fmcb6UtGSfmYOVI2FO0i3tev6lVJFJE8iI0EFL/lwzXUry6voFyU/Ym8T4fWqR4pSArr
-         kiJCzrzxWMGSjthpBr+pthPJO+VzsaY8jKFpn9/O4F8knxYUd2bP6m2kNO5Mnjs0ORuu
-         LNa2D1+0vBfhip2Ida6NOhCDdn3y5FTXdV0j4DyhPCD2jxPlhvz2IEk2rUdNjEevOMs6
-         LIAQ==
-X-Gm-Message-State: AOAM5328EV28gjEWUgaDeAjtxOHrr+mBk1Bz5YhxAZ7quB3cmC+XnPUw
-        QKl+50iTeFVKpNdlQLACK3W8ANs8epPkS9xa92JiJg==
-X-Google-Smtp-Source: ABdhPJz0msw3gheojDTN1y1Or7/pFfuAmO/78wVkNcKJjiVo7yDwZMTuFngQgn4FkhABj8BMb6xzyFieHO+AkXj7v14=
-X-Received: by 2002:a67:fb8f:: with SMTP id n15mr5701991vsr.30.1606244534393;
- Tue, 24 Nov 2020 11:02:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20201118234352.2138694-1-abhishekpandit@chromium.org> <7235CD4E-963C-4BCB-B891-62494AD7F10D@holtmann.org>
-In-Reply-To: <7235CD4E-963C-4BCB-B891-62494AD7F10D@holtmann.org>
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date:   Tue, 24 Nov 2020 11:02:03 -0800
-Message-ID: <CANFp7mVSGNbwCkWCj=bVzbE8L38nwu0+UMR9jkOYcYQmGBaAEw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Bluetooth: Power down controller when suspending
-To:     Marcel Holtmann <marcel@holtmann.org>, crlo@marvell.com,
-        akarwar@marvell.com
-Cc:     BlueZ development <linux-bluetooth@vger.kernel.org>,
-        ChromeOS Bluetooth Upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Daniel Winkler <danielwinkler@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Iqfo9keS2TpK9GfS0c0b6OiBQlmC8pD8aAHf7OaR9CI=;
+        b=mKZjcE/fvlm1pPWZKyi65+Hyj1qqQaoLoYg2LSAjVetz6oTriS+WpN/aOfOXC/TXjA
+         Ht4/n1AWUBMtMGTGmNUZblojDE1r4FQ/2kf4yGbBcG90ES7gdYHccuyZOLEoMmHJ4ZHj
+         ifwUOtjvUl14I2Oil4CAeyFySTc9GXiS2NUNcziyAgnMGPEGQmZBr5IO5dLObaZ3c9pK
+         CQH1dXfXDl9GG1qMmQLjxXW6RO1edG8VBN8yMAyfDlgu7EEgATjGgVzHTxZAIFqil27F
+         64xLNkGaXm6XkGx8RKPpDEG1i1TLMuiXI/ca+cxB86kiA+xhGO1NtCmUHfL/XqfyQA+u
+         T9Lg==
+X-Gm-Message-State: AOAM532rDQbV/UI0BrOGtD/e48CaOZ53ekxwou0NkQLp24yYkJmd0yZ+
+        CT+F3sT6ZMd9rL4e1ZBUm15x9w==
+X-Google-Smtp-Source: ABdhPJw/HJ98oz834LeZOvm1TSSpQe1fptg/MS2M8idKTbhtYAnFb4PUY3/ynRryGMQT1piVK1X2KQ==
+X-Received: by 2002:a1c:b787:: with SMTP id h129mr5980131wmf.67.1606244527085;
+        Tue, 24 Nov 2020 11:02:07 -0800 (PST)
+Received: from dell ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id 6sm33311328wrn.72.2020.11.24.11.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 11:02:06 -0800 (PST)
+Date:   Tue, 24 Nov 2020 19:02:04 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH 01/40] drm/radeon/radeon_device: Consume our own header
+ where the prototypes are located
+Message-ID: <20201124190204.GC4716@dell>
+References: <20201123111919.233376-1-lee.jones@linaro.org>
+ <20201123111919.233376-2-lee.jones@linaro.org>
+ <CADnq5_PaFeyNAc3a8e0MmZRKzPxPQCxGyhD_7TP+jcuPvRt9NQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADnq5_PaFeyNAc3a8e0MmZRKzPxPQCxGyhD_7TP+jcuPvRt9NQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+On Tue, 24 Nov 2020, Alex Deucher wrote:
 
-
-On Mon, Nov 23, 2020 at 3:46 AM Marcel Holtmann <marcel@holtmann.org> wrote=
-:
->
-> Hi Abhishek,
->
-> > This patch series adds support for a quirk that will power down the
-> > Bluetooth controller when suspending and power it back up when resuming=
-.
+> On Mon, Nov 23, 2020 at 6:19 AM Lee Jones <lee.jones@linaro.org> wrote:
 > >
-> > On Marvell SDIO Bluetooth controllers (SD8897 and SD8997), we are seein=
-g
-> > a large number of suspend failures with the following log messages:
+> > Fixes the following W=1 kernel build warning(s):
 > >
-> > [ 4764.773873] Bluetooth: hci_cmd_timeout() hci0 command 0x0c14 tx time=
-out
-> > [ 4767.777897] Bluetooth: btmrvl_enable_hs() Host sleep enable command =
-failed
-> > [ 4767.777920] Bluetooth: btmrvl_sdio_suspend() HS not actived, suspend=
- failed!
-> > [ 4767.777946] dpm_run_callback(): pm_generic_suspend+0x0/0x48 returns =
--16
-> > [ 4767.777963] call mmc2:0001:2+ returned -16 after 4882288 usecs
+> >  drivers/gpu/drm/radeon/radeon_device.c:637:6: warning: no previous prototype for ‘radeon_device_is_virtual’ [-Wmissing-prototypes]
 > >
-> > The daily failure rate with this signature is quite significant and
-> > users are likely facing this at least once a day (and some unlucky user=
-s
-> > are likely facing it multiple times a day).
-> >
-> > Given the severity, we'd like to power off the controller during suspen=
-d
-> > so the driver doesn't need to take any action (or block in any way) whe=
-n
-> > suspending and power on during resume. This will break wake-on-bt for
-> > users but should improve the reliability of suspend.
-> >
-> > We don't want to force all users of MVL8897 and MVL8997 to encounter
-> > this behavior if they're not affected (especially users that depend on
-> > Bluetooth for keyboard/mouse input) so the new behavior is enabled via
-> > module param. We are limiting this quirk to only Chromebooks (i.e.
-> > laptop). Chromeboxes will continue to have the old behavior since users
-> > may depend on BT HID to wake and use the system.
->
-> I don=E2=80=99t have a super great feeling with this change.
->
-> So historically only hciconfig hci0 up/down was doing a power cycle of th=
-e controller and when adding the mgmt interface we moved that to the mgmt i=
-nterface. In addition we added a special case of power up via hdev->setup. =
-We never had an intention that the kernel otherwise can power up/down the c=
-ontroller as it pleases.
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian König" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Applied.  Thanks!
 
-Aside from the powered setting, the stack is resilient to the
-controller crashing (which would be akin to a power off and power on).
-From the view of bluez, adapter lost and power down should be almost
-equivalent right? ChromeOS has several platforms where Bluetooth has
-been reset after suspend, usually due USB being powered off in S3, and
-the stack is still well-behaving when that occurs.
+Thanks again Alex.  Great work!
 
->
-> Can we ask Marvell first to investigate why this is fundamentally broken =
-with their hardware?
+Almost there now ...
 
-+Chin-Ran Lo and +Amitkumar Karwar (added based on changes to
-drivers/bluetooth/btmrvl_main.c)
-
-Could you please take a look at the original cover letter and comment
-(or add others at Marvell who may be able to)? Is this a known issue
-or a fix?
-
->Since what you are proposing is a pretty heavy change that might has side =
-affects. For example the state machine for the mgmt interface has no concep=
-t of a power down/up from the kernel. It is all triggered by bluetoothd.
->
-> I am careful here since the whole power up/down path is already complicat=
-ed enough.
->
-
-That sounds reasonable. I have landed this within ChromeOS so we can
-test whether a) this improves stability enough and b) whether the
-power off/on in the kernel has significant side effects. This will go
-through our automated testing and dogfooding over the next few weeks
-and hopefully identify those side-effects. I will re-raise this topic
-with updates once we have more data.
-
-Also, in case it wasn't very clear, I put this behind a module param
-that defaults to False because this is so heavy handed. We're only
-using it on specific Chromebooks that are exhibiting the worst
-behavior and not disabling it wholesale for all btmrvl controllers.
-
-Thanks
-Abhishek
-
-> Regards
->
-> Marcel
->
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
