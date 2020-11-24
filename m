@@ -2,80 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068A52C33C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8237F2C33CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388609AbgKXWTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 17:19:50 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46036 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727231AbgKXWTu (ORCPT
+        id S2389376AbgKXWV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 17:21:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388661AbgKXWV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:19:50 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606256388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UQPfZ1J61H/ekBBAaR7V+BMvtX4EMI5nVnNHoIml4cY=;
-        b=KTCOU6z7nYzCZBSY4aJF/Aw1YsI/0XmAB81NTW165bZxAvN6oPmLaSaBFZhUZVWjynlOxq
-        nCqWsnt4RieChFXuP867sMeXaPnmW8u9fsV/Gbn1BRdJFB0VNGb0IMyJuyKWV5fpQyC6Jt
-        Q2+/iL9J5edexGyDWyELgePpPZ/YShwU3DYFxcjZYOgjnfc4gYsnB7RdcnNPrWff7unbZG
-        ZaY9pqTia2ITN3vQpLhyzkscxHZNhl11PdmcdDEZzzZQZGjxDtppP10EiOsvCL4XOkbx9r
-        wAODJhjVw1jxFk0zsJcwnnxhVVX+iuhSgj/FNYp2v3UlVTFEEzGMaR8nasrQfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606256388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UQPfZ1J61H/ekBBAaR7V+BMvtX4EMI5nVnNHoIml4cY=;
-        b=r3f45/W7npRZRZ1ON6VohbAgkqBJpwE8zrsNWH62oAgAok6llT9gv4Vwh4nOwx5LB/Q3g3
-        Ri3BgRrqGnP3aaDw==
-To:     Laurent Vivier <lvivier@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-block@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: Re: [PATCH 1/2] genirq: add an affinity parameter to irq_create_mapping()
-In-Reply-To: <20201124200308.1110744-2-lvivier@redhat.com>
-References: <20201124200308.1110744-1-lvivier@redhat.com> <20201124200308.1110744-2-lvivier@redhat.com>
-Date:   Tue, 24 Nov 2020 23:19:47 +0100
-Message-ID: <87h7pel7ng.fsf@nanos.tec.linutronix.de>
+        Tue, 24 Nov 2020 17:21:56 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8DFC061A4E
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:21:55 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c66so419135pfa.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:21:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5IOFKT2E7UmZNE+UF5+67kx99kzkXEJjEUmTB7hYGQ8=;
+        b=PPW0lZFNYlL9xRQ+lUkWVVx5ASkq2QlU7KPxrRbKvts6ZAtAw/YUXZhM00orxYqZfg
+         axDh5BKUUvJfH1rkZb1iFvF3gGMZcUslXFz1OnmAK2hSpHozP1AeLCn7YxOoymaXua0F
+         YPHGL6s6rf3LcwZy1VWcM46dUUoniltGD4MQtyFFbyXB5wNB6YB5uZatAOdoV/Ihq8TG
+         3r6uq5Gqwt+p9XWl76NXYbnJIK7ElVTmVJvBv6TRKon+oWOUX9v/tMdjJCekCayPVXqy
+         UNYFgRHvy5HX/eP2SdDiFXEu97Cxezw3gu3zyftZAAWT7ia3ApuC2r0pjTAxXSPHK/3t
+         4k8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5IOFKT2E7UmZNE+UF5+67kx99kzkXEJjEUmTB7hYGQ8=;
+        b=ToVYUed1eYgdCZr5iOZCXfrx0mdFHX7UwD51iqLBNcwxeDndyhNdNvRB3sCIYpnK00
+         XjBI6E+7TFpVsN7L/nYgJH23cA0pSwA+3/Mmw3tF6ASgSu47gaB8udYyXgBGECWhtJeE
+         cLeDO51JuV8lSVyz8trIIrbJJ+38CUlgn5fmvsq0Wm1FpXJMZY3vyFn7eeQB/qCjoUW6
+         yXrkcqUGVnQA2fph5AoHm2ozPzy5M+pwWfRHb0oz+8F9P0UlqF3ytFO0EonbmISLigNF
+         Z94ubIjZAutmYdWbFaBVTQdpRORu1xTX7rBjAjTNAJVXFlXAGDc3imBGrben2OFYixp6
+         hK6Q==
+X-Gm-Message-State: AOAM533MiN8+8HoYDwDdqNJpXnpo11nVO92Ol3kTRsExIXGJ5E0Cz+5t
+        oDjBMTwiHbururG8do2WquPXdg==
+X-Google-Smtp-Source: ABdhPJzEi0HzFsD9olRT/c+V4q89YY33lIFUdwC1A293ipnDcgbJp25euiagGKlo/ygjoSazDXIMug==
+X-Received: by 2002:a17:90b:68f:: with SMTP id m15mr373352pjz.209.1606256514953;
+        Tue, 24 Nov 2020 14:21:54 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id g14sm173736pgi.89.2020.11.24.14.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 14:21:54 -0800 (PST)
+Date:   Tue, 24 Nov 2020 14:21:49 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas <thomas.lendacky@amd.com>, pbonzini@redhat.com,
+        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
+        Eric <eric.vantassell@amd.com>, gingell@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+Message-ID: <20201124222149.GB65542@google.com>
+References: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
+ <20201124191629.GB235281@google.com>
+ <20201124194904.GA45519@google.com>
+ <alpine.DEB.2.23.453.2011241215400.3594395@chino.kir.corp.google.com>
+ <20201124210817.GA65542@google.com>
+ <20201124212725.GB246319@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124212725.GB246319@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24 2020 at 21:03, Laurent Vivier wrote:
-> This parameter is needed to pass it to irq_domain_alloc_descs().
->
-> This seems to have been missed by
-> o06ee6d571f0e ("genirq: Add affinity hint to irq allocation")
+On Tue, Nov 24, 2020 at 09:27:25PM +0000, Sean Christopherson wrote:
+> On Tue, Nov 24, 2020, Vipin Sharma wrote:
+> > On Tue, Nov 24, 2020 at 12:18:45PM -0800, David Rientjes wrote:
+> > > On Tue, 24 Nov 2020, Vipin Sharma wrote:
+> > > 
+> > > > > > Looping Janosch and Christian back into the thread.                           
+> > > > > >                                                                               
+> > > > > > I interpret this suggestion as                                                
+> > > > > > encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
+> > > > > 
+> > > > > I think it makes sense to use encryption_ids instead of simply encryption, that
+> > > > > way it's clear the cgroup is accounting ids as opposed to restricting what
+> > > > > techs can be used on yes/no basis.
+> > > > > 
+> > > 
+> > > Agreed.
+> > > 
+> > > > > > offerings, which was my thought on this as well.                              
+> > > > > >                                                                               
+> > > > > > Certainly the kernel could provide a single interface for all of these and    
+> > > > > > key value pairs depending on the underlying encryption technology but it      
+> > > > > > seems to only introduce additional complexity in the kernel in string         
+> > > > > > parsing that can otherwise be avoided.  I think we all agree that a single    
+> > > > > > interface for all encryption keys or one-value-per-file could be done in      
+> > > > > > the kernel and handled by any userspace agent that is configuring these       
+> > > > > > values.                                                                       
+> > > > > >                                                                               
+> > > > > > I think Vipin is adding a root level file that describes how many keys we     
+> > > > > > have available on the platform for each technology.  So I think this comes    
+> > > > > > down to, for example, a single encryption.max file vs                         
+> > > > > > encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
+> > > > > 
+> > > > > Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
+> > > > > no need to enumerate platform total, but not knowing how many of the allowed IDs
+> > > > > have been allocated seems problematic.
+> > > > > 
+> > > > 
+> > > > We will be showing encryption_ids.{sev,sev_es}.{max,current}
+> > > > I am inclined to not provide "events" as I am not using it, let me know
+> > > > if this file is required, I can provide it then.
+> 
+> I've no objection to omitting current until it's needed.
+> 
+> > > > I will provide an encryption_ids.{sev,sev_es}.stat file, which shows
+> > > > total available ids on the platform. This one will be useful for
+> > > > scheduling jobs in the cloud infrastructure based on total supported
+> > > > capacity.
+> > > > 
+> > > 
+> > > Makes sense.  I assume the stat file is only at the cgroup root level 
+> > > since it would otherwise be duplicating its contents in every cgroup under 
+> > > it.  Probably not very helpful for child cgroup to see stat = 509 ASIDs 
+> > > but max = 100 :)
+> > 
+> > Yes, only at root.
+> 
+> Is a root level stat file needed?  Can't the infrastructure do .max - .current
+> on the root cgroup to calculate the number of available ids in the system?
 
-No, this has not been missed at all. There was and is no reason to do
-this.
+For an efficient scheduling of workloads in the cloud infrastructure, a
+scheduler needs to know the total capacity supported and the current
+usage of the host to get the overall picture. There are some issues with
+.max -.current approach:
 
-> This is needed to implement proper support for multiqueue with
-> pseries.
+1. Cgroup v2 convention is to not put resource control files in the
+   root. This will mean we need to sum (.max -.current) in all of the
+   immediate children of the root.
 
-And because pseries needs this _all_ callers need to be changed?
+2. .max can have any limit unless we add a check to not allow a user to
+   set any value more than the supported one. This will theoretically
+   change the encryption_ids cgroup resource distribution model from the
+   limit based to the allocation based. It will require the same
+   validations in the children cgroups. I think providing separate file on
+   the root is a simpler approach.
 
->  123 files changed, 171 insertions(+), 146 deletions(-)
+For someone to set the max limit, they need to know what is the
+supported capacity. In the case of SEV and SEV-ES it is not shown
+anywhere and the only way to know this is to use a CPUID instructions.
+The "stat" file will provide an easy way to know it.
 
-Lots of churn for nothing. 99% of the callers will never need that.
+Since current approach is not migrating charges, this means when a
+process migrates to an another cgroup and the old cgroup is deleted
+(user won't see it but it will be present in the cgroup hierarchy
+internally), we cannot get the correct usage by going through other
+cgroup directories in this case.
 
-What's wrong with simply adding an interface which takes that parameter,
-make the existing one an inline wrapper and and leave the rest alone?
+I am suggesting that the root stat file should show both available and
+used information.
+$ cat encryption_ids.sev.stat
+total 509
+used 102
 
-Thanks,
-
-        tglx
-
-
-
+It will be very easy for a cloud scheduler to retrieve the system state
+quickly.
