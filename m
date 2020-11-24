@@ -2,156 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B332C2ABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3B02C2ACC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389502AbgKXPEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:04:13 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:40831 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389312AbgKXPEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:04:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606230252; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=HbEXkE4/5qcA3cH25AXK1z4uk2ABDyVF5WqikAQO1x4=;
- b=WliYkEObEXo1VZf68x7p90yF+wkee1i2sPxngs2GPqqM16wvWASVJbntykk4xkCbxx/4dalD
- YPcGpUoo3tfsvHtEK8O7pOuxtB7ok99AGxfhwwAxRSOy2ssw3BPmMq7e03QbzqiIExCh8dZB
- dDTBIlcerO9LUmf75tdCbQtvKik=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fbd20eb4146c5eefdf7be8f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 15:04:11
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3D99C43468; Tue, 24 Nov 2020 15:04:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 42D52C43460;
-        Tue, 24 Nov 2020 15:04:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 42D52C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S2389520AbgKXPEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389223AbgKXPEr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:04:47 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1224C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:04:46 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id a9so29333718lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zAY25/RXmwYOWVJe8+TIllMxJtvaiO5QFeFRuqe7sfA=;
+        b=hPKPVezZkmNZvQMBW9tIArcm7h9+ipvHX9B+BNe47GB4NXdjfvBbVw9odWhcuNZlE6
+         lMwPnkbpOpFF6/4IX+8OhZR+sCLS5AgnRwQeOefwyxxTwiIOoBk7M33Y/x+x4FGXSenB
+         G41UR0DZGAAN0tuj7x5J/XsVx/qcPbebgVWq4aCiS8qfBdJskgrlIzryqdcc8CnN7D9Z
+         afb7Gfj1I6okPFVtiZaaNkWNbtE1yX8+TSeTbBe3tcENiIVYF/Ev473wj6Byj3RqsY5z
+         +Cfyu6/RbZ4TMFwDeHsrB/v+hyuJ4ZDG/4Ybfw2Ks3drVFxJSp1y08heLA2FcP61/ZYy
+         qPlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zAY25/RXmwYOWVJe8+TIllMxJtvaiO5QFeFRuqe7sfA=;
+        b=T7Ftfxb1P1Op/VEGLpWy8fMnNIaEAXJ6Sp+EvBIokr5mLB2vFAYyf9g37TC/29I3BO
+         R3JGlOcBZTQCowfArZ9CkhEGBMU0kBhbexBePCJVGB3upiPivB7ijyWDLGPTOBzQv94Q
+         0xPaq2PzoCm1lCI3xWPui0zNj7BxHsyhvKTeYwlTxt5qKBCcorlxnsHqiz2pS7Ki6e8O
+         DYp78V2aeQAz42XQ2XNVZZ2maspok6CNcXwmUYzvZsWD9kVgsD5VJ421l5KaC1BRwvA8
+         FfXBzdKIRpTmk0SZT6AjICsMgwRmzPBafhJEM2hH0qCXqoNFfmr06KVvdsgeoTL0tti0
+         5Emw==
+X-Gm-Message-State: AOAM533844M7yYNyk3zzU/KoHmhO0F6aCSAbM5DmqUq2tR23Qmiq45o4
+        2ZQcy8m7OmW+IQzN6dBzoPLp2yZe18wAYw1PdhtzCFfafZQLRA==
+X-Google-Smtp-Source: ABdhPJxASt/4uJzaMwJEija1/WDSBTFfr0NxH/EgWcReHh7um0vmpkxGfCeTC5RlRmTgq1y6fXVmhB5ASXV1H5vMJZM=
+X-Received: by 2002:a19:8686:: with SMTP id i128mr1817194lfd.333.1606230285308;
+ Tue, 24 Nov 2020 07:04:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] brcmsmac: ampdu: Check BA window size before checking
- block
- ack
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201116030635.645811-1-dima@arista.com>
-References: <20201116030635.645811-1-dima@arista.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        Dmitry Safonov <dima@arista.com>,
-        Yuji Nakao <contact@yujinakao.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201124150410.F3D99C43468@smtp.codeaurora.org>
-Date:   Tue, 24 Nov 2020 15:04:10 +0000 (UTC)
+References: <20201113132429.420940-1-eugen.hristev@microchip.com>
+ <CACRpkdYdPp_ihSEHkPaLa0_mcX+8ypnPZ4dn0d-PY9Mes1XntQ@mail.gmail.com> <20201124090322.cjugamri37yxcqy7@sekiro>
+In-Reply-To: <20201124090322.cjugamri37yxcqy7@sekiro>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 16:04:34 +0100
+Message-ID: <CACRpkdZ793ARr6egT55RYnefuExhqDEUvFW6RX70YqAatbFm-w@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: at91-pio4: add support for fewer lines on last
+ PIO bank
+To:     Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc:     Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Safonov <dima@arista.com> wrote:
+On Tue, Nov 24, 2020 at 10:03 AM Ludovic Desroches
+<ludovic.desroches@microchip.com> wrote:
+> On Tue, Nov 24, 2020 at 09:31:36AM +0100, Linus Walleij wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >
+> > On Fri, Nov 13, 2020 at 2:25 PM Eugen Hristev
+> > <eugen.hristev@microchip.com> wrote:
+> >
+> > > Some products, like sama7g5, do not have a full last bank of PIO lines.
+> > > In this case for example, sama7g5 only has 8 lines for the PE bank.
+> > > PA0-31, PB0-31, PC0-31, PD0-31, PE0-7, in total 136 lines.
+> > > To cope with this situation, added a data attribute that is product dependent,
+> > > to specify the number of lines of the last bank.
+> > > In case this number is different from the macro ATMEL_PIO_NPINS_PER_BANK,
+> > > adjust the total number of lines accordingly.
+> > > This will avoid advertising 160 lines instead of the actual 136, as this
+> > > product supports, and to avoid reading/writing to invalid register addresses.
+> > >
+> > > Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> >
+> > Nico/Ludovic: can you please look at this patch?
+>
+> I acked it one week ago but I get some nasty behaviors with my emails. Maybe you
+> didn't receive the answer.
+> https://lore.kernel.org/linux-gpio/20201116061549.ks6hfonyplwhknmq@sekiro/
 
-> bindex can be out of BA window (64):
->   tid 0 seq 2983, start_seq 2915, bindex 68, index 39
->   tid 0 seq 2984, start_seq 2915, bindex 69, index 40
->   tid 0 seq 2985, start_seq 2915, bindex 70, index 41
->   tid 0 seq 2986, start_seq 2915, bindex 71, index 42
->   tid 0 seq 2879, start_seq 2915, bindex 4060, index 63
->   tid 0 seq 2854, start_seq 2915, bindex 4035, index 38
->   tid 0 seq 2795, start_seq 2915, bindex 3976, index 43
->   tid 0 seq 2989, start_seq 2924, bindex 65, index 45
->   tid 0 seq 2992, start_seq 2924, bindex 68, index 48
->   tid 0 seq 2993, start_seq 2924, bindex 69, index 49
->   tid 0 seq 2994, start_seq 2924, bindex 70, index 50
->   tid 0 seq 2997, start_seq 2924, bindex 73, index 53
->   tid 0 seq 2795, start_seq 2941, bindex 3950, index 43
->   tid 0 seq 2921, start_seq 2941, bindex 4076, index 41
->   tid 0 seq 2929, start_seq 2941, bindex 4084, index 49
->   tid 0 seq 3011, start_seq 2946, bindex 65, index 3
->   tid 0 seq 3012, start_seq 2946, bindex 66, index 4
->   tid 0 seq 3013, start_seq 2946, bindex 67, index 5
-> 
-> In result isset() will try to dereference something on the stack,
-> causing panics:
->   BUG: unable to handle page fault for address: ffffa742800ed01f
->   #PF: supervisor read access in kernel mode
->   #PF: error_code(0x0000) - not-present page
->   PGD 6a4e9067 P4D 6a4e9067 PUD 6a4ec067 PMD 6a4ed067 PTE 0
->   Oops: 0000 [#1] PREEMPT SMP PTI
->   CPU: 1 PID: 0 Comm: swapper/1 Kdump: loaded Not tainted 5.8.5-arch1-1-kdump #1
->   Hardware name: Apple Inc. MacBookAir3,1/Mac-942452F5819B1C1B, BIOS    MBA31.88Z.0061.B07.1201241641 01/24/12
->   RIP: 0010:brcms_c_ampdu_dotxstatus+0x343/0x9f0 [brcmsmac]
->   Code: 54 24 20 66 81 e2 ff 0f 41 83 e4 07 89 d1 0f b7 d2 66 c1 e9 03 0f b7 c9 4c 8d 5c 0c 48 49 8b 4d 10 48 8b 79 68 41 57 44 89 e1 <41> 0f b6 33 41 d3 e0 48 c7 c1 38 e0 ea c0 48 83 c7 10 44 21 c6 4c
->   RSP: 0018:ffffa742800ecdd0 EFLAGS: 00010207
->   RAX: 0000000000000019 RBX: 000000000000000b RCX: 0000000000000006
->   RDX: 0000000000000ffe RSI: 0000000000000004 RDI: ffff8fc6ad776800
->   RBP: ffff8fc6855acb00 R08: 0000000000000001 R09: 00000000000005d9
->   R10: 00000000fffffffe R11: ffffa742800ed01f R12: 0000000000000006
->   R13: ffff8fc68d75a000 R14: 00000000000005db R15: 0000000000000019
->   FS:  0000000000000000(0000) GS:ffff8fc6aad00000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: ffffa742800ed01f CR3: 000000002480a000 CR4: 00000000000406e0
->   Call Trace:
->    <IRQ>
->    brcms_c_dpc+0xb46/0x1020 [brcmsmac]
->    ? wlc_intstatus+0xc8/0x180 [brcmsmac]
->    ? __raise_softirq_irqoff+0x1a/0x80
->    brcms_dpc+0x37/0xd0 [brcmsmac]
->    tasklet_action_common.constprop.0+0x51/0xb0
->    __do_softirq+0xff/0x340
->    ? handle_level_irq+0x1a0/0x1a0
->    asm_call_on_stack+0x12/0x20
->    </IRQ>
->    do_softirq_own_stack+0x5f/0x80
->    irq_exit_rcu+0xcb/0x120
->    common_interrupt+0xd1/0x200
->    asm_common_interrupt+0x1e/0x40
->   RIP: 0010:cpuidle_enter_state+0xb3/0x420
-> 
-> Check if the block is within BA window and only then check block's
-> status. Otherwise as Behan wrote: "When I came back to Dublin I
-> was courtmartialed in my absence and sentenced to death in my absence,
-> so I said they could shoot me in my absence."
-> 
-> Also reported:
-> https://bbs.archlinux.org/viewtopic.php?id=258428
-> https://lore.kernel.org/linux-wireless/87tuwgi92n.fsf@yujinakao.com/
-> 
-> Reported-by: Yuji Nakao <contact@yujinakao.com>
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
+No I didn't! Weird. b4 found your ACK anyways, so the patch is applied
+now!
 
-Patch applied to wireless-drivers-next.git, thanks.
-
-01c195de620b brcmsmac: ampdu: Check BA window size before checking block ack
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201116030635.645811-1-dima@arista.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Yours,
+Linus Walleij
