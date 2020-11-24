@@ -2,134 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5F12C25AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE1E2C25B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387565AbgKXM0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:26:43 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52243 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgKXM0n (ORCPT
+        id S2387582AbgKXM3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:29:14 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:26591 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729172AbgKXM3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:26:43 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1khXP6-0004Kf-77; Tue, 24 Nov 2020 12:26:40 +0000
-Date:   Tue, 24 Nov 2020 13:26:39 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dev@opencontainers.org,
-        corbet@lwn.net, Carlos O'Donell <carlos@redhat.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
- workaround
-Message-ID: <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+        Tue, 24 Nov 2020 07:29:14 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khXRU-000H9v-8h; Tue, 24 Nov 2020 13:29:08 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khXRT-000H8C-5G; Tue, 24 Nov 2020 13:29:07 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 9D702240041;
+        Tue, 24 Nov 2020 13:29:06 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 10B03240040;
+        Tue, 24 Nov 2020 13:29:06 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 593DF20049;
+        Tue, 24 Nov 2020 13:29:05 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 13:29:05 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        xie.he.0141@gmail.com, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 3/5] net/lapb: fix t1 timer handling for
+ LAPB_STATE_0
+Organization: TDT AG
+In-Reply-To: <2d40b42aee314611b9ba1627e5eab30b@AcuMS.aculab.com>
+References: <20201124093538.21177-1-ms@dev.tdt.de>
+ <20201124093538.21177-4-ms@dev.tdt.de>
+ <2d40b42aee314611b9ba1627e5eab30b@AcuMS.aculab.com>
+Message-ID: <3d3f3733c08168bc8417021206cd93b9@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1606220947-00017060-88198D89/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 01:08:20PM +0100, Florian Weimer wrote:
-> This documents a way to safely use new security-related system calls
-> while preserving compatibility with container runtimes that require
-> insecure emulation (because they filter the system call by default).
-> Admittedly, it is somewhat hackish, but it can be implemented by
-> userspace today, for existing system calls such as faccessat2,
-> without kernel or container runtime changes.
+On 2020-11-24 12:43, David Laight wrote:
+> From: Martin Schiller
+>> Sent: 24 November 2020 09:36
+>> 
+>> 1. DTE interface changes immediately to LAPB_STATE_1 and start sending
+>>    SABM(E).
+>> 
+>> 2. DCE interface sends N2-times DM and changes to LAPB_STATE_1
+>>    afterwards if there is no response in the meantime.
 > 
-> Signed-off-by: Florian Weimer <fweimer@redhat.com>
+> Seems reasonable.
+> It is 35 years since I wrote LAPB and I can't exactly remember
+> what we did.
+> If I stole a copy of the code it's on a QIC-150 tape cartridge!
 > 
-> ---
->  Documentation/process/adding-syscalls.rst | 37 +++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
+> I really don't remember having a DTE/DCE option.
+> It is likely that LAPB came up sending DM (response without F)
+> until level3 requested the link come up when it would send
+> N2 SABM+P hoping to get a UA+F.
+> It would then send DM-F until a retry request was made.
 > 
-> diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/process/adding-syscalls.rst
-> index a3ecb236576c..7d1e578a1df1 100644
-> --- a/Documentation/process/adding-syscalls.rst
-> +++ b/Documentation/process/adding-syscalls.rst
-> @@ -436,6 +436,40 @@ simulates registers etc).  Fixing this is as simple as adding a #define to
->  
->      #define stub_xyzzy sys_xyzzy
->  
-> +Container Compatibility and seccomp
-> +-----------------------------------
-> +
-> +The Linux Foundation Open Container Initiative Runtime Specification
-> +requires that by default, implementations install seccomp system call
-> +filters which cause system calls to fail with ``EPERM``.  As a result,
-> +all new system calls in such containers fail with ``EPERM`` instead of
-> +``ENOSYS``.  This design is problematic because ``EPERM`` is a
-> +legitimate system call result which should not trigger fallback to a
-> +userspace emulation, particularly for security-related system calls.
-> +(With ``ENOSYS``, it is clear that a fallback implementation has to be
-> +used to maintain compatibility with older kernels or container
-> +runtimes.)
-> +
-> +New system calls should therefore provide a way to reliably trigger an
-> +error distinct from ``EPERM``, without any side effects.  Some ways to
-> +achieve that are:
-> +
-> + - ``EBADFD`` for the invalid file descriptor -1
-> + - ``EFAULT`` for a null pointer
-> + - ``EINVAL`` for a contradictory set of flags that will remain invalid
-> +   in the future
-
-I'm sorry but I have some doubts about this new "rule". The idea of
-being able to reliably trigger an error for a system call other then
-EPERM might have merrit in some scenarios but justifying it via a bug in
-a userspace standard is not enough in my opinion.
-
-The solution is to fix the standard to mandate ENOSYS. This is the
-correct error for this exact scenario and standards can be changed.
-I don't think it is the kernel's job to work around a deliberate
-userspace decision to use EPERM and not ENOSYS. The kernel's system call
-design should not be informed by this especially since this is clearly
-not a kernel bug.
-
-Apart from that I have doubts that this is in any shape or form
-enforceable. Not just because in principle there might be system calls
-that only return EPERM on error but also because this requirement feels
-arbitrary and I doubt developers will feel bound by it or people will
-check for it.
-
-> +
-> +If a system call has such error behavior, upon encountering an
-> +``EPERM`` error, userspace applications can perform further
-> +invocations of the same system call to check if the ``EPERM`` error
-> +persists for those known error conditions.  If those also fail with
-> +``EPERM``, that likely means that the original ``EPERM`` error was the
-> +result of a seccomp filter, and should be treated like ``ENOSYS``
-
-I think that this "approach" alone should illustrate that this is the
-wrong way to approach this. It's hacky and requires excercising a system
-call multiple times just to find out whether or not it is supported.
-The only application that would possibly do this is probably glibc.
-This seems to be the complete wrong way of solving this problem.
-
-> +(e.g., trigger an alternative fallback implementation).  If those
-> +probing system calls do not fail with ``EPERM``, the error likely came
-> +from a real implementation, and should be reported to the caller
-> +directly, without resorting to ``ENOSYS``-style fallback.
-> +
->  
->  Other Details
->  -------------
-> @@ -575,3 +609,6 @@ References and Sources
->   - Recommendation from Linus Torvalds that x32 system calls should prefer
->     compatibility with 64-bit versions rather than 32-bit versions:
->     https://lkml.org/lkml/2011/8/31/244
-> + - Linux Configuration section of the Open Container Initiative
-> +   Runtime Specification:
-> +   https://github.com/opencontainers/runtime-spec/blob/master/config-linux.md
+> We certainly had several different types of crossover connectors
+> for DTE-DTE working.
 > 
-> -- 
-> Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-> Commercial register: Amtsgericht Muenchen, HRB 153243,
-> Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+> 	David
 > 
+
+The support for DTE/DCE was already in the LAPB code and I made it
+configurable from userspace (at least for hdlc interfaces) with this
+commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=f362e5fe0f1f
+
+For Layer3 (X.25) I will add it with an addional patch (you already
+commented on that) on a next step.
+
+The described behaviour above is my interpretation of point 2.4.4.1 of
+the "ITU-T Recommendation X.25 (10/96) aka "Blue Book" [1].
+
+[1] https://www.itu.int/rec/T-REC-X.25-199610-I/
+
+>> 
+>> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+>> ---
+>>  net/lapb/lapb_timer.c | 11 +++++++++--
+>>  1 file changed, 9 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/net/lapb/lapb_timer.c b/net/lapb/lapb_timer.c
+>> index 8f5b17001a07..baa247fe4ed0 100644
+>> --- a/net/lapb/lapb_timer.c
+>> +++ b/net/lapb/lapb_timer.c
+>> @@ -85,11 +85,18 @@ static void lapb_t1timer_expiry(struct timer_list 
+>> *t)
+>>  	switch (lapb->state) {
+>> 
+>>  		/*
+>> -		 *	If we are a DCE, keep going DM .. DM .. DM
+>> +		 *	If we are a DCE, send DM up to N2 times, then switch to
+>> +		 *	STATE_1 and send SABM(E).
+>>  		 */
+>>  		case LAPB_STATE_0:
+>> -			if (lapb->mode & LAPB_DCE)
+>> +			if (lapb->mode & LAPB_DCE &&
+>> +			    lapb->n2count != lapb->n2) {
+>> +				lapb->n2count++;
+>>  				lapb_send_control(lapb, LAPB_DM, LAPB_POLLOFF, LAPB_RESPONSE);
+>> +			} else {
+>> +				lapb->state = LAPB_STATE_1;
+>> +				lapb_establish_data_link(lapb);
+>> +			}
+>>  			break;
+>> 
+>>  		/*
+>> --
+>> 2.20.1
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes,
+> MK1 1PT, UK
+> Registration No: 1397386 (Wales)
