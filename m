@@ -2,114 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7085C2C206C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F7B2C208D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730889AbgKXIvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:51:51 -0500
-Received: from mail-eopbgr70085.outbound.protection.outlook.com ([40.107.7.85]:12782
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730519AbgKXIvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:51:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UTQVlZ/xQ/bOVmR0cy5qUYLAwZ8HPbpl0GmFLD2A9y/kDmSK699P6vpUHEc5ighBITu8arM6WmkAB35P2r+4kPMdik6JfPFyISg3cH5RldIshNZBkvgt1SbGJ7w9lawlcPCeknlvYO7uXBA5bcmh5+EaBCoJh2aWJ92hwbsTOybb0Ll+Z36bK3Y237UtC301C5F7fV3/SbZY8zkZOiOirSpE3yaslCvCFdoRVJKrfQT0cgxz2ti2OcdzSknhjUK9+dKAdGaLkZzWmzjueN6fZKIc++GWYr0ZxW4Vt3TQvRvalmYN/EJe9/IBY5To/y2px4ACx1z9B8BJXwL9oXCvMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cRoSuKKuImbStl8mlY0dTj6a/2C8lzBsCFpTlxRonFo=;
- b=Hdj8K7G0wRWCNJRQ3/qGEbf6wXQCpFJnaMijqVEIUskWYNbVjTXcG5nFIWaUNYOi6fBbb65cpKTe3Id9vQUSY5onlzPk4wBVP32EuWj5MGSXQM74ugnj/lxYvjK9Ukgq+ZMDe1oEZPFdQAiSfRUJLHP5iB8piiPLITPM9yrNyqJTUsDIV1AHrLPF7I7ODXlylthbkvlbFhjVpt+SM6wWqW27P3P1mBtYwobTgFMIkCTv0IBhb1zdhMQpPvUPof4YGlSxU8bD3QWNMed/b4sgy2wcU2pS8sOc2bq++Nr4t/BQ3+nfbjc1VSxpECnFrUdge9KWrG/Me7bBBsPDssDhZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cRoSuKKuImbStl8mlY0dTj6a/2C8lzBsCFpTlxRonFo=;
- b=R6TzJJXGrapFfZI3UU3kiF5W4Z02PTtG2lfQHg9PR81acdfiMaHhIHRvw/CCRyivlGWINlWIPK8VvCOyfxqsK9PiM3C5ALRW0YPcplk7jlH7/9LwoORi0yIIrgJ8YSJ8uH9gXZJzteTKzUMgxYlwwrWrbzZDCYP83EolgLkJyKE=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
- by AM7PR04MB7077.eurprd04.prod.outlook.com (2603:10a6:20b:11c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 24 Nov
- 2020 08:51:47 +0000
-Received: from AM6PR04MB5623.eurprd04.prod.outlook.com
- ([fe80::a533:3a5b:d525:d784]) by AM6PR04MB5623.eurprd04.prod.outlook.com
- ([fe80::a533:3a5b:d525:d784%6]) with mapi id 15.20.3589.022; Tue, 24 Nov 2020
- 08:51:47 +0000
-From:   Clark Wang <xiaoning.wang@nxp.com>
-To:     broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        nikita.shubin@maquefel.me
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: imx: fix the unbalanced spi runtime pm management
-Date:   Tue, 24 Nov 2020 16:52:47 +0800
-Message-Id: <20201124085247.18025-1-xiaoning.wang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR01CA0156.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::36) To AM6PR04MB5623.eurprd04.prod.outlook.com
- (2603:10a6:20b:a9::13)
+        id S1730914AbgKXIz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:55:29 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:51779 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbgKXIz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:55:29 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 26CD623E45;
+        Tue, 24 Nov 2020 09:55:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1606208125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FRZNI4FMUN78ycsbj+Uzk/DfzosgbTQJNV4nQrA2EmI=;
+        b=c3rq0S/fBjl8uc8B23WpQzND2UelJ/PgOCGCHshGRxle/gyKOcWGjtADpJBa/LTmDyUrD6
+        aKXUVCfvsm5P57/Q6auOzX0esO1fkGaeP3EPvcV1P4n/RAxTQ7a1lKpX5J6brTh0uFcu8a
+        8f4DCsk4yOtGG8WaJws78D+PI0wozps=
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0156.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 08:51:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b9978c8d-01f1-4ed8-ed14-08d890562d09
-X-MS-TrafficTypeDiagnostic: AM7PR04MB7077:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB7077A00CE4B8A17DBF474515F3FB0@AM7PR04MB7077.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y05zh95MNhohjOfLLnAzYx1tbjpAXHnIRsr/yuHRB3dVT5x0OnDl50xZb8KHL/de1Jyzkbeh8KSMgQdnsZqqKPWyI6AV6jnQn23ASmDxP/4s3xwB2LPl1TwNFyo/qWZT1CjY5FFkJGQsOoGG8+UV3nJnw56UOBe1LV5gPfImxdALrqCfrP9iGAR8ZDvarWtP+qgQMQWRStZSGRxfXhMmVtGk/KDQ2TfxYfDabQA6IorbgzWs1IJ7yei4C0FIXqdYiY7jWyciz17ITlwzSphi3his2dUsoWM1TmH+DKL7F1wSCaOJejYejIKVmUvdWdTWC3k50+y+fUYRjVvLEQRV4v8iy2yVTr8jXNLSTfQH4gMAWLeRtKGxxfOZTTUq7R7P
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5623.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(366004)(346002)(396003)(6512007)(8936002)(8676002)(69590400008)(52116002)(2906002)(86362001)(6506007)(1076003)(16526019)(26005)(186003)(66946007)(66556008)(956004)(2616005)(316002)(6486002)(4326008)(66476007)(83380400001)(478600001)(5660300002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: lCH1KhPddAy7raz/nG54xbf7xcVHmfluLHu3xrotSoZnmd08J2Qe3FMCWKxkKqVeQ7h0B3Cup+lfABPSpSSmikcN83PwYOupTrSJ4GtlURfG96Qh+PfJYYlnKymcj6h4rxGjcPIpHPeq3/C1Hg3PEcC2XASu8EPTDPpALiU3lEGbvAXe2/KBntcy8BCf3lYrXMGAgFBnxbUzVE/CIZGhJJr0/HQ+/w7r9KCPAro1z64bnscOUv4v3ZWg2HfdWd/KtEGKaiOgCOmiQ9RpdAgiCteWBEt4UZQfg70xSnEqw5hp+0nNIYKL6OJB+ZPqdVLYOpZCGkkfzjXlVRqtVE+mw4MfSt0c8EWs0JD3Uh+Yj8vWDLkXF59OxCrMSkWZY2e1VzQHMKHO8zAw3C7uibp2MzJxqddlxd403niewrMB+UrvktPTxvvYtkzAZT/n4FfM0Tjqz0dwL3YGW90NQQ07X1ebQulGOvXzcxkKM2l3bPJehxd7Iz+KYVahbkUrIAl2cN6quDQL+mp6SiItSa5v3R9XTqxv8X02hbfdVrk3iE/Dag6s5OW+I3Sl9v86ukD0SvRjJYcaAEm1gtT4lplW8F4DR9KeVUNGHUvLNaWpQMdSfe8HP58xAZf0/vbS3+f2h8voC1mMxywbAajrBqcmHmn53ao6Jg/IJCt5i12JfAQUiJCKKuwI7KIlOLCYtFIBYyfEIZtvjTen+q8zqvgzEZQ/xKBObKZPbzdZrD0T91jrA/7H/Y0nViNVpApZ21aXbSP6EBa53g+boLI2HTBXSE98h6oH8CaDk9PfOQKZDziDtkj7klkVzk8i6mgKm8sglOfsQ15bK/RHL4Jd2CMSlIy9uungUeL30jkOIlOB/JbBGb4BZwqJMOskX0Ky51N/kxENMm1R/VQ2KX3rIklIQA==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9978c8d-01f1-4ed8-ed14-08d890562d09
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5623.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 08:51:47.3755
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j7OveCDPINtIsi7QgEnCGFU6hiWw/m2P8kHHjh+KYJQac0KrL+f0dcCQozYxM5PTEhrN8BUoHvA/lfN7AjtZEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7077
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 09:55:24 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     "Y.b. Lu" <yangbo.lu@nxp.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ashish Kumar <ashish.kumar@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+ controllers use fixed indices
+In-Reply-To: <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
+ <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <20201120093015.duel3yx63cbya77w@skbuf>
+ <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
+ <71a86b0fbc95892f8fd240e0919e7e23@walle.cc>
+ <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <3293d698bf26ecf08f22e7e2ffe55e74@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If set active without increase the usage count of pm, the dont use
-autosuspend function will call the suspend callback to close the two
-clocks of spi because the usage count is reduced to -1.
-This will cause the warning dump below when the defer-probe occurs.
+Am 2020-11-24 09:47, schrieb Y.b. Lu:
+> Hi Michael,
+> 
+>> -----Original Message-----
+>> From: Michael Walle <michael@walle.cc>
+>> Sent: Tuesday, November 24, 2020 4:03 PM
+>> To: Y.b. Lu <yangbo.lu@nxp.com>
+>> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
+>> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
+>> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
+>> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>; 
+>> Ulf
+>> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
+>> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
+>> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+>> controllers use fixed indices
+>> 
+>> Am 2020-11-24 08:41, schrieb Y.b. Lu:
+>> > Hi Vladimir,
+>> >
+>> >> -----Original Message-----
+>> >> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>> >> Sent: Friday, November 20, 2020 5:30 PM
+>> >> To: Y.b. Lu <yangbo.lu@nxp.com>
+>> >> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
+>> >> Herring <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
+>> >> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>;
+>> >> Ulf
+>> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
+>> >> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>;
+>> >> Michael Walle <michael@walle.cc>
+>> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+>> >> controllers use fixed indices
+>> >>
+>> >> On Fri, Nov 20, 2020 at 02:04:02AM +0000, Y.b. Lu wrote:
+>> >> > Hi Vladimir,
+>> >> >
+>> >> > I have already upstreamed a patch for all affected layerscape boards.
+>> >> >
+>> >>
+>> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kern
+>> el.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fshawnguo%2Flinux.git%2
+>> Fcommit%2F&amp;data=04%7C01%7Cyangbo.lu%40nxp.com%7C498622ade
+>> e704fc0042008d8904f6184%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0
+>> %7C0%7C637418017917635725%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM
+>> C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000
+>> &amp;sdata=OciS3q%2BmP%2Bz4x1ewPHDigmUkgIZmBgUlRRTm4yaxB7s%3D
+>> &amp;reserved=0?
+>> >> h=imx/dt64&id=342ab37ecaf8c1b10dd3ca9a1271db29a6af0705
+>> >> >
+>> >> > Please check whether it works for you.
+>> >>
+>> >> Thanks, one can tell that I haven't done my due diligence of checking
+>> >> Shawn's tree first. I'll cherry-pick that patch and carry on with my
+>> >> work.
+>> >>
+>> >> However, the fact still remains that Michael has expressed his opinion
+>> >> regarding mmcblk0 vs mmcblk1. Do you think that we could make the
+>> >> aliases a per-board option instead of per-SoC? Consider that there
+>> >> might
+>> >> even be boards that only use SD card. It would be strange for the
+>> >> block
+>> >> device in that case to be called /dev/mmcblk1.
+>> >
+>> > I don't think it's a problem in board dts to define board specific
+>> > thing, like re-defining alias, and disabling any IP it not using.
+>> 
+>> First, why would you put it in the architecture include anyway? That
+>> is really board-specific. That is like you would say, we enable all
+>> devices and a board could potentially disable it. TBH it seems that
+>> this will fit your reference boards and you don't care about the
+>> other ones which uses that include.
+> 
+> In soc dtsi, this is giving default alias for two esdhc controllers.
+> This is not board specific.
+> That's natural esdhc0 is mmc0 and esdhc1 is mmc1.
 
-[  129.379701] ecspi2_root_clk already disabled
-[  129.384005] WARNING: CPU: 1 PID: 33 at drivers/clk/clk.c:952 clk_core_disable+0xa4/0xb0
+How could this be not board specific if there are at least three
+different use cases the board can choose from - and needs three
+different configurations:
 
-So add the get noresume function before set active.
+(1) eMMC at /dev/mmcblk0, SD card at /dev/mmcblk1
+(2) SD card at /dev/mmcblk0, eMMC at /dev/mmcblk1
+(3) no eMMC at all, SD card at /dev/mmcblk0
 
-Fixes: 43b6bf406cd0 spi: imx: fix runtime pm support for !CONFIG_PM
-Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
----
- drivers/spi/spi-imx.c | 1 +
- 1 file changed, 1 insertion(+)
+your include only support (1). If a board needs (2) or (3) it has to
+override the configuration in the _common_ include.
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 7513ef552d79..73ca821763d6 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -1659,6 +1659,7 @@ static int spi_imx_probe(struct platform_device *pdev)
- 
- 	pm_runtime_set_autosuspend_delay(spi_imx->dev, MXC_RPM_TIMEOUT);
- 	pm_runtime_use_autosuspend(spi_imx->dev);
-+	pm_runtime_get_noresume(spi_imx->dev);
- 	pm_runtime_set_active(spi_imx->dev);
- 	pm_runtime_enable(spi_imx->dev);
- 
--- 
-2.17.1
+>> And as Vladimir pointed out, what do you do if you just have the eMMC
+>> on the LS1028A. It will be mmcblk1 unless you do something like the
+>> following in the board dts:
+>> 
+>> mmc0 = &esdhc;
+>> /delete-property/ mmc1;
+>> 
+>> That is really cumbersome, isnt it?
+> 
+> The soc dtsi gives default alias to make esdhc0 as mmc0, and esdhc1 as
+> mmc1, the use case just needs to consider which esdhc controller is
+> used. That's fixed index for it.
+> No matter how the board is designed, there are two esdhc controllers
+> in soc. It's probed as mmc0 and mmc1.
+> It's use case that should choose the right mmc device. It is not the
+> dts that should be changed to suit use case.
+> If the board owner insists to change alias to make esdhc1 as mmc0, I
+> think no problem. Just do it in board dts to override the default one.
 
+Still, why would this be enforced in the common include? What is the
+advnatage here? I only see disadvantages.
+
+-michael
