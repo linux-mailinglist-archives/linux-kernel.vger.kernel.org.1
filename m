@@ -2,99 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259392C34C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFE92C34DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389307AbgKXXpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389255AbgKXXpJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:45:09 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC13CC0613D6;
-        Tue, 24 Nov 2020 15:45:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Tkitja/Eoegmpeva7rYWnAKrxKN18IlHRbTdli2tIQs=; b=DWNAujBGt91TCkwpe1ZmzKjyFt
-        hxR1cPGJ5Yf4BdO+jSBONh+Y1FbZyAFW1lTq1JDpuQjvYvACCTLl7nTKntYes8DoDOiiwu5zOb7zI
-        7NMOQkskk7DrLKqBfg+jJ5ioW/UUDlXqO2HBXLh1n/bJJqwNJBs1lNCSxhLdIVC572hC3rNQJMnEr
-        2JGukhY0lqbrZBofTU7x/4ONPZmjCHetDS/qNY8tb0M4keiUPVwBfT1U8vYCccxjqFkNhFJDvS6hN
-        ShctBBeQfZylaxCvXjU4P0RoVFisPlkjUCFyjXvraFqB1v7YPzxtvh/xYX6hHlCcWHbwMcGXtMa8W
-        zB54F0Ng==;
-Received: from [2602:306:c5a2:a380:9e7b:efff:fe40:2b26]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khhzY-0007Ab-F6; Tue, 24 Nov 2020 23:45:01 +0000
-Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <20201120231441.29911-2-ebiederm@xmission.com>
- <20201123175052.GA20279@redhat.com>
- <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
- <87im9vx08i.fsf@x220.int.ebiederm.org> <87pn42r0n7.fsf@x220.int.ebiederm.org>
- <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
- <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
-From:   Geoff Levand <geoff@infradead.org>
-Message-ID: <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org>
-Date:   Tue, 24 Nov 2020 15:44:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389547AbgKXXqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:46:39 -0500
+Received: from mail-bn7nam10on2061.outbound.protection.outlook.com ([40.107.92.61]:18657
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389323AbgKXXqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:46:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=em5KLt4IaWbAvdVaUCUZaRF+vgFWbnaa4NWE2tlusO16/x1y50PR/m1ppjpJLNqomiL3N/IEgZUmdfMW+9emBdzzK2YjgzKVFW3y1n/LBnDfv7vaXu7el0tv3tbvk6fXfWY4NSgCObVdw9504uBB6eU9TMqoYrgTYucZaDpvHLI4zFuDOmdAOeGHe7D67DHQTD1+C8pGHNHRZyLe+HOagqoMQD/rgm9xFskwWoNgBrgOhXxtvtGJ0GQKvZpK0gTvAP6kWCYlJncBtzHLxTMZ1AQymfL7Idp7U1vkotmDFewtlvhbefrbeTaZaNEXH/IRAf7Jom6RVLYfptyN55Y+Mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FQB3TzcSHFusmcxmChj4Q9VJ6xBFdyeiVnrb6Np0t3Q=;
+ b=cK9dFgvVUGnSbAQAvJwiMjVH+VksnoDfoVaoQEAmsdctVh120/K86+d3z3b6TCl3Rxz+QL7yUqF8Hzd4EF4lzvW1983DAmVei1YXwqBn0qk/rGBm1B/fJnO8x2Lsi00VNrhiBFx7RlwUfToRzSY1w6IG5ABFRcKx0ySY5TLBubt5p/giRFbLC7B/s7TAtlxqsjVcw/8Oqp5X93ugXQZuV5A0qFeEjcBrWnUM6eeeLCrYaQMKvOk78Bjj34c+qi8rgu43lKFtiKR2BEF5sgBtRBYlPYZeKkTWiNmyfv5nFnSG61cPeQvlb5MhmRFCndGqtXRGFb36828wrYUp69EKAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FQB3TzcSHFusmcxmChj4Q9VJ6xBFdyeiVnrb6Np0t3Q=;
+ b=CDxnmBraSi/PnNOZa9GV0Ui4DXmudOcaL1Wjf5OsMMZOTShIas3EK95fjyBe8Ok70UTOjjaqwVNnGYq8TYTRRkCQzOJ9ngkSUA60dv3L1MGk+5jzN1SYOpOuAW6Iw7AGAuYh+n0vixwcUENOHv4lZ+cIbjygQCKNsLUL7SE/fCg=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN1PR12MB2415.namprd12.prod.outlook.com (2603:10b6:802:26::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.30; Tue, 24 Nov
+ 2020 23:46:31 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 24 Nov 2020
+ 23:46:31 +0000
+Date:   Tue, 24 Nov 2020 23:46:22 +0000
+From:   Ashish Kalra <ashish.kalra@amd.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Borislav Petkov <bp@alien8.de>, hch@lst.de, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, jon.grimm@amd.com,
+        rientjes@google.com
+Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201124234622.GA16867@ashkalra_ubuntu_server>
+References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
+ <20201123170647.GE15044@zn.tnic>
+ <20201123175632.GA21539@char.us.oracle.com>
+ <20201123225631.GA16055@ashkalra_ubuntu_server>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123225631.GA16055@ashkalra_ubuntu_server>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM6PR06CA0023.namprd06.prod.outlook.com
+ (2603:10b6:5:120::36) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server (165.204.77.1) by DM6PR06CA0023.namprd06.prod.outlook.com (2603:10b6:5:120::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 23:46:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 67079098-311c-426e-d0ce-08d890d32a77
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2415:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2415FF44841E1B23F2161EA38EFB0@SN1PR12MB2415.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4CmIUzkSYuZKDFswjZNCn40zU9WH3q8ghzgjvtCV9Xt8bTZy11+bHfMcog00GIHcwPM9utf99CgESikg+HE9Gp8TOycZY3np9eZq2VP2M60O0IByuGn2YNhJHix6M9jRFZ1lmggruY9gwkCEXhf92DE3zLZ1u114Gw4uqGnn+WCK3J2fcXH7APuD3ip74PQy5YOtfnQxkLB6OPMoqwMoTshF3vyxQiHy01SKXTYiJud7kRephn2zhSGIGMcl0S9h9KShJwAhczmZ6VB9pYfzWoq0mVrFhkTaXM6eWgfd1nKLQD1IUkmAh0zAIVMxgZ3lJwtDvTabTXgAnE3OdX6hClFYp3/6eyMYa4pM1QJWo8emWsKW/eL7Pcj10gJ402gT2vC2plAV3+Mxixtwjochnw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(66946007)(16526019)(52116002)(33656002)(6666004)(66476007)(66556008)(7416002)(44832011)(45080400002)(6916009)(4326008)(83380400001)(316002)(8676002)(55016002)(9686003)(26005)(33716001)(966005)(186003)(8936002)(2906002)(1076003)(86362001)(5660300002)(478600001)(956004)(6496006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+cNg0HrcN+DMo50TiC3nOZQ7yBGbVWasqibKcFZ1SX13/I1ExGpKkNEgxh7y?=
+ =?us-ascii?Q?4PNys1zGt7fo8DCrrGHSmJ6uksm753Iah8cs5foWjV7iKXB18Llc0gZRUeXI?=
+ =?us-ascii?Q?qO0c6llw+pJIgZRUfV0umSY4NQFD0IHkGHRR+FL2hbOP8Td+a/de4UOybGvW?=
+ =?us-ascii?Q?u6U7kRYXNPqqqnygVsP7Fc7ZWbaTZQtrhHFpYugPlUc9U/uU/yH8wIpUsrLc?=
+ =?us-ascii?Q?f9Kyaj3Jmn6FYfO+YY8SmOvDVx6Pv8sVIQIv4vyrhmn6lKv2H1gvKDZGJ88T?=
+ =?us-ascii?Q?8c1+BfhfBbVicA3VPtgx6NzPI12JhqoHB0CCE7SQ3S/wInxv537cghjNxPr9?=
+ =?us-ascii?Q?2YDKeTsfDGh59lBY+u6uLxt+jC8fooWRgh18WR88EJ0uOP3gmTZFjH/WP/2r?=
+ =?us-ascii?Q?VHwH6JSfAN/dUiYe2Jdc2sXRZZj7l/J0TmVNTI0Mk5/vuxJv4EdYlM9Z13K3?=
+ =?us-ascii?Q?30LDSTC/tIsepDajnfENVSVqPOo1/Z+U6QBlNZ9LGwNpPFQ2j6USifLrnQ8h?=
+ =?us-ascii?Q?AE5Sl9oNaLJVZHVYvihTWLy0Y8PnfP/KpEFNHZU6y1+ptsz3aJhl+cXqwNFD?=
+ =?us-ascii?Q?i8CxTql5Tm94pB+o2YnJ+YlzLK3nVpGPc1BbgubvJAjIctyAI5iJRywoVMIa?=
+ =?us-ascii?Q?WA65ykJyCYEI6spLo5oEWiuwJjFjWIJyWGKrm7Vfbyv5mAGHBW50hyIZj8dM?=
+ =?us-ascii?Q?sgKLYXE/WrtQ2inFRlaL1/hHhoaDqK9OOpZDP0j8bL0HHw8AxQgbzB6aU7kC?=
+ =?us-ascii?Q?ljn05bdVufjUMxn9vYvy7RAPLTvv0goqeq2q5R4HczjFqd76MIe8hBROL2nj?=
+ =?us-ascii?Q?WtFu9tSl2KQNCtSxS/zifMSXgTNsA/tW1v6S3+8DLn8nWh4nhAIgRFAoX88a?=
+ =?us-ascii?Q?FvDcCIycuq1ZJANUje83KZ7Fi7Y9LqH5Fh3Jgonw12JqAz9aK7Xk5qTZ5bGY?=
+ =?us-ascii?Q?xqgfLQOE8WLx1mLeRxFsMQ9KP6hXa/BNpDeaeZwubKATOccyd+X3XWp7y4O4?=
+ =?us-ascii?Q?+ykM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67079098-311c-426e-d0ce-08d890d32a77
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 23:46:31.1442
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k2BC+9G0hKS2A0YRis86Lf1rdCp9yO9dAUSc7HNa2ymZmvQml9bqikj+V5Safz1J5GJWhrnFz1eipmycZKMBbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2415
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 12:14 PM, Arnd Bergmann wrote:
-> On Tue, Nov 24, 2020 at 8:58 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> On Tue, Nov 24, 2020 at 11:55 AM Eric W. Biederman
->> <ebiederm@xmission.com> wrote:
->>>
->>> If cell happens to be dead we can remove a fair amount of generic kernel
->>> code that only exists to support cell.
->>
->> Even if some people might still use cell (which sounds unlikely), I
->> think we can remove the spu core dumping code.
+Hello Konrad, 
+
+On Mon, Nov 23, 2020 at 10:56:31PM +0000, Ashish Kalra wrote:
+> Hello Konrad,
 > 
-> The Cell blade hardware (arch/powerpc/platforms/cell/) that I'm listed
-> as a maintainer for is very much dead, but there is apparently still some
-> activity on the Playstation 3 that Geoff Levand maintains.
+> On Mon, Nov 23, 2020 at 12:56:32PM -0500, Konrad Rzeszutek Wilk wrote:
+> > On Mon, Nov 23, 2020 at 06:06:47PM +0100, Borislav Petkov wrote:
+> > > On Thu, Nov 19, 2020 at 09:42:05PM +0000, Ashish Kalra wrote:
+> > > > From: Ashish Kalra <ashish.kalra@amd.com>
+> > > > 
+> > > > For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
+> > > > SEV uses SWIOTLB to make this happen without requiring changes to device
+> > > > drivers.  However, depending on workload being run, the default 64MB of
+> > > > SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
+> > > > for DMA, resulting in I/O errors and/or performance degradation for
+> > > > high I/O workloads.
+> > > > 
+> > > > Increase the default size of SWIOTLB for SEV guests using a minimum
+> > > > value of 128MB and a maximum value of 512MB, determining on amount
+> > > > of provisioned guest memory.
+> > > 
+> > > That sentence needs massaging.
+> > > 
+> > > > Using late_initcall() interface to invoke swiotlb_adjust() does not
+> > > > work as the size adjustment needs to be done before mem_encrypt_init()
+> > > > and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
+> > > > hence calling it explicitly from setup_arch().
+> > > 
+> > > "hence call it ... "
+> > > 
+> > > > 
+> > > > The SWIOTLB default size adjustment is added as an architecture specific
+> > > 
+> > > "... is added... " needs to be "Add ..."
+> > > 
+> > > > interface/callback to allow architectures such as those supporting memory
+> > > > encryption to adjust/expand SWIOTLB size for their use.
+> > > > 
+> > > > v5 fixed build errors and warnings as
+> > > > Reported-by: kbuild test robot <lkp@intel.com>
+> > > > 
+> > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > > > ---
+> > > >  arch/x86/kernel/setup.c   |  2 ++
+> > > >  arch/x86/mm/mem_encrypt.c | 32 ++++++++++++++++++++++++++++++++
+> > > >  include/linux/swiotlb.h   |  6 ++++++
+> > > >  kernel/dma/swiotlb.c      | 24 ++++++++++++++++++++++++
+> > > >  4 files changed, 64 insertions(+)
+> > > > 
+> > > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > > > index 3511736fbc74..b073d58dd4a3 100644
+> > > > --- a/arch/x86/kernel/setup.c
+> > > > +++ b/arch/x86/kernel/setup.c
+> > > > @@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
+> > > >  	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+> > > >  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+> > > >  
+> > > > +	swiotlb_adjust();
+> > > > +
+> > > >  	/*
+> > > >  	 * Reserve memory for crash kernel after SRAT is parsed so that it
+> > > >  	 * won't consume hotpluggable memory.
+> > > > diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> > > > index 3f248f0d0e07..c79a0d761db5 100644
+> > > > --- a/arch/x86/mm/mem_encrypt.c
+> > > > +++ b/arch/x86/mm/mem_encrypt.c
+> > > > @@ -490,6 +490,38 @@ static void print_mem_encrypt_feature_info(void)
+> > > >  }
+> > > >  
+> > > >  /* Architecture __weak replacement functions */
+> > > > +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
+> > > > +{
+> > > > +	unsigned long size = 0;
+> > > 
+> > > 	unsigned long size = iotlb_default_size;
+> > > 
+> > > > +
+> > > > +	/*
+> > > > +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
+> > > > +	 * SEV uses SWOTLB to make this happen without changing device
+> > > > +	 * drivers. However, depending on the workload being run, the
+> > > > +	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
+> > > 						     ^
+> > > 
+> > > Use words pls, not "&".
+> > > 
+> > > 
+> > > > +	 * run out of buffers for DMA, resulting in I/O errors and/or
+> > > > +	 * performance degradation especially with high I/O workloads.
+> > > > +	 * Increase the default size of SWIOTLB for SEV guests using
+> > > > +	 * a minimum value of 128MB and a maximum value of 512MB,
+> > > > +	 * depending on amount of provisioned guest memory.
+> > > > +	 */
+> > > > +	if (sev_active()) {
+> > > > +		phys_addr_t total_mem = memblock_phys_mem_size();
+> > > > +
+> > > > +		if (total_mem <= SZ_1G)
+> > > > +			size = max(iotlb_default_size, (unsigned long) SZ_128M);
+> > > > +		else if (total_mem <= SZ_4G)
+> > > > +			size = max(iotlb_default_size, (unsigned long) SZ_256M);
+> > 
+> > That is eating 128MB for 1GB, aka 12% of the guest memory allocated statically for this.
+> > 
+> > And for guests that are 2GB, that is 12% until it gets to 3GB when it is 8%
+> > and then 6% at 4GB.
+> > 
+> > I would prefer this to be based on your memory count, that is 6% of total
+> > memory. And then going forward we can allocate memory _after_ boot and then stich
+> > the late SWIOTLB pool and allocate on demand.
+> > 
+> > 
+> Ok. 
 > 
-> Eric correctly points out that the PS3 firmware no longer boots
-> Linux (OtherOS), but AFAIK there are both users with old firmware
-> and those that use a firmware exploit to run homebrew code including
-> Linux.
+> As i mentioned earlier, the patch was initially based on using a % of guest memory,
+> as below:
 > 
-> I would assume they still use the SPU and might also use the core
-> dump code in particular. Let's see what Geoff thinks.
+> +#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT        5
+> +#define SEV_ADJUST_SWIOTLB_SIZE_MAX    (1UL << 30)
+> ...
+> ...
+> +       if (sev_active() && !io_tlb_nslabs) {
+> +               unsigned long total_mem = get_num_physpages() <<
+> + PAGE_SHIFT;
+> +
+> +               default_size = total_mem *
+> +                       SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
+> +
+> +               default_size = ALIGN(default_size, 1 << IO_TLB_SHIFT);
+> +
+> +               default_size = clamp_val(default_size, IO_TLB_DEFAULT_SIZE,
+> +                       SEV_ADJUST_SWIOTLB_SIZE_MAX);
+> +       }
+> 
+> So a similar logic can be applied here.
+> 
+> > 
+> > > > +		else
+> > > > +			size = max(iotlb_default_size, (unsigned long) SZ_512M);
+> > > > +
+> > > > +		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV platform",
+> > > 
+> > > just "... for SEV" - no need for "platform".
+> > > 
+> > > ...
+> > > 
+> > > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > > > index c19379fabd20..3be9a19ea0a5 100644
+> > > > --- a/kernel/dma/swiotlb.c
+> > > > +++ b/kernel/dma/swiotlb.c
+> > > > @@ -163,6 +163,30 @@ unsigned long swiotlb_size_or_default(void)
+> > > >  	return size ? size : (IO_TLB_DEFAULT_SIZE);
+> > > >  }
+> > > >  
+> > > > +unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
+> > > > +{
+> > > > +	return 0;
+> > > 
+> > > That, of course, needs to return size, not 0.
+> > 
+> > This is not going to work for TDX. I think having a registration
+> > to SWIOTLB to have this function would be better going forward.
+> > 
+> > As in there will be a swiotlb_register_adjuster() which AMD SEV
+> > code can call at start, also TDX can do it (and other platforms).
+> > 
+> 
+> The question is how does mem_encrypt_init() work ?
+> 
+> That uses a similar logic as arch_swiotlb_adjust() as a "__weak"
+> function and i am sure it will also need to have added support for TDX,
+> can't both arch_swiotlb_adjust() and mem_encrypt_init() have specific
+> checks for active AMD/INTEL memory encryption technology and accordingly
+> perform actions, as mem_encrypt_init() currently checks for
+> sev_active().
+> 
+> init/main.c: 
+> 
+> void __init __weak mem_encrypt_init(void) { }
+> 
+> start_kernel()
+> {
+>    ..
+>    mem_encrypt_init();
+>    ..
+> }
+> 
+> arch/x86/mm/mem_encrypt.c: 
+>     
+> /* Architecture __weak replacement functions */
+> 
+> void __init mem_encrypt_init(void)
+> {
+>         if (!sme_me_mask)
+>                 return;
+> 
+>         /* Call into SWIOTLB to update the SWIOTLB DMA buffers */
+>         swiotlb_update_mem_attributes();
+> 
+>         /*
+>          * With SEV, we need to unroll the rep string I/O instructions.
+>          */
+>         if (sev_active())
+>                 static_branch_enable(&sev_enable_key);
+> ...
+> ...
+> 
 
-There are still PS3-Linux users out there.  They use 'Homebrew' firmware
-released through 'Hacker' forums that allow them to run Linux on
-non-supported systems.  They are generally hobbies who don't post to
-Linux kernel mailing lists.  I get direct inquiries regularly asking
-about how to update to a recent kernel.  One of the things that attract
-them to the PS3 is the Cell processor and either using or programming
-the SPUs.
+Your thoughts on this ?
 
-It is difficult to judge how much use the SPU core dump support gets,
-but if it is not a cause of major problems I feel we should consider
-keeping it.
+Thanks,
+Ashish
 
--Geoff
-
+> 
+> > > 
+> > > > +}
+> > > > +
+> > > > +void __init swiotlb_adjust(void)
+> > > > +{
+> > > > +	unsigned long size;
+> > > > +
+> > > > +	/*
+> > > > +	 * If swiotlb parameter has not been specified, give a chance to
+> > > > +	 * architectures such as those supporting memory encryption to
+> > > > +	 * adjust/expand SWIOTLB size for their use.
+> > > > +	 */
+> > > 
+> > > And when you preset the function-local argument "size" with the size
+> > > coming in as the size argument of arch_swiotlb_adjust()...
+> > > 
+> > > > +	if (!io_tlb_nslabs) {
+> > > > +		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
+> > > > +		if (size) {
+> > > 
+> > > ... you don't have to do if (size) here either but simply use size to
+> > > compute io_tlb_nslabs, I'd say.
+> > > 
+> > > Thx.
+> > > 
+> > > -- 
+> > > Regards/Gruss,
+> > >     Boris.
+> > > 
+> > > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7CAshish.Kalra%40amd.com%7Cebd4a85f98f44bdfcb5408d88fd8dfac%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637417508926083910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Ub9PjAPzhDWr7K2iQggTAXwgg4VbORxP%2F%2Fcg6gQreCc%3D&amp;reserved=0
