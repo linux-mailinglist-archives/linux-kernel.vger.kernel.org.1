@@ -2,116 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AF32C1DE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8271A2C1DEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbgKXGIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:08:15 -0500
-Received: from mga06.intel.com ([134.134.136.31]:47294 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729472AbgKXGIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:08:13 -0500
-IronPort-SDR: N6CajM/9X0OWyIN8QWFV+9WRFPRMRJC3i+rOXweeiG7w/2G/dGdiqL4Y9lbDtTscdx7K8SlwSX
- HuTi+hyfePLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="233504045"
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="233504045"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 22:08:13 -0800
-IronPort-SDR: kXiqK5kkYEw8PWEc8T5dcga78jp44smEtUsFyYb5/zY3t6D9fGe2JMFe6RVWipJ+wdBOUf7mQ/
- xM1WmOGTetfg==
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="478391608"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 22:08:13 -0800
-From:   ira.weiny@intel.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Steve French <sfrench@samba.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Brian King <brking@us.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 17/17] samples: Use memcpy_to/from_page()
-Date:   Mon, 23 Nov 2020 22:07:55 -0800
-Message-Id: <20201124060755.1405602-18-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20201124060755.1405602-1-ira.weiny@intel.com>
-References: <20201124060755.1405602-1-ira.weiny@intel.com>
+        id S1729552AbgKXGIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:08:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729532AbgKXGIb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:08:31 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAA3C0613CF;
+        Mon, 23 Nov 2020 22:08:31 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id 11so5781209oty.9;
+        Mon, 23 Nov 2020 22:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZoZU9eeGMyzNoZxXOK3ZAEdDwa+QPOxbaHh7UFCT0wc=;
+        b=XU4lpBhv0aFJugQfK3M7VhAgUUnP7WAOSflhvzSNStfOtxkfRXCc33wrAtApXdxuZQ
+         0+wviGLOV8JIq5EIbaOxmNue5mn9sLh+kZfbO8g3f0TCCgr2jKigT0nuuc45hcrtFTxu
+         KZ+DM9mJxiyKuCSOOWccDSvGb8QlBXakSqTplL7bKxboHoQo8lI+LPpwgYZLCXS3anlJ
+         BBsLrHs8tdWFbz6tPEvWlCBXYCdU/kujokGhWELriRgsaKcf/OT/aFgkZoX+N9y4Hz+t
+         vitCLLvUCycIjOxCJx6Hj5G6AdT0achcPDXvBthueRW5QnPiMX2niAzlk/fWoHQISdkc
+         4H4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZoZU9eeGMyzNoZxXOK3ZAEdDwa+QPOxbaHh7UFCT0wc=;
+        b=Ahy3KYSL9q0cpcYd1P6pXVbbd2n/RcK3DlOHHnnklBafgf1btjPH3f9nBdd7Nwueow
+         yt5UV1aZTSHChDMkM2d1EUyWH9lFM2FmhziXrfcp0HIKO6Bc1rocp/rkUUH2fb+6Pmzu
+         2fTXGdwqY4k03n8FH0YHMuwYlL+K4iQl+iZ5DjmSxA8BQBUqvG4D4a1oR1HiIWMGOsEw
+         fDnh4L8sZLzQTmKqZqVXI+k5hosJ+tmcRGGHmmzbh8s7Yn5tcZTogQHVDk+/dMnAPkHE
+         bphHFildR98wAr9zTm2zIHGqaZmW0orT171ztbh6SOaIQDcg/ZgOdfDyg8/7fmXGmV+s
+         cp8w==
+X-Gm-Message-State: AOAM530LqDz3vuqB1hNuDXZ7eBUS3M7EV7pNqFAyLtOKDtMa5oEJCXMV
+        yuBPxBzEcwluHDfp0hJBwCdRtBNnMjjpx1FtPhg=
+X-Google-Smtp-Source: ABdhPJxqWi0nnt7tIixUs46SG2tN319LJI4mJNVEAoecxwy6G+vIYHSn4lvL5dTmY6x9slv4vBfl76GjJMdINAew5y8=
+X-Received: by 2002:a9d:6c99:: with SMTP id c25mr2342006otr.327.1606198110129;
+ Mon, 23 Nov 2020 22:08:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605696462-391-2-git-send-email-gene.chen.richtek@gmail.com>
+ <3164b1ed-9e47-88cd-d492-ff5a9243e5ef@gmail.com> <CAE+NS350vuY1qNwn4_7ow8Z22_DfHrJAnKX1dsFM_WbaHziZiw@mail.gmail.com>
+ <5c4a5780-afec-fa7f-307e-b969192ec677@gmail.com>
+In-Reply-To: <5c4a5780-afec-fa7f-307e-b969192ec677@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 24 Nov 2020 14:08:19 +0800
+Message-ID: <CAE+NS36yU_ho5eV=j2rd36XqGXBKj3d8KP-bsrCCnWvxzV3Afw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/5] leds: flash: Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=
+=9C=8824=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=885:07=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> On 11/23/20 4:20 AM, Gene Chen wrote:
+> > Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=
+=E6=9C=8820=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=886:29=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+> >>
+> >> Hi Gene,
+> >>
+> >> On 11/18/20 11:47 AM, Gene Chen wrote:
+> >>> From: Gene Chen <gene_chen@richtek.com>
+> >>>
+> >>> Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+> >>>
+> >>> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> >>> ---
+> >>>    include/linux/led-class-flash.h | 36 +++++++++++++++++++++++++++++=
++++++++
+> >>>    1 file changed, 36 insertions(+)
+> >>>
+> >>> diff --git a/include/linux/led-class-flash.h b/include/linux/led-clas=
+s-flash.h
+> >>> index 21a3358..4f56c28 100644
+> >>> --- a/include/linux/led-class-flash.h
+> >>> +++ b/include/linux/led-class-flash.h
+> >>> @@ -85,6 +85,7 @@ static inline struct led_classdev_flash *lcdev_to_f=
+lcdev(
+> >>>        return container_of(lcdev, struct led_classdev_flash, led_cdev=
+);
+> >>>    }
+> >>>
+> >>> +#if IS_ENABLED(CONFIG_LEDS_CLASS_FLASH)
+> >>>    /**
+> >>>     * led_classdev_flash_register_ext - register a new object of LED =
+class with
+> >>>     *                               init data and with support for fl=
+ash LEDs
+> >>> @@ -127,6 +128,41 @@ static inline int devm_led_classdev_flash_regist=
+er(struct device *parent,
+> >>>    void devm_led_classdev_flash_unregister(struct device *parent,
+> >>>                                        struct led_classdev_flash *fle=
+d_cdev);
+> >>>
+> >>> +#else
+> >>> +
+> >>> +static inline int led_classdev_flash_register_ext(struct device *par=
+ent,
+> >>> +                                 struct led_classdev_flash *fled_cde=
+v,
+> >>> +                                 struct led_init_data *init_data)
+> >>> +{
+> >>> +     return -EINVAL;
+> >>
+> >> s/-EINVAL/0/
+> >>
+> >> The goal here is to assure that client will not fail when using no-op.
+> >>
+> >>> +}
+> >>> +
+> >>> +static inline int led_classdev_flash_register(struct device *parent,
+> >>> +                                        struct led_classdev_flash *f=
+led_cdev)
+> >>> +{
+> >>> +     return led_classdev_flash_register_ext(parent, fled_cdev, NULL)=
+;
+> >>> +}
+> >>
+> >> This function should be placed after #ifdef block because its
+> >> shape is the same for both cases.
+> >>
+> >>> +static inline void led_classdev_flash_unregister(struct led_classdev=
+_flash *fled_cdev) {};
+> >>> +static inline int devm_led_classdev_flash_register_ext(struct device=
+ *parent,
+> >>> +                                  struct led_classdev_flash *fled_cd=
+ev,
+> >>> +                                  struct led_init_data *init_data)
+> >>> +{
+> >>> +     return -EINVAL;
+> >>
+> >> /-EINVAL/0/
+> >>
+> >> Please do the same fix in all no-ops in the led-class-multicolor.h,
+> >> as we've discussed.
+> >>
+> >
+> > I think return -EINVAL is correct, because I should register flash
+> > light device if I define FLED in DTS node.
+>
+> I don't quite follow your logic here.
+>
+> No-op function's purpose is to simplify the code on the caller's side.
+> Therefore it should report success.
+>
+> Please return 0 from it.
+>
 
-Remove kmap/mem*()/kunmap pattern and use memcpy_to/from_page()
+Just like those functions in led-class-multicolor.h, caller may use
+return value to check whether FLED is registered successfully or not.
+For this case, is returning 0 a little bit misleading?
 
-Cc: Kirti Wankhede <kwankhede@nvidia.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- samples/vfio-mdev/mbochs.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/samples/vfio-mdev/mbochs.c b/samples/vfio-mdev/mbochs.c
-index e03068917273..54fe04f63c66 100644
---- a/samples/vfio-mdev/mbochs.c
-+++ b/samples/vfio-mdev/mbochs.c
-@@ -30,6 +30,7 @@
- #include <linux/iommu.h>
- #include <linux/sysfs.h>
- #include <linux/mdev.h>
-+#include <linux/pagemap.h>
- #include <linux/pci.h>
- #include <linux/dma-buf.h>
- #include <linux/highmem.h>
-@@ -442,7 +443,6 @@ static ssize_t mdev_access(struct mdev_device *mdev, char *buf, size_t count,
- 	struct device *dev = mdev_dev(mdev);
- 	struct page *pg;
- 	loff_t poff;
--	char *map;
- 	int ret = 0;
- 
- 	mutex_lock(&mdev_state->ops_lock);
-@@ -479,12 +479,10 @@ static ssize_t mdev_access(struct mdev_device *mdev, char *buf, size_t count,
- 		pos -= MBOCHS_MMIO_BAR_OFFSET;
- 		poff = pos & ~PAGE_MASK;
- 		pg = __mbochs_get_page(mdev_state, pos >> PAGE_SHIFT);
--		map = kmap(pg);
- 		if (is_write)
--			memcpy(map + poff, buf, count);
-+			memcpy_to_page(pg, poff, buf, count);
- 		else
--			memcpy(buf, map + poff, count);
--		kunmap(pg);
-+			memcpy_from_page(buf, pg, poff, count);
- 		put_page(pg);
- 
- 	} else {
--- 
-2.28.0.rc0.12.gb6a658bd00c9
-
+> --
+> Best regards,
+> Jacek Anaszewski
