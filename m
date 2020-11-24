@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9462C26D2
+	by mail.lfdr.de (Postfix) with ESMTP id EAB6A2C26D3
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387866AbgKXNIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:08:55 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:45306 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387752AbgKXNIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:08:55 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxStDUBb1fLf4VAA--.35257S2;
-        Tue, 24 Nov 2020 21:08:36 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Seth Heasley <seth.heasley@intel.com>,
-        Neil Horman <nhorman@tuxdriver.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: busses: Use dma_set_mask_and_coherent
-Date:   Tue, 24 Nov 2020 21:08:35 +0800
-Message-Id: <1606223315-13390-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxStDUBb1fLf4VAA--.35257S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFW8KFWfJrW8Kw4xAF4Utwb_yoWkCwb_tw
-        10qF92gFsYyr90v347KFW5Xr95t3yrZ34DZF1vy3WI9ry3uwsxJa17uFykAF4UZFsrJFya
-        g3WvyrZ5ArWjvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
-        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW5GwCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
-        CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUsw0eDUUUU
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S2387878AbgKXNJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:09:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387608AbgKXNJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:09:15 -0500
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C67B206D9;
+        Tue, 24 Nov 2020 13:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606223354;
+        bh=Xh1vCN+rL0BKrEhzFG6M2g6EJUZDfporWFoD+/Xd/6Q=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=wbg8QWxvwQNSIi6UB8ll+el+Qs/ISl1QWFTGV/qgEPZMaUaBknehJhpPmrw4Zj+K0
+         V3xUMjYpI3MywrJx9SteXln8HOjIykdQRRNa4VhZMyuWK2/SJ/lw6E4Z3cQL2SyqKH
+         PYNL5hJshvIZfJk68XITP+GkFtDfaCik2/OdpkmQ=
+Message-ID: <890e73cac81113e5958a39789fa119b7437bb191.camel@kernel.org>
+Subject: Re: [PATCH v2] ceph: add ceph.caps vxattr
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Luis Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 24 Nov 2020 08:09:12 -0500
+In-Reply-To: <20201123173846.15045-1-lhenriques@suse.de>
+References: <a12a732b67245cc02344405f7dd9fef4f3b47fbc.camel@kernel.org>
+         <20201123173846.15045-1-lhenriques@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+On Mon, 2020-11-23 at 17:38 +0000, Luis Henriques wrote:
+> Add a new vxattr that allows userspace to list the caps for a specific
+> directory or file.
+> 
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> ---
+> Hi!
+> 
+> Here's a version that also shows the caps in hexadecimal format, as
+> suggested by Jeff.  IMO the parenthesis and the '0x' prefix help the
+> readability, but they may make it a bit harder for scripts to parsing the
+> output.  I'm OK dropping those.
+> 
+> Cheers,
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- drivers/i2c/busses/i2c-ismt.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Looks good, merged into "testing".
 
-diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
-index a35a27c..5f49830 100644
---- a/drivers/i2c/busses/i2c-ismt.c
-+++ b/drivers/i2c/busses/i2c-ismt.c
-@@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		return -ENODEV;
- 	}
- 
--	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) != 0) ||
--	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) != 0)) {
--		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) ||
--		    (pci_set_consistent_dma_mask(pdev,
--						 DMA_BIT_MASK(32)) != 0)) {
-+	if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(64)) != 0)
-+		if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32)) != 0) {
- 			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
- 				pdev);
- 			return -ENODEV;
- 		}
--	}
- 
- 	err = ismt_dev_init(priv);
- 	if (err)
+I did make a slight change to the format -- instead of putting the hex
+value in parenthesis, I separated the two fields with a /, which I think
+should make things easier for scripts to parse.
+
+You should be able to do something like this to get at the hex value for
+testing:
+
+    $ getfattr -n ceph.caps foo | cut -d / -f2
+
+Let me know if you see issues with that and we can revisit the format.
+
+Thanks!
 -- 
-2.1.0
+Jeff Layton <jlayton@kernel.org>
 
