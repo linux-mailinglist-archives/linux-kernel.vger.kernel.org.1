@@ -2,89 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A482C2B80
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 284632C2B90
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389790AbgKXPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:38:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        id S2389801AbgKXPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:38:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389277AbgKXPiE (ORCPT
+        with ESMTP id S2389715AbgKXPit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:38:04 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18A1C0613D6;
-        Tue, 24 Nov 2020 07:38:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=gemFyzpNjNLon40XFhSL9X2QjE/xiw9/g4FNTnG3Ym4=; b=D8CkwFXXZblYfDir5fESdil6h
-        NJyGgTiXqzqCcZfxLA8A8+baS9eDHlGG1kk8H9YaehBBDfvIICFz31qIDxAeTVL4fJ50/QDIv3Aul
-        xaA2bie40QhHP5Y6iQKZuO9ESIwZBYCb55pFpbPEEWFSytwA1c1oEZzD+Uoo64odChsrldM4fURpV
-        YmsVpGK0Vv+RZWqdcBW+znGKeLK6Em3GxajInaLTTbft1RKaJUmeKbsc7gcAWLPXtKqy5ZPpCGJhu
-        UqKRl51EIlxSR6R0s8ohVoP8Nx7V+6Api/6lE/zcji2uszEmAUpEmPcvevOwkOs8T4sbYRxMSOUan
-        Dvo0U0w4w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35544)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1khaOC-0007tb-AP; Tue, 24 Nov 2020 15:37:56 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1khaO6-0007S6-L7; Tue, 24 Nov 2020 15:37:50 +0000
-Date:   Tue, 24 Nov 2020 15:37:50 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Antonio Borneo <antonio.borneo@st.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Yonglong Liu <liuyonglong@huawei.com>, stable@vger.kernel.org,
-        linuxarm@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
-Message-ID: <20201124153750.GH1551@shell.armlinux.org.uk>
-References: <20201124143848.874894-1-antonio.borneo@st.com>
- <20201124145647.GF1551@shell.armlinux.org.uk>
- <bd83b9c15f6cfed5df90da4f6b50d1a3f479b831.camel@st.com>
+        Tue, 24 Nov 2020 10:38:49 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA58C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:38:49 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id u12so22834689wrt.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:38:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kEyLf8LFch+KdsSp/Rnz95CvSLqxxYSUroQ+WOd06N4=;
+        b=R8lV2o5TDdkXVFg+npOQOfmTr894UuBL+hiZgpOvOeemCAGJLSxzNsjKPmbqTtaUBV
+         df3z1UFF5oKZaN5ZQr91KwUZQ6ERHZqqQx0vdG6is+IDe89rDGCvNsXovvJQ5Kdp+51K
+         7t350VA05XF6rpHuFim6dpw29CirGR9tsMJuQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kEyLf8LFch+KdsSp/Rnz95CvSLqxxYSUroQ+WOd06N4=;
+        b=UDpaMba/NDNK/kUikHl0d+CkaeM43+rNnGaqBXMYBeIprAq4kDnXjpWSA1GBzkxOxv
+         JSSLcRAd6C28/Vf7hjdoSDLuuTL1kCw7c+suerakrUwIjlnuUmgyIBUDylmiXJf2DFOs
+         5CULcapaNLWrSXrsgcq/O67NAZlFtNFn7PiPB7vk7ktNnj4cBKAhnl9TnvjDg3h3na3N
+         fcJCvw1q5JYDAC4CSxn9SRoFLe4z6Ewtme9kF0yAQihk3dIH7MmOUw++TKpuY/sZhT4V
+         veHgpHZd9vaDlRqCQp6JVEJLkMU84ag9f0Mfrte2Yo09yeAoghein0dbkiEhHTEOFw65
+         5m2g==
+X-Gm-Message-State: AOAM532VH/63bU6mAmwNGisOz0DTLgodb1NbZ23G4p8P43e9mLuPksR6
+        9YlWU+eKuWiFMjJyEorf9nTHjg==
+X-Google-Smtp-Source: ABdhPJyTWs2twpXLViHJQD11LS9U4IjfLcUt+cmKdO9Gzz+al2IGsYQUFvlDboFYPvWNuaA9EeR8BQ==
+X-Received: by 2002:a5d:544e:: with SMTP id w14mr5889967wrv.227.1606232327782;
+        Tue, 24 Nov 2020 07:38:47 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id 25sm5814752wmk.19.2020.11.24.07.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 07:38:47 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+Subject: [PATCH 1/6] dma-mapping: remove the {alloc,free}_noncoherent methods
+Date:   Tue, 24 Nov 2020 16:38:40 +0100
+Message-Id: <20201124153845.132207-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bd83b9c15f6cfed5df90da4f6b50d1a3f479b831.camel@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 04:17:42PM +0100, Antonio Borneo wrote:
-> On Tue, 2020-11-24 at 14:56 +0000, Russell King - ARM Linux admin wrote:
-> > Userspace doesn't expect the advertising mask to change beneath it.
-> > Since updates from userspace are done using a read-modify-write of
-> > the ksettings, this can have the undesired effect of removing 1G
-> > from the configured advertising mask.
-> > 
-> > We've had other PHYs have this behaviour; the correct solution is for
-> > the PHY driver to implement reading the resolution from the PHY rather
-> > than relying on the generic implementation if it can down-shift
-> 
-> If it's already upstream, could you please point to one of the phy driver
-> that already implements this properly?
+From: Christoph Hellwig <hch@lst.de>
 
-Reading the resolved information is PHY specific as it isn't
-standardised.
+It turns out allowing non-contigous allocations here was a rather bad
+idea, as we'll now need to define ways to get the pages for mmaping
+or dma_buf sharing.  Revert this change and stick to the original
+concept.  A different API for the use case of non-contigous allocations
+will be added back later.
 
-Marvell PHYs have read the resolved information for a very long time.
-I added support for it to at803x.c:
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/iommu/dma-iommu.c   | 30 ------------------------------
+ include/linux/dma-map-ops.h |  5 -----
+ kernel/dma/mapping.c        | 33 ++++++---------------------------
+ 3 files changed, 6 insertions(+), 62 deletions(-)
 
-06d5f3441b2e net: phy: at803x: use operating parameters from PHY-specific status
-
-after it broke for exactly the reason you're reporting for your PHY.
-
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 0cbcd3fc3e7e..73249732afd3 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -1054,34 +1054,6 @@ static void *iommu_dma_alloc(struct device *dev, size_t size,
+ 	return cpu_addr;
+ }
+ 
+-#ifdef CONFIG_DMA_REMAP
+-static void *iommu_dma_alloc_noncoherent(struct device *dev, size_t size,
+-		dma_addr_t *handle, enum dma_data_direction dir, gfp_t gfp)
+-{
+-	if (!gfpflags_allow_blocking(gfp)) {
+-		struct page *page;
+-
+-		page = dma_common_alloc_pages(dev, size, handle, dir, gfp);
+-		if (!page)
+-			return NULL;
+-		return page_address(page);
+-	}
+-
+-	return iommu_dma_alloc_remap(dev, size, handle, gfp | __GFP_ZERO,
+-				     PAGE_KERNEL, 0);
+-}
+-
+-static void iommu_dma_free_noncoherent(struct device *dev, size_t size,
+-		void *cpu_addr, dma_addr_t handle, enum dma_data_direction dir)
+-{
+-	__iommu_dma_unmap(dev, handle, size);
+-	__iommu_dma_free(dev, size, cpu_addr);
+-}
+-#else
+-#define iommu_dma_alloc_noncoherent		NULL
+-#define iommu_dma_free_noncoherent		NULL
+-#endif /* CONFIG_DMA_REMAP */
+-
+ static int iommu_dma_mmap(struct device *dev, struct vm_area_struct *vma,
+ 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+ 		unsigned long attrs)
+@@ -1152,8 +1124,6 @@ static const struct dma_map_ops iommu_dma_ops = {
+ 	.free			= iommu_dma_free,
+ 	.alloc_pages		= dma_common_alloc_pages,
+ 	.free_pages		= dma_common_free_pages,
+-	.alloc_noncoherent	= iommu_dma_alloc_noncoherent,
+-	.free_noncoherent	= iommu_dma_free_noncoherent,
+ 	.mmap			= iommu_dma_mmap,
+ 	.get_sgtable		= iommu_dma_get_sgtable,
+ 	.map_page		= iommu_dma_map_page,
+diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+index a5f89fc4d6df..3d1f91464bcf 100644
+--- a/include/linux/dma-map-ops.h
++++ b/include/linux/dma-map-ops.h
+@@ -22,11 +22,6 @@ struct dma_map_ops {
+ 			gfp_t gfp);
+ 	void (*free_pages)(struct device *dev, size_t size, struct page *vaddr,
+ 			dma_addr_t dma_handle, enum dma_data_direction dir);
+-	void *(*alloc_noncoherent)(struct device *dev, size_t size,
+-			dma_addr_t *dma_handle, enum dma_data_direction dir,
+-			gfp_t gfp);
+-	void (*free_noncoherent)(struct device *dev, size_t size, void *vaddr,
+-			dma_addr_t dma_handle, enum dma_data_direction dir);
+ 	int (*mmap)(struct device *, struct vm_area_struct *,
+ 			void *, dma_addr_t, size_t, unsigned long attrs);
+ 
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 51bb8fa8eb89..d3032513c54b 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -514,40 +514,19 @@ EXPORT_SYMBOL_GPL(dma_free_pages);
+ void *dma_alloc_noncoherent(struct device *dev, size_t size,
+ 		dma_addr_t *dma_handle, enum dma_data_direction dir, gfp_t gfp)
+ {
+-	const struct dma_map_ops *ops = get_dma_ops(dev);
+-	void *vaddr;
+-
+-	if (!ops || !ops->alloc_noncoherent) {
+-		struct page *page;
+-
+-		page = dma_alloc_pages(dev, size, dma_handle, dir, gfp);
+-		if (!page)
+-			return NULL;
+-		return page_address(page);
+-	}
++	struct page *page;
+ 
+-	size = PAGE_ALIGN(size);
+-	vaddr = ops->alloc_noncoherent(dev, size, dma_handle, dir, gfp);
+-	if (vaddr)
+-		debug_dma_map_page(dev, virt_to_page(vaddr), 0, size, dir,
+-				   *dma_handle);
+-	return vaddr;
++	page = dma_alloc_pages(dev, size, dma_handle, dir, gfp);
++	if (!page)
++		return NULL;
++	return page_address(page);
+ }
+ EXPORT_SYMBOL_GPL(dma_alloc_noncoherent);
+ 
+ void dma_free_noncoherent(struct device *dev, size_t size, void *vaddr,
+ 		dma_addr_t dma_handle, enum dma_data_direction dir)
+ {
+-	const struct dma_map_ops *ops = get_dma_ops(dev);
+-
+-	if (!ops || !ops->free_noncoherent) {
+-		dma_free_pages(dev, size, virt_to_page(vaddr), dma_handle, dir);
+-		return;
+-	}
+-
+-	size = PAGE_ALIGN(size);
+-	debug_dma_unmap_page(dev, dma_handle, size, dir);
+-	ops->free_noncoherent(dev, size, vaddr, dma_handle, dir);
++	dma_free_pages(dev, size, virt_to_page(vaddr), dma_handle, dir);
+ }
+ EXPORT_SYMBOL_GPL(dma_free_noncoherent);
+ 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.29.2.454.gaff20da3a2-goog
+
