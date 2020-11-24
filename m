@@ -2,107 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C8D2C258F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46972C2592
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387541AbgKXMTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387521AbgKXMTy (ORCPT
+        id S2387484AbgKXMWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:22:39 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50310 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732603AbgKXMWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:19:54 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5AAC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:19:53 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1khXIQ-0001FJ-1W; Tue, 24 Nov 2020 13:19:46 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1khXIO-0005Ik-NF; Tue, 24 Nov 2020 13:19:44 +0100
-Date:   Tue, 24 Nov 2020 13:19:43 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 3/4] amba: Make the remove callback return void
-Message-ID: <20201124121943.72etfmpubis6jw3l@pengutronix.de>
-References: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
- <20201124103242.2971199-3-u.kleine-koenig@pengutronix.de>
- <CAK8P3a0xz8Yf37GVntdyP-npKJ5N7jKH16JdcYL-a214KsXaEg@mail.gmail.com>
+        Tue, 24 Nov 2020 07:22:38 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AOCMTx4115256;
+        Tue, 24 Nov 2020 06:22:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606220549;
+        bh=x24vlfzLyE77QIt6cp3BSR5WjGdYPmRgvAFaen/KIJc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QIkKAb25Vuey29w6HX8Ow0PzHRBn2OctfRqZsdPNPgBa3ChpUQdeFiMlQ18c4X/RT
+         j20EGTEkcBJl1jFhb84N7R73d47IwcBVSlRXUNmHGlZMrie19Xx+s14DwOfwexOtHG
+         3726w3BfWGVNO2H22LWn8XTMaZdipy7a/p4/RfC8=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AOCMTqw008568
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 24 Nov 2020 06:22:29 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 24
+ Nov 2020 06:22:28 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 24 Nov 2020 06:22:28 -0600
+Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AOCMQNf099790;
+        Tue, 24 Nov 2020 06:22:26 -0600
+Subject: Re: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch
+ class"
+To:     Peter Chen <peter.chen@nxp.com>
+CC:     "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
+        "pawell@cadence.com" <pawell@cadence.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201123115051.30047-1-rogerq@ti.com>
+ <20201124064242.GA32310@b29397-desktop>
+ <89067b6a-5b94-d7d2-b07a-f434c9e5e2bd@ti.com>
+ <DBBPR04MB797982E6E190F0C0E0980F258BFB0@DBBPR04MB7979.eurprd04.prod.outlook.com>
+ <bdb2b4cb-686e-9283-bc66-78808b92c349@ti.com>
+ <20201124114641.GA9929@b29397-desktop>
+From:   Roger Quadros <rogerq@ti.com>
+Message-ID: <1c4fb95a-97b7-9022-7062-8fafcfe42c3d@ti.com>
+Date:   Tue, 24 Nov 2020 14:22:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zq5jbqs3ok2srepm"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0xz8Yf37GVntdyP-npKJ5N7jKH16JdcYL-a214KsXaEg@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201124114641.GA9929@b29397-desktop>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Peter,
 
---zq5jbqs3ok2srepm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 24/11/2020 13:47, Peter Chen wrote:
+> On 20-11-24 12:33:34, Roger Quadros wrote:
+>>>>>
+>>>>> I am sorry about that. Do you use role switch /sys entry, if you have
+>>>>> used, I prefer using "usb-role-switch" property at dts to judge if SoC
+>>>>> OTG signals or external signals for role switch. If you have not used
+>>>>> it, I prefer only setting cdns->role_sw for role switch use cases.
+>>>>>
+>>>>
+>>>> We use both hardware role switch and /sys entries for manually forcing a
+>>>> certain role.
+>>>>
+>>>> We do not set any "usb-role-switch" property at DTS.
+>>>>
+>>>> Currently cdns->role_sw is being always set by driver irrespective of any DT
+>>>> property, so this patch is clearly wrong and needs to be reverted.
+>>>>
+>>>> What do you think?
+>>>>
+>>>
+>>> Could you accept below fix?
+>>>
+>>> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+>>> index 2e469139769f..fdd52e87a7b2 100644
+>>> --- a/drivers/usb/cdns3/core.c
+>>> +++ b/drivers/usb/cdns3/core.c
+>>> @@ -280,8 +280,8 @@ int cdns3_hw_role_switch(struct cdns3 *cdns)
+>>>           enum usb_role real_role, current_role;
+>>>           int ret = 0;
+>>>
+>>> -       /* Depends on role switch class */
+>>> -       if (cdns->role_sw)
+>>> +       /* quit if switch role through external signals */
+>>> +       if (device_property_read_bool(cdns->dev, "usb-role-switch"))
+>>>                   return 0;
+>>>
+>>>           pm_runtime_get_sync(cdns->dev);
+>>
+>> Although this will fix the issue I don't think this is making the driver to behave
+>> as expected with usb-role-switch property.
+>>
+>> Now, even if usb-role-switch property is not present the driver will still register
+>> the role switch driver.
+>>
+>> I think we need to register the role switch driver only if usb-role-switch property
+>> is present. We would also need to set the default role if role-switch-default-mode is present.
+>>
+>> How about the following? It still doesn't handle role-switch-default-mode property though.
+>>
+> 
+> Roger, you said you also use /sys entries (I suppose it means through role
+> switch class) to do role switch, with your change, there will be no /sys
+> entry for role switch.
 
-On Tue, Nov 24, 2020 at 12:48:05PM +0100, Arnd Bergmann wrote:
-> On Tue, Nov 24, 2020 at 11:32 AM Uwe Kleine-K=F6nig
-> <u.kleine-koenig@pengutronix.de> wrote:
-> >
-> > Most amba drivers return 0 in their remove callback. Together with the
-> > driver core ignoring the return value anyhow, it doesn't make sense to
-> > return a value here.
-> >
-> > So add a warning to the only driver that could return an error code and
-> > change the remove prototype to return void, which makes it explicit that
-> > returning an error value doesn't work as expected. This simplifies chan=
-ging
-> > the core remove callback to return void, too.
-> >
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
->=20
-> Makes sense, I checked that the vfio driver cannot actually return an err=
-or
-> either, the 'if (vdev)' check seems to be done out of unnecessary caution,
-> as the probe would never have succeeded if that was NULL.
+Sorry for the confusion. Although we do need both features (SW role switch + HW role switch)
+I don't think it is required to operate simultaneously. If users need SW control they can set the DT flag.
 
-Yes I thought this possible, but didn't tried to wrap my head around the
-logic there. IMHO this warrants a cleanup, will address this in v2.
+cheers,
+-roger
 
-Thanks for your feedback,
-Uwe
+> 
+> Peter
+> 
+>>>> We use both hardware role switch and /sys entries for manually forcing a
+>>>> certain role.
+> 
+> 
+> 
+> 
+>> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+>> index 4c1445cf2ad0..986b56a9940c 100644
+>> --- a/drivers/usb/cdns3/core.c
+>> +++ b/drivers/usb/cdns3/core.c
+>> @@ -532,11 +532,13 @@ static int cdns3_probe(struct platform_device *pdev)
+>>   	if (device_property_read_bool(dev, "usb-role-switch"))
+>>   		sw_desc.fwnode = dev->fwnode;
+>> -	cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
+>> -	if (IS_ERR(cdns->role_sw)) {
+>> -		ret = PTR_ERR(cdns->role_sw);
+>> -		dev_warn(dev, "Unable to register Role Switch\n");
+>> -		goto err3;
+>> +	if (device_property_read_bool(cdns->dev, "usb-role-switch")) {
+>> +		cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
+>> +		if (IS_ERR(cdns->role_sw)) {
+>> +			ret = PTR_ERR(cdns->role_sw);
+>> +			dev_warn(dev, "Unable to register Role Switch\n");
+>> +			goto err3;
+>> +		}
+>>   	}
+>>   	if (cdns->wakeup_irq) {
+>>
+>>
+>>
+>> cheers,
+>> -roger
+>> -- 
+>> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+>> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---zq5jbqs3ok2srepm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+8+lwACgkQwfwUeK3K
-7Al8rwf/UqPq57uXKYh4PV+Y3o/wPKv35dYocyH9HfrXmi0+4MtUV4p2WRSj/w5y
-SJwUJWSlCHHS4E/htNSAGeMU/4uWQ0hWCVDJeEenPaP7RFC8UZwePSwQw9XM7uL/
-y+DL+yyCxIBtRX7+hbhmMOJqa2Dzmr1XzcFCzRddOOrtRriUQ2LA9tLI8Ql6fuMg
-i/nb84oyw70yHBxqON9d3zOLNFDj+PHxjXaWuKP/GpjqpdcXLpnkn0yCndR6te8c
-qLpsaDfp6/zA18K22t7yfQu251Qd9OUpbOnaCtTEDUeTJtQ6hzYH1QlZwaLwNCeu
-+gxFJj3v0yXphIMpmUGRT3IlhTtbVA==
-=qTCK
------END PGP SIGNATURE-----
-
---zq5jbqs3ok2srepm--
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
