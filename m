@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190F22C258A
+	by mail.lfdr.de (Postfix) with ESMTP id 913282C258B
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387518AbgKXMTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:19:06 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5543 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgKXMTF (ORCPT
+        id S2387533AbgKXMTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729172AbgKXMTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:19:05 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbcfa390000>; Tue, 24 Nov 2020 04:19:05 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 12:19:01 +0000
-Received: from moonraker.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 24 Nov 2020 12:19:00 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Thierry Reding <treding@nvidia.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] dt-bindings: Correct GV11B GPU register sizes
-Date:   Tue, 24 Nov 2020 12:18:42 +0000
-Message-ID: <20201124121842.1037035-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Nov 2020 07:19:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826ACC0613D6;
+        Tue, 24 Nov 2020 04:19:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uvDfFcTJVIdXBGR+joN6zXz154p6r479ClVsKuidpag=; b=AoYEmNwScc3ZhYqB9VycOafUC5
+        2v8rbvnu68twnK4hQ1ICV3Qzd3tbpCIgVcqUSI2A3/4FgAKbdGgoPE3j691S9i44M+3BMOp+ucZpe
+        WYTpbzzzuC8m5I6rqbpj7uJxVy2iPPq4BbrJt3tnjp156mNc79iiEIPR+k4akIFcqQYYTWMEGNmOn
+        GTS+ei+v5ogGFPnIWlWKqtnu9wWzezGV6iDyvZWWbfaK41ZVxjD7qnMAJMwYOli6+LnTRhtDS8F/J
+        ATpzt8UTjj6e/hWbcAEtZdqToH0AwcokShCJbDWUIV5xBWmnCgjfTQnUGBa3qUsMVttttRPptukAc
+        Xc1lNbWw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khXHs-0002FJ-2w; Tue, 24 Nov 2020 12:19:12 +0000
+Date:   Tue, 24 Nov 2020 12:19:12 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+Message-ID: <20201124121912.GZ4327@casper.infradead.org>
+References: <000000000000d3a33205add2f7b2@google.com>
+ <20200828100755.GG7072@quack2.suse.cz>
+ <20200831100340.GA26519@quack2.suse.cz>
+ <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
+ <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606220345; bh=0es/aNpBtueAk7MF62Z8gKogQAxyP9ER3IPb5yeGyeE=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=f2Sjkdyz77IXprxPGWnt9BobXFk2bzY75hV8CZ6Srn26g2k+DRT42qEj4FOph9lI8
-         uTqYUm1Z8ESip3QrxYnoTlGhrVgyyn3DXPnf/3ABeO8fMNbod6aza2DsS0mcrAF+va
-         twPkhFyrHfIdDN4ZdJ7MpmkaDrHTjXYqLaZ8+L4XOV8+IEVu8L/e1rqRQtuA2Ca+b6
-         oqPdy8g41kO1VavTKz7P4oFa6UWGwzbzX0HFa/SBS8EgTJDAuEG6IR47qm3fLaUogt
-         jr3phQThY3sUqRBcoYOPxNSJkZWiytF+BdRUF8id3yg4AuK03l/E+ABed5asZ42wUK
-         JYvNBCj22Yyxg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 90a09178f309 ("dt-bindings: Add documentation for GV11B GPU")
-added the GV11B GPU device-tree bindings information but incorrectly
-added an additional 0 to the size of the addresses in the example.
+On Mon, Nov 23, 2020 at 08:07:24PM -0800, Hugh Dickins wrote:
+> Twice now, when exercising ext4 looped on shmem huge pages, I have crashed
+> on the PF_ONLY_HEAD check inside PageWaiters(): ext4_finish_bio() calling
+> end_page_writeback() calling wake_up_page() on tail of a shmem huge page,
+> no longer an ext4 page at all.
+> 
+> The problem is that PageWriteback is not accompanied by a page reference
+> (as the NOTE at the end of test_clear_page_writeback() acknowledges): as
+> soon as TestClearPageWriteback has been done, that page could be removed
+> from page cache, freed, and reused for something else by the time that
+> wake_up_page() is reached.
+> 
+> https://lore.kernel.org/linux-mm/20200827122019.GC14765@casper.infradead.org/
+> Matthew Wilcox suggested avoiding or weakening the PageWaiters() tail
+> check; but I'm paranoid about even looking at an unreferenced struct page,
+> lest its memory might itself have already been reused or hotremoved (and
+> wake_up_page_bit() may modify that memory with its ClearPageWaiters()).
+> 
+> Then on crashing a second time, realized there's a stronger reason against
+> that approach.  If my testing just occasionally crashes on that check,
+> when the page is reused for part of a compound page, wouldn't it be much
+> more common for the page to get reused as an order-0 page before reaching
+> wake_up_page()?  And on rare occasions, might that reused page already be
+> marked PageWriteback by its new user, and already be waited upon?  What
+> would that look like?
+> 
+> It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
+> in write_cache_pages() (though I have never seen that crash myself).
 
-Fixes: 90a09178f309 ("dt-bindings: Add documentation for GV11B GPU")
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt b/Docum=
-entation/devicetree/bindings/gpu/nvidia,gk20a.txt
-index 662a3c8a7d29..cc6ce5221a38 100644
---- a/Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt
-+++ b/Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt
-@@ -97,8 +97,8 @@ Example for GV11B:
-=20
- 	gpu@17000000 {
- 		compatible =3D "nvidia,gv11b";
--		reg =3D <0x17000000 0x10000000>,
--		      <0x18000000 0x10000000>;
-+		reg =3D <0x17000000 0x1000000>,
-+		      <0x18000000 0x1000000>;
- 		interrupts =3D <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names =3D "stall", "nonstall";
---=20
-2.25.1
-
+I don't think this is it.  write_cache_pages() holds a reference to the
+page -- indeed, it holds the page lock!  So this particular race cannot
+cause the page to get recycled.  I still have no good ideas what this
+is :-(
