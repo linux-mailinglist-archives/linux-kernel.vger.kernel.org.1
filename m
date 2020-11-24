@@ -2,136 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981172C3449
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E1F2C344D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgKXXAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:00:10 -0500
-Received: from relay5.mymailcheap.com ([159.100.241.64]:57155 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728404AbgKXXAJ (ORCPT
+        id S1730338AbgKXXBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730166AbgKXXBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:00:09 -0500
-X-Greylist: delayed 121743 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 18:00:07 EST
-Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [149.56.97.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id D9CE72008F;
-        Tue, 24 Nov 2020 23:00:05 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 06A1A3F1C5;
-        Tue, 24 Nov 2020 23:00:02 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 4CE992A522;
-        Wed, 25 Nov 2020 00:00:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1606258801;
-        bh=iOyQ89pPddtKPEHY+rw1M3ypa8TpeYx6ftwm76ODn8k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DEHSjyJI4/zbJ2r6WLAmm26cvXczFgFmLd+NsOqL4mGFQ0V130sP5h/JEaO0pgh2M
-         WLCPux9xqgddcwDpBQIS+DSpmlPsP0xzOUeaJ4Gc+go/bcAAMBYROvWVZqpfoxEfNk
-         eD3Aa9Tsf3UStIIzjaFqKTYweH0lcW5zvyu/0ITI=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rlbUiSNneNyf; Wed, 25 Nov 2020 00:00:00 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Tue, 24 Nov 2020 23:59:59 +0100 (CET)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 896BA40FF4;
-        Tue, 24 Nov 2020 22:59:57 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="XKlFf575";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.161.143])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 33EB340FF4;
-        Tue, 24 Nov 2020 22:59:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1606258791; bh=iOyQ89pPddtKPEHY+rw1M3ypa8TpeYx6ftwm76ODn8k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XKlFf575BpCxn4fiNV3tTMULwOVza3jgFsMHO8HfI2L8MQ5ITG0MR1o70PgWox2lo
-         Sgu7hhnr2yjjZzCxwohQfCdPZ5JNPlRvybcEyDNF3AS+rW0qozwkt3WtCC8NjzafHN
-         XuMOsHxDcpXd6514lSyuzPzDSwjxvIjE0tZ/sgEM=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: [PATCH] ARM: dts: sun8i: s3: pinecube: add ethernet alias for Wi-Fi
-Date:   Wed, 25 Nov 2020 06:59:40 +0800
-Message-Id: <20201124225940.3750388-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
+        Tue, 24 Nov 2020 18:01:17 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4BEC0613D6;
+        Tue, 24 Nov 2020 15:01:17 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id t22so276296ljk.0;
+        Tue, 24 Nov 2020 15:01:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BNJegkHBp3jAxE9NdlHPV8CkVpROAwTgoEJJRjbP6SQ=;
+        b=VXBKkRlR+p5IG4teFpC6H539+qdjKhMqTBTy7id7eD2q0VYUQfFRW3Ku3dM69ECgCV
+         h1uTPm5XjwhvJwt8T1NWC4/Y8EeQb8vDDIuoTasuaGcWmpeDgzmRihoiqLC6NZlvfCGp
+         8Sf8KQKRyy4vh4Wn64eLESBOxf3mLAcMA7P88RTzwS6o+bLeeC6ntbXiZB39h7QZLr1c
+         6RxRtvDfoKKaYbyky5UaF3EpjHuZqUE0XAxObqplhSZgUlnCqagELx7lqhsgYzvAjzuK
+         dUqBplWVGkh6yYeMQBAhrYpgNbgXbqIeb4+O+jRUwPUtYDhWu1yU+12/dTQZu4j8uidj
+         CxHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BNJegkHBp3jAxE9NdlHPV8CkVpROAwTgoEJJRjbP6SQ=;
+        b=dLVfnLUJ6kJPZh0SeFWG+WR87Kfv56Pl2ZL+i4AERJAwAoVc+eIRmDQv4bmuwgURrk
+         M4xcyWUBxfilFnEVjJp9zhPw4KrOaSA7uMeE2TpcuL5IQDk1mDz6jkJuR6i4sizZy22k
+         RDJKDoppFCEciogYZlWq1pwbmmgeOsgJ2aV24ZdcXmRkpsH+6wo7pMvsLeVdp/x1fSkF
+         o4n4gCcfi70q6szZsCYFVxLMRMpcEpgoEpQOWPcGY0XooGS7Tc0qR1Tz5aZfM8mN4beA
+         m/RfnKpujSW1MHUeXCz7dHgxrWSfbEcX8mkdi2UbIDLUwDRELvVz6YNAw2hpNs7708Lr
+         EtCg==
+X-Gm-Message-State: AOAM531nPB09x4zShuNrFAQyVjqH+UELnNxVM9Sr+3xgekT8YM+cIOzc
+        JnAveRiF8jhanlGNzXvxiUXAR57ps6Q=
+X-Google-Smtp-Source: ABdhPJzMKb+/mZ7SRndXPa4v80lDOfDqqeQdRLe/0lhv1tFyno8yKiCRItfikTnQTAY0nZ5l/GZnNg==
+X-Received: by 2002:a2e:9a98:: with SMTP id p24mr210436lji.418.1606258875638;
+        Tue, 24 Nov 2020 15:01:15 -0800 (PST)
+Received: from localhost.localdomain (h-158-174-22-6.NA.cust.bahnhof.se. [158.174.22.6])
+        by smtp.gmail.com with ESMTPSA id q13sm41120lfn.15.2020.11.24.15.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 15:01:14 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] HID: wacom: Constify attribute_groups
+Date:   Wed, 25 Nov 2020 00:01:09 +0100
+Message-Id: <20201124230109.67543-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 896BA40FF4
-X-Spamd-Result: default: False [4.90 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.143:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_PROHIBIT(0.00)[0.0.0.1:email];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PineCube board has a RTL8189ES Wi-Fi module on board, and the module
-doesn't have any MAC address programmed in.
+These are never modified, so make them const to allow the compiler to put
+them in read-only memory. It also allows the compiler to shrink the
+resulting module with ~900 bytes, test-built with gcc 10.2 on x86_64.
 
-Add a ethernet alias in the DT, thus the bootloader will then be able to
-generate a MAC address into the device tree node of Wi-Fi.
+   text    data     bss     dec     hex filename
+ 204377   42832     576  247785   3c7e9 drivers/hid/wacom_old.ko
+ 204240   42064     576  246880   3c460 drivers/hid/wacom_new.ko
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-s3-pinecube.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/hid/wacom_sys.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-s3-pinecube.dts b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-index 4aa0ee897a0a..5086f713467a 100644
---- a/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-+++ b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-@@ -13,6 +13,7 @@ / {
- 	compatible = "pine64,pinecube", "sochip,s3", "allwinner,sun8i-v3";
- 
- 	aliases {
-+		ethernet0 = &rtl8189es;
- 		serial0 = &uart2;
- 	};
- 
-@@ -156,6 +157,10 @@ &mmc1 {
- 	bus-width = <4>;
- 	non-removable;
- 	status = "okay";
-+
-+	rtl8189es: wifi@1 {
-+		reg = <1>;
-+	};
+diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
+index cd71e7133944..045c464228d9 100644
+--- a/drivers/hid/wacom_sys.c
++++ b/drivers/hid/wacom_sys.c
+@@ -1173,7 +1173,7 @@ static struct attribute *cintiq_led_attrs[] = {
+ 	NULL
  };
  
- &pio {
+-static struct attribute_group cintiq_led_attr_group = {
++static const struct attribute_group cintiq_led_attr_group = {
+ 	.name = "wacom_led",
+ 	.attrs = cintiq_led_attrs,
+ };
+@@ -1194,7 +1194,7 @@ static struct attribute *intuos4_led_attrs[] = {
+ 	NULL
+ };
+ 
+-static struct attribute_group intuos4_led_attr_group = {
++static const struct attribute_group intuos4_led_attr_group = {
+ 	.name = "wacom_led",
+ 	.attrs = intuos4_led_attrs,
+ };
+@@ -1205,7 +1205,7 @@ static struct attribute *intuos5_led_attrs[] = {
+ 	NULL
+ };
+ 
+-static struct attribute_group intuos5_led_attr_group = {
++static const struct attribute_group intuos5_led_attr_group = {
+ 	.name = "wacom_led",
+ 	.attrs = intuos5_led_attrs,
+ };
+@@ -1216,13 +1216,13 @@ static struct attribute *generic_led_attrs[] = {
+ 	NULL
+ };
+ 
+-static struct attribute_group generic_led_attr_group = {
++static const struct attribute_group generic_led_attr_group = {
+ 	.name = "wacom_led",
+ 	.attrs = generic_led_attrs,
+ };
+ 
+ struct wacom_sysfs_group_devres {
+-	struct attribute_group *group;
++	const struct attribute_group *group;
+ 	struct kobject *root;
+ };
+ 
+@@ -1238,7 +1238,7 @@ static void wacom_devm_sysfs_group_release(struct device *dev, void *res)
+ 
+ static int __wacom_devm_sysfs_create_group(struct wacom *wacom,
+ 					   struct kobject *root,
+-					   struct attribute_group *group)
++					   const struct attribute_group *group)
+ {
+ 	struct wacom_sysfs_group_devres *devres;
+ 	int error;
+@@ -1264,7 +1264,7 @@ static int __wacom_devm_sysfs_create_group(struct wacom *wacom,
+ }
+ 
+ static int wacom_devm_sysfs_create_group(struct wacom *wacom,
+-					 struct attribute_group *group)
++					 const struct attribute_group *group)
+ {
+ 	return __wacom_devm_sysfs_create_group(wacom, &wacom->hdev->dev.kobj,
+ 					       group);
+@@ -1847,7 +1847,7 @@ static struct attribute *remote##SET_ID##_serial_attrs[] = {		\
+ 	&remote##SET_ID##_mode_attr.attr,				\
+ 	NULL								\
+ };									\
+-static struct attribute_group remote##SET_ID##_serial_group = {		\
++static const struct attribute_group remote##SET_ID##_serial_group = {	\
+ 	.name = NULL,							\
+ 	.attrs = remote##SET_ID##_serial_attrs,				\
+ }
 -- 
-2.28.0
+2.29.2
+
