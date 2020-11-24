@@ -2,133 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AA22C32DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE3D2C32DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732275AbgKXV1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:27:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
+        id S1732292AbgKXV17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732263AbgKXV1d (ORCPT
+        with ESMTP id S1732174AbgKXV17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:27:33 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCF3C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:27:30 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id j19so358577pgg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:27:30 -0800 (PST)
+        Tue, 24 Nov 2020 16:27:59 -0500
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA34CC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:27:58 -0800 (PST)
+Received: by mail-ua1-x943.google.com with SMTP id t15so35252ual.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:27:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ycdBeKfDdnxlj2we2eatzJcCu25NkZg7utasfa+QCJs=;
-        b=j1YEcpcRCjolfYVSNLeLmzuHRNxnhlKz+wYLfNMVpoq2ZqI2DBBuBRO0ixD0qzD3tC
-         KeLaMHOuTm71wOBGHwodtG43JGmQ/uDnbRrbK1FFWk5Td49DkkdETpql2oh34ccq4SD6
-         7G+zsmZKba/biKWGiFY/xlEkWH+nziDRuGaRqaa/xUKKo84H0mY/qaLWRRw7SC2e96ny
-         QTFOq6vk7UcEem8/3SuMSoV/N97Ernjs6ts18XyYnVsAVpygnI7frPOeqHNMhVmknuqb
-         Wsc7mJroPtrz8tH6x7VyOyhgV2x6Wt3ToRvDfOKxm+pe4OgSAcD0mTj2Z6oCko7hQMkF
-         BKRw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=56wAqxqhBDrN0Ju/3+WYd2eoccE4SJAvoDMPg1hvUI0=;
+        b=WXTMho/E5mqYYYjU+W5mmv9+te1tCkCm+1gbl5QGKPcp7anOPE6JVKXTLhwCq5G095
+         jJ0HWkVRzSZv3LhvNIRJ7NkkLUtL33yk1optAQZgJZ5xpvnIooMELxMS09N+HEsP+I1L
+         75O1lpdJ6CTc1IhcfMLiMJDahChl/QtYBGAfdsBR+4nCKT/46r4qA/Oe69PQsILycgah
+         skbWZ6nMYJbiCG54vORcag7Pq080GpqVQfaJEOSYj8OVF+pXO4dhMwa0WhKLB3W0JQo3
+         6cnknZAomTj4X4RJyJ121IAIa1DaKe6/6qSJzTWobedPSNJ4NOhnUASpgozqmA/7cSPX
+         /Ybw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ycdBeKfDdnxlj2we2eatzJcCu25NkZg7utasfa+QCJs=;
-        b=ebjtxDrWzOd1fE83Lw/KNvUB7yyxXV8aD+yvThOWnjhI39q+SbQkWfwMjyfsmiWRCm
-         47HmP/Lk52Bnqew+Lkoeh2QPeNmWEchq7B8SKvoNKhoa+9VROs10xkvqwYhr5FLfTgEo
-         s1ZjvX+kqrattUls47kIgE8CwS0PDkROx+UeVxnWFRstHKQQxhOIEY0JKMPiX3pTvtQj
-         apvNLa3Cqix8eBZ8VNqhBPqgtreY+JX9KmIOKrgGBO/oVbLAzw7JzNlm1vPjLkRDDj0S
-         l2ndhb/XwKFDm6XpVoaFwP+Bo/yzpmp7ZCX46wDZ5Sh9FsG6swQ/WYBwoir1vlEiVJl7
-         E//Q==
-X-Gm-Message-State: AOAM5328AIQI9xJuLlv/qHUUizHyWmIAad1mz9wuumhKOGTLzXnEbVIX
-        lOs4kue5OqS3nkMpS7FAK9NssA==
-X-Google-Smtp-Source: ABdhPJz29bntK467ochG2vHVzVTuub/FtxMns7R2Jct9+Ce6+9D3MGeT5gHMd85APqAOELHIj+WlYw==
-X-Received: by 2002:aa7:9edb:0:b029:197:f0c9:f5bc with SMTP id r27-20020aa79edb0000b0290197f0c9f5bcmr169373pfq.10.1606253250128;
-        Tue, 24 Nov 2020 13:27:30 -0800 (PST)
-Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
-        by smtp.gmail.com with ESMTPSA id j69sm11414pfd.37.2020.11.24.13.27.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 13:27:29 -0800 (PST)
-Date:   Tue, 24 Nov 2020 21:27:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas <thomas.lendacky@amd.com>, pbonzini@redhat.com,
-        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
-        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
-        Eric <eric.vantassell@amd.com>, gingell@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20201124212725.GB246319@google.com>
-References: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
- <20201124191629.GB235281@google.com>
- <20201124194904.GA45519@google.com>
- <alpine.DEB.2.23.453.2011241215400.3594395@chino.kir.corp.google.com>
- <20201124210817.GA65542@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=56wAqxqhBDrN0Ju/3+WYd2eoccE4SJAvoDMPg1hvUI0=;
+        b=GJZ50+570XZ9THCJSGZIMPxT5hoNxht7tNGraJd4VXII+GnqbM6m/DvVzVwVcpR4S8
+         mJzcyuUOB6kN6N9+leO1+0ngK3CHgvqvFFWOivyL/pVGrpvPqkgxxS6DPk3cqFT9jC1i
+         Wp79eo01PH1M22POcdT974o/bWoRKVuQBxRrHBZpXOK5OjM+uYQQorJTuMaaoDF56Ish
+         I4O9wr19L7Ve7slnKuUFpA/8uqDnck3qC9xHwc656ZHCmnW+mGtKYdMz4pdnfYwo53ZX
+         3dDxDTO6hhoX+ua6mn85O30rS8+aWa1hEEpPua3R3eJk28gU1U7QprtyK/yzN7voUl9B
+         tRmA==
+X-Gm-Message-State: AOAM5317EYhlBzJimVEFLcpUwQwp4j/mxVIKXlwx/PgTlqmZyxhQz2R9
+        1Ro6SFEaHrn5sBerozCxTlkPshCVPMhggP5s6ss=
+X-Google-Smtp-Source: ABdhPJxccWB5f7wJr2OScYSg+KGLZNeVxsjIkxeEtq7KQVRw2cr4sr3+WWqn0/lLRCm5utV5hJTq7oW33MqkBWDzhrA=
+X-Received: by 2002:ab0:6355:: with SMTP id f21mr134723uap.142.1606253278105;
+ Tue, 24 Nov 2020 13:27:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124210817.GA65542@google.com>
+References: <20201113230048.1200162-1-jim.cromie@gmail.com> <20201117100256.GC3121406@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201117100256.GC3121406@hirez.programming.kicks-ass.net>
+From:   jim.cromie@gmail.com
+Date:   Tue, 24 Nov 2020 14:27:28 -0700
+Message-ID: <CAJfuBxzhgQ+fTA-iyqLrpZ-=9ipXZGOCznRMM8AZE5yFOGh6PA@mail.gmail.com>
+Subject: Re: [PATCH] locking-selftest: add option to proceed through
+ unexpected failures
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020, Vipin Sharma wrote:
-> On Tue, Nov 24, 2020 at 12:18:45PM -0800, David Rientjes wrote:
-> > On Tue, 24 Nov 2020, Vipin Sharma wrote:
-> > 
-> > > > > Looping Janosch and Christian back into the thread.                           
-> > > > >                                                                               
-> > > > > I interpret this suggestion as                                                
-> > > > > encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
-> > > > 
-> > > > I think it makes sense to use encryption_ids instead of simply encryption, that
-> > > > way it's clear the cgroup is accounting ids as opposed to restricting what
-> > > > techs can be used on yes/no basis.
-> > > > 
-> > 
-> > Agreed.
-> > 
-> > > > > offerings, which was my thought on this as well.                              
-> > > > >                                                                               
-> > > > > Certainly the kernel could provide a single interface for all of these and    
-> > > > > key value pairs depending on the underlying encryption technology but it      
-> > > > > seems to only introduce additional complexity in the kernel in string         
-> > > > > parsing that can otherwise be avoided.  I think we all agree that a single    
-> > > > > interface for all encryption keys or one-value-per-file could be done in      
-> > > > > the kernel and handled by any userspace agent that is configuring these       
-> > > > > values.                                                                       
-> > > > >                                                                               
-> > > > > I think Vipin is adding a root level file that describes how many keys we     
-> > > > > have available on the platform for each technology.  So I think this comes    
-> > > > > down to, for example, a single encryption.max file vs                         
-> > > > > encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
-> > > > 
-> > > > Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
-> > > > no need to enumerate platform total, but not knowing how many of the allowed IDs
-> > > > have been allocated seems problematic.
-> > > > 
-> > > 
-> > > We will be showing encryption_ids.{sev,sev_es}.{max,current}
-> > > I am inclined to not provide "events" as I am not using it, let me know
-> > > if this file is required, I can provide it then.
+On Tue, Nov 17, 2020 at 3:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Nov 13, 2020 at 04:00:48PM -0700, Jim Cromie wrote:
+> > Locking selftest is currently (v.5.10-rc3) seeing 14 unexpected failures.
+> > Add option to not disable debug_locks, so as to let it reveal any
+> > locking flaws in new unrelated work.
+>
+> I'm assuming this is the arm64 fallout? Mark anything I can do to help
+> you there?
+>
+> The reasoning doesn't make sense though; if it can't pass the selftest,
+> then why would you trust any further reports?
 
-I've no objection to omitting current until it's needed.
-
-> > > I will provide an encryption_ids.{sev,sev_es}.stat file, which shows
-> > > total available ids on the platform. This one will be useful for
-> > > scheduling jobs in the cloud infrastructure based on total supported
-> > > capacity.
-> > > 
-> > 
-> > Makes sense.  I assume the stat file is only at the cgroup root level 
-> > since it would otherwise be duplicating its contents in every cgroup under 
-> > it.  Probably not very helpful for child cgroup to see stat = 509 ASIDs 
-> > but max = 100 :)
-> 
-> Yes, only at root.
-
-Is a root level stat file needed?  Can't the infrastructure do .max - .current
-on the root cgroup to calculate the number of available ids in the system?
+because it knows more than I do.
+having chosen to proceed anyway,
+Im free to discount the advice.
