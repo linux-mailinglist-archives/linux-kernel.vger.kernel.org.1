@@ -2,82 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953D52C1BFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B542C1BF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbgKXDZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 22:25:18 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:54404 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgKXDZR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 22:25:17 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3Aa9x070454;
-        Tue, 24 Nov 2020 03:25:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=mhHx85ik1onY5BRd3YDTxLGB4IyUoU/YipJlzt03SOU=;
- b=oxSJ8ybsXh3nTcR/zNM+GtrhsqfoNwdqBWy82KvwKboXdQTwfZtHZnW7nT6v2cf/A/qh
- KbUZfv5LS5BgJnnastog/wZwkzRpM5epZwpJGNEXZtiOtojuz/z7rM5vlG4ryBj48ovD
- 1gcCsaZeSK1nY5ZM5MWPxVelV8XYyDIIwiJwnl5W4XsKC4dAxsLD4zoQZfiuzWDZAHwS
- pU9BYjJbRG4hU7G8yfb3qDz/eR02wISXDySMBLxZHDsGz9NWK2DGwb0tkrheTdj2D815
- JsaeV2AHlPrPemOk9ORNyg9EKXOKVqLpPQUOGI7b2lsk+9uQQJX4asm0+yG0qy6n28hY 2A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34xtum0c5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Nov 2020 03:25:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO39mYC160846;
-        Tue, 24 Nov 2020 03:23:09 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34yx8j9avb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 03:23:09 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AO3N7lg013849;
-        Tue, 24 Nov 2020 03:23:07 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Nov 2020 19:23:07 -0800
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-scsi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] scsi: pm8001: logging neatening
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1r1ojmoa5.fsf@ca-mkp.ca.oracle.com>
-References: <cover.1605914030.git.joe@perches.com>
-Date:   Mon, 23 Nov 2020 22:23:05 -0500
-In-Reply-To: <cover.1605914030.git.joe@perches.com> (Joe Perches's message of
-        "Fri, 20 Nov 2020 15:16:08 -0800")
+        id S1729028AbgKXDYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 22:24:37 -0500
+Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75]:55392
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726876AbgKXDYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 22:24:36 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oD+YNFl3y4gx/rM+CL34di6O3PTeYHJmAOU50+6L8Bc9AsGePQBP5AnXZ3nSm4yf9qaibJv9d72ANSM4fzEicNk2LFhEDuTk6CGYdZJ5j5wDGNG7Br3Ft1XSJo82rbQ5EQA4QMQn557KQxDj90BqV4u+RHM22B4KwcMHeul2Moa37mFJkGwqaUmVagP4hjKVH6pgk8vUMf9FxaErknCqPIC1/FIyOQTMrA2J7NxPJovx1hirCd2z4OAKhfgcfN8jcMNR+LXQ7R1usBFT2+ZqhjzQLlkoc9BClvPgF00uFZ3iKNxJA6ExhKzkTW3tzFoYPXtpTFpmfzNYeJepOLnvkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SUrSFmc2F3Hexip2YCZMyqeuXLEf1F+dX8lkLWtb36A=;
+ b=UgJzy5gPSHXOD/ksh2/SCEW7FfiNho/Ys0W9U7ol4W40uy7cSGuNBysKyt8lZJuH6WLhONHyamtU348jSlsFagDJAExwh4odDsIEboe4ko7zej3nhZDoXD+ELi/swtapswpoz68XeHsrBGoDbrEii/+XGdF6TiUHtFgvdZbMAfTCxWUWPAKLhyO61PTDR0MGhmP2iI9DC5r5TnDgiWyHdXnSMh3QsHMwB45FqoYugkto1ssWD7FiNlAaWYmNz9ePwludzm7KsAdHYy61DR6VsMIEl8piq5df5ZsrHKuC2hF7saggfMiJshKnNI7A47JZAAy6z1ftMDJmTymI7cKRYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.freedesktop.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SUrSFmc2F3Hexip2YCZMyqeuXLEf1F+dX8lkLWtb36A=;
+ b=FLlvJc2ye272H7iYGIRuIjxjYFtWWFhDmvuqlKB+DGzwGY0KZAERQ+2UI2YCX8O7ffS1ArrUeq46dtwpNjenrGmspMaehtTXD0c/8aSs/ZM+72X/wf4Hsz79mItoaOvr4ZGQD+gyu6UZsw/15Q9HKv29lsit1kpt+lUcc74rWCE=
+Received: from MN2PR22CA0010.namprd22.prod.outlook.com (2603:10b6:208:238::15)
+ by CO6PR02MB7667.namprd02.prod.outlook.com (2603:10b6:303:a5::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.24; Tue, 24 Nov
+ 2020 03:24:31 +0000
+Received: from BL2NAM02FT057.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:238:cafe::f9) by MN2PR22CA0010.outlook.office365.com
+ (2603:10b6:208:238::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend
+ Transport; Tue, 24 Nov 2020 03:24:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.freedesktop.org; dkim=none (message not
+ signed) header.d=none;lists.freedesktop.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT057.mail.protection.outlook.com (10.152.77.36) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 03:24:31 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 23 Nov 2020 19:24:29 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 23 Nov 2020 19:24:29 -0800
+Envelope-to: nishad.saraf@xilinx.com,
+ michal.simek@xilinx.com,
+ wendy.liang@xilinx.com,
+ dri-devel@lists.freedesktop.org,
+ linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ gregkh@linuxfoundation.org,
+ arnd@arndb.de,
+ robh+dt@kernel.org,
+ hdanton@sina.com
+Received: from [10.23.125.111] (port=58718)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <wendy.liang@xilinx.com>)
+        id 1khOwP-000806-IM; Mon, 23 Nov 2020 19:24:29 -0800
+Subject: Re: [PATCH v2 9/9] misc: xilinx-ai-engine: Add support for servicing
+ error interrupts
+To:     Hillf Danton <hdanton@sina.com>,
+        Wendy Liang <wendy.liang@xilinx.com>
+CC:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>, <arnd@arndb.de>,
+        <gregkh@linuxfoundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        Nishad Saraf <nishad.saraf@xilinx.com>
+References: <1605743289-26575-1-git-send-email-wendy.liang@xilinx.com>
+ <20201119083645.544-1-hdanton@sina.com>
+From:   Wendy Liang <wendy.liang@xilinx.com>
+Message-ID: <627ef0ef-5e4c-b310-92e1-a9bb57d1aa96@xilinx.com>
+Date:   Mon, 23 Nov 2020 19:24:28 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
- bulkscore=0 mlxlogscore=890 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240018
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 mlxlogscore=902 impostorscore=0 spamscore=0 mlxscore=0
- phishscore=0 clxscore=1015 suspectscore=1 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240018
+In-Reply-To: <20201119083645.544-1-hdanton@sina.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 92a24136-47f7-4768-ba79-08d89028753c
+X-MS-TrafficTypeDiagnostic: CO6PR02MB7667:
+X-Microsoft-Antispam-PRVS: <CO6PR02MB76670F4379907301C9BE13D2B0FB0@CO6PR02MB7667.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RhEhorgQinWIM04sYHPsL8+Zcl9GNDORPYlwaHKDxu50t/tVckL8BPl0Ec5yewQ7NWIHwA6FYrwNOZUGb4QzHFTAA8NjWZ3QcyyyVd14s7uUV2zR0yNC8BeBnAsqkVU68ivMSp2yl4vvjDdG2eSo1vULvd+cWNT+PTqONzgirOeFUecXiVRtnkDtyTOY8IULDb2ojFGEs6dHK11XJ9V7PVb5MxCd9+KfWToFHmZjm1MXhcJDwzH0Yb1xj+eLQgxxXdUc8T09Tc0QAzrQAXAZzLbAbXY4bCbgGNZeNdFDOiReMyAfLD++eoqGYEnSMadihpzYh2RRGU2MVLni0bKnwRYPrvHPvktHLiS9Wx18eA+/WpDsOvDLLpK0f+zIAF7tgThJLyEwHA4MQzTf04dM2dB5LHdH+JweaGbXOr0vu2nD8rstv6uLr+LVWx/SJcTPE0FsSj/xfuxIkFbz4a/TpQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(46966005)(2906002)(7636003)(336012)(186003)(44832011)(478600001)(2616005)(26005)(53546011)(9786002)(31686004)(426003)(70586007)(107886003)(70206006)(83380400001)(316002)(4326008)(110136005)(36906005)(54906003)(5660300002)(8676002)(36756003)(356005)(8936002)(47076004)(82740400003)(82310400003)(31696002)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 03:24:31.1521
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92a24136-47f7-4768-ba79-08d89028753c
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT057.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB7667
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Joe,
 
-> Reduce code duplication and generic neatening of logging macros
+On 11/19/20 12:36 AM, Hillf Danton wrote:
+> On Wed, 18 Nov 2020 15:48:09 -0800 Wendy Liang wrote:
+>> +/**
+>> + * aie_interrupt() - interrupt handler for AIE.
+>> + * @irq: Interrupt number.
+>> + * @data: AI engine device structure.
+>> + * @return: IRQ_HANDLED.
+>> + *
+>> + * This thread function disables level 2 interrupt controllers and schedules a
+>> + * task in workqueue to backtrack the source of error interrupt. Disabled
+>> + * interrupts are re-enabled after successful completion of bottom half.
+>> + */
+>> +irqreturn_t aie_interrupt(int irq, void *data)
+>> +{
+>> +	struct aie_device *adev = data;
+>> +	struct aie_partition *apart;
+>> +	int ret;
+>> +	bool sched_work = false;
+>> +
+>> +	ret = mutex_lock_interruptible(&adev->mlock);
+>> +	if (ret) {
+>> +		dev_err(&adev->dev,
+>> +			"Failed to acquire lock. Process was interrupted by fatal signals\n");
+>> +		return IRQ_NONE;
+>> +	}
+>> +
+>> +	list_for_each_entry(apart, &adev->partitions, node) {
+>> +		struct aie_location loc;
+>> +		u32 ttype, l2_mask, l2_status, l2_bitmap_offset  = 0;
+>> +
+>> +		ret = mutex_lock_interruptible(&apart->mlock);
+>> +		if (ret) {
+>> +			dev_err(&apart->dev,
+>> +				"Failed to acquire lock. Process was interrupted by fatal signals\n");
+>> +			return IRQ_NONE;
+> 
+> Though quite unlikely, you need to release adev->mlock before
+> going home.
+Thanks to point it out, I will change in next version
 
-Applied to 5.11/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Thanks,
+Wendy
+> 
+>> +		}
+>> +
+>> +		for (loc.col = apart->range.start.col, loc.row = 0;
+>> +		     loc.col < apart->range.start.col + apart->range.size.col;
+>> +		     loc.col++) {
+>> +			ttype = apart->adev->ops->get_tile_type(&loc);
+>> +			if (ttype != AIE_TILE_TYPE_SHIMNOC)
+>> +				continue;
+>> +
+>> +			l2_mask = aie_get_l2_mask(apart, &loc);
+>> +			if (l2_mask) {
+>> +				aie_resource_cpy_from_arr32(&apart->l2_mask,
+>> +							    l2_bitmap_offset  *
+>> +							    32, &l2_mask, 32);
+>> +				aie_disable_l2_ctrl(apart, &loc, l2_mask);
+>> +			}
+>> +			l2_bitmap_offset++;
+>> +
+>> +			l2_status = aie_get_l2_status(apart, &loc);
+>> +			if (l2_status) {
+>> +				aie_clear_l2_intr(apart, &loc, l2_status);
+>> +				sched_work = true;
+>> +			} else {
+>> +				aie_enable_l2_ctrl(apart, &loc, l2_mask);
+>> +			}
+>> +		}
+>> +		mutex_unlock(&apart->mlock);
+>> +	}
+>> +
+>> +	/* For ES1 silicon, interrupts are latched in NPI */
+>> +	if (adev->version == VERSAL_ES1_REV_ID) {
+>> +		ret = zynqmp_pm_clear_aie_npi_isr(adev->pm_node_id,
+>> +						  AIE_NPI_ERROR_ID);
+>> +		if (ret < 0)
+>> +			dev_err(&adev->dev, "Failed to clear NPI ISR\n");
+>> +	}
+>> +
+>> +	mutex_unlock(&adev->mlock);
+>> +
+>> +	if (sched_work)
+>> +		schedule_work(&adev->backtrack);
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
