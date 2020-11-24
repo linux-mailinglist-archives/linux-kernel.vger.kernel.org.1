@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116F32C2B52
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0092C2B55
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389629AbgKXPaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:30:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388503AbgKXPa3 (ORCPT
+        id S2389695AbgKXPaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:30:46 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:29829 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389662AbgKXPaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:30:29 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31480C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:30:29 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id b6so8377728pfp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:30:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eMDUIiphwgQu/Rl/7QXTUEvd8hL5aoXhajraaKwKCps=;
-        b=08jMZAO19NC9YGv7ez1yKZVfbZHhH83VeOXbl5BSm1jpFljRj8AfKYBbquA1RFDkPd
-         VlraeOIrzu9B5B6/lgakO3mOkna3BHnN3ELg+Z6NC9l5pqZ9HFTP5TPyAEILiEZW9Ucd
-         fftOP2GSFWUomHxVtCLr//vdPyaFZafYwCwkvKrjXwT/VeVcTEahuhW7V6ppBKxUDPUI
-         PlNZSAZ6RMMC6ayPh9uaYs4fF7QgyMrGLbf80wTTczF/nZjKeQ3ePt0cJeg7IFzSmeim
-         6doUr62NdtL/CXelB9IFsVHFom1ra/hsQoRcja0CZdnKBUDdb03bP3h3dRCfvJAqh1bi
-         ibSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eMDUIiphwgQu/Rl/7QXTUEvd8hL5aoXhajraaKwKCps=;
-        b=HaE5qzgq/uOHL4r1PH8pn5SzxxsaLhwrfzXn7vZDFU09u2f+OW6qIOHQ0528oQBpIN
-         pBZBzga2VnTAwA+kZQb/XU0/Fe0SUnrfJDCJtAUBCqJ3poUkNJzousIXPwtLqy756gOK
-         3ye3lfpSdYowGsAMXizJ1J2OEq9ap5ZZp6yqpDu8sBXM2heeZ5s6zIwLJBdHBV01II1w
-         Jlk2IAsR3jH+tDCqsMPAMEijjD7PjG1Nxx65b4D2MumewYj5Zdv+3O21N+xrEzS8mtFp
-         K+hJrQamnJd5hrcNIU1kCTlOCYzFzwL8JQCmxXr1NXKyIdPmuj6VY+ETPDi/ZNeHkxuV
-         kK1g==
-X-Gm-Message-State: AOAM533arQsyJQPJIEMCMwGJplXLyfb6m1Qdc87eQ8lx6T3E+kZ/opAo
-        2YN4zv8A0lM0DdTZAIlIao8JpY50OeGHgw==
-X-Google-Smtp-Source: ABdhPJzgTdOGgxS19PCgtmRGESJ4KGJeMYsFILdAGpKHr15AmdL2UFHLUgRjeSs+TeBNwaQM8zLKLQ==
-X-Received: by 2002:a17:90a:4601:: with SMTP id w1mr5612148pjg.109.1606231828348;
-        Tue, 24 Nov 2020 07:30:28 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id ne22sm3574644pjb.45.2020.11.24.07.30.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 07:30:27 -0800 (PST)
-Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
-To:     David Howells <dhowells@redhat.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <74f6fb34-c4c2-6a7e-3614-78c34246c6bd@gmail.com>
- <20201123080506.GA30578@infradead.org>
- <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
- <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
- <516984.1606127474@warthog.procyon.org.uk>
- <1155891.1606222222@warthog.procyon.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5b8ce555-7451-d977-22e7-e5d080ef2e1a@kernel.dk>
-Date:   Tue, 24 Nov 2020 08:30:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 24 Nov 2020 10:30:46 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-117-FzTlDiKxMNmyd29DthU8XA-1; Tue, 24 Nov 2020 15:30:42 +0000
+X-MC-Unique: FzTlDiKxMNmyd29DthU8XA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 15:30:42 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 24 Nov 2020 15:30:42 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Ard Biesheuvel' <ardb@kernel.org>
+CC:     linux-efi <linux-efi@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "matthew.garrett@nebula.com" <matthew.garrett@nebula.com>,
+        "jk@ozlabs.org" <jk@ozlabs.org>
+Subject: RE: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+Thread-Topic: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+Thread-Index: AdbCbM2Q6wdSIj4dRX6VFD+iYFiXewAAJveAAAEq0JAAACh8AAAA5OiA
+Date:   Tue, 24 Nov 2020 15:30:42 +0000
+Message-ID: <4bd4f6ca36334473bc55bf3b5704afa1@AcuMS.aculab.com>
+References: <5f31cde519b941308412b3849197ee7c@AcuMS.aculab.com>
+ <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+ <3e96bbfe476b4b3d876e480ce6b20b58@AcuMS.aculab.com>
+ <CAMj1kXE3xM__pA6eaXwWV=we4sWrnecH1f7oUbuyGeHc9TPmOg@mail.gmail.com>
+In-Reply-To: <CAMj1kXE3xM__pA6eaXwWV=we4sWrnecH1f7oUbuyGeHc9TPmOg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <1155891.1606222222@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 5:50 AM, David Howells wrote:
-> Pavel Begunkov <asml.silence@gmail.com> wrote:
-> 
->> fio is relatively heavy, I'd suggest to try fio/t/io_uring with nullblk
-> 
-> no patches:
-
-Here's what I get. nullb0 using blk-mq, and submit_queues==NPROC.
-iostats and merging disabled, using 8k bs for t/io_uring to ensure we
-have > 1 segment. Everything pinned to the same CPU to ensure
-reproducibility and stability. Kernel has CONFIG_RETPOLINE enabled.
-
-5.10-rc5:
-IOPS=2453184, IOS/call=32/31, inflight=128 (128)
-IOPS=2435648, IOS/call=32/32, inflight=64 (64)
-IOPS=2448544, IOS/call=32/31, inflight=96 (96)
-IOPS=2439584, IOS/call=32/31, inflight=128 (128)
-IOPS=2454176, IOS/call=32/32, inflight=32 (32)
-
-5.10-rc5+all patches
-IOPS=2304224, IOS/call=32/32, inflight=64 (64)
-IOPS=2309216, IOS/call=32/32, inflight=32 (32)
-IOPS=2305376, IOS/call=32/31, inflight=128 (128)
-IOPS=2300544, IOS/call=32/32, inflight=128 (128)
-IOPS=2301728, IOS/call=32/32, inflight=32 (32)
-
-which looks to be around a 6% drop.
-
-Using actual hardware instead of just null_blk:
-
-5.10-rc5:
-IOPS=854163, IOS/call=31/31, inflight=101 (101)
-IOPS=855495, IOS/call=31/31, inflight=117 (117)
-IOPS=856118, IOS/call=31/31, inflight=100 (100)
-IOPS=855863, IOS/call=31/31, inflight=113 (113)
-IOPS=856282, IOS/call=31/31, inflight=116 (116)
-
-5.10-rc5+all patches
-IOPS=833391, IOS/call=31/31, inflight=100 (100)
-IOPS=838342, IOS/call=31/31, inflight=100 (100)
-IOPS=839921, IOS/call=31/31, inflight=105 (105)
-IOPS=841607, IOS/call=31/31, inflight=123 (123)
-IOPS=843625, IOS/call=31/31, inflight=107 (107)
-
-which looks to be around 2-3%, but we're also running at a much
-slower rate (830K vs ~2.3M).
-
--- 
-Jens Axboe
+RnJvbTogQXJkIEJpZXNoZXV2ZWwNCj4gU2VudDogMjQgTm92ZW1iZXIgMjAyMCAxNTowMg0KPiBP
+biBUdWUsIDI0IE5vdiAyMDIwIGF0IDE1OjU4LCBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdodEBh
+Y3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IEZyb206IEFyZCBCaWVzaGV1dmVsDQo+ID4gPiBT
+ZW50OiAyNCBOb3ZlbWJlciAyMDIwIDE0OjI0DQo+ID4gPg0KPiA+ID4gT24gVHVlLCAyNCBOb3Yg
+MjAyMCBhdCAxNToyMiwgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1bGFiLmNvbT4gd3Jv
+dGU6DQo+ID4gPiA+DQo+ID4gPiA+IEkndmUganVzdCB1cGRhdGVkIHRvIHRoZSBoZWFkIG9mIExp
+bnVzJ3MgdHJlZSAoNS4xMC1yYzUpIGFuZCBnb3QgdGhlIGZvbGxvd2luZw0KPiA+ID4gPiAnc3Bs
+YXQnIGR1cmluZyBzaHV0ZG93bi4NCj4gPiA+ID4NCj4gPiA+ID4gVXNlcnNwYWNlIGlzIFVidW50
+dSAyMC4wNC4NCj4gPiA+ID4NCj4gPiA+ID4gcmM0IHJlYm9vdGVkIGZpbmUuDQo+ID4gPiA+DQo+
+ID4gPiA+IEknbGwgdHJ5IHRvIGJpc2VjdCAtIGJ1dCBpdCBpc24ndCBxdWljay4NCj4gPiA+ID4N
+Cj4gPiA+DQo+ID4gPiBTdXJlbHkgY2F1c2VkIGJ5DQo+ID4gPg0KPiA+ID4NCj4gaHR0cHM6Ly9n
+aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0
+L2NvbW1pdC9mcy9lZml2YXJmcz9pZD1mZTUxODZjZjEyZTMwDQo+ID4gPiBmYWNmZTI2MWU5YmU2
+Yzc5MDRhMTcwYmQ4MjINCj4gPg0KPiA+IFllcCwgcmVib290cyBmaW5lIHdpdGggdGhhdCBrZnJl
+ZSgpIGNvbW1lbnRlZCBvdXQuDQo+ID4NCj4gDQo+IFRoYW5rcyBmb3IgY29uZmlybWluZy4NCj4g
+DQo+IERvZXMgaXQgYWxzbyB3b3JrIHdoZW4ga2VlcGluZyB0aGUga2ZyZWUoKSBhbmQgc2V0dGlu
+Zw0KPiBpbm9kZS0+aV9wcml2YXRlIHRvIE5VTEwgZXhwbGljaXRseSBhZnRlcndhcmRzPw0KDQpO
+bywgdGhhdCBzdGlsbCBwYW5pY3MuDQpTZXR0aW5nIGlfcHJpdmF0ZSBOVUxMIChidXQgd2l0aG91
+dCB0aGUga2ZyZWUoKSkgaXMgb2suDQoNCkknbSBzZWVpbmcgNDIgY2FsbHMgd2l0aCBhIG5vbi1O
+VUxMIGlfcHJpdmF0ZS4NClRoZSBmaW5hbCBjYWxsIGhhcyBpX3ByaXZhdGUgTlVMTCBhbmQgaXNu
+J3QgYSBkdXBsaWNhdGUuDQoNClRoZXJlIG11c3QgYmUgYW5vdGhlciBwb2ludGVyIGludG8gb25l
+IG9mIHRoZSBzdHJ1Y3R1cmVzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
