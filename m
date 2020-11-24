@@ -2,136 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2182C2C81
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A71D52C2C85
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390248AbgKXQNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
+        id S2390184AbgKXQOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:14:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389426AbgKXQNJ (ORCPT
+        with ESMTP id S2389424AbgKXQOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:13:09 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E052C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:13:09 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c198so2909207wmd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:13:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qzYhP0b8ID3iThkWEoh3xFX/9VMn9nUYQ9ogFepHOHY=;
-        b=TuQ0t9ZpKW4ggOGRiqM9dTnIH/lHkFnZhAF6uzm4dmBuQvOoa37WzbapO/5xtoLSkz
-         zSVFoquDpoF8/3bSA3Zk7821O8rQHPeYblUsu2BGcMBmkWmX/aoNXNbtxN15GprgAPrh
-         GjzCvfYT111CGrRk9Qh6cd04WWvw2KiGVMFQDTf/Y6khAlN4xCJKzqsn56333RzQ+VEQ
-         Z6liRVkUclidNgKbEnh0N7IOFIZrt3JQtV6cenOM5d9NCG9hqmVx9mvSi08cStSCYRy1
-         GQOLtAnZ2AIjSSlBCiAMTtzzvBmyyUXjN+rJ/ZW9ANS1l9hIpm7MMfCwJ484fhdwVL9v
-         kdYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qzYhP0b8ID3iThkWEoh3xFX/9VMn9nUYQ9ogFepHOHY=;
-        b=aDBtyaS3y3ad3br28Oju9L6Z/0ZZGXkmACwByjpMFlOinM4wwyxy7KpDRIGfwZUUUq
-         bpYOetCMN1eNKCTN2BBmtdm8TlgFMmgTJqqrQDD2+7zVpi3yd7hF4rYCc0BbgHeC25yx
-         4UiTsX+oQ2abmq4alpoY8XGdKLQ8loQo31dkJmnjDU3sHZGko+5yBTicqItUwmVf5jAk
-         Lz9pkPVgiNxvacOwiDbX0mFub7/Xl2IZrOMqaQjZg10coc6ihCCgCTOhcsHyOBggIiHz
-         DV9e+ZkXG4gYnpxAYvXG5XdfHXLTtdwbZyM++CxqXTSyi/sGDm6zUrEdW3Hefe3q22Ff
-         h5TQ==
-X-Gm-Message-State: AOAM531hI+gvuT128IAIF7znt+0yWGKx5utAKUXym/KwHlphjIupauHM
-        11j5R0KHQow4VYooyU8RRzNK8EI2vhPYPNxdhSs=
-X-Google-Smtp-Source: ABdhPJzeyZtAFf/J5jW+ZtF8k+WE6FDG/QuzE51jZAELAPXsmdi3+wHV8nliAKBzAjjloQOYFQfS141MEL7cbeStRP8=
-X-Received: by 2002:a1c:1c3:: with SMTP id 186mr5100898wmb.39.1606234388284;
- Tue, 24 Nov 2020 08:13:08 -0800 (PST)
+        Tue, 24 Nov 2020 11:14:39 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE435C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:14:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/1kCWnd3feKEZ2BNY0EBqrEBKNfPzZjxoqXEKQGIzvM=; b=U6Ify2qunErItlzQIuaLuG1RGm
+        2J8nOfxIjjQVT2MvNXuSaqYWI5Ot6CbunbyaGKRhLdzrv9+GQpMyzdihjo079ocKcXpzJlfycdVN0
+        Oa13yi9a20EQCbZ2PrAbDrTgRf2KjUYQMP9wb5bMsV/ARG1af0tMx3SgDUBkWyLn6rqTwQOnG+fL0
+        2Evqo6udgxpOjViHAz/93arflja2DIkfySSUnWmAPcRJuUp/AcfA0jv68q/n+puhnmaAd1j3wKSXQ
+        n4o2f1KSvcq2XU34v5vAYfGeET6W0s5jrBEB+VprcFytc9hsxUTt/6oL2DFdHgxXliZdEcPY8gYg4
+        r36epBdA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khawj-0001gk-3k; Tue, 24 Nov 2020 16:13:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C5EBB3012DF;
+        Tue, 24 Nov 2020 17:13:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AFA1B201ABB33; Tue, 24 Nov 2020 17:13:35 +0100 (CET)
+Date:   Tue, 24 Nov 2020 17:13:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 19/32] entry/idle: Enter and exit kernel protection
+ during idle entry and exit
+Message-ID: <20201124161335.GB3021@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-20-joel@joelfernandes.org>
 MIME-Version: 1.0
-References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-26-lee.jones@linaro.org>
-In-Reply-To: <20201123111919.233376-26-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 24 Nov 2020 11:12:57 -0500
-Message-ID: <CADnq5_Nw3MuqV-GcAiCcUkaVPpm-wXnsQ6Y2X-aZY21AxYPYWQ@mail.gmail.com>
-Subject: Re: [PATCH 25/40] drm/amd/include/arct_ip_offset: Mark top-level
- IP_BASE definition as __maybe_unused
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117232003.3580179-20-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  In file included from drivers/gpu/drm/amd/amdgpu/arct_reg_init.c:27:
->  drivers/gpu/drm/amd/amdgpu/../include/arct_ip_offset.h:227:29: warning: =
-=E2=80=98DBGU_IO_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->  227 | static const struct IP_BASE DBGU_IO_BASE =3D{ { { { 0x000001E0, 0x=
-000125A0, 0x0040B400, 0, 0, 0 } },
->  | ^~~~~~~~~~~~
->  drivers/gpu/drm/amd/amdgpu/../include/arct_ip_offset.h:127:29: warning: =
-=E2=80=98PCIE0_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  127 | static const struct IP_BASE PCIE0_BASE =3D{ { { { 0x000128C0, 0x00=
-411800, 0x04440000, 0, 0, 0 } },
->  | ^~~~~~~~~~
->  In file included from drivers/gpu/drm/amd/amdgpu/arct_reg_init.c:27:
->  drivers/gpu/drm/amd/amdgpu/../include/arct_ip_offset.h:63:29: warning: =
-=E2=80=98FUSE_BASE=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  63 | static const struct IP_BASE FUSE_BASE =3D{ { { { 0x000120A0, 0x0001=
-7400, 0x00401400, 0, 0, 0 } },
->  | ^~~~~~~~~
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Applied.  Thanks!
-
-Alex
-
+On Tue, Nov 17, 2020 at 06:19:49PM -0500, Joel Fernandes (Google) wrote:
+> Add a generic_idle_{enter,exit} helper function to enter and exit kernel
+> protection when entering and exiting idle, respectively.
+> 
+> While at it, remove a stale RCU comment.
+> 
+> Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  drivers/gpu/drm/amd/include/arct_ip_offset.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/include/arct_ip_offset.h b/drivers/gpu/d=
-rm/amd/include/arct_ip_offset.h
-> index a7791a9e1f905..af1c46991429b 100644
-> --- a/drivers/gpu/drm/amd/include/arct_ip_offset.h
-> +++ b/drivers/gpu/drm/amd/include/arct_ip_offset.h
-> @@ -28,12 +28,12 @@
->  struct IP_BASE_INSTANCE
+>  include/linux/entry-common.h | 18 ++++++++++++++++++
+>  kernel/sched/idle.c          | 11 ++++++-----
+>  2 files changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index 022e1f114157..8f34ae625f83 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -454,4 +454,22 @@ static inline bool entry_kernel_protected(void)
+>  	return IS_ENABLED(CONFIG_SCHED_CORE) && sched_core_kernel_protected()
+>  		&& _TIF_UNSAFE_RET != 0;
+>  }
+> +
+> +/**
+> + * generic_idle_enter - General tasks to perform during idle entry.
+> + */
+> +static inline void generic_idle_enter(void)
+> +{
+> +	/* Entering idle ends the protected kernel region. */
+> +	sched_core_unsafe_exit();
+> +}
+> +
+> +/**
+> + * generic_idle_exit  - General tasks to perform during idle exit.
+> + */
+> +static inline void generic_idle_exit(void)
+> +{
+> +	/* Exiting idle (re)starts the protected kernel region. */
+> +	sched_core_unsafe_enter();
+> +}
+>  #endif
+
+That naming is terrible..
+
+> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> index 8bdb214eb78f..ee4f91396c31 100644
+> --- a/kernel/sched/idle.c
+> +++ b/kernel/sched/idle.c
+> @@ -8,6 +8,7 @@
+>   */
+>  #include "sched.h"
+>  
+> +#include <linux/entry-common.h>
+>  #include <trace/events/power.h>
+>  
+>  /* Linker adds these: start and end of __cpuidle functions */
+> @@ -54,6 +55,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
+>  
+>  static noinline int __cpuidle cpu_idle_poll(void)
 >  {
->      unsigned int segment[MAX_SEGMENT];
-> -};
-> +} __maybe_unused;
->
->  struct IP_BASE
->  {
->      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
-> -};
-> +} __maybe_unused;
->
->
->  static const struct IP_BASE ATHUB_BASE            =3D{ { { { 0x00000C20,=
- 0x00012460, 0x00408C00, 0, 0, 0 } },
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> +	generic_idle_enter();
+>  	trace_cpu_idle(0, smp_processor_id());
+>  	stop_critical_timings();
+>  	rcu_idle_enter();
+> @@ -66,6 +68,7 @@ static noinline int __cpuidle cpu_idle_poll(void)
+>  	rcu_idle_exit();
+>  	start_critical_timings();
+>  	trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
+> +	generic_idle_exit();
+>  
+>  	return 1;
+>  }
+> @@ -156,11 +159,7 @@ static void cpuidle_idle_call(void)
+>  		return;
+>  	}
+>  
+> -	/*
+> -	 * The RCU framework needs to be told that we are entering an idle
+> -	 * section, so no more rcu read side critical sections and one more
+> -	 * step to the grace period
+> -	 */
+> +	generic_idle_enter();
+>  
+>  	if (cpuidle_not_available(drv, dev)) {
+>  		tick_nohz_idle_stop_tick();
+> @@ -225,6 +224,8 @@ static void cpuidle_idle_call(void)
+>  	 */
+>  	if (WARN_ON_ONCE(irqs_disabled()))
+>  		local_irq_enable();
+> +
+> +	generic_idle_exit();
+>  }
+
+I'm confused.. arch_cpu_idle_{enter,exit}() weren't conveniently placed
+for you?
