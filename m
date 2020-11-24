@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E563A2C22FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C002C22F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732047AbgKXKbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:31:11 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8577 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731908AbgKXKbJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731958AbgKXKbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 24 Nov 2020 05:31:09 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgKzj4d65zLsSS;
-        Tue, 24 Nov 2020 18:30:41 +0800 (CST)
-Received: from [10.74.191.121] (10.74.191.121) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 24 Nov 2020 18:30:57 +0800
-Subject: Re: [PATCH net-next v2 1/2] lockdep: Introduce in_softirq lockdep
- assert
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <mingo@redhat.com>, <will@kernel.org>, <viro@zeniv.linux.org.uk>,
-        <kyk.segfault@gmail.com>, <davem@davemloft.net>,
-        <linmiaohe@huawei.com>, <martin.varghese@nokia.com>,
-        <pabeni@redhat.com>, <pshelar@ovn.org>, <fw@strlen.de>,
-        <gnault@redhat.com>, <steffen.klassert@secunet.com>,
-        <vladimir.oltean@nxp.com>, <edumazet@google.com>,
-        <saeed@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <1605927976-232804-1-git-send-email-linyunsheng@huawei.com>
- <1605927976-232804-2-git-send-email-linyunsheng@huawei.com>
- <20201123142725.GQ3021@hirez.programming.kicks-ass.net>
- <20201123121259.312dcb82@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201124081112.GF2414@hirez.programming.kicks-ass.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <c85ba51b-0904-0376-7896-2eeb0d1b3d30@huawei.com>
-Date:   Tue, 24 Nov 2020 18:30:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21534 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731886AbgKXKbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:31:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606213867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h+X/QM3LIRfUSG0/Ck2rlt3TvdbGoFO5E2DZVLdsfOw=;
+        b=SsuKR54dhpLYIOQjkHN4FTxtlTiKSCWtbHuGgHaQBFI3JXFdautdiDuI/rQAj1aav5ZwAM
+        61rneSo0bN2mnF+Pdc8ZmAjN6eH7zpFyYFqFIF9G0v+XLm5R9F4KnEAdZvVLIexoEr4t4W
+        wTehctBxOVXVd9iyPGVNiV0adev4S0A=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-W1hgHaL0PgKojOkR7DcSMw-1; Tue, 24 Nov 2020 05:31:04 -0500
+X-MC-Unique: W1hgHaL0PgKojOkR7DcSMw-1
+Received: by mail-ej1-f72.google.com with SMTP id e7so6741204eja.15
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:31:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h+X/QM3LIRfUSG0/Ck2rlt3TvdbGoFO5E2DZVLdsfOw=;
+        b=tEylgZBLpR65GYwsFUE6Gc4IAydL+eAKy2UnUpbR1+MwbKMaE/FRxZtEzhUoOL/5ey
+         TLuhsAzIWYAZMLRVzFn2ayQKBuO78Zn5GJ9whbBtBeQgeEI06560XmZTjEidPDcEImgj
+         OHgGXueR/y/CkB6+52dRNo4XATVfVug7lbbcXZzEeqi7CpNCeoMu6YigYN6ev7vfMvXd
+         T02+gFVOGbVnyNvB4PQ31AbeogaleoxemExVAPtzhhqaSYc3XVYraKHXDxUL9J7IKLXg
+         b+z4qlT67qfQNPNrGYBfIEr39uwSIzw6efDjjXIKGnNotU+paKvFZ6+/hIPHhI0LE8yl
+         oI8g==
+X-Gm-Message-State: AOAM531h/Vg8WqAwJFzI1spz9BKU7sBl657/5Oz96xXyeXFm051TJt9q
+        o80fZw5QdqmnheONiEPQdDX/b4+tjF+OsJjdRMNKkfzb3GbRNyq1EDlOijZ1r0Q869c0HrZ9Pm7
+        9jKabCvlXSmbS/7nL31VBBz8Z
+X-Received: by 2002:a50:b584:: with SMTP id a4mr3303659ede.301.1606213863544;
+        Tue, 24 Nov 2020 02:31:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx1j1BZSeJJvNp43wSQVFfTRwJU5DVEOcEbiKgJSh1BIM/Fcda7aNMf+62DHflzA3z3suVNBw==
+X-Received: by 2002:a50:b584:: with SMTP id a4mr3303648ede.301.1606213863382;
+        Tue, 24 Nov 2020 02:31:03 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id i13sm6517717ejv.84.2020.11.24.02.31.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 02:31:02 -0800 (PST)
+Subject: Re: 5.10 regression, many XHCI swiotlb buffer is full / DMAR: Device
+ bounce map failed errors on thunderbolt connected XHCI controller
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+References: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
+ <be031d15-201f-0e5c-8b0f-be030077141f@redhat.com>
+ <20201124102715.GA16983@lst.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f1bd62b4-a746-6b1c-08ee-6dd1982722b6@redhat.com>
+Date:   Tue, 24 Nov 2020 11:31:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201124081112.GF2414@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201124102715.GA16983@lst.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.191.121]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/24 16:11, Peter Zijlstra wrote:
-> On Mon, Nov 23, 2020 at 12:12:59PM -0800, Jakub Kicinski wrote:
->> One liner would be:
+Hi,
+
+On 11/24/20 11:27 AM, Christoph Hellwig wrote:
+> On Mon, Nov 23, 2020 at 03:49:09PM +0100, Hans de Goede wrote:
+>> Hi,
 >>
->> 	* Acceptable for protecting per-CPU resources accessed from BH
->> 	
->> We can add:
+>> +Cc Christoph Hellwig <hch@lst.de>
 >>
->> 	* Much like in_softirq() - semantics are ambiguous, use carefully. *
+>> Christoph, this is still an issue, so I've been looking around a bit and think this
+>> might have something to do with the dma-mapping-5.10 changes.
 >>
->>
->> IIUC we basically want to protect the nc array and counter here:
+>> Do you have any suggestions to debug this, or is it time to do a git bisect
+>> on this before 5.10 ships with regression?
 > 
-> Works for me, thanks!
-
-Will add the above comment in v3.
-
-Thanks.
-
-> .
+> Given that DMAR prefix this seems to be about using intel-iommu + bounce
+> buffering for external devices.  I can't really think of anything specific
+> in 5.10 related to that, so maybe you'll need to bisect.
 > 
+> I doub this means we are actually leaking swiotlb buffers, so while
+> I'm pretty sure we broke something in lower layers this also means
+> xhci doesn't handle swiotlb operation very gracefully in general.
+
+Ok, I've re-arranged my schedule a bit so that I have time to bisect this
+tomorrow, so with some luck I will be able to provide info on which commit
+introduced this issue tomorrow around the end of the day.
+
+Regards,
+
+Hans
+
