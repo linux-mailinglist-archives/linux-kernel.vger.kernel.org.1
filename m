@@ -2,171 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8237F2C33CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E0E2C33D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389376AbgKXWV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 17:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
+        id S2389416AbgKXWWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 17:22:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388661AbgKXWV4 (ORCPT
+        with ESMTP id S1726925AbgKXWWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:21:56 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8DFC061A4E
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:21:55 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id c66so419135pfa.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:21:55 -0800 (PST)
+        Tue, 24 Nov 2020 17:22:12 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64A0C0613D6;
+        Tue, 24 Nov 2020 14:22:10 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id z7so8218wrn.3;
+        Tue, 24 Nov 2020 14:22:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5IOFKT2E7UmZNE+UF5+67kx99kzkXEJjEUmTB7hYGQ8=;
-        b=PPW0lZFNYlL9xRQ+lUkWVVx5ASkq2QlU7KPxrRbKvts6ZAtAw/YUXZhM00orxYqZfg
-         axDh5BKUUvJfH1rkZb1iFvF3gGMZcUslXFz1OnmAK2hSpHozP1AeLCn7YxOoymaXua0F
-         YPHGL6s6rf3LcwZy1VWcM46dUUoniltGD4MQtyFFbyXB5wNB6YB5uZatAOdoV/Ihq8TG
-         3r6uq5Gqwt+p9XWl76NXYbnJIK7ElVTmVJvBv6TRKon+oWOUX9v/tMdjJCekCayPVXqy
-         UNYFgRHvy5HX/eP2SdDiFXEu97Cxezw3gu3zyftZAAWT7ia3ApuC2r0pjTAxXSPHK/3t
-         4k8A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=Zjy5WrLgbZYh4W/KRF1nXj3IJsH6phdhD0tx3ox+N7A=;
+        b=gSRABH986L+Cgqpbjk8+wlggkwGG0ANS5k6+DL+6zTXCmCApeMZRYbkpdJNeoooQ60
+         bLA4DM8Rn38LubWajqpMlDMKyjEXiLwbafuDUPgyGjeTpWyJ6GuLKSQ7Yxjd1MaQjrJB
+         gguoJR/hgrY5oIh3HCP8Cha2TC5rF2Qg8yOwGTu8IXPAqWWLbgMAfHFVxFSpFxszgfps
+         N6fjlgFsqYO9XvjnvflJxfS9AgsBioj0ZoC2o4lXk351VhZAewFMaSGp8NIUyWEJmO9J
+         0Qqdxs+ijBtXjL/gsB+A3PQ5ekI+YTMp68zOAQ6Vrt5Okg1ZeMhCpQYCpEqifMqDLqwt
+         oyaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5IOFKT2E7UmZNE+UF5+67kx99kzkXEJjEUmTB7hYGQ8=;
-        b=ToVYUed1eYgdCZr5iOZCXfrx0mdFHX7UwD51iqLBNcwxeDndyhNdNvRB3sCIYpnK00
-         XjBI6E+7TFpVsN7L/nYgJH23cA0pSwA+3/Mmw3tF6ASgSu47gaB8udYyXgBGECWhtJeE
-         cLeDO51JuV8lSVyz8trIIrbJJ+38CUlgn5fmvsq0Wm1FpXJMZY3vyFn7eeQB/qCjoUW6
-         yXrkcqUGVnQA2fph5AoHm2ozPzy5M+pwWfRHb0oz+8F9P0UlqF3ytFO0EonbmISLigNF
-         Z94ubIjZAutmYdWbFaBVTQdpRORu1xTX7rBjAjTNAJVXFlXAGDc3imBGrben2OFYixp6
-         hK6Q==
-X-Gm-Message-State: AOAM533MiN8+8HoYDwDdqNJpXnpo11nVO92Ol3kTRsExIXGJ5E0Cz+5t
-        oDjBMTwiHbururG8do2WquPXdg==
-X-Google-Smtp-Source: ABdhPJzEi0HzFsD9olRT/c+V4q89YY33lIFUdwC1A293ipnDcgbJp25euiagGKlo/ygjoSazDXIMug==
-X-Received: by 2002:a17:90b:68f:: with SMTP id m15mr373352pjz.209.1606256514953;
-        Tue, 24 Nov 2020 14:21:54 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id g14sm173736pgi.89.2020.11.24.14.21.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 14:21:54 -0800 (PST)
-Date:   Tue, 24 Nov 2020 14:21:49 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas <thomas.lendacky@amd.com>, pbonzini@redhat.com,
-        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
-        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
-        Eric <eric.vantassell@amd.com>, gingell@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20201124222149.GB65542@google.com>
-References: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
- <20201124191629.GB235281@google.com>
- <20201124194904.GA45519@google.com>
- <alpine.DEB.2.23.453.2011241215400.3594395@chino.kir.corp.google.com>
- <20201124210817.GA65542@google.com>
- <20201124212725.GB246319@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=Zjy5WrLgbZYh4W/KRF1nXj3IJsH6phdhD0tx3ox+N7A=;
+        b=jKQMtAinyoGa8s2GlYshwe26giB3LhH751njvl05wMugsReih909wvw3q9nAoZ6I9I
+         y5Ro0PnAPMvdGWAZ8Fgyaume+2fJjRzOEBj6VE2+Dooo3B4zqb1Olw2sOv4c/VMKQesx
+         d5dfAAMa/UsWWSEwKSLqdFaF5MN1w5kxNXg8QJxFq5ZHQsBXhssQu/zPyv58nQloBFKG
+         MJQEpqMlIxSwpeDhdY42o2+juy7Hanwh6yB0bxv25sbd0UZLZYi/NVTiBNwHvdzmodr1
+         54IM+n2NtsXt+Z7c/54MTHiEmSQDv8cpsBdJVCfkp0lmNEsPFUvx00uiRqP9HyvGlpUB
+         c0sw==
+X-Gm-Message-State: AOAM531iCTvB5n5iEhTTUrd59+g42zrz2Nr53gjWhogOI5hzVSX3bnVH
+        QcSAZFMFFFrA9pqxL7k+KFxnjdfJrHdIeQ==
+X-Google-Smtp-Source: ABdhPJxYZpUpEtEGo235T6saHwlCQ9Ta+1cHzalvVzG+vViJeTKCRZk93xdh0Cwed981euVdDzKGBA==
+X-Received: by 2002:a5d:67c5:: with SMTP id n5mr668390wrw.179.1606256529444;
+        Tue, 24 Nov 2020 14:22:09 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f23:2800:145e:bd05:1fb8:712a? (p200300ea8f232800145ebd051fb8712a.dip0.t-ipconnect.de. [2003:ea:8f23:2800:145e:bd05:1fb8:712a])
+        by smtp.googlemail.com with ESMTPSA id k81sm1140599wma.2.2020.11.24.14.22.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 14:22:08 -0800 (PST)
+Subject: Re: [PATCH v2] net: phy: realtek: read actual speed on rtl8211f to
+ detect downshift
+To:     Antonio Borneo <antonio.borneo@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Yonglong Liu <liuyonglong@huawei.com>,
+        Willy Liu <willy.liu@realtek.com>
+Cc:     linuxarm@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+References: <20201124143848.874894-1-antonio.borneo@st.com>
+ <20201124215932.885306-1-antonio.borneo@st.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <7d8bf728-7d73-fa8c-d63d-49e9e6c872fd@gmail.com>
+Date:   Tue, 24 Nov 2020 23:22:03 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124212725.GB246319@google.com>
+In-Reply-To: <20201124215932.885306-1-antonio.borneo@st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 09:27:25PM +0000, Sean Christopherson wrote:
-> On Tue, Nov 24, 2020, Vipin Sharma wrote:
-> > On Tue, Nov 24, 2020 at 12:18:45PM -0800, David Rientjes wrote:
-> > > On Tue, 24 Nov 2020, Vipin Sharma wrote:
-> > > 
-> > > > > > Looping Janosch and Christian back into the thread.                           
-> > > > > >                                                                               
-> > > > > > I interpret this suggestion as                                                
-> > > > > > encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
-> > > > > 
-> > > > > I think it makes sense to use encryption_ids instead of simply encryption, that
-> > > > > way it's clear the cgroup is accounting ids as opposed to restricting what
-> > > > > techs can be used on yes/no basis.
-> > > > > 
-> > > 
-> > > Agreed.
-> > > 
-> > > > > > offerings, which was my thought on this as well.                              
-> > > > > >                                                                               
-> > > > > > Certainly the kernel could provide a single interface for all of these and    
-> > > > > > key value pairs depending on the underlying encryption technology but it      
-> > > > > > seems to only introduce additional complexity in the kernel in string         
-> > > > > > parsing that can otherwise be avoided.  I think we all agree that a single    
-> > > > > > interface for all encryption keys or one-value-per-file could be done in      
-> > > > > > the kernel and handled by any userspace agent that is configuring these       
-> > > > > > values.                                                                       
-> > > > > >                                                                               
-> > > > > > I think Vipin is adding a root level file that describes how many keys we     
-> > > > > > have available on the platform for each technology.  So I think this comes    
-> > > > > > down to, for example, a single encryption.max file vs                         
-> > > > > > encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
-> > > > > 
-> > > > > Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
-> > > > > no need to enumerate platform total, but not knowing how many of the allowed IDs
-> > > > > have been allocated seems problematic.
-> > > > > 
-> > > > 
-> > > > We will be showing encryption_ids.{sev,sev_es}.{max,current}
-> > > > I am inclined to not provide "events" as I am not using it, let me know
-> > > > if this file is required, I can provide it then.
+Am 24.11.2020 um 22:59 schrieb Antonio Borneo:
+> The rtl8211f supports downshift and before commit 5502b218e001
+> ("net: phy: use phy_resolve_aneg_linkmode in genphy_read_status")
+> the read-back of register MII_CTRL1000 was used to detect the
+> negotiated link speed.
+> The code added in commit d445dff2df60 ("net: phy: realtek: read
+> actual speed to detect downshift") is working fine also for this
+> phy and it's trivial re-using it to restore the downshift
+> detection on rtl8211f.
 > 
-> I've no objection to omitting current until it's needed.
+> Add the phy specific read_status() pointing to the existing
+> function rtlgen_read_status().
 > 
-> > > > I will provide an encryption_ids.{sev,sev_es}.stat file, which shows
-> > > > total available ids on the platform. This one will be useful for
-> > > > scheduling jobs in the cloud infrastructure based on total supported
-> > > > capacity.
-> > > > 
-> > > 
-> > > Makes sense.  I assume the stat file is only at the cgroup root level 
-> > > since it would otherwise be duplicating its contents in every cgroup under 
-> > > it.  Probably not very helpful for child cgroup to see stat = 509 ASIDs 
-> > > but max = 100 :)
-> > 
-> > Yes, only at root.
+> Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+> Link: https://lore.kernel.org/r/478f871a-583d-01f1-9cc5-2eea56d8c2a7@huawei.com
+> ---
+> To: Andrew Lunn <andrew@lunn.ch>
+> To: Heiner Kallweit <hkallweit1@gmail.com>
+> To: Russell King <linux@armlinux.org.uk>
+> To: "David S. Miller" <davem@davemloft.net>
+> To: Jakub Kicinski <kuba@kernel.org>
+> To: netdev@vger.kernel.org
+> To: Yonglong Liu <liuyonglong@huawei.com>
+> To: Willy Liu <willy.liu@realtek.com>
+> Cc: linuxarm@huawei.com
+> Cc: Salil Mehta <salil.mehta@huawei.com>
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-kernel@vger.kernel.org
+> In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
 > 
-> Is a root level stat file needed?  Can't the infrastructure do .max - .current
-> on the root cgroup to calculate the number of available ids in the system?
+> V1 => V2
+> 	move from a generic implementation affecting every phy
+> 	to a rtl8211f specific implementation
+> ---
+>  drivers/net/phy/realtek.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+> index 575580d3ffe0..8ff8a4edc173 100644
+> --- a/drivers/net/phy/realtek.c
+> +++ b/drivers/net/phy/realtek.c
+> @@ -621,6 +621,7 @@ static struct phy_driver realtek_drvs[] = {
+>  		PHY_ID_MATCH_EXACT(0x001cc916),
+>  		.name		= "RTL8211F Gigabit Ethernet",
+>  		.config_init	= &rtl8211f_config_init,
+> +		.read_status	= rtlgen_read_status,
+>  		.ack_interrupt	= &rtl8211f_ack_interrupt,
+>  		.config_intr	= &rtl8211f_config_intr,
+>  		.suspend	= genphy_suspend,
+> 
+> base-commit: 9bd2702d292cb7b565b09e949d30288ab7a26d51
+> 
 
-For an efficient scheduling of workloads in the cloud infrastructure, a
-scheduler needs to know the total capacity supported and the current
-usage of the host to get the overall picture. There are some issues with
-.max -.current approach:
-
-1. Cgroup v2 convention is to not put resource control files in the
-   root. This will mean we need to sum (.max -.current) in all of the
-   immediate children of the root.
-
-2. .max can have any limit unless we add a check to not allow a user to
-   set any value more than the supported one. This will theoretically
-   change the encryption_ids cgroup resource distribution model from the
-   limit based to the allocation based. It will require the same
-   validations in the children cgroups. I think providing separate file on
-   the root is a simpler approach.
-
-For someone to set the max limit, they need to know what is the
-supported capacity. In the case of SEV and SEV-ES it is not shown
-anywhere and the only way to know this is to use a CPUID instructions.
-The "stat" file will provide an easy way to know it.
-
-Since current approach is not migrating charges, this means when a
-process migrates to an another cgroup and the old cgroup is deleted
-(user won't see it but it will be present in the cgroup hierarchy
-internally), we cannot get the correct usage by going through other
-cgroup directories in this case.
-
-I am suggesting that the root stat file should show both available and
-used information.
-$ cat encryption_ids.sev.stat
-total 509
-used 102
-
-It will be very easy for a cloud scheduler to retrieve the system state
-quickly.
+Pefect would be to make this a fix for 5502b218e001,
+but rtlgen_read_status() was added one year after this change.
+Marking the change that added rtlgen_read_status() as "Fixes"
+would be technically ok, but as it's not actually broken not
+everybody may be happy with this.
+Having said that I'd be fine with treating this as an improvement,
+downshift should be a rare case.
