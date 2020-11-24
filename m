@@ -2,254 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350192C1E75
+	by mail.lfdr.de (Postfix) with ESMTP id C6CDA2C1E76
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbgKXGnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:43:01 -0500
-Received: from mail-eopbgr760087.outbound.protection.outlook.com ([40.107.76.87]:34373
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        id S1729819AbgKXGnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:43:16 -0500
+Received: from mail-eopbgr60049.outbound.protection.outlook.com ([40.107.6.49]:23939
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725786AbgKXGnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:43:01 -0500
+        id S1725786AbgKXGnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:43:15 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L16QxENlXJw37stdUvkh5nXBHflyzT3AO07k32wz8dDPabNBbrhy4EF+sFFZxeuIo1I6/91MVifaVOKst0Ly+R1A7qUhMEiTSUVP701vhyhgnptZF5mYoKk2VdiLsVG4xNgQCZGEP+N1+t6tIbDmwz7DF5vhFY4oS0Y5rQdStLYIFjgy+4aMaeRtQWmHnrXDIEKKi3pqNy6QT+47ERjtQwGYpQGpqr9FDYTXP8uIHwDeG+vBRmYzmktB3S02vrho9H7WRgM2mugVlPvGrsvE/jlCy3+OVEp47BtAaZFBrMhKlae5qTn/BN9EzocXUZJm+iL3YK9BENP/LFk691mNJw==
+ b=ATtp6wtQ/EkW9NJjLrJnN69SDSzwSlCvxoo5umxr3wZxVJD3fSLkICEILZ2+Nri03sFLz0fLVZ2qIxnRkpJh+aZjQbjr19Q/y0rGXLidRlMztqEd8rb4HMb8QIqrXCGq2a9U7liFXOO+gA4s2OsZLnNuwKhLrtPu51IrnrbTCMyj8to4KWMNrVuNDpyfOGwuJ2s/MuKI4jOeW645a+QXOzhu2kw0VpAdpTgCIjQP+YsUEccnrx5i1HX4LzBs57/E8I/XY6hoLvr9izkgwLzsIEq1Mk7mFbAL8rg7jGDluZuFV+NVZ45/dv7TE/YvTsF1TwYiRUUQ1he/+fskDW8yVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rgkwNWumUvt3Lq199MdOqlofTzfZOpK/ajIIcjXD0gg=;
- b=XcZE9sKa+aTCJWTc0aR41+xDpiq18i6CaZXp5RplIhp4JEQL4PcUi3jObwfIc2D33TCbgczMRuqQpHaPQL4fTBmjWz30q2UGWjG85Nou+v2nLcyXfkz8aKoIA98TOS80otflMVqvWybplkhbuleqdFlhzK1fwOXnTFlyuXmYa4BC9qKwkHgCNsd60/Bi944G4p6WFbSlVxYNKwQ+ZM9czaoa2qujoX73jIwOSOKy9p/HPDIUqeJJJY+rp+KW204ISRBzjvw26KB4fyXrXWwzHVivEO2xxoaZNXrM2UUEwqP0Q9azPUYn5xV7FvQiz4Ml3I+iE2kgrCM5g9eSCNajlg==
+ bh=oa8A0VH0O3NngdXpO/Cq5ugDqIQ3naQONtoOLHhvUxc=;
+ b=mgej9QUPTOBDFrQ6zbgQlrVNfJiYirwlJUX+E7m5utWmGji7LFbm1a1J+bvSOIWCs/qyh3sN9VifDyQWnmroH//4A6RN0aer+Tba9CgBbeCqDL6Bg3soWQfmirkGFhuVqFM8r+aWM8qENxe7mj8vB0JZl0ZlWyt8w3ayxXjpsuTUFvycWQjPk7Q377/fPaplbe1p7TYhZJkUi8vRNvV/BB3C/gSCUgDqqfe9pf5pN4Z8IBVufGqGLYyyDOFRf6Q2VD4IzthjmLVzeAUzbWHMZWiz1MtUxUzMjeXSFY6YpA0VGVmzLhQYdibl+PYckeV2SXA9qZPy6ZruTm1kzAjaCQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rgkwNWumUvt3Lq199MdOqlofTzfZOpK/ajIIcjXD0gg=;
- b=WQVhdzJpmh3oGUbU1tu3KBLyTF7kBJEwAsC/W9nSbSFynUGzfVuDJd/CEnFEs1IC+ivSnRi9iVi3obtZ6OjncrKvFw4RCq8b2LpvZI+pfHp19VGIHCASZG1ZWkZfgibwUK6tuLO5aRizGeHdyD0Bnom4k63/M9672bt1TSwn/hk=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
- by MWHPR12MB1439.namprd12.prod.outlook.com (2603:10b6:300:12::11) with
+ bh=oa8A0VH0O3NngdXpO/Cq5ugDqIQ3naQONtoOLHhvUxc=;
+ b=rYv1LYi1whxYiUdzmdzNSfiLlsTOppo77cKKNxn0HUCZzEh+G2qfRC2l5z2rDGZVwim7UFmCapVfPlc8/wSHm4QlHUd0Bx/HnJFMqyf6mnb00g98c0nuRg6KJ2d2j9quDjtoRsFvsoEZh49A9AMc3OqBvEnrDCBG/LpVnCqoNvU=
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
+ by DB8PR04MB6859.eurprd04.prod.outlook.com (2603:10a6:10:119::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.28; Tue, 24 Nov
- 2020 06:42:57 +0000
-Received: from MWHPR12MB1248.namprd12.prod.outlook.com
- ([fe80::4590:261a:f3b1:a1a2]) by MWHPR12MB1248.namprd12.prod.outlook.com
- ([fe80::4590:261a:f3b1:a1a2%9]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
- 06:42:57 +0000
-Date:   Tue, 24 Nov 2020 14:43:01 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Edgar Merger <Edgar.Merger@emerson.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Changfeng Zhu <changfeng.zhu@amd.com>
-Subject: Re: [PATCH] PCI: Mark AMD Raven iGPU ATS as broken
-Message-ID: <20201124064301.GA536919@hr-amd>
-References: <20201123134410.10648-1-will@kernel.org>
- <MN2PR12MB4488308D26DB50C18EA3BE0FF7FC0@MN2PR12MB4488.namprd12.prod.outlook.com>
- <20201123223356.GC12069@willie-the-truck>
- <218017ab-defd-c77d-9055-286bf49bee86@amd.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <218017ab-defd-c77d-9055-286bf49bee86@amd.com>
-X-Originating-IP: [58.247.170.245]
-X-ClientProxiedBy: HK2PR0302CA0017.apcprd03.prod.outlook.com
- (2603:1096:202::27) To MWHPR12MB1248.namprd12.prod.outlook.com
- (2603:10b6:300:12::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 24 Nov
+ 2020 06:43:12 +0000
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 06:43:12 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Roger Quadros <rogerq@ti.com>
+CC:     "pawell@cadence.com" <pawell@cadence.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch
+ class"
+Thread-Topic: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch
+ class"
+Thread-Index: AQHWwY7qvaWheOMvwU2q0XXgyvVqyqnW1uYA
+Date:   Tue, 24 Nov 2020 06:43:12 +0000
+Message-ID: <20201124064242.GA32310@b29397-desktop>
+References: <20201123115051.30047-1-rogerq@ti.com>
+In-Reply-To: <20201123115051.30047-1-rogerq@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fecadf60-4175-4a75-23f3-08d8904436b1
+x-ms-traffictypediagnostic: DB8PR04MB6859:
+x-microsoft-antispam-prvs: <DB8PR04MB68593CF66762A7268DCBFF408BFB0@DB8PR04MB6859.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1923;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jRSU37YRhij1kP8//BYI9XN5a7Kyfi0Rc4DwG/eAOIp5bi+lVxIrDHLyFpIlLoulwv+fIE8vvybsLelI13CBlUl1qEboO405M9yek9t+/N5ibKrA0tQwNSKmERrRljQGhtXnSRmtF5eJPvpm1OsIhEiv7VBkbbDrtGUplCKcPh+2HTNCM6D1IDng882AZY5LUu00kGQrH+yC4PrslRUIY2T7CqwYP9ieWcF2KRaUwVPtFuR98i5FQStWXRmwI3v3huSvKvxwgBtAk+/7PX3/jEmmr/yJcw95ywGlu114Y5fAALQ5o1UVRLHr+A9c6isg
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(396003)(376002)(39860400002)(346002)(366004)(91956017)(8936002)(4326008)(8676002)(53546011)(26005)(6506007)(186003)(478600001)(86362001)(33656002)(6486002)(5660300002)(44832011)(1076003)(316002)(66446008)(66556008)(83380400001)(64756008)(66476007)(66946007)(33716001)(6916009)(6512007)(76116006)(9686003)(2906002)(54906003)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: yKbn+H/fEbjfVgvTwaVXArxy7Auit0FQblylZmlwkXlFimPnRXZhIDYZrOO4aaR6osdTUkAWmAbgKc9d2Lpwsszgf4DcrmL8KD+8QxxYOFB5ewGNVtbGz9USR0kUVg/HW+Fe8zo0fEqgMXolALtKPIq3aj8Isf6T2RFl1pW2aWQ0M4XDWHTPYDuKGC7So8E2cqz3hvkgO4Q4UoZCZIblgTSmnL9JvZdZCObNLvp9WM/nSiNHj6vgF31hWZ8ZJD2FBGGU6DjFQAFHRGdYwPJHxkOPhN4O8zX2zKIq8AXNbhQ3tIb2FiYZdV4kll/xnUA4JC2JPw/35ec40U4JDwqUfPpXsXGK58RRBhNFBEgJB2IJZQ/UqOVVznIEnnhkNprPpftlB95QP+qpTqiB8jWrEQsahuD4frmw8sZb9o7UOGwAnexj3NtjeCNwlgwMbUUohYTtu328Pk9zw0Q86jnKXtUf/4IiUtwhGIRgU1NLgsBpXcxNikVTp9HZJ/+aA8gt2ohZty7i7uk75uc6tpHzkD88gyMCPC+V4ee1nZ16qxKJazLn5UQyqXXf0B5+7e0KVWY21/6FE6j+KBkqmLNhcIjAQ64ZoXUQWPmWG9B3yeDW3urJlg/ttytLpQcqHSrHOob9ddYuJeUeXHzEVYO1GcwtMvxGeQ/F+Ihn8DAhlmrZflEzcXX8rlomhfop7JDXvYaiqQtTIK+qyJAPIwHXiLWfEw2BryMoG0ZYn3pHDL4lxFoRuDWgGPL/FLyHNaIJGizwUv7JKv1ngD3PL2d8XfcUGc/D+Kc5T98u9wMz8KIqZZtIQ58LlNuJ5mCU0O8zOkRLybQjTiHDVph98mZG/faOPjecUuMu6lMKKprileuOtksK/sfuHiH7yDEyhob1ATgSOyRjH0NVpfkksOMXKw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <345099D80FA90448B80913EA319274E2@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from hr-amd (58.247.170.245) by HK2PR0302CA0017.apcprd03.prod.outlook.com (2603:1096:202::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.11 via Frontend Transport; Tue, 24 Nov 2020 06:42:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6adefb83-3843-48f1-9674-08d890442d52
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1439:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB14399E84F308D1F9A2DCE6F8ECFB0@MWHPR12MB1439.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7zuCRJwJAdYdrsn11Q8lQglqRCYH8yFPz5ZQB/J6wjxSx3VEHa2v0/vhcVoVtQ1592LFKhIJ8QWJwbo6Ik3ubigHrXKgZiNF/t0swXwmo8OPzHNSHJgJm7FF2I+AxA7lq08E05QfYIRfXRP1B0ohizAAv0jnGKQTEXnbM9sG1Y33J8/jHSNuo9ckL4XbbDs7zz4rEwS1Z7Gcyllbr+4FEZC8Zg00jk37OYPLTmklM78BLh5EuzKjS7eQtL2DIZuBp9LXf1TvvMUxBeuW7gCnfU5Uz6Llu1M9Zq26VEhzNUG2CohME0eU3pT/r7qDWAuwXn/deVnibYcq8qPf85x1AwrEbHR/0xg6oY1Dgl3c0dLMTkjvtIUWR9QIU7kadr3CHC8DsemN7WeIw0ZCZoDS7A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(376002)(136003)(39860400002)(45080400002)(53546011)(55016002)(8936002)(33656002)(966005)(16526019)(6862004)(6496006)(9686003)(26005)(4326008)(52116002)(6666004)(186003)(66946007)(956004)(66476007)(66556008)(478600001)(1076003)(83380400001)(86362001)(2906002)(5660300002)(8676002)(33716001)(54906003)(6636002)(4001150100001)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: pL9bY6lQU0AHLdueRQZFoY3mDfiviOZnjsJHQYWhvKQbsWpWybY1QMNwlvJ9T5OvFD+RG6VqopBAjJAiwXJ4p0AK7KAEGxGa/ksTciC4dspmgMg63Ot2SbaPriS4Kr8QzGlAMeqpyB9FwkvTNTuicSkknqwzaTWr0Vzv5Zd/5vTYIX2TiUv4NgdxzOE0vSwId7jY6g0+R6/X3Z90c0ZNFcP6JBd3rZnqhdZTsOy4vWYnF4WW9GPHoGrXGK/CQvpMsOxqWm5Qdh5Ohawoz9ojo8yFq6wA7nNrhpHeI4MpEBW+yrQ07d5YSe7Brqlwos/RXGvuct2smzYudQ1e6cc6I4ghHNXnCGPWwmoOpCEIkuyolQfJLHjHaYxCR7yWPOySz188PkSZoXZnQ1NkVwd1jxAmqUr3/P7BFXEQuFWP/a4pnpp7Zf2jpE0EYKZ7YB7XiaP+Kr8Uvx5vjxydwXWhlKlGo0eYCWrZDf1KhPXD8AIY593DRk2PdHIkAVN6dCv5aa424yAq9OW8bKD89HwvPn7uoqQxCSaCKpKui8C1eD4sNsIX8Fyj8cuqHmmrKrkmxi/XQCn+wqJej6fKC+WrjqixqH3YtOIUqTH4sdd5pUIELsnGhKdgCcZPOdASxftMACcPgvKP8Dm4JIu17d3stvZegFcy6B6OYZCj66N4keq3tFolrKnm4mWb5m/fE+DtKPSJtYhkeflWqDyR+bq5DVqtp/bi1X+KdiS4PoTARVntBlsENcuCZ7CPbY/ytsRl1Q0I/ETZjliv7RLGak4zhVtU2ioXnISn9fFT4Z3Dq/MW1ep2L8/H1+R8GLCE+yG39EqpuJsgGutrOjUqNfTgvNefdY/sgRGWOcoFp08foF0g9xcQ0pAUf7tVvm79a8ZNyH0xH+bgGgUHPPb63PDquA==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6adefb83-3843-48f1-9674-08d890442d52
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 06:42:56.8956
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fecadf60-4175-4a75-23f3-08d8904436b1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 06:43:12.1763
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 46GkhVxdYv87/+98+dEtduJjGsWXH+FQDa+RU9i1flCRwLSm4qlHUtt5I/2JtW6OIM3Tzpynt0w9vuQSpQqXkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1439
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WC39KZvFtRI+PqEPDrz6HCgb3yqB6KZLsCJDa3MnpobTvnwA0vTbCgHbk6aQNiD1swx2FCgG7kqWTqy/GGXZZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6859
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 06:51:11AM +0800, Kuehling, Felix wrote:
-> On 2020-11-23 5:33 p.m., Will Deacon wrote:
-> > On Mon, Nov 23, 2020 at 09:04:14PM +0000, Deucher, Alexander wrote:
-> >> [AMD Public Use]
-> >>
-> >>> -----Original Message-----
-> >>> From: Will Deacon <will@kernel.org>
-> >>> Sent: Monday, November 23, 2020 8:44 AM
-> >>> To: linux-kernel@vger.kernel.org
-> >>> Cc: linux-pci@vger.kernel.org; iommu@lists.linux-foundation.org; Will
-> >>> Deacon <will@kernel.org>; Bjorn Helgaas <bhelgaas@google.com>;
-> >>> Deucher, Alexander <Alexander.Deucher@amd.com>; Edgar Merger
-> >>> <Edgar.Merger@emerson.com>; Joerg Roedel <jroedel@suse.de>
-> >>> Subject: [PATCH] PCI: Mark AMD Raven iGPU ATS as broken
-> >>>
-> >>> Edgar Merger reports that the AMD Raven GPU does not work reliably on his
-> >>> system when the IOMMU is enabled:
-> >>>
-> >>>    | [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx timeout,
-> >>> signaled seq=1, emitted seq=3
-> >>>    | [...]
-> >>>    | amdgpu 0000:0b:00.0: GPU reset begin!
-> >>>    | AMD-Vi: Completion-Wait loop timed out
-> >>>    | iommu ivhd0: AMD-Vi: Event logged [IOTLB_INV_TIMEOUT
-> >>> device=0b:00.0 address=0x38edc0970]
-> >>>
-> >>> This is indicative of a hardware/platform configuration issue so, since
-> >>> disabling ATS has been shown to resolve the problem, add a quirk to match
-> >>> this particular device while Edgar follows-up with AMD for more information.
-> >>>
-> >>> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> >>> Cc: Alex Deucher <alexander.deucher@amd.com>
-> >>> Reported-by: Edgar Merger <Edgar.Merger@emerson.com>
-> >>> Suggested-by: Joerg Roedel <jroedel@suse.de>
-> >>> Link:
-> >>> https://lore.
-> >>> kernel.org/linux-
-> >>> iommu/MWHPR10MB1310F042A30661D4158520B589FC0@MWHPR10M
-> >>> B1310.namprd10.prod.outlook.com
-> >>> her%40amd.com%7C1a883fe14d0c408e7d9508d88fb5df4e%7C3dd8961fe488
-> >>> 4e608e11a82d994e183d%7C0%7C0%7C637417358593629699%7CUnknown%7
-> >>> CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwi
-> >>> LCJXVCI6Mn0%3D%7C1000&amp;sdata=TMgKldWzsX8XZ0l7q3%2BszDWXQJJ
-> >>> LOUfX5oGaoLN8n%2B8%3D&amp;reserved=0
-> >>> Signed-off-by: Will Deacon <will@kernel.org>
-> >>> ---
-> >>>
-> >>> Hi all,
-> >>>
-> >>> Since Joerg is away at the moment, I'm posting this to try to make some
-> >>> progress with the thread in the Link: tag.
-> >> + Felix
-> >>
-> >> What system is this?  Can you provide more details?  Does a sbios update
-> >> fix this?  Disabling ATS for all Ravens will break GPU compute for a lot
-> >> of people.  I'd prefer to just black list this particular system (e.g.,
-> >> just SSIDs or revision) if possible.
-> 
-> +Ray
-> 
-> There are already many systems where the IOMMU is disabled in the BIOS, 
-> or the CRAT table reporting the APU compute capabilities is broken. Ray 
-> has been working on a fallback to make APUs behave like dGPUs on such 
-> systems. That should also cover this case where ATS is blacklisted. That 
-> said, it affects the programming model, because we don't support the 
-> unified and coherent memory model on dGPUs like we do on APUs with 
-> IOMMUv2. So it would be good to make the conditions for this workaround 
-> as narrow as possible.
+On 20-11-23 13:50:51, Roger Quadros wrote:
+> This reverts commit 50642709f6590fe40afa6d22c32f23f5b842aed5.
+>=20
+> This commit breaks hardware based role switching on TI platforms.
+> cdns->role_sw is always going to be non-zero as it is a pointer
+> to the usb_role_switch instance. Some other means needs to be used
+> if hardware based role switching is not required by the platform.
+>=20
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  drivers/usb/cdns3/core.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>=20
+> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+> index a0f73d4711ae..4c1445cf2ad0 100644
+> --- a/drivers/usb/cdns3/core.c
+> +++ b/drivers/usb/cdns3/core.c
+> @@ -280,10 +280,6 @@ int cdns3_hw_role_switch(struct cdns3 *cdns)
+>  	enum usb_role real_role, current_role;
+>  	int ret =3D 0;
+> =20
+> -	/* Depends on role switch class */
+> -	if (cdns->role_sw)
+> -		return 0;
+> -
+>  	pm_runtime_get_sync(cdns->dev);
+> =20
+>  	current_role =3D cdns->role;
+> --=20
 
-Yes, besides the comments from Alex and Felix, may we get your firmware
-version (SMC firmware which is from SBIOS) and device id?
+Hi Roger,
 
-> >>>    | [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx timeout,
-> >>> signaled seq=1, emitted seq=3
+I am sorry about that. Do you use role switch /sys entry, if you have
+used, I prefer using "usb-role-switch" property at dts to judge if
+SoC OTG signals or external signals for role switch. If you have not
+used it, I prefer only setting cdns->role_sw for role switch use cases.
 
-It looks only gfx ib test passed, and fails to lanuch desktop, am I right?
-
-We would like to see whether it is Raven, Raven kicker (new Raven), or
-Picasso. In our side, per the internal test result, we didn't see the
-similiar issue on Raven kicker and Picasso platform.
+--=20
 
 Thanks,
-Ray
-
-> 
-> These are the relevant changes in KFD and Thunk for reference:
-> 
-> ### KFD ###
-> 
-> commit 914913ab04dfbcd0226ecb6bc99d276832ea2908
-> Author: Huang Rui <ray.huang@amd.com>
-> Date:   Tue Aug 18 14:54:23 2020 +0800
-> 
->      drm/amdkfd: implement the dGPU fallback path for apu (v6)
-> 
->      We still have a few iommu issues which need to address, so force raven
->      as "dgpu" path for the moment.
-> 
->      This is to add the fallback path to bypass IOMMU if IOMMU v2 is 
-> disabled
->      or ACPI CRAT table not correct.
-> 
->      v2: Use ignore_crat parameter to decide whether it will go with 
-> IOMMUv2.
->      v3: Align with existed thunk, don't change the way of raven, only 
-> renoir
->          will use "dgpu" path by default.
->      v4: don't update global ignore_crat in the driver, and revise fallback
->          function if CRAT is broken.
->      v5: refine acpi crat good but no iommu support case, and rename the
->          title.
->      v6: fix the issue of dGPU initialized firstly, just modify the report
->          value in the node_show().
-> 
->      Signed-off-by: Huang Rui <ray.huang@amd.com>
->      Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
->      Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-> 
-> ### Thunk ###
-> 
-> commit e32482fa4b9ca398c8bdc303920abfd672592764
-> Author: Huang Rui <ray.huang@amd.com>
-> Date:   Tue Aug 18 18:54:05 2020 +0800
-> 
->      libhsakmt: remove is_dgpu flag in the hsa_gfxip_table
-> 
->      Whether use dgpu path will check the props which exposed from kernel.
->      We won't need hard code in the ASIC table.
-> 
->      Signed-off-by: Huang Rui <ray.huang@amd.com>
->      Change-Id: I0c018a26b219914a41197ff36dbec7a75945d452
-> 
-> commit 7c60f6d912034aa67ed27b47a29221422423f5cc
-> Author: Huang Rui <ray.huang@amd.com>
-> Date:   Thu Jul 30 10:22:23 2020 +0800
-> 
->      libhsakmt: implement the method that using flag which exposed by 
-> kfd to configure is_dgpu
-> 
->      KFD already implemented the fallback path for APU. Thunk will use flag
->      which exposed by kfd to configure is_dgpu instead of hardcode before.
-> 
->      Signed-off-by: Huang Rui <ray.huang@amd.com>
->      Change-Id: I445f6cf668f9484dd06cd9ae1bb3cfe7428ec7eb
-> 
-> Regards,
->    Felix
-> 
-> 
-> > Cheers, Alex. I'll have to defer to Edgar for the details, as my
-> > understanding from the original thread over at:
-> >
-> > https://lore.kernel.org/linux-iommu/MWHPR10MB1310CDB6829DDCF5EA84A14689150@MWHPR10MB1310.namprd10.prod.outlook.com/
-> >
-> > is that this is a board developed by his company.
-> >
-> > Edgar -- please can you answer Alex's questions?
-> >
-> > Will
+Peter Chen=
