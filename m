@@ -2,94 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09742C2915
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFFF2C2918
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732297AbgKXOMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:12:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728474AbgKXOMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:12:00 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F4AF206FB;
-        Tue, 24 Nov 2020 14:11:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606227120;
-        bh=kZ7dmWGqYUsz1iJvnX3piGx7qsV4bipITHCKQ/3Wwb0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0uJjC1RdpOp0N1iNy7l0WKP5GF1sCDhOue/56l57aWMc1y3swfVQhpGrWxf0zRy8d
-         9CPdTDY3oOLDelRnxJ9FGtfqclVg4MCNDCq7JDFno8yNPnnaUTgBEwLBXukYzsm/Ut
-         T7zA75dfUHip/G1NG3r9dOXcxDilVfBuTE6msBGQ=
-Date:   Tue, 24 Nov 2020 14:11:36 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Claudiu.Beznea@microchip.com
-Cc:     jonathanh@nvidia.com, lgirdwood@gmail.com, s.hauer@pengutronix.de,
-        ttynkkynen@nvidia.com, linus.walleij@linaro.org,
-        axel.lin@ingics.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v3 1/6] regulator: core: validate selector against
- linear_min_sel
-Message-ID: <20201124141136.GD4933@sirena.org.uk>
-References: <1605280870-32432-1-git-send-email-claudiu.beznea@microchip.com>
- <1605280870-32432-2-git-send-email-claudiu.beznea@microchip.com>
- <cb096dc5-3757-d72f-41a9-c99007c84b40@nvidia.com>
- <f06c90ca-11c8-961d-1461-a9486933a1a3@microchip.com>
+        id S2387714AbgKXOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:12:15 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2146 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727123AbgKXOMP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:12:15 -0500
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgQsK14sSz67H8y;
+        Tue, 24 Nov 2020 22:10:29 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 24 Nov 2020 15:12:12 +0100
+Received: from [10.210.169.36] (10.210.169.36) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 24 Nov 2020 14:12:11 +0000
+Subject: Re: [PATCH v2 1/4] sbitmap: optimise sbitmap_deferred_clear()
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <cover.1606058975.git.asml.silence@gmail.com>
+ <ddfa166d93f38e812751b6ff986fd5403b7893b7.1606058975.git.asml.silence@gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e71a58b5-1315-d655-4e1e-cd7529acfd6b@huawei.com>
+Date:   Tue, 24 Nov 2020 14:11:51 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7DO5AaGCk89r4vaK"
-Content-Disposition: inline
-In-Reply-To: <f06c90ca-11c8-961d-1461-a9486933a1a3@microchip.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <ddfa166d93f38e812751b6ff986fd5403b7893b7.1606058975.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.36]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22/11/2020 15:35, Pavel Begunkov wrote:
+> Because of spinlocks and atomics sbitmap_deferred_clear() have to reload
+> &sb->map[index] on each access even though the map address won't change.
+> Pass in sbitmap_word instead of {sb, index}, so it's cached in a
+> variable. It also improves code generation of
+> sbitmap_find_bit_in_index().
+> 
+> Signed-off-by: Pavel Begunkov<asml.silence@gmail.com>
 
---7DO5AaGCk89r4vaK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Looks ok, even though a bit odd not be passing a struct sbitmap * now
 
-On Tue, Nov 24, 2020 at 11:14:54AM +0000, Claudiu.Beznea@microchip.com wrote:
-> On 24.11.2020 11:36, Jon Hunter wrote:
-
-> > Before doing so, I wanted to ask if that is the correct fix here,
-> > because it seems a bit odd that regulator_count_voltages() returns N
-> > voltages, but if the min selector value is greater than 0, then actually
-> > there are less than N. However, changing the number of voltages
-> > supported by the regulator to be N - linear_min_sel does not make sense
-> > either because then we need to know the linear_min_sel in order to
-> > determine the first valid voltage.
-
-> I would say that a solution would be to have a new helper to retrieve the
-> linear_min_sel (e.g. regulator_min_sel()) and use this for all the
-> consumers of regulator_list_voltage() and the other APIs that patch
-> "regulator: core: validate selector against linear_min_sel" has changed
-> (regulator_list_voltage_table(), regulator_set_voltage_time()). With this
-> change the loop in find_vdd_map_entry_exact() should be b/w
-> regulator_min_sel() and regulator_count_voltages().
-
-We need an incremental fix to return 0 rather than an error for things
-below the minimum selector, it's not invalid for there to be holes in
-the range of selectors and this is just an example of that.  Consumers
-need to be able to cope with skipping over values that can't be mapped.
-
---7DO5AaGCk89r4vaK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+9FJcACgkQJNaLcl1U
-h9Dt1Af/UjJU7QvVQkXzT954zArh+rkMyXnOg1BnqMdK4r+iGxZj+ItXebH76dcP
-qgGSPRcx/pqby84TgsjvA+HCXVwLWFMkHyzXo0nmczSZhz6PCEOas51+EVxaJ5Qb
-eNzScw/EMMuYHIfrPSiLD6k5Z+vMigwOdRlh/Du8uqar1ZKj7QPsN9ztKA6SJSQ2
-6wyhIB4YsMNra6nXQzG7kysIfPPPx0xdPuoARAzif3Dzsqj2pD3VDWadiViqnbnX
-4UVuchN7CxciC8k8tNGwnCHq1mniaaGhH+HCKmLGllzhB56O5Xi8I9WZtZhLQduT
-kSmxRhhNq0CBvKLPjWDOV9Na4gp8SA==
-=yh8y
------END PGP SIGNATURE-----
-
---7DO5AaGCk89r4vaK--
+Reviewed-by: John Garry <john.garry@huawei.com>
