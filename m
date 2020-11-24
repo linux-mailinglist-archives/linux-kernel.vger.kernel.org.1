@@ -2,131 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48792C2437
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CEE2C243D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732898AbgKXLcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:32:36 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2141 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732769AbgKXLcf (ORCPT
+        id S1732475AbgKXLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732174AbgKXLfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:32:35 -0500
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgMK03Wq5z67GZ2;
-        Tue, 24 Nov 2020 19:30:44 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 24 Nov 2020 12:32:27 +0100
-Received: from localhost (10.47.66.130) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 24 Nov
- 2020 11:32:27 +0000
-Date:   Tue, 24 Nov 2020 11:32:11 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Ye, Xiang" <xiang.ye@intel.com>
-CC:     Jonathan Cameron <jic23@kernel.org>, <jikos@kernel.org>,
-        <srinivas.pandruvada@linux.intel.com>,
-        <linux-input@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/4] HID: hid-sensor-custom: Add custom sensor iio
- support
-Message-ID: <20201124113211.00003141@Huawei.com>
-In-Reply-To: <20201124102905.GA29864@host>
-References: <20201119100331.2594-1-xiang.ye@intel.com>
-        <20201119100331.2594-2-xiang.ye@intel.com>
-        <20201121172127.18bdd4bb@archlinux>
-        <20201124102905.GA29864@host>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 24 Nov 2020 06:35:02 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1ABC0613D6;
+        Tue, 24 Nov 2020 03:35:02 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id r127so15209260yba.10;
+        Tue, 24 Nov 2020 03:35:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JgILikoCHUCT1Af09PTpbLerrxquUF+HoTrhcOAsado=;
+        b=n1yqbgzwcyROVAhQQn2tNQ4aKSWXH0egS7XGszKXlfypB1WhQj8qkXeZQpFgksDbRP
+         lvkl2BT8c1IxTGKR5iI27CRt5oBtA4BSX/+QZKxSRT3DoMQXntuV/MwYlPxUd/5X1tHN
+         gKrsUibfRLm7V57QfYP6YGad6ZFudwNsIfu80wlIXcJZGyb0Ll1i72smRUCwEcKMUqzh
+         yoKvnQ0edM6nJ0dUS3gXgxUwwl6nl1uBt/HDK0NR+MbYx5BNMWJbUv9yk9sQ8HcMhHYu
+         0+dtuSvfx9B6HCs9Cckl5SswEHZAS3L1qbrc8EGbCHRBD/HTmLKdmvk6c1bkXcjqIt0T
+         Ejig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JgILikoCHUCT1Af09PTpbLerrxquUF+HoTrhcOAsado=;
+        b=IeS0FGCB6RkAkvYzj6qRGntX2+wImGSh4c8C1mzWdiTaqLv9rJPdhA7EiIMmcAC2uo
+         w6FyEpNmSH2yOAxXVnlLLSG2wW4u67DZK750XZZxsp+ErUyEu4xfABPovcWQwXOxakbM
+         jpbA8k+fLJbJt79t6D/HnWUL/f0QUi5Q4q2t1TRAKKMbNW3ATvmGckIG5V/HkQH5BvUg
+         VN9/p4CfPJuGP01UzNhEo3Sp7MLARVh3GlFIin006Tt1L9udeuyJIQwHdN/dUj00sV4W
+         H4KiDC3hTwXkJGay2unEGbo9xr4hd09xp+8Y1jEdK6E5+UT9xQTfjtnFSEeofDjJzGqg
+         PVEg==
+X-Gm-Message-State: AOAM532Q6sfn6iz7YEqG0hkGfirQGv1UzIlQzjplhdQaifKo6A/ySiEy
+        tJrirndwLmzVMFl2DwSsWAjKUddJCXxT3Ftc6j17jOTmy0wqkA==
+X-Google-Smtp-Source: ABdhPJwsy+FSGLLygxj9TpEKS7K7IlatZ2yFKTNDBYB5cSpW3RBTnJelwdNlnO81EVofJYVt7DD/ApRu+6n/xiLjexQ=
+X-Received: by 2002:a25:6191:: with SMTP id v139mr7248891ybb.76.1606217701071;
+ Tue, 24 Nov 2020 03:35:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.66.130]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 24 Nov 2020 11:34:35 +0000
+Message-ID: <CA+V-a8v5iUcK6Hh=3rPiWbFs32U1TjPqT4AuwQniSFguk9-9bQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] memory: renesas-rpc-if: Trivial fixes
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-...
-> > >  	sysfs_remove_group(&sensor_inst->pdev->dev.kobj,
-> > > diff --git a/include/linux/hid-sensor-ids.h b/include/linux/hid-sensor-ids.h
-> > > index 530c09f3e64a..46db3056f04b 100644
-> > > --- a/include/linux/hid-sensor-ids.h
-> > > +++ b/include/linux/hid-sensor-ids.h
-> > > @@ -128,6 +128,10 @@
-> > >  #define HID_USAGE_SENSOR_UNITS_DEGREES_PER_SECOND		0x15
-> > >  
-> > >  /* Common selectors */
-> > > +#define HID_USAGE_SENSOR_PROP_DESC				0x200300
-> > > +#define HID_USAGE_SENSOR_PROP_FRIENDLY_NAME			0x200301
-> > > +#define HID_USAGE_SENSOR_PROP_SERIAL_NUM			0x200307
-> > > +#define HID_USAGE_SENSOR_PROP_MANUFACTURER			0x200305
-> > >  #define HID_USAGE_SENSOR_PROP_REPORT_INTERVAL			0x20030E
-> > >  #define HID_USAGE_SENSOR_PROP_SENSITIVITY_ABS			0x20030F
-> > >  #define HID_USAGE_SENSOR_PROP_SENSITIVITY_RANGE_PCT		0x200310
-> > > @@ -159,4 +163,39 @@
-> > >  #define HID_USAGE_SENSOR_PROP_REPORTING_STATE_NO_EVENTS_ENUM	0x200840
-> > >  #define HID_USAGE_SENSOR_PROP_REPORTING_STATE_ALL_EVENTS_ENUM	0x200841
-> > >  
-> > > +/* Custom Sensor (2000e1) */
-> > > +#define HID_USAGE_SENSOR_HINGE				        0x20020B
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_LOCATION			0x200400
-> > > +#define HID_USAGE_SENSOR_DATA_FIELE_TIME_SINCE_SYS_BOOT		0x20052B
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_USAGE		0x200541
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE		0x200543  
-> > Given these are all defined in a block could we use a macro?
-> > HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(x)                     0x200543 + (x)
-> > 
-> > perhaps?
-> > 
-> > I'm not sure what the preferred convention is in this file.  
-> If using HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(x), we should give a range to x, like (1<x<28).
-> How to ensure the x is in the range? It can be an issue when someone using x out of the range.
+Hi Sergei,
 
-It can be done via build time checking.
-https://elixir.bootlin.com/linux/latest/source/include/linux/build_bug.h#L49
-Normally we wouldn't bother and would rely on review to pick up on this but
-I'd have no problem with a paranoid check in the macro. Particularly as 28 isn't
-exactly and obvious number to support!
+On Tue, Nov 24, 2020 at 11:26 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> Hi All,
+>
+> This patch series fixes trivial issues in RPC-IF driver.
+>
+> Cheers,
+> Prabhakar
+>
+> Lad Prabhakar (5):
+>   memory: renesas-rpc-if: Return correct value to the caller of
+>     rpcif_manual_xfer()
+>   memory: renesas-rpc-if: Make rpcif_enable/disable_rpm() as static
+>     inline
+>   memory: renesas-rpc-if: Export symbols as GPL
+>   memory: renesas-rpc-if: Avoid use of C++ style comments
+>   memory: renesas-rpc-if: Fix a reference leak in rpcif_probe()
+>
+Patches sent to sergei.shtylyov@cogentembedded.com have bounced back
+so including gmail address (patchwork [1]).
 
-> 
-> Thanks
-> Xiang
-> >   
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1		0x200544
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_2		0x200545
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_3		0x200546
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_4		0x200547
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_5		0x200548
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_6		0x200549
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_7		0x20054A
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_8		0x20054B
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_9		0x20054C
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_10		0x20054D
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_11		0x20054E
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_12		0x20054F
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_13		0x200550
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_14		0x200551
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_15		0x200552
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_16		0x200553
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_17		0x200554
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_18		0x200555
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_19		0x200556
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_20		0x200557
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_21		0x200558
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_22		0x200559
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_23		0x20055A
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_24		0x20055B
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_25		0x20055C
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_26		0x20055D
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_27		0x20055E
-> > > +#define HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_28		0x20055F
-> > > +
-> > >  #endif  
-> >   
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=390163
 
+Cheers,
+Prabhakar
+
+
+>  drivers/memory/renesas-rpc-if.c | 28 +++++++++-------------------
+>  include/memory/renesas-rpc-if.h | 19 ++++++++++++++-----
+>  2 files changed, 23 insertions(+), 24 deletions(-)
+>
+> --
+> 2.17.1
+>
