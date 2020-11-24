@@ -2,126 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C49F2C2FF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279C72C2FF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390917AbgKXS2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:28:18 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60852 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388355AbgKXS2R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:28:17 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOIM4kb025926;
-        Tue, 24 Nov 2020 19:27:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=STMicroelectronics;
- bh=y5PgpLZWvVwrpeHOFsuBgZhKVxqtD4Xptw10KGhvdy4=;
- b=vbSWJ12V61pAqdp7nkwx9J0SWmlRvZVvUs855sbw3qQIvE8KyVce03B9rbIaeFrguXgv
- H8seVVGnXKeH0M4od4FAEbKznw59NnXViF1UrFuOAmUb29AUOUEZ7maGG5EgLyMVTFlT
- 7BEFV03eN20MbS0uejQOD05Y4J1eT11s9w5Kh9EePrNYGzxFh64taUMDdeFl8YMa4M0v
- +4oMmdKk/qVxCqgp9pu6ea30fgfRcVpq2bL7RlbEP2M3rNppGiDgIpf37L8FwbOF16TU
- /DsYSpEgmix4z48P/A0iMIZDBnFup79e+Cybnh/czsxcjfsxwSy84jOc114sCVpbLRwN IQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y01ch3c6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 19:27:55 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2159010002A;
-        Tue, 24 Nov 2020 19:27:54 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CBE9621FEBB;
-        Tue, 24 Nov 2020 19:27:54 +0100 (CET)
-Received: from [10.129.7.42] (10.75.127.51) by SFHDAG1NODE3.st.com
- (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 19:27:53 +0100
-Message-ID: <4a53794f1a0cea5eb009fce0b4b4c4846771f8be.camel@st.com>
-Subject: Re: [PATCH] net: stmmac: add flexible PPS to dwmac 4.10a
-From:   Antonio Borneo <antonio.borneo@st.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "Jose Abreu" <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        has <has@pengutronix.de>
-Date:   Tue, 24 Nov 2020 19:27:03 +0100
-In-Reply-To: <20201124102022.1a6e6085@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20191007154306.95827-1-antonio.borneo@st.com>
-         <20191007154306.95827-5-antonio.borneo@st.com>
-         <20191009152618.33b45c2d@cakuba.netronome.com>
-         <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
-         <e2b2b623700401538fe91e70495c348c08b5d2e3.camel@st.com>
-         <20201124102022.1a6e6085@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        id S2404121AbgKXS1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:27:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33228 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729291AbgKXS1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:27:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 392D8AC2D;
+        Tue, 24 Nov 2020 18:27:20 +0000 (UTC)
+Subject: Re: [PATCH v4] mm: Optional full ASLR for mmap() and mremap()
+To:     Topi Miettinen <toiwoton@gmail.com>,
+        linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <20201026160518.9212-1-toiwoton@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <1b07c7ec-b95e-7db2-6404-eb8210162fbc@suse.cz>
+Date:   Tue, 24 Nov 2020 19:27:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_05:2020-11-24,2020-11-24 signatures=0
+In-Reply-To: <20201026160518.9212-1-toiwoton@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 10:20 -0800, Jakub Kicinski wrote:
-> On Tue, 24 Nov 2020 15:23:27 +0100 Antonio Borneo wrote:
-> > On Tue, 2020-11-24 at 15:15 +0100, Ahmad Fatoum wrote:
-> > > On 10.10.19 00:26, Jakub Kicinski wrote:  
-> > > > On Mon, 7 Oct 2019 17:43:06 +0200, Antonio Borneo wrote:  
-> > > > > All the registers and the functionalities used in the callback
-> > > > > dwmac5_flex_pps_config() are common between dwmac 4.10a [1] and
-> > > > > 5.00a [2].
-> > > > > 
-> > > > > Reuse the same callback for dwmac 4.10a too.
-> > > > > 
-> > > > > Tested on STM32MP15x, based on dwmac 4.10a.
-> > > > > 
-> > > > > [1] DWC Ethernet QoS Databook 4.10a October 2014
-> > > > > [2] DWC Ethernet QoS Databook 5.00a September 2017
-> > > > > 
-> > > > > Signed-off-by: Antonio Borneo <antonio.borneo@st.com>  
-> > > > 
-> > > > Applied to net-next.  
-> > > 
-> > > This patch seems to have been fuzzily applied at the wrong location.
-> > > The diff describes extension of dwmac 4.10a and so does the @@ line:
-> > > 
-> > >   @@ -864,6 +864,7 @@ const struct stmmac_ops dwmac410_ops = {
-> > > 
-> > > The patch was applied mainline as 757926247836 ("net: stmmac: add
-> > > flexible PPS to dwmac 4.10a"), but it extends dwmac4_ops instead:
-> > > 
-> > >   @@ -938,6 +938,7 @@ const struct stmmac_ops dwmac4_ops = {
-> > > 
-> > > I don't know if dwmac4 actually supports FlexPPS, so I think it's
-> > > better to be on the safe side and revert 757926247836 and add the
-> > > change for the correct variant.  
-> > 
-> > Agree,
-> > the patch get applied to the wrong place!
-> 
-> :-o
-> 
-> This happens sometimes with stable backports but I've never seen it
-> happen working on "current" branches.
-> 
-> Sorry about that!
-> 
-> Would you mind sending the appropriate patches? I can do the revert if
-> you prefer, but since you need to send the fix anyway..
+Please CC linux-api on future versions.
 
-You mean sending two patches one for revert and one to re-apply the code?
-Or a single patch for the fix?
-
-Antonio
+On 10/26/20 5:05 PM, Topi Miettinen wrote:
+> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
+> enables full randomization of memory mappings created with mmap(NULL,
+> ...). With 2, the base of the VMA used for such mappings is random,
+> but the mappings are created in predictable places within the VMA and
+> in sequential order. With 3, new VMAs are created to fully randomize
+> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
+> even if not necessary.
+> 
+> The method is to randomize the new address without considering
+> VMAs. If the address fails checks because of overlap with the stack
+> area (or in case of mremap(), overlap with the old mapping), the
+> operation is retried a few times before falling back to old method.
+> 
+> On 32 bit systems this may cause problems due to increased VM
+> fragmentation if the address space gets crowded.
+> 
+> On all systems, it will reduce performance and increase memory
+> usage due to less efficient use of page tables and inability to
+> merge adjacent VMAs with compatible attributes.
+> 
+> In this example with value of 2, dynamic loader, libc, anonymous
+> memory reserved with mmap() and locale-archive are located close to
+> each other:
+> 
+> $ cat /proc/self/maps (only first line for each object shown for brevity)
+> 58c1175b1000-58c1175b3000 r--p 00000000 fe:0c 1868624                    /usr/bin/cat
+> 79752ec17000-79752f179000 r--p 00000000 fe:0c 2473999                    /usr/lib/locale/locale-archive
+> 79752f179000-79752f279000 rw-p 00000000 00:00 0
+> 79752f279000-79752f29e000 r--p 00000000 fe:0c 2402415                    /usr/lib/x86_64-linux-gnu/libc-2.31.so
+> 79752f43a000-79752f440000 rw-p 00000000 00:00 0
+> 79752f46f000-79752f470000 r--p 00000000 fe:0c 2400484                    /usr/lib/x86_64-linux-gnu/ld-2.31.so
+> 79752f49b000-79752f49c000 rw-p 00000000 00:00 0
+> 7ffdcad9e000-7ffdcadbf000 rw-p 00000000 00:00 0                          [stack]
+> 7ffdcadd2000-7ffdcadd6000 r--p 00000000 00:00 0                          [vvar]
+> 7ffdcadd6000-7ffdcadd8000 r-xp 00000000 00:00 0                          [vdso]
+> 
+> With 3, they are located at unrelated addresses:
+> $ echo 3 > /proc/sys/kernel/randomize_va_space
+> $ cat /proc/self/maps (only first line for each object shown for brevity)
+> 1206a8fa000-1206a8fb000 r--p 00000000 fe:0c 2400484                      /usr/lib/x86_64-linux-gnu/ld-2.31.so
+> 1206a926000-1206a927000 rw-p 00000000 00:00 0
+> 19174173000-19174175000 rw-p 00000000 00:00 0
+> ac82f419000-ac82f519000 rw-p 00000000 00:00 0
+> afa66a42000-afa66fa4000 r--p 00000000 fe:0c 2473999                      /usr/lib/locale/locale-archive
+> d8656ba9000-d8656bce000 r--p 00000000 fe:0c 2402415                      /usr/lib/x86_64-linux-gnu/libc-2.31.so
+> d8656d6a000-d8656d6e000 rw-p 00000000 00:00 0
+> 5df90b712000-5df90b714000 r--p 00000000 fe:0c 1868624                    /usr/bin/cat
+> 7ffe1be4c000-7ffe1be6d000 rw-p 00000000 00:00 0                          [stack]
+> 7ffe1bf07000-7ffe1bf0b000 r--p 00000000 00:00 0                          [vvar]
+> 7ffe1bf0b000-7ffe1bf0d000 r-xp 00000000 00:00 0                          [vdso]
+> 
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> CC: Jann Horn <jannh@google.com>
+> CC: Kees Cook <keescook@chromium.org>
+> CC: Matthew Wilcox <willy@infradead.org>
+> CC: Mike Rapoport <rppt@kernel.org>
+> Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
+> ---
+> v2: also randomize mremap(..., MREMAP_MAYMOVE)
+> v3: avoid stack area and retry in case of bad random address (Jann
+> Horn), improve description in kernel.rst (Matthew Wilcox)
+> v4: use /proc/$pid/maps in the example (Mike Rapaport), CCs (Andrew
+> Morton), only check randomize_va_space == 3
+> ---
+>   Documentation/admin-guide/hw-vuln/spectre.rst |  6 ++--
+>   Documentation/admin-guide/sysctl/kernel.rst   | 15 ++++++++++
+>   init/Kconfig                                  |  2 +-
+>   mm/internal.h                                 |  8 +++++
+>   mm/mmap.c                                     | 30 +++++++++++++------
+>   mm/mremap.c                                   | 27 +++++++++++++++++
+>   6 files changed, 75 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
+> index e05e581af5cf..9ea250522077 100644
+> --- a/Documentation/admin-guide/hw-vuln/spectre.rst
+> +++ b/Documentation/admin-guide/hw-vuln/spectre.rst
+> @@ -254,7 +254,7 @@ Spectre variant 2
+>      left by the previous process will also be cleared.
+>   
+>      User programs should use address space randomization to make attacks
+> -   more difficult (Set /proc/sys/kernel/randomize_va_space = 1 or 2).
+> +   more difficult (Set /proc/sys/kernel/randomize_va_space = 1, 2 or 3).
+>   
+>   3. A virtualized guest attacking the host
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> @@ -499,8 +499,8 @@ Spectre variant 2
+>      more overhead and run slower.
+>   
+>      User programs should use address space randomization
+> -   (/proc/sys/kernel/randomize_va_space = 1 or 2) to make attacks more
+> -   difficult.
+> +   (/proc/sys/kernel/randomize_va_space = 1, 2 or 3) to make attacks
+> +   more difficult.
+>   
+>   3. VM mitigation
+>   ^^^^^^^^^^^^^^^^
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index d4b32cc32bb7..bc3bb74d544d 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -1060,6 +1060,21 @@ that support this feature.
+>       Systems with ancient and/or broken binaries should be configured
+>       with ``CONFIG_COMPAT_BRK`` enabled, which excludes the heap from process
+>       address space randomization.
+> +
+> +3   Additionally enable full randomization of memory mappings created
+> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
+> +    mappings is random, but the mappings are created in predictable
+> +    places within the VMA and in sequential order. With 3, new VMAs
+> +    are created to fully randomize the mappings. Also mremap(...,
+> +    MREMAP_MAYMOVE) will move the mappings even if not necessary.
+> +
+> +    On 32 bit systems this may cause problems due to increased VM
+> +    fragmentation if the address space gets crowded.
+> +
+> +    On all systems, it will reduce performance and increase memory
+> +    usage due to less efficient use of page tables and inability to
+> +    merge adjacent VMAs with compatible attributes.
+> +
+>   ==  ===========================================================================
+>   
+>   
+> diff --git a/init/Kconfig b/init/Kconfig
+> index c9446911cf41..6146e2cd3b77 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1863,7 +1863,7 @@ config COMPAT_BRK
+>   	  also breaks ancient binaries (including anything libc5 based).
+>   	  This option changes the bootup default to heap randomization
+>   	  disabled, and can be overridden at runtime by setting
+> -	  /proc/sys/kernel/randomize_va_space to 2.
+> +	  /proc/sys/kernel/randomize_va_space to 2 or 3.
+>   
+>   	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
+>   
+> diff --git a/mm/internal.h b/mm/internal.h
+> index c43ccdddb0f6..b964c8dbb242 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -618,4 +618,12 @@ struct migration_target_control {
+>   	gfp_t gfp_mask;
+>   };
+>   
+> +#ifndef arch_get_mmap_end
+> +#define arch_get_mmap_end(addr)	(TASK_SIZE)
+> +#endif
+> +
+> +#ifndef arch_get_mmap_base
+> +#define arch_get_mmap_base(addr, base) (base)
+> +#endif
+> +
+>   #endif	/* __MM_INTERNAL_H */
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index d91ecb00d38c..3677491e999b 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -47,6 +47,7 @@
+>   #include <linux/pkeys.h>
+>   #include <linux/oom.h>
+>   #include <linux/sched/mm.h>
+> +#include <linux/elf-randomize.h>
+>   
+>   #include <linux/uaccess.h>
+>   #include <asm/cacheflush.h>
+> @@ -73,6 +74,8 @@ const int mmap_rnd_compat_bits_max = CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MAX;
+>   int mmap_rnd_compat_bits __read_mostly = CONFIG_ARCH_MMAP_RND_COMPAT_BITS;
+>   #endif
+>   
+> +#define MAX_RANDOM_MMAP_RETRIES			5
+> +
+>   static bool ignore_rlimit_data;
+>   core_param(ignore_rlimit_data, ignore_rlimit_data, bool, 0644);
+>   
+> @@ -206,7 +209,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+>   #ifdef CONFIG_COMPAT_BRK
+>   	/*
+>   	 * CONFIG_COMPAT_BRK can still be overridden by setting
+> -	 * randomize_va_space to 2, which will still cause mm->start_brk
+> +	 * randomize_va_space to >= 2, which will still cause mm->start_brk
+>   	 * to be arbitrarily shifted
+>   	 */
+>   	if (current->brk_randomized)
+> @@ -1445,6 +1448,23 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+>   	if (mm->map_count > sysctl_max_map_count)
+>   		return -ENOMEM;
+>   
+> +	/* Pick a random address even outside current VMAs? */
+> +	if (!addr && randomize_va_space == 3) {
+> +		int i = MAX_RANDOM_MMAP_RETRIES;
+> +		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
+> +
+> +		do {
+> +			/* Try a few times to find a free area */
+> +			addr = arch_mmap_rnd();
+> +			if (addr >= max_addr)
+> +				continue;
+> +			addr = get_unmapped_area(file, addr, len, pgoff, flags);
+> +		} while (--i >= 0 && !IS_ERR_VALUE(addr));
+> +
+> +		if (IS_ERR_VALUE(addr))
+> +			addr = 0;
+> +	}
+> +
+>   	/* Obtain the address to map to. we verify (or select) it and ensure
+>   	 * that it represents a valid section of the address space.
+>   	 */
+> @@ -2142,14 +2162,6 @@ unsigned long vm_unmapped_area(struct vm_unmapped_area_info *info)
+>   	return addr;
+>   }
+>   
+> -#ifndef arch_get_mmap_end
+> -#define arch_get_mmap_end(addr)	(TASK_SIZE)
+> -#endif
+> -
+> -#ifndef arch_get_mmap_base
+> -#define arch_get_mmap_base(addr, base) (base)
+> -#endif
+> -
+>   /* Get an address range which is currently unmapped.
+>    * For shmat() with addr=0.
+>    *
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index 138abbae4f75..c5b2ed2bfd2d 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -24,12 +24,15 @@
+>   #include <linux/uaccess.h>
+>   #include <linux/mm-arch-hooks.h>
+>   #include <linux/userfaultfd_k.h>
+> +#include <linux/elf-randomize.h>
+>   
+>   #include <asm/cacheflush.h>
+>   #include <asm/tlbflush.h>
+>   
+>   #include "internal.h"
+>   
+> +#define MAX_RANDOM_MREMAP_RETRIES		5
+> +
+>   static pmd_t *get_old_pmd(struct mm_struct *mm, unsigned long addr)
+>   {
+>   	pgd_t *pgd;
+> @@ -720,6 +723,30 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+>   		goto out;
+>   	}
+>   
+> +	if ((flags & MREMAP_MAYMOVE) && randomize_va_space == 3) {
+> +		/*
+> +		 * Caller is happy with a different address, so let's
+> +		 * move even if not necessary!
+> +		 */
+> +		int i = MAX_RANDOM_MREMAP_RETRIES;
+> +		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
+> +
+> +		do {
+> +			/* Try a few times to find a free area */
+> +			new_addr = arch_mmap_rnd();
+> +			if (new_addr >= max_addr)
+> +				continue;
+> +			ret = mremap_to(addr, old_len, new_addr, new_len,
+> +					&locked, flags, &uf, &uf_unmap_early,
+> +					&uf_unmap);
+> +			if (!IS_ERR_VALUE(ret))
+> +				goto out;
+> +		} while (--i >= 0);
+> +
+> +		/* Give up and try the old address */
+> +		new_addr = addr;
+> +	}
+> +
+>   	/*
+>   	 * Always allow a shrinking remap: that just unmaps
+>   	 * the unnecessary pages..
+> 
+> base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
+> 
 
