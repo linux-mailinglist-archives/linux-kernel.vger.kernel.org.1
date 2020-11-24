@@ -2,159 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B70D2C1DA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62362C1DAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729121AbgKXFjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 00:39:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729099AbgKXFjx (ORCPT
+        id S1728906AbgKXFns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 00:43:48 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54866 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725616AbgKXFnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 00:39:53 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA3FC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 21:39:53 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id w8so26208023ybj.14
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 21:39:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=num0SQsxDIMRNuuSRBGQ+NlMxj/jOeSqEtVQ3GNIWyo=;
-        b=YpxnqpYi239SbpxtHV+Vxz7w+h0AiAQYV1GookO796eyPdkf+79Unh1sSkTeYIGYlZ
-         fYGtsTS/V0+StBRMMtQWYykHOSsxU8EHFJJMuz5OQum15tUzmoU4mIhQhDqV2nBEyqKs
-         XK/KIZ2+zwBhcA+EzWiaCrqZe2Nb2x65s/Lfy+6uoLbUsHLsF3davJSBrpklz4sSUv4W
-         /SQPXg6/uMywGKgpV3mVypJfITIHuhBrto6iRSwkpTUClCyA2efXPf7U0yXt3j1K5YKW
-         p7TYHvw5CfC6xs5MJRByYXxoD6L1RnaBXJHLv7SbZb1BSqe2QO2ZMHreLbFH0hCJmgun
-         cHmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=num0SQsxDIMRNuuSRBGQ+NlMxj/jOeSqEtVQ3GNIWyo=;
-        b=eQAR1UH11d7BZpVDHWjJwjJJD7qcGqL9YyIr6Mr565p1S2dcM7TGhw1UXLF4w6bXWY
-         A0xrwdktTlznQyMIB67qqytFVqNm/9wafLkBNL2RK8g0cWXDvnglxBr3z1tKiTS9NXGG
-         pv8Rk4aj6DctbGhsXBzwrdUg5WEekTtydZUsTJPaobmY01pTzOsWnRdmNjaI+ym613v5
-         dI65nyzeAyBzopHte7r9/mmAWheA4zXjXLlNnkmdr7XKAca0sGjv87RX7ZHcBB+ESA9/
-         WGDtgMcQQXUoPm/Qqec3A+HlzFBtOF9NZbR2tDCEFor3jpwd495MfCKtxC06RxdFmuWE
-         LPnw==
-X-Gm-Message-State: AOAM532BQ+rbzg26wkWACKxLXK1ZRAXUCjzyzSnl/GZrImu0ngIzHQw3
-        X6f/ZZBQ1tobM6oS9KW0yJcdbUszizQ=
-X-Google-Smtp-Source: ABdhPJxzVVmlhMNlsCBIR68sN2RXwHt8UgDh7S4/lf5Z8gJWx8kRvBvH4P+J8Q+9qwpwIDF0oHGRYNLQQ5A=
-Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f693:9fff:fef4:2055])
- (user=surenb job=sendgmr) by 2002:a25:cc0c:: with SMTP id l12mr5070405ybf.90.1606196392342;
- Mon, 23 Nov 2020 21:39:52 -0800 (PST)
-Date:   Mon, 23 Nov 2020 21:39:43 -0800
-In-Reply-To: <20201124053943.1684874-1-surenb@google.com>
-Message-Id: <20201124053943.1684874-3-surenb@google.com>
-Mime-Version: 1.0
-References: <20201124053943.1684874-1-surenb@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH 2/2] mm/madvise: add process_madvise MADV_DONTNEER support
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     surenb@google.com
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org, mhocko@suse.com,
-        rientjes@google.com, willy@infradead.org, hannes@cmpxchg.org,
-        guro@fb.com, riel@surriel.com, minchan@kernel.org,
-        christian@brauner.io, oleg@redhat.com, timmurray@google.com,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 24 Nov 2020 00:43:47 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AO5WJTD171722;
+        Tue, 24 Nov 2020 00:43:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=fJEmXiZC2Ll3yueLXLw6WuHgsucJaOyaptCDRZskbRM=;
+ b=YZcMO95Hq2GBsN3HSWyZTd8xiIdcMIVGZvwoRsxaHOWCIqXPVB+Tc0KDsa6xg+4HyjmH
+ pVOucz0hk21FWxojnADI3Tq3g2EwZR3Du6hT5MA3qprIS9kr2rIFj/nd84LEWdgmAcHO
+ EiIa0X8VtzhtEzM6fyPxUsQgrJSpdFkEx/hlQamnmZCBpQYxzvyxutJpMZ3fuLwOp6jE
+ 31wzd69q9dkKOwNBBBR6BAI3dngfgME5HzT+Zm19PBSbGLXnZ0yM4IAtRSmkCkJarF6b
+ Kqlxximt4DXDVpBoCUi6stgm5RIoc1dDydkvV1YwP1zKQv9vRGegQOF41+PIOXDWdkw3 nQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 350rnadeyd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 00:43:07 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AO5XPBe178340;
+        Tue, 24 Nov 2020 00:43:07 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 350rnadext-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 00:43:07 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AO5VU0d025276;
+        Tue, 24 Nov 2020 05:43:05 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 34xth89ndf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 05:43:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AO5h3Mx48234914
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Nov 2020 05:43:03 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06F2A11C050;
+        Tue, 24 Nov 2020 05:43:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4021411C04A;
+        Tue, 24 Nov 2020 05:43:00 +0000 (GMT)
+Received: from Madhavan.PrimaryTP (unknown [9.85.108.160])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Nov 2020 05:43:00 +0000 (GMT)
+Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
+ events
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Gabriel Marin <gmx@google.com>,
+        "Liang, Kan" <kan.liang@linux.intel.com>
+References: <20201106212935.28943-1-kan.liang@linux.intel.com>
+ <20201109095235.GC2594@hirez.programming.kicks-ass.net>
+ <20201109110405.GN2651@hirez.programming.kicks-ass.net>
+ <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
+ <20201111162509.GW2611@hirez.programming.kicks-ass.net>
+ <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com>
+ <CAM9d7cjwFp9JBqs1Ga9n1ojbez9chZLvmOgFv1EE4KDhAa9ryA@mail.gmail.com>
+ <CAM9d7chbQE=zkqYsNFMv+uWEYWdXcGD=fNYT_R2ondwR5zVvaQ@mail.gmail.com>
+ <87a6v81gou.fsf@mpe.ellerman.id.au>
+ <CAM9d7cg8kYMyPHQK_rhEiYQaSddqqt93=pLVNKJm8Y6F=if9ow@mail.gmail.com>
+From:   Madhavan Srinivasan <maddy@linux.ibm.com>
+Message-ID: <9657dc9f-e1a9-eb7e-8ac2-a108416d5a10@linux.ibm.com>
+Date:   Tue, 24 Nov 2020 11:12:59 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAM9d7cg8kYMyPHQK_rhEiYQaSddqqt93=pLVNKJm8Y6F=if9ow@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_01:2020-11-24,2020-11-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 bulkscore=0 priorityscore=1501 clxscore=1011
+ suspectscore=0 impostorscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011240029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In modern systems it's not unusual to have a system component monitoring
-memory conditions of the system and tasked with keeping system memory
-pressure under control. One way to accomplish that is to kill
-non-essential processes to free up memory for more important ones.
-Examples of this are Facebook's OOM killer daemon called oomd and
-Android's low memory killer daemon called lmkd.
-For such system component it's important to be able to free memory
-quickly and efficiently. Unfortunately the time process takes to free
-up its memory after receiving a SIGKILL might vary based on the state
-of the process (uninterruptible sleep), size and OPP level of the core
-the process is running.
-In such situation it is desirable to be able to free up the memory of the
-process being killed in a more controlled way.
-Enable MADV_DONTNEED to be used with process_madvise when applied to a
-dying process to reclaim its memory. This would allow userspace system
-components like oomd and lmkd to free memory of the target process in
-a more predictable way.
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- mm/madvise.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+On 11/24/20 10:21 AM, Namhyung Kim wrote:
+> Hello,
+>
+> On Mon, Nov 23, 2020 at 8:00 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>> Namhyung Kim <namhyung@kernel.org> writes:
+>>> Hi Peter and Kan,
+>>>
+>>> (Adding PPC folks)
+>>>
+>>> On Tue, Nov 17, 2020 at 2:01 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>>>> Hello,
+>>>>
+>>>> On Thu, Nov 12, 2020 at 4:54 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>>>>
+>>>>>
+>>>>> On 11/11/2020 11:25 AM, Peter Zijlstra wrote:
+>>>>>> On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
+>>>>>>
+>>>>>>> - When the large PEBS was introduced (9c964efa4330), the sched_task() should
+>>>>>>> be invoked to flush the PEBS buffer in each context switch. However, The
+>>>>>>> perf_sched_events in account_event() is not updated accordingly. The
+>>>>>>> perf_event_task_sched_* never be invoked for a pure per-CPU context. Only
+>>>>>>> per-task event works.
+>>>>>>>      At that time, the perf_pmu_sched_task() is outside of
+>>>>>>> perf_event_context_sched_in/out. It means that perf has to double
+>>>>>>> perf_pmu_disable() for per-task event.
+>>>>>>> - The patch 1 tries to fix broken per-CPU events. The CPU context cannot be
+>>>>>>> retrieved from the task->perf_event_ctxp. So it has to be tracked in the
+>>>>>>> sched_cb_list. Yes, the code is very similar to the original codes, but it
+>>>>>>> is actually the new code for per-CPU events. The optimization for per-task
+>>>>>>> events is still kept.
+>>>>>>>     For the case, which has both a CPU context and a task context, yes, the
+>>>>>>> __perf_pmu_sched_task() in this patch is not invoked. Because the
+>>>>>>> sched_task() only need to be invoked once in a context switch. The
+>>>>>>> sched_task() will be eventually invoked in the task context.
+>>>>>> The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB and
+>>>>>> only set that for large pebs. Are you sure the other users (Intel LBR
+>>>>>> and PowerPC BHRB) don't need it?
+>>>>> I didn't set it for LBR, because the perf_sched_events is always enabled
+>>>>> for LBR. But, yes, we should explicitly set the PERF_ATTACH_SCHED_CB
+>>>>> for LBR.
+>>>>>
+>>>>>          if (has_branch_stack(event))
+>>>>>                  inc = true;
+>>>>>
+>>>>>> If they indeed do not require the pmu::sched_task() callback for CPU
+>>>>>> events, then I still think the whole perf_sched_cb_{inc,dec}() interface
+>>>>> No, LBR requires the pmu::sched_task() callback for CPU events.
+>>>>>
+>>>>> Now, The LBR registers have to be reset in sched in even for CPU events.
+>>>>>
+>>>>> To fix the shorter LBR callstack issue for CPU events, we also need to
+>>>>> save/restore LBRs in pmu::sched_task().
+>>>>> https://lore.kernel.org/lkml/1578495789-95006-4-git-send-email-kan.liang@linux.intel.com/
+>>>>>
+>>>>>> is confusing at best.
+>>>>>>
+>>>>>> Can't we do something like this instead?
+>>>>>>
+>>>>> I think the below patch may have two issues.
+>>>>> - PERF_ATTACH_SCHED_CB is required for LBR (maybe PowerPC BHRB as well) now.
+>>>>> - We may disable the large PEBS later if not all PEBS events support
+>>>>> large PEBS. The PMU need a way to notify the generic code to decrease
+>>>>> the nr_sched_task.
+>>>> Any updates on this?  I've reviewed and tested Kan's patches
+>>>> and they all look good.
+>>>>
+>>>> Maybe we can talk to PPC folks to confirm the BHRB case?
+>>> Can we move this forward?  I saw patch 3/3 also adds PERF_ATTACH_SCHED_CB
+>>> for PowerPC too.  But it'd be nice if ppc folks can confirm the change.
+>> Sorry I've read the whole thread, but I'm still not entirely sure I
+>> understand the question.
+> Thanks for your time and sorry about not being clear enough.
+>
+> We found per-cpu events are not calling pmu::sched_task()
+> on context switches.  So PERF_ATTACH_SCHED_CB was
+> added to indicate the core logic that it needs to invoke the
+> callback.
+>
+> The patch 3/3 added the flag to PPC (for BHRB) with other
+> changes (I think it should be split like in the patch 2/3) and
+> want to get ACKs from the PPC folks.
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 1aa074a46524..11306534369e 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -29,6 +29,7 @@
- #include <linux/swapops.h>
- #include <linux/shmem_fs.h>
- #include <linux/mmu_notifier.h>
-+#include <linux/oom.h>
- 
- #include <asm/tlb.h>
- 
-@@ -995,6 +996,18 @@ process_madvise_behavior_valid(int behavior)
- 	switch (behavior) {
- 	case MADV_COLD:
- 	case MADV_PAGEOUT:
-+	case MADV_DONTNEED:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool madvise_destructive(int behavior)
-+{
-+	switch (behavior) {
-+	case MADV_DONTNEED:
-+	case MADV_FREE:
- 		return true;
- 	default:
- 		return false;
-@@ -1006,6 +1019,10 @@ static bool can_range_madv_lru_vma(struct vm_area_struct *vma, int behavior)
- 	if (!can_madv_lru_vma(vma))
- 		return false;
- 
-+	/* For destructive madvise skip shared file-backed VMAs */
-+	if (madvise_destructive(behavior))
-+		return vma_is_anonymous(vma) || !(vma->vm_flags & VM_SHARED);
-+
- 	return true;
- }
- 
-@@ -1239,6 +1256,23 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
- 		goto release_task;
- 	}
- 
-+	if (madvise_destructive(behavior)) {
-+		/* Allow destructive madvise only on a dying processes */
-+		if (!signal_group_exit(task->signal)) {
-+			ret = -EINVAL;
-+			goto release_mm;
-+		}
-+		/* Ensure no competition with OOM-killer to avoid contention */
-+		if (unlikely(mm_is_oom_victim(mm)) ||
-+		    unlikely(test_bit(MMF_OOM_SKIP, &mm->flags))) {
-+			/* Already being reclaimed */
-+			ret = 0;
-+			goto release_mm;
-+		}
-+		/* Mark mm as unstable */
-+		set_bit(MMF_UNSTABLE, &mm->flags);
-+	}
-+
- 	/*
- 	 * For range madvise only the entire address space is supported for now
- 	 * and input iovec is ignored.
--- 
-2.29.2.454.gaff20da3a2-goog
+Sorry for delay.
 
+I guess first it will be better to split the ppc change to a separate patch,
+
+secondly, we are missing the changes needed in the power_pmu_bhrb_disable()
+
+where perf_sched_cb_dec() needs the "state" to be included.
+
+
+Maddy
+
+
+>
+> Thanks,
+> Namhyung
