@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE6F2C200C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D252C1FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730673AbgKXIcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:32:15 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:12756 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730476AbgKXIcM (ORCPT
+        id S1730641AbgKXIaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:30:05 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58166 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730433AbgKXIaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:32:12 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AO8Os6I025697;
-        Tue, 24 Nov 2020 03:32:00 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34y08uyx0e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 03:32:00 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AO8VwFJ019872
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 24 Nov 2020 03:31:59 -0500
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 24 Nov 2020 00:31:57 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 24 Nov 2020 00:31:57 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AO8VqG4021753;
-        Tue, 24 Nov 2020 03:31:55 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <dmitry.torokhov@gmail.com>, <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 3/3] Input: adp5589-keys - add basic devicetree support
-Date:   Tue, 24 Nov 2020 10:22:55 +0200
-Message-ID: <20201124082255.13427-3-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201124082255.13427-1-alexandru.ardelean@analog.com>
-References: <20201124082255.13427-1-alexandru.ardelean@analog.com>
+        Tue, 24 Nov 2020 03:30:04 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AO8Tgcs032629;
+        Tue, 24 Nov 2020 02:29:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606206582;
+        bh=0TsVbr1BWiaJJR7/cw85lOA9UC5Db6/HF0AjUs7Ri9k=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=dwxkIzaDDnvHCoKhCMm7N9rFoLJmyWWCHXGlVL9aWKQMp1bvliGB+2DTE5yrCubxZ
+         +YA7otJuXfPP1MZB5b3xisrPki/DGQiNd3RUmqdYJIypsGzNYtIfmoVVUcE8GLhh8R
+         Azow8I6dD6axe9IljExp0LZCn+1F4tRkXtSm531U=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AO8Tfag102466
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 24 Nov 2020 02:29:41 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 24
+ Nov 2020 02:29:41 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 24 Nov 2020 02:29:41 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AO8TbNZ049526;
+        Tue, 24 Nov 2020 02:29:38 -0600
+Subject: Re: [PATCH v2 00/17] Refactor fw_devlink to significantly improve
+ boot time
+To:     Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        <kernel-team@android.com>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-efi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20201121020232.908850-1-saravanak@google.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <758a1b59-1033-b0ae-2549-84c8eeea4b11@ti.com>
+Date:   Tue, 24 Nov 2020 10:29:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_03:2020-11-24,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 impostorscore=0 suspectscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240051
+In-Reply-To: <20201121020232.908850-1-saravanak@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+Hi,
 
-Add very basic devicetree suppport to the adp5589 allowing the device to be
-registered from devicetree and ACPI via PRP0001.
+On 21/11/2020 04:02, Saravana Kannan wrote:
+> The current implementation of fw_devlink is very inefficient because it
+> tries to get away without creating fwnode links in the name of saving
+> memory usage. Past attempts to optimize runtime at the cost of memory
+> usage were blocked with request for data showing that the optimization
+> made significant improvement for real world scenarios.
+> 
+> We have those scenarios now. There have been several reports of boot
+> time increase in the order of seconds in this thread [1]. Several OEMs
+> and SoC manufacturers have also privately reported significant
+> (350-400ms) increase in boot time due to all the parsing done by
+> fw_devlink.
+> 
+> So this patch series refactors fw_devlink to be more efficient. The key
+> difference now is the addition of support for fwnode links -- just a few
+> simple APIs. This also allows most of the code to be moved out of
+> firmware specific (DT mostly) code into driver core.
+> 
+> This brings the following benefits:
+> - Instead of parsing the device tree multiple times (complexity was
+>   close to O(N^3) where N in the number of properties) during bootup,
+>   fw_devlink parses each fwnode node/property only once and creates
+>   fwnode links. The rest of the fw_devlink code then just looks at these
+>   fwnode links to do rest of the work.
+> 
+> - Makes it much easier to debug probe issue due to fw_devlink in the
+>   future. fw_devlink=on blocks the probing of devices if they depend on
+>   a device that hasn't been added yet. With this refactor, it'll be very
+>   easy to tell what that device is because we now have a reference to
+>   the fwnode of the device.
+> 
+> - Much easier to add fw_devlink support to ACPI and other firmware
+>   types. A refactor to move the common bits from DT specific code to
+>   driver core was in my TODO list as a prerequisite to adding ACPI
+>   support to fw_devlink. This series gets that done.
+> 
+> Laurent and Grygorii tested the v1 series and they saw boot time
+> improvment of about 12 seconds and 3 seconds, respectively.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/input/keyboard/adp5589-keys.c | 30 ++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+Tested v2 on OMAP4 SDP. With my particular config, boot time to starting init went from 18.5 seconds
+to 12.5 seconds.
 
-diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
-index 6cb93ee3b97c..8ff18ff18b75 100644
---- a/drivers/input/keyboard/adp5589-keys.c
-+++ b/drivers/input/keyboard/adp5589-keys.c
-@@ -986,9 +986,25 @@ static void adp5589_clear_config(void *data)
- 	adp5589_write(client, kpad->var->reg(ADP5589_GENERAL_CFG), 0);
- }
- 
-+static const struct adp5589_chip_info *adp5589_get_chip_info(struct device *dev,
-+							     const struct i2c_device_id *id)
-+{
-+	const struct adp5589_chip_info *info;
-+
-+	info = device_get_match_data(dev);
-+	if (info)
-+		return info;
-+
-+	if (id)
-+		return &adp5589_chip_info_tbl[id->driver_data];
-+
-+	return NULL;
-+}
-+
- static int adp5589_probe(struct i2c_client *client,
- 			 const struct i2c_device_id *id)
- {
-+	const struct adp5589_chip_info *info;
- 	struct adp5589_kpad *kpad;
- 	const struct adp5589_kpad_platform_data *pdata =
- 		adp5589_kpad_pdata_get(&client->dev);
-@@ -1001,13 +1017,17 @@ static int adp5589_probe(struct i2c_client *client,
- 		return -EIO;
- 	}
- 
-+	info = adp5589_get_chip_info(&client->dev, id);
-+	if (!info)
-+		return -ENODEV;
-+
- 	kpad = devm_kzalloc(&client->dev, sizeof(*kpad), GFP_KERNEL);
- 	if (!kpad)
- 		return -ENOMEM;
- 
- 	kpad->client = client;
- 
--	kpad->info = &adp5589_chip_info_tbl[id->driver_data];
-+	kpad->info = info;
- 	kpad->var = kpad->info->constants;
- 
- 	error = devm_add_action_or_reset(&client->dev, adp5589_clear_config,
-@@ -1078,6 +1098,13 @@ static int __maybe_unused adp5589_resume(struct device *dev)
- 
- static SIMPLE_DEV_PM_OPS(adp5589_dev_pm_ops, adp5589_suspend, adp5589_resume);
- 
-+static const struct of_device_id adp5589_of_match[] = {
-+	{ .compatible = "adi,adp5585", .data = &adp5589_chip_info_tbl[ADP5585_01] },
-+	{ .compatible = "adi,adp5585-02", .data = &adp5589_chip_info_tbl[ADP5585_02] },
-+	{ .compatible = "adi,adp5589", .data = &adp5589_chip_info_tbl[ADP5589] },
-+	{}
-+};
-+
- static const struct i2c_device_id adp5589_id[] = {
- 	{"adp5589-keys", ADP5589},
- 	{"adp5585-keys", ADP5585_01},
-@@ -1091,6 +1118,7 @@ static struct i2c_driver adp5589_driver = {
- 	.driver = {
- 		.name = KBUILD_MODNAME,
- 		.pm = &adp5589_dev_pm_ops,
-+		.of_match_table = adp5589_of_match,
- 	},
- 	.probe = adp5589_probe,
- 	.id_table = adp5589_id,
+ Tomi
+
 -- 
-2.17.1
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
