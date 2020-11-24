@@ -2,79 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332992C2CA4
+	by mail.lfdr.de (Postfix) with ESMTP id AA9AB2C2CA5
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390280AbgKXQTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:19:04 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55466 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388568AbgKXQTD (ORCPT
+        id S2390287AbgKXQTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:19:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388568AbgKXQTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:19:03 -0500
-Received: by mail-wm1-f65.google.com with SMTP id x22so2897224wmc.5;
-        Tue, 24 Nov 2020 08:19:01 -0800 (PST)
+        Tue, 24 Nov 2020 11:19:24 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468E8C0613D6;
+        Tue, 24 Nov 2020 08:19:24 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a65so3465423wme.1;
+        Tue, 24 Nov 2020 08:19:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7HGiO0DgR9eXvqkxA8eOYyORP/pAS/lYW6lSD1i1EXI=;
+        b=i4zQwZN2jbnV5TFiUsIybhPvEcn/SA4ob58frZNxSiSy8XYTfX0yCfngM6U73z+HRz
+         Gak74tqXM8qCD7Jd6g/scdbe2T5/TXFAT0vEAsWBgfqxMm+S25fDyCbAmaDlVcsuENCi
+         6emutj2AKoonRuyv9grPOHSI8hKmlc0gEsxe9U/7roehsl93sG3ictaVRAb9UWGeGUUq
+         iC3NPw14YdoC40jf3DB8GrViRyaLFKRx3vBy8t3cvwlT9zqpIQTvvwbfwZagvH9mT7fJ
+         +2pmZf1Js4B30E7eKKApgLDjKxZ269DlcdliYuVgparSy/qX3NHW4BXpNFIFgBJeKlWb
+         B5XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PfnCueAGA03Kq3WrXMnEVjCnHQIAB19s6jaLxFSkI8U=;
-        b=HJWBt+y8VYy2pWH3bGZtfRXr7JsfvT0+cCYVAOCe6dbfvyw1vB1SObucQlH+2bJ7dg
-         /w63++/rEN7l5iLYZHQBuSJhplOK3MpaFEn4jYgbLGb8AV3z0rhHahwcwGYnr2PsHkyc
-         MD9EGu9y8PrMj8GJyC1GA9gGWyjGxvVlGolV03PX4Yy7Y9qR+jSsVx2NMlapwRGwOLLy
-         CiZsw+mzYCxsWiUeUYCyXkDjH817/F7NYHZQr4lZQpRiA9RPrxts7Zu2cxFWixYb0E06
-         3nN9+Jvu+/B81EErEZqd6f+7okbEtOFOTw9T7jbfQ3/uP7Y4h3pwcOjtgUc02Sb3peUW
-         5QmA==
-X-Gm-Message-State: AOAM531NJy0zRoRoqwIDiyVv99Dmwf/tiqmwI8VjK96E/m7qn8q9gjQt
-        OhKqBFEQEuog4KM4NNlhXs+xUHf5/s8=
-X-Google-Smtp-Source: ABdhPJygHdrleMo3Y0Zv6r/FmRX24xQJF2ZCmzCbI5JqJyjkpZSb90YC/aNoCYrYkE+0jrys+Twlpg==
-X-Received: by 2002:a1c:2b03:: with SMTP id r3mr5152591wmr.184.1606234741424;
-        Tue, 24 Nov 2020 08:19:01 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id h98sm23680174wrh.69.2020.11.24.08.19.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 08:19:00 -0800 (PST)
-Date:   Tue, 24 Nov 2020 16:18:59 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com
-Subject: Re: [RFC PATCH 00/18] Microsoft Hypervisor root partition ioctl
- interface
-Message-ID: <20201124161859.wkbyppzirf7nwggt@liuwe-devbox-debian-v2>
-References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7HGiO0DgR9eXvqkxA8eOYyORP/pAS/lYW6lSD1i1EXI=;
+        b=hYi5d3yhurw2eRvJ0z0RlFEssHz4z2LJ1EDigX/jOOffy8pL6UPlmsUvChc0OcY/ft
+         jG2RN3fD14Oprv4G78aPDhwLoABOGa1OpFE9oq1TvBqru2x7qM/SWeRgI5s+NKDNjXjd
+         MUvD6Vp5N1k4DRVw+mzGcZ648yfP6ZUQJ23yknsGHviDVQEUz5ko01yq7OVpZpFdivY3
+         mIigs3Q+owP9d4Jav06cD+G5P677ScO0Y5frq3WH53M0AVXerShLLPZY4vYfNM5dQLMW
+         8cBRYbQRlFy0CJ/hdBOV891HjOW24Z7ukcipJzrc5+DCGIRPZSTkHU7vZKDCxZ/rFTU1
+         9AqA==
+X-Gm-Message-State: AOAM531v2bVgQ/LsC7Cdzi3kmv/3gOie2mmD+is3xttxcTmZZ9WTeDP+
+        WvfxE+cHRF2on8XbnLwzmbM5Fbs5AAPrYqoCVuk3ui4I
+X-Google-Smtp-Source: ABdhPJwGyYag4yGAiHq/SMaLo1AA1wmaXzNEGygYbvFDgDJscO523CXblf6N8wr/xd8P8i/MgAybqmvp+cnzQyuQwCQ=
+X-Received: by 2002:a1c:1c3:: with SMTP id 186mr5127721wmb.39.1606234763015;
+ Tue, 24 Nov 2020 08:19:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
-User-Agent: NeoMutt/20180716
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-34-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-34-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 11:19:12 -0500
+Message-ID: <CADnq5_Nt3pi9F1fGF24ZWk2rE_Hk+g2-dNhQrCcoKMxNizFLCg@mail.gmail.com>
+Subject: Re: [PATCH 33/40] drm/amd/amdgpu/cik_sdma: Add one and remove another
+ function param description
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:30:19PM -0800, Nuno Das Neves wrote:
-> This patch series provides a userspace interface for creating and running guest
-> virtual machines while running on the Microsoft Hypervisor [0].
-> 
-> Since managing guest machines can only be done when Linux is the root partition,
-> this series depends on the RFC already posted by Wei Liu:
-> https://lore.kernel.org/linux-hyperv/20201105165814.29233-1-wei.liu@kernel.org/T/#t
-> 
-> The first two patches provide some helpers for converting hypervisor status
-> codes to linux error codes, and easily printing hypervisor status codes to dmesg
-> for debugging.
-> 
-> Hyper-V related headers asm-generic/hyperv-tlfs.h and x86/asm/hyperv-tlfs.h are
-> split into uapi and non-uapi. The uapi versions contain structures used in both
-> the ioctl interface and the kernel.
-> 
-> The mshv API is introduced in virt/mshv/mshv_main.c. As each interface is
+On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:282: warning: Function parameter o=
+r member 'flags' not described in 'cik_sdma_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:282: warning: Excess function para=
+meter 'fence' description in 'cik_sdma_ring_emit_fence'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Given this new file is placed under an arch-agnostic directory, please
-make sure it doesn't break builds for other architecture. We can start
-with running ARM builds for this series.
+Applied with minor changes.  Thanks!
 
-Wei.
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/cik_sdma.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c b/drivers/gpu/drm/amd/=
+amdgpu/cik_sdma.c
+> index f1e9966e7244e..28a64de8ae0e6 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+> @@ -271,7 +271,7 @@ static void cik_sdma_ring_emit_hdp_flush(struct amdgp=
+u_ring *ring)
+>   * @ring: amdgpu ring pointer
+>   * @addr: address
+>   * @seq: sequence number
+> - * @fence: amdgpu fence object
+> + * @flags: fence related flags
+>   *
+>   * Add a DMA fence packet to the ring to write
+>   * the fence seq number and DMA trap packet to generate
+> @@ -279,7 +279,7 @@ static void cik_sdma_ring_emit_hdp_flush(struct amdgp=
+u_ring *ring)
+>   */
+>  static void cik_sdma_ring_emit_fence(struct amdgpu_ring *ring, u64 addr,=
+ u64 seq,
+>                                      unsigned flags)
+> -{
+> +  {
+>         bool write64bit =3D flags & AMDGPU_FENCE_FLAG_64BIT;
+>         /* write the fence */
+>         amdgpu_ring_write(ring, SDMA_PACKET(SDMA_OPCODE_FENCE, 0, 0));
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
