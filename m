@@ -2,256 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518C42C213E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D222A2C2161
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731230AbgKXJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:27:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S1731318AbgKXJ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731220AbgKXJ06 (ORCPT
+        with ESMTP id S1731024AbgKXJ2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:26:58 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDF6C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:26:58 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id t22so8826984ljk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:26:58 -0800 (PST)
+        Tue, 24 Nov 2020 04:28:48 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3414C0613D6;
+        Tue, 24 Nov 2020 01:28:47 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id w202so2108896pff.10;
+        Tue, 24 Nov 2020 01:28:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kukcRBKUzlxamYfGZyLQcYKTY8NzjKcvgUjtKw6Awcs=;
-        b=mTKhkigHDoPSK5lJonpLM+ptC9nzL1l0tydMD89elegFPdySD76uSEJsbq+YHeYnxf
-         Rz4FfjcDwKYN8FfQRRD+CLwKIrxw+xcIQTUUulqIGLJnGJJtpBcYxFzRdgpwQ6SWMOo+
-         q3PkgZauF0skJeSgzy6EUgoeZeJJIR3+wesynyuOYU7UUggGUuSO4MnumIkz/7FpUgH7
-         bPgZc731EbjWDEHb8hURC9bd0FVBXY8DcP4BR/R1Jo7TNsiP+2/tiOAVr2NZKsL2GNJp
-         Jz0F1Lwi4OR9qB/Gy/s392aYCVV5Fn7wwJXzfaxfm5gTj6TFxF3WmE5GY7WRrHhjdS8B
-         IXmQ==
+        bh=bHKb7nomqkZKADTymOqb9YebPYk5PICoUgtAna9zlJA=;
+        b=kUjmDLTzJAMIAUeMr0l6en9vgdoe6CAUWMsC1khPiePFd01zJwUlO9BM0Y0FZ9aevz
+         UuXpqW5MEhhEgxiJybCmJkUd11D1zymEkd0P6UC8fCf8h6sOGAqrsjwNOSv1mZQpq0zZ
+         fZlpvwfJTi3YHbKIyxz8zY77tpIBemrM+ONVEO20Mv+MPgkkcKOyd0r9Y9rNZkMQnjNl
+         sBhNUyOo+DOSQoz6NQYXO+sxKBvvZ+JRvCzfItY+k4r0/NDORlvz5jSKEeSoQiPTW9WC
+         /s/+PPiOgrJFNWN5PnxVPOHnizrU6pDvXAyKBNR76m5mLGKuEYucE4XUr4W5PXlC7fKE
+         Vy7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kukcRBKUzlxamYfGZyLQcYKTY8NzjKcvgUjtKw6Awcs=;
-        b=FQTDmFIIBpIbdHthtKkl+YmmbaqJOsZ20IrPWxJ92VKHloLXpFobmPG/quvMbVk2kF
-         Mq+WciLJ/1ChlvK0ebAT42HBS052rGLPG0pVwd8/z5ClrcOoFwhcQULS7n2tWnaXGQWP
-         oCXyAHK7bfc3zXcgp4rVaw8iTmx9qoeR/DpFSFbJipchTRRIaWOoYqLHhn+ZmeHo2M8B
-         pGU67XGOZmW3Gyc5ZvgII9UBIgsMVV6tBkXT8ZGvpp304OBeklvdwN+FpLot+RLL5eTw
-         BHbvWLxGyGL9quauGok8TG/jDNnZna72fiNFQl6XCQQ89E72RKwKNmXHtoPCAvxGvzFx
-         Gocg==
-X-Gm-Message-State: AOAM532GCwmJcsdGGZDaCKx9p2aLQT2YY6TkQvLie7Oety/zWhDJ2GWK
-        t+ru24a8cwlwL8Fy+6YOK0FprJC3E2K3g/Z4OCnTWA==
-X-Google-Smtp-Source: ABdhPJwOkzwqjm2LNBXyYJWEcdhsLWfHn+ob5iB1SDuNQIbquePN0gEeSNq06vXwo6W+kH3ODe5+sRqpAfJ/VDCKf+s=
-X-Received: by 2002:a05:651c:134f:: with SMTP id j15mr1495677ljb.469.1606210016792;
- Tue, 24 Nov 2020 01:26:56 -0800 (PST)
+        bh=bHKb7nomqkZKADTymOqb9YebPYk5PICoUgtAna9zlJA=;
+        b=q2jktmY7o4LnmbbfPB1+nZejDj2PWU6RG/svkzuXaRno97KbPmWOC9z4VZLnsFOlFw
+         SjbSr+UEkxKxHWIx4ea+QvNgd+JW5e5uYrce2I5Hikzo1WYcNpYYPTVR0eMzePSoZUyN
+         WVFFzgQlBMfDhDXPIyv58Bd4P5RmYFT9i6RQX7z5nItn1SB+VbfGvP4KnBwShgNeHojV
+         DAFhwSHKl2J4GwMKUf2AazG3wZ3cYrg0HW8/YkZpLkkN3MlvpPP7BlTfzBW9ONtDkJCs
+         dMRzLaQPBbCumipF0O5nKvO1OnkjiKU9aljD/KN/hURiei9q3KI8IZTJ+mmVtOyNF67d
+         hfbg==
+X-Gm-Message-State: AOAM5320BOoFgDH/KqZ1AZnSnz7p383Y/5wHVpX0AVkgA17zj2pEIdto
+        wLsKpv3mhEl48DMFefbZm83pTmNaHHyDUmHIr5g=
+X-Google-Smtp-Source: ABdhPJx/5TVimn8Gf3cgvlwp5FjpuTfABlr3VrMAEiLMC1K6AxnhqJ0Qm6dcxy+ddZgRSA0ATSDhCzK7WxVTmS24PVk=
+X-Received: by 2002:a63:3e0f:: with SMTP id l15mr3103811pga.208.1606210127443;
+ Tue, 24 Nov 2020 01:28:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109113240.3733496-1-anup.patel@wdc.com> <20201109113240.3733496-11-anup.patel@wdc.com>
- <186ade3c372b44ef8ca1830da8c5002b@huawei.com>
-In-Reply-To: <186ade3c372b44ef8ca1830da8c5002b@huawei.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 24 Nov 2020 14:56:43 +0530
-Message-ID: <CAAhSdy1sx_oLGGoGjzr5ZrPStwCyFF4mBDEBw5zpsbSGcCRJjg@mail.gmail.com>
-Subject: Re: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table programming
-To:     Jiangyifei <jiangyifei@huawei.com>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
-        "Wubin (H)" <wu.wubin@huawei.com>,
-        "dengkai (A)" <dengkai1@huawei.com>,
-        yinyipeng <yinyipeng1@huawei.com>
+References: <3306b4d8-8689-b0e7-3f6d-c3ad873b7093@intel.com>
+ <cover.1605686678.git.xuanzhuo@linux.alibaba.com> <b7b0432d49ab05064efb85f1858b6e6f9e1274bd.1605686678.git.xuanzhuo@linux.alibaba.com>
+In-Reply-To: <b7b0432d49ab05064efb85f1858b6e6f9e1274bd.1605686678.git.xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 24 Nov 2020 10:28:36 +0100
+Message-ID: <CAJ8uoz2N_bRgJE94wqX4jSL0VfPDcVq6ppjbmgeMLgD-Qu9Oiw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] xsk: change the tx writeable condition
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 2:59 PM Jiangyifei <jiangyifei@huawei.com> wrote:
+On Wed, Nov 18, 2020 at 9:25 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
 >
+> Modify the tx writeable condition from the queue is not full to the
+> number of remaining tx queues is less than the half of the total number
+> of queues. Because the tx queue not full is a very short time, this will
+> cause a large number of EPOLLOUT events, and cause a large number of
+> process wake up.
 >
-> > -----Original Message-----
-> > From: Anup Patel [mailto:anup.patel@wdc.com]
-> > Sent: Monday, November 9, 2020 7:33 PM
-> > To: Palmer Dabbelt <palmer@dabbelt.com>; Palmer Dabbelt
-> > <palmerdabbelt@google.com>; Paul Walmsley <paul.walmsley@sifive.com>;
-> > Albert Ou <aou@eecs.berkeley.edu>; Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Alexander Graf <graf@amazon.com>; Atish Patra <atish.patra@wdc.com>;
-> > Alistair Francis <Alistair.Francis@wdc.com>; Damien Le Moal
-> > <damien.lemoal@wdc.com>; Anup Patel <anup@brainfault.org>;
-> > kvm@vger.kernel.org; kvm-riscv@lists.infradead.org;
-> > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Anup Patel
-> > <anup.patel@wdc.com>; Jiangyifei <jiangyifei@huawei.com>
-> > Subject: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
-> > programming
-> >
-> > This patch implements all required functions for programming the stage2 page
-> > table for each Guest/VM.
-> >
-> > At high-level, the flow of stage2 related functions is similar from KVM
-> > ARM/ARM64 implementation but the stage2 page table format is quite
-> > different for KVM RISC-V.
-> >
-> > [jiangyifei: stage2 dirty log support]
-> > Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-> > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/riscv/include/asm/kvm_host.h     |  12 +
-> >  arch/riscv/include/asm/pgtable-bits.h |   1 +
-> >  arch/riscv/kvm/Kconfig                |   1 +
-> >  arch/riscv/kvm/main.c                 |  19 +
-> >  arch/riscv/kvm/mmu.c                  | 649
-> > +++++++++++++++++++++++++-
-> >  arch/riscv/kvm/vm.c                   |   6 -
-> >  6 files changed, 672 insertions(+), 16 deletions(-)
-> >
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  net/xdp/xsk.c       | 20 +++++++++++++++++---
+>  net/xdp/xsk_queue.h |  6 ++++++
+>  2 files changed, 23 insertions(+), 3 deletions(-)
 >
-> ......
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 7f0353e..bc3d4ece 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -211,6 +211,17 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len,
+>         return 0;
+>  }
 >
-> >
-> >  int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu, @@ -69,27 +562,163 @@
-> > int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
-> >                        gpa_t gpa, unsigned long hva,
-> >                        bool writeable, bool is_write)
-> >  {
-> > -     /* TODO: */
-> > -     return 0;
-> > +     int ret;
-> > +     kvm_pfn_t hfn;
-> > +     short vma_pageshift;
-> > +     gfn_t gfn = gpa >> PAGE_SHIFT;
-> > +     struct vm_area_struct *vma;
-> > +     struct kvm *kvm = vcpu->kvm;
-> > +     struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
-> > +     bool logging = (memslot->dirty_bitmap &&
-> > +                     !(memslot->flags & KVM_MEM_READONLY)) ? true : false;
-> > +     unsigned long vma_pagesize;
-> > +
-> > +     mmap_read_lock(current->mm);
-> > +
-> > +     vma = find_vma_intersection(current->mm, hva, hva + 1);
-> > +     if (unlikely(!vma)) {
-> > +             kvm_err("Failed to find VMA for hva 0x%lx\n", hva);
-> > +             mmap_read_unlock(current->mm);
-> > +             return -EFAULT;
-> > +     }
-> > +
-> > +     if (is_vm_hugetlb_page(vma))
-> > +             vma_pageshift = huge_page_shift(hstate_vma(vma));
-> > +     else
-> > +             vma_pageshift = PAGE_SHIFT;
-> > +     vma_pagesize = 1ULL << vma_pageshift;
-> > +     if (logging || (vma->vm_flags & VM_PFNMAP))
-> > +             vma_pagesize = PAGE_SIZE;
-> > +
-> > +     if (vma_pagesize == PMD_SIZE || vma_pagesize == PGDIR_SIZE)
-> > +             gfn = (gpa & huge_page_mask(hstate_vma(vma))) >> PAGE_SHIFT;
-> > +
-> > +     mmap_read_unlock(current->mm);
-> > +
-> > +     if (vma_pagesize != PGDIR_SIZE &&
-> > +         vma_pagesize != PMD_SIZE &&
-> > +         vma_pagesize != PAGE_SIZE) {
-> > +             kvm_err("Invalid VMA page size 0x%lx\n", vma_pagesize);
-> > +             return -EFAULT;
-> > +     }
-> > +
-> > +     /* We need minimum second+third level pages */
-> > +     ret = stage2_cache_topup(pcache, stage2_pgd_levels,
-> > +                              KVM_MMU_PAGE_CACHE_NR_OBJS);
-> > +     if (ret) {
-> > +             kvm_err("Failed to topup stage2 cache\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
-> > +     if (hfn == KVM_PFN_ERR_HWPOISON) {
-> > +             send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
-> > +                             vma_pageshift, current);
-> > +             return 0;
-> > +     }
-> > +     if (is_error_noslot_pfn(hfn))
-> > +             return -EFAULT;
-> > +
-> > +     /*
-> > +      * If logging is active then we allow writable pages only
-> > +      * for write faults.
-> > +      */
-> > +     if (logging && !is_write)
-> > +             writeable = false;
-> > +
-> > +     spin_lock(&kvm->mmu_lock);
-> > +
-> > +     if (writeable) {
->
-> Hi Anup,
->
-> What is the purpose of "writable = !memslot_is_readonly(slot)" in this series?
+> +static bool xsk_writeable(struct xdp_sock *xs)
 
-Where ? I don't see this line in any of the patches.
+Not clear what this function does from the name. How about
+xsk_tx_half_free() or maybe xsk_tx_writeable()?
 
+> +{
+> +       if (!xs->tx)
+> +               return false;
+
+Skip this test as it will slow down the code. It is only needed in one
+place below.
+
+> +       if (xskq_cons_left(xs->tx) > xs->tx->nentries / 2)
+> +               return false;
+> +
+> +       return true;
+> +}
+> +
+>  static bool xsk_is_bound(struct xdp_sock *xs)
+>  {
+>         if (READ_ONCE(xs->state) == XSK_BOUND) {
+> @@ -296,7 +307,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
+>         rcu_read_lock();
+>         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+>                 __xskq_cons_release(xs->tx);
+> -               xs->sk.sk_write_space(&xs->sk);
+> +               if (xsk_writeable(xs))
+> +                       xs->sk.sk_write_space(&xs->sk);
+>         }
+>         rcu_read_unlock();
+>  }
+> @@ -442,7 +454,8 @@ static int xsk_generic_xmit(struct sock *sk)
 >
-> When mapping the HVA to HPA above, it doesn't know that the PTE writeable of stage2 is "!memslot_is_readonly(slot)".
-> This may causes the difference between the writability of HVA->HPA and GPA->HPA.
-> For example, GPA->HPA is writeable, but HVA->HPA is not writeable.
-
-Yes, this is possible particularly when Host kernel is updating writability
-of HVA->HPA mappings for swapping in/out pages.
-
+>  out:
+>         if (sent_frame)
+> -               sk->sk_write_space(sk);
+> +               if (xsk_writeable(xs))
+> +                       sk->sk_write_space(sk);
 >
-> Is it better that the writability of HVA->HPA is also determined by whether the memslot is readonly in this change?
-> Like this:
-> -    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
-> +    hfn = gfn_to_pfn_prot(kvm, gfn, writeable, NULL);
-
-The gfn_to_pfn_prot() needs to know what type of fault we
-got (i.e read/write fault). Rest of the information (such as whether
-slot is writable or not) is already available to gfn_to_pfn_prot().
-
-The question here is should we pass "&writeable" or NULL as
-last parameter to gfn_to_pfn_prot(). The recent JUMP label
-support in Linux RISC-V causes problem on HW where PTE
-'A' and 'D' bits are not updated by HW so I have to change
-last parameter of gfn_to_pfn_prot() from "&writeable" to NULL.
-
-I am still investigating this.
-
-Regards,
-Anup
-
+>         mutex_unlock(&xs->mutex);
+>         return err;
+> @@ -499,7 +512,8 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
 >
-> Regards,
-> Yifei
+>         if (xs->rx && !xskq_prod_is_empty(xs->rx))
+>                 mask |= EPOLLIN | EPOLLRDNORM;
+> -       if (xs->tx && !xskq_cons_is_full(xs->tx))
+> +
+
+No reason to introduce a newline here.
+
+> +       if (xsk_writeable(xs))
+
+Add an explicit "xs->tx &&" in the if statement here as we removed the
+test in xsk_writeable.
+
+>                 mask |= EPOLLOUT | EPOLLWRNORM;
 >
-> > +             kvm_set_pfn_dirty(hfn);
-> > +             mark_page_dirty(kvm, gfn);
-> > +             ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
-> > +                                   vma_pagesize, false, true);
-> > +     } else {
-> > +             ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
-> > +                                   vma_pagesize, true, true);
-> > +     }
-> > +
-> > +     if (ret)
-> > +             kvm_err("Failed to map in stage2\n");
-> > +
-> > +     spin_unlock(&kvm->mmu_lock);
-> > +     kvm_set_pfn_accessed(hfn);
-> > +     kvm_release_pfn_clean(hfn);
-> > +     return ret;
-> >  }
-> >
+>         return mask;
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index cdb9cf3..82a5228 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -264,6 +264,12 @@ static inline bool xskq_cons_is_full(struct xsk_queue *q)
+>                 q->nentries;
+>  }
 >
-> ......
+> +static inline __u64 xskq_cons_left(struct xsk_queue *q)
+
+Let us call this xskq_cons_entries_present() or
+xskq_cons_filled_entries(). The word "left" has the connotation that I
+still have stuff left to do. While this is kind of true for this case,
+it might not be for other cases that can use your function. The
+function provides how many (filled) entries that are present in the
+ring. Can you come up with a better name as I am not super fond of my
+suggestions? It would have been nice to call it xskq_cons_nb_entries()
+but there is already such a function that is lazy in nature and that
+allows access to the entries.
+
+> +{
+> +       /* No barriers needed since data is not accessed */
+> +       return READ_ONCE(q->ring->producer) - READ_ONCE(q->ring->consumer);
+> +}
+> +
+>  /* Functions for producers */
+>
+>  static inline bool xskq_prod_is_full(struct xsk_queue *q)
+> --
+> 1.8.3.1
 >
