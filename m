@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942212C1E16
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F202C1E1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbgKXGVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:21:38 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:17373 "EHLO z5.mailgun.us"
+        id S1729118AbgKXGWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:22:14 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:10411 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726197AbgKXGVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:21:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606198897; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=WjHmjt0stjiGryWOi4xegHxsZG0q/vN8TYzk3Fgapx0=; b=wPe0nZuwdQ/7zTKagxfAwH2uujcKwoMVttF7mPlFGU8nJ8kBMiTkdHQm+mFYXmCvJVSXwF2Z
- lDkuS6wPL3EtI3ckHspr3q+yx7mZTaEL+HqBhCfwtUfu5+5MVU6WBkLgIfgjx5SShI0FeBh+
- 7/gLa0LsG0otIqas5J++HIAAP1w=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fbca66f7f0cfa6a16554ea9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 06:21:35
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9CEF9C433ED; Tue, 24 Nov 2020 06:21:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4576C43461;
-        Tue, 24 Nov 2020 06:21:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4576C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org, dianders@chromium.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        evgreen@chromium.org, robh+dt@kernel.org, swboyd@chromium.org,
-        mka@chromium.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sc7180: Add DDR/L3 votes for the pro variant
-Date:   Tue, 24 Nov 2020 11:51:16 +0530
-Message-Id: <1606198876-3515-2-git-send-email-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606198876-3515-1-git-send-email-sibis@codeaurora.org>
-References: <1606198876-3515-1-git-send-email-sibis@codeaurora.org>
+        id S1728601AbgKXGWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:22:14 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CgDSy2Dmfz9tySZ;
+        Tue, 24 Nov 2020 07:22:10 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id oVUV-djEWx00; Tue, 24 Nov 2020 07:22:10 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgDSy1Bgzz9ty3k;
+        Tue, 24 Nov 2020 07:22:10 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 01D668B7A3;
+        Tue, 24 Nov 2020 07:22:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id R-K-LmnoVsW1; Tue, 24 Nov 2020 07:22:10 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0DCF78B79F;
+        Tue, 24 Nov 2020 07:22:10 +0100 (CET)
+Subject: Re: [PATCH v2 08/19] arm/vdso: Remove vdso pointer from mm->context
+To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org
+References: <20201124002932.1220517-1-dima@arista.com>
+ <20201124002932.1220517-9-dima@arista.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <a6877fff-b066-cffb-cede-011601f8a410@csgroup.eu>
+Date:   Tue, 24 Nov 2020 07:22:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201124002932.1220517-9-dima@arista.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DDR/L3 bandwidth votes for the pro variant of SC7180 SoC, as it support
-frequencies upto 2.5 GHz.
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 625e922c273d..05bc10a4c84d 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -527,6 +527,11 @@
- 			opp-hz = /bits/ 64 <2400000000>;
- 			opp-peak-kBps = <8532000 23347200>;
- 		};
-+
-+		cpu6_opp16: opp-2553600000 {
-+			opp-hz = /bits/ 64 <2553600000>;
-+			opp-peak-kBps = <8532000 23347200>;
-+		};
- 	};
- 
- 	memory@80000000 {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Le 24/11/2020 à 01:29, Dmitry Safonov a écrit :
+> Not used any more.
 
+But what about mremap() ? Maybe you should explain why you can remove it ?
+
+> 
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
+>   arch/arm/include/asm/mmu.h |  3 ---
+>   arch/arm/kernel/vdso.c     | 12 ------------
+>   2 files changed, 15 deletions(-)
+> 
+> diff --git a/arch/arm/include/asm/mmu.h b/arch/arm/include/asm/mmu.h
+> index 1592a4264488..2397b0a19f59 100644
+> --- a/arch/arm/include/asm/mmu.h
+> +++ b/arch/arm/include/asm/mmu.h
+> @@ -12,9 +12,6 @@ typedef struct {
+>   #endif
+>   	unsigned int	vmalloc_seq;
+>   	unsigned long	sigpage;
+> -#ifdef CONFIG_VDSO
+> -	unsigned long	vdso;
+> -#endif
+>   #ifdef CONFIG_BINFMT_ELF_FDPIC
+>   	unsigned long	exec_fdpic_loadmap;
+>   	unsigned long	interp_fdpic_loadmap;
+> diff --git a/arch/arm/kernel/vdso.c b/arch/arm/kernel/vdso.c
+> index 710e5ca99a53..4b39c7d8f525 100644
+> --- a/arch/arm/kernel/vdso.c
+> +++ b/arch/arm/kernel/vdso.c
+> @@ -47,17 +47,8 @@ static const struct vm_special_mapping vdso_data_mapping = {
+>   	.pages = &vdso_data_page,
+>   };
+>   
+> -static int vdso_mremap(const struct vm_special_mapping *sm,
+> -		struct vm_area_struct *new_vma)
+> -{
+> -	current->mm->context.vdso = new_vma->vm_start;
+> -
+> -	return 0;
+> -}
+> -
+>   static struct vm_special_mapping vdso_text_mapping __ro_after_init = {
+>   	.name = "[vdso]",
+> -	.mremap = vdso_mremap,
+>   };
+>   
+>   struct elfinfo {
+> @@ -239,8 +230,6 @@ void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
+>   	struct vm_area_struct *vma;
+>   	unsigned long len;
+>   
+> -	mm->context.vdso = 0;
+> -
+>   	if (vdso_text_pagelist == NULL)
+>   		return;
+>   
+> @@ -258,7 +247,6 @@ void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
+>   	if (IS_ERR(vma))
+>   		return;
+>   
+> -	mm->context.vdso = addr;
+>   	*sysinfo_ehdr = addr;
+>   }
+>   
+> 
