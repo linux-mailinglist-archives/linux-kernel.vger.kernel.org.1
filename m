@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9552C31A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8DC2C31B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730078AbgKXUEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:04:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727189AbgKXUEJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:04:09 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05882C0613D6;
-        Tue, 24 Nov 2020 12:04:09 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id d17so30616200lfq.10;
-        Tue, 24 Nov 2020 12:04:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yQgYdytsJTWx40vs8O0euMQoqQTcCtKDhAMPimfddKI=;
-        b=cosKrxFY6w+hivTa43r0ylY+uV+RFy+HNc+RCmbsbCdxt7tppl30ly3THnjosC7Xxd
-         OItFN1kWC5JZe1g3DJhuLCNZnvJdMLJ23sNp6M5GRo2+FWLp7i0GhYYt/KYbDxUeHy7f
-         2lkCFsvAqUu5ICKeVt0xr0qNgZI6UUBzcGEXC2MBuGpDnzPkgNyU8jl2QQ/4f4ubg57h
-         vdnuE1FaCYTNpHAohUYfIWBKqzHbERV2b1GbZrfjN2x2Lbbj1JG3IghFWJXBAdSvHxPE
-         pjzvBz6NvjCy5d9OLv0WD/UaSAd1lcXudLuUtXErMMP8HGubThVonaSy4Inc14JMHFHQ
-         Zirw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yQgYdytsJTWx40vs8O0euMQoqQTcCtKDhAMPimfddKI=;
-        b=iQbDt+gu4Wd/OIIbdKJZSeWp/xrmVzbKide7/zjL0aHuTBGq6JSHetRIBkEJegzrGG
-         RtJChCzH+x/cdvTXyhc5CDrBeweCU7UsXcibLyxvUxb0UPsx/RT+jcktOQiBF/mbor31
-         KcHVKqrlSnbxfqp+fL+6TSBtTlTxN3AMh0jUmi5VNflrfTAGzNOii1vEefjEsRwHrP3p
-         rSA457b8uhDBFqeHn0/SrsXmTlW5NIsHHmqere9O4Jad+reKWjJZS9QVUaLtQq91gutv
-         VCVhsXFti/e24CpZjnNlicOiRMOgsgGu6FIHT0eAt8MnYLzSazE++yhdgkNNn8uP5dEg
-         +/+Q==
-X-Gm-Message-State: AOAM532P47wo0NjfpCENW+MoHY5MUs/jX7pmAvX2NRw61mWHRnaK2np2
-        woCur6rnE7TUOp/uhSoQeLo=
-X-Google-Smtp-Source: ABdhPJwG7Ww3zbg4TMYvm6069UG3PkJtckTYIUaBtZFqTTdokEnajSpUitxGVVTZ9tOZILUi0mcbvA==
-X-Received: by 2002:a19:42cd:: with SMTP id p196mr2200173lfa.228.1606248247530;
-        Tue, 24 Nov 2020 12:04:07 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50? ([2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50])
-        by smtp.gmail.com with ESMTPSA id y132sm1267lfc.8.2020.11.24.12.04.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 12:04:06 -0800 (PST)
-Subject: Re: [PATCH 4/5] memory: renesas-rpc-if: Avoid use of C++ style
- comments
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201124112552.26377-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <8ddf57ec-c1af-cc20-ecba-c8cd96e56d7a@gmail.com>
-Date:   Tue, 24 Nov 2020 23:04:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730237AbgKXUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:09:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726433AbgKXUJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 15:09:01 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF86C2067D;
+        Tue, 24 Nov 2020 20:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606248541;
+        bh=xRlZ6dmBUu08TU3vy5/5TLMN9Zw/P7z3PuKFEkz4xo4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Wval/qzPSXW6OSsfuN6Xd41KgrSoPNwlRmo39HOyYBB9ZoczERldwsjycKv49ubUu
+         mPZmEFLfEppIKPijPbMRNPPr91Guf0HgQ/D4LdgrxWq9oeXujMY43N3We47xhiQuRX
+         bFPUmZuI8ZHE//FIi2wpDKDtXJTXHkfXL1ZiOAm8=
+Date:   Tue, 24 Nov 2020 12:08:59 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 00/17] rxrpc: Prelude to gssapi support
+Message-ID: <20201124120859.10037dd6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk>
+References: <160616220405.830164.2239716599743995145.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201124112552.26377-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 2:25 PM, Lad Prabhakar wrote:
+On Mon, 23 Nov 2020 20:10:04 +0000 David Howells wrote:
+> Here are some patches that do some reorganisation of the security class
+> handling in rxrpc to allow implementation of the RxGK security class that
+> will allow AF_RXRPC to use GSSAPI-negotiated tokens and better crypto.  The
+> RxGK security class is not included in this patchset.
+> 
+> It does the following things:
+> 
+>  (1) Add a keyrings patch to provide the original key description, as
+>      provided to add_key(), to the payload preparser so that it can
+>      interpret the content on that basis.  Unfortunately, the rxrpc_s key
+>      type wasn't written to interpret its payload as anything other than a
+>      string of bytes comprising a key, but for RxGK, more information is
+>      required as multiple Kerberos enctypes are supported.
+> 
+>  (2) Remove the rxk5 security class key parsing.  The rxk5 class never got
+>      rolled out in OpenAFS and got replaced with rxgk.
+> 
+>  (3) Support the creation of rxrpc keys with multiple tokens of different
+>      types.  If some types are not supported, the ENOPKG error is
+>      suppressed if at least one other token's type is supported.
+> 
+>  (4) Punt the handling of server keys (rxrpc_s type) to the appropriate
+>      security class.
+> 
+>  (5) Organise the security bits in the rxrpc_connection struct into a
+>      union to make it easier to override for other classes.
+> 
+>  (6) Move some bits from core code into rxkad that won't be appropriate to
+>      rxgk.
 
-> Replace C++ style comment with C style.
-
-   Thanks, I've overlooked this, and the header files should use C style comment,
-not C++.
- 
-> While at it also replace the tab with a space between struct and
-> struct name.
-
-   No connection between these 2 changes, so there should be 2 patches, not 1.
-Also, I'd like to ask you that they're left intact (unless it causes problems
-for you).
-
-> Suggested-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-[...]
-
-> diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
-> index b8c7cc63065f..30ea6bd969b4 100644
-> --- a/include/memory/renesas-rpc-if.h
-> +++ b/include/memory/renesas-rpc-if.h
-> @@ -19,7 +19,7 @@ enum rpcif_data_dir {
->  	RPCIF_DATA_OUT,
->  };
->  
-> -struct	rpcif_op {
-> +struct rpcif_op {
->  	struct {
->  		u8 buswidth;
->  		u8 opcode;
-> @@ -57,7 +57,7 @@ struct	rpcif_op {
->  	} data;
->  };
->  
-> -struct	rpcif {
-> +struct rpcif {
->  	struct device *dev;
->  	void __iomem *dirmap;
->  	struct regmap *regmap;
-> @@ -93,4 +93,4 @@ static inline void rpcif_disable_rpm(struct rpcif *rpc)
->  	pm_runtime_put_sync(rpc->dev);
->  }
->  
-> -#endif // __RENESAS_RPC_IF_H
-> +#endif /* __RENESAS_RPC_IF_H */
-
-MBR, Sergei
+Pulled into net-next, thank you!
