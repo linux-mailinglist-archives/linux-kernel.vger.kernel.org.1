@@ -2,77 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991822C1EC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065422C1EC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729981AbgKXHTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 02:19:41 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57659 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729283AbgKXHTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 02:19:41 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CgFlG5NCHz9sSs;
-        Tue, 24 Nov 2020 18:19:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606202379;
-        bh=yNYb3CA0f5Alb8v6AnhoqwzsijAlnPiZ+alDHKffC74=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OUfwjftgKLNkhEUYElXYUZ0aj63mpyhaXGBWFUBs+qIDvZP0fNltCyEgi/8BO9ROD
-         1ER7tOmOPm6Ycz+YQgz8Enr3nGaUkZ+9fCd3qqNqfQOHOJI9UoUMAtwVLSI+qfKrj/
-         i4k/tW5RE/FE3yUvc9ZBNmAhl6ilSgAiFr3mtpdQ1RuJSfz+fIP58Axxt4TZbamrIV
-         WSgZ+K0U8spm5NSQgfiG5CHo90S9sv++8Tr+To0ZUQ+BIR0A/yERXFbuN2+Icr9y/3
-         FMSX54vFpk0imc5+04+PLCAfTCBZ40sGTQT9VFFtwvv+iaitD92tDnrzIlW9YGBz1w
-         9AqPSmyeitYWg==
-Date:   Tue, 24 Nov 2020 18:19:38 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andy Gross <agross@kernel.org>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the qcom tree
-Message-ID: <20201124181938.11046212@canb.auug.org.au>
+        id S1730026AbgKXHT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 02:19:56 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8576 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730003AbgKXHT4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 02:19:56 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgFl253frzLnfF;
+        Tue, 24 Nov 2020 15:19:26 +0800 (CST)
+Received: from [10.174.179.81] (10.174.179.81) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 24 Nov 2020 15:19:47 +0800
+Subject: Re: [PATCH net] ipv6: addrlabel: fix possible memory leak in
+ ip6addrlbl_net_init
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
+        <yoshfuji@linux-ipv6.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201122023456.71100-1-wanghai38@huawei.com>
+ <20201123172207.213d7134@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <029b9280-3c3f-afe0-1991-be54678afd51@huawei.com>
+Date:   Tue, 24 Nov 2020 15:19:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/aFb0b9x1a9_Wv+n_=iRQTRG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201123172207.213d7134@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.81]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/aFb0b9x1a9_Wv+n_=iRQTRG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+ÔÚ 2020/11/24 9:22, Jakub Kicinski Ð´µÀ:
+> On Sun, 22 Nov 2020 10:34:56 +0800 Wang Hai wrote:
+>> kmemleak report a memory leak as follows:
+>>
+>> unreferenced object 0xffff8880059c6a00 (size 64):
+>>    comm "ip", pid 23696, jiffies 4296590183 (age 1755.384s)
+>>    hex dump (first 32 bytes):
+>>      20 01 00 10 00 00 00 00 00 00 00 00 00 00 00 00   ...............
+>>      1c 00 00 00 00 00 00 00 00 00 00 00 07 00 00 00  ................
+>>    backtrace:
+>>      [<00000000aa4e7a87>] ip6addrlbl_add+0x90/0xbb0
+>>      [<0000000070b8d7f1>] ip6addrlbl_net_init+0x109/0x170
+>>      [<000000006a9ca9d4>] ops_init+0xa8/0x3c0
+>>      [<000000002da57bf2>] setup_net+0x2de/0x7e0
+>>      [<000000004e52d573>] copy_net_ns+0x27d/0x530
+>>      [<00000000b07ae2b4>] create_new_namespaces+0x382/0xa30
+>>      [<000000003b76d36f>] unshare_nsproxy_namespaces+0xa1/0x1d0
+>>      [<0000000030653721>] ksys_unshare+0x3a4/0x780
+>>      [<0000000007e82e40>] __x64_sys_unshare+0x2d/0x40
+>>      [<0000000031a10c08>] do_syscall_64+0x33/0x40
+>>      [<0000000099df30e7>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> We should free all rules when we catch an error in ip6addrlbl_net_init().
+>> otherwise a memory leak will occur.
+>>
+>> Fixes: 2a8cc6c89039 ("[IPV6] ADDRCONF: Support RFC3484 configurable address selection policy table.")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> We can simplify this function.
+>
+>> diff --git a/net/ipv6/addrlabel.c b/net/ipv6/addrlabel.c
+>> index 642fc6ac13d2..637e323a0224 100644
+>> --- a/net/ipv6/addrlabel.c
+>> +++ b/net/ipv6/addrlabel.c
+>> @@ -306,6 +306,8 @@ static int ip6addrlbl_del(struct net *net,
+>>   /* add default label */
+>>   static int __net_init ip6addrlbl_net_init(struct net *net)
+>>   {
+>> +	struct ip6addrlbl_entry *p = NULL;
+>> +	struct hlist_node *n;
+>>   	int err = 0;
+> err does not need init
+>
+>>   	int i;
+>>   
+>> @@ -320,9 +322,17 @@ static int __net_init ip6addrlbl_net_init(struct net *net)
+> instead of the temporary ret variable we can assign directly to err
+>
+>>   					 ip6addrlbl_init_table[i].prefixlen,
+>>   					 0,
+>>   					 ip6addrlbl_init_table[i].label, 0);
+>> -		/* XXX: should we free all rules when we catch an error? */
+>> -		if (ret && (!err || err != -ENOMEM))
+>> +		if (ret && (!err || err != -ENOMEM)) {
+> this will become if (err)
+>
+>>   			err = ret;
+>> +			goto err_ip6addrlbl_add;
+>> +		}
+>> +	}
+>> +	return err;
+> return 0;
+>
+>> +err_ip6addrlbl_add:
+>> +	hlist_for_each_entry_safe(p, n, &net->ipv6.ip6addrlbl_table.head, list) {
+>> +		hlist_del_rcu(&p->list);
+>> +		kfree_rcu(p, rcu);
+>>   	}
+>>   	return err;
+>>   }
 
-Commit
+Thanks for advice. I just sent a v2
 
-  872b41c9a255 ("arm64: dts: qcom: sort sm8150 usb_2 node")
+¡°[PATCH net v2] ipv6: addrlabel: fix possible memory leak in 
+ip6addrlbl_net_init¡±
 
-is missing a Signed-off-by from its author.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/aFb0b9x1a9_Wv+n_=iRQTRG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+8tAoACgkQAVBC80lX
-0Gxkdwf7BerlZXL+y9dPKoBwb8A7fnx26kftVUMXj74RLdX2whGpjebt75LL1udi
-FnQ3T3k8kfDdCkCQipudyfqX8EvG3AwyZnaHxg5Lb8DCCw+S+5ZPWizBZUnJ2q6M
-3pP+BRqTpZz4sj9beQ2Tft4zRymoZq9atoK41pNcHyFDx6BJvupfmnmqMkcsPDDp
-nOHbVxELrmbdD1OsgOD74WtyvhJO+nfddoJPegFILeTfNxmsUz1qKO7fNP/iWc8I
-WBFltX9sYRUnIZyFadO4DiX1k5hISjx6KalGLZmlqXCmiCYtbledNmGmCxefXNVx
-nt/rBmwz9yiF2gsdHk62kSQvadBGcQ==
-=X++2
------END PGP SIGNATURE-----
-
---Sig_/aFb0b9x1a9_Wv+n_=iRQTRG--
+> .
+>
