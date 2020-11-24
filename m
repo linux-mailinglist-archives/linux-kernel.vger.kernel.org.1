@@ -2,189 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8C42C2DBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CC72C2DC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390245AbgKXREd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389441AbgKXREc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:04:32 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6996C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:04:32 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id d9so21258059qke.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=obEVozB81UHSovvaumjhiS8dmk+xqmutoJGiIGq4SQk=;
-        b=rKuQjuBAA7wOYVE9gEFcVvly6MXntSepdtbUkQ+a5zIvyu0Qw8omlELYND7Q68rR9+
-         lB/IPkQqlmrb/5XK7lhOoe8JJ4YUjWRrwsuI6oSvLKSckNSNfaweU0XhLt54saiCaqER
-         jEFVO0QeBy1b86ZQ1jtMWHPCkMEN1o6nRWs08=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=obEVozB81UHSovvaumjhiS8dmk+xqmutoJGiIGq4SQk=;
-        b=WGbmc3TvVSBpgIhMIY0KjObzgs7B7xcbUZFOt5aRcpvQIP/7H51fN3VbOPg9lvcDPE
-         cZyHpacH+vQsrw0j1aI77Mbpn++YYE2DdMbMvfV2IdreHj9NFhlGLXnxV17VAtrOQM6+
-         AeSzrP6oO7/RsW0NyTUtfQx6ZSW4ip7ZghY8AUs4kbo/xxfkWgrEEsHhUdThXKhjYuKg
-         v4g3InNyZ91t5BdDlhvXThl/uYjhNEuY1Ok0jnYUY1k8+DGa7NvoycxpApPp/lMlIuLc
-         /v+uJbcYilgtD3+DjakLbKy++WyKQeu3djiTLFlWMX8gn/nX5RgUVEf8akQ6yj3FLZuO
-         u+BQ==
-X-Gm-Message-State: AOAM533aWU8lxE7H+zw8DU31iaG7WwLzZBanTZXMC+EVkwEdsEWBRlUJ
-        2CEEQYOF53OrZRbyA7j3EbJ2+A==
-X-Google-Smtp-Source: ABdhPJy0JSCacsG8pFPvcmkdn0FbyaHt4agex/8k5MhnWuAqqlqE+GmmiE4+dtAx4mZkG6GcWHG7tw==
-X-Received: by 2002:a37:4893:: with SMTP id v141mr5560211qka.361.1606237471779;
-        Tue, 24 Nov 2020 09:04:31 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id p62sm653316qkf.50.2020.11.24.09.04.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 09:04:30 -0800 (PST)
-Date:   Tue, 24 Nov 2020 12:04:30 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 12/32] sched: Simplify the core pick loop for
- optimized case
-Message-ID: <20201124170430.GC1021337@google.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-13-joel@joelfernandes.org>
- <20201124120438.GY3021@hirez.programming.kicks-ass.net>
+        id S2389939AbgKXRF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:05:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731540AbgKXRF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:05:27 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3413206E5;
+        Tue, 24 Nov 2020 17:05:25 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 12:05:23 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Hui Su <sh_def@163.com>
+Cc:     mingo@redhat.com, jack@suse.cz, akpm@linux-foundation.org,
+        neilb@suse.de, tj@kernel.org, trond.myklebust@hammerspace.com,
+        liuzhiqiang26@huawei.com, tytso@mit.edu, cai@lca.pw,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] trace: fix potenial dangerous pointer
+Message-ID: <20201124120523.34a59eed@gandalf.local.home>
+In-Reply-To: <20201124165205.GA23937@rlk>
+References: <20201124165205.GA23937@rlk>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124120438.GY3021@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Wed, 25 Nov 2020 00:52:05 +0800
+Hui Su <sh_def@163.com> wrote:
 
-On Tue, Nov 24, 2020 at 01:04:38PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 17, 2020 at 06:19:42PM -0500, Joel Fernandes (Google) wrote:
-> > +	/*
-> > +	 * Optimize for common case where this CPU has no cookies
-> > +	 * and there are no cookied tasks running on siblings.
-> > +	 */
-> > +	if (!need_sync) {
-> > +		for_each_class(class) {
-> > +			next = class->pick_task(rq);
-> > +			if (next)
-> > +				break;
-> > +		}
-> > +
-> > +		if (!next->core_cookie) {
-> > +			rq->core_pick = NULL;
-> > +			goto done;
-> > +		}
-> >  		need_sync = true;
-> >  	}
+> The bdi_dev_name() returns a char [64], and
+> the __entry->name is a char [32].
 > 
-> This isn't what I send you here:
+> It maybe dangerous to TP_printk("%s", __entry->name)
+> after the strncpy().
+
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+This should go through the tree that has the code that uses these
+tracepoints.
+
+-- Steve
+
+
 > 
->   https://lkml.kernel.org/r/20201026093131.GF2628@hirez.programming.kicks-ass.net
-
-I had replied to it here with concerns about the effects of newly idle
-balancing not being reverseable, it was only a theoretical concern:
-http://lore.kernel.org/r/20201105185019.GA2771003@google.com
-
-Also I was trying to keep the logic the same as v8 for unconstrained pick
-(calling pick_task), considering that has been tested quite a bit.
-
-> Specifically, you've lost the whole cfs-cgroup optimization.
-
-Are you referring to this optimization in pick_next_task_fair() ?
-
-/*
- * Since we haven't yet done put_prev_entity and if the
- * selected task
- * is a different task than we started out with, try
- * and touch the
- * least amount of cfs_rqs.
- */
-
-You are right, we wouldn't get that with just calling pick_task_fair(). We
-did not have this in v8 series either though.
-
-Also, if the task is a cookied task, then I think you are doing more work
-with your patch due to the extra put_prev_task().
-
-> What was wrong/not working with the below?
-
-Other than the new idle balancing, IIRC it was also causing instability.
-Maybe we can considering this optimization in the future if that's Ok with
-you?
-
-thanks,
-
- - Joel
-
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5225,8 +5227,6 @@ pick_next_task(struct rq *rq, struct tas
->  		return next;
->  	}
+> Signed-off-by: Hui Su <sh_def@163.com>
+> ---
+>  include/trace/events/writeback.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
+> index e7cbccc7c14c..57d795365987 100644
+> --- a/include/trace/events/writeback.h
+> +++ b/include/trace/events/writeback.h
+> @@ -190,7 +190,7 @@ TRACE_EVENT(inode_foreign_history,
+>  	),
 >  
-> -	put_prev_task_balance(rq, prev, rf);
-> -
->  	smt_mask = cpu_smt_mask(cpu);
->  	need_sync = !!rq->core->core_cookie;
+>  	TP_fast_assign(
+> -		strncpy(__entry->name, bdi_dev_name(inode_to_bdi(inode)), 32);
+> +		strscpy_pad(__entry->name, bdi_dev_name(inode_to_bdi(inode)), 32);
+>  		__entry->ino		= inode->i_ino;
+>  		__entry->cgroup_ino	= __trace_wbc_assign_cgroup(wbc);
+>  		__entry->history	= history;
+> @@ -219,7 +219,7 @@ TRACE_EVENT(inode_switch_wbs,
+>  	),
 >  
-> @@ -5255,17 +5255,14 @@ pick_next_task(struct rq *rq, struct tas
->  	 * and there are no cookied tasks running on siblings.
->  	 */
->  	if (!need_sync) {
-> -		for_each_class(class) {
-> -			next = class->pick_task(rq);
-> -			if (next)
-> -				break;
-> -		}
-> -
-> +		next = __pick_next_task(rq, prev, rf);
->  		if (!next->core_cookie) {
->  			rq->core_pick = NULL;
-> -			goto done;
-> +			return next;
->  		}
-> -		need_sync = true;
-> +		put_prev_task(next);
-> +	} else {
-> +		put_prev_task_balance(rq, prev, rf);
->  	}
+>  	TP_fast_assign(
+> -		strncpy(__entry->name,	bdi_dev_name(old_wb->bdi), 32);
+> +		strscpy_pad(__entry->name, bdi_dev_name(old_wb->bdi), 32);
+>  		__entry->ino		= inode->i_ino;
+>  		__entry->old_cgroup_ino	= __trace_wb_assign_cgroup(old_wb);
+>  		__entry->new_cgroup_ino	= __trace_wb_assign_cgroup(new_wb);
+> @@ -252,7 +252,7 @@ TRACE_EVENT(track_foreign_dirty,
+>  		struct address_space *mapping = page_mapping(page);
+>  		struct inode *inode = mapping ? mapping->host : NULL;
 >  
->  	for_each_cpu(i, smt_mask) {
+> -		strncpy(__entry->name,	bdi_dev_name(wb->bdi), 32);
+> +		strscpy_pad(__entry->name, bdi_dev_name(wb->bdi), 32);
+>  		__entry->bdi_id		= wb->bdi->id;
+>  		__entry->ino		= inode ? inode->i_ino : 0;
+>  		__entry->memcg_id	= wb->memcg_css->id;
+> @@ -285,7 +285,7 @@ TRACE_EVENT(flush_foreign,
+>  	),
+>  
+>  	TP_fast_assign(
+> -		strncpy(__entry->name,	bdi_dev_name(wb->bdi), 32);
+> +		strscpy_pad(__entry->name, bdi_dev_name(wb->bdi), 32);
+>  		__entry->cgroup_ino	= __trace_wb_assign_cgroup(wb);
+>  		__entry->frn_bdi_id	= frn_bdi_id;
+>  		__entry->frn_memcg_id	= frn_memcg_id;
+
