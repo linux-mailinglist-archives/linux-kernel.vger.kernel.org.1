@@ -2,69 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1732C2962
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC262C298A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388873AbgKXOXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731656AbgKXOXM (ORCPT
+        id S2389002AbgKXO0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:26:19 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55414 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388969AbgKXO0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:23:12 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5927FC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:23:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+Y3Hzccj3kNWKA+Fq9a4rpUhCDRfohJChJu1uJl6Seg=; b=RgNIne4l9wuC60z2fu3qXgNqcH
-        FZTMUCHC3N8oCnMaprN0X5+4we+QC23CMXd3MOKrSiHoKcqLDHpv4xiMPJs3bQFTxi3id1lSa8lJb
-        S9b0M0WR8m3guGciSqOEV+XplQ22XPtjedPg8KKvIFpo+QohoqOVJsKvf4j0qW6ClNeL06avn+emy
-        rkI/gz16MZPgG1x/H5gCY+nxejQ/TFKta8db2s3dgv9d97V/hPmQ8klaxtsQNBKqrPHVh2h8vmEEK
-        aW820X/AQWl+yj7y8AbFFz33PkekoEUgu7FsY3z2xxAekvZofjhZNUJTxnrLt2GZziejnx0ZBBQYX
-        yyJ0g4fQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khZDk-00072H-Pt; Tue, 24 Nov 2020 14:23:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9CA41306E56;
-        Tue, 24 Nov 2020 15:23:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E3CD20222D7E; Tue, 24 Nov 2020 15:23:03 +0100 (CET)
-Date:   Tue, 24 Nov 2020 15:23:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@kernel.org,
-        x86@kernel.org, mark.rutland@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] More RCU vs idle fixes
-Message-ID: <20201124142303.GF3092@hirez.programming.kicks-ass.net>
-References: <20201120114145.197714127@infradead.org>
- <yt9dv9du7tow.fsf@linux.ibm.com>
- <20201124141853.GG2414@hirez.programming.kicks-ass.net>
+        Tue, 24 Nov 2020 09:26:17 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOEGZiR017030;
+        Tue, 24 Nov 2020 15:24:19 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=STMicroelectronics;
+ bh=/Lr2yKdeXEPI/ALwJxE9iloE/mG9CzbQupaWiqLE3wM=;
+ b=G38+FG9jP/010Etf8q+4RN8sdlaTwcdjAdhjhmB9/fagRQTrGL4phffCwVXN7RkYUrEF
+ AKkoUw57L0qtNJZIU3nJCYOMXt71Rw9WVgD2ZX4dpd/7uq5B5zmLqOIu7RRyFbcYJnCg
+ R6QrqiX3rltVYf44Vys7ThcAQjaCYaR1BGzjwCexgHqc/xkKAWkxBtLaxXtQ0aUFlIti
+ ZGpAY31DgioYTOVnkpxbR7VhdfA1TcjznugPG1Lm2C+aGYFaInoJkZQH0lMXuD9PxbVU
+ VeyyRuP0jgnqvDtv3exNGj96b6CunQNT2nInKWBHy8x+NXFWgv6Db5xtiz+OLvtkg+us qg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34y0fgsrnf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 15:24:19 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E17DD10002A;
+        Tue, 24 Nov 2020 15:24:18 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9045E2B8A38;
+        Tue, 24 Nov 2020 15:24:18 +0100 (CET)
+Received: from [10.129.7.42] (10.75.127.48) by SFHDAG1NODE3.st.com
+ (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
+ 2020 15:24:15 +0100
+Message-ID: <e2b2b623700401538fe91e70495c348c08b5d2e3.camel@st.com>
+Subject: Re: [PATCH] net: stmmac: add flexible PPS to dwmac 4.10a
+From:   Antonio Borneo <antonio.borneo@st.com>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
+CC:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        has <has@pengutronix.de>
+Date:   Tue, 24 Nov 2020 15:23:27 +0100
+In-Reply-To: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
+References: <20191007154306.95827-1-antonio.borneo@st.com>
+         <20191007154306.95827-5-antonio.borneo@st.com>
+         <20191009152618.33b45c2d@cakuba.netronome.com>
+         <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124141853.GG2414@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 03:18:53PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 24, 2020 at 02:47:27PM +0100, Sven Schnelle wrote:
-> > Peter Zijlstra <peterz@infradead.org> writes:
-> > 
-> > > Both arm64 and s390 are tripping over arch_cpu_idle() RCU,tracing,lockdep
-> > > interaction. While looking at that I also found fail in inte_idle.
-> > >
-> > > Please consider for this cycle.
-> > 
-> > Is anyone taking this patchset?
+On Tue, 2020-11-24 at 15:15 +0100, Ahmad Fatoum wrote:
+> Hello Jakub,
 > 
-> I think I'll stuff it in x86/urgent for lack of a better place.
+> On 10.10.19 00:26, Jakub Kicinski wrote:
+> > On Mon, 7 Oct 2019 17:43:06 +0200, Antonio Borneo wrote:
+> > > All the registers and the functionalities used in the callback
+> > > dwmac5_flex_pps_config() are common between dwmac 4.10a [1] and
+> > > 5.00a [2].
+> > > 
+> > > Reuse the same callback for dwmac 4.10a too.
+> > > 
+> > > Tested on STM32MP15x, based on dwmac 4.10a.
+> > > 
+> > > [1] DWC Ethernet QoS Databook 4.10a October 2014
+> > > [2] DWC Ethernet QoS Databook 5.00a September 2017
+> > > 
+> > > Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+> > 
+> > Applied to net-next.
+> 
+> This patch seems to have been fuzzily applied at the wrong location.
+> The diff describes extension of dwmac 4.10a and so does the @@ line:
+> 
+>   @@ -864,6 +864,7 @@ const struct stmmac_ops dwmac410_ops = {
+> 
+> The patch was applied mainline as 757926247836 ("net: stmmac: add
+> flexible PPS to dwmac 4.10a"), but it extends dwmac4_ops instead:
+> 
+>   @@ -938,6 +938,7 @@ const struct stmmac_ops dwmac4_ops = {
+> 
+> I don't know if dwmac4 actually supports FlexPPS, so I think it's
+> better to be on the safe side and revert 757926247836 and add the
+> change for the correct variant.
 
-Ah, locking/urgent might be a better place I suppose.
+Agree,
+the patch get applied to the wrong place!
+
+Antonio
+
+> 
+> Cheers,
+> Ahmad
+> 
+> 
+
+
