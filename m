@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF84A2C3292
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F362C32A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731443AbgKXVVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731414AbgKXVVn (ORCPT
+        id S1728460AbgKXVYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:24:32 -0500
+Received: from vulcan.natalenko.name ([104.207.131.136]:46580 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727966AbgKXVYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:21:43 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1B3C0613D6;
-        Tue, 24 Nov 2020 13:21:43 -0800 (PST)
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        Tue, 24 Nov 2020 16:24:31 -0500
+Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id F0F9D23E3F;
-        Tue, 24 Nov 2020 22:21:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1606252898;
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 0FD6F8AAF01;
+        Tue, 24 Nov 2020 22:24:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1606253068;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wIZr2dT8FfZXEBvU48oDTvepadKi82zYYnSlXuZYz6k=;
-        b=iNsEq/kZPZeUnpgg3mpWD+YwbIBgWYPuDm6PrClGFBPrfmm1RH0PAY6u8HGsDnTn6dbOLn
-        pRkF10yQLO3noUOpd6TMG5J+fTxNQyVYxwQW/n5g1LFebsdrj6bOVY5VliMuwWhYBFR4n/
-        txZFg+6VJ1YKR7iABpmjyWJPOvZFc84=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] arm64: dts: freescale: sl28: correct MMC order
-Date:   Tue, 24 Nov 2020 22:21:26 +0100
-Message-Id: <20201124212126.32218-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ef6cqFP5rtCRJRsC0pbk1fWvr/gryXZqDbAGKXuGsf0=;
+        b=YemTNNq45rDxGydtNUuLfNISH2jCVhRnhFHbWWaQkIHyBHC8z5H2mHBnJJgQgB3Yu8chNo
+        QHt/ssDLKmNm+6NK2wW1maqb6n4VypVcLAjoQRoROic98FDJzj+inNcewLtxuhOXD22zTT
+        4KnZC8NDVQfOTy9/M4k7aLYpgQAY+qc=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Date:   Tue, 24 Nov 2020 22:24:27 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        matthew.garrett@nebula.com, jk@ozlabs.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+In-Reply-To: <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+References: <5f31cde519b941308412b3849197ee7c@AcuMS.aculab.com>
+ <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <c4c57a4b65d57bb7b2e87870a92558a5@natalenko.name>
+X-Sender: oleksandr@natalenko.name
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 342ab37ecaf8 ("arm64: dts: freescale: use fixed index mmcN for
-layerscape") hardcoded the order of the MMC devices. This doesn't fit
-the sl28 boards, which come with an onboard eMMC. Thus use the more
-natural order for the eMMC and SD card. Use /dev/mmcblk0 for the eMMC
-and /dev/mmcblk1 for the SD card which is removable by the user.
+Hi.
 
-Please note, that the images for this board already use root=UUID=,
-therefore the actual device number doesn't matter for booting.
+On 24.11.2020 15:23, Ard Biesheuvel wrote:
+> Surely caused by
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/efivarfs?id=fe5186cf12e30facfe261e9be6c7904a170bd822
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts | 2 ++
- 1 file changed, 2 insertions(+)
+This also soaked through the stable queue into v5.9.11, and now the same 
+BUG is triggered in the latest stable kernel.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-index fbaecf285d05..6da4a28c4d19 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-@@ -18,6 +18,8 @@
- 
- 	aliases {
- 		crypto = &crypto;
-+		mmc0 = &esdhc1;
-+		mmc1 = &esdhc;
- 		serial0 = &duart0;
- 		serial1 = &duart1;
- 		serial2 = &lpuart1;
+/cc Greg
+
 -- 
-2.20.1
-
+   Oleksandr Natalenko (post-factum)
