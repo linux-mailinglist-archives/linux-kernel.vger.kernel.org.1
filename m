@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033822C29E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8C12C29EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389215AbgKXOmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:42:14 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:43850 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388162AbgKXOmO (ORCPT
+        id S2389223AbgKXOnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:43:07 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:57693 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388854AbgKXOnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:42:14 -0500
-Date:   Tue, 24 Nov 2020 14:42:11 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606228932;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ATsDejaPv8NkLKCC6exgYHw07pd1pomeYiGhekbJbps=;
-        b=EHINuUXgetx03zYlcGQ8HroQJGfPTaZJWlhod6+hlVvbA4f8c4MuaKix3LPvUsUsPV/pea
-        ds8RXq5N5weP3+NyablK8PEFII1JhX44B5TnyJbHRwzq+ysL3U18sl4o1cmxSgLrhzJS1h
-        KpH1IB5ncjTgtkK24Z7+iOSLqZglJxVbU+KShCd0RQU+wsH4aaceoTbdfe5bFslFCDBH6r
-        duFUg+AQSTTNP91XqVS4jINaL1u5t23rNXoYkx5unyJxkLpnCrkp65NoE94ebkSsw0DlJv
-        EVAcX9m1VMBLmJfevJw1eagXKcvvGDypW/y5Bad9EVoNqLgGlbxJFyCRfRcbRg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606228932;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ATsDejaPv8NkLKCC6exgYHw07pd1pomeYiGhekbJbps=;
-        b=ijynnphaJ0wZgeTJmO/hGkJex2gibT/GnEg6E1wzp5gUH04iqAMgJQnpBSZAXg7TOkFQDH
-        Es2jMLVNZHKySODg==
-From:   "tip-bot2 for Geert Uytterhoeven" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] sh/irq: Add missing closing parentheses in
- arch_show_interrupts()
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201124130656.2741743-1-geert+renesas@glider.be>
-References: <20201124130656.2741743-1-geert+renesas@glider.be>
+        Tue, 24 Nov 2020 09:43:05 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-256-sjOgxl-7M5qNyQiFRe9n-Q-1; Tue, 24 Nov 2020 14:43:01 +0000
+X-MC-Unique: sjOgxl-7M5qNyQiFRe9n-Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 14:42:58 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 24 Nov 2020 14:42:58 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Ard Biesheuvel' <ardb@kernel.org>
+CC:     linux-efi <linux-efi@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "matthew.garrett@nebula.com" <matthew.garrett@nebula.com>,
+        "jk@ozlabs.org" <jk@ozlabs.org>
+Subject: RE: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+Thread-Topic: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+Thread-Index: AdbCbM2Q6wdSIj4dRX6VFD+iYFiXewAAJveAAAB+INA=
+Date:   Tue, 24 Nov 2020 14:42:58 +0000
+Message-ID: <8aea350dd7714d0ab95e9b2fb7cd013d@AcuMS.aculab.com>
+References: <5f31cde519b941308412b3849197ee7c@AcuMS.aculab.com>
+ <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+In-Reply-To: <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Message-ID: <160622893109.11115.12932515800816767356.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+RnJvbTogQXJkIEJpZXNoZXV2ZWwNCj4gU2VudDogMjQgTm92ZW1iZXIgMjAyMCAxNDoyNA0KPiAN
+Cj4gT24gVHVlLCAyNCBOb3YgMjAyMCBhdCAxNToyMiwgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWln
+aHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBJJ3ZlIGp1c3QgdXBkYXRlZCB0byB0aGUg
+aGVhZCBvZiBMaW51cydzIHRyZWUgKDUuMTAtcmM1KSBhbmQgZ290IHRoZSBmb2xsb3dpbmcNCj4g
+PiAnc3BsYXQnIGR1cmluZyBzaHV0ZG93bi4NCj4gPg0KPiA+IFVzZXJzcGFjZSBpcyBVYnVudHUg
+MjAuMDQuDQoNCkFueW9uZSBmcm9tIHVidW50dSBrbm93IGhvdyB0byBnZXQgdGhlIGtlcm5lbCBz
+dGFjayB0cmFjZWJhY2sNCndpdGhvdXQgc2V0dGluZyB1cCBhIHNlcmlhbCBjb25zb2xlPw0KSXQg
+c2VlbXMgdG8gYmUgY29tcGxldGVseSBicm9rZW4gYnkgcnVubmluZyB0aGUgZ3JhcGhpY2FsIGxv
+Z2luDQpvbiB0dHkwLg0KDQo+ID4NCj4gPiByYzQgcmVib290ZWQgZmluZS4NCj4gPg0KPiA+IEkn
+bGwgdHJ5IHRvIGJpc2VjdCAtIGJ1dCBpdCBpc24ndCBxdWljay4NCj4gPg0KPiANCj4gU3VyZWx5
+IGNhdXNlZCBieQ0KPiANCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
+cm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC9mcy9lZml2YXJmcz9pZD1mZTUxODZj
+ZjEyZTMwDQo+IGZhY2ZlMjYxZTliZTZjNzkwNGExNzBiZDgyMg0KDQpZZXMsIEknbSBidWlsZGlu
+ZyB3aXRoIHRoYXQgY29tbWVudGVkIG91dC4NCg0KQnV0IHRoZSBzeXN0ZW0gaGFzIGRlY2lkZWQg
+dG8gZG8gYSBmdWxsIGJ1aWxkLg0KDQpJIHN1c3BlY3QgaXQgbWlnaHQgbmVlZCBpbm9kZS0+aV9w
+cml2YXRlID0gTlVMTDsNCkJ1dCB0aGF0IG1pZ2h0IGxlYWQgdG8gYSBOVUxMIHBvaW50ZXIgZGVy
+ZWYgZWxzZXdoZXJlLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRl
+LCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpS
+ZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Commit-ID:     15b8d9372f27c47e17c91f6f16d359314cf11404
-Gitweb:        https://git.kernel.org/tip/15b8d9372f27c47e17c91f6f16d359314cf=
-11404
-Author:        Geert Uytterhoeven <geert+renesas@glider.be>
-AuthorDate:    Tue, 24 Nov 2020 14:06:56 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 24 Nov 2020 15:37:16 +01:00
-
-sh/irq: Add missing closing parentheses in arch_show_interrupts()
-
-    arch/sh/kernel/irq.c: In function =E2=80=98arch_show_interrupts=E2=80=99:
-    arch/sh/kernel/irq.c:47:58: error: expected =E2=80=98)=E2=80=99 before =
-=E2=80=98;=E2=80=99 token
-       47 |   seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
-	  |                                                          ^
-
-Fixes: fe3f1d5d7cd3062c ("sh: Get rid of nmi_count()")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201124130656.2741743-1-geert+renesas@glider=
-.be
-
----
- arch/sh/kernel/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/sh/kernel/irq.c b/arch/sh/kernel/irq.c
-index 5addcb2..ab5f790 100644
---- a/arch/sh/kernel/irq.c
-+++ b/arch/sh/kernel/irq.c
-@@ -44,7 +44,7 @@ int arch_show_interrupts(struct seq_file *p, int prec)
-=20
- 	seq_printf(p, "%*s: ", prec, "NMI");
- 	for_each_online_cpu(j)
--		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
-+		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j));
- 	seq_printf(p, "  Non-maskable interrupts\n");
-=20
- 	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
