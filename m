@@ -2,91 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC312C1A34
+	by mail.lfdr.de (Postfix) with ESMTP id AB6022C1A35
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgKXAtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:49:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
+        id S1726979AbgKXAtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgKXAtM (ORCPT
+        with ESMTP id S1726828AbgKXAtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 19:49:12 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C5BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:49:11 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id q206so21829373oif.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:49:11 -0800 (PST)
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551B4C061A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:49:12 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id i13so4396347oou.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:49:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Hul6Z0rO+u1oGC6czmCmGCiWhnk2qL4GQew7Mv6jjWY=;
-        b=rQbtH5oCDK+DnHuvlkGyEzdzQoEldmvcvQG84XE5xUyPYhcMxGZB3WZTShoBbYf/hD
-         5kltV0Nc4TPH3WCg7OY31ssZ+UdKyexTEDTOP2RRbmwbUtVGtDAa649GOZK3xum72OPe
-         9jSaokQM0MWqeWAeeGOw6zCQERTh9b98a7PQmL3ZDuDMo9b1nMiq1/rNtMGo8D4tXm0O
-         pwGaBSfNS4EcpYk/sHUx4H+RSWlhUEik/Z3yYCGgEVStLbhbxWh8eLL0UMhqq972pr9S
-         u8j5CyDeTk9AMwJNI3PLkElM5zHq1qSODZfeM0JNt2zX/Fnd7qUDQpqgwR6ZziT3wMCe
-         bxJw==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LMNXHUThgQgUKT4LhTaTZHbIlK/f0HsLvTvbONxdRFQ=;
+        b=KZ45WBrg6D7kgEa5/mk8scl7z7g+gcPy+AMbgiJgHEEN1fH+vS9ZGkTeSO5KQPKCm7
+         MTeoNDMz2HNpGGiIix+NVjJq2Rr77KbAfXD5zG0ChJV2cSwOrO7Xipb3Bxyp3UP+tNWx
+         3MFFTDeEciYBgZrzsdbHfVYHx1TfT3Y1r+Kmp0wt0fj//wu3tpmJeICCzhRE3k7MHwtb
+         UH+j4EW3UUq650nVNErZn883KqfVEM37anAMq6qoqiWwh/KIRspnYb68I/0sV4HfVxf5
+         1h3P6Wt3r92MMPdYk5yW0MlW4iJ9GLBmQV16TE4bnh1FKaRmgLBcQZfuM9Z/9Zw5Umnk
+         DZgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Hul6Z0rO+u1oGC6czmCmGCiWhnk2qL4GQew7Mv6jjWY=;
-        b=DsGIjm+LVl5zeab0hDZnVOwc4N/mF1T+DWLbY5x79aNz732SDGGVL1MBK0Q+yl2say
-         NeM7vSVug+RkDHJmg9sav0eEMMMi12JOKuv0Y6ReO3NyGtD8F1d9ltfT0CHpKZ4Jp7XU
-         I1cQs2gOKoB4W+GVjRjIG6FGUF7UDkHjQo/boH7avnCOGiynUkvI2V4kvP9NvPGdOamS
-         9rtjBl3C5hKuhxBcPsA4PSDoiqD+g7osk24VFRkd0LZQNxQFwWBE3DamGdiAx1gqEmf3
-         a6waW+axWpyUr3nGdrfSmdikz0eWM/SDX3PyxHYubsROlph4iRuY40i6BK3Kk69oLxSW
-         N3kw==
-X-Gm-Message-State: AOAM533iczlVQXK/WD6+jpYL1F1RmtAjJPvgbUDcq9o+eoMfbRGPHlNK
-        5FtiED+HPtk3vn9+UegXiw==
-X-Google-Smtp-Source: ABdhPJzWaDoI2j6bYN3hgdz4WIRnEIOuutBveimMn1frGDF4RjNeuCWlcpPq/cM6y9/Wt1VY60NYeg==
-X-Received: by 2002:aca:1c0f:: with SMTP id c15mr1190080oic.54.1606178950981;
-        Mon, 23 Nov 2020 16:49:10 -0800 (PST)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id c130sm4100312oia.33.2020.11.23.16.49.09
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=LMNXHUThgQgUKT4LhTaTZHbIlK/f0HsLvTvbONxdRFQ=;
+        b=E7gMgsSTMYnTG4ZnY4VpGzOZUbHgomfTtUhmji6rNNxTXLDOw9gJy9snsF3yBRZGW2
+         NhXDlMQOFTHRJz0J3tTXoYYyFkocPhKaAESlv9v3Co51CnqBy/b7iHuHGIwjngSmeI6M
+         xbrhjUhY+eRCMFsUxrpSLmgINLiuDXGXoRJ9gDtmF7m37U9GkGDuG7NdlAcjQaGlTcib
+         g8cIBrs2Vfi5BeVFzYRo0uXf2e2vDKe+tboKuC5yW1Z+FIwRfHzbP+NQJzoNftrZq1Aa
+         9s2fbr0jMFJKmBvsAFUhnxDdF1RU+xJIYKFi6qDYyZh8QtP3aHUOI7plU22VJyiwp9SV
+         pTpg==
+X-Gm-Message-State: AOAM530ToaWF9RNQeXlN9rLSdi4P8064IC7uPwm9b3+kycAgGwZHrVf9
+        yGUBQAPW6m1ZlaNAwuPbsw==
+X-Google-Smtp-Source: ABdhPJwY6ZvfyIflr2lmEL61W/jrQRGOrCTPaj0vJwtzqzjoJ3HBVcrR8O84pg02qWC857JC9DdMOg==
+X-Received: by 2002:a4a:3b83:: with SMTP id s125mr1477328oos.82.1606178951580;
+        Mon, 23 Nov 2020 16:49:11 -0800 (PST)
+Received: from serve.minyard.net ([47.184.170.156])
+        by smtp.gmail.com with ESMTPSA id h3sm4433158otq.33.2020.11.23.16.49.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 23 Nov 2020 16:49:09 -0800 (PST)
 Sender: Corey Minyard <tcminyard@gmail.com>
 Received: from t560.minyard.net (unknown [IPv6:2001:470:b8f6:1b:413d:60da:9340:6f51])
-        by serve.minyard.net (Postfix) with ESMTPA id D62A2180048;
-        Tue, 24 Nov 2020 00:49:08 +0000 (UTC)
+        by serve.minyard.net (Postfix) with ESMTPA id 05E87180577;
+        Tue, 24 Nov 2020 00:49:09 +0000 (UTC)
 From:   minyard@acm.org
 To:     Jiri Slaby <jirislaby@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Hurley <peter@hurleysoftware.com>,
-        brian.bloniarz@gmail.com
-Subject: [PATCH 0/2] drivers:tty:pty: Fix a race causing data loss on close
-Date:   Mon, 23 Nov 2020 18:49:00 -0600
-Message-Id: <20201124004902.1398477-1-minyard@acm.org>
+        brian.bloniarz@gmail.com, Corey Minyard <cminyard@mvista.com>
+Subject: [PATCH 1/2] tty: Export redirect release
+Date:   Mon, 23 Nov 2020 18:49:01 -0600
+Message-Id: <20201124004902.1398477-2-minyard@acm.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201124004902.1398477-1-minyard@acm.org>
+References: <20201124004902.1398477-1-minyard@acm.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I finally got some time to spend with this issue, and I think I have a
-good fix.  Not really a v2, this is a completely different fix.
-Basically, calling tty_vhangup() on the slave when closing a pty master
-is just a bad idea.
+From: Corey Minyard <cminyard@mvista.com>
 
-From what I can tell, the tty_vhangup() is there in case there was a
-console redirect to the pty slave.  When you close the master, you need
-to release the redirect.  I didn't see another reason for tty_vhangup().
-So this has two parts, export the release of the tty redirect release
-for the pty code to use, and call it from the pty code.
+This will be required by the pty code when it removes tty_vhangup() on
+master close.
 
-With this change, everything seems to work ok and no data is lost on the
-slave side if the master closes with outstanding data.  I have updated
-my test program to check that all written data is read, it's available
-at https://sourceforge.net/projects/ser2net/files/tmp/testpty.c/download
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
+---
+ drivers/tty/tty_io.c | 32 ++++++++++++++++++++++++--------
+ include/linux/tty.h  |  1 +
+ 2 files changed, 25 insertions(+), 8 deletions(-)
 
-But, this code is quite intricate and I certainly may have missed
-something.
-
--corey
-
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 7a4c02548fb3..571b1d7d4d5a 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -542,6 +542,28 @@ void tty_wakeup(struct tty_struct *tty)
+ 
+ EXPORT_SYMBOL_GPL(tty_wakeup);
+ 
++/**
++ *	tty_release_redirect	-	Release a redirect on a pty if present
++ *	@tty: tty device
++ *
++ *	This is available to the pty code so if the master closes, if the
++ *	slave is a redirect it can release the redirect.
++ */
++struct file *tty_release_redirect(struct tty_struct *tty)
++{
++	struct file *f = NULL;
++
++	spin_lock(&redirect_lock);
++	if (redirect && file_tty(redirect) == tty) {
++		f = redirect;
++		redirect = NULL;
++	}
++	spin_unlock(&redirect_lock);
++
++	return f;
++}
++EXPORT_SYMBOL_GPL(tty_release_redirect);
++
+ /**
+  *	__tty_hangup		-	actual handler for hangup events
+  *	@tty: tty device
+@@ -567,7 +589,7 @@ EXPORT_SYMBOL_GPL(tty_wakeup);
+ static void __tty_hangup(struct tty_struct *tty, int exit_session)
+ {
+ 	struct file *cons_filp = NULL;
+-	struct file *filp, *f = NULL;
++	struct file *filp, *f;
+ 	struct tty_file_private *priv;
+ 	int    closecount = 0, n;
+ 	int refs;
+@@ -575,13 +597,7 @@ static void __tty_hangup(struct tty_struct *tty, int exit_session)
+ 	if (!tty)
+ 		return;
+ 
+-
+-	spin_lock(&redirect_lock);
+-	if (redirect && file_tty(redirect) == tty) {
+-		f = redirect;
+-		redirect = NULL;
+-	}
+-	spin_unlock(&redirect_lock);
++	f = tty_release_redirect(tty);
+ 
+ 	tty_lock(tty);
+ 
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index a99e9b8e4e31..d98319c5d195 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -418,6 +418,7 @@ extern void tty_kclose(struct tty_struct *tty);
+ extern int tty_dev_name_to_number(const char *name, dev_t *number);
+ extern int tty_ldisc_lock(struct tty_struct *tty, unsigned long timeout);
+ extern void tty_ldisc_unlock(struct tty_struct *tty);
++extern struct file *tty_release_redirect(struct tty_struct *tty);
+ #else
+ static inline void tty_kref_put(struct tty_struct *tty)
+ { }
+-- 
+2.25.1
 
