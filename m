@@ -2,78 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ACE2C2F17
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EB42C2F1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403951AbgKXRpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:45:41 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:51120 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390713AbgKXRpl (ORCPT
+        id S2403986AbgKXRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:46:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403979AbgKXRqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:45:41 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 0EBBF80636;
-        Tue, 24 Nov 2020 18:45:36 +0100 (CET)
-Date:   Tue, 24 Nov 2020 18:45:35 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     "Lukas F. Hartmann" <lukas@mntre.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: display/panel: add Innolux N125HCE-GN1
-Message-ID: <20201124174535.GA57448@ravnborg.org>
-References: <20201124172604.981746-1-lukas@mntre.com>
- <20201124172604.981746-2-lukas@mntre.com>
+        Tue, 24 Nov 2020 12:46:17 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE09AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:46:15 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id m16so11542121vsl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:46:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mep5g3jd3Wcro6wz5b9PghU5nLpdZLWg1PGCxkgwp3w=;
+        b=X2o/ZcxEs4KlhZZWqNX+HZCTnBf5x/L6fV9FDjTOY/GFMTeC+8Ky9wvb/Nf8OfWUWI
+         hqlAD2iIwvxuYcsVOVzC23Hu6ysGeREOWXyQma6bRhUTAt9XN6W82Jrk4tDsydvNjL+p
+         VHKttUI7lJMGgp4LeK0pDdNbUPOqLnMWglorA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mep5g3jd3Wcro6wz5b9PghU5nLpdZLWg1PGCxkgwp3w=;
+        b=Rt5Bpo4u3IhCezH1lz2ilTyvtr1dHeq0eNEs8NM/TcPAWGVUJqqseVtg2yyJdUF0+y
+         oLuHm+FMo+Q2b8Ut8n7O9WErPM+GouIgzv380JfdrynmWEB6R7Fy/MRmeVFShUZvGUb2
+         YS1NbsIQMEJAGwPPaX9JyhZA6QXg0wmYKHKw05cg707BvgsoPTatOxqVPkn5R3OMry+6
+         g1IkHV1MmIFS1+8XAqGIU2Eba1t6Y+Lv2r7ynf9ciHPFS2xccEuEpVpezAMayapObnaV
+         NcrEvbQcJGJYwygkK+SnWJJGEzZdJJSSwLn4c82HukvLzYFcjMsc9P+IpHpU+1nQm3ZG
+         hDzQ==
+X-Gm-Message-State: AOAM533la/G47sA75tuO1fl41iGYdYdUsu7e0JwY93fXub34lhQH+Jl1
+        z/go1kunLkpTX2YLyiuFnCAhRl/CwRbsCw==
+X-Google-Smtp-Source: ABdhPJwwgQJG7beV1L+c296kzS9jBI0iflO6GBEv5IdTXkqoFu9oUcaPp/YZCa3rJnfeFXpzlBxFhA==
+X-Received: by 2002:a67:e9d0:: with SMTP id q16mr5202068vso.2.1606239974803;
+        Tue, 24 Nov 2020 09:46:14 -0800 (PST)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id n16sm1422121vsj.9.2020.11.24.09.46.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 09:46:13 -0800 (PST)
+Received: by mail-vs1-f41.google.com with SMTP id r14so11521727vsa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:46:12 -0800 (PST)
+X-Received: by 2002:a05:6102:309a:: with SMTP id l26mr4989655vsb.4.1606239971784;
+ Tue, 24 Nov 2020 09:46:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124172604.981746-2-lukas@mntre.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=Xw0AzbREAAAA:8 a=FZtKqjOaVaul58dK6XgA:9
-        a=CjuIK1q_8ugA:10 a=8ntjimWYsTyQni2bnFcl:22
+References: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+ <CACRpkdamdXCqZa4=qb5MsJtQMw1v53z5HZVv5SHJv84dtVACqQ@mail.gmail.com>
+ <CAD=FV=W9+Wa=0d-Y+kxhqsRVM4TOofTC-C519cLkYOsLSBRZ4A@mail.gmail.com> <603c691f-3614-d87b-075a-0889e9ffc453@codeaurora.org>
+In-Reply-To: <603c691f-3614-d87b-075a-0889e9ffc453@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 24 Nov 2020 09:46:00 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UdExXYaf3K6jbyr8tR3_NEib+BaYtxk1xQzS7-DuLC-g@mail.gmail.com>
+Message-ID: <CAD=FV=UdExXYaf3K6jbyr8tR3_NEib+BaYtxk1xQzS7-DuLC-g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] irqchip: qcom-pdc: Fix phantom irq when changing
+ between rising/falling
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas
+Hi,
 
-On Tue, Nov 24, 2020 at 06:26:06PM +0100, Lukas F. Hartmann wrote:
-> The Innolux N125HCE-GN1 display is used in the MNT Reform 2.0 laptop,
-> attached via eDP to a SN65DSI86 MIPI-DSI to eDP bridge. This patch
-> contains the DT binding for "innolux,n125hce-gn1".
-> 
-> Signed-off-by: Lukas F. Hartmann <lukas@mntre.com>
+On Tue, Nov 24, 2020 at 9:42 AM Maulik Shah <mkshah@codeaurora.org> wrote:
+>
+> Hi Linus,
+>
+> +        * When we change types the PDC can give a phantom interrupt.
+> +        * Clear it.  Specifically the phantom shows up if a line is already
+> +        * high and we change to rising or if a line is already low and we
+> +        * change to falling but let's be consistent and clear it always.
+> +        *
+>
+> Can you please hold this change. I am checking with HW folks if above
+> commented behaviour is expected/is valid case to set the irq type rising
+> edge when the line is already high.
+>
+> Will keep posting update here.
+>
+> Thanks,
+> Maulik
 
-bindings before their usage, so this should be first patch.
+Thanks for the update.  I'm still going to post a v2 because I think
+patch #1 in the series should land and it seems nice to keep them
+together.  I'll add a note to the patch indicating your request to
+wait for an ack before landing.
 
-> ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> index edb53ab0d..03b3e0b9d 100644
-> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> @@ -160,6 +160,8 @@ properties:
->          # Innolux Corporation 11.6" WXGA (1366x768) TFT LCD panel
->        - innolux,n116bge
->          # InnoLux 15.6" WXGA TFT LCD panel
-> +      - innolux,n125hce-gn1
-> +        # InnoLux 13.3" FHD (1920x1080) eDP TFT LCD panel
-
-Comments before the compatible.
-
-I applied this first and reordered the comment - so both details are
-handled.
-
-Applied to drm-misc-next.
-
-	Sam
+-Doug
