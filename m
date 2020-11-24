@@ -2,182 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8882C1DFC
+	by mail.lfdr.de (Postfix) with ESMTP id EB3242C1DFE
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729660AbgKXGLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:11:07 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8575 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbgKXGLG (ORCPT
+        id S1729411AbgKXGMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728707AbgKXGMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:11:06 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgDCc4S0YzLlny;
-        Tue, 24 Nov 2020 14:10:36 +0800 (CST)
-Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 24 Nov 2020 14:10:55 +0800
-From:   Guohua Zhong <zhongguohua1@huawei.com>
-To:     <patrick@baymotion.com>, <joern@lazybastard.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nixiaoming@huawei.com>, <wangle6@huawei.com>,
-        <young.liuyang@huawei.com>
-Subject: [PATCH] phram: Allow the user to set the erase page size.
-Date:   Tue, 24 Nov 2020 14:10:53 +0800
-Message-ID: <20201124061053.10812-1-zhongguohua1@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Tue, 24 Nov 2020 01:12:12 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B126FC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:12:10 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id r22so10953362edw.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:12:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pZjg1xQ0Iv1GHEMitlUxPg48M2pI2OsXz3XVyqZx1r0=;
+        b=GZiTlMquhbSE4wLmzDeSnGGztt2ei/rHdw0eKl8OvUxXvd7jvPE3kYbGSkwi1m/A0W
+         pSh/QT3aG9nvJxhk+bTLtA//UVc8hpM3+uuIl8kN3s8yFs+Yfk8l4mEZc5S1pnomITvO
+         VSL+kQQnaeKiXdF+cYHbTtVu1MswCFMx7wPtGAIdhIGRp64LpV7nVgsjBMc12NUbF0e9
+         w5j0644ZrAfgwSNlO3UF19XzxL/AoEVYCyu8HRfu1KSnbjGRAEGC9qUqS5/gpCBM7bbK
+         NxD+xN58Ig4KxtiW1ArPv23sh3/WTfAVamUYNtY4mnZB9yFAH3Ua/J1bfPiEIQ3kXV68
+         iKrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pZjg1xQ0Iv1GHEMitlUxPg48M2pI2OsXz3XVyqZx1r0=;
+        b=YkC8ySkyRfQX/VUaLPnQ3GcezUsu84F9xQQMUql0glUBCdpBX888AH6evT3XOO5Nc4
+         /PyLiUyhpJQtSxnkJ+09obrIvN+mMRiPPlP4tE4K/I2hKPq9j8mM7XDYeouDXTDm62UQ
+         Xq5D9WeOWzuy+1BLw8aXyrXoa0KS+ElKUmlvGQc0Vz82x3lfa4ynUv/IjmFa4/rktv1J
+         sertjwTLDgUZMGXS3j05ff9Qkuj0meRVhCYSuhjo3b1V8jc6an7ue7yeZpadEvZlmSC2
+         MIH9vtFKFOV8cqwvWzcCoqnAFUJ8tQdmkFQoAv1ZiZ1DAxmp69LGpS0zOmIaaGgFkC3Y
+         1+hg==
+X-Gm-Message-State: AOAM5313BWVYvbbzyajHHVurrM7A0eE9d5zL/6J387lXHfh3DJZExqi9
+        FjDDbR0vMeKARjdnGhCW5K8H6g1/mAaloKurvIMKzw==
+X-Google-Smtp-Source: ABdhPJxhPT+j3W7KSDmBdwh1ZLFOkOpBZ4rFGHgjNOe+urTL0QetqiVGVQFhnpqDBRnXFqzFdlJsscpVJn+KPgMk9OE=
+X-Received: by 2002:a05:6402:1644:: with SMTP id s4mr2455486edx.221.1606198329283;
+ Mon, 23 Nov 2020 22:12:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.227]
-X-CFilter-Loop: Reflected
+References: <20201123121835.580259631@linuxfoundation.org>
+In-Reply-To: <20201123121835.580259631@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 24 Nov 2020 11:41:57 +0530
+Message-ID: <CA+G9fYtOd8pajJ4aDYjMqScyfd_VCtvudzhKzPybuNiJOWSKJQ@mail.gmail.com>
+Subject: Re: [PATCH 5.9 000/252] 5.9.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Permit the user to specify the erase page size as a parameter.
-This solves two problems:
+On Mon, 23 Nov 2020 at 18:14, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.9.11 release.
+> There are 252 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.9.11-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-- phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
-create images with erase sizes less than 8KiB; many architectures
-define PAGE_SIZE as 4KiB.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-- Allows more effective use of small capacity devices.  JFFS2
-needs somewhere between 2 and 5 empty pages for garbage collection;
-and for an NVRAM part with only 32KiB of space, a smaller erase page
-allows much better utilization in applications where garbage collection
-is important.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
-Reviewed-by: Joern Engel <joern@logfs.org>
-Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
-[Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
-Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
----
- drivers/mtd/devices/phram.c | 51 +++++++++++++++++++++++++++++----------------
- 1 file changed, 33 insertions(+), 18 deletions(-)
+Summary
+------------------------------------------------------------------------
 
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index 087b5e86d1bf..3ac766b65bf2 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -6,14 +6,14 @@
-  * Usage:
-  *
-  * one commend line parameter per device, each in the form:
-- *   phram=<name>,<start>,<len>
-+ *   phram=<name>,<start>,<len>[,<erasesize>]
-  * <name> may be up to 63 characters.
-- * <start> and <len> can be octal, decimal or hexadecimal.  If followed
-+ * <start>, <len>, and <erasesize> can be octal, decimal or hexadecimal.  If followed
-  * by "ki", "Mi" or "Gi", the numbers will be interpreted as kilo, mega or
-- * gigabytes.
-+ * gigabytes. <erasesize> is optional and defaults to PAGE_SIZE.
-  *
-  * Example:
-- *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
-+ *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi,64Ki
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-@@ -88,7 +88,7 @@ static void unregister_devices(void)
- 	}
- }
- 
--static int register_device(char *name, phys_addr_t start, size_t len)
-+static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
- {
- 	struct phram_mtd_list *new;
- 	int ret = -ENOMEM;
-@@ -115,7 +115,7 @@ static int register_device(char *name, phys_addr_t start, size_t len)
- 	new->mtd._write = phram_write;
- 	new->mtd.owner = THIS_MODULE;
- 	new->mtd.type = MTD_RAM;
--	new->mtd.erasesize = PAGE_SIZE;
-+	new->mtd.erasesize = erasesize;
- 	new->mtd.writesize = 1;
- 
- 	ret = -EAGAIN;
-@@ -204,22 +204,23 @@ static inline void kill_final_newline(char *str)
- static int phram_init_called;
- /*
-  * This shall contain the module parameter if any. It is of the form:
-- * - phram=<device>,<address>,<size> for module case
-- * - phram.phram=<device>,<address>,<size> for built-in case
-- * We leave 64 bytes for the device name, 20 for the address and 20 for the
-- * size.
-- * Example: phram.phram=rootfs,0xa0000000,512Mi
-+ * - phram=<device>,<address>,<size>[,<erasesize>] for module case
-+ * - phram.phram=<device>,<address>,<size>[,<erasesize>] for built-in case
-+ * We leave 64 bytes for the device name, 20 for the address , 20 for the
-+ * size and 20 for the erasesize.
-+ * Example: phram.phram=rootfs,0xa0000000,512Mi,65536
-  */
--static char phram_paramline[64 + 20 + 20];
-+static char phram_paramline[64 + 20 + 20 + 20];
- #endif
- 
- static int phram_setup(const char *val)
- {
--	char buf[64 + 20 + 20], *str = buf;
--	char *token[3];
-+	char buf[64 + 20 + 20 + 20], *str = buf;
-+	char *token[4];
- 	char *name;
- 	uint64_t start;
- 	uint64_t len;
-+	uint64_t erasesize = PAGE_SIZE;
- 	int i, ret;
- 
- 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
-@@ -228,7 +229,7 @@ static int phram_setup(const char *val)
- 	strcpy(str, val);
- 	kill_final_newline(str);
- 
--	for (i = 0; i < 3; i++)
-+	for (i = 0; i < 4; i++)
- 		token[i] = strsep(&str, ",");
- 
- 	if (str)
-@@ -253,11 +254,25 @@ static int phram_setup(const char *val)
- 		goto error;
- 	}
- 
--	ret = register_device(name, start, len);
-+	if (token[3]) {
-+		ret = parse_num64(&erasesize, token[3]);
-+		if (ret) {
-+			parse_err("illegal erasesize\n");
-+			goto error;
-+		}
-+	}
-+
-+	if (len == 0 || erasesize == 0 || erasesize > len
-+	    || erasesize > UINT_MAX || len % erasesize != 0) {
-+		parse_err("illegal erasesize or len\n");
-+		goto error;
-+	}
-+
-+	ret = register_device(name, start, len, (uint32_t)erasesize);
- 	if (ret)
- 		goto error;
- 
--	pr_info("%s device: %#llx at %#llx\n", name, len, start);
-+	pr_info("%s device: %#llx at %#llx for erasesize %#llx\n", name, len, start, erasesize);
- 	return 0;
- 
- error:
-@@ -298,7 +313,7 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
- }
- 
- module_param_call(phram, phram_param_call, NULL, NULL, 0200);
--MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
-+MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
- 
- 
- static int __init init_phram(void)
--- 
-2.12.3
+kernel: 5.9.11-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.9.y
+git commit: 7939279fca79f52c48861829cef3fe5d15529c42
+git describe: v5.9.10-253-g7939279fca79
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
+y/build/v5.9.10-253-g7939279fca79
 
+No regressions (compared to build v5.9.10)
+
+No fixes (compared to build v5.9.10)
+
+
+Ran 47415 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-controllers-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* kunit
+* kselftest
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
