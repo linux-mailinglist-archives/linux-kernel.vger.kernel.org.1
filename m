@@ -2,134 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1616B2C2185
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470782C2195
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731326AbgKXJgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:36:20 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46086 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgKXJgT (ORCPT
+        id S1731424AbgKXJgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:36:45 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41972 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731310AbgKXJgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:36:19 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AO9a6xA059924;
-        Tue, 24 Nov 2020 03:36:06 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606210566;
-        bh=9IuaD463M/O7x1ub80gs1VOzW7luN+hlcORuuHRJZFI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=of8SXsPKegrKNelju/P1soyMQPckY8yCcQHw7DyRsdsCj8jHEsU3JWUL931Gl61AJ
-         VKO7ycs/M/KkzUjkbxpalSaorbLXSnKBAvjYmjgLaGPY+Yfr3sG2ynC959fpy3/B6a
-         JCckzsYNHFO6fQyN9/v/+HPP+9qGBcOEQQ8vaBY8=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AO9a6H0082122
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Nov 2020 03:36:06 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 24
- Nov 2020 03:36:06 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 24 Nov 2020 03:36:06 -0600
-Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AO9ZxTL062055;
-        Tue, 24 Nov 2020 03:36:00 -0600
-Subject: Re: [PATCH v3 00/10] Introduced new Cadence USBSSP DRD Driver.
-To:     Pawel Laszczak <pawell@cadence.com>,
-        Peter Chen <peter.chen@nxp.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "rogerq@ti.com" <rogerq@ti.com>, Rahul Kumar <kurahul@cadence.com>,
-        "Govindraju, Aswath" <a-govindraju@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-References: <20201119141307.8342-1-pawell@cadence.com>
- <20201124075023.GC32310@b29397-desktop>
- <DM6PR07MB55299F262CEA81216999CB05DDFB0@DM6PR07MB5529.namprd07.prod.outlook.com>
-From:   Sekhar Nori <nsekhar@ti.com>
-Message-ID: <45ffc5f8-f9de-e14d-3d03-9ef1f1c848d9@ti.com>
-Date:   Tue, 24 Nov 2020 15:05:59 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Tue, 24 Nov 2020 04:36:38 -0500
+Date:   Tue, 24 Nov 2020 09:36:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606210595;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qLJtI9nAfxpQ241N7feAZU1m7Epn1p0do43IJBH+6tU=;
+        b=sy4pMokHHcaYUQMauj+dUeEbQKxSNTcsfaCr5Dn40ZDIJDPfhB3Ar1/yA+Vso3ybq0x26b
+        uLqN2oSLE1qWA3wMGf+bBZMwoyLz4Jg3pHfzH3FL0R2nv0MThZpuxr5SmAVqDKOPXpILml
+        sJbqJzhrvQ1S/LxwLZRKK4AFtG6CyCVauiRqd8PvKfPa1X3tjuuIGI4njZoiyqWpTqsttt
+        552nuFzzS3vpsEL5qrV+vr/BmDuaYZs2hW+Io9b/JpZFu2c4Uclxdapb5pM5EQ1LrxE4vP
+        ssgkdxMCouHD4EkhYmI7oM1nXtgpbVmBbz3MASUEfxXU3zptcrTe6EHlnzyylw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606210595;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qLJtI9nAfxpQ241N7feAZU1m7Epn1p0do43IJBH+6tU=;
+        b=eEZGRxdy5QQQ1XXJC2YRLenW1ZKrW8LufEZvVZr4rhp9EPvvvgqNin5Z4nb6f7lAlGgqRs
+        v5mxz6uO5FmNLnAw==
+From:   "thermal-bot for Andres Freund" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-pm@vger.kernel.org
+To:     linux-pm@vger.kernel.org
+Subject: [thermal: thermal/next] thermal: intel_pch_thermal: Add PCI ids for
+ Lewisburg PCH.
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tushar Dave <tushar.n.dave@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andres Freund <andres@anarazel.de>,
+        amitk@kernel.org
+In-Reply-To: <20201113204916.1144907-1-andres@anarazel.de>
+References: <20201113204916.1144907-1-andres@anarazel.de>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR07MB55299F262CEA81216999CB05DDFB0@DM6PR07MB5529.namprd07.prod.outlook.com>
+Message-ID: <160621059444.11115.12415047656928422652.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/20 2:51 PM, Pawel Laszczak wrote:
-> Peter,
-> 
->> On 20-11-19 15:12:57, Pawel Laszczak wrote:
->>> This patch introduce new Cadence USBSS DRD driver to linux kernel.
->>>
->>> The Cadence USBSS DRD Controller is a highly configurable IP Core which
->>> can be instantiated as Dual-Role Device (DRD), Peripheral Only and
->>> Host Only (XHCI)configurations.
->>>
->>> The current driver has been validated with FPGA burned. We have support
->>> for PCIe bus, which is used on FPGA prototyping.
->>>
->>> The host side of USBSS-DRD controller is compliance with XHCI
->>> specification, so it works with standard XHCI Linux driver.
->>>
->>> The device side of USBSS DRD controller is compliant with XHCI.
->>> The architecture for device side is almost the same as for host side,
->>> and most of the XHCI specification can be used to understand how
->>> this controller operates.
->>>
->>> This controller and driver support Full Speed, Hight Speed, Supper Speed
->>> and Supper Speed Plus USB protocol.
->>>
->>> The prefix cdnsp used in driver has chosen by analogy to cdn3 driver.
->>> The last letter of this acronym means PLUS. The formal name of controller
->>> is USBSSP but it's to generic so I've decided to use CDNSP.
->>>
->>> The patch 1: adds support for DRD CDNSP.
->>> The patch 2: separates common code that can be reusable by cdnsp driver.
->>> The patch 3: moves reusable code to separate module.
->>> The patch 4: changes prefixes in reusable code from cdns3 to common cdns.
->>> The patch 5: adopts gadget_dev pointer in cdns structure to make possible
->>>              use it in both drivers.
->>> The patches 6-8: add the main part of driver and has been intentionally
->>>              split into 3 part. In my opinion such division should not
->>>              affect understanding and reviewing the driver, and cause that
->>>              main patch (7/8) is little smaller. Patch 6 introduces main
->>>              header file for driver, 7 is the main part that implements all
->>>              functionality of driver and 8 introduces tracepoints.
->>> The patch 9: Adds cdns3 prefixes to files related with USBSS driver.
->>> the patch 10: Adds USBSSP DRD IP driver entry to MAINTAINERS file.
->>>
->>> Changlog from v2:
->>> - removed not used pdev parameter from cdnsp_read/wite_64 functions
->>> - fixed incorrect value assigned to CDNSP_ENDPOINTS_NUM (32 -> 31)
->>> - replaced some constant value with CDNSP_ENDPOINTS_NUM macro
->>> - replaced 'true' with '1' in bits description in cdnsp-gadget.h file
->>> - fixed some typos
->>> - some other less important changes suggested by Peter Chen
->>
->> Hi Pawel,
->>
->> I have updated my -next tree as the latest usb-next tree which v5.10-rc4
->> is included, would you please rebase my tree and send again, I could apply your
->> patches and test, if test could pass, I will apply it to my -next tree.
->> You don't need to rebase again since it is a huge patch set, will take some
->> efforts for rebase.
->>
-> 
-> I'll try to post it tomorrow.
+The following commit has been merged into the thermal/next branch of thermal:
 
-Pawel, have you tested TI J7 for regressions after this series? After
-your latest changes, can you post a tree which someone in TI can test?
+Commit-ID:     e78acf7efebff9184ad4add02b62a1f486a8cde8
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git//e78acf7efebff9184ad4add02b62a1f486a8cde8
+Author:        Andres Freund <andres@anarazel.de>
+AuthorDate:    Fri, 13 Nov 2020 12:49:16 -08:00
+Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CommitterDate: Sat, 14 Nov 2020 19:44:39 +01:00
 
-Thanks,
-Sekhar
+thermal: intel_pch_thermal: Add PCI ids for Lewisburg PCH.
+
+I noticed that I couldn't read the PCH temperature on my workstation
+(C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but had to go
+through IPMI. Looking at the data sheet, it looks to me like the
+existing intel PCH thermal driver should work without changes for
+Lewisburg.
+
+I suspect there's some other PCI IDs missing. But I hope somebody at
+Intel would have an easier time figuring that out than I...
+
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Tushar Dave <tushar.n.dave@intel.com>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: linux-pm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Link: https://lore.kernel.org/lkml/20200115184415.1726953-1-andres@anarazel.de/
+Signed-off-by: Andres Freund <andres@anarazel.de>
+Reviewed-by: Pandruvada, Srinivas <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20201113204916.1144907-1-andres@anarazel.de
+---
+ drivers/thermal/intel/intel_pch_thermal.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/intel/intel_pch_thermal.c b/drivers/thermal/intel/intel_pch_thermal.c
+index 0a9e445..32e1b28 100644
+--- a/drivers/thermal/intel/intel_pch_thermal.c
++++ b/drivers/thermal/intel/intel_pch_thermal.c
+@@ -28,6 +28,7 @@
+ #define PCH_THERMAL_DID_CNL_H	0xA379 /* CNL-H PCH */
+ #define PCH_THERMAL_DID_CNL_LP	0x02F9 /* CNL-LP PCH */
+ #define PCH_THERMAL_DID_CML_H	0X06F9 /* CML-H PCH */
++#define PCH_THERMAL_DID_LWB	0xA1B1 /* Lewisburg PCH */
+ 
+ /* Wildcat Point-LP  PCH Thermal registers */
+ #define WPT_TEMP	0x0000	/* Temperature */
+@@ -340,6 +341,7 @@ enum board_ids {
+ 	board_skl,
+ 	board_cnl,
+ 	board_cml,
++	board_lwb,
+ };
+ 
+ static const struct board_info {
+@@ -365,7 +367,11 @@ static const struct board_info {
+ 	[board_cml] = {
+ 		.name = "pch_cometlake",
+ 		.ops = &pch_dev_ops_wpt,
+-	}
++	},
++	[board_lwb] = {
++		.name = "pch_lewisburg",
++		.ops = &pch_dev_ops_wpt,
++	},
+ };
+ 
+ static int intel_pch_thermal_probe(struct pci_dev *pdev,
+@@ -479,6 +485,8 @@ static const struct pci_device_id intel_pch_thermal_id[] = {
+ 		.driver_data = board_cnl, },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCH_THERMAL_DID_CML_H),
+ 		.driver_data = board_cml, },
++	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCH_THERMAL_DID_LWB),
++		.driver_data = board_lwb, },
+ 	{ 0, },
+ };
+ MODULE_DEVICE_TABLE(pci, intel_pch_thermal_id);
