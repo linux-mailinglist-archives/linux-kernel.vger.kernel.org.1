@@ -2,353 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFE92C34DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAFC2C34EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389547AbgKXXqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:46:39 -0500
-Received: from mail-bn7nam10on2061.outbound.protection.outlook.com ([40.107.92.61]:18657
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389323AbgKXXqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389658AbgKXXqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389467AbgKXXqh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Nov 2020 18:46:37 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=em5KLt4IaWbAvdVaUCUZaRF+vgFWbnaa4NWE2tlusO16/x1y50PR/m1ppjpJLNqomiL3N/IEgZUmdfMW+9emBdzzK2YjgzKVFW3y1n/LBnDfv7vaXu7el0tv3tbvk6fXfWY4NSgCObVdw9504uBB6eU9TMqoYrgTYucZaDpvHLI4zFuDOmdAOeGHe7D67DHQTD1+C8pGHNHRZyLe+HOagqoMQD/rgm9xFskwWoNgBrgOhXxtvtGJ0GQKvZpK0gTvAP6kWCYlJncBtzHLxTMZ1AQymfL7Idp7U1vkotmDFewtlvhbefrbeTaZaNEXH/IRAf7Jom6RVLYfptyN55Y+Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FQB3TzcSHFusmcxmChj4Q9VJ6xBFdyeiVnrb6Np0t3Q=;
- b=cK9dFgvVUGnSbAQAvJwiMjVH+VksnoDfoVaoQEAmsdctVh120/K86+d3z3b6TCl3Rxz+QL7yUqF8Hzd4EF4lzvW1983DAmVei1YXwqBn0qk/rGBm1B/fJnO8x2Lsi00VNrhiBFx7RlwUfToRzSY1w6IG5ABFRcKx0ySY5TLBubt5p/giRFbLC7B/s7TAtlxqsjVcw/8Oqp5X93ugXQZuV5A0qFeEjcBrWnUM6eeeLCrYaQMKvOk78Bjj34c+qi8rgu43lKFtiKR2BEF5sgBtRBYlPYZeKkTWiNmyfv5nFnSG61cPeQvlb5MhmRFCndGqtXRGFb36828wrYUp69EKAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16964C0613D6;
+        Tue, 24 Nov 2020 15:46:35 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id v143so1231304qkb.2;
+        Tue, 24 Nov 2020 15:46:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FQB3TzcSHFusmcxmChj4Q9VJ6xBFdyeiVnrb6Np0t3Q=;
- b=CDxnmBraSi/PnNOZa9GV0Ui4DXmudOcaL1Wjf5OsMMZOTShIas3EK95fjyBe8Ok70UTOjjaqwVNnGYq8TYTRRkCQzOJ9ngkSUA60dv3L1MGk+5jzN1SYOpOuAW6Iw7AGAuYh+n0vixwcUENOHv4lZ+cIbjygQCKNsLUL7SE/fCg=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN1PR12MB2415.namprd12.prod.outlook.com (2603:10b6:802:26::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.30; Tue, 24 Nov
- 2020 23:46:31 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 24 Nov 2020
- 23:46:31 +0000
-Date:   Tue, 24 Nov 2020 23:46:22 +0000
-From:   Ashish Kalra <ashish.kalra@amd.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Borislav Petkov <bp@alien8.de>, hch@lst.de, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
-        peterz@infradead.org, dave.hansen@linux-intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, jon.grimm@amd.com,
-        rientjes@google.com
-Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Message-ID: <20201124234622.GA16867@ashkalra_ubuntu_server>
-References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
- <20201123170647.GE15044@zn.tnic>
- <20201123175632.GA21539@char.us.oracle.com>
- <20201123225631.GA16055@ashkalra_ubuntu_server>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123225631.GA16055@ashkalra_ubuntu_server>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: DM6PR06CA0023.namprd06.prod.outlook.com
- (2603:10b6:5:120::36) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H+rGPaoJ9R3rr7zK4cuxMwlBlLpdlGUAwlQnvIZjZd8=;
+        b=rGjC6KnGzC9NIfLo6IfoTM7C5TiZmv4q08vYNRt8cewMWpFhbX886WW47/gIiopas/
+         e2jKhT73QJs/dRAIbILcJdQSFnVW9dal1rOBoIKd0ECBe+nqcukIgJrBRfX2wbZlPbrR
+         27L+0GE9CXpbAta7TZEIdoDweQHp+sEvmypYMH9hyutdrnRkkklGbspFfFiZY+HYfDHj
+         jsH/8tjPy+0JiTdJWitSDoQxXZntWXoEWL0cWLR+fmdpM332GBoSCjfuWUHY88IWDiPh
+         04ztpEPYlCjpB7IXy1yQhW/otwe7DgKcwtOpyIrk5XdAw3ZKiOAkll08YWpT8S+NhzMx
+         e/Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H+rGPaoJ9R3rr7zK4cuxMwlBlLpdlGUAwlQnvIZjZd8=;
+        b=Q8UP4W0HGBkwtYdUGzC4W5wcRfwkwmxV+LOTgIizLDL5whLBTS7f/iGqJfniyi7Eup
+         Nn2GfgcTCPceWkSJ/IvDKZFFGlv6fhp+hZaqbyhJI23N/ZwqigiporL4NWPjuCb4ZS7A
+         EAtybcUExkAb/B6dJA3G82Hk//AYkujwJxt32VnH4pw4CR5mJRSof0VpsVxqzuU8aooF
+         LiGDuCP8YKA8aAwdVdriWK2cfIz8e5RbegXYl/ESyf2kqhnsVmq8AAAEVpLiC8z/wDRl
+         yscoc8UmTOdkDFQeFa/SfUpKXwbNyFCnm7+49/6OLggkhv87Zg2av0811qHAVU8Glu6n
+         QgBQ==
+X-Gm-Message-State: AOAM530z1OU9XtXekfaDmI3PfjVfPfIFfgfSBH3Y94eu0TmaXEbhTxDG
+        lrKRLphCsfWXGphZYVjvP7GkPNXxftvFO8I+bac=
+X-Google-Smtp-Source: ABdhPJzOwu2wFsHHn8A1YNPfZeoFLdmnMgNDFogUYxSXdSyfkKR4RJ+IXZpEdbdh4p7RHhstmUROclNZOq0Hltp8jFg=
+X-Received: by 2002:a5b:40e:: with SMTP id m14mr627984ybp.33.1606261594309;
+ Tue, 24 Nov 2020 15:46:34 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server (165.204.77.1) by DM6PR06CA0023.namprd06.prod.outlook.com (2603:10b6:5:120::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 23:46:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 67079098-311c-426e-d0ce-08d890d32a77
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2415:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2415FF44841E1B23F2161EA38EFB0@SN1PR12MB2415.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4CmIUzkSYuZKDFswjZNCn40zU9WH3q8ghzgjvtCV9Xt8bTZy11+bHfMcog00GIHcwPM9utf99CgESikg+HE9Gp8TOycZY3np9eZq2VP2M60O0IByuGn2YNhJHix6M9jRFZ1lmggruY9gwkCEXhf92DE3zLZ1u114Gw4uqGnn+WCK3J2fcXH7APuD3ip74PQy5YOtfnQxkLB6OPMoqwMoTshF3vyxQiHy01SKXTYiJud7kRephn2zhSGIGMcl0S9h9KShJwAhczmZ6VB9pYfzWoq0mVrFhkTaXM6eWgfd1nKLQD1IUkmAh0zAIVMxgZ3lJwtDvTabTXgAnE3OdX6hClFYp3/6eyMYa4pM1QJWo8emWsKW/eL7Pcj10gJ402gT2vC2plAV3+Mxixtwjochnw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(66946007)(16526019)(52116002)(33656002)(6666004)(66476007)(66556008)(7416002)(44832011)(45080400002)(6916009)(4326008)(83380400001)(316002)(8676002)(55016002)(9686003)(26005)(33716001)(966005)(186003)(8936002)(2906002)(1076003)(86362001)(5660300002)(478600001)(956004)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+cNg0HrcN+DMo50TiC3nOZQ7yBGbVWasqibKcFZ1SX13/I1ExGpKkNEgxh7y?=
- =?us-ascii?Q?4PNys1zGt7fo8DCrrGHSmJ6uksm753Iah8cs5foWjV7iKXB18Llc0gZRUeXI?=
- =?us-ascii?Q?qO0c6llw+pJIgZRUfV0umSY4NQFD0IHkGHRR+FL2hbOP8Td+a/de4UOybGvW?=
- =?us-ascii?Q?u6U7kRYXNPqqqnygVsP7Fc7ZWbaTZQtrhHFpYugPlUc9U/uU/yH8wIpUsrLc?=
- =?us-ascii?Q?f9Kyaj3Jmn6FYfO+YY8SmOvDVx6Pv8sVIQIv4vyrhmn6lKv2H1gvKDZGJ88T?=
- =?us-ascii?Q?8c1+BfhfBbVicA3VPtgx6NzPI12JhqoHB0CCE7SQ3S/wInxv537cghjNxPr9?=
- =?us-ascii?Q?2YDKeTsfDGh59lBY+u6uLxt+jC8fooWRgh18WR88EJ0uOP3gmTZFjH/WP/2r?=
- =?us-ascii?Q?VHwH6JSfAN/dUiYe2Jdc2sXRZZj7l/J0TmVNTI0Mk5/vuxJv4EdYlM9Z13K3?=
- =?us-ascii?Q?30LDSTC/tIsepDajnfENVSVqPOo1/Z+U6QBlNZ9LGwNpPFQ2j6USifLrnQ8h?=
- =?us-ascii?Q?AE5Sl9oNaLJVZHVYvihTWLy0Y8PnfP/KpEFNHZU6y1+ptsz3aJhl+cXqwNFD?=
- =?us-ascii?Q?i8CxTql5Tm94pB+o2YnJ+YlzLK3nVpGPc1BbgubvJAjIctyAI5iJRywoVMIa?=
- =?us-ascii?Q?WA65ykJyCYEI6spLo5oEWiuwJjFjWIJyWGKrm7Vfbyv5mAGHBW50hyIZj8dM?=
- =?us-ascii?Q?sgKLYXE/WrtQ2inFRlaL1/hHhoaDqK9OOpZDP0j8bL0HHw8AxQgbzB6aU7kC?=
- =?us-ascii?Q?ljn05bdVufjUMxn9vYvy7RAPLTvv0goqeq2q5R4HczjFqd76MIe8hBROL2nj?=
- =?us-ascii?Q?WtFu9tSl2KQNCtSxS/zifMSXgTNsA/tW1v6S3+8DLn8nWh4nhAIgRFAoX88a?=
- =?us-ascii?Q?FvDcCIycuq1ZJANUje83KZ7Fi7Y9LqH5Fh3Jgonw12JqAz9aK7Xk5qTZ5bGY?=
- =?us-ascii?Q?xqgfLQOE8WLx1mLeRxFsMQ9KP6hXa/BNpDeaeZwubKATOccyd+X3XWp7y4O4?=
- =?us-ascii?Q?+ykM?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67079098-311c-426e-d0ce-08d890d32a77
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 23:46:31.1442
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k2BC+9G0hKS2A0YRis86Lf1rdCp9yO9dAUSc7HNa2ymZmvQml9bqikj+V5Safz1J5GJWhrnFz1eipmycZKMBbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2415
+References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+ <alpine.LNX.2.23.453.2011230938390.7@nippy.intranet> <CANiq72=z+tmuey9wj3Kk7wX5s0hTHpsQdLhAqcOVNrHon6xn5Q@mail.gmail.com>
+ <alpine.LNX.2.23.453.2011241036520.7@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.23.453.2011241036520.7@nippy.intranet>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 25 Nov 2020 00:46:23 +0100
+Message-ID: <CANiq72=Ybm2MHmOizo1xQ_QYGuvbthtnLbwCkr8AFb8PcfmuQw@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Konrad, 
+On Tue, Nov 24, 2020 at 1:58 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+>
+> What I meant was that you've used pessimism as if it was fact.
 
-On Mon, Nov 23, 2020 at 10:56:31PM +0000, Ashish Kalra wrote:
-> Hello Konrad,
-> 
-> On Mon, Nov 23, 2020 at 12:56:32PM -0500, Konrad Rzeszutek Wilk wrote:
-> > On Mon, Nov 23, 2020 at 06:06:47PM +0100, Borislav Petkov wrote:
-> > > On Thu, Nov 19, 2020 at 09:42:05PM +0000, Ashish Kalra wrote:
-> > > > From: Ashish Kalra <ashish.kalra@amd.com>
-> > > > 
-> > > > For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
-> > > > SEV uses SWIOTLB to make this happen without requiring changes to device
-> > > > drivers.  However, depending on workload being run, the default 64MB of
-> > > > SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
-> > > > for DMA, resulting in I/O errors and/or performance degradation for
-> > > > high I/O workloads.
-> > > > 
-> > > > Increase the default size of SWIOTLB for SEV guests using a minimum
-> > > > value of 128MB and a maximum value of 512MB, determining on amount
-> > > > of provisioned guest memory.
-> > > 
-> > > That sentence needs massaging.
-> > > 
-> > > > Using late_initcall() interface to invoke swiotlb_adjust() does not
-> > > > work as the size adjustment needs to be done before mem_encrypt_init()
-> > > > and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
-> > > > hence calling it explicitly from setup_arch().
-> > > 
-> > > "hence call it ... "
-> > > 
-> > > > 
-> > > > The SWIOTLB default size adjustment is added as an architecture specific
-> > > 
-> > > "... is added... " needs to be "Add ..."
-> > > 
-> > > > interface/callback to allow architectures such as those supporting memory
-> > > > encryption to adjust/expand SWIOTLB size for their use.
-> > > > 
-> > > > v5 fixed build errors and warnings as
-> > > > Reported-by: kbuild test robot <lkp@intel.com>
-> > > > 
-> > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> > > > ---
-> > > >  arch/x86/kernel/setup.c   |  2 ++
-> > > >  arch/x86/mm/mem_encrypt.c | 32 ++++++++++++++++++++++++++++++++
-> > > >  include/linux/swiotlb.h   |  6 ++++++
-> > > >  kernel/dma/swiotlb.c      | 24 ++++++++++++++++++++++++
-> > > >  4 files changed, 64 insertions(+)
-> > > > 
-> > > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> > > > index 3511736fbc74..b073d58dd4a3 100644
-> > > > --- a/arch/x86/kernel/setup.c
-> > > > +++ b/arch/x86/kernel/setup.c
-> > > > @@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
-> > > >  	if (boot_cpu_has(X86_FEATURE_GBPAGES))
-> > > >  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
-> > > >  
-> > > > +	swiotlb_adjust();
-> > > > +
-> > > >  	/*
-> > > >  	 * Reserve memory for crash kernel after SRAT is parsed so that it
-> > > >  	 * won't consume hotpluggable memory.
-> > > > diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> > > > index 3f248f0d0e07..c79a0d761db5 100644
-> > > > --- a/arch/x86/mm/mem_encrypt.c
-> > > > +++ b/arch/x86/mm/mem_encrypt.c
-> > > > @@ -490,6 +490,38 @@ static void print_mem_encrypt_feature_info(void)
-> > > >  }
-> > > >  
-> > > >  /* Architecture __weak replacement functions */
-> > > > +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
-> > > > +{
-> > > > +	unsigned long size = 0;
-> > > 
-> > > 	unsigned long size = iotlb_default_size;
-> > > 
-> > > > +
-> > > > +	/*
-> > > > +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
-> > > > +	 * SEV uses SWOTLB to make this happen without changing device
-> > > > +	 * drivers. However, depending on the workload being run, the
-> > > > +	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
-> > > 						     ^
-> > > 
-> > > Use words pls, not "&".
-> > > 
-> > > 
-> > > > +	 * run out of buffers for DMA, resulting in I/O errors and/or
-> > > > +	 * performance degradation especially with high I/O workloads.
-> > > > +	 * Increase the default size of SWIOTLB for SEV guests using
-> > > > +	 * a minimum value of 128MB and a maximum value of 512MB,
-> > > > +	 * depending on amount of provisioned guest memory.
-> > > > +	 */
-> > > > +	if (sev_active()) {
-> > > > +		phys_addr_t total_mem = memblock_phys_mem_size();
-> > > > +
-> > > > +		if (total_mem <= SZ_1G)
-> > > > +			size = max(iotlb_default_size, (unsigned long) SZ_128M);
-> > > > +		else if (total_mem <= SZ_4G)
-> > > > +			size = max(iotlb_default_size, (unsigned long) SZ_256M);
-> > 
-> > That is eating 128MB for 1GB, aka 12% of the guest memory allocated statically for this.
-> > 
-> > And for guests that are 2GB, that is 12% until it gets to 3GB when it is 8%
-> > and then 6% at 4GB.
-> > 
-> > I would prefer this to be based on your memory count, that is 6% of total
-> > memory. And then going forward we can allocate memory _after_ boot and then stich
-> > the late SWIOTLB pool and allocate on demand.
-> > 
-> > 
-> Ok. 
-> 
-> As i mentioned earlier, the patch was initially based on using a % of guest memory,
-> as below:
-> 
-> +#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT        5
-> +#define SEV_ADJUST_SWIOTLB_SIZE_MAX    (1UL << 30)
-> ...
-> ...
-> +       if (sev_active() && !io_tlb_nslabs) {
-> +               unsigned long total_mem = get_num_physpages() <<
-> + PAGE_SHIFT;
-> +
-> +               default_size = total_mem *
-> +                       SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
-> +
-> +               default_size = ALIGN(default_size, 1 << IO_TLB_SHIFT);
-> +
-> +               default_size = clamp_val(default_size, IO_TLB_DEFAULT_SIZE,
-> +                       SEV_ADJUST_SWIOTLB_SIZE_MAX);
-> +       }
-> 
-> So a similar logic can be applied here.
-> 
-> > 
-> > > > +		else
-> > > > +			size = max(iotlb_default_size, (unsigned long) SZ_512M);
-> > > > +
-> > > > +		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV platform",
-> > > 
-> > > just "... for SEV" - no need for "platform".
-> > > 
-> > > ...
-> > > 
-> > > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > > > index c19379fabd20..3be9a19ea0a5 100644
-> > > > --- a/kernel/dma/swiotlb.c
-> > > > +++ b/kernel/dma/swiotlb.c
-> > > > @@ -163,6 +163,30 @@ unsigned long swiotlb_size_or_default(void)
-> > > >  	return size ? size : (IO_TLB_DEFAULT_SIZE);
-> > > >  }
-> > > >  
-> > > > +unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
-> > > > +{
-> > > > +	return 0;
-> > > 
-> > > That, of course, needs to return size, not 0.
-> > 
-> > This is not going to work for TDX. I think having a registration
-> > to SWIOTLB to have this function would be better going forward.
-> > 
-> > As in there will be a swiotlb_register_adjuster() which AMD SEV
-> > code can call at start, also TDX can do it (and other platforms).
-> > 
-> 
-> The question is how does mem_encrypt_init() work ?
-> 
-> That uses a similar logic as arch_swiotlb_adjust() as a "__weak"
-> function and i am sure it will also need to have added support for TDX,
-> can't both arch_swiotlb_adjust() and mem_encrypt_init() have specific
-> checks for active AMD/INTEL memory encryption technology and accordingly
-> perform actions, as mem_encrypt_init() currently checks for
-> sev_active().
-> 
-> init/main.c: 
-> 
-> void __init __weak mem_encrypt_init(void) { }
-> 
-> start_kernel()
-> {
->    ..
->    mem_encrypt_init();
->    ..
-> }
-> 
-> arch/x86/mm/mem_encrypt.c: 
->     
-> /* Architecture __weak replacement functions */
-> 
-> void __init mem_encrypt_init(void)
-> {
->         if (!sme_me_mask)
->                 return;
-> 
->         /* Call into SWIOTLB to update the SWIOTLB DMA buffers */
->         swiotlb_update_mem_attributes();
-> 
->         /*
->          * With SEV, we need to unroll the rep string I/O instructions.
->          */
->         if (sev_active())
->                 static_branch_enable(&sev_enable_key);
-> ...
-> ...
-> 
+"future mistakes that it might prevent" is neither pessimism nor states a fact.
 
-Your thoughts on this ?
+> For example, "There is no way to guess what the effect would be if the
+> compiler trained programmers to add a knee-jerk 'break' statement to avoid
+> a warning".
 
-Thanks,
-Ashish
+It is only knee-jerk if you think you are infallible.
 
-> 
-> > > 
-> > > > +}
-> > > > +
-> > > > +void __init swiotlb_adjust(void)
-> > > > +{
-> > > > +	unsigned long size;
-> > > > +
-> > > > +	/*
-> > > > +	 * If swiotlb parameter has not been specified, give a chance to
-> > > > +	 * architectures such as those supporting memory encryption to
-> > > > +	 * adjust/expand SWIOTLB size for their use.
-> > > > +	 */
-> > > 
-> > > And when you preset the function-local argument "size" with the size
-> > > coming in as the size argument of arch_swiotlb_adjust()...
-> > > 
-> > > > +	if (!io_tlb_nslabs) {
-> > > > +		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
-> > > > +		if (size) {
-> > > 
-> > > ... you don't have to do if (size) here either but simply use size to
-> > > compute io_tlb_nslabs, I'd say.
-> > > 
-> > > Thx.
-> > > 
-> > > -- 
-> > > Regards/Gruss,
-> > >     Boris.
-> > > 
-> > > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7CAshish.Kalra%40amd.com%7Cebd4a85f98f44bdfcb5408d88fd8dfac%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637417508926083910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Ub9PjAPzhDWr7K2iQggTAXwgg4VbORxP%2F%2Fcg6gQreCc%3D&amp;reserved=0
+> Moreover, what I meant was that preventing programmer mistakes is a
+> problem to be solved by development tools
+
+This warning comes from a development tool -- the compiler.
+
+> The idea that retro-fitting new
+> language constructs onto mature code is somehow necessary to "prevent
+> future mistakes" is entirely questionable.
+
+The kernel is not a frozen codebase.
+
+Further, "mature code vs. risk of change" arguments don't apply here
+because the semantics of the program and binary output isn't changing.
+
+> Sure. And if you put -Wimplicit-fallthrough into the Makefile and if that
+> leads to well-intentioned patches that cause regressions, it is partly on
+> you.
+
+Again: adding a `fallthrough` does not change the program semantics.
+If you are a maintainer and want to cross-check, compare the codegen.
+
+> Have you ever considered the overall cost of the countless
+> -Wpresume-incompetence flags?
+
+Yeah: negative. On the other hand, the overall cost of the countless
+-fI-am-infallible flags is very noticeable.
+
+> Perhaps you pay the power bill for a build farm that produces logs that
+> no-one reads? Perhaps you've run git bisect, knowing that the compiler
+> messages are not interesting? Or compiled software in using a language
+> that generates impenetrable messages? If so, here's a tip:
+>
+> # grep CFLAGS /etc/portage/make.conf
+> CFLAGS="... -Wno-all -Wno-extra ..."
+> CXXFLAGS="${CFLAGS}"
+>
+> Now allow me some pessimism: the hardware upgrades, gigawatt hours and
+> wait time attributable to obligatory static analyses are a net loss.
+
+If you really believe compiler warnings and static analysis are
+useless and costly, I think there is not much point in continuing the
+discussion.
+
+> No, it's not for me to prove that such patches don't affect code
+> generation. That's for the patch author and (unfortunately) for reviewers.
+
+I was not asking you to prove it. I am stating that proving it is very easy.
+
+Cheers,
+Miguel
