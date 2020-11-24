@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1A02C1DB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8892C1DA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgKXFrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 00:47:03 -0500
-Received: from guitar.tcltek.co.il ([192.115.133.116]:39273 "EHLO
-        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729217AbgKXFrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 00:47:03 -0500
-X-Greylist: delayed 521 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 00:47:02 EST
-Received: from tarshish (unknown [10.0.8.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.tkos.co.il (Postfix) with ESMTPS id 4BAD64400C6;
-        Tue, 24 Nov 2020 07:38:16 +0200 (IST)
-References: <20201124052701.GF8403@vkoul-mobl>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Baruch Siach <baruch@tkos.co.il>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Olof Johansson <olof@lixom.net>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: Reusing DTS from arm64 to arm
-In-reply-to: <20201124052701.GF8403@vkoul-mobl>
-Date:   Tue, 24 Nov 2020 07:38:15 +0200
-Message-ID: <87lferwbzs.fsf@tarshish>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1729052AbgKXFju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 00:39:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728874AbgKXFju (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 00:39:50 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27DCC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 21:39:48 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id 4so5534268pla.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 21:39:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=mKYwXoA6RKca8Gj0Xk1sTxg7l//t2h1MecKeF/NRkRI=;
+        b=XzkAfhjQjZIxPRVXwpA+vCIjhw5D1ZiRcns0Bc6KRsXecXgR6WE+UjIk/QsFUxgPEv
+         qFKR0peCFZBJldWweVU8+NHwexec5RFx46+wmvFf4HLH41eapps4tWM0Ndu1aUb80c1+
+         f5F6vLMfiDNxvAGfNSHYhn0vYmugKGHMnu8Ci8BIg1rDBsjxyH+CP+TmHcfJeYPymk5Q
+         VCdIdtQichiTfQZst27cI85qMCj+GfANdP4VXQzBYQgxNHYX0qHFgwlYP7iRvEKtIZee
+         yq0E5T1hQViO5kTU99IzxrrXTJxW++wms0tQQbOhW03Fb/jDJQXNZrbbFPvsufuvvhOt
+         ZnNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=mKYwXoA6RKca8Gj0Xk1sTxg7l//t2h1MecKeF/NRkRI=;
+        b=AM2iSub2hbpt9yefKzsdvkJ/vlCMXoKXv2ct/kZzdJC8g06p3yq6lrDKtWy5xnh/Sc
+         FpczhqXSvz+q1elIEsytcbWvdejhBYco8sJ3S25Am1hh8Sp2U/VcgxOxl3lEOx2T77cs
+         JHFim/bOOWMaEzfFRjPX7GEe5J5DB7O3IEFI9ZH8Qsl6el0tXhSwE8zrLh74Hrvcf/L3
+         HG7lESQCxLstBKUgOlMGTQlAhDKJ8CS+OWid8cE1czW1L8GtYnzajV3OJQ39CyiqKZuI
+         BkmjaYeZYmxDt/LCbDiMOR8wC3rypqH/003jxGeh1imXUHefinpivYeIJIIx4JN5Nodk
+         7/QQ==
+X-Gm-Message-State: AOAM531XWYiWBI12meCLukVY9pZ7mHoQq4hPVQB39k54jirmSbK+9h6A
+        uNyu+wWTrZFA5CqPycRESiWUXMhM14c=
+X-Google-Smtp-Source: ABdhPJyBKvuaa4qpP38cFI9DjLi4nvNVC7tUSSFiYtk5IXXU0B/4MP5WiMXgroEOAmEtsn8LYawAQWNVU3Y=
+Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f693:9fff:fef4:2055])
+ (user=surenb job=sendgmr) by 2002:aa7:978d:0:b029:197:fd52:ee48 with SMTP id
+ o13-20020aa7978d0000b0290197fd52ee48mr2613356pfp.13.1606196388178; Mon, 23
+ Nov 2020 21:39:48 -0800 (PST)
+Date:   Mon, 23 Nov 2020 21:39:41 -0800
+Message-Id: <20201124053943.1684874-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH 0/2] userspace memory reaping using process_madvise
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     surenb@google.com
+Cc:     akpm@linux-foundation.org, mhocko@kernel.org, mhocko@suse.com,
+        rientjes@google.com, willy@infradead.org, hannes@cmpxchg.org,
+        guro@fb.com, riel@surriel.com, minchan@kernel.org,
+        christian@brauner.io, oleg@redhat.com, timmurray@google.com,
+        linux-api@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+When a process is being killed it might be in an uninterruptible sleep
+which leads to an unpredictable delay in its memory reclaim. In low memory
+situations, when it's important to free up memory quickly, such delay is
+problematic. Kernel solves this problem with oom-reaper thread which
+performs memory reclaim even when the victim process is not runnable.
+Userspace currently lacks such mechanisms and the need and potential
+solutions were discussed before (see links below).
+This patchset provides a mechanism to perform memory reclaim of an
+external process using process_madvise(MADV_DONTNEED). The chosen
+mechanism is the result of the latest discussion at [4].
+The first patch adds PMADV_FLAG_RANGE flag for process_madvise to operate
+on large address ranges spanning multiple VMAs. Currently it supports only
+the entire memory of a process. This is done to keep things simple and
+since it's the only real usecase we currently know of. In the future this
+can be developed further to support other large ranges. One way to do that
+is suggested in [5].
+The second patch enables MADV_DONTNEED behavior for process_madvise to
+perform memory reclaim of an external process.
 
-On Tue, Nov 24 2020, Vinod Koul wrote:
-> We have Qualcomm arm platform which uses PMIC PM8150B. This PMIC was
-> also used in SM8150 board and is already upstream [1] but in arm64.
->
-> So, what is the guidance to share DTS files between 32 and 64 variants?
-> Does a solution already exist which I may not be aware of..?
+1. https://patchwork.kernel.org/cover/10894999
+2. https://lwn.net/Articles/787217
+3. https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+4. https://lkml.org/lkml/2020/11/13/849
+5. https://lkml.org/lkml/2020/11/18/1076
 
-You might want to take a look at Raspberry Pi. For example:
+Suren Baghdasaryan (2):
+  mm/madvise: allow process_madvise operations on entire memory range
+  mm/madvise: add process_madvise MADV_DONTNEER support
 
-arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts:
-// SPDX-License-Identifier: GPL-2.0
-#include "arm/bcm2837-rpi-3-b.dts"
-
-baruch
-
-> I can think of following options for this, in case we dont have a
-> solution:
->
-> 1. Hack up arm include paths to also include arm64 path so that we can
-> share DTS
->
-> 2. Use relative path of arm64 directory and include that (seems not
-> great to look at)
->
-> 3. Copy the file (simplest but least preferred)
->
-> Or is there a better idea to solve this...?
->
-> [1]: arch/arm64/boot/dts/qcom/pm8150b.dtsi
->
-> Thanks
-
+ arch/alpha/include/uapi/asm/mman.h           |  4 +
+ arch/mips/include/uapi/asm/mman.h            |  4 +
+ arch/parisc/include/uapi/asm/mman.h          |  4 +
+ arch/xtensa/include/uapi/asm/mman.h          |  4 +
+ fs/io_uring.c                                |  2 +-
+ include/linux/mm.h                           |  3 +-
+ include/uapi/asm-generic/mman-common.h       |  4 +
+ mm/madvise.c                                 | 81 ++++++++++++++++++--
+ tools/include/uapi/asm-generic/mman-common.h |  4 +
+ 9 files changed, 101 insertions(+), 9 deletions(-)
 
 -- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
+2.29.2.454.gaff20da3a2-goog
+
