@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCB82C2522
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4209E2C2526
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733164AbgKXMAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:00:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729172AbgKXMAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:00:33 -0500
-Received: from localhost.localdomain (unknown [213.195.126.134])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39E2B2076E;
-        Tue, 24 Nov 2020 12:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606219233;
-        bh=EQ3qNXyrD0FnMOq6ggilGWtupETyN3N8CFyBBuVBxh0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gcP6Nhok4oHyifW6lw25dPmRr6Fsm3jMYieJrh4HWPpJOLiC3XyHk7UabSCC+Skal
-         qESXdJ6kDPjzpC3vk7BL9V2RXcHyX8Dy6Dnf57c98+Kym90+FDF+NGNpY4tZz0mFWd
-         iRhzlkAsIddkXLvoo5DaG3+Zb5Ty77vQfzPnRja8=
-From:   matthias.bgg@kernel.org
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>, hdegoede@redhat.com
-Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Chung-Hsien Hsu <stanley.hsu@cypress.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Double Lo <double.lo@cypress.com>,
-        Frank Kao <frank.kao@cypress.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        netdev@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Matthias Brugger <mbrugger@suse.com>, digetx@gmail.com,
-        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Amar Shankar <amsr@cypress.com>, brcm80211-dev-list@cypress.com
-Subject: [PATCH v3] brcmfmac: expose firmware config files through modinfo
-Date:   Tue, 24 Nov 2020 13:00:18 +0100
-Message-Id: <20201124120018.31358-1-matthias.bgg@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1733199AbgKXMAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729172AbgKXMAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:00:43 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06D1C0613D6;
+        Tue, 24 Nov 2020 04:00:41 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id u21so21617021iol.12;
+        Tue, 24 Nov 2020 04:00:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pFQqpahw9l/rBq/5WPcCxd/Tz8vut/eGLY8uQxwZEKc=;
+        b=PlrDiVIB/mj/X4OK1G1S1G02sy41oyRhiUn+fsH4CN6pmWvatSvSYpxYUQX1MC9N1c
+         nhOV8k6/4+oQHNttb9dqLXVbA57fvjB+syUVsDtMaZgjcjKYWjy5j4anebLtyw7xZZc5
+         EWwx3XIAaXFphf5fi9rVLmXR9S3Tu6tU7R3lNiIEZBY8IJ4lW7Hbwf5DTQfARhhztuKr
+         FODb6T+t7JBq5/ERKrI2QVDYX4eQGseSohns6lfhKQy4G89v4q3ohKVi80+COvVuicVX
+         SDQrYa45x/FyFwv00AfukXf8e3cuZuduTDqOuXJ0ZVEj82iRD14wAgUOwt1ftzP3OC5z
+         LqDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pFQqpahw9l/rBq/5WPcCxd/Tz8vut/eGLY8uQxwZEKc=;
+        b=qpMetso5qwvb39nNNZP/vqWq6ACy1Z87dAfEsv5n5qXxFE3uIWmOkLupNgY7SUzXoa
+         41M614f3WBw//tNpNRrGJ8roJY5G3t6/a4W+LlB/7QZ01hxNhXgGGUD+p3Uk4Nl2MTpY
+         gBeTpEWQFpbRmNJFCs86PNhWGN8o1ExDJx/FtaTTCmBbNsCNuDh7mn3G+dEJVUXMiYVi
+         eZTLyCPYatC5SntWCyLgnMlkalYGiBJvPEiWWquwueZT1XaGeI9DCW0Q2J+TGWsR3Rz8
+         LpnubiqV7e0fFYEJ01abVT8rHBoHhAXA9rsf344ZubwEn3GDxwCuOBOi3+phWh552U4c
+         Az9g==
+X-Gm-Message-State: AOAM533MvPUbftUkn9hmQFJSZcdn4yWo5TV2m5jooSiP+2FyCmjH8Byj
+        H1rJb1cJe3DIydenRjuauAPCQntYPIxBedGuvRA=
+X-Google-Smtp-Source: ABdhPJxPepiMRuOiYdJgy6qTfsmXpz4u4CBALSh/3WHT0UFzgBDc/IiFLglOGujxF7OvvxbR95atYKgbEl5bZq9YA9U=
+X-Received: by 2002:a05:6638:41a:: with SMTP id q26mr4087022jap.27.1606219241186;
+ Tue, 24 Nov 2020 04:00:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201124104030.903-1-lukas.bulwahn@gmail.com> <CAG48ez1FqJYay1F=LUt84DVHd+k0=gXohwhTnwv=t1sv=hTSjw@mail.gmail.com>
+ <20201124115058.GA32060@infradead.org> <CAK8P3a2rVKQ5UHzcycu=0QpjtSQ3Nne4Xre-7+V27vmCe9yfKg@mail.gmail.com>
+In-Reply-To: <CAK8P3a2rVKQ5UHzcycu=0QpjtSQ3Nne4Xre-7+V27vmCe9yfKg@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 24 Nov 2020 13:00:30 +0100
+Message-ID: <CAKXUXMxfPqn4hG-QCtQM1qrK7Vck2hHRycb5VZBYHf4-ezkiGA@mail.gmail.com>
+Subject: Re: [PATCH] zlib: define get_unaligned16() only when used
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kernel-janitors@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <mbrugger@suse.com>
+On Tue, Nov 24, 2020 at 12:56 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Nov 24, 2020 at 12:51 PM Christoph Hellwig <hch@infradead.org> wrote:
+> > On Tue, Nov 24, 2020 at 12:08:40PM +0100, Jann Horn wrote:
+> > > > Since commit acaab7335bd6 ("lib/zlib: remove outdated and incorrect
+> > > > pre-increment optimization"), get_unaligned16() is only used when
+> > > > !CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS.
+> > > >
+> > > > Hence, make CC=clang W=1 warns:
+> > > >
+> > > >   lib/zlib_inflate/inffast.c:20:1:
+> > > >     warning: unused function 'get_unaligned16' [-Wunused-function]
+> > > >
+> > > > Define get_unaligned16() only when it is actually used.
+> > > >
+> > > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > >
+> > > AFAICS a nicer option would be to "#include <asm/unaligned.h>" and
+> > > then use "get_unaligned", which should automatically do the right
+> > > thing everywhere and remove the need for defining get_unaligned16()
+> > > and checking CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS entirely?
+> >
+> > Yes, that is the right thing to do.
+>
+> It's possible that this didn't work when the code was originally added:
+> The decompressor functions are called from the compressed boot path,
+> which is a bit limited regarding which headers it can include, at least
+> on some architectures.
+>
+> I would recommend test-building this for all architectures that include
+> ../../../../lib/decompress_inflate.c from their boot code.
+>
 
-Apart from a firmware binary the chip needs a config file used by the
-FW. Add the config files to modinfo so that they can be read by
-userspace.
+Jann, Christoph, Arnd, thanks for the advice. I will start to look
+into this immediately.
 
-Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-
----
-
-Changes in v3:
-Use only two more generic wildcards.
-
-Changes in v2:
-In comparison to first version [0] we use wildcards to enumerate the
-firmware configuration files. Wildcard support was added to dracut
-recently [1].
-[0] https://lore.kernel.org/linux-wireless/20200701153123.25602-1-matthias.bgg@kernel.org/
-[1] https://github.com/dracutdevs/dracut/pull/860
-
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index 99987a789e7e..6fe91c537adf 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-@@ -625,6 +625,10 @@ BRCMF_FW_DEF(4359, "brcmfmac4359-sdio");
- BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
- BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
- 
-+/* firmware config files */
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-sdio.*.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-pcie.*.txt");
-+
- static const struct brcmf_firmware_mapping brcmf_sdio_fwnames[] = {
- 	BRCMF_FW_ENTRY(BRCM_CC_43143_CHIP_ID, 0xFFFFFFFF, 43143),
- 	BRCMF_FW_ENTRY(BRCM_CC_43241_CHIP_ID, 0x0000001F, 43241B0),
--- 
-2.29.2
-
+Lukas
