@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C572D2C2B4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019FB2C2B21
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388132AbgKXP3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:29:32 -0500
-Received: from pb-sasl-trial21.pobox.com ([173.228.157.51]:51152 "EHLO
-        pb-sasl-trial21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728426AbgKXP3b (ORCPT
+        id S2389618AbgKXPWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:22:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730771AbgKXPWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:29:31 -0500
-X-Greylist: delayed 517 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 10:29:30 EST
-Received: from pb-sasl-trial21.pobox.com (localhost.local [127.0.0.1])
-        by pb-sasl-trial21.pobox.com (Postfix) with ESMTP id 8CFFF1FB17;
-        Tue, 24 Nov 2020 10:20:52 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=Jo23Bh/xtFFvRBkpZCyz3G4sDYI=; b=hHIHwW
-        DZezDY0qZ0+Uw2Kc8MxaUAgJyp45FhjJ9GZV/SP20uSHayZYoh9nwzNPgiG/G/vS
-        K4857Vcglaqe9ULYXyU5bcVutM84fKdKLmCdXYi9Axf6CNxgB2/kzzuIqhvoFOxH
-        qdNWw+OZHTQcxz5/WlUliCbZXspYyFBwmmaag=
-Received: from pb-smtp20.sea.icgroup.com (pb-smtp20.pobox.com [10.110.30.20])
-        by pb-sasl-trial21.pobox.com (Postfix) with ESMTP id 6CABF1FB14;
-        Tue, 24 Nov 2020 10:20:52 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=Mn7Qjd0RWtZW8tou1NMKSrUduDIuvsAZF25t7rjnrTc=; b=cET7Qk/8pfKrUGDHxfJjaXH3YszxaIRACnvB7bB/d4VvjFSEYF6TCaWQR5SFceEaWJ5RjBsU/BghjHWvs7bVyFlHN7YT46rBiG+xa278WNAbjNFog8ccuVy/P/felkrwGfRFvXwGSLDFUDnsieYBq2aI1oVy9CGS76f3C8U2MR4=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 594FD10FA12;
-        Tue, 24 Nov 2020 10:20:49 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 876AD2DA0AC4;
-        Tue, 24 Nov 2020 10:20:47 -0500 (EST)
-Date:   Tue, 24 Nov 2020 10:20:47 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Ira Weiny <ira.weiny@intel.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Steve French <sfrench@samba.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Brian King <brking@us.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?ISO-8859-15?Q?J=E9r=F4me_Glisse?= <jglisse@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 12/17] fs/cramfs: Use memcpy_from_page()
-In-Reply-To: <20201124060755.1405602-13-ira.weiny@intel.com>
-Message-ID: <nycvar.YSQ.7.78.906.2011241020270.2184@knanqh.ubzr>
-References: <20201124060755.1405602-1-ira.weiny@intel.com> <20201124060755.1405602-13-ira.weiny@intel.com>
+        Tue, 24 Nov 2020 10:22:01 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC4DC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:22:00 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id t6so13266623lfl.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:22:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MzDXagPugS5o+KmKXpuVg51WsdU5lLTnROP0cd+1ApQ=;
+        b=rE6GLlPAJ9z/ChKNrYX53P+OJarMJAnhSG76r0IF5zJvaFsvxt81Y3J0uAnSml4uCm
+         N2NJhUI/Dao3ke0nui1hJbxrvEp30iNvHZQLLZVv46SqkTJ6UrknrOEX27CmrWfzGxjq
+         BAz2j9FUwy2E5GOmt5KMyJlc0L6xDpNVyyNg8dtuAv5LYZP5C/odDmQ5u9vS7kqJinKv
+         qDuZte5lQYsPIF+fI+Hf/bTJ1Sx95jVqjq+2Prg8sfMMYH5YhT/kdxoLxORtQXkPgA7+
+         GDYllGD/+XecM90G0e1f964iLZzLmXNns4TGpQfD+kLbZPoC0ZfRxyZ5H5WJDqIE1xZZ
+         TGdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MzDXagPugS5o+KmKXpuVg51WsdU5lLTnROP0cd+1ApQ=;
+        b=ld848aTQObRtSW5p9H+FYaWLsFzeU0o2J3b9tmoNFMwYyXdR6uCzvZakYpz9mrrT95
+         wQW9zaZ89RnM1+KSAyFVpjwvJ7LJrQXex9CcGeDnpTAgWYjP+p3tgpyYHVv9z3Af3Sqx
+         FOx5w6bESB7HBvtOGL69ZAFcDMcEsfBarDex6qR+HT502DYU4t4IkUcVwPHBjTThFBsu
+         T7KLyGjfZK33jWtMMeaO684pR/s5S3ZCfTwRtgRti5ooE57BUgjLw1dlUL6T7P4DLZvM
+         ZYuNLl3f43FTlcVZUhKOyu2kyyvUC2qKdRXBxoZc4w1vx2hzqupdFgmKVJRZB0t7eCmw
+         sbTg==
+X-Gm-Message-State: AOAM530NxycdV8DHvmCyzb7tYpeFbgZ0iNBhAmkz9bwSbLTOXmHCvZZA
+        OSxa0ykugqQER6SDT7W1OMoB80j6e6KAirCFaUzs6g==
+X-Google-Smtp-Source: ABdhPJw9emUWnhbBIWCETbI02Q6AAMS1NjlG9mSwYBl2+eJFmM0BDZa8fxjOq0MJCuD18PQrSzVG5Xa65kvwkNKrMrs=
+X-Received: by 2002:a19:7b06:: with SMTP id w6mr2113166lfc.260.1606231319202;
+ Tue, 24 Nov 2020 07:21:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: A1F9A662-2E68-11EB-8BBF-E43E2BB96649-78420484!pb-smtp20.pobox.com
+References: <20201106150706.29089-1-TheSven73@gmail.com> <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
+ <CAGngYiVu3cXtzb5PaoDOoyqjuuohLQ+em6Keg-qgDFFn2tdp=Q@mail.gmail.com>
+ <CACRpkdagAK1X6FT=sug5FGA1iipXnOT_ujtMBh9cVnep_DpWyA@mail.gmail.com>
+ <20201111123327.GB4847@sirena.org.uk> <CACRpkdZW3G48Yj3yGMTKZGwVEQOSs1VeVTTGLgyoJViM3=Yedg@mail.gmail.com>
+ <20201116210632.GJ4739@sirena.org.uk> <CACRpkdayWzWKHv69cg_GL2O=NWozqi_ZLnH1WdMOHzEb1bU-xA@mail.gmail.com>
+ <20201118114049.GA4827@sirena.org.uk>
+In-Reply-To: <20201118114049.GA4827@sirena.org.uk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 24 Nov 2020 16:21:48 +0100
+Message-ID: <CACRpkdbJsiW_U2hrsT+t5gsbj+ow2t_kEmTQyD2jZxs3LCRfLw@mail.gmail.com>
+Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO descriptors
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020, ira.weiny@intel.com wrote:
+On Wed, Nov 18, 2020 at 12:41 PM Mark Brown <broonie@kernel.org> wrote:
 
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Remove open coded kmap/memcpy/kunmap and use mempcy_from_page() instead.
-> 
-> Cc: Nicolas Pitre <nico@fluxnic.net>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> What people think they were sold was the idea that they shouldn't have
+> to write driver code or upstream things, something with more AML like
+> capabilities (not realising that AML works partly because ACPI hugely
+> constrains system design).
 
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
+This makes a lot of sense.
 
+I suppose what we need to think about is the bigger question of why
+people/companies/managers are so worried about working upstream
+that they will go to lengths to avoid it and jump at any chance of
+raising a wall of abstraction between their internal development and
+the in-kernel software development.
 
-> ---
->  fs/cramfs/inode.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> index 4b90cfd1ec36..996a3a32a01f 100644
-> --- a/fs/cramfs/inode.c
-> +++ b/fs/cramfs/inode.c
-> @@ -247,8 +247,7 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
->  		struct page *page = pages[i];
->  
->  		if (page) {
-> -			memcpy(data, kmap(page), PAGE_SIZE);
-> -			kunmap(page);
-> +			memcpy_from_page(data, page, 0, PAGE_SIZE);
->  			put_page(page);
->  		} else
->  			memset(data, 0, PAGE_SIZE);
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
-> 
+I think of this as vendor/community couples therapy or something,
+there is some form of deep disconnect or mistrust going on at times
+and having worked on both ends myself I would think I could
+understand it but I can't.
+
+Yours,
+Linus Walleij
