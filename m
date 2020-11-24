@@ -2,89 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C632C2894
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08E52C2876
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388560AbgKXNox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:44:53 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:34843 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387958AbgKXNo3 (ORCPT
+        id S2388541AbgKXNnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:43:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388527AbgKXNnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:44:29 -0500
-Received: by mail-lj1-f196.google.com with SMTP id r18so7289822ljc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 05:44:27 -0800 (PST)
+        Tue, 24 Nov 2020 08:43:18 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBD6C0613D6;
+        Tue, 24 Nov 2020 05:43:18 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id cq7so20902499edb.4;
+        Tue, 24 Nov 2020 05:43:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ctRbS11BgFmifUEFq2VQXHr3JxOfCOKEQgfEbTr9MN0=;
+        b=IbQXIJ5ipOWYlxa4NICpwlQaJnL3WpTzfaLXhKO6rfPPiUTxNDcfHrjpWsihNLoowm
+         R7C/RraZRBeQCcUGXKY7IeBEiK4cS9bIJKdXnnVsSdfofoMHxYNIpAY4/IR0RtNPgT9p
+         b1/GyYxse9KodHSyQSRQgYJTSYnlHem0HQgN/Do93KSQQo+0aqqlyNCrxW+qoewSQ6Cb
+         JVikUX/EFcBAEM8jid33E220rM0GeRbXyUI+Dojb5ZdFLFdIaRpo2kBsXTJleytq7Gr0
+         NMNlM1/pHH3iD8TlVljKWYruDhiAQHGzqrzF7j3CK3I2xgVjBe3Fb/4zd+FzL11Js42B
+         MA8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=j3kc1wXa18BDFunWKfOTVH49kwkIDZe5FcAUUmoO1ss=;
-        b=UEG/4ExMq2+VrigU8nz8w5D06sEHdPEikvj6JATzPuA9T6q97kdZee40NhDCw557Oo
-         lrzJK+q5xSH6eguqEO7LZK62kUbs8DdhUxBp1itIkUzBghmkXQiPkfjkqOTETdwm0axd
-         pQObxd1zbYOkTbdCLjHrmtLqppU0S1M/4GeZ4zbxlwVjI/lPCGDjv9E5+DjAX/cWzGor
-         WYhL4PjbaLLEcfkO37fpCowqOyW/j/2NuduxBlgI2+FwWCe3F0/NYroFuwTgdy78OO8E
-         JTLQknlYhqMeAwZ/OgIrjbWlm6XICmcK2DOP689dw5jnjKL8pBWJrYmYFy5bnTrybG6Q
-         bM4A==
-X-Gm-Message-State: AOAM531F+QX3SCn3sqLDFg/v0Auzf1V48sqnpR777ULvU8xvZl/n6n9O
-        lLXPTHS+eJOvCaq/CBmi3Fs=
-X-Google-Smtp-Source: ABdhPJzVi1v2lHsckFXBOFxn/v30wn5xFmw4vU3BplxG3XuhsHqIxZ1rMHEmbVjjhf1q3sKNhNrY3A==
-X-Received: by 2002:a2e:544e:: with SMTP id y14mr1993474ljd.9.1606225467228;
-        Tue, 24 Nov 2020 05:44:27 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id x9sm1737310lfg.93.2020.11.24.05.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 05:44:26 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1khYcY-0000i9-B2; Tue, 24 Nov 2020 14:44:39 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH] x86/apic: Fix CPU devicetree-node lookups
-Date:   Tue, 24 Nov 2020 14:42:47 +0100
-Message-Id: <20201124134247.2668-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        bh=ctRbS11BgFmifUEFq2VQXHr3JxOfCOKEQgfEbTr9MN0=;
+        b=DeVsrHRLuyDE95ObSKvq2Hs/J/Gz3n4RdLf3VVnRc5x2JcczAKtPh801CZTwWsFJcv
+         DTkiKtVlDd3KI4sYOHCscPgL+fafwp/klvLk8hk18+idZ4HdtgjCV6EYGp2UHGDcZgDz
+         k5HFRxL4H6LEcykIB5IN72BDybxxAjcRFSvxU8R4U6/FcmoCKScfjpv0V647cYV9/PiC
+         r94OdSSfk0v05uvT28bXFrsxBaBvtgO9tnTCIg/HZNx9Yu/CPC2dpEPSlq3ALBa/vBfo
+         6il1Xv3aCnUnjLNT06/vplf2x/a9Gd6rtb2Oh7vqEYZtJd0ankRrdmiN+0uQvmQSm74D
+         SoTQ==
+X-Gm-Message-State: AOAM533537ulOkAADXpdNy6nfibNzxsXMlQ15gEjvrulR33jfgVo8uqd
+        lKnR7YpvhKbP0vth7wsH4oT2bC315t0=
+X-Google-Smtp-Source: ABdhPJxWR9HjOYFpydOK8KY8l6vqAJU6DdBK50fePfrUG+pRzPoEwIaXFKbwO70cbXierpKS775+1Q==
+X-Received: by 2002:a50:a40a:: with SMTP id u10mr3896586edb.16.1606225396556;
+        Tue, 24 Nov 2020 05:43:16 -0800 (PST)
+Received: from [192.168.2.202] (pd9e5aead.dip0.t-ipconnect.de. [217.229.174.173])
+        by smtp.gmail.com with ESMTPSA id n14sm6950875edw.38.2020.11.24.05.43.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 05:43:15 -0800 (PST)
+Subject: Re: [PATCH 0/9] Add support for Microsoft Surface System Aggregator
+ Module
+To:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20201115192143.21571-1-luzmaximilian@gmail.com>
+ <059069df-c972-5060-1b26-2ddcc842810d@redhat.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <d1a781d9-6433-e1b5-5683-4de15efde686@gmail.com>
+Date:   Tue, 24 Nov 2020 14:43:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <059069df-c972-5060-1b26-2ddcc842810d@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix CPU devicetree-node lookups by implementing
-arch_match_cpu_phys_id().
+On 11/24/20 12:59 PM, Hans de Goede wrote:
+> Hi,
+> 
+> On 11/15/20 8:21 PM, Maximilian Luz wrote:
+>> Hello,
+>>
+>>    N.B.: the following text is mostly a repeat of cover letter from the
+>>    previous RFC for the uninitiated, which can be found at
+>>
+>>    https://lore.kernel.org/linux-serial/20200923151511.3842150-1-luzmaximilian@gmail.com/
+>>
+>>    See "Changes" below for an overview of differences between the RFC and
+>>    this patchset. I hope I have addressed all comments from that in this
+>>    version, thank you again for those.
+>>
+>> The Surface System Aggregator Module (we'll refer to it as Surface
+>> Aggregator or SAM below) is an embedded controller (EC) found on various
+>> Microsoft Surface devices. Specifically, all 4th and later generation
+>> Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
+>> exception of the Surface Go series and the Surface Duo. Notably, it
+>> seems like this EC can also be found on the ARM-based Surface Pro X [1].
+> 
+> <snip>
+> 
+>> This patch-set can also be found at the following repository and
+>> reference, if you prefer to look at a kernel tree instead of these
+>> emails:
+>>
+>>    https://github.com/linux-surface/kernel tags/s/surface-aggregator/v1
+>>
+>> Thanks,
+>> Max
+> 
+> Thank you for your work on this. It would be great if we can get better
+> support for the Surface line in the mainline kernel.
+> 
+> Since a lot of people have already commented on this series I think that
+> you have enough feedback to do a v2 addressing that feedback right?
 
-This allows using of_get_cpu_node() and of_cpu_device_node_get() to look
-up CPU devicetree nodes and specifically makes sure that CPU struct
-devices are linked to the correct devicetree nodes.
+Yes, I'm already working on it.
 
-Note that CPUs are described in devicetree using their APIC ids and
-that those do not generally coincide with the logical ids (e.g. used by
-the default arch_match_cpu_phys_id() implementation).
+> For now I'm going to assume that you will do a v2 addressing the
+> initial round of comments and not review this myself (IOW I'll review
+> this when v2 is posted).
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- arch/x86/kernel/apic/apic.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Sure, no need for you to review v1 at this point.
+  
+> Let me know if you see things differently.
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index b3eef1d5c903..19c0119892dd 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2311,6 +2311,11 @@ static int cpuid_to_apicid[] = {
- 	[0 ... NR_CPUS - 1] = -1,
- };
- 
-+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-+{
-+	return phys_id == cpuid_to_apicid[cpu];
-+}
-+
- #ifdef CONFIG_SMP
- /**
-  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
--- 
-2.26.2
-
+Thanks,
+Max
