@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330912C1F56
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF692C1F5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730350AbgKXIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:01:41 -0500
-Received: from mga03.intel.com ([134.134.136.65]:54010 "EHLO mga03.intel.com"
+        id S1730382AbgKXICv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:02:51 -0500
+Received: from mga06.intel.com ([134.134.136.31]:56189 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730248AbgKXIBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:01:41 -0500
-IronPort-SDR: 1cMqnpTyoXD8k8AyTdMHzBgY/ZHv7Ux8cDuRbHOJBm/3gYRPNSoDXyLMw66dUEikG0IG4seuJR
- Zfr2GyAWlwDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="172003161"
+        id S1728890AbgKXICv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:02:51 -0500
+IronPort-SDR: KQtI4UTgPjplNHxc9c1qwVTk+tiqyGaAv2Ya3IVtIac8KTfUuC9oVrgPf9CPhg47EVGOwXSlpY
+ bZxazO81QzMg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="233514955"
 X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="172003161"
+   d="scan'208";a="233514955"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:01:40 -0800
-IronPort-SDR: wFEf4qRNJPUR0/CmrXn7S4TJBdmYrgTlsGu7k8XhaDZBB0Md6eCb9a59okejddGjyjr3vCvxb+
- 7JBoq5x6Dx0w==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:02:49 -0800
+IronPort-SDR: 3JphZjpq3JdJnRoPGc5Y0j14NIUBG18Z1ITdlXdmhM0K4IoyOe+yDxx5gIBPcrNYR1jOmUEiiM
+ Qgmb6ruhny+A==
 X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="478417780"
+   d="scan'208";a="478418204"
 Received: from shao2-debian.sh.intel.com (HELO [10.239.13.117]) ([10.239.13.117])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:01:38 -0800
-Subject: Re: [kbuild-all] Re: sound/soc/intel/catpt/loader.c:654
- catpt_first_boot_firmware() warn: consider using resource_size() here
-To:     "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        lkp <lkp@intel.com>
-Cc:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>
-References: <202011220325.oB7oeTEq-lkp@intel.com>
- <20201123105317.GZ4077@smile.fi.intel.com>
- <8cb2dcbdef2446238c6a1fe8e8b74504@intel.com>
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:02:47 -0800
+Subject: Re: [kbuild-all] Re: drivers/net/wan/slic_ds26522.c:205:12: warning:
+ stack frame size of 12288 bytes in function 'slic_ds26522_probe'
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <202011200603.Fq2dmeMk-lkp@intel.com>
+ <CAAeHK+zykqmcDPAa5GAeu4hSfyWF-D4PAa15y=CSgtAxSQTkGQ@mail.gmail.com>
 From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <d848db76-a351-ecd7-2755-d268e1b335de@intel.com>
-Date:   Tue, 24 Nov 2020 16:00:50 +0800
+Message-ID: <71e44c1f-3c9f-db89-0347-3e23699d67cb@intel.com>
+Date:   Tue, 24 Nov 2020 16:01:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <8cb2dcbdef2446238c6a1fe8e8b74504@intel.com>
+In-Reply-To: <CAAeHK+zykqmcDPAa5GAeu4hSfyWF-D4PAa15y=CSgtAxSQTkGQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -53,38 +53,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/23/20 7:41 PM, Rojewski, Cezary wrote:
-> On 2020-11-23 11:53 AM, Andy Shevchenko wrote:
->> On Sun, Nov 22, 2020 at 03:52:27AM +0800, kernel test robot wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   27bba9c532a8d21050b94224ffd310ad0058c353
->>> commit: 6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1 ASoC: Intel: Select catpt and deprecate haswell
->>> date:   7 weeks ago
->>> config: x86_64-randconfig-m001-20201122 (attached as .config)
->>> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> smatch warnings:
->>> sound/soc/intel/catpt/loader.c:654 catpt_first_boot_firmware() warn: consider using resource_size() here
->> ...
+On 11/23/20 10:15 PM, Andrey Konovalov wrote:
+> On Thu, Nov 19, 2020 at 11:16 PM kernel test robot <lkp@intel.com> wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   3494d58865ad4a47611dbb427b214cc5227fa5eb
+>> commit: cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4 kasan: allow enabling stack tagging for tag-based mode
+>> date:   3 months ago
+>> config: arm64-randconfig-r002-20201119 (attached as .config)
+>> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project b2613fb2f0f53691dd0211895afbb9413457fca7)
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # install arm64 cross compiling tool for clang build
+>>          # apt-get install binutils-aarch64-linux-gnu
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
 >>
->>> a9aa6fb3eb6c7e Cezary Rojewski 2020-09-29  652  	for (res = cdev->dram.child; res->sibling; res = res->sibling)
->>> a9aa6fb3eb6c7e Cezary Rojewski 2020-09-29  653  		;
->>> a9aa6fb3eb6c7e Cezary Rojewski 2020-09-29 @654  	__request_region(&cdev->dram, res->end + 1,
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
 >>
->> This sounds like false positive. From where it gets the idea of resource_size()
->> for the *start* offset?!
+>> All warnings (new ones prefixed by >>):
 >>
-> Indeed it is false positive. I've already explained this in:
+>>>> drivers/net/wan/slic_ds26522.c:205:12: warning: stack frame size of 12288 bytes in function 'slic_ds26522_probe' [-Wframe-larger-than=]
+>>     static int slic_ds26522_probe(struct spi_device *spi)
+>>                ^
+>>     1 warning generated.
+>> --
+>>>> drivers/gpu/drm/panel/panel-sitronix-st7789v.c:194:12: warning: stack frame size of 18352 bytes in function 'st7789v_prepare' [-Wframe-larger-than=]
+>>     static int st7789v_prepare(struct drm_panel *panel)
+>>                ^
+>>     1 warning generated.
+> Same issue as reported previously. Copying my response from the other
+> email just in case:
 >
-> RE: [bug report] ASoC: Intel: catpt: Firmware loading and context restore
-> https://www.spinics.net/lists/alsa-devel/msg117145.html
+> This is the same issue in LLVM that was reported by Arnd for generic
+> KASAN (also see KASAN_STACK_ENABLE option description). By default
+> KASAN shouldn't have stack instrumentation enabled unless
+> KASAN_STACK_ENABLE is specified. Perhaps it makes sense to disable it
+> for KASAN_SW_TAGS config on the kernel test robot.
+>
+> [1] https://bugs.llvm.org/show_bug.cgi?id=38809
 
-Hi all,
+Hi Andrey,
 
-Thanks a lot, we'll ignore the warning next time.
+Thanks for the explanation, we'll disable CONFIG_KASAN_SW_TAGS.
 
 Best Regards,
 Rong Chen
+
