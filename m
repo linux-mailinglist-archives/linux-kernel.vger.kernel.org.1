@@ -2,154 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379AC2C3208
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4037F2C3213
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731320AbgKXUg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:36:28 -0500
-Received: from mailoutvs49.siol.net ([185.57.226.240]:51414 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727186AbgKXUg1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:36:27 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 9ECD952140B;
-        Tue, 24 Nov 2020 21:36:23 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id IfoQqw3X5caQ; Tue, 24 Nov 2020 21:36:23 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 1E14C52133C;
-        Tue, 24 Nov 2020 21:36:23 +0100 (CET)
-Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 6472F52140B;
-        Tue, 24 Nov 2020 21:36:22 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: Re: [PATCH v4 00/13] Stateless H.264 de-staging
-Date:   Tue, 24 Nov 2020 21:42:24 +0100
-Message-ID: <4354018.LnWUqtLeLf@kista>
-In-Reply-To: <20201123144000.81310-1-ezequiel@collabora.com>
-References: <20201123144000.81310-1-ezequiel@collabora.com>
+        id S1731931AbgKXUnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:43:20 -0500
+Received: from mga09.intel.com ([134.134.136.24]:5506 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726890AbgKXUnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 15:43:20 -0500
+IronPort-SDR: M9XTzsrghfZmF6FNZkcoJir8t6/LYHNoB4TGQdNgdGmyYQxLUfCaeSMrzTkj1z9S7MGfKIJbZu
+ Rp2m1f4i837w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="172170999"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="172170999"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 12:43:19 -0800
+IronPort-SDR: Z2zMjG0uxYkIUHYJVJi9zAoYP4omDnNsPpVF0kmXCtjPOpVE2gagmJr479teT1vYzxUlTyJo6y
+ 6Eb38EplXg1A==
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="370486561"
+Received: from rgdanner-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.218.41])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 12:43:19 -0800
+Subject: Re: [PATCH v7 1/2] PCI/ERR: Call pci_bus_reset() before calling
+ ->slot_reset() callback
+To:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        linux-pci@vger.kernel.org
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, ashok.raj@intel.com,
+        knsathya@kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Sinan Kaya <okaya@kernel.org>, haifeng.zhao@intel.com,
+        chris.newcomer@canonical.com
+References: <6349d22f-cf49-bab4-ad0f-a928e65622af@canonical.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <beefa995-e56c-3e66-a2f8-2d6f97a82498@linux.intel.com>
+Date:   Tue, 24 Nov 2020 12:43:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <6349d22f-cf49-bab4-ad0f-a928e65622af@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi Guilherme,
 
-Dne ponedeljek, 23. november 2020 ob 15:39:47 CET je Ezequiel Garcia 
-napisal(a):
-> Seems we are converging, as this iteration is really small.
+On 11/24/20 10:45 AM, Guilherme G. Piccoli wrote:
+> Hi Kuppuswamy Sathyanarayanan (and all involved here), thanks for the
+> patch! I'd like to ask what is the status of this patchset - I just
+> "parachuted" in the issue, and by tracking the linux-pci ML, I found
+> this V7 (and all previous versions since V2). Also, noticed that Jay's
+> email might have gotten lost in translation (he's not CCed in latest
+> versions of the patchset).
 > 
-> Just like v3, this iteration (plus a patch for VP8 VP8_FRAME_HEADER 
-initialization,
-> which I'll send shortly) passes v4l2-compliance with no failures.
-> 
-> As an additional test, Fluendo's JVT-AVC_V1 conformance test [1] passes with
-> score 72/135, for the Hantro driver on i.MX8MQ (Hantro G1 VPU).
-> Considering the Hantro driver only supports 4:2:0 and 4:0:0, this score
-> looks quite good.
-> 
-> [1] https://github.com/fluendo/fluster/
+> I was able to find even another interesting thread that might be
+> related, Ethan's patchset. So, if any of the developers can clarify the
+> current status of this patchset or if the functionality hereby proposed
+> ended-up being implemented in another patch, I appreciate a lot.
+Thanks for bringing this up. Its waiting for Bjorn's comments/approval.
 
-Tested with ffmpeg/kodi stack on Allwinner R40 with different samples which use 
-different H264 features and works without any problem.
-
-You can add
-
-Tested-by: Jernej Skrabec <jernej.skrabec@siol.net>
-
-for whole series.
-
-Best regards,
-Jernej
-
+Bjorn, any comments ? Some of our customers also looking for this issue
+fix. Please let me know.
 > 
-> Thanks,
-> Ezequiel
-> 
-> v4:
->   * Minor documentation fixes.
->   * Remove media/h264-ctrls.h, which was missing before.
->   * Thanks to feedback from Jernej, std_validation_compound
->     is now more complete, initializing non-present syntax elements.
-> v3:
->   * Dropped level control from Cedrus, as agreed.
->   * Add support for H264 stateless controls in std_log and 
-std_validate_compound.
->   * Added a ctrl debug error message, to help debug validation issues.
->   * Style minor fixes as requested by Hans.
-> v2:
->   * Split destage changes in several patches so it's easier to review.
->   * Added missing changes to drivers/media/v4l2-core/v4l2-ctrls.c.
->   * Renamed V4L2_CID_CODEC_CX2341X_ and V4L2_CID_MPEG_MFC51_
->   * Moved the compatibility macros for MPEG to the end of the header.
-> 
-> Ezequiel Garcia (12):
->   media: ctrls: Add validate failure debug message
->   media: cedrus: h264: Support profile controls
->   media: Rename stateful codec control macros
->   media: Clean stateless control includes
->   media: uapi: h264: Add profile_idc macros
->   media: controls: Validate H264 stateless controls
->   media: controls: Add the stateless codec control class
->   media: uapi: Move parsed H264 pixel format out of staging
->   media: uapi: Move the H264 stateless control types out of staging
->   media: controls: Log H264 stateless controls in .std_log
->   media: uapi: move H264 stateless controls out of staging
->   media: docs: Move the H264 stateless codec uAPI
-> 
-> Jonas Karlman (1):
->   media: rkvdec: h264: Support profile and level controls
-> 
->  .../userspace-api/media/v4l/common.rst        |   1 +
->  .../userspace-api/media/v4l/dev-mem2mem.rst   |   2 +-
->  .../media/v4l/ext-ctrls-codec-stateless.rst   | 674 +++++++++++++++
->  .../media/v4l/ext-ctrls-codec.rst             | 696 +--------------
->  .../media/v4l/extended-controls.rst           |   9 +-
->  .../media/v4l/pixfmt-compressed.rst           |  21 +-
->  .../media/v4l/vidioc-g-ext-ctrls.rst          |   6 +-
->  drivers/media/common/cx2341x.c                |   4 +-
->  drivers/media/platform/s5p-mfc/s5p_mfc_dec.c  |   2 +-
->  drivers/media/platform/s5p-mfc/s5p_mfc_enc.c  |   2 +-
->  drivers/media/v4l2-core/v4l2-ctrls.c          | 198 ++++-
->  drivers/staging/media/hantro/hantro_drv.c     |  26 +-
->  drivers/staging/media/hantro/hantro_h264.c    |   8 +-
->  drivers/staging/media/hantro/hantro_hw.h      |   4 +-
->  drivers/staging/media/rkvdec/rkvdec-h264.c    |   8 +-
->  drivers/staging/media/rkvdec/rkvdec.c         |  39 +-
->  drivers/staging/media/sunxi/cedrus/cedrus.c   |  43 +-
->  .../staging/media/sunxi/cedrus/cedrus_dec.c   |  12 +-
->  include/media/fwht-ctrls.h                    |   2 +-
->  include/media/h264-ctrls.h                    | 406 ---------
->  include/media/hevc-ctrls.h                    |  10 +-
->  include/media/mpeg2-ctrls.h                   |   4 +-
->  include/media/v4l2-ctrls.h                    |   1 -
->  include/media/v4l2-h264.h                     |   2 +-
->  include/media/vp8-ctrls.h                     |   2 +-
->  include/uapi/linux/v4l2-controls.h            | 804 +++++++++++++-----
->  include/uapi/linux/videodev2.h                |   8 +
->  27 files changed, 1582 insertions(+), 1412 deletions(-)
->  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-codec-
-stateless.rst
->  delete mode 100644 include/media/h264-ctrls.h
-> 
-> -- 
-> 2.27.0
+> Thanks in advance! Below, some references to lore archives.
+> Cheers,
 > 
 > 
 
+> 
 
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
