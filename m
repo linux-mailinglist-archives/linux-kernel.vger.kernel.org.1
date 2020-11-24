@@ -2,135 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5802C2586
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 190F22C258A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387513AbgKXMRt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 07:17:49 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:43275 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgKXMRs (ORCPT
+        id S2387518AbgKXMTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:19:06 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5543 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729172AbgKXMTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:17:48 -0500
-Received: by mail-ej1-f68.google.com with SMTP id k27so28112790ejs.10;
-        Tue, 24 Nov 2020 04:17:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VUOwed7/avy6Sfz8h2pEiBST+7n37x1MRVNbS7uJ1/c=;
-        b=AUIz8s49eJQg6vWRozBalrD4GfY8DTzT7qzUNiqapb9+0o7yAJ3f98gu5asTYww4ml
-         5flgpeG2wrNOfNfqcHOWWBSC5/zfPjAHooaWHr5nF2PXz8RxFvgGYrV5L9o/RpQn7Scn
-         mDcNa+TYklb0SEkFSbaO4Ga9yxXm0Gt1hpMhKkNC7cYMGxx60S1i+M7IdlUaL5nMuGe6
-         2ZrlAheHbN+NLR9tRTDkK5RIrQPmh+G1AsOUyk6UPaOzZy4OA6CYh1okPH7yl2u7jn1Q
-         4Hm+I3rInHmrsqoAU7mNell8ai8epY98wgWc07g4n3aVHY+Qtqy3TSPApD//14bjRmFB
-         /FLw==
-X-Gm-Message-State: AOAM530BCpN2ybaGuL++cUQ91ASS9xg7kiQMohB9ZQCfgJ+6CI+zw7Dv
-        3whNC+j8g1xlOSpjfmDY1/k=
-X-Google-Smtp-Source: ABdhPJyFvPWTFflUiBH2trFrIJCnrRiTpXbadgQlvJnJj6jm3c56JHDp0y58SUwUeKMKS2nz+qlf9A==
-X-Received: by 2002:a17:906:a856:: with SMTP id dx22mr4164864ejb.134.1606220266162;
-        Tue, 24 Nov 2020 04:17:46 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g20sm6898192ejk.3.2020.11.24.04.17.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 04:17:44 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:17:42 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v7 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
- Driver
-Message-ID: <20201124121742.GA35334@kozik-lap>
-References: <20201124120330.32445-1-l.stelmach@samsung.com>
- <CGME20201124120337eucas1p268c7e3147ea36e62d40d252278c5dcb7@eucas1p2.samsung.com>
- <20201124120330.32445-4-l.stelmach@samsung.com>
+        Tue, 24 Nov 2020 07:19:05 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbcfa390000>; Tue, 24 Nov 2020 04:19:05 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
+ 2020 12:19:01 +0000
+Received: from moonraker.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 24 Nov 2020 12:19:00 +0000
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Thierry Reding <treding@nvidia.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] dt-bindings: Correct GV11B GPU register sizes
+Date:   Tue, 24 Nov 2020 12:18:42 +0000
+Message-ID: <20201124121842.1037035-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201124120330.32445-4-l.stelmach@samsung.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606220345; bh=0es/aNpBtueAk7MF62Z8gKogQAxyP9ER3IPb5yeGyeE=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=f2Sjkdyz77IXprxPGWnt9BobXFk2bzY75hV8CZ6Srn26g2k+DRT42qEj4FOph9lI8
+         uTqYUm1Z8ESip3QrxYnoTlGhrVgyyn3DXPnf/3ABeO8fMNbod6aza2DsS0mcrAF+va
+         twPkhFyrHfIdDN4ZdJ7MpmkaDrHTjXYqLaZ8+L4XOV8+IEVu8L/e1rqRQtuA2Ca+b6
+         oqPdy8g41kO1VavTKz7P4oFa6UWGwzbzX0HFa/SBS8EgTJDAuEG6IR47qm3fLaUogt
+         jr3phQThY3sUqRBcoYOPxNSJkZWiytF+BdRUF8id3yg4AuK03l/E+ABed5asZ42wUK
+         JYvNBCj22Yyxg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 01:03:30PM +0100, Łukasz Stelmach wrote:
-> ASIX AX88796[1] is a versatile ethernet adapter chip, that can be
-> connected to a CPU with a 8/16-bit bus or with an SPI. This driver
-> supports SPI connection.
-> 
-> The driver has been ported from the vendor kernel for ARTIK5[2]
-> boards. Several changes were made to adapt it to the current kernel
-> which include:
-> 
-> + updated DT configuration,
-> + clock configuration moved to DT,
-> + new timer, ethtool and gpio APIs,
-> + dev_* instead of pr_* and custom printk() wrappers,
-> + removed awkward vendor power managemtn.
-> + introduced ethtool tunable to control SPI compression
-> 
-> [1] https://www.asix.com.tw/products.php?op=pItemdetail&PItemID=104;65;86&PLine=65
-> [2] https://git.tizen.org/cgit/profile/common/platform/kernel/linux-3.10-artik/
-> 
-> The other ax88796 driver is for NE2000 compatible AX88796L chip. These
-> chips are not compatible. Hence, two separate drivers are required.
-> 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  MAINTAINERS                                |    6 +
->  drivers/net/ethernet/Kconfig               |    1 +
->  drivers/net/ethernet/Makefile              |    1 +
->  drivers/net/ethernet/asix/Kconfig          |   35 +
->  drivers/net/ethernet/asix/Makefile         |    6 +
->  drivers/net/ethernet/asix/ax88796c_ioctl.c |  221 ++++
->  drivers/net/ethernet/asix/ax88796c_ioctl.h |   26 +
->  drivers/net/ethernet/asix/ax88796c_main.c  | 1132 ++++++++++++++++++++
->  drivers/net/ethernet/asix/ax88796c_main.h  |  561 ++++++++++
->  drivers/net/ethernet/asix/ax88796c_spi.c   |  112 ++
->  drivers/net/ethernet/asix/ax88796c_spi.h   |   69 ++
->  include/uapi/linux/ethtool.h               |    1 +
->  net/ethtool/common.c                       |    1 +
->  13 files changed, 2172 insertions(+)
->  create mode 100644 drivers/net/ethernet/asix/Kconfig
->  create mode 100644 drivers/net/ethernet/asix/Makefile
->  create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
->  create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
->  create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
->  create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
->  create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
->  create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 14b8ec0bb58b..930dc859d4f7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2812,6 +2812,12 @@ S:	Maintained
->  F:	Documentation/hwmon/asc7621.rst
->  F:	drivers/hwmon/asc7621.c
->  
-> +ASIX AX88796C SPI ETHERNET ADAPTER
-> +M:	Łukasz Stelmach <l.stelmach@samsung.com>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/net/asix,ax99706c-spi.yaml
+Commit 90a09178f309 ("dt-bindings: Add documentation for GV11B GPU")
+added the GV11B GPU device-tree bindings information but incorrectly
+added an additional 0 to the size of the addresses in the example.
 
-Wrong file name.
+Fixes: 90a09178f309 ("dt-bindings: Add documentation for GV11B GPU")
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt b/Docum=
+entation/devicetree/bindings/gpu/nvidia,gk20a.txt
+index 662a3c8a7d29..cc6ce5221a38 100644
+--- a/Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt
++++ b/Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt
+@@ -97,8 +97,8 @@ Example for GV11B:
+=20
+ 	gpu@17000000 {
+ 		compatible =3D "nvidia,gv11b";
+-		reg =3D <0x17000000 0x10000000>,
+-		      <0x18000000 0x10000000>;
++		reg =3D <0x17000000 0x1000000>,
++		      <0x18000000 0x1000000>;
+ 		interrupts =3D <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-names =3D "stall", "nonstall";
+--=20
+2.25.1
 
-
-> +F:	drivers/net/ethernet/asix/ax88796c_*
-> +
