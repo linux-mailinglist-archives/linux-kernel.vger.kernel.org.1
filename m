@@ -2,229 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDA12C1EFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D5F2C1F09
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730145AbgKXHk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 02:40:29 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8395 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730006AbgKXHk2 (ORCPT
+        id S1730179AbgKXHmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 02:42:12 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:3862 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727840AbgKXHmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 02:40:28 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CgGBp5scLz71kd;
-        Tue, 24 Nov 2020 15:40:02 +0800 (CST)
-Received: from [10.174.187.74] (10.174.187.74) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 24 Nov 2020 15:40:14 +0800
-Subject: Re: [RFC PATCH v1 2/4] KVM: arm64: GICv4.1: Try to save hw pending
- state in save_pending_tables
-To:     Marc Zyngier <maz@kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        Tue, 24 Nov 2020 02:42:11 -0500
+X-UUID: e72b33f7cda2424a86d621cdf62630f5-20201124
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=f3yhY4rg+59F/lJcfGD6B3v/MzgVaHqpNluUEuRiMUY=;
+        b=Fd3jpTf4zdmagpExXo1zKnIx+CE/AY3lLe5MaCl4Y7fcBMABO3103mwSsM7K4gNC1pneFfS/eYY6ruAu9sCXiZMedO/DW/nuPSuZAKaraOxpd4bkHh+lJGZFssh7nA7enDZ9turDGN4o4Xi9SxGDlZulA+9xODVKRur5HfrDjXs=;
+X-UUID: e72b33f7cda2424a86d621cdf62630f5-20201124
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <dongchun.zhu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1467442728; Tue, 24 Nov 2020 15:40:53 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Nov
+ 2020 15:40:52 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 24 Nov 2020 15:40:51 +0800
+Message-ID: <1606203651.4733.134.camel@mhfsdcap03>
+Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
+From:   Dongchun Zhu <dongchun.zhu@mediatek.com>
+To:     Robert Foss <robert.foss@linaro.org>
+CC:     <mchehab@kernel.org>, <linux-media@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-3-lushenming@huawei.com>
- <f3ea1b24436bb86b5a5633f8ccc9b3d1@kernel.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <90f04f50-c1ba-55b2-0f93-1e755b40b487@huawei.com>
-Date:   Tue, 24 Nov 2020 15:40:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Ben Kao <ben.kao@intel.com>, <tfiga@google.com>,
+        <dongchun.zhu@mediatek.com>, <shengnan.wang@mediatek.com>
+Date:   Tue, 24 Nov 2020 15:40:51 +0800
+In-Reply-To: <20201116155008.118124-1-robert.foss@linaro.org>
+References: <20201116155008.118124-1-robert.foss@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <f3ea1b24436bb86b5a5633f8ccc9b3d1@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.187.74]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: B8943FAC103671E8D2C875EA7339919DE696CA6E7C4C505EE1FBE512216E5CAB2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/23 17:18, Marc Zyngier wrote:
-> On 2020-11-23 06:54, Shenming Lu wrote:
->> After pausing all vCPUs and devices capable of interrupting, in order
->         ^^^^^^^^^^^^^^^^^
-> See my comment below about this.
-> 
->> to save the information of all interrupts, besides flushing the pending
->> states in kvm’s vgic, we also try to flush the states of VLPIs in the
->> virtual pending tables into guest RAM, but we need to have GICv4.1 and
->> safely unmap the vPEs first.
->>
->> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->> ---
->>  arch/arm64/kvm/vgic/vgic-v3.c | 62 +++++++++++++++++++++++++++++++----
->>  1 file changed, 56 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c b/arch/arm64/kvm/vgic/vgic-v3.c
->> index 9cdf39a94a63..e1b3aa4b2b12 100644
->> --- a/arch/arm64/kvm/vgic/vgic-v3.c
->> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
->> @@ -1,6 +1,8 @@
->>  // SPDX-License-Identifier: GPL-2.0-only
->>
->>  #include <linux/irqchip/arm-gic-v3.h>
->> +#include <linux/irq.h>
->> +#include <linux/irqdomain.h>
->>  #include <linux/kvm.h>
->>  #include <linux/kvm_host.h>
->>  #include <kvm/arm_vgic.h>
->> @@ -356,6 +358,39 @@ int vgic_v3_lpi_sync_pending_status(struct kvm
->> *kvm, struct vgic_irq *irq)
->>      return 0;
->>  }
->>
->> +/*
->> + * With GICv4.1, we can get the VLPI's pending state after unmapping
->> + * the vPE. The deactivation of the doorbell interrupt will trigger
->> + * the unmapping of the associated vPE.
->> + */
->> +static void get_vlpi_state_pre(struct vgic_dist *dist)
->> +{
->> +    struct irq_desc *desc;
->> +    int i;
->> +
->> +    if (!kvm_vgic_global_state.has_gicv4_1)
->> +        return;
->> +
->> +    for (i = 0; i < dist->its_vm.nr_vpes; i++) {
->> +        desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
->> +        irq_domain_deactivate_irq(irq_desc_get_irq_data(desc));
->> +    }
->> +}
->> +
->> +static void get_vlpi_state_post(struct vgic_dist *dist)
-> 
-> nit: the naming feels a bit... odd. Pre/post what?
+SGkgUm9iZXJ0LA0KDQpUaGFua3MgZm9yIHRoZSBwYXRjaC4NCg0KT24gTW9uLCAyMDIwLTExLTE2
+IGF0IDE2OjUwICswMTAwLCBSb2JlcnQgRm9zcyB3cm90ZToNCj4gUmVtb3ZlIHRoZSAzMjgweDI0
+NjQgbW9kZSBhcyBpdCBjYW4ndCBiZSByZXByb2R1Y2VkIGFuZCB5aWVsZHMNCj4gYW4gb3V0cHV0
+IHJlc29sdXRpb24gb2YgMzI2NHgyNDQ4IGluc3RlYWQgb2YgdGhlIGRlc2lyZWQgb25lLg0KPiAN
+Cj4gRnVydGhlcm1vcmUgdGhlIDMyNjR4MjQ0OCByZXNvbHV0aW9uIGlzIHRoZSBoaWdoZXN0IHJl
+c29sdXRpb24NCj4gdGhhdCB0aGUgcHJvZHVjdCBicmllZiBsaXN0cy4NCj4gDQo+IFNpbmNlIDMy
+ODB4MjQ2NCBuZWl0aGVyIHdvcmtzIGNvcnJlY3RseSBub3Igc2VlbXMgdG8gYmUgc3VwcG9ydGVk
+DQo+IGJ5IHRoZSBzZW5zb3IsIGxldCdzIHJlbW92ZSBpdC4NCj4gDQoNCkluIGZhY3QsIEkgd2Fz
+IGFsc28gY29uZnVzZWQgYWJvdXQgMzI4MHgyNDY0IHNldHRpbmcgYXQgdGhlIGJlZ2lubmluZy4N
+CkZyb20gZGF0YXNoZWV0LCB0aGUgT1Y4ODU2IHNoYWxsIHN1cHBvcnQgYW4gYWN0aXZlIGFycmF5
+IG9mIDMyNjR4MjQ0OA0KcGl4ZWxzICg4LW1lZ2FwaXhlbCwgdGhlIG1heGltdW0pIG9wZXJhdGlu
+ZyBhdCAzMGZwcy4NCg0KPiBTaWduZWQtb2ZmLWJ5OiBSb2JlcnQgRm9zcyA8cm9iZXJ0LmZvc3NA
+bGluYXJvLm9yZz4NCj4gLS0tDQo+ICBkcml2ZXJzL21lZGlhL2kyYy9vdjg4NTYuYyB8IDIwMiAt
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwg
+MjAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvaTJjL292
+ODg1Ni5jIGIvZHJpdmVycy9tZWRpYS9pMmMvb3Y4ODU2LmMNCj4gaW5kZXggMmY0Y2VhYTgwNTkz
+Li4zMzY1ZDE5YTMwM2QgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvaTJjL292ODg1Ni5j
+DQo+ICsrKyBiL2RyaXZlcnMvbWVkaWEvaTJjL292ODg1Ni5jDQo+IEBAIC0xNDgsMTk2ICsxNDgs
+NiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG92ODg1Nl9yZWcgbWlwaV9kYXRhX3JhdGVfMzYwbWJw
+c1tdID0gew0KPiAgCXsweDAzMWUsIDB4MGN9LA0KPiAgfTsNCj4gIA0KPiAtc3RhdGljIGNvbnN0
+IHN0cnVjdCBvdjg4NTZfcmVnIG1vZGVfMzI4MHgyNDY0X3JlZ3NbXSA9IHsNCj4gLQl7MHgzMDAw
+LCAweDIwfSwNCj4gLQl7MHgzMDAzLCAweDA4fSwNCj4gLQl7MHgzMDBlLCAweDIwfSwNCj4gLQl7
+MHgzMDEwLCAweDAwfSwNCj4gLQl7MHgzMDE1LCAweDg0fSwNCj4gLQl7MHgzMDE4LCAweDcyfSwN
+Cj4gLQl7MHgzMDIxLCAweDIzfSwNCj4gLQl7MHgzMDMzLCAweDI0fSwNCj4gLQl7MHgzNTAwLCAw
+eDAwfSwNCj4gLQl7MHgzNTAxLCAweDlhfSwNCj4gLQl7MHgzNTAyLCAweDIwfSwNCj4gLQl7MHgz
+NTAzLCAweDA4fSwNCj4gLQl7MHgzNTA1LCAweDgzfSwNCj4gLQl7MHgzNTA4LCAweDAxfSwNCj4g
+LQl7MHgzNTA5LCAweDgwfSwNCj4gLQl7MHgzNTBjLCAweDAwfSwNCj4gLQl7MHgzNTBkLCAweDgw
+fSwNCj4gLQl7MHgzNTBlLCAweDA0fSwNCj4gLQl7MHgzNTBmLCAweDAwfSwNCj4gLQl7MHgzNTEw
+LCAweDAwfSwNCj4gLQl7MHgzNTExLCAweDAyfSwNCj4gLQl7MHgzNTEyLCAweDAwfSwNCj4gLQl7
+MHgzNjAwLCAweDcyfSwNCj4gLQl7MHgzNjAxLCAweDQwfSwNCj4gLQl7MHgzNjAyLCAweDMwfSwN
+Cj4gLQl7MHgzNjEwLCAweGM1fSwNCj4gLQl7MHgzNjExLCAweDU4fSwNCj4gLQl7MHgzNjEyLCAw
+eDVjfSwNCj4gLQl7MHgzNjEzLCAweGNhfSwNCj4gLQl7MHgzNjE0LCAweDIwfSwNCj4gLQl7MHgz
+NjI4LCAweGZmfSwNCj4gLQl7MHgzNjI5LCAweGZmfSwNCj4gLQl7MHgzNjJhLCAweGZmfSwNCj4g
+LQl7MHgzNjMzLCAweDEwfSwNCj4gLQl7MHgzNjM0LCAweDEwfSwNCj4gLQl7MHgzNjM1LCAweDEw
+fSwNCj4gLQl7MHgzNjM2LCAweDEwfSwNCj4gLQl7MHgzNjYzLCAweDA4fSwNCj4gLQl7MHgzNjY5
+LCAweDM0fSwNCj4gLQl7MHgzNjZlLCAweDEwfSwNCj4gLQl7MHgzNzA2LCAweDg2fSwNCj4gLQl7
+MHgzNzBiLCAweDdlfSwNCj4gLQl7MHgzNzE0LCAweDIzfSwNCj4gLQl7MHgzNzMwLCAweDEyfSwN
+Cj4gLQl7MHgzNzMzLCAweDEwfSwNCj4gLQl7MHgzNzY0LCAweDAwfSwNCj4gLQl7MHgzNzY1LCAw
+eDAwfSwNCj4gLQl7MHgzNzY5LCAweDYyfSwNCj4gLQl7MHgzNzZhLCAweDJhfSwNCj4gLQl7MHgz
+NzZiLCAweDMwfSwNCj4gLQl7MHgzNzgwLCAweDAwfSwNCj4gLQl7MHgzNzgxLCAweDI0fSwNCj4g
+LQl7MHgzNzgyLCAweDAwfSwNCj4gLQl7MHgzNzgzLCAweDIzfSwNCj4gLQl7MHgzNzk4LCAweDJm
+fSwNCj4gLQl7MHgzN2ExLCAweDYwfSwNCj4gLQl7MHgzN2E4LCAweDZhfSwNCj4gLQl7MHgzN2Fi
+LCAweDNmfSwNCj4gLQl7MHgzN2MyLCAweDA0fSwNCj4gLQl7MHgzN2MzLCAweGYxfSwNCj4gLQl7
+MHgzN2M5LCAweDgwfSwNCj4gLQl7MHgzN2NiLCAweDE2fSwNCj4gLQl7MHgzN2NjLCAweDE2fSwN
+Cj4gLQl7MHgzN2NkLCAweDE2fSwNCj4gLQl7MHgzN2NlLCAweDE2fSwNCj4gLQl7MHgzODAwLCAw
+eDAwfSwNCj4gLQl7MHgzODAxLCAweDAwfSwNCj4gLQl7MHgzODAyLCAweDAwfSwNCj4gLQl7MHgz
+ODAzLCAweDA2fSwNCj4gLQl7MHgzODA0LCAweDBjfSwNCj4gLQl7MHgzODA1LCAweGRmfSwNCj4g
+LQl7MHgzODA2LCAweDA5fSwNCj4gLQl7MHgzODA3LCAweGE3fSwNCj4gLQl7MHgzODA4LCAweDBj
+fSwNCj4gLQl7MHgzODA5LCAweGQwfSwNCj4gLQl7MHgzODBhLCAweDA5fSwNCj4gLQl7MHgzODBi
+LCAweGEwfSwNCj4gLQl7MHgzODBjLCAweDA3fSwNCj4gLQl7MHgzODBkLCAweDg4fSwNCj4gLQl7
+MHgzODBlLCAweDA5fSwNCj4gLQl7MHgzODBmLCAweGI4fSwNCj4gLQl7MHgzODEwLCAweDAwfSwN
+Cj4gLQl7MHgzODExLCAweDAwfSwNCj4gLQl7MHgzODEyLCAweDAwfSwNCj4gLQl7MHgzODEzLCAw
+eDAxfSwNCj4gLQl7MHgzODE0LCAweDAxfSwNCj4gLQl7MHgzODE1LCAweDAxfSwNCj4gLQl7MHgz
+ODE2LCAweDAwfSwNCj4gLQl7MHgzODE3LCAweDAwfSwNCj4gLQl7MHgzODE4LCAweDAwfSwNCj4g
+LQl7MHgzODE5LCAweDEwfSwNCj4gLQl7MHgzODIwLCAweDgwfSwNCj4gLQl7MHgzODIxLCAweDQ2
+fSwNCj4gLQl7MHgzODJhLCAweDAxfSwNCj4gLQl7MHgzODJiLCAweDAxfSwNCj4gLQl7MHgzODMw
+LCAweDA2fSwNCj4gLQl7MHgzODM2LCAweDAyfSwNCj4gLQl7MHgzODYyLCAweDA0fSwNCj4gLQl7
+MHgzODYzLCAweDA4fSwNCj4gLQl7MHgzY2MwLCAweDMzfSwNCj4gLQl7MHgzZDg1LCAweDE3fSwN
+Cj4gLQl7MHgzZDhjLCAweDczfSwNCj4gLQl7MHgzZDhkLCAweGRlfSwNCj4gLQl7MHg0MDAxLCAw
+eGUwfSwNCj4gLQl7MHg0MDAzLCAweDQwfSwNCj4gLQl7MHg0MDA4LCAweDAwfSwNCj4gLQl7MHg0
+MDA5LCAweDBifSwNCj4gLQl7MHg0MDBhLCAweDAwfSwNCj4gLQl7MHg0MDBiLCAweDg0fSwNCj4g
+LQl7MHg0MDBmLCAweDgwfSwNCj4gLQl7MHg0MDEwLCAweGYwfSwNCj4gLQl7MHg0MDExLCAweGZm
+fSwNCj4gLQl7MHg0MDEyLCAweDAyfSwNCj4gLQl7MHg0MDEzLCAweDAxfSwNCj4gLQl7MHg0MDE0
+LCAweDAxfSwNCj4gLQl7MHg0MDE1LCAweDAxfSwNCj4gLQl7MHg0MDQyLCAweDAwfSwNCj4gLQl7
+MHg0MDQzLCAweDgwfSwNCj4gLQl7MHg0MDQ0LCAweDAwfSwNCj4gLQl7MHg0MDQ1LCAweDgwfSwN
+Cj4gLQl7MHg0MDQ2LCAweDAwfSwNCj4gLQl7MHg0MDQ3LCAweDgwfSwNCj4gLQl7MHg0MDQ4LCAw
+eDAwfSwNCj4gLQl7MHg0MDQ5LCAweDgwfSwNCj4gLQl7MHg0MDQxLCAweDAzfSwNCj4gLQl7MHg0
+MDRjLCAweDIwfSwNCj4gLQl7MHg0MDRkLCAweDAwfSwNCj4gLQl7MHg0MDRlLCAweDIwfSwNCj4g
+LQl7MHg0MjAzLCAweDgwfSwNCj4gLQl7MHg0MzA3LCAweDMwfSwNCj4gLQl7MHg0MzE3LCAweDAw
+fSwNCj4gLQl7MHg0NTAzLCAweDA4fSwNCj4gLQl7MHg0NjAxLCAweDgwfSwNCj4gLQl7MHg0ODAw
+LCAweDQ0fSwNCj4gLQl7MHg0ODE2LCAweDUzfSwNCj4gLQl7MHg0ODFiLCAweDU4fSwNCj4gLQl7
+MHg0ODFmLCAweDI3fSwNCj4gLQl7MHg0ODM3LCAweDE2fSwNCj4gLQl7MHg0ODNjLCAweDBmfSwN
+Cj4gLQl7MHg0ODRiLCAweDA1fSwNCj4gLQl7MHg1MDAwLCAweDU3fSwNCj4gLQl7MHg1MDAxLCAw
+eDBhfSwNCj4gLQl7MHg1MDA0LCAweDA0fSwNCj4gLQl7MHg1MDJlLCAweDAzfSwNCj4gLQl7MHg1
+MDMwLCAweDQxfSwNCj4gLQl7MHg1NzgwLCAweDE0fSwNCj4gLQl7MHg1NzgxLCAweDBmfSwNCj4g
+LQl7MHg1NzgyLCAweDQ0fSwNCj4gLQl7MHg1NzgzLCAweDAyfSwNCj4gLQl7MHg1Nzg0LCAweDAx
+fSwNCj4gLQl7MHg1Nzg1LCAweDAxfSwNCj4gLQl7MHg1Nzg2LCAweDAwfSwNCj4gLQl7MHg1Nzg3
+LCAweDA0fSwNCj4gLQl7MHg1Nzg4LCAweDAyfSwNCj4gLQl7MHg1Nzg5LCAweDBmfSwNCj4gLQl7
+MHg1NzhhLCAweGZkfSwNCj4gLQl7MHg1NzhiLCAweGY1fSwNCj4gLQl7MHg1NzhjLCAweGY1fSwN
+Cj4gLQl7MHg1NzhkLCAweDAzfSwNCj4gLQl7MHg1NzhlLCAweDA4fSwNCj4gLQl7MHg1NzhmLCAw
+eDBjfSwNCj4gLQl7MHg1NzkwLCAweDA4fSwNCj4gLQl7MHg1NzkxLCAweDA0fSwNCj4gLQl7MHg1
+NzkyLCAweDAwfSwNCj4gLQl7MHg1NzkzLCAweDUyfSwNCj4gLQl7MHg1Nzk0LCAweGEzfSwNCj4g
+LQl7MHg1Nzk1LCAweDAyfSwNCj4gLQl7MHg1Nzk2LCAweDIwfSwNCj4gLQl7MHg1Nzk3LCAweDIw
+fSwNCj4gLQl7MHg1Nzk4LCAweGQ1fSwNCj4gLQl7MHg1Nzk5LCAweGQ1fSwNCj4gLQl7MHg1Nzlh
+LCAweDAwfSwNCj4gLQl7MHg1NzliLCAweDUwfSwNCj4gLQl7MHg1NzljLCAweDAwfSwNCj4gLQl7
+MHg1NzlkLCAweDJjfSwNCj4gLQl7MHg1NzllLCAweDBjfSwNCj4gLQl7MHg1NzlmLCAweDQwfSwN
+Cj4gLQl7MHg1N2EwLCAweDA5fSwNCj4gLQl7MHg1N2ExLCAweDQwfSwNCj4gLQl7MHg1OWY4LCAw
+eDNkfSwNCj4gLQl7MHg1YTA4LCAweDAyfSwNCj4gLQl7MHg1YjAwLCAweDAyfSwNCj4gLQl7MHg1
+YjAxLCAweDEwfSwNCj4gLQl7MHg1YjAyLCAweDAzfSwNCj4gLQl7MHg1YjAzLCAweGNmfSwNCj4g
+LQl7MHg1YjA1LCAweDZjfSwNCj4gLQl7MHg1ZTAwLCAweDAwfQ0KPiAtfTsNCj4gLQ0KPiAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBvdjg4NTZfcmVnIG1vZGVfMzI2NHgyNDQ4X3JlZ3NbXSA9IHsNCj4g
+IAl7MHgwMTAzLCAweDAxfSwNCj4gIAl7MHgwMzAyLCAweDNjfSwNCj4gQEAgLTk2MywxOCArNzcz
+LDYgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBvdjg4NTZfbGlua19mcmVxX2NvbmZpZyBsaW5rX2Zy
+ZXFfY29uZmlnc1tdID0gew0KPiAgfTsNCj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBvdjg4
+NTZfbW9kZSBzdXBwb3J0ZWRfbW9kZXNbXSA9IHsNCj4gLQl7DQo+IC0JCS53aWR0aCA9IDMyODAs
+DQo+IC0JCS5oZWlnaHQgPSAyNDY0LA0KPiAtCQkuaHRzID0gMTkyOCwNCj4gLQkJLnZ0c19kZWYg
+PSAyNDg4LA0KPiAtCQkudnRzX21pbiA9IDI0ODgsDQo+IC0JCS5yZWdfbGlzdCA9IHsNCj4gLQkJ
+CS5udW1fb2ZfcmVncyA9IEFSUkFZX1NJWkUobW9kZV8zMjgweDI0NjRfcmVncyksDQo+IC0JCQku
+cmVncyA9IG1vZGVfMzI4MHgyNDY0X3JlZ3MsDQo+IC0JCX0sDQo+IC0JCS5saW5rX2ZyZXFfaW5k
+ZXggPSBPVjg4NTZfTElOS19GUkVRXzcyME1CUFMsDQo+IC0JfSwNCg0KSWYgMzI4MHgyNDY0IHJl
+c29sdXRpb24gaXMgcmVtb3ZlZCwgYmF5ZXIgb3JkZXIgbmVlZHMgdG8gYmUgdXBkYXRlZCBpbg0K
+dGhlIG1lYW50aW1lLiBGcm9tIE9WODg1NidzIGRhdGFzaGVldCwgYmF5ZXIgb3JkZXIgdHVybnMg
+dG8gYmUgQkdHUiBpZg0Kc2Vuc29yIGFkb3B0cyBmdWxsIG1vZGUgKDMyNjR4MjQ0OCkgb3IgYmlu
+bmluZyBtb2RlICgxNjMyeDEyMjQpLg0KDQo+ICAJew0KPiAgCQkud2lkdGggPSAzMjY0LA0KPiAg
+CQkuaGVpZ2h0ID0gMjQ0OCwNCg0K
 
-My understanding is that the unmapping is a preparation for get_vlpi_state...
-Maybe just call it unmap/map_all_vpes?
-
-> 
->> +{
->> +    struct irq_desc *desc;
->> +    int i;
->> +
->> +    if (!kvm_vgic_global_state.has_gicv4_1)
->> +        return;
->> +
->> +    for (i = 0; i < dist->its_vm.nr_vpes; i++) {
->> +        desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
->> +        irq_domain_activate_irq(irq_desc_get_irq_data(desc), false);
->> +    }
->> +}
->> +
->>  /**
->>   * vgic_v3_save_pending_tables - Save the pending tables into guest RAM
->>   * kvm lock and all vcpu lock must be held
->> @@ -365,14 +400,17 @@ int vgic_v3_save_pending_tables(struct kvm *kvm)
->>      struct vgic_dist *dist = &kvm->arch.vgic;
->>      struct vgic_irq *irq;
->>      gpa_t last_ptr = ~(gpa_t)0;
->> -    int ret;
->> +    int ret = 0;
->>      u8 val;
->>
->> +    get_vlpi_state_pre(dist);
->> +
->>      list_for_each_entry(irq, &dist->lpi_list_head, lpi_list) {
->>          int byte_offset, bit_nr;
->>          struct kvm_vcpu *vcpu;
->>          gpa_t pendbase, ptr;
->>          bool stored;
->> +        bool is_pending = irq->pending_latch;
->>
->>          vcpu = irq->target_vcpu;
->>          if (!vcpu)
->> @@ -387,24 +425,36 @@ int vgic_v3_save_pending_tables(struct kvm *kvm)
->>          if (ptr != last_ptr) {
->>              ret = kvm_read_guest_lock(kvm, ptr, &val, 1);
->>              if (ret)
->> -                return ret;
->> +                goto out;
->>              last_ptr = ptr;
->>          }
->>
->>          stored = val & (1U << bit_nr);
->> -        if (stored == irq->pending_latch)
->> +
->> +        /* also flush hw pending state */
-> 
-> This comment looks out of place, as we aren't flushing anything.
-
-Ok, I will correct it.
-
-> 
->> +        if (irq->hw) {
->> +            WARN_RATELIMIT(irq_get_irqchip_state(irq->host_irq,
->> +                        IRQCHIP_STATE_PENDING, &is_pending),
->> +                       "IRQ %d", irq->host_irq);
-> 
-> Isn't this going to warn like mad on a GICv4.0 system where this, by definition,
-> will generate an error?
-
-As we have returned an error in save_its_tables if hw && !has_gicv4_1, we don't
-have to warn this here?
-
-> 
->> +        }
->> +
->> +        if (stored == is_pending)
->>              continue;
->>
->> -        if (irq->pending_latch)
->> +        if (is_pending)
->>              val |= 1 << bit_nr;
->>          else
->>              val &= ~(1 << bit_nr);
->>
->>          ret = kvm_write_guest_lock(kvm, ptr, &val, 1);
->>          if (ret)
->> -            return ret;
->> +            goto out;
->>      }
->> -    return 0;
->> +
->> +out:
->> +    get_vlpi_state_post(dist);
-> 
-> This bit worries me: you have unmapped the VPEs, so any interrupt that has been
-> generated during that phase is now forever lost (the GIC doesn't have ownership
-> of the pending tables).
-
-In my opinion, during this phase, the devices capable of interrupting should have
-already been paused (prevent from sending interrupts), such as VFIO migration protocol
-has already realized it.
-
-> 
-> Do you really expect the VM to be restartable from that point? I don't see how
-> this is possible.
-> 
-
-If the migration has encountered an error, the src VM might be restarted, so we have to
-map the vPEs back.
-
->> +
->> +    return ret;
->>  }
->>
->>  /**
-> 
-> Thanks,
-> 
->         M.
-
-Thanks,
-Shenming
