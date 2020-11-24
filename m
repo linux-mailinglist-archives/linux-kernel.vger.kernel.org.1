@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0632E2C20EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5372C20EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730981AbgKXJLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
+        id S1730974AbgKXJK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728826AbgKXJLH (ORCPT
+        with ESMTP id S1730943AbgKXJKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:11:07 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB86FC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:11:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LsUhmU0WT++YLBi6HGUiMcQOnFMwJPHN5wB9uqRalGU=; b=ypY8JjN0GujQRr8F4buCXJ1DQf
-        8bStYBvXuR36JeMYxvWVtis+wFA/xsrH0rwHCcrP1O5l525rUsix/WSKr5PlE7x5iyIn5Ag2w0jMV
-        Jtsmw3rIfKe4PgsT61wC/VRimCmsane3jx5V0zgY83lzGxV5J5hE0uz5SudSj5oYCSDhX2sNVrH6Z
-        qU51iT2wsi7FgiyZ0lK0QTuSc+iKnHCxdZYYY8C71sPbFB61S8heFUemthBHoyfciKEDdVzDH7H86
-        4EUmz+/2uU9EfmjuAtfA5yx833bu/llKWrojszrd/U8NKGQsqY5sAw18+215gYj2sygQyw7QvNLdL
-        tVgea+Sw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khUKn-0001wj-4N; Tue, 24 Nov 2020 09:10:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A26C7306DD8;
-        Tue, 24 Nov 2020 10:09:55 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8B7A520298C8F; Tue, 24 Nov 2020 10:09:55 +0100 (CET)
-Date:   Tue, 24 Nov 2020 10:09:55 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 09/32] sched/fair: Snapshot the min_vruntime of CPUs
- on force idle
-Message-ID: <20201124090955.GV3021@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-10-joel@joelfernandes.org>
- <20201122114442.GD110669@balbir-desktop>
- <2cb42831-5074-e0a9-9e2a-f2a880504026@linux.microsoft.com>
- <20201123233149.GB8893@balbir-desktop>
+        Tue, 24 Nov 2020 04:10:24 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF38C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:10:24 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a3so2048101wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:10:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Mqfhh5sobw5RQvqH90O9IkiiSzC2XEiEberF8qfFS0=;
+        b=jGon3Gf+LiqEqK0gLdBoozR136wGzvXGvJ1ij5lupny+np0OE0HyWJBTWy87/gD5K1
+         gZLV7O2sXLiOlm31O//WAmiAFeJ7OkGsr4vhsQjFS6Tj9iImbtb6LOeXO9nKuZlvuHyc
+         Un0nf2CKg/nQnFtfP0XQgVisyCuBm4v1hT3LOAYM8jlITep7MkBNCJQVomyx4bF28IxB
+         kyCxRyRxfSRer5469CV96JS5f++Ro3ARnSifnf7Qmmh+u2athG7nm4zhH/pZ+W+XlQyl
+         ZTP855Lpe6gAo5Z6e3QPoVi4XYSL1gUT9X2HzaWH5IUZpZgXUtpPy0uOhFGsafET+3Ge
+         +liA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Mqfhh5sobw5RQvqH90O9IkiiSzC2XEiEberF8qfFS0=;
+        b=qyzY6tPDa3CFwrU7JIQfao81+LJqTZobRwNdmlYG/4GqVEmDwA5EZkgT57KeHubi27
+         qUiHF6m2CYdGTvLRrd5h1Qm3yGuC7hh0mOij79XcUlBShJY2rsjEvJlInx4zeMdbAR63
+         sAWAJatcFie9QEc7qGke8ZA43g45VPJaztfpYvN73XRp5xvQhKDtMT8unAIe45eyEI9B
+         ItXTqF1ISsM/tAhjd/oQ767RZ5ggAZ+jD5plM4vPrMMwreGaySAJofnW1l3P2d/ASf4c
+         Tsi4nwEqmSqFVK9Be6ZvFJ7ZQc1ROGH+6yrwU86ncljayAksecAHajZ0Tz21vZ8GyPDe
+         n9TA==
+X-Gm-Message-State: AOAM531I6/Zwem9WtUhyZdhnq1szdGHjo+HrnF8IXO3TacGTpWy6FMNe
+        S27JU6X74DAvvz/DP2AnMnpBlg==
+X-Google-Smtp-Source: ABdhPJzk8iYOXz1ncUa8TnoRC9Y7B1bESlx4UUXMqhszK61k1YtxO6os9+qMBFWYMWQuvTwfiJjASA==
+X-Received: by 2002:a1c:e455:: with SMTP id b82mr3221302wmh.117.1606209023093;
+        Tue, 24 Nov 2020 01:10:23 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id j4sm23646396wrn.83.2020.11.24.01.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 01:10:22 -0800 (PST)
+Date:   Tue, 24 Nov 2020 09:10:19 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V4 2/3] sched/core: Rename schedutil_cpu_util() and allow
+ rest of the kernel to use it
+Message-ID: <20201124091019.GA1023091@google.com>
+References: <cover.1606198885.git.viresh.kumar@linaro.org>
+ <9a5442b916f9667e714dd84fe4e3fc26f8bcc887.1606198885.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123233149.GB8893@balbir-desktop>
+In-Reply-To: <9a5442b916f9667e714dd84fe4e3fc26f8bcc887.1606198885.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 10:31:49AM +1100, Balbir Singh wrote:
-> On Mon, Nov 23, 2020 at 07:31:31AM -0500, Vineeth Pillai wrote:
-> > Hi Balbir,
-> > 
-> > On 11/22/20 6:44 AM, Balbir Singh wrote:
-> > > 
-> > > This seems cumbersome, is there no way to track the min_vruntime via
-> > > rq->core->min_vruntime?
-> > Do you mean to have a core wide min_vruntime? We had a
-> > similar approach from v3 to v7 and it had major issues which
-> > broke the assumptions of cfs. There were some lengthy
-> > discussions and Peter explained in-depth about the issues:
-> > 
-> > https://lwn.net/ml/linux-kernel/20200506143506.GH5298@hirez.programming.kicks-ass.net/
-> > https://lwn.net/ml/linux-kernel/20200515103844.GG2978@hirez.programming.kicks-ass.net/
-> >
-> 
-> One of the equations in the link is
-> 
-> ">From which immediately follows that:
-> 
->           T_k + T_l
->   S_k+l = ---------                                       (13)
->           W_k + W_l
-> 
-> On which we can define a combined lag:
-> 
->   lag_k+l(i) := S_k+l - s_i                               (14)
-> 
-> And that gives us the tools to compare tasks across a combined runqueue.
-> "
-> 
-> S_k+l reads like rq->core->vruntime, but it sounds like the equivalent
-> of rq->core->vruntime is updated when we enter forced idle as opposed to
-> all the time.
+Hey Viresh,
 
-Yes, but actually computing and maintaining it is hella hard. Try it
-with the very first example in that email (the infeasible weight
-scenario) and tell me how it works for you ;-)
+On Tuesday 24 Nov 2020 at 11:56:15 (+0530), Viresh Kumar wrote:
+> There is nothing schedutil specific in schedutil_cpu_util(), rename it
+> to effective_cpu_util(). Also create and expose another wrapper
+> sched_cpu_util() which can be used by other parts of the kernel, like
+> thermal core (that will be done in a later commit).
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  include/linux/sched.h            | 21 +++++++++++++++++++++
+>  kernel/sched/core.c              | 11 +++++++++--
+>  kernel/sched/cpufreq_schedutil.c |  2 +-
+>  kernel/sched/fair.c              |  6 +++---
+>  kernel/sched/sched.h             | 19 ++-----------------
+>  5 files changed, 36 insertions(+), 23 deletions(-)
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 063cd120b459..926b944dae5e 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1926,6 +1926,27 @@ extern long sched_getaffinity(pid_t pid, struct cpumask *mask);
+>  #define TASK_SIZE_OF(tsk)	TASK_SIZE
+>  #endif
+>  
+> +#ifdef CONFIG_SMP
+> +/**
+> + * enum cpu_util_type - CPU utilization type
+> + * @FREQUENCY_UTIL:	Utilization used to select frequency
+> + * @ENERGY_UTIL:	Utilization used during energy calculation
+> + *
+> + * The utilization signals of all scheduling classes (CFS/RT/DL) and IRQ time
+> + * need to be aggregated differently depending on the usage made of them. This
+> + * enum is used within sched_cpu_util() to differentiate the types of
+> + * utilization expected by the callers, and adjust the aggregation accordingly.
+> + */
+> +enum cpu_util_type {
+> +	FREQUENCY_UTIL,
+> +	ENERGY_UTIL,
+> +};
+> +
+> +/* Returns effective CPU utilization, as seen by the scheduler */
+> +unsigned long sched_cpu_util(int cpu, enum cpu_util_type type,
+> +			     unsigned long max);
 
-Also note that the text below (6) mentions dynamic, then look up the
-EEVDF paper which describes some of the dynamics -- the paper is
-incomplete and contains a bug, I forget if it ever got updated or if
-there's another paper that completes it (the BQF I/O scheduler started
-from that and fixed it).
+Are 'type' and 'max' useful to anybody outside of kernel/sched ?
+If not then how about we hide them, keep the cpu_util_type enum in
+kernel/sched/sched.h and evaluate arch_scale_cpu_capacity() in
+sched_cpu_util() directly?
 
-I'm not saying it cannot be done, I'm just saying it is really rather
-involved and probably not worth it.
-
-The basic observation the current approach relies on is that al that
-faffery basically boils down to the fact that vruntime only means
-something when there is contention. And that only the progression is
-important not the actual value. That is, this is all fundamentally a
-differential equation and our integration constant is meaningless (also
-embodied in (7)).
-
-Also, I think the code as proposed here relies on SMT2 and is buggered
-for SMT3+. Now, that second link above describes means of making SMT3+
-work, but we're not there yet.
+Thanks,
+Quentin
