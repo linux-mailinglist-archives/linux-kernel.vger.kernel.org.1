@@ -2,133 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B6F2C2BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF82F2C2BA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389850AbgKXPnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:43:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389803AbgKXPnp (ORCPT
+        id S2389772AbgKXPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:43:04 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:45209 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389529AbgKXPnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:43:45 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B442C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:43:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w9JwNF/HnsOs/5tIwHmp8F8lPNYJfCnT0FcuNfn45GE=; b=UreWVn2423H9nZNcsrO7QRxNCG
-        Upj6n43gnmNPt8R4Dk4A1SsM5tcpTceSK+JTYNGQkwOlGaNvqDij9z1bI3ELe2gKGQfy3aPDrfgMi
-        /Z7UVrZhh84ZQQz3vA53u0Eklw5PrYsr7pm+HWlj+4OM6O/XU9LLMOJP3ysn7lB7wySzK06RNdVDQ
-        PCueenZpuYkXW+hZ5Bp5wi/B+uS0BAsz06uIQJitZx548aJjLBF90zjwpQ2pgIQ78jjmqmL7LCPnS
-        5Rqi2VpwPkTG4mjqi7KzQ001SuEUVkvbTjYpRaipMCCu55f3ElfhAPrzkgzBDdrkk2HO/Qnn2ieDb
-        A4zVmUBA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khaSn-0003nu-NG; Tue, 24 Nov 2020 15:42:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E6DA53012DF;
-        Tue, 24 Nov 2020 16:42:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BE4B42008B34C; Tue, 24 Nov 2020 16:42:37 +0100 (CET)
-Date:   Tue, 24 Nov 2020 16:42:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Balbir Singh <bsingharora@gmail.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
-Message-ID: <20201124154237.GZ3021@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-15-joel@joelfernandes.org>
- <20201122235456.GF110669@balbir-desktop>
- <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
+        Tue, 24 Nov 2020 10:43:04 -0500
+Received: by mail-ot1-f66.google.com with SMTP id k3so19721228otp.12;
+        Tue, 24 Nov 2020 07:43:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wGQAm/Habl7BLWd6IdQBk99pbaAhlMirh4N9+XF5FO4=;
+        b=jRBI85/ik5ZhX0H1lSDYU7Ofc4BaNpjTonvBs+UBoLZ2LkUrm33IciRnhkncW7XVHs
+         Y6RN+Dsdkl53p1lIhIJTl87HCSr7gQXjnliWeBrahekcaG9W0EVyCWz7bC+2rCWoXflQ
+         /j75okeCTn7s3hXTHaER3t5iMUkIHZFZnHZSjaZX7bcISpdP6aN9OVmtXObu2qo6CIWh
+         KaZAXvIYltdsM9sVnJ7a/DkvzvefttO3PR4HzhMv59P/ZtTEPCP8cVRNhrghSU47EiY4
+         Vicy5j7AxuVPROXeLU+UYfnd8X+S168fVMP0MCi4cJQuWtVmZ4/h17X+uUqx0iQfddIi
+         pB8A==
+X-Gm-Message-State: AOAM5321KCrj07O9theDu2cGTYm8u8mcbCm6xBzqtt0/DAbOP7WCN2Pm
+        COqZimxkW4z/0XKwWGnzXXmb85WwSmyMcPpPtZ0=
+X-Google-Smtp-Source: ABdhPJxx4mOYcdNxFA+yVyffgNbk2C9v4K201yvdM4+e75s1ZyTs7WLqg4qKp1dArDLWTTOp3JccLLLShI9Mq4OHeiA=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr3727469otc.145.1606232583214;
+ Tue, 24 Nov 2020 07:43:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
+References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201124112552.26377-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201124112552.26377-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 24 Nov 2020 16:42:52 +0100
+Message-ID: <CAMuHMdVkbMbKdY76XGDGxGwCsY_oHZfF=v9XMLZSjLMN+jKe_Q@mail.gmail.com>
+Subject: Re: [PATCH 2/5] memory: renesas-rpc-if: Make rpcif_enable/disable_rpm()
+ as static inline
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 12:36:10PM +0800, Li, Aubrey wrote:
-> >> +#ifdef CONFIG_SCHED_CORE
-> >> +		/*
-> >> +		 * Skip this cpu if source task's cookie does not match
-> >> +		 * with CPU's core cookie.
-> >> +		 */
-> >> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-> >> +			continue;
-> >> +#endif
-> >> +
-> > 
-> > Any reason this is under an #ifdef? In sched_core_cookie_match() won't
-> > the check for sched_core_enabled() do the right thing even when
-> > CONFIG_SCHED_CORE is not enabed?> 
-> Yes, sched_core_enabled works properly when CONFIG_SCHED_CORE is not
-> enabled. But when CONFIG_SCHED_CORE is not enabled, it does not make
-> sense to leave a core scheduler specific function here even at compile
-> time. Also, for the cases in hot path, this saves CPU cycles to avoid
-> a judgment.
+Hi Prabhakar,
 
-No, that's nonsense. If it works, remove the #ifdef. Less (#ifdef) is
-more.
+On Tue, Nov 24, 2020 at 12:27 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Define rpcif_enable_rpm() and rpcif_disable_rpm() as static
+> inline in the header instead of exporting it.
+>
+> Suggested-by: Pavel Machek <pavel@denx.de>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-> >> +static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-> >> +{
-> >> +	bool idle_core = true;
-> >> +	int cpu;
-> >> +
-> >> +	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-> >> +	if (!sched_core_enabled(rq))
-> >> +		return true;
-> >> +
-> >> +	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
-> >> +		if (!available_idle_cpu(cpu)) {
-> > 
-> > I was looking at this snippet and comparing this to is_core_idle(), the
-> > major difference is the check for vcpu_is_preempted(). Do we want to
-> > call the core as non idle if any vcpu was preempted on this CPU?
-> 
-> Yes, if there is a VCPU was preempted on this CPU, better not place task
-> on this core as the VCPU may be holding a spinlock and wants to be executed
-> again ASAP.
+Thanks for your patch, which is an improvement.
 
-If you're doing core scheduling on vcpus, you deserve all the pain
-possible.
+> --- a/include/memory/renesas-rpc-if.h
+> +++ b/include/memory/renesas-rpc-if.h
+> @@ -10,6 +10,7 @@
+>  #ifndef __RENESAS_RPC_IF_H
+>  #define __RENESAS_RPC_IF_H
+>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/types.h>
+>
+>  enum rpcif_data_dir {
+> @@ -77,11 +78,19 @@ struct      rpcif {
+>
+>  int  rpcif_sw_init(struct rpcif *rpc, struct device *dev);
+>  void rpcif_hw_init(struct rpcif *rpc, bool hyperflash);
+> -void rpcif_enable_rpm(struct rpcif *rpc);
+> -void rpcif_disable_rpm(struct rpcif *rpc);
+>  void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
+>                    size_t *len);
+>  int rpcif_manual_xfer(struct rpcif *rpc);
+>  ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf);
+>
+> +static inline void rpcif_enable_rpm(struct rpcif *rpc)
+> +{
+> +       pm_runtime_enable(rpc->dev);
+> +}
+> +
+> +static inline void rpcif_disable_rpm(struct rpcif *rpc)
+> +{
+> +       pm_runtime_put_sync(rpc->dev);
 
+Looking at how this is used, this should call pm_runtime_disable()
+instead.
 
+And probably this should be moved inside the core RPC-IF driver:
+  1. pm_runtime_enable() could be called from rpcif_sw_init(),
+  2. pm_runtime_put_sync() can be called from a new rpc_sw_deinit()
+     function, to be called by the SPI and MTD drivers on probe failure
+     and on remove.
+
+> +}
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
