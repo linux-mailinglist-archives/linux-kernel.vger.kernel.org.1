@@ -2,208 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBA12C25E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746B52C2608
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387629AbgKXMni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:43:38 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:46979 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733231AbgKXMnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:43:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606221816; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KPH+uh7Q002+AMdNTwne1i7ICbqTjCHDwyjsOxu6Krw=; b=Y/YDFBc6LAqjVwqctPw1bgPT6j3OWx3JSARVOZ04lb+KPcFx8CXIfiucwaeIZ4b0/c711UP5
- n7IcYC1Mtet44+0blDY1J0uQ95QFtCPibwU/w75fLzGz9blIZtNDAo4kDvmqWy8vvuRdPNXu
- zKlk+Fvnd+pt8XmFZPEdfP+m4uc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fbcfff3fa67d9becf1a6ba7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 12:43:31
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 66711C43462; Tue, 24 Nov 2020 12:43:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.77.145])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7EBFC433C6;
-        Tue, 24 Nov 2020 12:43:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7EBFC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH 3/3] pinctrl: qcom: Clear possible pending irq when
- remuxing GPIOs
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-References: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
- <20201123160139.3.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid>
- <502b39f5-a2b3-5893-da18-47b034f4895d@codeaurora.org>
- <853f7419653122d2fd46e8d70202d25c@kernel.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <bc0337f1-4b8e-7a3a-22fd-ff6f8cbaffca@codeaurora.org>
-Date:   Tue, 24 Nov 2020 18:13:21 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2387637AbgKXMqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387599AbgKXMqL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:46:11 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628A7C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:46:10 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id t8so18383628pfg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:46:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zvMoedg9c3vAj7qTNNLGhSdFiVG9vOlTW6cU7Q9XeFo=;
+        b=FrdMPUpDEFFjBtYI8z4IeWI2Z4ohddd3ZcheGrplS0kTOmz4h18rj8yx1KD0p94H/4
+         4da07fC+FGhGMT861t9xebrdtDKWv9GNFNa7UdYTDzRWtSm8THlMn+8gUcHPYDBgU4BG
+         0Ioe9Otk2VxnLl3jVXir6r5KJbCI/ivA9S5xTRVUBw7Q0usttObbgvmqqTbLfu3cCPpP
+         gjzox5FYTLPTL7hND87YVmaJkLBvFPmyYgeJF/5aqmejfQ7Pst18yDrJ+VYwlnnykvgZ
+         eJjGrnH6KVtJNyy+toC6DpaYps582AB+j+Zu9MrYeWS5JSy1WQj/QILf892bEpx8fxwL
+         DhFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zvMoedg9c3vAj7qTNNLGhSdFiVG9vOlTW6cU7Q9XeFo=;
+        b=dDOz+b03TpwFK0ipxZ0KN8kxQR0nhNbvzN4suxfax+fUEme7qaT3xq5pTadZLfJgi1
+         bWXvQTn6Agpwe7ABF6yCkG5sag1iRtzSV5Hme58cr/fDPIQBEYWiD6AqUPruoRT0zwgk
+         y7UVpsKQJQeXAEH7aQO07253JzCEWLHYmv3Xiwgr7G/HE5jqUc5kXRubkPp8F5XtPjVF
+         QywONiKE0KEdo4mo3uutPolSK2haCgid/gYKukGpCznRQyXAGAszV38QRsKwWAKfI4MU
+         4vxHrvqSTDe7A0cXzsKr5uSBypu3oaKXjS5pU7ADGhpZmDXV4J0r8dUSE6QQav5A0tpg
+         /SMQ==
+X-Gm-Message-State: AOAM530InuNxFPpFhKDzmEkgSbFlkRPhJZ3FD2ntTsYKBZH0Mm2bjaQY
+        LECBr/qmJ30eF5hhJS/tkAAZ8qbb36puz8GAIO9YbA==
+X-Google-Smtp-Source: ABdhPJw4zreHDeiqTrvJd7toGaCPcJpurHA+IsBwgCC6p/FqJZJI2OUo3Y313QMps8SXpsVjl4nPz3fGSgYe8qccqlw=
+X-Received: by 2002:a17:90b:941:: with SMTP id dw1mr4752466pjb.147.1606221969905;
+ Tue, 24 Nov 2020 04:46:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <853f7419653122d2fd46e8d70202d25c@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
+References: <20201124095259.58755-1-songmuchun@bytedance.com>
+ <20201124095259.58755-10-songmuchun@bytedance.com> <20201124115109.GW27488@dhcp22.suse.cz>
+In-Reply-To: <20201124115109.GW27488@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 24 Nov 2020 20:45:30 +0800
+Message-ID: <CAMZfGtV=_=f-AybncRDxyp9FB3e499RuPCz5B-8R2Or7285MrQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v6 09/16] mm/hugetlb: Defer freeing of
+ HugeTLB pages
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On 11/24/2020 4:45 PM, Marc Zyngier wrote:
-> On 2020-11-24 10:37, Maulik Shah wrote:
+On Tue, Nov 24, 2020 at 7:51 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> [...]
+> On Tue 24-11-20 17:52:52, Muchun Song wrote:
+> > In the subsequent patch, we will allocate the vmemmap pages when free
+> > HugeTLB pages. But update_and_free_page() is called from a non-task
+> > context(and hold hugetlb_lock), so we can defer the actual freeing in
+> > a workqueue to prevent use GFP_ATOMIC to allocate the vmemmap pages.
 >
->>>   static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->>>                     unsigned function,
->>>                     unsigned group)
->>>   {
->>>       struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
->>> +    struct gpio_chip *gc = &pctrl->chip;
->>> +    unsigned int irq = irq_find_mapping(gc->irq.domain, group);
->>>       const struct msm_pingroup *g;
->>>       unsigned long flags;
->>>       u32 val, mask;
->>> +    u32 oldval;
->>> +    u32 old_i;
->>>       int i;
->>>         g = &pctrl->soc->groups[group];
->>> @@ -187,15 +215,26 @@ static int msm_pinmux_set_mux(struct 
->>> pinctrl_dev *pctldev,
->>>       if (WARN_ON(i == g->nfuncs))
->>>           return -EINVAL;
->>>   -    raw_spin_lock_irqsave(&pctrl->lock, flags);
->>> +    disable_irq(irq);
->>>   -    val = msm_readl_ctl(pctrl, g);
->>> +    raw_spin_lock_irqsave(&pctrl->lock, flags);
->>> +    oldval = val = msm_readl_ctl(pctrl, g);
->>>       val &= ~mask;
->>>       val |= i << g->mux_bit;
->>>       msm_writel_ctl(val, pctrl, g);
->>> -
->>>       raw_spin_unlock_irqrestore(&pctrl->lock, flags);
->>>   +    /*
->>> +     * Clear IRQs if switching to/from GPIO mode since muxing to/from
->>> +     * the GPIO path can cause phantom edges.
->>> +     */
->>> +    old_i = (oldval & mask) >> g->mux_bit;
->>> +    if (old_i != i &&
->>> +        (i == pctrl->soc->gpio_func || old_i == 
->>> pctrl->soc->gpio_func))
->>> +        msm_pinctrl_clear_pending_irq(pctrl, group, irq);
->>
->> disable_irq() and enable_irq() should be moved inside this if loop. as
->> only use for this is to mask the IRQ when switching back to gpio IRQ
->> mode?
->>
->> i also don't think we should leave IRQ enabled at the end of this
->> function by default, probably need to check if IRQ was already
->> unmasked before disabling it, then only call enable_irq().
->
-> Why? It looks to me that this reproduces the behaviour of 
-> IRQCHIP_SET_TYPE_MASKED, which is highly desirable. What
-> problem are you trying to address with this?
+> This has been brought up earlier without any satisfying answer. Do we
+> really have bother with the freeing from the pool and reconstructing the
+> vmemmap page tables? Do existing usecases really require such a dynamic
+> behavior? In other words, wouldn't it be much simpler to allow to use
 
-Correct, here trying to reproduce the behaviour of 
-IRQCHIP_SET_TYPE_MASKED which i guess is ok once its moved inside if 
-loop as this is the place its switching to IRQ mode.
+If someone wants to free a HugeTLB page, there is no way to do that if we
+do not allow this behavior. When do we need this? On our server, we will
+allocate a lot of HugeTLB pages for SPDK or virtualization. Sometimes,
+we want to debug some issues and want to apt install some debug tools,
+but if the host has little memory and the install operation can be failed
+because of no memory. In this time, we can try to free some HugeTLB
+pages to buddy in order to continue debugging. So maybe we need this.
 
-but there is a problem to leave it enabled at the end of set_direction 
-callbacks, see below.
+> hugetlb pages with sparse vmemmaps only for the boot time reservations
+> and never allow them to be freed back to the allocator. This is pretty
+> restrictive, no question about that, but it would drop quite some code
+
+Yeah, if we do not allow freeing the HugeTLB page to buddy, it actually
+can drop some code. But I think that it only drop this one and next one
+patch. It seems not a lot. And if we drop this patch, we need to add some
+another code to do the boot time reservations and other code to disallow
+freeing HugeTLB pages. So why not support freeing now.
+
+> AFAICS and the resulting series would be much easier to review really
+> carefully. Additional enhancements can be done on top with specifics
+> about usecases which require more flexibility.
+
+The code of allocating vmemmap pages for the HugeTLB page is very
+similar to the freeing vmemmap pages. The two operations are opposite.
+I think that if someone can understand the freeing path, it is also easy
+for him to understand the allcating path. If you look at close to this patch,
+I believe that it is easy for you.
 
 >
->>
->>> +
->>> +    enable_irq(irq);
->>> +
->>>       return 0;
->>>   }
->>>   @@ -456,32 +495,45 @@ static const struct pinconf_ops 
->>> msm_pinconf_ops = {
->>>   static int msm_gpio_direction_input(struct gpio_chip *chip, 
->>> unsigned offset)
->>>   {
->>>       const struct msm_pingroup *g;
->>> +    unsigned int irq = irq_find_mapping(chip->irq.domain, offset);
->>>       struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
->>>       unsigned long flags;
->>> +    u32 oldval;
->>>       u32 val;
->>>         g = &pctrl->soc->groups[offset];
->>>   +    disable_irq(irq);
->>> +
->>>       raw_spin_lock_irqsave(&pctrl->lock, flags);
->>>   -    val = msm_readl_ctl(pctrl, g);
->>> +    oldval = val = msm_readl_ctl(pctrl, g);
->>>       val &= ~BIT(g->oe_bit);
->>>       msm_writel_ctl(val, pctrl, g);
->>>         raw_spin_unlock_irqrestore(&pctrl->lock, flags);
->>>   +    if (oldval != val)
->>> +        msm_pinctrl_clear_pending_irq(pctrl, offset, irq);
->>> +
->>> +    enable_irq(irq);
->>
->> i do not think we need disable_irq() and enable_irq() here, changing
->> direction to input does not mean its being used for interrupt only, it
->> may be set to use something like Rx mode in UART.
->>
->> the client driver should enable IRQ when needed.
->
-> And the kernel doesn't expect random interrupts to fire. Again, what
-> are you trying to fix by removing these?
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/hugetlb.c         | 96 ++++++++++++++++++++++++++++++++++++++++++++++------
+> >  mm/hugetlb_vmemmap.c |  5 ---
+> >  mm/hugetlb_vmemmap.h | 10 ++++++
+> >  3 files changed, 95 insertions(+), 16 deletions(-)
+> --
+> Michal Hocko
+> SUSE Labs
 
-I see leaving IRQ enabled here can cause problems. For example in 
-qcom_geni_serial.c driver before requesting IRQ, it sets the 
-IRQ_NOAUTOEN flag to not keep it enabled.
 
-see the below snippet
-         irq_set_status_flags(uport->irq, IRQ_NOAUTOEN);
-         ret = devm_request_irq(uport->dev, uport->irq, 
-qcom_geni_serial_isr,
-                         IRQF_TRIGGER_HIGH, port->name, uport);
-
-later when this devm_request_irq() invokes .irq_request_resources 
-callback it will reach msm_gpio_irq_reqres() from
-where msm_gpio_direction_input() is called which leaves the irq enabled 
-at the end with enable_irq() which was not expected by driver.
-
-It will cause is IRQ storm since the UART geni driver uses GPIO in Rx 
-mode when out of suspend. The IRQ mode in GPIO is enabled
-with suspend entry only. During resume the IRQ will again be disabled 
-and GPIO will be switched to Rx mode.
-
-Thanks,
-Maulik
->
->         M.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+Yours,
+Muchun
