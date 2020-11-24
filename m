@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A592C21D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8E52C21D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731579AbgKXJjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:39:36 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60168 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731175AbgKXJjf (ORCPT
+        id S1731589AbgKXJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:39:48 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:30234 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731175AbgKXJjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:39:35 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AO9dMKr102139;
-        Tue, 24 Nov 2020 03:39:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606210762;
-        bh=/UZqV0080zJ5hCt/MnjxSlJyTTwEADKbUBDSNEH9IAA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=GK2Z1qn9A4QjTNtkh1EuMuIv9d1b40cJR8S9+R5ire2qR8swMI92C9nPqbEjSQftp
-         3NHajRxYhNxQ06HK4nPKZrIbKaUjdnoGOzROo9fY8kermyKrbMmtyXbaSM0RGlf/ai
-         jO6ZLRr7WZTGZAnn2fAjHf79cOF05340LRN2nsZs=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AO9dLYL027179
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Nov 2020 03:39:21 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 24
- Nov 2020 03:39:21 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 24 Nov 2020 03:39:21 -0600
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AO9dJUE112679;
-        Tue, 24 Nov 2020 03:39:20 -0600
-Subject: Re: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch
- class"
-To:     Peter Chen <peter.chen@nxp.com>
-CC:     "pawell@cadence.com" <pawell@cadence.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201123115051.30047-1-rogerq@ti.com>
- <20201124064242.GA32310@b29397-desktop>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <89067b6a-5b94-d7d2-b07a-f434c9e5e2bd@ti.com>
-Date:   Tue, 24 Nov 2020 11:39:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 24 Nov 2020 04:39:47 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khUnX-000QFa-Cd; Tue, 24 Nov 2020 10:39:43 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1khUnW-0006v1-KZ; Tue, 24 Nov 2020 10:39:42 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 5EABF240041;
+        Tue, 24 Nov 2020 10:39:42 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id D0EE8240040;
+        Tue, 24 Nov 2020 10:39:41 +0100 (CET)
+Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 9576A20115;
+        Tue, 24 Nov 2020 10:39:41 +0100 (CET)
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        xie.he.0141@gmail.com
+Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
+Subject: [PATCH net-next v6 0/5] net/x25: netdev event handling
+Date:   Tue, 24 Nov 2020 10:39:33 +0100
+Message-ID: <20201124093938.22012-1-ms@dev.tdt.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201124064242.GA32310@b29397-desktop>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+Content-Transfer-Encoding: quoted-printable
+X-purgate-ID: 151534::1606210783-0001C3AC-A415E21F/0/0
+X-purgate: clean
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter,
+---
 
-On 24/11/2020 08:43, Peter Chen wrote:
-> On 20-11-23 13:50:51, Roger Quadros wrote:
->> This reverts commit 50642709f6590fe40afa6d22c32f23f5b842aed5.
->>
->> This commit breaks hardware based role switching on TI platforms.
->> cdns->role_sw is always going to be non-zero as it is a pointer
->> to the usb_role_switch instance. Some other means needs to be used
->> if hardware based role switching is not required by the platform.
->>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
->> ---
->>   drivers/usb/cdns3/core.c | 4 ----
->>   1 file changed, 4 deletions(-)
->>
->> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
->> index a0f73d4711ae..4c1445cf2ad0 100644
->> --- a/drivers/usb/cdns3/core.c
->> +++ b/drivers/usb/cdns3/core.c
->> @@ -280,10 +280,6 @@ int cdns3_hw_role_switch(struct cdns3 *cdns)
->>   	enum usb_role real_role, current_role;
->>   	int ret = 0;
->>   
->> -	/* Depends on role switch class */
->> -	if (cdns->role_sw)
->> -		return 0;
->> -
->>   	pm_runtime_get_sync(cdns->dev);
->>   
->>   	current_role = cdns->role;
->> -- 
-> 
-> Hi Roger,
-> 
-> I am sorry about that. Do you use role switch /sys entry, if you have
-> used, I prefer using "usb-role-switch" property at dts to judge if
-> SoC OTG signals or external signals for role switch. If you have not
-> used it, I prefer only setting cdns->role_sw for role switch use cases.
-> 
+Changes to v5:
+o fix numbering in commit message of patch 2/5.
 
-We use both hardware role switch and /sys entries for manually forcing
-a certain role.
+Changes to v4:
+o also establish layer2 (LAPB) on NETDEV_UP events, if the carrier is
+  already UP.
 
-We do not set any "usb-role-switch" property at DTS.
+Changes to v3:
+o another complete rework of the patch-set to split event handling
+  for layer2 (LAPB) and layer3 (X.25)
 
-Currently cdns->role_sw is being always set by driver irrespective of
-any DT property, so this patch is clearly wrong and needs to be reverted.
+Changes to v2:
+o restructure complete patch-set
+o keep netdev event handling in layer3 (X.25)
+o add patch to fix lapb_connect_request() for DCE
+o add patch to handle carrier loss correctly in lapb
+o drop patch for x25_neighbour param handling
+  this may need fixes/cleanup and will be resubmitted later.
 
-What do you think?
+Changes to v1:
+o fix 'subject_prefix' and 'checkpatch' warnings
 
-cheers,
--roger
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+---
+
+Martin Schiller (5):
+  net/x25: handle additional netdev events
+  net/lapb: support netdev events
+  net/lapb: fix t1 timer handling for LAPB_STATE_0
+  net/x25: fix restart request/confirm handling
+  net/x25: remove x25_kill_by_device()
+
+ net/lapb/lapb_iface.c | 94 +++++++++++++++++++++++++++++++++++++++++++
+ net/lapb/lapb_timer.c | 11 ++++-
+ net/x25/af_x25.c      | 38 ++++++++---------
+ net/x25/x25_link.c    | 47 +++++++++++++++++-----
+ net/x25/x25_route.c   |  3 --
+ 5 files changed, 155 insertions(+), 38 deletions(-)
+
+--=20
+2.20.1
+
