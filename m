@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC3E2C1E85
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C662C1E87
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729896AbgKXGw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:52:26 -0500
-Received: from m176150.mail.qiye.163.com ([59.111.176.150]:37356 "EHLO
-        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729885AbgKXGwZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:52:25 -0500
-Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
-        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 659351A31F4;
-        Tue, 24 Nov 2020 14:51:50 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AAoACwDIDVz-8Zy3pozuG4px.3.1606200710396.Hmail.bernard@vivo.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        id S1729791AbgKXGyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:54:03 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:44869 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728986AbgKXGyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:54:02 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CgF9f503cz9tyhw;
+        Tue, 24 Nov 2020 07:53:58 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id hmjPhs3s2u0p; Tue, 24 Nov 2020 07:53:58 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgF9f44vJz9tyhv;
+        Tue, 24 Nov 2020 07:53:58 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5E5C08B7A3;
+        Tue, 24 Nov 2020 07:53:59 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 1BWyoMS_Jinp; Tue, 24 Nov 2020 07:53:59 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4C8818B79F;
+        Tue, 24 Nov 2020 07:53:58 +0100 (CET)
+Subject: Re: [PATCH v2 00/19] Add generic vdso_base tracking
+To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: =?UTF-8?B?UmU6W1JGQyBQQVRDSF0gQWRkIGEgbmV3ICJGcm96ZW4iIHN0YXR1cyB0byBNQUlOVEFJTkVSUyBzdWJzeXN0ZW0gZW50cmllcw==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 112.80.34.204
-In-Reply-To: <afd4d5199527b33c4c428090b8a3d360b9565549.camel@perches.com>
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <20201124002932.1220517-1-dima@arista.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <5e315bf6-b03d-e66e-9557-22ece397080e@csgroup.eu>
+Date:   Tue, 24 Nov 2020 07:53:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [112.80.34.204) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 24 Nov 2020 14:51:50 +0800 (GMT+08:00)
-From:   Bernard <bernard@vivo.com>
-Date:   Tue, 24 Nov 2020 14:51:50 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ09IHkhMSklIH0NDVkpNS01JS0tMSktPSExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISVVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU5CQk9JTE9MSk5ON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6OhQ6OAw*Mj8tAVZDIQJICxQBDjxPCwNVSFVKTUtNSUtLTEpLQktOVTMWGhIXVRkeCRUaCR87
-        DRINFFUYFBZFWVdZEgtZQVlKSklVQ0tVSE9VSUtPWVdZCAFZQUxMT0I3Bg++
-X-HM-Tid: 0a75f905d51393b4kuws659351a31f4
+In-Reply-To: <20201124002932.1220517-1-dima@arista.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkZyb206IEpvZSBQZXJjaGVzIDxqb2VAcGVyY2hlcy5jb20+CkRhdGU6IDIwMjAtMTEtMjQgMDY6
-MjQ6MDcKVG86ICBTYW0gUmF2bmJvcmcgPHNhbUByYXZuYm9yZy5vcmc+LEJlcm5hcmQgWmhhbyA8
-YmVybmFyZEB2aXZvLmNvbT4KQ2M6ICBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnLEFuZHJl
-dyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+LExpbnVzIFRvcnZhbGRzIDx0b3J2
-YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz4sa2VybmVsLWphbml0b3JzIDxrZXJuZWwtamFuaXRv
-cnNAdmdlci5rZXJuZWwub3JnPixHcmVnIEtIIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4K
-U3ViamVjdDogW1JGQyBQQVRDSF0gQWRkIGEgbmV3ICJGcm96ZW4iIHN0YXR1cyB0byBNQUlOVEFJ
-TkVSUyBzdWJzeXN0ZW0gZW50cmllcz5PbiBNb24sIDIwMjAtMTEtMjMgYXQgMjI6NDIgKzAxMDAs
-IFNhbSBSYXZuYm9yZyB3cm90ZToKPj4gRm9yIHRoaXMgb2xkIGRyaXZlciB3ZSBzaG91bGQgdHJ5
-IHRvIGxpbWl0IHBhdGNoZXMgdG8gYnVnIGZpeGluZyBhbmQKPj4gaW5mcmFzdHJ1Y3R1cmUgdXBk
-YXRlcy4KPgo+SXQgbWlnaHQgYmUgdXNlZnVsIHRvIGFkZCBhIG5ldyAiUzoiIGVudHJ5IHR5cGUg
-dG8gdGhlc2Ugb2xkIGRyaXZlcnMKPmFzIHN1cHBvcnRlZC9tYWludGFpbmVkL29ic29sZXRlIG1h
-eSBub3QgcmVhbGx5IGJlIGFwcHJvcHJpYXRlLgo+Cj5Ib3cgYWJvdXQgc29tZXRoaW5nIGxpa2Ug
-IlM6IEZyb3plbiIgYW5kIGNoZWNrcGF0Y2ggY291bGQgZW1pdCBhCj5tZXNzYWdlIHNpbWlsYXIg
-dG8gdGhlIG9uZSBmb3IgdW5uZWNlc3NhcnkgY2hhbmdlcyB0byBvYnNvbGV0ZSBjb2RlPwo+Cj5T
-byB1c2luZyB0aGUgYmVsb3cgd291bGQgZW1pdDoKPgo+JCAuL3NjcmlwdHMvY2hlY2twYXRjaC5w
-bCAtZiBkcml2ZXJzL2dwdS9kcm0vdmlhL3ZpYV9kbWEuYwo+V0FSTklORzogZHJpdmVycy9ncHUv
-ZHJtL3ZpYS92aWFfZG1hLmMgaXMgbWFya2VkIGFzICdmcm96ZW4nIGluIHRoZSBNQUlOVEFJTkVS
-UyBoaWVyYXJjaHkuICBObyB1bm5lY2Vzc2FyeSBtb2RpZmljYXRpb25zIHBsZWFzZS4KPgo+TWF5
-YmUgbGlrZSB0aGUgYmVsb3cgKGFuZCBmeWkgdGhlcmUncyBubyBhZGRpdGlvbmFsIGdpdCBsb29r
-dXAgb3ZlcmhlYWQgYXMKPnRoZSBpbml0aWFsIG9ic29sZXRlIGNoZWNrIGFscmVhZHkgY2FjaGVz
-IHRoZSBnaXQgcmVzdWx0KS4KPgo+LS0tCj4gTUFJTlRBSU5FUlMgICAgICAgICAgIHwgMTAgKysr
-KysrKysrLQo+IHNjcmlwdHMvY2hlY2twYXRjaC5wbCB8IDExICsrKysrKystLS0tCj4gMiBmaWxl
-cyBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+Cj5kaWZmIC0tZ2l0
-IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJTkVSUwo+aW5kZXggNWYxMDEwNWNhYzZmLi42Mzc0ZDI5
-MTgwYjggMTAwNjQ0Cj4tLS0gYS9NQUlOVEFJTkVSUwo+KysrIGIvTUFJTlRBSU5FUlMKPkBAIC04
-OCw3ICs4OCwxMCBAQCBEZXNjcmlwdGlvbnMgb2Ygc2VjdGlvbiBlbnRyaWVzIGFuZCBwcmVmZXJy
-ZWQgb3JkZXIKPiAJICAgU3VwcG9ydGVkOglTb21lb25lIGlzIGFjdHVhbGx5IHBhaWQgdG8gbG9v
-ayBhZnRlciB0aGlzLgo+IAkgICBNYWludGFpbmVkOglTb21lb25lIGFjdHVhbGx5IGxvb2tzIGFm
-dGVyIGl0Lgo+IAkgICBPZGQgRml4ZXM6CUl0IGhhcyBhIG1haW50YWluZXIgYnV0IHRoZXkgZG9u
-J3QgaGF2ZSB0aW1lIHRvIGRvCj4tCQkJbXVjaCBvdGhlciB0aGFuIHRocm93IHRoZSBvZGQgcGF0
-Y2ggaW4uIFNlZSBiZWxvdy4uCj4rCQkJbXVjaCBvdGhlciB0aGFuIHRocm93IHRoZSBvZGQgcGF0
-Y2ggaW4uCj4rCSAgIEZyb3plbjoJT2xkIGNvZGUgdGhhdCBzaG91bGQgbm90IGJlIG1vZGlmaWVk
-IHVubGVzcyBjaGFuZ2VzCj4rCQkJYXJlIHRvIGNvcnJlY3QgYWN0dWFsIGRlZmVjdHMgb3IgQVBJ
-IGluZnJhc3RydWN0dXJlLgo+KwkJCUNsZWFudXAvc3R5bGUgY2hhbmdlcyBhcmUgbm90IGdlbmVy
-YWxseSBhY2NlcHRlZC4KPiAJICAgT3JwaGFuOglObyBjdXJyZW50IG1haW50YWluZXIgW2J1dCBt
-YXliZSB5b3UgY291bGQgdGFrZSB0aGUKPiAJCQlyb2xlIGFzIHlvdSB3cml0ZSB5b3VyIG5ldyBj
-b2RlXS4KPiAJICAgT2Jzb2xldGU6CU9sZCBjb2RlLiBTb21ldGhpbmcgdGFnZ2VkIG9ic29sZXRl
-IGdlbmVyYWxseSBtZWFucwo+QEAgLTU3MTgsNiArNTcyMSwxMSBAQCBTOglTdXBwb3J0ZWQKPiBU
-OglnaXQgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtL2RybS1taXNjCj4gRjoJZHJp
-dmVycy9ncHUvZHJtL3VkbC8KPiAKPitEUk0gRFJJVkVSIEZPUiBWSUEKPitMOglkcmktZGV2ZWxA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4rUzoJRnJvemVuCj4rRjoJZHJpdmVycy9ncHUvZHJtL3Zp
-YS8KPisKPiBEUk0gRFJJVkVSIEZPUiBWSVJUVUFMIEtFUk5FTCBNT0RFU0VUVElORyAoVktNUykK
-PiBNOglSb2RyaWdvIFNpcXVlaXJhIDxyb2RyaWdvc2lxdWVpcmFtZWxvQGdtYWlsLmNvbT4KPiBN
-OglNZWxpc3NhIFdlbiA8bWVsaXNzYS5zcndAZ21haWwuY29tPgo+ZGlmZiAtLWdpdCBhL3Njcmlw
-dHMvY2hlY2twYXRjaC5wbCBiL3NjcmlwdHMvY2hlY2twYXRjaC5wbAo+aW5kZXggZmRmZDVlYzA5
-YmU2Li43OTMyMWNiZmI3NjEgMTAwNzU1Cj4tLS0gYS9zY3JpcHRzL2NoZWNrcGF0Y2gucGwKPisr
-KyBiL3NjcmlwdHMvY2hlY2twYXRjaC5wbAo+QEAgLTkwMiw4ICs5MDIsOCBAQCBzdWIgc2VlZF9j
-YW1lbGNhc2VfZmlsZSB7Cj4gCj4gb3VyICVtYWludGFpbmVkX3N0YXR1cyA9ICgpOwo+IAo+LXN1
-YiBpc19tYWludGFpbmVkX29ic29sZXRlIHsKPi0JbXkgKCRmaWxlbmFtZSkgPSBAXzsKPitzdWIg
-aXNfbWFpbnRhaW5lZCB7Cj4rCW15ICgkZmlsZW5hbWUsICR0ZXN0KSA9IEBfOwo+IAo+IAlyZXR1
-cm4gMCBpZiAoISR0cmVlIHx8ICEoLWUgIiRyb290L3NjcmlwdHMvZ2V0X21haW50YWluZXIucGwi
-KSk7Cj4gCj5AQCAtOTExLDcgKzkxMSw3IEBAIHN1YiBpc19tYWludGFpbmVkX29ic29sZXRlIHsK
-PiAJCSRtYWludGFpbmVkX3N0YXR1c3skZmlsZW5hbWV9ID0gYHBlcmwgJHJvb3Qvc2NyaXB0cy9n
-ZXRfbWFpbnRhaW5lci5wbCAtLXN0YXR1cyAtLW5vbSAtLW5vbCAtLW5vZ2l0IC0tbm9naXQtZmFs
-bGJhY2sgLWYgJGZpbGVuYW1lIDI+JjFgOwo+IAl9Cj4gCj4tCXJldHVybiAkbWFpbnRhaW5lZF9z
-dGF0dXN7JGZpbGVuYW1lfSA9fiAvb2Jzb2xldGUvaTsKPisJcmV0dXJuICRtYWludGFpbmVkX3N0
-YXR1c3skZmlsZW5hbWV9ID1+IC8kdGVzdC9pOwo+IH0KPiAKPiBzdWIgaXNfU1BEWF9MaWNlbnNl
-X3ZhbGlkIHsKPkBAIC0yNjMzLDkgKzI2MzMsMTIgQEAgc3ViIHByb2Nlc3Mgewo+IAkJfQo+IAo+
-IAkJaWYgKCRmb3VuZF9maWxlKSB7Cj4tCQkJaWYgKGlzX21haW50YWluZWRfb2Jzb2xldGUoJHJl
-YWxmaWxlKSkgewo+KwkJCWlmIChpc19tYWludGFpbmVkKCRyZWFsZmlsZSwgIm9ic29sZXRlIikp
-IHsKPiAJCQkJV0FSTigiT0JTT0xFVEUiLAo+IAkJCQkgICAgICIkcmVhbGZpbGUgaXMgbWFya2Vk
-IGFzICdvYnNvbGV0ZScgaW4gdGhlIE1BSU5UQUlORVJTIGhpZXJhcmNoeS4gIE5vIHVubmVjZXNz
-YXJ5IG1vZGlmaWNhdGlvbnMgcGxlYXNlLlxuIik7Cj4rCQkJfSBlbHNpZiAoaXNfbWFpbnRhaW5l
-ZCgkcmVhbGZpbGUsICJmcm96ZW4iKSkgewo+KwkJCQlXQVJOKCJGUk9aRU4iLAo+KwkJCQkgICAg
-ICIkcmVhbGZpbGUgaXMgbWFya2VkIGFzICdmcm96ZW4nIGluIHRoZSBNQUlOVEFJTkVSUyBoaWVy
-YXJjaHkuICBObyB1bm5lY2Vzc2FyeSBtb2RpZmljYXRpb25zIHBsZWFzZS5cbiIpOwo+IAkJCX0K
-PiAJCQlpZiAoJHJlYWxmaWxlID1+IG1AXig/OmRyaXZlcnMvbmV0L3xuZXQvfGRyaXZlcnMvc3Rh
-Z2luZy8pQCkgewo+IAkJCQkkY2hlY2sgPSAxOwoKSGk6CgpGb3IgbWUsIHRoaXMgc2VlbXMgdG8g
-YmUgYSBuaWNlIGlkZWEuCkFzIGEgIG5ld2NvbWVyIHRvIHRoZSBjb21tdW5pdHksIG1heWJlIEkg
-YW0gbm90IHN1cmUgd2hpY2ggZHJpdmVycyBhcmUgaG90IGFuZCB3aGljaCBvbmVzIGRvIG5vdCBu
-ZWVkIHRvbyBtdWNoIGF0dGVudGlvbi4KV2l0aCB0aGlzIHBhdGNoIHNjcmlwdCwgaXQgd2lsbCBn
-aXZlIHVzIGEgYmV0dGVyIGd1aWRlLgoKQlIvL0Jlcm5hcmQKPgoNCg0K
+
+
+Le 24/11/2020 à 01:29, Dmitry Safonov a écrit :
+> v2 Changes:
+> - Rename user_landing to vdso_base as it tracks vDSO VMA start address,
+>    rather than the explicit address to land (Andy)
+> - Reword and don't use "new-execed" and "new-born" task (Andy)
+> - Fix failures reported by build robot
+> 
+> Started from discussion [1], where was noted that currently a couple of
+> architectures support mremap() for vdso/sigpage, but not munmap().
+> If an application maps something on the ex-place of vdso/sigpage,
+> later after processing signal it will land there (good luck!)
+> 
+> Patches set is based on linux-next (next-20201123) and it depends on
+> changes in x86/cleanups (those reclaim TIF_IA32/TIF_X32) and also
+> on my changes in akpm (fixing several mremap() issues).
+
+I have a series that cleans up VDSO init on powerpc and migrates powerpc to 
+_install_special_mapping() (patch 10 of the series).
+
+https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=204396&state=%2A&archive=both
+
+I'm wondering how we should coordinate with your series for merging.
+
+I guess your series will also imply removal of arch_unmap() ? see 
+https://elixir.bootlin.com/linux/v5.10-rc4/source/arch/powerpc/include/asm/mmu_context.h#L262
+
+> 
+> Logically, the patches set divides on:
+> - patch       1: a cleanup for patches in x86/cleanups
+> - patches  2-11: cleanups for arch_setup_additional_pages()
+> - patches 12-13: x86 signal changes for unmapped vdso
+> - patches 14-19: provide generic vdso_base in mm_struct
+> 
+> In the end, besides cleanups, it's now more predictable what happens for
+> applications with unmapped vdso on architectures those support .mremap()
+> for vdso/sigpage.
+> 
+> I'm aware of only one user that unmaps vdso - Valgrind [2].
+> (there possibly are more, but this one is "special", it unmaps vdso, but
+>   not vvar, which confuses CRIU [Checkpoint Restore In Userspace], that's
+>   why I'm aware of it)
+> 
+> Patches as a .git branch:
+> https://github.com/0x7f454c46/linux/tree/setup_additional_pages-v2
+> 
+> v1 Link:
+> https://lore.kernel.org/lkml/20201108051730.2042693-1-dima@arista.com/
+> 
+> [1]: https://lore.kernel.org/linux-arch/CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com/
+> [2]: https://github.com/checkpoint-restore/criu/issues/488
+> 
+
+Christophe
