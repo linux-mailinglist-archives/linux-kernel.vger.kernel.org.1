@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4292C2690
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B252C26A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387736AbgKXMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:51:26 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:41634 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1733265AbgKXMv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:51:26 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxCtG6Ab1fG_wVAA--.37925S2;
-        Tue, 24 Nov 2020 20:51:07 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] acpi: Fix use-after-free in acpi_ipmi.c
-Date:   Tue, 24 Nov 2020 20:51:06 +0800
-Message-Id: <1606222266-11685-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxCtG6Ab1fG_wVAA--.37925S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw18JrWfuw1rGw13Xw13Jwb_yoWfAFc_uF
-        nFvr47WF1kAr10kr12vr15ZrWj9FsIqFZ3Wr18tFn2y3s3XrykXrW7Zry0qr13uw4UCFn0
-        g3Wjyr4UAr1agjkaLaAFLSUrUUUU1b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb38YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG
-        8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2js
-        IE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE
-        14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI
-        0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1l
-        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWI
-        evJa73UjIFyTuYvjxUshF4DUUUU
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S2387771AbgKXM5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:57:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733262AbgKXM5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:57:18 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16736C0613D6;
+        Tue, 24 Nov 2020 04:57:18 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id m6so22206186wrg.7;
+        Tue, 24 Nov 2020 04:57:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fOmRRYkAD1VzyqVOGvjejz5VOA+At3vl3lOXmomMp+Q=;
+        b=JclXKfTkz5u3wsiKUtUOScmRnxL1WB8uIKg7sin6/326MroTWUGNGFvlkrr69uP4K1
+         P9e0ZKr4DpOGsTP3SNzNqYhCokiEjhXmrouRw9zA9dZgocdeahHp4gH3g8IpFvW6ylMr
+         tZlVNNgSOK2N6QS8Q3xGrX9gaSrUobBw+Rbd6qGW/0J4auGCuU/9P8asn8dKm+mJyzNW
+         4fHmTWsYYnjllYn7d56xME5lqlPWA86Hla6hd7jvkWUKIq7OXIMu/aj0lAdiFK16wQym
+         LhHQ3ZRyL8WP82Y2RRlmXhLgVaazL37WP96Zu2cYLRvrAax30700xROkKnM715Sbr6Oj
+         9NKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fOmRRYkAD1VzyqVOGvjejz5VOA+At3vl3lOXmomMp+Q=;
+        b=s33zPFgPVLaKNzHLN6LR0hHk9FHU2BCIl/7ol2+7nfFfS4m5S5boPTOQdJAfbpGP0r
+         E/QmGGT7Tj/OFWDP+9jWqXW5bVgVrX28zu7c2neS0U7u/QQeg76CD9kj1kEk0LQRSixO
+         aPZdmG47xl0eJA38tCnAP0nY05nHjZW0IwXCXlNsXFFGVq3yS5GgurItR5FQTVguhM76
+         I7/fgdKMwpnSKo/k3yZ32l7uPsj0GFsrQbdupavLFSH7TKxmJ/cetdJ36pNX566t5GW5
+         qeOgkev0nd8e8QLWTM/ORSWRvjbmBiRHA59sxzWfnwhwxa8j8Ls+fTTgB1D1ai8q3smW
+         xLLA==
+X-Gm-Message-State: AOAM53315yU7SWsKZbamyceSrnjBkuoPyKzassYHWFY1Cbif0idgUXkc
+        WvqoDgko8uZAkLgpctUjMMjsJZvms1etpw==
+X-Google-Smtp-Source: ABdhPJwH1E9W+euEk9eP0iSch2igPdlM/IuobaxipcIbJWFkP+LJQdeMqViLXHalPpnS4TETeAnDTw==
+X-Received: by 2002:adf:f102:: with SMTP id r2mr5077917wro.315.1606222636583;
+        Tue, 24 Nov 2020 04:57:16 -0800 (PST)
+Received: from [192.168.1.216] (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
+        by smtp.gmail.com with ESMTPSA id u5sm5064332wml.13.2020.11.24.04.57.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 04:57:16 -0800 (PST)
+Subject: Re: [PATCH 5.11] block: optimise for_each_bvec() advance
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60aaa6caab3d061cf7194716c27a10920b5bd7ad.1606212786.git.asml.silence@gmail.com>
+ <20201124113729.GA88892@T590>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <2b73d46d-deb6-ecb5-6d0e-1d26d572481a@gmail.com>
+Date:   Tue, 24 Nov 2020 12:54:06 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
+MIME-Version: 1.0
+In-Reply-To: <20201124113729.GA88892@T590>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kfree() has been called inside put_device so anther kfree would cause a
-use-after-free bug.
+On 24/11/2020 11:37, Ming Lei wrote:
+> On Tue, Nov 24, 2020 at 10:21:23AM +0000, Pavel Begunkov wrote:
+>> Because of how for_each_bvec() works it never advances across multiple
+>> entries at a time, so bvec_iter_advance() is an overkill. Add
+>> specialised bvec_iter_advance_single() that is faster. It also handles
+>> zero-len bvecs, so can kill bvec_iter_skip_zero_bvec().
+>>
+[...]
+> 
+> Looks fine,
+> 
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- drivers/acpi/acpi_ipmi.c | 2 --
- 1 file changed, 2 deletions(-)
+Thanks Ming
 
-diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
-index 9d6c0fc..72902b6 100644
---- a/drivers/acpi/acpi_ipmi.c
-+++ b/drivers/acpi/acpi_ipmi.c
-@@ -130,7 +130,6 @@ ipmi_dev_alloc(int iface, struct device *dev, acpi_handle handle)
- 			       ipmi_device, &user);
- 	if (err) {
- 		put_device(dev);
--		kfree(ipmi_device);
- 		return NULL;
- 	}
- 	ipmi_device->user_interface = user;
-@@ -142,7 +141,6 @@ static void ipmi_dev_release(struct acpi_ipmi_device *ipmi_device)
- {
- 	ipmi_destroy_user(ipmi_device->user_interface);
- 	put_device(ipmi_device->dev);
--	kfree(ipmi_device);
- }
- 
- static void ipmi_dev_release_kref(struct kref *kref)
 -- 
-2.1.0
-
+Pavel Begunkov
