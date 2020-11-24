@@ -2,158 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B142C2F00
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DCA2C2F04
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390818AbgKXRmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:42:04 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3332 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390713AbgKXRmD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:42:03 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AOHfSbW024357;
-        Tue, 24 Nov 2020 09:41:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=pez9ohBBbBKIszV+S6dK5DPpVBncky07UQ8T6La25QQ=;
- b=Fpj9Xfxw6WK0ZTUjbS+36RkO6OJV1uQUU5S9KaG/JBQ741TjWNfwmousdE1+Hfqjeyxm
- cPpwZ9Vt86UMBUpAnswcgopTC0nGKCldGD99HqSpjQjGJlsqUjj1A027bJUfrgFVvsAf
- xg7KaXMvVk+Wwhqxs2oDOJC5TrGwzjXQzLc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 350qy4ue65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 24 Nov 2020 09:41:48 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 24 Nov 2020 09:41:47 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fr/8G36OO3k4HoqzJluhj9b/sLTjzdOUY7h2Fp9+rHRVTNX0sw97V9c3lDIsccSuEpbEdcGzni1iMN/oZELwSpmoTPuMYoJdn0Z35GN3n6Pqrq+wARYYqbBi1+WtplsFkrb6yU2S/ExjBRPg82rdmU57vKPT+Rz62IyEBWomdATTUOfeQf8c6BAU3MlG7SAfB1cGC6ImHUNfEoRVWoFUSNuDJ751VZKCk/HvlsNCeZKE/ZCMEHxXXoydEIvrNJxubW7gZ7AcDbjc0oUcjCfTnDgeW1TbOSAkB6YdAuGqzjDlYGD0PmBEySxz1ZxgqI/kyd+2sTnvdI+145eRdXLy0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pez9ohBBbBKIszV+S6dK5DPpVBncky07UQ8T6La25QQ=;
- b=ZxNb6WsOAUwuo47ZS/ungNhqXTUXoYDsE4f3uu+vNU7/hhMlP1QEBWY7MxfMt63/7M0iJBK/YEOpLta+GMSarP70T3zyTSnr84g9OGmWRt7sewWpGlp/vr/m8QaplC1mz/nXmbNPLFsNtnKpjCKxEpwNr3Xo/OR4MIbVfvd2n7zhY2fnXoYicESS+10dqGN4z5KHOPWK9Ga7rgO8vIo9q/7cWNcLBWSyGoFqGjjSnEiR/+9wV0neGdmPk/vybzWsEk4CjWv5j7iGIxR7903e2Wk0E4aBBhPsFo/X1cSpDpccrbxUdtkLFE6+YKQZnUAD4LV7rQb0k4cN5TUyx+j7kQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pez9ohBBbBKIszV+S6dK5DPpVBncky07UQ8T6La25QQ=;
- b=QPnHxlFvNVapEJcWYQ1d+zAyA1jNGcuVGUbuIZj21qjpqZVpIjTY+oLQA2XyN7P/ye7bSF49K8PhRR6txTEXgtFUKGnJYxfed/oGVD0nWB7PRprQAxYgnmLdtVbHmRsxOYNclLB8NOkVtND1t3HyKYqjefVJJ50r6UIvQcU32Hg=
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by SJ0PR15MB4204.namprd15.prod.outlook.com (2603:10b6:a03:2c8::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 24 Nov
- 2020 17:41:45 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3589.029; Tue, 24 Nov 2020
- 17:41:45 +0000
-Subject: Re: [PATCH bpf-next v3 2/3] bpf: Add a BPF helper for getting the IMA
- hash of an inode
-To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-References: <20201124151210.1081188-1-kpsingh@chromium.org>
- <20201124151210.1081188-3-kpsingh@chromium.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <4f1309b1-830b-f76f-0b9b-c783f062f0ab@fb.com>
-Date:   Tue, 24 Nov 2020 09:41:41 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
-In-Reply-To: <20201124151210.1081188-3-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:4987]
-X-ClientProxiedBy: MWHPR1401CA0011.namprd14.prod.outlook.com
- (2603:10b6:301:4b::21) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S2403909AbgKXRm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:42:29 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:32028 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728945AbgKXRm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:42:29 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606239749; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=LDLGWnftuNhuhwXEbFu9jSpsqBYMscUfjOPnE77S6l8=; b=eLC6mgDb/0C+6DUXWFzQxztkeaEeeUNwraf+ywIhKV5mSS/hLNh0ayqDUsU0owdLVAsB8KEQ
+ RHyru7IzN0BjeuXuX6gof02Yeb7JXr8ATp31nXEFgsIFvI4o7nXYcm4xhD8kmrV8mHBmCb1L
+ G7r7J4QNBrR9/y277jY+QYY1zZ4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fbd45f5d64ea0b703a92ae6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 17:42:13
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DF9DAC433C6; Tue, 24 Nov 2020 17:42:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.77.145])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 843C7C433ED;
+        Tue, 24 Nov 2020 17:42:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 843C7C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH 1/3] irqchip: qcom-pdc: Fix phantom irq when changing
+ between rising/falling
+To:     Doug Anderson <dianders@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+ <CACRpkdamdXCqZa4=qb5MsJtQMw1v53z5HZVv5SHJv84dtVACqQ@mail.gmail.com>
+ <CAD=FV=W9+Wa=0d-Y+kxhqsRVM4TOofTC-C519cLkYOsLSBRZ4A@mail.gmail.com>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <603c691f-3614-d87b-075a-0889e9ffc453@codeaurora.org>
+Date:   Tue, 24 Nov 2020 23:12:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::10b2] (2620:10d:c090:400::5:4987) by MWHPR1401CA0011.namprd14.prod.outlook.com (2603:10b6:301:4b::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 17:41:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9ccfa16e-4c84-4cdc-1404-08d890a03624
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4204:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB4204089EEC90F7DA8D8E2412D3FB0@SJ0PR15MB4204.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v+cxCthuc/7qrQ9ZbDN+adBCauOFfknwYGJS8F7Bx9RS9wEKvZoSzEjGTSkWBYlv21M7qi3b6tD7P1wBRm3izOks1tg5k51j44zjpjySM+iiu8SC65cLk+QNo5BJjxXezmP6W/nIlvB2+RN8KzdpB4MNgOcPAW9oHv0yuCgIaUGPGU84/x0YxuQiHMK8G9vY6sisLi8YWYY4giFDe7sE9UX2guV05psfad4bvm7Mcrk5BhhXVSbdHhMThmaHjFC98aXznDhhGopiYmKaoAoL3iXV8jgKjxDjZfj6/8QPOQhxUX/1unav9o6Cxb1IlXTwADk1+wYIgNe9dvuTrAzwpDHbqFbuHOey74M2eB0AT5VZVzf8YKJeLVyO4I9khIlE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(39860400002)(366004)(346002)(6486002)(54906003)(8676002)(16526019)(66946007)(478600001)(53546011)(186003)(52116002)(66476007)(316002)(8936002)(36756003)(66556008)(110136005)(31696002)(83380400001)(4744005)(2616005)(86362001)(6666004)(31686004)(2906002)(7416002)(4326008)(5660300002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SmcvMHo1ZEdYMlBFOGVLdXJMbHlFMmw0WEFOWFFFTnN6ZEliaWZlOC9OR05r?=
- =?utf-8?B?U3YzRExsQ2R1cjVCZTdzN0lHT2NLekV0UGI4TVhBekZYUXpjZmNKQWRNbUwv?=
- =?utf-8?B?aTl6YjBLRlhuTVRER2IwRDF3eFo2TStVdjBkRHVXNEdRTDhBN2ZWc3pMcUFl?=
- =?utf-8?B?ZVRDL2t6anZKSzFudDZvank1bXcyVVVCMlgvbzFOV0dnK2xnV1NBRkZhUmxQ?=
- =?utf-8?B?bkxrbTBnUHd3RGM0enQ5OWt4bmEyODdNMGJvM0pJUFVldXZUcVhPWnpFY1Bq?=
- =?utf-8?B?Z05GWkd6M1E2QUQ4TDBEZkVvenN4YzcxS2dhVWZLZW1NMm9FMVhoMi9MU3E3?=
- =?utf-8?B?YTREK3d6VlZXWUpMZzA2KzNMQ3pCMGZReUNVb2dmM0M0bk5oTm5iS1Y3T2ha?=
- =?utf-8?B?M3lKaDhwa2hrTStMUjZpZUNMRlNzQURUMXVzblVVN3FDYVR4M1VnVUZTb0Q3?=
- =?utf-8?B?Ym1ScjYwUjg5WEZWZnIvWnAwdDk3engvUVlsNWFmZ2tDSC93aVd4MmxXdkRl?=
- =?utf-8?B?ekx6QzlvL1dIK1E3NHNranpEUE5EZlg4dEEyM0ozSmNmeTZWV2hHU1hpeGVa?=
- =?utf-8?B?TnkrQjV0Ymp3c0pTQnl0S1NRNlB3aUF5SzZVQk4zU3JIVjh6TW04OWIvNzRQ?=
- =?utf-8?B?NnROMzh1UGhCMEFUWndRRWppdlhTMlpURWlGaVU5c1J2MlkrdzBoS3pJamhD?=
- =?utf-8?B?a2hyVndNQ0NKa0NRbXpvdmJvRGp2a0llM2FtZUNtYTJUcy9wNFJYNU5zUElF?=
- =?utf-8?B?UmFIaXZQTjRJbktEU1lwZnF6WHppUkNmcnh0VytPZWsxVVYvb011d0NuWHgz?=
- =?utf-8?B?NU53NWhWa01lZ2N6UTBvanpTdENGczJkNDVoRVl4cjhxVFhsMkpobWhMYSt0?=
- =?utf-8?B?dEFjbVpDak5nODI2QVM0V0NzTjNaVHVBaDA2cTAxZHpPVzJjaDJVVkI5YVNO?=
- =?utf-8?B?UVZGRlBmZnpFMlNJREw5QldzQ2NkUUY2aFdVVTZ6b3NrbUcwenBWemMyc09K?=
- =?utf-8?B?Yk1UVkZKaDJKZWhqNkpEdXp3bFg0SHpYc0VVNldqbEEyWk1iR0NRMDFkYmJ1?=
- =?utf-8?B?MklVVGdFV3dHWWxRRGNBL1ZWemhIWmFsVXdISjJpWDZEWUh2NjVaM3pOMEFh?=
- =?utf-8?B?Ukx1U2EwL3FxSGtnZ1pZYkhkU1ZIZFpmdDUzcHozTjNqMDB3MCtTUGovdVFq?=
- =?utf-8?B?d0ZCR2ZMT1VRTjNHOG16bEhSVUNMeGU1M2tOdXZWQUJtbUR1WUU2RWM1cnBk?=
- =?utf-8?B?VFJMQ0o2dGQwNlMxZW56ZkI5Z2tuMEFJRnZGbFUxNGtFeGJ3eFdERXJQdlJl?=
- =?utf-8?B?Ui9Yc2xJOGZTRTRrOTNybnZWWFFGOEJlOEJrWFZ1NG81TFhPNWQwRnN4SzFJ?=
- =?utf-8?B?cGlkUHNCRWdrcVE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ccfa16e-4c84-4cdc-1404-08d890a03624
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 17:41:45.1485
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IInCA/eKgLCLYIwGzkAqn1jSa+6go7+st0wmSS9kkcFV+VjUSksUrUG28ix4iGQU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4204
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_05:2020-11-24,2020-11-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- adultscore=0 phishscore=0 bulkscore=0 impostorscore=0 suspectscore=0
- clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=926
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240107
-X-FB-Internal: deliver
+In-Reply-To: <CAD=FV=W9+Wa=0d-Y+kxhqsRVM4TOofTC-C519cLkYOsLSBRZ4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
++	 * When we change types the PDC can give a phantom interrupt.
++	 * Clear it.  Specifically the phantom shows up if a line is already
++	 * high and we change to rising or if a line is already low and we
++	 * change to falling but let's be consistent and clear it always.
++	 *
 
-On 11/24/20 7:12 AM, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> Provide a wrapper function to get the IMA hash of an inode. This helper
-> is useful in fingerprinting files (e.g executables on execution) and
-> using these fingerprints in detections like an executable unlinking
-> itself.
-> 
-> Since the ima_inode_hash can sleep, it's only allowed for sleepable
-> LSM hooks.
-> 
-> Signed-off-by: KP Singh <kpsingh@google.com>
+Can you please hold this change. I am checking with HW folks if above 
+commented behaviour is expected/is valid case to set the irq type rising 
+edge when the line is already high.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Will keep posting update here.
+
+Thanks,
+Maulik
+
+On 11/24/2020 10:25 PM, Doug Anderson wrote:
+> Hi,
+>
+> On Tue, Nov 24, 2020 at 12:28 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>> On Tue, Nov 24, 2020 at 1:02 AM Douglas Anderson <dianders@chromium.org> wrote:
+>>
+>>> We have a problem if we use gpio-keys and configure wakeups such that
+>>> we only want one edge to wake us up.  AKA:
+>>>    wakeup-event-action = <EV_ACT_DEASSERTED>;
+>>>    wakeup-source;
+>> I would need Marc's ACK to apply this with the other patches
+>> to the pinctrl tree, but I can't really see if maybe it is OK to
+>> apply it separately?
+> I'll make an explicit note after the cut in the patch, but to also
+> respond here: we can apply this patch on its own.  The only reason I
+> sent as one series is because they address similar issues, this patch
+> stands on its own.  Patch #3 needs #2 but patch #2/#3 don't need patch
+> #1.
+>
+>> Also are these patches supposed to all go in as fixes or
+>> for v5.11?
+> Wherever it makes sense.
+>
+> -Doug
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
