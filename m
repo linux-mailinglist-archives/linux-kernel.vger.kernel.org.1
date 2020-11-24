@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6902C1E7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC3E2C1E85
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbgKXGtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:49:50 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:64084 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729853AbgKXGtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:49:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606200589; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=UDO+Y8s0zbY40OPyGLj6G8krTvl3bn+bwk439waak+c=; b=W4kM7fykYA8KS2VSxiKtwCM3oRyKZKh9Bmkk3iDJd7xuZvwgWr4C6uoJpKA1Qa2XHu114G1q
- 7oC+bbZWc1eqj6l28I/UyyMlAtUE/qMqPhYhKl0gubryoizk/6+pZ+QhEgxVFnMSGAYThHZQ
- 7c94ASp0KVkrN/tzixRL06eYGMc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fbcad0d1b731a5d9c07b850 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 06:49:49
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2C2DBC43463; Tue, 24 Nov 2020 06:49:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4DEE4C43460;
-        Tue, 24 Nov 2020 06:49:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4DEE4C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        david@redhat.com, Laura Abbott <lauraa@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>
-Subject: [PATCH] fs/buffer.c: Revoke LRU when trying to drop buffers
-Date:   Mon, 23 Nov 2020 22:49:38 -0800
-Message-Id: <1fe5d53722407a2651eeeada3a422c117041bf1d.1606194703.git.cgoldswo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1606194703.git.cgoldswo@codeaurora.org>
-References: <cover.1606194703.git.cgoldswo@codeaurora.org>
-In-Reply-To: <cover.1606194703.git.cgoldswo@codeaurora.org>
-References: <cover.1606194703.git.cgoldswo@codeaurora.org>
+        id S1729896AbgKXGw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:52:26 -0500
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:37356 "EHLO
+        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729885AbgKXGwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:52:25 -0500
+Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 659351A31F4;
+        Tue, 24 Nov 2020 14:51:50 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AAoACwDIDVz-8Zy3pozuG4px.3.1606200710396.Hmail.bernard@vivo.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: =?UTF-8?B?UmU6W1JGQyBQQVRDSF0gQWRkIGEgbmV3ICJGcm96ZW4iIHN0YXR1cyB0byBNQUlOVEFJTkVSUyBzdWJzeXN0ZW0gZW50cmllcw==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 112.80.34.204
+In-Reply-To: <afd4d5199527b33c4c428090b8a3d360b9565549.camel@perches.com>
+MIME-Version: 1.0
+Received: from bernard@vivo.com( [112.80.34.204) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 24 Nov 2020 14:51:50 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Tue, 24 Nov 2020 14:51:50 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ09IHkhMSklIH0NDVkpNS01JS0tMSktPSExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISVVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU5CQk9JTE9MSk5ON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6OhQ6OAw*Mj8tAVZDIQJICxQBDjxPCwNVSFVKTUtNSUtLTEpLQktOVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKSklVQ0tVSE9VSUtPWVdZCAFZQUxMT0I3Bg++
+X-HM-Tid: 0a75f905d51393b4kuws659351a31f4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laura Abbott <lauraa@codeaurora.org>
-
-When a buffer is added to the LRU list, a reference is taken which is
-not dropped until the buffer is evicted from the LRU list. This is the
-correct behavior, however this LRU reference will prevent the buffer
-from being dropped. This means that the buffer can't actually be dropped
-until it is selected for eviction. There's no bound on the time spent
-on the LRU list, which means that the buffer may be undroppable for
-very long periods of time. Given that migration involves dropping
-buffers, the associated page is now unmigratible for long periods of
-time as well. CMA relies on being able to migrate a specific range
-of pages, so these types of failures make CMA significantly
-less reliable, especially under high filesystem usage.
-
-Rather than waiting for the LRU algorithm to eventually kick out
-the buffer, explicitly remove the buffer from the LRU list when trying
-to drop it. There is still the possibility that the buffer
-could be added back on the list, but that indicates the buffer is
-still in use and would probably have other 'in use' indicates to
-prevent dropping.
-
-Signed-off-by: Laura Abbott <lauraa@codeaurora.org>
-Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
----
- fs/buffer.c | 47 +++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 45 insertions(+), 2 deletions(-)
-
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 64564ac..1751f0b 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1471,12 +1471,48 @@ static bool has_bh_in_lru(int cpu, void *dummy)
- 	return false;
- }
- 
-+static void __evict_bh_lru(void *arg)
-+{
-+	struct bh_lru *b = &get_cpu_var(bh_lrus);
-+	struct buffer_head *bh = arg;
-+	int i;
-+
-+	for (i = 0; i < BH_LRU_SIZE; i++) {
-+		if (b->bhs[i] == bh) {
-+			brelse(b->bhs[i]);
-+			b->bhs[i] = NULL;
-+			goto out;
-+		}
-+	}
-+out:
-+	put_cpu_var(bh_lrus);
-+}
-+
-+static bool bh_exists_in_lru(int cpu, void *arg)
-+{
-+	struct bh_lru *b = per_cpu_ptr(&bh_lrus, cpu);
-+	struct buffer_head *bh = arg;
-+	int i;
-+
-+	for (i = 0; i < BH_LRU_SIZE; i++) {
-+		if (b->bhs[i] == bh)
-+			return true;
-+	}
-+
-+	return false;
-+
-+}
- void invalidate_bh_lrus(void)
- {
- 	on_each_cpu_cond(has_bh_in_lru, invalidate_bh_lru, NULL, 1);
- }
- EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
- 
-+static void evict_bh_lrus(struct buffer_head *bh)
-+{
-+	on_each_cpu_cond(bh_exists_in_lru, __evict_bh_lru, bh, 1);
-+}
-+
- void set_bh_page(struct buffer_head *bh,
- 		struct page *page, unsigned long offset)
- {
-@@ -3245,8 +3281,15 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
- 
- 	bh = head;
- 	do {
--		if (buffer_busy(bh))
--			goto failed;
-+		if (buffer_busy(bh)) {
-+			/*
-+			 * Check if the busy failure was due to an
-+			 * outstanding LRU reference
-+			 */
-+			evict_bh_lrus(bh);
-+			if (buffer_busy(bh))
-+				goto failed;
-+		}
- 		bh = bh->b_this_page;
- 	} while (bh != head);
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+CkZyb206IEpvZSBQZXJjaGVzIDxqb2VAcGVyY2hlcy5jb20+CkRhdGU6IDIwMjAtMTEtMjQgMDY6
+MjQ6MDcKVG86ICBTYW0gUmF2bmJvcmcgPHNhbUByYXZuYm9yZy5vcmc+LEJlcm5hcmQgWmhhbyA8
+YmVybmFyZEB2aXZvLmNvbT4KQ2M6ICBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnLEFuZHJl
+dyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+LExpbnVzIFRvcnZhbGRzIDx0b3J2
+YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz4sa2VybmVsLWphbml0b3JzIDxrZXJuZWwtamFuaXRv
+cnNAdmdlci5rZXJuZWwub3JnPixHcmVnIEtIIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4K
+U3ViamVjdDogW1JGQyBQQVRDSF0gQWRkIGEgbmV3ICJGcm96ZW4iIHN0YXR1cyB0byBNQUlOVEFJ
+TkVSUyBzdWJzeXN0ZW0gZW50cmllcz5PbiBNb24sIDIwMjAtMTEtMjMgYXQgMjI6NDIgKzAxMDAs
+IFNhbSBSYXZuYm9yZyB3cm90ZToKPj4gRm9yIHRoaXMgb2xkIGRyaXZlciB3ZSBzaG91bGQgdHJ5
+IHRvIGxpbWl0IHBhdGNoZXMgdG8gYnVnIGZpeGluZyBhbmQKPj4gaW5mcmFzdHJ1Y3R1cmUgdXBk
+YXRlcy4KPgo+SXQgbWlnaHQgYmUgdXNlZnVsIHRvIGFkZCBhIG5ldyAiUzoiIGVudHJ5IHR5cGUg
+dG8gdGhlc2Ugb2xkIGRyaXZlcnMKPmFzIHN1cHBvcnRlZC9tYWludGFpbmVkL29ic29sZXRlIG1h
+eSBub3QgcmVhbGx5IGJlIGFwcHJvcHJpYXRlLgo+Cj5Ib3cgYWJvdXQgc29tZXRoaW5nIGxpa2Ug
+IlM6IEZyb3plbiIgYW5kIGNoZWNrcGF0Y2ggY291bGQgZW1pdCBhCj5tZXNzYWdlIHNpbWlsYXIg
+dG8gdGhlIG9uZSBmb3IgdW5uZWNlc3NhcnkgY2hhbmdlcyB0byBvYnNvbGV0ZSBjb2RlPwo+Cj5T
+byB1c2luZyB0aGUgYmVsb3cgd291bGQgZW1pdDoKPgo+JCAuL3NjcmlwdHMvY2hlY2twYXRjaC5w
+bCAtZiBkcml2ZXJzL2dwdS9kcm0vdmlhL3ZpYV9kbWEuYwo+V0FSTklORzogZHJpdmVycy9ncHUv
+ZHJtL3ZpYS92aWFfZG1hLmMgaXMgbWFya2VkIGFzICdmcm96ZW4nIGluIHRoZSBNQUlOVEFJTkVS
+UyBoaWVyYXJjaHkuICBObyB1bm5lY2Vzc2FyeSBtb2RpZmljYXRpb25zIHBsZWFzZS4KPgo+TWF5
+YmUgbGlrZSB0aGUgYmVsb3cgKGFuZCBmeWkgdGhlcmUncyBubyBhZGRpdGlvbmFsIGdpdCBsb29r
+dXAgb3ZlcmhlYWQgYXMKPnRoZSBpbml0aWFsIG9ic29sZXRlIGNoZWNrIGFscmVhZHkgY2FjaGVz
+IHRoZSBnaXQgcmVzdWx0KS4KPgo+LS0tCj4gTUFJTlRBSU5FUlMgICAgICAgICAgIHwgMTAgKysr
+KysrKysrLQo+IHNjcmlwdHMvY2hlY2twYXRjaC5wbCB8IDExICsrKysrKystLS0tCj4gMiBmaWxl
+cyBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+Cj5kaWZmIC0tZ2l0
+IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJTkVSUwo+aW5kZXggNWYxMDEwNWNhYzZmLi42Mzc0ZDI5
+MTgwYjggMTAwNjQ0Cj4tLS0gYS9NQUlOVEFJTkVSUwo+KysrIGIvTUFJTlRBSU5FUlMKPkBAIC04
+OCw3ICs4OCwxMCBAQCBEZXNjcmlwdGlvbnMgb2Ygc2VjdGlvbiBlbnRyaWVzIGFuZCBwcmVmZXJy
+ZWQgb3JkZXIKPiAJICAgU3VwcG9ydGVkOglTb21lb25lIGlzIGFjdHVhbGx5IHBhaWQgdG8gbG9v
+ayBhZnRlciB0aGlzLgo+IAkgICBNYWludGFpbmVkOglTb21lb25lIGFjdHVhbGx5IGxvb2tzIGFm
+dGVyIGl0Lgo+IAkgICBPZGQgRml4ZXM6CUl0IGhhcyBhIG1haW50YWluZXIgYnV0IHRoZXkgZG9u
+J3QgaGF2ZSB0aW1lIHRvIGRvCj4tCQkJbXVjaCBvdGhlciB0aGFuIHRocm93IHRoZSBvZGQgcGF0
+Y2ggaW4uIFNlZSBiZWxvdy4uCj4rCQkJbXVjaCBvdGhlciB0aGFuIHRocm93IHRoZSBvZGQgcGF0
+Y2ggaW4uCj4rCSAgIEZyb3plbjoJT2xkIGNvZGUgdGhhdCBzaG91bGQgbm90IGJlIG1vZGlmaWVk
+IHVubGVzcyBjaGFuZ2VzCj4rCQkJYXJlIHRvIGNvcnJlY3QgYWN0dWFsIGRlZmVjdHMgb3IgQVBJ
+IGluZnJhc3RydWN0dXJlLgo+KwkJCUNsZWFudXAvc3R5bGUgY2hhbmdlcyBhcmUgbm90IGdlbmVy
+YWxseSBhY2NlcHRlZC4KPiAJICAgT3JwaGFuOglObyBjdXJyZW50IG1haW50YWluZXIgW2J1dCBt
+YXliZSB5b3UgY291bGQgdGFrZSB0aGUKPiAJCQlyb2xlIGFzIHlvdSB3cml0ZSB5b3VyIG5ldyBj
+b2RlXS4KPiAJICAgT2Jzb2xldGU6CU9sZCBjb2RlLiBTb21ldGhpbmcgdGFnZ2VkIG9ic29sZXRl
+IGdlbmVyYWxseSBtZWFucwo+QEAgLTU3MTgsNiArNTcyMSwxMSBAQCBTOglTdXBwb3J0ZWQKPiBU
+OglnaXQgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtL2RybS1taXNjCj4gRjoJZHJp
+dmVycy9ncHUvZHJtL3VkbC8KPiAKPitEUk0gRFJJVkVSIEZPUiBWSUEKPitMOglkcmktZGV2ZWxA
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4rUzoJRnJvemVuCj4rRjoJZHJpdmVycy9ncHUvZHJtL3Zp
+YS8KPisKPiBEUk0gRFJJVkVSIEZPUiBWSVJUVUFMIEtFUk5FTCBNT0RFU0VUVElORyAoVktNUykK
+PiBNOglSb2RyaWdvIFNpcXVlaXJhIDxyb2RyaWdvc2lxdWVpcmFtZWxvQGdtYWlsLmNvbT4KPiBN
+OglNZWxpc3NhIFdlbiA8bWVsaXNzYS5zcndAZ21haWwuY29tPgo+ZGlmZiAtLWdpdCBhL3Njcmlw
+dHMvY2hlY2twYXRjaC5wbCBiL3NjcmlwdHMvY2hlY2twYXRjaC5wbAo+aW5kZXggZmRmZDVlYzA5
+YmU2Li43OTMyMWNiZmI3NjEgMTAwNzU1Cj4tLS0gYS9zY3JpcHRzL2NoZWNrcGF0Y2gucGwKPisr
+KyBiL3NjcmlwdHMvY2hlY2twYXRjaC5wbAo+QEAgLTkwMiw4ICs5MDIsOCBAQCBzdWIgc2VlZF9j
+YW1lbGNhc2VfZmlsZSB7Cj4gCj4gb3VyICVtYWludGFpbmVkX3N0YXR1cyA9ICgpOwo+IAo+LXN1
+YiBpc19tYWludGFpbmVkX29ic29sZXRlIHsKPi0JbXkgKCRmaWxlbmFtZSkgPSBAXzsKPitzdWIg
+aXNfbWFpbnRhaW5lZCB7Cj4rCW15ICgkZmlsZW5hbWUsICR0ZXN0KSA9IEBfOwo+IAo+IAlyZXR1
+cm4gMCBpZiAoISR0cmVlIHx8ICEoLWUgIiRyb290L3NjcmlwdHMvZ2V0X21haW50YWluZXIucGwi
+KSk7Cj4gCj5AQCAtOTExLDcgKzkxMSw3IEBAIHN1YiBpc19tYWludGFpbmVkX29ic29sZXRlIHsK
+PiAJCSRtYWludGFpbmVkX3N0YXR1c3skZmlsZW5hbWV9ID0gYHBlcmwgJHJvb3Qvc2NyaXB0cy9n
+ZXRfbWFpbnRhaW5lci5wbCAtLXN0YXR1cyAtLW5vbSAtLW5vbCAtLW5vZ2l0IC0tbm9naXQtZmFs
+bGJhY2sgLWYgJGZpbGVuYW1lIDI+JjFgOwo+IAl9Cj4gCj4tCXJldHVybiAkbWFpbnRhaW5lZF9z
+dGF0dXN7JGZpbGVuYW1lfSA9fiAvb2Jzb2xldGUvaTsKPisJcmV0dXJuICRtYWludGFpbmVkX3N0
+YXR1c3skZmlsZW5hbWV9ID1+IC8kdGVzdC9pOwo+IH0KPiAKPiBzdWIgaXNfU1BEWF9MaWNlbnNl
+X3ZhbGlkIHsKPkBAIC0yNjMzLDkgKzI2MzMsMTIgQEAgc3ViIHByb2Nlc3Mgewo+IAkJfQo+IAo+
+IAkJaWYgKCRmb3VuZF9maWxlKSB7Cj4tCQkJaWYgKGlzX21haW50YWluZWRfb2Jzb2xldGUoJHJl
+YWxmaWxlKSkgewo+KwkJCWlmIChpc19tYWludGFpbmVkKCRyZWFsZmlsZSwgIm9ic29sZXRlIikp
+IHsKPiAJCQkJV0FSTigiT0JTT0xFVEUiLAo+IAkJCQkgICAgICIkcmVhbGZpbGUgaXMgbWFya2Vk
+IGFzICdvYnNvbGV0ZScgaW4gdGhlIE1BSU5UQUlORVJTIGhpZXJhcmNoeS4gIE5vIHVubmVjZXNz
+YXJ5IG1vZGlmaWNhdGlvbnMgcGxlYXNlLlxuIik7Cj4rCQkJfSBlbHNpZiAoaXNfbWFpbnRhaW5l
+ZCgkcmVhbGZpbGUsICJmcm96ZW4iKSkgewo+KwkJCQlXQVJOKCJGUk9aRU4iLAo+KwkJCQkgICAg
+ICIkcmVhbGZpbGUgaXMgbWFya2VkIGFzICdmcm96ZW4nIGluIHRoZSBNQUlOVEFJTkVSUyBoaWVy
+YXJjaHkuICBObyB1bm5lY2Vzc2FyeSBtb2RpZmljYXRpb25zIHBsZWFzZS5cbiIpOwo+IAkJCX0K
+PiAJCQlpZiAoJHJlYWxmaWxlID1+IG1AXig/OmRyaXZlcnMvbmV0L3xuZXQvfGRyaXZlcnMvc3Rh
+Z2luZy8pQCkgewo+IAkJCQkkY2hlY2sgPSAxOwoKSGk6CgpGb3IgbWUsIHRoaXMgc2VlbXMgdG8g
+YmUgYSBuaWNlIGlkZWEuCkFzIGEgIG5ld2NvbWVyIHRvIHRoZSBjb21tdW5pdHksIG1heWJlIEkg
+YW0gbm90IHN1cmUgd2hpY2ggZHJpdmVycyBhcmUgaG90IGFuZCB3aGljaCBvbmVzIGRvIG5vdCBu
+ZWVkIHRvbyBtdWNoIGF0dGVudGlvbi4KV2l0aCB0aGlzIHBhdGNoIHNjcmlwdCwgaXQgd2lsbCBn
+aXZlIHVzIGEgYmV0dGVyIGd1aWRlLgoKQlIvL0Jlcm5hcmQKPgoNCg0K
