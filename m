@@ -2,65 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577392C24D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04252C2502
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732970AbgKXLkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:40:43 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7671 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727909AbgKXLkm (ORCPT
+        id S1733103AbgKXLwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732852AbgKXLww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:40:42 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CgMX019WBz15KDX;
-        Tue, 24 Nov 2020 19:40:16 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 24 Nov 2020 19:40:29 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] sched/topology: Mark some symbols with static keyword
-Date:   Tue, 24 Nov 2020 19:52:11 +0800
-Message-ID: <1606218731-3999-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Tue, 24 Nov 2020 06:52:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5BFC0613D6;
+        Tue, 24 Nov 2020 03:52:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EcWi9+S29vOTFIAAm9bKVVKBIY3LaJMRPri+apbEGP8=; b=Fiz9D45SkyFlVfE2RbxXqJ8oUG
+        F45hNDPlYd6z1KtuS6IJXKWqExQGxhxZMW1rEOAT5icqPVG8OmKwHPHm3ZXDqf174Py+EIoHqlHb9
+        XgiX8KfMhA1O/aMB6q8p1g9DcrMpDTYRm1wgMNr1kKTatHnEpmkLHOLea1cGfDd/wrtcywozyUt1z
+        w2Hk8lrazrHXfvmiXnuHG9UEGsA5yEz/z/JJwqZuaDCHkgA9u4sUZ8UxaFPi5+ToDDyGijKnWRNTk
+        ojQahvjpt08p3Y1o2pNEtquOjuIpwW7I1AT3PiVicJBhvJtm4Ew6w4kk/W/OE3X8ooajD5uHaDPKX
+        VX5/q5IQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khWs4-0000Tx-5n; Tue, 24 Nov 2020 11:52:32 +0000
+Date:   Tue, 24 Nov 2020 11:52:32 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: remove the extra processing of zero size in
+ xfs_idata_realloc()
+Message-ID: <20201124115232.GC32060@infradead.org>
+References: <20201124104531.561-1-thunder.leizhen@huawei.com>
+ <20201124104531.561-3-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124104531.561-3-thunder.leizhen@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warnings:
+On Tue, Nov 24, 2020 at 06:45:31PM +0800, Zhen Lei wrote:
+> krealloc() does the free operation when the parameter new_size is 0, with
+> ZERO_SIZE_PTR returned. Because all other places use NULL to check whether
+> if_data is available or not, so covert it from ZERO_SIZE_PTR to NULL.
 
-kernel/sched/topology.c:211:1: warning: symbol 'sched_energy_mutex' was not declared. Should it be static?
-kernel/sched/topology.c:212:6: warning: symbol 'sched_energy_update' was not declared. Should it be static?
-
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- kernel/sched/topology.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 5d3675c..2676687 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -208,8 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
- DEFINE_STATIC_KEY_FALSE(sched_energy_present);
- unsigned int sysctl_sched_energy_aware = 1;
--DEFINE_MUTEX(sched_energy_mutex);
--bool sched_energy_update;
-+static DEFINE_MUTEX(sched_energy_mutex);
-+static bool sched_energy_update;
- 
- void rebuild_sched_domains_energy(void)
- {
--- 
-2.6.2
-
+This new code looks much harder to read than the version it replaced.
