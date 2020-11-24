@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF692C1F5B
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEAD2C1F5A
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730382AbgKXICv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:02:51 -0500
-Received: from mga06.intel.com ([134.134.136.31]:56189 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728890AbgKXICv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:02:51 -0500
-IronPort-SDR: KQtI4UTgPjplNHxc9c1qwVTk+tiqyGaAv2Ya3IVtIac8KTfUuC9oVrgPf9CPhg47EVGOwXSlpY
- bZxazO81QzMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="233514955"
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="233514955"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:02:49 -0800
-IronPort-SDR: 3JphZjpq3JdJnRoPGc5Y0j14NIUBG18Z1ITdlXdmhM0K4IoyOe+yDxx5gIBPcrNYR1jOmUEiiM
- Qgmb6ruhny+A==
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="478418204"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.117]) ([10.239.13.117])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:02:47 -0800
-Subject: Re: [kbuild-all] Re: drivers/net/wan/slic_ds26522.c:205:12: warning:
- stack frame size of 12288 bytes in function 'slic_ds26522_probe'
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <202011200603.Fq2dmeMk-lkp@intel.com>
- <CAAeHK+zykqmcDPAa5GAeu4hSfyWF-D4PAa15y=CSgtAxSQTkGQ@mail.gmail.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <71e44c1f-3c9f-db89-0347-3e23699d67cb@intel.com>
-Date:   Tue, 24 Nov 2020 16:01:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1730374AbgKXICk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730193AbgKXICi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:02:38 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9550EC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:02:34 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id f12so7085174oto.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:02:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a594DHYDSH28ozJvU6Q2cBNN/U0tDhb9dpOOY+Zf8ek=;
+        b=ZLeC2pXRxS7ioJzWcYY9jJ/Np48Q6UGh5Gsvxkyd73LF4tfwf8TLhewXJTemf3Jwxx
+         X7jKioju8zjZw6KC2hyAUQh8KdjAn4BYilk4LZ/TOyVQ+LIb/HsCOe7kNkmXNOQO/Uyb
+         jyr5vgrWK7sjx0NieksUlsASyKp5d6OXcUEjq6XnPDaVpGoS8nfJdjr4IGJQzY2zI5GP
+         z2ItB7Jz1rRzgJpb3exTUoZBnhzLOIGzzVGjfJyrPogi4RD9ZMM16HePxM3y3aKLFRWc
+         /mvwIDbPN6GAHDYH+pChgCdXtyxsUGeS1RxxYqjZ6AEiNKpVKwoCrPcQPsFaSR6seUcq
+         sJNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a594DHYDSH28ozJvU6Q2cBNN/U0tDhb9dpOOY+Zf8ek=;
+        b=od/O+ktHmuhCATLtsK/STwLho5ZiKRMIO5FRBlrDmWnBi2iMen7U1kRlN5ScGiisRn
+         ibioNiq/jcz40rQixTQzzsTT93ZEXpqO/dL3pNDrYA7c4HAd65ujj/ebHAq34WISIfRH
+         zrlmUeeSwesesMRVWXWqDebiNJWJKFnt43iJ4Xp2BIwTW6ZxdmBhcV4Gvr/2/Km8Gs01
+         5wrjSAglrr4j2P2kzOTeGq62AVSANGJUf1KlfJWmsMtcxaJyaUEGpxoLuhrnpIc88l3X
+         qysYhezpw2Wf3fxlUm9b6mnvPcy6cJDApIjCrMdD8qZBCzpoQw9faUiS8ba/XcAFzB0w
+         JLpw==
+X-Gm-Message-State: AOAM531O65sHmxTdn9lYGw/sNhFSJ0PNSuxMOlDRhEpj/dXeGXQM8/C+
+        YHMNdJIkKSYTkTF52+ARLf+P0MAZC8+5KJt9XA087A==
+X-Google-Smtp-Source: ABdhPJyhU4UCNA5E8Kwo//NGX/pFWA9xTcgIEzo/Ro/rMxJ7ogdtEI+hGnzxmYgfdxM9qtIEZmZxaNzNJ3xe/7hYKPw=
+X-Received: by 2002:a05:6830:1c76:: with SMTP id s22mr2516951otg.233.1606204953329;
+ Tue, 24 Nov 2020 00:02:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+zykqmcDPAa5GAeu4hSfyWF-D4PAa15y=CSgtAxSQTkGQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201116054035.211498-1-98.arpi@gmail.com> <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
+ <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com> <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
+In-Reply-To: <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 24 Nov 2020 09:02:21 +0100
+Message-ID: <CANpmjNNfNJWJ7avZrRkwvtx2Vv7oR9V8=dmcWW_irotmKWQWGw@mail.gmail.com>
+Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/23/20 10:15 PM, Andrey Konovalov wrote:
-> On Thu, Nov 19, 2020 at 11:16 PM kernel test robot <lkp@intel.com> wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   3494d58865ad4a47611dbb427b214cc5227fa5eb
->> commit: cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4 kasan: allow enabling stack tagging for tag-based mode
->> date:   3 months ago
->> config: arm64-randconfig-r002-20201119 (attached as .config)
->> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project b2613fb2f0f53691dd0211895afbb9413457fca7)
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # install arm64 cross compiling tool for clang build
->>          # apt-get install binutils-aarch64-linux-gnu
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>>> drivers/net/wan/slic_ds26522.c:205:12: warning: stack frame size of 12288 bytes in function 'slic_ds26522_probe' [-Wframe-larger-than=]
->>     static int slic_ds26522_probe(struct spi_device *spi)
->>                ^
->>     1 warning generated.
->> --
->>>> drivers/gpu/drm/panel/panel-sitronix-st7789v.c:194:12: warning: stack frame size of 18352 bytes in function 'st7789v_prepare' [-Wframe-larger-than=]
->>     static int st7789v_prepare(struct drm_panel *panel)
->>                ^
->>     1 warning generated.
-> Same issue as reported previously. Copying my response from the other
-> email just in case:
+On Tue, 24 Nov 2020 at 08:25, David Gow <davidgow@google.com> wrote:
 >
-> This is the same issue in LLVM that was reported by Arnd for generic
-> KASAN (also see KASAN_STACK_ENABLE option description). By default
-> KASAN shouldn't have stack instrumentation enabled unless
-> KASAN_STACK_ENABLE is specified. Perhaps it makes sense to disable it
-> for KASAN_SW_TAGS config on the kernel test robot.
+> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
+> > > On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> > > >
+> > > > Implementation of support for parameterized testing in KUnit. This
+> > > > approach requires the creation of a test case using the
+> > > > KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+> > > >
+> > > > This generator function should return the next parameter given the
+> > > > previous parameter in parameterized tests. It also provides a macro to
+> > > > generate common-case generators based on arrays. Generators may also
+> > > > optionally provide a human-readable description of parameters, which is
+> > > > displayed where available.
+> > > >
+> > > > Note, currently the result of each parameter run is displayed in
+> > > > diagnostic lines, and only the overall test case output summarizes
+> > > > TAP-compliant success or failure of all parameter runs. In future, when
+> > > > supported by kunit-tool, these can be turned into subsubtest outputs.
+> > > >
+> > > > Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> > > > Co-developed-by: Marco Elver <elver@google.com>
+> > > > Signed-off-by: Marco Elver <elver@google.com>
+> > > > ---
+> > > [Resending this because my email client re-defaulted to HTML! Aarrgh!]
+> > >
+> > > This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
+> > > both worked fine.
+> > >
+> > > Reviewed-by: David Gow <davidgow@google.com>
+> > > Tested-by: David Gow <davidgow@google.com>
+> >
+> > Thank you!
+> >
+> > > Thanks for sticking with this!
+> >
+> > Will these patches be landing in 5.11 or 5.12?
+> >
 >
-> [1] https://bugs.llvm.org/show_bug.cgi?id=38809
+> I can't think of any reason not to have these in 5.11. We haven't
+> started staging things in the kselftest/kunit branch for 5.11 yet,
+> though.
+>
+> Patch 2 will probably need to be acked by Ted for ext4 first.
 
-Hi Andrey,
+Patch 2 had already had 1 Reviewed-by on v3 that got lost. The core
+bits of that test haven't changed since then, but I can't tell if it
+needs a re-review.
 
-Thanks for the explanation, we'll disable CONFIG_KASAN_SW_TAGS.
+https://lkml.kernel.org/r/CAAXuY3o9Xe-atK0Mja6qXLncUhmmVf4pR7hsANsqaoUX71RXVg@mail.gmail.com
 
-Best Regards,
-Rong Chen
+Thanks,
+-- Marco
 
+> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
+>
+> Cheers,
+> -- David
+>
+> > > -- David
+> >
+> > Thanks,
+> > -- Marco
