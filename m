@@ -2,318 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279C72C2FF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D972C2FF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404121AbgKXS1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:27:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33228 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729291AbgKXS1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:27:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 392D8AC2D;
-        Tue, 24 Nov 2020 18:27:20 +0000 (UTC)
-Subject: Re: [PATCH v4] mm: Optional full ASLR for mmap() and mremap()
-To:     Topi Miettinen <toiwoton@gmail.com>,
-        linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-References: <20201026160518.9212-1-toiwoton@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1b07c7ec-b95e-7db2-6404-eb8210162fbc@suse.cz>
-Date:   Tue, 24 Nov 2020 19:27:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S2390924AbgKXSal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390718AbgKXSak (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:30:40 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D59BC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:30:40 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id ek7so11099074qvb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:30:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qE+mlz7vaHNamyks+T6fnmjyxlDijK/IliQeVxUfJ7E=;
+        b=WzZhpaNgLbsS4lgWNQRsvMsW1h6D7J+kWJi5NGJw9N4uQya5bMeDbRpayFRfuL91/i
+         G3WPsygPujP32fX+VeEzR9GdDuCG1auM5NoIC7QYdZpB3J3vdSuYa4FWG62A2NzV/aju
+         3TuG2u05XBVPNMs4PY8IvTuZAMm0Tsipdy4F0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qE+mlz7vaHNamyks+T6fnmjyxlDijK/IliQeVxUfJ7E=;
+        b=o4cDyU/UT7iXi5niIZyvDXDUxjSNO+SN6jzk5Px3DoSlK3DqHo1+sCHkx2CC3orZyh
+         W6ZJ5lx8mhpf6QQEG7uUx/cdrlkWfw5TAg2D7wKDmqM1awc9wDyIwJBqdDnZeifSRYEQ
+         KL1Wb+weZ1kB9aisqBg1LbJr4mYK2bHU7OJ3SvSSpS5G2QFR+pQgIA8RSMFQvOA5a8ee
+         AX10GzZ1PyvhsoM/ZbFRRz9LTav1D7Kiip50n0HcTGNpBL60blzXRgvdq19R5EtKMW5z
+         /pFFUlwcYQhh5IQmgOQ22acfrvYHwjBH42tRRsFPpQrSk7ldLxyLZR7TPcuCSHugkHFN
+         iqmA==
+X-Gm-Message-State: AOAM531+P0A18sLpufgF0crMMB9mLtIlsxZhvX0VJM+XF8jL9OU9K9eu
+        dJjZorHKNfwG2H7lkZD0JF1MMIyfyyuAcQ==
+X-Google-Smtp-Source: ABdhPJyv5aFhmhLQOrN+O7tia+0mwM3cnfR0tlCavpeZATU7GOwqY41pjwmceBKFe5b5YbAANt3P5A==
+X-Received: by 2002:ad4:5b82:: with SMTP id 2mr6128551qvp.28.1606242639558;
+        Tue, 24 Nov 2020 10:30:39 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id x24sm13193330qkx.23.2020.11.24.10.30.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 10:30:38 -0800 (PST)
+Date:   Tue, 24 Nov 2020 13:30:38 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 10/32] sched: Fix priority inversion of cookied task
+ with sibling
+Message-ID: <20201124183038.GG1021337@google.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-11-joel@joelfernandes.org>
+ <20201122224123.GE110669@balbir-desktop>
 MIME-Version: 1.0
-In-Reply-To: <20201026160518.9212-1-toiwoton@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201122224123.GE110669@balbir-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please CC linux-api on future versions.
+On Mon, Nov 23, 2020 at 09:41:23AM +1100, Balbir Singh wrote:
+> On Tue, Nov 17, 2020 at 06:19:40PM -0500, Joel Fernandes (Google) wrote:
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > 
+> > The rationale is as follows. In the core-wide pick logic, even if
+> > need_sync == false, we need to go look at other CPUs (non-local CPUs) to
+> > see if they could be running RT.
+> > 
+> > Say the RQs in a particular core look like this:
+> > Let CFS1 and CFS2 be 2 tagged CFS tags. Let RT1 be an untagged RT task.
+> > 
+> > rq0            rq1
+> > CFS1 (tagged)  RT1 (not tag)
+> > CFS2 (tagged)
+> > 
+> > Say schedule() runs on rq0. Now, it will enter the above loop and
+> > pick_task(RT) will return NULL for 'p'. It will enter the above if() block
+> > and see that need_sync == false and will skip RT entirely.
+> > 
+> > The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
+> > rq0             rq1
+> > CFS1            IDLE
+> > 
+> > When it should have selected:
+> > rq0             r1
+> > IDLE            RT
+> > 
+> > Joel saw this issue on real-world usecases in ChromeOS where an RT task
+> > gets constantly force-idled and breaks RT. Lets cure it.
+> > 
+> > NOTE: This problem will be fixed differently in a later patch. It just
+> >       kept here for reference purposes about this issue, and to make
+> >       applying later patches easier.
+> >
+> 
+> The changelog is hard to read, it refers to above if(), whereas there
+> is no code snippet in the changelog.
 
-On 10/26/20 5:05 PM, Topi Miettinen wrote:
-> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
-> enables full randomization of memory mappings created with mmap(NULL,
-> ...). With 2, the base of the VMA used for such mappings is random,
-> but the mappings are created in predictable places within the VMA and
-> in sequential order. With 3, new VMAs are created to fully randomize
-> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
-> even if not necessary.
-> 
-> The method is to randomize the new address without considering
-> VMAs. If the address fails checks because of overlap with the stack
-> area (or in case of mremap(), overlap with the old mapping), the
-> operation is retried a few times before falling back to old method.
-> 
-> On 32 bit systems this may cause problems due to increased VM
-> fragmentation if the address space gets crowded.
-> 
-> On all systems, it will reduce performance and increase memory
-> usage due to less efficient use of page tables and inability to
-> merge adjacent VMAs with compatible attributes.
-> 
-> In this example with value of 2, dynamic loader, libc, anonymous
-> memory reserved with mmap() and locale-archive are located close to
-> each other:
-> 
-> $ cat /proc/self/maps (only first line for each object shown for brevity)
-> 58c1175b1000-58c1175b3000 r--p 00000000 fe:0c 1868624                    /usr/bin/cat
-> 79752ec17000-79752f179000 r--p 00000000 fe:0c 2473999                    /usr/lib/locale/locale-archive
-> 79752f179000-79752f279000 rw-p 00000000 00:00 0
-> 79752f279000-79752f29e000 r--p 00000000 fe:0c 2402415                    /usr/lib/x86_64-linux-gnu/libc-2.31.so
-> 79752f43a000-79752f440000 rw-p 00000000 00:00 0
-> 79752f46f000-79752f470000 r--p 00000000 fe:0c 2400484                    /usr/lib/x86_64-linux-gnu/ld-2.31.so
-> 79752f49b000-79752f49c000 rw-p 00000000 00:00 0
-> 7ffdcad9e000-7ffdcadbf000 rw-p 00000000 00:00 0                          [stack]
-> 7ffdcadd2000-7ffdcadd6000 r--p 00000000 00:00 0                          [vvar]
-> 7ffdcadd6000-7ffdcadd8000 r-xp 00000000 00:00 0                          [vdso]
-> 
-> With 3, they are located at unrelated addresses:
-> $ echo 3 > /proc/sys/kernel/randomize_va_space
-> $ cat /proc/self/maps (only first line for each object shown for brevity)
-> 1206a8fa000-1206a8fb000 r--p 00000000 fe:0c 2400484                      /usr/lib/x86_64-linux-gnu/ld-2.31.so
-> 1206a926000-1206a927000 rw-p 00000000 00:00 0
-> 19174173000-19174175000 rw-p 00000000 00:00 0
-> ac82f419000-ac82f519000 rw-p 00000000 00:00 0
-> afa66a42000-afa66fa4000 r--p 00000000 fe:0c 2473999                      /usr/lib/locale/locale-archive
-> d8656ba9000-d8656bce000 r--p 00000000 fe:0c 2402415                      /usr/lib/x86_64-linux-gnu/libc-2.31.so
-> d8656d6a000-d8656d6e000 rw-p 00000000 00:00 0
-> 5df90b712000-5df90b714000 r--p 00000000 fe:0c 1868624                    /usr/bin/cat
-> 7ffe1be4c000-7ffe1be6d000 rw-p 00000000 00:00 0                          [stack]
-> 7ffe1bf07000-7ffe1bf0b000 r--p 00000000 00:00 0                          [vvar]
-> 7ffe1bf0b000-7ffe1bf0d000 r-xp 00000000 00:00 0                          [vdso]
-> 
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> CC: Jann Horn <jannh@google.com>
-> CC: Kees Cook <keescook@chromium.org>
-> CC: Matthew Wilcox <willy@infradead.org>
-> CC: Mike Rapoport <rppt@kernel.org>
-> Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
-> ---
-> v2: also randomize mremap(..., MREMAP_MAYMOVE)
-> v3: avoid stack area and retry in case of bad random address (Jann
-> Horn), improve description in kernel.rst (Matthew Wilcox)
-> v4: use /proc/$pid/maps in the example (Mike Rapaport), CCs (Andrew
-> Morton), only check randomize_va_space == 3
-> ---
->   Documentation/admin-guide/hw-vuln/spectre.rst |  6 ++--
->   Documentation/admin-guide/sysctl/kernel.rst   | 15 ++++++++++
->   init/Kconfig                                  |  2 +-
->   mm/internal.h                                 |  8 +++++
->   mm/mmap.c                                     | 30 +++++++++++++------
->   mm/mremap.c                                   | 27 +++++++++++++++++
->   6 files changed, 75 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
-> index e05e581af5cf..9ea250522077 100644
-> --- a/Documentation/admin-guide/hw-vuln/spectre.rst
-> +++ b/Documentation/admin-guide/hw-vuln/spectre.rst
-> @@ -254,7 +254,7 @@ Spectre variant 2
->      left by the previous process will also be cleared.
->   
->      User programs should use address space randomization to make attacks
-> -   more difficult (Set /proc/sys/kernel/randomize_va_space = 1 or 2).
-> +   more difficult (Set /proc/sys/kernel/randomize_va_space = 1, 2 or 3).
->   
->   3. A virtualized guest attacking the host
->   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> @@ -499,8 +499,8 @@ Spectre variant 2
->      more overhead and run slower.
->   
->      User programs should use address space randomization
-> -   (/proc/sys/kernel/randomize_va_space = 1 or 2) to make attacks more
-> -   difficult.
-> +   (/proc/sys/kernel/randomize_va_space = 1, 2 or 3) to make attacks
-> +   more difficult.
->   
->   3. VM mitigation
->   ^^^^^^^^^^^^^^^^
-> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> index d4b32cc32bb7..bc3bb74d544d 100644
-> --- a/Documentation/admin-guide/sysctl/kernel.rst
-> +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> @@ -1060,6 +1060,21 @@ that support this feature.
->       Systems with ancient and/or broken binaries should be configured
->       with ``CONFIG_COMPAT_BRK`` enabled, which excludes the heap from process
->       address space randomization.
-> +
-> +3   Additionally enable full randomization of memory mappings created
-> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
-> +    mappings is random, but the mappings are created in predictable
-> +    places within the VMA and in sequential order. With 3, new VMAs
-> +    are created to fully randomize the mappings. Also mremap(...,
-> +    MREMAP_MAYMOVE) will move the mappings even if not necessary.
-> +
-> +    On 32 bit systems this may cause problems due to increased VM
-> +    fragmentation if the address space gets crowded.
-> +
-> +    On all systems, it will reduce performance and increase memory
-> +    usage due to less efficient use of page tables and inability to
-> +    merge adjacent VMAs with compatible attributes.
-> +
->   ==  ===========================================================================
->   
->   
-> diff --git a/init/Kconfig b/init/Kconfig
-> index c9446911cf41..6146e2cd3b77 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1863,7 +1863,7 @@ config COMPAT_BRK
->   	  also breaks ancient binaries (including anything libc5 based).
->   	  This option changes the bootup default to heap randomization
->   	  disabled, and can be overridden at runtime by setting
-> -	  /proc/sys/kernel/randomize_va_space to 2.
-> +	  /proc/sys/kernel/randomize_va_space to 2 or 3.
->   
->   	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
->   
-> diff --git a/mm/internal.h b/mm/internal.h
-> index c43ccdddb0f6..b964c8dbb242 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -618,4 +618,12 @@ struct migration_target_control {
->   	gfp_t gfp_mask;
->   };
->   
-> +#ifndef arch_get_mmap_end
-> +#define arch_get_mmap_end(addr)	(TASK_SIZE)
-> +#endif
-> +
-> +#ifndef arch_get_mmap_base
-> +#define arch_get_mmap_base(addr, base) (base)
-> +#endif
-> +
->   #endif	/* __MM_INTERNAL_H */
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index d91ecb00d38c..3677491e999b 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -47,6 +47,7 @@
->   #include <linux/pkeys.h>
->   #include <linux/oom.h>
->   #include <linux/sched/mm.h>
-> +#include <linux/elf-randomize.h>
->   
->   #include <linux/uaccess.h>
->   #include <asm/cacheflush.h>
-> @@ -73,6 +74,8 @@ const int mmap_rnd_compat_bits_max = CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MAX;
->   int mmap_rnd_compat_bits __read_mostly = CONFIG_ARCH_MMAP_RND_COMPAT_BITS;
->   #endif
->   
-> +#define MAX_RANDOM_MMAP_RETRIES			5
-> +
->   static bool ignore_rlimit_data;
->   core_param(ignore_rlimit_data, ignore_rlimit_data, bool, 0644);
->   
-> @@ -206,7 +209,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
->   #ifdef CONFIG_COMPAT_BRK
->   	/*
->   	 * CONFIG_COMPAT_BRK can still be overridden by setting
-> -	 * randomize_va_space to 2, which will still cause mm->start_brk
-> +	 * randomize_va_space to >= 2, which will still cause mm->start_brk
->   	 * to be arbitrarily shifted
->   	 */
->   	if (current->brk_randomized)
-> @@ -1445,6 +1448,23 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
->   	if (mm->map_count > sysctl_max_map_count)
->   		return -ENOMEM;
->   
-> +	/* Pick a random address even outside current VMAs? */
-> +	if (!addr && randomize_va_space == 3) {
-> +		int i = MAX_RANDOM_MMAP_RETRIES;
-> +		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
-> +
-> +		do {
-> +			/* Try a few times to find a free area */
-> +			addr = arch_mmap_rnd();
-> +			if (addr >= max_addr)
-> +				continue;
-> +			addr = get_unmapped_area(file, addr, len, pgoff, flags);
-> +		} while (--i >= 0 && !IS_ERR_VALUE(addr));
-> +
-> +		if (IS_ERR_VALUE(addr))
-> +			addr = 0;
-> +	}
-> +
->   	/* Obtain the address to map to. we verify (or select) it and ensure
->   	 * that it represents a valid section of the address space.
->   	 */
-> @@ -2142,14 +2162,6 @@ unsigned long vm_unmapped_area(struct vm_unmapped_area_info *info)
->   	return addr;
->   }
->   
-> -#ifndef arch_get_mmap_end
-> -#define arch_get_mmap_end(addr)	(TASK_SIZE)
-> -#endif
-> -
-> -#ifndef arch_get_mmap_base
-> -#define arch_get_mmap_base(addr, base) (base)
-> -#endif
-> -
->   /* Get an address range which is currently unmapped.
->    * For shmat() with addr=0.
->    *
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index 138abbae4f75..c5b2ed2bfd2d 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -24,12 +24,15 @@
->   #include <linux/uaccess.h>
->   #include <linux/mm-arch-hooks.h>
->   #include <linux/userfaultfd_k.h>
-> +#include <linux/elf-randomize.h>
->   
->   #include <asm/cacheflush.h>
->   #include <asm/tlbflush.h>
->   
->   #include "internal.h"
->   
-> +#define MAX_RANDOM_MREMAP_RETRIES		5
-> +
->   static pmd_t *get_old_pmd(struct mm_struct *mm, unsigned long addr)
->   {
->   	pgd_t *pgd;
-> @@ -720,6 +723,30 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
->   		goto out;
->   	}
->   
-> +	if ((flags & MREMAP_MAYMOVE) && randomize_va_space == 3) {
-> +		/*
-> +		 * Caller is happy with a different address, so let's
-> +		 * move even if not necessary!
-> +		 */
-> +		int i = MAX_RANDOM_MREMAP_RETRIES;
-> +		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
-> +
-> +		do {
-> +			/* Try a few times to find a free area */
-> +			new_addr = arch_mmap_rnd();
-> +			if (new_addr >= max_addr)
-> +				continue;
-> +			ret = mremap_to(addr, old_len, new_addr, new_len,
-> +					&locked, flags, &uf, &uf_unmap_early,
-> +					&uf_unmap);
-> +			if (!IS_ERR_VALUE(ret))
-> +				goto out;
-> +		} while (--i >= 0);
-> +
-> +		/* Give up and try the old address */
-> +		new_addr = addr;
-> +	}
-> +
->   	/*
->   	 * Always allow a shrinking remap: that just unmaps
->   	 * the unnecessary pages..
-> 
-> base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
-> 
+Yeah sorry, it comes from this email where I described the issue:
+http://lore.kernel.org/r/20201023175724.GA3563800@google.com
+
+I corrected the changelog and appended the patch below. Also pushed it to:
+https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/log/?h=coresched
+
+> Also, from what I can see following
+> the series, p->core_cookie is not yet set anywhere (unless I missed it),
+> so fixing it in here did not make sense just reading the series.
+
+The interface patches for core_cookie are added later, that's how it is. The
+infrastructure comes first here. It would also not make sense to add
+interface first as well so I think the current ordering is fine.
+
+---8<-----------------------
+
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] sched: Fix priority inversion of cookied task with sibling
+
+The rationale is as follows. In the core-wide pick logic, even if
+need_sync == false, we need to go look at other CPUs (non-local CPUs) to
+see if they could be running RT.
+
+Say the RQs in a particular core look like this:
+Let CFS1 and CFS2 be 2 tagged CFS tags. Let RT1 be an untagged RT task.
+
+rq0            rq1
+CFS1 (tagged)  RT1 (not tag)
+CFS2 (tagged)
+
+The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
+rq0             rq1
+CFS1            IDLE
+
+When it should have selected:
+rq0             r1
+IDLE            RT
+
+Fix this issue by forcing need_sync and restarting the search if a
+cookied task was discovered. This will avoid this optimization from
+making incorrect picks.
+
+Joel saw this issue on real-world usecases in ChromeOS where an RT task
+gets constantly force-idled and breaks RT. Lets cure it.
+
+NOTE: This problem will be fixed differently in a later patch. It just
+      kept here for reference purposes about this issue, and to make
+      applying later patches easier.
+
+Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/sched/core.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 4ee4902c2cf5..53af817740c0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5195,6 +5195,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	need_sync = !!rq->core->core_cookie;
+ 
+ 	/* reset state */
++reset:
+ 	rq->core->core_cookie = 0UL;
+ 	if (rq->core->core_forceidle) {
+ 		need_sync = true;
+@@ -5242,14 +5243,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 				/*
+ 				 * If there weren't no cookies; we don't need to
+ 				 * bother with the other siblings.
+-				 * If the rest of the core is not running a tagged
+-				 * task, i.e.  need_sync == 0, and the current CPU
+-				 * which called into the schedule() loop does not
+-				 * have any tasks for this class, skip selecting for
+-				 * other siblings since there's no point. We don't skip
+-				 * for RT/DL because that could make CFS force-idle RT.
+ 				 */
+-				if (i == cpu && !need_sync && class == &fair_sched_class)
++				if (i == cpu && !need_sync)
+ 					goto next_class;
+ 
+ 				continue;
+@@ -5259,7 +5254,20 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 			 * Optimize the 'normal' case where there aren't any
+ 			 * cookies and we don't need to sync up.
+ 			 */
+-			if (i == cpu && !need_sync && !p->core_cookie) {
++			if (i == cpu && !need_sync) {
++				if (p->core_cookie) {
++					/*
++					 * This optimization is only valid as
++					 * long as there are no cookies
++					 * involved. We may have skipped
++					 * non-empty higher priority classes on
++					 * siblings, which are empty on this
++					 * CPU, so start over.
++					 */
++					need_sync = true;
++					goto reset;
++				}
++
+ 				next = p;
+ 				goto done;
+ 			}
+@@ -5299,7 +5307,6 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 					 */
+ 					need_sync = true;
+ 				}
+-
+ 			}
+ 		}
+ next_class:;
+-- 
+2.29.2.454.gaff20da3a2-goog
 
