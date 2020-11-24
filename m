@@ -2,148 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685EE2C1D21
+	by mail.lfdr.de (Postfix) with ESMTP id D4FBA2C1D22
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgKXEvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:51:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgKXEvP (ORCPT
+        id S1726765AbgKXEva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:51:30 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:35509 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbgKXEv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:51:15 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAF6C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:51:13 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id o3so18187928ota.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:51:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IaPCaFCHuJQneePrqd68vBnsJF+MzsPrh4FvA+iHfzE=;
-        b=UpR50yOkEvNdKtEe2bzhgb4x84Cye79O1Rm1mO8+oJTdzz2XfFE2isfCJ+YRTV8U8H
-         L8PthdNJl+O1zDL68k06P0DmWk3xIt+5/YMjnL7pUlEIoiUeRLX1eiQK11qxqXbx28/a
-         OdW+4Zuq2hs70u0dgtxBdY6j5CtbDQfms2eyYV1iIP9eMBF3f6iZaZMmnsookYiXAvBa
-         SqJIiokjpkIc/l+gz2XVzK2NjH/iqpawKqHc7eGfv4JQ4MiLHA9m9DAISAgNwaxoOub7
-         VYyB0nlSfdmwTUcN01brAtYe2HY/Wce3mutxjn3KmYxgOQnzAvFnm2Y+8zZRRUm6TdD0
-         ZvTQ==
+        Mon, 23 Nov 2020 23:51:29 -0500
+Received: by mail-lj1-f195.google.com with SMTP id r18so5760944ljc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:51:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IaPCaFCHuJQneePrqd68vBnsJF+MzsPrh4FvA+iHfzE=;
-        b=Q3uuYgnSIg0J21wOMsl2wwoBdU2hT8+06BADK9EGcDMFoRxaGiUxvAEtYK7maeV3f2
-         KD3XcE7qofjxt2r0y69KP8Qiz+bzIE4radNTwd/vHumzvh/kRmi6lcSuIy2nPmdw8sD5
-         J/YsJyWEmAu3+txY6mNRWagrY/EzgT3Dda9qyX2PpnG/hSn++BZxZsVZEmRGIbwCQDpV
-         gT1Ve0MGD5McBw3b0NpJcbfJvtmGsyeVTgTxG5Jnn0FdPZCdoYPGd23mglGLkUM3K6HN
-         VzrFNZyTYH/jxqQGH+IGEpVD3gk4nBtVcFgbVYZOD/knUUEF22KzGhJyHyU/kBnPKXsZ
-         YBog==
-X-Gm-Message-State: AOAM5330VbT6Fj2Hche5BGntsHqU5GgAHHFJ5XQGZWctjtkHDAyPM2qo
-        mMjVO6vzPMklYG8qctOkBqgNcg==
-X-Google-Smtp-Source: ABdhPJyMRIgFMVWRa72QLRCoypAvMPvF/ocxU/Mr/PZmNprFTp5JuOmTLGZWikWWLAMT7evse/AAcA==
-X-Received: by 2002:a9d:261:: with SMTP id 88mr2045432otb.202.1606193472833;
-        Mon, 23 Nov 2020 20:51:12 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w6sm7845466otj.12.2020.11.23.20.51.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 20:51:12 -0800 (PST)
-Date:   Mon, 23 Nov 2020 22:51:10 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-pm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH] cpuidle: arm: qcom: fix Kconfig problems
-Message-ID: <20201124045110.GH95182@builder.lan>
-References: <20201124013053.11502-1-rdunlap@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=602FIqwWhz6vUm0jx2ZcCsqu08FcjrdaJmn8EM3RSdc=;
+        b=Ea0YeT9YgeAlZn9Liv0jiqhNu4sg9x6ibX7Te7iJlYeaRI5yJAVSQIYZDxlX2/s3cJ
+         U1ZG1OMiBR5JYSbE6dLcaymYmTB1R+MsmstBV0CLqIPgU1tjwDqVtq1iR4sGHhEXFFrZ
+         8jX5LvRmV1kRxy7ogjRhv1HXWn9HLNDH5Vg58sMgki2wt4Gh50S2qpUzvtyuCnSIoEDG
+         M0xyzqBqmUijJNwrf5hC5OKtb+0igrYdb6KwUPERxno4K7zAPfKAXT9pY1TvpCiaffhh
+         67pHVCpsSiI6fHeyhQ4FEId3hKzADbJJWZt8chMVq41g5M5O7VVmQ1HThjTK4TZBVqTv
+         ZGxw==
+X-Gm-Message-State: AOAM532rwbRCVdY9s/DqNVigLAgnwRLijDTylJD4nc+QrjEhywUekTkK
+        NCTC8Fqc40mhEn28iULlaJcnSYrKoJqqPVAF7l0=
+X-Google-Smtp-Source: ABdhPJwVYcigqhxUrHcfAiaRJMrRQ6F3yiXnsu1oThwXA9XYiYd015v8VeunzeWChVKXDpC2Ow4uH0jAZl+C2PVsd94=
+X-Received: by 2002:a2e:84c7:: with SMTP id q7mr1051112ljh.415.1606193487259;
+ Mon, 23 Nov 2020 20:51:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124013053.11502-1-rdunlap@infradead.org>
+References: <20201106212935.28943-1-kan.liang@linux.intel.com>
+ <20201109095235.GC2594@hirez.programming.kicks-ass.net> <20201109110405.GN2651@hirez.programming.kicks-ass.net>
+ <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com> <20201111162509.GW2611@hirez.programming.kicks-ass.net>
+ <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com> <CAM9d7cjwFp9JBqs1Ga9n1ojbez9chZLvmOgFv1EE4KDhAa9ryA@mail.gmail.com>
+ <CAM9d7chbQE=zkqYsNFMv+uWEYWdXcGD=fNYT_R2ondwR5zVvaQ@mail.gmail.com> <87a6v81gou.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87a6v81gou.fsf@mpe.ellerman.id.au>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 24 Nov 2020 13:51:15 +0900
+Message-ID: <CAM9d7cg8kYMyPHQK_rhEiYQaSddqqt93=pLVNKJm8Y6F=if9ow@mail.gmail.com>
+Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU events
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Gabriel Marin <gmx@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 23 Nov 19:30 CST 2020, Randy Dunlap wrote:
+Hello,
 
-> The Kconfig symbol ARM_QCOM_SPM_CPUIDLE wildly selects other
-> Kconfig symbols when it should not.
-> This causes kconfig warnings and subsequent build errors,
-> as listed below, so modify this symbol's Kconfig entry to
-> constrain and tame it.
-> 
-> WARNING: unmet direct dependencies detected for QCOM_SCM
->   Depends on [n]: ARM [=y] && HAVE_ARM_SMCCC [=n] || ARM64
->   Selected by [y]:
->   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64
-> 
-> WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
->   Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
->   Selected by [y]:
->   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64
-> 
-> and
-> 
-> arm-linux-gnueabi-ld: arch/arm/kernel/sleep.o: in function `__cpu_suspend':
-> (.text+0x68): undefined reference to `cpu_sa110_suspend_size'
-> arm-linux-gnueabi-ld: arch/arm/kernel/suspend.o: in function `__cpu_suspend_save':
-> suspend.c:(.text+0x138): undefined reference to `cpu_sa110_do_suspend'
-> arm-linux-gnueabi-ld: suspend.c:(.text+0x170): undefined reference to `cpu_sa110_do_resume'
-> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-smc.o: in function `__scm_smc_do_quirk':
-> qcom_scm-smc.c:(.text+0x54): undefined reference to `__arm_smccc_smc'
-> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
-> qcom_scm-legacy.c:(.text+0x168): undefined reference to `__arm_smccc_smc'
-> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call_atomic':
-> qcom_scm-legacy.c:(.text+0x2e0): undefined reference to `__arm_smccc_smc'
-> 
-> Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: linux-pm@vger.kernel.org
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Stephan Gerhold <stephan@gerhold.net>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/cpuidle/Kconfig.arm |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> --- linux-next-20201123.orig/drivers/cpuidle/Kconfig.arm
-> +++ linux-next-20201123/drivers/cpuidle/Kconfig.arm
-> @@ -108,10 +108,11 @@ config ARM_TEGRA_CPUIDLE
->  config ARM_QCOM_SPM_CPUIDLE
->  	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
->  	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64
-> +	depends on PM
->  	select ARM_CPU_SUSPEND
->  	select CPU_IDLE_MULTIPLE_DRIVERS
->  	select DT_IDLE_STATES
-> -	select QCOM_SCM
-> +	select QCOM_SCM if HAVE_ARM_SMCCC
+On Mon, Nov 23, 2020 at 8:00 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> Namhyung Kim <namhyung@kernel.org> writes:
+> > Hi Peter and Kan,
+> >
+> > (Adding PPC folks)
+> >
+> > On Tue, Nov 17, 2020 at 2:01 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >>
+> >> Hello,
+> >>
+> >> On Thu, Nov 12, 2020 at 4:54 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+> >> >
+> >> >
+> >> >
+> >> > On 11/11/2020 11:25 AM, Peter Zijlstra wrote:
+> >> > > On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
+> >> > >
+> >> > >> - When the large PEBS was introduced (9c964efa4330), the sched_task() should
+> >> > >> be invoked to flush the PEBS buffer in each context switch. However, The
+> >> > >> perf_sched_events in account_event() is not updated accordingly. The
+> >> > >> perf_event_task_sched_* never be invoked for a pure per-CPU context. Only
+> >> > >> per-task event works.
+> >> > >>     At that time, the perf_pmu_sched_task() is outside of
+> >> > >> perf_event_context_sched_in/out. It means that perf has to double
+> >> > >> perf_pmu_disable() for per-task event.
+> >> > >
+> >> > >> - The patch 1 tries to fix broken per-CPU events. The CPU context cannot be
+> >> > >> retrieved from the task->perf_event_ctxp. So it has to be tracked in the
+> >> > >> sched_cb_list. Yes, the code is very similar to the original codes, but it
+> >> > >> is actually the new code for per-CPU events. The optimization for per-task
+> >> > >> events is still kept.
+> >> > >>    For the case, which has both a CPU context and a task context, yes, the
+> >> > >> __perf_pmu_sched_task() in this patch is not invoked. Because the
+> >> > >> sched_task() only need to be invoked once in a context switch. The
+> >> > >> sched_task() will be eventually invoked in the task context.
+> >> > >
+> >> > > The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB and
+> >> > > only set that for large pebs. Are you sure the other users (Intel LBR
+> >> > > and PowerPC BHRB) don't need it?
+> >> >
+> >> > I didn't set it for LBR, because the perf_sched_events is always enabled
+> >> > for LBR. But, yes, we should explicitly set the PERF_ATTACH_SCHED_CB
+> >> > for LBR.
+> >> >
+> >> >         if (has_branch_stack(event))
+> >> >                 inc = true;
+> >> >
+> >> > >
+> >> > > If they indeed do not require the pmu::sched_task() callback for CPU
+> >> > > events, then I still think the whole perf_sched_cb_{inc,dec}() interface
+> >> >
+> >> > No, LBR requires the pmu::sched_task() callback for CPU events.
+> >> >
+> >> > Now, The LBR registers have to be reset in sched in even for CPU events.
+> >> >
+> >> > To fix the shorter LBR callstack issue for CPU events, we also need to
+> >> > save/restore LBRs in pmu::sched_task().
+> >> > https://lore.kernel.org/lkml/1578495789-95006-4-git-send-email-kan.liang@linux.intel.com/
+> >> >
+> >> > > is confusing at best.
+> >> > >
+> >> > > Can't we do something like this instead?
+> >> > >
+> >> > I think the below patch may have two issues.
+> >> > - PERF_ATTACH_SCHED_CB is required for LBR (maybe PowerPC BHRB as well) now.
+> >> > - We may disable the large PEBS later if not all PEBS events support
+> >> > large PEBS. The PMU need a way to notify the generic code to decrease
+> >> > the nr_sched_task.
+> >>
+> >> Any updates on this?  I've reviewed and tested Kan's patches
+> >> and they all look good.
+> >>
+> >> Maybe we can talk to PPC folks to confirm the BHRB case?
+> >
+> > Can we move this forward?  I saw patch 3/3 also adds PERF_ATTACH_SCHED_CB
+> > for PowerPC too.  But it'd be nice if ppc folks can confirm the change.
+>
+> Sorry I've read the whole thread, but I'm still not entirely sure I
+> understand the question.
 
-I presume the trigger for this error is that 'd0511b5496c0 ("firmware:
-QCOM_SCM: Allow qcom_scm driver to be loadable as a permenent module")'
-made QCOM_SCM user selectable and described the dependency on
-HAVE_ARM_SMCCC..
+Thanks for your time and sorry about not being clear enough.
 
-So given that, and the fact that this driver doesn't do anything without
-QCOM_SCM, can we instead make it "depends on QCOM_SCM"? I believe it
-would inherit the dependency of HAVE_ARM_SMCCC in this case?
+We found per-cpu events are not calling pmu::sched_task()
+on context switches.  So PERF_ATTACH_SCHED_CB was
+added to indicate the core logic that it needs to invoke the
+callback.
 
-Regards,
-Bjorn
+The patch 3/3 added the flag to PPC (for BHRB) with other
+changes (I think it should be split like in the patch 2/3) and
+want to get ACKs from the PPC folks.
 
->  	help
->  	  Select this to enable cpuidle for Qualcomm processors.
->  	  The Subsystem Power Manager (SPM) controls low power modes for the
+Thanks,
+Namhyung
