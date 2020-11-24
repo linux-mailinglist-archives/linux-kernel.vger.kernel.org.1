@@ -2,144 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC9E2C2EFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B142C2F00
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403958AbgKXRlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:41:46 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:60394 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390613AbgKXRlq (ORCPT
+        id S2390818AbgKXRmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:42:04 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3332 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390713AbgKXRmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:41:46 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOHe2PH031364;
-        Tue, 24 Nov 2020 09:40:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=pfpt0220;
- bh=LMRgz+rY9/HavjE2CVzuVjC6iuDx+iXyAgHGdFl2WIg=;
- b=Des+JfJn12E/FAdEAndKBCY+eC0UZlfadIOuPf92yqf603FZn4Xm9L5NQHf/piuvGO0V
- jvwMkrGOM03SN2VZ7C25DnaPAinu5PUoLa7E0vp07noJG3uAPpp0g/s/2LoJFRdDHZ7d
- H9x195dv/pWLKRomRosC5zmXk0L2OFOhlYxu4rtZCMWqXmJ6vlLiEAbRF3wh81TwSrSW
- jh7EPLErGcxzHjwiR2CN/gDj+l9NMweIuXUzLHrqxxL/Rr9gTHnm4zuvbeiFJgju1G8A
- 7vsgMeuhf8zXA9Jt3u1RErKs9URKHeVKbLUdGbGfFHZBAIU5s9DqJROs2I/NwOt/D3Ju Kw== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 34y14ub5cq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 09:40:54 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Nov
- 2020 09:40:53 -0800
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Nov
- 2020 09:40:52 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
- by SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 24 Nov 2020 09:40:52 -0800
+        Tue, 24 Nov 2020 12:42:03 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AOHfSbW024357;
+        Tue, 24 Nov 2020 09:41:48 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=pez9ohBBbBKIszV+S6dK5DPpVBncky07UQ8T6La25QQ=;
+ b=Fpj9Xfxw6WK0ZTUjbS+36RkO6OJV1uQUU5S9KaG/JBQ741TjWNfwmousdE1+Hfqjeyxm
+ cPpwZ9Vt86UMBUpAnswcgopTC0nGKCldGD99HqSpjQjGJlsqUjj1A027bJUfrgFVvsAf
+ xg7KaXMvVk+Wwhqxs2oDOJC5TrGwzjXQzLc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 350qy4ue65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 24 Nov 2020 09:41:48 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 24 Nov 2020 09:41:47 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XPczTl8cataKyxivn2o7c8P03LngiyGiI3o8D3YrGtRSU6AUSLkpmy2ky2RBdbCyWli1ebknZUiljSgRsLhjXi23EQ3MKUtlkE1CI68VS/9vqtGPKuXEXcsSrrPLi6zSwExFUS3NJucb7xxZTKC4RKbsCkZ1kloOk5NWsWt5kHRTN0WAr7uAtQuPyzc20ab4kVX1N7JvUOub6VYTg/JlkS+zWc2faf9djtr/mRbADu5cK2AJDub4cyJDDkXGi9EjRasgCCcPhNj0GOTukbfXnIdlkizIhWf/vgN9ZdlDFIsJtStiR5J/0QJaH3k2laoRd4gvvwxBS2PDm/21ZDgxSw==
+ b=Fr/8G36OO3k4HoqzJluhj9b/sLTjzdOUY7h2Fp9+rHRVTNX0sw97V9c3lDIsccSuEpbEdcGzni1iMN/oZELwSpmoTPuMYoJdn0Z35GN3n6Pqrq+wARYYqbBi1+WtplsFkrb6yU2S/ExjBRPg82rdmU57vKPT+Rz62IyEBWomdATTUOfeQf8c6BAU3MlG7SAfB1cGC6ImHUNfEoRVWoFUSNuDJ751VZKCk/HvlsNCeZKE/ZCMEHxXXoydEIvrNJxubW7gZ7AcDbjc0oUcjCfTnDgeW1TbOSAkB6YdAuGqzjDlYGD0PmBEySxz1ZxgqI/kyd+2sTnvdI+145eRdXLy0Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LMRgz+rY9/HavjE2CVzuVjC6iuDx+iXyAgHGdFl2WIg=;
- b=GYcRSHEZ+HHMSCs+5ni1F3IGVqVTS9EuyT3TfGa8LCg2120ruFVnuVkd9VdlH/z6PVZzboo73EF0XbMaH7rCe2fHe5STHAwx+2xyddTMFq6CA7K5cPZp+G/NfzhnFB9GO0JtEuChymTNyncESYRhqdJTnXlDVDaXSJkEsUfiddnN6sjzDTip6m5bNFEN3TP7tatA74UPyb2Ii/MUJ16k52v8Q4FkFuQNd2cxJ6rDxqRDeMWfAka+pjvlfaaAoT3/EjgcxaaNE7QSjXqAeeo0Mak/PQ2YQViD4JVoEQC7N2YReyO4cLJ17EwNnaOnDHWiFHRkIj0Qw6gKXtH+FqquPA==
+ bh=pez9ohBBbBKIszV+S6dK5DPpVBncky07UQ8T6La25QQ=;
+ b=ZxNb6WsOAUwuo47ZS/ungNhqXTUXoYDsE4f3uu+vNU7/hhMlP1QEBWY7MxfMt63/7M0iJBK/YEOpLta+GMSarP70T3zyTSnr84g9OGmWRt7sewWpGlp/vr/m8QaplC1mz/nXmbNPLFsNtnKpjCKxEpwNr3Xo/OR4MIbVfvd2n7zhY2fnXoYicESS+10dqGN4z5KHOPWK9Ga7rgO8vIo9q/7cWNcLBWSyGoFqGjjSnEiR/+9wV0neGdmPk/vybzWsEk4CjWv5j7iGIxR7903e2Wk0E4aBBhPsFo/X1cSpDpccrbxUdtkLFE6+YKQZnUAD4LV7rQb0k4cN5TUyx+j7kQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LMRgz+rY9/HavjE2CVzuVjC6iuDx+iXyAgHGdFl2WIg=;
- b=UEhNkQZrrrJHr6PE7/aybjSqt6ou3ca/mdc22acyMxzDjOyIIKEmIzB0dps+FBUYl3w1faFvQaT4sfpBIt2/NwT3/b1RMt6ujGWxmAH5O1hWYB9jwTo2ZN38pb/9R8es1aSTLpmbSGYSbBmIBcNGW8dJoZ7iSN5M37K+ymsB4GI=
-Received: from MW2PR18MB2267.namprd18.prod.outlook.com (2603:10b6:907:3::11)
- by MWHPR18MB0927.namprd18.prod.outlook.com (2603:10b6:300:9a::9) with
+ bh=pez9ohBBbBKIszV+S6dK5DPpVBncky07UQ8T6La25QQ=;
+ b=QPnHxlFvNVapEJcWYQ1d+zAyA1jNGcuVGUbuIZj21qjpqZVpIjTY+oLQA2XyN7P/ye7bSF49K8PhRR6txTEXgtFUKGnJYxfed/oGVD0nWB7PRprQAxYgnmLdtVbHmRsxOYNclLB8NOkVtND1t3HyKYqjefVJJ50r6UIvQcU32Hg=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by SJ0PR15MB4204.namprd15.prod.outlook.com (2603:10b6:a03:2c8::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
- 2020 17:40:49 +0000
-Received: from MW2PR18MB2267.namprd18.prod.outlook.com
- ([fe80::e17f:37fb:4eb3:c703]) by MW2PR18MB2267.namprd18.prod.outlook.com
- ([fe80::e17f:37fb:4eb3:c703%4]) with mapi id 15.20.3564.039; Tue, 24 Nov 2020
- 17:40:49 +0000
-From:   Alex Belits <abelits@marvell.com>
-To:     "trix@redhat.com" <trix@redhat.com>
-CC:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "nitesh@redhat.com" <nitesh@redhat.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH v5 0/9] "Task_isolation" mode
-Thread-Topic: [EXT] Re: [PATCH v5 0/9] "Task_isolation" mode
-Thread-Index: AQHWwcAN4HMJq5rZb0WNk0YfmsaUganXfHoAgAAR6IA=
-Date:   Tue, 24 Nov 2020 17:40:49 +0000
-Message-ID: <a31f81cfa62936ff5edc420be63a5ac0b318b594.camel@marvell.com>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
-         <b0e7afd3-4c11-c8f3-834b-699c20dbdd90@redhat.com>
-In-Reply-To: <b0e7afd3-4c11-c8f3-834b-699c20dbdd90@redhat.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 24 Nov
+ 2020 17:41:45 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3589.029; Tue, 24 Nov 2020
+ 17:41:45 +0000
+Subject: Re: [PATCH bpf-next v3 2/3] bpf: Add a BPF helper for getting the IMA
+ hash of an inode
+To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+References: <20201124151210.1081188-1-kpsingh@chromium.org>
+ <20201124151210.1081188-3-kpsingh@chromium.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <4f1309b1-830b-f76f-0b9b-c783f062f0ab@fb.com>
+Date:   Tue, 24 Nov 2020 09:41:41 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
+In-Reply-To: <20201124151210.1081188-3-kpsingh@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [173.228.7.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d48ef156-f7fd-4657-ec3b-08d890a01502
-x-ms-traffictypediagnostic: MWHPR18MB0927:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR18MB0927833C5F81682579F317BCBCFB0@MWHPR18MB0927.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:517;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PAe9dPWZIWvLV61t0xLWkF1BuYOjgrxXryuqQKMwL3DBfODf+9PgX938x543TJBickmBVk8ulZ+s0N4BVhNSvdHpTflIPVkgasnNgxi3BHHNC3W6E7V70RLqiGmILmXVOPWUb0rTqD1NvcxZkEa9spUUPxAkSRMnjz2ZYF/mknjftw5YmvEoRnQAt9lEWLDnl9MwhOD7OpNWstETR7Kku1ChcglCWa8QxAfOiD0vOYPI5Xt76VYFrRUwzyPZGgeb+sC5FpOAXLcm9ddmh2oQRaCtI4pBW1judN9GxLVmYnP9sK4K5b/AlX9lS2xVEtqjCsLvivrP+HsWv++bbK3XdA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR18MB2267.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(4001150100001)(2906002)(6512007)(71200400001)(83380400001)(54906003)(5660300002)(26005)(6486002)(186003)(64756008)(8936002)(53546011)(86362001)(66446008)(498600001)(8676002)(91956017)(4744005)(7416002)(6916009)(66476007)(66556008)(76116006)(36756003)(66946007)(4326008)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: pxZ1V49IcSIpsiLQ+ZI7coE6VnjJqEMR+5Dezf44lUR0TUaFKmZnZmoFwpM5NJO41IuvLnSKmMg0PxKs7vcsZ7grt++DfH1xAI1A0LoS060IElgLY7AsKZpe2pkrEAs3YwomXW+mSj/lHcWjU3IbWq+dVtp/M+Agbgw6EOEh3SNt2+tOHurtQRuhvuStZFC1Jh5TYU/tqhpup4vSXvsipJrcXJQCThLIMYMsll1EjzgkOxeZcLJ2v77esXwdlvpX14c7ocVYdskntGj1DNEEm23JMtWT5jm71Wc1ZSEIcrQTpK26R7czICc4mN6EHEtYbX9wlLebbqrF8jGdEUuoVhTR3mXUgbesqGQvkHvzI6K2FuJKov9roNOi98rfn3LHtJ8dI5YRbd59d8p+d09SX65Qg1JE1Soz2UjNDpRgiTPfGOM6j1mFisGa8IpUA6yttKx7/VPRw5STIXvMgj7UQR4KgeENJcKxLJbY6NgOmPx1vmyoRXFoSsqp213qDrUt6qo+rpzHQsXYtCddRLGXOGfayjb8VfPpXfETMzdxThTKzGJXN+lsLzu1MN+CoDPg7+1XlTU7+WwirWmWBL2dIxwNDvDk7KqHv7Cj8S4htQhh/X7J7mvJSRYp5JpmHBy3GbsijWJ9ATPY4dI9lqZmEWyOEkitvQ8xv/4ZPnrXTKzl4dVDYeeJ6uMxvlcair5mJqHic0+nWvqRvstVmmekWWOIb0HZm82NWGQbwM1+Isv4u0jLjz3mpwKBH0X6MEF+Y0pZoS0oBqt2d4w3I+Z/htmdDbj7lvhQlByz0LrErfqiWUGVkKznmQka38lyn0ZOc1hjO6ZwMJNod/htVWQpIL4lnafTeMlU2l5XrmFUP2TCCVV0zOpEKRyTih1TycRcOEoCewcIWOPrE0n2ZO75rw==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <065E67963AFA9B4AA53162870E453322@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:4987]
+X-ClientProxiedBy: MWHPR1401CA0011.namprd14.prod.outlook.com
+ (2603:10b6:301:4b::21) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::10b2] (2620:10d:c090:400::5:4987) by MWHPR1401CA0011.namprd14.prod.outlook.com (2603:10b6:301:4b::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 17:41:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9ccfa16e-4c84-4cdc-1404-08d890a03624
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4204:
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4204089EEC90F7DA8D8E2412D3FB0@SJ0PR15MB4204.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v+cxCthuc/7qrQ9ZbDN+adBCauOFfknwYGJS8F7Bx9RS9wEKvZoSzEjGTSkWBYlv21M7qi3b6tD7P1wBRm3izOks1tg5k51j44zjpjySM+iiu8SC65cLk+QNo5BJjxXezmP6W/nIlvB2+RN8KzdpB4MNgOcPAW9oHv0yuCgIaUGPGU84/x0YxuQiHMK8G9vY6sisLi8YWYY4giFDe7sE9UX2guV05psfad4bvm7Mcrk5BhhXVSbdHhMThmaHjFC98aXznDhhGopiYmKaoAoL3iXV8jgKjxDjZfj6/8QPOQhxUX/1unav9o6Cxb1IlXTwADk1+wYIgNe9dvuTrAzwpDHbqFbuHOey74M2eB0AT5VZVzf8YKJeLVyO4I9khIlE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(39860400002)(366004)(346002)(6486002)(54906003)(8676002)(16526019)(66946007)(478600001)(53546011)(186003)(52116002)(66476007)(316002)(8936002)(36756003)(66556008)(110136005)(31696002)(83380400001)(4744005)(2616005)(86362001)(6666004)(31686004)(2906002)(7416002)(4326008)(5660300002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SmcvMHo1ZEdYMlBFOGVLdXJMbHlFMmw0WEFOWFFFTnN6ZEliaWZlOC9OR05r?=
+ =?utf-8?B?U3YzRExsQ2R1cjVCZTdzN0lHT2NLekV0UGI4TVhBekZYUXpjZmNKQWRNbUwv?=
+ =?utf-8?B?aTl6YjBLRlhuTVRER2IwRDF3eFo2TStVdjBkRHVXNEdRTDhBN2ZWc3pMcUFl?=
+ =?utf-8?B?ZVRDL2t6anZKSzFudDZvank1bXcyVVVCMlgvbzFOV0dnK2xnV1NBRkZhUmxQ?=
+ =?utf-8?B?bkxrbTBnUHd3RGM0enQ5OWt4bmEyODdNMGJvM0pJUFVldXZUcVhPWnpFY1Bq?=
+ =?utf-8?B?Z05GWkd6M1E2QUQ4TDBEZkVvenN4YzcxS2dhVWZLZW1NMm9FMVhoMi9MU3E3?=
+ =?utf-8?B?YTREK3d6VlZXWUpMZzA2KzNMQ3pCMGZReUNVb2dmM0M0bk5oTm5iS1Y3T2ha?=
+ =?utf-8?B?M3lKaDhwa2hrTStMUjZpZUNMRlNzQURUMXVzblVVN3FDYVR4M1VnVUZTb0Q3?=
+ =?utf-8?B?Ym1ScjYwUjg5WEZWZnIvWnAwdDk3engvUVlsNWFmZ2tDSC93aVd4MmxXdkRl?=
+ =?utf-8?B?ekx6QzlvL1dIK1E3NHNranpEUE5EZlg4dEEyM0ozSmNmeTZWV2hHU1hpeGVa?=
+ =?utf-8?B?TnkrQjV0Ymp3c0pTQnl0S1NRNlB3aUF5SzZVQk4zU3JIVjh6TW04OWIvNzRQ?=
+ =?utf-8?B?NnROMzh1UGhCMEFUWndRRWppdlhTMlpURWlGaVU5c1J2MlkrdzBoS3pJamhD?=
+ =?utf-8?B?a2hyVndNQ0NKa0NRbXpvdmJvRGp2a0llM2FtZUNtYTJUcy9wNFJYNU5zUElF?=
+ =?utf-8?B?UmFIaXZQTjRJbktEU1lwZnF6WHppUkNmcnh0VytPZWsxVVYvb011d0NuWHgz?=
+ =?utf-8?B?NU53NWhWa01lZ2N6UTBvanpTdENGczJkNDVoRVl4cjhxVFhsMkpobWhMYSt0?=
+ =?utf-8?B?dEFjbVpDak5nODI2QVM0V0NzTjNaVHVBaDA2cTAxZHpPVzJjaDJVVkI5YVNO?=
+ =?utf-8?B?UVZGRlBmZnpFMlNJREw5QldzQ2NkUUY2aFdVVTZ6b3NrbUcwenBWemMyc09K?=
+ =?utf-8?B?Yk1UVkZKaDJKZWhqNkpEdXp3bFg0SHpYc0VVNldqbEEyWk1iR0NRMDFkYmJ1?=
+ =?utf-8?B?MklVVGdFV3dHWWxRRGNBL1ZWemhIWmFsVXdISjJpWDZEWUh2NjVaM3pOMEFh?=
+ =?utf-8?B?Ukx1U2EwL3FxSGtnZ1pZYkhkU1ZIZFpmdDUzcHozTjNqMDB3MCtTUGovdVFq?=
+ =?utf-8?B?d0ZCR2ZMT1VRTjNHOG16bEhSVUNMeGU1M2tOdXZWQUJtbUR1WUU2RWM1cnBk?=
+ =?utf-8?B?VFJMQ0o2dGQwNlMxZW56ZkI5Z2tuMEFJRnZGbFUxNGtFeGJ3eFdERXJQdlJl?=
+ =?utf-8?B?Ui9Yc2xJOGZTRTRrOTNybnZWWFFGOEJlOEJrWFZ1NG81TFhPNWQwRnN4SzFJ?=
+ =?utf-8?B?cGlkUHNCRWdrcVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ccfa16e-4c84-4cdc-1404-08d890a03624
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR18MB2267.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d48ef156-f7fd-4657-ec3b-08d890a01502
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 17:40:49.2586
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 17:41:45.1485
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: r/mJu5rOmTUgzetmBo7zt45gSd4CIEfLLMe6uidczDhYn/jbatcPwsXY64wU1kARK4cwxVPNgyzfvtt8Cb1eSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR18MB0927
-X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IInCA/eKgLCLYIwGzkAqn1jSa+6go7+st0wmSS9kkcFV+VjUSksUrUG28ix4iGQU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4204
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-24_05:2020-11-24,2020-11-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ adultscore=0 phishscore=0 bulkscore=0 impostorscore=0 suspectscore=0
+ clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=926
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240107
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUdWUsIDIwMjAtMTEtMjQgYXQgMDg6MzYgLTA4MDAsIFRvbSBSaXggd3JvdGU6DQo+IEV4
-dGVybmFsIEVtYWlsDQo+IA0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IC0tLQ0KPiANCj4gT24gMTEvMjMvMjAg
-OTo0MiBBTSwgQWxleCBCZWxpdHMgd3JvdGU6DQo+ID4gVGhpcyBpcyBhbiB1cGRhdGUgb2YgdGFz
-ayBpc29sYXRpb24gd29yayB0aGF0IHdhcyBvcmlnaW5hbGx5IGRvbmUNCj4gPiBieQ0KPiA+IENo
-cmlzIE1ldGNhbGYgPGNtZXRjYWxmQG1lbGxhbm94LmNvbT4gYW5kIG1haW50YWluZWQgYnkgaGlt
-IHVudGlsDQo+ID4gTm92ZW1iZXIgMjAxNy4gSXQgaXMgYWRhcHRlZCB0byB0aGUgY3VycmVudCBr
-ZXJuZWwgYW5kIGNsZWFuZWQgdXANCj4gPiB0bw0KPiA+IGltcGxlbWVudCBpdHMgZnVuY3Rpb25h
-bGl0eSBpbiBhIG1vcmUgY29tcGxldGUgYW5kIGNsZWFuZXIgbWFubmVyLg0KPiANCj4gSSBhbSBo
-YXZpbmcgcHJvYmxlbXMgYXBwbHlpbmcgdGhlIHBhdGNoc2V0IHRvIHRvZGF5J3MgbGludXgtbmV4
-dC4NCj4gDQo+IFdoaWNoIGtlcm5lbCBzaG91bGQgSSBiZSB1c2luZyA/DQoNClRoZSBwYXRjaGVz
-IGFyZSBhZ2FpbnN0IExpbnVzJyB0cmVlLCBpbiBwYXJ0aWN1bGFyLCBjb21taXQNCmEzNDllNGM2
-NTk2MDlmZDIwZTRiZWVhODllNWM0YTQwMzhlMzNhOTUNCg0KLS0gDQpBbGV4DQo=
+
+
+On 11/24/20 7:12 AM, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> Provide a wrapper function to get the IMA hash of an inode. This helper
+> is useful in fingerprinting files (e.g executables on execution) and
+> using these fingerprints in detections like an executable unlinking
+> itself.
+> 
+> Since the ima_inode_hash can sleep, it's only allowed for sleepable
+> LSM hooks.
+> 
+> Signed-off-by: KP Singh <kpsingh@google.com>
+
+Acked-by: Yonghong Song <yhs@fb.com>
