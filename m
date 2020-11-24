@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1F02C1C58
+	by mail.lfdr.de (Postfix) with ESMTP id A5CD52C1C59
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgKXD5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 22:57:20 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16324 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKXD5T (ORCPT
+        id S1728214AbgKXD6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 22:58:19 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:36268 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727388AbgKXD6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 22:57:19 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbc849f0001>; Mon, 23 Nov 2020 19:57:19 -0800
-Received: from [10.40.101.31] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 03:57:11 +0000
-Subject: Re: [PATCH] PCI/MSI: Set device flag indicating only 32-bit MSI
- support
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <bhelgaas@google.com>, <lorenzo.pieralisi@arm.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
-References: <20201120213036.GA278887@bjorn-Precision-5520>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <a11f7fb2-6512-484f-70f8-bd9493ab7766@nvidia.com>
-Date:   Tue, 24 Nov 2020 09:27:06 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Mon, 23 Nov 2020 22:58:18 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3tiwW078846;
+        Tue, 24 Nov 2020 03:58:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=UT1q0ssjr3ASFBM7Q8x9Xmg4gFYhYnL1VbvfVxfMkx4=;
+ b=C5WaOft0oQUomsIrVXh6cBW8UqeAkux1AaCNbOfrCfKsXbv5prH1yt/I8mtqPeTwJ3zc
+ kdiTG6KVlEHBLxkf5lLQxKybKezFFCYyig6n2E9Lav/S08emEMiEJwpcVh6bD68f0QJs
+ iKpHavyiFeSKsTLq9JlaKjNfzLbABwTMZZRqdWPyoilY66ELQM8brBNSmNEWkBuygTxd
+ V+9ZOwordu/TXKys21X6rjHJUJ1eQPjK9jMYnPsNIYu994UEaRr7pZhrGR4vU9Wjx84v
+ jLzK0ybt+wL8E5ogQBauWirzMmDRhcqUGaPCzoJ5z4Fh75v8+tFB1G/WhYNAwLa0TaJz lg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 34xtaqkyks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 24 Nov 2020 03:58:13 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO3toB2080899;
+        Tue, 24 Nov 2020 03:58:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 34ycnrvyy2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Nov 2020 03:58:12 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AO3wBZ5009620;
+        Tue, 24 Nov 2020 03:58:11 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 23 Nov 2020 19:58:11 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-scsi@vger.kernel.org, James Smart <james.smart@broadcom.com>,
+        Colin King <colin.king@canonical.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: lpfc: fix pointer defereference before it is null checked issue
+Date:   Mon, 23 Nov 2020 22:58:00 -0500
+Message-Id: <160618683552.24173.13742714512709142456.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201118131345.460631-1-colin.king@canonical.com>
+References: <20201118131345.460631-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20201120213036.GA278887@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606190239; bh=tw/iAw+vbSDGofDACoQ9Ai9A4bgTac58Miq7w2/0VPY=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=brxhgsxwG2qvo3vLJIq4+l1u16J9irnZMeNKS2e8RQNKs91OYStlqeCsNH6dQHG6G
-         RfuQ5nS1RhS2z4SOvwqX9wWq6y0Q48R4723ohQ+oK45CoZ+TDNIqh+MAgfFLZQeMUT
-         4G5Q4wPN1751jsoZAEslHiBpcS0/IaMF0v1EEtzw9jlqijfUF5VywkpBUg9o2XoZc6
-         yuigXwp/HrItaz9DnWMo21kt2+i4hPDaVCIedspzBzhVXYrp4WRhCJTFjdApckz7k7
-         lbFNmFX5YtWA8KgeLCFI5DqIDQMgCgiWKmw1qCPSE2cqnEpsZG6EZUUrvid3FMj0qO
-         cW54w2t05XJ2g==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240021
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011240021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 18 Nov 2020 13:13:45 +0000, Colin King wrote:
 
+> There is a null check on pointer lpfc_cmd after the pointer has been
+> dereferenced when pointers rdata and ndlp are initialized at the start
+> of the function. Fix this by only assigning rdata and ndlp after the
+> pointer lpfc_cmd has been null checked.
 
-On 11/21/2020 3:00 AM, Bjorn Helgaas wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Tue, Nov 17, 2020 at 08:27:28PM +0530, Vidya Sagar wrote:
->> There are devices (Ex:- Marvell SATA controller) that don't support
->> 64-bit MSIs and the same is advertised through their MSI capability
->> register.
-> 
-> I *think* you're saying these devices behave correctly per spec: they
-> don't support 64-bit MSI, and they don't advertise support for 64-bit
-> MSI.  Right?
-Yes. That is what I intended to say.
+Applied to 5.11/scsi-queue, thanks!
 
-> 
->> Set no_64bit_msi flag explicitly for such devices in the
->> MSI setup code so that the msi_verify_entries() API would catch
->> if the MSI arch code tries to use 64-bit MSI.
-> 
-> And you want msi_verify_entries() to catch attempts by the arch code
-> to assign a 64-bit MSI address?
-Yes.
+[1/1] scsi: lpfc: Fix pointer defereference before it is null checked issue
+      https://git.kernel.org/mkp/scsi/c/1e7dddb2e76a
 
-> 
-> That sounds OK, but the error message ("Device has broken 64-bit MSI")
-> is not appropriate if the device is actually *not* broken.
-Ok. I didn't change the existing error message. I'll change it to cover 
-both the scenarios i.e. either the device is broken or the device 
-doesn't really support 64-bit MSI.
-
-> 
->> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->> ---
->>   drivers/pci/msi.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
->> index d52d118979a6..af49da28854e 100644
->> --- a/drivers/pci/msi.c
->> +++ b/drivers/pci/msi.c
->> @@ -581,10 +581,12 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
->>        entry->msi_attrib.multi_cap     = (control & PCI_MSI_FLAGS_QMASK) >> 1;
->>        entry->msi_attrib.multiple      = ilog2(__roundup_pow_of_two(nvec));
->>
->> -     if (control & PCI_MSI_FLAGS_64BIT)
->> +     if (control & PCI_MSI_FLAGS_64BIT) {
->>                entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_64;
->> -     else
->> +     } else {
->>                entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
->> +             dev->no_64bit_msi = 1;
->> +     }
->>
->>        /* Save the initial mask status */
->>        if (entry->msi_attrib.maskbit)
->> --
->> 2.17.1
->>
+-- 
+Martin K. Petersen	Oracle Linux Engineering
