@@ -2,325 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7370C2C318A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CF82C3187
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:00:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729864AbgKXT75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729774AbgKXT7z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:59:55 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDA8C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:59:54 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id f19so2549644qtx.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:59:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=WXbcQWvdWDLVC5jHOswTFrpCLxCuVOiUOcyyKJaeh/g=;
-        b=hurQCtcsEarRy0HRrRrdpGlHFG8T6ntiY+W8DibV3UoYqNtuiPUoho9HjblqNH52ve
-         9muorssfxUCj/uJuGe2RRWCVB5sKHeKxDzL9PlWr8sHuUL/0Td/nQ9dcfme3BK4JaECN
-         0LyZTZcb9isPJuGGbU5djI5HJn1hEl/UERcsnV1LZGeOMd1xbMAjlC+sanpB2L3sTgkq
-         pQcj6IKUIfsgrDvR2t3g0+w/UT+kiKzFix3w2yhFNmtfw6QW9hXqB+nJhNXrh/LSl1/K
-         xUOjnKcnK73gCxt/HHZOQmWYlVRDMgCiZuNbOZUjeKx0rR9QRzWM7Fjqb5g9ZTloPyvq
-         Aa4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WXbcQWvdWDLVC5jHOswTFrpCLxCuVOiUOcyyKJaeh/g=;
-        b=qR+6uQlYdEFxkyxfrx0RP9GqOkAmfFXMilKxTIsOcVkg+5jsNaCjbWFgIdGTlKUwMB
-         V1tsI7Joq3Bz1puIvNeN2gnzta41otOOjez6+CMMSBiaMYEfTLwOOfu69KBCVLGKFLAh
-         ish2CafF1PQR7L+703jf/ftKVWzBRap+9CnJoTp89piD8yuQj51HmYePIdQOe4IOEW4Q
-         KZbtzp1IVex8KyVosijTm7go/YhZf3pU5R83hl0siIyb+cOsuaGACwVtS2N8d5Tba1Az
-         n1eg6Piro2nfsRKItCTwLR8WWFVpHv3/Aff6m1kORfKVxBMq5uAUEbrjqNVgT/+kdKdm
-         UMug==
-X-Gm-Message-State: AOAM532DGlAcEreawzd2LD869aqzqZbx8UQjc/B+toTvxcZCwlIZ4b6O
-        2G5Hw1GkIKfOXNFXiodzXhQE6y91Y08LxMAkLNM=
-X-Google-Smtp-Source: ABdhPJwz/b68ErbwAINA1DmsvIFCJSbOy4bc1aE3NJXrgYnPJF4Xsm8gnyly0MqpDkHkNvc5NEgy+sTiYJlDL/Kzg3M=
-Sender: "samitolvanen via sendgmr" 
-        <samitolvanen@samitolvanen1.mtv.corp.google.com>
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:ad4:4661:: with SMTP id
- z1mr239900qvv.19.1606247993327; Tue, 24 Nov 2020 11:59:53 -0800 (PST)
-Date:   Tue, 24 Nov 2020 11:59:40 -0800
-In-Reply-To: <20201124195940.27061-1-samitolvanen@google.com>
-Message-Id: <20201124195940.27061-3-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20201124195940.27061-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2 2/2] arm64: scs: use vmapped IRQ and SDEI shadow stacks
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729789AbgKXT7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:59:50 -0500
+Received: from mga14.intel.com ([192.55.52.115]:2071 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729752AbgKXT7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 14:59:48 -0500
+IronPort-SDR: PA5BRUx/eE+hSGTXyoHko1YU0qIp035VaAUYw8WAPOcRip0wL1umoPHZ0HICK2Ck//0wcAI39O
+ JntEhn11GWmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="171228492"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="171228492"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 11:59:48 -0800
+IronPort-SDR: +ax1h8vFq9gbnC2OKPq0W7q7KhylF4OEMd9u7iwyo8rVxtHWmEiT/iuVquVcoFwZLNzaRBRA9l
+ ldz8+7/xCyeA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="403023749"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga001.jf.intel.com with ESMTP; 24 Nov 2020 11:59:47 -0800
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 24 Nov 2020 11:59:47 -0800
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 24 Nov 2020 11:59:46 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 24 Nov 2020 11:59:46 -0800
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 24 Nov 2020 11:59:46 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YuASUyu5N9ovRepn0+RrMv6ajx/7u3Nb3wpP4YMzAoE0jnf4PZB0FkfmCXshWfHAVAT0HHIsrXPcG8HVz0pFpqy/q8p5qq2oMZqMZrL2k7MimNHuH9xLUSuDucOLV6UYQwAJMP0jjnWNgVW+6skTdID9NO2NdDZd3sDaL2/KVIfe5D9axmuxst7CU/LA66nrAESNOH9VrjxMISWTY4NeFx9xNJzamFGgazeF7NUvPeS8ZT9u+gQeyZsT9eunuY7s7QFGXcwVWtneqQvNL/jzN0fYYWdgAOITClAoTsr37exgMKC4jMLfLtpTJN3MKC0leIYUxnINwmTKmZHdtnHGoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MbaOc9dGIMbBvsUxiaReTf7Nregbi2ZsXC5E6bUMggE=;
+ b=PS7Q5EeOmbvhksj7KmD9/afW9tjxtlZvKtfVhsFyl4suJe1wKIjgi5co0dcKG3WUwDqE7xtUTvG7/jv8l2YpJMUWBQwSfQSMSGiCJMwBeBKAPB/Z9iuelXKD68uPNxOmXP763sFYN2PJ4mmlR5wF3TrOHaPtbUpoTHI+EKFAyfLjn44OV4bjKaPP9WuBfcuXC/qkoYFibI70Q1GQa59RpvbowWKm4mpM6kVGlyY8g1CMWRJaNzUYHAHMOwvt1qk8aDwjq+T9Ld4jc78ZvllKjbl7M9xXVghaS2h/IjHnlRSKQjov5/7B5GzEEt/cN4IJFnXfLkSYf0+9hBH0iOYWiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MbaOc9dGIMbBvsUxiaReTf7Nregbi2ZsXC5E6bUMggE=;
+ b=jEZwGKbHAqW1BYTVaDFTc/5XiXQZoqK1DhKRQ6F3qVlxq9HCaAUm3DFEZgamvkmo3lhRx/652bav+55BYWVNRyUl7zetwk+pJIObC8/1W4l4fka7CPnig/iQGrvp8MihsE5Bf7UeZxAw9rZeNqi/CsSnr837u7S1yFYvVRHanxo=
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
+ by SA2PR11MB5035.namprd11.prod.outlook.com (2603:10b6:806:116::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
+ 2020 19:59:44 +0000
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::bcad:a1da:3b9b:1412]) by SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::bcad:a1da:3b9b:1412%6]) with mapi id 15.20.3589.025; Tue, 24 Nov 2020
+ 19:59:44 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "hch@infradead.org" <hch@infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "luto@kernel.org" <luto@kernel.org>
+Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
+Thread-Topic: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
+Thread-Index: AQHWv3v0VGlTYBJQUE2XnxoQHVHqeqnVb0MAgADEkICAAOOpgIAAoj4A
+Date:   Tue, 24 Nov 2020 19:59:44 +0000
+Message-ID: <4be82a3571fb25bb096f2c98dc32d07da51af3d4.camel@intel.com>
+References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
+         <20201120202426.18009-2-rick.p.edgecombe@intel.com>
+         <20201123090040.GA6334@infradead.org>
+         <eccaa448f82e90c924d51d52525f766340026dfe.camel@intel.com>
+         <20201124101901.GB9682@infradead.org>
+In-Reply-To: <20201124101901.GB9682@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.30.1 (3.30.1-1.fc29) 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.55.54.38]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 42e8382c-ea5f-4089-fcd5-08d890b37d10
+x-ms-traffictypediagnostic: SA2PR11MB5035:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR11MB5035E91AC57639C956B908E3C9FB0@SA2PR11MB5035.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fw4daa2UbjRIYu14CSRnlfDRs2/KO/p2TsSm+0HQQuaRbsq/4azWBf6hqEKtGG6UcJMnjHZhOZ/qRuFdzFNPtSXKNp/TBhCIFGAgc79Ig4BwCPf6LHvRBLn0MkGRPPGMtbmK5/kXyRKfjx5C+YSvrUr5MsFr+wXrmFFfp02amm7BE2/DF3kGSVcEnbAxfAi59cL3da6GF3sZZGhvtS9YL/8VHafU3pujrz6+Magn0a+bQJrfLo8jaOZIbcPFRk+A0+QA17UzjS4HIuJ4lOW5OF5NjCdxUAJOInyqJMJZ6gvprjFIIGDaWswtCXJCink1ID2+lDYm84yZNqXmPqJhGQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(396003)(346002)(376002)(316002)(54906003)(6506007)(2906002)(2616005)(26005)(83380400001)(186003)(5660300002)(36756003)(66946007)(66556008)(7416002)(71200400001)(64756008)(76116006)(478600001)(8936002)(91956017)(86362001)(8676002)(6486002)(66476007)(4326008)(6916009)(66446008)(6512007)(4001150100001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?RFRVZDBGNFBXSE9BT0dsekRiUHRKTDdUcjNCcUFWWGFhNC9GVWIvUXFYZmtS?=
+ =?utf-8?B?anBCL0U2U3ZlR3p5MDZPM1NETWhTNzlkUTVaVVA4c1o1OHNyT1R0Sm1HNDVJ?=
+ =?utf-8?B?UU9hK1VMRFJYaEYrNjlYTWRLK1o5MnlZVjFERE1GSE9TeDNTQldXS0ZTTjlm?=
+ =?utf-8?B?b0Z0UG1pY0dqcGdOM1pFU3FiVUZyOHlEdkxpTEtMUHdETXI5T1lrVTNYMlpO?=
+ =?utf-8?B?UDNaNm5ZY3RsOHdjRWNrNUpXd1gxeUlsMkNoZmZQTkdENWliVVYweGdQdW1v?=
+ =?utf-8?B?WStZeURWZzdoWkhDdkR3TmR3SVZMOEl2RW02L3VrNU1RQms3OHgvMmdHYzNO?=
+ =?utf-8?B?TVREb21XYTdETUlkTENlcnFvc21sbkorUTdWTGsxNzVSQWRkWitTK2w3R1Rr?=
+ =?utf-8?B?b2Urc3RURVlHcHY4ODlpam41ZTdBQ04yOGdRZ25EVEVuWXo3RndGdDZvcU9C?=
+ =?utf-8?B?cjJRZmFjZFdRK1dBVTEwbHJESzBNRWY1alBxaEswQXR4S1A1Rk96QmxicE50?=
+ =?utf-8?B?N0tvTDZ2S0xSQzUvdCtQdnAwUzJsekxyQ29oQTF3dWs3eTlqZ2h5QVpmZUVm?=
+ =?utf-8?B?OVcxU054ZDhZNTNsSEEyTjZXNTBuSjFFS25NTWFoNkhGRVRvMC96K1k1aTNE?=
+ =?utf-8?B?YzVWdFpWVnNVT3MzZXJkc1VMRDBEVndyNWNqVlgvZ2JWMGhIaGJ5RTJQM2ZM?=
+ =?utf-8?B?RC91SHkvYzdpOUw1ODhrbnlBUlFtblFsM1c2T1doczRza3ZHdzBoei9Nendt?=
+ =?utf-8?B?VUkyWHNRUGtJY3FIQWlKeitYR1dsYk5BWUs4WmpMV0lOZUV6N0VXMldGM3U2?=
+ =?utf-8?B?c202RjdLRTlScEZicmc5T0QxUC9RU1psbFdTbE1uUnBhTGp0d0VmVWhzYXBj?=
+ =?utf-8?B?RDZGeDBDNWtlaG9CTG8zWHV5VFVJT3IvWWxkR1poL3Q5b0NOTWpqNXRqNDVB?=
+ =?utf-8?B?WGdRd2o2NjRIanh3RGhNODBjUW5yMEZmRmFxNk5xR1EwenZ4a3lEN2cweUJS?=
+ =?utf-8?B?WjlETjNHOGxEREcyQll3eE1pd3NWMFpxNkd4aVdPRmJzdDduYWJTSlhOZllw?=
+ =?utf-8?B?TkF5ak84dFB5WlhyRGt5Z0VlSEZVS1krcWorVEp2ekxKUlNuUTJJL3hGR2FT?=
+ =?utf-8?B?NGJ5OHdFeWkvbC9McTZhS1NVb0NhZnh1NHprQnNocEhEVEZpUjArUU93QjlS?=
+ =?utf-8?B?SDJya1ZqMkRYUnBPVlpScDBwSitIZWlxVnkxTXlqbk9hRUErRkhlZTQ5Yld4?=
+ =?utf-8?B?RzB0d2F4amZwWHFyVnNmczlwbldJZEFvNTVSQUJKUlRveVRiNU81Rm9ZWDVD?=
+ =?utf-8?Q?GXYzlR+MKjFgqu36Eb5s/tv5Oox6mt2nRT?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E955E7D407404A479F3EA44983CCE8C4@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42e8382c-ea5f-4089-fcd5-08d890b37d10
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 19:59:44.3207
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c1fWfaHWlNjMrYF9yRro/HqQXV7wEeTt5ybE1+mer2j+PB9P825uoNUXPcaxHWwdPhhzhyazwi/naFb36mk5D8nj19o9M6DWKJNzBRhTXUE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5035
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use scs_alloc() to allocate also IRQ and SDEI shadow stacks instead of
-using statically allocated stacks.
-
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
----
- arch/arm64/kernel/Makefile |  1 -
- arch/arm64/kernel/entry.S  |  6 ++--
- arch/arm64/kernel/irq.c    | 19 ++++++++++
- arch/arm64/kernel/scs.c    | 16 ---------
- arch/arm64/kernel/sdei.c   | 71 +++++++++++++++++++++++++++++++-------
- include/linux/scs.h        |  4 ---
- 6 files changed, 81 insertions(+), 36 deletions(-)
- delete mode 100644 arch/arm64/kernel/scs.c
-
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index bbaf0bc4ad60..86364ab6f13f 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -58,7 +58,6 @@ obj-$(CONFIG_CRASH_DUMP)		+= crash_dump.o
- obj-$(CONFIG_CRASH_CORE)		+= crash_core.o
- obj-$(CONFIG_ARM_SDE_INTERFACE)		+= sdei.o
- obj-$(CONFIG_ARM64_PTR_AUTH)		+= pointer_auth.o
--obj-$(CONFIG_SHADOW_CALL_STACK)		+= scs.o
- obj-$(CONFIG_ARM64_MTE)			+= mte.o
- 
- obj-y					+= vdso/ probes/
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index b295fb912b12..5c2ac4b5b2da 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -441,7 +441,7 @@ SYM_CODE_END(__swpan_exit_el0)
- 
- #ifdef CONFIG_SHADOW_CALL_STACK
- 	/* also switch to the irq shadow stack */
--	adr_this_cpu scs_sp, irq_shadow_call_stack, x26
-+	ldr_this_cpu scs_sp, irq_shadow_call_stack_ptr, x26
- #endif
- 
- 9998:
-@@ -1097,9 +1097,9 @@ SYM_CODE_START(__sdei_asm_handler)
- #ifdef CONFIG_SHADOW_CALL_STACK
- 	/* Use a separate shadow call stack for normal and critical events */
- 	cbnz	w4, 3f
--	adr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_normal, tmp=x6
-+	ldr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_normal_ptr, tmp=x6
- 	b	4f
--3:	adr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_critical, tmp=x6
-+3:	ldr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_critical_ptr, tmp=x6
- 4:
- #endif
- 
-diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-index 9cf2fb87584a..5b7ada9d9559 100644
---- a/arch/arm64/kernel/irq.c
-+++ b/arch/arm64/kernel/irq.c
-@@ -17,6 +17,7 @@
- #include <linux/init.h>
- #include <linux/irqchip.h>
- #include <linux/kprobes.h>
-+#include <linux/scs.h>
- #include <linux/seq_file.h>
- #include <linux/vmalloc.h>
- #include <asm/daifflags.h>
-@@ -27,6 +28,22 @@ DEFINE_PER_CPU(struct nmi_ctx, nmi_contexts);
- 
- DEFINE_PER_CPU(unsigned long *, irq_stack_ptr);
- 
-+
-+DECLARE_PER_CPU(unsigned long *, irq_shadow_call_stack_ptr);
-+
-+#ifdef CONFIG_SHADOW_CALL_STACK
-+DEFINE_PER_CPU(unsigned long *, irq_shadow_call_stack_ptr);
-+#endif
-+
-+static void init_irq_scs(void)
-+{
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		per_cpu(irq_shadow_call_stack_ptr, cpu) =
-+			scs_alloc(cpu_to_node(cpu));
-+}
-+
- #ifdef CONFIG_VMAP_STACK
- static void init_irq_stacks(void)
- {
-@@ -54,6 +71,8 @@ static void init_irq_stacks(void)
- void __init init_IRQ(void)
- {
- 	init_irq_stacks();
-+	if (IS_ENABLED(CONFIG_SHADOW_CALL_STACK))
-+		init_irq_scs();
- 	irqchip_init();
- 	if (!handle_arch_irq)
- 		panic("No interrupt controller found.");
-diff --git a/arch/arm64/kernel/scs.c b/arch/arm64/kernel/scs.c
-deleted file mode 100644
-index e8f7ff45dd8f..000000000000
---- a/arch/arm64/kernel/scs.c
-+++ /dev/null
-@@ -1,16 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Shadow Call Stack support.
-- *
-- * Copyright (C) 2019 Google LLC
-- */
--
--#include <linux/percpu.h>
--#include <linux/scs.h>
--
--DEFINE_SCS(irq_shadow_call_stack);
--
--#ifdef CONFIG_ARM_SDE_INTERFACE
--DEFINE_SCS(sdei_shadow_call_stack_normal);
--DEFINE_SCS(sdei_shadow_call_stack_critical);
--#endif
-diff --git a/arch/arm64/kernel/sdei.c b/arch/arm64/kernel/sdei.c
-index 7689f2031c0c..cbc370d3bb4f 100644
---- a/arch/arm64/kernel/sdei.c
-+++ b/arch/arm64/kernel/sdei.c
-@@ -7,6 +7,7 @@
- #include <linux/hardirq.h>
- #include <linux/irqflags.h>
- #include <linux/sched/task_stack.h>
-+#include <linux/scs.h>
- #include <linux/uaccess.h>
- 
- #include <asm/alternative.h>
-@@ -37,6 +38,14 @@ DEFINE_PER_CPU(unsigned long *, sdei_stack_normal_ptr);
- DEFINE_PER_CPU(unsigned long *, sdei_stack_critical_ptr);
- #endif
- 
-+DECLARE_PER_CPU(unsigned long *, sdei_shadow_call_stack_normal_ptr);
-+DECLARE_PER_CPU(unsigned long *, sdei_shadow_call_stack_critical_ptr);
-+
-+#ifdef CONFIG_SHADOW_CALL_STACK
-+DEFINE_PER_CPU(unsigned long *, sdei_shadow_call_stack_normal_ptr);
-+DEFINE_PER_CPU(unsigned long *, sdei_shadow_call_stack_critical_ptr);
-+#endif
-+
- static void _free_sdei_stack(unsigned long * __percpu *ptr, int cpu)
- {
- 	unsigned long *p;
-@@ -48,13 +57,31 @@ static void _free_sdei_stack(unsigned long * __percpu *ptr, int cpu)
- 	}
- }
- 
-+static void _free_sdei_scs(unsigned long * __percpu *ptr, int cpu)
-+{
-+	void *s;
-+
-+	s = per_cpu(*ptr, cpu);
-+	if (s) {
-+		per_cpu(*ptr, cpu) = NULL;
-+		scs_free(s);
-+	}
-+}
-+
- static void free_sdei_stacks(void)
- {
- 	int cpu;
- 
- 	for_each_possible_cpu(cpu) {
--		_free_sdei_stack(&sdei_stack_normal_ptr, cpu);
--		_free_sdei_stack(&sdei_stack_critical_ptr, cpu);
-+		if (IS_ENABLED(CONFIG_VMAP_STACK)) {
-+			_free_sdei_stack(&sdei_stack_normal_ptr, cpu);
-+			_free_sdei_stack(&sdei_stack_critical_ptr, cpu);
-+		}
-+
-+		if (IS_ENABLED(CONFIG_SHADOW_CALL_STACK)) {
-+			_free_sdei_scs(&sdei_shadow_call_stack_normal_ptr, cpu);
-+			_free_sdei_scs(&sdei_shadow_call_stack_critical_ptr, cpu);
-+		}
- 	}
- }
- 
-@@ -70,18 +97,40 @@ static int _init_sdei_stack(unsigned long * __percpu *ptr, int cpu)
- 	return 0;
- }
- 
-+static int _init_sdei_scs(unsigned long * __percpu *ptr, int cpu)
-+{
-+	void *s;
-+
-+	s = scs_alloc(cpu_to_node(cpu));
-+	if (!s)
-+		return -ENOMEM;
-+	per_cpu(*ptr, cpu) = s;
-+
-+	return 0;
-+}
-+
- static int init_sdei_stacks(void)
- {
- 	int cpu;
- 	int err = 0;
- 
- 	for_each_possible_cpu(cpu) {
--		err = _init_sdei_stack(&sdei_stack_normal_ptr, cpu);
--		if (err)
--			break;
--		err = _init_sdei_stack(&sdei_stack_critical_ptr, cpu);
--		if (err)
--			break;
-+		if (IS_ENABLED(CONFIG_VMAP_STACK)) {
-+			err = _init_sdei_stack(&sdei_stack_normal_ptr, cpu);
-+			if (err)
-+				break;
-+			err = _init_sdei_stack(&sdei_stack_critical_ptr, cpu);
-+			if (err)
-+				break;
-+		}
-+		if (IS_ENABLED(CONFIG_SHADOW_CALL_STACK)) {
-+			err = _init_sdei_scs(&sdei_shadow_call_stack_normal_ptr, cpu);
-+			if (err)
-+				break;
-+			err = _init_sdei_scs(&sdei_shadow_call_stack_critical_ptr, cpu);
-+			if (err)
-+				break;
-+		}
- 	}
- 
- 	if (err)
-@@ -133,10 +182,8 @@ unsigned long sdei_arch_get_entry_point(int conduit)
- 		return 0;
- 	}
- 
--	if (IS_ENABLED(CONFIG_VMAP_STACK)) {
--		if (init_sdei_stacks())
--			return 0;
--	}
-+	if (init_sdei_stacks())
-+		return 0;
- 
- 	sdei_exit_mode = (conduit == SMCCC_CONDUIT_HVC) ? SDEI_EXIT_HVC : SDEI_EXIT_SMC;
- 
-diff --git a/include/linux/scs.h b/include/linux/scs.h
-index 2a506c2a16f4..18122d9e17ff 100644
---- a/include/linux/scs.h
-+++ b/include/linux/scs.h
-@@ -22,10 +22,6 @@
- /* An illegal pointer value to mark the end of the shadow stack. */
- #define SCS_END_MAGIC		(0x5f6UL + POISON_POINTER_DELTA)
- 
--/* Allocate a static per-CPU shadow stack */
--#define DEFINE_SCS(name)						\
--	DEFINE_PER_CPU(unsigned long [SCS_SIZE/sizeof(long)], name)	\
--
- #define task_scs(tsk)		(task_thread_info(tsk)->scs_base)
- #define task_scs_sp(tsk)	(task_thread_info(tsk)->scs_sp)
- 
--- 
-2.29.2.454.gaff20da3a2-goog
-
+T24gVHVlLCAyMDIwLTExLTI0IGF0IDEwOjE5ICswMDAwLCBoY2hAaW5mcmFkZWFkLm9yZyB3cm90
+ZToNCj4gQnV0IEkgdGhvdWdodCB0aGF0IHVzaW5nIHRob3NlIHBncHJvdCBmbGFncyB3YXMgc3Rp
+bGwgc29ydA0KPiBvdmVybG9hZGluZw0KPiA+IHRoZSBtZWFuaW5nIG9mIHBncHJvdC4gTXkgdW5k
+ZXJzdGFuZGluZyB3YXMgdGhhdCBpdCBpcyBzdXBwb3NlZCB0bw0KPiA+IGhvbGQNCj4gPiB0aGUg
+YWN0dWFsIGJpdHMgc2V0IGluIHRoZSBQVEUuIEZvciBleGFtcGxlIGxhcmdlIHBhZ2VzIG9yIFRM
+Qg0KPiA+IGhpbnRzDQo+ID4gKGxpa2UgUEFHRV9LRVJORUxfRVhFQ19DT05UKSBjb3VsZCBzZXQg
+b3IgdW5zZXQgZXh0cmEgYml0cywgc28NCj4gPiBhc2tpbmcNCj4gPiBmb3IgUEFHRV9LRVJORUxf
+RVhFQyB3b3VsZG4ndCBuZWNlc3NhcmlseSBtZWFuICJzZXQgdGhlc2UgYml0cyBpbg0KPiA+IGFs
+bA0KPiA+IG9mIHRoZSBQVEVzIiwgaXQgY291bGQgbWVhbiBzb21ldGhpbmcgbW9yZSBsaWtlICJp
+bmZlciB3aGF0IEkgd2FudA0KPiA+IGZyb20NCj4gPiB0aGVzZSBiaXRzIGFuZCBkbyB0aGF0Ii4N
+Cj4gPiANCj4gPiB4ODYncyBjcGEgd2lsbCBhbHNvIGF2b2lkIGNoYW5naW5nIE5YIGlmIGl0IGlz
+IG5vdCBzdXBwb3J0ZWQsIHNvIGlmDQo+ID4gdGhlDQo+ID4gY2FsbGVyIGFza2VkIGZvciBQQUdF
+X0tFUk5FTC0+UEFHRV9LRVJORUxfRVhFQyBpbiBwZXJtX2NoYW5nZSgpIGl0DQo+ID4gc2hvdWxk
+IG5vdCBuZWNlc3NhcmlseSBib3RoZXIgc2V0dGluZyBhbGwgb2YgdGhlIFBBR0VfS0VSTkVMX0VY
+RUMNCj4gPiBiaXRzDQo+ID4gaW4gdGhlIGFjdHVhbCBQVEVzLiBBc2tpbmcgZm9yIFBFUk1fUlct
+PlBFUk1fUldYIG9uIHRoZSBvdGhlciBoYW5kLA0KPiA+IHdvdWxkIGxldCB0aGUgaW1wbGVtZW50
+YXRpb24gZG8gd2hhdGV2ZXIgaXQgbmVlZHMgdG8gc2V0IHRoZSBtZW1vcnkNCj4gPiBleGVjdXRh
+YmxlLCBsaWtlIHNldF9tZW1vcnlfeCgpIGRvZXMuIEl0IHNob3VsZCB3b3JrIGVpdGhlciB3YXkg
+YnV0DQo+ID4gc2VlbXMgbGlrZSB0aGUgZXhwZWN0YXRpb25zIHdvdWxkIGJlIGEgbGl0dGxlIGNs
+ZWFyZXIgd2l0aCB0aGUNCj4gPiBQRVJNXw0KPiA+IGZsYWdzLg0KPiANCj4gT2ssIG1heWJlIHRo
+YXQgaXMgYW4gYXJndW1lbnQsIGFuZCB3ZSBzaG91bGQgdXNlIHRoZSBuZXcgZmxhZ3MgbW9yZQ0K
+PiBicm9hZGx5Lg0KDQpUaGV5IG1pZ2h0IG1ha2Ugc2Vuc2UgdG8gbGl2ZSBpbiBzZXRfbWVtb3J5
+LmggdGhlbi4gU2VwYXJhdGUgZnJvbSB0aGlzDQpwYXRjaHNldCwgYSBjYWxsIGxpa2Ugc2V0X21l
+bW9yeShhZGRyLCBudW1wYWdlcywgUEVSTV9SKSBjb3VsZCBiZSBtb3JlDQplZmZpY2llbnQgdGhh
+biB0d28gY2FsbHMgdG8gc2V0X21lbW9yeV9ybygpIGFuZCBzZXRfbWVtb3J5X254KCkuIE5vdA0K
+dGhhdCBpdCBoYXBwZW5zIHZlcnkgbXVjaCBvdXRzaWRlIG9mIHZtYWxsb2MgdXNhZ2VzLiBCdXQg
+anVzdCB0byB0cnkgdG8NCnRoaW5rIHdoZXJlIGVsc2UgaXQgY291bGQgYmUgdXNlZC4NCg0KPiA+
+IENvdWxkIGVhc2lseSB3cmFwIHRoaXMgb25lLCBidXQganVzdCB0byBjbGFyaWZ5LCBkbyB5b3Ug
+bWVhbiBsaW5lcw0KPiA+IG92ZXINCj4gPiA4MCBjaGFycz8gVGhlcmUgd2VyZSBhbHJlYWR5IHNv
+bWUgb3ZlciA4MCBpbiB2bWFsbG9jIGJlZm9yZSB0aGUNCj4gPiBtb3ZlIHRvDQo+ID4gMTAwIGNo
+YXJzLCBzbyBmaWd1cmVkIGl0IHdhcyBvayB0byBzdHJldGNoIG91dCBub3cuDQo+IA0KPiBDb2Rp
+bmdTdHlsZSBzdGlsbCBzYXlzIDgwIGNoYXJhY3RlcnMgdW5sZXNzIHlvdSBoYXZlIGFuIGV4Y2Vw
+dGlvbg0KPiB3aGVyZQ0KPiBhIGxvbmdlciBsaW5lIGltcHJvdmVzIHRoZSByZWFkYWJpbGl0eS4g
+IFRoZSBxdW90ZWQgY29kZSBhYnNvbHV0ZWx5DQo+IGRvZXMgbm90IGZpdCB0aGUgZGVmaW5pdGlv
+biBvZiBhbiBleGNlcHRpb24gb3IgaW1wcm92ZXMgcmVhZGFiaWxpdHkuDQoNCkZhaXIgZW5vdWdo
+Lg0KDQpBbmQgdG8gdGhlIG90aGVyIGNvbW1lbnQgaW4geW91ciBmaXJzdCBtYWlsLCBnbGFkIHRv
+IGRvIHRoaXMgYW5kDQpmaW5hbGx5IHNlbmQgaXQgb3V0LiBUaGlzIHNlcmllcyBoYXMgYmVlbiBz
+aXR0aW5nIGluIGEgbG9jYWwgYnJhbmNoIGZvcg0KbW9zdCBvZiB0aGUgeWVhciB3aGlsZSBzdHVm
+ZiBrZXB0IGludGVycnVwdGluZyBpdC4NCg==
