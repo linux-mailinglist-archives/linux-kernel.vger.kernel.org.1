@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE4D2C1A86
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 02:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FAD2C1AAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 02:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgKXBE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 20:04:58 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8389 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKXBE5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 20:04:57 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cg5QW44hBz72r0;
-        Tue, 24 Nov 2020 09:04:35 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 24 Nov 2020
- 09:04:46 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <vkoul@kernel.org>, <thomas.petazzoni@free-electrons.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] dmaengine: mv_xor_v2: Fix error return code in mv_xor_v2_probe()
-Date:   Tue, 24 Nov 2020 09:08:13 +0800
-Message-ID: <20201124010813.1939095-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1729428AbgKXBKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 20:10:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726958AbgKXBKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 20:10:05 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606180205;
+        bh=QuoN6v046wqWzfROay9p6G6nYeSMi/ZaQtcigikJdZ8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SeZ0hKZ1X2wprrmXIYPFnNLGWhf6ahNytJ0zgUIOyk1nogPBzkHRXuddnyBCYBQpj
+         sp8BFolxt4+KExErHwIyI4awjHWVRjg9buaYuYxDoQGrzyD/1XbUGnABOaNnEJkP4h
+         mZp6gJzqY9BxLuUvgWbQU9Br9ya9ZBLx56dKpfBI=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/2] net: pch_gbe: Use dma_set_mask_and_coherent to simplify
+ code
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160618020532.30283.4433703176583925818.git-patchwork-notify@kernel.org>
+Date:   Tue, 24 Nov 2020 01:10:05 +0000
+References: <20201121090302.1332491-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20201121090302.1332491-1-christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     davem@davemloft.net, kuba@kernel.org, kaixuxia@tencent.com,
+        mhabets@solarflare.com, mst@redhat.com,
+        luc.vanoostenryck@gmail.com, jesse.brandeburg@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return the corresponding error code when first_msi_entry() returns
-NULL in mv_xor_v2_probe().
+Hello:
 
-Fixes: 19a340b1a820430 ("dmaengine: mv_xor_v2: new driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/dma/mv_xor_v2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/drivers/dma/mv_xor_v2.c b/drivers/dma/mv_xor_v2.c
-index 2753a6b916f6..9b0d463f89bb 100644
---- a/drivers/dma/mv_xor_v2.c
-+++ b/drivers/dma/mv_xor_v2.c
-@@ -771,8 +771,10 @@ static int mv_xor_v2_probe(struct platform_device *pdev)
- 		goto disable_clk;
- 
- 	msi_desc = first_msi_entry(&pdev->dev);
--	if (!msi_desc)
-+	if (!msi_desc) {
-+		ret = -ENODEV;
- 		goto free_msi_irqs;
-+	}
- 	xor_dev->msi_desc = msi_desc;
- 
- 	ret = devm_request_irq(&pdev->dev, msi_desc->irq,
--- 
-2.25.4
+On Sat, 21 Nov 2020 10:03:02 +0100 you wrote:
+> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  .../net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c   | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+
+Here is the summary with links:
+  - [1/2] net: pch_gbe: Use dma_set_mask_and_coherent to simplify code
+    https://git.kernel.org/netdev/net-next/c/8ff39301efd9
+  - [2/2] net: pch_gbe: Use 'dma_free_coherent()' to undo 'dma_alloc_coherent()'
+    https://git.kernel.org/netdev/net-next/c/7fd6372e273e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
