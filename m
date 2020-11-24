@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDE22C2288
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969552C2294
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728701AbgKXKKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:10:23 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:9187 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725792AbgKXKKX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:10:23 -0500
-X-UUID: 98052439ccf44716ae12f6965e2bb06c-20201124
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=u3IMSN6l9DpAAf3WTb8SAGhvr/8FfMvCzmELwlNcKgw=;
-        b=P8nAD54DPfSa4fiI0weW968+SQGLVNBIsGcNZsUkOBnLTPzhe3SCbHcZu81pmsaCRT6FkVSadSk5yra8+nYC0JtO7kKs8Xv9traj2Io2sVrjqu04vPWCkd/+e4dsqoDrA8RMzliM5ES93UtxguJNPNws75pIRD5NRJsPezhQK1A=;
-X-UUID: 98052439ccf44716ae12f6965e2bb06c-20201124
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <dongchun.zhu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 657754852; Tue, 24 Nov 2020 18:10:16 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Nov
- 2020 18:10:15 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 24 Nov 2020 18:10:15 +0800
-Message-ID: <1606212616.4733.157.camel@mhfsdcap03>
-Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
-From:   Dongchun Zhu <dongchun.zhu@mediatek.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     Robert Foss <robert.foss@linaro.org>, <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ben Kao <ben.kao@intel.com>, <tfiga@google.com>,
-        <shengnan.wang@mediatek.com>, <dongchun.zhu@mediatek.com>
-Date:   Tue, 24 Nov 2020 18:10:16 +0800
-In-Reply-To: <20201124084343.GD3940@paasikivi.fi.intel.com>
-References: <20201116155008.118124-1-robert.foss@linaro.org>
-         <1606203651.4733.134.camel@mhfsdcap03>
-         <20201124084343.GD3940@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1730060AbgKXKOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:14:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727089AbgKXKOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:14:33 -0500
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82396206FA;
+        Tue, 24 Nov 2020 10:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606212872;
+        bh=b8HhW9uD6Rj5MLBmsqYc9N3xHsa1TIn+WX9DZwiS+MM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NlR9Xce3ZfRoyhKndZaataNqsLYkXUxW1Nyu64thgrWP7ub7s3mPfC2N0UNVRzaGy
+         sF2QN/emYbctPOykg3+4QCyI9f2dFJXT5oi572QWiJEvfw/+0GMJMCcUDR7JRaQNRz
+         RWllSTEVpKSfAY+bIGBg3B/Yty9yKmQJVZ2FTPfc=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [GIT PULL] memory: tegra soc/clock for v5.11 - sharing a tag
+Date:   Tue, 24 Nov 2020 11:13:52 +0100
+Message-Id: <20201124101352.26381-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 727A302743AD4B499C0DB70EA4A56C8256AD2C86B3BD07D9F325D4A353D04AC12000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2FrYXJpLA0KDQpPbiBUdWUsIDIwMjAtMTEtMjQgYXQgMTA6NDMgKzAyMDAsIFNha2FyaSBB
-aWx1cyB3cm90ZToNCj4gSGkgRG9uZ2NodW4sDQo+IA0KPiBPbiBUdWUsIE5vdiAyNCwgMjAyMCBh
-dCAwMzo0MDo1MVBNICswODAwLCBEb25nY2h1biBaaHUgd3JvdGU6DQo+ID4gPiAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBvdjg4NTZfbW9kZSBzdXBwb3J0ZWRfbW9kZXNbXSA9IHsNCj4gPiA+IC0Jew0K
-PiA+ID4gLQkJLndpZHRoID0gMzI4MCwNCj4gPiA+IC0JCS5oZWlnaHQgPSAyNDY0LA0KPiA+ID4g
-LQkJLmh0cyA9IDE5MjgsDQo+ID4gPiAtCQkudnRzX2RlZiA9IDI0ODgsDQo+ID4gPiAtCQkudnRz
-X21pbiA9IDI0ODgsDQo+ID4gPiAtCQkucmVnX2xpc3QgPSB7DQo+ID4gPiAtCQkJLm51bV9vZl9y
-ZWdzID0gQVJSQVlfU0laRShtb2RlXzMyODB4MjQ2NF9yZWdzKSwNCj4gPiA+IC0JCQkucmVncyA9
-IG1vZGVfMzI4MHgyNDY0X3JlZ3MsDQo+ID4gPiAtCQl9LA0KPiA+ID4gLQkJLmxpbmtfZnJlcV9p
-bmRleCA9IE9WODg1Nl9MSU5LX0ZSRVFfNzIwTUJQUywNCj4gPiA+IC0JfSwNCj4gPiANCj4gPiBJ
-ZiAzMjgweDI0NjQgcmVzb2x1dGlvbiBpcyByZW1vdmVkLCBiYXllciBvcmRlciBuZWVkcyB0byBi
-ZSB1cGRhdGVkIGluDQo+ID4gdGhlIG1lYW50aW1lLiBGcm9tIE9WODg1NidzIGRhdGFzaGVldCwg
-YmF5ZXIgb3JkZXIgdHVybnMgdG8gYmUgQkdHUiBpZg0KPiA+IHNlbnNvciBhZG9wdHMgZnVsbCBt
-b2RlICgzMjY0eDI0NDgpIG9yIGJpbm5pbmcgbW9kZSAoMTYzMngxMjI0KS4NCj4gDQo+IEhvdyBp
-cyB0aGlzIHJlbGF0ZWQgdG8gdGhlIHBhdGNoPw0KPiANCg0KWWVzLCBpdCBzZWVtcyB0byBiZSBh
-bm90aGVyIGlzc3VlLg0KQnV0IGl0IGlzIHZlcnkgb2Z0ZW4gdGhhdCBiYXllciBvcmRlciBpcyBz
-dHJvbmdseSByZWxhdGVkIHRvIHRoZSBpbWFnZQ0Kd2luZG93IHNpemUgYW5kIG1pcnJvci9mbGlw
-IHNldHRpbmcuDQoNCj4gVGhlIG5leHQgbGFyZ2VzdCBzaXplIGlzIDE2IGJ5IDE2IGxlc3MsIHNv
-IHRoZSBCYXllciBvcmRlciBpcyB0aGUgc2FtZS4gSWYNCj4gaXQncyB3cm9uZyBjdXJyZW50bHkg
-KGFzIGl0IHdvdWxkIGFwcGVhciB0byksIGl0IHNob3VsZCBiZSBhIHNlcGFyYXRlDQo+IHBhdGNo
-Lg0KPiANCg0KT1Y4ODU2IHNlbnNvciBhcnJheSByZWdpb24gY29uc2lzdHMgb2YgMyBtYWluIHdp
-bmRvdyBzZXR0aW5ncy4NClRoZSBpbm5lciB3aW5kb3cgaXMgY29udHJvbGxlZCBieSBbSF93aW5f
-b2ZmLCBWX3dpbl9vZmZdLg0KRnJvbSB0aGUgb2xkIHVudXN1YWwgMzI4MHgyNDY0IGFuZCAxNjQw
-eDEyMzIgc2V0dGluZywNCkhfd2luX29mZihSMzgxMC1SMzgxMSkgaXMgMCwgVl93aW5fb2ZmKFIz
-ODEyLVIzODEzKSBpcyAxLg0KDQpDb25zaWRlcmluZyB0aGF0IHRoZSByZWdpc3RlciBURVNUX1BB
-VFRFUk5fQ1RSTChSNDMyMCkgY29udHJvbGxpbmcgcGl4ZWwNCm9yZGVyIGlzIG5vdCBzZXQgKGRl
-ZmF1bHQ6IDB4ODAsIG1lYW5pbmcgQkcvR1IpIGFuZCBtaXJyb3IvZmxpcCBhcmUgYm90aA0KT0ZG
-LCB0aGUgYWJzb2x1dGUgY29vcmRpbmF0ZSBvZiBjcm9wX3N0YXJ0IGlzIGV4cHJlc3NlZCBhczoN
-CltIX2Nyb3Bfc3RhcnQrSF93aW5fb2ZmLCBWX2Nyb3Bfc3RhcnQrVl93aW5fb2ZmXSA9IFswLCA3
-XQ0KDQpUaHVzIHRoZSBmaXJzdCBwaXhlbCBzaGFsbCBzdGFydCB3aXRoIEcgY2hhbm5lbChhY2Nv
-cmRpbmcgdG8gZGF0YXNoZWV0KS4NClRoaXMgaXMgZGlmZmVyZW50IHdpdGggY3VycmVudCByZXNv
-bHV0aW9ucyAoMzI2NHgyNDQ4IGFuZCAxNjMyeDEyMjQpLg0KDQo=
+Hi,
 
+Stable tag with Tegra SoC changes in Memory controllers tree, being a part of
+my regular v5.11 pull request later to arm-soc. Please pull if your patches
+depend on this.
+
+Best regards,
+Krzysztof
+
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/tegra-soc-clk-drivers-5.11
+
+for you to fetch changes up to 245157a31e91aec7f5b621ed26c0a8370b1c8a64:
+
+  soc/tegra: fuse: Add stub for tegra_sku_info (2020-11-06 19:25:21 +0100)
+
+----------------------------------------------------------------
+Tegra SoC and clock controller changes for v5.11
+
+Export symbols and add stubs necessary for upcoming modified Tegra
+memory controller drivers (touching also devfreq and interconnect).
+
+----------------------------------------------------------------
+Dmitry Osipenko (3):
+      clk: tegra: Export Tegra20 EMC kernel symbols
+      soc/tegra: fuse: Export tegra_read_ram_code()
+      soc/tegra: fuse: Add stub for tegra_sku_info
+
+ drivers/clk/tegra/clk-tegra20-emc.c    | 3 +++
+ drivers/soc/tegra/fuse/tegra-apbmisc.c | 2 ++
+ include/soc/tegra/fuse.h               | 4 ++++
+ 3 files changed, 9 insertions(+)
