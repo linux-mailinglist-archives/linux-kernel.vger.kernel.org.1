@@ -2,898 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7C12C3190
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E422C3198
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729940AbgKXUBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729774AbgKXUBJ (ORCPT
+        id S1729994AbgKXUD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:03:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36113 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729971AbgKXUDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:01:09 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C0AC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:01:08 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kheUo-0003N1-Gn; Tue, 24 Nov 2020 21:01:02 +0100
-Message-ID: <89724abeca0eb407c24807507ff6b1bc310d7275.camel@pengutronix.de>
-Subject: Re: dts: add MNT Reform 2.0
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     "Lukas F. Hartmann" <lukas@mntre.com>
-Cc:     devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Tue, 24 Nov 2020 21:01:01 +0100
-In-Reply-To: <20201124172735.981878-1-lukas@mntre.com>
-References: <20201124172735.981878-1-lukas@mntre.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Tue, 24 Nov 2020 15:03:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606248203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DOLfU9QYMGrspYJyzvFCDSDoj+0Yb7d+LpKKWf0+TiU=;
+        b=Qgin9l/zXnLe1ejYSDH/JjU1QBBAokXq+wbOQxIkCefP+S74wU4IDji37Kslje8a67r7Na
+        56UKPvEZyghmyllKkmgzi2gOdEfBq0jG2iC1FQ71Ivp6jDUp2jfEzUzpxzd7rgvveJrLVs
+        1XkS2nWMPlGtQieTJm7nLDTscs4Cn3k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-6_d5NO5PPCy6SULvgRXZBQ-1; Tue, 24 Nov 2020 15:03:19 -0500
+X-MC-Unique: 6_d5NO5PPCy6SULvgRXZBQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F411107AD88;
+        Tue, 24 Nov 2020 20:03:17 +0000 (UTC)
+Received: from thinkpad.redhat.com (ovpn-113-83.ams2.redhat.com [10.36.113.83])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B80705D6AB;
+        Tue, 24 Nov 2020 20:03:09 +0000 (UTC)
+From:   Laurent Vivier <lvivier@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-block@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Laurent Vivier <lvivier@redhat.com>
+Subject: [PATCH 0/2] powerpc/pseries: fix MSI/X IRQ affinity on pseries
+Date:   Tue, 24 Nov 2020 21:03:06 +0100
+Message-Id: <20201124200308.1110744-1-lvivier@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
-
-just some general comments, not a full review.
-
-Am Dienstag, den 24.11.2020, 18:27 +0100 schrieb Lukas F. Hartmann:
-> This is the device tree for the MNT Reform 2.0 open hardware laptop
-> which is based on NXP i.MX8MQ. It is designed around the Boundary Devices
-> Nitrogen8M SoM.
-
-Since this is based on a module the DT should be split in a module dtsi
-and a baseboard dts.
-
-> Technical details: https://mntre.com/reform
-> 
-> Signed-off-by: Lukas F. Hartmann <lukas@mntre.com>
-> ---
->  .../boot/dts/freescale/imx8mq-mnt-reform2.dts | 783 ++++++++++++++++++
->  1 file changed, 783 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts b/arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts
-> new file mode 100644
-> index 000000000..c95a22a1e
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts
-> @@ -0,1 +1,782 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright 2018 Boundary Devices
-> + * Copyright 2019-2020 MNT Research GmbH
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "dt-bindings/input/input.h"
-> +#include "dt-bindings/pwm/pwm.h"
-> +#include "dt-bindings/usb/pd.h"
-> +#include "dt-bindings/gpio/gpio.h"
-> +#include "imx8mq.dtsi"
-> +
-> +/ {
-> +	model = "MNT Reform 2";
-> +	compatible = "fsl,imx8mq";
-
-This needs a more specific compatible.
-
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	// 4GB of RAM
-> +	memory@40000000 {
-> +		device_type = "memory";
-> +		reg = <0x00000000 0x40000000 0 0xc0000000>;
-> +	};
-
-Do you need this node? Most bootloaders should be able to patch in the
-correct amount of memory before passing control to the kernel.
-
-> +
-> +	reg_vref_0v9: regulator-vref-0v9 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vref-0v9";
-> +		regulator-min-microvolt = <900000>;
-> +		regulator-max-microvolt = <900000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vref_1v2: regulator-vref-1v2 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vref-1v2";
-> +		regulator-min-microvolt = <1200000>;
-> +		regulator-max-microvolt = <1200000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vref_1v8: regulator-vref-1v8 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vref-1v8";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vref_2v5: regulator-vref-2v5 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vref-2v5";
-> +		regulator-min-microvolt = <2500000>;
-> +		regulator-max-microvolt = <2500000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vref_3v3: regulator-vref-3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vref-3v3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vref_5v: regulator-vref-5v {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vref-5v";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	backlight: backlight {
-> +		compatible = "pwm-backlight";
-> +		pwms = <&pwm2 0 10000>;
-> +		enable-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
-> +		brightness-levels = <0 32 64 128 160 200 255>;
-> +		default-brightness-level = <6>;
-> +	};
-> +
-> +	panel {
-> +		compatible = "innolux,n125hce-gn1";
-> +		power = <&reg_vref_3v3>;
-> +		backlight = <&backlight>;
-> +		no-hpd;
-> +
-> +		port@0 {
-> +			panel_in: endpoint {
-> +				remote-endpoint = <&edp_bridge_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	sound {
-> +		compatible = "simple-audio-card";
-> +		simple-audio-card,name = "wm8960-audio";
-> +		simple-audio-card,format = "i2s";
-> +		simple-audio-card,frame-master = <&dai_cpu_master>;
-> +		simple-audio-card,bitclock-master = <&dai_cpu_master>;
-> +
-> +		simple-audio-card,widgets =
-> +		"Microphone", "Mic Jack",
-> +		"Line", "Line In",
-> +		"Line", "Line Out",
-> +		"Speaker", "Speaker",
-> +		"Headphone", "Headphone Jack";
-> +		simple-audio-card,routing =
-> +		"Headphone Jack", "HP_L",
-> +		"Headphone Jack", "HP_R",
-> +		"Speaker", "SPK_LP",
-> +		"Speaker", "SPK_LN",
-> +		"Speaker", "SPK_RP",
-> +		"Speaker", "SPK_RN",
-> +		"Mic Jack", "MICB",
-> +		"LINPUT1", "Mic Jack",
-> +		"LINPUT2", "Line In",
-> +		"RINPUT2", "Line In";
-> +
-> +		dai_cpu_master: simple-audio-card,cpu {
-> +			sound-dai = <&sai2>;
-> +		};
-> +
-> +		dailink0: simple-audio-card,codec {
-> +			sound-dai = <&codec>;
-> +		};
-> +	};
-> +
-> +	pcie0_refclk: pcie0-refclk {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <100000000>;
-> +	};
-> +
-> +	pcie1_refclk: pcie1-refclk {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <100000000>;
-> +	};
-
-One of those doesn't actually exist, as I know that one of the PCIe
-interfaces on the BD module uses the SoC internal refclock.
-
-> +};
-> +
-> +&A53_0 {
-> +	cpu-supply = <&reg_arm_dram>;
-> +};
-> +
-> +&A53_1 {
-> +	cpu-supply = <&reg_arm_dram>;
-> +};
-> +
-> +&A53_2 {
-> +	cpu-supply = <&reg_arm_dram>;
-> +};
-> +
-> +&A53_3 {
-> +	cpu-supply = <&reg_arm_dram>;
-> +};
-> +
-> +/ {
-> +	soc@0 {
-> +		bus@32c00000 {
-> +			dcss: display-controller@32e00000 {
-> +				status = "okay";
-> +
-> +				compatible = "nxp,imx8mq-dcss";
-> +				reg = <0x32e00000 0x2d000>, <0x32e2f000 0x1000>;
-> +				interrupts = <6>, <8>, <9>;
-> +				interrupt-names = "ctxld", "ctxld_kick", "vblank";
-> +				interrupt-parent = <&irqsteer>;
-> +				clocks = <&clk IMX8MQ_CLK_DISP_APB_ROOT>,
-> +					<&clk IMX8MQ_CLK_DISP_AXI_ROOT>,
-> +					<&clk IMX8MQ_CLK_DISP_RTRM_ROOT>,
-> +					<&clk IMX8MQ_CLK_DC_PIXEL>,
-> +					<&clk IMX8MQ_CLK_DISP_DTRC>;
-> +				clock-names = "apb", "axi", "rtrm", "pix", "dtrc";
-> +				assigned-clocks = <&clk IMX8MQ_CLK_DISP_AXI>,
-> +					<&clk IMX8MQ_CLK_DISP_RTRM>,
-> +					<&clk IMX8MQ_VIDEO2_PLL1_REF_SEL>,
-> +					<&clk IMX8MQ_VIDEO_PLL1_REF_SEL>,
-> +					<&clk IMX8MQ_CLK_DC_PIXEL>;
-> +				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_800M>,
-> +					<&clk IMX8MQ_SYS1_PLL_800M>,
-> +					<&clk IMX8MQ_CLK_27M>,
-> +					<&clk IMX8MQ_CLK_25M>,
-> +					<&clk IMX8MQ_VIDEO_PLL1_OUT>;
-> +				assigned-clock-rates = <800000000>,
-> +					<400000000>,
-> +					<27000000>,
-> +					<25000000>,
-> +					<594000000>;
-
-This whole node shouldn't be in this DT. I hadn't realized that the
-DCSS DT patch is not yet upstream. Please work with Shawn and Laurentiu
-to get this node into the imx8mq.dtsi instead.
-
-> +				port {
-> +					dcss_dsi_out: endpoint {
-> +						remote-endpoint = <&mipi_dsi_in>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +// LCDIF is not used, but has to be active or DCSS won't work
-
-This sounds fishy. There is no dependency between the two interfaces,
-so you shouldn't need to enable the lcdif to get the dcss working. Do
-you miss some clock assignment in the dcss node?
-
-> +&lcdif {
-> +	status = "okay";
-> +	/delete-node/ port@0;
-> +};
-> +
-> +&dphy {
-> +	status = "okay";
-> +};
-> +
-> +&fec1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_fec1>;
-> +	phy-mode = "rgmii-id";
-> +	phy-handle = <&ethphy0>;
-> +	fsl,magic-packet;
-> +	status = "okay";
-> +
-> +	mdio {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		ethphy0: ethernet-phy@4 {
-> +			compatible = "ethernet-phy-ieee802.3-c22";
-> +			reg = <4>;
-> +			interrupts = <&gpio1 11 IRQ_TYPE_LEVEL_LOW>;
-> +			reset-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c1 {
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c1>;
-> +	status = "okay";
-> +
-> +	// I2C Mux on Nitrogen8M_SOM
-> +	i2cmux@70 {
-> +		compatible = "nxp,pca9546";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_i2c1_pca9546>;
-> +		reg = <0x70>;
-> +		reset-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		i2c1a: i2c1@0 {
-> +			reg = <0>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			// Regulator on Nitrogen8M_SOM
-> +			reg_arm_dram: fan53555@60 {
-> +				compatible = "fcs,fan53555";
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&pinctrl_reg_arm_dram>;
-> +				reg = <0x60>;
-> +				regulator-min-microvolt =	 <900000>;
-> +				regulator-max-microvolt = <1000000>;
-> +				regulator-ramp-delay = <8000>;
-> +				regulator-always-on;
-> +				vsel-gpios = <&gpio3 24 GPIO_ACTIVE_HIGH>;
-> +			};
-> +		};
-> +
-> +		i2c1b: i2c1@1 {
-> +			reg = <1>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			// Regulator on Nitrogen8M_SOM
-> +			reg_dram_1p1v: fan53555@60 {
-> +				compatible = "fcs,fan53555";
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&pinctrl_reg_dram_1p1v>;
-> +				reg = <0x60>;
-> +				regulator-min-microvolt = <1100000>;
-> +				regulator-max-microvolt = <1100000>;
-> +				regulator-ramp-delay = <8000>;
-> +				regulator-always-on;
-> +				vsel-gpios = <&gpio2 11 GPIO_ACTIVE_HIGH>;
-> +			};
-> +		};
-> +
-> +		i2c1c: i2c1@2 {
-> +			reg = <2>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			// Regulator on Nitrogen8M_SOM
-> +			reg_soc_gpu_vpu: fan53555@60 {
-> +				compatible = "fcs,fan53555";
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&pinctrl_reg_soc_gpu_vpu>;
-> +				reg = <0x60>;
-> +				regulator-min-microvolt = <900000>;
-> +				regulator-max-microvolt = <1000000>;
-> +				regulator-ramp-delay = <8000>;
-> +				regulator-always-on;
-> +				vsel-gpios = <&gpio2 20 GPIO_ACTIVE_HIGH>;
-> +			};
-> +		};
-> +
-> +		// No peripheral connected, available on DSI connector
-> +		i2c1d: i2c1@3 {
-> +			reg = <3>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +		};
-> +	};
-> +};
-> +
-> +// No peripheral connected, available on CSI connector
-> +&i2c2 {
-> +	status = "disabled";
-> +};
-> +
-> +&i2c3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c3>;
-> +	status = "okay";
-> +
-> +	// Audio chip on motherboard
-> +	codec: wm8960@1a {
-> +		compatible = "wlf,wm8960";
-> +		reg = <0x1a>;
-> +		clocks = <&clk IMX8MQ_CLK_SAI2>;
-> +		clock-names = "mclk";
-> +		#sound-dai-cells = <0>;
-> +	};
-> +
-> +	// Realtime clock chip on motherboard
-> +	pcf8523: pcf8523@68 {
-> +		compatible = "nxp,pcf8523";
-> +		reg = <0x68>;
-> +	};
-> +};
-> +
-> +&i2c4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c4>;
-> +	status = "okay";
-> +
-> +	// DSI to eDP converter on motherboard
-> +	edp_bridge: sn65dsi86@2c {
-> +		compatible = "ti,sn65dsi86";
-> +		reg = <0x2c>;
-> +		enable-gpios = <&gpio3 20 GPIO_ACTIVE_HIGH>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +
-> +				edp_bridge_in: endpoint {
-> +					remote-endpoint = <&mipi_dsi_out>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +
-> +				edp_bridge_out: endpoint {
-> +					remote-endpoint = <&panel_in>;
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_hog>;
-> +
-> +	pinctrl_hog: hoggrp {
-> +		fsl,pins = <
-> +		// WL_EN on Nitrogen8M_SOM, pin 38, goes to /EN input of SN65DSI86
-> +		MX8MQ_IOMUXC_SAI5_RXC_GPIO3_IO20		0x19
-> +		MX8MQ_IOMUXC_GPIO1_IO14_GPIO1_IO14		0x56
-> +		>;
-> +	};
-> +
-> +	pinctrl_fec1: fec1grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_ENET_MDC_ENET1_MDC			0x3
-> +		MX8MQ_IOMUXC_ENET_MDIO_ENET1_MDIO		0x23
-> +		MX8MQ_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
-> +		MX8MQ_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
-> +		MX8MQ_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
-> +		MX8MQ_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
-> +		MX8MQ_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
-> +		MX8MQ_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
-> +		MX8MQ_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
-> +		MX8MQ_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
-> +		MX8MQ_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
-> +		MX8MQ_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
-> +		MX8MQ_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
-> +		MX8MQ_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
-> +		MX8MQ_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x19
-> +		MX8MQ_IOMUXC_GPIO1_IO11_GPIO1_IO11		0x59
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c1: i2c1grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_I2C1_SCL_I2C1_SCL			0x4000007f
-> +		MX8MQ_IOMUXC_I2C1_SDA_I2C1_SDA			0x4000007f
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c1_pca9546: i2c1-pca9546grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_GPIO1_IO04_GPIO1_IO4		0x46
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c2: i2c2grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_I2C2_SCL_I2C2_SCL			0x4000007f
-> +		MX8MQ_IOMUXC_I2C2_SDA_I2C2_SDA			0x4000007f
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c3: i2c3grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_I2C3_SCL_I2C3_SCL			0x4000007f
-> +		MX8MQ_IOMUXC_I2C3_SDA_I2C3_SDA			0x4000007f
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c4: i2c4grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_I2C4_SCL_I2C4_SCL			0x4000007f
-> +		MX8MQ_IOMUXC_I2C4_SDA_I2C4_SDA			0x4000007f
-> +		>;
-> +	};
-> +
-> +	pinctrl_pcie0: pcie0grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_ECSPI1_MOSI_GPIO5_IO7		0x16
-> +		>;
-> +	};
-> +
-> +	pinctrl_pcie1: pcie1grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SAI5_RXD2_GPIO3_IO23		0x16
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm2: pwm2grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SPDIF_RX_PWM2_OUT			0x16
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm3: pwm3grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SPDIF_TX_PWM3_OUT			0x16
-> +		>;
-> +	};
-> +
-> +	// Backlight
-> +	pinctrl_pwm4: pwm4grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SAI3_MCLK_PWM4_OUT			0x16
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_arm_dram: reg-arm-dram {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SAI5_RXD3_GPIO3_IO24		0x16
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_dram_1p1v: reg-dram-1p1v {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD1_STROBE_GPIO2_IO11		0x16
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_soc_gpu_vpu: reg-soc-gpu-vpu {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD2_WP_GPIO2_IO20			0x16
-> +		>;
-> +	};
-> +
-> +	pinctrl_sai2: sai2grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SAI2_RXD0_SAI2_RX_DATA0		0xd6	/* Pin 166 */
-> +		MX8MQ_IOMUXC_SAI2_RXFS_SAI2_RX_SYNC		0xd6	/* Pin 168 */
-> +		MX8MQ_IOMUXC_SAI2_TXC_SAI2_TX_BCLK		0xd6	/* Pin 170 */
-> +		MX8MQ_IOMUXC_SAI2_TXFS_SAI2_TX_SYNC		0xd6	/* Pin 172 */
-> +		MX8MQ_IOMUXC_SAI2_RXC_SAI2_RX_BCLK		0xd6	/* Pin 174 */
-> +		MX8MQ_IOMUXC_SAI2_MCLK_SAI2_MCLK		0xd6	/* Pin 176 */
-> +		MX8MQ_IOMUXC_SAI2_TXD0_SAI2_TX_DATA0		0xd6	/* Pin 168 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_UART1_RXD_UART1_DCE_RX		0x45
-> +		MX8MQ_IOMUXC_UART1_TXD_UART1_DCE_TX		0x45
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart2: uart2grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_UART2_RXD_UART2_DCE_RX		0x45
-> +		MX8MQ_IOMUXC_UART2_TXD_UART2_DCE_TX		0x45
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart3: uart3grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_UART3_RXD_UART3_DCE_RX		0x45
-> +		MX8MQ_IOMUXC_UART3_TXD_UART3_DCE_TX		0x45
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1: usdhc1grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x83
-> +		MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0		0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1		0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2		0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA3_USDHC1_DATA3		0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA4_USDHC1_DATA4		0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA5_USDHC1_DATA5		0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA6_USDHC1_DATA6		0xc3
-> +		MX8MQ_IOMUXC_SD1_DATA7_USDHC1_DATA7		0xc3
-> +		MX8MQ_IOMUXC_SD1_RESET_B_GPIO2_IO10		0x41
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x8d
-> +		MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0		0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1		0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2		0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA3_USDHC1_DATA3		0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA4_USDHC1_DATA4		0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA5_USDHC1_DATA5		0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA6_USDHC1_DATA6		0xcd
-> +		MX8MQ_IOMUXC_SD1_DATA7_USDHC1_DATA7		0xcd
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x9f
-> +		MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0		0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1		0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2		0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA3_USDHC1_DATA3		0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA4_USDHC1_DATA4		0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA5_USDHC1_DATA5		0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA6_USDHC1_DATA6		0xdf
-> +		MX8MQ_IOMUXC_SD1_DATA7_USDHC1_DATA7		0xdf
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2: usdhc2grp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x03
-> +		MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xc3
-> +		MX8MQ_IOMUXC_SD2_DATA0_USDHC2_DATA0		0xc3
-> +		MX8MQ_IOMUXC_SD2_DATA1_USDHC2_DATA1		0xc3
-> +		MX8MQ_IOMUXC_SD2_DATA2_USDHC2_DATA2		0xc3
-> +		MX8MQ_IOMUXC_SD2_DATA3_USDHC2_DATA3		0xc
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x0d
-> +		MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xcd
-> +		MX8MQ_IOMUXC_SD2_DATA0_USDHC2_DATA0		0xcd
-> +		MX8MQ_IOMUXC_SD2_DATA1_USDHC2_DATA1		0xcd
-> +		MX8MQ_IOMUXC_SD2_DATA2_USDHC2_DATA2		0xcd
-> +		MX8MQ_IOMUXC_SD2_DATA3_USDHC2_DATA3		0xcd
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x1e
-> +		MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xce
-> +		MX8MQ_IOMUXC_SD2_DATA0_USDHC2_DATA0		0xce
-> +		MX8MQ_IOMUXC_SD2_DATA1_USDHC2_DATA1		0xce
-> +		MX8MQ_IOMUXC_SD2_DATA2_USDHC2_DATA2		0xce
-> +		MX8MQ_IOMUXC_SD2_DATA3_USDHC2_DATA3		0xce
-> +		>;
-> +	};
-> +
-> +	pinctrl_wdog: wdoggrp {
-> +		fsl,pins = <
-> +		MX8MQ_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
-> +		>;
-> +	};
-> +};
-
-iomuxc should be the last node in the DT file. Other nodes should be
-sorted alphabetically.
-
-> +
-> +&mipi_dsi {
-> +	status = "okay";
-> +
-> +	ports {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		port@0 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0>;
-> +
-> +			// We don't want input from LCDIF
-> +			/delete-node/ endpoint@0;
-> +
-> +			mipi_dsi_in: endpoint@1 {
-> +				reg = <1>;
-> +				remote-endpoint = <&dcss_dsi_out>;
-> +			};
-> +		};
-> +		port@1 {
-> +			reg = <1>;
-> +			mipi_dsi_out: endpoint {
-> +				remote-endpoint = <&edp_bridge_in>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&pcie0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pcie0>;
-> +	reset-gpio = <&gpio5 7 GPIO_ACTIVE_LOW>;
-> +	internal-refclk;
-
-This property isn't supported in upstream. The proepr solution would be
-to point the pcie_bus clock handle to the internal clock and add
-support to the PCIe driver to notice this fact and program the GPR
-accordingly.
-
-> +
-> +	clocks = <&clk IMX8MQ_CLK_PCIE1_ROOT>,
-> +		<&clk IMX8MQ_CLK_PCIE1_AUX>,
-> +		<&clk IMX8MQ_CLK_PCIE1_PHY>,
-> +		<&pcie0_refclk>;
-> +
-> +	clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
-> +
-> +	assigned-clocks = <&clk IMX8MQ_CLK_PCIE1_CTRL>,
-> +		<&clk IMX8MQ_CLK_PCIE1_PHY>;
-> +	assigned-clock-parents = <&clk IMX8MQ_SYS2_PLL_250M>,
-> +		<&clk IMX8MQ_SYS2_PLL_100M>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&pcie1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pcie1>;
-> +	reset-gpio = <&gpio3 23 GPIO_ACTIVE_LOW>;
-> +
-> +	clocks = <&clk IMX8MQ_CLK_PCIE2_ROOT>,
-> +		<&clk IMX8MQ_CLK_PCIE2_AUX>,
-> +		<&clk IMX8MQ_CLK_PCIE2_PHY>,
-> +		<&pcie1_refclk>;
-> +	clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
-> +	status = "okay";
-> +};
-> +
-> +&pwm2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm2>;
-> +	status = "okay";
-> +};
-> +
-> +&pwm3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm3>;
-> +	status = "okay";
-> +};
-> +
-> +// Backlight control
-> +&pwm4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm4>;
-> +	status = "okay";
-> +};
-> +
-> +&sai2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_sai2>;
-> +	assigned-clocks = <&clk IMX8MQ_CLK_SAI2>;
-> +	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL2_OUT>;
-> +	assigned-clock-rates = <12288000>;
-> +	status = "okay";
-> +};
-> +
-> +// Don't use i.MX8M internal RTC because we have a dedicated one
-> +&snvs_rtc {
-> +	status = "disabled";
-> +};
-> +
-> +// Console
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	status = "okay";
-> +};
-> +
-> +// Auxiliary serial port on motherboard
-> +&uart2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart2>;
-> +	status = "okay";
-> +};
-> +
-> +// connected to LPC11U24 chip on the motherboard
-> +&uart3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart3>;
-> +	status = "okay";
-> +};
-> +
-> +&usb_dwc3_0 {
-> +	status = "okay";
-> +	dr_mode = "host";
-> +};
-> +
-> +&usb_dwc3_1 {
-> +	status = "okay";
-> +	dr_mode = "host";
-> +};
-> +
-> +&usb3_phy0 {
-> +	vbus-supply = <&reg_vref_5v>;
-> +	status = "okay";
-> +};
-> +
-> +&usb3_phy1 {
-> +	vbus-supply = <&reg_vref_5v>;
-> +	status = "okay";
-> +};
-> +
-> +// eMMC on Nitrogen8M_SOM
-> +&usdhc1 {
-> +	assigned-clocks = <&clk IMX8MQ_CLK_USDHC1>;
-> +	assigned-clock-rates = <400000000>;
-> +	bus-width = <8>;
-> +	no-mmc-hs400;
-> +	non-removable;
-
-no-sd maybe, to speed up enumeration?
-
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc1>;
-> +	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
-> +	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-> +	status = "disabled";
-> +};
-> +
-> +// SD Card on motherboard
-> +&usdhc2 {
-> +	assigned-clocks = <&clk IMX8MQ_CLK_USDHC2>;
-> +	assigned-clock-rates = <200000000>;
-> +	bus-width = <4>;
-> +	no-1-8-v; // We don't support 1.8V signaling
-
-This should not be necessary if you instead add a vqmmc-supply and
-point it to the same fixed 3.3V regulator as the vmmc.
-
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc2>;
-> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
-> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
-> +	vmmc-supply = <&reg_vref_3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&wdog1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_wdog>;
-> +	fsl,ext-reset-output;
-> +	status = "okay";
-> +};
-> --
-> 2.28.0
-
-Regards,
-Lucas
+With virtio, in multiqueue case, each queue IRQ is normally=0D
+bound to a different CPU using the affinity mask.=0D
+=0D
+This works fine on x86_64 but totally ignored on pseries.=0D
+=0D
+This is not obvious at first look because irqbalance is doing=0D
+some balancing to improve that.=0D
+=0D
+It appears that the "managed" flag set in the MSI entry=0D
+is never copied to the system IRQ entry.=0D
+=0D
+This series passes the affinity mask from rtas_setup_msi_irqs()=0D
+to irq_domain_alloc_descs() by adding an affinity parameter to=0D
+irq_create_mapping().=0D
+=0D
+The first patch adds the parameter (no functional change), the=0D
+second patch passes the actual affinity mask to irq_create_mapping()=0D
+in rtas_setup_msi_irqs().=0D
+=0D
+For instance, with 32 CPUs VM and 32 queues virtio-scsi interface:=0D
+=0D
+... -smp 32 -device virtio-scsi-pci,id=3Dvirtio_scsi_pci0,num_queues=3D32=0D
+=0D
+for IRQ in $(grep virtio2-request /proc/interrupts |cut -d: -f1); do=0D
+    for file in /proc/irq/$IRQ/ ; do=0D
+        echo -n "IRQ: $(basename $file) CPU: " ; cat $file/smp_affinity_lis=
+t=0D
+    done=0D
+done=0D
+=0D
+Without the patch (and without irqbalanced)=0D
+=0D
+IRQ: 268 CPU: 0-31=0D
+IRQ: 269 CPU: 0-31=0D
+IRQ: 270 CPU: 0-31=0D
+IRQ: 271 CPU: 0-31=0D
+IRQ: 272 CPU: 0-31=0D
+IRQ: 273 CPU: 0-31=0D
+IRQ: 274 CPU: 0-31=0D
+IRQ: 275 CPU: 0-31=0D
+IRQ: 276 CPU: 0-31=0D
+IRQ: 277 CPU: 0-31=0D
+IRQ: 278 CPU: 0-31=0D
+IRQ: 279 CPU: 0-31=0D
+IRQ: 280 CPU: 0-31=0D
+IRQ: 281 CPU: 0-31=0D
+IRQ: 282 CPU: 0-31=0D
+IRQ: 283 CPU: 0-31=0D
+IRQ: 284 CPU: 0-31=0D
+IRQ: 285 CPU: 0-31=0D
+IRQ: 286 CPU: 0-31=0D
+IRQ: 287 CPU: 0-31=0D
+IRQ: 288 CPU: 0-31=0D
+IRQ: 289 CPU: 0-31=0D
+IRQ: 290 CPU: 0-31=0D
+IRQ: 291 CPU: 0-31=0D
+IRQ: 292 CPU: 0-31=0D
+IRQ: 293 CPU: 0-31=0D
+IRQ: 294 CPU: 0-31=0D
+IRQ: 295 CPU: 0-31=0D
+IRQ: 296 CPU: 0-31=0D
+IRQ: 297 CPU: 0-31=0D
+IRQ: 298 CPU: 0-31=0D
+IRQ: 299 CPU: 0-31=0D
+=0D
+With the patch:=0D
+=0D
+IRQ: 265 CPU: 0=0D
+IRQ: 266 CPU: 1=0D
+IRQ: 267 CPU: 2=0D
+IRQ: 268 CPU: 3=0D
+IRQ: 269 CPU: 4=0D
+IRQ: 270 CPU: 5=0D
+IRQ: 271 CPU: 6=0D
+IRQ: 272 CPU: 7=0D
+IRQ: 273 CPU: 8=0D
+IRQ: 274 CPU: 9=0D
+IRQ: 275 CPU: 10=0D
+IRQ: 276 CPU: 11=0D
+IRQ: 277 CPU: 12=0D
+IRQ: 278 CPU: 13=0D
+IRQ: 279 CPU: 14=0D
+IRQ: 280 CPU: 15=0D
+IRQ: 281 CPU: 16=0D
+IRQ: 282 CPU: 17=0D
+IRQ: 283 CPU: 18=0D
+IRQ: 284 CPU: 19=0D
+IRQ: 285 CPU: 20=0D
+IRQ: 286 CPU: 21=0D
+IRQ: 287 CPU: 22=0D
+IRQ: 288 CPU: 23=0D
+IRQ: 289 CPU: 24=0D
+IRQ: 290 CPU: 25=0D
+IRQ: 291 CPU: 26=0D
+IRQ: 292 CPU: 27=0D
+IRQ: 293 CPU: 28=0D
+IRQ: 294 CPU: 29=0D
+IRQ: 295 CPU: 30=0D
+IRQ: 299 CPU: 31=0D
+=0D
+This matches what we have on an x86_64 system.=0D
+=0D
+Laurent Vivier (2):=0D
+  genirq: add an affinity parameter to irq_create_mapping()=0D
+  powerpc/pseries: pass MSI affinity to irq_create_mapping()=0D
+=0D
+ arch/arc/kernel/intc-arcv2.c                  | 4 ++--=0D
+ arch/arc/kernel/mcip.c                        | 2 +-=0D
+ arch/arm/common/sa1111.c                      | 2 +-=0D
+ arch/arm/mach-s3c/irq-s3c24xx.c               | 3 ++-=0D
+ arch/arm/plat-orion/gpio.c                    | 2 +-=0D
+ arch/mips/ath25/ar2315.c                      | 4 ++--=0D
+ arch/mips/ath25/ar5312.c                      | 4 ++--=0D
+ arch/mips/lantiq/irq.c                        | 2 +-=0D
+ arch/mips/pci/pci-ar2315.c                    | 3 ++-=0D
+ arch/mips/pic32/pic32mzda/time.c              | 2 +-=0D
+ arch/mips/ralink/irq.c                        | 2 +-=0D
+ arch/powerpc/kernel/pci-common.c              | 2 +-=0D
+ arch/powerpc/kvm/book3s_xive.c                | 2 +-=0D
+ arch/powerpc/platforms/44x/ppc476.c           | 4 ++--=0D
+ arch/powerpc/platforms/cell/interrupt.c       | 4 ++--=0D
+ arch/powerpc/platforms/cell/iommu.c           | 3 ++-=0D
+ arch/powerpc/platforms/cell/pmu.c             | 2 +-=0D
+ arch/powerpc/platforms/cell/spider-pic.c      | 2 +-=0D
+ arch/powerpc/platforms/cell/spu_manage.c      | 6 +++---=0D
+ arch/powerpc/platforms/maple/pci.c            | 2 +-=0D
+ arch/powerpc/platforms/pasemi/dma_lib.c       | 5 +++--=0D
+ arch/powerpc/platforms/pasemi/msi.c           | 2 +-=0D
+ arch/powerpc/platforms/pasemi/setup.c         | 4 ++--=0D
+ arch/powerpc/platforms/powermac/pci.c         | 2 +-=0D
+ arch/powerpc/platforms/powermac/pic.c         | 2 +-=0D
+ arch/powerpc/platforms/powermac/smp.c         | 2 +-=0D
+ arch/powerpc/platforms/powernv/opal-irqchip.c | 5 +++--=0D
+ arch/powerpc/platforms/powernv/pci.c          | 2 +-=0D
+ arch/powerpc/platforms/powernv/vas.c          | 2 +-=0D
+ arch/powerpc/platforms/ps3/interrupt.c        | 2 +-=0D
+ arch/powerpc/platforms/pseries/ibmebus.c      | 2 +-=0D
+ arch/powerpc/platforms/pseries/msi.c          | 2 +-=0D
+ arch/powerpc/sysdev/fsl_mpic_err.c            | 2 +-=0D
+ arch/powerpc/sysdev/fsl_msi.c                 | 2 +-=0D
+ arch/powerpc/sysdev/mpic.c                    | 3 ++-=0D
+ arch/powerpc/sysdev/mpic_u3msi.c              | 2 +-=0D
+ arch/powerpc/sysdev/xics/xics-common.c        | 2 +-=0D
+ arch/powerpc/sysdev/xive/common.c             | 2 +-=0D
+ arch/sh/boards/mach-se/7343/irq.c             | 2 +-=0D
+ arch/sh/boards/mach-se/7722/irq.c             | 2 +-=0D
+ arch/sh/boards/mach-x3proto/gpio.c            | 2 +-=0D
+ arch/xtensa/kernel/perf_event.c               | 2 +-=0D
+ arch/xtensa/kernel/smp.c                      | 2 +-=0D
+ arch/xtensa/kernel/time.c                     | 2 +-=0D
+ drivers/ata/pata_macio.c                      | 2 +-=0D
+ drivers/base/regmap/regmap-irq.c              | 2 +-=0D
+ drivers/bus/moxtet.c                          | 2 +-=0D
+ drivers/clocksource/ingenic-timer.c           | 2 +-=0D
+ drivers/clocksource/timer-riscv.c             | 2 +-=0D
+ drivers/extcon/extcon-max8997.c               | 3 ++-=0D
+ drivers/gpio/gpio-bcm-kona.c                  | 2 +-=0D
+ drivers/gpio/gpio-brcmstb.c                   | 2 +-=0D
+ drivers/gpio/gpio-davinci.c                   | 2 +-=0D
+ drivers/gpio/gpio-em.c                        | 3 ++-=0D
+ drivers/gpio/gpio-grgpio.c                    | 2 +-=0D
+ drivers/gpio/gpio-mockup.c                    | 2 +-=0D
+ drivers/gpio/gpio-mpc8xxx.c                   | 2 +-=0D
+ drivers/gpio/gpio-mvebu.c                     | 2 +-=0D
+ drivers/gpio/gpio-tb10x.c                     | 2 +-=0D
+ drivers/gpio/gpio-tegra.c                     | 2 +-=0D
+ drivers/gpio/gpio-wm831x.c                    | 2 +-=0D
+ drivers/gpio/gpiolib.c                        | 2 +-=0D
+ drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c       | 3 ++-=0D
+ drivers/gpu/ipu-v3/ipu-common.c               | 2 +-=0D
+ drivers/hid/hid-rmi.c                         | 2 +-=0D
+ drivers/i2c/busses/i2c-cht-wc.c               | 2 +-=0D
+ drivers/i2c/i2c-core-base.c                   | 2 +-=0D
+ drivers/i2c/muxes/i2c-mux-pca954x.c           | 2 +-=0D
+ drivers/ide/pmac.c                            | 2 +-=0D
+ drivers/iio/dummy/iio_dummy_evgen.c           | 3 ++-=0D
+ drivers/input/rmi4/rmi_bus.c                  | 2 +-=0D
+ drivers/irqchip/irq-ath79-misc.c              | 3 ++-=0D
+ drivers/irqchip/irq-bcm2835.c                 | 3 ++-=0D
+ drivers/irqchip/irq-csky-mpintc.c             | 2 +-=0D
+ drivers/irqchip/irq-eznps.c                   | 2 +-=0D
+ drivers/irqchip/irq-mips-gic.c                | 8 +++++---=0D
+ drivers/irqchip/irq-mmp.c                     | 4 ++--=0D
+ drivers/irqchip/irq-versatile-fpga.c          | 2 +-=0D
+ drivers/irqchip/irq-vic.c                     | 2 +-=0D
+ drivers/macintosh/macio_asic.c                | 2 +-=0D
+ drivers/memory/omap-gpmc.c                    | 2 +-=0D
+ drivers/mfd/ab8500-core.c                     | 2 +-=0D
+ drivers/mfd/arizona-irq.c                     | 5 +++--=0D
+ drivers/mfd/db8500-prcmu.c                    | 2 +-=0D
+ drivers/mfd/mfd-core.c                        | 2 +-=0D
+ drivers/mfd/stmpe.c                           | 5 +++--=0D
+ drivers/mfd/tc3589x.c                         | 2 +-=0D
+ drivers/mfd/tps6586x.c                        | 2 +-=0D
+ drivers/mfd/wm8994-irq.c                      | 5 +++--=0D
+ drivers/misc/cxl/irq.c                        | 2 +-=0D
+ drivers/misc/ocxl/afu_irq.c                   | 2 +-=0D
+ drivers/misc/ocxl/link.c                      | 2 +-=0D
+ drivers/net/dsa/mv88e6xxx/chip.c              | 2 +-=0D
+ drivers/net/dsa/mv88e6xxx/global2.c           | 2 +-=0D
+ drivers/net/dsa/qca/ar9331.c                  | 2 +-=0D
+ drivers/net/dsa/rtl8366rb.c                   | 3 ++-=0D
+ drivers/net/ethernet/ibm/ibmvnic.c            | 4 ++--=0D
+ drivers/net/usb/lan78xx.c                     | 2 +-=0D
+ drivers/pci/controller/pci-ftpci100.c         | 2 +-=0D
+ drivers/pci/controller/pci-tegra.c            | 2 +-=0D
+ drivers/pci/controller/pcie-rcar-host.c       | 2 +-=0D
+ drivers/pci/controller/pcie-xilinx-cpm.c      | 4 ++--=0D
+ drivers/pci/controller/pcie-xilinx.c          | 2 +-=0D
+ drivers/pinctrl/mediatek/mtk-eint.c           | 2 +-=0D
+ drivers/pinctrl/nomadik/pinctrl-abx500.c      | 3 ++-=0D
+ drivers/pinctrl/pinctrl-at91-pio4.c           | 3 ++-=0D
+ drivers/pinctrl/pinctrl-rockchip.c            | 2 +-=0D
+ drivers/pinctrl/samsung/pinctrl-samsung.c     | 2 +-=0D
+ drivers/pinctrl/sunxi/pinctrl-sunxi.c         | 2 +-=0D
+ drivers/power/supply/lp8788-charger.c         | 2 +-=0D
+ drivers/rtc/rtc-lp8788.c                      | 2 +-=0D
+ drivers/rtc/rtc-max8997.c                     | 3 ++-=0D
+ drivers/rtc/rtc-max8998.c                     | 3 ++-=0D
+ drivers/scsi/cxlflash/ocxl_hw.c               | 2 +-=0D
+ drivers/ssb/driver_gpio.c                     | 4 ++--=0D
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 2 +-=0D
+ drivers/staging/octeon-usb/octeon-hcd.c       | 2 +-=0D
+ drivers/tty/hvc/hvsi.c                        | 2 +-=0D
+ drivers/tty/serial/pmac_zilog.c               | 6 +++---=0D
+ drivers/watchdog/octeon-wdt-main.c            | 2 +-=0D
+ include/linux/irqdomain.h                     | 3 ++-=0D
+ kernel/irq/irqdomain.c                        | 8 +++++---=0D
+ sound/soc/codecs/rt5677.c                     | 2 +-=0D
+ 123 files changed, 171 insertions(+), 146 deletions(-)=0D
+=0D
+-- =0D
+2.28.0=0D
+=0D
 
