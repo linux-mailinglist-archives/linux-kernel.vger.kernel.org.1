@@ -2,85 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B252C2831
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCAE2C2836
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388424AbgKXNgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:36:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33924 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388416AbgKXNgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:36:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606225005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2c/SYhOtoyvJtV/p2zTmvjzRC4P9vVyA8jCHuZPunMs=;
-        b=IvMw/JSbQDq0vmancWDg21W2VAQ1wUzQCSeLYFvoGwcDnzw+FvEofTkT6j2f32KusClcTm
-        gpnaMYVBCblguuMiAqxjEaBCLaP7YBVf4QHm3cElJX5I5QLWvcitJFCxWkF4u1eUwEB36w
-        5KqfFbSF2b7WAaZUUtX3L1+eO6UjXAA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3A24BADE1;
-        Tue, 24 Nov 2020 13:36:45 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 14:36:44 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] memcg: add support to generate the total count of
- children from root
-Message-ID: <20201124133644.GA31550@dhcp22.suse.cz>
-References: <20201124105836.713371-1-atomlin@redhat.com>
- <20201124112612.GV27488@dhcp22.suse.cz>
- <CANfR36hyrqXjk2tL03GzCk6rn6sCD7Sd811soBsZC3dHY0h9fQ@mail.gmail.com>
+        id S2388434AbgKXNhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387693AbgKXNhV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:37:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915BFC0613D6;
+        Tue, 24 Nov 2020 05:37:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gxsDeVGamS0hlIf6ve+2luB3JdMIOEqdPuqPaIv9Dls=; b=VBYUp/uEnseBoeTeKEhlEWh3HQ
+        g9jh5J/6w+XXN7KTPAWqRI2umbF+U2cvDEHRZ2+NADxjtfotGOawPf+w3FZ95YmoiYfvSAmBJq9D4
+        26wEASipBY6rGNiLU2Hi8AssdKYuF70q8nnjB8RjiU2SZP0YZgXvYmtZelAahPgqFm4LGeIQPwHt2
+        lo8QqqROqwzFUNAoeIMBekulW9J+J1XJwzu6vYqp6gvntJCCRyHMb2MlYx3Ct96pZ8dB9NbUflhGt
+        pjlmHxstjZln9ZulPC9kuS4AQj7iF7mj/kiKWYtjSCVN0VIYtEoRfye1lyQIHousEOYYA4BSj7/yO
+        m9EVCaBg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khYVT-00086n-HE; Tue, 24 Nov 2020 13:37:19 +0000
+Date:   Tue, 24 Nov 2020 13:37:19 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dev@opencontainers.org,
+        corbet@lwn.net, Carlos O'Donell <carlos@redhat.com>
+Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
+ workaround
+Message-ID: <20201124133719.GA30896@infradead.org>
+References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANfR36hyrqXjk2tL03GzCk6rn6sCD7Sd811soBsZC3dHY0h9fQ@mail.gmail.com>
+In-Reply-To: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24-11-20 13:27:32, Aaron Tomlin wrote:
-> On Tue, 24 Nov 2020 at 11:26, Michal Hocko <mhocko@suse.com> wrote:
-> 
-> > On Tue 24-11-20 10:58:36, Aaron Tomlin wrote:
-> > > Each memory-controlled cgroup is assigned a unique ID and the total
-> > > number of memory cgroups is limited to MEM_CGROUP_ID_MAX.
-> > >
-> > > This patch provides the ability to determine the number of
-> > > memory cgroups from the root memory cgroup, only.
-> > > A value of 1 (i.e. self count) is returned if there are no children.
-> > > For example, the number of memory cgroups can be established by
-> > > reading the /sys/fs/cgroup/memory/memory.total_cnt file.
-> >
-> 
-> Hi Michal,
-> 
-> 
-> > Could you add some explanation why is this information useful for
-> > userspace? Who is going to use it and why a simple scripting on top of
-> > cgroupfs is insufficient.
-> >
-> 
-> Thank you for your feedback.
-> 
-> Indeed, one can use a command/script to manually calculate this.
-> Having said that, one that creates a significant number of
-> memory-controlled cgroups may prefer a quick, simple and reliable method
-> to generate the aforementioned data, for management purposes only.
-> As such, I thought this patch might be particularly useful.
+On Tue, Nov 24, 2020 at 01:08:20PM +0100, Florian Weimer wrote:
+> This documents a way to safely use new security-related system calls
+> while preserving compatibility with container runtimes that require
+> insecure emulation (because they filter the system call by default).
+> Admittedly, it is somewhat hackish, but it can be implemented by
+> userspace today, for existing system calls such as faccessat2,
+> without kernel or container runtime changes.
 
-This like any other user visible interface would be a much easier sell
-if there was a clear usecase to justify it. I do not see anything
-controversial about exporting such a value but my general take is that
-we are only adding new interface when existing ones are insufficient. A
-performance might be a very good reason but that would really require to
-come with some real life numbers.
-
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+I think this is completely insane.  Tell the OCI folks to fix their
+completely broken specification instead.
