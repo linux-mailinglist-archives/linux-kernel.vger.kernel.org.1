@@ -2,249 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE572C2E6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88F22C2E71
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390803AbgKXRZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:25:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        id S2390818AbgKXR0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:26:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390794AbgKXRZq (ORCPT
+        with ESMTP id S2390661AbgKXR0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:25:46 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945C0C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:25:44 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id a19so14235553ilm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:25:44 -0800 (PST)
+        Tue, 24 Nov 2020 12:26:19 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4D3C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:26:19 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id l2so21483045qkf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:26:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Z6tlEwV2va2PDMozZGMdT895LM4tZsvIbgGRKWaEoV4=;
-        b=O1otos6rFw3st6xur2OtmZ59kmbeoRug0Ytr6D48haYnFV/4i5YTnbi7zgXShcxOYw
-         qW4Lxi/kxwNU/9Q+YW3586WdhZjbM0GSSV2zXURBFZGjJuH+gfoFZj+6309L5sfOP7Uz
-         ZNE/98YEWZrRlCURKbfdWnqDbiBV906YsvYKY=
+        bh=alOzv44eGcjfpihMYnDwscb9X2R1MdOVC0kRQ9Tq8IQ=;
+        b=Bp4Z1nP/zMlvdIvZ2C4wlMvQguakizmpIkzzCaxYf6u7hLlWtqGnrH+ncPOC/pEhxX
+         xKdiOFLmsQxUQs/7HzqhzON9HYNprPQi+A5YhMiMHUDiDzJeaAgsNPfrZzL78Gsvy6Ck
+         2qX6LzmlEtvd95ICvYx2wUmphmBcz0MUKvGRiiYPoiVrTFlwSKxvsMfSULAnmzUQRJXJ
+         3FaPI+bH2VdYN8sO+NNU5WqtqoQgbeXobt8EQeLyUKOHsKmRQoWcoFSAYCSHcZ8YTwCh
+         a4A28oRtPHdTjewsELKzJhtHdnx3xkqXql+uFGj3AO5En+QODaOR/FiqpX3J32LyX8OT
+         3sJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Z6tlEwV2va2PDMozZGMdT895LM4tZsvIbgGRKWaEoV4=;
-        b=Zw7KeN5XrtAz6KBmwGHI0Wui/qx2TGH44B7utzUlZSz3YHCH1dLEEeG6G7jIL1N/Y2
-         l30pijExwVhUDYe8uBZgiouJYyHlw+KlrtkcSy47/pmuXDdqdUorrfhE3/MMeL/yl1Fc
-         99SflrsiUbslacLc/xA0+hzx/pHBzWyiGCrr43rR94vx83v+eUIZT6nF+1+3W2QbAnRY
-         KMUtHgBsM4UnNlgkoylfqjRXNuyvLbLPJFCZdgwyHNWybmXrLSRtZe5MZNl+1XTj/65N
-         kZNglLI7GbMBRLdugPukitVATWjClUDGxkd9K3eMLqlYX+KO+lsVjAZKw6Fr7ZRx3Zmh
-         +ljw==
-X-Gm-Message-State: AOAM5300AClXiEXDuz8P4EBgyf8S/ItcsUB/PeLkvJwu/JwrstlJVQ0D
-        ztD9Kn14CMwQGEmw4bx6rAx+Cat+aySu8VV5
-X-Google-Smtp-Source: ABdhPJyMAqLHkNUr4BaE3P1WZVFngcWQEAgz3GoYWYKcsTW+m7BV4qtdVEQuK4J8C9J7aBv98h4a9Q==
-X-Received: by 2002:a92:5:: with SMTP id 5mr4995143ila.150.1606238743226;
-        Tue, 24 Nov 2020 09:25:43 -0800 (PST)
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com. [209.85.166.43])
-        by smtp.gmail.com with ESMTPSA id k13sm5166036ioh.30.2020.11.24.09.25.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 09:25:42 -0800 (PST)
-Received: by mail-io1-f43.google.com with SMTP id t8so22691173iov.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:25:42 -0800 (PST)
-X-Received: by 2002:a02:b144:: with SMTP id s4mr5587937jah.32.1606238741494;
- Tue, 24 Nov 2020 09:25:41 -0800 (PST)
+        bh=alOzv44eGcjfpihMYnDwscb9X2R1MdOVC0kRQ9Tq8IQ=;
+        b=lYVTKsT1WkA/lnlXb7UErxKwLCyShnQc9YJeyrYrrRZY9byDB1Fkyye2QjCo+ojZLz
+         yickiavAb6jzae94zJ5qs3Izdx3uIoPJAfUobaA+ZmRcXxKe7OJL3Z1fyt8yXVdlzrLt
+         c1nrOBviacRdUwNqSrgTsSOw5qlzbsulZcGio19cO3aYFEwEe93dJF7KgkYM3wsiMCn/
+         bqE8dTTiImwvnIIdCp7J/FKJzs3Hl2Ad1BII9jAnQkXiyHaq3o/MuhGabsyYqaF91iWR
+         mUkpDaTo11LjiQpOuhbFIveIOOwX+OOFNCIe6BIheWaod5VYrYbEZKIcGZKCthcnMK2j
+         UkRw==
+X-Gm-Message-State: AOAM533aNTF9DXMaHu7pCatCgLwvIyklFJm2UXemDXq7nOS2yoApO2BG
+        nSMn8+7brjryiBM9h9uKwV7bHuZAj15DfE2ERkbSpQ==
+X-Google-Smtp-Source: ABdhPJxPgzZ0zSc0E/zfDctNAjzjKhUt0WBPKSQQ7LrYTHbV9PFEIpqfR37WzRpFkd+0FrI/utMKyuin1ppEewhztog=
+X-Received: by 2002:a25:b090:: with SMTP id f16mr8175543ybj.466.1606238778756;
+ Tue, 24 Nov 2020 09:26:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124153845.132207-1-ribalda@chromium.org> <20201124153845.132207-5-ribalda@chromium.org>
- <f1055d12-8bde-80d0-29f3-dfbfbf59cc11@arm.com>
-In-Reply-To: <f1055d12-8bde-80d0-29f3-dfbfbf59cc11@arm.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Tue, 24 Nov 2020 18:25:30 +0100
-X-Gmail-Original-Message-ID: <CANiDSCuVgN=d-TdW1T0EVxMALhyOcy2Sc511D4SkxN_1kh8h9A@mail.gmail.com>
-Message-ID: <CANiDSCuVgN=d-TdW1T0EVxMALhyOcy2Sc511D4SkxN_1kh8h9A@mail.gmail.com>
-Subject: Re: [PATCH 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
+References: <20201121020232.908850-1-saravanak@google.com> <758a1b59-1033-b0ae-2549-84c8eeea4b11@ti.com>
+In-Reply-To: <758a1b59-1033-b0ae-2549-84c8eeea4b11@ti.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 24 Nov 2020 09:25:42 -0800
+Message-ID: <CAGETcx_ZSYpyi8M3T9d1vJk0FzxWoFWW6A=f-vK4jtF73SR0cw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/17] Refactor fw_devlink to significantly improve
+ boot time
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin
-
-On Tue, Nov 24, 2020 at 5:29 PM Robin Murphy <robin.murphy@arm.com> wrote:
+On Tue, Nov 24, 2020 at 12:29 AM 'Tomi Valkeinen' via kernel-team
+<kernel-team@android.com> wrote:
 >
-> On 2020-11-24 15:38, Ricardo Ribalda wrote:
-> > On architectures where the is no coherent caching such as ARM use the
-> > dma_alloc_noncontiguos API and handle manually the cache flushing using
-> > dma_sync_single().
-> >
-> > With this patch on the affected architectures we can measure up to 20x
-> > performance improvement in uvc_video_copy_data_work().
-> >
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >   drivers/media/usb/uvc/uvc_video.c | 74 ++++++++++++++++++++++++++-----
-> >   drivers/media/usb/uvc/uvcvideo.h  |  1 +
-> >   2 files changed, 63 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > index a6a441d92b94..9e90b261428a 100644
-> > --- a/drivers/media/usb/uvc/uvc_video.c
-> > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > @@ -1490,6 +1490,11 @@ static void uvc_video_encode_bulk(struct uvc_urb *uvc_urb,
-> >       urb->transfer_buffer_length = stream->urb_size - len;
-> >   }
-> >
-> > +static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
-> > +{
-> > +     return stream->dev->udev->bus->controller->parent;
-> > +}
-> > +
-> >   static void uvc_video_complete(struct urb *urb)
-> >   {
-> >       struct uvc_urb *uvc_urb = urb->context;
-> > @@ -1539,6 +1544,11 @@ static void uvc_video_complete(struct urb *urb)
-> >        * Process the URB headers, and optionally queue expensive memcpy tasks
-> >        * to be deferred to a work queue.
-> >        */
-> > +     if (uvc_urb->pages)
-> > +             dma_sync_single_for_cpu(stream_to_dmadev(stream),
-> > +                                     urb->transfer_dma,
-> > +                                     urb->transfer_buffer_length,
-> > +                                     DMA_FROM_DEVICE);
+> Hi,
 >
-> This doesn't work. Even in iommu-dma, the streaming API still expects to
-> work on physically-contiguous memory that could have been passed to
-> dma_map_single() in the first place. As-is, this will invalidate
-> transfer_buffer_length bytes from the start of the *first* physical
-> page, and thus destroy random other data if lines from subsequent
-> unrelated pages are dirty in caches.
+> On 21/11/2020 04:02, Saravana Kannan wrote:
+> > The current implementation of fw_devlink is very inefficient because it
+> > tries to get away without creating fwnode links in the name of saving
+> > memory usage. Past attempts to optimize runtime at the cost of memory
+> > usage were blocked with request for data showing that the optimization
+> > made significant improvement for real world scenarios.
+> >
+> > We have those scenarios now. There have been several reports of boot
+> > time increase in the order of seconds in this thread [1]. Several OEMs
+> > and SoC manufacturers have also privately reported significant
+> > (350-400ms) increase in boot time due to all the parsing done by
+> > fw_devlink.
+> >
+> > So this patch series refactors fw_devlink to be more efficient. The key
+> > difference now is the addition of support for fwnode links -- just a few
+> > simple APIs. This also allows most of the code to be moved out of
+> > firmware specific (DT mostly) code into driver core.
+> >
+> > This brings the following benefits:
+> > - Instead of parsing the device tree multiple times (complexity was
+> >   close to O(N^3) where N in the number of properties) during bootup,
+> >   fw_devlink parses each fwnode node/property only once and creates
+> >   fwnode links. The rest of the fw_devlink code then just looks at these
+> >   fwnode links to do rest of the work.
+> >
+> > - Makes it much easier to debug probe issue due to fw_devlink in the
+> >   future. fw_devlink=on blocks the probing of devices if they depend on
+> >   a device that hasn't been added yet. With this refactor, it'll be very
+> >   easy to tell what that device is because we now have a reference to
+> >   the fwnode of the device.
+> >
+> > - Much easier to add fw_devlink support to ACPI and other firmware
+> >   types. A refactor to move the common bits from DT specific code to
+> >   driver core was in my TODO list as a prerequisite to adding ACPI
+> >   support to fw_devlink. This series gets that done.
+> >
+> > Laurent and Grygorii tested the v1 series and they saw boot time
+> > improvment of about 12 seconds and 3 seconds, respectively.
 >
-> The only feasible way to do a DMA sync on disjoint pages in a single
-> call is with a scatterlist.
+> Tested v2 on OMAP4 SDP. With my particular config, boot time to starting init went from 18.5 seconds
+> to 12.5 seconds.
 
-Thanks for pointing this out. I guess I was lucky on my hardware and
-the areas were always  contiguous.
+Thanks for testing Tomi!
 
-Will rework and send back to the list.
-
-Thanks again.
-
->
-> Robin.
->
-> >       stream->decode(uvc_urb, buf, buf_meta);
-> >
-> >       /* If no async work is needed, resubmit the URB immediately. */
-> > @@ -1566,8 +1576,15 @@ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
-> >                       continue;
-> >
-> >   #ifndef CONFIG_DMA_NONCOHERENT
-> > -             usb_free_coherent(stream->dev->udev, stream->urb_size,
-> > -                               uvc_urb->buffer, uvc_urb->dma);
-> > +             if (uvc_urb->pages) {
-> > +                     vunmap(uvc_urb->buffer);
-> > +                     dma_free_noncontiguous(stream_to_dmadev(stream),
-> > +                                            stream->urb_size,
-> > +                                            uvc_urb->pages, uvc_urb->dma);
-> > +             } else {
-> > +                     usb_free_coherent(stream->dev->udev, stream->urb_size,
-> > +                                       uvc_urb->buffer, uvc_urb->dma);
-> > +             }
-> >   #else
-> >               kfree(uvc_urb->buffer);
-> >   #endif
-> > @@ -1577,6 +1594,47 @@ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
-> >       stream->urb_size = 0;
-> >   }
-> >
-> > +#ifndef CONFIG_DMA_NONCOHERENT
-> > +static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-> > +                              struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-> > +{
-> > +     struct device *dma_dev = dma_dev = stream_to_dmadev(stream);
-> > +
-> > +     if (!dma_can_alloc_noncontiguous(dma_dev)) {
-> > +             uvc_urb->buffer = usb_alloc_coherent(stream->dev->udev,
-> > +                                                  stream->urb_size,
-> > +                                                  gfp_flags | __GFP_NOWARN,
-> > +                                                  &uvc_urb->dma);
-> > +             return uvc_urb->buffer != NULL;
-> > +     }
-> > +
-> > +     uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> > +                                              &uvc_urb->dma,
-> > +                                              gfp_flags | __GFP_NOWARN, 0);
-> > +     if (!uvc_urb->pages)
-> > +             return false;
-> > +
-> > +     uvc_urb->buffer = vmap(uvc_urb->pages,
-> > +                            PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
-> > +                            VM_DMA_COHERENT, PAGE_KERNEL);
-> > +     if (!uvc_urb->buffer) {
-> > +             dma_free_noncontiguous(dma_dev, stream->urb_size,
-> > +                                    uvc_urb->pages, uvc_urb->dma);
-> > +             return false;
-> > +     }
-> > +
-> > +     return true;
-> > +}
-> > +#else
-> > +static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-> > +                              struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-> > +{
-> > +     uvc_urb->buffer = kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
-> > +
-> > +     return uvc_urb->buffer != NULL;
-> > +}
-> > +#endif
-> > +
-> >   /*
-> >    * Allocate transfer buffers. This function can be called with buffers
-> >    * already allocated when resuming from suspend, in which case it will
-> > @@ -1607,19 +1665,11 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
-> >
-> >       /* Retry allocations until one succeed. */
-> >       for (; npackets > 1; npackets /= 2) {
-> > +             stream->urb_size = psize * npackets;
-> >               for (i = 0; i < UVC_URBS; ++i) {
-> >                       struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
-> >
-> > -                     stream->urb_size = psize * npackets;
-> > -#ifndef CONFIG_DMA_NONCOHERENT
-> > -                     uvc_urb->buffer = usb_alloc_coherent(
-> > -                             stream->dev->udev, stream->urb_size,
-> > -                             gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
-> > -#else
-> > -                     uvc_urb->buffer =
-> > -                         kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
-> > -#endif
-> > -                     if (!uvc_urb->buffer) {
-> > +                     if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
-> >                               uvc_free_urb_buffers(stream);
-> >                               break;
-> >                       }
-> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > index a3dfacf069c4..3e3ef1f1daa5 100644
-> > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > @@ -532,6 +532,7 @@ struct uvc_urb {
-> >
-> >       char *buffer;
-> >       dma_addr_t dma;
-> > +     struct page **pages;
-> >
-> >       unsigned int async_operations;
-> >       struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-> >
-
-
-
--- 
-Ricardo Ribalda
+-Saravana
