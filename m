@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67742C1D8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8061D2C1D95
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 06:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728846AbgKXF3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 00:29:54 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:2586 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKXF3x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 00:29:53 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1khQtf-000MZZ-Fa; Tue, 24 Nov 2020 06:29:47 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1khQte-0001dF-LO; Tue, 24 Nov 2020 06:29:46 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 0E08E240041;
-        Tue, 24 Nov 2020 06:29:46 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 7CF87240040;
-        Tue, 24 Nov 2020 06:29:45 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id EF582204C2;
-        Tue, 24 Nov 2020 06:29:44 +0100 (CET)
+        id S1728857AbgKXFgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 00:36:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgKXFgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 00:36:18 -0500
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94AC9206FB;
+        Tue, 24 Nov 2020 05:36:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606196178;
+        bh=PY5GOVNfFhgXvqmnxwhdOyaq1u3p5yH99M056S09Er0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cR64A+ORQ6400oZFz1g+eHgUnarSwZTqjxgzn9tbuahVRr45T8kTEGAUL9cWflc4b
+         eK+8hQbPW6mR7T1yNz/MS9fobqiHy33dgjqNRoeg5aUuevBfnlNwlSZkNiAbBrG9pZ
+         aT+V3rklptNYUx64JXQv97sC4Rekv5XXL2XYTgZI=
+Received: by mail-lf1-f54.google.com with SMTP id s30so27144726lfc.4;
+        Mon, 23 Nov 2020 21:36:17 -0800 (PST)
+X-Gm-Message-State: AOAM532KKLQ50i0yDFeEiHf2KruQFmxwpAlFqhNRX4O2NYAM4MDHGuN2
+        Yvb7yWtQ2srEDaF1VsA4TZznCiiUsywMvgFeeOY=
+X-Google-Smtp-Source: ABdhPJwt3UzrXi3DqyqC5U4j4xnCEDnsfUn4otiaOU1Yl0BmCTWOPLJFHorMabhDqJMHUM/QUM2Ymblm6VFgxkmwmqs=
+X-Received: by 2002:a19:ecf:: with SMTP id 198mr992157lfo.193.1606196175805;
+ Mon, 23 Nov 2020 21:36:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 24 Nov 2020 06:29:44 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 2/5] net/lapb: support netdev events
-Organization: TDT AG
-In-Reply-To: <CAJht_EOA4+DSjnKYZX3udrXX9jGHRmFw3OQesUb3AncD2oowwA@mail.gmail.com>
-References: <20201120054036.15199-1-ms@dev.tdt.de>
- <20201120054036.15199-3-ms@dev.tdt.de>
- <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
- <CAJht_EP_oqCDs6mMThBZNtz4sgpbyQgMhKkHeqfS_7JmfEzfQg@mail.gmail.com>
- <87a620b6a55ea8386bffefca0a1f8b77@dev.tdt.de>
- <CAJht_EPc8MF1TjznSjWTPyMbsrw3JVqxST5g=eF0yf_zasUdeA@mail.gmail.com>
- <d85a4543eae46bac1de28ec17a2389dd@dev.tdt.de>
- <CAJht_EMjO_Tkm93QmAeK_2jg2KbLdv2744kCSHiZLy48aXiHnw@mail.gmail.com>
- <CAJht_EO+enBOFMkVVB5y6aRnyMEsOZtUBJcAvOFBS91y7CauyQ@mail.gmail.com>
- <16b7e74e6e221f43420da7836659d7df@dev.tdt.de>
- <CAJht_EPtPDOSYfwc=9trBMdzLw4BbTzJbGvaEgWoyiy2624Q+Q@mail.gmail.com>
- <20201123113622.115c474b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOA4+DSjnKYZX3udrXX9jGHRmFw3OQesUb3AncD2oowwA@mail.gmail.com>
-Message-ID: <39b6386b4ce7462f6cb4448020735ed5@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.15
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-ID: 151534::1606195787-00001F6B-CD377998/0/0
+References: <20201124052701.GF8403@vkoul-mobl>
+In-Reply-To: <20201124052701.GF8403@vkoul-mobl>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Tue, 24 Nov 2020 13:36:04 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67DpjMkcXoumQ=92wVovCqor37U7xroxsoh+BO6i7x8jg@mail.gmail.com>
+Message-ID: <CAGb2v67DpjMkcXoumQ=92wVovCqor37U7xroxsoh+BO6i7x8jg@mail.gmail.com>
+Subject: Re: Reusing DTS from arm64 to arm
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Olof Johansson <olof@lixom.net>, Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-23 23:09, Xie He wrote:
-> On Mon, Nov 23, 2020 at 11:36 AM Jakub Kicinski <kuba@kernel.org> 
-> wrote:
->> 
->> > >  From this point of view it will be the best to handle the NETDEV_UP in
->> > > the lapb event handler and establish the link analog to the
->> > > NETDEV_CHANGE event if the carrier is UP.
->> >
->> > Thanks! This way we can make sure LAPB would automatically connect in
->> > all situations.
->> >
->> > Since we'll have a netif_carrier_ok check in NETDEV_UP handing, it
->> > might make the code look prettier to also have a netif_carrier_ok
->> > check in NETDEV_GOING_DOWN handing (for symmetry). Just a suggestion.
->> > You can do whatever looks good to you :)
->> 
->> Xie other than this the patches look good to you?
->> 
->> Martin should I expect a respin to follow Xie's suggestion
->> or should I apply v4?
-> 
-> There should be a respin because we need to handle the NETDEV_UP
-> event. The lapbether driver (and possibly some HDLC WAN drivers)
-> doesn't generate carrier events so we need to do auto-connect in the
-> NETDEV_UP event.
+Hi,
 
-I'll send a v5 with the appropriate change.
+On Tue, Nov 24, 2020 at 1:28 PM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> Hello Olof, Rob,
+>
+> We have Qualcomm arm platform which uses PMIC PM8150B. This PMIC was
+> also used in SM8150 board and is already upstream [1] but in arm64.
+>
+> So, what is the guidance to share DTS files between 32 and 64 variants?
+> Does a solution already exist which I may not be aware of..?
+>
+> I can think of following options for this, in case we dont have a
+> solution:
+>
+> 1. Hack up arm include paths to also include arm64 path so that we can
+> share DTS
+
+These are already provided. See scripts/dtc/include-prefixes/ .
+
+So just put
+
+#include <arm64/qcom/pm8150b.dtsi>
+
+in your DTS and it should work?
+
+For Allwinner we have the reverse, i.e. including arm dts files from arm64.
+
+
+Regards
+ChenYu
+
+> 2. Use relative path of arm64 directory and include that (seems not
+> great to look at)
+>
+> 3. Copy the file (simplest but least preferred)
+>
+> Or is there a better idea to solve this...?
+>
+> [1]: arch/arm64/boot/dts/qcom/pm8150b.dtsi
+>
+> Thanks
+> --
+> ~Vinod
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
