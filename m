@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D9F2C3157
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0912C312F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgKXTsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
+        id S1726756AbgKXToL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:44:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726594AbgKXToD (ORCPT
+        with ESMTP id S1726620AbgKXToE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:44:03 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F921C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:44:03 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id p22so79818wmg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:44:03 -0800 (PST)
+        Tue, 24 Nov 2020 14:44:04 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610E1C061A4F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:44:04 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id w24so105134wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:44:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HQG7VvhLuLqLIiCO1wDsJUncEyILipv0iifGGhYNwBw=;
-        b=ROnAYiAd5qDaRM6zlXai5MEWDhk655E2E+vwaBBQzU3vLw++RLC4/Jub4Bt3Hvy0HW
-         pwVKhquuQdg0kk3tR1802CxvCaIcCwMmVQyiRfLJBffRMydYoXbNWu6QKx04FekT+/qp
-         qoL59FYT3twrWeZa+Kd9U45wg7C8HeQReGIsbPxd3eF+kBkgnRVKLMICmYUZVZZcSKcB
-         i3krnvNltBSKPhTsEx91aoglWLCC8evPXFNZ5CcQoBWLe40kKZ/NpidKAmX1NZFJSC5e
-         3429CPqWQ2HYM51EEndQBWcN+40LTgM9aL9qXD4DJTS4i3u5d6Y7QaI4+o6IYnURuma3
-         QtRw==
+        bh=DTo1OeJsTMi708YCunPWIPmexxKTRjfpe4q5AMYK+8k=;
+        b=AdFPXVRq91HXvmzYsLOfIxNCl+1jVT27YrmgFCSoMfUOF/IJY75qGZkjBGPa68nVx+
+         vgrGSGE/17aRzboCcz0qYX1UESnuJdo8J2zZxxj5YzEg2AYppSRdvIP0fhPMr/r10zCu
+         1Tz8kM7LyZBytsrhbHvEyaNIGq3lqD6oZSwczk8BbL7+ZNsYIaXIp64ePN68spYVwfvO
+         DgsaAr9GZBY1m/OIXOdcGGr3/BkRKzoDXXZf9ScAXxYHNvcIZsYXGenADIi8ryBFEDsf
+         g1A2ywPf2/GAn7RmfvYoeL/Kxf9Mdc8OMSRt0RL18XxkC5BB5pZ/poO3Wf1jqsWcp6dM
+         kOug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HQG7VvhLuLqLIiCO1wDsJUncEyILipv0iifGGhYNwBw=;
-        b=golk6T9ZrxppVd19GA6sOv0inAKp2gmYjan6EkplnpWFolQrKwj+gW5SXLwrSHy4/e
-         jnk9+J9E8e0IgVTs6aa9UgEXUzww48niBdTVZ010DtjAaXUK8EXiRlnM4q63LDT1rJio
-         ubXPOPViE2MaK2IHvWkMB92YTGP0lqnoip2AlVK2FG0FNWqcvNiTiISsrHYSbNguIC1u
-         wLC7Ra+C8PHYwNtlUgJatcZobkWAxIy70kospdz+Yi30LF9NKB0Wxs2EGUSErlvddu7t
-         f4V3UFk7gVppWsvYDeHOIX3QpQz7/PPjF3rP8OqJ2SPGy9Mm4ZrRR2kMyE6sUOC6pAlc
-         IgCQ==
-X-Gm-Message-State: AOAM531mPCulnb+oFPyF45jw6G12jhGOrM8yJsxp6+RJ46/blbJa9wkl
-        UV6Qxwcc4nf8yiR0XtehFDNMVA==
-X-Google-Smtp-Source: ABdhPJxABCqmQpKoOyO33AaWgS8+y0qIF8skdrZlNoUJ266NV2fmZqe3GarA3FNS1UObzNFWwWwgCA==
-X-Received: by 2002:a1c:4b10:: with SMTP id y16mr22750wma.10.1606247041886;
-        Tue, 24 Nov 2020 11:44:01 -0800 (PST)
+        bh=DTo1OeJsTMi708YCunPWIPmexxKTRjfpe4q5AMYK+8k=;
+        b=ZlWmVkIoXGaEEDqXk0S2C4vhwbph0IRt0O0MbSPIloK/vdwbB0RJ6Gwa7GOugFMwJN
+         +/jypPfnBvOhY1W+1aIEtfdRK+XGHd4lEDu8p5ZEkTzYHndcFjEkBQ2OuigBkLLMVDcO
+         flwf3HdS+kPXYvOy2lSyhOCFZ2CQJG7T6Jn6Svxz0Ru4WblTNhHv5ajp6AyoAmF8BpHS
+         9Yo7kYHaxQyonU6ftlVbSsGRVuUXYmG+nJcoa6+uACqD8VXvEjFQmBGVecWSbnn+o6rv
+         ZMsiulDaVDg9xSQhczRJF6+bDaRxTkH90uvCkRTQ8x3INSLe1JIqRqBi6IW65Z9qD29x
+         gueA==
+X-Gm-Message-State: AOAM5335SzG0fSYZs8zNlrLE8SEvc8UYX0zAh+ygKOCMA0FQDExu0zmm
+        a/lcw1WYFOfnWiVsu6RmBk4T5C8VrE5vNUnQ
+X-Google-Smtp-Source: ABdhPJxkibkRVGkcK95WR2K9W8ZA7y6vi0pEa1l+e3tU26brziMvgP66uY0Vo6rHrq+75BUtzOvGWg==
+X-Received: by 2002:a1c:9901:: with SMTP id b1mr22910wme.18.1606247043062;
+        Tue, 24 Nov 2020 11:44:03 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id d134sm200511wmd.8.2020.11.24.11.44.00
+        by smtp.gmail.com with ESMTPSA id d134sm200511wmd.8.2020.11.24.11.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 11:44:01 -0800 (PST)
+        Tue, 24 Nov 2020 11:44:02 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 02/40] drm/amd/amdgpu/gmc_v10_0: Suppy some missing function doc descriptions
-Date:   Tue, 24 Nov 2020 19:37:46 +0000
-Message-Id: <20201124193824.1118741-3-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: [PATCH 03/40] drm/msm/adreno/a6xx_gpu_state: Make some local functions static
+Date:   Tue, 24 Nov 2020 19:37:47 +0000
+Message-Id: <20201124193824.1118741-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201124193824.1118741-1-lee.jones@linaro.org>
 References: <20201124193824.1118741-1-lee.jones@linaro.org>
@@ -73,47 +69,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:278: warning: Function parameter or member 'vmhub' not described in 'gmc_v10_0_flush_gpu_tlb'
- drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:278: warning: Function parameter or member 'flush_type' not described in 'gmc_v10_0_flush_gpu_tlb'
- drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:371: warning: Function parameter or member 'flush_type' not described in 'gmc_v10_0_flush_gpu_tlb_pasid'
- drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:371: warning: Function parameter or member 'all_hub' not described in 'gmc_v10_0_flush_gpu_tlb_pasid'
+ drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:83:7: warning: no previous prototype for ‘state_kcalloc’ [-Wmissing-prototypes]
+ drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:95:7: warning: no previous prototype for ‘state_kmemdup’ [-Wmissing-prototypes]
+ drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:947:6: warning: no previous prototype for ‘a6xx_gpu_state_destroy’ [-Wmissing-prototypes]
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Sean Paul <sean@poorly.run>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: linux-arm-msm@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
+Cc: freedreno@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
-index d9399324be474..4887b0e66e975 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
-@@ -270,6 +270,8 @@ static void gmc_v10_0_flush_vm_hub(struct amdgpu_device *adev, uint32_t vmid,
-  *
-  * @adev: amdgpu_device pointer
-  * @vmid: vm instance to flush
-+ * @vmhub: vmhub type
-+ * @flush_type: the flush type
-  *
-  * Flush the TLB for the requested page table.
-  */
-@@ -362,6 +364,8 @@ static void gmc_v10_0_flush_gpu_tlb(struct amdgpu_device *adev, uint32_t vmid,
-  *
-  * @adev: amdgpu_device pointer
-  * @pasid: pasid to be flush
-+ * @flush_type: the flush type
-+ * @all_hub: Used with PACKET3_INVALIDATE_TLBS_ALL_HUB()
-  *
-  * Flush the TLB for the requested pasid.
-  */
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+index e9ede19193b0e..c1699b4f9a897 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+@@ -80,7 +80,7 @@ struct a6xx_state_memobj {
+ 	unsigned long long data[];
+ };
+ 
+-void *state_kcalloc(struct a6xx_gpu_state *a6xx_state, int nr, size_t objsize)
++static void *state_kcalloc(struct a6xx_gpu_state *a6xx_state, int nr, size_t objsize)
+ {
+ 	struct a6xx_state_memobj *obj =
+ 		kzalloc((nr * objsize) + sizeof(*obj), GFP_KERNEL);
+@@ -92,7 +92,7 @@ void *state_kcalloc(struct a6xx_gpu_state *a6xx_state, int nr, size_t objsize)
+ 	return &obj->data;
+ }
+ 
+-void *state_kmemdup(struct a6xx_gpu_state *a6xx_state, void *src,
++static void *state_kmemdup(struct a6xx_gpu_state *a6xx_state, void *src,
+ 		size_t size)
+ {
+ 	void *dst = state_kcalloc(a6xx_state, 1, size);
+@@ -944,7 +944,7 @@ struct msm_gpu_state *a6xx_gpu_state_get(struct msm_gpu *gpu)
+ 	return  &a6xx_state->base;
+ }
+ 
+-void a6xx_gpu_state_destroy(struct kref *kref)
++static void a6xx_gpu_state_destroy(struct kref *kref)
+ {
+ 	struct a6xx_state_memobj *obj, *tmp;
+ 	struct msm_gpu_state *state = container_of(kref,
 -- 
 2.25.1
 
