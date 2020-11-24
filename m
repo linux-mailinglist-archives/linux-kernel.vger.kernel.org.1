@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435A62C2971
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9DB2C2977
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388695AbgKXOZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:25:15 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52725 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730558AbgKXOZO (ORCPT
+        id S2388908AbgKXOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:25:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388682AbgKXOZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:25:14 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9361D5C01E1;
-        Tue, 24 Nov 2020 09:25:13 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 24 Nov 2020 09:25:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=sitk3GTsxspTPI3ycVReJOlcRgA
-        UlRjje2GEEm0ppZk=; b=WWWRBfdNLyhpXLr9rE1tCZAaVuR94z4qSBa0qZHK+/u
-        9UPg/JCSyKbb8fmTMA1Fin+JCD8CTtZ5OHGz+HapiFTy8rVv4fRw/g06V4OnJcNU
-        u8rZ4AUkzJKWMlLNMf3pZdF/xewH9jX8aI0AGWvTJXH5BTnRfawUS3DkrTkRps/f
-        D3Bh6O29REy8lllyIfalQFbGKW+C9/tBhY0wg8GSRoKVNh5Ubi7uFGC+O4AkIc74
-        LoGOLltmVmJS4D/gmCsHe+XDSsLxSzAJL6Egi4yy3E2cdV6ud/0BTFk3CEwygTwi
-        uCDnrjB/FoWEsMx5gjTcyOgZwe7xo1jOmZTx1zRNqOg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sitk3G
-        TsxspTPI3ycVReJOlcRgAUlRjje2GEEm0ppZk=; b=akhWCepZn/1XRJQ7ET60x6
-        Vz+Q8szVOrppPb4G3A4xzGZNOQHTJZ0eEJN/ShtHmQsfj3TDRYfk36pTfgJywnkC
-        LdMOVsXq9k7Un7pgn6dT61y6fRIOtSh9FhG1+q9dbvq40emlXsVvGqARRY4KARiF
-        SbsVlKYJ9r/Q6ZEZgd+fxoTwgnYfXkQ5JO+15Je5KGUDKT/t//JDWaDtJy7klzhZ
-        Hsf7/KTwzPPGEuA1mWKFV/TuaU336TUnZZLovQeAh2xHN7dMw63sR5+9lHUIS5Ty
-        fKBFD8SPtUADumJWyDCd+7lROOKSiWfYtmnhS7XCJZd5jSrhhuFhQI/Bz1qCYWJA
-        ==
-X-ME-Sender: <xms:yBe9XyWZfV1ecWMslUWoJKlCBZMzHaxEAA0zp63RFCTqA_gnWzKazQ>
-    <xme:yBe9X-mOIzJpbF4mM7tl8wZI0_BD_ccziDopjcwH2biIKZkktuaBfLYUSZJBztjNe
-    RhSgDDBXgaBIO-1NSo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
-    sehgtderredttddvnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimh
-    gvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnhepgfffieeiudduveefjeel
-    geelhefgtdelgffhkeefjeefvdeviefhheekgeeivddunecuffhomhgrihhnpegsrghnrg
-    hnrgdqphhirdhorhhgpdhgohhoghhlvgdrtghomhenucfkphepledtrdekledrieekrdej
-    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:yBe9X2aHtQ88nTnDcGWZxdqMnhyeYRcAJcLspr-1nf0AMXJSW35GRw>
-    <xmx:yBe9X5W221I4I6eRtVqXZwliNxQLtNL3NcTIKNPiaTsDWazNN_EoRQ>
-    <xmx:yBe9X8lfNnGQ-iIyaFY25fkT07_xVQf33PPo7f_fh53rjRcS4xMsGQ>
-    <xmx:yRe9X2g2SK7wdVEKK9_Wj_S9_b6z40OweVzVoVOePb_AV4RKhKRDog>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 89BB33064AB6;
-        Tue, 24 Nov 2020 09:25:12 -0500 (EST)
-Date:   Tue, 24 Nov 2020 15:25:11 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Michael Klein <michael@fossekall.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add
- gpio-line-names
-Message-ID: <20201124142511.rbzzrsmjx55ykgjm@gilmour>
-References: <20201123094300.GA3699@a98shuttle.de>
- <20201123114535.1605939-1-michael@fossekall.de>
+        Tue, 24 Nov 2020 09:25:52 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAEEC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:25:50 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id u24so11144163vsl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:25:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N0bYsVH3nX2+OrWeKV+IhWPNW7SxLL8wfGpVZs1WpC4=;
+        b=EDgjj2+oAPA7Acji64+FmuVACR9K66q27TqlRkf8LTM2/hnbs4KTFVRq8v55KrYBdq
+         vwI7SxLUYPVLhi2EjzKvEWfEO4V2ZpxHHYEpW4rVQeG2PXS3X/NDzXY0CZEVhSd1S0g5
+         vpaeda9BQx3NJDhrFDGTuYRAu4BRmXHa1uSxzWBYyf3b0NErGFMiDgtSwy+SRNRrAJiK
+         7El+PAryir76UjhHOYvMCell+95Nvgjz5c9sTd0qjSwsYIU17yTc7h/Pd3SxRRP3OZu/
+         yhq5GTbzx8DkvOuotF9AIYMFo9rRH55YxSKW791CF7radC//clZc02ZJ41uvRV5n+5HL
+         peTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N0bYsVH3nX2+OrWeKV+IhWPNW7SxLL8wfGpVZs1WpC4=;
+        b=QCFEvGHlw7BHRLWWLRbuNUEH8ZOTwYUhcjHEvONb7CikMg0IjkNRDrIjiBQL9BS031
+         0swCPd0Rit+W3loyTsZSczz5xBUdjjFoI6vfcwHpFOF463bCYXvKfF6Y1tv80CUcf/+W
+         RL8sS4wj5FNharH5KqH0/hMEL6X6XFmw+q+nkGZSdySsGONA/VowLPo/3UpoiBA5nPJw
+         fVUxsmkTcELp2Lq+Jb8npABdAjfwljyx+hs0rSR3CtWuBsqEU9jTUO3p+TWtyJTD0n4e
+         ThTPs1pW65NvYBEuvB5PYNeforra0yabYlbotGJP6RiZEKwZ3I4YLiiIAf27ilAKid1B
+         qagQ==
+X-Gm-Message-State: AOAM5323go41H8kBzLlN1XJpTdYfxjn90wc7Dus9rZqd956zYdTJmyc1
+        0P+WiKz776/mspBGpsmOfQCrBhu1gZ1o/RNiB2KY3Q==
+X-Google-Smtp-Source: ABdhPJzhZfHuOq5aKuFvvR01RfE3+t1reY1YiLArpVadOD1pJBErw+3edBrUDyCXjNqiRSg8zYmRuFcAc/c4n2DajhE=
+X-Received: by 2002:a67:ce8e:: with SMTP id c14mr3917991vse.42.1606227949488;
+ Tue, 24 Nov 2020 06:25:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6sbmkps4knxhdg62"
-Content-Disposition: inline
-In-Reply-To: <20201123114535.1605939-1-michael@fossekall.de>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com> <713f57f4a66fff9a50a8d93643a7987d6560becb.1605823502.git.cristian.ciocaltea@gmail.com>
+In-Reply-To: <713f57f4a66fff9a50a8d93643a7987d6560becb.1605823502.git.cristian.ciocaltea@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 24 Nov 2020 15:25:12 +0100
+Message-ID: <CAPDyKFrFp52NhNPtbOmoCRVVTMACcmAFNomJJM1whm8dCAP2hQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/18] dt-bindings: mmc: owl: Add compatible string for
+ Actions Semi S500 SoC
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-actions@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 20 Nov 2020 at 00:56, Cristian Ciocaltea
+<cristian.ciocaltea@gmail.com> wrote:
+>
+> Add a new compatible string corresponding to the MMC controller found
+> in the S500 variant of the Actions Semi Owl SoCs family.
+>
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
---6sbmkps4knxhdg62
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied for next, thanks!
 
-On Mon, Nov 23, 2020 at 12:45:35PM +0100, Michael Klein wrote:
-> Add gpio-line-names as documented in the Banana Pi wiki [1] and in the
-> schematics [2].
->=20
-> [1]: http://wiki.banana-pi.org/Banana_Pi_BPI-M2_ZERO#GPIO_PIN_define
-> [2]: https://drive.google.com/file/d/0B4PAo2nW2KfnMW5sVkxWSW9qa28/view
->=20
-> Signed-off-by: Michael Klein <michael@fossekall.de>
+Kind regards
+Uffe
 
-Applied, thanks
 
-Maxime
-
---6sbmkps4knxhdg62
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX70XxwAKCRDj7w1vZxhR
-xQ8JAQDog3kxhpSUVogruy/T1cwOfvj965+eQQo54PuVRUsXZgD7Boo/5JqErY8/
-TPeA00zvD/njGPRzZMLsmj6fXKFWpQw=
-=K0ff
------END PGP SIGNATURE-----
-
---6sbmkps4knxhdg62--
+> ---
+>  Documentation/devicetree/bindings/mmc/owl-mmc.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/owl-mmc.yaml b/Documentation/devicetree/bindings/mmc/owl-mmc.yaml
+> index b6ab527087d5..b0d81ebe0f6e 100644
+> --- a/Documentation/devicetree/bindings/mmc/owl-mmc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/owl-mmc.yaml
+> @@ -17,7 +17,9 @@ properties:
+>      oneOf:
+>        - const: actions,owl-mmc
+>        - items:
+> -          - const: actions,s700-mmc
+> +          - enum:
+> +              - actions,s500-mmc
+> +              - actions,s700-mmc
+>            - const: actions,owl-mmc
+>
+>    reg:
+> --
+> 2.29.2
+>
