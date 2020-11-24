@@ -2,56 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC252C1C98
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C55C2C1C9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728796AbgKXEOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:14:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728643AbgKXEOX (ORCPT
+        id S1728808AbgKXEOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:14:49 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:55211 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728155AbgKXEOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:14:23 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA05CC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:14:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mlMktLVfsrdjf/T64LkGt1vFmYlTMbYcYYynjTprjGg=; b=BLh3OA8MiW6zkUwz+TIcgFV6P2
-        O9jjur8ymrJWnNUBlW9hJRl3DbQK+1nW01rnwzHiiiv3TmqqUJP2/FN6JtCNPn+IA4JESNQ8V6cRm
-        54F+8q7BDJ4NQSDPTKcHgAAC4cyzVV/xjLed+h3pIpWptKC5j4Je7hR9gvNwy9kOsH8SyWO+fyGGU
-        ZjlhG79fbCSTehFHs24lvX5LnWd2N6dsjN67btTTvPtRVjyLS4jAG3aQerUcTsTTJEdypnwzi3ec2
-        E6ZVbyb/WKOrk5d1l8jDXJ0Bxbs6tHhOw12SlRl8UD/0XWKRO49Du1IIOxoZlScLW9Yd1+L1fG9Nz
-        0MzZoMWQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khPib-0007UO-RQ; Tue, 24 Nov 2020 04:14:17 +0000
-Date:   Tue, 24 Nov 2020 04:14:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     syzbot <syzbot+dcb847a3e1e0ecd191ab@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: kernel BUG at include/linux/highmem.h:LINE!
-Message-ID: <20201124041417.GX4327@casper.infradead.org>
-References: <000000000000f6914405b49d9c9d@google.com>
- <20201123194230.f59c93eba3cf356c632eb1c0@linux-foundation.org>
+        Mon, 23 Nov 2020 23:14:48 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id C4E3415CD;
+        Mon, 23 Nov 2020 23:14:47 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 23 Nov 2020 23:14:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=j
+        A4ah2CMYgsd377/SA0s2RVNHVfzfBJJzqdBqULdqJ8=; b=G6voIAJ+kzoLQKsB7
+        9qvGVriR5E1TG9UNzg0XV80gOiOApQ37SHsDWwNXmrU1N6r8kX1tF5ziZVijvNOY
+        4g8AsePgeG6lTiA2zYkVpuZXN1289B/ViYhIcCCUgBsj5UD5jFDjk2mPeAjF0lqD
+        mnYIvUPG3SC8g6JtFMeLB4gwybi664nL/wwsFx9TjC1hMuyNcUBVcmZRIlHOtPZU
+        v7kXIgoAGBpsoek3C0gSD9Ddgswnx7OMrVYtNuKOwrgkOdSjhS/ikpiJNnWp7qK6
+        fwZlqd7tjY5WoCJ1k+eF9UryIODx5Hwg12k6TXQxILlgQrxmkDunnSnQsvAB1SBk
+        qJbHg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=jA4ah2CMYgsd377/SA0s2RVNHVfzfBJJzqdBqULdq
+        J8=; b=mMVsAErgT9rltMMz6YSqFahh7gX/lX7/1SHSkdBp/7fwSEwNCuIAfLz2M
+        D/8IpM3IqYOTnX/VpzOuXRiP+i60snN9qVJhYilNqZrfAPdlwzZ15iZ5GXmoj4eO
+        oVPvL+0MAfl93XmfiT5EUSHMv+ciKfoWP+odAhjvJ4z1TKFWOEDzxDwJY9E/jY/b
+        CzbXi0ugPM6es0eUlvjR7BTZ7jmj4uNoPytDUVnD12Y1ZlgW/pwjsH/R24mkdUYG
+        V5csy/ScWDETsZj1ZmzwutgQJtlfsRm8EqkGsDIz40PjmIuwN+RRNzx0IKjwmo41
+        ULnxLWIesRx8GAI+IU2Z7lYfkECug==
+X-ME-Sender: <xms:toi8Xxl1ziEUtNvwglL9Vi5GWgwBvgI0o7BfmT0uhcMEbrQBrhtQ5A>
+    <xme:toi8X81tHssvgWqcuDM43ruge2nrK0fm7ZOANEdhVozsQ9664QvOgyLxfhV89Gfm1
+    q7NmL1fcM3LIXPw9Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegjedgleeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
+    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:toi8X3pG98jyQczQWLIVolZZ0thkOsqzRq53YXaMO4hEGcroQFA_lQ>
+    <xmx:toi8XxkK9sM1HorHNbhuMoVloWe-N5MCCXE198K8adp04kyuP1khDw>
+    <xmx:toi8X_2GJLZzhMqsguTFmVm_KXq6hmHVMxWcncY12XSckRnXRo_z5Q>
+    <xmx:t4i8X6QMSlP7uxw8FXLNd_7RUxVjbxgWh3EbRqpFHjOwXWDnjQa9fg>
+Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 215483064AB0;
+        Mon, 23 Nov 2020 23:14:46 -0500 (EST)
+To:     Michael Klein <michael@fossekall.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20201123161041.2304766-1-michael@fossekall.de>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add
+ gpio-poweroff to DT
+Message-ID: <4bf42c9e-9f70-bc30-1a88-44a127cd989a@sholland.org>
+Date:   Mon, 23 Nov 2020 22:14:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123194230.f59c93eba3cf356c632eb1c0@linux-foundation.org>
+In-Reply-To: <20201123161041.2304766-1-michael@fossekall.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 07:42:30PM -0800, Andrew Morton wrote:
-> Matthew's series "Overhaul multi-page lookups for THP" chnages the
-> shmem code quite a bit, and in the area of truncate.  Matthew, could
-> you please fire up that reproducer?
+On 11/23/20 10:10 AM, Michael Klein wrote:
+> Add gpio-poweroff node to allow the board to power itself off after
+> shutdown by disabling the SYSTEM and CPUX regulators (U5 resp. U6).
+> The RST button can be used to restart the board.
 
-Almost certainly my fault.  I was trying to get the shmem truncate code
-in better shape before posting my series of fixes.  I'll send you a batch
-of four which fix problems noticed by Hugh.  There's at least one more
-to come.
+The PSCI client will override this driver once the PSCI implementation
+is upgraded to v0.2 or newer functions. So having this around should
+cause no compatibility issues (although it would print an error in dmesg
+at that point). This seems like a reasonable thing to do for the other
+H2+/H3 boards that use a similar regulator layout.
+
+Reviewed-by: Samuel Holland <samuel@sholland.org>
+
+> Signed-off-by: Michael Klein <michael@fossekall.de>
+> ---
+>  arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> index 4c6704e4c57e..76e79e6db733 100644
+> --- a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> +++ b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> @@ -46,6 +46,11 @@ sw4 {
+>  		};
+>  	};
+>  
+> +	gpio_poweroff {
+> +		compatible = "gpio-poweroff";
+> +		gpios = <&r_pio 0 8 GPIO_ACTIVE_LOW>; /* PL8 */
+> +	};
+> +
+>  	reg_vdd_cpux: vdd-cpux-regulator {
+>  		compatible = "regulator-gpio";
+>  		regulator-name = "vdd-cpux";
+> 
+
