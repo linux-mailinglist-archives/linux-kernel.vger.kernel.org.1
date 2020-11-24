@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DF72C2B6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A237E2C2B7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389744AbgKXPey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389340AbgKXPey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:34:54 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF33FC0613D6;
-        Tue, 24 Nov 2020 07:34:53 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id v8so10813285vso.2;
-        Tue, 24 Nov 2020 07:34:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rSahwMlPVKC+k3kYG3otLuHHfUicNi1S/Np+gD97NI0=;
-        b=K/deaqEVY6aTzrqs6A1dV9MeM2e9ix2qrWfdFg7md/EVNIn59JTeoy0sgRmnDbcQiS
-         z1IOgXwEK81gyG7lsTer6hoxdznAte4Q/3fgsx732+L75wuZDAV0xdeTLZbyp6c+ET0r
-         rA3DEO4G21frdrUxddD8Qu1Tf0SIWtkb7LAuWPh/SYsZRqlXGmXkXA5hLZk/RNg2zzMj
-         djBP5aQSsrToOFaLkGkvNnvlBB9G5tOSvCGnAfU9OKVfSQkY4M3ec2SowDnK2Mmuu38t
-         2e20AnPViCUoQfYXdX3zexO9IoWgoRFXrsdMt55Rh1v6keg5s+lHGA2ra046mKQXFPOB
-         AADA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rSahwMlPVKC+k3kYG3otLuHHfUicNi1S/Np+gD97NI0=;
-        b=tBAE62A+yHofY+HpnXvqOk5bNjCj0cqByGglesL44Zm4rB4oV6agEQQ+beOlzU3j5a
-         6KTJ6tCAfEzsBcaWrueGLN2jytgrajLK64Sv4lARrSsNUwh19krzczTinJaIys5sPxL2
-         cUO0tCH+K2mVjvj98ySWmIVUSAjO9yCwo02JzpgAw5VvSMUoYFIFXAA2jyO0KI6tMh15
-         EcknQCZ0Dxr6Vb6HeXOUZ7/ara2DKMoBKxhDD90E2u5KjEmCMegly9vktZxs4kRbv9Im
-         XPbMtuQvVsBYbg4QF6bO2raFka+WR95aU4b1aSMEADDt2zTGf6gC6savtri6g3U+9MdM
-         A5Hg==
-X-Gm-Message-State: AOAM532kn3mE9gKQlAnHCLSkuKBuAwJM4UU67PvOrK8Fa/ee2LznRQe/
-        WBzsvka6y0MTB1WZw03zYNQn6ighTAoZwFLz3B0=
-X-Google-Smtp-Source: ABdhPJzH01ciWRir6svn8+Zir3hYQjEG0pjt/A2lxGqAy6ff5TJ5jBJl3RaA9o6zcNnUTX598G2jyt6/+5yJx3PCE7w=
-X-Received: by 2002:a67:2084:: with SMTP id g126mr4429457vsg.42.1606232093012;
- Tue, 24 Nov 2020 07:34:53 -0800 (PST)
+        id S2389772AbgKXPhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:37:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389277AbgKXPhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:37:32 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6713206D9;
+        Tue, 24 Nov 2020 15:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606232252;
+        bh=IFQDOQcne/owwjCkX5+QGdYdd5nPT/w1ifsPEHT2KQs=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=JJjTuV53I47R44w4DYywyIiuphe4JHl4wV0GHV97/c9j1ZXuhJLWNSTvPGGkkqNQk
+         TMi1E3rOsg0i6N4KLGa5PdcxRU9EPD/A19d8ds7m04ubJAfPeN+m+gNHFQmvET/HJO
+         sU1gPyOXna59QIT1TD3ctSrwAFx3hMKAiOW6gES4=
+Date:   Tue, 24 Nov 2020 15:37:09 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Philippe Duplessis-Guindon <pduplessis@efficios.com>,
+        linux-trace-devel@vger.kernel.org
+Cc:     mathieu.desnoyers@efficios.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201124135730.9185-1-pduplessis@efficios.com>
+References: <20201124135730.9185-1-pduplessis@efficios.com>
+Subject: Re: [RFC PATCH v2] tracing: Remove duplicate `type` field from regmap `regcache_sync` trace event
+Message-Id: <160623222905.5095.18294249015305684225.b4-ty@kernel.org>
 MIME-Version: 1.0
-References: <20201123163622.166048-1-clemens.gruber@pqgruber.com>
- <CAGngYiU8M0urUogQJf5-GS_rWmPa85TAVxdRD1EfkRK-EGQ7_w@mail.gmail.com>
- <X70kjlZpIaN1T1ml@workstation.tuxnet> <CAGngYiVkzm=D=hX=k7jL-ikApV4Xc0q+jzebMbqbQVoSAzSWYg@mail.gmail.com>
-In-Reply-To: <CAGngYiVkzm=D=hX=k7jL-ikApV4Xc0q+jzebMbqbQVoSAzSWYg@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 24 Nov 2020 10:34:41 -0500
-Message-ID: <CAGngYiUhWii29u06B5jq8gjYr8xW6L3VgLB0njaBxdKP2GdsTQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] pwm: pca9685: Switch to atomic API
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 10:29 AM Sven Van Asbroeck <thesven73@gmail.com> wrote:
->
-> My pleasure ! We are fortunate that you take the time & effort to improve
-> this code.
+On Tue, 24 Nov 2020 08:57:30 -0500, Philippe Duplessis-Guindon wrote:
+> I have an error saying that `regcache_sync` has 2 fields named `type`
+> while using libtraceevent.
+> 
+> Erase the `int field` type, which is not assigned. This field is
+> introduced by mistake and this commit removes it.
+> 
+> Fixes commit 593600890110c ("regmap: Add the regcache_sync trace event")
 
-By "this code" I meant the pca9685 driver in general. Just making sure
-there's no possible misinterpretation :)
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+
+Thanks!
+
+[1/1] regmap: Remove duplicate `type` field from regmap `regcache_sync` trace event
+      commit: e6e9354b58307c120afbdc2719a6093638c37446
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
