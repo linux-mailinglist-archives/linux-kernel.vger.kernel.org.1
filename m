@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B3E2C325A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439822C3260
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729649AbgKXVJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:09:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
+        id S1729957AbgKXVNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:13:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729619AbgKXVJZ (ORCPT
+        with ESMTP id S1729696AbgKXVNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:09:25 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168FAC0613D6;
-        Tue, 24 Nov 2020 13:09:23 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id k9so15718754ejc.11;
-        Tue, 24 Nov 2020 13:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=elrmmGmMMQ6PzIopqvZQCkanN6h0/gWDnjrJZkGJIrc=;
-        b=g7LSYe/1dvjbcmdkl2nhyDWaLYIFni5VjHt4WQ/sh6N4iEqA9z4kUOjkpDf/ZTbbsb
-         geuhN8jGiWp9hCsnMWIAfw9neXc1C82DlAgzW8v+vNCLtYbilVlfHhLogZtDm+Ggs6g7
-         rNQ4Ux8H0Q4jp41z8sKlhyeBNd7hTE81Y06Rcpj/xz7BjJJIJc3EL2vPVY+FmcZocYBK
-         +P4lu6pswz1/nVv3upEM3bTW7GBJnyRtM1EVAo8flLsOde5HWzHxXFN6/TsnGDb1YP6m
-         BDjqmrJfBTs/3Nq2qCsMbLVMJ5Z9GDlft5E6XTpAYu7FrXhk44MVVVfowJlT3Yx7uBUU
-         bkvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=elrmmGmMMQ6PzIopqvZQCkanN6h0/gWDnjrJZkGJIrc=;
-        b=Wcx4oBxZd6wm8f6ZTPmqmXI8L2iqrBAZ1B7uO27RyT+MDxrYhBekSPwD6tvkczQs7p
-         LzUzvkDwi1jGJq4R3+t2m6+SqyjMRK0huKpFiMR50PbslHOcl+g4YBVKUI7wH+SR/yNu
-         GHocYjQue7s7zJypak9iJFbeZ0I4CVqmYCUknuhDkVRSprW+We4Zgup5kbmVVgDdBfo5
-         kFQXF/iDD0vIEYvPGiGEFhhteUUgZD/JUvz1rAK4KgrhJp7lCtN86NqP/UimrOikSe5C
-         YBEylzt+G9cJ2xKZMHlnjLBL4NvPs2NFHJJgmPiVV6N7AhlXLt6gROyFNnXWg0sgpYIT
-         bojQ==
-X-Gm-Message-State: AOAM5314OYanR9p3cm9TFZSIG+X/NF+zoomVwxNBS5S45c4OwCS1mRi2
-        b/IRLgghTXuYtJzObGQ8ITk=
-X-Google-Smtp-Source: ABdhPJw+oOzt0sqIybHqz+LalDY0mFf5wSqrIieAWHVKK2WTxgTVcNENN+x2eHJPL6OZB9sIwONulw==
-X-Received: by 2002:a17:906:490:: with SMTP id f16mr353412eja.12.1606252161779;
-        Tue, 24 Nov 2020 13:09:21 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee2a.dynamic.kabel-deutschland.de. [95.91.238.42])
-        by smtp.googlemail.com with ESMTPSA id v8sm52468edt.3.2020.11.24.13.09.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 24 Nov 2020 13:09:21 -0800 (PST)
-Message-ID: <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
- remove skip_ref_clk
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 24 Nov 2020 22:09:18 +0100
-In-Reply-To: <1606202906-14485-2-git-send-email-cang@codeaurora.org>
-References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
-         <1606202906-14485-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        Tue, 24 Nov 2020 16:13:14 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820B6C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:13:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=bRma0OFbi1m6TM+oYAu2kkAVbhOo6D7XSE0W8Im9z/E=; b=ANPhSDmdhsOahQQ1LnaippPFR1
+        4ectuHnLsqS6Id+o1+mypTq8jzk54EEQa+eepIx2OKaYPWplIw09Uk3YVNBzHC1dmNYKMVy50Tc3X
+        de3iO0YsFMeeARQeC1IGQ/1/KTNItfy6Kdu+xFfJBj1BXfkwJufGWh0wGWlTuS2WdCWrWDNGg/NOY
+        yDn2p7gvdgfQMUGPyjibYiciC9uq7yPspc7PgjdwKTNxU3pLOSt9I4b/hZAjD6vVlCz3sqNLkIh/t
+        EG8WkIog0Ek3C1i1G3Nhd0k0WSIL1odPF7BOqJsZQ2odBg8ao30rMCxz/JzBUeP5l3vfB6YlQg2gd
+        bcb/KYHQ==;
+Received: from [2601:1c0:6280:3f0::1935] (helo=dragon.site)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khfcd-00005v-NI; Tue, 24 Nov 2020 21:13:12 +0000
+Subject: Re: drivers/clocksource/timer-riscv.c:28:16: error: implicit
+ declaration of function 'get_cycles64'
+To:     kernel test robot <lkp@intel.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org
+References: <202011212217.9IAK7t1V-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <59ba6905-baef-02af-a424-41969f3ad0b3@infradead.org>
+Date:   Tue, 24 Nov 2020 13:13:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <202011212217.9IAK7t1V-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-23 at 23:28 -0800, Can Guo wrote:
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -229,6 +229,8 @@ struct ufs_dev_cmd {
->   * @max_freq: maximum frequency supported by the clock
->   * @min_freq: min frequency that can be used for clock scaling
->   * @curr_freq: indicates the current frequency that it is set to
-> + * @always_on_while_link_active: indicate that the clk should not be
-> disabled if
-> +                                link is still active
->   * @enabled: variable to check against multiple enable/disable
->   */
->  struct ufs_clk_info {
-> @@ -238,6 +240,7 @@ struct ufs_clk_info {
->         u32 max_freq;
->         u32 min_freq;
->         u32 curr_freq;
-> +       bool always_on_while_link_active;
+On 11/21/20 6:26 AM, kernel test robot wrote:
+> Hi Palmer,
+> 
+> FYI, the error/warning still remains.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   27bba9c532a8d21050b94224ffd310ad0058c353
+> commit: d5be89a8d118a8e8d09cd74a921a808f17fbdd09 RISC-V: Resurrect the MMIO timer implementation for M-mode systems
+> date:   9 weeks ago
+> config: riscv-randconfig-r034-20201121 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project bec968cbb367dd03439c89c1d4ef968ef662d7c0)
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install riscv cross compiling tool for clang build
+>          # apt-get install binutils-riscv64-linux-gnu
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d5be89a8d118a8e8d09cd74a921a808f17fbdd09
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout d5be89a8d118a8e8d09cd74a921a808f17fbdd09
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=riscv
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
 
-Can,
-using a sentence as a parameter name looks a little bit clumsy to me.
-The meaning has been explained in the comments section. How about
-simplify it and in line with other parameters in the structure?
+CONFIG_RISCV_M_MODE=y
 
-Thanks,
-Bean 
+and that prevents get_cycles64() in
+arch/riscv/include/asm/timex.h from being visible.
 
->         bool enabled;
->  };
->  
+I suppose that was intended?
+
+
+>>> drivers/clocksource/timer-riscv.c:28:16: error: implicit declaration of function 'get_cycles64' [-Werror,-Wimplicit-function-declaration]
+>             sbi_set_timer(get_cycles64() + delta);
+>                           ^
+>     drivers/clocksource/timer-riscv.c:28:16: note: did you mean 'get_cycles'?
+>     arch/riscv/include/asm/timex.h:18:24: note: 'get_cycles' declared here
+>     static inline cycles_t get_cycles(void)
+>                            ^
+>     drivers/clocksource/timer-riscv.c:47:9: error: implicit declaration of function 'get_cycles64' [-Werror,-Wimplicit-function-declaration]
+>             return get_cycles64();
+>                    ^
+>     drivers/clocksource/timer-riscv.c:52:9: error: implicit declaration of function 'get_cycles64' [-Werror,-Wimplicit-function-declaration]
+>             return get_cycles64();
+>                    ^
+>     7 warnings and 3 errors generated.
+> 
+> vim +/get_cycles64 +28 drivers/clocksource/timer-riscv.c
+> 
+
 
