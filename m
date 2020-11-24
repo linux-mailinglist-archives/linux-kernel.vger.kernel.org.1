@@ -2,166 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A812C2010
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18042C2016
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730678AbgKXIcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:32:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730476AbgKXIcu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:32:50 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2E3C0613CF;
-        Tue, 24 Nov 2020 00:32:50 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id y24so13053979otk.3;
-        Tue, 24 Nov 2020 00:32:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2Q2PJe5i+0yyqNpuz8z7kTzoUZGPUVSZ0K1hVFCIENc=;
-        b=EJEK4my6XgGJ/dD2WIbE+x9yKt34U2S0NfxAtf5UDkh51GwKec1scrVlUnkhzirfpj
-         ACu7SVoyXDQ3dn20K1VkpyaZKTiy4KM7d/rgkjoXnlhXcokGAHw0Te0SbpYyWJ1gk4xP
-         pbfS9bVFHR6ywMivsTXNTXKwimCbOTWnR6PELgCQlrVA7fVXMLUU22SBxBFwxOIGSE7H
-         f1AJUIhUs0ENqLK5yEeNQ3WIrEG2JvAclEr5sFeqKhVN2BKnc8pxyvb1qawpYvBhoKaM
-         QcZ1GS9W/IsKJGOBBDbZDHIdqQWwks9p35WVKUxD5lJSr56hJQ2nRIeqsXbVnT9uzxl/
-         wwDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2Q2PJe5i+0yyqNpuz8z7kTzoUZGPUVSZ0K1hVFCIENc=;
-        b=gddak34R2v4AGETcF4KL1/PVRmJYt1lYSrr50cRoniWywTHGaRQMKuDe3+gtozSfu9
-         97Jy/2KONs23IlB1r7kHWSju2P57voxytKdTBahVvG+6790JIGFcpHaceFefc3lEDW0h
-         iSaKc3WAK+bi8nPjwiJ4wrptVKAjUU53nLrnhslpu6LDbfcwjzld+HVe2HZNtWpUsD0Q
-         6tbdXFPzhwdVH40Kk12KAtSInZf3Hpj5lJD8CbD/woU0z2lsmA6F157L6uspavaL6x+t
-         BH1paaLoqZHyVR1F5puMWs2b4m+yvcueO0bYFpEytUikYmU3tNjR2r4CshBLOCuyr6mF
-         SrZA==
-X-Gm-Message-State: AOAM533yDrW6WbwOOg3YKc0HdJlnVTMMgOG/RggR0hWOOPDvT4cOEJCr
-        BpWjJV+5aViiuhJPVoOv7+vcu5rWZmtUjKeyKog=
-X-Google-Smtp-Source: ABdhPJxV3Rl2vkNvuvxyPEAKWiZ7f5Gc/SAbQGhC5bCF06tKppvMDBbCfOiBqV/xmGcTl3wCltcJ1C9xb6fCvvAH6bo=
-X-Received: by 2002:a9d:6c99:: with SMTP id c25mr2645011otr.327.1606206769728;
- Tue, 24 Nov 2020 00:32:49 -0800 (PST)
-MIME-Version: 1.0
-References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
- <20201118213712.GA22371@amd> <6068b1e3-a4c8-6c7d-d33d-f2238e905e43@gmail.com>
- <20201119215721.GA5337@amd> <0700c32d-643b-fedb-06f0-21547b18205d@gmail.com>
- <CAE+NS363BpytNGZzfZHLa7KLKL8gjGj14oNvRi3oaH9KT79REg@mail.gmail.com>
- <25fef924-634d-7f60-7e1d-0290d1701fab@gmail.com> <CAE+NS34vDejgf8Ydfer_rY25qaG-DQQ5H-9-Er+Shz0=UF-EzA@mail.gmail.com>
-In-Reply-To: <CAE+NS34vDejgf8Ydfer_rY25qaG-DQQ5H-9-Er+Shz0=UF-EzA@mail.gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Tue, 24 Nov 2020 16:32:40 +0800
-Message-ID: <CAE+NS34-oU3FnfBsHD3W+z-4QNr3LgnEjXhDbNrVf+KJg_bDEw@mail.gmail.com>
-Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT definitions
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1730627AbgKXIdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:33:36 -0500
+Received: from mail-dm6nam12on2107.outbound.protection.outlook.com ([40.107.243.107]:51169
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730474AbgKXIdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:33:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a73K9jtwgZI0C/dUZfVPI2vSbUWNLL6KDBR4oxa/QRxfqIGuXsGs6L4ivRv5bL2qECQAt+L3K1YW0uoHwxCDTdFJE+vXP4kEH1MlAZF+vt0+Mgn2um8o+uQv0N+fEvu0O2nnnTkVmlxN3dmD+z2H6PaMKHHoWLMyhLYVUmnbRlkg0UuLPBnO02GNwqMS+w+mMBgAohGWIMPeyI6MoPyDGNqp0a4PnEfYNfaJEaSAFMfneF8wLZiC6VfP6zYvugFbHyfaYUn9k8wWClVBvFL3wdnSbSyhXsg4h/XQvqWaQnaFHhQVpdvc58NH82+BnqUlyNzEl3HaAQ9q03wSj/xSAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EEShTQjqrhLIGxf+jX/srIl9s8yR7hrS3Y1sxYIXRYE=;
+ b=H/A9HjdIW0sWyyxR+h9NWINRlCSCTH4UhnxtaG9E10qHygMeOWsJHyNbbBIUhREWg9F6bLjqX/w2UqY5D9egIBhXAuhfvQ1EXD88YrkWFTvuvM29PQkEt3EJqdhRU2qSIqvP99iUOhaP4YComn/4CQfn01v3jDuefeVGHgBRnJscEVbLqKxEgbvkUkUO0axk2tg0ZgPJnbyIKNqJ7GmS91BgJ6gDI5pP6ecEyeII/AEEnIBQSQ4fiio2RtpLLNLU0EN/TKyfj+BxUh9sN9WWKEUyOWq9horMi6XL0XjkiHERwk1b1FnuvwkVCgn2btcXwDIdJSDy6q6R7AKRp+eMYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EEShTQjqrhLIGxf+jX/srIl9s8yR7hrS3Y1sxYIXRYE=;
+ b=e360GJzH56uCTQZidEH85Vc7ZDQDlFvhX6YjNETFbCBjOtQnPMI6BhgmYP9r0g0gF4iChNW7r6rweVFHhUdKa9v694xxB8B0QHIf9+p2idMv06IhOoggXKkFyeygK0inTeQu65PRKMqxtutKsffLSwN+bbSW+1MJSvTV01tWR+A=
+Received: from MW2PR2101MB1801.namprd21.prod.outlook.com (2603:10b6:302:5::20)
+ by MW4PR21MB1860.namprd21.prod.outlook.com (2603:10b6:303:7a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.4; Tue, 24 Nov
+ 2020 08:33:33 +0000
+Received: from MW2PR2101MB1801.namprd21.prod.outlook.com
+ ([fe80::d0da:1926:ffb7:f06c]) by MW2PR2101MB1801.namprd21.prod.outlook.com
+ ([fe80::d0da:1926:ffb7:f06c%8]) with mapi id 15.20.3611.017; Tue, 24 Nov 2020
+ 08:33:33 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Boqun Feng <boqun.feng@gmail.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "b.zolnierkie@samsung.com" <b.zolnierkie@samsung.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Hu <weh@microsoft.com>
+Subject: RE: [PATCH] video: hyperv_fb: Directly use the MMIO VRAM
+Thread-Topic: [PATCH] video: hyperv_fb: Directly use the MMIO VRAM
+Thread-Index: AQHWwBYrh+ep75sJdUq4vnjYcMIHRqnW9RcA
+Date:   Tue, 24 Nov 2020 08:33:32 +0000
+Message-ID: <MW2PR2101MB1801841901E659E60502EB86BFFB0@MW2PR2101MB1801.namprd21.prod.outlook.com>
+References: <20201121014547.54890-1-decui@microsoft.com>
+ <20201121145411.GG3025@boqun-archlinux>
+In-Reply-To: <20201121145411.GG3025@boqun-archlinux>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3963a294-6577-4647-97b6-267f7e8557ab;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-24T08:20:13Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:c577:ba58:12ff:ac91]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 256fb33f-69db-4f9a-d4d0-08d89053a10f
+x-ms-traffictypediagnostic: MW4PR21MB1860:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW4PR21MB18609F106DFC21781953E56ABFFB0@MW4PR21MB1860.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wRNnB9qEwzZYQMo4+445qOgb+8YZtZTY8EAntDRAG575DoaoTyHco+XQpKQUi2dx4xtO7O72fkjjdyhSm75D7ISsJLyG9gDMoVhHCAYUzIBRhP7Gm0bwfSBiozVTmzHMMTurVQGyYqeRM6d3roBd8nBEZLkFPZRkxsDKv83A+qXOm5c/hlY7iUyy7Ld3YZEa/hMtp4bZM4WK/Lc413KuwUuQHp79RhXWdmz5U1vE3BystZNLvZfGeZJ0P0z/LajbHFyc+P6UBoooEEygsuLZHn6bqB+ZWb9Tmhql29XeX6Uq0LyvRzNZd3/5ma9oQG4royvcfwNCez+UUoFxcO2Y+A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1801.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39860400002)(136003)(396003)(9686003)(5660300002)(33656002)(82950400001)(8990500004)(107886003)(82960400001)(55016002)(52536014)(8936002)(8676002)(66446008)(64756008)(66556008)(66476007)(66946007)(10290500003)(6506007)(186003)(76116006)(71200400001)(83380400001)(2906002)(7696005)(54906003)(86362001)(4326008)(316002)(110136005)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?6dYcbf0pA7nuEXs1woMo2A624LFu+sXJu6btquTmON2awu2D6HDsX7ouQZQZ?=
+ =?us-ascii?Q?4Bys6r8tYD3+QX4bFmjSAbr0daNL9EMPBgVBXckAcQi2fcmbFh5MDIWLzBWI?=
+ =?us-ascii?Q?9OsOQ9TZ4bO+vD+ihXvaV/7qedyBNkrImRLP4fmNn5kv+jCTGy1ISY/L8IEV?=
+ =?us-ascii?Q?hxzIF4AUtNpwTZPkAXg3otPF5CN6NdeLncL/jzRp4WLu51TqVXY0lx579lmW?=
+ =?us-ascii?Q?15TlR0AtlGFZoBaZKken5y9wpvPgTIct6d0IiVOqcbcFYTpM5hDBCI8dHyBO?=
+ =?us-ascii?Q?uTiQ60kkI6Oo1GogBs0HALs+hDu4pK0XVF4bpA9adkd/pX/bn/QJgFB3Jyde?=
+ =?us-ascii?Q?dnuolEDaGfR3ZP7t5dnpNxJJmOeNCNNJuR+mMSgncy4eAbaeGDDwrjiQOPor?=
+ =?us-ascii?Q?auaOLFldcLf8HMTmkl0s5/XDOuqqVGbhuJrF4YzbXzD3aH9NiFfYAkiHGyWU?=
+ =?us-ascii?Q?EYI15hLO6yQik58VJS7mKum2IDSPB3HKxKuYwmjpKeXqFJssu5TKT6BVEepB?=
+ =?us-ascii?Q?gB+3qQsba5hR50TlSTayGOD9j6zlmDs55KATCX3Qy3D0rePCNnFTs+2cq8QY?=
+ =?us-ascii?Q?bpTuF2Ujvgn9SW9kV+P4Bu/p1tJcIZPPumN8RwLuilsovndQVHyLFu/VW0ay?=
+ =?us-ascii?Q?8LzPn8LrDj4rvEk4F9e/WwHiBUp4gMFuDtYm1PcsiNkuEIC+rM5Mihe2HoNh?=
+ =?us-ascii?Q?P4aK1PxNrHYZrZEed5e2dcEZ9BCLhbpZiIoJ7vlVY5I0xqhxAMRg53rwzEdB?=
+ =?us-ascii?Q?E2/MlPd1UYDg4muyAG1UvZ6MQa4V5uqmoHs9U8xLJ53MrCPDFM2+FmdL3ljd?=
+ =?us-ascii?Q?ZGCaQ2gijhX1VGE5+UzBo0xLNRIrbnk7ErPahqMEPt59jY9wGcJhNL2nS9ch?=
+ =?us-ascii?Q?LCACwQ12ZU+1Uuv6Qkd16i56W9VWwJZYjUN9OgDaX9MRXs5AlLE0I/+g+x3i?=
+ =?us-ascii?Q?PZl5jD6YPiYzo1l6cIWIv0EcfV3VGfPXJvvJAS+2ktoGuF1VO5MFw5trg7TH?=
+ =?us-ascii?Q?+JPYsULYdcVnDjgMQX5clYxqHAZfodrNQxO5TIZJB5FH6IE=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1801.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 256fb33f-69db-4f9a-d4d0-08d89053a10f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 08:33:33.0410
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: A19a7poQar6UyoSSd6cZnkM2kXKE3HKKdyoI3uAVCSxgMN1bh49+gqyZZCZNXqG3AiNsuSROqgivvX1BOphbEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1860
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix Typo.
+Hi Wei Liu,
+Please do not pick up this patch, because actually MMIO VRAM can not work
+with fb_deferred_io.
 
-Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=882=
-4=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:33=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=
-=E6=9C=8824=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=884:52=E5=AF=AB=E9=
-=81=93=EF=BC=9A
-> >
-> > On 11/23/20 4:00 AM, Gene Chen wrote:
-> > > Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B4=
-11=E6=9C=8820=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=886:26=E5=AF=AB=
-=E9=81=93=EF=BC=9A
-> > >>
-> > >> On 11/19/20 10:57 PM, Pavel Machek wrote:
-> > >>> On Thu 2020-11-19 22:03:14, Jacek Anaszewski wrote:
-> > >>>> Hi Pavel, Gene,
-> > >>>>
-> > >>>> On 11/18/20 10:37 PM, Pavel Machek wrote:
-> > >>>>> Hi!
-> > >>>>>
-> > >>>>>> From: Gene Chen <gene_chen@richtek.com>
-> > >>>>>>
-> > >>>>>> Add LED_COLOR_ID_MOONLIGHT definitions
-> > >>>>>
-> > >>>>> Why is moonlight a color? Camera flashes are usually white, no?
-> > >>>>>
-> > >>>>> At least it needs a comment...
-> > >>>>
-> > >>>> That's my fault, In fact I should have asked about adding
-> > >>>> LED_FUNCTION_MOONLIGHT, it was evidently too late for me that even=
-ing...
-> > >>>
-> > >>> Aha, that makes more sense.
-> > >>>
-> > >>> But please let's call it "torch" if we do that, as that is already
-> > >>> used in kernel sources... and probably in the interface, too:
-> > >>
-> > >> I'd say that torch is something different that moonlight,
-> > >> but we would need more input from Gene to learn more about
-> > >> the nature of light emitted by ML LED on his device.
-> > >>
-> > >> Please note that torch is usually meant as the other mode of
-> > >> flash LED (sometimes it is called "movie mode"), which is already
-> > >> handled by brightness file of LED class flash device (i.e. its LED c=
-lass
-> > >> subset), and which also maps to v4l2-flash TORCH mode.
-> > >>
-> > >
-> > > It's used to front camera fill light.
-> > > More brightness than screen backlight, and more soft light than flash=
-.
-> > > I think LED_ID_COLOR_WHITE is okay.
-> >
-> > So why in v6 you assigned LED_COLOR_ID_AMBER to it?
-> >
+Previously I didn't test Xorg -- sorry. As soon as I tested it, I got the b=
+elow
+warning and the Xorg program ternimated immediately:
 
-we suppose Moonlight can be white or amber.
+[   28.148432] WARNING: CPU: 19 PID: 1410 at mm/vmalloc.c:383 vmalloc_to_pa=
+ge+0x14b/0x150
+...
+[   28.192959] CPU: 19 PID: 1410 Comm: Xorg Tainted: G            E     5.1=
+0.0-rc1+ #4
+...
+[   28.208720] RIP: 0010:vmalloc_to_page+0x14b/0x150
+...
+[   28.299231] Call Trace:
+[   28.301428]  fb_deferred_io_fault+0x3a/0xa0
+[   28.305276]  __do_fault+0x36/0x120
+[   28.308276]  handle_mm_fault+0x1144/0x1950
+[   28.311963]  exc_page_fault+0x290/0x510
+[   28.315551]  ? asm_exc_page_fault+0x8/0x30
+[   28.319186]  asm_exc_page_fault+0x1e/0x30
+[   28.322969] RIP: 0033:0x7fbeda3ec2f5
 
-> > Regardless of that, now we're talking about LED function - you chose
-> > LED_FUNCTION_INDICATOR for it, but inferring from your above descriptio=
-n
-> > - it certainly doesn't fit here.
-> >
-> > Also register names, containing part "ML" indicate that this LED's
-> > intended function is moonlinght, which your description somehow
-> > corroborates.
-> >
-> > Moonlight LEDs become ubiquitous nowadays so sooner or later we will
-> > need to add this function anyway [0].
-> >
-> > [0]
-> > https://landscapelightingoakville.com/what-is-moon-lighting-and-why-doe=
-s-it-remain-so-popular/
-> >
->
-> According to reference,
-> "When you are trying to imitate moonlight you need to use low voltage,
-> softer lighting. You don=E2=80=99t want something that=E2=80=99s too brig=
-ht"
-> which is focus on brightness instead of color.
->
-> So we suppose Moonlight can be white or amber.
->
-> Should I add LED_FUNCTION_MOONLIGHT and set LED_COLOR_ID_WHITE?
->
-> > --
-> > Best regards,
-> > Jacek Anaszewski
+The issue is that fb_deferred_io_page() requires that the PFN be backed by =
+a
+struct page, but it looks the MMIO address does not have the struct page ba=
+cked.
+
+So I have to drop this patch.=20
+Thanks Wei Hu and Michael for pointing this out!
+
+FYI: drivers/video/fbdev/core/fb_defio.c:
+static struct page *fb_deferred_io_page(struct fb_info *info, unsigned long=
+ offs)
+{
+        void *screen_base =3D (void __force *) info->screen_base;
+        struct page *page;
+
+        if (is_vmalloc_addr(screen_base + offs))
+                page =3D vmalloc_to_page(screen_base + offs);
+        else
+                page =3D pfn_to_page((info->fix.smem_start + offs) >> PAGE_=
+SHIFT);
+
+        return page;
+}
+
+/* this is to find and return the vmalloc-ed fb pages */
+static vm_fault_t fb_deferred_io_fault(struct vm_fault *vmf)
+{
+        unsigned long offset;
+        struct page *page;
+        struct fb_info *info =3D vmf->vma->vm_private_data;
+
+        offset =3D vmf->pgoff << PAGE_SHIFT;
+        if (offset >=3D info->fix.smem_len)
+                return VM_FAULT_SIGBUS;
+
+        page =3D fb_deferred_io_page(info, offset);
+        if (!page)
+                return VM_FAULT_SIGBUS;
+
+Thanks,
+-- Dexuan
