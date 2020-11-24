@@ -2,106 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946CF2C29D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 763A32C29CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389134AbgKXOiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:38:11 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:13343 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388014AbgKXOiL (ORCPT
+        id S2389164AbgKXOg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:36:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20740 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389142AbgKXOgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:38:11 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UGQV.7L_1606228678;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGQV.7L_1606228678)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 24 Nov 2020 22:37:59 +0800
-Subject: Re: INFO: task can't die in shrink_inactive_list (2)
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, peterz@infradead.org
-References: <0000000000000340a105b49441d3@google.com>
- <20201123195452.8ecd01b1fc2ce287dfd6a0d5@linux-foundation.org>
- <97ca8171-c3eb-6462-fcb6-fee53287868a@linux.alibaba.com>
-Message-ID: <d129dcc0-8cb5-7b2b-baf3-301c6169a0c5@linux.alibaba.com>
-Date:   Tue, 24 Nov 2020 22:35:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Tue, 24 Nov 2020 09:36:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606228613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kymzfJ2oxkSUJR89/SsMrJNlPC5DR18c0lpdXSeyrFg=;
+        b=Kmaw05WWBBAxWG2SgApsrmzr8QcSyCj0W7UezvAJuI0Ig/l4Hdq6pEpSDe/Fv+stmMoPD0
+        rlRwFpgWMLfe+WLgd/RNPK0ux7hA/SVUdhYSFl1A9K9DcmQFgPV2zRxY+Rcd7Z7sfe9CKV
+        JbYuGNf41aGOo1Yan/mAyoXMyN1wAc8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-w6QARhs9OMa5dJfhMJ7fsQ-1; Tue, 24 Nov 2020 09:36:51 -0500
+X-MC-Unique: w6QARhs9OMa5dJfhMJ7fsQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2A7A18B6140;
+        Tue, 24 Nov 2020 14:36:48 +0000 (UTC)
+Received: from krava (unknown [10.40.193.173])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A307619C44;
+        Tue, 24 Nov 2020 14:36:46 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 15:36:45 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Petr Malat <oss@malat.biz>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: Re: [PATCH v2 1/3] Revert "perf session: Fix decompression of
+ PERF_RECORD_COMPRESSED records"
+Message-ID: <20201124143645.GD2088148@krava>
+References: <20201124095923.3683-1-oss@malat.biz>
+ <20201124102919.15312-1-oss@malat.biz>
 MIME-Version: 1.0
-In-Reply-To: <97ca8171-c3eb-6462-fcb6-fee53287868a@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124102919.15312-1-oss@malat.biz>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 24, 2020 at 11:29:15AM +0100, Petr Malat wrote:
+> Both mmapped and compressed events can be split by the buffer boundary,
+> it doesn't make sense to handle them differently.
 
+hi,
+I'm going to need more than this, if there's a problem
+with current code please share more details, what's
+broken and how it shows
 
-ÔÚ 2020/11/24 ÏÂÎç8:00, Alex Shi Ð´µÀ:
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    03430750 Add linux-next specific files for 20201116
->>> git tree:       linux-next
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=13f80e5e500000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c4c3f27041fdb8
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=e5a33e700b1dd0da20a2
->>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f7bc5a500000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10934cf2500000
-> CC Peter Zijlstra.
+thanks,
+jirka
+
 > 
-> I found next-20200821 had a very very similar ops as this.
-> https://groups.google.com/g/syzkaller-upstream-moderation/c/S0pyqK1dZv8/m/dxMoEhGdAQAJ
-> So does this means the bug exist for long time from 5.9-rc1?
+> Fixes: bb1835a3b86c ("perf session: Fix decompression of PERF_RECORD_COMPRESSED records")
+> Fixes: 57fc032ad643 ("perf session: Avoid infinite loop when seeing invalid header.size")
+> Signed-off-by: Petr Malat <oss@malat.biz>
+> ---
+>  tools/perf/util/session.c | 44 +++++++++++++++------------------------
+>  1 file changed, 17 insertions(+), 27 deletions(-)
 > 
-> The reproducer works randomly on a cpu=2, mem=1600M x86 vm. It could cause hung again
-> on both kernel, but both with different kernel stack.
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index 098080287c68..0d7a59c1aeb6 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -2038,8 +2038,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
+>  }
+>  
+>  static union perf_event *
+> -prefetch_event(char *buf, u64 head, size_t mmap_size,
+> -	       bool needs_swap, union perf_event *error)
+> +fetch_mmaped_event(struct perf_session *session,
+> +		   u64 head, size_t mmap_size, char *buf)
+>  {
+>  	union perf_event *event;
+>  
+> @@ -2051,32 +2051,20 @@ prefetch_event(char *buf, u64 head, size_t mmap_size,
+>  		return NULL;
+>  
+>  	event = (union perf_event *)(buf + head);
+> -	if (needs_swap)
+> -		perf_event_header__bswap(&event->header);
+> -
+> -	if (head + event->header.size <= mmap_size)
+> -		return event;
+>  
+> -	/* We're not fetching the event so swap back again */
+> -	if (needs_swap)
+> +	if (session->header.needs_swap)
+>  		perf_event_header__bswap(&event->header);
+>  
+> -	pr_debug("%s: head=%#" PRIx64 " event->header_size=%#x, mmap_size=%#zx:"
+> -		 " fuzzed or compressed perf.data?\n",__func__, head, event->header.size, mmap_size);
+> -
+> -	return error;
+> -}
+> -
+> -static union perf_event *
+> -fetch_mmaped_event(u64 head, size_t mmap_size, char *buf, bool needs_swap)
+> -{
+> -	return prefetch_event(buf, head, mmap_size, needs_swap, ERR_PTR(-EINVAL));
+> -}
+> +	if (head + event->header.size > mmap_size) {
+> +		/* We're not fetching the event so swap back again */
+> +		if (session->header.needs_swap)
+> +			perf_event_header__bswap(&event->header);
+> +		pr_debug("%s: head=%#" PRIx64 " event->header_size=%#x, mmap_size=%#zx: fuzzed perf.data?\n",
+> +			 __func__, head, event->header.size, mmap_size);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+>  
+> -static union perf_event *
+> -fetch_decomp_event(u64 head, size_t mmap_size, char *buf, bool needs_swap)
+> -{
+> -	return prefetch_event(buf, head, mmap_size, needs_swap, NULL);
+> +	return event;
+>  }
+>  
+>  static int __perf_session__process_decomp_events(struct perf_session *session)
+> @@ -2089,8 +2077,10 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
+>  		return 0;
+>  
+>  	while (decomp->head < decomp->size && !session_done()) {
+> -		union perf_event *event = fetch_decomp_event(decomp->head, decomp->size, decomp->data,
+> -							     session->header.needs_swap);
+> +		union perf_event *event = fetch_mmaped_event(session, decomp->head, decomp->size, decomp->data);
+> +
+> +		if (IS_ERR(event))
+> +			return PTR_ERR(event);
+>  
+>  		if (!event)
+>  			break;
+> @@ -2190,7 +2180,7 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>  	}
+>  
+>  more:
+> -	event = fetch_mmaped_event(head, mmap_size, buf, session->header.needs_swap);
+> +	event = fetch_mmaped_event(session, head, mmap_size, buf);
+>  	if (IS_ERR(event))
+>  		return PTR_ERR(event);
+>  
+> -- 
+> 2.20.1
 > 
-> Maybe is system just too busy? I will try more older kernel with the reproducer.
 
-5.8 kernel sometime also failed on this test on my 2 cpus vm guest with 2g memory:
-Any comments for this issue?
-
-Thanks
-Alex
-
-[ 5875.750929][  T946] INFO: task repro:31866 blocked for more than 143 seconds.
-[ 5875.751618][  T946]       Not tainted 5.8.0 #6
-[ 5875.752046][  T946] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables th.
-[ 5875.752845][  T946] repro           D12088 31866      1 0x80004086
-[ 5875.753436][  T946] Call Trace:
-[ 5875.753747][  T946]  __schedule+0x394/0x950
-[ 5875.774033][  T946]  ? __mutex_lock+0x46f/0x9c0
-[ 5875.774481][  T946]  ? blkdev_put+0x18/0x120
-[ 5875.774894][  T946]  schedule+0x37/0xe0
-[ 5875.775260][  T946]  schedule_preempt_disabled+0xf/0x20
-[ 5875.775753][  T946]  __mutex_lock+0x474/0x9c0
-[ 5875.776174][  T946]  ? lock_acquire+0xa7/0x390
-[ 5875.776602][  T946]  ? locks_remove_file+0x1e7/0x2d0
-[ 5875.777079][  T946]  ? blkdev_put+0x18/0x120
-[ 5875.777485][  T946]  blkdev_put+0x18/0x120
-[ 5875.777880][  T946]  blkdev_close+0x1f/0x30
-[ 5875.778281][  T946]  __fput+0xf0/0x260
-[ 5875.778639][  T946]  task_work_run+0x68/0xb0
-[ 5875.779054][  T946]  do_exit+0x3df/0xce0
-[ 5875.779430][  T946]  ? get_signal+0x11d/0xca0
-[ 5875.779846][  T946]  do_group_exit+0x42/0xb0
-[ 5875.780261][  T946]  get_signal+0x16a/0xca0
-[ 5875.780662][  T946]  ? handle_mm_fault+0xc8f/0x19c0
-[ 5875.781134][  T946]  do_signal+0x2b/0x8e0
-[ 5875.781521][  T946]  ? trace_hardirqs_off+0xe/0xf0
-[ 5875.781989][  T946]  __prepare_exit_to_usermode+0xef/0x1f0
-[ 5875.782512][  T946]  ? asm_exc_page_fault+0x8/0x30
-[ 5875.782979][  T946]  prepare_exit_to_usermode+0x5/0x30
-[ 5875.783461][  T946]  asm_exc_page_fault+0x1e/0x30
-[ 5875.783909][  T946] RIP: 0033:0x428dd7
-[ 5875.794899][  T946] Code: Bad RIP value.
-[ 5875.795290][  T946] RSP: 002b:00007f37c99e0d78 EFLAGS: 00010202
-[ 5875.795858][  T946] RAX: 0000000020000080 RBX: 0000000000000000 RCX: 0000000076656f
-[ 5875.796588][  T946] RDX: 000000000000000c RSI: 00000000004b2370 RDI: 00000000200000
-[ 5875.797326][  T946] RBP: 00007f37c99e0da0 R08: 00007f37c99e1700 R09: 00007f37c99e10
-[ 5875.798063][  T946] R10: 00007f37c99e19d0 R11: 0000000000000202 R12: 00000000000000
-[ 5875.798802][  T946] R13: 0000000000021000 R14: 0000000000000000 R15: 00007f37c99e10
