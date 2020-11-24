@@ -2,198 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCD12C3399
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09BA2C33A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388275AbgKXV5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:57:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731696AbgKXV5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:57:17 -0500
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBB5820715
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 21:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606255036;
-        bh=NKTa7dLhb4WX8DpX7xxrijkL1HVS8VWwDbB2EYzcFFE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tF7koIwHqUeAdU8NWI/Ej9UosKw2qWRr+G7VezLm2Ut1X1AZtEUzEoKlI4TV5PwqH
-         Bw/Tp2DNpIvXuxgWuuypsFuvMLNa0Fa5BE3cwQmoMom9lEscuo35I/08SpNcTxkzrW
-         aaPmSsB4q5Zv5pmYvp/7c1DhpM4X37R4HBId+jmA=
-Received: by mail-wr1-f50.google.com with SMTP id t4so10918304wrr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:57:15 -0800 (PST)
-X-Gm-Message-State: AOAM532QQh2LNOSwF6AuRpOD+PKxdy9WK6+phrhu7k6SgN1Tfcb9WuQ6
-        JPBEAexO9msb+fWmxTlByRiXPNK9RIht9fkBaRx7kw==
-X-Google-Smtp-Source: ABdhPJzpjAfkskq+eGhhEjz/1Bf+L0y9f7ytY47+jSjxHLhcliLc+rleBGHbHj5kg0aLz20bkhHnz74/gVM80kgd90E=
-X-Received: by 2002:a5d:4e87:: with SMTP id e7mr634055wru.70.1606255034259;
- Tue, 24 Nov 2020 13:57:14 -0800 (PST)
+        id S2388702AbgKXWA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 17:00:57 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:32664 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731696AbgKXWA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 17:00:57 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AOLwW2m018710;
+        Tue, 24 Nov 2020 23:00:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=STMicroelectronics;
+ bh=/nsqPmbt8hlWF/ePqLKnAQe8oN8M+aSPJvRRrQxajqw=;
+ b=RvyzlBTd8uOvpig9x0ILiM4nOLUyL916s2Yhq6xCThcQFgQoHVYNr1veNP/0zPjb5yjA
+ o8Y3eNO4p2s0U3O+vnrdwOkZTN4TGRQ1Jdfu5vzfoQ465gCJx3JrKKn2bxiIXsIGOpMv
+ mgIi3VReKPF2BH/TMCSAvVC0Bv+u973Fc5MhqK6hhbyez1jtb01wJGYEzsDrrh99Caro
+ IDoF3AQQVaqFyi0wCzHZeGY7UiXIxlKWaS3fw1DOdrSZRtBjE7QHkSUFHtoNdCrNf8Ry
+ biylLd6+YnDlZn1UFQsMNdLIWldRUNrGMaVmYUAHACjcuNo2npTlnX/pHFkwxAk4Zj/v kQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34y05h9w0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 23:00:26 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6004910002A;
+        Tue, 24 Nov 2020 23:00:25 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3FF85207403;
+        Tue, 24 Nov 2020 23:00:25 +0100 (CET)
+Received: from localhost (10.75.127.46) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov 2020 23:00:24
+ +0100
+From:   Antonio Borneo <antonio.borneo@st.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        Yonglong Liu <liuyonglong@huawei.com>,
+        Willy Liu <willy.liu@realtek.com>
+CC:     Antonio Borneo <antonio.borneo@st.com>, <linuxarm@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] net: phy: realtek: read actual speed on rtl8211f to detect downshift
+Date:   Tue, 24 Nov 2020 22:59:32 +0100
+Message-ID: <20201124215932.885306-1-antonio.borneo@st.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
+References: <20201124143848.874894-1-antonio.borneo@st.com>
 MIME-Version: 1.0
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201121151259.GA3948@wind.enjellic.com> <CALCETrXTjZSg-ccDKF7yX8y+vCCrcn9C_m6ZCGNdWHq73aUHQQ@mail.gmail.com>
- <20201124184039.GA22484@wind.enjellic.com>
-In-Reply-To: <20201124184039.GA22484@wind.enjellic.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 24 Nov 2020 13:57:00 -0800
-X-Gmail-Original-Message-ID: <CALCETrUDoMKRsB8EHNo1iZB-KxidWB_LCivReE6DvCT2HQ2PzQ@mail.gmail.com>
-Message-ID: <CALCETrUDoMKRsB8EHNo1iZB-KxidWB_LCivReE6DvCT2HQ2PzQ@mail.gmail.com>
-Subject: Re: [PATCH v40 00/24] Intel SGX foundations
-To:     "Dr. Greg" <greg@enjellic.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
-        Mikko Ylinen <mikko.ylinen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_09:2020-11-24,2020-11-24 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 10:40 AM Dr. Greg <greg@enjellic.com> wrote:
->
-> On Sat, Nov 21, 2020 at 10:36:58AM -0800, Andy Lutomirski wrote:
->
+The rtl8211f supports downshift and before commit 5502b218e001
+("net: phy: use phy_resolve_aneg_linkmode in genphy_read_status")
+the read-back of register MII_CTRL1000 was used to detect the
+negotiated link speed.
+The code added in commit d445dff2df60 ("net: phy: realtek: read
+actual speed to detect downshift") is working fine also for this
+phy and it's trivial re-using it to restore the downshift
+detection on rtl8211f.
 
-> Intel SGX developer licensing requires that you provide application
-> recipients with a full and complete runtime along with the signed
-> application.  Our developer license allowed us to substitute our
-> runtime for Intel's.
+Add the phy specific read_status() pointing to the existing
+function rtlgen_read_status().
 
-Upstream Linux wants nothing to do with Intel's developer licensing.
+Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+Link: https://lore.kernel.org/r/478f871a-583d-01f1-9cc5-2eea56d8c2a7@huawei.com
+---
+To: Andrew Lunn <andrew@lunn.ch>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+To: Russell King <linux@armlinux.org.uk>
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+To: netdev@vger.kernel.org
+To: Yonglong Liu <liuyonglong@huawei.com>
+To: Willy Liu <willy.liu@realtek.com>
+Cc: linuxarm@huawei.com
+Cc: Salil Mehta <salil.mehta@huawei.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-kernel@vger.kernel.org
+In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
 
-> > > Given that this driver is no longer locked to the Intel trust root, by
-> > > virtue of being restricted to run only on platforms which support
-> > > Flexible Launch Control, there is no longer any legitimate technical
-> > > reason to not expose all of the functionality of the hardware.
->
-> > I read this three times, and I can't tell what functionality you're
-> > referring to.
->
-> Yes you do, as I mentioned to Dave in my last e-mail, we have been
-> disagreeing about this for a year.
+V1 => V2
+	move from a generic implementation affecting every phy
+	to a rtl8211f specific implementation
+---
+ drivers/net/phy/realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-No, I don't.  It's entirely possible that I'm aware of the
-functionality you're referring to, but that doesn't mean that your
-description quoted above is sufficient for me to have the slightest
-idea which functionality you mean right here.
+diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+index 575580d3ffe0..8ff8a4edc173 100644
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@ -621,6 +621,7 @@ static struct phy_driver realtek_drvs[] = {
+ 		PHY_ID_MATCH_EXACT(0x001cc916),
+ 		.name		= "RTL8211F Gigabit Ethernet",
+ 		.config_init	= &rtl8211f_config_init,
++		.read_status	= rtlgen_read_status,
+ 		.ack_interrupt	= &rtl8211f_ack_interrupt,
+ 		.config_intr	= &rtl8211f_config_intr,
+ 		.suspend	= genphy_suspend,
 
->
-> You were at some kind of seminar where SGX was discussed.  Based on
-> that you developed a 'manifesto' regarding how Linux should implement
-> the technology.  That manifesto indicated there would be no place for
-> cryptographic policy control on enclaves.
+base-commit: 9bd2702d292cb7b565b09e949d30288ab7a26d51
+-- 
+2.29.2
 
-That's not what I said.  Paraphrasing myself, I said that there is no
-place for a driver in upstream Linux that allows only Intel-approved
-code to run.  That is not at all the same thing as saying we won't
-support cryptographic policy in a way that allows the platform owner
-an appropriate degree of control.
-
-Actually supporting launch control (the EINIT-enforced kind) in
-upstream Linux will be tricky but is surely possible.  It would
-probably help if Intel or firmware vendors had some clear
-specification of exactly how they intend for platform owners to select
-an SGXLEPUBKEYHASH value.  (A nice spec in which an authenticated UEFI
-variable contained the desired SGXLEPUBKEYHASH and lock state might be
-an excellent start.)  Supporting this in upstream Linux will also
-require decoupling the user code that creates an enclave from the user
-code that invokes the LE.  Jarkko already wrote some code for this,
-and it could be revived.  If this ends up being inconsistent with
-Intel's licensing requirements, then Intel can change their licensing
-requirements or people can just ignore Intel and use a different
-signing key.
-
-Frankly, using Intel's signing key in SGXLEPUBKEYHASH offers a dubious
-degree of protection in the first place -- it assumes that Intel will
-never approve a malware enclave, and it also assumes that the lack of
-functioning EINITTOKEN revocation won't break the whole scheme.
-
->
-> A well taken and considered point on a locked launch control platform
-> but completely irrelevant for this driver, that only operates on
-> Flexible Launch Control platforms.  By demanding compliance with only
-> that vision you deny platform owners a final measure of defense
-> against anonymous code execution.
-
-I am denying Intel the chance to impose their licensing requirements.
-The fact that Intel chose to poison the well with their licensing
-system and that, as a result, Linux won't support the Intel model of
-launch control to protect platform owners is an unfortunate side
-effect.
-
->
-> > > The patch that I am including below implements signature based policy
-> > > controls for enclave initialization.  It does so in a manner that is
-> > > completely transparent to the default behavior of the driver, which is
-> > > to initialize any enclave passed to it with the exception of enclaves
-> > > that set the PROVISION_KEY attribute bit.
->
-> > It's completely unreviewable.  It's an ABI patch, and it does not
-> > document what it does, nor does it document why it does it.  It's
-> > just a bunch of code.  NAK.
->
-> You can certainly NAK-away Andy[0]. I've had sufficent private
-> feedback from reasoned and informed individuals that I've made my
-> point that this isn't about technical considerations.
-
-Depends on what you mean by "technical".  In the submitting-patches
-guide (https://www.kernel.org/doc/html/v5.9/process/submitting-patches.html),
-you will find instructions to "describe your changes" and "separate
-your changes".  If you can produce a reasonably, reviewable submission
-of your code, I will review it.  But I am not going to dig through
-your diff to try to find the hidden technical merit.
-
->
-> Here is the link, again, to the patch in 'git am' compliant format.
->
-> ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-v41.patch
->
-> I've been watching Linux patches go by for close to 30 years.  If this
-> is completely unreviewable garbage, legitimate concerns can be raised
-> about what is getting pushed into the kernel.
-
-The kernel review process is by no means perfect.  That does not mean
-that you get to apply your unreviewable garbage just because other
-people have pulled it off in the past.
-
-> For the LKML record, absent our patch the driver has an open security
-> issue with respect to anonymous code execution that should be
-> addressed, if that issue is indeed of any concern.
-
-What do you mean?
-
-
-> The only thing that I can think of is that you disagree with the
-> optional capability of blocking the enclave from implementing
-> anonymously executable memory.  Absent that ability there is the
-> security issue that has now been extensively discussed.
-
-You keep sending a patch that blocks mmap and mprotect on an
-initialized enclave.  As far as I can tell, you haven't explained how
-it's any better than the code it replaces.  The code it replaces
-enforces per-page maximum permissions, and all the infrastructure is
-in place for the platform owner to be able to enforce their rules
-without breaking ABI.
-
-Your proposal appears to accomplish something a little bit like what
-the code in -tip does, except without as much room for future
-improvements.  Since you haven't tried to explain why you think it's
-better, I can't really evaluate it.
