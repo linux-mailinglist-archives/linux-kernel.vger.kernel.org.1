@@ -2,90 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813B72C1CCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFCA2C1CE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729109AbgKXEgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:36:14 -0500
-Received: from smtprelay0165.hostedemail.com ([216.40.44.165]:33448 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729090AbgKXEgM (ORCPT
+        id S1729233AbgKXEhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:37:51 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42594 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729212AbgKXEhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:36:12 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 7BB35181D3025;
-        Tue, 24 Nov 2020 04:36:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:541:800:960:973:988:989:1260:1311:1314:1345:1359:1437:1515:1534:1541:1711:1730:1747:1777:1792:2393:2559:2562:2914:3138:3139:3140:3141:3142:3352:3865:3866:3867:3870:3872:5007:6261:10004:10848:11026:11658:11914:12043:12296:12297:12555:12895:13069:13221:13229:13311:13357:13894:14181:14384:14394:14721:21060:21080:21451:21627:30054:30064,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: month31_550b9d52736b
-X-Filterd-Recvd-Size: 2517
-Received: from joe-laptop.perches.com (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 24 Nov 2020 04:36:10 +0000 (UTC)
-From:   Joe Perches <joe@perches.com>
-To:     Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] scsi: pm8001: Fix misindentation
-Date:   Mon, 23 Nov 2020 20:36:04 -0800
-Message-Id: <9542a8be9954c1dca744f93f53bb1af6dd1436e8.1606192458.git.joe@perches.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <cover.1606192458.git.joe@perches.com>
-References: <cover.1606192458.git.joe@perches.com>
+        Mon, 23 Nov 2020 23:37:51 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id D57A11F4481C
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Gao Xiang <hsiangkao@redhat.com>,
+        Daniel Rosenberg <drosen@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, kernel-team@android.com
+Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
+Organization: Collabora
+References: <20201119060904.463807-1-drosen@google.com>
+        <20201119060904.463807-3-drosen@google.com>
+        <20201122051218.GA2717478@xiangao.remote.csb>
+        <X7w9AO0x8vG85JQU@sol.localdomain>
+Date:   Mon, 23 Nov 2020 23:37:45 -0500
+In-Reply-To: <X7w9AO0x8vG85JQU@sol.localdomain> (Eric Biggers's message of
+        "Mon, 23 Nov 2020 14:51:44 -0800")
+Message-ID: <877dqbpdye.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel robot reported a misindentation of a goto.
+Eric Biggers <ebiggers@kernel.org> writes:
 
-Fix it.
+> On Sun, Nov 22, 2020 at 01:12:18PM +0800, Gao Xiang wrote:
+>> Hi all,
+>> 
+>> On Thu, Nov 19, 2020 at 06:09:03AM +0000, Daniel Rosenberg wrote:
+>> > This shifts the responsibility of setting up dentry operations from
+>> > fscrypt to the individual filesystems, allowing them to have their own
+>> > operations while still setting fscrypt's d_revalidate as appropriate.
+>> > 
+>> > Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
+>> > they have their own specific dentry operations as well. That operation
+>> > will set the minimal d_ops required under the circumstances.
+>> > 
+>> > Since the fscrypt d_ops are set later on, we must set all d_ops there,
+>> > since we cannot adjust those later on. This should not result in any
+>> > change in behavior.
+>> > 
+>> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
+>> > Acked-by: Eric Biggers <ebiggers@google.com>
+>> > ---
+>> 
+>> ...
+>> 
+>> >  extern const struct file_operations ext4_dir_operations;
+>> >  
+>> > -#ifdef CONFIG_UNICODE
+>> > -extern const struct dentry_operations ext4_dentry_ops;
+>> > -#endif
+>> > -
+>> >  /* file.c */
+>> >  extern const struct inode_operations ext4_file_inode_operations;
+>> >  extern const struct file_operations ext4_file_operations;
+>> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+>> > index 33509266f5a0..12a417ff5648 100644
+>> > --- a/fs/ext4/namei.c
+>> > +++ b/fs/ext4/namei.c
+>> > @@ -1614,6 +1614,7 @@ static struct buffer_head *ext4_lookup_entry(struct inode *dir,
+>> >  	struct buffer_head *bh;
+>> >  
+>> >  	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
+>> > +	generic_set_encrypted_ci_d_ops(dentry);
+>> 
+>> One thing might be worth noticing is that currently overlayfs might
+>> not work properly when dentry->d_sb->s_encoding is set even only some
+>> subdirs are CI-enabled but the others not, see generic_set_encrypted_ci_d_ops(),
+>> ovl_mount_dir_noesc => ovl_dentry_weird()
+>> 
+>> For more details, see:
+>> https://android-review.googlesource.com/c/device/linaro/hikey/+/1483316/2#message-2e1f6ab0010a3e35e7d8effea73f60341f84ee4d
+>> 
+>> Just found it by chance (and not sure if it's vital for now), and
+>> a kind reminder about this.
+>> 
+>
+> Yes, overlayfs doesn't work on ext4 or f2fs filesystems that have the casefold
+> feature enabled, regardless of which directories are actually using casefolding.
+> This is an existing limitation which was previously discussed, e.g. at
+> https://lkml.kernel.org/linux-ext4/CAOQ4uxgPXBazE-g2v=T_vOvnr_f0ZHyKYZ4wvn7A3ePatZrhnQ@mail.gmail.com/T/#u
+> and
+> https://lkml.kernel.org/linux-ext4/20191203051049.44573-1-drosen@google.com/T/#u.
+>
+> Gabriel and Daniel, is one of you still looking into fixing this?
 
-At the same time, use a temporary for a repeated entry in the same block
-to reduce visual noise.
+Eric,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/scsi/pm8001/pm8001_init.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+overlayfs+CI has been on my todo list for over a year now, as I have a
+customer who wants to mix them, but I haven't been able to get to it.
+I'm sure I won't be able to get to it until mid next year, so if anyone
+wants to tackle it, feel free to do it.
 
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index 38907f45c845..17b29163c13d 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -386,17 +386,17 @@ static int pm8001_alloc(struct pm8001_hba_info *pm8001_ha,
- 	pm8001_ha->memoryMap.region[FORENSIC_MEM].element_size = 0x10000;
- 	pm8001_ha->memoryMap.region[FORENSIC_MEM].alignment = 0x10000;
- 	for (i = 0; i < pm8001_ha->max_memcnt; i++) {
-+		struct mpi_mem *region = &pm8001_ha->memoryMap.region[i];
-+
- 		if (pm8001_mem_alloc(pm8001_ha->pdev,
--			&pm8001_ha->memoryMap.region[i].virt_ptr,
--			&pm8001_ha->memoryMap.region[i].phys_addr,
--			&pm8001_ha->memoryMap.region[i].phys_addr_hi,
--			&pm8001_ha->memoryMap.region[i].phys_addr_lo,
--			pm8001_ha->memoryMap.region[i].total_len,
--			pm8001_ha->memoryMap.region[i].alignment) != 0) {
--			pm8001_dbg(pm8001_ha, FAIL,
--				   "Mem%d alloc failed\n",
--				   i);
--				goto err_out;
-+				     &region->virt_ptr,
-+				     &region->phys_addr,
-+				     &region->phys_addr_hi,
-+				     &region->phys_addr_lo,
-+				     region->total_len,
-+				     region->alignment) != 0) {
-+			pm8001_dbg(pm8001_ha, FAIL, "Mem%d alloc failed\n", i);
-+			goto err_out;
- 		}
- 	}
- 
+
+> IIUC, the current thinking is that when the casefolding flag is set on
+> a directory, it's too late to assign dentry_operations at that point.
+
+yes
+
+> But what if all child dentries (which must be negative) are
+> invalidated first,
+
+I recall I tried this approach when I quickly looked over this last
+year, but my limited vfs knowledge prevented me from getting something
+working.  But it makes sense.
+
+> and also the filesystem forbids setting the casefold flag on encrypted
+> directories that are accessed via a no-key name (so that
+> fscrypt_d_revalidate isn't needed -- i.e. the directory would only go
+> from "no d_ops" to "generic_ci_dentry_ops", not from
+> "generic_encrypted_dentry_ops" to "generic_encrypted_ci_dentry_ops")?
+
+
+
+
 -- 
-2.26.0
-
+Gabriel Krisman Bertazi
