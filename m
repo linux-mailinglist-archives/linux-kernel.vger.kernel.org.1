@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4292C2205
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7C22C2207
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731192AbgKXJrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:47:25 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:60602 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729704AbgKXJrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:47:24 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx33+i1rxf0+gVAA--.35867S2;
-        Tue, 24 Nov 2020 17:47:14 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] phy/mediatek: Make PHY_MTK_XSPHY depend on HAS_IOMEM and OF_ADDRESS to fix build errors
-Date:   Tue, 24 Nov 2020 17:47:13 +0800
-Message-Id: <1606211233-7425-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx33+i1rxf0+gVAA--.35867S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtw47Xw13uryDur48AFy5Arb_yoWkWrXEg3
-        ZI9rn7Xr1UZr1SkrW5Zr1ru34I93W7WryrGa4YqFy5ury2gF17K3sFqF1kur17GwsYgF4D
-        XrWfZr10vr1jyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbckFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8uwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUsTmhUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1731405AbgKXJrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:47:48 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:41637 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgKXJrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:47:47 -0500
+Received: by mail-ed1-f67.google.com with SMTP id t9so20171852edq.8;
+        Tue, 24 Nov 2020 01:47:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dk34/e/mxzNqyGJMYlOWAK9IKJtf8RN7D44FdJ3MzvE=;
+        b=incordErnOUaNDKd5y0dHAtczDCCsiiEzG0wWi4M2yAlrF2OnA17fip7IceINMp8qa
+         gjnXUzqKustDl5QcmSXRyNtLDwi4THTqj1fBLKIKzq8m+VqN0dz0H1OqW/Ew0pWLPTmx
+         9GYMiMtbVYQoRfACufuYdT+W/5+VWesXy/9UiTZaC9U1xIIXwyxPwM3Nci/XmfOkXYzA
+         3m9RgqxYSmVF1u0GLIDJa3q35lvVcH/OU/P94aQ5JBec/qtHqFCTtUGZ2E49AaqIq57C
+         XQ+YAI14wq2ndVt7cfC3qgZbS6ZVVnSO3ZbAtwOBz5BVMr9yzKcBQymxGcc0ukisIhba
+         1Ogg==
+X-Gm-Message-State: AOAM530zhv2F0Y4VlzpesZIa4K5+XkwlyVSfCIpJoFq9E3CRU6Ll2xCI
+        ayj3oWdXKgzprgrk+yWNTJg=
+X-Google-Smtp-Source: ABdhPJzP/62o37kI8xbriHmwkRVBlNr3Mo/vCjuuGrr41wo+LoS/B5nho69Yk1vLW3JJ6J2wvob7sg==
+X-Received: by 2002:aa7:d493:: with SMTP id b19mr3002612edr.279.1606211266000;
+        Tue, 24 Nov 2020 01:47:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id k12sm6349016ejz.48.2020.11.24.01.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 01:47:44 -0800 (PST)
+Date:   Tue, 24 Nov 2020 10:47:43 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 3/4] arm64: dts: imx8m: add NVMEM provider and
+ consumer to read soc unique ID
+Message-ID: <20201124094743.GB15030@kozik-lap>
+References: <20201124015949.29262-1-alice.guo@nxp.com>
+ <20201124015949.29262-3-alice.guo@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201124015949.29262-3-alice.guo@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_ioremap_resource() will be not built in lib/devres.c if
-CONFIG_HAS_IOMEM is not set, of_address_to_resource() will be
-not built in drivers/of/address.c if CONFIG_OF_ADDRESS is not
-set, and then there exists two build errors about undefined
-reference to "devm_ioremap_resource" and "of_address_to_resource"
-in phy-mtk-xsphy.c under COMPILE_TEST and CONFIG_PHY_MTK_XSPHY,
-make PHY_MTK_XSPHY depend on HAS_IOMEM and OF_ADDRESS to fix it.
+On Tue, Nov 24, 2020 at 09:59:48AM +0800, Alice Guo wrote:
+> In order to be able to use NVMEM APIs to read soc unique ID, add the
+> nvmem data cell and name for nvmem-cells to the "soc" node, and add a
+> nvmem node which provides soc unique ID to efuse@30350000.
+> 
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- drivers/phy/mediatek/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+I already reviewed it. Do not ignore received tags.
 
-diff --git a/drivers/phy/mediatek/Kconfig b/drivers/phy/mediatek/Kconfig
-index 50c5e93..66df045 100644
---- a/drivers/phy/mediatek/Kconfig
-+++ b/drivers/phy/mediatek/Kconfig
-@@ -30,6 +30,8 @@ config PHY_MTK_XSPHY
- 	tristate "MediaTek XS-PHY Driver"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
- 	depends on OF
-+	depends on HAS_IOMEM
-+	depends on OF_ADDRESS
- 	select GENERIC_PHY
- 	help
- 	  Enable this to support the SuperSpeedPlus XS-PHY transceiver for
--- 
-2.1.0
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
+Best regards,
+Krzysztof
+
+> ---
+> 
+> v2: remove the subject prefix "LF-2571-3"
+> v3: convert register addresses and sizes to hex
+> v4: delete "stuff" in subject and commit message, add detailed
+>     description
+> v5: change underscore of device node to hyphen
+> v6: none
