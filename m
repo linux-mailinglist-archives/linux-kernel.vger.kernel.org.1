@@ -2,81 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763892C2CDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7014B2C2CE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390454AbgKXQ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:27:25 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:21304 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390003AbgKXQ1Y (ORCPT
+        id S2390461AbgKXQ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:27:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390003AbgKXQ1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:27:24 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-53-PHWAJYOoN_y3X4F8JOFFrg-1; Tue, 24 Nov 2020 16:27:20 +0000
-X-MC-Unique: PHWAJYOoN_y3X4F8JOFFrg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 16:27:19 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 24 Nov 2020 16:27:19 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Thomas Zimmermann' <tzimmermann@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Huang, Ray" <ray.huang@amd.com>, Dave Airlie <airlied@redhat.com>,
-        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>
-Subject: RE: Linux 5.10-rc4; graphics alignment
-Thread-Topic: Linux 5.10-rc4; graphics alignment
-Thread-Index: Ada/IUdqcU2WLz13TDyBa91ssXd9zQABIUYAAAEibgAAAW3SAAAAkehgAAGiZoAAAIjkIAAB97YAAANWzKAAy4YMoA==
-Date:   Tue, 24 Nov 2020 16:27:19 +0000
-Message-ID: <eb79a45bfb7f4deb8d8d22350578a9dd@AcuMS.aculab.com>
-References: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
- <fa5c887e-82d8-5347-ff18-85e3628dadbe@suse.de>
- <c01d2d95f1e64be984cff71e7bdf1c84@AcuMS.aculab.com>
- <c9bae016-413f-0db9-c9ee-d6f39d24a6ab@suse.de>
- <fa6346190d0b4936934d1f1359e5b71f@AcuMS.aculab.com>
- <fd66bfcc-072a-ddfb-0d12-af4a5207820d@suse.de>
- <ec3130c3d22a4d4dafe020d30fd224cd@AcuMS.aculab.com>
- <7d42ee6b-d72b-9f4d-21fe-4f5981eb425e@suse.de>
- <fd7e7817781a43eb857fceb971502511@AcuMS.aculab.com>
-In-Reply-To: <fd7e7817781a43eb857fceb971502511@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 24 Nov 2020 11:27:40 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4723CC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:27:40 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id a65so3492697wme.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:27:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=a025llBjrOgh57FwURmzXOqxqtmRhk0DL79snbqwcHs=;
+        b=ChTECUklJcsQ3TMYgEboImd53xNjfpMqloeOZ4lZhjyxWxAs06Aj+G3MoJwDHoJgJ/
+         9POE4CKA1o2hh7EadKWBXCst0rH00OzOJbh8/e2KWY6TUY88bRhbdTt9QLEgpkURXnPP
+         n3w7xK+TOCR0KWOfItbjF+H5ethAkG+FaImhMTi0tYKATX6qg8QiAHbMwjuQ6sLM7E1S
+         cfJHqul9g+j7o1gyCrulnxsyVoyAwhJHKXDCfDPJkIbX7iAJ8DPmKXKyYzLYodQ7p5Fc
+         zYLo87YI/3XYhyuBoZbeXexBfVKQKzoeKrrFC+RFHxuUbEKLlbprvkD3vx5GNi14cUex
+         Y2Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=a025llBjrOgh57FwURmzXOqxqtmRhk0DL79snbqwcHs=;
+        b=EMb29RCbd0g+vaj9ZtkvpYhJt8Sl7JeWzXVwK5epIlFLZ29anI6Nx72okW68yA/wp4
+         yvMJOQe3QPTwq683jq7RSoUHkF6fB0okiUPYkYVAYE6IKgSHcNsF6mc9Ty0rFgEd02Y6
+         d1udCLObdMGcFMEQbAUf0/4zzm0gOC712C84+ep+b5QM1tqkS+JJ0oRNQffkHfwXChq1
+         yBwLURVxvNZALK2D4l4w3/nBfy9UxJ+gYv78ORNc6SoFX/cjhbOfdpQtm11o7CxdlBP+
+         9axSrQ88w9mDyyuQC543dF+u+OtkRZlfO/Vr2/kAXqufHVBEYhitZDBe2Q+bu8bnRqOC
+         fKQQ==
+X-Gm-Message-State: AOAM530u5TByoUjEe4ftWY+QSMfydfd3WuQRQ9ap54+PS3uFne79hFpL
+        ntqAu/mpd1nRAb7wgNE1PbTVhyylOVL6/Y++eLo=
+X-Google-Smtp-Source: ABdhPJykG7KoA+/cvCSiQx0SduJ3Pe5sSnnrlFsfIvCn+1uFMmBfOyFbLoqUuznnxZTbnzabnczxC0PvbEVbSUtTuA8=
+X-Received: by 2002:a1c:f017:: with SMTP id a23mr5301350wmb.56.1606235259096;
+ Tue, 24 Nov 2020 08:27:39 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-40-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-40-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 11:27:28 -0500
+Message-ID: <CADnq5_OxLOWfQ3Y=zkn7t9aP4BeeFKyHCRU9Thpv0-6=tgg1Fw@mail.gmail.com>
+Subject: Re: [PATCH 39/40] drm/amd/amdgpu/gmc_v9_0: Remove unused table 'ecc_umc_mcumc_status_addrs'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDIwIE5vdmVtYmVyIDIwMjAgMTU6MzkNCj4gDQo+
-IEZyb206IFRob21hcyBaaW1tZXJtYW5uDQo+ID4gU2VudDogMjAgTm92ZW1iZXIgMjAyMCAxMzo0
-Mg0KPiAuLi4NCj4gPiBJIGRpZCBhIGRpZmYgZnJvbSB2NS4xMC1yYzQgdG8gZHJtLXRpcCB0byBs
-b29rIGZvciBzdXNwaWNpb3VzIGNoYW5nZXMuDQo+ID4gU29tZSBjYW5kaWRhdGVzIGFyZQ0KPiA+
-DQo+ID4gICAgOGUzNzg0ZGZlZjhhICgiZHJtL2FzdDogUmVsb2FkIGdhbW1hIExVVCBhZnRlciBj
-aGFuZ2luZyBwcmltYXJ5DQo+ID4gcGxhbmUncyBjb2xvciBmb3JtYXQiKQ0KPiANCj4gT2ssIHRo
-YXQgb25lIGZpeGVzIHRoZSBzY3JlZW4gY29sb3VycyAoZXRjKS4NCj4gU28gOGUzNzg0ZGZlZjhh
-IHdhcyBnb29kIGFuZCB0aGVuIEhFQUReIHdhcyBiYWQuDQo+IA0KPiBJIG1pZ2h0IHRyeSB0byBi
-aXNlY3QgdGhlIGJyZWFrYWdlLg0KPiANCj4gVGhlIHN0YWNrIHNwbGF0IGlzIGVudGlyZWx5IGRp
-ZmZlcmVudC4NCj4gSSdsbCB0cnkgdG8gYmlzZWN0IHRoYXQgb24gTGludXMncyB0cmVlLg0KDQpU
-aGUgZ29vZCBuZXdzIGlzIEknbSBub3QgZ2V0dGluZyB0aGUgc3RhY2sgc3BsYXQgb24gcmM1Lg0K
-SSdtIG5vdCBzdXJlIEkgY2FuIGJlIGJvdGhlcmVkIHRvIGZpbmQgb3V0IHdoZW4gOi0pDQoNCkFw
-cGx5aW5nIDhlMzc4NGRmZWY4YSB0byByYzUgYnkgaGFuZCBhbHNvIGZpeGVzIHRoZSBkaXNwbGF5
-IGNvbG91cnMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJy
-YW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lz
-dHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:382:23: warning: =E2=80=98ecc_umc_=
+mcumc_status_addrs=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c | 35 ---------------------------
+>  1 file changed, 35 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/=
+amdgpu/gmc_v9_0.c
+> index 0c3421d587e87..fbee43b4ba64d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+> @@ -379,41 +379,6 @@ static const uint32_t ecc_umc_mcumc_ctrl_mask_addrs[=
+] =3D {
+>         (0x001d43e0 + 0x00001800),
+>  };
+>
+> -static const uint32_t ecc_umc_mcumc_status_addrs[] =3D {
+> -       (0x000143c2 + 0x00000000),
+> -       (0x000143c2 + 0x00000800),
+> -       (0x000143c2 + 0x00001000),
+> -       (0x000143c2 + 0x00001800),
+> -       (0x000543c2 + 0x00000000),
+> -       (0x000543c2 + 0x00000800),
+> -       (0x000543c2 + 0x00001000),
+> -       (0x000543c2 + 0x00001800),
+> -       (0x000943c2 + 0x00000000),
+> -       (0x000943c2 + 0x00000800),
+> -       (0x000943c2 + 0x00001000),
+> -       (0x000943c2 + 0x00001800),
+> -       (0x000d43c2 + 0x00000000),
+> -       (0x000d43c2 + 0x00000800),
+> -       (0x000d43c2 + 0x00001000),
+> -       (0x000d43c2 + 0x00001800),
+> -       (0x001143c2 + 0x00000000),
+> -       (0x001143c2 + 0x00000800),
+> -       (0x001143c2 + 0x00001000),
+> -       (0x001143c2 + 0x00001800),
+> -       (0x001543c2 + 0x00000000),
+> -       (0x001543c2 + 0x00000800),
+> -       (0x001543c2 + 0x00001000),
+> -       (0x001543c2 + 0x00001800),
+> -       (0x001943c2 + 0x00000000),
+> -       (0x001943c2 + 0x00000800),
+> -       (0x001943c2 + 0x00001000),
+> -       (0x001943c2 + 0x00001800),
+> -       (0x001d43c2 + 0x00000000),
+> -       (0x001d43c2 + 0x00000800),
+> -       (0x001d43c2 + 0x00001000),
+> -       (0x001d43c2 + 0x00001800),
+> -};
+> -
+>  static int gmc_v9_0_ecc_interrupt_state(struct amdgpu_device *adev,
+>                 struct amdgpu_irq_src *src,
+>                 unsigned type,
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
