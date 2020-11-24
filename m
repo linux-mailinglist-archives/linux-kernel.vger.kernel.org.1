@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3F12C33C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068A52C33C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389343AbgKXWRL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 17:17:11 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56237 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731199AbgKXWRK (ORCPT
+        id S2388609AbgKXWTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 17:19:50 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46036 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727231AbgKXWTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:17:10 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-175-Y51XK0xAPXSbNaFUnwjJqw-1; Tue, 24 Nov 2020 22:17:06 +0000
-X-MC-Unique: Y51XK0xAPXSbNaFUnwjJqw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 22:17:06 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 24 Nov 2020 22:17:06 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Artem Labazov' <123321artyom@gmail.com>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
-Thread-Topic: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
-Thread-Index: AQHWwprkdg3ghuo7zUO/MeBWMbuGy6nX2YQQ
-Date:   Tue, 24 Nov 2020 22:17:06 +0000
-Message-ID: <ebdf1f1769aa45cc8880155a4189f2a6@AcuMS.aculab.com>
-References: <20201124194749.4041176-1-123321artyom@gmail.com>
-In-Reply-To: <20201124194749.4041176-1-123321artyom@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 24 Nov 2020 17:19:50 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606256388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UQPfZ1J61H/ekBBAaR7V+BMvtX4EMI5nVnNHoIml4cY=;
+        b=KTCOU6z7nYzCZBSY4aJF/Aw1YsI/0XmAB81NTW165bZxAvN6oPmLaSaBFZhUZVWjynlOxq
+        nCqWsnt4RieChFXuP867sMeXaPnmW8u9fsV/Gbn1BRdJFB0VNGb0IMyJuyKWV5fpQyC6Jt
+        Q2+/iL9J5edexGyDWyELgePpPZ/YShwU3DYFxcjZYOgjnfc4gYsnB7RdcnNPrWff7unbZG
+        ZaY9pqTia2ITN3vQpLhyzkscxHZNhl11PdmcdDEZzzZQZGjxDtppP10EiOsvCL4XOkbx9r
+        wAODJhjVw1jxFk0zsJcwnnxhVVX+iuhSgj/FNYp2v3UlVTFEEzGMaR8nasrQfg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606256388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UQPfZ1J61H/ekBBAaR7V+BMvtX4EMI5nVnNHoIml4cY=;
+        b=r3f45/W7npRZRZ1ON6VohbAgkqBJpwE8zrsNWH62oAgAok6llT9gv4Vwh4nOwx5LB/Q3g3
+        Ri3BgRrqGnP3aaDw==
+To:     Laurent Vivier <lvivier@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-block@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Laurent Vivier <lvivier@redhat.com>
+Subject: Re: [PATCH 1/2] genirq: add an affinity parameter to irq_create_mapping()
+In-Reply-To: <20201124200308.1110744-2-lvivier@redhat.com>
+References: <20201124200308.1110744-1-lvivier@redhat.com> <20201124200308.1110744-2-lvivier@redhat.com>
+Date:   Tue, 24 Nov 2020 23:19:47 +0100
+Message-ID: <87h7pel7ng.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artem Labazov
-> Sent: 24 November 2020 19:48
-> 
-> The table for Unicode upcase conversion requires an order-5 allocation,
-> which may fail on a highly-fragmented system:
+On Tue, Nov 24 2020 at 21:03, Laurent Vivier wrote:
+> This parameter is needed to pass it to irq_domain_alloc_descs().
+>
+> This seems to have been missed by
+> o06ee6d571f0e ("genirq: Add affinity hint to irq allocation")
 
-ISTM that is the wrong way to do the case conversion.
-It is also why having to do it is bloody stupid.
+No, this has not been missed at all. There was and is no reason to do
+this.
 
-	David
+> This is needed to implement proper support for multiqueue with
+> pseries.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+And because pseries needs this _all_ callers need to be changed?
+
+>  123 files changed, 171 insertions(+), 146 deletions(-)
+
+Lots of churn for nothing. 99% of the callers will never need that.
+
+What's wrong with simply adding an interface which takes that parameter,
+make the existing one an inline wrapper and and leave the rest alone?
+
+Thanks,
+
+        tglx
+
+
 
