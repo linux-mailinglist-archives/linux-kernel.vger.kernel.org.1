@@ -2,202 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631612C2CEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC982C2CF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390490AbgKXQ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:29:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:42176 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389808AbgKXQ30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:29:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A539E1396;
-        Tue, 24 Nov 2020 08:29:25 -0800 (PST)
-Received: from [10.57.59.159] (unknown [10.57.59.159])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DCF93F71F;
-        Tue, 24 Nov 2020 08:29:22 -0800 (PST)
-Subject: Re: [PATCH 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-References: <20201124153845.132207-1-ribalda@chromium.org>
- <20201124153845.132207-5-ribalda@chromium.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f1055d12-8bde-80d0-29f3-dfbfbf59cc11@arm.com>
-Date:   Tue, 24 Nov 2020 16:29:20 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2390410AbgKXQaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389808AbgKXQaQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 11:30:16 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7CAC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:30:16 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id p22so2931287wmg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:30:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=G8IAtlr5m1gYnRAMobJiAIZSerjuCkgbFe4M5d9hPSg=;
+        b=iOHS4wBfvNCggF1/tVIhDzsNrlETd0MbF+Jb7aCaUudrbcubXA/pNWjtFNvNYRqZ3r
+         x8c4do+a7c2KzFNV/uELb3ag5z0UXboovCaP3iM9MK7FmyhQHcnhFiqQ+Pb6NLTaE1ay
+         eHaIC6FOof1qwNxYouhJvJzjoPIviiCPKUQjY6f44VKJ1g3UA3p235BrAq7Z9cKompVZ
+         vB8/y0IV++mlsADdnU9iQwGrwHIwtCTMx+Q65CZbJEp5oZIPJx6AM6cyj+V04IUSC7Rc
+         6W48HQEb7kAcBQfmsfEy3669pUlL3MAzlaOCQk4lAtoey9uFLsi5n488mi+qJfWiXgS2
+         N8SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G8IAtlr5m1gYnRAMobJiAIZSerjuCkgbFe4M5d9hPSg=;
+        b=QC58bpJ8MbcSYDiiNREZ0YGbqA8XrTLFHrs7wlsf6OF7WphdgIs8C/mFvENPHFP+hQ
+         V6FFRZwH/UkD3yry17GOVeMh+TgA3kB0IkYlfp+tBfrO9pQIjl24LZtzTHx1oiY7JivB
+         wl5G1QRrOuqqr45zkevAwz7LAnWneu6l4RRnk7eRZ6DBfumwKzzbsCu8zwzb0QR8Q5S1
+         L4UGNyBg0rio8P1ld962O5DyfKaRx9c8fI2QtJGb1AWvn7BTqH6NDnQJmKdv076zSKw6
+         vlCyBFwp0V1KNBr9M+oND7PLg2z30tyGpmvcwl4ig7mbvWwruclF1PpHpcSilB/fx2tX
+         224Q==
+X-Gm-Message-State: AOAM531w9fjxMKte5qVc4Qx3NPKITGoj023xBfCloeqdlPoVpFIyTHaH
+        8s18OJysRDThklxHqP79VMuyDtMZ3DtO2JLmxnE=
+X-Google-Smtp-Source: ABdhPJx8GcGOsSIBYK5cUimv6QWYaz7yYoCPmjQWAfTMLBeTCkWj3w0W1q3MnGgjxOgTL5xbim7VpqeTT61jbjsEX1U=
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr5340007wmi.70.1606235414853;
+ Tue, 24 Nov 2020 08:30:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201124153845.132207-5-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-41-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-41-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 11:30:03 -0500
+Message-ID: <CADnq5_OwhSqyfv-vybWM4R-NuNXdT=tF-Af75utcSDRmHBj9DQ@mail.gmail.com>
+Subject: Re: [PATCH 40/40] drm/amd/amdgpu/gmc_v9_0: Suppy some missing
+ function doc descriptions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-24 15:38, Ricardo Ribalda wrote:
-> On architectures where the is no coherent caching such as ARM use the
-> dma_alloc_noncontiguos API and handle manually the cache flushing using
-> dma_sync_single().
-> 
-> With this patch on the affected architectures we can measure up to 20x
-> performance improvement in uvc_video_copy_data_work().
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+On Mon, Nov 23, 2020 at 6:21 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:382:23: warning: =E2=80=98ecc_umc_=
+mcumc_status_addrs=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:720: warning: Function parameter o=
+r member 'vmhub' not described in 'gmc_v9_0_flush_gpu_tlb'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:836: warning: Function parameter o=
+r member 'flush_type' not described in 'gmc_v9_0_flush_gpu_tlb_pasid'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:836: warning: Function parameter o=
+r member 'all_hub' not described in 'gmc_v9_0_flush_gpu_tlb_pasid'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Applied with minor changes.  Thanks!
+
+Alex
+
 > ---
->   drivers/media/usb/uvc/uvc_video.c | 74 ++++++++++++++++++++++++++-----
->   drivers/media/usb/uvc/uvcvideo.h  |  1 +
->   2 files changed, 63 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index a6a441d92b94..9e90b261428a 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -1490,6 +1490,11 @@ static void uvc_video_encode_bulk(struct uvc_urb *uvc_urb,
->   	urb->transfer_buffer_length = stream->urb_size - len;
->   }
->   
-> +static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
-> +{
-> +	return stream->dev->udev->bus->controller->parent;
-> +}
-> +
->   static void uvc_video_complete(struct urb *urb)
->   {
->   	struct uvc_urb *uvc_urb = urb->context;
-> @@ -1539,6 +1544,11 @@ static void uvc_video_complete(struct urb *urb)
->   	 * Process the URB headers, and optionally queue expensive memcpy tasks
->   	 * to be deferred to a work queue.
->   	 */
-> +	if (uvc_urb->pages)
-> +		dma_sync_single_for_cpu(stream_to_dmadev(stream),
-> +					urb->transfer_dma,
-> +					urb->transfer_buffer_length,
-> +					DMA_FROM_DEVICE);
-
-This doesn't work. Even in iommu-dma, the streaming API still expects to 
-work on physically-contiguous memory that could have been passed to 
-dma_map_single() in the first place. As-is, this will invalidate 
-transfer_buffer_length bytes from the start of the *first* physical 
-page, and thus destroy random other data if lines from subsequent 
-unrelated pages are dirty in caches.
-
-The only feasible way to do a DMA sync on disjoint pages in a single 
-call is with a scatterlist.
-
-Robin.
-
->   	stream->decode(uvc_urb, buf, buf_meta);
->   
->   	/* If no async work is needed, resubmit the URB immediately. */
-> @@ -1566,8 +1576,15 @@ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
->   			continue;
->   
->   #ifndef CONFIG_DMA_NONCOHERENT
-> -		usb_free_coherent(stream->dev->udev, stream->urb_size,
-> -				  uvc_urb->buffer, uvc_urb->dma);
-> +		if (uvc_urb->pages) {
-> +			vunmap(uvc_urb->buffer);
-> +			dma_free_noncontiguous(stream_to_dmadev(stream),
-> +					       stream->urb_size,
-> +					       uvc_urb->pages, uvc_urb->dma);
-> +		} else {
-> +			usb_free_coherent(stream->dev->udev, stream->urb_size,
-> +					  uvc_urb->buffer, uvc_urb->dma);
-> +		}
->   #else
->   		kfree(uvc_urb->buffer);
->   #endif
-> @@ -1577,6 +1594,47 @@ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
->   	stream->urb_size = 0;
->   }
->   
-> +#ifndef CONFIG_DMA_NONCOHERENT
-> +static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-> +				 struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-> +{
-> +	struct device *dma_dev = dma_dev = stream_to_dmadev(stream);
-> +
-> +	if (!dma_can_alloc_noncontiguous(dma_dev)) {
-> +		uvc_urb->buffer = usb_alloc_coherent(stream->dev->udev,
-> +						     stream->urb_size,
-> +						     gfp_flags | __GFP_NOWARN,
-> +						     &uvc_urb->dma);
-> +		return uvc_urb->buffer != NULL;
-> +	}
-> +
-> +	uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> +						 &uvc_urb->dma,
-> +						 gfp_flags | __GFP_NOWARN, 0);
-> +	if (!uvc_urb->pages)
-> +		return false;
-> +
-> +	uvc_urb->buffer = vmap(uvc_urb->pages,
-> +			       PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
-> +			       VM_DMA_COHERENT, PAGE_KERNEL);
-> +	if (!uvc_urb->buffer) {
-> +		dma_free_noncontiguous(dma_dev, stream->urb_size,
-> +				       uvc_urb->pages, uvc_urb->dma);
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +#else
-> +static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-> +				 struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-> +{
-> +	uvc_urb->buffer = kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
-> +
-> +	return uvc_urb->buffer != NULL;
-> +}
-> +#endif
-> +
->   /*
->    * Allocate transfer buffers. This function can be called with buffers
->    * already allocated when resuming from suspend, in which case it will
-> @@ -1607,19 +1665,11 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
->   
->   	/* Retry allocations until one succeed. */
->   	for (; npackets > 1; npackets /= 2) {
-> +		stream->urb_size = psize * npackets;
->   		for (i = 0; i < UVC_URBS; ++i) {
->   			struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
->   
-> -			stream->urb_size = psize * npackets;
-> -#ifndef CONFIG_DMA_NONCOHERENT
-> -			uvc_urb->buffer = usb_alloc_coherent(
-> -				stream->dev->udev, stream->urb_size,
-> -				gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
-> -#else
-> -			uvc_urb->buffer =
-> -			    kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
-> -#endif
-> -			if (!uvc_urb->buffer) {
-> +			if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
->   				uvc_free_urb_buffers(stream);
->   				break;
->   			}
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index a3dfacf069c4..3e3ef1f1daa5 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -532,6 +532,7 @@ struct uvc_urb {
->   
->   	char *buffer;
->   	dma_addr_t dma;
-> +	struct page **pages;
->   
->   	unsigned int async_operations;
->   	struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-> 
+>  drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/=
+amdgpu/gmc_v9_0.c
+> index fbee43b4ba64d..a83743ab3e8bb 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+> @@ -675,6 +675,7 @@ static bool gmc_v9_0_get_atc_vmid_pasid_mapping_info(=
+struct amdgpu_device *adev,
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @vmid: vm instance to flush
+> + * @vmhub: vmhub type
+>   * @flush_type: the flush type
+>   *
+>   * Flush the TLB for the requested page table using certain type.
+> @@ -791,6 +792,8 @@ static void gmc_v9_0_flush_gpu_tlb(struct amdgpu_devi=
+ce *adev, uint32_t vmid,
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @pasid: pasid to be flush
+> + * @flush_type: the flush type
+> + * @all_hub: Used with PACKET3_INVALIDATE_TLBS_ALL_HUB()
+>   *
+>   * Flush the TLB for the requested pasid.
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
