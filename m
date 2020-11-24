@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D233F2C1E47
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C30B2C1E48
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729758AbgKXGdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:33:41 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8394 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbgKXGdk (ORCPT
+        id S1729774AbgKXGdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729760AbgKXGdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:33:40 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CgDjn5nzLz72HV;
-        Tue, 24 Nov 2020 14:33:17 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 24 Nov 2020
- 14:33:26 +0800
-From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
-To:     <richard@nod.at>
-CC:     <s.hauer@pengutronix.de>, <herbert@gondor.apana.org.au>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
-Subject: [PATCH] ubifs: Fix error return code in ubifs_init_authentication()
-Date:   Tue, 24 Nov 2020 14:33:20 +0800
-Message-ID: <20201124063320.1799-1-bobo.shaobowang@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 24 Nov 2020 01:33:43 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5283C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:33:43 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id l1so1930798pld.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:33:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RnuaPlkufKE3bJ/+cfsWhjGgUTnQEoo85iF+YTP34+g=;
+        b=mpe/jYOxFHJV9jweJ8TUUczl8ZsmbzIIZDKC/OCi20wPsgN6d23oekxFXcgQ5s2r2u
+         O5p3EvsA3J9QbF8gmTQvJihaJcGm8J3ZK6yi+MlDOQ6TsUs9EY6qYGEKNnkuHovcWAjH
+         reCXkmbln0Hg57q8fRJsUtXbTTCpFQzN/LhOSgp3rX2ed1uzPsQH3WNrfogj1zMZaKKL
+         QW14n23t6ljjqviztUURcng8G8+P1DCs9aydIeVHwfipqN5toylQd2Z8t1KKqIteylrU
+         F4MJqbXq0qd1UcVkbtgC3TJDW+fjAeWdOiMOjTY1n0KFjmRXS8aBDmVcOHkUlgCzI/2w
+         kazQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RnuaPlkufKE3bJ/+cfsWhjGgUTnQEoo85iF+YTP34+g=;
+        b=Zgjm6b0o5KsnfMViBRCTCX1z2jRJFZXIPIJyCGmair+Igdm4lCKXIxpCjOc50bI5pd
+         HZ7KSTS4WvWuWsae1UO68LMuzqjKFj8urTW2gpMZkIf8t/cfgVKkEiY5mIJJzcbhulKK
+         Lz30BRkk2WECiM+jmdL/w47udObFM5BMfMQQShLtGZca8NyG882dIU8IOG18/M56H6C0
+         ByiBLFuLOjuFkq6fBfOw1Sv8gKncfVqyieKs8lUZdUFqmWOOaCnluHaLy5VzUFioYFNz
+         UNPSxsZJn7qyCLrhaivjQ34rcbUbNXoxOil1B/Qdjdqihti6Yt0VXtohfGOh9HZdX9pT
+         m+1g==
+X-Gm-Message-State: AOAM5337iKzI0lDNfsit4uNEE4Pn4PI4KELQ/Y7dvhrJt9m8dzY7BGsS
+        ZDYIxMreliRy3gqccFs9dO7Qkg==
+X-Google-Smtp-Source: ABdhPJz+1PCmKeOfD3/EDQ8KaHO6w4120PT6JVez8E9GzD+4FU2l8IgSvqj1A3IcUoylTtsiBPw0tw==
+X-Received: by 2002:a17:902:ec01:b029:da:13f5:1aaa with SMTP id l1-20020a170902ec01b02900da13f51aaamr2787834pld.0.1606199623356;
+        Mon, 23 Nov 2020 22:33:43 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id 14sm4916811pfz.54.2020.11.23.22.33.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 23 Nov 2020 22:33:42 -0800 (PST)
+Date:   Tue, 24 Nov 2020 12:03:40 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        anmar.oueja@linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dcookies: Make dcookies depend on CONFIG_OPROFILE
+Message-ID: <20201124063340.2dvb6ou63hf5ecn3@vireshk-i7>
+References: <51a9a594a38ae6e0982e78976cf046fb55b63a8e.1603191669.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51a9a594a38ae6e0982e78976cf046fb55b63a8e.1603191669.git.viresh.kumar@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return PTR_ERR() error code from the error handling case where
-ubifs_hash_get_desc() failed instead of 0 in ubifs_init_authentication(),
-as done elsewhere in this function.
+On 20-10-20, 16:31, Viresh Kumar wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The dcookies stuff is used only with OPROFILE and there is no need to
+> build it if CONFIG_OPROFILE isn't enabled. Build it depending on
+> CONFIG_OPROFILE instead of CONFIG_PROFILING.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> [ Viresh: Update the name in #endif part ]
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  fs/Makefile              | 2 +-
+>  include/linux/dcookies.h | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
 
-Fixes: 49525e5eecca5 ("ubifs: Add helper functions for authentication support")
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
----
- fs/ubifs/auth.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Alexander,
 
-diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-index b93b3cd10bfd..8c50de693e1d 100644
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -338,8 +338,10 @@ int ubifs_init_authentication(struct ubifs_info *c)
- 	c->authenticated = true;
- 
- 	c->log_hash = ubifs_hash_get_desc(c);
--	if (IS_ERR(c->log_hash))
-+	if (IS_ERR(c->log_hash)) {
-+		err = PTR_ERR(c->log_hash);
- 		goto out_free_hmac;
-+	}
- 
- 	err = 0;
- 
+Ping for picking up this patch for 5.11. Thanks.
+
 -- 
-2.17.1
-
+viresh
