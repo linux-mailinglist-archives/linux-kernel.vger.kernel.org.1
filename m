@@ -2,216 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A472C1F6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7B72C1F9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730248AbgKXIIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:08:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgKXIIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:08:13 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1730333AbgKXIKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:10:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728177AbgKXIKE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:10:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AC3C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Sg0d2W9lIZVXaKPXvUC0vCuRKlWPQr9QqT8INz/yg80=; b=c1/dYbhkt2kl4iCUCaPRlDv/BD
+        eb17+dtyYYfTsjz1A6gFDluM6K0jG/17YKBXAAU1x/uHFzYexx22Yc/yLHTiT5BV4N9wJ2vmTMO/h
+        /hVqveDUbfGzfcNU2NQKvzVCHx+UCG4JHnaQOVlwyVmti1VjbYkB4xnm5SdBoftSD/CL8CbCEETg2
+        oadbfXEfUY8pmzK93wCsQDTwN7NFDJ9WHuJEvlB9DStMttmVItGBw6YKWLCeKvNaAlZ9rRA6r9mav
+        6I2+YUJZtqnyBhm7E7o6sSfdsRaKnLqbTcL7wA0ApniYgDc7bmvPPPulvYK5hDai02Wql64PXpiSb
+        DmsLP5Vw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khTOd-0000ZJ-9N; Tue, 24 Nov 2020 08:09:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5DD6206D9;
-        Tue, 24 Nov 2020 08:08:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606205293;
-        bh=G+ujxjFt/eVsHQI1QsvkPgPsk4UXcNfS/bgQijKG/hA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eDV1mZdh+r548ggFb4+qZPDsElMU200zkPh59LiqAg/HwFaKAhufK4hlprPzNgE1+
-         wVj6edkiR1Vd3YKTRmAquQc14/9ZNQ1EWEA4va9qtXPDMkl2WwXxXjrSvDer7DBpM8
-         7TtSk3JfZDuUiQ3rjx9vcUXwtBAOG8XZNxH81NY8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1khTMw-00DBJ1-GG; Tue, 24 Nov 2020 08:08:10 +0000
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72D7E304D28;
+        Tue, 24 Nov 2020 09:09:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5E1BF20222D66; Tue, 24 Nov 2020 09:09:51 +0100 (CET)
+Date:   Tue, 24 Nov 2020 09:09:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>
+Subject: Re: [RFC] perf/x86: Fix a warning on x86_pmu_stop()
+Message-ID: <20201124080951.GE2414@hirez.programming.kicks-ass.net>
+References: <20201121025011.227781-1-namhyung@kernel.org>
+ <20201123142321.GP3021@hirez.programming.kicks-ass.net>
+ <CAM9d7cji+M+qVm4g48Jcgnfjm-=3HVVtv49ntDpksQx8aBdSyQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 24 Nov 2020 08:08:10 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
- callback
-In-Reply-To: <7bc7e428-cfd5-6171-dc1e-4be097c46690@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-2-lushenming@huawei.com>
- <f64703b618a2ebc6c6f5c423e2b779c6@kernel.org>
- <7bc7e428-cfd5-6171-dc1e-4be097c46690@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <e01d8bf87ef42bda3f3ec117e474d103@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cji+M+qVm4g48Jcgnfjm-=3HVVtv49ntDpksQx8aBdSyQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-24 07:38, Shenming Lu wrote:
-> On 2020/11/23 17:01, Marc Zyngier wrote:
->> On 2020-11-23 06:54, Shenming Lu wrote:
->>> From: Zenghui Yu <yuzenghui@huawei.com>
->>> 
->>> Up to now, the irq_get_irqchip_state() callback of its_irq_chip
->>> leaves unimplemented since there is no architectural way to get
->>> the VLPI's pending state before GICv4.1. Yeah, there has one in
->>> v4.1 for VLPIs.
->>> 
->>> With GICv4.1, after unmapping the vPE, which cleans and invalidates
->>> any caching of the VPT, we can get the VLPI's pending state by
->> 
->> This is a crucial note: without this unmapping and invalidation,
->> the pending bits are not generally accessible (they could be cached
->> in a GIC private structure, cache or otherwise).
->> 
->>> peeking at the VPT. So we implement the irq_get_irqchip_state()
->>> callback of its_irq_chip to do it.
->>> 
->>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->>> ---
->>>  drivers/irqchip/irq-gic-v3-its.c | 38 
->>> ++++++++++++++++++++++++++++++++
->>>  1 file changed, 38 insertions(+)
->>> 
->>> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
->>> b/drivers/irqchip/irq-gic-v3-its.c
->>> index 0fec31931e11..287003cacac7 100644
->>> --- a/drivers/irqchip/irq-gic-v3-its.c
->>> +++ b/drivers/irqchip/irq-gic-v3-its.c
->>> @@ -1695,6 +1695,43 @@ static void its_irq_compose_msi_msg(struct
->>> irq_data *d, struct msi_msg *msg)
->>>      iommu_dma_compose_msi_msg(irq_data_get_msi_desc(d), msg);
->>>  }
->>> 
->>> +static bool its_peek_vpt(struct its_vpe *vpe, irq_hw_number_t hwirq)
->>> +{
->>> +    int mask = hwirq % BITS_PER_BYTE;
->> 
->> nit: this isn't a mask, but a shift instead. BIT(hwirq % BPB) would 
->> give
->> you a mask.
+On Tue, Nov 24, 2020 at 02:01:39PM +0900, Namhyung Kim wrote:
+
+> Yes, it's not about __intel_pmu_pebs_event().  I'm looking at
+> intel_pmu_drain_pebs_nhm() specifically.  There's code like
 > 
-> Ok, I will correct it.
+>         /* log dropped samples number */
+>         if (error[bit]) {
+>             perf_log_lost_samples(event, error[bit]);
 > 
->> 
->>> +    void *va;
->>> +    u8 *pt;
->>> +
->>> +    va = page_address(vpe->vpt_page);
->>> +    pt = va + hwirq / BITS_PER_BYTE;
->>> +
->>> +    return !!(*pt & (1U << mask));
->>> +}
->>> +
->>> +static int its_irq_get_irqchip_state(struct irq_data *d,
->>> +                     enum irqchip_irq_state which, bool *val)
->>> +{
->>> +    struct its_device *its_dev = irq_data_get_irq_chip_data(d);
->>> +    struct its_vlpi_map *map = get_vlpi_map(d);
->>> +
->>> +    if (which != IRQCHIP_STATE_PENDING)
->>> +        return -EINVAL;
->>> +
->>> +    /* not intended for physical LPI's pending state */
->>> +    if (!map)
->>> +        return -EINVAL;
->>> +
->>> +    /*
->>> +     * In GICv4.1, a VMAPP with {V,Alloc}=={0,1} cleans and 
->>> invalidates
->>> +     * any caching of the VPT associated with the vPEID held in the 
->>> GIC.
->>> +     */
->>> +    if (!is_v4_1(its_dev->its) || 
->>> atomic_read(&map->vpe->vmapp_count))
->> 
->> It isn't clear to me what prevents this from racing against a mapping 
->> of
->> the VPE. Actually, since we only hold the LPI irqdesc lock, I'm pretty 
->> sure
->> nothing prevents it.
+>             if (perf_event_account_interrupt(event))
+>                 x86_pmu_stop(event, 0);
+>         }
 > 
-> Yes, should have the vmovp_lock held?
-
-That's not helping because of the VPE activation.
-
-> And is it necessary to also hold this lock in
-> its_vpe_irq_domain_activate/deactivate?
-
-Well, you'd need that, but that's unnecessary complex AFAICT.
-
+>         if (counts[bit]) {
+>             __intel_pmu_pebs_event(event, iregs, base,
+>                            top, bit, counts[bit],
+>                            setup_pebs_fixed_sample_data);
+>         }
 > 
->> 
->>> +        return -EACCES;
->> 
->> I can sort of buy EACCESS for a VPE that is currently mapped, but a 
->> non-4.1
->> ITS should definitely return EINVAL.
-> 
-> Alright, EINVAL looks better.
-> 
->> 
->>> +
->>> +    *val = its_peek_vpt(map->vpe, map->vintid);
->>> +
->>> +    return 0;
->>> +}
->>> +
->>>  static int its_irq_set_irqchip_state(struct irq_data *d,
->>>                       enum irqchip_irq_state which,
->>>                       bool state)
->>> @@ -1975,6 +2012,7 @@ static struct irq_chip its_irq_chip = {
->>>      .irq_eoi        = irq_chip_eoi_parent,
->>>      .irq_set_affinity    = its_set_affinity,
->>>      .irq_compose_msi_msg    = its_irq_compose_msi_msg,
->>> +    .irq_get_irqchip_state    = its_irq_get_irqchip_state,
->> 
->> My biggest issue with this is that it isn't a reliable interface.
->> It happens to work in the context of KVM, because you make sure it
->> is called at the right time, but that doesn't make it safe in general
->> (anyone with the interrupt number is allowed to call this at any 
->> time).
-> 
-> We check the vmapp_count in it to ensure the unmapping of the vPE, and
-> let the caller do the unmapping (they should know whether it is the 
-> right
-> time). If the unmapping is not done, just return a failure.
+> There's a path to x86_pmu_stop() when an error bit is on.
 
-And without guaranteeing mutual exclusion against a concurrent VMAPP,
-checking the vmapp_count means nothing (you need the lock described
-above, and start sprinkling it around in other places as well).
+That would seem to suggest you try something like this:
 
->> 
->> Is there a problem with poking at the VPT page from the KVM side?
->> The code should be exactly the same (maybe simpler even), and at least
->> you'd be guaranteed to be in the correct context.
-> 
-> Yeah, that also seems a good choice.
-> If you prefer it, we can try to realize it in v2.
-
-I'd certainly prefer that. Let me know if you spot any implementation
-issue with that.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index 31b9e58b03fe..8c6ee8be8b6e 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1945,7 +1945,7 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
+ 		if (error[bit]) {
+ 			perf_log_lost_samples(event, error[bit]);
+ 
+-			if (perf_event_account_interrupt(event))
++			if (iregs && perf_event_account_interrupt(event))
+ 				x86_pmu_stop(event, 0);
+ 		}
+ 
