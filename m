@@ -2,160 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736B72C2FB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E788C2C2FB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404307AbgKXSJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:09:34 -0500
-Received: from mg.ssi.bg ([178.16.128.9]:43550 "EHLO mg.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390797AbgKXSJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:09:33 -0500
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-        by mg.ssi.bg (Proxmox) with ESMTP id 2F6A98AA6;
-        Tue, 24 Nov 2020 20:09:30 +0200 (EET)
-Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
-        by mg.ssi.bg (Proxmox) with ESMTP id 3048F8B0F;
-        Tue, 24 Nov 2020 20:09:29 +0200 (EET)
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id E69383C09CA;
-        Tue, 24 Nov 2020 20:09:22 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 0AOI9Jqm006735;
-        Tue, 24 Nov 2020 20:09:21 +0200
-Date:   Tue, 24 Nov 2020 20:09:19 +0200 (EET)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Wang Hai <wanghai38@huawei.com>
-cc:     horms@verge.net.au, pablo@netfilter.org, kadlec@netfilter.org,
-        fw@strlen.de, davem@davemloft.net, kuba@kernel.org,
-        christian@brauner.io, hans.schillstrom@ericsson.com,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v3] ipvs: fix possible memory leak in
- ip_vs_control_net_init
-In-Reply-To: <20201124080749.69160-1-wanghai38@huawei.com>
-Message-ID: <3164a9e0-962a-c54-129e-9ad780c454c8@ssi.bg>
-References: <20201124080749.69160-1-wanghai38@huawei.com>
+        id S2404315AbgKXSJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:09:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47493 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390777AbgKXSJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:09:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606241396;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uUA8/aOgpZ26JxcYo0ZLju1cjGrlPjY1iezm4VSo/Pg=;
+        b=RU7pV+jHp+fFR7LQYViviiG6bh1Y1sG+LX6ENuVRnXNBiinL1551U/3ZmOtDtYrB2lBAKa
+        lxCGk+Gp/zbnW3onc88mC5/JEwCMsZqw7hPMRk8O8K5L2mZvDeM8uhQwIsV9shJ8E5MkPi
+        fSso8oeEuHu+crR8/lEBKjn3QfXvtYk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-QEKI0QbqNuOLThpMqBG3UA-1; Tue, 24 Nov 2020 13:09:52 -0500
+X-MC-Unique: QEKI0QbqNuOLThpMqBG3UA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D3FB809DDF;
+        Tue, 24 Nov 2020 18:09:51 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-112-141.ams2.redhat.com [10.36.112.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D70F5C1A3;
+        Tue, 24 Nov 2020 18:09:46 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Mark Wielaard <mark@klomp.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dev@opencontainers.org,
+        corbet@lwn.net, Carlos O'Donell <carlos@redhat.com>
+Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
+ workaround
+References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+        <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
+        <878saq3ofx.fsf@oldenburg2.str.redhat.com>
+        <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
+Date:   Tue, 24 Nov 2020 19:09:44 +0100
+In-Reply-To: <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org> (Mark
+        Wielaard's message of "Tue, 24 Nov 2020 15:08:05 +0100")
+Message-ID: <87im9uzkwn.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Mark Wielaard:
 
-	Hello,
+> For valgrind the issue is statx which we try to use before falling back
+> to stat64, fstatat or stat (depending on architecture, not all define
+> all of these). The problem with these fallbacks is that under some
+> containers (libseccomp versions) they might return EPERM instead of
+> ENOSYS. This causes really obscure errors that are really hard to
+> diagnose.
 
-On Tue, 24 Nov 2020, Wang Hai wrote:
+The probing sequence I proposed should also work for statx. 8-p
 
-> kmemleak report a memory leak as follows:
-> 
-> BUG: memory leak
-> unreferenced object 0xffff8880759ea000 (size 256):
-> backtrace:
-> [<00000000c0bf2deb>] kmem_cache_zalloc include/linux/slab.h:656 [inline]
-> [<00000000c0bf2deb>] __proc_create+0x23d/0x7d0 fs/proc/generic.c:421
-> [<000000009d718d02>] proc_create_reg+0x8e/0x140 fs/proc/generic.c:535
-> [<0000000097bbfc4f>] proc_create_net_data+0x8c/0x1b0 fs/proc/proc_net.c:126
-> [<00000000652480fc>] ip_vs_control_net_init+0x308/0x13a0 net/netfilter/ipvs/ip_vs_ctl.c:4169
-> [<000000004c927ebe>] __ip_vs_init+0x211/0x400 net/netfilter/ipvs/ip_vs_core.c:2429
-> [<00000000aa6b72d9>] ops_init+0xa8/0x3c0 net/core/net_namespace.c:151
-> [<00000000153fd114>] setup_net+0x2de/0x7e0 net/core/net_namespace.c:341
-> [<00000000be4e4f07>] copy_net_ns+0x27d/0x530 net/core/net_namespace.c:482
-> [<00000000f1c23ec9>] create_new_namespaces+0x382/0xa30 kernel/nsproxy.c:110
-> [<00000000098a5757>] copy_namespaces+0x2e6/0x3b0 kernel/nsproxy.c:179
-> [<0000000026ce39e9>] copy_process+0x220a/0x5f00 kernel/fork.c:2072
-> [<00000000b71f4efe>] _do_fork+0xc7/0xda0 kernel/fork.c:2428
-> [<000000002974ee96>] __do_sys_clone3+0x18a/0x280 kernel/fork.c:2703
-> [<0000000062ac0a4d>] do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
-> [<0000000093f1ce2c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> In the error path of ip_vs_control_net_init(), remove_proc_entry() needs
-> to be called to remove the added proc entry, otherwise a memory leak
-> will occur.
-> 
-> Also, add some '#ifdef CONFIG_PROC_FS' because proc_create_net* return NULL
-> when PROC is not used.
-> 
-> Fixes: b17fc9963f83 ("IPVS: netns, ip_vs_stats and its procfs")
-> Fixes: 61b1ab4583e2 ("IPVS: netns, add basic init per netns.")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> Don't you have the same issue with glibc for those architectures that
+> don't have fstatat or 32bit arches that need 64-bit time_t? And if so,
+> how are you working around containers possibly returning EPERM instead
+> of ENOSYS?
 
-	Looks good to me, thanks!
+That's a good point.  I don't think many people run 32-bit containers in
+the cloud.  The Y2038 changes in glibc impact 64-bit ports a little, but
+mostly on the fringes (e.g., clock_nanosleep vs nanosleep).
 
-Acked-by: Julian Anastasov <ja@ssi.bg>
-
-> ---
-> v2->v3: improve code format
-> v1->v2: add some '#ifdef CONFIG_PROC_FS' and check the return value of proc_create_net*
->  net/netfilter/ipvs/ip_vs_ctl.c | 31 +++++++++++++++++++++++++------
->  1 file changed, 25 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-> index e279ded4e306..d45dbcba8b49 100644
-> --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-> @@ -4167,12 +4167,18 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
->  
->  	spin_lock_init(&ipvs->tot_stats.lock);
->  
-> -	proc_create_net("ip_vs", 0, ipvs->net->proc_net, &ip_vs_info_seq_ops,
-> -			sizeof(struct ip_vs_iter));
-> -	proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
-> -			ip_vs_stats_show, NULL);
-> -	proc_create_net_single("ip_vs_stats_percpu", 0, ipvs->net->proc_net,
-> -			ip_vs_stats_percpu_show, NULL);
-> +#ifdef CONFIG_PROC_FS
-> +	if (!proc_create_net("ip_vs", 0, ipvs->net->proc_net,
-> +			     &ip_vs_info_seq_ops, sizeof(struct ip_vs_iter)))
-> +		goto err_vs;
-> +	if (!proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
-> +				    ip_vs_stats_show, NULL))
-> +		goto err_stats;
-> +	if (!proc_create_net_single("ip_vs_stats_percpu", 0,
-> +				    ipvs->net->proc_net,
-> +				    ip_vs_stats_percpu_show, NULL))
-> +		goto err_percpu;
-> +#endif
->  
->  	if (ip_vs_control_net_init_sysctl(ipvs))
->  		goto err;
-> @@ -4180,6 +4186,17 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
->  	return 0;
->  
->  err:
-> +#ifdef CONFIG_PROC_FS
-> +	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
-> +
-> +err_percpu:
-> +	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
-> +
-> +err_stats:
-> +	remove_proc_entry("ip_vs", ipvs->net->proc_net);
-> +
-> +err_vs:
-> +#endif
->  	free_percpu(ipvs->tot_stats.cpustats);
->  	return -ENOMEM;
->  }
-> @@ -4188,9 +4205,11 @@ void __net_exit ip_vs_control_net_cleanup(struct netns_ipvs *ipvs)
->  {
->  	ip_vs_trash_cleanup(ipvs);
->  	ip_vs_control_net_cleanup_sysctl(ipvs);
-> +#ifdef CONFIG_PROC_FS
->  	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
->  	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
->  	remove_proc_entry("ip_vs", ipvs->net->proc_net);
-> +#endif
->  	free_percpu(ipvs->tot_stats.cpustats);
->  }
->  
-> -- 
-> 2.17.1
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
