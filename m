@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C492C291E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18362C292A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388247AbgKXOOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:14:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730869AbgKXOOK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:14:10 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C889C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:14:10 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id s18so22759523oih.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hz2P2WPL1KrEPUlVDM13R5/lRmiVmQvTmZ2t096gK7I=;
-        b=BuHOigF/7Vdcojt/ZD/BdAjNsubYUWz1psl6JtgnuMzs+Pp3SNjgx7E+ANSgpkyJYC
-         PO+5vvizSnDU0R+DMz5TSdxewBHKMxGVsipqgrML2jiNbgSaa00KjZbzCTNmo5RJ77hi
-         iSzOilufJSPMP9cODFm48MGiVamh9X0VKcl5dAMyMShyxyeHQ8Qv3JIx2ea76CzGZpRU
-         ijM8nRUp2vNiF7mHHBS//oT4wY4fvv505qVrQNTA8zjlI0i3ZKmT1YsEbdVwiDKJflwb
-         4tr4hbNZKJAiTyfU9e+zS0jgOweMp3wOdTEp+dI9GDsig+q1zHpQMVEpv/CYhTxHRuwS
-         EU2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hz2P2WPL1KrEPUlVDM13R5/lRmiVmQvTmZ2t096gK7I=;
-        b=f5Dnu+kVKKkaaotzp3iWQ7h+WJ4YzJGxvPhar4WxyXDpXtOxfOtyvhPLjPSL/H2eYh
-         Q01YQ9zmd0hzD1bXSmIYH203jRP3+fbDlIl05+mhYX3/3bkA+OsnR+TiyQohm3okFQMR
-         uny5d8hUMbqUZBUVGkA32mEFioWwJBd5jKnf5EZYmIpDNhG2aHp1vyCj8ua5PwsAdd1f
-         qvdSdSgOwDVIJAQPgXjR6CpodPxwPkS4bIOYemuNTbDFGmjfIo3qcglI5Y5DH62Eeibl
-         FYH2vvjDcvvVqCZuJU7md8sgZdwp9AO/gWXTU2Va38L+4zwOpuG4aQhyI1hTImCrRgms
-         40mg==
-X-Gm-Message-State: AOAM531r8B1+eH291Tt6tC8y3FYnLNkVoqI6xFgpoJt15Xo1tGBZKhOE
-        9Thw53cIFJ3FC9QdqezucMZ6GQ==
-X-Google-Smtp-Source: ABdhPJy8NCNmgnxEIPdXXoQnpW4iEmbZkWduC2RmKNv+z7ymjReFm++owUrGvbEvIHTXNQd9ydO5oQ==
-X-Received: by 2002:aca:3205:: with SMTP id y5mr2907934oiy.162.1606227249741;
-        Tue, 24 Nov 2020 06:14:09 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u63sm9283170oia.50.2020.11.24.06.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 06:14:09 -0800 (PST)
-Date:   Tue, 24 Nov 2020 08:14:07 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andy Gross <agross@kernel.org>, Jonathan Marek <jonathan@marek.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the qcom tree
-Message-ID: <20201124141407.GA185852@builder.lan>
-References: <20201124181938.11046212@canb.auug.org.au>
+        id S2388560AbgKXOO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:14:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727207AbgKXOO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:14:56 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CADBF2063A;
+        Tue, 24 Nov 2020 14:14:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606227296;
+        bh=F30Bz9YLwr55lsxo6wyzgBYBg7fy7ZlU/lXDWGUcwyo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MBZN3c7k1F0VLck3VV8cjLn/E4zVyVpLdryZA32f7T7PeIZX/HlUwNA1PhlYrh7Ls
+         +mDLLgB9aZxqe8HsldcKb84jnvsBC5jvCk/3Vb34BKpeXuRbVJOMQ0BYS71+AUzjNO
+         CtXX45y7NH4ui/QiYxJjllyQrUVhKp4nmpNCI/0k=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khZ5p-00DGcy-Iq; Tue, 24 Nov 2020 14:14:53 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: [PATCH v2 0/6] arm/arm64: Allow the rescheduling IPI to bypass irq_enter/exit
+Date:   Tue, 24 Nov 2020 14:14:43 +0000
+Message-Id: <20201124141449.572446-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124181938.11046212@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, tglx@linutronix.de, Valentin.Schneider@arm.com, peterz@infradead.org, mark.rutland@arm.com, linux@arm.linux.org.uk, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24 Nov 01:19 CST 2020, Stephen Rothwell wrote:
+This is the second version of my earlier series [1], which aims at
+fixing (or papering over, depending on how you look at things) a
+performance regression seen on arm64 for reched IPI heavy workloads
+(such as "perf bench sched pipe").
 
-> Hi all,
-> 
-> Commit
-> 
->   872b41c9a255 ("arm64: dts: qcom: sort sm8150 usb_2 node")
-> 
-> is missing a Signed-off-by from its author.
-> 
+As eloquently described by Thomas in his earlier replies [2], the
+current situation is less than ideal on most architecture except x86,
+and my conclusion is that what was broken in 5.9 wouldn't be more
+broken in 5.10 with these patches (and addresses the performance
+regression).
 
-Thanks for spotting this Stephen! The mistake has been corrected.
+Needless to say, I intend to try and help fixing the issues Thomas
+mentioned, and I believe that Mark (cc'd) already has something that
+could be used as a healthy starting point (Mark, do correct me if I
+misrepresented your work).
 
-Regards,
-Bjorn
+Thanks,
+
+	M.
+
+* From v1:
+  - Added a new __irq_modify_status() helper
+  - Renamed IRQ_NAKED to IRQ_RAW
+  - Renamed IRQ_HIDDEN to IRQ_IPI
+  - Applied the same workaround to 32bit ARM for completeness
+
+[1] https://lore.kernel.org/r/20201101131430.257038-1-maz@kernel.org/
+[2] https://lore.kernel.org/r/87lfewnmdz.fsf@nanos.tec.linutronix.de/
+
+Marc Zyngier (6):
+  genirq: Add __irq_modify_status() helper to clear/set special flags
+  genirq: Allow an interrupt to be marked as 'raw'
+  arm64: Mark the recheduling IPI as raw interrupt
+  arm: Mark the recheduling IPI as raw interrupt
+  genirq: Drop IRQ_HIDDEN from IRQF_MODIFY_MASK
+  genirq: Rename IRQ_HIDDEN to IRQ_IPI
+
+ arch/arm/Kconfig        |  1 +
+ arch/arm/kernel/smp.c   |  6 +++++-
+ arch/arm64/Kconfig      |  1 +
+ arch/arm64/kernel/smp.c |  6 +++++-
+ include/linux/irq.h     | 11 ++++++++---
+ kernel/irq/Kconfig      |  3 +++
+ kernel/irq/chip.c       | 12 ++++++++++--
+ kernel/irq/debugfs.c    |  3 ++-
+ kernel/irq/irqdesc.c    | 17 ++++++++++++-----
+ kernel/irq/proc.c       |  2 +-
+ kernel/irq/settings.h   | 33 +++++++++++++++++++++++++++------
+ 11 files changed, 75 insertions(+), 20 deletions(-)
+
+-- 
+2.28.0
+
