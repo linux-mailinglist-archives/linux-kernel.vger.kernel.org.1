@@ -2,193 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F269C2C2A73
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94862C2A75
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389282AbgKXOwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
+        id S2389305AbgKXOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388166AbgKXOwo (ORCPT
+        with ESMTP id S2388166AbgKXOx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:52:44 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F1AC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:52:43 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id r9so22155981ioo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:52:43 -0800 (PST)
+        Tue, 24 Nov 2020 09:53:28 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9DAC0613D6;
+        Tue, 24 Nov 2020 06:53:27 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id gj5so28897518ejb.8;
+        Tue, 24 Nov 2020 06:53:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pfzUHau9FtStLRkBsMZ3Hfw9WsRE5iXgwdfPMH0ee1s=;
-        b=DiDCed7FSKa/JeRB3epzXJN6Z3PTFD+u5kauX0IXRRJ9j4V9VXpfTvYNIHPBzGABpx
-         3mmt0AV0GShFdD1dsz73e/NA8KvLerFEl5RUjwRkcZZ7bqdf/KWEeSnDXOWXhTSKUmNQ
-         L8d/guIFJyRwNkz+S1rYDqBSx7ulTpXlhnNwhjbP+ZVq8ONNW7zGBX9LPTYWe8pboS0R
-         u9k09upYcrEPkqMJHyoPleaBnHVk2CbKKg+2HQmCix5z88PS2KQ0D6HuSijKOVcoaZzd
-         LHcOXXnBbL9B5mITLUs+uv+hRKHCqg5gOzH+hqus0KTkrCTGVfkk1T9tECtdBsgrhk2u
-         cEFw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rEUKuLpjCuuXItWkksOTBx3RDvxi7jvrhOsxyZoWmi4=;
+        b=sBr9ORJyasxV3qB6qzPsLZdyoergeUwBTSBHF6ZFV85hF/MBtXGC96NgDlCn7+hJXT
+         ln5htt0pYtst7Bb0ai+5CBm9wkLA6cgUIRGekdKVvSfSAWT2s1+VaikYJL5aBJZexbTc
+         tYfDFHhhf4QQvbUol73GtehxBxgHm/PKBBq9msiDXU2WzJ8fvhYJMf6Jyh4H2itlxAlZ
+         kuOebPSFbVpMcESr229BmSgedhbO8itTkjKDtxGEbrLHULQTJIVtY5iLedV8vOBRAI2I
+         emgZKEzPSRZpju5ZDsXFry5laO9LQDnxOZnAl8O0bFhvoQXL+7RbUfmpUuJEuzehCpS0
+         7/Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pfzUHau9FtStLRkBsMZ3Hfw9WsRE5iXgwdfPMH0ee1s=;
-        b=LqUUSl2wPNWgzKUXhzl6gsoVZ5N6cEU6eP0PVC52+ur1ilob3ZJUz1pIx7rWsUTkmD
-         /xIdxEdTla8FapBFGCBxZLIGrxz4pjgaMrLJsbTWo0Ks5pdXzbZTwfFzV35tKAG+5bI1
-         hIXgo0ThmvXGtp6FlPT11J8F0Bm2jYCvPQS5GgomVWFGzRjCnAVCCm5zwR8JHw5/PEcD
-         QyiAmoyveNNeCerYiTiUxwHLcX4j3WyCRi8TM6VFE6nbCIY0hbUoGpFj2owHFdYYJfqP
-         5LWzBo56nHMJJmePPBASrsG+2zgyBwKlP1NxFaHZzszCO+u5P+QJwGzZzC9zUACX2dNO
-         zoIg==
-X-Gm-Message-State: AOAM531zpCJwbEP/aXGqvv3zR+mNunPmWzgb3AffUHjrRvg4kCLnLAf0
-        VcBymX+//CI0HOy2xbBoXLIC8GATJKAxWVyLaXU=
-X-Google-Smtp-Source: ABdhPJwiGiDLpDWF2nBPdJuLvQZa7QER69J4mSk03iO1nr2+q/dNipafVE1L5fhc2XZeMoO3Qq8vBSazHFMGWxxLgls=
-X-Received: by 2002:a02:830f:: with SMTP id v15mr4574545jag.12.1606229562528;
- Tue, 24 Nov 2020 06:52:42 -0800 (PST)
-MIME-Version: 1.0
-References: <1606214936-35192-1-git-send-email-milan.lakhani@codethink.co.uk> <1606214936-35192-2-git-send-email-milan.lakhani@codethink.co.uk>
-In-Reply-To: <1606214936-35192-2-git-send-email-milan.lakhani@codethink.co.uk>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 24 Nov 2020 15:52:31 +0100
-Message-ID: <CAKXUXMyBsWydrqspsWn6HUAGEDVU12y_vY=Tx_4DXGrG0=stQg@mail.gmail.com>
-Subject: Re: [linux-safety] [PATCH v2 2/2] staging: vt6655: Use macro in rxtx.c
-To:     Milan Lakhani <milan.lakhani@codethink.co.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rEUKuLpjCuuXItWkksOTBx3RDvxi7jvrhOsxyZoWmi4=;
+        b=sMZwV2vP6y/XF3uiDBHYGdngq3+DlWPt0KVc1Jc9aiJwRx1NS7cKnOTPn1fU00BzeA
+         bi5PG+enKSHJt0Zei5rmX2q5Eguo4rjdSLW4Ql+w0MN4QYZoYVtlP2fB3cfSCVbxFpZh
+         gPKgWpIpkr+lkDxdvqtmvV3F6mN2KKYZXHQspO5m3pdBPPFjmYp1Xd9Kk3GS2IIZ0yQO
+         rI8gYEzXm3hLSLCrtxWfV4cRMS04RDHY9gcq87i1MJTtXIhSQRYvKm0/I9lY+MoZus/t
+         OpLmMnP4mKeOqUu50CkZ4kpgvp53lIdDRNkrfaB2pWt1Y2CL69nINyuaff5sY0gwA5a9
+         dWcQ==
+X-Gm-Message-State: AOAM5301pEOStSi21mPVJx4WCirSCD84kdEqLGP5H9d3gTctAHYsQ46x
+        dmzfXFpt6okqcs5zITZR+c4=
+X-Google-Smtp-Source: ABdhPJyaVJenZZeGBaqJ01kMB58aUbsK780xB4sToUBFLH500309P3SDPHkLrJpAPswyd24bZkxd4Q==
+X-Received: by 2002:a17:906:680d:: with SMTP id k13mr4364048ejr.482.1606229606600;
+        Tue, 24 Nov 2020 06:53:26 -0800 (PST)
+Received: from BV030612LT ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id qx6sm6934310ejb.10.2020.11.24.06.53.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 06:53:25 -0800 (PST)
+Date:   Tue, 24 Nov 2020 16:53:23 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-actions@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-safety@lists.elisa.tech, forest@alittletooquiet.net
-Content-Type: text/plain; charset="UTF-8"
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Subject: Re: [PATCH v2 09/18] arm: dts: owl-s500: Add MMC support
+Message-ID: <20201124145323.GA598837@BV030612LT>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <0556399f1ce8b1255d1f7961f04fcb95c96ab928.1605823502.git.cristian.ciocaltea@gmail.com>
+ <CAPDyKFrBaiqmHbx0MKTv0uusDdLeeAwQuN8NMiVKgaAQBK0x1w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFrBaiqmHbx0MKTv0uusDdLeeAwQuN8NMiVKgaAQBK0x1w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:49 AM Milan Lakhani
-<milan.lakhani@codethink.co.uk> wrote:
->
-> Use macro for repeated function to get the data duration and timestamp,
-> correcting line length and alignment warnings in rxtx.c. Reported by
-> checkpatch.
->
-> Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
+On Tue, Nov 24, 2020 at 03:25:15PM +0100, Ulf Hansson wrote:
+> On Fri, 20 Nov 2020 at 00:56, Cristian Ciocaltea
+> <cristian.ciocaltea@gmail.com> wrote:
+> >
+> > Add MMC controller nodes for Actions Semi S500 SoC, in order to
+> > facilitate access to SD/EMMC/SDIO cards.
+> >
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> 
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> 
+> Kind regards
+> Uffe
+> 
 
-Patch looks good.
+Thanks for the review!
 
-You need to CC:
+Regards,
+Cristi
 
-devel@driverdev.osuosl.org
-
-
-> ---
->  drivers/staging/vt6655/rxtx.c | 51 ++++++++++++++++---------------------------
->  1 file changed, 19 insertions(+), 32 deletions(-)
->
-> diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
-> index 508e1bd..c5dfe3c 100644
-> --- a/drivers/staging/vt6655/rxtx.c
-> +++ b/drivers/staging/vt6655/rxtx.c
-> @@ -423,6 +423,10 @@ s_uGetRTSCTSDuration(
->         return cpu_to_le16((u16)uDurTime);
->  }
->
-> +#define getDurationTimeStamp(byDurType, byPktType, wRate) \
-> +       (cpu_to_le16((u16)s_uGetDataDuration(pDevice, (byDurType), cbFrameLength, (byPktType), \
-> +               (wRate), bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption)))
-> +
->  static
->  __le16
->  s_uFillDataHead(
-> @@ -467,15 +471,10 @@ s_uFillDataHead(
->                         } else {
->                                 /* Get Duration and TimeStamp */
->                                 buf->duration_a =
-> -                                       cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength,
-> -                                                                           byPktType, wCurrentRate, bNeedAck, uFragIdx,
-> -                                                                           cbLastFragmentSize, uMACfragNum,
-> -                                                                           byFBOption));
-> +                                       getDurationTimeStamp(DATADUR_A, byPktType, wCurrentRate);
->                                 buf->duration_b =
-> -                                       cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B, cbFrameLength,
-> -                                                                           PK_TYPE_11B, pDevice->byTopCCKBasicRate,
-> -                                                                           bNeedAck, uFragIdx, cbLastFragmentSize,
-> -                                                                           uMACfragNum, byFBOption));
-> +                                       getDurationTimeStamp(DATADUR_B, PK_TYPE_11B,
-> +                                                            pDevice->byTopCCKBasicRate);
->                         }
->
->                         buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, wCurrentRate);
-> @@ -492,14 +491,11 @@ s_uFillDataHead(
->                                   pDevice->byTopCCKBasicRate,
->                                   PK_TYPE_11B, &buf->b);
->                 /* Get Duration and TimeStamp */
-> -               buf->duration_a = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
-> -                                                                     wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -               buf->duration_b = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B, cbFrameLength, PK_TYPE_11B,
-> -                                                                      pDevice->byTopCCKBasicRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -               buf->duration_a_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
-> -                                                                         wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -               buf->duration_a_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
-> -                                                                        wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> +               buf->duration_a = getDurationTimeStamp(DATADUR_A, byPktType, wCurrentRate);
-> +               buf->duration_b = getDurationTimeStamp(DATADUR_B, PK_TYPE_11B,
-> +                                                      pDevice->byTopCCKBasicRate);
-> +               buf->duration_a_f0 = getDurationTimeStamp(DATADUR_A_F0, byPktType, wCurrentRate);
-> +               buf->duration_a_f1 = getDurationTimeStamp(DATADUR_A_F1, byPktType, wCurrentRate);
->
->                 buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, wCurrentRate);
->                 buf->time_stamp_off_b = vnt_time_stamp_off(pDevice, pDevice->byTopCCKBasicRate);
-> @@ -517,12 +513,11 @@ s_uFillDataHead(
->                                           byPktType, &buf->a);
->
->                         /* Get Duration and TimeStampOff */
-> -                       buf->duration = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
-> -                                                                           wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -                       buf->duration_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
-> -                                                                              wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> -                       buf->duration_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
-> -                                                                               wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
-> +                       buf->duration = getDurationTimeStamp(DATADUR_A, byPktType, wCurrentRate);
-> +                       buf->duration_f0 = getDurationTimeStamp(DATADUR_A_F0, byPktType,
-> +                                                               wCurrentRate);
-> +                       buf->duration_f1 = getDurationTimeStamp(DATADUR_A_F1, byPktType,
-> +                                                               wCurrentRate);
->                         buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
->                         return buf->duration;
->                 }
-> @@ -537,11 +532,7 @@ s_uFillDataHead(
->                         buf->duration = dur;
->                 } else {
->                         /* Get Duration and TimeStampOff */
-> -                       buf->duration =
-> -                               cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
-> -                                                                   wCurrentRate, bNeedAck, uFragIdx,
-> -                                                                   cbLastFragmentSize, uMACfragNum,
-> -                                                                   byFBOption));
-> +                       buf->duration = getDurationTimeStamp(DATADUR_A, byPktType, wCurrentRate);
->                 }
->
->                 buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
-> @@ -558,11 +549,7 @@ s_uFillDataHead(
->                 buf->duration = dur;
->         } else {
->                 /* Get Duration and TimeStampOff */
-> -               buf->duration =
-> -                       cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B, cbFrameLength, byPktType,
-> -                                                           wCurrentRate, bNeedAck, uFragIdx,
-> -                                                           cbLastFragmentSize, uMACfragNum,
-> -                                                           byFBOption));
-> +               buf->duration = getDurationTimeStamp(DATADUR_B, byPktType, wCurrentRate);
->         }
->
->         buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
-> --
-> 2.7.4
->
->
->
-> -=-=-=-=-=-=-=-=-=-=-=-
-> Links: You receive all messages sent to this group.
-> View/Reply Online (#198): https://lists.elisa.tech/g/linux-safety/message/198
-> Mute This Topic: https://lists.elisa.tech/mt/78474577/1714638
-> Group Owner: linux-safety+owner@lists.elisa.tech
-> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [lukas.bulwahn@gmail.com]
-> -=-=-=-=-=-=-=-=-=-=-=-
->
->
+> 
+> > ---
+> >  arch/arm/boot/dts/owl-s500.dtsi | 33 +++++++++++++++++++++++++++++++++
+> >  1 file changed, 33 insertions(+)
+> >
+> > diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
+> > index b16172615db0..7af7c9e1119d 100644
+> > --- a/arch/arm/boot/dts/owl-s500.dtsi
+> > +++ b/arch/arm/boot/dts/owl-s500.dtsi
+> > @@ -241,5 +241,38 @@ dma: dma-controller@b0260000 {
+> >                         clocks = <&cmu CLK_DMAC>;
+> >                         power-domains = <&sps S500_PD_DMA>;
+> >                 };
+> > +
+> > +               mmc0: mmc@b0230000 {
+> > +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
+> > +                       reg = <0xb0230000 0x38>;
+> > +                       interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+> > +                       clocks = <&cmu CLK_SD0>;
+> > +                       resets = <&cmu RESET_SD0>;
+> > +                       dmas = <&dma 2>;
+> > +                       dma-names = "mmc";
+> > +                       status = "disabled";
+> > +               };
+> > +
+> > +               mmc1: mmc@b0234000 {
+> > +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
+> > +                       reg = <0xb0234000 0x38>;
+> > +                       interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+> > +                       clocks = <&cmu CLK_SD1>;
+> > +                       resets = <&cmu RESET_SD1>;
+> > +                       dmas = <&dma 3>;
+> > +                       dma-names = "mmc";
+> > +                       status = "disabled";
+> > +               };
+> > +
+> > +               mmc2: mmc@b0238000 {
+> > +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
+> > +                       reg = <0xb0238000 0x38>;
+> > +                       interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+> > +                       clocks = <&cmu CLK_SD2>;
+> > +                       resets = <&cmu RESET_SD2>;
+> > +                       dmas = <&dma 4>;
+> > +                       dma-names = "mmc";
+> > +                       status = "disabled";
+> > +               };
+> >         };
+> >  };
+> > --
+> > 2.29.2
+> >
