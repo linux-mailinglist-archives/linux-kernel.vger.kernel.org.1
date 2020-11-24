@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25C52C1B1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 03:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C348B2C1B20
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 03:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgKXCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 21:00:03 -0500
-Received: from mail-eopbgr70048.outbound.protection.outlook.com ([40.107.7.48]:58572
+        id S1727207AbgKXCAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 21:00:21 -0500
+Received: from mail-eopbgr70050.outbound.protection.outlook.com ([40.107.7.50]:21627
         "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726904AbgKXCAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 21:00:02 -0500
+        id S1726904AbgKXCAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 21:00:20 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EyB9VpU15UBbsei+2bMa+SYk5vjb7KCor3qjZSh23C6UjUFRU/MzV5J+FFtjJgA+/XCn+S0e0hqG2IeTWl4XbmVXMH/5YidABulSNeFCvKyM5uzX+h29/ZdEK+5Wtxdt4gCUqPme2pRlj0jZdGv+Fe6zn5l2x9FKskqklDn2eaT1ru2+6zRQP/lOnQmNZeHi+OJaDiDM7f//NPx5D3XXZhAxqFcYgzyTj3eEgOOJAhWZUOSu7sueUHOuh4yApE+a43VXw+rUQWbozVNcSbCS0DzBNbZ4yZ/7N8B0t5Y9AJ3/iBvczOXgkOtHa6Os8ugsAkDpvguU3ghgaVB05TfL+w==
+ b=QpPIpcr2KxsK/Tetr/mJayBYCVl5FauZPX6IAPmx05ZR9iLI3fAXxHq+fPC2Mz+x51J6X7k5HjLizWBZu7fKhFu8AB5ZCF3immrSwNPR++lVAfmap9MiP4TTOW/OJcqBiiPUcb+udPHDelBPGyM9PUvy0TKQjOJmswGfACov8zcwAmQ1K2qKo7JoIdlLA6NLWWRXD1scRIJSXTG1IZsg7xWbviiBkUwBHNA2nmpxtP8bM/+yCmgwAaDlZZU3rc7CqiWvd4E5LB0OuNUBxeesmbIRpd8JFqV7jSV0AmaMt4ipTT5tSmF6rWokbpv/AATuvu9wOPc3+YjSe/BzCECaAA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BvrBEwp0KWEfnEV+BosvPVS4dz9eZWKBNU7ttKza4ko=;
- b=cCNSuKwv4SzMOebFNeBJ+YW63Wdz3+K4mjSlk5PjWj3ynX6XjsWrBMgjHUXd8WLF0uzcpsx9L2KB/5EIGGVOWsv2PLMVMiAHzZ46CFY043UYj1wlJXrIcsBBhprZiTkCADg6OU5x9zPQX2w1HTejS8X2wXeD9KHaoKZRmZ9D83fpoGEm45cwIdbVHj+KdiE7NKQpkpUQGrbIMAi9Kx/B83EJ9D7TnBD507yyXE/TCeapn5w3Ge6FFV4wmGpPdDK5sqVN/GIELVHw5BAAp8fBNHkxSz0+Iet02VKfPTkbTPHVTrjuRMEfJBBtAVReMqVNJwRLCWQXnZy3UO421NoSCA==
+ bh=c9Z9S3TmKnT4aqTsb1HvO8pMfCKlinWvD2uxKXKkb34=;
+ b=JeDoQJ9z1cSg8PyI+2RYea50yvlkC5vtl6SdOPokknbsMEZt0ZxMIWXd3alSaUGGm1ctMSMeqDfWIQ+pIj2Y3VU9wwu1Og+tZqdLSUZal6iSBlbzqwFNt0qHoMuDgxj+rzjrCibz10zoaD9UIKo71Ec550jxQCsH8thnkiTb0hUH+/8LdCJaP1Gpi8pUHIjCVDJbP2eAVrIYLTD/3fnpxwvtyF5QzRM3BhMhVqywN6fG0XVd42hidC0vmP9hTXEpppFZIiwCx2beiozPXRr4cGUwqaAfpyJ8vTiqU7e9ML4Q56at3Ib/q7nS/cjeqdKwF7RXOXccr7rB+3/VYKwUXw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BvrBEwp0KWEfnEV+BosvPVS4dz9eZWKBNU7ttKza4ko=;
- b=ZKBjLXziQz1C8J5LT0mhFL9bPLR8Za/EVI/KYIW5l7HSnzy/M4xhnzYnTgT8EyYckMstH0JZpWA13knzTwO9E5HO60DSfVx8WQRulC0L33YQnJayKKQV/IN2bwBrLTSPfROXboZWK7K27RrhZZdJfDZprMVem22oLVSRTPzlI8c=
+ bh=c9Z9S3TmKnT4aqTsb1HvO8pMfCKlinWvD2uxKXKkb34=;
+ b=f6Fx5ZKa2qEjOP9GDlxB5vjrCRkrdbwGfDLEabrZLxt1/nR8giyPjubKuUm71s8NlHxkE6GrMYF3Z9QsLeu7GgQ7jdTcI1BoEujXMOrFaBY4dJ8d+96qCe0YMwgagSQ8Y08OPbRz3DrbABvVsmKVVp4Tdr+kKTZ65+0IBKHLrnE=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
 Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
  by AM7PR04MB7096.eurprd04.prod.outlook.com (2603:10a6:20b:113::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
- 2020 01:59:58 +0000
+ 2020 02:00:16 +0000
 Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
  ([fe80::78fe:9b7a:a2ac:9631]) by AM6PR04MB6053.eurprd04.prod.outlook.com
  ([fe80::78fe:9b7a:a2ac:9631%7]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
- 01:59:58 +0000
+ 02:00:16 +0000
 From:   Alice Guo <alice.guo@nxp.com>
 To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         krzk@kernel.org
 Cc:     linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v6 1/4] dt-bindings: soc: imx8m: add DT Binding doc for soc unique ID
-Date:   Tue, 24 Nov 2020 09:59:46 +0800
-Message-Id: <20201124015949.29262-1-alice.guo@nxp.com>
+Subject: [PATCH v6 2/4] arm64: dts: imx8m: add SoC ID compatible
+Date:   Tue, 24 Nov 2020 09:59:47 +0800
+Message-Id: <20201124015949.29262-2-alice.guo@nxp.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201124015949.29262-1-alice.guo@nxp.com>
+References: <20201124015949.29262-1-alice.guo@nxp.com>
 Content-Type: text/plain
 X-Originating-IP: [119.31.174.71]
 X-ClientProxiedBy: SG2PR04CA0188.apcprd04.prod.outlook.com
@@ -53,109 +55,105 @@ X-ClientProxiedBy: SG2PR04CA0188.apcprd04.prod.outlook.com
  (2603:10a6:20b:b9::10)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by SG2PR04CA0188.apcprd04.prod.outlook.com (2603:1096:4:14::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 01:59:55 +0000
+Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by SG2PR04CA0188.apcprd04.prod.outlook.com (2603:1096:4:14::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 02:00:12 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5573adf9-4bb9-46da-c9e7-08d8901ca569
+X-MS-Office365-Filtering-Correlation-Id: b22df386-734e-4816-df9a-08d8901cafe4
 X-MS-TrafficTypeDiagnostic: AM7PR04MB7096:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB7096A834423E7D9670199CD4E2FB0@AM7PR04MB7096.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-Microsoft-Antispam-PRVS: <AM7PR04MB7096E3A5B16AB115D7E761ABE2FB0@AM7PR04MB7096.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:361;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: el7b0zI9ZdBnaE4ti9xZ58BnPHC+BXUs6UjCsXRwsGqM68MvZFIa7CIJO6f+a0uS9ErnVhQo/NqKixf5vkdGZ+OvMMCa5Rfq6yTPSmnfk8QQqFR3ngW+9Q13w2wWfpEP5kn2YZvxpVXTQ0xeB1F/wK+N9Y2Ng7gNaECKv28YgPC3Fx9RjZjp7jSJbX3UqAkAoaUK8Y0rNEUh4QRYqpSWuI5ZVBtC7GxNXn48LITFl2DD+G5Tg7MxAGRZFQMT6s2kYNoaMzL50Wqg4ADdhejyf7YHa54lucMyQe1ikN16jRoHyYJbHfhpnmguzbv75ixwoqgVNDQcxXm93NFnM6XfwNQVy/UZHZR2izus7IAtRoEHUxV/VaSOP2jCPwAPjEbQ
+X-Microsoft-Antispam-Message-Info: 7xbsoEhcR75W5FPfOTe8WOf0s69tRRIM88T/3GcKLypNvCLG4uPdmbWYrwiJ/7cxrviPO+gIwAsG0LSKSizWj7H/BeSlrcXQQj1ejWdLV985qTvvHQ9dNmiHQpXuT1W/7+3m9HkIJ7zQ5uQhgEwoAUV/r1SdJveI+GEbO11L8SURL4whNgKk9OMqZAMRhp/U8irQwfihvDq0jVSxoKPeSp8ca6P9cGxQ9z7FACI94DN3mEOaml8NhpwSa14HzbDkS9YGO+lueNFHbNoEk4zmZGcB+RnZpnkm/Ie6E1TwRea/x0ranMM6KBZ5Hc0sn9ioK06NI5fQ5vuuJnVOlnKZExQWtmPkk/V+XLvEvEe9cLqZLg2L2YcPZHZ6+dWtnkPP
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(366004)(136003)(346002)(956004)(478600001)(36756003)(2616005)(6512007)(8936002)(44832011)(4326008)(316002)(6486002)(26005)(8676002)(52116002)(2906002)(6506007)(16526019)(186003)(66476007)(66556008)(6666004)(66946007)(83380400001)(1076003)(86362001)(5660300002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: xJ5nD/wdJyUAgCAdb65xrxlndB3cyPEsPILBJMwOqcTntuM2XiO3vn8PkcZCgVZ95lCZDgkp2ZLKIBdGqJT9D+ZtGlgQkRi7a0TDSiVINUgnQOno+OZkyQ1AmAW2ux9yg9R6p+raNH79QgqF/cIWd7wW5H/KdtwZdsKucfpg/fUDGDqVmCS8uVy9HWlxTYE7pyQOo8NbPRLu49H+XNqQzMO+Q0o0fhUSWdTSWNW1w17KiixaMvD59TfzYH4KEeyx7miep3Swv5QrxGZLWiVCkThd56BDd+O5t3DxkuWqhoZWre2nA79TPqHkTobsqN4MAvo4CVcdIMXZk54ZlwkXy+obfaF/xB0AFV0dZ9Yc9A7XeoVaYnGOeOCxWNoQ9HA0djfgMudk4lVReke31cHJpSlB3xLBI/59ZZFSTyAUIWNrZFwZo7QmxmjnQJHngFzLs4CnPNNa6FQiRqO2y3kDxcAT2wRqp24EFrv4WrCCJa/JdzVmUJcQm++mAHuq8TsKii2Zy5UW0Nt8A8Ns+bU7mCdkB2ACdthWfrprQl+3QaXmkwvF/O5m4M8AswwrdlQX9coRQA4uOL+nRTV6oTi13Pwr9/XNA1LViFww2L5ZEe+k7nNRnAartSZ9CD5IsuGkOYt3OXqx09mxT9GNe8BpD/cGOfbNEVE2hoVv3GbDMSBXb3RGDeEAEgsH95DbaC+AegTAndNGxvE0LD4NrPvqT0e3Y4nVAX/bWr8XZJ2LJtLetFWAWXDrhnOyWDwXCGV1o/QTy8/Gc+lbW54KH/eWASN8lsLJ81/6YTLvTHCkpxC5dA8vxN+e9FdaGAJV7eIRHXXNYM5nsmErKaORMa3bW5SsTz21tw8PhRR7s0VtsDo/aJLZulIwkYKoVoooPh80deIwDwnmgBnHwdNnadgFAg==
+X-MS-Exchange-AntiSpam-MessageData: J13Jq+owMK0VaaAFU3T0R2LUkwQormYwrWHhaPxH0NXnLaIHZ1sgcD1GHD8sWScdJCQzw+FMOJBYcWXIfnqMZigtuy2apytZhA4T0+1w2R0SyhSf5RnYEkSmxKy//FxPF9U9RsMbkyInDHeqhWaDX0dgR0xYCPo+i1+t2dF1kJVxhvbeLhT69sQXa/viP6zQUHDQFW0SNL0xyyrEe/YAEloqqbn3i1T/z6C8J5AtlEn7yivDl2bZ49zV7IDnb0CAJmyG+Xbsd91MbK5maxvMIQwwvwGXGPHUsbZiM8WHMXe/+6K2rnw1j6C+Ky2YZ7Wlc9nWdmfMT/haSPh+d8cX+GmqlX8+ZASYTopBFmhzuFJ0UTM/RYWWVBgdySDdQiD/ydkgSuzMGtPcpzmGFyKtl+SgxBZamxMHkBQm5BYLlXdHZpYhSci7t4KMI9aBAMZ1ORkUaPXrumbz02V2k/PeB1SpOSYdAdH57zwglJkU1179XfAE5UqQOaZkVWb1UrtHlz5qmBZzShmaC/UsJo9/4KLH2blKf6m3y0m+eQoNUTenjbQ5nZcyLS9NZjOrVn4zykeh2crQb8yC7DkdCW/pwotoXk9+dSD5mLl3XjE4SLXzy9HSHs4ZZqYPrTzgTpLKZBRZiwRbIg1CB1dPAWlmC/3tQqpk/RgPyzvKkHtCRwB8OkgCe+Mdbx6ev4R9B2bHFEEo21XtYe0r/JnKzqjxz+0+MB7ytF0EpVHS4lNMBYq3rvmcMKbFM+Vo3W1fZ6pLgK2Cpf2rwIinEY7LQzicRDBVaVSkRkBrNDFZCZgE4SMIsPvBuIlB4NykWw9EbAE7IrqlcMGr/K8ggNK40rVvnWu4pCKZJUCBpVBW8HRYZ0ihv+Xza09RzFwLm3R7xrUrmlgRusDK96Z6mwpXbQR4tg==
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5573adf9-4bb9-46da-c9e7-08d8901ca569
+X-MS-Exchange-CrossTenant-Network-Message-Id: b22df386-734e-4816-df9a-08d8901cafe4
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 01:59:58.3691
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 02:00:16.1708
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nGptwQQFotYxSzpkAsrCtgxzxCWeSBgwkUY6+OQQ1mV2r5H9eTudAdRIi116FEcxydOFJcWGblo/Vi3nD4L3Ww==
+X-MS-Exchange-CrossTenant-UserPrincipalName: nDeuF9pfC1SpGm5A0CfpXQeqT5he0+I3uSPcXkjPAhwy/Xfr8TvZJO2uHK0DoxyLT/QmFlPw2R///udEeiZITA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT Binding doc for the Unique ID of i.MX 8M series.
+Add compatible string to .dtsi files for binding of imx8_soc_info and
+device.
 
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Alice Guo <alice.guo@nxp.com>
 ---
 
-v2: remove the subject prefix "LF-2571-1"
-v3: put it into Documentation/devicetree/bindings/arm/fsl.yaml
-    modify the description of nvmem-cells
-    use "make ARCH=arm64 dtbs_check" to test it and fix errors
-v4: use allOf to limit new version DTS files for i.MX8M to include
-    "fsl,imx8mm/n/p/q-soc", nvmem-cells and nvmem-cells-names
-v5: correct the error of using allOf
-v6: none
+v2: remove the subject prefix "LF-2571-2"
+v3: none
+v4: change subject and commit message, add Reviewed-by
+v5: none
+v6: leave only the changelog under '---'
 
- .../devicetree/bindings/arm/fsl.yaml          | 47 +++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 67980dcef66d..7132ffd41abb 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -918,6 +918,53 @@ properties:
-               - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
-           - const: fsl,s32v234
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index c824f2615fe8..d457ce815e68 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -257,7 +257,7 @@
+ 	};
 
-+  soc:
-+    type: object
-+    properties:
-+      compatible:
-+        oneOf:
-+          - description: new version compatible for i.MX8M SoCs
-+            items:
-+              - enum:
-+                  - fsl,imx8mm-soc
-+                  - fsl,imx8mn-soc
-+                  - fsl,imx8mp-soc
-+                  - fsl,imx8mq-soc
-+              - const: simple-bus
-+
-+          - description: old version compatible for i.MX8M SoCs
-+            items:
-+              - const: simple-bus
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx8mm
-+              - fsl,imx8mn
-+              - fsl,imx8mp
-+              - fsl,imx8mq
-+
-+    then:
-+      patternProperties:
-+        "^soc@[0-9a-f]+$":
-+          properties:
-+            compatible:
-+              items:
-+                - enum:
-+                    - fsl,imx8mm-soc
-+                    - fsl,imx8mn-soc
-+                    - fsl,imx8mp-soc
-+                    - fsl,imx8mq-soc
-+                - const: simple-bus
-+
-+          required:
-+            - compatible
-+            - nvmem-cells
-+            - nvmem-cell-names
-+
- additionalProperties: true
+ 	soc@0 {
+-		compatible = "simple-bus";
++		compatible = "fsl,imx8mm-soc", "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		ranges = <0x0 0x0 0x0 0x3e000000>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index a06d2a6268e6..6d3a809a00fd 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -241,7 +241,7 @@
+ 	};
 
- ...
+ 	soc@0 {
+-		compatible = "simple-bus";
++		compatible = "fsl,imx8mn-soc", "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		ranges = <0x0 0x0 0x0 0x3e000000>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index ecccfbb4f5ad..ec6ac523ecfc 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -218,7 +218,7 @@
+ 	};
+
+ 	soc@0 {
+-		compatible = "simple-bus";
++		compatible = "fsl,imx8mp-soc", "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		ranges = <0x0 0x0 0x0 0x3e000000>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index a841a023e8e0..9b6d9307e5d7 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -286,7 +286,7 @@
+ 	};
+
+ 	soc@0 {
+-		compatible = "simple-bus";
++		compatible = "fsl,imx8mq-soc", "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		ranges = <0x0 0x0 0x0 0x3e000000>;
 --
 2.17.1
 
