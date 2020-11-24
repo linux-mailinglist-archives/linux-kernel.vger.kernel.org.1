@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FAA2C1FB6
+	by mail.lfdr.de (Postfix) with ESMTP id 9DECE2C1FB7
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730457AbgKXIRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:17:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730447AbgKXIRf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:17:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E5AC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:17:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZyExhNch12p/Hcf7krqTIV0ABzoKgV0CWL75KJBPvXE=; b=VYsntT46dXn0wMY+icj6UFPlZ1
-        sUZkxMaH3PWgi/+2vRcVnqUMHNpuPwEW5qS6ltRzAqShDF5qwf09asI0ENY08G7ugxgXoVhiaeYw/
-        /4S+O9IoPDT8Rr3LwB/gFZatuOnOF4hoUnFsgbwRCT9S644y26gIsd2UvcCBGnG4HZsm02AZHXH+3
-        sLeedJWHZA8ToXSJmG4GCtWmY6ZgAGQwbXvP9+9WlplaRTZK4NFtaDgSBQXiPfS0ymBgCNj31d/1d
-        /B9HQTB64cnslpVo0BhrbR7n4S1p4StFQuOFa5AnmX3TX3TsLGYT4x1jZ/RbdCkFrmiVEh6yA91f9
-        QqHXwaoQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khTUq-00034C-15; Tue, 24 Nov 2020 08:16:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D464030280E;
-        Tue, 24 Nov 2020 09:16:17 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AE4B924C2AFCE; Tue, 24 Nov 2020 09:16:17 +0100 (CET)
-Date:   Tue, 24 Nov 2020 09:16:17 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 04/32] sched: Core-wide rq->lock
-Message-ID: <20201124081617.GT3021@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-5-joel@joelfernandes.org>
- <20201122091152.GB110669@balbir-desktop>
+        id S1730465AbgKXISa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:18:30 -0500
+Received: from mail-bn7nam10on2080.outbound.protection.outlook.com ([40.107.92.80]:53665
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730355AbgKXIS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:18:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f+eWc+LH7qohOy2hM4+NNvlPCJelalM8k3qfVrmrR9WsEM5QahKS/CRCubIbJVfz+4NNAvcv2kmB/PByKLbGujd0TIgk4AFIdxnXrn2MKjbTl9z3YUmCGu4QqNaH6t+SAaV8FmqcAs9NBp8hcz59mgZ80bmuxUGbi5C/HTGv634EDymtoDOfl0WaWV7GTfEj4yGjNTQtuU8G6xLMFtAnzJAF2kSOA5eqktvPlMQv+JpvQgG6CoP1bOrdTMFSk2+wYOMn5uXgSoXIL1/HR0GmR/KNaUBgoU/7cWFD7YGZQnbyJXqAhFqIWXSVEWUUjGiunK4b2F8W7WYlfDhdFhYXyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sE6BNcXPEMlNz756PnrK2CE+Wm1MUt6gjl5aYi7/kwc=;
+ b=d1SbMl98NmsNWy65vlkGWg0I5Yjm3pRQOTMox17pFfSExxaaUjJpKmcbdDvLrtsNsOdibcpdI4+GQR6L0k/AuUjoSUTq0Kf786JW/uH0fDH9FWaOQSGZFAezDHJRfJjVOhJO+NfxpD117/aMy8WdzpWzdctxVtKPyM6Y9elJb+6HW4I+i8SngXDIOfZL+MjqjTBaQlPhzCHmwwxIDQgmCmShpGghnbzFvi3DiZNvFvP+54Z9Sc+2HMKTZPbNfq+2HHR75wvUo+qwI4kHbbZ11ldrwkz2olUKsKO1O9kkaYzNr9OCc/zmxE2AzxyjYXNYGYilnUROFdIXwCyglg9/yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sE6BNcXPEMlNz756PnrK2CE+Wm1MUt6gjl5aYi7/kwc=;
+ b=Z6Xa0LrgTyCYn/tDdzXGwlBdH42kgL04OV7PVSEqOf3sWpbMoyGHSrMxjb9wkUCIvN3E13T3WkNBfsiXVBRnMRNU4XjI/+xh5MVq1pr8ON5hpGB9K3UGBNcqQls0A1Xc1JfxUgvrBj5cbhOa9HzuYGZKE2Fqhhh9VFMSHYPSwic=
+Received: from SN1PR12CA0073.namprd12.prod.outlook.com (2603:10b6:802:20::44)
+ by BN6PR02MB2323.namprd02.prod.outlook.com (2603:10b6:404:36::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.25; Tue, 24 Nov
+ 2020 08:18:27 +0000
+Received: from SN1NAM02FT061.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:802:20:cafe::5c) by SN1PR12CA0073.outlook.office365.com
+ (2603:10b6:802:20::44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend
+ Transport; Tue, 24 Nov 2020 08:18:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT061.mail.protection.outlook.com (10.152.72.196) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 08:18:26 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 24 Nov 2020 00:18:25 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Tue, 24 Nov 2020 00:18:25 -0800
+Envelope-to: michal.simek@xilinx.com,
+ rajan.vaja@xilinx.com,
+ tejas.patel@xilinx.com,
+ manish.narani@xilinx.com,
+ wendy.liang@xilinx.com,
+ gregkh@linuxfoundation.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.19.2.167] (port=44484 helo=xsjjliang50.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <wendy.liang@xilinx.com>)
+        id 1khTWr-00055D-1q; Tue, 24 Nov 2020 00:18:25 -0800
+From:   Wendy Liang <wendy.liang@xilinx.com>
+To:     <michal.simek@xilinx.com>, <rajan.vaja@xilinx.com>,
+        <gregkh@linuxfoundation.org>, <tejas.patel@xilinx.com>,
+        <manish.narani@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Wendy Liang <wendy.liang@xilinx.com>
+Subject: [PATCH v2] firmware: xlnx-zynqmp: fix compilation warning
+Date:   Tue, 24 Nov 2020 00:18:18 -0800
+Message-ID: <1606205898-12642-1-git-send-email-wendy.liang@xilinx.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201122091152.GB110669@balbir-desktop>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 494b5570-f558-45c0-093b-08d89051849a
+X-MS-TrafficTypeDiagnostic: BN6PR02MB2323:
+X-Microsoft-Antispam-PRVS: <BN6PR02MB2323D8082725591B618E01E1B0FB0@BN6PR02MB2323.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aUsRKueC/cAeZT3DoNhTH0y474rYpDJ7H+AZhe+k3W7qIUtFL8aJzxaD7ttFXa+8ZjBxpmvK8yQn1GR5vNU8yghY76uUNGNGNqs0YnOB2D+hwtE85WDuZIY5XLQOMLmAAL71NEkhkvKHWPYEOl6VUih9wpmYFPS6EvwCha2OsSGsR1TyLaZKvl+ouZ6Ufy10TGv4el4UBZ3FZve3BoQ3rILMq20PC/xUCXY+mQzESFs3NLHNUY+UTaUPvzcImegIDHj94sX1JqeUTRcpmVSa2FY0cv9L969ZYvPsCiLubAGZgVA4mKWD4FfxhPYHMKHKLhiVxi5jMkWPnRdaCb2NadXLuM4qB/XMTVf/NdiXKaQhm5ARAiLws5u8Nj9PnBHPR/pNiNdgiCQcIxpiQC7pvkuvUJom1EjrU6gmn+D+eYQ=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(39860400002)(376002)(46966005)(356005)(6666004)(47076004)(6636002)(107886003)(7636003)(36756003)(2906002)(9786002)(70206006)(70586007)(478600001)(4326008)(36906005)(7696005)(110136005)(82740400003)(82310400003)(8936002)(5660300002)(44832011)(54906003)(83380400001)(316002)(426003)(186003)(26005)(2616005)(8676002)(336012)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 08:18:26.3503
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 494b5570-f558-45c0-093b-08d89051849a
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT061.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2323
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 08:11:52PM +1100, Balbir Singh wrote:
-> On Tue, Nov 17, 2020 at 06:19:34PM -0500, Joel Fernandes (Google) wrote:
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > Introduce the basic infrastructure to have a core wide rq->lock.
-> >
-> 
-> Reading through the patch, it seems like all the CPUs have to be
-> running with sched core enabled/disabled? Is it possible to have some
-> cores with core sched disabled?
+Fix compilation warning when ZYNQMP_FIRMWARE is not defined.
 
-Yep, patch even says so:
+include/linux/firmware/xlnx-zynqmp.h: In function
+'zynqmp_pm_get_eemi_ops':
+ include/linux/firmware/xlnx-zynqmp.h:363:9: error: implicit
+ declaration of function 'ERR_PTR'
+ [-Werror=implicit-function-declaration]
+     363 |  return ERR_PTR(-ENODEV);
 
- + * XXX entirely possible to selectively enable cores, don't bother for now.
+include/linux/firmware/xlnx-zynqmp.h:363:18: note: each undeclared
+identifier is reported only once for each function it appears in
+   include/linux/firmware/xlnx-zynqmp.h: In function
+'zynqmp_pm_get_api_version':
+   include/linux/firmware/xlnx-zynqmp.h:367:10: error: 'ENODEV'
+undeclared (first use in this function)
+     367 |  return -ENODEV;
+         |          ^~~~~~
 
-> I don't see a strong use case for it,
-> but I am wondering if the design will fall apart if that assumption is
-> broken?
+Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
+---
+v2:
+* Always include linux/err.h
+---
+ include/linux/firmware/xlnx-zynqmp.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The use-case I have is not using stop-machine. That is, stopping a whole
-core at a time, instead of the whole sodding machine. It's on the todo
-list *somewhere*....
-
+diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+index 5968df8..f84244e 100644
+--- a/include/linux/firmware/xlnx-zynqmp.h
++++ b/include/linux/firmware/xlnx-zynqmp.h
+@@ -13,6 +13,8 @@
+ #ifndef __FIRMWARE_ZYNQMP_H__
+ #define __FIRMWARE_ZYNQMP_H__
+ 
++#include <linux/err.h>
++
+ #define ZYNQMP_PM_VERSION_MAJOR	1
+ #define ZYNQMP_PM_VERSION_MINOR	0
+ 
+-- 
+2.7.4
 
