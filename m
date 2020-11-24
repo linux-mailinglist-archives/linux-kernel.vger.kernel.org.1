@@ -2,188 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD20A2C26D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3AF2C26E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387833AbgKXNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:11:08 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7674 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733262AbgKXNLH (ORCPT
+        id S2387909AbgKXNNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:13:02 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:3898 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387675AbgKXNNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:11:07 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CgPXG64DNz15Q2Q;
-        Tue, 24 Nov 2020 21:10:38 +0800 (CST)
-Received: from [10.174.187.74] (10.174.187.74) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 24 Nov 2020 21:10:49 +0800
-Subject: Re: [RFC PATCH v1 2/4] KVM: arm64: GICv4.1: Try to save hw pending
- state in save_pending_tables
-To:     Marc Zyngier <maz@kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-3-lushenming@huawei.com>
- <f3ea1b24436bb86b5a5633f8ccc9b3d1@kernel.org>
- <90f04f50-c1ba-55b2-0f93-1e755b40b487@huawei.com>
- <4e2b87897485e38e251c447b9ad70eb6@kernel.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <86c2b9ad-7214-caef-0924-ec71b43aa003@huawei.com>
-Date:   Tue, 24 Nov 2020 21:10:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 24 Nov 2020 08:13:02 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AODCD95000701;
+        Tue, 24 Nov 2020 14:12:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=ix/kx7ERmG4i0gfDa9YUOrftv5Xy+RUr3PaZbU4Xkb4=;
+ b=DazCYgY32udAr3uRdVPQeBZEdrNhyGnz8SZ0wAUfj48TyKjTwO1l9O9m9DJa3ewF5cDz
+ MG2r/w8PDeLEWuqddpxwUHSaIARuZY9oNdvLl83IVKsS2KX2Adfx0anPQ7CCHLJabmml
+ ULDx7B4+7kx8jBZexwBMwzYLrK7TBCgEzB01zarSGWSfZH7XoloaNmbMu0HLrewtMnY3
+ O4aI7jknWh1hPFS3TBbQW0rS0fNg73U8eSfy2zsZtYfKhuLS7/YpzirQr3A1eiy6/Pk6
+ 1LW4Z5Bo6BFLSjQ14YTl7EBJXEmJQ2597bpXnaTzZqTocU8OgrNW0Wt59BbiBXQRNu// bw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34y05h7hvv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 14:12:53 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 806C4100038;
+        Tue, 24 Nov 2020 14:12:52 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 55DBE26F739;
+        Tue, 24 Nov 2020 14:12:52 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
+ 2020 14:12:51 +0100
+Subject: Re: ARM.STM32 - Mainline stable kernel 5.9.10 hangs indefinitely on a
+ STM32MP157A-DK1 board.
+To:     Manuel Reis <mluis.reis@gmail.com>, <mcoquelin.stm32@gmail.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+CC:     <linux-kernel@vger.kernel.org>,
+        Michael Opdenacker <michael.opdenacker@bootlin.com>
+References: <ZZWAKQ.K8IZKPD4L3Z9@gmail.com>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <4d92399d-db02-a220-fc8e-889405b85ddf@st.com>
+Date:   Tue, 24 Nov 2020 14:11:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <4e2b87897485e38e251c447b9ad70eb6@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <ZZWAKQ.K8IZKPD4L3Z9@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.187.74]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/24 16:26, Marc Zyngier wrote:
-> On 2020-11-24 07:40, Shenming Lu wrote:
->> On 2020/11/23 17:18, Marc Zyngier wrote:
->>> On 2020-11-23 06:54, Shenming Lu wrote:
->>>> After pausing all vCPUs and devices capable of interrupting, in order
->>>         ^^^^^^^^^^^^^^^^^
->>> See my comment below about this.
->>>
->>>> to save the information of all interrupts, besides flushing the pending
->>>> states in kvm’s vgic, we also try to flush the states of VLPIs in the
->>>> virtual pending tables into guest RAM, but we need to have GICv4.1 and
->>>> safely unmap the vPEs first.
->>>>
->>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->>>> ---
->>>>  arch/arm64/kvm/vgic/vgic-v3.c | 62 +++++++++++++++++++++++++++++++----
->>>>  1 file changed, 56 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c b/arch/arm64/kvm/vgic/vgic-v3.c
->>>> index 9cdf39a94a63..e1b3aa4b2b12 100644
->>>> --- a/arch/arm64/kvm/vgic/vgic-v3.c
->>>> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
->>>> @@ -1,6 +1,8 @@
->>>>  // SPDX-License-Identifier: GPL-2.0-only
->>>>
->>>>  #include <linux/irqchip/arm-gic-v3.h>
->>>> +#include <linux/irq.h>
->>>> +#include <linux/irqdomain.h>
->>>>  #include <linux/kvm.h>
->>>>  #include <linux/kvm_host.h>
->>>>  #include <kvm/arm_vgic.h>
->>>> @@ -356,6 +358,39 @@ int vgic_v3_lpi_sync_pending_status(struct kvm
->>>> *kvm, struct vgic_irq *irq)
->>>>      return 0;
->>>>  }
->>>>
->>>> +/*
->>>> + * With GICv4.1, we can get the VLPI's pending state after unmapping
->>>> + * the vPE. The deactivation of the doorbell interrupt will trigger
->>>> + * the unmapping of the associated vPE.
->>>> + */
->>>> +static void get_vlpi_state_pre(struct vgic_dist *dist)
->>>> +{
->>>> +    struct irq_desc *desc;
->>>> +    int i;
->>>> +
->>>> +    if (!kvm_vgic_global_state.has_gicv4_1)
->>>> +        return;
->>>> +
->>>> +    for (i = 0; i < dist->its_vm.nr_vpes; i++) {
->>>> +        desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
->>>> +        irq_domain_deactivate_irq(irq_desc_get_irq_data(desc));
->>>> +    }
->>>> +}
->>>> +
->>>> +static void get_vlpi_state_post(struct vgic_dist *dist)
->>>
->>> nit: the naming feels a bit... odd. Pre/post what?
->>
->> My understanding is that the unmapping is a preparation for get_vlpi_state...
->> Maybe just call it unmap/map_all_vpes?
-> 
-> Yes, much better.
-> 
-> [...]
-> 
->>>> +        if (irq->hw) {
->>>> +            WARN_RATELIMIT(irq_get_irqchip_state(irq->host_irq,
->>>> +                        IRQCHIP_STATE_PENDING, &is_pending),
->>>> +                       "IRQ %d", irq->host_irq);
->>>
->>> Isn't this going to warn like mad on a GICv4.0 system where this, by definition,
->>> will generate an error?
->>
->> As we have returned an error in save_its_tables if hw && !has_gicv4_1, we don't
->> have to warn this here?
-> 
-> Are you referring to the check in vgic_its_save_itt() that occurs in patch 4?
-> Fair enough, though I think the use of irq_get_irqchip_state() isn't quite
-> what we want, as per my comments on patch #1.
-> 
->>>
->>>> +        }
->>>> +
->>>> +        if (stored == is_pending)
->>>>              continue;
->>>>
->>>> -        if (irq->pending_latch)
->>>> +        if (is_pending)
->>>>              val |= 1 << bit_nr;
->>>>          else
->>>>              val &= ~(1 << bit_nr);
->>>>
->>>>          ret = kvm_write_guest_lock(kvm, ptr, &val, 1);
->>>>          if (ret)
->>>> -            return ret;
->>>> +            goto out;
->>>>      }
->>>> -    return 0;
->>>> +
->>>> +out:
->>>> +    get_vlpi_state_post(dist);
->>>
->>> This bit worries me: you have unmapped the VPEs, so any interrupt that has been
->>> generated during that phase is now forever lost (the GIC doesn't have ownership
->>> of the pending tables).
->>
->> In my opinion, during this phase, the devices capable of interrupting
->> should have  already been paused (prevent from sending interrupts),
->> such as VFIO migration protocol has already realized it.
-> 
-> Is that a hard guarantee? Pausing devices *may* be possible for a limited
-> set of endpoints, but I'm not sure that is universally possible to restart
-> them and expect a consistent state (you have just dropped a bunch of network
-> packets on the floor...).
+Hi Manuel
 
-No, as far as I know, if the VFIO device does not support pause, the migration would
-fail early... And the specific action is decided by the vendor driver.
-In fact, the VFIO migration is still in an experimental phase... I will pay attention
-to the follow-up development.
+On 11/24/20 1:50 PM, Manuel Reis wrote:
+> To:���� Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> To:���� Alexandre Torgue <alexandre.torgue@st.com>
+> Cc:��� linux-kernel@vger.kernel.org
+> CC:��� Michael Opdenacker <michael.opdenacker@bootlin.com>
+> 
+> Hi there,
+> 
+> Mainline stable kernel 5.9.10 hangs indefinitely on a STM32MP157A-DK1 
+> Discovery Kit board.
+> 
+> Built plain vanilla 5.9.10 stable kernel for multi_v7_defconfig (set 
+> compression to XZ) using arm-linux-gnueabi-gcc (Ubuntu 10.2.0-8ubuntu1) 
+> 10.2.0.
+> 
+> Downloaded it to the board memory via tftp running U-Boot v2020.07. 
+> After boot, kernel initiates and prints several messages until it hangs on:
+> 
+> [ 2.692879] stpmic1 1-0033: PMIC Chip Version: 0x10
+> [ 2.704158] vddcore: supplied by regulator-dummy
+> [ 2.710304] vdd_ddr: supplied by regulator-dummy
+> [ 2.716414] vdd: supplied by regulator-dummy
+> [ 2.722355] v3v3: supplied by regulator-dummy
+> [ 2.728033] v1v8_audio: supplied by v3v3
+> [ 2.734287] v3v3_hdmi: supplied by regulator-dummy
+> [ 2.741035] vtt_ddr: supplied by vdd_ddr
+> [ 2.743833] vdd_usb: supplied by regulator-dummy
+> [ 2.751332] vdda: supplied by regulator-dummy
+> [ 2.757371] v1v2_hdmi: supplied by v3v3
+> 
+> No other information or indication is given, even though I added kernel 
+> debugging features such as the ones in "Kernel hacking ->Debug Oops, 
+> Lockups and Hangs".
+> 
+> Any help would be appreciated. Let me know if I can provide any further 
+> information.
+> 
 
+It has been introduced by commit aea6cb99703e ("regulator: resolve 
+supply after creating regulator") and should fixed by this one:
+
+cf1ad559a20d ("regulator: defer probe when trying to get voltage from 
+unresolved supply").
+
+Should be taken in stable tree.
+
+regards
+alex
+
+
+> Cheers,
+> Manuel
 > 
->>> Do you really expect the VM to be restartable from that point? I don't see how
->>> this is possible.
->>>
->>
->> If the migration has encountered an error, the src VM might be
->> restarted, so we have to map the vPEs back.
-> 
-> As I said above, I doubt it is universally possible to do so, but
-> after all, this probably isn't worse that restarting on the target...
-> 
->         M.
