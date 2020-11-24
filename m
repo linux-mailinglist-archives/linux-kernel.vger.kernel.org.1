@@ -2,265 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD6F2C32F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC58A2C3304
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732385AbgKXVbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:31:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56024 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731585AbgKXVbV (ORCPT
+        id S1732635AbgKXVcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:32:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732521AbgKXVcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:31:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606253479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SUFkTpZGndRNTlU23p0AoNkwlyXdbRb6zkOHCX3TCNA=;
-        b=E7IpIizI47cjbaJwKOY6Llk5BzXIQCl8IIY0CL51NXkib4z+69Q35xNVplnXFU39mB4Fgg
-        gZ7vjJRm9hHHPn8k1kVdAlMToGCr49jihS9SzviWRBfNNuwx924DY98MpGINjPKKWke34M
-        F2y6El8nm5S4lmuDIiynBGfvMmTFIrk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-ceXNeoYIOtaAUGOOi9YRkw-1; Tue, 24 Nov 2020 16:31:14 -0500
-X-MC-Unique: ceXNeoYIOtaAUGOOi9YRkw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D9EF107B46A;
-        Tue, 24 Nov 2020 21:31:11 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E1825D9CA;
-        Tue, 24 Nov 2020 21:31:00 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 14:31:00 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Eric Auger <eric.auger@redhat.com>
-Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, joro@8bytes.org,
-        maz@kernel.org, robin.murphy@arm.com, jean-philippe@linaro.org,
-        zhangfei.gao@linaro.org, zhangfei.gao@gmail.com,
-        vivek.gautam@arm.com, shameerali.kolothum.thodi@huawei.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com, tn@semihalf.com,
-        nicoleotsuka@gmail.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v11 01/13] vfio: VFIO_IOMMU_SET_PASID_TABLE
-Message-ID: <20201124143100.05380b0d@w520.home>
-In-Reply-To: <20201116110030.32335-2-eric.auger@redhat.com>
-References: <20201116110030.32335-1-eric.auger@redhat.com>
-        <20201116110030.32335-2-eric.auger@redhat.com>
+        Tue, 24 Nov 2020 16:32:48 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C51C061A52
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:32:47 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 34so347409pgp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:32:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nUebvx46WK355IC8BSYKhA86maU/C5TyOra9y/oS07E=;
+        b=lzAwh4po+9zegkg/2K9x7CHiUUthvj2PFJyxHwt1QdcZQIdrGCSiE3JgzWuDiv+VMN
+         KwBJ/6n/jsAIvSMb6eOJqvl2BVv6D2OMXP8giSKXaaH9JwLNdR2oULKAXe3g8bDVfAub
+         65Ll+320/JpDsvMBOWCFVSOrRLSDK1WOgK6ns=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nUebvx46WK355IC8BSYKhA86maU/C5TyOra9y/oS07E=;
+        b=fYS3tPYtCYafeHu9XOaqeMpJo9dLAgum7oy+r0WPU1aL53UaO9zlLhiYDGv1gES6lq
+         b2J25NXUtK5GrH0rqA0F623BoivfX//ip1IkSv/yhJIqPcHV6ipWImXZYCXtwOdkwBOL
+         wKHHkZ6N57gFuZGOF2AuItSiGuCpxS06nzTz3G2M/6FzIBYaQewXfJf81pZxu/uCGXd3
+         FFqUXo0LPusnNkhT21Jq3dc1UDpsPYOfGhLg5lPjNJZMhOOeRD+Q1JH1DkbBp1xiPDiV
+         iKApLVDpNJrckmD6VubuB5RHAdj/X7VQJRN3VSuWo5hFWTmEFZ9GV9w8FfVPQxkCMfEN
+         vsFQ==
+X-Gm-Message-State: AOAM530FvMtyNjB2552OMeQvhDqcA2phZDyUJxhw9bxQhL1OjiXBo8Pz
+        R8FM80q/GKNxeSKSSOkRuDOD2w==
+X-Google-Smtp-Source: ABdhPJyp86bHnh+pX/bbtyJvtymIhKFSWtRW4h5d/m2XI4eSElpEXSRnILd/bhh2ok8eYrLt5J5YAQ==
+X-Received: by 2002:a17:90a:e2d4:: with SMTP id fr20mr212344pjb.202.1606253566770;
+        Tue, 24 Nov 2020 13:32:46 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k6sm5489pfd.169.2020.11.24.13.32.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 13:32:45 -0800 (PST)
+Date:   Tue, 24 Nov 2020 13:32:44 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
+        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        x86@kernel.org, linux-nfs@vger.kernel.org,
+        GR-Linux-NIC-Dev@marvell.com, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
+        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
+ Clang
+Message-ID: <202011241327.BB28F12F6@keescook>
+References: <202011201129.B13FDB3C@keescook>
+ <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook>
+ <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+ <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
+ <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
+ <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
+ <20201123130348.GA3119@embeddedor>
+ <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 12:00:18 +0100
-Eric Auger <eric.auger@redhat.com> wrote:
+On Mon, Nov 23, 2020 at 08:31:30AM -0800, James Bottomley wrote:
+> Really, no ... something which produces no improvement has no value at
+> all ... we really shouldn't be wasting maintainer time with it because
+> it has a cost to merge.  I'm not sure we understand where the balance
+> lies in value vs cost to merge but I am confident in the zero value
+> case.
 
-> From: "Liu, Yi L" <yi.l.liu@linux.intel.com>
-> 
-> This patch adds an VFIO_IOMMU_SET_PASID_TABLE ioctl
-> which aims to pass the virtual iommu guest configuration
-> to the host. This latter takes the form of the so-called
-> PASID table.
-> 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> 
-> ---
-> v11 -> v12:
-> - use iommu_uapi_set_pasid_table
-> - check SET and UNSET are not set simultaneously (Zenghui)
-> 
-> v8 -> v9:
-> - Merge VFIO_IOMMU_ATTACH/DETACH_PASID_TABLE into a single
->   VFIO_IOMMU_SET_PASID_TABLE ioctl.
-> 
-> v6 -> v7:
-> - add a comment related to VFIO_IOMMU_DETACH_PASID_TABLE
-> 
-> v3 -> v4:
-> - restore ATTACH/DETACH
-> - add unwind on failure
-> 
-> v2 -> v3:
-> - s/BIND_PASID_TABLE/SET_PASID_TABLE
-> 
-> v1 -> v2:
-> - s/BIND_GUEST_STAGE/BIND_PASID_TABLE
-> - remove the struct device arg
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 65 +++++++++++++++++++++++++++++++++
->  include/uapi/linux/vfio.h       | 19 ++++++++++
->  2 files changed, 84 insertions(+)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 67e827638995..87ddd9e882dc 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2587,6 +2587,41 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
->  	return ret;
->  }
->  
-> +static void
-> +vfio_detach_pasid_table(struct vfio_iommu *iommu)
-> +{
-> +	struct vfio_domain *d;
-> +
-> +	mutex_lock(&iommu->lock);
-> +	list_for_each_entry(d, &iommu->domain_list, next)
-> +		iommu_detach_pasid_table(d->domain);
-> +
-> +	mutex_unlock(&iommu->lock);
-> +}
-> +
-> +static int
-> +vfio_attach_pasid_table(struct vfio_iommu *iommu, unsigned long arg)
-> +{
-> +	struct vfio_domain *d;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&iommu->lock);
-> +
-> +	list_for_each_entry(d, &iommu->domain_list, next) {
-> +		ret = iommu_uapi_attach_pasid_table(d->domain, (void __user *)arg);
-> +		if (ret)
-> +			goto unwind;
-> +	}
-> +	goto unlock;
-> +unwind:
-> +	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
-> +		iommu_detach_pasid_table(d->domain);
-> +	}
-> +unlock:
+What? We can't measure how many future bugs aren't introduced because the
+kernel requires explicit case flow-control statements for all new code.
 
-This goto leap frog could be avoided with just:
+We already enable -Wimplicit-fallthrough globally, so that's not the
+discussion. The issue is that Clang is (correctly) even more strict
+than GCC for this, so these are the remaining ones to fix for full Clang
+coverage too.
 
-list_for_each_entry(d, &iommu->domain_list, next) {
-	ret = iommu_uapi_attach_pasid_table(d->domain, (void __user *)arg);
-	if (ret) {
-		list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
-			iommu_detach_pasid_table(d->domain);
-		}
-		break;
-	}
-}
+People have spent more time debating this already than it would have
+taken to apply the patches. :)
 
-> +	mutex_unlock(&iommu->lock);
-> +	return ret;
-> +}
-> +
->  static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
->  					   struct vfio_info_cap *caps)
->  {
-> @@ -2747,6 +2782,34 @@ static int vfio_iommu_type1_unmap_dma(struct vfio_iommu *iommu,
->  			-EFAULT : 0;
->  }
->  
-> +static int vfio_iommu_type1_set_pasid_table(struct vfio_iommu *iommu,
-> +					    unsigned long arg)
-> +{
-> +	struct vfio_iommu_type1_set_pasid_table spt;
-> +	unsigned long minsz;
-> +	int ret = -EINVAL;
-> +
-> +	minsz = offsetofend(struct vfio_iommu_type1_set_pasid_table, flags);
-> +
-> +	if (copy_from_user(&spt, (void __user *)arg, minsz))
-> +		return -EFAULT;
-> +
-> +	if (spt.argsz < minsz)
-> +		return -EINVAL;
-> +
-> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET &&
-> +	    spt.flags & VFIO_PASID_TABLE_FLAG_UNSET)
-> +		return -EINVAL;
-> +
-> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET)
-> +		ret = vfio_attach_pasid_table(iommu, arg + minsz);
-> +	else if (spt.flags & VFIO_PASID_TABLE_FLAG_UNSET) {
-> +		vfio_detach_pasid_table(iommu);
-> +		ret = 0;
-> +	}
+This is about robustness and language wrangling. It's a big code-base,
+and this is the price of our managing technical debt for permanent
+robustness improvements. (The numbers I ran from Gustavo's earlier
+patches were that about 10% of the places adjusted were identified as
+legitimate bugs being fixed. This final series may be lower, but there
+are still bugs being found from it -- we need to finish this and shut
+the door on it for good.)
 
-This doesn't really validate that the other flag bits are zero, ex.
-user could pass flags = (1 << 8) | VFIO_PASID_TABLE_FLAG_SET and we'd
-just ignore the extra bit.  So this probably needs to be:
-
-if (spt.flags == VFIO_PASID_TABLE_FLAG_SET)
-	ret = vfio_attach_pasid_table(iommu, arg + minsz);
-else if (spt.flags == VFIO_PASID_TABLE_FLAG_UNSET)
-	vfio_detach_pasid_table(iommu);
-
-Or otherwise validate that none of the other bits are set.  It also
-seems cleaner to me to set the initial value of ret = 0 and end this
-with:
-
-else
-	ret = -EINVAL;
-
-
-> +	return ret;
-> +}
-> +
->  static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->  					unsigned long arg)
->  {
-> @@ -2867,6 +2930,8 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
->  		return vfio_iommu_type1_unmap_dma(iommu, arg);
->  	case VFIO_IOMMU_DIRTY_PAGES:
->  		return vfio_iommu_type1_dirty_pages(iommu, arg);
-> +	case VFIO_IOMMU_SET_PASID_TABLE:
-> +		return vfio_iommu_type1_set_pasid_table(iommu, arg);
->  	default:
->  		return -ENOTTY;
->  	}
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 2f313a238a8f..78ce3ce6c331 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -14,6 +14,7 @@
->  
->  #include <linux/types.h>
->  #include <linux/ioctl.h>
-> +#include <linux/iommu.h>
->  
->  #define VFIO_API_VERSION	0
->  
-> @@ -1180,6 +1181,24 @@ struct vfio_iommu_type1_dirty_bitmap_get {
->  
->  #define VFIO_IOMMU_DIRTY_PAGES             _IO(VFIO_TYPE, VFIO_BASE + 17)
->  
-> +/*
-> + * VFIO_IOMMU_SET_PASID_TABLE - _IOWR(VFIO_TYPE, VFIO_BASE + 22,
-
-We already reuse ioctl indexes between type1 and spapr (ex. +17 is
-either VFIO_IOMMU_DIRTY_PAGES or VFIO_IOMMU_SPAPR_REGISTER_MEMORY
-depending on the iommu type).  I wonder if we should reuse +18 here
-instead.
-
-> + *			struct vfio_iommu_type1_set_pasid_table)
-> + *
-> + * The SET operation passes a PASID table to the host while the
-> + * UNSET operation detaches the one currently programmed. Setting
-> + * a table while another is already programmed replaces the old table.
-> + */
-> +struct vfio_iommu_type1_set_pasid_table {
-> +	__u32	argsz;
-> +	__u32	flags;
-> +#define VFIO_PASID_TABLE_FLAG_SET	(1 << 0)
-> +#define VFIO_PASID_TABLE_FLAG_UNSET	(1 << 1)
-> +	struct iommu_pasid_table_config config; /* used on SET */
-> +};
-> +
-> +#define VFIO_IOMMU_SET_PASID_TABLE	_IO(VFIO_TYPE, VFIO_BASE + 22)
-> +
->  /* -------- Additional API for SPAPR TCE (Server POWERPC) IOMMU -------- */
->  
->  /*
-
+-- 
+Kees Cook
