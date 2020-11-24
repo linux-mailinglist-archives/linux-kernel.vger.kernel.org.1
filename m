@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2030D2C235D
+	by mail.lfdr.de (Postfix) with ESMTP id 8D05F2C235E
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732321AbgKXK4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:56:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        id S1732325AbgKXK5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbgKXK4q (ORCPT
+        with ESMTP id S1725786AbgKXK5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:56:46 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76B5C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:56:44 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id j19so17122072pgg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:56:44 -0800 (PST)
+        Tue, 24 Nov 2020 05:57:21 -0500
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F8EC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:57:21 -0800 (PST)
+Received: by mail-vk1-xa44.google.com with SMTP id u16so4667596vkb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:57:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ho+OU1gWIbxlU6vkFFYhPItLBY/4CgC1Ux1l0SznRAg=;
-        b=SSOV3AHKcYwB6+VVY1RKwf3eonAoK6VB7pgCtKHR8LD3fRuhXLehOkIUQSnbQIDI4/
-         p3q0lllVhyARw/nFniVJuSZDSA1nyuupwNNDJFfBpDHPMhOE1FaqJl/r4F+EjejdwGh6
-         JcTYJjpYmkK5vvITW2a+tZh4AjKcXiOtBFjVSdkurRhJSjv91DLg2qu+cCdrKbmCH2ek
-         XlPQWnIeN1dG8UEFO7U6FU5ocZw0syYsyS7a7xM2lRPAMw13hOx8/vzLXyLbY8/o4EiN
-         9GUnx1vWcyBeLGNll61sm78qt98gQpFgpeGDJx/kqBx4w5ovOS0zJDPQfVVMkvsWOSLZ
-         1UcA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hU262f2HnxuyZTfh5JckIXsgmt3xi8/poiOz2lwFaaA=;
+        b=wk6+VYMguzeNCjGJncZmPFPwpYJGiNgN4zubHvWbUwro66ZSJT6VmfcFA9ZUpFTL/u
+         kJMrUyGDjcIU4N2Q6DpSsGWrbZ2kaWU1+eiG2eMeSKoFooX3Oix7mBB622BstcvbKyKV
+         bRoW1mXbgkgS2MtAjAy76amkuP3IQxqwAAlYSnh8uIELQprOQuaspaVd07jBiXDErQdN
+         LLaPZcO7XZYjRhO73F3AsQJAca7bqF2sARp2kcKCXUW9qfZGr/o1XNBAck+5Krkk229n
+         Yh+ffDDb96f+zcf+qUTjmyfzopt45jNJalkrLQHbrc7iIEtfkqyltCRXh3pszED/WR1D
+         dmbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ho+OU1gWIbxlU6vkFFYhPItLBY/4CgC1Ux1l0SznRAg=;
-        b=jm+2LVAr3qB0nlRiRGuhhaLWxCqJTWoTwRkPNqRxOTZ/Tl3EP181ZnHCyISFnCxQhC
-         CqNI0fsfLCbwVoqVqiWCtC3rEcVl/7Zf312kB/WZCtMJJS1+3zxdrMItM5JgAt9+M0Qz
-         92BfSIu+W4U1D1I0iOSNKCqJFWkYDbV0ylbxpD8wu0HBqCdvN+H+DoJzm7C+sooSv+7e
-         jmTM7mQCgwJHugxqzxbG/+JZWz7wQAkk6Y6imhhlKECaUSjQZ/9EZxRdF2EN7QudTWSO
-         e/pxv3+mE/3jSoLxINDDLcL41XjRpGJOCl+YMWsRdd5oIzB+Eo6STKiIi+2SRqCu1X5t
-         2ahg==
-X-Gm-Message-State: AOAM533DCk1TN56zJCcPZm2y1dbmeKYDB1Su+CATChSN9e8TEeaSXyJD
-        n/wye7O/3WE2YOhNExY0wtvzwQ==
-X-Google-Smtp-Source: ABdhPJx7aupXyGjbsXOlPp/GgIVXYWhXASJLws7GvUy6w0exJM/+0lrVY6h+M0ix3HjuU4jTiROcvg==
-X-Received: by 2002:a17:90b:4398:: with SMTP id in24mr4069757pjb.188.1606215404113;
-        Tue, 24 Nov 2020 02:56:44 -0800 (PST)
-Received: from [0.0.0.0] (124-171-134-245.dyn.iinet.net.au. [124.171.134.245])
-        by smtp.gmail.com with UTF8SMTPSA id j10sm1087588pji.29.2020.11.24.02.56.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 02:56:43 -0800 (PST)
-Subject: Re: [PATCH kernel v4 2/8] genirq/irqdomain: Clean legacy IRQ
- allocation
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>
-References: <20201124061720.86766-1-aik@ozlabs.ru>
- <20201124061720.86766-3-aik@ozlabs.ru>
- <CAHp75VfV4mG23C9Ep1vNLk2oBjB=LTQGyU=fhWPhw4PX-Ci-7A@mail.gmail.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <38b803db-2d67-dfa0-7e7b-e4ce816576ad@ozlabs.ru>
-Date:   Tue, 24 Nov 2020 21:56:36 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
- Thunderbird/84.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hU262f2HnxuyZTfh5JckIXsgmt3xi8/poiOz2lwFaaA=;
+        b=sZAmIb5SWfTjgcSuhHFbu9WSt1419imA7nFBEBVGq4qC7/zf0k6VM4bES3Sjy2lmzW
+         Xe79iY+fT65vYLpmIvCQuaOF8SAXcUq/X35DJyqLgwTcLHke3Km0LBQWQmpekdJ8GyxU
+         R+dG9usw1Iaw7n+Q5zaz8KNNhDsTjzj1qTMi5AccLVixcZjny3olAMX5GGMomHZxa+9o
+         1ZkhBG1ffAwVu8g9QtmzUPRk0mjpWOfz2fcmvaBzccfyGXN9S0/qACA+JOdDxljv5zIu
+         KBNJ+0zZbKaf6XGuNA8XxnrRkFeTe/klMhRydkJkx2n2QWCiG0Z1SSFoxOM/hvbC8KQM
+         A0QA==
+X-Gm-Message-State: AOAM532yYtoP+VwHVsIz1PZfYcJ0Fiwhrce6RYIHD6IuHAq82rrKHOen
+        itPLLIeJe0fxkgqM6u396sdO+lALJ5r5I1dBz2g+nTXZSKyhxQ==
+X-Google-Smtp-Source: ABdhPJxQfFu/Vpu7788dZxGuli6si0gWNoMI5GT2W0PAqQMomavKphMlfuJUJGa3lMz21r2ZOHffV9M/D0Na5EMapIE=
+X-Received: by 2002:a1f:2ed2:: with SMTP id u201mr3125274vku.7.1606215440944;
+ Tue, 24 Nov 2020 02:57:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfV4mG23C9Ep1vNLk2oBjB=LTQGyU=fhWPhw4PX-Ci-7A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de> <20201124103242.2971199-2-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20201124103242.2971199-2-u.kleine-koenig@pengutronix.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 24 Nov 2020 11:56:44 +0100
+Message-ID: <CAPDyKFoS60VjCSAqSBmtjpxGrVefHT4xt+O5qzsjBYRmQsJ8OA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] amba: Fix resource leak for drivers without .remove
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 24 Nov 2020 at 11:33, Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> Consider an amba driver with a .probe but without a .remove callback (e.g=
+.
+> pl061_gpio_driver). The function amba_probe() is called to bind a device
+> and so dev_pm_domain_attach() and others are called. As there is no remov=
+e
+> callback amba_remove() isn't called at unbind time however and so calling
+> dev_pm_domain_detach() is missed and the pm domain keeps active.
+>
+> To fix this always use the core driver callbacks and handle missing amba
+> callbacks there. For probe refuse registration as a driver without probe
+> doesn't make sense.
+>
+> Fixes: 7cfe249475fd ("ARM: AMBA: Add pclk support to AMBA bus infrastruct=
+ure")
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
 
-On 11/24/20 8:19 PM, Andy Shevchenko wrote:
-> On Tue, Nov 24, 2020 at 8:20 AM Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
->>
->> There are 10 users of __irq_domain_alloc_irqs() and only one - IOAPIC -
->> passes realloc==true. There is no obvious reason for handling this
->> specific case in the generic code.
->>
->> This splits out __irq_domain_alloc_irqs_data() to make it clear what
->> IOAPIC does and makes __irq_domain_alloc_irqs() cleaner.
->>
->> This should cause no behavioral change.
-> 
->> +       ret = __irq_domain_alloc_irqs_data(domain, virq, nr_irqs, node, arg, affinity);
->> +       if (ret <= 0)
->>                  goto out_free_desc;
-> 
-> Was or wasn't 0 considered as error code previously?
-
-Oh. I need to clean this up, the idea is since this does not allocate 
-IRQs, this should return error code and not an irq, I'll make this explicit.
-
-> 
->>          return virq;
-> 
->>   out_free_desc:
->>          irq_free_descs(virq, nr_irqs);
->>          return ret;
-> 
-
--- 
-Alexey
+> ---
+>  drivers/amba/bus.c | 20 ++++++++++++--------
+>  1 file changed, 12 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+> index 8658e0533b67..8c4a42df47c6 100644
+> --- a/drivers/amba/bus.c
+> +++ b/drivers/amba/bus.c
+> @@ -300,10 +300,11 @@ static int amba_remove(struct device *dev)
+>  {
+>         struct amba_device *pcdev =3D to_amba_device(dev);
+>         struct amba_driver *drv =3D to_amba_driver(dev->driver);
+> -       int ret;
+> +       int ret =3D 0;
+>
+>         pm_runtime_get_sync(dev);
+> -       ret =3D drv->remove(pcdev);
+> +       if (drv->remove)
+> +               ret =3D drv->remove(pcdev);
+>         pm_runtime_put_noidle(dev);
+>
+>         /* Undo the runtime PM settings in amba_probe() */
+> @@ -320,7 +321,9 @@ static int amba_remove(struct device *dev)
+>  static void amba_shutdown(struct device *dev)
+>  {
+>         struct amba_driver *drv =3D to_amba_driver(dev->driver);
+> -       drv->shutdown(to_amba_device(dev));
+> +
+> +       if (drv->shutdown)
+> +               drv->shutdown(to_amba_device(dev));
+>  }
+>
+>  /**
+> @@ -333,12 +336,13 @@ static void amba_shutdown(struct device *dev)
+>   */
+>  int amba_driver_register(struct amba_driver *drv)
+>  {
+> -       drv->drv.bus =3D &amba_bustype;
+> +       if (!drv->probe)
+> +               return -EINVAL;
+>
+> -#define SETFN(fn)      if (drv->fn) drv->drv.fn =3D amba_##fn
+> -       SETFN(probe);
+> -       SETFN(remove);
+> -       SETFN(shutdown);
+> +       drv->drv.bus =3D &amba_bustype;
+> +       drv->drv.probe =3D amba_probe;
+> +       drv->drv.remove =3D amba_remove;
+> +       drv->drv.shutdown =3D amba_shutdown;
+>
+>         return driver_register(&drv->drv);
+>  }
+> --
+> 2.29.2
+>
