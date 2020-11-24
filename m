@@ -2,105 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1932C21A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158022C21A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731435AbgKXJg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:36:58 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10077 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731411AbgKXJg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:36:58 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbcd43f0001>; Tue, 24 Nov 2020 01:37:03 -0800
-Received: from [10.26.73.42] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 09:36:54 +0000
-Subject: Re: [PATCH v3 1/6] regulator: core: validate selector against
- linear_min_sel
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>
-CC:     <s.hauer@pengutronix.de>, <ttynkkynen@nvidia.com>,
-        <linus.walleij@linaro.org>, <axel.lin@ingics.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <1605280870-32432-1-git-send-email-claudiu.beznea@microchip.com>
- <1605280870-32432-2-git-send-email-claudiu.beznea@microchip.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <cb096dc5-3757-d72f-41a9-c99007c84b40@nvidia.com>
-Date:   Tue, 24 Nov 2020 09:36:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731444AbgKXJhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:37:02 -0500
+Received: from verein.lst.de ([213.95.11.211]:53607 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731438AbgKXJhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:37:01 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DB23F67373; Tue, 24 Nov 2020 10:36:58 +0100 (CET)
+Date:   Tue, 24 Nov 2020 10:36:58 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Christoph Hellwig <hch@lst.de>, Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3 1/3] LICENSES: Add the CC-BY-4.0 license
+Message-ID: <20201124093658.GA13174@lst.de>
+References: <cover.1606137108.git.linux@leemhuis.info> <c07e51e153f453c83c77a75513ad3d5ec70ef1be.1606137108.git.linux@leemhuis.info> <20201124091852.GB11695@lst.de> <04eae024-811d-d11e-b8bd-52f0dd0e225f@leemhuis.info>
 MIME-Version: 1.0
-In-Reply-To: <1605280870-32432-2-git-send-email-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606210623; bh=l40HTXpzevEVEAEAdmPjFtiskwyo/SaTkS4mo69i94o=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=GA6XFo0EWRG82MhQ2+sy2JaurLhA93lfZB4bCF87UPO8OyvgT4cgPGQEnfKGnFuNp
-         RkaI0KhguU2mPalny+tr5y6jrLlOjtaZXECFAJ4UVoi5Ov8f+qXOPtfZDYt9Alx2PJ
-         lf62n1SxnsaAvS3KNznXup4dPWf0XqnrfXL0BaD2KJkhDCCoxUrnf6rn28Sb5S0Squ
-         LdLQL8VuXlBABVpTgKkqZ94T9JA/0tkGyKEeDkBqvE8bLWS9kdCJgeaq+C8xBsDjzg
-         vd2D7TyiITvz+TbWJvYZAIWgwiLR9G2zq5DJMNPPXFcEOsRhsJNdVK4jfPz6Dk02YU
-         OtW48vLvNk2XA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04eae024-811d-d11e-b8bd-52f0dd0e225f@leemhuis.info>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 24, 2020 at 10:31:33AM +0100, Thorsten Leemhuis wrote:
+> Am 24.11.20 um 10:18 schrieb Christoph Hellwig:
+>> On Tue, Nov 24, 2020 at 09:00:01AM +0100, Thorsten Leemhuis wrote:
+>>> For context: Patch 2 of this series adds a text to the Documentation/ directory
+>>> which (for now) uses "GPL-2.0+ OR CC-BY-4.0", as I want to make it easy and
+>>> attractive for others to base their work on it. I'm not strongly attached to
+>>> CC-BY-4.0, but it seemed like the best choice: it's designed for such usage and
+>>> afaics better than using MIT for text files.
+>>
+>> And you've not Cced me on that patch 2 or patch 3, which makes Ccing
+>> me on this pretty useless as I can't judge the context.
+>
+> Argh, sorry, slipped through. You can find it here:
+>
+> https://lore.kernel.org/linux-doc/2f314e58cb14c1579f843f8c72bdb4bbb83ac20a.1606137108.git.linux@leemhuis.info/
+>
+> FWIW, here it is for easy access (just sent with thunderbird instead of
+> git send-mail, hopefully should be enough for this):
 
-On 13/11/2020 15:21, Claudiu Beznea wrote:
-> There are regulators who's min selector is not zero. Selectors loops
-> (looping b/w zero and regulator::desc::n_voltages) might throw errors
-> because invalid selectors are used (lower than
-> regulator::desc::linear_min_sel). For this situations validate selectors
-> against regulator::desc::linear_min_sel.
-
-
-After this commit was merged, I noticed a regression in the DFLL (CPU
-clock source) on Tegra124. The DFLL driver
-(drivers/clk/tegra/clk-dfll.c) calls regulator_list_voltage() in a loop
-to determine the selector for a given voltage (see function
-find_vdd_map_entry_exact()).
-
-Currently, the DFLL driver queries the number of voltages provided by
-the regulator by calling regulator_count_voltages() and then starting
-from 0, iterates through the number of voltages to find the selector
-value for the voltage it is looking for by calling
-regulator_list_voltage(). It assumes that any negative value returned by
-calling regulator_list_voltage() is an error and this will cause the
-loop up to terminate.
-
-In this case the regulator in question is the as3722 and the
-linear_min_sel for this regulator is 1 and so when the DFLL driver calls
-regulator_list_voltage() with a selector value of 0 it now returns a
-negative error code, as expected by this change, and this terminates the
-loop up in the DFLL driver. So I can clearly see why this is happening
-and I could fix up the DFLL driver to avoid this.
-
-Before doing so, I wanted to ask if that is the correct fix here,
-because it seems a bit odd that regulator_count_voltages() returns N
-voltages, but if the min selector value is greater than 0, then actually
-there are less than N. However, changing the number of voltages
-supported by the regulator to be N - linear_min_sel does not make sense
-either because then we need to know the linear_min_sel in order to
-determine the first valid voltage.
-
-In case of the as3722, the value 0 means that the regulator is powered
-down. So it is a valid setting and equates to 0 volts at the output AFAICT.
-
-Please let me know your thoughts are the correct way to fix this up.
-
-Thanks
-Jon
-
--- 
-nvpublic
+So what is so special with this documentation that it needs a
+(for the kernel tree) unusual license?  How to we make sure people
+don't accidentally end up including things they can't?
