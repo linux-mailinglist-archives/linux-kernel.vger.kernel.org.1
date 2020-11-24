@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8985F2C2959
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF302C295A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388851AbgKXOWV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 09:22:21 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:34992 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388376AbgKXOWU (ORCPT
+        id S2388856AbgKXOWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387688AbgKXOWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:22:20 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-254-hA5XXtmjPeW6Yg81jUCPrg-1; Tue, 24 Nov 2020 14:22:16 +0000
-X-MC-Unique: hA5XXtmjPeW6Yg81jUCPrg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 14:22:15 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 24 Nov 2020 14:22:15 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     linux-efi <linux-efi@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-CC:     "'matthew.garrett@nebula.com'" <matthew.garrett@nebula.com>,
-        "'jk@ozlabs.org'" <jk@ozlabs.org>,
-        'Ard Biesheuvel' <ardb@kernel.org>
-Subject: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
-Thread-Topic: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
-Thread-Index: AdbCbM2Q6wdSIj4dRX6VFD+iYFiXew==
-Date:   Tue, 24 Nov 2020 14:22:15 +0000
-Message-ID: <5f31cde519b941308412b3849197ee7c@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 24 Nov 2020 09:22:44 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59839C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:22:44 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id 23so22471272wrc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:22:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:message-id:in-reply-to:references
+         :mime-version;
+        bh=H6M9KkxfOgGnU3wVbw+NKs4jfgioXI1a9cDe+UiHovk=;
+        b=VPOU5qFaMgOz/6GSRqrKhJn9X9LT68yPnE0Xz7W6NpZ3wGZlOLMvA3/4kyqhWRz3Qc
+         NfYqP5XuCQ7Z/ggIQIdvvgdfksQrWF+MB5p3xjGHL/1otoGSqmE4ThVV0uyZfIopRdE8
+         r+PumKwrzc81lLojGw5ikBc3SVNXW0qNIJK/PvYceDmOGLfCJKHG511S9GFhVDbRA98c
+         /ZX13uliAXDjb4qpg7LGhqC8NVJg4eQzCeKfXRZFK9BiwbqXcMoE5jZEpyi00Q9KRGQB
+         B2Lh5KqPGeFI/DqKif+2QB7IC7gqPa4+NdF6CQ2fxlH7cNe7CWIJjVATkOt96gYFIJN4
+         QJWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:message-id:in-reply-to
+         :references:mime-version;
+        bh=H6M9KkxfOgGnU3wVbw+NKs4jfgioXI1a9cDe+UiHovk=;
+        b=am4SBRjiRrJJw0JjM7irvwvcB+mPNeeWa/6YGo+Kmw7gc4h7YAY/rA5hxZrMqKhM4S
+         3QnkTfqqMHObWjEBvWSsphftF/jnY4z2VzGWr//jRj60C8qqmB8+Ys9vItlacrzhMqSu
+         Gjy5AJlRf89tdXXqJFbvADYFCeeHictDffKxDbSoowQyTCjpySPu/8nYssLdXZYYB+Mj
+         yneuGxht5E5vqiElzewUJ4eCAhzv1rrDEbeNVhzglvAPx2eSb5h/9au5ZTTOSDr2fMDv
+         AZviiHTBFMFlz5kGpFFyTxLZO5/lRI4uoUNunOacZuI+aQ+xNAXfw1TvlQRU8ratKyc9
+         m06g==
+X-Gm-Message-State: AOAM531178p6YIRhpZa6rLON3KCc5hV8IkLYVUu5EhKRFTT8T0g4u2dF
+        CVYkwkaoaNnbHVzZw4GL0Ww=
+X-Google-Smtp-Source: ABdhPJyRkwma0tTeFnZUL90qJ6ulNaU9n8drB9d1XXH2PM679D+2T/PNEjwaEXH5q9uD3u6gXMkvGA==
+X-Received: by 2002:adf:dec1:: with SMTP id i1mr5487258wrn.129.1606227763128;
+        Tue, 24 Nov 2020 06:22:43 -0800 (PST)
+Received: from [192.168.1.12] (a89-155-154-90.cpe.netcabo.pt. [89.155.154.90])
+        by smtp.gmail.com with ESMTPSA id 9sm5657413wmo.34.2020.11.24.06.22.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 06:22:42 -0800 (PST)
+Date:   Tue, 24 Nov 2020 14:22:35 +0000
+From:   Manuel Reis <mluis.reis@gmail.com>
+Subject: Re: ARM.STM32 - Mainline stable kernel 5.9.10 hangs indefinitely on
+ =?UTF-8?Q?a=0D=0A?= STM32MP157A-DK1 board.
+To:     Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     mcoquelin.stm32@gmail.com,
+        =?iso-8859-2?q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>,
+        linux-kernel@vger.kernel.org,
+        Michael Opdenacker <michael.opdenacker@bootlin.com>
+Message-Id: <N91BKQ.LV5OVN39B5VU2@gmail.com>
+In-Reply-To: <4d92399d-db02-a220-fc8e-889405b85ddf@st.com>
+References: <ZZWAKQ.K8IZKPD4L3Z9@gmail.com>
+        <4d92399d-db02-a220-fc8e-889405b85ddf@st.com>
+X-Mailer: geary/3.38.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've just updated to the head of Linus's tree (5.10-rc5) and got the following
-'splat' during shutdown.
+Thank you very much Alex,
 
-Userspace is Ubuntu 20.04.
+Tried, tested and verified. Got it working with stable/master 
+(v5.10-rc5).
 
-rc4 rebooted fine.
+Regards,
+Manuel
 
-I'll try to bisect - but it isn't quick.
+On ter, 24 nov, 2020 at 14:11, Alexandre Torgue 
+<alexandre.torgue@st.com> wrote:
+> Hi Manuel
+> 
+> On 11/24/20 1:50 PM, Manuel Reis wrote:
+>> To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>
+>> To:     Alexandre Torgue <alexandre.torgue@st.com>
+>> Cc:    linux-kernel@vger.kernel.org
+>> CC:    Michael Opdenacker <michael.opdenacker@bootlin.com>
+>> 
+>> Hi there,
+>> 
+>> Mainline stable kernel 5.9.10 hangs indefinitely on a 
+>> STM32MP157A-DK1 Discovery Kit board.
+>> 
+>> Built plain vanilla 5.9.10 stable kernel for multi_v7_defconfig (set 
+>> compression to XZ) using arm-linux-gnueabi-gcc (Ubuntu 
+>> 10.2.0-8ubuntu1) 10.2.0.
+>> 
+>> Downloaded it to the board memory via tftp running U-Boot v2020.07. 
+>> After boot, kernel initiates and prints several messages until it 
+>> hangs on:
+>> 
+>> [ 2.692879] stpmic1 1-0033: PMIC Chip Version: 0x10
+>> [ 2.704158] vddcore: supplied by regulator-dummy
+>> [ 2.710304] vdd_ddr: supplied by regulator-dummy
+>> [ 2.716414] vdd: supplied by regulator-dummy
+>> [ 2.722355] v3v3: supplied by regulator-dummy
+>> [ 2.728033] v1v8_audio: supplied by v3v3
+>> [ 2.734287] v3v3_hdmi: supplied by regulator-dummy
+>> [ 2.741035] vtt_ddr: supplied by vdd_ddr
+>> [ 2.743833] vdd_usb: supplied by regulator-dummy
+>> [ 2.751332] vdda: supplied by regulator-dummy
+>> [ 2.757371] v1v2_hdmi: supplied by v3v3
+>> 
+>> No other information or indication is given, even though I added 
+>> kernel debugging features such as the ones in "Kernel hacking 
+>> ->Debug Oops, Lockups and Hangs".
+>> 
+>> Any help would be appreciated. Let me know if I can provide any 
+>> further information.
+>> 
+> 
+> It has been introduced by commit aea6cb99703e ("regulator: resolve 
+> supply after creating regulator") and should fixed by this one:
+> 
+> cf1ad559a20d ("regulator: defer probe when trying to get voltage from 
+> unresolved supply").
+> 
+> Should be taken in stable tree.
+> 
+> regards
+> alex
+> 
+> 
+>> Cheers,
+>> Manuel
+>> 
 
-	David
-
-[   49.612436] kernel BUG at mm/slub.c:304!
-[   49.616407] invalid opcode: 0000 [#1] SMP PTI
-[   49.620806] CPU: 4 PID: 2044 Comm: (sd-umount) Not tainted 5.10.0-rc5+ #104
-[   49.627816] Hardware name: Supermicro A1SAi/A1SRi, BIOS 1.1a 08/27/2015
-[   49.634484] RIP: 0010:__slab_free+0x1c9/0x380
-[   49.638874] Code: 41 5e 41 5f 5d c3 41 f7 46 08 00 0d 21 00 0f 85 f0 fe ff ff 4d 85 ed 0f 85 e7 fe ff ff 80 4c 24 5b 80 45 31 c0 e9 2a ff ff ff <0f> 0b 49 3b 5c 24 28 75 97 4c 89 c0 41 89 f0 44 89 fe 49 89 4c 24
-[   49.659081] RSP: 0018:ffffa69740d17ce0 EFLAGS: 00010246
-[   49.665694] RAX: ffff98444d492800 RBX: 0000000000080005 RCX: ffff98444d492000
-[   49.674227] RDX: ffff98444d492000 RSI: fffff4a184352400 RDI: ffff984440043300
-[   49.682735] RBP: ffffa69740d17d78 R08: 0000000000000001 R09: ffffffffb8a66024
-[   49.691253] R10: ffff98444d492000 R11: 0000000000000001 R12: fffff4a184352400
-[   49.699753] R13: ffff98444d492000 R14: ffff984440043300 R15: ffff98444d492000
-[   49.708230] FS:  00007f353813d980(0000) GS:ffff9847afd00000(0000) knlGS:0000000000000000
-[   49.717695] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   49.724823] CR2: 00007f3538f2f760 CR3: 000000010f6dc000 CR4: 00000000001006e0
-[   49.733369] Call Trace:
-[   49.737236]  ? xas_store+0x59/0x630
-[   49.742141]  kfree+0x3af/0x400
-[   49.746609]  ? up+0x37/0x70
-[   49.750817]  ? efivarfs_destroy+0x24/0x30
-[   49.756220]  efivarfs_destroy+0x24/0x30
-[   49.761435]  ? efivarfs_kill_sb+0x30/0x30
-[   49.766811]  __efivar_entry_iter+0xed/0x130
-[   49.772355]  efivarfs_kill_sb+0x25/0x30
-[   49.777540]  deactivate_locked_super+0x3b/0x80
-[   49.783360]  deactivate_super+0x3e/0x50
-[   49.788554]  cleanup_mnt+0x109/0x160
-[   49.793471]  __cleanup_mnt+0x12/0x20
-[   49.798388]  task_work_run+0x70/0xb0
-[   49.803298]  exit_to_user_mode_prepare+0x14b/0x170
-[   49.809450]  syscall_exit_to_user_mode+0x2d/0x150
-[   49.815522]  do_syscall_64+0x45/0x90
-[   49.820471]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   49.826912] RIP: 0033:0x7f3538ff32cb
-[   49.831880] Code: 8b 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 95 8b 0c 00 f7 d8 64 89 01 48
-[   49.853650] RSP: 002b:00007ffffcd5efc8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-[   49.862792] RAX: 0000000000000000 RBX: 0000557eb1ea4c00 RCX: 00007f3538ff32cb
-[   49.871520] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000557eb1ea4c40
-[   49.880260] RBP: 0000000000000000 R08: 0000000000008000 R09: 00007ffffcd5e3c0
-[   49.889013] R10: 00007f353813d900 R11: 0000000000000206 R12: 0000000000000000
-[   49.897778] R13: 0000000000000000 R14: 0000000000000001 R15: 0000557eb1e9fb60
-[   49.906560] Modules linked in: nls_iso8859_1 dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua ipmi_ssif intel_powerclamp coretemp kvm_intel kvm joydev input_leds ipmi_si intel_cstate ipmi_devintf ipmi_msghandler mac_hid sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 multipath linear ast drm_vram_helper drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec drm_ttm_helper ttm drm gpio_ich ahci igb crct10dif_pclmul hid_generic crc32_pclmul i2c_i801 ghash_clmulni_intel aesni_intel libahci glue_helper crypto_simd i2c_ismt cryptd lpc_ich dca i2c_smbus usbhid i2c_algo_bit hid
-[   49.983763] ---[ end trace b39f2c043c8d157b ]---
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
