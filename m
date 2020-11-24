@@ -2,173 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96982C2FF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732742C2FFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390949AbgKXSbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:31:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390911AbgKXSbn (ORCPT
+        id S2404186AbgKXSdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:33:25 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:53452 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390872AbgKXSdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:31:43 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EB1C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:31:43 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id t8so19332338pfg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3pDNDxEpeYYvG914Ntyi16QK2xKi5rl8BfIONS+Vyeg=;
-        b=ELUJcJFa5YynV0JyRD0UJRvb02Kq/8+szcZ74mPsjminVRYns9l5GjTqtDeD56vdba
-         /Vq45RCeCw5y+xBvdcDxpAZhRMo9XCozUXBS0s50mktV6vzOOrrhn5JYNj3KfQN/kITA
-         c7pKuuPug34WduB9P1254ddZ3C6QpbRBSFqCbkvDZxN1JW767q9XAlj1y87Vm+U0N23M
-         YA9qjlZG3Uy7FmfiAqZ3WQ87Wf1TRG//aomGQugTH0QWcHbyuMMvSvPRRj08Ty5mDtPo
-         c1e34nWq0ZeLTeKodqZXNOEQPuxWVtB3mH1q6US9nWc5h3nY+sN4kbzFtVREl1c6Hhu0
-         L35A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3pDNDxEpeYYvG914Ntyi16QK2xKi5rl8BfIONS+Vyeg=;
-        b=Eq6Ls1hycI2RBKETzUo7KHRR1qzrkvXMu1LnHXQwNZ1arOqpCrGnkjNMQ/OsUw+pgI
-         TCCHUFBVwocS5sRxBq+l7NahVrSyBWvvgx8E3tGuQ3v/0eWjaCSavhgrLDYJDt91uRLB
-         HuLSeNnDaK19l9R/higSyu4QYFY7GghDfz98E5YpRSLT8pgNscDIliFuIozTltdcso94
-         XgDP59fiJiP/IjetLlc0EzBvl2Gp0kXRj83eAmTP5yCLrcWpLRv5iVpYcQsxxubt9YIL
-         Buh56HjUx7b63pURmz0XYf5CJ1ybmIIRPsjYtlg6MvXv6Wg8w1+PhuyMIGA1y982jXBp
-         a+Mg==
-X-Gm-Message-State: AOAM530Gt8XE4jRH24y8l3jkcUNXCQLrIRYho07Hee3+bjx6QrEPekOY
-        DAc3Cqqf+cyPIVXKLFcHZOIuFg==
-X-Google-Smtp-Source: ABdhPJyghN+EqQmUdCa4cnajESqcIMR9Xebl3t9XLppVtosvtPKWGGg0RUN3t+ytILKbLhb4mu2ytQ==
-X-Received: by 2002:a62:1455:0:b029:18b:83a2:768b with SMTP id 82-20020a6214550000b029018b83a2768bmr5154475pfu.3.1606242702917;
-        Tue, 24 Nov 2020 10:31:42 -0800 (PST)
-Received: from google.com (h208-100-161-3.bendor.broadband.dynamic.tds.net. [208.100.161.3])
-        by smtp.gmail.com with ESMTPSA id 64sm15739121pfe.0.2020.11.24.10.31.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 10:31:42 -0800 (PST)
-Date:   Tue, 24 Nov 2020 10:31:39 -0800
-From:   William Mcvicker <willmcvicker@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        kernel-team@android.com, Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH v1 0/2] Add support to capture external module's SCM
- version
-Message-ID: <20201124183139.GB737971@google.com>
-References: <20201121011652.2006613-1-willmcvicker@google.com>
- <20201123090257.GB6334@infradead.org>
- <20201123221338.GA2726675@google.com>
- <20201124093117.GA21089@linux-8ccs>
- <20201124180516.GA737971@google.com>
- <X71NGClOP5Lqg6M5@kroah.com>
+        Tue, 24 Nov 2020 13:33:24 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1khd7y-00CpWM-N7; Tue, 24 Nov 2020 11:33:22 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1khd7w-005yjH-BE; Tue, 24 Nov 2020 11:33:22 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
+References: <20201123063835.18981-1-miles.chen@mediatek.com>
+Date:   Tue, 24 Nov 2020 12:32:56 -0600
+In-Reply-To: <20201123063835.18981-1-miles.chen@mediatek.com> (Miles Chen's
+        message of "Mon, 23 Nov 2020 14:38:35 +0800")
+Message-ID: <87lfeqsizr.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X71NGClOP5Lqg6M5@kroah.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1khd7w-005yjH-BE;;;mid=<87lfeqsizr.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/cWINijvy8cfZD9GCnZGUD9VbnS+lLulo=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.9 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3842]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Miles Chen <miles.chen@mediatek.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1552 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (0.7%), b_tie_ro: 10 (0.6%), parse: 1.58
+        (0.1%), extract_message_metadata: 15 (1.0%), get_uri_detail_list: 3.5
+        (0.2%), tests_pri_-1000: 4.7 (0.3%), tests_pri_-950: 1.31 (0.1%),
+        tests_pri_-900: 1.00 (0.1%), tests_pri_-90: 390 (25.1%), check_bayes:
+        371 (23.9%), b_tokenize: 9 (0.6%), b_tok_get_all: 7 (0.4%),
+        b_comp_prob: 2.3 (0.2%), b_tok_touch_all: 349 (22.5%), b_finish: 0.95
+        (0.1%), tests_pri_0: 408 (26.3%), check_dkim_signature: 1.51 (0.1%),
+        check_dkim_adsp: 25 (1.6%), poll_dns_idle: 716 (46.1%), tests_pri_10:
+        2.5 (0.2%), tests_pri_500: 714 (46.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RESEND PATCH v1] proc: use untagged_addr() for pagemap_read addresses
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 07:12:40PM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 24, 2020 at 10:05:16AM -0800, William Mcvicker wrote:
-> > On Tue, Nov 24, 2020 at 10:31:18AM +0100, Jessica Yu wrote:
-> > > +++ William Mcvicker [23/11/20 14:13 -0800]:
-> > > > On Mon, Nov 23, 2020 at 09:02:57AM +0000, Christoph Hellwig wrote:
-> > > > > On Sat, Nov 21, 2020 at 01:16:49AM +0000, Will McVicker wrote:
-> > > > > > These two patches add module support to capture an external module's SCM
-> > > > > > version as a MODULE_INFO() attribute. This allows users to identity the SCM
-> > > > > > version of a given kernel module by using the modinfo tool or on the device
-> > > > > > via sysfs:
-> > > > > 
-> > > > > As this obviously is of no use for in-tree modules it falls under the we
-> > > > > don't add code to support things that are not in tree rule and has no
-> > > > > business in the kernel.
-> > > > 
-> > > > Hi Christoph,
-> > > > 
-> > > > Ah sorry, I didn't intend this to come across as only for external modules.
-> > > > That just seemed like the easiest way to explain how the scmversion attribute
-> > > > can be different from the vermagic. We mainly need this for in-tree kernel
-> > > > modules since that's where most our drivers are. Let me re-phrase this with
-> > > > that in mind. Basically, I like to look at this as an improved version of the
-> > > > existing srcversion module attribute since it allows you to easily identify the
-> > > > module version with a quick SCM version string check instead of doing a full
-> > > > checksum on the module source.
-> > > > 
-> > > > For example, we have a setup to test kernel changes on the hikey and db845c
-> > > > devices without updating the kernel modules. Without this scmversion module
-> > > > attribute, you can't identify the original module version using `uname
-> > > > -r`. And for kernel modules in the initramfs, you can't even use modinfo to get
-> > > > the module vermagic.  With this patch, you are able to get the SCM version for
-> > > > *all* kernel modules (on disk and in the initramfs) via the sysfs node:
-> > > > /sys/module/<mod>/scmversion. This also works the other way around when
-> > > > developers update their kernel modules to fix some bug (like a security
-> > > > vulnerability) but don't need to update the full kernel.
-> > > 
-> > > Hi Will,
-> > > 
-> > > If this were also intended for in-tree kernel modules, then why do
-> > > intree modules only get the UTS_RELEASE string in their scmversion
-> > > field, which basically already exists in the vermagic? Or do you plan
-> > > to change that?
-> > > 
-> > > Jessica
-> > 
-> > Hi Jessica,
-> > 
-> > Thanks for asking! The reason in-tree kernel modules get the UTS_RELEASE string
-> > is for a few reasons:
-> > 
-> > (1) It contains the SCM version (since UTS_RELEASE has that).
-> > (2) It allows you to get the SCM version via the sysfs node (useful for modules
-> > in the initramfs).
-> > (3) It helps identify that that particular kernel module was in-tree when
-> > originally compiled.
-> > (4) Using UTS_RELEASE also allows us to respect the privacy of kernels with
-> > "# CONFIG_LOCALVERSION_AUTO is not set" by not including the SCM version in the
-> > module scmversion attribute.
-> > 
-> > Now, if we don't care about knowing if a module was in-tree or not (since
-> > we only care about in-tree modules here anyway), I can update the patch to have
-> > a consistent format regardless of in-tree or external. Personally, I like the
-> > UTS_RELEASE version better because it gives me more information from the sysfs
-> > node which is useful when debugging issues related to modules loaded in
-> > initramfs.
-> 
-> We already know if a module was built in-or-out of tree, the "O" taint
-> flag is set, so that information is already in the module today, right?
-> Can't that be used somehow here?
-> 
-> thanks,
-> 
-> greg k-h
-Hi Greg,
+Miles Chen <miles.chen@mediatek.com> writes:
 
-Let me prefix this with this, I do see the benefits of having a consistent
-scmversion format for intree and out-of-tree modules. So I'm happy to fix that
-in the next patchset.
+> When we try to visit the pagemap of a tagged userspace pointer, we find
+> that the start_vaddr is not correct because of the tag.
+> To fix it, we should untag the usespace pointers in pagemap_read().
+>
+> I tested with 5.10-rc4 and the issue remains.
+>
+> My test code is baed on [1]:
+>
+> A userspace pointer which has been tagged by 0xb4: 0xb400007662f541c8
 
-Now, I could be wrong, but I believe the taint flag is only printed when the
-module is loaded:
 
-  XXX: loading out-of-tree module taints kernel.
+Sigh this patch is buggy.
 
-or when there's a kernel WARNING or kernel crash. But that assumes you have the
-full logs when the kernel booted or you have a full crash stack in the kernel.
+> === userspace program ===
+>
+> uint64 OsLayer::VirtualToPhysical(void *vaddr) {
+> 	uint64 frame, paddr, pfnmask, pagemask;
+> 	int pagesize = sysconf(_SC_PAGESIZE);
+> 	off64_t off = ((uintptr_t)vaddr) / pagesize * 8; // off = 0xb400007662f541c8 / pagesize * 8 = 0x5a00003b317aa0
+> 	int fd = open(kPagemapPath, O_RDONLY);
+> 	...
+>
+> 	if (lseek64(fd, off, SEEK_SET) != off || read(fd, &frame, 8) != 8) {
+> 		int err = errno;
+> 		string errtxt = ErrorString(err);
+> 		if (fd >= 0)
+> 			close(fd);
+> 		return 0;
+> 	}
+> ...
+> }
+>
+> === kernel fs/proc/task_mmu.c ===
+>
+> static ssize_t pagemap_read(struct file *file, char __user *buf,
+> 		size_t count, loff_t *ppos)
+> {
+> 	...
+> 	src = *ppos;
+> 	svpfn = src / PM_ENTRY_BYTES; // svpfn == 0xb400007662f54
+> 	start_vaddr = svpfn << PAGE_SHIFT; // start_vaddr == 0xb400007662f54000
+> 	end_vaddr = mm->task_size;
+>
+> 	/* watch out for wraparound */
+> 	// svpfn == 0xb400007662f54
+> 	// (mm->task_size >> PAGE) == 0x8000000
+> 	if (svpfn > mm->task_size >> PAGE_SHIFT) // the condition is true because of the tag 0xb4
+> 		start_vaddr = end_vaddr;
+>
+> 	ret = 0;
+> 	while (count && (start_vaddr < end_vaddr)) { // we cannot visit correct entry because start_vaddr is set to end_vaddr
+> 		int len;
+> 		unsigned long end;
+> 		...
+> 	}
+> 	...
+> }
+>
+> [1] https://github.com/stressapptest/stressapptest/blob/master/src/os.cc#L158
+>
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+> ---
+>  fs/proc/task_mmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 217aa2705d5d..e9a70f7ee515 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1599,11 +1599,11 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
+>  
+>  	src = *ppos;
+>  	svpfn = src / PM_ENTRY_BYTES;
 
-Modinfo does have an attribute that indicates if the module is intree or
-not:
+> -	start_vaddr = svpfn << PAGE_SHIFT;
+> +	start_vaddr = untagged_addr(svpfn << PAGE_SHIFT);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-$ modinfo -F intree out_dir/./net/netfilter/nf_log_common.ko
-Y
+Arguably the line above is safe, but unfortunately it has the
+possibility of suffering from overflow.
 
-But that is not queriable via sysfs. Ideally, we'd like to be able to get all
-this information via sysfs so that it can be captured in our bug reports.
+>  	end_vaddr = mm->task_size;
+>  
+>  	/* watch out for wraparound */
+> -	if (svpfn > mm->task_size >> PAGE_SHIFT)
+> +	if (start_vaddr > mm->task_size)
+>  		start_vaddr = end_vaddr;
 
-Thanks,
-Will
+Overflow handling you are removing here.
+>  
+>  	/*
+
+
+I suspect the proper way to handle this is to move the test for
+overflow earlier so the code looks something like:
+
+	end_vaddr = mm->task_size;
+
+	src = *ppos;
+	svpfn = src / PM_ENTRY_BYTES;
+
+	/* watch out for wraparound */
+        start_vaddr = end_vaddr;
+	if (svpfn < (ULONG_MAX >> PAGE_SHIFT))
+        	start_vaddr = untagged_addr(svpfn << PAGE_SHIFT);
+
+	/* Ensure the address is inside the task */
+	if (start_vaddr > mm->task_size)
+        	start_vaddr = end_vaddr;
+
+Eric
+
