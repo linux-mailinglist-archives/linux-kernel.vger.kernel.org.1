@@ -2,245 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0042C29B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FB22C29B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389107AbgKXObY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:31:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730879AbgKXObX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:31:23 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31A5420674;
-        Tue, 24 Nov 2020 14:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606228282;
-        bh=WaWppMIG8NAiAq7V+qNADnCdiZIDrftoIXt08JUDQtg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r0c8lBz+GXRBOkcNd0w3+6jEYH95WPuRaV6bjCmFiHj7Nun/UbRVFL3bi7+MH1oQz
-         RXoNMAawD++gt5Hx7nc3O1fHR+a2ORou8kfcrYUXquz4390R8dTwkEQxAzj4btKT1l
-         NeBMl7beDYNyFi1CuA6IzyPDq5hfegmU+EQ9STKA=
-Date:   Tue, 24 Nov 2020 14:31:16 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 6/6] mm: proc: Avoid fullmm flush for young/dirty bit
- toggling
-Message-ID: <20201124143116.GA13352@willie-the-truck>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-7-will@kernel.org>
- <20201120204005.GC1303870@google.com>
- <20201123183554.GC11688@willie-the-truck>
- <20201123200403.GA3888699@google.com>
- <20201123211750.GA12069@willie-the-truck>
- <20201124011334.GA140483@google.com>
+        id S2389118AbgKXObe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:31:34 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:43796 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389017AbgKXObd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:31:33 -0500
+Date:   Tue, 24 Nov 2020 15:31:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606228290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=slmi/gCy0F1kst4xh7w6cb31xf6xlyZEmUC7j5VLPjk=;
+        b=DVuJTz7Z8+ndQgPM5DJ6MeCLVzNY5Dbf3+KKnA2LhLSJOu8ryv55XtrGIqiDBOSkvr2E/J
+        Kza2LThPJ4K+MqL+TF/Y1lc7W6DCBx63c980mOsKcL2rq9kPXGvJZcAFrndSE9XMlEXmI8
+        VCu+2yqF3+9YDyBhuAfsSkVFkAEOybUqcYbyFKArEMQExlLT4y4JWAq22kd255Uy7jXB4Z
+        7zj8JZ/sYY8c23f9QKNupxWlRhH5Nw7LCOB/nqZoi27KigGwFsUpjQsvlYzYZJ5U7KWN8E
+        QW2F6HTHSAfLTjnECfYKh5i095xYVcZbgkGx9jPlh0wQiKVXzBj4L+Dx/apDZg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606228290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=slmi/gCy0F1kst4xh7w6cb31xf6xlyZEmUC7j5VLPjk=;
+        b=Y5rReRqc4pJOYzY6KVDBCGrvqkWdMbrKBsCIEkCNKZ73u4vQTbf4v7m4R49T+SDNFivVAH
+        AkD67HJrw628xuDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.10-rc5-rt10
+Message-ID: <20201124143129.hexio5jg4za3u3si@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201124011334.GA140483@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 06:13:34PM -0700, Yu Zhao wrote:
-> On Mon, Nov 23, 2020 at 09:17:51PM +0000, Will Deacon wrote:
-> > On Mon, Nov 23, 2020 at 01:04:03PM -0700, Yu Zhao wrote:
-> > > On Mon, Nov 23, 2020 at 06:35:55PM +0000, Will Deacon wrote:
-> > > > On Fri, Nov 20, 2020 at 01:40:05PM -0700, Yu Zhao wrote:
-> > > > > On Fri, Nov 20, 2020 at 02:35:57PM +0000, Will Deacon wrote:
-> > > > > > clear_refs_write() uses the 'fullmm' API for invalidating TLBs after
-> > > > > > updating the page-tables for the current mm. However, since the mm is not
-> > > > > > being freed, this can result in stale TLB entries on architectures which
-> > > > > > elide 'fullmm' invalidation.
-> > > > > > 
-> > > > > > Ensure that TLB invalidation is performed after updating soft-dirty
-> > > > > > entries via clear_refs_write() by using the non-fullmm API to MMU gather.
-> > > > > > 
-> > > > > > Signed-off-by: Will Deacon <will@kernel.org>
-> > > > > > ---
-> > > > > >  fs/proc/task_mmu.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> > > > > > index a76d339b5754..316af047f1aa 100644
-> > > > > > --- a/fs/proc/task_mmu.c
-> > > > > > +++ b/fs/proc/task_mmu.c
-> > > > > > @@ -1238,7 +1238,7 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
-> > > > > >  			count = -EINTR;
-> > > > > >  			goto out_mm;
-> > > > > >  		}
-> > > > > > -		tlb_gather_mmu_fullmm(&tlb, mm);
-> > > > > > +		tlb_gather_mmu(&tlb, mm, 0, TASK_SIZE);
-> > > > > 
-> > > > > Let's assume my reply to patch 4 is wrong, and therefore we still need
-> > > > > tlb_gather/finish_mmu() here. But then wouldn't this change deprive
-> > > > > architectures other than ARM the opportunity to optimize based on the
-> > > > > fact it's a full-mm flush?
-> > > 
-> > > I double checked my conclusion on patch 4, and aside from a couple
-> > > of typos, it still seems correct after the weekend.
-> > 
-> > I still need to digest that, but I would prefer that we restore the
-> > invalidation first, and then have a subsequent commit to relax it. I find
-> > it hard to believe that the behaviour in mainline at the moment is deliberate.
-> > 
-> > That is, I'm not against optimising this, but I'd rather get it "obviously
-> > correct" first and the current code is definitely not that.
-> 
-> I wouldn't mind having this patch and patch 4 if the invalidation they
-> restore were in a correct state -- b3a81d0841a9 ("mm: fix KSM data
-> corruption") isn't correct to start with.
-> 
-> It is complicated, so please bear with me. Let's study this by looking
-> at examples this time.
+Dear RT folks!
 
-Thanks for putting these together. If you're right, then it looks like it's
-even worse than I thought :(
+I'm pleased to announce the v5.10-rc5-rt10 patch set. 
 
-> > > > Only for the soft-dirty case, but I think TLB invalidation is required
-> > > > there because we are write-protecting the entries and I don't see any
-> > > > mechanism to handle lazy invalidation for that (compared with the aging
-> > > > case, which is handled via pte_accessible()).
-> > > 
-> > > The lazy invalidation for that is done when we write-protect a page,
-> > > not an individual PTE. When we do so, our decision is based on both
-> > > the dirty bit and the writable bit on each PTE mapping this page. So
-> > > we only need to make sure we don't lose both on a PTE. And we don't
-> > > here.
-> > 
-> > Sorry, I don't follow what you're getting at here (page vs pte). Please can
-> > you point me to the code you're referring to? The case I'm worried about is
-> > code that holds sufficient locks (e.g. mmap_sem + ptl) finding an entry
-> > where !pte_write() and assuming (despite pte_dirty()) that there can't be
-> > any concurrent modifications to the mapped page. Granted, I haven't found
-> > anything doing that, but I could not convince myself that it would be a bug
-> > to write such code, either.
-> 
-> Example 1: memory corruption is still possible with patch 4 & 6
-> 
->   CPU0        CPU1        CPU2        CPU3
->   ----        ----        ----        ----
->   userspace                           page writeback
-> 
->   [cache writable
->    PTE in TLB]
-> 
->               inc_tlb_flush_pending()
->               clean_record_pte()
->               pte_mkclean()
+Changes since v5.10-rc5-rt9:
 
-This path:      ^^^^^ looks a bit weird to me and I _think_ only happens
-via some vmware DRM driver (i.e. the only caller of
-clean_record_shared_mapping_range()). Are you sure that's operating on
-pages that can be reclaimed? I have a feeling it might all be pinned.
+  - A patch from upstream addressing migrate disable related issue
+    reported by Oleksandr Natalenko. Patch by Peter Zijlstra.
 
->                           tlb_gather_mmu()
->                           [set mm_tlb_flush_pending()]
->                           clear_refs_write()
->                           pte_wrprotect()
-> 
->                                       page_mkclean_one()
->                                       !pte_dirty() && !pte_write()
->                                       [true, no flush]
-> 
->                                       write page to disk
-> 
->   Write to page
->   [using stale PTE]
-> 
->                                       drop clean page
->                                       [data integrity compromised]
-> 
->               flush_tlb_range()
-> 
->                           tlb_finish_mmu()
->                           [flush (with patch 4)]
+  - A patch from upstream addressing migrate disable related issue
+    reported by Qian Cai. Patch by Valentin Schneider.
 
-Setting my earlier comment aside, I think a useful observation here
-is that even with correct TLB invalidation, there is still a window
-between modifying the page-table and flushing the TLB where another CPU
-could see the updated page-table and incorrectly elide a flush. In these
-cases we need to rely either on locking or use of tlb_flush_pending() to
-ensure the correct behaviour.
+  - A workaround for a build failure when IMX clock drivers are built as
+    modules.
 
-> Example 2: why no flush when write-protecting is not a problem (after
-> we fix the problem correctly by adding mm_tlb_flush_pending()).
+Known issues
+     - It has been pointed out that due to changes to the printk code the
+       internal buffer representation changed. This is only an issue if tools
+       like `crash' are used to extract the printk buffer from a kernel memory
+       image.
 
-So here you add an mm_tlb_flush_pending() check to the reclaim path
-to resolve the race above.
+The delta patch against v5.10-rc5-rt9 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10-rc5-rt9-rt10.patch.xz
 
-> Case a:
-> 
->   CPU0        CPU1        CPU2        CPU3
->   ----        ----        ----        ----
->   userspace                           page writeback
-> 
->   [cache writable
->    PTE in TLB]
-> 
->               inc_tlb_flush_pending()
->               clean_record_pte()
->               pte_mkclean()
-> 
->                           clear_refs_write()
->                           pte_wrprotect()
-> 
->                                       page_mkclean_one()
->                                       !pte_dirty() && !pte_write() &&
->                                       !mm_tlb_flush_pending()
->                                       [false: flush]
-> 
->                                       write page to disk
-> 
->   Write to page
->   [page fault]
-> 
->                                       drop clean page
->                                       [data integrity guaranteed]
-> 
->               flush_tlb_range()
-> 
-> Case b:
-> 
->   CPU0        CPU1        CPU2
->   ----        ----        ----
->   userspace               page writeback
-> 
->   [cache writable
->    PTE in TLB]
-> 
->               clear_refs_write()
->               pte_wrprotect()
->               [pte_dirty() is false]
-> 
->                           page_mkclean_one()
->                           !pte_dirty() && !pte_write() &&
->                           !mm_tlb_flush_pending()
->                           [true: no flush]
-> 
->                           write page to disk
-> 
->   Write to page
->   [h/w tries to set
->    the dirty bit
->    but sees write-
->    protected PTE,
->    page fault]
+You can get this release via the git tree at:
 
-I agree with you for this example, but I think if the page writeback ran
-on CPU 1 after clear_refs_write() then we could have a problem: the updated
-pte could sit in the store buffer of CPU1 and the walker on CPU0 would
-be able to set the dirty bit. TLB invalidation in clear_refs_write()
-would prevent that.
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.10-rc5-rt10
 
-Will
+The RT patch against v5.10-rc5 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10-rc5-rt10.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10-rc5-rt10.tar.xz
+
+Sebastian
+
+diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
+index dd6a737d060b4..b8bf9460c91d7 100644
+--- a/drivers/clk/imx/Makefile
++++ b/drivers/clk/imx/Makefile
+@@ -26,9 +26,9 @@ obj-$(CONFIG_CLK_IMX8MN) += clk-imx8mn.o
+ obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o
+ obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
+ 
+-obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o
+-clk-imx-scu-$(CONFIG_CLK_IMX8QXP) += clk-scu.o clk-imx8qxp.o
+-clk-imx-lpcg-scu-$(CONFIG_CLK_IMX8QXP) += clk-lpcg-scu.o clk-imx8qxp-lpcg.o
++obj-$(CONFIG_MXC_CLK_SCU)	+= clk-imx-scu.o
++clk-imx-scu-y			:= clk-scu.o clk-lpcg-scu.o
++obj-$(CONFIG_CLK_IMX8QXP)	+= clk-imx8qxp.o clk-imx8qxp-lpcg.o
+ 
+ obj-$(CONFIG_CLK_IMX1)   += clk-imx1.o
+ obj-$(CONFIG_CLK_IMX25)  += clk-imx25.o
+diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
+index 1f0e44f921aee..336dce43da82d 100644
+--- a/drivers/clk/imx/clk-lpcg-scu.c
++++ b/drivers/clk/imx/clk-lpcg-scu.c
+@@ -115,3 +115,4 @@ struct clk_hw *imx_clk_lpcg_scu(const char *name, const char *parent_name,
+ 
+ 	return hw;
+ }
++EXPORT_SYMBOL_GPL(imx_clk_lpcg_scu);
+diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
+index b8b2072742a56..026a33606ae53 100644
+--- a/drivers/clk/imx/clk-scu.c
++++ b/drivers/clk/imx/clk-scu.c
+@@ -9,6 +9,7 @@
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
+ #include <linux/slab.h>
++#include <linux/module.h>
+ 
+ #include "clk-scu.h"
+ 
+@@ -132,6 +133,7 @@ int imx_clk_scu_init(void)
+ {
+ 	return imx_scu_get_handle(&ccm_ipc_handle);
+ }
++EXPORT_SYMBOL_GPL(imx_clk_scu_init);
+ 
+ /*
+  * clk_scu_recalc_rate - Get clock rate for a SCU clock
+@@ -387,3 +389,5 @@ struct clk_hw *__imx_clk_scu(const char *name, const char * const *parents,
+ 
+ 	return hw;
+ }
++EXPORT_SYMBOL_GPL(__imx_clk_scu);
++MODULE_LICENSE("GPL");
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5ec2d786ae8ea..b7d43ac654dce 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1982,7 +1982,7 @@ static int migration_cpu_stop(void *data)
+ 			 * and we should be valid again. Nothing to do.
+ 			 */
+ 			if (!pending) {
+-				WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
++				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
+ 				goto out;
+ 			}
+ 
+@@ -1994,7 +1994,7 @@ static int migration_cpu_stop(void *data)
+ 		else
+ 			p->wake_cpu = dest_cpu;
+ 
+-	} else if (dest_cpu < 0) {
++	} else if (dest_cpu < 0 || pending) {
+ 		/*
+ 		 * This happens when we get migrated between migrate_enable()'s
+ 		 * preempt_enable() and scheduling the stopper task. At that
+@@ -2004,13 +2004,24 @@ static int migration_cpu_stop(void *data)
+ 		 * more likely.
+ 		 */
+ 
++		/*
++		 * The task moved before the stopper got to run. We're holding
++		 * ->pi_lock, so the allowed mask is stable - if it got
++		 * somewhere allowed, we're done.
++		 */
++		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
++			p->migration_pending = NULL;
++			complete = true;
++			goto out;
++		}
++
+ 		/*
+ 		 * When this was migrate_enable() but we no longer have an
+ 		 * @pending, a concurrent SCA 'fixed' things and we should be
+ 		 * valid again. Nothing to do.
+ 		 */
+ 		if (!pending) {
+-			WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
++			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
+ 			goto out;
+ 		}
+ 
+diff --git a/localversion-rt b/localversion-rt
+index 22746d6390a42..d79dde624aaac 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt9
++-rt10
