@@ -2,150 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790072C1FD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A382C1FD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730517AbgKXI0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:26:52 -0500
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:30024 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730500AbgKXI0v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:26:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606206410; x=1637742410;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rzJrrzklVRf9eadjbGgdPrbEEAvaq8klfJmDth8IB6k=;
-  b=gkMQtnbeOu3uOt/nIWdGcDe4JaQTV+vZLKgC75xdFQDKnx0F700d4155
-   QDgrLYQ9GVt8WcMOSeG3dURBwz8YH16LydUoA7x+Snz+KN6I3W3BJMDW9
-   PLrAYPyEuG0jUiaOsOMvLz21Y/0z6de0Wy+/Zmw/6Fqv1VzZJ5lfsmeXT
-   9sLAK82uE7QbsZKhM+mXCQTtNuDuDfWYkLRTYMKQ5ttAp6RTefFMg6PDT
-   p7FBX18vy9ZUhPeVsJLmj62+hcZTs0A8GTH2fLkmLsQC22CK+RMvUMMBu
-   ENZInHN4Inll/MXOXYdEYYYBIm+d3lfdLzXM/+Pb2HugcSxccjDeXCsnU
-   A==;
-IronPort-SDR: QsNdaq2mYQ18qkeBJuDwfPejPHjc8ujw50pSYHh3XyK1VMyKomLVh+EtaLOwatoX2jpVU4REDn
- DWpDzE3SOBdM97PkPPqTBzfkMGW+5FjRlQiTbWzXOhMwoaKGGRIkaxBAG0M4+GdWTvdGJbwgaC
- p8GL+/jGfM4lvjKI4JKfFnWuVktsAfSIf1g/dyBeR4KHbNp4RNNHM0osk8oKsq+WK46sl4/143
- +a9PdjqIAntwEhMTtZQGuVsf7gyPT5sK0p5yeLXAPh0IF9QRaV1+tDB4DKpce8iJEOtxSIu30H
- Txk=
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="100156753"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Nov 2020 01:26:49 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 24 Nov 2020 01:26:49 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 24 Nov 2020 01:26:48 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@nvidia.com>, <roopa@nvidia.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v2] bridge: mrp: Implement LC mode for MRP
-Date:   Tue, 24 Nov 2020 09:25:25 +0100
-Message-ID: <20201124082525.273820-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.27.0
+        id S1730531AbgKXI07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:26:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730500AbgKXI07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:26:59 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 293F220870;
+        Tue, 24 Nov 2020 08:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606206418;
+        bh=YCvAHBNcK4JrFhb6WFO3tG22p20ZWh3it7ak5hEvG2I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DzSuDDeBaz/h0qW7OiRtKhYC5Y7L3qQx5larBizrKvm42cruk2f03ei1/RN4SR/Wr
+         VSq9y/dhO+f009B8o9oyOsJQZerIHcfaAvtZjq1hE5/nGqXOA5oGkdNmfMyTUC0dNJ
+         eR9lbz+Lh/m3jdkMri6N7jXDJshrGda3DKeHP0pM=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khTf5-00DBXE-Ui; Tue, 24 Nov 2020 08:26:56 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Date:   Tue, 24 Nov 2020 08:26:55 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shenming Lu <lushenming@huawei.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v1 2/4] KVM: arm64: GICv4.1: Try to save hw pending
+ state in save_pending_tables
+In-Reply-To: <90f04f50-c1ba-55b2-0f93-1e755b40b487@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-3-lushenming@huawei.com>
+ <f3ea1b24436bb86b5a5633f8ccc9b3d1@kernel.org>
+ <90f04f50-c1ba-55b2-0f93-1e755b40b487@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <4e2b87897485e38e251c447b9ad70eb6@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend MRP to support LC mode(link check) for the interconnect port.
-This applies only to the interconnect ring.
+On 2020-11-24 07:40, Shenming Lu wrote:
+> On 2020/11/23 17:18, Marc Zyngier wrote:
+>> On 2020-11-23 06:54, Shenming Lu wrote:
+>>> After pausing all vCPUs and devices capable of interrupting, in order
+>>         ^^^^^^^^^^^^^^^^^
+>> See my comment below about this.
+>> 
+>>> to save the information of all interrupts, besides flushing the 
+>>> pending
+>>> states in kvm’s vgic, we also try to flush the states of VLPIs in the
+>>> virtual pending tables into guest RAM, but we need to have GICv4.1 
+>>> and
+>>> safely unmap the vPEs first.
+>>> 
+>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>> ---
+>>>  arch/arm64/kvm/vgic/vgic-v3.c | 62 
+>>> +++++++++++++++++++++++++++++++----
+>>>  1 file changed, 56 insertions(+), 6 deletions(-)
+>>> 
+>>> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c 
+>>> b/arch/arm64/kvm/vgic/vgic-v3.c
+>>> index 9cdf39a94a63..e1b3aa4b2b12 100644
+>>> --- a/arch/arm64/kvm/vgic/vgic-v3.c
+>>> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
+>>> @@ -1,6 +1,8 @@
+>>>  // SPDX-License-Identifier: GPL-2.0-only
+>>> 
+>>>  #include <linux/irqchip/arm-gic-v3.h>
+>>> +#include <linux/irq.h>
+>>> +#include <linux/irqdomain.h>
+>>>  #include <linux/kvm.h>
+>>>  #include <linux/kvm_host.h>
+>>>  #include <kvm/arm_vgic.h>
+>>> @@ -356,6 +358,39 @@ int vgic_v3_lpi_sync_pending_status(struct kvm
+>>> *kvm, struct vgic_irq *irq)
+>>>      return 0;
+>>>  }
+>>> 
+>>> +/*
+>>> + * With GICv4.1, we can get the VLPI's pending state after unmapping
+>>> + * the vPE. The deactivation of the doorbell interrupt will trigger
+>>> + * the unmapping of the associated vPE.
+>>> + */
+>>> +static void get_vlpi_state_pre(struct vgic_dist *dist)
+>>> +{
+>>> +    struct irq_desc *desc;
+>>> +    int i;
+>>> +
+>>> +    if (!kvm_vgic_global_state.has_gicv4_1)
+>>> +        return;
+>>> +
+>>> +    for (i = 0; i < dist->its_vm.nr_vpes; i++) {
+>>> +        desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
+>>> +        irq_domain_deactivate_irq(irq_desc_get_irq_data(desc));
+>>> +    }
+>>> +}
+>>> +
+>>> +static void get_vlpi_state_post(struct vgic_dist *dist)
+>> 
+>> nit: the naming feels a bit... odd. Pre/post what?
+> 
+> My understanding is that the unmapping is a preparation for 
+> get_vlpi_state...
+> Maybe just call it unmap/map_all_vpes?
 
-Opposite to RC mode(ring check) the LC mode is using CFM frames to
-detect when the link goes up or down and based on that the userspace
-will need to react.
-One advantage of the LC mode over RC mode is that there will be fewer
-frames in the normal rings. Because RC mode generates InTest on all
-ports while LC mode sends CFM frame only on the interconnect port.
+Yes, much better.
 
-All 4 nodes part of the interconnect ring needs to have the same mode.
-And it is not possible to have running LC and RC mode at the same time
-on a node.
+[...]
 
-Whenever the MIM starts it needs to detect the status of the other 3
-nodes in the interconnect ring so it would send a frame called
-InLinkStatus, on which the clients needs to reply with their link
-status.
+>>> +        if (irq->hw) {
+>>> +            WARN_RATELIMIT(irq_get_irqchip_state(irq->host_irq,
+>>> +                        IRQCHIP_STATE_PENDING, &is_pending),
+>>> +                       "IRQ %d", irq->host_irq);
+>> 
+>> Isn't this going to warn like mad on a GICv4.0 system where this, by 
+>> definition,
+>> will generate an error?
+> 
+> As we have returned an error in save_its_tables if hw && !has_gicv4_1, 
+> we don't
+> have to warn this here?
 
-This patch adds InLinkStatus frame type and extends existing rules on
-how to forward this frame.
+Are you referring to the check in vgic_its_save_itt() that occurs in 
+patch 4?
+Fair enough, though I think the use of irq_get_irqchip_state() isn't 
+quite
+what we want, as per my comments on patch #1.
 
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+>> 
+>>> +        }
+>>> +
+>>> +        if (stored == is_pending)
+>>>              continue;
+>>> 
+>>> -        if (irq->pending_latch)
+>>> +        if (is_pending)
+>>>              val |= 1 << bit_nr;
+>>>          else
+>>>              val &= ~(1 << bit_nr);
+>>> 
+>>>          ret = kvm_write_guest_lock(kvm, ptr, &val, 1);
+>>>          if (ret)
+>>> -            return ret;
+>>> +            goto out;
+>>>      }
+>>> -    return 0;
+>>> +
+>>> +out:
+>>> +    get_vlpi_state_post(dist);
+>> 
+>> This bit worries me: you have unmapped the VPEs, so any interrupt that 
+>> has been
+>> generated during that phase is now forever lost (the GIC doesn't have 
+>> ownership
+>> of the pending tables).
+> 
+> In my opinion, during this phase, the devices capable of interrupting
+> should have  already been paused (prevent from sending interrupts),
+> such as VFIO migration protocol has already realized it.
 
----
-v1 -> v2:
-  - remove struct 'br_mrp_in_link_status_hdr' as is unused
----
- include/uapi/linux/mrp_bridge.h |  1 +
- net/bridge/br_mrp.c             | 18 +++++++++++++++---
- 2 files changed, 16 insertions(+), 3 deletions(-)
+Is that a hard guarantee? Pausing devices *may* be possible for a 
+limited
+set of endpoints, but I'm not sure that is universally possible to 
+restart
+them and expect a consistent state (you have just dropped a bunch of 
+network
+packets on the floor...).
 
-diff --git a/include/uapi/linux/mrp_bridge.h b/include/uapi/linux/mrp_bridge.h
-index 6aeb13ef0b1e..9744773de5ff 100644
---- a/include/uapi/linux/mrp_bridge.h
-+++ b/include/uapi/linux/mrp_bridge.h
-@@ -61,6 +61,7 @@ enum br_mrp_tlv_header_type {
- 	BR_MRP_TLV_HEADER_IN_TOPO = 0x7,
- 	BR_MRP_TLV_HEADER_IN_LINK_DOWN = 0x8,
- 	BR_MRP_TLV_HEADER_IN_LINK_UP = 0x9,
-+	BR_MRP_TLV_HEADER_IN_LINK_STATUS = 0xa,
- 	BR_MRP_TLV_HEADER_OPTION = 0x7f,
- };
- 
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index bb12fbf9aaf2..cec2c4e4561d 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -858,7 +858,8 @@ static bool br_mrp_in_frame(struct sk_buff *skb)
- 	if (hdr->type == BR_MRP_TLV_HEADER_IN_TEST ||
- 	    hdr->type == BR_MRP_TLV_HEADER_IN_TOPO ||
- 	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_DOWN ||
--	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_UP)
-+	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_UP ||
-+	    hdr->type == BR_MRP_TLV_HEADER_IN_LINK_STATUS)
- 		return true;
- 
- 	return false;
-@@ -1126,9 +1127,9 @@ static int br_mrp_rcv(struct net_bridge_port *p,
- 						goto no_forward;
- 				}
- 			} else {
--				/* MIM should forward IntLinkChange and
-+				/* MIM should forward IntLinkChange/Status and
- 				 * IntTopoChange between ring ports but MIM
--				 * should not forward IntLinkChange and
-+				 * should not forward IntLinkChange/Status and
- 				 * IntTopoChange if the frame was received at
- 				 * the interconnect port
- 				 */
-@@ -1155,6 +1156,17 @@ static int br_mrp_rcv(struct net_bridge_port *p,
- 			     in_type == BR_MRP_TLV_HEADER_IN_LINK_DOWN))
- 				goto forward;
- 
-+			/* MIC should forward IntLinkStatus frames only to
-+			 * interconnect port if it was received on a ring port.
-+			 * If it is received on interconnect port then, it
-+			 * should be forward on both ring ports
-+			 */
-+			if (br_mrp_is_ring_port(p_port, s_port, p) &&
-+			    in_type == BR_MRP_TLV_HEADER_IN_LINK_STATUS) {
-+				p_dst = NULL;
-+				s_dst = NULL;
-+			}
-+
- 			/* Should forward the InTopo frames only between the
- 			 * ring ports
- 			 */
+>> Do you really expect the VM to be restartable from that point? I don't 
+>> see how
+>> this is possible.
+>> 
+> 
+> If the migration has encountered an error, the src VM might be
+> restarted, so we have to map the vPEs back.
+
+As I said above, I doubt it is universally possible to do so, but
+after all, this probably isn't worse that restarting on the target...
+
+         M.
 -- 
-2.27.0
-
+Jazz is not dead. It just smells funny...
