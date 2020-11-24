@@ -2,448 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA082C215D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518C42C213E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731307AbgKXJ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:27:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731278AbgKXJ1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:27:48 -0500
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D358E20872;
-        Tue, 24 Nov 2020 09:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606210067;
-        bh=GcYHmVpON//HgfC+Q9fSTKhraRbGw/gcP2/N7E5anYQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f7M5Z3Y7xCQwL6ieAdzCsRYeTu4pviJMAIXmes1xGO2mzGzWGMlTwOw2gAwkOWHpN
-         TvLI8FSoNsWmtfm1rNqqLnB0VL2IjcLowf0Rx0OMLki6VkhfgbysSn0h8y7ukzEA9l
-         YgTVkuq86JX/gn/ztR5l5ChS/0ijttlH6qBLYHds=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: [PATCH v11 9/9] secretmem: test: add basic selftest for memfd_secret(2)
-Date:   Tue, 24 Nov 2020 11:25:56 +0200
-Message-Id: <20201124092556.12009-10-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201124092556.12009-1-rppt@kernel.org>
-References: <20201124092556.12009-1-rppt@kernel.org>
+        id S1731230AbgKXJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731220AbgKXJ06 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:26:58 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDF6C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:26:58 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id t22so8826984ljk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:26:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kukcRBKUzlxamYfGZyLQcYKTY8NzjKcvgUjtKw6Awcs=;
+        b=mTKhkigHDoPSK5lJonpLM+ptC9nzL1l0tydMD89elegFPdySD76uSEJsbq+YHeYnxf
+         Rz4FfjcDwKYN8FfQRRD+CLwKIrxw+xcIQTUUulqIGLJnGJJtpBcYxFzRdgpwQ6SWMOo+
+         q3PkgZauF0skJeSgzy6EUgoeZeJJIR3+wesynyuOYU7UUggGUuSO4MnumIkz/7FpUgH7
+         bPgZc731EbjWDEHb8hURC9bd0FVBXY8DcP4BR/R1Jo7TNsiP+2/tiOAVr2NZKsL2GNJp
+         Jz0F1Lwi4OR9qB/Gy/s392aYCVV5Fn7wwJXzfaxfm5gTj6TFxF3WmE5GY7WRrHhjdS8B
+         IXmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kukcRBKUzlxamYfGZyLQcYKTY8NzjKcvgUjtKw6Awcs=;
+        b=FQTDmFIIBpIbdHthtKkl+YmmbaqJOsZ20IrPWxJ92VKHloLXpFobmPG/quvMbVk2kF
+         Mq+WciLJ/1ChlvK0ebAT42HBS052rGLPG0pVwd8/z5ClrcOoFwhcQULS7n2tWnaXGQWP
+         oCXyAHK7bfc3zXcgp4rVaw8iTmx9qoeR/DpFSFbJipchTRRIaWOoYqLHhn+ZmeHo2M8B
+         pGU67XGOZmW3Gyc5ZvgII9UBIgsMVV6tBkXT8ZGvpp304OBeklvdwN+FpLot+RLL5eTw
+         BHbvWLxGyGL9quauGok8TG/jDNnZna72fiNFQl6XCQQ89E72RKwKNmXHtoPCAvxGvzFx
+         Gocg==
+X-Gm-Message-State: AOAM532GCwmJcsdGGZDaCKx9p2aLQT2YY6TkQvLie7Oety/zWhDJ2GWK
+        t+ru24a8cwlwL8Fy+6YOK0FprJC3E2K3g/Z4OCnTWA==
+X-Google-Smtp-Source: ABdhPJwOkzwqjm2LNBXyYJWEcdhsLWfHn+ob5iB1SDuNQIbquePN0gEeSNq06vXwo6W+kH3ODe5+sRqpAfJ/VDCKf+s=
+X-Received: by 2002:a05:651c:134f:: with SMTP id j15mr1495677ljb.469.1606210016792;
+ Tue, 24 Nov 2020 01:26:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201109113240.3733496-1-anup.patel@wdc.com> <20201109113240.3733496-11-anup.patel@wdc.com>
+ <186ade3c372b44ef8ca1830da8c5002b@huawei.com>
+In-Reply-To: <186ade3c372b44ef8ca1830da8c5002b@huawei.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 24 Nov 2020 14:56:43 +0530
+Message-ID: <CAAhSdy1sx_oLGGoGjzr5ZrPStwCyFF4mBDEBw5zpsbSGcCRJjg@mail.gmail.com>
+Subject: Re: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table programming
+To:     Jiangyifei <jiangyifei@huawei.com>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
+        "Wubin (H)" <wu.wubin@huawei.com>,
+        "dengkai (A)" <dengkai1@huawei.com>,
+        yinyipeng <yinyipeng1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Nov 16, 2020 at 2:59 PM Jiangyifei <jiangyifei@huawei.com> wrote:
+>
+>
+> > -----Original Message-----
+> > From: Anup Patel [mailto:anup.patel@wdc.com]
+> > Sent: Monday, November 9, 2020 7:33 PM
+> > To: Palmer Dabbelt <palmer@dabbelt.com>; Palmer Dabbelt
+> > <palmerdabbelt@google.com>; Paul Walmsley <paul.walmsley@sifive.com>;
+> > Albert Ou <aou@eecs.berkeley.edu>; Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Alexander Graf <graf@amazon.com>; Atish Patra <atish.patra@wdc.com>;
+> > Alistair Francis <Alistair.Francis@wdc.com>; Damien Le Moal
+> > <damien.lemoal@wdc.com>; Anup Patel <anup@brainfault.org>;
+> > kvm@vger.kernel.org; kvm-riscv@lists.infradead.org;
+> > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Anup Patel
+> > <anup.patel@wdc.com>; Jiangyifei <jiangyifei@huawei.com>
+> > Subject: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
+> > programming
+> >
+> > This patch implements all required functions for programming the stage2 page
+> > table for each Guest/VM.
+> >
+> > At high-level, the flow of stage2 related functions is similar from KVM
+> > ARM/ARM64 implementation but the stage2 page table format is quite
+> > different for KVM RISC-V.
+> >
+> > [jiangyifei: stage2 dirty log support]
+> > Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
+> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+> > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> > ---
+> >  arch/riscv/include/asm/kvm_host.h     |  12 +
+> >  arch/riscv/include/asm/pgtable-bits.h |   1 +
+> >  arch/riscv/kvm/Kconfig                |   1 +
+> >  arch/riscv/kvm/main.c                 |  19 +
+> >  arch/riscv/kvm/mmu.c                  | 649
+> > +++++++++++++++++++++++++-
+> >  arch/riscv/kvm/vm.c                   |   6 -
+> >  6 files changed, 672 insertions(+), 16 deletions(-)
+> >
+>
+> ......
+>
+> >
+> >  int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu, @@ -69,27 +562,163 @@
+> > int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+> >                        gpa_t gpa, unsigned long hva,
+> >                        bool writeable, bool is_write)
+> >  {
+> > -     /* TODO: */
+> > -     return 0;
+> > +     int ret;
+> > +     kvm_pfn_t hfn;
+> > +     short vma_pageshift;
+> > +     gfn_t gfn = gpa >> PAGE_SHIFT;
+> > +     struct vm_area_struct *vma;
+> > +     struct kvm *kvm = vcpu->kvm;
+> > +     struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
+> > +     bool logging = (memslot->dirty_bitmap &&
+> > +                     !(memslot->flags & KVM_MEM_READONLY)) ? true : false;
+> > +     unsigned long vma_pagesize;
+> > +
+> > +     mmap_read_lock(current->mm);
+> > +
+> > +     vma = find_vma_intersection(current->mm, hva, hva + 1);
+> > +     if (unlikely(!vma)) {
+> > +             kvm_err("Failed to find VMA for hva 0x%lx\n", hva);
+> > +             mmap_read_unlock(current->mm);
+> > +             return -EFAULT;
+> > +     }
+> > +
+> > +     if (is_vm_hugetlb_page(vma))
+> > +             vma_pageshift = huge_page_shift(hstate_vma(vma));
+> > +     else
+> > +             vma_pageshift = PAGE_SHIFT;
+> > +     vma_pagesize = 1ULL << vma_pageshift;
+> > +     if (logging || (vma->vm_flags & VM_PFNMAP))
+> > +             vma_pagesize = PAGE_SIZE;
+> > +
+> > +     if (vma_pagesize == PMD_SIZE || vma_pagesize == PGDIR_SIZE)
+> > +             gfn = (gpa & huge_page_mask(hstate_vma(vma))) >> PAGE_SHIFT;
+> > +
+> > +     mmap_read_unlock(current->mm);
+> > +
+> > +     if (vma_pagesize != PGDIR_SIZE &&
+> > +         vma_pagesize != PMD_SIZE &&
+> > +         vma_pagesize != PAGE_SIZE) {
+> > +             kvm_err("Invalid VMA page size 0x%lx\n", vma_pagesize);
+> > +             return -EFAULT;
+> > +     }
+> > +
+> > +     /* We need minimum second+third level pages */
+> > +     ret = stage2_cache_topup(pcache, stage2_pgd_levels,
+> > +                              KVM_MMU_PAGE_CACHE_NR_OBJS);
+> > +     if (ret) {
+> > +             kvm_err("Failed to topup stage2 cache\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
+> > +     if (hfn == KVM_PFN_ERR_HWPOISON) {
+> > +             send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
+> > +                             vma_pageshift, current);
+> > +             return 0;
+> > +     }
+> > +     if (is_error_noslot_pfn(hfn))
+> > +             return -EFAULT;
+> > +
+> > +     /*
+> > +      * If logging is active then we allow writable pages only
+> > +      * for write faults.
+> > +      */
+> > +     if (logging && !is_write)
+> > +             writeable = false;
+> > +
+> > +     spin_lock(&kvm->mmu_lock);
+> > +
+> > +     if (writeable) {
+>
+> Hi Anup,
+>
+> What is the purpose of "writable = !memslot_is_readonly(slot)" in this series?
 
-The test verifies that file descriptor created with memfd_secret does
-not allow read/write operations, that secret memory mappings respect
-RLIMIT_MEMLOCK and that remote accesses with process_vm_read() and
-ptrace() to the secret memory fail.
+Where ? I don't see this line in any of the patches.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- tools/testing/selftests/vm/.gitignore     |   1 +
- tools/testing/selftests/vm/Makefile       |   3 +-
- tools/testing/selftests/vm/memfd_secret.c | 298 ++++++++++++++++++++++
- tools/testing/selftests/vm/run_vmtests    |  17 ++
- 4 files changed, 318 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/vm/memfd_secret.c
+>
+> When mapping the HVA to HPA above, it doesn't know that the PTE writeable of stage2 is "!memslot_is_readonly(slot)".
+> This may causes the difference between the writability of HVA->HPA and GPA->HPA.
+> For example, GPA->HPA is writeable, but HVA->HPA is not writeable.
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index 9a35c3f6a557..c8deddc81e7a 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -21,4 +21,5 @@ va_128TBswitch
- map_fixed_noreplace
- write_to_hugetlbfs
- hmm-tests
-+memfd_secret
- local_config.*
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 62fb15f286ee..9ab98946fbf2 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -34,6 +34,7 @@ TEST_GEN_FILES += khugepaged
- TEST_GEN_FILES += map_fixed_noreplace
- TEST_GEN_FILES += map_hugetlb
- TEST_GEN_FILES += map_populate
-+TEST_GEN_FILES += memfd_secret
- TEST_GEN_FILES += mlock-random-test
- TEST_GEN_FILES += mlock2-tests
- TEST_GEN_FILES += mremap_dontunmap
-@@ -129,7 +130,7 @@ warn_32bit_failure:
- endif
- endif
- 
--$(OUTPUT)/mlock-random-test: LDLIBS += -lcap
-+$(OUTPUT)/mlock-random-test $(OUTPUT)/memfd_secret: LDLIBS += -lcap
- 
- $(OUTPUT)/gup_test: ../../../../mm/gup_test.h
- 
-diff --git a/tools/testing/selftests/vm/memfd_secret.c b/tools/testing/selftests/vm/memfd_secret.c
-new file mode 100644
-index 000000000000..79578dfd13e6
---- /dev/null
-+++ b/tools/testing/selftests/vm/memfd_secret.c
-@@ -0,0 +1,298 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright IBM Corporation, 2020
-+ *
-+ * Author: Mike Rapoport <rppt@linux.ibm.com>
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/uio.h>
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/ptrace.h>
-+#include <sys/syscall.h>
-+#include <sys/resource.h>
-+#include <sys/capability.h>
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdio.h>
-+
-+#include "../kselftest.h"
-+
-+#define fail(fmt, ...) ksft_test_result_fail(fmt, ##__VA_ARGS__)
-+#define pass(fmt, ...) ksft_test_result_pass(fmt, ##__VA_ARGS__)
-+#define skip(fmt, ...) ksft_test_result_skip(fmt, ##__VA_ARGS__)
-+
-+#ifdef __NR_memfd_secret
-+
-+#include <linux/secretmem.h>
-+
-+#define PATTERN	0x55
-+
-+static const int prot = PROT_READ | PROT_WRITE;
-+static const int mode = MAP_SHARED;
-+
-+static unsigned long page_size;
-+static unsigned long mlock_limit_cur;
-+static unsigned long mlock_limit_max;
-+
-+static int memfd_secret(unsigned long flags)
-+{
-+	return syscall(__NR_memfd_secret, flags);
-+}
-+
-+static void test_file_apis(int fd)
-+{
-+	char buf[64];
-+
-+	if ((read(fd, buf, sizeof(buf)) >= 0) ||
-+	    (write(fd, buf, sizeof(buf)) >= 0) ||
-+	    (pread(fd, buf, sizeof(buf), 0) >= 0) ||
-+	    (pwrite(fd, buf, sizeof(buf), 0) >= 0))
-+		fail("unexpected file IO\n");
-+	else
-+		pass("file IO is blocked as expected\n");
-+}
-+
-+static void test_mlock_limit(int fd)
-+{
-+	size_t len;
-+	char *mem;
-+
-+	len = mlock_limit_cur;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("unable to mmap secret memory\n");
-+		return;
-+	}
-+	munmap(mem, len);
-+
-+	len = mlock_limit_max * 2;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem != MAP_FAILED) {
-+		fail("unexpected mlock limit violation\n");
-+		munmap(mem, len);
-+		return;
-+	}
-+
-+	pass("mlock limit is respected\n");
-+}
-+
-+static void try_process_vm_read(int fd, int pipefd[2])
-+{
-+	struct iovec liov, riov;
-+	char buf[64];
-+	char *mem;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		exit(KSFT_FAIL);
-+	}
-+
-+	liov.iov_len = riov.iov_len = sizeof(buf);
-+	liov.iov_base = buf;
-+	riov.iov_base = mem;
-+
-+	if (process_vm_readv(getppid(), &liov, 1, &riov, 1, 0) < 0) {
-+		if (errno == ENOSYS)
-+			exit(KSFT_SKIP);
-+		exit(KSFT_PASS);
-+	}
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void try_ptrace(int fd, int pipefd[2])
-+{
-+	pid_t ppid = getppid();
-+	int status;
-+	char *mem;
-+	long ret;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		perror("pipe write");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = ptrace(PTRACE_ATTACH, ppid, 0, 0);
-+	if (ret) {
-+		perror("ptrace_attach");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = waitpid(ppid, &status, WUNTRACED);
-+	if ((ret != ppid) || !(WIFSTOPPED(status))) {
-+		fprintf(stderr, "weird waitppid result %ld stat %x\n",
-+			ret, status);
-+		exit(KSFT_FAIL);
-+	}
-+
-+	if (ptrace(PTRACE_PEEKDATA, ppid, mem, 0))
-+		exit(KSFT_PASS);
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void check_child_status(pid_t pid, const char *name)
-+{
-+	int status;
-+
-+	waitpid(pid, &status, 0);
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == KSFT_SKIP) {
-+		skip("%s is not supported\n", name);
-+		return;
-+	}
-+
-+	if ((WIFEXITED(status) && WEXITSTATUS(status) == KSFT_PASS) ||
-+	    WIFSIGNALED(status)) {
-+		pass("%s is blocked as expected\n", name);
-+		return;
-+	}
-+
-+	fail("%s: unexpected memory access\n", name);
-+}
-+
-+static void test_remote_access(int fd, const char *name,
-+			       void (*func)(int fd, int pipefd[2]))
-+{
-+	int pipefd[2];
-+	pid_t pid;
-+	char *mem;
-+
-+	if (pipe(pipefd)) {
-+		fail("pipe failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	pid = fork();
-+	if (pid < 0) {
-+		fail("fork failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	if (pid == 0) {
-+		func(fd, pipefd);
-+		return;
-+	}
-+
-+	mem = mmap(NULL, page_size, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("Unable to mmap secret memory\n");
-+		return;
-+	}
-+
-+	ftruncate(fd, page_size);
-+	memset(mem, PATTERN, page_size);
-+
-+	if (write(pipefd[1], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	check_child_status(pid, name);
-+}
-+
-+static void test_process_vm_read(int fd)
-+{
-+	test_remote_access(fd, "process_vm_read", try_process_vm_read);
-+}
-+
-+static void test_ptrace(int fd)
-+{
-+	test_remote_access(fd, "ptrace", try_ptrace);
-+}
-+
-+static int set_cap_limits(rlim_t max)
-+{
-+	struct rlimit new;
-+	cap_t cap = cap_init();
-+
-+	new.rlim_cur = max;
-+	new.rlim_max = max;
-+	if (setrlimit(RLIMIT_MEMLOCK, &new)) {
-+		perror("setrlimit() returns error");
-+		return -1;
-+	}
-+
-+	/* drop capabilities including CAP_IPC_LOCK */
-+	if (cap_set_proc(cap)) {
-+		perror("cap_set_proc() returns error");
-+		return -2;
-+	}
-+
-+	return 0;
-+}
-+
-+static void prepare(void)
-+{
-+	struct rlimit rlim;
-+
-+	page_size = sysconf(_SC_PAGE_SIZE);
-+	if (!page_size)
-+		ksft_exit_fail_msg("Failed to get page size %s\n",
-+				   strerror(errno));
-+
-+	if (getrlimit(RLIMIT_MEMLOCK, &rlim))
-+		ksft_exit_fail_msg("Unable to detect mlock limit: %s\n",
-+				   strerror(errno));
-+
-+	mlock_limit_cur = rlim.rlim_cur;
-+	mlock_limit_max = rlim.rlim_max;
-+
-+	printf("page_size: %ld, mlock.soft: %ld, mlock.hard: %ld\n",
-+	       page_size, mlock_limit_cur, mlock_limit_max);
-+
-+	if (page_size > mlock_limit_cur)
-+		mlock_limit_cur = page_size;
-+	if (page_size > mlock_limit_max)
-+		mlock_limit_max = page_size;
-+
-+	if (set_cap_limits(mlock_limit_max))
-+		ksft_exit_fail_msg("Unable to set mlock limit: %s\n",
-+				   strerror(errno));
-+}
-+
-+#define NUM_TESTS 4
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd;
-+
-+	prepare();
-+
-+	ksft_print_header();
-+	ksft_set_plan(NUM_TESTS);
-+
-+	fd = memfd_secret(0);
-+	if (fd < 0) {
-+		if (errno == ENOSYS)
-+			ksft_exit_skip("memfd_secret is not supported\n");
-+		else
-+			ksft_exit_fail_msg("memfd_secret failed: %s\n",
-+					   strerror(errno));
-+	}
-+
-+	test_mlock_limit(fd);
-+	test_file_apis(fd);
-+	test_process_vm_read(fd);
-+	test_ptrace(fd);
-+
-+	close(fd);
-+
-+	ksft_exit(!ksft_get_fail_cnt());
-+}
-+
-+#else /* __NR_memfd_secret */
-+
-+int main(int argc, char *argv[])
-+{
-+	printf("skip: skipping memfd_secret test (missing __NR_memfd_secret)\n");
-+	return KSFT_SKIP;
-+}
-+
-+#endif /* __NR_memfd_secret */
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftests/vm/run_vmtests
-index e953f3cd9664..95a67382f132 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -346,4 +346,21 @@ else
- 	exitcode=1
- fi
- 
-+echo "running memfd_secret test"
-+echo "------------------------------------"
-+./memfd_secret
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	echo "[SKIP]"
-+	exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
-+exit $exitcode
-+
- exit $exitcode
--- 
-2.28.0
+Yes, this is possible particularly when Host kernel is updating writability
+of HVA->HPA mappings for swapping in/out pages.
 
+>
+> Is it better that the writability of HVA->HPA is also determined by whether the memslot is readonly in this change?
+> Like this:
+> -    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
+> +    hfn = gfn_to_pfn_prot(kvm, gfn, writeable, NULL);
+
+The gfn_to_pfn_prot() needs to know what type of fault we
+got (i.e read/write fault). Rest of the information (such as whether
+slot is writable or not) is already available to gfn_to_pfn_prot().
+
+The question here is should we pass "&writeable" or NULL as
+last parameter to gfn_to_pfn_prot(). The recent JUMP label
+support in Linux RISC-V causes problem on HW where PTE
+'A' and 'D' bits are not updated by HW so I have to change
+last parameter of gfn_to_pfn_prot() from "&writeable" to NULL.
+
+I am still investigating this.
+
+Regards,
+Anup
+
+>
+> Regards,
+> Yifei
+>
+> > +             kvm_set_pfn_dirty(hfn);
+> > +             mark_page_dirty(kvm, gfn);
+> > +             ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
+> > +                                   vma_pagesize, false, true);
+> > +     } else {
+> > +             ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
+> > +                                   vma_pagesize, true, true);
+> > +     }
+> > +
+> > +     if (ret)
+> > +             kvm_err("Failed to map in stage2\n");
+> > +
+> > +     spin_unlock(&kvm->mmu_lock);
+> > +     kvm_set_pfn_accessed(hfn);
+> > +     kvm_release_pfn_clean(hfn);
+> > +     return ret;
+> >  }
+> >
+>
+> ......
+>
