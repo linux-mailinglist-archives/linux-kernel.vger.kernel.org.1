@@ -2,133 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409AE2C1A2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296682C1A2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgKXAmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:42:10 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:22415 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725797AbgKXAmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:42:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606178528; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=6gnbiJ4/cY/mVOvvFefpXEYCd0E9z+NaZwEV11kPH+Y=; b=LLNt8YEquOJOvVbrCZvpEm6ZxQLWu+/EEFxrn2vtHLSP6lESUOGLXvEUCiJhF9wYxWCP+BiP
- 43UDdyYAAmaIAJkjFKVlJOfww/ySExMtGESXlHaJ6aDwTZ15j2bRXvy3ONrR1SDkFPDaOBfo
- x7nG3yA1m8Z8jt8HxtUKAXjS9BI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fbc56dde9b708862243b4db (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 00:42:05
- GMT
-Sender: tingweiz=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 145EAC43460; Tue, 24 Nov 2020 00:42:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D635C433C6;
-        Tue, 24 Nov 2020 00:42:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6D635C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingweiz@codeaurora.org
-Date:   Tue, 24 Nov 2020 08:41:55 +0800
-From:   Tingwei Zhang <tingweiz@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     anshuman.khandual@arm.com, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        jonathan.zhouwen@huawei.com, mike.leach@linaro.org
-Subject: Re: [PATCH v4 20/25] coresight: etm4x: Detect system instructions
- support
-Message-ID: <20201124004155.GA10220@codeaurora.org>
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
- <20201119164547.2982871-21-suzuki.poulose@arm.com>
- <20201123075827.GA18352@codeaurora.org>
- <1c8d4b13-0c80-0bd3-29a6-dd586841377f@arm.com>
+        id S1726744AbgKXAm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:42:57 -0500
+Received: from mail-bn8nam12on2044.outbound.protection.outlook.com ([40.107.237.44]:54753
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725797AbgKXAmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 19:42:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BHwq7kAewyZuCzc0CAMT6uLj7L4PbpKmNFBvTVZe4+0me0AS2GPYOSkKdBfs6XgEIytjESn+xO9vELLYVSsoM2oZ0+1JBkX44KQgUG4vJ5LbPQdNXVSDskQ0TG8rajc4pPUcVUMbJx9xv5DGxhbU4ctxxsrY1CVnbO1eoem35JMWtHU5U2LvwfQ77Y9joIJ2nlcy0UkDNGszOnptbULNwKKMyuuIxdbAleT8iUrQ4gteYCdgfMK2beEkUPHll+f9Az+nA2LmDHWJlfET8eg65+UFx8AJpgC85dby4qUOHLpfuUG0IvFLcFisGejHKclnrlfN9ire6Aap8U0kpyzb5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DeMfEUMNIlGhdLn7PS6D1YTJ/Kqg3Y/zwYuvYJ5MDXw=;
+ b=WsagQT9tEsXhgUb1kj+oUVAN0iG8OU40qxRDuXRREKXWPV/6scaC8K3QzpbE/tAdww0LdOPcdQQQxrexUsjEpzo+RS6MF3tNIS6yH4ZpbuLazEeNdwMx3y3dhUu6jU9hSUK/krQSJZpQRKiNvehZf2gdi2MUpJyDYvsPqW168z291Al///W81i6J+FCeMIOpDn7zEY1tq88F1KMsBgWqzmvoEIe1l23u3GwcF1qqA9HM0/uPIBQNyQ6j1kK/b0mW32VUVT1x4uFWtXNYbgSpOzxm+0Jw9kpzq0QLs2E7d0irVTUFScdrr7vP4Cmmk6DfwFXKd/lbFdkOft40cuISKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DeMfEUMNIlGhdLn7PS6D1YTJ/Kqg3Y/zwYuvYJ5MDXw=;
+ b=cp4qubYIk3N9rcfcRILDqNhSjLC8hB/S5+it7AxoKgW1ms9Jrq4uhVDxT+FFNX8qDFxFIWLfnv1thsyJaB1ESAPGd8+5StNtidEuf9U/wSehTdSfW4CjGbir1Acl/GLPlWyTF0QK+yf7Dy4KyiiPDEOV+JNgc1ST+qpfrFsUzbs=
+Received: from DM6PR12MB2619.namprd12.prod.outlook.com (2603:10b6:5:45::18) by
+ DM5PR12MB2358.namprd12.prod.outlook.com (2603:10b6:4:b3::34) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3564.25; Tue, 24 Nov 2020 00:42:51 +0000
+Received: from DM6PR12MB2619.namprd12.prod.outlook.com
+ ([fe80::5a6:dfb2:fdfd:2d91]) by DM6PR12MB2619.namprd12.prod.outlook.com
+ ([fe80::5a6:dfb2:fdfd:2d91%6]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 00:42:51 +0000
+From:   "Quan, Evan" <Evan.Quan@amd.com>
+To:     Colin King <colin.king@canonical.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Wang, Kevin(Yang)" <Kevin1.Wang@amd.com>,
+        "Gui, Jack" <Jack.Gui@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] drm/amd/powerplay: fix spelling mistake
+ "smu_state_memroy_block" -> "smu_state_memory_block"
+Thread-Topic: [PATCH] drm/amd/powerplay: fix spelling mistake
+ "smu_state_memroy_block" -> "smu_state_memory_block"
+Thread-Index: AQHWwYb/QG3R3a5QL024dYjMdI9elanWckgQ
+Date:   Tue, 24 Nov 2020 00:42:51 +0000
+Message-ID: <DM6PR12MB26197807564F833B9A2E18E8E4FB0@DM6PR12MB2619.namprd12.prod.outlook.com>
+References: <20201123105417.198314-1-colin.king@canonical.com>
+In-Reply-To: <20201123105417.198314-1-colin.king@canonical.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ActionId=f32d5e88-8f5d-4a47-bd4c-d72c443bef13;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ContentBits=0;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=true;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Method=Standard;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Name=Internal
+ Use Only -
+ Unrestricted;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SetDate=2020-11-24T00:42:23Z;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [180.167.199.189]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c045ddce-e8cf-4f82-be4f-08d89011dfb0
+x-ms-traffictypediagnostic: DM5PR12MB2358:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR12MB23585D8AF6BDBDB0BFBBEB7AE4FB0@DM5PR12MB2358.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2399;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZlWHmH20f+n9uRJ6UqDUuAnpZgwCE+C2w+lhl7aNHo5IHf2vdkBl+XUnzttyM534c8uLEOMZnzfQj9mv6yvOLhGPkvPPEcU5wzaab9wVmBcBmqDIM4Q7mPJqsB6vF+ssH4GWRK0Q8YN5fcAoXjY8sYIkcUdnpFR/hXLa+p9bSLrh3KaJWnDA6SRR2Esb+ok+VFzpErs+BdZ7UFvVuNDNRlVufGKFtOln+iaI1CWUoB1wdMdm9prYvddxxIKJLCsku6G+V8eZjJxVMUiOFABiQ0UlCN0mSbny43tUwcZuDvgN/EmpTtIh7OVoFWK6/8nRvYs6dVgqTSxsdA57qmSkwUWFoWu87NCJMY0w2zylnp94J3GHxJvZqi28cyOwhOGQ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2619.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(8676002)(26005)(478600001)(186003)(66556008)(76116006)(66446008)(4326008)(64756008)(33656002)(66946007)(2906002)(66476007)(5660300002)(71200400001)(7696005)(52536014)(53546011)(6506007)(86362001)(8936002)(55016002)(9686003)(83380400001)(316002)(54906003)(921005)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: tUhLQX6BP181GW+ZJWO44XWJp4pErCeGd047x/HgKXoCdyPv2LISo1cOJjLOs1Y8nS4ElFEVBP7JzMSqEPPJgDK8Dq7mWzWeO1X4FNDDPIIypwxCMhF7oUdQEx1bO35rAp4EvEP62RKKJ2jnexxTvt5Bk/B1Ye0jscW4h518Jl7D91P+O6Ci9tDv9nloaxNF3F6zfwNWo+93FhCxFHmO1sZCMGdEfb70OxLMqlqjKjvIJgUGBPj0nN7EPGP66oJYk95HUn/2z35ShMDjGcK6IXc+ntkfrAHfnxoM2O4FnAG7USqkKCUOqpNrR/Bx0mF7zY6EH0YYKN0p45z/4qEJp6gXBAnMSgaQX3RmF+sRUjdxO66lJ2AYSBHnRy8fxdStVH0MtzGXwxN32rYAVdqddKkTPE8IAyhjgA/C0MOXNWyGgl199Ifj7sqNU0oA17LWvO2wqOWE1wQ6CvLQbtneHpJzw7V1f1LrVCoFyjjrnZ6fULsSRGc3HR9/r1SEADAynBoqrcdktORfLStqFv0HxH//rlrgHCCvNO2dT6iRGaYQdSVwyYmJqhzCOvrYC5g68+17hLEjKck6RZW8X3NxvbuxN69dgSrwUmBurnYAdOKTdmTlnB5OBWS39XW07Wi43/AUto3inZhAtVV+8ljC0qysiU7bL2JNx0cbfYDXKrMNcMUR5nZTO0HHKlc0lJJGgjdGJLg3I4MUHAzaesnRZN7BncyOTBpAslokK8fI5Lf7PuGTe/wFlzcx/Z7TrMxLM5UFAVBDzoqJ98pwEc1uR+k2Pg12KmkBInJhyhgLR39vikolLOktctxFYMOWjFcxxXMFR+KRo9QfUr8oVXUt02RmWCDCPJxd3Rh/mYSxfIDT/Typ4H/cq+FTPEqdQICLEnTRIm4V8WmLLS+axFsxpA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c8d4b13-0c80-0bd3-29a6-dd586841377f@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2619.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c045ddce-e8cf-4f82-be4f-08d89011dfb0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 00:42:51.3343
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Gyl3B0f3QWzaA0a7DbVI/wTHLhjLp5Z24qUFPyrrdD/FPZS8JlmAiPNAgfe1r0pi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2358
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 05:39:43PM +0800, Suzuki K Poulose wrote:
-> On 11/23/20 7:58 AM, Tingwei Zhang wrote:
-> >Hi Suzuki,
-> >
-> >On Fri, Nov 20, 2020 at 12:45:42AM +0800, Suzuki K Poulose wrote:
-> >>ETM v4.4 onwards adds support for system instruction access
-> >>to the ETM. Detect the support on an ETM and switch to using the
-> >>mode when available.
-> >>
-> >>Cc: Mike Leach <mike.leach@linaro.org>
-> >>Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >>Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >>---
-> >>  .../coresight/coresight-etm4x-core.c          | 39 +++++++++++++++++++
-> >>  1 file changed, 39 insertions(+)
-> >>
-> >>diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >>b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >>index 7ac0a185c146..5cbea9c27f58 100644
-> >>--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >>+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >>@@ -684,6 +684,37 @@ static const struct coresight_ops etm4_cs_ops = {
-> >>  	.source_ops	= &etm4_source_ops,
-> >>  };
-> >>
-> >>+static inline bool cpu_supports_sysreg_trace(void)
-> >>+{
-> >>+	u64 dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
-> >>+
-> >>+	return ((dfr0 >> ID_AA64DFR0_TRACEVER_SHIFT) & 0xfUL) > 0;
-> >>+}
-> >>+
-> >>+static bool etm4_init_sysreg_access(struct etmv4_drvdata *drvdata,
-> >>+				    struct csdev_access *csa)
-> >>+{
-> >>+	u32 devarch;
-> >>+
-> >>+	if (!cpu_supports_sysreg_trace())
-> >>+		return false;
-> >>+
-> >>+	/*
-> >>+	 * ETMs implementing sysreg access must implement TRCDEVARCH.
-> >>+	 */
-> >>+	devarch = read_etm4x_sysreg_const_offset(TRCDEVARCH);
-> >>+	if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH)
-> >
-> >Is this driver suppose to work on ETM 5.0/ETE trace unit before ETE driver
-> >is ready?
-> 
-> No, it is not supposed to work on an ETE without the ETE support. That check
-> ensures that we only detect ETMv4x for now. The ETE driver support adds the
-> ETE_ARCH as one of the supported ETMs. If you hack around it might still
-> probe,
-> but things could go terribly wrong if we access registers that are not
-> available
-> on ETE.
-> 
-> Btw, are you able to test this series on an ETMv4.4+ system ?
-> 
-I'm trying to test this series on an ETE. Look like it's not correct.
-I'll apply ETE patch on top of this and test.
-
-> Kind regards
-> Suzuki
-> _______________________________________________
-> CoreSight mailing list
-> CoreSight@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/coresight
+W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEludGVybmFsIERpc3RyaWJ1dGlvbiBPbmx5XQ0KDQpS
+ZXZpZXdlZC1ieTogRXZhbiBRdWFuIDxldmFuLnF1YW5AYW1kLmNvbT4NCg0KLS0tLS1PcmlnaW5h
+bCBNZXNzYWdlLS0tLS0NCkZyb206IENvbGluIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNv
+bT4NClNlbnQ6IE1vbmRheSwgTm92ZW1iZXIgMjMsIDIwMjAgNjo1NCBQTQ0KVG86IERldWNoZXIs
+IEFsZXhhbmRlciA8QWxleGFuZGVyLkRldWNoZXJAYW1kLmNvbT47IEtvZW5pZywgQ2hyaXN0aWFu
+IDxDaHJpc3RpYW4uS29lbmlnQGFtZC5jb20+OyBEYXZpZCBBaXJsaWUgPGFpcmxpZWRAbGludXgu
+aWU+OyBEYW5pZWwgVmV0dGVyIDxkYW5pZWxAZmZ3bGwuY2g+OyBRdWFuLCBFdmFuIDxFdmFuLlF1
+YW5AYW1kLmNvbT47IFdhbmcsIEtldmluKFlhbmcpIDxLZXZpbjEuV2FuZ0BhbWQuY29tPjsgR3Vp
+LCBKYWNrIDxKYWNrLkd1aUBhbWQuY29tPjsgYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7
+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCkNjOiBrZXJuZWwtamFuaXRvcnNAdmdl
+ci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBbUEFU
+Q0hdIGRybS9hbWQvcG93ZXJwbGF5OiBmaXggc3BlbGxpbmcgbWlzdGFrZSAic211X3N0YXRlX21l
+bXJveV9ibG9jayIgLT4gInNtdV9zdGF0ZV9tZW1vcnlfYmxvY2siDQoNCkZyb206IENvbGluIElh
+biBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+DQoNClRoZSBzdHJ1Y3QgbmFtZSBzbXVf
+c3RhdGVfbWVtcm95X2Jsb2NrIGNvbnRhaW5zIGEgc3BlbGxpbmcgbWlzdGFrZSwgcmVuYW1lIGl0
+IHRvIHNtdV9zdGF0ZV9tZW1vcnlfYmxvY2sNCg0KRml4ZXM6IDg1NTRlNjdkNmUyMiAoImRybS9h
+bWQvcG93ZXJwbGF5OiBpbXBsZW1lbnQgcG93ZXJfZHBtX3N0YXRlIHN5cyBpbnRlcmZhY2UgZm9y
+IFNNVTExIikNClNpZ25lZC1vZmYtYnk6IENvbGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9u
+aWNhbC5jb20+DQotLS0NCiBkcml2ZXJzL2dwdS9kcm0vYW1kL3BtL2luYy9hbWRncHVfc211Lmgg
+fCA0ICsrLS0NCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygt
+KQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9wbS9pbmMvYW1kZ3B1X3NtdS5o
+IGIvZHJpdmVycy9ncHUvZHJtL2FtZC9wbS9pbmMvYW1kZ3B1X3NtdS5oDQppbmRleCA3NTUwNzU3
+Y2MwNTkuLmE1NTllYTIyMDRjMSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvcG0v
+aW5jL2FtZGdwdV9zbXUuaA0KKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9wbS9pbmMvYW1kZ3B1
+X3NtdS5oDQpAQCAtOTksNyArOTksNyBAQCBzdHJ1Y3Qgc211X3N0YXRlX2Rpc3BsYXlfYmxvY2sg
+ew0KIGJvb2wgICAgICAgICAgICAgIGVuYWJsZV92YXJpX2JyaWdodDsNCiB9Ow0KDQotc3RydWN0
+IHNtdV9zdGF0ZV9tZW1yb3lfYmxvY2sgew0KK3N0cnVjdCBzbXVfc3RhdGVfbWVtb3J5X2Jsb2Nr
+IHsNCiBib29sICAgICAgICAgICAgICBkbGxfb2ZmOw0KIHVpbnQ4X3QgICAgICAgICAgICAgICAg
+IG0zYXJiOw0KIHVpbnQ4X3QgICAgICAgICAgICAgICAgIHVudXNlZFszXTsNCkBAIC0xNDYsNyAr
+MTQ2LDcgQEAgc3RydWN0IHNtdV9wb3dlcl9zdGF0ZSB7DQogc3RydWN0IHNtdV9zdGF0ZV92YWxp
+ZGF0aW9uX2Jsb2NrICAgICAgICAgICAgIHZhbGlkYXRpb247DQogc3RydWN0IHNtdV9zdGF0ZV9w
+Y2llX2Jsb2NrICAgICAgICAgICAgICAgICAgIHBjaWU7DQogc3RydWN0IHNtdV9zdGF0ZV9kaXNw
+bGF5X2Jsb2NrICAgICAgICAgICAgICAgIGRpc3BsYXk7DQotc3RydWN0IHNtdV9zdGF0ZV9tZW1y
+b3lfYmxvY2sgICAgICAgICAgICAgICAgIG1lbW9yeTsNCitzdHJ1Y3Qgc211X3N0YXRlX21lbW9y
+eV9ibG9jayAgICAgICAgICAgICAgICAgbWVtb3J5Ow0KIHN0cnVjdCBzbXVfc3RhdGVfc29mdHdh
+cmVfYWxnb3JpdGhtX2Jsb2NrICAgICBzb2Z0d2FyZTsNCiBzdHJ1Y3Qgc211X3V2ZF9jbG9ja3Mg
+ICAgICAgICAgICAgICAgICAgICAgICAgdXZkX2Nsb2NrczsNCiBzdHJ1Y3Qgc211X2h3X3Bvd2Vy
+X3N0YXRlICAgICAgICAgICAgICAgICAgICAgaGFyZHdhcmU7DQotLQ0KMi4yOC4wDQoNCg==
