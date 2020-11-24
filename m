@@ -2,126 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2CF2C24DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ECD2C2432
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733032AbgKXLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:42:34 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2144 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733024AbgKXLmd (ORCPT
+        id S1732820AbgKXLb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:31:27 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8397 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728346AbgKXLb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:42:33 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgMWY5kWMz67GxF;
-        Tue, 24 Nov 2020 19:39:53 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 24 Nov 2020 12:42:26 +0100
-Received: from localhost (10.47.66.130) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 24 Nov
- 2020 11:42:26 +0000
-Date:   Tue, 24 Nov 2020 11:42:10 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Cristian Pop <cristian.pop@analog.com>
-CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jic23@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: dac: AD5766 yaml documentation
-Message-ID: <20201124114210.000068ef@Huawei.com>
-In-Reply-To: <20201123145042.18930-1-cristian.pop@analog.com>
-References: <20201123145042.18930-1-cristian.pop@analog.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 24 Nov 2020 06:31:26 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CgMKM2hG2z6ybj;
+        Tue, 24 Nov 2020 19:31:03 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 24 Nov 2020 19:31:13 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <linus.walleij@linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] pinctrl: pinctrl-microchip-sgpio: Mark some symbols with static keyword
+Date:   Tue, 24 Nov 2020 19:42:53 +0800
+Message-ID: <1606218173-3722-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.66.130]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 16:50:41 +0200
-Cristian Pop <cristian.pop@analog.com> wrote:
+Fix the following sparse warnings:
 
-> This adds device tree bindings for the AD5766 DAC.
-> 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+drivers/pinctrl/pinctrl-microchip-sgpio.c:63:31: warning: symbol 'properties_luton' was not declared. Should it be static?
+drivers/pinctrl/pinctrl-microchip-sgpio.c:68:31: warning: symbol 'properties_ocelot' was not declared. Should it be static?
+drivers/pinctrl/pinctrl-microchip-sgpio.c:73:31: warning: symbol 'properties_sparx5' was not declared. Should it be static?
 
-One trivial point inline.  If that's all we have in the series I can tidy up
-whilst applying.
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/pinctrl/pinctrl-microchip-sgpio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Jonathan
-
-> ---
->  .../bindings/iio/dac/adi,ad5766.yaml          | 52 +++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> new file mode 100644
-> index 000000000000..aed4a0472bc4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2020 Analog Devices Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/bindings/iio/dac/adi,ad5766.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD5766 DAC device driver
-> +
-> +maintainers:
-> +  - Cristian Pop <cristian.pop@analog.com>
-> +
-> +description: |
-> +  Bindings for the Analog Devices AD5766 current DAC device. Datasheet can be
-> +  found here:
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad5766-5767.pdf
-> +
-
-Just one blank line.
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad5766
-> +      - adi,ad5767
-> +
-> +  reg:
-> +    maxItems: 1
-> +  
-> +  spi-max-frequency:
-> +    maximum: 1000000
-> +
-> +  spi-cpol: true
-> +
-> +  reset-gpios:
-> +    description: GPIO spec for the RESET pin. If specified, it will be
-> +      asserted during driver probe.
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-max-frequency
-> +  - spi-cpol
-> +
-> +examples:
-> +  - |
-> +    ad5766@0{
-> +        compatible = "adi,ad5766";
-> +        reg = <0>;
-> +        spi-cpol;
-> +        spi-max-frequency = <1000000>;
-> +        reset-gpios = <&gpio 22 0>;
-> +      };
+diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
+index d6c31cc..e182419 100644
+--- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
++++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
+@@ -60,17 +60,17 @@ struct sgpio_properties {
+ #define SGPIO_SPARX5_CLK_FREQ    GENMASK(19, 8)
+ #define SGPIO_SPARX5_BIT_SOURCE  GENMASK(23, 12)
+ 
+-const struct sgpio_properties properties_luton = {
++static const struct sgpio_properties properties_luton = {
+ 	.arch   = SGPIO_ARCH_LUTON,
+ 	.regoff = { 0x00, 0x09, 0x29, 0x2a, 0x2b },
+ };
+ 
+-const struct sgpio_properties properties_ocelot = {
++static const struct sgpio_properties properties_ocelot = {
+ 	.arch   = SGPIO_ARCH_OCELOT,
+ 	.regoff = { 0x00, 0x06, 0x26, 0x04, 0x05 },
+ };
+ 
+-const struct sgpio_properties properties_sparx5 = {
++static const struct sgpio_properties properties_sparx5 = {
+ 	.arch   = SGPIO_ARCH_SPARX5,
+ 	.regoff = { 0x00, 0x06, 0x26, 0x04, 0x05 },
+ };
+-- 
+2.6.2
 
