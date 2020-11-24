@@ -2,76 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EE72C256C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE222C256B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387428AbgKXMLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729173AbgKXMLT (ORCPT
+        id S1733227AbgKXMM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:12:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45742 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729172AbgKXMM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:11:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C5FC0613D6;
-        Tue, 24 Nov 2020 04:11:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0snAvb5DOf+oPMchsCEyUIU/3RDtclpkTrApuWx5x1w=; b=cM01k4eKrSZ1mFMoilnZWF+zm3
-        AvkPQ8IXi5lb0AqfaKPACXJH5QGsEUDKUlx9rQqMare2QscEbYFINvjV3RstjDHldXXZ8X+a33e04
-        8VB/uB0teuTiN/iDL1jAgnn9dhOdbi9clxK+cA973oz7OGYADzkC4zqVMk9PbogOnJ1cEMnmAKZ58
-        6QKTd5+nWr4diAEMBEC8yTzsmYuBVwAmrYhriaVUmX9/3eh6QBIeHSVFhQ0OHDLDcKOA5ZMWVqxoJ
-        G6N5RxYVI1O4iIzvM9h6IxGrIVEDW2LopW5W8kbTUNzkcKAvDW/q505V8tSrogaYT59/VFaJEzKEg
-        X14JMrSg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khXA5-0001k0-Qp; Tue, 24 Nov 2020 12:11:10 +0000
-Date:   Tue, 24 Nov 2020 12:11:09 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Christoph Hellwig <hch@lst.de>, Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 1/3] LICENSES: Add the CC-BY-4.0 license
-Message-ID: <20201124121109.GY4327@casper.infradead.org>
-References: <cover.1606137108.git.linux@leemhuis.info>
- <c07e51e153f453c83c77a75513ad3d5ec70ef1be.1606137108.git.linux@leemhuis.info>
- <20201124091852.GB11695@lst.de>
- <04eae024-811d-d11e-b8bd-52f0dd0e225f@leemhuis.info>
- <20201124093658.GA13174@lst.de>
- <e424e24f-08d3-0b83-3d5b-ac500c753792@leemhuis.info>
+        Tue, 24 Nov 2020 07:12:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606219946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QYtm4WS/VKbRUCOq0XLPYf6Vll9ag4HN6eyUxZktLK0=;
+        b=hUMLn53SOOxKyNamTEU8aqOvfZELcZc1a972Gsg2Y34cHeA3QM40E/gx22jlAJkfgfwMjx
+        qWjB1F8fPNxNrbA4B3x06hQ9/hIAdot8tTsr6kpuWLF1xihHkP1LzQgtUXlt4v4PHDhEcH
+        zlnlVDHERSc4qVR7JZpZle6DsRs4ThI=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-526-Ek2yfpF1MCi1zNdfWz2Xhw-1; Tue, 24 Nov 2020 07:12:25 -0500
+X-MC-Unique: Ek2yfpF1MCi1zNdfWz2Xhw-1
+Received: by mail-ej1-f71.google.com with SMTP id pv11so689028ejb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:12:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QYtm4WS/VKbRUCOq0XLPYf6Vll9ag4HN6eyUxZktLK0=;
+        b=iqwCxg1MtIpLvh7e0w60XqcZdujSMxhfndgClcFsxzuzdoc6xUd4Qs+53Q1Djt9HQN
+         xdoZA3R3ZAKIQWlti/OvO3E8UZiLuYXpnM3moR1GfuB7/7vbHplLIcDtlhzeJRXdAyi3
+         +bkiTNNyiAqeCkEmY0w5P111uL2qv6oa0lgJwi6v5xXQrtSZi8ZoirHo8rxHHeVlDTfG
+         yMOcpzECrcfNaCEA4DNie6NyVsJFPxhaiqKs7X8j0Oo+IwmJUNcJcbYVuWkajVnHa5/X
+         /FQ7gsGZdtK5+08BqYVB5BURSASTjZD8xXXaHRPC0FIMFfh+wsu7c1D/2gfFgQoN8Tf5
+         3o/A==
+X-Gm-Message-State: AOAM533uN9/8FmvihCz/JI27c8ee1L4mBCVrNTDUTKQLBZiMduN+kxxe
+        GBc3fGrvXk/HtqyJ2T++Wx5Mk1HB1gBU1m5MBx9Fhi4RiD3ochpslzUyVTPN3qXbCC8gNVeJa2U
+        Cuj/V26/473sTe6fvxvcdS84TaBlEXR/a7muH/WSBdqgXuBhJzUP7ueRL5bEqJwqK4Lc47CFUe6
+        0L
+X-Received: by 2002:a17:906:1183:: with SMTP id n3mr3751842eja.188.1606219943610;
+        Tue, 24 Nov 2020 04:12:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxk/PTwzMP+ErI6EGlqY2qYdUTtV53aR0KLZ94Bj3nBwadWAvcZpZNWLEJ5MKudenQ/xcOiPw==
+X-Received: by 2002:a17:906:1183:: with SMTP id n3mr3751822eja.188.1606219943366;
+        Tue, 24 Nov 2020 04:12:23 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id j7sm6742345ejk.14.2020.11.24.04.12.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 04:12:22 -0800 (PST)
+Subject: Re: [PATCH] platform/x86: intel-vbtn: Support for tablet mode on HP
+ Pavilion 13 x360 PC
+To:     Max Verevkin <me@maxverevkin.tk>
+Cc:     AceLan Kao <acelan.kao@canonical.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201124131652.11165-1-me@maxverevkin.tk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a7efc180-be37-8058-465a-5e334e131b48@redhat.com>
+Date:   Tue, 24 Nov 2020 13:12:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e424e24f-08d3-0b83-3d5b-ac500c753792@leemhuis.info>
+In-Reply-To: <20201124131652.11165-1-me@maxverevkin.tk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:07:41AM +0100, Thorsten Leemhuis wrote:
-> There is nothing special with this text, it's just that GPL is known to not
-> be really ideal for documentation. That makes it hard for people to reuse
-> parts of the docs outside of the kernel context, say in books or on
-> websites. But it IMHO would be good for us if others could simply use this
-> text as a base in such places. Otherwise they'd often face a situation where
-> they had to write something completely new themselves, which afsics often
-> leads to texts that can be incomplete, inaccurate or actually missleading.
-> That can lead to bad bug reports, which is annoying both for reporters and
-> kernel developers.
-> 
-> That's why I came up with the thought "make the text available under more
-> liberal license in addition to the GPLv2 is a good idea here". I considered
-> MIT, but from what I see CC-BY 4.0 is a way better choice for documentation
-> that is more known to authors.
-> 
-> And I hope others pick up the idea when they write new documentation for the
-> kernel, so maybe sooner or later it's not unusual anymore.
+Hi,
 
-It's really tricky to make this work when, eg, including kernel-doc from
-files which are unambiguously licensed under the GPL.  I'd be happy to
-sign up to licensing the files I control under GPL-with-CC-BY-SA-exception
-that said something like "any documentation extracted from this file may
-be distributed under the BY-SA license", but I'm not sure everybody would.
+On 11/24/20 2:16 PM, Max Verevkin wrote:
+> Signed-off-by: Max Verevkin <me@maxverevkin.tk>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+> ---
+>  drivers/platform/x86/intel-vbtn.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
+> index f5901b0b07cd..0419c8001fe3 100644
+> --- a/drivers/platform/x86/intel-vbtn.c
+> +++ b/drivers/platform/x86/intel-vbtn.c
+> @@ -206,6 +206,12 @@ static const struct dmi_system_id dmi_switches_allow_list[] = {
+>  			DMI_MATCH(DMI_PRODUCT_NAME, "HP Stream x360 Convertible PC 11"),
+>  		},
+>  	},
+> +	{
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion 13 x360 PC"),
+> +		},
+> +	},
+>  	{} /* Array terminator */
+>  };
+>  
+> 
+
