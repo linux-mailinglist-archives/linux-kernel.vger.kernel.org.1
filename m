@@ -2,56 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0D42C21F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 881D12C21F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731693AbgKXJnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:43:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731576AbgKXJnK (ORCPT
+        id S1731701AbgKXJnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:43:21 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:49073 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgKXJnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:43:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F93C0613D6;
-        Tue, 24 Nov 2020 01:43:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M/iBLJL/EG5AgOHD7behYTBNDQkWYbGk8/XLqfCBQpc=; b=ZWy/rWekEoc/XtfyySU5aZH3J0
-        Krzj7EjERitAmRkbozaSIaWZ9lY1bH8N/dvz6gSzYUo7HJUedIKRAM8RWGeJeX0UwZHPzTfx0AasE
-        4QDj7Pg62EbANHgDbMrY/M9BbVARJzB6RTUWA0u5uuEVQv9/l4eOBqJ+iOx32TXZkXwz8mPNKODTy
-        jR85yOpj4EBh+qFIL617dqd/PiV5S960MjELfXUnMimhT/JsAfYmiLmm5sqOb0uUAPZqF0CARUpY1
-        NKx2Icsy9uqPXzF2qN8PJtUsWEYToJ5JOSio1aQeuHJUunm6jbKdxizTMdBX2U1ggAIFAON3vY4Iv
-        tI+0ZbIg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khUqr-0000SN-4t; Tue, 24 Nov 2020 09:43:09 +0000
-Date:   Tue, 24 Nov 2020 09:43:09 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jani Nikula <jani.nikula@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        intel-gfx@lists.freedesktop.org, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH 9/9] blktrace: make relay callbacks const
-Message-ID: <20201124094309.GI31963@infradead.org>
-References: <cover.1606153547.git.jani.nikula@intel.com>
- <7ff5ce0b735901eb4f10e13da2704f1d8c4a2507.1606153547.git.jani.nikula@intel.com>
+        Tue, 24 Nov 2020 04:43:19 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 21B9923E45;
+        Tue, 24 Nov 2020 10:43:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1606210995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lt6x/itJc1dXt2VhsUKeDxS7oj0ZsZ4Zcf2aw15O+B8=;
+        b=N+Keib/coSaK8Jki8gD3bHy0+YJOWmpiUOa7ytTdKv4HU2ACYe2ZkarVmtxjfLF6ksnxVD
+        +ulHDKM65Ez4iwgDgGA6SM6umDx3XCn5e3Z1ymtZsY3xJA0oVJYoEFbtAblU1kkXgz1vxn
+        AeykY6b/URr2j2QvY5MuqPx/xCyanoQ=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ff5ce0b735901eb4f10e13da2704f1d8c4a2507.1606153547.git.jani.nikula@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 10:43:15 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     "Y.b. Lu" <yangbo.lu@nxp.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ashish Kumar <ashish.kumar@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+ controllers use fixed indices
+In-Reply-To: <AM7PR04MB6885044C8AE85FE369285186F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
+ <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <20201120093015.duel3yx63cbya77w@skbuf>
+ <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
+ <71a86b0fbc95892f8fd240e0919e7e23@walle.cc>
+ <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <3293d698bf26ecf08f22e7e2ffe55e74@walle.cc>
+ <AM7PR04MB688518B8AE836C2CC37FED6AF8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <de68e6861f0ab947642c847b3b645503@walle.cc>
+ <AM7PR04MB6885044C8AE85FE369285186F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d6ecf5fea0d8bde80f7563b4cb586b59@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 07:59:29PM +0200, Jani Nikula wrote:
-> Now that relay_open() accepts const callbacks, make relay callbacks
-> const.
+Am 2020-11-24 10:22, schrieb Y.b. Lu:
+> Hi Michael,
+> 
+>> -----Original Message-----
+>> From: Michael Walle <michael@walle.cc>
+>> Sent: Tuesday, November 24, 2020 5:08 PM
+>> To: Y.b. Lu <yangbo.lu@nxp.com>
+>> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
+>> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
+>> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
+>> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>; 
+>> Ulf
+>> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
+>> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
+>> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+>> controllers use fixed indices
+>> 
+>> Am 2020-11-24 10:02, schrieb Y.b. Lu:
+>> > Hi Michael,
+>> >
+>> >> -----Original Message-----
+>> >> From: Michael Walle <michael@walle.cc>
+>> >> Sent: Tuesday, November 24, 2020 4:55 PM
+>> >> To: Y.b. Lu <yangbo.lu@nxp.com>
+>> >> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
+>> >> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
+>> >> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
+>> >> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>;
+>> >> Ulf
+>> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
+>> >> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
+>> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+>> >> controllers use fixed indices
+>> >>
+>> >> Am 2020-11-24 09:47, schrieb Y.b. Lu:
+>> >> > Hi Michael,
+>> >> >
+>> >> >> -----Original Message-----
+>> >> >> From: Michael Walle <michael@walle.cc>
+>> >> >> Sent: Tuesday, November 24, 2020 4:03 PM
+>> >> >> To: Y.b. Lu <yangbo.lu@nxp.com>
+>> >> >> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
+>> >> >> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
+>> >> >> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
+>> >> >> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>;
+>> >> >> Ulf
+>> >> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
+>> >> >> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
+>> >> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+>> >> >> controllers use fixed indices
+>> >> >>
+>> >> >> Am 2020-11-24 08:41, schrieb Y.b. Lu:
+>> >> >> > Hi Vladimir,
+>> >> >> >
+>> >> >> >> -----Original Message-----
+>> >> >> >> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>> >> >> >> Sent: Friday, November 20, 2020 5:30 PM
+>> >> >> >> To: Y.b. Lu <yangbo.lu@nxp.com>
+>> >> >> >> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li
+>> <leoyang.li@nxp.com>;
+>> >> Rob
+>> >> >> >> Herring <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
+>> >> >> >> devicetree@vger.kernel.org; Adrian Hunter
+>> <adrian.hunter@intel.com>;
+>> >> >> >> Ulf
+>> >> >> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
+>> >> >> >> linux-kernel@vger.kernel.org; Ashish Kumar
+>> <ashish.kumar@nxp.com>;
+>> >> >> >> Michael Walle <michael@walle.cc>
+>> >> >> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD
+>> card
+>> >> >> >> controllers use fixed indices
+>> >> >> >>
+>> >> >> >> On Fri, Nov 20, 2020 at 02:04:02AM +0000, Y.b. Lu wrote:
+>> >> >> >> > Hi Vladimir,
+>> >> >> >> >
+>> >> >> >> > I have already upstreamed a patch for all affected layerscape
+>> boards.
+>> >> >> >> >
+>> >> >> >>
+>> >> >>
+>> >>
+>> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kern
+>> >> >>
+>> >>
+>> el.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fshawnguo%2Flinux.git%2
+>> >> >>
+>> >>
+>> Fcommit%2F&amp;data=04%7C01%7Cyangbo.lu%40nxp.com%7C498622ade
+>> >> >>
+>> >>
+>> e704fc0042008d8904f6184%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0
+>> >> >> %7C0%7C637418017917635725%7CUnknown%7CTWFpbGZsb3d8eyJW
+>> Ijoi
+>> >> M
+>> >> >>
+>> >>
+>> C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000
+>> >> >>
+>> >>
+>> &amp;sdata=OciS3q%2BmP%2Bz4x1ewPHDigmUkgIZmBgUlRRTm4yaxB7s%3D
+>> >> >> &amp;reserved=0?
+>> >> >> >> h=imx/dt64&id=342ab37ecaf8c1b10dd3ca9a1271db29a6af0705
+>> >> >> >> >
+>> >> >> >> > Please check whether it works for you.
+>> >> >> >>
+>> >> >> >> Thanks, one can tell that I haven't done my due diligence of checking
+>> >> >> >> Shawn's tree first. I'll cherry-pick that patch and carry on with my
+>> >> >> >> work.
+>> >> >> >>
+>> >> >> >> However, the fact still remains that Michael has expressed his opinion
+>> >> >> >> regarding mmcblk0 vs mmcblk1. Do you think that we could make
+>> the
+>> >> >> >> aliases a per-board option instead of per-SoC? Consider that there
+>> >> >> >> might
+>> >> >> >> even be boards that only use SD card. It would be strange for the
+>> >> >> >> block
+>> >> >> >> device in that case to be called /dev/mmcblk1.
+>> >> >> >
+>> >> >> > I don't think it's a problem in board dts to define board specific
+>> >> >> > thing, like re-defining alias, and disabling any IP it not using.
+>> >> >>
+>> >> >> First, why would you put it in the architecture include anyway? That
+>> >> >> is really board-specific. That is like you would say, we enable all
+>> >> >> devices and a board could potentially disable it. TBH it seems that
+>> >> >> this will fit your reference boards and you don't care about the
+>> >> >> other ones which uses that include.
+>> >> >
+>> >> > In soc dtsi, this is giving default alias for two esdhc controllers.
+>> >> > This is not board specific.
+>> >> > That's natural esdhc0 is mmc0 and esdhc1 is mmc1.
+>> >>
+>> >> How could this be not board specific if there are at least three
+>> >> different use cases the board can choose from - and needs three
+>> >> different configurations:
+>> >>
+>> >> (1) eMMC at /dev/mmcblk0, SD card at /dev/mmcblk1
+>> >> (2) SD card at /dev/mmcblk0, eMMC at /dev/mmcblk1
+>> >> (3) no eMMC at all, SD card at /dev/mmcblk0
+>> >
+>> > Not matter it's SD card or eMMC card, if it's on esdhc0, use
+>> > /dev/mmcblk0.
+>> > Not matter it's SD card or eMMC card, if it's on esdhc1, use
+>> > /dev/mmcblk1.
+>> > It's not related to board and card type, it's only related to esdhc
+>> > interface in use.
+>> 
+>> And what interace is used is board specific, isn't it?
+> 
+> Again, for all boards, use /dev/mmcblk0 for card on esdhc0 interface,
+> and /dev/mmcblk1 for card on esdhc1 interface.
+> That's not board specific.
 
-Looks good,
+So why don't you enable the devices by default then? That would be the
+same reasoning, wouldn't it? Or even enable all devices by default. 
+Nobody
+does that. But the boards themselves enable the devices which _they_
+are actually using.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+>> >> your include only support (1). If a board needs (2) or (3) it has to
+>> >> override the configuration in the _common_ include.
+>> >>
+>> >> >> And as Vladimir pointed out, what do you do if you just have the eMMC
+>> >> >> on the LS1028A. It will be mmcblk1 unless you do something like the
+>> >> >> following in the board dts:
+>> >> >>
+>> >> >> mmc0 = &esdhc;
+>> >> >> /delete-property/ mmc1;
+>> >> >>
+>> >> >> That is really cumbersome, isnt it?
+>> >> >
+>> >> > The soc dtsi gives default alias to make esdhc0 as mmc0, and esdhc1 as
+>> >> > mmc1, the use case just needs to consider which esdhc controller is
+>> >> > used. That's fixed index for it.
+>> >> > No matter how the board is designed, there are two esdhc controllers
+>> >> > in soc. It's probed as mmc0 and mmc1.
+>> >> > It's use case that should choose the right mmc device. It is not the
+>> >> > dts that should be changed to suit use case.
+>> >> > If the board owner insists to change alias to make esdhc1 as mmc0, I
+>> >> > think no problem. Just do it in board dts to override the default one.
+>> >>
+>> >> Still, why would this be enforced in the common include? What is the
+>> >> advnatage here? I only see disadvantages.
+>> 
+>> You didn't answer this unfortunately.
+> 
+> As I explained,
+> "Again, for all boards, use /dev/mmcblk0 for card on esdhc0 interface,
+> and /dev/mmcblk1 for card on esdhc1 interface.
+> That's not board specific."
+> 
+> Without such definition, the index is random for each booting.
+
+No the question was why to include this into the common header. Not into
+the board specific ones.
+
+-michael
