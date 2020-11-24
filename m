@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C8D2C24D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2CF2C24DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733011AbgKXLl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:41:56 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:33500 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732548AbgKXLl4 (ORCPT
+        id S1733032AbgKXLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:42:34 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2144 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733024AbgKXLmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:41:56 -0500
-Received: by mail-ed1-f66.google.com with SMTP id k4so20537389edl.0;
-        Tue, 24 Nov 2020 03:41:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OuWuDtQpe3gLLoCvV3TSZsRvGbsd7x5eT2lI0ArbwK4=;
-        b=dR3m3NVYnkyA7ypS79Rur2Z1QHdlDhLLb8JRGhxgMtASVB3P1M2UcCYpKjvu+JQm1p
-         y153dcQCcXdVsaTo7ejunJPJnqh+UA7itVAeGzgWDgjxxDQb0DJViyU5Iz9SOOjTdg8+
-         zzGy/Kq+DN9axFki9jJkLu0uXL7v9ttj5fJzsDjshOdGJlH4J26DCSVguSsVwim6Ye9q
-         thMfpOkhwrMJCYkaWOx7GBGYAF3WpVSZfPGnDjdQa9EDAF0M44cdBSqhl//5Zk1cFMcE
-         gkDoQ81exNBXoDTbhndeCXcD2UrtDummsZNfSt0p1KHSXOAES+c9jFvtthI/cIpytd4T
-         NXeA==
-X-Gm-Message-State: AOAM532POSHzSDztB/X99bESnb1ajrYKGGiTghjvIXWQrTlfxLbt0pcR
-        1fBWcBO0nke6pznGNdmU92Y=
-X-Google-Smtp-Source: ABdhPJxIubTB3KIMkbTAqjZj968UiXkQgXME39M860y8SovpFjszvM1mKrVv9MmjhuYudLM5KIhu4g==
-X-Received: by 2002:a50:eb0a:: with SMTP id y10mr3723877edp.342.1606218113995;
-        Tue, 24 Nov 2020 03:41:53 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id i2sm2886628ejs.17.2020.11.24.03.41.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 03:41:52 -0800 (PST)
-Date:   Tue, 24 Nov 2020 12:41:51 +0100
-From:   "krzk@kernel.org" <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: nfc: s3fwrn5: Support a
- UART interface
-Message-ID: <20201124114151.GA32873@kozik-lap>
-References: <CGME20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
- <20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
- <20201123080123.GA5656@kozik-lap>
- <CACwDmQBh77pqivk=bBv3SJ14HLucY42jZyEaKAX+n=yS3TSqFw@mail.gmail.com>
+        Tue, 24 Nov 2020 06:42:33 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CgMWY5kWMz67GxF;
+        Tue, 24 Nov 2020 19:39:53 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 24 Nov 2020 12:42:26 +0100
+Received: from localhost (10.47.66.130) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 24 Nov
+ 2020 11:42:26 +0000
+Date:   Tue, 24 Nov 2020 11:42:10 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Cristian Pop <cristian.pop@analog.com>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jic23@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: dac: AD5766 yaml documentation
+Message-ID: <20201124114210.000068ef@Huawei.com>
+In-Reply-To: <20201123145042.18930-1-cristian.pop@analog.com>
+References: <20201123145042.18930-1-cristian.pop@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACwDmQBh77pqivk=bBv3SJ14HLucY42jZyEaKAX+n=yS3TSqFw@mail.gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.66.130]
+X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 08:39:40PM +0900, Bongsu Jeon wrote:
-> On Mon, Nov 23, 2020 at 5:02 PM krzk@kernel.org <krzk@kernel.org> wrote:
-> >
-> > On Mon, Nov 23, 2020 at 04:55:26PM +0900, Bongsu Jeon wrote:
- > >  examples:
-> > >    - |
-> > >      #include <dt-bindings/gpio/gpio.h>
-> > > @@ -71,3 +81,17 @@ examples:
-> > >              wake-gpios = <&gpj0 2 GPIO_ACTIVE_HIGH>;
-> > >          };
-> > >      };
-> > > +  # UART example on Raspberry Pi
-> > > +  - |
-> > > +    &uart0 {
-> > > +        status = "okay";
-> > > +
-> > > +        s3fwrn82_uart {
-> >
-> > Just "bluetooth" to follow Devicetree specification.
-> Sorry. I don't understand this comment.
-> Could you explain it?
-> Does it mean i need to refer to the net/broadcom-bluetooth.txt?
+On Mon, 23 Nov 2020 16:50:41 +0200
+Cristian Pop <cristian.pop@analog.com> wrote:
 
-The node name should be "bluetooth", not "s3fwrn82_uart", because of
-Devicetree naming convention - node names should represent generic class
-of a device.
+> This adds device tree bindings for the AD5766 DAC.
+> 
+> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
 
-Best regards,
-Krzysztof
+One trivial point inline.  If that's all we have in the series I can tidy up
+whilst applying.
+
+Jonathan
+
+> ---
+>  .../bindings/iio/dac/adi,ad5766.yaml          | 52 +++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
+> new file mode 100644
+> index 000000000000..aed4a0472bc4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2020 Analog Devices Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/bindings/iio/dac/adi,ad5766.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AD5766 DAC device driver
+> +
+> +maintainers:
+> +  - Cristian Pop <cristian.pop@analog.com>
+> +
+> +description: |
+> +  Bindings for the Analog Devices AD5766 current DAC device. Datasheet can be
+> +  found here:
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad5766-5767.pdf
+> +
+
+Just one blank line.
+
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad5766
+> +      - adi,ad5767
+> +
+> +  reg:
+> +    maxItems: 1
+> +  
+> +  spi-max-frequency:
+> +    maximum: 1000000
+> +
+> +  spi-cpol: true
+> +
+> +  reset-gpios:
+> +    description: GPIO spec for the RESET pin. If specified, it will be
+> +      asserted during driver probe.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - spi-max-frequency
+> +  - spi-cpol
+> +
+> +examples:
+> +  - |
+> +    ad5766@0{
+> +        compatible = "adi,ad5766";
+> +        reg = <0>;
+> +        spi-cpol;
+> +        spi-max-frequency = <1000000>;
+> +        reset-gpios = <&gpio 22 0>;
+> +      };
 
