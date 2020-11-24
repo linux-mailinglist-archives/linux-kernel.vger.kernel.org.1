@@ -2,153 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5323A2C22ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF25F2C22F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731283AbgKXK2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:28:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgKXK2Q (ORCPT
+        id S1731827AbgKXK2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:28:41 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55457 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbgKXK2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:28:16 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE15C0613D6;
-        Tue, 24 Nov 2020 02:28:16 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e360052021be21853ebf1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3600:5202:1be2:1853:ebf1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7F96F1EC0258;
-        Tue, 24 Nov 2020 11:28:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606213694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c1iD6gApHU/j5+m+pR3M2pYpCc5CocFQKVTv8UeDApE=;
-        b=oxFEsy1xk2af1Zv9kcv9IDxeON6BmmZshHoR+RFqMzeKov/OtvquRS1f0VwWN7SDXZuTBs
-        3tmvJmv3fWOjuMnLqJVmfbIBkUULqOJ4TdxeeMraENvmrx9cehfmVe5TWqwx/pVeyfrgxS
-        i9wcUT2ECgbm5jEFSB/e5bSFj3iSOBw=
-Date:   Tue, 24 Nov 2020 11:28:14 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jan Kara <jack@suse.cz>
-Cc:     =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
-Message-ID: <20201124102814.GE4009@zn.tnic>
-References: <20201101212738.GA16924@gmail.com>
- <20201102122638.GB23988@quack2.suse.cz>
- <20201103211747.GA3688@gmail.com>
- <20201123164622.GJ27294@quack2.suse.cz>
- <20201123224651.GA27809@gmail.com>
- <20201124084507.GA4009@zn.tnic>
- <20201124102033.GA19336@quack2.suse.cz>
+        Tue, 24 Nov 2020 05:28:41 -0500
+Received: by mail-wm1-f65.google.com with SMTP id x22so1926634wmc.5;
+        Tue, 24 Nov 2020 02:28:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RwUy1fNeibgQmYo6Awy3BlHbLwEGW2ZCC3VGxsMlMyE=;
+        b=uiKy1o/ppMy2F4XlyyMvTh3JYpAmZBfbYyx2X+dmJR/SCS+q7cu7EXvC/M+eBYaN9/
+         BSpFZ0X3pJMUwOg0fKRuafeRgD772gHXximfJ3VN+ZlZwc6zSqV7+JNirVKtA18nQ6Z/
+         NMjAaUkfFbzzyADxGr/KFVD+MhnOqubv3MBD42dUCEpypHETZy1swqn5FnMfgkyOSwoU
+         2bw9UIGTL7yMS34IklqSz8y3uHvAiorrrp5llBS0d0YTM+unKxecF904M4U47xFRGajg
+         vI7YNX4H1F8RQXX9VexsGFISvJZQYxNbVcYkMwKdtWO6Hx0563hX5Oljf6ChJnLHno3K
+         KKVg==
+X-Gm-Message-State: AOAM5315vezSmBpT4WKnYbeN4alNFmzLm5wL7JmhjWZknVz4Z4vkRgSa
+        aseMDEf4NKC0xDtModDyV2g=
+X-Google-Smtp-Source: ABdhPJwOmd9u4DoGyLUfSdgBmDUzqvUTJdpLbXxoHCerpn4QKmHOaWn0OsP6MgihJk58FlDoGEKEyw==
+X-Received: by 2002:a7b:c00b:: with SMTP id c11mr3656173wmb.175.1606213719208;
+        Tue, 24 Nov 2020 02:28:39 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id 36sm25404427wrf.94.2020.11.24.02.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 02:28:38 -0800 (PST)
+Date:   Tue, 24 Nov 2020 10:28:37 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "b.zolnierkie@samsung.com" <b.zolnierkie@samsung.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Hu <weh@microsoft.com>
+Subject: Re: [PATCH] video: hyperv_fb: Directly use the MMIO VRAM
+Message-ID: <20201124102837.ap7puuqtvyeusbjl@liuwe-devbox-debian-v2>
+References: <20201121014547.54890-1-decui@microsoft.com>
+ <20201121145411.GG3025@boqun-archlinux>
+ <MW2PR2101MB1801841901E659E60502EB86BFFB0@MW2PR2101MB1801.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201124102033.GA19336@quack2.suse.cz>
+In-Reply-To: <MW2PR2101MB1801841901E659E60502EB86BFFB0@MW2PR2101MB1801.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:20:33AM +0100, Jan Kara wrote:
-> On Tue 24-11-20 09:45:07, Borislav Petkov wrote:
-> > On Mon, Nov 23, 2020 at 11:46:51PM +0100, Paweł Jasiak wrote:
-> > > On 23/11/20, Jan Kara wrote:
-> > > > OK, with a help of Boris Petkov I think I have a fix that looks correct
-> > > > (attach). Can you please try whether it works for you? Thanks!
-> > > 
-> > > Unfortunately I am getting a linker error.
-> > > 
-> > > ld: arch/x86/entry/syscall_32.o:(.rodata+0x54c): undefined reference to `__ia32_sys_ia32_fanotify_mark'
-> > 
-> > Because CONFIG_COMPAT is not set in your .config.
-> > 
-> > Jan, look at 121b32a58a3a and especially this hunk
-> > 
-> > diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> > index 9b294c13809a..b8f89f78b8cd 100644
-> > --- a/arch/x86/kernel/Makefile
-> > +++ b/arch/x86/kernel/Makefile
-> > @@ -53,6 +53,8 @@ obj-y                 += setup.o x86_init.o i8259.o irqinit.o
-> >  obj-$(CONFIG_JUMP_LABEL)       += jump_label.o
-> >  obj-$(CONFIG_IRQ_WORK)  += irq_work.o
-> >  obj-y                  += probe_roms.o
-> > +obj-$(CONFIG_X86_32)   += sys_ia32.o
-> > +obj-$(CONFIG_IA32_EMULATION)   += sys_ia32.o
-> > 
-> > how it enables the ia32 syscalls depending on those config items. Now,
-> > you have
-> > 
-> >  #ifdef CONFIG_COMPAT
-> > -COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-> > +SYSCALL_DEFINE6(ia32_fanotify_mark,
-> > 
-> > which is under CONFIG_COMPAT which is not set in Paweł's config.
-> > 
-> > config COMPAT
-> >         def_bool y
-> >         depends on IA32_EMULATION || X86_X32
-> > 
-> > but it depends on those two config items.
-> > 
-> > However, it looks to me like ia32_fanotify_mark's definition should be
-> > simply under CONFIG_X86_32 because:
-> > 
-> > IA32_EMULATION is 32-bit emulation on 64-bit kernels
-> > X86_X32 is for the x32 ABI
+On Tue, Nov 24, 2020 at 08:33:32AM +0000, Dexuan Cui wrote:
+> Hi Wei Liu,
+> Please do not pick up this patch, because actually MMIO VRAM can not work
+> with fb_deferred_io.
 > 
-> Thanks for checking! I didn't realize I needed to change the ifdefs as well
-> (I missed that bit in 121b32a58a3a). So do I understand correctly that
-> whenever the kernel is 64-bit, 64-bit syscall args (e.g. defined as u64) are
-> passed just fine regardless of whether the userspace is 32-bit or not?
-> 
-> Also how about other 32-bit archs? Because I now realized that
-> CONFIG_COMPAT as well as the COMPAT_SYSCALL_DEFINE6() is also utilized by
-> other 32-bit archs (I can see a reference to compat_sys_fanotify_mark e.g.
-> in sparc, powerpc, and other args). So I probably need to actually keep
-> that for other archs but do the modification only for x86, don't I?
 
-Hmm, you raise a good point and looking at that commit again, the
-intention is to supply those ia32 wrappers as both 32-bit native *and*
-32-bit emulation ones.
+No problem. Thanks for the heads-up.
 
-So I think this
-
-> -#ifdef CONFIG_COMPAT
-> +#if defined(CONFIG_COMPAT) || defined(CONFIG_X86_32)
-> +#ifdef CONFIG_X86_32
-> +SYSCALL_DEFINE6(ia32_fanotify_mark,
-> +#elif CONFIG_COMPAT
->  COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-> +#endif
-
-should be
-
-if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
-SYSCALL_DEFINE6(ia32_fanotify_mark,
-#elif CONFIG_COMPAT
-COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-#endif
-
-or so.
-
-Meaning that 32-bit native or 32-bit emulation supplies
-ia32_fanotify_mark() as a syscall wrapper and other arches doing
-CONFIG_COMPAT, still do the COMPAT_SYSCALL_DEFINE6() thing.
-
-But I'd prefer if someone more knowledgeable than me in that whole
-syscall macros muck to have a look...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Wei.
