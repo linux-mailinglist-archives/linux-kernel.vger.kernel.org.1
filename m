@@ -2,86 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB142C28A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA942C28BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388635AbgKXNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:48:21 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15452 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388627AbgKXNrs (ORCPT
+        id S2388667AbgKXNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388659AbgKXNwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:47:48 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AODWxbJ033452;
-        Tue, 24 Nov 2020 08:47:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=OjF6bqqG0pJRYJr2z1eRX4IAQ9frRRFFEKx1Ea61Tvg=;
- b=pXye4oCXP/M16Oj70boLGij8UFF93V+5GXxmfjUEBUGwBXHdAN1BOqjYgBeyNln5baev
- wn0wnXTWiTXBjeukkeKrVg3x8k+YINhLVfh7HSn9gN0iijiRqN/Wzc8wFAQEWq13Se6v
- N4xYCFlgb+uqRrk35YNRBAn/3yaGvt4YbYGIxvEFutdV81Qe7Xm7NLQ/YBH5pXUALi2t
- 7+HpAtx/DLcmi2dGQqAge02ZOgEJ1ErCeIv4YOTdxlN1FhEBKxlyJK7nLMfz/k/A1lMn
- UNABi3sO6I0tX/wJrn/fIW5tdMP+LK2kEC83DtsfiDgKT8qc7FumYqGU0Nb/I892nWkT iQ== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 350nsds43k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 08:47:35 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AODc9l3003735;
-        Tue, 24 Nov 2020 13:47:33 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 34xth8khek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 13:47:33 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AODlVXp6423080
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 13:47:31 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 26EAC52052;
-        Tue, 24 Nov 2020 13:47:31 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CDED252054;
-        Tue, 24 Nov 2020 13:47:30 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@kernel.org,
-        x86@kernel.org, mark.rutland@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] More RCU vs idle fixes
-References: <20201120114145.197714127@infradead.org>
-Date:   Tue, 24 Nov 2020 14:47:27 +0100
-In-Reply-To: <20201120114145.197714127@infradead.org> (Peter Zijlstra's
-        message of "Fri, 20 Nov 2020 12:41:45 +0100")
-Message-ID: <yt9dv9du7tow.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Tue, 24 Nov 2020 08:52:05 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A181C0613D6;
+        Tue, 24 Nov 2020 05:52:05 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id w5so19299036ybj.11;
+        Tue, 24 Nov 2020 05:52:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/xzGLKqEoGdQuYh0hVdg4j8tpw4CuwBxLLQvBfE/c3g=;
+        b=cAwGjVUd96NG73mmr09q8lxQcEsZIYFXiUQXZKgUrO/g1HI5tieA/D2x7rxruR+pZH
+         zf5N3H/dE80eeqE5tNZaNKQL6702M/DjVj2xQFNIKTi0PSvTrpMUUPcB/V+fzO/pdBVC
+         XcVvCGZlFvxb4lmZzpvXeMd5uavR+Slv3o6+CT3PRBLJHG3iCwVoVkmiaX4aylPV5i+8
+         ZNb4jcyQStPcksSxaYmRTwA6+NR3BxgIEw9njT9k/fnji3Nx079OH7Xf4y5wcAHJjjRU
+         IpSzaCptOJQc4REpCF4kht9KYQYPrDNpF3Zs2II6oVKit0h+b6WfOKPfDijsQsCW9we2
+         +4hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/xzGLKqEoGdQuYh0hVdg4j8tpw4CuwBxLLQvBfE/c3g=;
+        b=rSqrJjh7t5vmQmLG+e4rxCGpM6gU02jPZnrPZldoR2sTeqQ4VGwtwthqRIAhFdXvJr
+         My7GC52MXlVA1n9L6+pbjOqu8+AEX4tLVsKn8t++HBrBwxdQA/Mta9uKYc9L3EeReNnO
+         1uT6uwmT2HfmtipWy7OJzRbxOyFrkXn1cYIU7m0k1gVhfN68TACYKoe0/yklA20TVGsF
+         xNVfFXZs6fvEydurKPbcY1WDIYGffWCKx6KBPEH5Pn+ft7Zk4umsmJmd8ZURj3EjvSH9
+         IRlQAPx4QprH3Lodoy55CsD0gaW13foYl/8O9+b7u39F3X7ifZXMyNxiZyP9h5BYf5Ml
+         B65w==
+X-Gm-Message-State: AOAM531y8wCbXauJI20t4NiOTt2c5hN1GBDX6gMEohyNQIj3xhBHE98r
+        d4ACF/f4leAfqo4uG4+/abhSSyxs9F3c+6GVjpM=
+X-Google-Smtp-Source: ABdhPJyYTG/S8F/n6cArO1UCQlkfQKe+v1xL7DpsOKd+MOBOkGT+QoNqyirH4VHEHDIBC0skA51hgmNoY51h7/eVvJU=
+X-Received: by 2002:a25:3a86:: with SMTP id h128mr245823yba.401.1606225924262;
+ Tue, 24 Nov 2020 05:52:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- mlxlogscore=702 malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1011
- lowpriorityscore=0 phishscore=0 mlxscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240081
+References: <20201120151343.24175-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXAB-eUAMSeptptajr0eReHXHFuoR5HZkB-X+AKBUsyxA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXAB-eUAMSeptptajr0eReHXHFuoR5HZkB-X+AKBUsyxA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 24 Nov 2020 13:51:38 +0000
+Message-ID: <CA+V-a8tqP=LTcOZJ+7wskgDtCs4+yosmm_tb0VCVdVJsYjLD7A@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Add OV7725 nodes
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
+Hi Geert,
 
-> Both arm64 and s390 are tripping over arch_cpu_idle() RCU,tracing,lockdep
-> interaction. While looking at that I also found fail in inte_idle.
+Thank you for the review.
+
+On Tue, Nov 24, 2020 at 9:04 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Please consider for this cycle.
+> Hi Prabhakar,
+>
+> On Fri, Nov 20, 2020 at 4:13 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add the ov7725 endpoint nodes to the camera daughter board. The ov7725
+> > sensors can be populated on I2C{0,1,2,3} buses.
+> >
+> > By default the VIN{0,1,2,3} are tied to OV5640{0,1,2,3} endpoints
+> > respectively in the camera DB dts hence the remote-endpoint property in
+> > OV7725{0,1,2,3} endpoints is commented out.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> The camera definitions look mostly OK to me.
+>
+> IIUIC, these are 4 plug-in cameras, that can be used instead of the
+> (currently described) 4 other OV5640-based plug-in cameras?
+> In addition, the user can mix and match them, in the 4 available
+> slots (J11-J14), which would require editing the DTS?
+>
+> Wouldn't it be easier to have separate DTS files for the OV7725 and
+> OV5640 cameras, and #include them from r8a7742-iwg21d-q7-dbcm-ca.dts?
+>
+Good point, will move the vin and ov5640 nodes to
+r8a7742-iwg21d-q7-dbcm-ov5640.dtsi and similarly add vin and ov7725
+nodes to r8a7742-iwg21d-q7-dbcm-ov7725.dtsi and by default shall
+include r8a7742-iwg21d-q7-dbcm-ov5640.dtsi in
+r8a7742-iwg21d-q7-dbcm-ca.dts file.(Will keep the mclk_camx and
+pimuxes in r8a7742-iwg21d-q7-dbcm-ca.dts file)
 
-Is anyone taking this patchset? For s390, we also need to change the
-local_irq_safe/restore to the raw variants in enabled_wait() in
-arch/s390/kernel/idle.c. I can make a patch and carry that via the
-s390 tree, but i want to make sure the s390 change in this patchset
-also reaches linus' tree.
+>     /* 8bit CMOS Camera 1 (J13) */
+>     #define MCLK_CAM    &mclk_cam1
+>     #define ...
+>     /* Comment the below according to connected cameras */
+>     #include "ov5640.dts"
+>     //#include "ov7725.dts"
+>     #undef MCLK_CAM
+>     #undef ...
+>
+>     [...]
+>
+> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+>
+> > @@ -152,6 +198,30 @@
+> >                         };
+> >                 };
+> >         };
+> > +
+> > +       ov7725@21 {
+> > +               status = "disabled";
+>
+> This one is disabled, the three others aren't?
+>
+my bad should have dropped this.
 
-Thanks
-Sven
+Cheers,
+Prabhakar
+
+
+> > +               compatible = "ovti,ov7725";
+> > +               reg = <0x21>;
+> > +               clocks = <&mclk_cam3>;
+> > +
+> > +               port {
+> > +                       ov7725_2: endpoint {
+> > +                               bus-width = <8>;
+> > +                               bus-type = <6>;
+> > +                               /*
+> > +                                * uncomment remote-endpoint property to
+> > +                                * tie ov7725_2 to vin2ep also make
+> > +                                * sure to comment/remove remote-endpoint
+> > +                                * property from ov5640_2 endpoint and
+> > +                                * replace remote-endpoint property in
+> > +                                * vin2ep node with
+> > +                                * remote-endpoint = <&ov7725_2>;
+> > +                                */
+> > +                               /* remote-endpoint = <&vin2ep>; */
+> > +                       };
+> > +               };
+> > +       };
+> >  };
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
