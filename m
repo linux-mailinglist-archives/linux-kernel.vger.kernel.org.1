@@ -2,69 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FC02C24F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084252C24F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733048AbgKXLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:49:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728491AbgKXLtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:49:40 -0500
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E18CD20857
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606218580;
-        bh=PUBX3pg96iPTmC+3ajxfCSWd3GB4JF9umJhidh4JYJQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nQfU56ROXDVHIurupdILBePZen1/uVeHEm/0DLxWG2v7+s7F+4eTCATK2V5DhvJZc
-         HJNPaOBdZj33efQR7+itzU9K7JxjCZ5MBID2FP6iUJE53q4DuT56zOZrlgXruQOtb/
-         ISxeAF36yLCE3PrqLuWeZftLHrHsK4WwkZL5vcgU=
-Received: by mail-ot1-f53.google.com with SMTP id n11so19046294ota.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:49:39 -0800 (PST)
-X-Gm-Message-State: AOAM5337o1wVkOp2RWvVuWtz64RY/1ZtcDj41/1/BtE7nmw1woFN2Qfh
-        5ezsn3hGSE4syXRge//7XrfxK+Nv1G9RdFc1Ms8=
-X-Google-Smtp-Source: ABdhPJy9c3s/Jeb9nfLEN+BPcVb1IbuR24GoD2eAR6YCiec9vq6xxo/J70frTg0AHuEAYwvM+JTd6bTj8JpwCLoCBXM=
-X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr2674436otc.305.1606218579150;
- Tue, 24 Nov 2020 03:49:39 -0800 (PST)
+        id S1732864AbgKXLst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:48:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728491AbgKXLsr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:48:47 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30601C0613D6;
+        Tue, 24 Nov 2020 03:48:47 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c66so18266793pfa.4;
+        Tue, 24 Nov 2020 03:48:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bew3Foss59SH2vxXIn0vqfZszKHH7IPfRGCktSQ+XUM=;
+        b=Erzsnp2EiL1wc/Tm0mQooV6Kc3q1yGA1ZIrBMace0GrXdGac88eSiCk4nWhUzJgS6X
+         Kw/stexvh4/QhMY7OMSG3sfdzvDmf+GWY6ZPZDY9iMtP4Zd6bmMeFLcCsWVsyLEdJNdn
+         1SmWHAf9mHuJUh8wNi08MaIhU4ZdLDFMsszJIYuyLpMoeJwSk0a0EjY9EobzWZF28cpv
+         Lk4uPkeBJ3qH5PEAezEbSh6qsUGtKuZ/itWvDbTiZW6vp+/D3iiyxrYJCoopFjbf6XZq
+         SO3YcylLzsrxsg9zoN2sVfA8p3wge3MlPLU/Dd3zqHPvKLkLkVKQxGaSEUsDdPVwsDZo
+         Nrcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bew3Foss59SH2vxXIn0vqfZszKHH7IPfRGCktSQ+XUM=;
+        b=c0hGgpDRuyobVYXa40l5653xrRVFwz3ryExN3q6ID7q5uPOpJlVYCEYbG1gdK3Lq/k
+         /gsTwaqU6aO/+Z2gXD/9sKLNyDYUFYn7HsmITzbT/3khnnJiFgWCcAkCvFE25PMOr7F0
+         jIdPtg54cq1wnAfkBBB+FJDOGI31UXceLh1r8nUvZ/70kpHBNeip2edIRMAnKsIbk/mj
+         0EPT+CTYJFTTCwpHn85GWqKgvv/3NnHOdArcH1OCvg++54eckRGNgXVEyinCuaUW62+u
+         7hKDTcAqkYCZDZzXG49qdlBffpBv5dkaws2YV/DEB7PWGWHNqKBC6IE55X+bLleg3Zu/
+         rY+w==
+X-Gm-Message-State: AOAM532mFPnS78ihPQIMTQZfVV5hFKHvKhDqWzTGaOi0U62ig653MUNh
+        Az7f2liptyQydg6k8qREvhYpGoGloX4gW41Rhpc=
+X-Google-Smtp-Source: ABdhPJxrpj3VZYBuwcG1mGU/LW82BoA03TWprutQm67datui6eLDZ7fVcZ9Z0X2DfuPfy/XIBaDe8vjWrwt1r5TDuxQ=
+X-Received: by 2002:a63:1514:: with SMTP id v20mr3448015pgl.203.1606218526763;
+ Tue, 24 Nov 2020 03:48:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 24 Nov 2020 12:49:23 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0xDQhbzZoZ6qvpQg6zRU20-ZtJRkPq5Gjw0+2LGs71tw@mail.gmail.com>
-Message-ID: <CAK8P3a0xDQhbzZoZ6qvpQg6zRU20-ZtJRkPq5Gjw0+2LGs71tw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] amba: reorder functions
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201124102152.16548-1-alexandru.ardelean@analog.com> <202011241901.eIm4FyEB-lkp@intel.com>
+In-Reply-To: <202011241901.eIm4FyEB-lkp@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 24 Nov 2020 13:49:35 +0200
+Message-ID: <CAHp75Vc+M2veG25pehO-8LSj0WcXvotijwaYvkYvAr3LF1n10Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] spi: convert to BIT() all spi_device flags
+To:     kernel test robot <lkp@intel.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild-all@lists.01.org, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:32 AM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> Put helpers (here: amba_get_enable_pclk and amba_put_disable_pclk) at
-> the top of the file and then define callbacks directly before the
-> structs they are used in; in the same order.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On Tue, Nov 24, 2020 at 1:42 PM kernel test robot <lkp@intel.com> wrote:
 
-Looks good, I checked the whole series and this seems like a useful
-cleanup. All four patches:
+> All warnings (new ones prefixed by >>):
+>
+>    In file included from drivers/spi/spidev.c:26:
+> >> include/uapi/linux/spi/spidev.h:33: warning: "SPI_CPHA" redefined
+>       33 | #define SPI_CPHA  0x01
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Argh! Can we have only one set of flags?
+
+-- 
+With Best Regards,
+Andy Shevchenko
