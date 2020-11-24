@@ -2,157 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097852C2BEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887F82C2BE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390084AbgKXPvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:51:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389866AbgKXPvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:51:46 -0500
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A01D42073C;
-        Tue, 24 Nov 2020 15:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606233105;
-        bh=+z+guEczWGGY8Fmi0RRJrJK9CwM5f159lXd/SraCCFo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bnV/JAag6M9SPuRfaIgWp4z8vCZLmbv8aAxTi+ozopUO4lqOSHo7THpdvCRtt0cUx
-         yRhIx5t+PEIs7S6OIP3LwxfOm8zw909m/mwqHyr5UXoTd7eQy/7A7W8rtoOIu+9t+I
-         2sgUr7azoMjBvRv5sspfclA2NlVQ3Q+U4pEHMq+0=
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: [PATCH v4 14/14] arm64: Remove logic to kill 32-bit tasks on 64-bit-only cores
-Date:   Tue, 24 Nov 2020 15:50:39 +0000
-Message-Id: <20201124155039.13804-15-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201124155039.13804-1-will@kernel.org>
-References: <20201124155039.13804-1-will@kernel.org>
+        id S2390027AbgKXPvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:51:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390003AbgKXPva (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:51:30 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F19C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:51:30 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a186so2841981wme.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:51:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6GM7HZKJOMbvnNyqxtbbQQmzhMuTNq7eU6NBsZKc41s=;
+        b=oAAKjcXVvTnLxDN0CqGoY7CnqvAOMvs06bh0shxjr/VcQQIh21vrLpOc6xehdcudmo
+         sYxEqBpPOaBZqlW7xP1ieh5OjWM1vZsxzWZbq9yy9kEmMyxK4a/OaY2I77gO99Xr3Uaa
+         IzhxRw0NEPK6MjTbwvcrpDXmkjvO+PgVrGrjeokLWuaWpFTZ3Ml8dMam9VZ61Xx0XD5Q
+         h44slbwH0ZxnvnLcu9pP8hLyOtsVhmBXvacaPwEeDCNajjXJm3P3iiRu4kqxM8WZePcC
+         /eUxl3fGQ6aIrMOvfd9GOHmKl/Zr2hnMNBLFlA9BhkpLnEP44mj0QEYIKVppmKLg+VZ3
+         ycHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6GM7HZKJOMbvnNyqxtbbQQmzhMuTNq7eU6NBsZKc41s=;
+        b=OUpFuxSaRr+Pr0fkfmHgnGp6WlIM8ijgXAtz5DjicO9otuKdmmNrdwdCMrC1q/a3kj
+         MLGfxB7y1Ht6FKhwBqDiwzzK5774XP/L8eKV3DBMd/NPaxRNQSuA//QuV/3Mkm+ZtxZz
+         HVdRpqUTuOd606vMy0+KaGEBg/JTHdvNKLcBjgr5ibnIU61w+B/Yu5ibwQBETPtkLPOL
+         MqrVJdNcEUSSe/h5LetR3JQ+TY82WP7WwYTF3uU/xQ+c37HZDzkGZ17/+7UlUnhftbJi
+         U+Fjnsqk4n5ST9C+sm1AVC2dx5SZuAkYcG0sS1ZzgZcc5t2D5jjMbJ6fqCPPwWiCVIrS
+         7hqw==
+X-Gm-Message-State: AOAM5305S2o/pk2XspbxdbC2XGpRExlMi2HecqDmjAV2V3yCRC6kQmAK
+        dp3en0exwCnaUoSHt1m0vk9yJ7fe0voRvMG3c88=
+X-Google-Smtp-Source: ABdhPJwmRU0+C0x/7U2CChem3SlI4KM5YXcqfAcScbL2Aftb6WMTxqTsRomNDeRcZ+kpO+Zfa0vkSWlewKle4bEg6nw=
+X-Received: by 2002:a1c:f017:: with SMTP id a23mr5132469wmb.56.1606233088772;
+ Tue, 24 Nov 2020 07:51:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-6-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-6-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 10:51:17 -0500
+Message-ID: <CADnq5_P6pF+XeOn_ZjVe0gQMUXqbLAzS9qc1fR-D=CXaMTZVkg@mail.gmail.com>
+Subject: Re: [PATCH 05/40] drm/amd/amdgpu/cik_ih: Supply description for 'ih'
+ in 'cik_ih_{get, set}_wptr()'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scheduler now knows enough about these braindead systems to place
-32-bit tasks accordingly, so throw out the safety checks and allow the
-ret-to-user path to avoid do_notify_resume() if there is nothing to do.
+On Mon, Nov 23, 2020 at 6:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/cik_ih.c:189: warning: Function parameter or =
+member 'ih' not described in 'cik_ih_get_wptr'
+>  drivers/gpu/drm/amd/amdgpu/cik_ih.c:274: warning: Function parameter or =
+member 'ih' not described in 'cik_ih_set_rptr'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Qinglang Miao <miaoqinglang@huawei.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/arm64/kernel/process.c | 14 +-------------
- arch/arm64/kernel/signal.c  | 26 --------------------------
- 2 files changed, 1 insertion(+), 39 deletions(-)
+Applied.  Thanks!
 
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 72116b0c7c73..e21c631c8b17 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -543,15 +543,6 @@ static void erratum_1418040_thread_switch(struct task_struct *prev,
- 	write_sysreg(val, cntkctl_el1);
- }
- 
--static void compat_thread_switch(struct task_struct *next)
--{
--	if (!is_compat_thread(task_thread_info(next)))
--		return;
--
--	if (static_branch_unlikely(&arm64_mismatched_32bit_el0))
--		set_tsk_thread_flag(next, TIF_NOTIFY_RESUME);
--}
--
- /*
-  * Thread switching.
-  */
-@@ -568,7 +559,6 @@ __notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
- 	uao_thread_switch(next);
- 	ssbs_thread_switch(next);
- 	erratum_1418040_thread_switch(prev, next);
--	compat_thread_switch(next);
- 
- 	/*
- 	 * Complete any pending TLB or cache maintenance on this CPU in case
-@@ -644,7 +634,7 @@ static void adjust_compat_task_affinity(struct task_struct *p)
- 	 * execve().
- 	 */
- 	if (!restrict_cpus_allowed_ptr(p, possible_mask))
--		goto out;
-+		return;
- 
- 	if (alloc_cpumask_var(&cpuset_mask, GFP_KERNEL)) {
- 		cpuset_cpus_allowed(p, cpuset_mask);
-@@ -661,8 +651,6 @@ static void adjust_compat_task_affinity(struct task_struct *p)
- out_set_mask:
- 	set_cpus_allowed_ptr(p, newmask);
- 	free_cpumask_var(cpuset_mask);
--out:
--	set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
- }
- 
- /*
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index bcb6ca2d9a7c..a8184cad8890 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -911,19 +911,6 @@ static void do_signal(struct pt_regs *regs)
- 	restore_saved_sigmask();
- }
- 
--static bool cpu_affinity_invalid(struct pt_regs *regs)
--{
--	if (!compat_user_mode(regs))
--		return false;
--
--	/*
--	 * We're preemptible, but a reschedule will cause us to check the
--	 * affinity again.
--	 */
--	return !cpumask_test_cpu(raw_smp_processor_id(),
--				 system_32bit_el0_cpumask());
--}
--
- asmlinkage void do_notify_resume(struct pt_regs *regs,
- 				 unsigned long thread_flags)
- {
-@@ -961,19 +948,6 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
- 			if (thread_flags & _TIF_NOTIFY_RESUME) {
- 				tracehook_notify_resume(regs);
- 				rseq_handle_notify_resume(NULL, regs);
--
--				/*
--				 * If we reschedule after checking the affinity
--				 * then we must ensure that TIF_NOTIFY_RESUME
--				 * is set so that we check the affinity again.
--				 * Since tracehook_notify_resume() clears the
--				 * flag, ensure that the compiler doesn't move
--				 * it after the affinity check.
--				 */
--				barrier();
--
--				if (cpu_affinity_invalid(regs))
--					force_sig(SIGKILL);
- 			}
- 
- 			if (thread_flags & _TIF_FOREIGN_FPSTATE)
--- 
-2.29.2.454.gaff20da3a2-goog
+Alex
 
+> ---
+>  drivers/gpu/drm/amd/amdgpu/cik_ih.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/cik_ih.c b/drivers/gpu/drm/amd/am=
+dgpu/cik_ih.c
+> index db953e95f3d27..d3745711d55f9 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/cik_ih.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/cik_ih.c
+> @@ -177,6 +177,7 @@ static void cik_ih_irq_disable(struct amdgpu_device *=
+adev)
+>   * cik_ih_get_wptr - get the IH ring buffer wptr
+>   *
+>   * @adev: amdgpu_device pointer
+> + * @ih: IH ring buffer to fetch wptr
+>   *
+>   * Get the IH ring buffer wptr from either the register
+>   * or the writeback memory buffer (CIK).  Also check for
+> @@ -266,6 +267,7 @@ static void cik_ih_decode_iv(struct amdgpu_device *ad=
+ev,
+>   * cik_ih_set_rptr - set the IH ring buffer rptr
+>   *
+>   * @adev: amdgpu_device pointer
+> + * @ih: IH ring buffer to set wptr
+>   *
+>   * Set the IH ring buffer rptr.
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
