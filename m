@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B22D2C2E38
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6118E2C2E3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390584AbgKXRPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:15:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390308AbgKXRPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:15:40 -0500
-Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99F95206E5;
-        Tue, 24 Nov 2020 17:15:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606238139;
-        bh=J0afl+2LLskLIWwsKBm6ugjEsGEPidJcN2s83PAH1r8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gKz9tVfElOsxRj4E39Sw9bNOpcDs0K6NqDUiZ26523s5kVYVtCbqgMrYBjJcJ9C8U
-         g8wHYWoFUcp/3MnWIvapgjlc2xkmOghOIjzIiAVFRW0wiDAZt4oDVD9jglryLBR2e/
-         etGuqA4ACTpJq6tc8SL/y6I3eWS1GMMVNydlwpW8=
-Date:   Tue, 24 Nov 2020 18:15:36 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
-        Carlos O'Donell <carlos@redhat.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
- workaround
-Message-ID: <X70/uPNt2BA/vUSo@kroah.com>
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
- <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
- <878saq3ofx.fsf@oldenburg2.str.redhat.com>
- <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
- <20201124164546.GA14094@infradead.org>
- <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
+        id S2390608AbgKXRQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:16:33 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44554 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728342AbgKXRQd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:16:33 -0500
+Date:   Tue, 24 Nov 2020 18:16:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606238190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=21CneeHv4WjigQFLsDRnBPjDyqomDe8iqs+F8eXUq54=;
+        b=YNuNJPCqi1woBBDIVq9RGDhGKE6iS0zVkDg/F+0aJMJ0GY5xTotuc0YTbaaoOBOj4GJ55+
+        Gq+cffSqonZhuVk0cyn+hqZxeb1PQNAscVhFfR13mG0F6nBjyzWpwWcGWgM9+2bDYlgKGM
+        8aYGROcTmFdhOjzOxKT9NhzhHZiPQkH6B6T04lOXv3sdkt0zcQ1SreZRl4z/KoxQw8DIXw
+        4jJhy4udc8nLLigI1DXPlSR8/lNCeRoSYVRKXLqsfAqELDICFn6jaZvr9MnqvgiGIi6j1b
+        6v0XS65uq0uQUjbeoaKovB4FmWzoCzg3CLVwOdWv9adlVMvh0zcyRqzP3NsM9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606238190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=21CneeHv4WjigQFLsDRnBPjDyqomDe8iqs+F8eXUq54=;
+        b=5oMOmvZiz3+HJ0TFxE+1+ihsPdEcvXf76vE9EuoLCpFxRMC2ycJ9jAKLjiw2kZYcDmtSfZ
+        4t6U78aUx76DFyCQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        LTP List <ltp@lists.linux.it>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        torvalds@linuxfoundation.org, Yang Shi <shy828301@gmail.com>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@suse.de>, Song Liu <songliubraving@fb.com>,
+        Zi Yan <ziy@nvidia.com>, vtolkm@googlemail.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: kernel BUG at mm/highmem.c:417! invalid opcode: 0000 EIP:
+ zero_user_segments
+Message-ID: <20201124171628.dk6tle5lh3sx2jxg@linutronix.de>
+References: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
+In-Reply-To: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 06:06:38PM +0100, Jann Horn wrote:
-> +seccomp maintainers/reviewers
-> [thread context is at
-> https://lore.kernel.org/linux-api/87lfer2c0b.fsf@oldenburg2.str.redhat.com/
-> ]
+On 2020-11-24 18:52:44 [+0530], Naresh Kamboju wrote:
+> While running LTP test case access01 the following kernel BUG
+> noticed on linux next 20201124 tag kernel on i386.
 > 
-> On Tue, Nov 24, 2020 at 5:49 PM Christoph Hellwig <hch@infradead.org> wrote:
-> > On Tue, Nov 24, 2020 at 03:08:05PM +0100, Mark Wielaard wrote:
-> > > For valgrind the issue is statx which we try to use before falling back
-> > > to stat64, fstatat or stat (depending on architecture, not all define
-> > > all of these). The problem with these fallbacks is that under some
-> > > containers (libseccomp versions) they might return EPERM instead of
-> > > ENOSYS. This causes really obscure errors that are really hard to
-> > > diagnose.
-> >
-> > So find a way to detect these completely broken container run times
-> > and refuse to run under them at all.  After all they've decided to
-> > deliberately break the syscall ABI.  (and yes, we gave the the rope
-> > to do that with seccomp :().
+> git short log:
+> ----------------
+> git log --oneline next-20201120..next-20201124 -- mm/highmem.c
+> d9927d46febf Merge branch 'akpm-current/current'
+> 72d22a0d0e86 mm: support THPs in zero_user_segments
+> 2a656cad337e mm/highmem: Take kmap_high_get() properly into account
 > 
-> FWIW, if the consensus is that seccomp filters that return -EPERM by
-> default are categorically wrong, I think it should be fairly easy to
-> add a check to the seccomp core that detects whether the installed
-> filter returns EPERM for some fixed unused syscall number and, if so,
-> prints a warning to dmesg or something along those lines...
+> Please find these easy steps to reproduce the kernel build and boot.
 
-Why?  seccomp is saying "this syscall is not permitted", so -EPERM seems
-like the correct error to provide here.  It's not -ENOSYS as the syscall
-is present.
+This BUG_ON() is in zero_user_segments() which ash been added in commit
+   72d22a0d0e86 mm: support THPs in zero_user_segments
 
-As everyone knows, there are other ways to have -EPERM be returned from
-a syscall if you don't have the correct permissions to do something.
-Why is seccomp being singled out here?  It's doing the correct thing.
+> [   50.852189] kernel BUG at mm/highmem.c:417!
 
-thanks,
+I managed to capture one invocation with:
+zero_user_segments(0xd4367a90,
+		   0x1000, 0x1000,
+		   0x0, 0x50)
+page_compound() -> 1
+page_size() -> 4096
 
-greg k-h
+And at the end it BUGs because end2 is still 0x50.
+
+because:
+|         for (i = 0; i < compound_nr(page); i++) {
+|                 void *kaddr;
+|                 unsigned this_end;
+| 
+|                 if (end1 == 0 && start2 >= PAGE_SIZE) {
+|                         start2 -= PAGE_SIZE;
+|                         end2 -= PAGE_SIZE;
+|                         continue;
+|                 }
+| 
+|                 if (start1 >= PAGE_SIZE) {
+start1 0x1000 is >= PAGE_SIZE.
+|                         start1 -= PAGE_SIZE;
+|                         end1 -= PAGE_SIZE;
+|                         if (start2) {
+start2 is 0.
+|                                 start2 -= PAGE_SIZE;
+|                                 end2 -= PAGE_SIZE;
+|                         }
+|                         continue;
+|                 }
+
+I don't know why the logic for start1/end1 and start2/end2 is coupled
+here.  Based on how __block_write_begin_int() invokes it seems to zero
+two independent blocks (or it is a bug in caller).
+The generic implementation would do nothing for start1/end1 and for
+second part if would memset(page + 0, 0, 0x50 - 0).
+
+Sebastian
