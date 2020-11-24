@@ -2,471 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2D92C1F0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078532C1F1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730199AbgKXHol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 02:44:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52458 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726970AbgKXHok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 02:44:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 76C00ACF5;
-        Tue, 24 Nov 2020 07:44:38 +0000 (UTC)
-Subject: Re: [drm/fb] 6a1b34c0a3:
- WARNING:at_drivers/gpu/drm/drm_fb_helper.c:#drm_fb_helper_damage_work
-To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>
-Cc:     daniel@ffwll.ch, airlied@linux.ie, sam@ravnborg.org,
-        mripard@kernel.org, maarten.lankhorst@linux.intel.com,
-        christian.koenig@amd.com, ville.syrjala@linux.intel.com,
-        dri-devel@lists.freedesktop.org, 0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20201122141849.GH2390@xsang-OptiPlex-9020>
- <5dddb55b-cbe1-7778-3109-b84624bac407@suse.de>
- <aa34dc60-96c1-e188-a0f8-51b7f8275e69@linux.intel.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <4acf0ddd-c2b0-2f40-40df-a4becffea64a@suse.de>
-Date:   Tue, 24 Nov 2020 08:44:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1730271AbgKXHrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 02:47:23 -0500
+Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:23904
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730064AbgKXHrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 02:47:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GQiScXPR5YrgeBLgbxDe9ZT0t0Fm0HLyqKpWxv6ULPjZX7JdCO57N/CMg+iu28aN7mVSp5QlXkoMhEgMQueOM7c2NTpmSnh6gPurwb0fLI2tvyIjWaUnaPINJVfmJuaabwVXEi7O2m3U9CFmEerO+oCFIP6crN3TcSidF4hpqmuarVfgpQAqdv4ErqVcfhlfot1abBxxxttsiJgiUTL+8DpRWEiVq6oNBJbdliw66APX9rjswWc2FKQ1PODGDHLcxibwWKEkEY9kOmNkiqd6GqXontQz3tfs1LlPm61Q8hvR28QX0VVit67BpU9RWbdJMZk9ptJZlo1L9Isjf8pZNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IHe5GS1VC8Pmeb2wEhatNNfP4IOBZcmmPBR4Vwed6rI=;
+ b=j/mct7Kh3Jg7sCHqcBR2BCA4oms5RILrD7PeOkdFR0BInTN9vGdKHniBB0+r93eObW4XZGmmxqYeGlwjBRD6he2oJx90IugsQ6//8CeAY6k/wB6FssMUwOYYkg1wqFw+sCedmu8r5fGPG81jFgaXZYsTVCIr1kflnR1MPLL8KBBqv9bauBKsNqMVSdx6+GpennSTAVezZQ/Hn+uAq+z8z1bvvLwwr/F/+sysjP6MTbkBXjpVlUXSO6zwd+T4L2OgP4Ie74aCYgqq37OA4mzdQ48HRL58/yK2nKPWdfnOHV/RlnrCdKd49LCNMwogG0uT20R/6Ll2Fj3Xrgcm40bfAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IHe5GS1VC8Pmeb2wEhatNNfP4IOBZcmmPBR4Vwed6rI=;
+ b=f8hM43VQABlsSc3ZBNmmSODp/bLng5AriLkA+ugtHrW1MUjHvjsL33bPOxF3Mq3MpID0BLSTId3ObNnRZHylPHzZQsE4txLyRSGyKhkGt3esQRVQT4EPGVFvuBT4ekjnxmlv08931FszGZDYRe3yJ7G5r4tWO8HXqwGnCdkrD8Q=
+Received: from MN2PR19CA0018.namprd19.prod.outlook.com (2603:10b6:208:178::31)
+ by BYAPR02MB4789.namprd02.prod.outlook.com (2603:10b6:a03:46::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.30; Tue, 24 Nov
+ 2020 07:47:18 +0000
+Received: from BL2NAM02FT049.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:178:cafe::d1) by MN2PR19CA0018.outlook.office365.com
+ (2603:10b6:208:178::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend
+ Transport; Tue, 24 Nov 2020 07:47:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT049.mail.protection.outlook.com (10.152.77.118) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3589.20 via Frontend Transport; Tue, 24 Nov 2020 07:47:17 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 23 Nov 2020 23:46:44 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 23 Nov 2020 23:46:44 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ linux-i2c@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Received: from [10.140.6.6] (port=46320 helo=xhdappanad40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <raviteja.narayanam@xilinx.com>)
+        id 1khT2B-00009O-5N; Mon, 23 Nov 2020 23:46:43 -0800
+From:   Raviteja Narayanam <raviteja.narayanam@xilinx.com>
+To:     <linux-i2c@vger.kernel.org>
+CC:     <michal.simek@xilinx.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
+        Raviteja Narayanam <raviteja.narayanam@xilinx.com>
+Subject: [PATCH] i2c: cadence: Clear HOLD bit before xfer_size register rolls over
+Date:   Tue, 24 Nov 2020 13:16:05 +0530
+Message-ID: <1606203965-31595-1-git-send-email-raviteja.narayanam@xilinx.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <aa34dc60-96c1-e188-a0f8-51b7f8275e69@linux.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="PLNeCQ1xikpLovPXsqxk2QKLV0frmPHON"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c64bf69f-2a54-46e0-866b-08d8904d2acb
+X-MS-TrafficTypeDiagnostic: BYAPR02MB4789:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB47891F2E0C9F2AF19D224F09CAFB0@BYAPR02MB4789.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7JZNx/BGgF2oQonH5d0KSNOaaNl/IhPN5ui7yM9wpo9kTZHk7S6oNjolM2O7H58R7U8TKk/rtCWtVAZaSNAUqwattErCroofTr7Ve7S6DTleUvW3jkgmRyUM4/4yRXCcLcBXOCrtR/lNAlAgGBwfmCXapUBULQJ87zy00jDnB28pxpwL231QtjTj6jw4RHhALkVjgYds98X0OJVh3r7ydFJhrou25ojBxGPwK1L/i5IongyOtct/kDs7LWsa0GE2YoGePcFRN/CUjl+dkG8R8AGoAiP0/cqwqphNVn/7Yu8duxHzUzddZBm1uBasIs0dNXIeourS0U8T/rAasoKYG4v9fCCe4cedCcE7UqPkzILi9JNTpKfQNsYjyMfbZ9mwAizHOvUWgbuJB02PYVPUecRZaT5aftvLQI5deZ8BUs4=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(46966005)(9786002)(5660300002)(186003)(83380400001)(478600001)(7636003)(336012)(356005)(26005)(107886003)(36756003)(54906003)(426003)(7696005)(82310400003)(4326008)(316002)(2616005)(82740400003)(2906002)(8936002)(6666004)(6916009)(70586007)(70206006)(47076004)(36906005)(8676002)(44832011)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 07:47:17.6358
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c64bf69f-2a54-46e0-866b-08d8904d2acb
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT049.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4789
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PLNeCQ1xikpLovPXsqxk2QKLV0frmPHON
-Content-Type: multipart/mixed; boundary="YrzHJJ8lbY2vdni4GD9QSVojFWT7lAz8J";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Xing Zhengjun <zhengjun.xing@linux.intel.com>,
- kernel test robot <oliver.sang@intel.com>
-Cc: daniel@ffwll.ch, airlied@linux.ie, sam@ravnborg.org, mripard@kernel.org,
- maarten.lankhorst@linux.intel.com, christian.koenig@amd.com,
- ville.syrjala@linux.intel.com, dri-devel@lists.freedesktop.org,
- 0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
- lkp@lists.01.org
-Message-ID: <4acf0ddd-c2b0-2f40-40df-a4becffea64a@suse.de>
-Subject: Re: [drm/fb] 6a1b34c0a3:
- WARNING:at_drivers/gpu/drm/drm_fb_helper.c:#drm_fb_helper_damage_work
-References: <20201122141849.GH2390@xsang-OptiPlex-9020>
- <5dddb55b-cbe1-7778-3109-b84624bac407@suse.de>
- <aa34dc60-96c1-e188-a0f8-51b7f8275e69@linux.intel.com>
-In-Reply-To: <aa34dc60-96c1-e188-a0f8-51b7f8275e69@linux.intel.com>
+On Xilinx zynq SOC if the delay between address register write and
+control register write in cdns_mrecv function is more, the xfer size
+register rolls over and controller is stuck. This is an IP bug and
+is resolved in later versions of IP.
 
---YrzHJJ8lbY2vdni4GD9QSVojFWT7lAz8J
-Content-Type: multipart/mixed;
- boundary="------------659560322450D81B3C21499C"
-Content-Language: en-US
+To avoid this scenario, disable the interrupts on the current processor
+core between the two register writes and enable them later. This can
+help achieve the timing constraint.
 
-This is a multi-part message in MIME format.
---------------659560322450D81B3C21499C
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
+---
+ drivers/i2c/busses/i2c-cadence.c | 48 ++++++++++++++++++++++++++++++++++------
+ 1 file changed, 41 insertions(+), 7 deletions(-)
 
-Hi
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index e4b7f2a..81b7c45 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -578,6 +578,11 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
+ {
+ 	unsigned int ctrl_reg;
+ 	unsigned int isr_status;
++	unsigned long flags;
++	bool hold_clear = false;
++	bool irq_save = false;
++
++	u32 addr;
+ 
+ 	id->p_recv_buf = id->p_msg->buf;
+ 	id->recv_count = id->p_msg->len;
+@@ -618,14 +623,43 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
+ 		cdns_i2c_writereg(id->recv_count, CDNS_I2C_XFER_SIZE_OFFSET);
+ 	}
+ 
+-	/* Set the slave address in address register - triggers operation */
+-	cdns_i2c_writereg(id->p_msg->addr & CDNS_I2C_ADDR_MASK,
+-						CDNS_I2C_ADDR_OFFSET);
+-	/* Clear the bus hold flag if bytes to receive is less than FIFO size */
++	/* Determine hold_clear based on number of bytes to receive and hold flag */
+ 	if (!id->bus_hold_flag &&
+-		((id->p_msg->flags & I2C_M_RECV_LEN) != I2C_M_RECV_LEN) &&
+-		(id->recv_count <= CDNS_I2C_FIFO_DEPTH))
+-			cdns_i2c_clear_bus_hold(id);
++	    ((id->p_msg->flags & I2C_M_RECV_LEN) != I2C_M_RECV_LEN) &&
++	    (id->recv_count <= CDNS_I2C_FIFO_DEPTH)) {
++		if (cdns_i2c_readreg(CDNS_I2C_CR_OFFSET) & CDNS_I2C_CR_HOLD) {
++			hold_clear = true;
++			if (id->quirks & CDNS_I2C_BROKEN_HOLD_BIT)
++				irq_save = true;
++		}
++	}
++
++	addr = id->p_msg->addr;
++	addr &= CDNS_I2C_ADDR_MASK;
++
++	if (hold_clear) {
++		ctrl_reg = cdns_i2c_readreg(CDNS_I2C_CR_OFFSET) & ~CDNS_I2C_CR_HOLD;
++		/*
++		 * In case of Xilinx Zynq SOC, clear the HOLD bit before transfer size
++		 * register reaches '0'. This is an IP bug which causes transfer size
++		 * register overflow to 0xFF. To satisfy this timing requirement,
++		 * disable the interrupts on current processor core between register
++		 * writes to slave address register and control register.
++		 */
++		if (irq_save)
++			local_irq_save(flags);
++
++		cdns_i2c_writereg(addr, CDNS_I2C_ADDR_OFFSET);
++		cdns_i2c_writereg(ctrl_reg, CDNS_I2C_CR_OFFSET);
++		/* Read it back to avoid bufferring and make sure write happens */
++		cdns_i2c_readreg(CDNS_I2C_CR_OFFSET);
++
++		if (irq_save)
++			local_irq_restore(flags);
++	} else {
++		cdns_i2c_writereg(addr, CDNS_I2C_ADDR_OFFSET);
++	}
++
+ 	cdns_i2c_writereg(CDNS_I2C_ENABLED_INTR_MASK, CDNS_I2C_IER_OFFSET);
+ }
+ 
+-- 
+2.7.4
 
-Am 24.11.20 um 02:58 schrieb Xing Zhengjun:
->=20
->=20
-> On 11/23/2020 4:04 PM, Thomas Zimmermann wrote:
->> Hi
->>
->> Am 22.11.20 um 15:18 schrieb kernel test robot:
->>>
->>> Greeting,
->>>
->>> FYI, we noticed the following commit (built with gcc-9):
->>>
->>> commit: 6a1b34c0a339fdc75d7932ad5702f2177c9d7a1c ("drm/fb-helper:=20
->>> Move damage blit code and its setup into separate routine")
->>> url:=20
->>> https://github.com/0day-ci/linux/commits/Thomas-Zimmermann/drm-fb-hel=
-per-Various-fixes-and-cleanups/20201120-182750=20
->>>
->>>
->>>
->>> in testcase: trinity
->>> version: trinity-static-i386-x86_64-f93256fb_2019-08-28
->>> with following parameters:
->>>
->>> =A0=A0=A0=A0runtime: 300s
->>>
->>> test-description: Trinity is a linux system call fuzz tester.
->>> test-url: http://codemonkey.org.uk/projects/trinity/
->>>
->>>
->>> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2=
-=20
->>> -m 8G
->>>
->>> caused below changes (please refer to attached dmesg/kmsg for entire =
-
->>> log/backtrace):
->>
->> That dmesg is full of messages like
->>
->> [=A0 696.323556] alloc_vmap_area: 24 callbacks suppressed
->> [=A0 696.323562] vmap allocation for size 3149824 failed: use=20
->> vmalloc=3D<size> to increase size
->>
->> I think the test system needs to be reconfigured first.
->>
->=20
-> We have tried "vmalloc=3D256M" and "vmalloc=3D512M", the same warning s=
-till=20
-> happened.
-
-OK, then I don't know. Thanks for testing.
-
-Best regards
-Thomas
-
->=20
->=20
->> Best regards
->> Thomas
->>
->>>
->>>
->>> +--------------------------------------------------------------------=
----+------------+------------+=20
->>>
->>> |                                                                    =
-  =20
->>> | 154f2d1afd | 6a1b34c0a3 |
->>> +--------------------------------------------------------------------=
----+------------+------------+=20
->>>
->>> |=20
->>> WARNING:at_drivers/gpu/drm/drm_fb_helper.c:#drm_fb_helper_damage_work=
-=20
->>> | 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 | 36=A0=A0=A0=A0=A0=A0=A0=A0 |
->>> | EIP:drm_fb_helper_damage_work | 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 | 36=A0=
-=A0=A0=A0=A0=A0=A0=A0 |
->>> +--------------------------------------------------------------------=
----+------------+------------+=20
->>>
->>>
->>>
->>> If you fix the issue, kindly add following tag
->>> Reported-by: kernel test robot <oliver.sang@intel.com>
->>>
->>>
->>> [=A0 106.616652] WARNING: CPU: 1 PID: 173 at=20
->>> drivers/gpu/drm/drm_fb_helper.c:434=20
->>> drm_fb_helper_damage_work+0x371/0x390
->>> [=A0 106.627732] Modules linked in:
->>> [=A0 106.632419] CPU: 1 PID: 173 Comm: kworker/1:2 Not tainted=20
->>> 5.10.0-rc4-next-20201120-00007-g6a1b34c0a339 #3
->>> [=A0 106.637806] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996=
-),=20
->>> BIOS 1.12.0-1 04/01/2014
->>> [=A0 106.642853] Workqueue: events drm_fb_helper_damage_work
->>> [=A0 106.647664] EIP: drm_fb_helper_damage_work+0x371/0x390
->>> [=A0 106.652305] Code: b1 17 c7 01 68 bd 5b 2d c5 53 50 68 55 21 2d c=
-5=20
->>> 83 15 44 b1 17 c7 00 e8 ae bc b1 01 83 05 48 b1 17 c7 01 83 15 4c b1 =
-
->>> 17 c7 00 <0f> 0b 83 05 50 b1 17 c7 01 83 15 54 b1 17 c7 00 83 c4 10=20
->>> e9 78 fd
->>> [=A0 106.663517] EAX: 0000002d EBX: c8730520 ECX: 00000847 EDX: 00000=
-000
->>> [=A0 106.668423] ESI: ca987000 EDI: cab274d8 EBP: f62f5f20 ESP: f62f5=
-ee8
->>> [=A0 106.673214] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS:=
-=20
->>> 00010246
->>> [=A0 106.678295] CR0: 80050033 CR2: 00000000 CR3: 063a7000 CR4: 00040=
-6d0
->>> [=A0 106.683160] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000=
-000
->>> [=A0 106.687967] DR6: fffe0ff0 DR7: 00000400
->>> [=A0 106.690763] Call Trace:
->>> [=A0 106.693394]=A0 process_one_work+0x3ea/0xaa0
->>> [=A0 106.693501] ixgbevf: Intel(R) 10 Gigabit PCI Express Virtual=20
->>> Function Network Driver
->>> [=A0 106.695300]=A0 worker_thread+0x330/0x900
->>> [=A0 106.697406] ixgbevf: Copyright (c) 2009 - 2018 Intel Corporation=
-=2E
->>> [=A0 106.702963]=A0 kthread+0x190/0x210
->>> [=A0 106.705709]=A0 ? rescuer_thread+0x650/0x650
->>> [=A0 106.708379]=A0 ? kthread_insert_work_sanity_check+0x120/0x120
->>> [=A0 106.711271]=A0 ret_from_fork+0x1c/0x30
->>> [=A0 106.713973] ---[ end trace dd528799d3369ac1 ]---
->>>
->>>
->>> To reproduce:
->>>
->>> =A0=A0=A0=A0=A0=A0=A0=A0 # build kernel
->>> =A0=A0=A0=A0cd linux
->>> =A0=A0=A0=A0cp config-5.10.0-rc4-next-20201120-00007-g6a1b34c0a339 .c=
-onfig
->>> =A0=A0=A0=A0make HOSTCC=3Dgcc-9 CC=3Dgcc-9 ARCH=3Di386 olddefconfig p=
-repare=20
->>> modules_prepare bzImage
->>>
->>> =A0=A0=A0=A0=A0=A0=A0=A0 git clone https://github.com/intel/lkp-tests=
-=2Egit
->>> =A0=A0=A0=A0=A0=A0=A0=A0 cd lkp-tests
->>> =A0=A0=A0=A0=A0=A0=A0=A0 bin/lkp qemu -k <bzImage> job-script # job-s=
-cript is=20
->>> attached in this email
->>>
->>>
->>>
->>> Thanks,
->>> Oliver Sang
->>>
->>
->>
->> _______________________________________________
->> LKP mailing list -- lkp@lists.01.org
->> To unsubscribe send an email to lkp-leave@lists.01.org
->>
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=FCrnberg, Germany
-(HRB 36809, AG N=FCrnberg)
-Gesch=E4ftsf=FChrer: Felix Imend=F6rffer
-
---------------659560322450D81B3C21499C
-Content-Type: application/pgp-keys;
- name="OpenPGP_0x680DC11D530B7A23.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0x680DC11D530B7A23.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdgX=
-H47
-fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0BeB5B=
-bqP
-5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4YchdHm3bkPj=
-z9E
-ErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB9GluwvIhSezPg=
-nEm
-imZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEBAAHNKFRob21hcyBaa=
-W1t
-ZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmNvbT7CwI4EEwEIADgCGwMFCwkIBwIGFQoJCAsCB=
-BYC
-AwECHgECF4AWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCXvxIWAAKCRBoDcEdUwt6I+aZB/9ih=
-Onf
-G4Lgf1L87cvoXh95/bnaJ6aQhP6/ZeRleuCXflnyDajlm3c9loQr0r2bQUi7JeYwUKbBab2QS=
-GJm
-DMRGlLMnmzWB8mHmZ6bHAu+2Sth8SraE42p6BB9d8dlYEID+dl/D/xUBeulfkck5rloGtYqDi=
-+1Q
-DfkEZJaxVSZ6FFkXuQi/G9qcI4iklN2nv02iQ7mZe8WYAysix6s/6vIobhirEBreclSNxXqis=
-p8n
-91+v855JC11EgRdUXMRK81IAaCKXP8zLx3ixku7mvP9Om61yerHSbeU2HZbIggZYQlFh6llJm=
-zF1
-CjCWgPTJyk4t4kMTcNOw5ykD47vU/KW+wl0EEBECAB0WIQQn6OOmnzvP/7ktjmoud6EwEfXTw=
-gUC
-WzodVwAKCRAud6EwEfXTwidvAKDkOADDHfI0QNXqAZcg6i1kOndAYACeLXHBwpjnumkPSyoab=
-IiL
-+he8r3zCwHMEEAEIAB0WIQQeXZghmQijlU7YzFiqUDvJrg9HpwUCWznxsQAKCRCqUDvJrg9Hp=
-42f
-CADIvsZcAd04PDFclRltHr2huy6s7+ZZA6PgYlMblEBh4bJA+dNPBTvzpJ7FJv/bmHOa+phWy=
-Urj
-EpfFGuOKGuWAfzgVAEu52fMrW3/mm+O26z1AKIu8hiZ/x9OAe4AM71ZO2lZrV1/53ZdzWnRuO=
-45N
-GQcotU8oeVfT9okAfmozmWMmIMq7Q0K6bV8W3qiD5XfDNxjr2caxc/9WX1bZPUo3n0H23MNaA=
-Tpy
-Oz732UtDh6sKUAB1RfzBBd/REbjHD7+quwJGAdRScyDRncX1vNb2+wihy0ipA69XY3bkhR5iD=
-u5r
-A9enuiMe6J1IBMI1PZh+vOufB/M6cd2D9RULIJaJwsBzBBABCAAdFiEEuyNtt7Ge78bIRx1op=
-/N8
-GYw5MYEFAls6MrsACgkQp/N8GYw5MYEnLQf/dwqlDJVQL2q+i8FFaqTMAm0n9jLRV6pN8JxFH=
-j0g
-voyWUOnQuNdAFgtKd26ZhN8NkLoSMO8E19eBPfLoBIFK5yNNVmRHAZm07MzGbA0uNWINJhmdR=
-bZM
-RMh0nneXjcEU/IvUmd8TPFTAd24X2mbzHgcaHMLJSVx1ohd4alRJXHIqDobKmiVwekyPnInJn=
-zWw
-iuZUkIotTkQple1PT/dF3S+KtPXBL6ldQ4NkAeCjsz4wnzSa9+VKOxEhiHM0PMzXSbkCMP+4m=
-Xy9
-RMplBw9Dm9hN2PSouBPifIrSodiiSWZYXOEkzLiBAB0frCKR63Dnx9kvjCD9Pz5wLd/70rjqI=
-cLA
-jgQTAQgAOAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC=
-3oj
-BQJftODHAAoJEGgNwR1TC3ojZSIIAIV3makffp4P4leU8JSLt0aTNewsOhy7VQzKUtlCw3PKD=
-3l/
-SuymZhQKgH+n6sijzFauZnZ+x0T+Oy+dDVZb3sNJuuMUDIHw18EO9daZBMcueaS54FGe73lAp=
-HUl
-7nxyocCxoqIG8+fP+75itV/ls2TSh5rJvjLvHC8J3NqfGlJ/jlSKrQUnzFbXfE5KGWiKNAn+I=
-1a2
-EE0I7uLpYgkdb8hcjtV9Rxr2ja+GWOaSoqB29P5GUzipkWo4144Q16JBO6QP2R9y/1ZK9VqH2=
-5T8
-lTKocLAaHCEdpDqY5KI15as9tIxlI1Vh+eqhTh/gwEm1ykO1gmrQ1zvGLDMB1EE6El3NJ1Rob=
-21h
-cyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIbAwULCQgHAgYVC=
-gkI
-CwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJe/EheAAoJEGgNwR1TC3ojq=
-RgI
-AIoegtTp1prPzfHgTAuEPd8v58ssHubwi9tg69a8IJ+iMNozhs4iUou84WOLBJNjSieXHZRa8=
-fJj
-//2/sTuABn38AQ9FcKX9/B49hrdCo6c0WHHKqlPrSTzuXNKYyOdmSFd/pDhBb2Bn5DTxxH5RP=
-m/N
-U/C9nUlwi7Y+FgBlDNa5h592wmJfv0cJAfvF56C+QL65jHFOFIW9xSaTOAxxMXHGJHXki6Iwa=
-aTg
-s7QQlKQcd5XvvED1bwLyQ7rq+MEZo5N7IygpQMM3qqGMlCnDdyQ3W95rd0HCWpfa0oVRCOwdu=
-SL3
-5hG7ONqBpvBj8z5GjSbt4HLJGvpeT0k37qzRExrCXQQQEQIAHRYhBCfo46afO8//uS2Oai53o=
-TAR
-9dPCBQJbOh1XAAoJEC53oTAR9dPC05AAoIy0HQ2DBDYugQ42P4HfyxfZTIvKAJ0fqNBcBFW9S=
-tbR
-DEP9cfpNVOv8YMLAcwQQAQgAHRYhBB5dmCGZCKOVTtjMWKpQO8muD0enBQJbOfGzAAoJEKpQO=
-8mu
-D0enL0wIAM2NTeUDCofBAkbWHGTZopclefbh0xGPYQEfttNyalp0hn1CrVO7OsX5eTjRqgyOa=
-1C5
-OAsNghCM4PUmrfv5cZ9+sNn9bRM50uVW9IFRlq8wwBY4+7QejJ5gs7DW/0tZIMZ6iTGKK0WEO=
-7gd
-2K9hXadPBScTdIqXeWH82meiqElnEQL+K9UeGUBrku+1EQIOxwziKwTDlTvhyJ+xmEKj0uWRc=
-Ocl
-27xLS9XOWPGXcNQBtlZhF8e/E1kFRt5CPP5UBdUCN8qydUadseXivSNDiYob9dyJSFt7G0Bq4=
-/ac
-Ret5ANtGRWsp8xYJQRossRMWL0w9P8SiIc2IY/JrQrpz29nCwHMEEAEIAB0WIQS7I223sZ7vx=
-shH
-HWin83wZjDkxgQUCWzoywAAKCRCn83wZjDkxgQaDCACyFuBLQWNvLT8GTDqTf/gETzmtoEM6Y=
-r8O
-4jbYg05xiFzAqMZctQsm3zHakx2JrimxDvQJRQJQzp5ICJ7J/BOuSL4FE1SPeQIfjm4jyBZGH=
-P/W
-vgHsT5e3+ZCPePPZO+3irarTKVhaaP70Tpka6EsOCZzO6L8D6tUDkhxMX0ymy7p8w9Yt1eD0o=
-Ume
-mxrKdS1ulpNJUTBw7gJN8bMowVnycEm6wntxOjrCxuwbkKhFLdn0ejcXQ0UkfbUFKfU64gGBu=
-S53
-ZlM8XlOhQEIw/FrdXszhR+Tg3Ag130cmJhOrghgOBLzvJfUd6OvDT5VIz0QGbAm8SWlAIIms1=
-9Z8
-kBsLwsCOBBMBCAA4AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEchf7rIzpz2NEoWjla=
-A3B
-HVMLeiMFAl+04McACgkQaA3BHVMLeiPHXAf/SEoZa6CKoOAs1ctEP/hN8cEQqbEiuZ+71nm3u=
-/BQ
-p/CEUvqGq+iVc8kkpClDbPz5fa9mb+yWwufsnXKOs6ygmEoAEOL7dBZZIaRobBEkB09VXIkx8=
-lE0
-00grBVtToHUGRfZcMoMZ98XhPGU6lJDN200j/2CV46hQDz6PLySecNjOME05mosbYW5N2JwFd=
-uXP
-Qx++DjWB32QLBhcOcP3WslTy3PKVe/TcTvk0JpPFMz4UFc+awBVhDgZiGGAW3xLZRYyhpoAEs=
-N7u
-XkV2ct0MRxuZ3y4tTYJobhbZwutRojiPPZduRw9CSpNDcQHruFiSOIQTpnLeCA6K2JAZyqmP/=
-87A
-TQRbOdLgAQgAxiY/gz9X5PlFjlq3+DutR02wuFa/UA9iuH1FB584Nges1EdQT16ixhtPpcyvJ=
-H2F
-PxeUY5hHApbCJAGhZIOJMyj9eLb2NSefgFd8janHYNNfBzbYsq0sCBNGM/6ptTrdjTGdA3b1Q=
-YNt
-iDLIrnUNbcfQh/Zrck2yF4AAr5dz1tqPQsYhzxP26IRYcGcIf5F2GABOdZYYp0N6BRHkGQN8O=
-Dk7
-8UhLKYkEfHYPKiSW/mDgHOSCpOrCZpjOyXxTFkq9trGrTNt6EN1ryW+EVeh00UwCBMsmUu4Ng=
-4Ys
-rYDButLdKnQARuSl0kFvjipWUablsClmi4d4n/6f7uvXb6Wp2wARAQABwsB8BBgBCAAmFiEEc=
-hf7
-rIzpz2NEoWjlaA3BHVMLeiMFAls50uACGwwFCQPCZwAACgkQaA3BHVMLeiOl9wgAifA/k6VwQ=
-qiR
-OccKINPPg6fLgacdE/Z9cBNBkIrGa7gAljaH2J/D01/ZOMJnoAy8Le2EA3SsUOPnk32XizUKl=
-oOj
-gn7R+Sse7I1pydPbToJ4lXUTs1ie3FSf4tKJGs53LCfp6uPFGL0RhNUsIdwOEESMqYVl+DgAz=
-gZk
-xZfWWDT54dt3mgvVqzbxa+8j+4hozJXxFvJei3Wv/xAuVaV1Tc2tMXmntMxTbLdkfaZ/my5Io=
-cAy
-1sTiMonxkcU6jcaEuCNWsFYcT0lc7TzEqSAP7Dq/zf6eiawS5/oLotiupj+2xm/IRfrM3wK2K=
-s90
-9a79Vc1FgCX+Vq3uVIjcfbqqscLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojB=
-QJf
-tOH6AAoJEGgNwR1TC3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6=
-Baa
-6H7ufXNQtThRyIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3=
-T0T
-trijKP4ASAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446S=
-h8W
-n/2DYa8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRai=
-tYJ
-4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9fOwU0EX7ThE=
-wEQ
-ANJiTIb/nQ+MPgIBsSfBBhmXrVFUwFveO6DWPZ0M+Y5xBJhvDukosstSgcLCdld4SFF2JnnCo=
-yh9
-boM2j2Ksd5wNzTzXlo3lEzFRAipftboviUjap0qxoRwy1hBV3Ft1/VyNwwYY7qjGVATQU7cIT=
-/zL
-gb+Sd0NPQA8r2NvpJq1MnI8nFfA2ZH4diuRtavhEBUzp63SlCYxnyxqT5AQzSQGUpsjSyh1A5=
-ezt
-j1pwxgnkX7F9ZT0lUBo6zZM6ZBq8Nkyvox46l79QoWMBm9y+/nIXy/uXdT6RaumPjBzVttGmk=
-Onm
-TlGUJyQAndAE1boib9iWCJ4kIr2ezRKjXJXGuaM1m7hSfdQYWed0j52+nW9qGSNNk1GjYXM8Z=
-SWT
-agX6O5mfbpzRgBBK/XoE9NWRNAa4V+tUX4/vqqDl0m+O4F2GYs6Eu7WLredRgwjDuMF/VCKvQ=
-fr3
-yjIt90Zi10cHQw3khdJWmSDKYgenpvsffo4x56biifOh6IxS/whf5/BAx4nx8GyX7JO0DUnUu=
-ieC
-NfEGRu8QbYBSOkO/vdm4xy7RZwdzlqN8zjCLFOCG346Bnsx3ku2lNtX6qZoajmfD4oO6N0Xds=
-2pE
-wjufCfJW9sCLdBmqLD5OvsRljyv7vt5w28XSF1tyhQaxIs+8sFJtwfCliduffq56FcFrEXCxs=
-LQr
-ABEBAAHCwqwEGAEIACAWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCX7ThEwIbAgJACRBoDcEdU=
-wt6
-I8F0IAQZAQgAHRYhBMZ3Zv36bjFHcGBRaJYfxNxEKL/gBQJftOETAAoJEJYfxNxEKL/gkygQA=
-LQH
-pXm45ZfMCDx7u/d7rRH/R7EfEV5OAoS981IkzbTgrb9z6YYfhQqH+R2ImgoX/Lou7zSjyd22/=
-IaZ
-AnTKHKkXIFIM1uB144dqAi3tW/Bei/CSdiD7DY1q92Ebl6e+Gpf3TZdATSY00fVeLMNFnjbbz=
-CVX
-9+LEKYARNm7kYogVJMc5CuVmXBn9FFF3cioRvpuals8llsFc4WiUBJfDfOzjXExqv3OMtJj0s=
-qlK
-sXdnLkXbtAmEvFaxqUuO1ZwTCTGflrn/g4C8Cg0ifk0wZGgGYRindkJE1vOQZPaDI7GtNxJ+D=
-sx4
-fL/8tf7Wuk3TZ6t/ofKhjq8sUVCVhnlyd/3ujruDu/PhwwYBsHjNn+PmHeCCRJuOWwKapdfjH=
-9nt
-sHXTvyXBB2D3H7Oj7S/HOTXRNTUWhaxICKtq+XDSuJKOv7CNevkjMF4ybQDsrUxnaWd76YqNP=
-vZv
-PYoTqKzKukifjGXMsxC6HU4K2GscpvoaIk7glaD+NYi3fIGi/gR0UNc6cmXtOrYKSnCsNOwcO=
-CJL
-DjEr6YdbdAXO2wxCLqnupo8JRJgA8hjjHM5OoTGEyP/c+DKDqFO90YilX1XN8xchHrw+bDv0E=
-Zm0
-RZpVdL7WNr7qQE4UhDfuyo4Gis4Z+npzoOL4g3yaQQfK32zZD9iqk9152b7ny2Ke5oFIF5SSa=
-EwH
-/2tLNBevzgzWuEB6FtqoMT5RjDyx+xBeImRlhnP0EenRh+EP0nmLCAaFiP4tTp1bX54SyByp8=
-wcN
-7F2+v2Sgdd64w1pdrjT74Zf1xj0NTxEdt5jEaPfl5Vjv3cXiB8ACwPkMIXmkJx3uaGJynl4Os=
-irb
-nzzviEzvDVpLAxL7Qr6imlKUh92iAoz+XxEDqgMZnJJOTDFdDxEBhv911VzlRraDNdxw4MHMm=
-5Nr
-5pj4HGYh3PigzNo0KIreB50YqhGOesaC4Q75gv8mLc2Ec5dEq79BVMUOaCmYDShBN9j6JovNs=
-WSR
-5YP3tXi+jZ+VnyKLft9wo1fh1oYadFEVSHgGsEY=3D
-=3DfoRs
------END PGP PUBLIC KEY BLOCK-----
-
---------------659560322450D81B3C21499C--
-
---YrzHJJ8lbY2vdni4GD9QSVojFWT7lAz8J--
-
---PLNeCQ1xikpLovPXsqxk2QKLV0frmPHON
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl+8ueUFAwAAAAAACgkQlh/E3EQov+BO
-+g/+LLZG0TP6fG5pp0hdKBQKS+o9T4I3lNM3DmcTf9123IOB2JMeEdkMoBf2Fj6JcM8aNUG4jTQo
-1bmkK27WTp9TpueVH/YLz1FKbFAopyOTaWs3qohtnyNQONrPD9OJ4s1YV9sNXTrAqy6POZee82o7
-WwjXYnAII5OY0m7efR8Q/uOg1For/Xf3d4z4W+bXSdCX0+//HuPJvrxslbOUWo/PCb84dtIaNEu/
-BVkeRHszKWDGRweGeAqFQ0VuqFRA3rfiwH/fwWqlxvrptSlSarKLQ4V7xlS/ayYsIIob4vYMjSDd
-lxbikwF3h66j9ZamOvUhOM+8A7Kc0cWyIS/TR40H6AjcKl/mRFgT8vKdTFlNTcCAGCKVmG/Yxm+G
-8tEdPUVD4M8gxegZhVtdU7NK65tRfbcBf5crxphRwyKANTZnrHZpXfpbfEmNXT0ZcAILoxvVl87D
-FGm8Zbp4GuGIHeRo3a3LTuBfMFce2Go1JeaVxDN4AoP5Rk3Ep7Aqvh8Fqyiuzy2dbNclBwnJHUTV
-vuoB0zeCRc610WKEexTNl0lPA/RxfJRp9IKSgYMLG4VFLIsjtFcdyX3NarL8iiOoD+qdrxQ0+pi7
-ph1AqVLqfuLjdijY3O4qRiiIcbNfMLQ+aABRuurOi4UdBmErsGaIhW4a4zuZ6w791tfw3ejEpPZt
-Fyw=
-=l0y1
------END PGP SIGNATURE-----
-
---PLNeCQ1xikpLovPXsqxk2QKLV0frmPHON--
