@@ -2,123 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30912C20F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1815F2C20FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730943AbgKXJNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727477AbgKXJNw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:13:52 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDA4C0613D6;
-        Tue, 24 Nov 2020 01:13:51 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id s30so27866481lfc.4;
-        Tue, 24 Nov 2020 01:13:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fIukb1V/mzn93MU1dQnXMsPLeNbtxaANkhBLdUp3br0=;
-        b=Cs3k1SZ7ifHsNVz0CZW36NkPQFd0rGwgER9f8cZGQQko1ikOKhr4QWnWr7eWc7Yzfc
-         MDtohI4WKe5AtxCJOwRVbfnbEqWzt6iwZKRcsWl6Zntdve4L6np4Ltdc8UA1Ybq4Vx+f
-         jkTbfww4FtxD1tOa71zcmihcXFm1DoAyCkty0gzyYBGMpTbPJHxtlmGYgnyZCvOg7WwG
-         /OEiGh7E4T52ddQQ33opkEjHCbtbasseciyiYlm9rrkUzHsQog+59kJpgL/e/JVl9bZ2
-         Q9bgzkKdhB0y23+hR20ySeSipeqIN5ffi6/V9lvozoC6G/epREtERZS8gD3NrAhsfq5E
-         gy1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fIukb1V/mzn93MU1dQnXMsPLeNbtxaANkhBLdUp3br0=;
-        b=A5/2/CYeKhVCmukyL2KJH50MYdLk5UbvMDpN2DmjzCk5PLTJyn62IsgKEZJUo3lKI6
-         ISvRvUu3c/Gpdbl8rq1eS61nhVRZO3H5xkSzlMS/WSY3KTz1K/sPSH5M9CkTmYKxT08v
-         mcsaKHsFqk/0kgnJa7VnjcuriYyw44apCBFza+2Hes4QUC/Q6SJ3J5gXmYmvIIaA+C3z
-         08IA9giUMgGwD4R7Rj1mNdApyEO0FltV/T+kQfXBSVjRrCCOifbBf4VVHsjcnFjDk02y
-         O7OTdXQTpwo05rfT7Fw8i9GvF7ga3y309dSNChVpcwIMoES1v2E6bY4SZ5lvMHAmDPmX
-         rbtQ==
-X-Gm-Message-State: AOAM533gNbsz9I4NHmbIdHlaTF2pf7OtSxUAe8Dj5/81JozTgv/x5lPt
-        zyIovb/uWYQvBQDlqqEpWTs=
-X-Google-Smtp-Source: ABdhPJxbyG0352c86lWvNDZnJDqhA2YOWXcRsyfKquJjBhPyD4Ni9BJBwtvNNPtm+8dxHSAwjj+CPw==
-X-Received: by 2002:a19:7b06:: with SMTP id w6mr1484289lfc.260.1606209230293;
-        Tue, 24 Nov 2020 01:13:50 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:42b3:ccad:a982:d97f:90ed:ada1? ([2a00:1fa0:42b3:ccad:a982:d97f:90ed:ada1])
-        by smtp.gmail.com with ESMTPSA id 6sm253081ljr.127.2020.11.24.01.13.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 01:13:49 -0800 (PST)
-Subject: Re: [PATCH v3] usb: musb: remove unused variable 'devctl'
-To:     min.guo@mediatek.com, Bin Liu <b-liu@ti.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        chunfeng.yun@mediatek.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201124084955.30270-1-min.guo@mediatek.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <c2f3f643-8514-5c4a-dd52-7abc8a6dc501@gmail.com>
-Date:   Tue, 24 Nov 2020 12:13:42 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201124084955.30270-1-min.guo@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1731058AbgKXJRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:17:10 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:54212 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728967AbgKXJRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:17:10 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmtCQz7xfgOUVAA--.35926S2;
+        Tue, 24 Nov 2020 17:17:04 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] pinctrl: at91-pio4: Make PINCTRL_AT91PIO4 depend on HAS_IOMEM to fix build error
+Date:   Tue, 24 Nov 2020 17:17:03 +0800
+Message-Id: <1606209423-4742-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxmtCQz7xfgOUVAA--.35926S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XrW7Cr4DuFyfZFWfWw48WFg_yoWfZFb_ua
+        yvgrn7JryUCws7Kw1jva1fuFy0ya90gr1xKF1qqa4S9347Xa47t34DWF4kJwn7G3yxGFyq
+        vay8Xr1F9w1jyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8uwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU8iSdDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+If CONFIG_HAS_IOMEM is not set, devm_platform_ioremap_resource() will
+be not built in drivers/base/platform.c and then there exists a build
+error about undefined reference to "devm_platform_ioremap_resource"
+in pinctrl-at91-pio4.c under COMPILE_TEST and CONFIG_PINCTRL_AT91PIO4,
+make PINCTRL_AT91PIO4 depend on HAS_IOMEM to fix it.
 
-On 24.11.2020 11:49, min.guo@mediatek.com wrote:
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/pinctrl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> From: Min Guo <min.guo@mediatek.com>
-> 
-> Remove unused 'devctl' variable to fix compile warnings:
-> 
->      drivers/usb/musb/musbhsdma.c: In function 'dma_controller_irq':
->      drivers/usb/musb/musbhsdma.c:324:8: warning: variable 'devctl' set
->      but not used [-Wunused-but-set-variable]
-> 
-> Signed-off-by: Min Guo <min.guo@mediatek.com>
-> ---
-> changes in v3
-> suggested by Greg Kroah-Hartman:
-> Add a comment.
-> 
-> changes in v2
-> suggested by Alan Stern:
-> Add void before musb_read to indicate that the register MUSB_DEVCTL
-> was intended to be read and discarded.
-> ---
->   drivers/usb/musb/musbhsdma.c | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/musb/musbhsdma.c b/drivers/usb/musb/musbhsdma.c
-> index 0aacfc8be5a1..2a345b4ad015 100644
-> --- a/drivers/usb/musb/musbhsdma.c
-> +++ b/drivers/usb/musb/musbhsdma.c
-[...]
-> @@ -336,7 +334,11 @@ irqreturn_t dma_controller_irq(int irq, void *private_data)
->   						< musb_channel->len) ?
->   					"=> reconfig 0" : "=> complete");
->   
-> -				devctl = musb_readb(mbase, MUSB_DEVCTL);
-> +				/*
-> +				 * Some hardware may need to read the
-> +				 * MUSB_DEVCTL register once to take effect.
-> +				 */
-> +				(void)musb_readb(mbase, MUSB_DEVCTL);
+diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+index 8150953..d132e1a 100644
+--- a/drivers/pinctrl/Kconfig
++++ b/drivers/pinctrl/Kconfig
+@@ -82,6 +82,7 @@ config PINCTRL_AT91
+ config PINCTRL_AT91PIO4
+ 	bool "AT91 PIO4 pinctrl driver"
+ 	depends on OF
++	depends on HAS_IOMEM
+ 	depends on ARCH_AT91 || COMPILE_TEST
+ 	select PINMUX
+ 	select GENERIC_PINCONF
+-- 
+2.1.0
 
-    Hm, forcibly reading DevCtl in the DMA driver... sounds quite 
-nonsensically. Lemme take a look...
-
-[...]
-
-MBR, Sergei
