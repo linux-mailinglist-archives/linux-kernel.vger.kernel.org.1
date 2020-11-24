@@ -2,105 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424C02C2327
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5152C2329
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732181AbgKXKmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731324AbgKXKmt (ORCPT
+        id S1732189AbgKXKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:43:38 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:51125 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731324AbgKXKnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:42:49 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CDCC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:42:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hV4v8/sy7lWGaOxqP7PaojedXRhJakXf/w80FAM8S6U=; b=Xtjk9KxIgfhdSk9RUYLznWCEt8
-        U1K6ZiL+rY7y3sZG6kopgukllEJqMNeybq0J1pi/ddJ18QZT2yMnQESg2UhVilFglrxbZBiygkZmI
-        sQP+6MzKF+95mCDo/d11FXzspwrAyiBOOOIcLiUyeWKtDhcsXfg+W7moa5SKxiAbwwgvI4KZexd+L
-        MJCHk+/MKYGtjnOWnQNmRRgOSMQ+RXetqt4mBfx2U4JjI+nVN34YLacYLDTn0K4D7igFJJeOOMl2M
-        pTQavmVHU3o8JjJkvZbajHjFwvUZfRs6BXoLZ5noq1X8BhjjlXB2RAAQvknUCQ9jdRxUFbyjvc2uS
-        pwiSyOqw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khVlZ-0004Hf-P1; Tue, 24 Nov 2020 10:41:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A76573062EA;
-        Tue, 24 Nov 2020 11:41:42 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 92A2E20222D67; Tue, 24 Nov 2020 11:41:42 +0100 (CET)
-Date:   Tue, 24 Nov 2020 11:41:42 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 15/32] sched: Improve snapshotting of min_vruntime
- for CGroups
-Message-ID: <20201124104142.GX3021@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-16-joel@joelfernandes.org>
+        Tue, 24 Nov 2020 05:43:37 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5AEC55C0152;
+        Tue, 24 Nov 2020 05:43:36 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 24 Nov 2020 05:43:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=lITX1qzbR2O4UpzNk+OdG6y12JU
+        SmHJDkpZQUJ7dDOU=; b=Ni18EMJStY0GlcJcIPdVoli7dlSGrS+1A12TCtNjSj1
+        my4SH6GmJ9wnddtP1NxDV3+/Yka0WGhKS8NHS7ngfTjMLKF9l58yVT/0y3gOQRgf
+        FPAw3A6M/21X5JkZr78EhpGjMhTg79iugdnQyri0mCA5zLqODW9/n6bukhejGaN9
+        DMo198iMWsFKTR7cFUTYRrRViIJ64DiVwXmXfiQzM02igT9AN9N4TBFd1X1/tOXs
+        T6HAGv399NMc/o90ZHTJjPybwKfz+UmqSyHZokHWllQz9sUtED6wQvyBR6/qfcy0
+        rKMi1TCDHBaLUlBI2WH/cHzqFRhDKx6DolrFO/54jVw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=lITX1q
+        zbR2O4UpzNk+OdG6y12JUSmHJDkpZQUJ7dDOU=; b=nPWb7TULKGEIbQ3ZzCp5EX
+        XNpH4DOs51fytyz1hkF2Y9x1TzTzAGuQaEi3pYieFExYozPRv2UmiVqTcOH6O2iq
+        5htTdxgOqSzjVGCjXDKyhc7I+VMWQLmobI+2fM4WIzo2OwA3xC/GaasjldhaY5LD
+        Qw5pekzqCLoxik0iXNqQdOiK1f7PUiVHVtqwBZJcYhQgLPnEQfp2tRX1qlRCtHgp
+        KKG3G9j7LBm0iCxyznTUdiVXVjt1ViImzcty+D/B38FInVQzVRFTVbV92WHIS1d1
+        CYQaVHhDAr87L9Z6Lu8U7oqGa1VB/+7mNqyQjiYquBdnXtLe30OaUxLxbxFBPMYQ
+        ==
+X-ME-Sender: <xms:1uO8X18wsvjvSIZZNivRaecmJXDSxo7Q7i5Q1klDhngkKj8bkeLSWQ>
+    <xme:1uO8X5sO3jzOKQqSfHji-mfgnA9uvWZZwaHJ2YGDCil4A28neR4U9QPuHNnChY8Jx
+    I_8Elu22i6s2gzQetE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:1uO8XzDS70M2trtJoB6p3VmrraBpswQTjaq0w-WVSybNg4rKROZ1MQ>
+    <xmx:1uO8X5cKFw2yaqf1w2I1lnQVkj7KT7YThOt-Igeu3GPs0MeUyqxKIA>
+    <xmx:1uO8X6Pwyjdl8_FbwP8nDMu1kIUOC4tVvXMYN0D5KmQZY5IqW2KHAQ>
+    <xmx:2OO8X3qqMC6S97idzHQktPdHk2u2hVzT63fj9Lp9TF19nkslVVLdTQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 850873064AB4;
+        Tue, 24 Nov 2020 05:43:34 -0500 (EST)
+Date:   Tue, 24 Nov 2020 11:43:32 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the arm-soc tree
+Message-ID: <20201124104332.i6ptfl7e7kcoc5yu@gilmour>
+References: <20201124093115.0f358046@canb.auug.org.au>
+ <20201124091804.GA11695@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xegofoq7xx3feejm"
 Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-16-joel@joelfernandes.org>
+In-Reply-To: <20201124091804.GA11695@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:45PM -0500, Joel Fernandes (Google) wrote:
-> +static void se_fi_update(struct sched_entity *se, unsigned int fi_seq, bool forceidle)
->  {
-> -	bool samecpu = task_cpu(a) == task_cpu(b);
-> +	bool root = true;
-> +	long old, new;
 
-My compiler was not impressed by all those variable definitions.
+--xegofoq7xx3feejm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
-> +	for_each_sched_entity(se) {
-> +		struct cfs_rq *cfs_rq = cfs_rq_of(se);
-> +
-> +		if (forceidle) {
-> +			if (cfs_rq->forceidle_seq == fi_seq)
-> +				break;
-> +			cfs_rq->forceidle_seq = fi_seq;
-> +		}
-> +
-> +		cfs_rq->min_vruntime_fi = cfs_rq->min_vruntime;
-> +	}
-> +}
+On Tue, Nov 24, 2020 at 10:18:04AM +0100, Christoph Hellwig wrote:
+> On Tue, Nov 24, 2020 at 09:31:15AM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > After merging the arm-soc tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> >=20
+> > drivers/soc/sunxi/sunxi_mbus.c: In function 'sunxi_mbus_notifier':
+> > drivers/soc/sunxi/sunxi_mbus.c:93:8: error: implicit declaration of fun=
+ction 'dma_direct_set_offset' [-Werror=3Dimplicit-function-declaration]
+> >    93 |  ret =3D dma_direct_set_offset(dev, PHYS_OFFSET, 0, SZ_4G);
+> >       |        ^~~~~~~~~~~~~~~~~~~~~
+> >=20
+> > Caused by commit
+> >=20
+> >   b4bdc4fbf8d0 ("soc: sunxi: Deal with the MBUS DMA offsets in a centra=
+l place")
+> >=20
+> > probably interacting with commit
+> >=20
+> >   16fee29b0735 ("dma-mapping: remove the dma_direct_set_offset export")
+> >=20
+> > which is also in the arm-soc tree ...
+>=20
+> drivers/soc/sunxi/sunxi_mbus.c now needs an include of <linux/dma-map-ops=
+=2Eh>.
+
+I just sent a patch doing so
+
+Maxime
+
+--xegofoq7xx3feejm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7zj1AAKCRDj7w1vZxhR
+xbROAQCXqyCRlo/C/AsJUGOO3hNS4yGFAEtFYGRsl5XPB+DpaQEA0rJAxdMrJY9U
+Ib/IwuQ5SSk4NgoXJlc0Gu9LT88AzgU=
+=zPoe
+-----END PGP SIGNATURE-----
+
+--xegofoq7xx3feejm--
