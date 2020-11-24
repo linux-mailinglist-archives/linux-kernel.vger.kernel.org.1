@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D320E2C29DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033822C29E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389194AbgKXOkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:40:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388014AbgKXOkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:40:09 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 990E3206E5;
-        Tue, 24 Nov 2020 14:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606228808;
-        bh=8cAsMW0jxkAcxLnMU27PtmCKLh9UoLHSExBwGavk3CM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FWfBIFPmZ0R2i7RCHQHaBZ8/6WRxggDrlntE4uMwJ+oU7Op241xy8MEa/A/MPv6JJ
-         3oZlg9Nm76YrmqkWSykwqf0amdIH1fk84bmRLMbQXJ57QGILd9Se5EWNJ0fn0rGgt/
-         XRVrh9vqQiyyZzerPTYZhYEB7h8Yis7PLIqIe7IE=
-Date:   Tue, 24 Nov 2020 08:40:23 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 131/141] tpm: Fix fall-through warnings for Clang
-Message-ID: <20201124144023.GH16084@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <1804f48dac434541dc60ada5eefcb86f74905671.1605896060.git.gustavoars@kernel.org>
- <20201123225226.GA17124@kernel.org>
- <20201123225322.GA19839@kernel.org>
+        id S2389215AbgKXOmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:42:14 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:43850 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388162AbgKXOmO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:42:14 -0500
+Date:   Tue, 24 Nov 2020 14:42:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606228932;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ATsDejaPv8NkLKCC6exgYHw07pd1pomeYiGhekbJbps=;
+        b=EHINuUXgetx03zYlcGQ8HroQJGfPTaZJWlhod6+hlVvbA4f8c4MuaKix3LPvUsUsPV/pea
+        ds8RXq5N5weP3+NyablK8PEFII1JhX44B5TnyJbHRwzq+ysL3U18sl4o1cmxSgLrhzJS1h
+        KpH1IB5ncjTgtkK24Z7+iOSLqZglJxVbU+KShCd0RQU+wsH4aaceoTbdfe5bFslFCDBH6r
+        duFUg+AQSTTNP91XqVS4jINaL1u5t23rNXoYkx5unyJxkLpnCrkp65NoE94ebkSsw0DlJv
+        EVAcX9m1VMBLmJfevJw1eagXKcvvGDypW/y5Bad9EVoNqLgGlbxJFyCRfRcbRg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606228932;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ATsDejaPv8NkLKCC6exgYHw07pd1pomeYiGhekbJbps=;
+        b=ijynnphaJ0wZgeTJmO/hGkJex2gibT/GnEg6E1wzp5gUH04iqAMgJQnpBSZAXg7TOkFQDH
+        Es2jMLVNZHKySODg==
+From:   "tip-bot2 for Geert Uytterhoeven" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] sh/irq: Add missing closing parentheses in
+ arch_show_interrupts()
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20201124130656.2741743-1-geert+renesas@glider.be>
+References: <20201124130656.2741743-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123225322.GA19839@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <160622893109.11115.12932515800816767356.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:53:22AM +0200, Jarkko Sakkinen wrote:
-> On Tue, Nov 24, 2020 at 12:52:31AM +0200, Jarkko Sakkinen wrote:
-> > On Fri, Nov 20, 2020 at 12:40:14PM -0600, Gustavo A. R. Silva wrote:
-> > > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > > by explicitly adding a break statement instead of letting the code fall
-> > > through to the next case.
-> > > 
-> > > Link: https://github.com/KSPP/linux/issues/115
-> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > > ---
-> > >  drivers/char/tpm/eventlog/tpm1.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/drivers/char/tpm/eventlog/tpm1.c b/drivers/char/tpm/eventlog/tpm1.c
-> > > index 2c96977ad080..8aa9057601d6 100644
-> > > --- a/drivers/char/tpm/eventlog/tpm1.c
-> > > +++ b/drivers/char/tpm/eventlog/tpm1.c
-> > > @@ -210,6 +210,7 @@ static int get_event_name(char *dest, struct tcpa_event *event,
-> > >  		default:
-> > >  			break;
-> > >  		}
-> > > +		break;
-> > >  	default:
-> > >  		break;
-> > >  	}
-> > > -- 
-> > > 2.27.0
-> > > 
-> > > 
-> > 
-> > Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
-> > 
-> > Who is picking these patches?
+The following commit has been merged into the irq/core branch of tip:
 
-I can take it in my tree for 5.11 if people are OK with that. :)
+Commit-ID:     15b8d9372f27c47e17c91f6f16d359314cf11404
+Gitweb:        https://git.kernel.org/tip/15b8d9372f27c47e17c91f6f16d359314cf=
+11404
+Author:        Geert Uytterhoeven <geert+renesas@glider.be>
+AuthorDate:    Tue, 24 Nov 2020 14:06:56 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 24 Nov 2020 15:37:16 +01:00
 
-> > 
-> > /Jarkko
-> 
-> I mean
-> 
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+sh/irq: Add missing closing parentheses in arch_show_interrupts()
 
-Thanks, Jarkko.
---
-Gustavo
+    arch/sh/kernel/irq.c: In function =E2=80=98arch_show_interrupts=E2=80=99:
+    arch/sh/kernel/irq.c:47:58: error: expected =E2=80=98)=E2=80=99 before =
+=E2=80=98;=E2=80=99 token
+       47 |   seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
+	  |                                                          ^
 
+Fixes: fe3f1d5d7cd3062c ("sh: Get rid of nmi_count()")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201124130656.2741743-1-geert+renesas@glider=
+.be
+
+---
+ arch/sh/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/sh/kernel/irq.c b/arch/sh/kernel/irq.c
+index 5addcb2..ab5f790 100644
+--- a/arch/sh/kernel/irq.c
++++ b/arch/sh/kernel/irq.c
+@@ -44,7 +44,7 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+=20
+ 	seq_printf(p, "%*s: ", prec, "NMI");
+ 	for_each_online_cpu(j)
+-		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
++		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j));
+ 	seq_printf(p, "  Non-maskable interrupts\n");
+=20
+ 	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
