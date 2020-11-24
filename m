@@ -2,126 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1E12C3257
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B3E2C325A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgKXVI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:08:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
+        id S1729649AbgKXVJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729549AbgKXVIZ (ORCPT
+        with ESMTP id S1729619AbgKXVJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:08:25 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1879C061A4E
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:08:23 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id 5so11321927plj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:08:23 -0800 (PST)
+        Tue, 24 Nov 2020 16:09:25 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168FAC0613D6;
+        Tue, 24 Nov 2020 13:09:23 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id k9so15718754ejc.11;
+        Tue, 24 Nov 2020 13:09:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G8S42ykz8GQE/h+DytjaAc53070LGayg6/X2MaLnGo4=;
-        b=rsCmTT9AmQu1r6IL0afCU1Zq05tKOxlvyj55zg3e4zT5rVbfFAzSLQgCuoRaQFu7v1
-         +kXtZGJWUWplCRgQf3TWQeCyNjjdvRtdAEaKGVx4/otabfhCDdgsO9E3hhc+BEAQlovK
-         ECp6s3ALBjkJ2dmlobjtCpJCJgDkZRTNhu73PVHr/ems2HMqXhcwXxEBUn1DuhffMmYk
-         O3Zi9AY50iDVUSy9NV4U/2qXROdtB0fYp9q/ZkXZCQR/DOB39OmRESUFJ8p3Wz6DOm5h
-         0qOzDg2UcQEiXlHCSAsHLiPvIVMvu8zXyfFbOnBYwNvHcHLX3KTg6SkKzAZDN26Nqk1Y
-         6h4w==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=elrmmGmMMQ6PzIopqvZQCkanN6h0/gWDnjrJZkGJIrc=;
+        b=g7LSYe/1dvjbcmdkl2nhyDWaLYIFni5VjHt4WQ/sh6N4iEqA9z4kUOjkpDf/ZTbbsb
+         geuhN8jGiWp9hCsnMWIAfw9neXc1C82DlAgzW8v+vNCLtYbilVlfHhLogZtDm+Ggs6g7
+         rNQ4Ux8H0Q4jp41z8sKlhyeBNd7hTE81Y06Rcpj/xz7BjJJIJc3EL2vPVY+FmcZocYBK
+         +P4lu6pswz1/nVv3upEM3bTW7GBJnyRtM1EVAo8flLsOde5HWzHxXFN6/TsnGDb1YP6m
+         BDjqmrJfBTs/3Nq2qCsMbLVMJ5Z9GDlft5E6XTpAYu7FrXhk44MVVVfowJlT3Yx7uBUU
+         bkvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G8S42ykz8GQE/h+DytjaAc53070LGayg6/X2MaLnGo4=;
-        b=tHc8XiXVTzIsBRJxD5RV/XGSb35tVTZUWsvlmVWtoCP2oYccHjRV7PFU0WQ0flhUtg
-         czofs5svjl5puziIOsFhoGTkCG2aKntXVFi4DzeJIIAu5KZoZNsSOHFT6pKqWpcSW8Ib
-         uDyhq0mw9EEkwLBYlAzgb469i34ZuyHMDeIB4XiA3STmrjAf6Igu6KFu6YVgHopKsolm
-         N/HlMkIN8aQuDZ/VFXF8sdBhTWWqb3N+m7zSlPFYdXd7PPpTg2/efVo6VUwlIOP+kgsV
-         RTh1+ZAV9ca1nLNX8z/cPPXxDNmFeEbgNqmWcb1y9P8wVVlONM9PWYVqVD1g9UJEvELB
-         +R9A==
-X-Gm-Message-State: AOAM530iLaTE9Pd9rc6nJpbqyJ1TX4zul0k82En/19mye/Y79uLqHfXR
-        x8WfRReQBYgOJRA0u3fTsQofug==
-X-Google-Smtp-Source: ABdhPJz5Fx2+bpGo/B/r0yfGYFv5y2+FYhmfiO8de2zRAtmGS5ARVTlePGqT5XUmBOcO4TzSzaVPsA==
-X-Received: by 2002:a17:902:8b8c:b029:d6:df70:fa21 with SMTP id ay12-20020a1709028b8cb02900d6df70fa21mr147419plb.15.1606252102945;
-        Tue, 24 Nov 2020 13:08:22 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id r15sm119898pjp.51.2020.11.24.13.08.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 13:08:22 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:08:17 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas <thomas.lendacky@amd.com>, pbonzini@redhat.com,
-        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
-        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
-        Eric <eric.vantassell@amd.com>, gingell@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20201124210817.GA65542@google.com>
-References: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
- <20201124191629.GB235281@google.com>
- <20201124194904.GA45519@google.com>
- <alpine.DEB.2.23.453.2011241215400.3594395@chino.kir.corp.google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.23.453.2011241215400.3594395@chino.kir.corp.google.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=elrmmGmMMQ6PzIopqvZQCkanN6h0/gWDnjrJZkGJIrc=;
+        b=Wcx4oBxZd6wm8f6ZTPmqmXI8L2iqrBAZ1B7uO27RyT+MDxrYhBekSPwD6tvkczQs7p
+         LzUzvkDwi1jGJq4R3+t2m6+SqyjMRK0huKpFiMR50PbslHOcl+g4YBVKUI7wH+SR/yNu
+         GHocYjQue7s7zJypak9iJFbeZ0I4CVqmYCUknuhDkVRSprW+We4Zgup5kbmVVgDdBfo5
+         kFQXF/iDD0vIEYvPGiGEFhhteUUgZD/JUvz1rAK4KgrhJp7lCtN86NqP/UimrOikSe5C
+         YBEylzt+G9cJ2xKZMHlnjLBL4NvPs2NFHJJgmPiVV6N7AhlXLt6gROyFNnXWg0sgpYIT
+         bojQ==
+X-Gm-Message-State: AOAM5314OYanR9p3cm9TFZSIG+X/NF+zoomVwxNBS5S45c4OwCS1mRi2
+        b/IRLgghTXuYtJzObGQ8ITk=
+X-Google-Smtp-Source: ABdhPJw+oOzt0sqIybHqz+LalDY0mFf5wSqrIieAWHVKK2WTxgTVcNENN+x2eHJPL6OZB9sIwONulw==
+X-Received: by 2002:a17:906:490:: with SMTP id f16mr353412eja.12.1606252161779;
+        Tue, 24 Nov 2020 13:09:21 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bee2a.dynamic.kabel-deutschland.de. [95.91.238.42])
+        by smtp.googlemail.com with ESMTPSA id v8sm52468edt.3.2020.11.24.13.09.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 24 Nov 2020 13:09:21 -0800 (PST)
+Message-ID: <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
+ remove skip_ref_clk
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 24 Nov 2020 22:09:18 +0100
+In-Reply-To: <1606202906-14485-2-git-send-email-cang@codeaurora.org>
+References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
+         <1606202906-14485-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:18:45PM -0800, David Rientjes wrote:
-> On Tue, 24 Nov 2020, Vipin Sharma wrote:
-> 
-> > > > Looping Janosch and Christian back into the thread.                           
-> > > >                                                                               
-> > > > I interpret this suggestion as                                                
-> > > > encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
-> > > 
-> > > I think it makes sense to use encryption_ids instead of simply encryption, that
-> > > way it's clear the cgroup is accounting ids as opposed to restricting what
-> > > techs can be used on yes/no basis.
-> > > 
-> 
-> Agreed.
-> 
-> > > > offerings, which was my thought on this as well.                              
-> > > >                                                                               
-> > > > Certainly the kernel could provide a single interface for all of these and    
-> > > > key value pairs depending on the underlying encryption technology but it      
-> > > > seems to only introduce additional complexity in the kernel in string         
-> > > > parsing that can otherwise be avoided.  I think we all agree that a single    
-> > > > interface for all encryption keys or one-value-per-file could be done in      
-> > > > the kernel and handled by any userspace agent that is configuring these       
-> > > > values.                                                                       
-> > > >                                                                               
-> > > > I think Vipin is adding a root level file that describes how many keys we     
-> > > > have available on the platform for each technology.  So I think this comes    
-> > > > down to, for example, a single encryption.max file vs                         
-> > > > encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
-> > > 
-> > > Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
-> > > no need to enumerate platform total, but not knowing how many of the allowed IDs
-> > > have been allocated seems problematic.
-> > > 
-> > 
-> > We will be showing encryption_ids.{sev,sev_es}.{max,current}
-> > I am inclined to not provide "events" as I am not using it, let me know
-> > if this file is required, I can provide it then.
-> > 
-> > I will provide an encryption_ids.{sev,sev_es}.stat file, which shows
-> > total available ids on the platform. This one will be useful for
-> > scheduling jobs in the cloud infrastructure based on total supported
-> > capacity.
-> > 
-> 
-> Makes sense.  I assume the stat file is only at the cgroup root level 
-> since it would otherwise be duplicating its contents in every cgroup under 
-> it.  Probably not very helpful for child cgroup to see stat = 509 ASIDs 
-> but max = 100 :)
+On Mon, 2020-11-23 at 23:28 -0800, Can Guo wrote:
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -229,6 +229,8 @@ struct ufs_dev_cmd {
+>   * @max_freq: maximum frequency supported by the clock
+>   * @min_freq: min frequency that can be used for clock scaling
+>   * @curr_freq: indicates the current frequency that it is set to
+> + * @always_on_while_link_active: indicate that the clk should not be
+> disabled if
+> +                                link is still active
+>   * @enabled: variable to check against multiple enable/disable
+>   */
+>  struct ufs_clk_info {
+> @@ -238,6 +240,7 @@ struct ufs_clk_info {
+>         u32 max_freq;
+>         u32 min_freq;
+>         u32 curr_freq;
+> +       bool always_on_while_link_active;
 
-Yes, only at root.
+Can,
+using a sentence as a parameter name looks a little bit clumsy to me.
+The meaning has been explained in the comments section. How about
+simplify it and in line with other parameters in the structure?
+
+Thanks,
+Bean 
+
+>         bool enabled;
+>  };
+>  
+
