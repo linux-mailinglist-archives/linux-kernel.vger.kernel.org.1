@@ -2,192 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDD12C1DCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA252C1DD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgKXGGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:06:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60026 "EHLO mail.kernel.org"
+        id S1729328AbgKXGIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:08:04 -0500
+Received: from mga14.intel.com ([192.55.52.115]:51611 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728113AbgKXGGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:06:30 -0500
-Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 699C2206E5;
-        Tue, 24 Nov 2020 06:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606197988;
-        bh=P3cw+hY+r3IiY9t77q/gus8d2vQhBHLBFRGa6m2DSYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WiFJL8evgczQqjdjHXwYeT8re+nlbxDdiXb+nQZ6rJcQcFlg5yf6Jj/KEfVNmhLx7
-         JNL5HDVpFNBNwEkbHSuvAYRsNXSrI95b17Tr5Hsw9+RsfvY3AOcpeTIhs8DQpRJCjB
-         yNVbuNXAOirmYwi6yTuxxUVcKliwguQi/yaaHNF8=
-Date:   Tue, 24 Nov 2020 07:06:26 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, dja@axtens.net, npiggin@gmail.com,
-        stable-commits@vger.kernel.org
-Subject: Re: Patch "powerpc/64s: flush L1D after user accesses" has been
- added to the 4.4-stable tree
-Message-ID: <X7yi4q3CLZ74hPW0@kroah.com>
-References: <160585744921681@kroah.com>
- <e11e8b93-084b-8746-3e16-73dd4ee94147@huawei.com>
+        id S1728113AbgKXGID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:08:03 -0500
+IronPort-SDR: GOowKN6p1A6bGWcgqUJVOHVIkU9ZREMdq82/iC+8jsAR8tFSLAYdwiJrZNKw0UEh7QDk+zJ/ES
+ vhOdjU8Cw2Bg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="171114706"
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="171114706"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 22:08:03 -0800
+IronPort-SDR: GPJEf40arfky0g/F29XxaT9Krhv6lv2p2pNnqLKzAIgj1TpKsaP2EbEkWrdl+6kBQtDS+brxCx
+ giwZRSN9BmeA==
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="546707680"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 22:08:02 -0800
+From:   ira.weiny@intel.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Steve French <sfrench@samba.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Brian King <brking@us.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH 00/17] kmap: Create mem*_page interfaces
+Date:   Mon, 23 Nov 2020 22:07:38 -0800
+Message-Id: <20201124060755.1405602-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e11e8b93-084b-8746-3e16-73dd4ee94147@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:18:05AM +0800, yangerkun wrote:
-> 
-> 
-> 在 2020/11/20 15:30, gregkh@linuxfoundation.org 写道:
-> > 
-> > This is a note to let you know that I've just added the patch titled
-> > 
-> >      powerpc/64s: flush L1D after user accesses
-> > 
-> > to the 4.4-stable tree which can be found at:
-> >      http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-> > 
-> > The filename of the patch is:
-> >       powerpc-64s-flush-l1d-after-user-accesses.patch
-> > and it can be found in the queue-4.4 subdirectory.
-> > 
-> > If you, or anyone else, feels it should not be added to the stable tree,
-> > please let <stable@vger.kernel.org> know about it.
-> > 
-> > 
-> > > > From foo@baz Fri Nov 20 08:28:41 AM CET 2020
-> > From: Daniel Axtens <dja@axtens.net>
-> > Date: Fri, 20 Nov 2020 11:07:04 +1100
-> > Subject: powerpc/64s: flush L1D after user accesses
-> > To: stable@vger.kernel.org
-> > Cc: dja@axtens.net
-> > Message-ID: <20201120000704.374811-9-dja@axtens.net>
-> > 
-> > From: Nicholas Piggin <npiggin@gmail.com>
-> > 
-> > commit 9a32a7e78bd0cd9a9b6332cbdc345ee5ffd0c5de upstream.
-> > 
-> > IBM Power9 processors can speculatively operate on data in the L1 cache before
-> > it has been completely validated, via a way-prediction mechanism. It is not possible
-> > for an attacker to determine the contents of impermissible memory using this method,
-> > since these systems implement a combination of hardware and software security measures
-> > to prevent scenarios where protected data could be leaked.
-> > 
-> > However these measures don't address the scenario where an attacker induces
-> > the operating system to speculatively execute instructions using data that the
-> > attacker controls. This can be used for example to speculatively bypass "kernel
-> > user access prevention" techniques, as discovered by Anthony Steinhauser of
-> > Google's Safeside Project. This is not an attack by itself, but there is a possibility
-> > it could be used in conjunction with side-channels or other weaknesses in the
-> > privileged code to construct an attack.
-> > 
-> > This issue can be mitigated by flushing the L1 cache between privilege boundaries
-> > of concern. This patch flushes the L1 cache after user accesses.
-> > 
-> > This is part of the fix for CVE-2020-4788.
-> > 
-> > Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> > Signed-off-by: Daniel Axtens <dja@axtens.net>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >   Documentation/kernel-parameters.txt            |    4 +
-> >   arch/powerpc/include/asm/book3s/64/kup-radix.h |   23 ++++++
-> >   arch/powerpc/include/asm/feature-fixups.h      |    9 ++
-> >   arch/powerpc/include/asm/kup.h                 |    4 +
-> >   arch/powerpc/include/asm/security_features.h   |    3
-> >   arch/powerpc/include/asm/setup.h               |    1
-> >   arch/powerpc/kernel/exceptions-64s.S           |   86 +++++++------------------
-> >   arch/powerpc/kernel/ppc_ksyms.c                |    7 ++
-> >   arch/powerpc/kernel/setup_64.c                 |   80 +++++++++++++++++++++++
-> >   arch/powerpc/kernel/vmlinux.lds.S              |    7 ++
-> >   arch/powerpc/lib/feature-fixups.c              |   50 ++++++++++++++
-> >   arch/powerpc/platforms/powernv/setup.c         |    7 +-
-> >   arch/powerpc/platforms/pseries/setup.c         |    4 +
-> >   13 files changed, 224 insertions(+), 61 deletions(-)
-> >   create mode 100644 arch/powerpc/include/asm/book3s/64/kup-radix.h
-> > 
-> > --- a/Documentation/kernel-parameters.txt
-> > +++ b/Documentation/kernel-parameters.txt
-> > @@ -2197,6 +2197,7 @@ bytes respectively. Such letter suffixes
-> >   					       mds=off [X86]
-> >   					       tsx_async_abort=off [X86]
-> >   					       no_entry_flush [PPC]
-> > +					       no_uaccess_flush [PPC]
-> >   			auto (default)
-> >   				Mitigate all CPU vulnerabilities, but leave SMT
-> > @@ -2521,6 +2522,9 @@ bytes respectively. Such letter suffixes
-> >   	nospec_store_bypass_disable
-> >   			[HW] Disable all mitigations for the Speculative Store Bypass vulnerability
-> > +	no_uaccess_flush
-> > +			[PPC] Don't flush the L1-D cache after accessing user data.
-> > +
-> >   	noxsave		[BUGS=X86] Disables x86 extended register state save
-> >   			and restore using xsave. The kernel will fallback to
-> >   			enabling legacy floating-point and sse state.
-> > --- /dev/null
-> > +++ b/arch/powerpc/include/asm/book3s/64/kup-radix.h
-> > @@ -0,0 +1,23 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef _ASM_POWERPC_BOOK3S_64_KUP_RADIX_H
-> > +#define _ASM_POWERPC_BOOK3S_64_KUP_RADIX_H
-> > +#include <linux/jump_label.h>
-> > +
-> > +DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-> > +
-> > +/* Prototype for function defined in exceptions-64s.S */
-> > +void do_uaccess_flush(void);
-> > +
-> > +static __always_inline void allow_user_access(void __user *to, const void __user *from,
-> > +					      unsigned long size)
-> > +{
-> > +}
-> > +
-> > +static inline void prevent_user_access(void __user *to, const void __user *from,
-> 
-> Hi,
-> 
-> This will redefine prevent_user_access and lead to compile error...
-> 
-> 
-> In file included from arch/powerpc/kernel/ppc_ksyms.c:10:0:
-> ./arch/powerpc/include/asm/book3s/64/kup-radix.h:11:29: error: redefinition
-> of 'allow_user_access'
->  static __always_inline void allow_user_access(void __user *to, const void
-> __user *from,
->                              ^~~~~~~~~~~~~~~~~
-> In file included from ./arch/powerpc/include/asm/uaccess.h:12:0,
->                  from arch/powerpc/kernel/ppc_ksyms.c:8:
-> ./arch/powerpc/include/asm/kup.h:12:20: note: previous definition of
-> 'allow_user_access' was here
->  static inline void allow_user_access(void __user *to, const void __user
-> *from,
->                     ^~~~~~~~~~~~~~~~~
-> In file included from arch/powerpc/kernel/ppc_ksyms.c:10:0:
-> ./arch/powerpc/include/asm/book3s/64/kup-radix.h:16:20: error: redefinition
-> of 'prevent_user_access'
->  static inline void prevent_user_access(void __user *to, const void __user
-> *from,
->                     ^~~~~~~~~~~~~~~~~~~
-> In file included from ./arch/powerpc/include/asm/uaccess.h:12:0,
->                  from arch/powerpc/kernel/ppc_ksyms.c:8:
-> ./arch/powerpc/include/asm/kup.h:14:20: note: previous definition of
-> 'prevent_user_access' was here
->  static inline void prevent_user_access(void __user *to, const void __user
-> *from,
->                     ^~~~~~~~~~~~~~~~~~~
-> make[1]: *** [scripts/Makefile.build:277: arch/powerpc/kernel/ppc_ksyms.o]
-> Error 1
-> make[1]: *** Waiting for unfinished jobs....
+From: Ira Weiny <ira.weiny@intel.com>
 
-Should be fixed in the -rc releases I just made yesterday, right?
+The following pattern is used often:
 
-thanks,
+	kmap()
+	memcpy(), memmove(), or memset()
+	kunmap()
 
-greg k-h
+The problem with this is 2 fold: 1) This is best done with k[un]map_atomic().
+2) kmap() is expanding and evolving beyond the use of highmem.
+
+To the second point we have new functionality being placed behind kmap, such as
+PKS, which has nothing to do with highmem.  Also we have new kmap interfaces,
+kmap_local() which allow for a more fined grained mapping of pages and would be
+very appropriate for the above pattern.
+
+iov_iter.c already defined 3 functions which do most of what we want.
+
+	memcpy_from_page()
+	memcpy_to_page()
+	memzero_page()
+
+Lift these to the core and enhance with memcpy_page(), memmove_page(), and
+memset_page().  Then replace the patterns throughout the kernel as appropriate.
+
+Once the kmap_local() implementation is finalized the kmap_atomic() can be
+replaced with kmap_local().  For the moment use kmap_atomic().
+
+
+Ira Weiny (17):
+  mm/highmem: Lift memcpy_[to|from]_page and memset_page to core
+  drivers/firmware_loader: Use new memcpy_[to|from]_page()
+  drivers/gpu: Convert to mem*_page()
+  fs/afs: Convert to memzero_page()
+  fs/btrfs: Convert to memzero_page()
+  fs/hfs: Convert to mem*_page() interface
+  fs/cifs: Convert to memcpy_page()
+  fs/hfsplus: Convert to mem*_page()
+  fs/f2fs: Remove f2fs_copy_page()
+  fs/freevxfs: Use memcpy_to_page()
+  fs/reiserfs: Use memcpy_from_page()
+  fs/cramfs: Use memcpy_from_page()
+  drivers/target: Convert to mem*_page()
+  drivers/scsi: Use memcpy_to_page()
+  drivers/staging: Use memcpy_to/from_page()
+  lib: Use mempcy_to/from_page()
+  samples: Use memcpy_to/from_page()
+
+ drivers/base/firmware_loader/fallback.c   | 11 +++--
+ drivers/gpu/drm/gma500/gma_display.c      |  7 ++-
+ drivers/gpu/drm/gma500/mmu.c              |  4 +-
+ drivers/gpu/drm/i915/gem/i915_gem_shmem.c |  6 +--
+ drivers/gpu/drm/i915/gt/intel_gtt.c       |  9 +---
+ drivers/gpu/drm/i915/gt/shmem_utils.c     |  8 ++--
+ drivers/scsi/ipr.c                        | 11 +----
+ drivers/staging/rts5208/rtsx_transport.c  |  8 ++--
+ drivers/target/target_core_rd.c           |  6 +--
+ drivers/target/target_core_transport.c    | 10 ++---
+ fs/afs/write.c                            |  5 +--
+ fs/btrfs/inode.c                          | 21 +++------
+ fs/cifs/smb2ops.c                         | 10 ++---
+ fs/cramfs/inode.c                         |  3 +-
+ fs/f2fs/f2fs.h                            | 10 -----
+ fs/f2fs/file.c                            |  3 +-
+ fs/freevxfs/vxfs_immed.c                  |  6 +--
+ fs/hfs/bnode.c                            | 13 ++----
+ fs/hfsplus/bnode.c                        | 53 +++++++----------------
+ fs/reiserfs/journal.c                     |  9 ++--
+ include/linux/pagemap.h                   | 49 +++++++++++++++++++++
+ lib/iov_iter.c                            | 21 ---------
+ lib/test_bpf.c                            | 11 +----
+ lib/test_hmm.c                            | 10 +----
+ samples/vfio-mdev/mbochs.c                |  8 ++--
+ 25 files changed, 119 insertions(+), 193 deletions(-)
+
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
