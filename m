@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DB72C343D
+	by mail.lfdr.de (Postfix) with ESMTP id EDBC92C343E
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgKXWwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 17:52:41 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48978 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729045AbgKXWwk (ORCPT
+        id S1729113AbgKXWxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 17:53:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727770AbgKXWxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:52:40 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 442061C0B78; Tue, 24 Nov 2020 23:52:38 +0100 (CET)
-Date:   Tue, 24 Nov 2020 23:52:37 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 51/91] can: ti_hecc: Fix memleak in ti_hecc_probe
-Message-ID: <20201124225237.GA12731@amd>
-References: <20201123121809.285416732@linuxfoundation.org>
- <20201123121811.803791718@linuxfoundation.org>
+        Tue, 24 Nov 2020 17:53:47 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463F9C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:53:46 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id 62so519800pgg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:53:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ljL3CSoYdqarb5zTCYLNXdzPywfy0T6TGMxzOFscvWg=;
+        b=kn29kPKXk0w1xKEGzswS4Qbp/mxMrUyauVm+1Pk3+ZM6N2cfG0m8wHJGVeG2Q3qSm0
+         xqmH+2wZOe3kk0UT1JbayqwkC5pLhbvygAZWXike68g0YcPoWZHRkRvFMPfeSDsMBb2G
+         xFxnXHknNVhmi1Mb8fm6TXUJaRP0pFX8lN5PQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ljL3CSoYdqarb5zTCYLNXdzPywfy0T6TGMxzOFscvWg=;
+        b=I/85ZPoifonLzCzyTIm7q0hu7dZv7bstXqTDq9eO1yc664nsGQ8CaRGIk2CsRGbyjb
+         HtP14HL1AW9lQ3SX/Rq8AVFm26OsqlCr0UAQZiNqEQ0m2TEh9Rhavpl2r4MsB1SV52uA
+         vPNTKXOy70Pwc+76JowW5MCkfz9dSrcabLfnJpR8bJUFs2/z64sb8cYjxAYf1F8u61LI
+         +pP2EXBuW0ro42yqpA0a3WNhZwSTj5dXigyaF2SUt743fpDBXRTdvqXvOknzGJBEVIKB
+         qn3dSO0IdTUe388tjhgmcJC3VQ/RNa7mmYO54NfQ5c9IQMF7S2GyYhaFJl3LPQK1eHJn
+         lhDg==
+X-Gm-Message-State: AOAM5328IdymgzpDqJBgjVBRYjNZzuHpZ9QSybMn0cibvclEDtGA02V9
+        poFyAK5rWTccZseiex1U7O2w/zHNZIzjUgcU
+X-Google-Smtp-Source: ABdhPJyC/XDxu1EwO7/8id4vpauYSl9LTEPc/I4hsO9GT/OEDtEPp92l3ey2Mgy7T2gbunujS4AakQ==
+X-Received: by 2002:a63:1a02:: with SMTP id a2mr507553pga.359.1606258425853;
+        Tue, 24 Nov 2020 14:53:45 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c28sm85700pfj.108.2020.11.24.14.53.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 14:53:44 -0800 (PST)
+Date:   Tue, 24 Nov 2020 14:53:43 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: simplify pstore-blk
+Message-ID: <202011241452.603BC5B@keescook>
+References: <20201016132047.3068029-1-hch@lst.de>
+ <202010161553.F2BA6CF@keescook>
+ <20201123145331.GA778@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123121811.803791718@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201123145331.GA778@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 03:53:31PM +0100, Christoph Hellwig wrote:
+> On Fri, Oct 16, 2020 at 03:54:25PM -0700, Kees Cook wrote:
+> > On Fri, Oct 16, 2020 at 03:20:38PM +0200, Christoph Hellwig wrote:
+> > > this series cleans up and massively simplifies the pstore-blk code,
+> > > please take a look.
+> > 
+> > Cool! Thanks for doing this work. I have a few things I'd like to see
+> > done differently, and while I'm not a huge fan of the general reduction
+> > in utility, I can live with it as long as it doesn't make other things
+> > worse. :) I'll get this reviewed with specific feedback soon, but I'm
+> > about to be EOW. ;)
+> 
+> Any progress on this in the last five weeks?
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi! Sorry, no, I keep getting distracted by other stuff. I'll try to
+make time for it again next week (I'm soon AFK for Turkey Day).
 
-Hi!
-
-> From: Zhang Qilong <zhangqilong3@huawei.com>
->=20
-> [ Upstream commit 7968c7c79d3be8987feb8021f0c46e6866831408 ]
->=20
-> In the error handling, we should goto the probe_exit_candev
-> to free ndev to prevent memory leak.
-
-Well, that's true.
-
-Unfortunately, 4.19 version has way more exit paths than mainline, so
-the fix is not nearly complete. Mainline code is fragile but okay.
-
-> Fixes: dabf54dd1c63 ("can: ti_hecc: Convert TI HECC driver to DT  only dr=
-iver")
-
-I'm pretty sure problems were there before this commit.
-
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-								Pavel
-
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 81a3fdd5e010..4400a1a7dbd0 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -897,7 +897,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc");
- 	if (!res) {
- 		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc\n");
--		return -EINVAL;
-+		err =3D -EINVAL;
-+		goto probe_exit_candev;
- 	}
-=20
- 	priv->base =3D devm_ioremap_resource(&pdev->dev, res);
-@@ -911,7 +912,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc-ram");
- 	if (!res) {
- 		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc-ram\n");
--		return -EINVAL;
-+		err =3D -EINVAL;
-+		goto probe_exit_candev;
- 	}
-=20
- 	priv->hecc_ram =3D devm_ioremap_resource(&pdev->dev, res);
-@@ -925,7 +927,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "mbx");
- 	if (!res) {
- 		dev_err(&pdev->dev, "can't get IORESOURCE_MEM mbx\n");
--		return -EINVAL;
-+		err =3D -EINVAL;
-+		goto probe_exit_candev;
- 	}
-=20
- 	priv->mbx =3D devm_ioremap_resource(&pdev->dev, res);
-
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+9jrUACgkQMOfwapXb+vJHNACeNctpl4WEfuB6GoxNeoOUzoyd
-UM4AoI+9QA0ioS3HzbwnGuycX8Vclzpm
-=Pwpl
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+-- 
+Kees Cook
