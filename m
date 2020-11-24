@@ -2,144 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B021B2C2527
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3605E2C252A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733037AbgKXMBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:01:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45884 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbgKXMBb (ORCPT
+        id S1733222AbgKXMBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:01:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733212AbgKXMBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:01:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606219289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFWhLFtfwd2p3lUKJ8drhblrE5r73sVZPJsFgL8VlxM=;
-        b=GyXrr2rIOwIQRcKqO82sxNqQ+z1Yru7HLl5RZ4egs/1VUsexlc4dSfJ9SDhUqIfPl2l/O+
-        gRAGsQL0ubsauke5MJlZ8tMpHTvurqaI1h2eyhuoLDXqgdqfRL04mu0MsNDJ17j525wTmQ
-        FLVqmbMObMpB9VD2knosJgrKa5mc/3s=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-NplCKs1fOdSuZxRAtejcqQ-1; Tue, 24 Nov 2020 07:01:25 -0500
-X-MC-Unique: NplCKs1fOdSuZxRAtejcqQ-1
-Received: by mail-ed1-f72.google.com with SMTP id bu17so7783358edb.22
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:01:25 -0800 (PST)
+        Tue, 24 Nov 2020 07:01:47 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00CCC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:01:47 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id s10so21673900ioe.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:01:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OtTStFZ1K4vG9mf1OSlywjo0WPS9A+qPTfMdwg+0WeU=;
+        b=B3BwzQbaXFU3fhtDdHR+Fmv8MKnhR2mxgOp2ryIc5wuXL4rXiS85tpU6q5H3eR6qE+
+         6qzQoaoL8DgM+BofPoZTBWmfryCnozhhBT+EEK6ATwmvGtVQzE0xjmM4qt+tQ5k0iE0J
+         0hdGRkNaK/blbkiRCF/yNOj+MFI3+N1/U+yak=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jFWhLFtfwd2p3lUKJ8drhblrE5r73sVZPJsFgL8VlxM=;
-        b=VH8yO9/AwdeTTgRHGf8zXIR6qEaPr+a92MO9uSajgNlXv0BeWGNS9IhMjnCOpqBRpL
-         itGq71WvDvl0GHHfvy/FuU95bkDulAm2pn2lBrIKwe2YOEawsa5YZcudfGLvRf0vrbT8
-         gusN2huKVeFm+fF8oUifw+58dUjAEM2CGZWCsDAxqSw6yICgBoyCgt2SvWbVOWdZ5R6r
-         /A/TVCdqB+rum7PXel0ZpQR9cAh2KZNkj1j6RRLLnZfao1YkHJXKJl9ETpP72pilgKsg
-         N+vuvcTfI96VbbsSKEhE1RIXa0zbpIFXWLb0I35QIFiho5/ozrURwDrKLv2mX69y+S21
-         RxaQ==
-X-Gm-Message-State: AOAM532LQWI0kovIfw676UIq+DLOVuDPgMj+99MbzbK3wIAwZ4Vr9Mak
-        yCFI/udMWs1WMiC3TQ6KAOChUqQ/NCHN+wXsjHxTDg8xwMw2/EJemtdw7UYNPe6/9vut1bJ6LUy
-        Ngcu0C9ialNcasaxCMP4Su+F1
-X-Received: by 2002:a17:906:ce41:: with SMTP id se1mr4122797ejb.155.1606219284575;
-        Tue, 24 Nov 2020 04:01:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzPxYpjkY9DnFSI+JjDHn1CBMwNDM8Ugsx2KlZwnL8pg+jjxVjOWB3NL4jvgFnDJm7qNiaSUQ==
-X-Received: by 2002:a17:906:ce41:: with SMTP id se1mr4122772ejb.155.1606219284409;
-        Tue, 24 Nov 2020 04:01:24 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id c30sm6748650edd.68.2020.11.24.04.01.23
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OtTStFZ1K4vG9mf1OSlywjo0WPS9A+qPTfMdwg+0WeU=;
+        b=flHByJmgNyDdmImLLmlugv9jgG2gGsoPnvDiKaTBGqitRJMqNSYRmABTTla4g1gO28
+         8jo7HkdFCNL/t3kMCRJ7pJ9T+J0RoOLn4TjUgtrd/K8s3U4k16ZKi1tEAE5l23F+0YOX
+         TTSplffUcnVLuD8mhqKr3uXuMpx/5xljv7qwOFPZGOMrakLu7Q8QcHAKbc0gYdJMU1x3
+         VohIkJbRGhnw4jJNxkL7kSujZL2gR7V4f7iPKXwLhRrEGW7K/SQphEXzWIMN1e0w9KG1
+         sZjnzBamEuT+CLSofTlHPF0E6i5tJ42UaY18ElwyOXbooq53YDPl1E3lWFEHkfWv3X0l
+         fKNw==
+X-Gm-Message-State: AOAM532EFqVMqcOWY9MtrczrwuckjXtqZFcy/gVO3h6jp0XPGuGLSe5n
+        SM1HHbUbaDMOcWH3xu/PBXnnfCc47LfCoA==
+X-Google-Smtp-Source: ABdhPJzvDXFD81L4qj6F5SoyjzmZLjgSLc55iFM6MECoH0EtvugA7HYjWMIS3oXT/Wcgvj1pxl3IaA==
+X-Received: by 2002:a5e:df03:: with SMTP id f3mr3715351ioq.182.1606219306769;
+        Tue, 24 Nov 2020 04:01:46 -0800 (PST)
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com. [209.85.166.181])
+        by smtp.gmail.com with ESMTPSA id s134sm10239219ilc.64.2020.11.24.04.01.45
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 04:01:23 -0800 (PST)
-Subject: Re: [PATCH v3] brcmfmac: expose firmware config files through modinfo
-To:     matthias.bgg@kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Chung-Hsien Hsu <stanley.hsu@cypress.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Double Lo <double.lo@cypress.com>,
-        Frank Kao <frank.kao@cypress.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        netdev@vger.kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Matthias Brugger <mbrugger@suse.com>, digetx@gmail.com,
-        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Amar Shankar <amsr@cypress.com>, brcm80211-dev-list@cypress.com
-References: <20201124120018.31358-1-matthias.bgg@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <83cdf5c7-bc07-f5c9-1165-821aa3b11ba2@redhat.com>
-Date:   Tue, 24 Nov 2020 13:01:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 24 Nov 2020 04:01:46 -0800 (PST)
+Received: by mail-il1-f181.google.com with SMTP id y9so19042098ilb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 04:01:45 -0800 (PST)
+X-Received: by 2002:a05:6e02:12ab:: with SMTP id f11mr757703ilr.89.1606219305436;
+ Tue, 24 Nov 2020 04:01:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201124120018.31358-1-matthias.bgg@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200930160917.1234225-9-hch@lst.de> <20201118142546.170621-1-ribalda@chromium.org>
+ <20201124113512.GA21974@lst.de>
+In-Reply-To: <20201124113512.GA21974@lst.de>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Tue, 24 Nov 2020 13:01:33 +0100
+X-Gmail-Original-Message-ID: <CANiDSCtLrqWBOmC9X91V8P-aahQr2=L-GQNjHM6YauT69_QcEg@mail.gmail.com>
+Message-ID: <CANiDSCtLrqWBOmC9X91V8P-aahQr2=L-GQNjHM6YauT69_QcEg@mail.gmail.com>
+Subject: Re: [PATCH] WIP! media: uvcvideo: Use dma_alloc_noncontiguos API
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+HI Christoph
 
-On 11/24/20 1:00 PM, matthias.bgg@kernel.org wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
-> 
-> Apart from a firmware binary the chip needs a config file used by the
-> FW. Add the config files to modinfo so that they can be read by
-> userspace.
-> 
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> 
-> ---
-> 
-> Changes in v3:
-> Use only two more generic wildcards.
+On Tue, Nov 24, 2020 at 12:35 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Nov 18, 2020 at 03:25:46PM +0100, Ricardo Ribalda wrote:
+> > On architectures where the is no coherent caching such as ARM use the
+> > dma_alloc_noncontiguos API and handle manually the cache flushing using
+> > dma_sync_single().
+> >
+> > With this patch on the affected architectures we can measure up to 20x
+> > performance improvement in uvc_video_copy_data_work().
+>
+> This has a bunch of crazy long lines, but otherwise looks fine to me.
 
-Thanks, patch looks good to me:
+That is easy to solve :)
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+https://github.com/ribalda/linux/commit/17ab65a08302e845ad7ae7775ce54b387a5=
+8a887
 
-Regards,
+>
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >
+> > This patch depends on dma_alloc_contiguous API=EF=BF=BC1315351diffmboxs=
+eries
+>
+> How do we want to proceed?  Do the media maintainers want to pick up
+> that patch?  Should I pick up the media patch in the dma-mapping tree?
 
-Hans
+I was hoping that you could answer that question :).
 
-> 
-> Changes in v2:
-> In comparison to first version [0] we use wildcards to enumerate the
-> firmware configuration files. Wildcard support was added to dracut
-> recently [1].
-> [0] https://lore.kernel.org/linux-wireless/20200701153123.25602-1-matthias.bgg@kernel.org/
-> [1] https://github.com/dracutdevs/dracut/pull/860
-> 
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> index 99987a789e7e..6fe91c537adf 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> @@ -625,6 +625,10 @@ BRCMF_FW_DEF(4359, "brcmfmac4359-sdio");
->  BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
->  BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
->  
-> +/* firmware config files */
-> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-sdio.*.txt");
-> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-pcie.*.txt");
-> +
->  static const struct brcmf_firmware_mapping brcmf_sdio_fwnames[] = {
->  	BRCMF_FW_ENTRY(BRCM_CC_43143_CHIP_ID, 0xFFFFFFFF, 43143),
->  	BRCMF_FW_ENTRY(BRCM_CC_43241_CHIP_ID, 0x0000001F, 43241B0),
-> 
+Do you have other use-cases than linux-media in mind?
 
+I think Sergey wants to experiment also with vb2, to figure out how
+much it affects it.
+His change will be much more complicated than mine thought, there are
+more cornercases there.
+
+>
+> Can you respost a combined series to get started?
+
+Sure. Shall I also include the profiling patch?
+
+
+Best regards
+--=20
+Ricardo Ribalda
