@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B762C33A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0862C33A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 23:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388638AbgKXWAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 17:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
+        id S2388870AbgKXWEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 17:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731696AbgKXWAY (ORCPT
+        with ESMTP id S1731800AbgKXWEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:00:24 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994E0C0613D6;
-        Tue, 24 Nov 2020 14:00:23 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id i17so120724ljd.3;
-        Tue, 24 Nov 2020 14:00:23 -0800 (PST)
+        Tue, 24 Nov 2020 17:04:08 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936A9C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:04:07 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id 18so11383502pli.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 14:04:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=5gc70FHb6SJrsVk8HGw5LrPGq7PHyIY9jYoqow8jBUY=;
-        b=a6Q2YBj9PSDjMMqRcXySN3aiphYBDIwvK10RyG8mrKrDWhPCjDzoySYAzEgRnQE0A3
-         1+gzxAoj0yuKAajLdKpQWHvTDum3EHaR2FpE5FVnyKuzk4Wv1PdQj3JRCyfBHkCG4Vmp
-         JwwSejUMENuRnxu51u126B7Jj5dtyvmqV39NK/xtZi6m3iYZuH6aT2qYanacDeOKK3IK
-         MDBs1tRhwGKLL8eXMxfvFmSZnxIHqaE6U9cF9SNLEh5MpnCj69FFQO1TGjF3ZX3qnF+0
-         Hsajt8Czqk7sdTuibgk4Enr/IKfIsiYsafGk4awAn1uvMithQQjF/z81gfx83spkLpmS
-         jU7g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mprkldjb7CjnHozwqyjj+Jl9qcuDOi72QFxjdMqMlao=;
+        b=mMLjin9xvm7UjvLFOvfEmfJpDOC7c85RswKHc8n121a3BqSZ429co2QEMkq09h7PGD
+         /pnHcRwf9Yq7g07bYgg2AV8/2vndniTYuQlEM0X0PKI6Yfy3FvpLfdwPZSS7j/jxp4vd
+         LOeKHavDBHSg6VuZ+W191jH1sHCsHkaBVq9IA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=5gc70FHb6SJrsVk8HGw5LrPGq7PHyIY9jYoqow8jBUY=;
-        b=JGtxKFyNs2P+y6RR2AaMRUOKF/SVEzsLByS08MGv6ODRF5wkQAcv7N4m2oy/aCmQgf
-         IvdlmDlSWSAJH2F6DJCoCRdpWWeDO44n4bHCfqVZAwyqtptegAvCgkbCBOMfwezswPUr
-         62O4nF1nz04b+dlp2LezlZKMC+DVOdOGZ2m9T+PxqGpuhSWn7Y0FK7vlcQoNYH8ciV8p
-         p6FWlY1z4HboKssShE6NaqzlAnX6RF9kmXqvMN7trP/fsuuZKOwBEEcF3hgl2gMGWwTz
-         RoHXAZwTweCs3jVy9mUKIPxMBUFXDep0Dn8InyG5LMp8/hAnLB2hDnGQg4c3BG3UUdfp
-         ETfg==
-X-Gm-Message-State: AOAM53148kw53PpI6vB+O5boQjCv5XNkRmOXV4MZ7HyeHNtJM2O5FnM3
-        dUizaPIRajkUqN5x10ip1RUViKCeMFkwx+n8j7k=
-X-Google-Smtp-Source: ABdhPJzR+tqoeN5N5YEb70bHvxbccwtXNtT3TqOB8rCU+37OhcHP8rjvYgddqjlHp+AqpGuPhkCGXltlBAmY8CRw+n0=
-X-Received: by 2002:a2e:8183:: with SMTP id e3mr139157ljg.267.1606255221843;
- Tue, 24 Nov 2020 14:00:21 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mprkldjb7CjnHozwqyjj+Jl9qcuDOi72QFxjdMqMlao=;
+        b=LyJHlFX1V2AiQR1smeK4Khb4s/2myUSDqYRQU/JLEc4Gk5Bgyctlpkiwi4CaGJTAM3
+         cTOGTfxrKF88G7m+abGOc4Mua6y9Mg8N/ldizR6M4FIdPGUDkIHUGLd9y3dPCgBLxLEl
+         wroC9xAmoj6nlU1gQiGAmL+8p91kRmOQ3/hnrpSxblNaqzEeG40WjsX+PbMeRsLJjV2A
+         eLBPAB0Xrr4ykqBhFFcPvi6Ni3emRfcQeaqniIHOXcuTq37v9gSXp+8HqaBWy/Y1vJrb
+         wZXTyUSPPOMMqUI7uViiEnutTt5Z7mb57mFWyzJLUmWp/stqLqJxvSo/mF6Hl1MBSowO
+         UKow==
+X-Gm-Message-State: AOAM532Wa5iuTTvx7oNlUwBGTiYDlHBuC440pVVzxBTMM/MsMpJaiRpE
+        CAFubCSTfJEAWSM62xFMCjhbIg==
+X-Google-Smtp-Source: ABdhPJwWsNzP3VcgbsHBRHePZyiD5EvmfBK/FQikTLooHtKWBj3ykTgPDCTI0MdKcQzupXKJ75E4ZQ==
+X-Received: by 2002:a17:902:bc46:b029:d6:d98a:1a68 with SMTP id t6-20020a170902bc46b02900d6d98a1a68mr276371plz.63.1606255447027;
+        Tue, 24 Nov 2020 14:04:07 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ne22sm184262pjb.45.2020.11.24.14.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 14:04:06 -0800 (PST)
+Date:   Tue, 24 Nov 2020 14:04:05 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] scs: switch to vmapped shadow stacks
+Message-ID: <202011241404.9EA7F5F@keescook>
+References: <20201124195940.27061-1-samitolvanen@google.com>
+ <20201124195940.27061-2-samitolvanen@google.com>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 24 Nov 2020 16:00:10 -0600
-Message-ID: <CAH2r5mvPQWxW2feT+ELLpNR2fNCHqqchauuVoadiGpCwu2bAQg@mail.gmail.com>
-Subject: [GIT PULL] SMB3 Fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124195940.27061-2-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-09162bc32c880a791c6c0668ce0745cf7958f576:
+On Tue, Nov 24, 2020 at 11:59:39AM -0800, Sami Tolvanen wrote:
+> The kernel currently uses kmem_cache to allocate shadow call stacks,
+> which means an overflows may not be immediately detected and can
+> potentially result in another task's shadow stack to be overwritten.
+> 
+> This change switches SCS to use virtually mapped shadow stacks for
+> tasks, which increases shadow stack size to a full page and provides
+> more robust overflow detection, similarly to VMAP_STACK.
+> 
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.10-rc5-smb3-fixes
-
-for you to fetch changes up to 1254100030b3377e8302f9c75090ab191d73ee7c:
-
-  smb3: Handle error case during offload read path (2020-11-15 23:05:33 -0600)
-
-----------------------------------------------------------------
-Four smb3 fixes for stable: one fixes a memleak, the other
-three address a problem found with decryption offload that
-can cause a use after free.
-
-This PR was delayed due to changes to the cifs/smb3 testing
-infrastructure (multiple testing configuration changes and improvements).
-There are a few additional cifs/smb3 fixes in progress that can now be finished
-and tested that I will send with later PR.
-
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/437
-----------------------------------------------------------------
-Namjae Jeon (1):
-      cifs: fix a memleak with modefromsid
-
-Rohith Surabattula (3):
-      smb3: Call cifs reconnect from demultiplex thread
-      smb3: Avoid Mid pending list corruption
-      smb3: Handle error case during offload read path
-
- fs/cifs/cifsacl.c |  1 +
- fs/cifs/smb2ops.c | 88 +++++++++++++++++++++++++++++++++++++++++++++----------
- 2 files changed, 74 insertions(+), 15 deletions(-)
-
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Thanks,
-
-Steve
+Kees Cook
