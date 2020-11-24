@@ -2,191 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FB22C29B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B8B2C29BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389118AbgKXObe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:31:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:43796 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389017AbgKXObd (ORCPT
+        id S2389123AbgKXOeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:34:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388847AbgKXOeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:31:33 -0500
-Date:   Tue, 24 Nov 2020 15:31:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606228290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=slmi/gCy0F1kst4xh7w6cb31xf6xlyZEmUC7j5VLPjk=;
-        b=DVuJTz7Z8+ndQgPM5DJ6MeCLVzNY5Dbf3+KKnA2LhLSJOu8ryv55XtrGIqiDBOSkvr2E/J
-        Kza2LThPJ4K+MqL+TF/Y1lc7W6DCBx63c980mOsKcL2rq9kPXGvJZcAFrndSE9XMlEXmI8
-        VCu+2yqF3+9YDyBhuAfsSkVFkAEOybUqcYbyFKArEMQExlLT4y4JWAq22kd255Uy7jXB4Z
-        7zj8JZ/sYY8c23f9QKNupxWlRhH5Nw7LCOB/nqZoi27KigGwFsUpjQsvlYzYZJ5U7KWN8E
-        QW2F6HTHSAfLTjnECfYKh5i095xYVcZbgkGx9jPlh0wQiKVXzBj4L+Dx/apDZg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606228290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=slmi/gCy0F1kst4xh7w6cb31xf6xlyZEmUC7j5VLPjk=;
-        b=Y5rReRqc4pJOYzY6KVDBCGrvqkWdMbrKBsCIEkCNKZ73u4vQTbf4v7m4R49T+SDNFivVAH
-        AkD67HJrw628xuDg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.10-rc5-rt10
-Message-ID: <20201124143129.hexio5jg4za3u3si@linutronix.de>
+        Tue, 24 Nov 2020 09:34:16 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8944C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:34:15 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id p8so22550800wrx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:34:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YQpCas1RNfDZEcGYI04yEm6odPOACipDcEuTBaoIULk=;
+        b=UhV7hB9LJySyibtoHRqaxMir8P7FnhXAU96E4aHd3ofIMEZCRtLh+zeMX/RZH2wp/d
+         ASfb7zsWToxZhdhECdglvYGnSj/gHkK+a128+ByWw8EqQuvRvEHVa/6FGH0Q/PMdeY8p
+         cOVbuuXQq/r/33GWKbTOqEjjjzE0whLpLoOC4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=YQpCas1RNfDZEcGYI04yEm6odPOACipDcEuTBaoIULk=;
+        b=sohnyt4KBY9Xc/EgB0z20h9eUlAu1Im6jSZ+LqWfRAPoZtrdrI2cE1h4OVv+Y9J47r
+         hCr/Km5w6g1Z107WR4QhRIk3Qc07IbXHvSnKfs9O6giyW5nIxg+jNhvklh8rBkQ4BjO0
+         fqfD9FKSeME91jMn7ETxoKXgrZTxgmLKxBK9kvALE2oY/jLn0uz+vNgcJjtrvcZpEBKE
+         tdVpcLxQ6BN0t8uje8w1nIVB+nmUjxp9gTiJXiU7fmlIxjAUhJ9FOiK6Bgzshd/URdjg
+         8XDjOgbaA8hzVvTzDnQQIXHCZJjMUS5K0B9ZqSGgnesrLLbbFPt2xz4im7khmCZ9BGz0
+         J+Zw==
+X-Gm-Message-State: AOAM531SqCTuKy2JA6Z+i/dmNwf4xS/pD2H7AXMqiExWHWHQ1HWbPEJa
+        2jav4P1GyZS4/G6mRguuY/Emag==
+X-Google-Smtp-Source: ABdhPJz6iTrOgvt95IAsr45xzCdl3M2C2ca0X4EFZPlX+gugzV3LnRN6/oGeySsazf01z6hbldI7qw==
+X-Received: by 2002:a5d:50d1:: with SMTP id f17mr5715898wrt.264.1606228454425;
+        Tue, 24 Nov 2020 06:34:14 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m18sm27135410wru.37.2020.11.24.06.34.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 06:34:13 -0800 (PST)
+Date:   Tue, 24 Nov 2020 15:34:11 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Michel Lespinasse <walken@google.com>,
+        Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH 2/3] mm: Extract might_alloc() debug check
+Message-ID: <20201124143411.GN401619@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Michel Lespinasse <walken@google.com>,
+        Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
+ <20201120095445.1195585-3-daniel.vetter@ffwll.ch>
+ <20201120180719.GO244516@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201120180719.GO244516@ziepe.ca>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Fri, Nov 20, 2020 at 02:07:19PM -0400, Jason Gunthorpe wrote:
+> On Fri, Nov 20, 2020 at 10:54:43AM +0100, Daniel Vetter wrote:
+> > diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> > index d5ece7a9a403..f94405d43fd1 100644
+> > --- a/include/linux/sched/mm.h
+> > +++ b/include/linux/sched/mm.h
+> > @@ -180,6 +180,22 @@ static inline void fs_reclaim_acquire(gfp_t gfp_mask) { }
+> >  static inline void fs_reclaim_release(gfp_t gfp_mask) { }
+> >  #endif
+> >  
+> > +/**
+> > + * might_alloc - Marks possible allocation sites
+> > + * @gfp_mask: gfp_t flags that would be use to allocate
+> > + *
+> > + * Similar to might_sleep() and other annotations this can be used in functions
+> > + * that might allocate, but often dont. Compiles to nothing without
+> > + * CONFIG_LOCKDEP. Includes a conditional might_sleep() if @gfp allows blocking.
+> > + */
+> > +static inline void might_alloc(gfp_t gfp_mask)
+> > +{
+> > +	fs_reclaim_acquire(gfp_mask);
+> > +	fs_reclaim_release(gfp_mask);
+> > +
+> > +	might_sleep_if(gfpflags_allow_blocking(gfp_mask));
+> > +}
+> 
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> 
+> Oh, I just had a another thread with Matt about xarray, this would be
+> perfect to add before xas_nomem():
 
-I'm pleased to announce the v5.10-rc5-rt10 patch set. 
+Yeah I think there's plenty of places where this will be useful. Want to
+slap a sob onto this diff so I can include it for the next round, or will
+you or Matt send this out when my might_alloc has landed?
+-Daniel
 
-Changes since v5.10-rc5-rt9:
+> 
+> diff --git a/lib/idr.c b/lib/idr.c
+> index f4ab4f4aa3c7f5..722d9ddff53221 100644
+> --- a/lib/idr.c
+> +++ b/lib/idr.c
+> @@ -391,6 +391,8 @@ int ida_alloc_range(struct ida *ida, unsigned int min, unsigned int max,
+>  	if ((int)max < 0)
+>  		max = INT_MAX;
+>  
+> +	might_alloc(gfp);
+> +
+>  retry:
+>  	xas_lock_irqsave(&xas, flags);
+>  next:
+> diff --git a/lib/xarray.c b/lib/xarray.c
+> index 5fa51614802ada..dd260ee7dcae9a 100644
+> --- a/lib/xarray.c
+> +++ b/lib/xarray.c
+> @@ -1534,6 +1534,8 @@ void *__xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
+>  	XA_STATE(xas, xa, index);
+>  	void *curr;
+>  
+> +	might_alloc(gfp);
+> +
+>  	if (WARN_ON_ONCE(xa_is_advanced(entry)))
+>  		return XA_ERROR(-EINVAL);
+>  	if (xa_track_free(xa) && !entry)
+> @@ -1600,6 +1602,8 @@ void *__xa_cmpxchg(struct xarray *xa, unsigned long index,
+>  	XA_STATE(xas, xa, index);
+>  	void *curr;
+>  
+> +	might_alloc(gfp);
+> +
+>  	if (WARN_ON_ONCE(xa_is_advanced(entry)))
+>  		return XA_ERROR(-EINVAL);
+>  
+> @@ -1637,6 +1641,8 @@ int __xa_insert(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
+>  	XA_STATE(xas, xa, index);
+>  	void *curr;
+>  
+> +	might_alloc(gfp);
+> +
+>  	if (WARN_ON_ONCE(xa_is_advanced(entry)))
+>  		return -EINVAL;
+>  	if (!entry)
+> @@ -1806,6 +1812,8 @@ int __xa_alloc(struct xarray *xa, u32 *id, void *entry,
+>  {
+>  	XA_STATE(xas, xa, 0);
+>  
+> +	might_alloc(gfp);
+> +
+>  	if (WARN_ON_ONCE(xa_is_advanced(entry)))
+>  		return -EINVAL;
+>  	if (WARN_ON_ONCE(!xa_track_free(xa)))
 
-  - A patch from upstream addressing migrate disable related issue
-    reported by Oleksandr Natalenko. Patch by Peter Zijlstra.
-
-  - A patch from upstream addressing migrate disable related issue
-    reported by Qian Cai. Patch by Valentin Schneider.
-
-  - A workaround for a build failure when IMX clock drivers are built as
-    modules.
-
-Known issues
-     - It has been pointed out that due to changes to the printk code the
-       internal buffer representation changed. This is only an issue if tools
-       like `crash' are used to extract the printk buffer from a kernel memory
-       image.
-
-The delta patch against v5.10-rc5-rt9 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10-rc5-rt9-rt10.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.10-rc5-rt10
-
-The RT patch against v5.10-rc5 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10-rc5-rt10.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10-rc5-rt10.tar.xz
-
-Sebastian
-
-diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-index dd6a737d060b4..b8bf9460c91d7 100644
---- a/drivers/clk/imx/Makefile
-+++ b/drivers/clk/imx/Makefile
-@@ -26,9 +26,9 @@ obj-$(CONFIG_CLK_IMX8MN) += clk-imx8mn.o
- obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o
- obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
- 
--obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o
--clk-imx-scu-$(CONFIG_CLK_IMX8QXP) += clk-scu.o clk-imx8qxp.o
--clk-imx-lpcg-scu-$(CONFIG_CLK_IMX8QXP) += clk-lpcg-scu.o clk-imx8qxp-lpcg.o
-+obj-$(CONFIG_MXC_CLK_SCU)	+= clk-imx-scu.o
-+clk-imx-scu-y			:= clk-scu.o clk-lpcg-scu.o
-+obj-$(CONFIG_CLK_IMX8QXP)	+= clk-imx8qxp.o clk-imx8qxp-lpcg.o
- 
- obj-$(CONFIG_CLK_IMX1)   += clk-imx1.o
- obj-$(CONFIG_CLK_IMX25)  += clk-imx25.o
-diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
-index 1f0e44f921aee..336dce43da82d 100644
---- a/drivers/clk/imx/clk-lpcg-scu.c
-+++ b/drivers/clk/imx/clk-lpcg-scu.c
-@@ -115,3 +115,4 @@ struct clk_hw *imx_clk_lpcg_scu(const char *name, const char *parent_name,
- 
- 	return hw;
- }
-+EXPORT_SYMBOL_GPL(imx_clk_lpcg_scu);
-diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
-index b8b2072742a56..026a33606ae53 100644
---- a/drivers/clk/imx/clk-scu.c
-+++ b/drivers/clk/imx/clk-scu.c
-@@ -9,6 +9,7 @@
- #include <linux/clk-provider.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-+#include <linux/module.h>
- 
- #include "clk-scu.h"
- 
-@@ -132,6 +133,7 @@ int imx_clk_scu_init(void)
- {
- 	return imx_scu_get_handle(&ccm_ipc_handle);
- }
-+EXPORT_SYMBOL_GPL(imx_clk_scu_init);
- 
- /*
-  * clk_scu_recalc_rate - Get clock rate for a SCU clock
-@@ -387,3 +389,5 @@ struct clk_hw *__imx_clk_scu(const char *name, const char * const *parents,
- 
- 	return hw;
- }
-+EXPORT_SYMBOL_GPL(__imx_clk_scu);
-+MODULE_LICENSE("GPL");
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5ec2d786ae8ea..b7d43ac654dce 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1982,7 +1982,7 @@ static int migration_cpu_stop(void *data)
- 			 * and we should be valid again. Nothing to do.
- 			 */
- 			if (!pending) {
--				WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
-+				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
- 				goto out;
- 			}
- 
-@@ -1994,7 +1994,7 @@ static int migration_cpu_stop(void *data)
- 		else
- 			p->wake_cpu = dest_cpu;
- 
--	} else if (dest_cpu < 0) {
-+	} else if (dest_cpu < 0 || pending) {
- 		/*
- 		 * This happens when we get migrated between migrate_enable()'s
- 		 * preempt_enable() and scheduling the stopper task. At that
-@@ -2004,13 +2004,24 @@ static int migration_cpu_stop(void *data)
- 		 * more likely.
- 		 */
- 
-+		/*
-+		 * The task moved before the stopper got to run. We're holding
-+		 * ->pi_lock, so the allowed mask is stable - if it got
-+		 * somewhere allowed, we're done.
-+		 */
-+		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
-+			p->migration_pending = NULL;
-+			complete = true;
-+			goto out;
-+		}
-+
- 		/*
- 		 * When this was migrate_enable() but we no longer have an
- 		 * @pending, a concurrent SCA 'fixed' things and we should be
- 		 * valid again. Nothing to do.
- 		 */
- 		if (!pending) {
--			WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
-+			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
- 			goto out;
- 		}
- 
-diff --git a/localversion-rt b/localversion-rt
-index 22746d6390a42..d79dde624aaac 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt9
-+-rt10
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
