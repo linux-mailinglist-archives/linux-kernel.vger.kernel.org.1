@@ -2,120 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447B42C2380
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E8B2C2371
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732460AbgKXLCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:02:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19932 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732447AbgKXLCD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:02:03 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AOAW7IA179620;
-        Tue, 24 Nov 2020 06:01:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=lVsos4lno+eB5udRSRAS82PyJA/Ru4W3MJVpinWqJn4=;
- b=brYKCB/3idy/CnIJVkj/VwKMTjEg7xIRCEhbBsd6fSRwFF+PmUkFf8WZqhrvOKIWJNyW
- IrwVp3iXJsCH8MuJi2Up2k0VHQbRS1EeIiEqmYrA3igbXZVRIfWtvCuABFrEVf4Wj2eC
- +kf0g9bsF8Xa28+5gWu7dZkQaM9Q+CQmE4xH1GRVhEK5jvbQLmspaiU1mBO29D/FRmDT
- sD/j6kM8GI9l21Q/2xk6hXKc6hYGNe4f7he+Mnn/vHvu73BZVGaL/2rs4s0lPKhqnK0c
- 1982OiuU+xgZQsxAMic+NM5Yo62IIj5MysVd359k1Z07+7x0AKM3kB7cdYUGGIq6zxRg Jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 350rb0ysr4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 06:01:46 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AOB0aCR093282;
-        Tue, 24 Nov 2020 06:01:46 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 350rb0ysmu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 06:01:46 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AOAr6Iw017837;
-        Tue, 24 Nov 2020 11:01:41 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 350cvrs0tk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 11:01:41 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AOB0O4B852534
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 11:00:24 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E1D942061;
-        Tue, 24 Nov 2020 11:00:24 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7AACD4205C;
-        Tue, 24 Nov 2020 11:00:21 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.32.189])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 24 Nov 2020 11:00:21 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     mpe@ellerman.id.au, paulus@samba.org
-Cc:     ravi.bangoria@linux.ibm.com, mikey@neuling.org, npiggin@gmail.com,
-        leobras.c@gmail.com, pbonzini@redhat.com, christophe.leroy@c-s.fr,
-        jniethe5@gmail.com, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 4/4] KVM: PPC: Introduce new capability for 2nd DAWR
-Date:   Tue, 24 Nov 2020 16:29:53 +0530
-Message-Id: <20201124105953.39325-5-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201124105953.39325-1-ravi.bangoria@linux.ibm.com>
-References: <20201124105953.39325-1-ravi.bangoria@linux.ibm.com>
+        id S1732373AbgKXLAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:00:25 -0500
+Received: from mga02.intel.com ([134.134.136.20]:17580 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726628AbgKXLAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:00:24 -0500
+IronPort-SDR: 4fuxdfLH0cANVwLD8F0+W8vnP4OZL0xNUORJ5CuQfPSTNiwoSMUM1zfE5OOJvFoTLLfYerib5h
+ AjdMLwDKlzbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="158968018"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="158968018"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 03:00:24 -0800
+IronPort-SDR: 7Srde/6ru/0gKKhg+a+Vrj08hTovIQC5xtCaacSiSQcJ8H2T99Wr45V/NZ3sm1b9cR3ZOb3aLW
+ JxOhQOHourbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="432568841"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 24 Nov 2020 03:00:21 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 24 Nov 2020 13:00:20 +0200
+Date:   Tue, 24 Nov 2020 13:00:20 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Roger Quadros <rogerq@ti.com>
+Cc:     Peter Chen <peter.chen@nxp.com>,
+        "pawell@cadence.com" <pawell@cadence.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch
+ class"
+Message-ID: <20201124110020.GA1008337@kuha.fi.intel.com>
+References: <20201123115051.30047-1-rogerq@ti.com>
+ <20201124064242.GA32310@b29397-desktop>
+ <89067b6a-5b94-d7d2-b07a-f434c9e5e2bd@ti.com>
+ <DBBPR04MB797982E6E190F0C0E0980F258BFB0@DBBPR04MB7979.eurprd04.prod.outlook.com>
+ <bdb2b4cb-686e-9283-bc66-78808b92c349@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_04:2020-11-24,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- mlxscore=0 priorityscore=1501 adultscore=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 mlxlogscore=920
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240061
+In-Reply-To: <bdb2b4cb-686e-9283-bc66-78808b92c349@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce KVM_CAP_PPC_DAWR1 which can be used by Qemu to query whether
-kvm supports 2nd DAWR or not.
+On Tue, Nov 24, 2020 at 12:33:34PM +0200, Roger Quadros wrote:
+> +Heikki
+> 
+> Peter,
+> 
+> On 24/11/2020 11:57, Peter Chen wrote:
+> > 
+> > 
+> > 
+> > Best regards,
+> > Peter Chen
+> > 
+> > > -----Original Message-----
+> > > From: Roger Quadros <rogerq@ti.com>
+> > > Sent: 2020年11月24日 17:39
+> > > To: Peter Chen <peter.chen@nxp.com>
+> > > Cc: pawell@cadence.com; gregkh@linuxfoundation.org; balbi@kernel.org;
+> > > linux-usb@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > Subject: Re: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch class"
+> > > 
+> > > Peter,
+> > > 
+> > > On 24/11/2020 08:43, Peter Chen wrote:
+> > > > On 20-11-23 13:50:51, Roger Quadros wrote:
+> > > > > This reverts commit 50642709f6590fe40afa6d22c32f23f5b842aed5.
+> > > > > 
+> > > > > This commit breaks hardware based role switching on TI platforms.
+> > > > > cdns->role_sw is always going to be non-zero as it is a pointer
+> > > > > to the usb_role_switch instance. Some other means needs to be used if
+> > > > > hardware based role switching is not required by the platform.
+> > > > > 
+> > > > > Signed-off-by: Roger Quadros <rogerq@ti.com>
+> > > > > ---
+> > > > >    drivers/usb/cdns3/core.c | 4 ----
+> > > > >    1 file changed, 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+> > > > > index a0f73d4711ae..4c1445cf2ad0 100644
+> > > > > --- a/drivers/usb/cdns3/core.c
+> > > > > +++ b/drivers/usb/cdns3/core.c
+> > > > > @@ -280,10 +280,6 @@ int cdns3_hw_role_switch(struct cdns3 *cdns)
+> > > > >    	enum usb_role real_role, current_role;
+> > > > >    	int ret = 0;
+> > > > > 
+> > > > > -	/* Depends on role switch class */
+> > > > > -	if (cdns->role_sw)
+> > > > > -		return 0;
+> > > > > -
+> > > > >    	pm_runtime_get_sync(cdns->dev);
+> > > > > 
+> > > > >    	current_role = cdns->role;
+> > > > > --
+> > > > 
+> > > > Hi Roger,
+> > > > 
+> > > > I am sorry about that. Do you use role switch /sys entry, if you have
+> > > > used, I prefer using "usb-role-switch" property at dts to judge if SoC
+> > > > OTG signals or external signals for role switch. If you have not used
+> > > > it, I prefer only setting cdns->role_sw for role switch use cases.
+> > > > 
+> > > 
+> > > We use both hardware role switch and /sys entries for manually forcing a
+> > > certain role.
+> > > 
+> > > We do not set any "usb-role-switch" property at DTS.
+> > > 
+> > > Currently cdns->role_sw is being always set by driver irrespective of any DT
+> > > property, so this patch is clearly wrong and needs to be reverted.
+> > > 
+> > > What do you think?
+> > > 
+> > 
+> > Could you accept below fix?
+> > 
+> > diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+> > index 2e469139769f..fdd52e87a7b2 100644
+> > --- a/drivers/usb/cdns3/core.c
+> > +++ b/drivers/usb/cdns3/core.c
+> > @@ -280,8 +280,8 @@ int cdns3_hw_role_switch(struct cdns3 *cdns)
+> >          enum usb_role real_role, current_role;
+> >          int ret = 0;
+> > 
+> > -       /* Depends on role switch class */
+> > -       if (cdns->role_sw)
+> > +       /* quit if switch role through external signals */
+> > +       if (device_property_read_bool(cdns->dev, "usb-role-switch"))
+> >                  return 0;
+> > 
+> >          pm_runtime_get_sync(cdns->dev);
+> 
+> Although this will fix the issue I don't think this is making the driver to behave
+> as expected with usb-role-switch property.
+> 
+> Now, even if usb-role-switch property is not present the driver will still register
+> the role switch driver.
+> 
+> I think we need to register the role switch driver only if usb-role-switch property
+> is present. We would also need to set the default role if role-switch-default-mode is present.
+> 
+> How about the following? It still doesn't handle role-switch-default-mode property though.
+> 
+> 
+> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+> index 4c1445cf2ad0..986b56a9940c 100644
+> --- a/drivers/usb/cdns3/core.c
+> +++ b/drivers/usb/cdns3/core.c
+> @@ -532,11 +532,13 @@ static int cdns3_probe(struct platform_device *pdev)
+>  	if (device_property_read_bool(dev, "usb-role-switch"))
+>  		sw_desc.fwnode = dev->fwnode;
+> -	cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
+> -	if (IS_ERR(cdns->role_sw)) {
+> -		ret = PTR_ERR(cdns->role_sw);
+> -		dev_warn(dev, "Unable to register Role Switch\n");
+> -		goto err3;
+> +	if (device_property_read_bool(cdns->dev, "usb-role-switch")) {
+> +		cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
+> +		if (IS_ERR(cdns->role_sw)) {
+> +			ret = PTR_ERR(cdns->role_sw);
+> +			dev_warn(dev, "Unable to register Role Switch\n");
+> +			goto err3;
+> +		}
+>  	}
+>  	if (cdns->wakeup_irq) {
 
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- arch/powerpc/kvm/powerpc.c | 3 +++
- include/uapi/linux/kvm.h   | 1 +
- 2 files changed, 4 insertions(+)
+Makes sense to me. FWIW:
 
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 13999123b735..48763fe59fc5 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -679,6 +679,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 			!kvmppc_hv_ops->enable_svm(NULL);
- 		break;
- #endif
-+	case KVM_CAP_PPC_DAWR1:
-+		r = cpu_has_feature(CPU_FTR_DAWR1);
-+		break;
- 	default:
- 		r = 0;
- 		break;
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index f6d86033c4fa..0f32d6cbabc2 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1035,6 +1035,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_LAST_CPU 184
- #define KVM_CAP_SMALLER_MAXPHYADDR 185
- #define KVM_CAP_S390_DIAG318 186
-+#define KVM_CAP_PPC_DAWR1 187
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+thanks,
+
 -- 
-2.26.2
-
+heikki
