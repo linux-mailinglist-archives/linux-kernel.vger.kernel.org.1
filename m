@@ -2,130 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340A12C1E1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F152C1E22
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgKXGWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:22:49 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:10458 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729350AbgKXGWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:22:49 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CgDTc6cn9z9tySj;
-        Tue, 24 Nov 2020 07:22:44 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 7SMUS3ayqCaK; Tue, 24 Nov 2020 07:22:44 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgDTc4pfsz9tySZ;
-        Tue, 24 Nov 2020 07:22:44 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7B16D8B7A3;
-        Tue, 24 Nov 2020 07:22:45 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id AD3TmhH4TGpE; Tue, 24 Nov 2020 07:22:45 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 634098B79F;
-        Tue, 24 Nov 2020 07:22:44 +0100 (CET)
-Subject: Re: [PATCH v2 09/19] s390/vdso: Remove vdso_base pointer from
- mm->context
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
-References: <20201124002932.1220517-1-dima@arista.com>
- <20201124002932.1220517-10-dima@arista.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <7ec0d6b6-64b1-6095-c574-febca7478aa7@csgroup.eu>
-Date:   Tue, 24 Nov 2020 07:22:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729600AbgKXGXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:23:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728601AbgKXGXX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:23:23 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE98C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:23:22 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id v22so19622151edt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g7rAnBCNEOexDsLeiBc8AFxW7GC6geHmTufT6HDd6+M=;
+        b=EMjDhtqvKPL+LhyRWhJ7GpK/6OhFaDspFcOFurIEKoAsnfdSiQH/4lbZOBLFEszfST
+         t3NAqoNEGqJXwsuYU9Ruxskatx7rQP8LPXaz4BIL5tKybwTWrH6IuBAw+kGevXt0twOS
+         5ag1rMgG4v+X6GgUAbanNAQmI9M4AlShLlwH0w5iMaWgN7BuUbHdTLNU+xJ1GnkTuN9y
+         HK3V2qg/n1YQ3juQRlx8hSy9BizRhSo/tvn410sDBBlDgtQ1rNyAmLs6wGZ+GihZvfr+
+         nqu6jdpBjtHlI6TJw22fr9BLwTJ8py4qL7AQzF/73OG9qZ/yZ/yysC25Zehk2sl09QW7
+         OIRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g7rAnBCNEOexDsLeiBc8AFxW7GC6geHmTufT6HDd6+M=;
+        b=rWLrrh+SdzQAUtcbmPf9N6SGO+TO+tixGQFN9ei+qNhcsIEorZszbZt1pg8Huh4iVN
+         47besPGkvvsm4YVXfs2cVZEDO1L+NdO7xRfDhkQrO4ZF0ZhN36XKk6URmD0DDcuDvazk
+         Z4Wnq+u/xa2E4k/WmcIpGwx6YI0iiDZZZlHsoyTS4sMFlyF+++ai1Z8AMLnl/Jmgb0XV
+         jNwF5lXkKOcIpZcoyjPlDeZElmer6FM8+P4MHE9SkilF83J9GxxUh+IlBUY7EYXsDvV6
+         CKyoRDOiMaBm/BpBO6ZdpzrrHgyR3PGEz/5sYGrFypvXcxpcG3HeDxbDkeK+bbm4H54v
+         xvsA==
+X-Gm-Message-State: AOAM5337mP1KEcT7aitI45YkDjQEt48v70lO9703RzK3aYaOmTReorMZ
+        4ae3UnuuccDkw2tEi8cHzAgWQXGiaEO8DyNWpxn8ag==
+X-Google-Smtp-Source: ABdhPJxQNen1PLZZm50zG1JSrV64LLgD6Xd2GhfeWhmbOTk8Unmf5NUXmVXU3AS/+Ldq1so0yJQO0ALxggx5z3poDXo=
+X-Received: by 2002:aa7:d443:: with SMTP id q3mr2648810edr.262.1606199001305;
+ Mon, 23 Nov 2020 22:23:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201124002932.1220517-10-dima@arista.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <cover.1606192458.git.joe@perches.com> <69dc34ff63adfa60b3f203ed2d58143b5692af57.1606192458.git.joe@perches.com>
+In-Reply-To: <69dc34ff63adfa60b3f203ed2d58143b5692af57.1606192458.git.joe@perches.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Tue, 24 Nov 2020 07:23:10 +0100
+Message-ID: <CAMGffE=JTjJkjJC68v5OjDGVs536be8_CxDTHbOh4tHNf8LaPQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] scsi: pm8001: Convert pm8001_printk to pm8001_info
+To:     Joe Perches <joe@perches.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 24/11/2020 à 01:29, Dmitry Safonov a écrit :
-> Not used any more.
-
-Same, what about mremap(), why can it be removed ?
-
-> 
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: linux-s390@vger.kernel.org
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
+On Tue, Nov 24, 2020 at 5:36 AM Joe Perches <joe@perches.com> wrote:
+>
+> Use the more common logging style.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Thanks!
 > ---
->   arch/s390/include/asm/mmu.h |  1 -
->   arch/s390/kernel/vdso.c     | 10 ----------
->   2 files changed, 11 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
-> index e12ff0f29d1a..095d0596f700 100644
-> --- a/arch/s390/include/asm/mmu.h
-> +++ b/arch/s390/include/asm/mmu.h
-> @@ -15,7 +15,6 @@ typedef struct {
->   	unsigned long gmap_asce;
->   	unsigned long asce;
->   	unsigned long asce_limit;
-> -	unsigned long vdso_base;
->   	/* The mmu context belongs to a secure guest. */
->   	atomic_t is_protected;
->   	/*
-> diff --git a/arch/s390/kernel/vdso.c b/arch/s390/kernel/vdso.c
-> index 810b72f8985c..3f07711a07c1 100644
-> --- a/arch/s390/kernel/vdso.c
-> +++ b/arch/s390/kernel/vdso.c
-> @@ -58,18 +58,9 @@ static vm_fault_t vdso_fault(const struct vm_special_mapping *sm,
->   	return 0;
->   }
->   
-> -static int vdso_mremap(const struct vm_special_mapping *sm,
-> -		       struct vm_area_struct *vma)
-> -{
-> -	current->mm->context.vdso_base = vma->vm_start;
-> -
-> -	return 0;
-> -}
-> -
->   static const struct vm_special_mapping vdso_mapping = {
->   	.name = "[vdso]",
->   	.fault = vdso_fault,
-> -	.mremap = vdso_mremap,
->   };
->   
->   static int __init vdso_setup(char *str)
-> @@ -204,7 +195,6 @@ int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
->   		goto out_up;
->   	}
->   
-> -	current->mm->context.vdso_base = vdso_base;
->   	*sysinfo_ehdr = vdso_base;
->   	rc = 0;
->   
-> 
+>  drivers/scsi/pm8001/pm8001_init.c | 12 ++++++------
+>  drivers/scsi/pm8001/pm8001_sas.c  |  4 ++--
+>  drivers/scsi/pm8001/pm8001_sas.h  |  4 ++--
+>  3 files changed, 10 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
+> index 13530d7fb8a6..38907f45c845 100644
+> --- a/drivers/scsi/pm8001/pm8001_init.c
+> +++ b/drivers/scsi/pm8001/pm8001_init.c
+> @@ -1293,8 +1293,8 @@ static int pm8001_pci_suspend(struct pci_dev *pdev, pm_message_t state)
+>                         tasklet_kill(&pm8001_ha->tasklet[j]);
+>  #endif
+>         device_state = pci_choose_state(pdev, state);
+> -       pm8001_printk(pm8001_ha, "pdev=0x%p, slot=%s, entering operating state [D%d]\n",
+> -                     pdev, pm8001_ha->name, device_state);
+> +       pm8001_info(pm8001_ha, "pdev=0x%p, slot=%s, entering operating state [D%d]\n",
+> +                   pdev, pm8001_ha->name, device_state);
+>         pci_save_state(pdev);
+>         pci_disable_device(pdev);
+>         pci_set_power_state(pdev, device_state);
+> @@ -1318,16 +1318,16 @@ static int pm8001_pci_resume(struct pci_dev *pdev)
+>         pm8001_ha = sha->lldd_ha;
+>         device_state = pdev->current_state;
+>
+> -       pm8001_printk(pm8001_ha, "pdev=0x%p, slot=%s, resuming from previous operating state [D%d]\n",
+> -                     pdev, pm8001_ha->name, device_state);
+> +       pm8001_info(pm8001_ha, "pdev=0x%p, slot=%s, resuming from previous operating state [D%d]\n",
+> +                   pdev, pm8001_ha->name, device_state);
+>
+>         pci_set_power_state(pdev, PCI_D0);
+>         pci_enable_wake(pdev, PCI_D0, 0);
+>         pci_restore_state(pdev);
+>         rc = pci_enable_device(pdev);
+>         if (rc) {
+> -               pm8001_printk(pm8001_ha, "slot=%s Enable device failed during resume\n",
+> -                             pm8001_ha->name);
+> +               pm8001_info(pm8001_ha, "slot=%s Enable device failed during resume\n",
+> +                           pm8001_ha->name);
+>                 goto err_out_enable;
+>         }
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
+> index 4562b0a5062a..d1e9dba2ef19 100644
+> --- a/drivers/scsi/pm8001/pm8001_sas.c
+> +++ b/drivers/scsi/pm8001/pm8001_sas.c
+> @@ -1191,7 +1191,7 @@ int pm8001_abort_task(struct sas_task *task)
+>         phy_id = pm8001_dev->attached_phy;
+>         ret = pm8001_find_tag(task, &tag);
+>         if (ret == 0) {
+> -               pm8001_printk(pm8001_ha, "no tag for task:%p\n", task);
+> +               pm8001_info(pm8001_ha, "no tag for task:%p\n", task);
+>                 return TMF_RESP_FUNC_FAILED;
+>         }
+>         spin_lock_irqsave(&task->task_state_lock, flags);
+> @@ -1313,7 +1313,7 @@ int pm8001_abort_task(struct sas_task *task)
+>                 task->slow_task = NULL;
+>         spin_unlock_irqrestore(&task->task_state_lock, flags);
+>         if (rc != TMF_RESP_FUNC_COMPLETE)
+> -               pm8001_printk(pm8001_ha, "rc= %d\n", rc);
+> +               pm8001_info(pm8001_ha, "rc= %d\n", rc);
+>         return rc;
+>  }
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_sas.h b/drivers/scsi/pm8001/pm8001_sas.h
+> index 5266756a268b..f2c8cbad3853 100644
+> --- a/drivers/scsi/pm8001/pm8001_sas.h
+> +++ b/drivers/scsi/pm8001/pm8001_sas.h
+> @@ -70,14 +70,14 @@
+>  #define PM8001_DEVIO_LOGGING   0x100 /* development io message logging */
+>  #define PM8001_IOERR_LOGGING   0x200 /* development io err message logging */
+>
+> -#define pm8001_printk(HBA, fmt, ...)                                   \
+> +#define pm8001_info(HBA, fmt, ...)                                     \
+>         pr_info("%s:: %s  %d:" fmt,                                     \
+>                 (HBA)->name, __func__, __LINE__, ##__VA_ARGS__)
+>
+>  #define pm8001_dbg(HBA, level, fmt, ...)                               \
+>  do {                                                                   \
+>         if (unlikely((HBA)->logging_level & PM8001_##level##_LOGGING))  \
+> -               pm8001_printk(HBA, fmt, ##__VA_ARGS__);                 \
+> +               pm8001_info(HBA, fmt, ##__VA_ARGS__);                   \
+>  } while (0)
+>
+>  #define PM8001_USE_TASKLET
+> --
+> 2.26.0
+>
