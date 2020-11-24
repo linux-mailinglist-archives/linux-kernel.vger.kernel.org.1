@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939A12C1D29
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D24B2C1D2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727635AbgKXExn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:53:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        id S1727795AbgKXE5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:57:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbgKXExn (ORCPT
+        with ESMTP id S1726595AbgKXE5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:53:43 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A5BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:53:42 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id d17so26997751lfq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:53:42 -0800 (PST)
+        Mon, 23 Nov 2020 23:57:01 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A89AC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:57:00 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id v21so16396126pgi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:57:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=39gr2tFdgeuXdCwWbn22GRnP3K3VvibhIlGf9k17rGw=;
-        b=SwaVIz6ZuT6iXE5tagOrwT7N6KNmmSkcEsDFfOdmzj5yjFEuDkdXhaHbzf22ipogzf
-         zWRWhpolqbEMbnZmb7w8SY8YssaOfvRbra2P6MvkDrdQIcceCNS8eCPycSxvqCyBE/Wt
-         Aogcb79k9z8ri+jJ6nmyXvkP8hv8F792ZSl3g=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ncpwistDFnipYLn+/2FKxZUn+WKeJ5fneb6uwY/MPIQ=;
+        b=GK1RxQqLnVhVj8jOqOYCtmv4YBATiByta/qF4Czg7CYzV4aaAlcHWuibeXBFnCfnB3
+         q8y2DtxRlrZblPn2jL7oB7eABBb++nnhdu92oMJ41H3wFZr4K5hlbPXF8rTryakLDU0E
+         R4ZZdLXGJ/WXMH/3JjEtTTXzJnIw7+3YJA4SJt2CmzEgqwLz3u1X3Lp2J1oLh6wT6ONT
+         dQ0SVWXoxmq3qHedEZqSEIxmyJMo7aZTOspjvLxSNj/uB2kSUz2WD55Krs0qa14SOPeI
+         bYynzPImk2G6i2AWdgx+KiTsaHjn4634ZOCDhHd5jKQSaInBSOpdCOGl0Cplea3W8s3r
+         zZIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=39gr2tFdgeuXdCwWbn22GRnP3K3VvibhIlGf9k17rGw=;
-        b=Nm49fjrB1Jhcl4o+So53TCynAkSZIfDM333zhMeiylw4KSx1DJsiSjHqANGu9UZAmj
-         0km0HA2Q5uuHzNb57QOgyMcmQQ86PgKVNL7u6vvdFOmuLlZo8DtlPTDCSHjcZnpKXAHf
-         MXFw9Aoot8WF9YTu8B4XQH6Go1kpz2mZ4KFvy2kC5RmawubXah7EwbBR9dE3Dx8LKQgF
-         cpsoJkDFxaLFufjyiCJmocjFf62lNkKXIbK2prJ0EIL7x6sQJ2olK3pO6C2ePUd3i8Q0
-         amRzM7hqRRhgj0tzs2kl514ShJoDjXgj4uxwvESXV6YsuUsE6+mDvBQF37EU78tYcFAk
-         1zcw==
-X-Gm-Message-State: AOAM531dzcXBHRzbOlN2a/wCB+51ETvf4e8XVz8r/Gdh19qIKeK2SXiW
-        7vRVCUgixJ8UPBTybGZIOtn4qqgtIccwYA==
-X-Google-Smtp-Source: ABdhPJwgHRcsPxEUVvwQZtwc5/H1k1TdukQICpivK9JTfXOAcvZ+ujTtBJMn/6E3k9VFcXJNSk/8Uw==
-X-Received: by 2002:a19:f00b:: with SMTP id p11mr1082892lfc.166.1606193621098;
-        Mon, 23 Nov 2020 20:53:41 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id 26sm187386ljg.73.2020.11.23.20.53.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 20:53:38 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id u18so26994927lfd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:53:37 -0800 (PST)
-X-Received: by 2002:a19:ae06:: with SMTP id f6mr1057406lfc.133.1606193616810;
- Mon, 23 Nov 2020 20:53:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ncpwistDFnipYLn+/2FKxZUn+WKeJ5fneb6uwY/MPIQ=;
+        b=cetDQgKUDr94a0hprU1UH4gAJdH2cAsmPcBOGVerSUUI6Y5rQ7BqK53qHIXkvloW3m
+         dZ4aWTXwhBaNulBCWSMD9JnZD4IiFXnDgSo+LL/90UaxEphjm5iyeS/6Db0GnEunYsAu
+         VJP9uKuAvutmlgDpDxFlVPff/GbdrYKkFi0+/Og8JH0CHT4FBffvZZgTQFqTX5daA4va
+         3ImymGwiajWFUWCidFRvVL9622kboa3VrNUCgL36ph/sQCm0t58Gmg3XrBC6SM2TCEEx
+         ff3QoO5CaJW0u3YixuvZgUMSAZg02Nki7dN/LPI2pn0vXzmRRclixmqlWwqGVKJNRg1w
+         uP7Q==
+X-Gm-Message-State: AOAM5336FDeXxRfBqjyFr6ubBr7IZEq/mPzxSXpOmMVUmxvymhWTeaoL
+        0BwCv6+s6u3G6g2uGpWYebOuMA==
+X-Google-Smtp-Source: ABdhPJxCpsrFYmyMKV+7dRbT97Vja8EQkjD7PAm2TZk1FVxAs7v60jrow0dq2xqS6MwSng19pVxIqg==
+X-Received: by 2002:a17:90a:1bc5:: with SMTP id r5mr2827375pjr.157.1606193819575;
+        Mon, 23 Nov 2020 20:56:59 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id d68sm12501014pfd.32.2020.11.23.20.56.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 23 Nov 2020 20:56:58 -0800 (PST)
+Date:   Tue, 24 Nov 2020 10:26:53 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Quentin Perret <qperret@google.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V3 2/2] thermal: cpufreq_cooling: Reuse sched_cpu_util()
+ for SMP platforms
+Message-ID: <20201124045653.jpkcl75mxjihovhj@vireshk-i7>
+References: <cover.1605770951.git.viresh.kumar@linaro.org>
+ <1fa9994395764ba19cfe6240d8b3c1ce390e8f82.1605770951.git.viresh.kumar@linaro.org>
+ <aefcc0e2-6c13-625a-4367-fe665330c0db@arm.com>
 MIME-Version: 1.0
-References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
- <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
- <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 23 Nov 2020 20:53:20 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whYO5v09E8oHoYQDn7qqV0hBu713AjF+zxJ9DCr1+WOtQ@mail.gmail.com>
-Message-ID: <CAHk-=whYO5v09E8oHoYQDn7qqV0hBu713AjF+zxJ9DCr1+WOtQ@mail.gmail.com>
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aefcc0e2-6c13-625a-4367-fe665330c0db@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 8:07 PM Hugh Dickins <hughd@google.com> wrote:
->
-> Then on crashing a second time, realized there's a stronger reason against
-> that approach.  If my testing just occasionally crashes on that check,
-> when the page is reused for part of a compound page, wouldn't it be much
-> more common for the page to get reused as an order-0 page before reaching
-> wake_up_page()?  And on rare occasions, might that reused page already be
-> marked PageWriteback by its new user, and already be waited upon?  What
-> would that look like?
->
-> It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
-> in write_cache_pages() (though I have never seen that crash myself).
+On 23-11-20, 15:32, Lukasz Luba wrote:
+> LGTM. It has potential. We will see how far we can improve IPA with this
+> model.
+> 
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-So looking more at the patch, I started looking at this part:
+Thanks Lukasz for your review :)
 
-> +       writeback = TestClearPageWriteback(page);
-> +       /* No need for smp_mb__after_atomic() after TestClear */
-> +       waiters = PageWaiters(page);
-> +       if (waiters) {
-> +               /*
-> +                * Writeback doesn't hold a page reference on its own, relying
-> +                * on truncation to wait for the clearing of PG_writeback.
-> +                * We could safely wake_up_page_bit(page, PG_writeback) here,
-> +                * while holding i_pages lock: but that would be a poor choice
-> +                * if the page is on a long hash chain; so instead choose to
-> +                * get_page+put_page - though atomics will add some overhead.
-> +                */
-> +               get_page(page);
-> +       }
-
-and thinking more about this, my first reaction was "but that has the
-same race, just a smaller window".
-
-And then reading the comment more, I realize you relied on the i_pages
-lock, and that this odd ordering was to avoid the possible latency.
-
-But what about the non-mapping case? I'm not sure how that happens,
-but this does seem very fragile.
-
-I'm wondering why you didn't want to just do the get_page()
-unconditionally and early. Is avoiding the refcount really such a big
-optimization?
-
-            Linus
+-- 
+viresh
