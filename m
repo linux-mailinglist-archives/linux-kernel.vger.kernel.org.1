@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F9C2C2A86
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD752C2A8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389277AbgKXO5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:57:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        id S2389367AbgKXO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:57:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728352AbgKXO5A (ORCPT
+        with ESMTP id S1728352AbgKXO52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:57:00 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C596BC0613D6;
-        Tue, 24 Nov 2020 06:57:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=J0J3E7b9p8oawWwuEj7kpUYKxWq5ce28QVykTXRpMWw=; b=u05sgykDakZ+56Z95sUEBTtjp
-        o6F/rDI/sDO5xwz4tL2EqZb4Nczft02XO9EvJeef0tCFxtkfG3cgkaQo2KgjQLRGhubJNJpywtEIT
-        ZFBFz89nuHKzIvvs8qkcu/caoeaqh24A3ZiVIv2g8JUdxJXbvGt/vnQHJOWj2xkQ4jtCEKb/qbtjb
-        qQO41vt/Sa7p67hJ6Vvg4/cG25PG75Gw5FmDTMwNm/05G0mVRt7tosUcEVMZclmLUoITntUoYBOpV
-        L1GN41vjd/d18I+Y1Sy6FW/DIQl7queUHwgp2UBZzvBBJs6xzJEujOXaF3Vbo/WQEFixU5PWuaWOs
-        KIB7801zQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35532)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1khZkS-0007qo-Q0; Tue, 24 Nov 2020 14:56:52 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1khZkN-0007Qk-I3; Tue, 24 Nov 2020 14:56:47 +0000
-Date:   Tue, 24 Nov 2020 14:56:47 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Antonio Borneo <antonio.borneo@st.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Yonglong Liu <liuyonglong@huawei.com>, stable@vger.kernel.org,
-        linuxarm@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
+        Tue, 24 Nov 2020 09:57:28 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6B4C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:57:26 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id w15so852079oie.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:57:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sXzXgvLp4s+46JRUtzzV0/6Df/FZIX/XlFhg2++CJ7g=;
+        b=rvgO0ShYj3OMSlEin7VGkUn0IM+58ObeVh/TdWxzWTdOvl/seTdhKJCeGJb2aVxEOP
+         4mveIzPpcPBk+2ATDUftjhUVhK0DZlvF6jiSLo5Q9pbO10swOdOH8pxUsooaQpuIjfm6
+         w9PYIVZ70hsp6bcw23zxkMx2FRuv1cynkbn9co/6PvObOa4WVwO/ih8uP8svElI8NpWZ
+         IwVQ83vdU8w8SdOR/nbTfYQWOMPQf1BghyrUxELA1ObvUtzZalIkV+9d0D5tazrekRxY
+         u4eGRu3KesPfVPY+82kT9W/Jti1rsm4Xanmen3fBhkZdbvgSSFyD9E825RQroHApWEKy
+         vxEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sXzXgvLp4s+46JRUtzzV0/6Df/FZIX/XlFhg2++CJ7g=;
+        b=DZzVbM3fmKJTO1VOq97Y0gvOTJk5HcwnAC4VloMX/Gp5+3ACiVaGthR4WNtAklHJcD
+         TPR/tsWK94BliLY1X4uzbQ873ad/oVxukra56CxqhbTdNBJLe1b09bVqf0uA8pRpwDpT
+         Qk20NKXeZnP+ZFVNez+lwY21AVyiKq48IVdyEtTYqVARQXKolATtZWHHxEv9/B8uQ3YQ
+         /7KWiCCB4NZqAGf5GE8fmoSwiGJLAPi27FS4YY3HQk1ebWd74KgB6iP/mUkBIwt5nz5p
+         XtqH8184OYkT0aqUCzdS4SoAI8zhwtinfYLVVuNXCVf/9PgtXiatc8pd+SYClMyJEbL0
+         l1cg==
+X-Gm-Message-State: AOAM533UUqgBQL0yd8mYw2tflO9xvBHNEll4F8bYHWG5kXap456+mEwX
+        WmaE/J2EYHpKimz4w78udKGxJg==
+X-Google-Smtp-Source: ABdhPJxa3NAVx1Cn2t+G3dKNxlpEbRiazZDjFN23ymWT/MGwtBTKGNQYqdxTJmVghDox3My4/lknJQ==
+X-Received: by 2002:aca:c3c4:: with SMTP id t187mr2783806oif.148.1606229846311;
+        Tue, 24 Nov 2020 06:57:26 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k13sm2227901otl.72.2020.11.24.06.57.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 06:57:25 -0800 (PST)
+Date:   Tue, 24 Nov 2020 08:57:23 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, robh+dt@kernel.org, vkoul@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
-Message-ID: <20201124145647.GF1551@shell.armlinux.org.uk>
-References: <20201124143848.874894-1-antonio.borneo@st.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Document SDX55 Modem and
+ boards
+Message-ID: <20201124145723.GJ95182@builder.lan>
+References: <20201124140011.134751-1-manivannan.sadhasivam@linaro.org>
+ <20201124140011.134751-2-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20201124140011.134751-2-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 03:38:48PM +0100, Antonio Borneo wrote:
-> If the auto-negotiation fails to establish a gigabit link, the phy
-> can try to 'down-shift': it resets the bits in MII_CTRL1000 to
-> stop advertising 1Gbps and retries the negotiation at 100Mbps.
+On Tue 24 Nov 08:00 CST 2020, Manivannan Sadhasivam wrote:
+
+> From: Vinod Koul <vkoul@kernel.org>
 > 
-> From commit 5502b218e001 ("net: phy: use phy_resolve_aneg_linkmode
-> in genphy_read_status") the content of MII_CTRL1000 is not checked
-> anymore at the end of the negotiation, preventing the detection of
-> phy 'down-shift'.
-> In case of 'down-shift' phydev->advertising gets out-of-sync wrt
-> MII_CTRL1000 and still includes modes that the phy have already
-> dropped. The link partner could still advertise higher speeds,
-> while the link is established at one of the common lower speeds.
-> The logic 'and' in phy_resolve_aneg_linkmode() between
-> phydev->advertising and phydev->lp_advertising will report an
-> incorrect mode.
+> Document the SDX55 Modem binding and also the boards using it.
+
+It's not really the "SDX55 Modem", it's the "SDX55 platform". That way
+things become less confusing when we actually add the modem on SDX55
+later.
+
 > 
-> Issue detected with a local phy rtl8211f connected with a gigabit
-> capable router through a two-pairs network cable.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> After auto-negotiation, read back MII_CTRL1000 and mask-out from
-> phydev->advertising the modes that have been eventually discarded
-> due to the 'down-shift'.
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index ad25deba4d86..4362e8f0d495 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -39,6 +39,7 @@ description: |
+>          sc7180
+>          sdm630
+>          sdm660
+> +        sdx55
 
-Sorry, but no. While your solution will appear to work, in
-introduces unexpected changes to the user visible APIs.
+'x' > 'm', so this should go one line down.
 
->  	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) {
-> +		if (phydev->is_gigabit_capable) {
-> +			adv = phy_read(phydev, MII_CTRL1000);
-> +			if (adv < 0)
-> +				return adv;
-> +			/* update advertising in case of 'down-shift' */
-> +			mii_ctrl1000_mod_linkmode_adv_t(phydev->advertising,
-> +							adv);
+Regards,
+Bjorn
 
-If a down-shift occurs, this will cause the configured advertising
-mask to lose the 1G speed, which will be visible to userspace.
-Userspace doesn't expect the advertising mask to change beneath it.
-Since updates from userspace are done using a read-modify-write of
-the ksettings, this can have the undesired effect of removing 1G
-from the configured advertising mask.
-
-We've had other PHYs have this behaviour; the correct solution is for
-the PHY driver to implement reading the resolution from the PHY rather
-than relying on the generic implementation if it can down-shift.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>          sdm845
+>          sm8250
+>  
+> @@ -178,4 +179,9 @@ properties:
+>                - qcom,sm8250-mtp
+>            - const: qcom,sm8250
+>  
+> +      - items:
+> +          - enum:
+> +              - qcom,sdx55-mtp
+> +          - const: qcom,sdx55
+> +
+>  ...
+> -- 
+> 2.25.1
+> 
