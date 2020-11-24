@@ -2,190 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1621C2C2E07
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08FE2C2E0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403906AbgKXRJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:09:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403886AbgKXRJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:09:01 -0500
-Received: from localhost (unknown [122.167.149.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F11802086A;
-        Tue, 24 Nov 2020 17:08:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606237741;
-        bh=u+HaoKOGf0uodNlatAunWpK2FubkGGcwGGi3W0oPtbo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D70gOfIoieYODu4k8JkoD+JDglBmEY5oiqyrsHfgoOfBLxqv3//UCGe6nml8egHdh
-         XBJOVUO7dsW2Hf6JIkxNDoSmQ6Gty4wZXJJkMprtGhx6xBZpWfKyASGLWJnuI1RG4C
-         Qyb+3NcEAWu9ToO5edyqSagNLWxeIB7afy262ozo=
-Date:   Tue, 24 Nov 2020 22:38:56 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, ssantosh@kernel.org
-Cc:     nm@ti.com, robh+dt@kernel.org, dan.j.williams@intel.com,
-        t-kristo@ti.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org, vigneshr@ti.com,
-        grygorii.strashko@ti.com
-Subject: Re: [PATCH v2 00/19] dmaengine/soc: k3-udma: Add support for BCDMA
- and PKTDMA
-Message-ID: <20201124170856.GR8403@vkoul-mobl>
-References: <20201117105656.5236-1-peter.ujfalusi@ti.com>
+        id S2390754AbgKXRJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:09:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390747AbgKXRJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:09:26 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB03C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:09:26 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id g17so16610658qts.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:09:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QEMX7b5mpMblIzXSQJkvTIsCcjYRDagRkMNRaojL7BY=;
+        b=eahESHQt0XDJELoA7oRaEI8mo6EmgBLvYoqIJh5LQ2m5Dz6cSL7b7CDA0kHzirIEDe
+         U9IbLkF5OP0D+ziUgLh6yPin3bZYBQmvvSWzb95x1HJu7ryUQezlP7qspLvrzUb6Qje7
+         Bqc5WPrAHAvx/FuE2DUwFijKqDMG3epV5sdkQny4qK49Izeu4wSLj8pyDbrN+lm8eEcU
+         prqTtLWADSwcW/dRYVTIfCqQFwtSAPNlFVHKaE0Q9nbKCZ925c64uGEQHQa2rjh+5MnA
+         vEwjQkJGMiRb8Plo49gq3Asz7BtbaTuh5yib5O55Cbj82QsWojhzEdSD6WWdHMwFuKCk
+         6juA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QEMX7b5mpMblIzXSQJkvTIsCcjYRDagRkMNRaojL7BY=;
+        b=WVV04oCJYSK0iWLTwDhYP/NtE8sHW1KuB4c4MFe7f9akhczbg9vrO8RX1tc6I0+jWr
+         8YJtYUyRxyuRuM7cRPlgVDA5U1TIHBegm4WugBIl1ZBhvD7xdnbw3owTUF7XQcOpI7nP
+         xqlqKX9K9C432LVQbpkHw7FiS3m4VffEy3XRtEkL9IZgypvkCQ45R7tBpSkGxUc9G0XS
+         88pB4VrZqGj2b0P/BPns5doEQj6P8fIKjGr0o6cKSM9c2n+IxTXEANcuxAh2/SpVbuvi
+         6H68mKChpAlYLryMvtZWDtWkm7r/xKSiEXRXtMYOAe0nwwUMZwjF9l0riuMEVRPhaha0
+         YpYw==
+X-Gm-Message-State: AOAM531Oysz02dYiE1iY+cMRn3NJv86dV8wJlXGBn6zl+KlGH9Bo/oHc
+        kWHpAHrij1t0i+RWh6I6Q9U=
+X-Google-Smtp-Source: ABdhPJyLyMDq9FoicW+HGEFllUOPTNmMXsNk0bmPnU4WOqNE6nyGep6sqAdCPecY1ErTi1iKmpAsCw==
+X-Received: by 2002:ac8:43d3:: with SMTP id w19mr5255401qtn.18.1606237765454;
+        Tue, 24 Nov 2020 09:09:25 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id i12sm13117404qtr.56.2020.11.24.09.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 09:09:24 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 24 Nov 2020 12:09:02 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Hui Su <sh_def@163.com>, mingo@redhat.com, jack@suse.cz,
+        akpm@linux-foundation.org, neilb@suse.de,
+        trond.myklebust@hammerspace.com, liuzhiqiang26@huawei.com,
+        tytso@mit.edu, cai@lca.pw, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] trace: fix potenial dangerous pointer
+Message-ID: <X70+Ll+L2ksoeCMv@mtj.duckdns.org>
+References: <20201124165205.GA23937@rlk>
+ <20201124120523.34a59eed@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117105656.5236-1-peter.ujfalusi@ti.com>
+In-Reply-To: <20201124120523.34a59eed@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-11-20, 12:56, Peter Ujfalusi wrote:
-> Hi,
+On Tue, Nov 24, 2020 at 12:05:23PM -0500, Steven Rostedt wrote:
+> On Wed, 25 Nov 2020 00:52:05 +0800
+> Hui Su <sh_def@163.com> wrote:
 > 
-> The series have build dependency on ti_sci/soc series (v2):
-> https://lore.kernel.org/lkml/20201008115224.1591-1-peter.ujfalusi@ti.com/
+> > The bdi_dev_name() returns a char [64], and
+> > the __entry->name is a char [32].
+> > 
+> > It maybe dangerous to TP_printk("%s", __entry->name)
+> > after the strncpy().
 > 
-> Santosh kindly created immutable branch holdinf the series:
-> git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git for_5.11/drivers-soc 
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+> This should go through the tree that has the code that uses these
+> tracepoints.
 
-Santosh, Can I have a signed tag for this please?
+Acked-by: Tejun Heo <tj@kernel.org>
 
-> 
-> The unmapped event handling in INTA is already mainline.
-> 
-> Changes since v1:
-> - Both DT binding document has been updated to address all comments and
->   suggestions from Rob, all checks are passing on them
-> - included new patch to fix the normal channel start offset when ultra-high
->   capacity channels are available for the UDMA and updated the BCDMA/PKTDMA
->   patches along the same line
-> - Re-arranged the patches for Vinod so that the preparational patches and fixes
->   can be picked up separately (they still have dependency on Santosh's branch):
-> 
->   patch 1-5: Fixes and new features for existing devices using UDMA, but the
->              the BCDMA/PKTDMA support is building on top of these.
->              Build dependency on Santosh's branch
->   patch 6: Optional second stage router configuration callback support in core
->   patch 7-9: Per channel coherency support in core and use it in dmatest.
->   patch 10-: Initial AM64 BCDMA and PKTDMA support
-> 
-> The DMSS introduced within AM64 as a simplified Data movement engine is built
-> on similar grounds as the K3 NAVSS and UDMAP, but with significant architectural
-> changes.
-> 
-> - Rings are built into the DMAs
-> The DMAs no longer use the general purpose ringacc, all rings has been moved
-> inside of the DMAs. The new rings within the DMAs are simplified to be dual
-> directional compared to the uni-directional rings in ringacc.
-> There is no more of a concept of generic purpose rings, all rings are assigned
-> to specific channels or flows.
-> 
-> - Per channel coherency support
-> The DMAs use the 'ASEL' bits to select data and configuration fetch path. The
-> ASEL bits are placed at the unused parts of any address field used by the
-> DMAs (pointers to descriptors, addresses in descriptors, ring base addresses).
-> The ASEL is not part of the address (the DMAs can address 48bits).
-> Individual channels can be configured to be coherent (via ACP port) or non
-> coherent individually by configuring the ASEL to appropriate value.
-> 
-> - Two different DMAs (well, three actually)
-> PKTDMA
-> Similar to UDMAP channels configured in packet mode.
-> The flow configuration of the channels has changed significantly in a way that
-> each channel have at least one flow assigned at design time and each flow is
-> directly mapped to corresponding ring.
-> When multiple flows are set, the channel can only use the flows within it's
-> assigned range.
-> PKTDMA also introduced multiple tflows which did not existed in UDMAP.
-> 
-> BCDMA
-> It has two types of channels:
-> - split channels (tchan/rchan): Similar to UDMAP channels configured in TR mode.
-> - Block copy channels (bchan): Similar to EDMA or traditional DMA channels, they
->   can be used for mem2mem type of transfers or to service peripherals not
->   accessible via PSI-L by using external triggers for the TR.
-> BCDMA channels do not have support for multiple flows
-> 
-> With the introduction of the new DMAs (especially the BCDMA) we also need to
-> update the resource manager code to support the second range from sysfw for
-> UDMA channels.
-> 
-> The two outstanding change in the series in my view is
-> the handling of the DMAs sideband signal of ASEL to select path to provide
-> coherency or non coherency.
-> 
-> The smaller one is the device_router_config callback to allow the configuration
-> of the triggers when BCDMA is servicing a triggering peripheral to solve a
-> chicken-egg situation:
-> The router needs to know the event number to send which in turn depends on the
-> channel we got for servicing the peripheral.
-> 
-> Regards,
-> Peter
-> ---
-> Grygorii Strashko (1):
->   soc: ti: k3-ringacc: add AM64 DMA rings support.
-> 
-> Peter Ujfalusi (17):
->   dmaengine: ti: k3-udma: Correct normal channel offset when uchan_cnt
->     is not 0
->   dmaengine: ti: k3-udma: Wait for peer teardown completion if supported
->   dmaengine: ti: k3-udma: Add support for second resource range from
->     sysfw
->   dmaengine: ti: k3-udma-glue: Add function to get device pointer for
->     DMA API
->   dmaengine: ti: k3-udma-glue: Configure the dma_dev for rings
->   dmaengine: of-dma: Add support for optional router configuration
->     callback
->   dmaengine: Add support for per channel coherency handling
->   dmaengine: doc: client: Update for dmaengine_get_dma_device() usage
->   dmaengine: dmatest: Use dmaengine_get_dma_device
->   dt-bindings: dma: ti: Add document for K3 BCDMA
->   dt-bindings: dma: ti: Add document for K3 PKTDMA
->   dmaengine: ti: k3-psil: Extend psil_endpoint_config for K3 PKTDMA
->   dmaengine: ti: k3-psil: Add initial map for AM64
->   dmaengine: ti: Add support for k3 event routers
->   dmaengine: ti: k3-udma: Initial support for K3 BCDMA
->   dmaengine: ti: k3-udma: Add support for BCDMA channel TPL handling
->   dmaengine: ti: k3-udma: Initial support for K3 PKTDMA
-> 
-> Vignesh Raghavendra (1):
->   dmaengine: ti: k3-udma-glue: Add support for K3 PKTDMA
-> 
->  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  |  175 ++
->  .../devicetree/bindings/dma/ti/k3-pktdma.yaml |  183 ++
->  Documentation/driver-api/dmaengine/client.rst |    4 +-
->  drivers/dma/dmatest.c                         |   13 +-
->  drivers/dma/of-dma.c                          |   10 +
->  drivers/dma/ti/Makefile                       |    3 +-
->  drivers/dma/ti/k3-psil-am64.c                 |   75 +
->  drivers/dma/ti/k3-psil-priv.h                 |    1 +
->  drivers/dma/ti/k3-psil.c                      |    1 +
->  drivers/dma/ti/k3-udma-glue.c                 |  294 ++-
->  drivers/dma/ti/k3-udma-private.c              |   39 +
->  drivers/dma/ti/k3-udma.c                      | 1968 +++++++++++++++--
->  drivers/dma/ti/k3-udma.h                      |   27 +-
->  drivers/soc/ti/k3-ringacc.c                   |  325 ++-
->  include/linux/dma/k3-event-router.h           |   16 +
->  include/linux/dma/k3-psil.h                   |   16 +
->  include/linux/dma/k3-udma-glue.h              |   12 +
->  include/linux/dmaengine.h                     |   14 +
->  include/linux/soc/ti/k3-ringacc.h             |   17 +
->  19 files changed, 2973 insertions(+), 220 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
->  create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
->  create mode 100644 drivers/dma/ti/k3-psil-am64.c
->  create mode 100644 include/linux/dma/k3-event-router.h
-> 
-> -- 
-> Peter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Andrew, can you please route this one?
+
+Thanks.
 
 -- 
-~Vinod
+tejun
