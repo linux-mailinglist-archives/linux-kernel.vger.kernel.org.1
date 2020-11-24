@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAFF2C21CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365532C21C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731548AbgKXJiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:38:52 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:47338 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731477AbgKXJic (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:38:32 -0500
-Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1khUmK-0007Ty-Cq; Tue, 24 Nov 2020 09:38:28 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] scsi: pm8001: remove space in a debug message
-Date:   Tue, 24 Nov 2020 09:38:28 +0000
-Message-Id: <20201124093828.307709-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        id S1731531AbgKXJiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:38:46 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:43162 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731507AbgKXJin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:38:43 -0500
+Received: from zn.tnic (p200300ec2f0e360052021be21853ebf1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3600:5202:1be2:1853:ebf1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE42E1EC0529;
+        Tue, 24 Nov 2020 10:38:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606210721;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=mIxQeGPd5ay/UcAwPgNBuQ42UymVxYGQUjrVO6RwKWQ=;
+        b=E6jhhwVoW/NqalShXB4DbazzDfcgmyJayc5KYXVkeB8CMqqMLHVxBSIrgilA2M0GYiHEnx
+        WVDJpaWLhKXqdS8GYi2v8gYrAvW6YHGCa3G5texvNNLmu77ZCuHqarUkTAPB90Hiy1cQoI
+        rY4yXG5THYW6gbbgiFs/MdYplMmcCj8=
+Date:   Tue, 24 Nov 2020 10:38:37 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dave.hansen@linux-intel.com" <dave.hansen@linux-intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "Grimm, Jon" <Jon.Grimm@amd.com>,
+        "rientjes@google.com" <rientjes@google.com>
+Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201124093837.GD4009@zn.tnic>
+References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
+ <20201123170647.GE15044@zn.tnic>
+ <20201123175632.GA21539@char.us.oracle.com>
+ <20201123225631.GA16055@ashkalra_ubuntu_server>
+ <20201124090431.GC4009@zn.tnic>
+ <EF13C80C-42DC-4B51-8AF8-2C1D3859B490@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <EF13C80C-42DC-4B51-8AF8-2C1D3859B490@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Nov 24, 2020 at 09:25:06AM +0000, Kalra, Ashish wrote:
+> But what will be the criteria to figure out this percentage?
+>
+> As I mentioned earlier, this can be made as complicated as possible by
+> adding all kind of heuristics but without any predictable performance
+> gain.
+>
+> Or it can be kept simple by using a static percentage value.
 
-There are two words that need separating with a space in a 
-pm8001_dbg message. Fix it.
+Yes, static percentage number based on the guest memory. X% of the guest
+memory is used for SWIOTLB.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Since you use sev_active(), it means the size computation is done in the
+guest so that SWIOTLB size is per-guest. Yes?
 
-diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
-index 08d6cc9b50db..c8d4d87c5473 100644
---- a/drivers/scsi/pm8001/pm8001_hwi.c
-+++ b/drivers/scsi/pm8001/pm8001_hwi.c
-@@ -1031,7 +1031,7 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha)
- 	regVal = pm8001_cr32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK);
- 	pm8001_cw32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK, regVal3);
- 	pm8001_dbg(pm8001_ha, INIT,
--		   "GSM 0x700048 - Write Data Parity Check Enableis set to = 0x%x\n",
-+		   "GSM 0x700048 - Write Data Parity Check Enable is set to = 0x%x\n",
- 		   pm8001_cr32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK));
- 
- 	/* step 13: bring the IOP and AAP1 out of reset */
+If so, you can simply take, say, 5% of the guest memory's size and use
+that for SWIOTLB buffers. Or 6 or X or whatever.
+
+Makes sense?
+
 -- 
-2.29.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
