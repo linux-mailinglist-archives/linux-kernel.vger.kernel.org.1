@@ -2,198 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937E92C1EE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6E72C1EEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730079AbgKXHby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 02:31:54 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:54049 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729951AbgKXHbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 02:31:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606203112; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=r2KNcUaierxJmn5CHPmfvgAFLmybeWsl3U3JcN5rG88=; b=Cvrxzt02HvH3aNWRIkWhKfaAe+mgXwZ29HsBMSo5oNRzkn+ooaQz99bQ9nw7dkQeXYMZbKRh
- Im616bZMlhO/xGgpbtvvyQ0/BLHSejfVQjQ7SapnuvbOhRaEntNSOe3/EJ2+FD/D/vgUIxba
- l9llK0F7y8r+SB0Cy3kVn01xKb4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fbcb6e4c6fdb18c636a512d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 07:31:48
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 02C9AC43460; Tue, 24 Nov 2020 07:31:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24C64C433ED;
-        Tue, 24 Nov 2020 07:31:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 24C64C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dianders@chromium.org, rnayak@codeaurora.org, ilina@codeaurora.org,
-        lsrao@codeaurora.org, Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH v2] soc: qcom: rpmh: Remove serialization of TCS commands
-Date:   Tue, 24 Nov 2020 13:01:26 +0530
-Message-Id: <1606203086-31218-1-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1730083AbgKXHdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 02:33:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728934AbgKXHdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 02:33:53 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BB6C0613CF;
+        Mon, 23 Nov 2020 23:33:52 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id y74so9427268oia.11;
+        Mon, 23 Nov 2020 23:33:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KKRM9jTf5nSJd59wAkauAXklVp5cT6v6o379KchKHvM=;
+        b=jeip3wVPozHymCziewDWg3eWSaxaRVyXd+LKi1graaO9ONwLpqo5ecMwhEtGPw99V3
+         IzS9HuNtTFQ+q5p9UsRp7rRUesDybSBLjvsVTROA1c73C0+nLxlShnCKznBEWyoMc1iI
+         6plsKOQuQL9W/PGM7q7/4HpWIdEbYlHtyg65bnKgKUWClcXw4B9azE5ccn+ahfOJMqO3
+         pSMlMEmxHgJdp/OzoCfduaFszVd9t5mqPPDKVPKoIOl9OqdiV/VHtEdQcfLTa2MuDsMH
+         h9NWBsQ5BH5acg2gvhjoiEzxZ3C6TxRZMU0qU45UOdKwLzPek4zTOLJErrKS04EVB/H6
+         ymUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KKRM9jTf5nSJd59wAkauAXklVp5cT6v6o379KchKHvM=;
+        b=f7gFQ2I+mt2IRR3/F/EHQZ9f8kaFf9mzw9Zr7ANBaiIR5vmp4uT5XWnF4PPQAxezkT
+         YFqdE0kGjlojzhxd7tKjkq99V5rwhhVhWh9bCyd5Wyq+Wz+vPGNfEMMvQKDhgJxWMAqw
+         r420wc5terKYhrI0lLWwXWXbP/YTOXGhvL5UxpiNZgybFt2DY2fy1Ky6gybpZ3XW4XH2
+         IsyPkWcyLaLAiJZpGiGCaRT1UVE7JzLUWKuSG71IE01wRfEZX2uv9PWpEotG4oygWca5
+         q0snIMnSDxE/PL8Uqik6jb+ItxKEcIHe24Ls4cj79mNQM+xJudrEg2pUNH1uBYT5e3gw
+         Gg1g==
+X-Gm-Message-State: AOAM533XM7FrCzAkPk6vMBwDBovuUW740+kRuXXFWOkQf84UMmqv9yr2
+        6RPDeMzqMkc+qgMe/Hrg4cy5qOYX/zIU/fBFr/s=
+X-Google-Smtp-Source: ABdhPJxa1iV5tDEv3/kW7lm9TC/hZGVpHgpwrvtGKtIBec0//BiHzGgBa4Zwe1/6Ash6iLnYIrY7mkFnhBJRdlOR4j4=
+X-Received: by 2002:aca:c209:: with SMTP id s9mr1790607oif.55.1606203232139;
+ Mon, 23 Nov 2020 23:33:52 -0800 (PST)
+MIME-Version: 1.0
+References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
+ <20201118213712.GA22371@amd> <6068b1e3-a4c8-6c7d-d33d-f2238e905e43@gmail.com>
+ <20201119215721.GA5337@amd> <0700c32d-643b-fedb-06f0-21547b18205d@gmail.com>
+ <CAE+NS363BpytNGZzfZHLa7KLKL8gjGj14oNvRi3oaH9KT79REg@mail.gmail.com> <25fef924-634d-7f60-7e1d-0290d1701fab@gmail.com>
+In-Reply-To: <25fef924-634d-7f60-7e1d-0290d1701fab@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 24 Nov 2020 15:33:42 +0800
+Message-ID: <CAE+NS34vDejgf8Ydfer_rY25qaG-DQQ5H-9-Er+Shz0=UF-EzA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT definitions
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lina Iyer <ilina@codeaurora.org>
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=
+=9C=8824=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=884:52=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> On 11/23/20 4:00 AM, Gene Chen wrote:
+> > Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=
+=E6=9C=8820=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=886:26=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+> >>
+> >> On 11/19/20 10:57 PM, Pavel Machek wrote:
+> >>> On Thu 2020-11-19 22:03:14, Jacek Anaszewski wrote:
+> >>>> Hi Pavel, Gene,
+> >>>>
+> >>>> On 11/18/20 10:37 PM, Pavel Machek wrote:
+> >>>>> Hi!
+> >>>>>
+> >>>>>> From: Gene Chen <gene_chen@richtek.com>
+> >>>>>>
+> >>>>>> Add LED_COLOR_ID_MOONLIGHT definitions
+> >>>>>
+> >>>>> Why is moonlight a color? Camera flashes are usually white, no?
+> >>>>>
+> >>>>> At least it needs a comment...
+> >>>>
+> >>>> That's my fault, In fact I should have asked about adding
+> >>>> LED_FUNCTION_MOONLIGHT, it was evidently too late for me that evenin=
+g...
+> >>>
+> >>> Aha, that makes more sense.
+> >>>
+> >>> But please let's call it "torch" if we do that, as that is already
+> >>> used in kernel sources... and probably in the interface, too:
+> >>
+> >> I'd say that torch is something different that moonlight,
+> >> but we would need more input from Gene to learn more about
+> >> the nature of light emitted by ML LED on his device.
+> >>
+> >> Please note that torch is usually meant as the other mode of
+> >> flash LED (sometimes it is called "movie mode"), which is already
+> >> handled by brightness file of LED class flash device (i.e. its LED cla=
+ss
+> >> subset), and which also maps to v4l2-flash TORCH mode.
+> >>
+> >
+> > It's used to front camera fill light.
+> > More brightness than screen backlight, and more soft light than flash.
+> > I think LED_ID_COLOR_WHITE is okay.
+>
+> So why in v6 you assigned LED_COLOR_ID_AMBER to it?
+>
+> Regardless of that, now we're talking about LED function - you chose
+> LED_FUNCTION_INDICATOR for it, but inferring from your above description
+> - it certainly doesn't fit here.
+>
+> Also register names, containing part "ML" indicate that this LED's
+> intended function is moonlinght, which your description somehow
+> corroborates.
+>
+> Moonlight LEDs become ubiquitous nowadays so sooner or later we will
+> need to add this function anyway [0].
+>
+> [0]
+> https://landscapelightingoakville.com/what-is-moon-lighting-and-why-does-=
+it-remain-so-popular/
+>
 
-Requests sent to RPMH can be sent as fire-n-forget or response required,
-with the latter ensuring the command has been completed by the hardware
-accelerator. Commands in a request with tcs_cmd::wait set, would ensure
-that those select commands are sent as response required, even though
-the actual TCS request may be fire-n-forget.
+We use term "Moonlight" as reference says
+"When you are trying to imitate moonlight you need to use low voltage,
+softer lighting. You don=E2=80=99t want something that=E2=80=99s too bright=
+"
+which is focus on brightness instead of color.
 
-Also, commands with .wait flag were also guaranteed to be complete
-before the following command in the TCS is sent. This means that the
-next command of the same request blocked until the current request is
-completed. This could mean waiting for a voltage to settle or series of
-NOCs be configured before the next command is sent. But drivers using
-this feature have never cared about the serialization aspect. By not
-enforcing the serialization we can allow the hardware to run in parallel
-improving the performance.
+So we surpose Moonlight can be white or amber.
 
-Let's clarify the usage of this member in the tcs_cmd structure to mean
-only completion and not serialization. This should also improve the
-performance of bus requests where changes could happen in parallel.
-Also, CPU resume from deep idle may see benefits from certain wake
-requests.
+Should I add LED_FUNCTION_MOONLIGHT and set LED_COLOR_ID_WHITE?
 
-Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
----
-Changes in v2:
-- Add SoB of self
-- Fix typo in comment
-- Update comment as Doug suggested
-- Remove write to RSC_DRV_CMD_WAIT_FOR_CMPL in tcs_write() and tcs_invalidate()
----
- drivers/soc/qcom/rpmh-rsc.c | 25 ++++++++++---------------
- include/soc/qcom/tcs.h      |  3 ++-
- 2 files changed, 12 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index 37969dc..9a06099 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -231,10 +231,9 @@ static void tcs_invalidate(struct rsc_drv *drv, int type)
- 	if (bitmap_empty(tcs->slots, MAX_TCS_SLOTS))
- 		return;
- 
--	for (m = tcs->offset; m < tcs->offset + tcs->num_tcs; m++) {
-+	for (m = tcs->offset; m < tcs->offset + tcs->num_tcs; m++)
- 		write_tcs_reg_sync(drv, RSC_DRV_CMD_ENABLE, m, 0);
--		write_tcs_reg_sync(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, m, 0);
--	}
-+
- 	bitmap_zero(tcs->slots, MAX_TCS_SLOTS);
- }
- 
-@@ -423,8 +422,7 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
- 			cmd = &req->cmds[j];
- 			sts = read_tcs_cmd(drv, RSC_DRV_CMD_STATUS, i, j);
- 			if (!(sts & CMD_STATUS_ISSUED) ||
--			   ((req->wait_for_compl || cmd->wait) &&
--			   !(sts & CMD_STATUS_COMPL))) {
-+			   (cmd->wait && !(sts & CMD_STATUS_COMPL))) {
- 				pr_err("Incomplete request: %s: addr=%#x data=%#x",
- 				       drv->name, cmd->addr, cmd->data);
- 				err = -EIO;
-@@ -443,7 +441,6 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
- skip:
- 		/* Reclaim the TCS */
- 		write_tcs_reg(drv, RSC_DRV_CMD_ENABLE, i, 0);
--		write_tcs_reg(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, i, 0);
- 		writel_relaxed(BIT(i), drv->tcs_base + RSC_DRV_IRQ_CLEAR);
- 		spin_lock(&drv->lock);
- 		clear_bit(i, drv->tcs_in_use);
-@@ -476,23 +473,23 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
- static void __tcs_buffer_write(struct rsc_drv *drv, int tcs_id, int cmd_id,
- 			       const struct tcs_request *msg)
- {
--	u32 msgid, cmd_msgid;
-+	u32 msgid;
-+	u32 cmd_msgid = CMD_MSGID_LEN | CMD_MSGID_WRITE;
- 	u32 cmd_enable = 0;
--	u32 cmd_complete;
- 	struct tcs_cmd *cmd;
- 	int i, j;
- 
--	cmd_msgid = CMD_MSGID_LEN;
-+	/* Convert all commands to RR when the request has wait_for_compl set */
- 	cmd_msgid |= msg->wait_for_compl ? CMD_MSGID_RESP_REQ : 0;
--	cmd_msgid |= CMD_MSGID_WRITE;
--
--	cmd_complete = read_tcs_reg(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, tcs_id);
- 
- 	for (i = 0, j = cmd_id; i < msg->num_cmds; i++, j++) {
- 		cmd = &msg->cmds[i];
- 		cmd_enable |= BIT(j);
--		cmd_complete |= cmd->wait << j;
- 		msgid = cmd_msgid;
-+		/*
-+		 * Additionally, if the cmd->wait is set, make the command
-+		 * response reqd even if the overall request was fire-n-forget.
-+		 */
- 		msgid |= cmd->wait ? CMD_MSGID_RESP_REQ : 0;
- 
- 		write_tcs_cmd(drv, RSC_DRV_CMD_MSGID, tcs_id, j, msgid);
-@@ -501,7 +498,6 @@ static void __tcs_buffer_write(struct rsc_drv *drv, int tcs_id, int cmd_id,
- 		trace_rpmh_send_msg(drv, tcs_id, j, msgid, cmd);
- 	}
- 
--	write_tcs_reg(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, tcs_id, cmd_complete);
- 	cmd_enable |= read_tcs_reg(drv, RSC_DRV_CMD_ENABLE, tcs_id);
- 	write_tcs_reg(drv, RSC_DRV_CMD_ENABLE, tcs_id, cmd_enable);
- }
-@@ -652,7 +648,6 @@ int rpmh_rsc_send_data(struct rsc_drv *drv, const struct tcs_request *msg)
- 		 * cleaned from rpmh_flush() by invoking rpmh_rsc_invalidate()
- 		 */
- 		write_tcs_reg_sync(drv, RSC_DRV_CMD_ENABLE, tcs_id, 0);
--		write_tcs_reg_sync(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, tcs_id, 0);
- 		enable_tcs_irq(drv, tcs_id, true);
- 	}
- 	spin_unlock_irqrestore(&drv->lock, flags);
-diff --git a/include/soc/qcom/tcs.h b/include/soc/qcom/tcs.h
-index 7a2a055..eb5cb35 100644
---- a/include/soc/qcom/tcs.h
-+++ b/include/soc/qcom/tcs.h
-@@ -30,7 +30,7 @@ enum rpmh_state {
-  *
-  * @addr: the address of the resource slv_id:18:16 | offset:0:15
-  * @data: the resource state request
-- * @wait: wait for this request to be complete before sending the next
-+ * @wait: ensure that this command is complete before returning
-  */
- struct tcs_cmd {
- 	u32 addr;
-@@ -43,6 +43,7 @@ struct tcs_cmd {
-  *
-  * @state:          state for the request.
-  * @wait_for_compl: wait until we get a response from the h/w accelerator
-+ *                  (same as setting cmd->wait for all commands in the request)
-  * @num_cmds:       the number of @cmds in this request
-  * @cmds:           an array of tcs_cmds
-  */
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+> --
+> Best regards,
+> Jacek Anaszewski
