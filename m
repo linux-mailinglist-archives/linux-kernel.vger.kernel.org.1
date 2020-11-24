@@ -2,191 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282052C2CBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083B62C2CBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390381AbgKXQW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:22:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387694AbgKXQWZ (ORCPT
+        id S2390398AbgKXQW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:22:57 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42001 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390160AbgKXQW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:22:25 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B93C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:22:24 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id l36so19875843ota.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:22:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yAx0bZUynwPp6ieRFwBxeKJxMhDlw8QUeMjYHWg4GQU=;
-        b=s9F3mzNow1EmxBZlldMkYWyr9UjLbpyDCzrSEych7mauy1jw8KniN+3GJUb6ET7ULT
-         nZyyf4DwpxVQc5rwbcLYj/Ii5/Km/DPMcTb/njkImGsDDZPpOX1mSM2vpN9YeE/dbLBi
-         vnFZ9lP7TKYuKelnmOfxotdTGyjOtE4fPqGuCq8bmlMAi4lrZU/ozSjO5gREOd7AVQJ1
-         Tca3033U0LaLHKoOfynk3kmmpymUpBEupJIqNlQiuqG6cYI4atLY+w7h3lF2Y6KkTIjW
-         spF53e0p2UBEHHh/Yu9x4anaqC45GChVTdf4zJYbkm7U5OM1libzhMnxOoOnW89Bkuoy
-         qkFQ==
+        Tue, 24 Nov 2020 11:22:56 -0500
+Received: by mail-wr1-f65.google.com with SMTP id l1so22894871wrb.9;
+        Tue, 24 Nov 2020 08:22:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yAx0bZUynwPp6ieRFwBxeKJxMhDlw8QUeMjYHWg4GQU=;
-        b=aEIg+OJIhWSJR2EELGxN1HbYf/uP5lYToQQNlNvCNUwBav42U/E8eY5bYOhHW62Oyj
-         KVz7InCmUakx/r/ksK1m4hnXODg3SdfUjpYF9djx9D9jPEmWC8s7Z3VVZayAtj7hze9r
-         R1/hT/ZBmCLk6KZCF16WN/rucl7qddMWLJmRA1WZcfLUiBqDZjsaQ7dAtZYj5eyodRsy
-         LT2X9iJz2jEcjGWQpjL7lGn8fRLj5P3iRpwxeSOrRMPy1YJlUGbzJWc6HRVgSxEfxaVX
-         q7m7A4G5xHqUv/eGciID2Sf2VinnTyJjiFF35iLLFVKUayw+zUhN1L3RsSnB7HIKH9E8
-         QVTw==
-X-Gm-Message-State: AOAM532H6YoctG1Jv7QKCqzkFLs84z94EY7jsxRd0kQuQZgEKHfZqZR1
-        ly0H6T178SPDNxJoMW7EaK4GaA==
-X-Google-Smtp-Source: ABdhPJwFSa8qQqQZZjQ4qPOcjBm6mGcsgXICH2unaCUf/0gU4cAxQgWN3P+36aQCMEblPR5qqpBJ6Q==
-X-Received: by 2002:a9d:7b48:: with SMTP id f8mr4113940oto.135.1606234943223;
-        Tue, 24 Nov 2020 08:22:23 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c18sm9795000oob.45.2020.11.24.08.22.22
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=beptYMt7+eafD2ZEQSEovk9FzgjHfPs3g/lAfS8j9uM=;
+        b=t/FNO/fvyKb5Pp9X5qeI/wK96CCsRhoEuWSjU5FNQGJeDNh/RIqckAR8R/30U8d/9i
+         yY9l2zZhHfFVoqoms9HhW9BuxDgUeIBpvBVKsZ6nSrhiPoFpfeRearN7xTY9d8dIOjnU
+         oGRXBBGh78QxEwAxziJFBHEiMTW4sbeOkwp9Pg6ADyu/bmifX1pWOCBAgaXGHWYP+kH5
+         DAStr7Bac8O09h6tTVsL7C2Iyof8tjnrPp/fEqO4fW1L4fXdxsOyByzjeiuFR6PEHyKa
+         GnFsnmeKpDwX4svHNbT76UIieBOvKOBNVr9uQMP9UH+nA4vWBrlV2gutUYX0sSq8JGgW
+         cp8Q==
+X-Gm-Message-State: AOAM533qVYbmYaxRPFvrGkzPxjg60SYW2T6G7pPLtwMc3nzuLTubemDO
+        FgHYm5BgyOzaCwBBqG6ilDk=
+X-Google-Smtp-Source: ABdhPJzNWJISAR6jpBemgnrfO4WfQurOZMlhDm6aMhArKWRtwu3b2mmXuZb+ypGKjS10uTSkrzVDfA==
+X-Received: by 2002:adf:f441:: with SMTP id f1mr6141880wrp.225.1606234975722;
+        Tue, 24 Nov 2020 08:22:55 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id x9sm20773316wrt.70.2020.11.24.08.22.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 08:22:22 -0800 (PST)
-Date:   Tue, 24 Nov 2020 10:22:20 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     ohad@wizery.com, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, evgreen@chromium.org
-Subject: Re: [PATCH 2/2] remoteproc: qcom_q6v5_mss: map/unmap MBA region
- before/after use
-Message-ID: <20201124162220.GN9177@builder.lan>
-References: <1604473422-29639-1-git-send-email-sibis@codeaurora.org>
- <1604473422-29639-2-git-send-email-sibis@codeaurora.org>
+        Tue, 24 Nov 2020 08:22:55 -0800 (PST)
+Date:   Tue, 24 Nov 2020 16:22:53 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: Re: [PATCH] hv_netvsc: Validate number of allocated sub-channels
+Message-ID: <20201124162253.3qpfgo7rtvut4nqn@liuwe-devbox-debian-v2>
+References: <20201118153310.112404-1-parri.andrea@gmail.com>
+ <20201118173715.60b5a8f2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604473422-29639-2-git-send-email-sibis@codeaurora.org>
+In-Reply-To: <20201118173715.60b5a8f2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 04 Nov 01:03 CST 2020, Sibi Sankar wrote:
-
-> The application processor accessing the MBA region after assigning it to
-> the remote Q6 would lead to an XPU violation. Fix this by un-mapping the
-> MBA region post firmware copy and MBA text log dumps.
+On Wed, Nov 18, 2020 at 05:37:15PM -0800, Jakub Kicinski wrote:
+> On Wed, 18 Nov 2020 16:33:10 +0100 Andrea Parri (Microsoft) wrote:
+> > Lack of validation could lead to out-of-bound reads and information
+> > leaks (cf. usage of nvdev->chan_table[]).  Check that the number of
+> > allocated sub-channels fits into the expected range.
+> > 
+> > Suggested-by: Saruhan Karademir <skarade@microsoft.com>
+> > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: netdev@vger.kernel.org
 > 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> Acked-by: Jakub Kicinski <kuba@kernel.org>
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-I renamed "ptr" to "mba_region" throughout the patch and applied the
-pair.
-
-Thanks,
-Bjorn
-
-> ---
->  drivers/remoteproc/qcom_q6v5_mss.c | 37 ++++++++++++++++++++++---------------
->  1 file changed, 22 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 2c866b6da23c..1b4a34325788 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -189,7 +189,6 @@ struct q6v5 {
->  	size_t total_dump_size;
->  
->  	phys_addr_t mba_phys;
-> -	void *mba_region;
->  	size_t mba_size;
->  	size_t dp_size;
->  
-> @@ -408,7 +407,7 @@ static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
->  				   current_perm, next, perms);
->  }
->  
-> -static void q6v5_debug_policy_load(struct q6v5 *qproc)
-> +static void q6v5_debug_policy_load(struct q6v5 *qproc, void *ptr)
->  {
->  	const struct firmware *dp_fw;
->  
-> @@ -416,7 +415,7 @@ static void q6v5_debug_policy_load(struct q6v5 *qproc)
->  		return;
->  
->  	if (SZ_1M + dp_fw->size <= qproc->mba_size) {
-> -		memcpy(qproc->mba_region + SZ_1M, dp_fw->data, dp_fw->size);
-> +		memcpy(ptr + SZ_1M, dp_fw->data, dp_fw->size);
->  		qproc->dp_size = dp_fw->size;
->  	}
->  
-> @@ -426,6 +425,7 @@ static void q6v5_debug_policy_load(struct q6v5 *qproc)
->  static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
->  {
->  	struct q6v5 *qproc = rproc->priv;
-> +	void *ptr;
->  
->  	/* MBA is restricted to a maximum size of 1M */
->  	if (fw->size > qproc->mba_size || fw->size > SZ_1M) {
-> @@ -433,8 +433,16 @@ static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
->  		return -EINVAL;
->  	}
->  
-> -	memcpy(qproc->mba_region, fw->data, fw->size);
-> -	q6v5_debug_policy_load(qproc);
-> +	ptr = memremap(qproc->mba_phys, qproc->mba_size, MEMREMAP_WC);
-> +	if (!ptr) {
-> +		dev_err(qproc->dev, "unable to map memory region: %pa+%zx\n",
-> +			&qproc->mba_phys, qproc->mba_size);
-> +		return -EBUSY;
-> +	}
-> +
-> +	memcpy(ptr, fw->data, fw->size);
-> +	q6v5_debug_policy_load(qproc, ptr);
-> +	memunmap(ptr);
->  
->  	return 0;
->  }
-> @@ -541,6 +549,7 @@ static void q6v5_dump_mba_logs(struct q6v5 *qproc)
->  {
->  	struct rproc *rproc = qproc->rproc;
->  	void *data;
-> +	void *ptr;
->  
->  	if (!qproc->has_mba_logs)
->  		return;
-> @@ -549,12 +558,16 @@ static void q6v5_dump_mba_logs(struct q6v5 *qproc)
->  				    qproc->mba_size))
->  		return;
->  
-> -	data = vmalloc(MBA_LOG_SIZE);
-> -	if (!data)
-> +	ptr = memremap(qproc->mba_phys, qproc->mba_size, MEMREMAP_WC);
-> +	if (!ptr)
->  		return;
->  
-> -	memcpy(data, qproc->mba_region, MBA_LOG_SIZE);
-> -	dev_coredumpv(&rproc->dev, data, MBA_LOG_SIZE, GFP_KERNEL);
-> +	data = vmalloc(MBA_LOG_SIZE);
-> +	if (data) {
-> +		memcpy(data, ptr, MBA_LOG_SIZE);
-> +		dev_coredumpv(&rproc->dev, data, MBA_LOG_SIZE, GFP_KERNEL);
-> +	}
-> +	memunmap(ptr);
->  }
->  
->  static int q6v5proc_reset(struct q6v5 *qproc)
-> @@ -1605,12 +1618,6 @@ static int q6v5_alloc_memory_region(struct q6v5 *qproc)
->  
->  	qproc->mba_phys = r.start;
->  	qproc->mba_size = resource_size(&r);
-> -	qproc->mba_region = devm_ioremap_wc(qproc->dev, qproc->mba_phys, qproc->mba_size);
-> -	if (!qproc->mba_region) {
-> -		dev_err(qproc->dev, "unable to map memory region: %pa+%zx\n",
-> -			&r.start, qproc->mba_size);
-> -		return -EBUSY;
-> -	}
->  
->  	if (!child) {
->  		node = of_parse_phandle(qproc->dev->of_node,
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Applied to hyperv-next.
