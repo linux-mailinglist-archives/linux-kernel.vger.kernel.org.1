@@ -2,170 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F7B2C208D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230662C2098
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730914AbgKXIz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:55:29 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:51779 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726942AbgKXIz3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:55:29 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 26CD623E45;
-        Tue, 24 Nov 2020 09:55:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1606208125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FRZNI4FMUN78ycsbj+Uzk/DfzosgbTQJNV4nQrA2EmI=;
-        b=c3rq0S/fBjl8uc8B23WpQzND2UelJ/PgOCGCHshGRxle/gyKOcWGjtADpJBa/LTmDyUrD6
-        aKXUVCfvsm5P57/Q6auOzX0esO1fkGaeP3EPvcV1P4n/RAxTQ7a1lKpX5J6brTh0uFcu8a
-        8f4DCsk4yOtGG8WaJws78D+PI0wozps=
+        id S1730925AbgKXI5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:57:32 -0500
+Received: from mail-eopbgr70054.outbound.protection.outlook.com ([40.107.7.54]:34693
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730896AbgKXI5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:57:32 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d0EhzPZn88oMm095XugfknbU8UanHJJ5d+YsrF0IcoHL2cSEKvUgirpXesivGVNNwNKyxPkeAX4vkak+hRMqcf9Iz2OGByZY4TqS5mfnDB9OTUn98GEoIC8MlmLmOxpik3b78U3lIsvI/5ijd3MW7RY2Z44EVgCAbSdE0u1uWvKIyEMOXchrXugs3q16f4B2PONocpHljEJY/Y8TAoi1qtyWdN3hn8VoBbDNKftWh02Pouc5S98Vxs7MBMl9/kdHxuqNccXz91A7o06zhIJPd7MjKuRmfJa/ULpPu9EEan/o010rViIutydFWkDXvuOJha0MoEKAv9HvT/0ZPtIHFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SvkoR5P0aqxuUfw+6JXXE7dCbxFeljIyoLytXnrA3+w=;
+ b=dti9DAbUV6kD+VOzZ/fCqR8fe8vHMCmqbimwRepWC2F3Bp9PYlJNtMU6Cbl4qB2Q9J62kVCZkoLcI5jkNcpMyaPriGplXDCs9kHFynnQKIuvaTI7JdA2LhoGtuyAaMsyWEpLlF40wSm9SoZWAyGWHLWpZJ4qojShFIFCDsmRjRsDHrNYFYMXIKUT3KE83CGwo0I4I2RJqQaa8HO7ejxS7XGYQTdIXeKhS9FCPb/Q/EUq1pqucFMSaz6CizN5Kgm3UGZOoknDGNGQiyZh+NofG4nqoQNJzA6nOxbuP0QIG7yKWQjwOX03E8NxzFFC4KjL2CXd0KtOa7Ig0RemcpSaVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SvkoR5P0aqxuUfw+6JXXE7dCbxFeljIyoLytXnrA3+w=;
+ b=lob6BuXMzYiy5Y/Pey4kIEqETv7/gVJy7Q9lS/TkG6ZWacLZFAKeM20q6Cf27EZVQJN8L91ONQIDzwFXeH6o8GAXVp/F2Yr5BWl5YExfAGy1fv/PaCVdc5nvWMz6isrG4FTm4tIaRvUEQXQFxJIiTHL36tJALsGScTwdu9+PufU=
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
+ by AM7PR04MB7077.eurprd04.prod.outlook.com (2603:10a6:20b:11c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 24 Nov
+ 2020 08:57:28 +0000
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::a533:3a5b:d525:d784]) by AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::a533:3a5b:d525:d784%6]) with mapi id 15.20.3589.022; Tue, 24 Nov 2020
+ 08:57:28 +0000
+From:   Clark Wang <xiaoning.wang@nxp.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+CC:     "broonie@kernel.org" <broonie@kernel.org>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>
+Subject: RE: [EXT] [PATCH] spi: imx: enable runtime pm support
+Thread-Topic: [EXT] [PATCH] spi: imx: enable runtime pm support
+Thread-Index: AQHWY9/iuScipEkFI0KzKaHjGfcnQqnGdAMAgBFCRvA=
+Date:   Tue, 24 Nov 2020 08:57:28 +0000
+Message-ID: <AM6PR04MB562348A699215824A00E29ECF3FB0@AM6PR04MB5623.eurprd04.prod.outlook.com>
+References: <20200727063354.17031-1-xiaoning.wang@nxp.com>
+ <20201113091800.27469-1-nikita.shubin@maquefel.me>
+In-Reply-To: <20201113091800.27469-1-nikita.shubin@maquefel.me>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: maquefel.me; dkim=none (message not signed)
+ header.d=none;maquefel.me; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f1aaa479-edc9-4ff3-2415-08d89056f89f
+x-ms-traffictypediagnostic: AM7PR04MB7077:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM7PR04MB707748E030491D3549697C91F3FB0@AM7PR04MB7077.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mfsi7kGs0XCItxwPFhDWRzQPGlR6Z5c5X744iKO2sO517PoUI9QNzoCNu+YHC2Ns4rpvsDtoINMT1TdoPLxIAeOwIwH+F4Dm3L4JD6VLUs7+WEY4IqDBC7qhUX2K5zD2yir4D1c2K7OQqtVmaQsHCF5Q0EnmmQ4iDRCxWvpeb7JAOvohsjTShFyl01jQ1txDiiCfnhJREsXP2DvMiO6y/VlVPYvYE7UUTjCGp0tk+HKFegVlS+zx6ePNNYbU3L4vcLutLRV1KPqXKd/1XaFRORSeCpXlA/kjPORTSXUvPFfDhuVRFeVyt7Y6hypo4PGK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5623.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(366004)(346002)(396003)(6916009)(33656002)(8936002)(54906003)(8676002)(9686003)(2906002)(86362001)(53546011)(55016002)(6506007)(7696005)(76116006)(26005)(186003)(64756008)(66946007)(66446008)(66556008)(316002)(71200400001)(4326008)(66476007)(83380400001)(478600001)(52536014)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 0aepXoeZeNea85E0CkUh0/0/A60UcCvdc43BAmbtWVuJWGwMGl8UPWgIGTsZKRAjbD/kmFW/lgeB/HSVuTh73nNfcAEm5Wl6oVmLPR6H7zw0f3avG8erCcWY27Bwf5uuVoWnAq9iKppJ88EMFl19h5Q3CIjCZ9H1pEb5T8O3piZr7Ch0QUtg0Wseb96q++OodKfPF94AmFg3MY9Mj0X5v0Q3pljC9bHFZulz+Zzf8S7E1e1JGzoAXD+xjo3/33CUS5UeFGun/sJfzarvzW6IOsGMtAfno4ruQpiKvuTn1/zuLOHd41KjRSac463FfWww+iluKGSZkBRAQNwfN0FOmSSt4jVBn414FyIbvXpExN7R8gMfKNmJvzOmpgfXpvjjt5noIXy3WtbwzA/NeuymlrvKIJhXyf4h1Ghey8Za9YEDAQnKhxKxd3N8nSieRIjbLixKqPS7MuCIRPkiJh2nlw0pOob0cAAqNNwZcCVislBRWnaooM8I7QSYu5BCqHK594BCJuAUhLcvTU/M/r720IorvRlkICdz+1CSLl2RiddPh9Tt/c/bXhhyCpEl4VtNzcwPg7CUbMDiBbjBlI/wKcqcLe91i60rdvD/5TL6fJtnvyja+dfLyIJtS13em5i0arACbvx+LUFPMEi2Z3Go0ll4FueFDCud8Cm6F/iVr1F4LRCGZtK3HME5Wti+MByN9MG9OHt2N7ruO9csSApv/iCGkQnDQUOF5+8aLkNeyXw3/p2WUposufKrAFldZ4e64g/uQOia4qnVGn978FrtKhRpsW0+7dqUZa7a1LaRppzmR89nCTV71Js08i1b+hIAm9ADUuvoeWx44NldJP+Pqyqm5pLO9F0L1UxKQGJRbhtntzuFcDMB6VAkLM2P0IzhCDrqBMXdO2ZKP/1uux2aXQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 24 Nov 2020 09:55:24 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     "Y.b. Lu" <yangbo.lu@nxp.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <ashish.kumar@nxp.com>
-Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-In-Reply-To: <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
-References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
- <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <20201120093015.duel3yx63cbya77w@skbuf>
- <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
- <71a86b0fbc95892f8fd240e0919e7e23@walle.cc>
- <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <3293d698bf26ecf08f22e7e2ffe55e74@walle.cc>
-X-Sender: michael@walle.cc
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5623.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1aaa479-edc9-4ff3-2415-08d89056f89f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 08:57:28.4652
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n9uAPahWLyn0Ah6DgxX8i+OGAz6scIoGenw0TwBWjOZ5urMhPdU9/pcEZE0rllMi7TgpEakTcpM16rmSeaWufA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-11-24 09:47, schrieb Y.b. Lu:
-> Hi Michael,
-> 
->> -----Original Message-----
->> From: Michael Walle <michael@walle.cc>
->> Sent: Tuesday, November 24, 2020 4:03 PM
->> To: Y.b. Lu <yangbo.lu@nxp.com>
->> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
->> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
->> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
->> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>; 
->> Ulf
->> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
->> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
->> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
->> controllers use fixed indices
->> 
->> Am 2020-11-24 08:41, schrieb Y.b. Lu:
->> > Hi Vladimir,
->> >
->> >> -----Original Message-----
->> >> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->> >> Sent: Friday, November 20, 2020 5:30 PM
->> >> To: Y.b. Lu <yangbo.lu@nxp.com>
->> >> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
->> >> Herring <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
->> >> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>;
->> >> Ulf
->> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
->> >> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>;
->> >> Michael Walle <michael@walle.cc>
->> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
->> >> controllers use fixed indices
->> >>
->> >> On Fri, Nov 20, 2020 at 02:04:02AM +0000, Y.b. Lu wrote:
->> >> > Hi Vladimir,
->> >> >
->> >> > I have already upstreamed a patch for all affected layerscape boards.
->> >> >
->> >>
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kern
->> el.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fshawnguo%2Flinux.git%2
->> Fcommit%2F&amp;data=04%7C01%7Cyangbo.lu%40nxp.com%7C498622ade
->> e704fc0042008d8904f6184%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0
->> %7C0%7C637418017917635725%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM
->> C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000
->> &amp;sdata=OciS3q%2BmP%2Bz4x1ewPHDigmUkgIZmBgUlRRTm4yaxB7s%3D
->> &amp;reserved=0?
->> >> h=imx/dt64&id=342ab37ecaf8c1b10dd3ca9a1271db29a6af0705
->> >> >
->> >> > Please check whether it works for you.
->> >>
->> >> Thanks, one can tell that I haven't done my due diligence of checking
->> >> Shawn's tree first. I'll cherry-pick that patch and carry on with my
->> >> work.
->> >>
->> >> However, the fact still remains that Michael has expressed his opinion
->> >> regarding mmcblk0 vs mmcblk1. Do you think that we could make the
->> >> aliases a per-board option instead of per-SoC? Consider that there
->> >> might
->> >> even be boards that only use SD card. It would be strange for the
->> >> block
->> >> device in that case to be called /dev/mmcblk1.
->> >
->> > I don't think it's a problem in board dts to define board specific
->> > thing, like re-defining alias, and disabling any IP it not using.
->> 
->> First, why would you put it in the architecture include anyway? That
->> is really board-specific. That is like you would say, we enable all
->> devices and a board could potentially disable it. TBH it seems that
->> this will fit your reference boards and you don't care about the
->> other ones which uses that include.
-> 
-> In soc dtsi, this is giving default alias for two esdhc controllers.
-> This is not board specific.
-> That's natural esdhc0 is mmc0 and esdhc1 is mmc1.
+Hi Nikita,
 
-How could this be not board specific if there are at least three
-different use cases the board can choose from - and needs three
-different configurations:
+Sorry for this issue caused by my patch.
+Yes, it because I did not add the !CONFIG_PM support when add the runtime p=
+m patch. This may cause the clks cannot be enabled when do not enable CONFI=
+G_PM.
+Sascha has fix this issue with the patch:
+43b6bf406cd0 spi: imx: fix runtime pm support for !CONFIG_PM
 
-(1) eMMC at /dev/mmcblk0, SD card at /dev/mmcblk1
-(2) SD card at /dev/mmcblk0, eMMC at /dev/mmcblk1
-(3) no eMMC at all, SD card at /dev/mmcblk0
+You may try the latest upstream driver again.
 
-your include only support (1). If a board needs (2) or (3) it has to
-override the configuration in the _common_ include.
+I also fix a warning dump issue with CONFIG_PM enabled. It is under reviewe=
+d. So that, this driver can work well in both cases.
 
->> And as Vladimir pointed out, what do you do if you just have the eMMC
->> on the LS1028A. It will be mmcblk1 unless you do something like the
->> following in the board dts:
->> 
->> mmc0 = &esdhc;
->> /delete-property/ mmc1;
->> 
->> That is really cumbersome, isnt it?
-> 
-> The soc dtsi gives default alias to make esdhc0 as mmc0, and esdhc1 as
-> mmc1, the use case just needs to consider which esdhc controller is
-> used. That's fixed index for it.
-> No matter how the board is designed, there are two esdhc controllers
-> in soc. It's probed as mmc0 and mmc1.
-> It's use case that should choose the right mmc device. It is not the
-> dts that should be changed to suit use case.
-> If the board owner insists to change alias to make esdhc1 as mmc0, I
-> think no problem. Just do it in board dts to override the default one.
+Thanks!
 
-Still, why would this be enforced in the common include? What is the
-advnatage here? I only see disadvantages.
+Best Regards,
+Clark Wang
 
--michael
+> -----Original Message-----
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> Sent: Friday, November 13, 2020 17:18
+> To: Clark Wang <xiaoning.wang@nxp.com>
+> Cc: broonie@kernel.org; festevam@gmail.com; kernel@pengutronix.de;
+> linux-arm-kernel@lists.infradead.org; dl-linux-imx <linux-imx@nxp.com>;
+> linux-kernel@vger.kernel.org; linux-spi@vger.kernel.org;
+> s.hauer@pengutronix.de; shawnguo@kernel.org; Nikita Shubin
+> <nikita.shubin@maquefel.me>
+> Subject: [EXT] [PATCH] spi: imx: enable runtime pm support
+>=20
+> Caution: EXT Email
+>=20
+> Hello Clark,
+>=20
+> This patch breaks spi-imx on imx7d.
+> Toradex Colibri imx7d spi reports with:
+>=20
+>     [    4.258468] inv-mpu6000-spi spi2.0: I/O Error in PIO
+>     [    4.264269] inv-mpu6000-spi spi2.0: SPI transfer failed: -110
+>     [    4.264305] spi_master spi2: failed to transfer one message from q=
+ueue
+>=20
+> We are using spi-imx with dma.
+>=20
+> Reverting your patch fixes this issue.
+>=20
+> The baseline commit 951cbbc386ff01b50da4f46387e994e81d9ab431 (tag:
+> v5.9.8, stable/linux-5.9.y)
+>=20
+> Could you please give some comments on this issue ?
