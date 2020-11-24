@@ -2,226 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CFA2C26D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD20A2C26D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387884AbgKXNJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:09:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387608AbgKXNJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:09:24 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A74B0206D9;
-        Tue, 24 Nov 2020 13:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606223363;
-        bh=ms1OC1jgGP8rsglnaN/qBcxxZ1UrxXPNJn5K7DfbYok=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fm38o4/YbY3u5xAjT/QoQgA1caa9U6lR0nCkzzQekwnHqnxLb/C+Wsv/bS/2UwCZ7
-         qdZPbc39etdVCOT6LDni6bEfWfn+MmbwIfEP0HJAQXk4R3u4R9k/az2kg29WITPtcz
-         zsyN6M7NYuYMrMY1tzazE5eO3hg/nXE4NvonBgEs=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1khY4P-00DFma-EF; Tue, 24 Nov 2020 13:09:21 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 24 Nov 2020 13:09:21 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        id S2387833AbgKXNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:11:08 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7674 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733262AbgKXNLH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:11:07 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CgPXG64DNz15Q2Q;
+        Tue, 24 Nov 2020 21:10:38 +0800 (CST)
+Received: from [10.174.187.74] (10.174.187.74) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 24 Nov 2020 21:10:49 +0800
+Subject: Re: [RFC PATCH v1 2/4] KVM: arm64: GICv4.1: Try to save hw pending
+ state in save_pending_tables
+To:     Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Scull <ascull@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>, kernel-team@android.com
-Subject: Re: [RFC PATCH 2/6] kvm: arm64: Fix up RELA relocations in hyp
- code/data
-In-Reply-To: <20201119162543.78001-3-dbrazdil@google.com>
-References: <20201119162543.78001-1-dbrazdil@google.com>
- <20201119162543.78001-3-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <ab46f9a28693c10995f9628557bd212e@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, ascull@google.com, ardb@kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Eric Auger <eric.auger@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-3-lushenming@huawei.com>
+ <f3ea1b24436bb86b5a5633f8ccc9b3d1@kernel.org>
+ <90f04f50-c1ba-55b2-0f93-1e755b40b487@huawei.com>
+ <4e2b87897485e38e251c447b9ad70eb6@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <86c2b9ad-7214-caef-0924-ec71b43aa003@huawei.com>
+Date:   Tue, 24 Nov 2020 21:10:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
+MIME-Version: 1.0
+In-Reply-To: <4e2b87897485e38e251c447b9ad70eb6@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.74]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-19 16:25, David Brazdil wrote:
-> KVM nVHE code runs under a different VA mapping than the kernel, hence
-> so far it relied only on PC-relative addressing to avoid accidentally
-> using a relocated kernel VA from a constant pool (see hyp_symbol_addr).
+On 2020/11/24 16:26, Marc Zyngier wrote:
+> On 2020-11-24 07:40, Shenming Lu wrote:
+>> On 2020/11/23 17:18, Marc Zyngier wrote:
+>>> On 2020-11-23 06:54, Shenming Lu wrote:
+>>>> After pausing all vCPUs and devices capable of interrupting, in order
+>>>         ^^^^^^^^^^^^^^^^^
+>>> See my comment below about this.
+>>>
+>>>> to save the information of all interrupts, besides flushing the pending
+>>>> states in kvm’s vgic, we also try to flush the states of VLPIs in the
+>>>> virtual pending tables into guest RAM, but we need to have GICv4.1 and
+>>>> safely unmap the vPEs first.
+>>>>
+>>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>>> ---
+>>>>  arch/arm64/kvm/vgic/vgic-v3.c | 62 +++++++++++++++++++++++++++++++----
+>>>>  1 file changed, 56 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c b/arch/arm64/kvm/vgic/vgic-v3.c
+>>>> index 9cdf39a94a63..e1b3aa4b2b12 100644
+>>>> --- a/arch/arm64/kvm/vgic/vgic-v3.c
+>>>> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
+>>>> @@ -1,6 +1,8 @@
+>>>>  // SPDX-License-Identifier: GPL-2.0-only
+>>>>
+>>>>  #include <linux/irqchip/arm-gic-v3.h>
+>>>> +#include <linux/irq.h>
+>>>> +#include <linux/irqdomain.h>
+>>>>  #include <linux/kvm.h>
+>>>>  #include <linux/kvm_host.h>
+>>>>  #include <kvm/arm_vgic.h>
+>>>> @@ -356,6 +358,39 @@ int vgic_v3_lpi_sync_pending_status(struct kvm
+>>>> *kvm, struct vgic_irq *irq)
+>>>>      return 0;
+>>>>  }
+>>>>
+>>>> +/*
+>>>> + * With GICv4.1, we can get the VLPI's pending state after unmapping
+>>>> + * the vPE. The deactivation of the doorbell interrupt will trigger
+>>>> + * the unmapping of the associated vPE.
+>>>> + */
+>>>> +static void get_vlpi_state_pre(struct vgic_dist *dist)
+>>>> +{
+>>>> +    struct irq_desc *desc;
+>>>> +    int i;
+>>>> +
+>>>> +    if (!kvm_vgic_global_state.has_gicv4_1)
+>>>> +        return;
+>>>> +
+>>>> +    for (i = 0; i < dist->its_vm.nr_vpes; i++) {
+>>>> +        desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
+>>>> +        irq_domain_deactivate_irq(irq_desc_get_irq_data(desc));
+>>>> +    }
+>>>> +}
+>>>> +
+>>>> +static void get_vlpi_state_post(struct vgic_dist *dist)
+>>>
+>>> nit: the naming feels a bit... odd. Pre/post what?
+>>
+>> My understanding is that the unmapping is a preparation for get_vlpi_state...
+>> Maybe just call it unmap/map_all_vpes?
 > 
-> So as to reduce the possibility of a programmer error, fixup the
-> relocated addresses instead. Let the kernel relocate them to kernel VA
-> first, but then iterate over them again, filter those that point to hyp
-> code/data and convert the kernel VA to hyp VA.
+> Yes, much better.
 > 
-> This is done after kvm_compute_layout and before apply_alternatives.
+> [...]
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/include/asm/kvm_mmu.h |  1 +
->  arch/arm64/kernel/smp.c          |  4 +-
->  arch/arm64/kvm/va_layout.c       | 76 ++++++++++++++++++++++++++++++++
->  3 files changed, 80 insertions(+), 1 deletion(-)
+>>>> +        if (irq->hw) {
+>>>> +            WARN_RATELIMIT(irq_get_irqchip_state(irq->host_irq,
+>>>> +                        IRQCHIP_STATE_PENDING, &is_pending),
+>>>> +                       "IRQ %d", irq->host_irq);
+>>>
+>>> Isn't this going to warn like mad on a GICv4.0 system where this, by definition,
+>>> will generate an error?
+>>
+>> As we have returned an error in save_its_tables if hw && !has_gicv4_1, we don't
+>> have to warn this here?
 > 
-> diff --git a/arch/arm64/include/asm/kvm_mmu.h 
-> b/arch/arm64/include/asm/kvm_mmu.h
-> index 5168a0c516ae..e5226f7e4732 100644
-> --- a/arch/arm64/include/asm/kvm_mmu.h
-> +++ b/arch/arm64/include/asm/kvm_mmu.h
-> @@ -105,6 +105,7 @@ alternative_cb_end
->  void kvm_update_va_mask(struct alt_instr *alt,
->  			__le32 *origptr, __le32 *updptr, int nr_inst);
->  void kvm_compute_layout(void);
-> +void kvm_fixup_hyp_relocations(void);
+> Are you referring to the check in vgic_its_save_itt() that occurs in patch 4?
+> Fair enough, though I think the use of irq_get_irqchip_state() isn't quite
+> what we want, as per my comments on patch #1.
 > 
->  static __always_inline unsigned long __kern_hyp_va(unsigned long v)
->  {
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 18e9727d3f64..30241afc2c93 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -434,8 +434,10 @@ static void __init hyp_mode_check(void)
->  			   "CPU: CPUs started in inconsistent modes");
->  	else
->  		pr_info("CPU: All CPU(s) started at EL1\n");
-> -	if (IS_ENABLED(CONFIG_KVM))
-> +	if (IS_ENABLED(CONFIG_KVM)) {
->  		kvm_compute_layout();
-> +		kvm_fixup_hyp_relocations();
-> +	}
->  }
+>>>
+>>>> +        }
+>>>> +
+>>>> +        if (stored == is_pending)
+>>>>              continue;
+>>>>
+>>>> -        if (irq->pending_latch)
+>>>> +        if (is_pending)
+>>>>              val |= 1 << bit_nr;
+>>>>          else
+>>>>              val &= ~(1 << bit_nr);
+>>>>
+>>>>          ret = kvm_write_guest_lock(kvm, ptr, &val, 1);
+>>>>          if (ret)
+>>>> -            return ret;
+>>>> +            goto out;
+>>>>      }
+>>>> -    return 0;
+>>>> +
+>>>> +out:
+>>>> +    get_vlpi_state_post(dist);
+>>>
+>>> This bit worries me: you have unmapped the VPEs, so any interrupt that has been
+>>> generated during that phase is now forever lost (the GIC doesn't have ownership
+>>> of the pending tables).
+>>
+>> In my opinion, during this phase, the devices capable of interrupting
+>> should have  already been paused (prevent from sending interrupts),
+>> such as VFIO migration protocol has already realized it.
 > 
->  void __init smp_cpus_done(unsigned int max_cpus)
-> diff --git a/arch/arm64/kvm/va_layout.c b/arch/arm64/kvm/va_layout.c
-> index d8cc51bd60bf..b80fab974896 100644
-> --- a/arch/arm64/kvm/va_layout.c
-> +++ b/arch/arm64/kvm/va_layout.c
-> @@ -10,6 +10,7 @@
->  #include <asm/alternative.h>
->  #include <asm/debug-monitors.h>
->  #include <asm/insn.h>
-> +#include <asm/kvm_asm.h>
->  #include <asm/kvm_mmu.h>
->  #include <asm/memory.h>
+> Is that a hard guarantee? Pausing devices *may* be possible for a limited
+> set of endpoints, but I'm not sure that is universally possible to restart
+> them and expect a consistent state (you have just dropped a bunch of network
+> packets on the floor...).
+
+No, as far as I know, if the VFIO device does not support pause, the migration would
+fail early... And the specific action is decided by the vendor driver.
+In fact, the VFIO migration is still in an experimental phase... I will pay attention
+to the follow-up development.
+
 > 
-> @@ -82,6 +83,81 @@ __init void kvm_compute_layout(void)
->  	init_hyp_physvirt_offset();
->  }
+>>> Do you really expect the VM to be restartable from that point? I don't see how
+>>> this is possible.
+>>>
+>>
+>> If the migration has encountered an error, the src VM might be
+>> restarted, so we have to map the vPEs back.
 > 
-> +#define __load_elf_u64(s)					\
-> +	({							\
-> +		extern u64 s;					\
-> +		u64 val;					\
-> +								\
-> +		asm ("ldr %0, =%1" : "=r"(val) : "S"(&s));	\
-> +		val;						\
-> +	})
-
-I'm not sure I get the rational about the naming here. None of this
-has much to do with ELF, but seems to just load a value from a
-constant pool.
-
-> +
-> +static bool __is_within_bounds(u64 addr, char *start, char *end)
-> +{
-> +	return start <= (char*)addr && (char*)addr < end;
-> +}
-> +
-> +static bool __is_in_hyp_section(u64 addr)
-> +{
-> +	return __is_within_bounds(addr, __hyp_text_start, __hyp_text_end) ||
-> +	       __is_within_bounds(addr, __hyp_rodata_start, __hyp_rodata_end) 
-> ||
-> +	       __is_within_bounds(addr,
-> +				  CHOOSE_NVHE_SYM(__per_cpu_start),
-> +				  CHOOSE_NVHE_SYM(__per_cpu_end));
-> +}
-> +
-> +static void __fixup_hyp_rel(u64 addr)
-> +{
-> +	u64 *ptr, kern_va, hyp_va;
-> +
-> +	/* Adjust the relocation address taken from ELF for KASLR. */
-> +	addr += kaslr_offset();
-> +
-> +	/* Skip addresses not in any of the hyp sections. */
-> +	if (!__is_in_hyp_section(addr))
-> +		return;
-> +
-> +	/* Get the LM alias of the relocation address. */
-> +	ptr = (u64*)kvm_ksym_ref((void*)addr);
-
-Why the casting? We should be perfectly fine without.
-
-nit: we really need to change the name of this helper, it doesn't have
-anything to do with symbols anymore. And actually, lm_alias() *is* the
-right thing to use here (we don't relocate anything on VHE).
-
-> +
-> +	/*
-> +	 * Read the value at the relocation address. It has already been
-> +	 * relocated to the actual kernel kimg VA.
-> +	 */
-> +	kern_va = (u64)kvm_ksym_ref((void*)*ptr);
-
-Same comment.
-
-> +
-> +	/* Convert to hyp VA. */
-> +	hyp_va = __early_kern_hyp_va(kern_va);
-> +
-> +	/* Store hyp VA at the relocation address. */
-> +	*ptr = __early_kern_hyp_va(kern_va);
-> +}
-> +
-> +static void __fixup_hyp_rela(void)
-> +{
-> +	Elf64_Rela *rel;
-> +	size_t i, n;
-> +
-> +	rel = (Elf64_Rela*)(kimage_vaddr + __load_elf_u64(__rela_offset));
-> +	n = __load_elf_u64(__rela_size) / sizeof(*rel);
-> +
-> +	for (i = 0; i < n; ++i)
-> +		__fixup_hyp_rel(rel[i].r_offset);
-> +}
-> +
-> +/*
-> + * The kernel relocated pointers to kernel VA. Iterate over 
-> relocations in
-> + * the hypervisor ELF sections and convert them to hyp VA. This avoids 
-> the
-> + * need to only use PC-relative addressing in hyp.
-> + */
-> +__init void kvm_fixup_hyp_relocations(void)
-> +{
-> +	if (!IS_ENABLED(CONFIG_RELOCATABLE) || has_vhe())
-
-What do we do if CONFIG_RELOCATABLE is not selected? As far as I can 
-tell,
-bad things will happen...
-
-I'm also worried that at this stage, the kernel is broken, until you
-remove the other bits involved in runtime offsetting pointers.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> As I said above, I doubt it is universally possible to do so, but
+> after all, this probably isn't worse that restarting on the target...
+> 
+>         M.
