@@ -2,189 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A052C2CD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F34632C2CDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390412AbgKXQ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S2390447AbgKXQ0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389861AbgKXQ02 (ORCPT
+        with ESMTP id S1728539AbgKXQ0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:26:28 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB72AC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:26:28 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id u7so11385694vsq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:26:28 -0800 (PST)
+        Tue, 24 Nov 2020 11:26:44 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C67DC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:26:44 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id s13so3463827wmh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:26:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e44wk8MkE5luS4VPP/tOiY6OXFFUDjOtoE11h9rO1rQ=;
-        b=lg5QSCkmuSEcqU7ETiY5fcU2g7mMK28FXHVHIsk89BdwA6FH/G9weJb/h0Y1c0lroL
-         HCJxIbgUiwFYvi73yMMUpfb6CYUya25UygMN/Tk9CNLjJbEvF86nu7hHFB3FOc5iVTtA
-         lNmrZWaHZrpP1lUvJi4uJ5AR1+uDiypZBOMwE=
+         :cc:content-transfer-encoding;
+        bh=L5yh124+35fWpY6C/RYa1tV5+Q4siwUnEg7czGfCdgc=;
+        b=p3Nh4Wd0lncqnmu/1NyYehIOHHW/Aht1QF850QehyuLuUDo8QGXLlyQ6/fwOeexD8G
+         cuhC8L9soyjdFfQVPlc/1OjYSYQ7HYxr1zSUD05FzKREYNlFrQB4/JPzKdhQQr2m65nG
+         zSY3GZj4gqozYTe0NuItOa+kiG5QxG9eDdTdqQrGIwUOBWX5fUsYzZewxABxkAGsbFti
+         NingY2nL4VrqYFSoOOtxDmdEEvAcgImnLcpQDPan8MVkOBwVFPVUmf2rN2JjZUA95wqT
+         TWPAnET2gt2fi43V9qt32JM1FdC+iDJW+yWr8W54NQOxMzH7dSIoTcAPT/bX2v9z7giH
+         CjsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e44wk8MkE5luS4VPP/tOiY6OXFFUDjOtoE11h9rO1rQ=;
-        b=R2u2z+hrXavCytLp+zCSASOF26TVbNAtBHHoZPfR9IhXvuRc2bA8TyTk/gs98vFCHa
-         Hn7VnluFO5/joBjYhiopKH1jDwUzNEBNZPHWDcHpL5e1VhTGomwqlR8kYBWsTLw45BK1
-         4ksIcVzSfV+krHOUwAJG8cGW0AmJJqarJxPBLC3kjmnuFCK2bakEvnX5NUk3P9X6mhdu
-         MCcvLWmhjtDqVCzd0NbyaLWDLWvQ0EaWhnM9UOOqkcw7faE6LJ/0BTqrk7VYLtVwpcsA
-         HO2snVWuyjuCH1Dt5VuiVHVDxRhvy8TEfzHDr7QxsIq+w9/Blw1TPwF84REkt7Phx2Hu
-         kdxQ==
-X-Gm-Message-State: AOAM532lykK1ExlrCiL8tO6lu9dih4QWhR3vM8cBY9+PGcsnt+dhjS+7
-        R+877y8RIV6OiQuxYNeIlRf0U/4Z+PfL0w==
-X-Google-Smtp-Source: ABdhPJwE8yBIU30eot5MH3eVkiHR8RVH7mISfgmFrwmz+k4Zvw8t/3Fn61vKNxXvgKap0Mepir4MmA==
-X-Received: by 2002:a05:6102:5fb:: with SMTP id w27mr4116880vsf.24.1606235187556;
-        Tue, 24 Nov 2020 08:26:27 -0800 (PST)
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
-        by smtp.gmail.com with ESMTPSA id x11sm1643207vsp.15.2020.11.24.08.26.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 08:26:26 -0800 (PST)
-Received: by mail-vs1-f54.google.com with SMTP id u24so11368277vsl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:26:26 -0800 (PST)
-X-Received: by 2002:a67:ef98:: with SMTP id r24mr4313446vsp.37.1606235186181;
- Tue, 24 Nov 2020 08:26:26 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=L5yh124+35fWpY6C/RYa1tV5+Q4siwUnEg7czGfCdgc=;
+        b=hPJnMpcperi7YrdJPL9JsUhsmFG5traWH1rnhtAOR5RKFLJKx6zOVBdmcbySo+GNvm
+         9J/WrEDmFjwQ7UIeZHj2HvqTf9Ulfn2LnO6GSAABMz0R8GAOik2IyC3hd6DLrc3htu38
+         TP0mcM3iSR+nsWOQhyGtoLu4kAiHawg/NyyxJ2wD5HJW5LQOtYrNSQjH8EB3ccOasm2p
+         94GaYk5Po7Sd79pF+ySy+ZGBtYsNhvMhqnhJQuQC1t++BtVbzrCpIVRdFdnRUOHXftJ7
+         jGl9NyYVOdhDZFYxQTPhLGsAr8kRSE19t3CGqikR20ZfvAgkcPytQcCJcM9Wsae7EIVo
+         Poiw==
+X-Gm-Message-State: AOAM531QFtnNg7GeTw/dJODZtYXQ/zMBX1d6VhsCk9j1RuHK0tgseuUE
+        SJuLXPmf/pxc+SK35Qp18wx+RpiDkZzJEg//xWA=
+X-Google-Smtp-Source: ABdhPJx14x2qfyZKiQ4i/fQGiHmWJzAtD6CHBdmhGOpi8h8GQsXZjLaETc3PeWibouLypsxDwfPrbDeg3KFO42FI2tE=
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr5325311wmi.70.1606235203423;
+ Tue, 24 Nov 2020 08:26:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20201112200906.991086-1-kuabhs@chromium.org> <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
- <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com> <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
-In-Reply-To: <002401d6c242$d78f2140$86ad63c0$@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 24 Nov 2020 08:26:14 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
-Message-ID: <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     Abhishek Kumar <kuabhs@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-38-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-38-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 11:26:32 -0500
+Message-ID: <CADnq5_MEwCJJxdsTzLQu3cjx0w2_ww0mYKHbenD2Pn=9Mxq2tQ@mail.gmail.com>
+Subject: Re: [PATCH 37/40] drm/amd/amdgpu/gmc_v8_0: Fix more issues attributed
+ to copy/paste
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        Brian Norris <briannorris@chromium.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Nov 24, 2020 at 1:19 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
+On Mon, Nov 23, 2020 at 6:21 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> > -----Original Message-----
-> > From: Doug Anderson <dianders@chromium.org>
-> > Sent: Tuesday, November 24, 2020 6:27 AM
-> > To: Abhishek Kumar <kuabhs@chromium.org>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>; Rakesh Pillai
-> > <pillair@codeaurora.org>; LKML <linux-kernel@vger.kernel.org>; ath10k
-> > <ath10k@lists.infradead.org>; Brian Norris <briannorris@chromium.org>;
-> > linux-wireless <linux-wireless@vger.kernel.org>; David S. Miller
-> > <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; netdev
-> > <netdev@vger.kernel.org>
-> > Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF
-> > selection
-> >
-> > Hi,
-> >
-> > On Thu, Nov 12, 2020 at 12:09 PM Abhishek Kumar <kuabhs@chromium.org>
-> > wrote:
-> > >
-> > > In some devices difference in chip-id should be enough to pick
-> > > the right BDF. Add another support for chip-id based BDF selection.
-> > > With this new option, ath10k supports 2 fallback options.
-> > >
-> > > The board name with chip-id as option looks as follows
-> > > board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-> > >
-> > > Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> > > Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> > > Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> > > ---
-> > >
-> > > (no changes since v1)
-> >
-> > I think you need to work on the method you're using to generate your
-> > patches.  There are most definitely changes since v1.  You described
-> > them in your cover letter (which you don't really need for a singleton
-> > patch) instead of here.
-> >
-> >
-> > > @@ -1438,12 +1439,17 @@ static int
-> > ath10k_core_create_board_name(struct ath10k *ar, char *name,
-> > >         }
-> > >
-> > >         if (ar->id.qmi_ids_valid) {
-> > > -               if (with_variant && ar->id.bdf_ext[0] != '\0')
-> > > +               if (with_additional_params && ar->id.bdf_ext[0] != '\0')
-> > >                         scnprintf(name, name_len,
-> > >                                   "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
-> > >                                   ath10k_bus_str(ar->hif.bus),
-> > >                                   ar->id.qmi_board_id, ar->id.qmi_chip_id,
-> > >                                   variant);
-> > > +               else if (with_additional_params)
-> > > +                       scnprintf(name, name_len,
-> > > +                                 "bus=%s,qmi-board-id=%x,qmi-chip-id=%x",
-> > > +                                 ath10k_bus_str(ar->hif.bus),
-> > > +                                 ar->id.qmi_board_id, ar->id.qmi_chip_id);
-> >
-> > I believe this is exactly opposite of what Rakesh was requesting.
-> > Specifically, he was trying to eliminate the extra scnprintf() but I
-> > think he still agreed that it was a good idea to generate 3 different
-> > strings.  I believe the proper diff to apply to v1 is:
-> >
-> > https://crrev.com/c/255643
-
-Wow, I seem to have deleted the last digit from my URL.  Should have been:
-
-https://crrev.com/c/2556437
-
-> >
-> > -Doug
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> Hi Abhishek/Doug,
+>  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:618: warning: Function parameter o=
+r member 'flush_type' not described in 'gmc_v8_0_flush_gpu_tlb_pasid'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:618: warning: Function parameter o=
+r member 'all_hub' not described in 'gmc_v8_0_flush_gpu_tlb_pasid'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:657: warning: Function parameter o=
+r member 'vmhub' not described in 'gmc_v8_0_flush_gpu_tlb'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:657: warning: Function parameter o=
+r member 'flush_type' not described in 'gmc_v8_0_flush_gpu_tlb'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:998: warning: Function parameter o=
+r member 'pasid' not described in 'gmc_v8_0_vm_decode_fault'
 >
-> I missed on reviewing this change. Also I agree with Doug that this is not the change I was looking for.
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Applied with minor changes.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 >
-> The argument "with_variant" can be renamed to "with_extra_params". There is no need for any new argument to this function.
-> Case 1: with_extra_params=0,  ar->id.bdf_ext[0] = 0             ->   The default name will be used (bus=snoc,qmi_board_id=0xab)
-> Case 2: with_extra_params=1,  ar->id.bdf_ext[0] = 0             ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd
-> Case 3: with_extra_params=1,  ar->id.bdf_ext[0] = "xyz"      ->   bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd,variant=xyz
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c b/drivers/gpu/drm/amd/=
+amdgpu/gmc_v8_0.c
+> index 0f32a8002c3d7..41c1d8e812b88 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+> @@ -609,6 +609,8 @@ static int gmc_v8_0_mc_init(struct amdgpu_device *ade=
+v)
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @pasid: pasid to be flush
+> + * @flush_type: unused
+> + * @all_hub: unused
+>   *
+>   * Flush the TLB for the requested pasid.
+>   */
+> @@ -649,6 +651,8 @@ static int gmc_v8_0_flush_gpu_tlb_pasid(struct amdgpu=
+_device *adev,
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @vmid: vm instance to flush
+> + * @vmhub: unused
+> + * @flush_type: unused
+>   *
+>   * Flush the TLB for the requested page table (VI).
+>   */
+> @@ -990,6 +994,7 @@ static void gmc_v8_0_gart_disable(struct amdgpu_devic=
+e *adev)
+>   * @status: VM_CONTEXT1_PROTECTION_FAULT_STATUS register value
+>   * @addr: VM_CONTEXT1_PROTECTION_FAULT_ADDR register value
+>   * @mc_client: VM_CONTEXT1_PROTECTION_FAULT_MCCLIENT register value
+> + * @pasid: debug logging only - no functional use
+>   *
+>   * Print human readable fault information (VI).
+>   */
+> --
+> 2.25.1
 >
-> ar->id.bdf_ext[0] depends on the DT entry for variant field.
-
-I'm confused about your suggestion.  Maybe you can help clarify.  Are
-you suggesting:
-
-a) Only two calls to ath10k_core_create_board_name()
-
-I'm pretty sure this will fail in some cases.  Specifically consider
-the case where the device tree has a "variant" defined but the BRD
-file only has one entry for (board-id) and one for (board-id +
-chip-id) but no entry for (board-id + chip-id + variant).  If you are
-only making two calls then I don't think you'll pick the right one.
-
-Said another way...
-
-If the device tree has a variant:
-1. We should prefer a BRD entry that has board-id + chip-id + variant
-2. If #1 isn't there, we should prefer a BRD entry that has board-id + chip-id
-3. If #1 and #2 aren't there we fall back to a BRD entry that has board-id.
-
-...without 3 calls to ath10k_core_create_board_name() we can't handle
-all 3 cases.
-
-
-b) Three calls to ath10k_core_create_board_name() but the caller
-manually whacks "ar->id.bdf_ext[0]" for one of the calls
-
-This doesn't look like it's a clean solution, but maybe I'm missing something.
-
-
--Doug
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
