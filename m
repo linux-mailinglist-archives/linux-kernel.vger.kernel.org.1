@@ -2,117 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9642C2011
+	by mail.lfdr.de (Postfix) with ESMTP id 09A812C2010
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730686AbgKXIdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
+        id S1730678AbgKXIcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:32:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730476AbgKXIdH (ORCPT
+        with ESMTP id S1730476AbgKXIcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:33:07 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC047C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:33:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1z5cl4E+1Kt5ZTJVS7bSlXS5dAz5x84o0QFQGPW0MwI=; b=TUOxQiajN4MT/SrV3n5T0XJHNs
-        ibPQSsgjFWHHfNC5igX2BOc3Z0l0Kei3PjbMXAmYx3v7QUjbfibKH6sDzGfuA6mGdwMS8JHCsa6Sy
-        eo4Z/QwO9HQ/sTWR5yaiO48WyVmW4lUuNC1UrY1ktB8SD9Y2+Q51Dsq4+9RCmORBP1x0fpYacjlxa
-        FRPbkkmzGadNf4GcflgnxN8nfwaubGPgr34iUUgY64tKaxZEsMhOsbJpkLs8YRZ1jt6eftqrsqqoF
-        ZuSYfI65olro/Hxc5qrl/4EcXYrAd1ymfTsVjEWdWSylSSsCUMru6dUpuZ0Qgsb3HBrrQdpNFvqRx
-        LdRQFF0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khTjz-0003zd-Pz; Tue, 24 Nov 2020 08:32:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBE563012DF;
-        Tue, 24 Nov 2020 09:31:56 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A103024C2AFD3; Tue, 24 Nov 2020 09:31:56 +0100 (CET)
-Date:   Tue, 24 Nov 2020 09:31:56 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Singh, Balbir" <bsingharora@gmail.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 03/32] sched/fair: Fix pick_task_fair crashes due to
- empty rbtree
-Message-ID: <20201124083156.GU3021@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-4-joel@joelfernandes.org>
- <cab6918c-7b52-923c-4274-f92e9f0a5cd2@gmail.com>
+        Tue, 24 Nov 2020 03:32:50 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2E3C0613CF;
+        Tue, 24 Nov 2020 00:32:50 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id y24so13053979otk.3;
+        Tue, 24 Nov 2020 00:32:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2Q2PJe5i+0yyqNpuz8z7kTzoUZGPUVSZ0K1hVFCIENc=;
+        b=EJEK4my6XgGJ/dD2WIbE+x9yKt34U2S0NfxAtf5UDkh51GwKec1scrVlUnkhzirfpj
+         ACu7SVoyXDQ3dn20K1VkpyaZKTiy4KM7d/rgkjoXnlhXcokGAHw0Te0SbpYyWJ1gk4xP
+         pbfS9bVFHR6ywMivsTXNTXKwimCbOTWnR6PELgCQlrVA7fVXMLUU22SBxBFwxOIGSE7H
+         f1AJUIhUs0ENqLK5yEeNQ3WIrEG2JvAclEr5sFeqKhVN2BKnc8pxyvb1qawpYvBhoKaM
+         QcZ1GS9W/IsKJGOBBDbZDHIdqQWwks9p35WVKUxD5lJSr56hJQ2nRIeqsXbVnT9uzxl/
+         wwDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2Q2PJe5i+0yyqNpuz8z7kTzoUZGPUVSZ0K1hVFCIENc=;
+        b=gddak34R2v4AGETcF4KL1/PVRmJYt1lYSrr50cRoniWywTHGaRQMKuDe3+gtozSfu9
+         97Jy/2KONs23IlB1r7kHWSju2P57voxytKdTBahVvG+6790JIGFcpHaceFefc3lEDW0h
+         iSaKc3WAK+bi8nPjwiJ4wrptVKAjUU53nLrnhslpu6LDbfcwjzld+HVe2HZNtWpUsD0Q
+         6tbdXFPzhwdVH40Kk12KAtSInZf3Hpj5lJD8CbD/woU0z2lsmA6F157L6uspavaL6x+t
+         BH1paaLoqZHyVR1F5puMWs2b4m+yvcueO0bYFpEytUikYmU3tNjR2r4CshBLOCuyr6mF
+         SrZA==
+X-Gm-Message-State: AOAM533yDrW6WbwOOg3YKc0HdJlnVTMMgOG/RggR0hWOOPDvT4cOEJCr
+        BpWjJV+5aViiuhJPVoOv7+vcu5rWZmtUjKeyKog=
+X-Google-Smtp-Source: ABdhPJxV3Rl2vkNvuvxyPEAKWiZ7f5Gc/SAbQGhC5bCF06tKppvMDBbCfOiBqV/xmGcTl3wCltcJ1C9xb6fCvvAH6bo=
+X-Received: by 2002:a9d:6c99:: with SMTP id c25mr2645011otr.327.1606206769728;
+ Tue, 24 Nov 2020 00:32:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cab6918c-7b52-923c-4274-f92e9f0a5cd2@gmail.com>
+References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
+ <20201118213712.GA22371@amd> <6068b1e3-a4c8-6c7d-d33d-f2238e905e43@gmail.com>
+ <20201119215721.GA5337@amd> <0700c32d-643b-fedb-06f0-21547b18205d@gmail.com>
+ <CAE+NS363BpytNGZzfZHLa7KLKL8gjGj14oNvRi3oaH9KT79REg@mail.gmail.com>
+ <25fef924-634d-7f60-7e1d-0290d1701fab@gmail.com> <CAE+NS34vDejgf8Ydfer_rY25qaG-DQQ5H-9-Er+Shz0=UF-EzA@mail.gmail.com>
+In-Reply-To: <CAE+NS34vDejgf8Ydfer_rY25qaG-DQQ5H-9-Er+Shz0=UF-EzA@mail.gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 24 Nov 2020 16:32:40 +0800
+Message-ID: <CAE+NS34-oU3FnfBsHD3W+z-4QNr3LgnEjXhDbNrVf+KJg_bDEw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT definitions
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:15:28PM +1100, Singh, Balbir wrote:
-> On 18/11/20 10:19 am, Joel Fernandes (Google) wrote:
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > pick_next_entity() is passed curr == NULL during core-scheduling. Due to
-> > this, if the rbtree is empty, the 'left' variable is set to NULL within
-> > the function. This can cause crashes within the function.
-> > 
-> > This is not an issue if put_prev_task() is invoked on the currently
-> > running task before calling pick_next_entity(). However, in core
-> > scheduling, it is possible that a sibling CPU picks for another RQ in
-> > the core, via pick_task_fair(). This remote sibling would not get any
-> > opportunities to do a put_prev_task().
-> > 
-> > Fix it by refactoring pick_task_fair() such that pick_next_entity() is
-> > called with the cfs_rq->curr. This will prevent pick_next_entity() from
-> > crashing if its rbtree is empty.
-> > 
-> > Also this fixes another possible bug where update_curr() would not be
-> > called on the cfs_rq hierarchy if the rbtree is empty. This could effect
-> > cross-cpu comparison of vruntime.
-> > 
-> 
-> It is not clear from the changelog as to what does put_prev_task() do to prevent
-> the crash from occuring? Why did we pass NULL as curr in the first place to
-> pick_next_entity?
-> 
-> The patch looks functionally correct as in, it passes curr as the reference
-> to pick_next_entity() for left and entity_before comparisons.
+Fix Typo.
 
-This patch should not exist; it should be smashed into the previous
-patch. There is no point in preserving a crash.
+Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=882=
+4=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:33=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=
+=E6=9C=8824=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=884:52=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+> >
+> > On 11/23/20 4:00 AM, Gene Chen wrote:
+> > > Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B4=
+11=E6=9C=8820=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=886:26=E5=AF=AB=
+=E9=81=93=EF=BC=9A
+> > >>
+> > >> On 11/19/20 10:57 PM, Pavel Machek wrote:
+> > >>> On Thu 2020-11-19 22:03:14, Jacek Anaszewski wrote:
+> > >>>> Hi Pavel, Gene,
+> > >>>>
+> > >>>> On 11/18/20 10:37 PM, Pavel Machek wrote:
+> > >>>>> Hi!
+> > >>>>>
+> > >>>>>> From: Gene Chen <gene_chen@richtek.com>
+> > >>>>>>
+> > >>>>>> Add LED_COLOR_ID_MOONLIGHT definitions
+> > >>>>>
+> > >>>>> Why is moonlight a color? Camera flashes are usually white, no?
+> > >>>>>
+> > >>>>> At least it needs a comment...
+> > >>>>
+> > >>>> That's my fault, In fact I should have asked about adding
+> > >>>> LED_FUNCTION_MOONLIGHT, it was evidently too late for me that even=
+ing...
+> > >>>
+> > >>> Aha, that makes more sense.
+> > >>>
+> > >>> But please let's call it "torch" if we do that, as that is already
+> > >>> used in kernel sources... and probably in the interface, too:
+> > >>
+> > >> I'd say that torch is something different that moonlight,
+> > >> but we would need more input from Gene to learn more about
+> > >> the nature of light emitted by ML LED on his device.
+> > >>
+> > >> Please note that torch is usually meant as the other mode of
+> > >> flash LED (sometimes it is called "movie mode"), which is already
+> > >> handled by brightness file of LED class flash device (i.e. its LED c=
+lass
+> > >> subset), and which also maps to v4l2-flash TORCH mode.
+> > >>
+> > >
+> > > It's used to front camera fill light.
+> > > More brightness than screen backlight, and more soft light than flash=
+.
+> > > I think LED_ID_COLOR_WHITE is okay.
+> >
+> > So why in v6 you assigned LED_COLOR_ID_AMBER to it?
+> >
+
+we suppose Moonlight can be white or amber.
+
+> > Regardless of that, now we're talking about LED function - you chose
+> > LED_FUNCTION_INDICATOR for it, but inferring from your above descriptio=
+n
+> > - it certainly doesn't fit here.
+> >
+> > Also register names, containing part "ML" indicate that this LED's
+> > intended function is moonlinght, which your description somehow
+> > corroborates.
+> >
+> > Moonlight LEDs become ubiquitous nowadays so sooner or later we will
+> > need to add this function anyway [0].
+> >
+> > [0]
+> > https://landscapelightingoakville.com/what-is-moon-lighting-and-why-doe=
+s-it-remain-so-popular/
+> >
+>
+> According to reference,
+> "When you are trying to imitate moonlight you need to use low voltage,
+> softer lighting. You don=E2=80=99t want something that=E2=80=99s too brig=
+ht"
+> which is focus on brightness instead of color.
+>
+> So we suppose Moonlight can be white or amber.
+>
+> Should I add LED_FUNCTION_MOONLIGHT and set LED_COLOR_ID_WHITE?
+>
+> > --
+> > Best regards,
+> > Jacek Anaszewski
