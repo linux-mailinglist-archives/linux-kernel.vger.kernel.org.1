@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11072C26ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9252C26F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387967AbgKXNOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:14:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38082 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387878AbgKXNOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:14:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606223677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HqT93hPnj0lZKcD5jf1u3wzpiTA2s4b6ubLt/KHbxM8=;
-        b=Pc/Opv3aa3WAuV7rrBCPOrdnlDjYA+E02bHsIe2iDUefcYRCH3QKFA3INs1m1E2VAPmWPE
-        gXPJqsGzDZgiR1xyfkGlCbkWPTYhfAvLkopDie6KOSc5TSbB6K667GlWC+e5/P8E+eYnx3
-        VTkZ4ROgmeNsTrcATunjXRl0UTG+JK8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 96937AC2D;
-        Tue, 24 Nov 2020 13:14:37 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 14:14:36 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v6 09/16] mm/hugetlb: Defer freeing of
- HugeTLB pages
-Message-ID: <20201124131436.GX27488@dhcp22.suse.cz>
-References: <20201124095259.58755-1-songmuchun@bytedance.com>
- <20201124095259.58755-10-songmuchun@bytedance.com>
- <20201124115109.GW27488@dhcp22.suse.cz>
- <CAMZfGtV=_=f-AybncRDxyp9FB3e499RuPCz5B-8R2Or7285MrQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtV=_=f-AybncRDxyp9FB3e499RuPCz5B-8R2Or7285MrQ@mail.gmail.com>
+        id S2387987AbgKXNPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:15:47 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:47884 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387656AbgKXNPq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:15:46 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201124131533euoutp0243122b2c664b3e51bd53c0d12ce1d067~Kc-nDhalD0375803758euoutp02w
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:15:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201124131533euoutp0243122b2c664b3e51bd53c0d12ce1d067~Kc-nDhalD0375803758euoutp02w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1606223733;
+        bh=VMIE5grJi+EGHjoSejoXX7yX4OEbolDjXuEvDM6rKGc=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=gBvneU6xIpTMoUB+tBCjFFIUZH5M/yDupjFPLv4qATzUDssRwwvZmFOeP6fGGktRc
+         Wr01ilce7Ljo6c61JyntxjuOXR4bRtTmjTXb1hedBiT4oB2aUjzinIzbqWAR0xCvA4
+         JJqg/BCmYjHH9+icJAwjW91FOSjbWnnIygQgOTrk=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201124131533eucas1p270324139dfa5f41b960cfeb9d4ed0104~Kc-mpCAVX0811808118eucas1p2b;
+        Tue, 24 Nov 2020 13:15:33 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 42.2F.44805.5770DBF5; Tue, 24
+        Nov 2020 13:15:33 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201124131532eucas1p22f02c41a48e9768738b4529771ed7820~Kc-mL6iY00914609146eucas1p2T;
+        Tue, 24 Nov 2020 13:15:32 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201124131532eusmtrp1d48af34344ab3485e6c66e463df95850~Kc-mLMjFm2366323663eusmtrp11;
+        Tue, 24 Nov 2020 13:15:32 +0000 (GMT)
+X-AuditID: cbfec7f4-b37ff7000000af05-31-5fbd07752b63
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 0D.D7.16282.4770DBF5; Tue, 24
+        Nov 2020 13:15:32 +0000 (GMT)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201124131532eusmtip209b157e09e83caa73c00236fff181a41~Kc-lx8Ufq0274902749eusmtip2s;
+        Tue, 24 Nov 2020 13:15:32 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH] spi: Fix potential NULL pointer dereference in
+ spi_shutdown()
+Date:   Tue, 24 Nov 2020 14:15:23 +0100
+Message-Id: <20201124131523.32287-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIIsWRmVeSWpSXmKPExsWy7djP87ql7HvjDa6s5rTYOGM9q8XUh0/Y
+        LJoXr2ezuLxrDptF48eb7BZrj9xlt7g9cTKjA7vHplWdbB77565h9+j/a+DRt2UVo8fnTXIB
+        rFFcNimpOZllqUX6dglcGU8bNzEVPOauODZvLnMD41fOLkZODgkBE4nW/0fYuxi5OIQEVjBK
+        nHjXwwrhfGGUWLhuGhuE85lRouPQCTaYlhdrNjBDJJYzSsxsn8oM13Ju4SlGkCo2AUOJrrdd
+        YB0iAtYS32ZMAytiFmhlkrg3HaSdk0NYIEBiy6EHQNs5OFgEVCVabhaDhHkFbCX+Nx6F2iYv
+        sXrDAbBeCYFGDokTDb+hEi4SE2fOZ4KwhSVeHd/CDmHLSJye3MMC0dDMKPHw3Fp2CKeHUeJy
+        0wxGiCpriTvnfrGBbGYW0JRYv0sfIuwoceXFOVaQsIQAn8SNt4IgYWYgc9K26cwQYV6JjjYh
+        iGo1iVnH18GtPXjhElSJh8TVc8IgYSGBWIn9f66zT2CUm4WwagEj4ypG8dTS4tz01GKjvNRy
+        veLE3OLSvHS95PzcTYzAVHD63/EvOxiXv/qod4iRiYPxEKMEB7OSCG+r3M54Id6UxMqq1KL8
+        +KLSnNTiQ4zSHCxK4rxJW9bECwmkJ5akZqemFqQWwWSZODilGpjq3n91fBkwy8Qm6seXk1d3
+        L5h/9s88hZsRR+/sbYs84bw99/rUSY9OXJ/87lndBsWMQ28O5U3Zc4BDYdqzs74Nq0NMlD5k
+        REgkKf4+0TvlzHoJ9UpF6V9s7RzisktneL2PnJ6Vfflag8GB2dv9dyz8mLJ/RbDRR6XII04S
+        bTGZBUusuLNmOx7d38YvVPaI02L//M3s70+x5S2TqzL/emfaLQOeafEqG5UnqRbJTxWMiigS
+        XNG6YZbCqyYZzyi3wEch6R+iZ9XejxaZOXX/9MvO+qIl533cRM5ttWzbnvQ+akt6482jIhF8
+        LZolF/x9r/QwXbOdqnzmntGDm7P+Obi35UWyGQUmP9w9VX76y5RuJZbijERDLeai4kQAVDvC
+        xnQDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOLMWRmVeSWpSXmKPExsVy+t/xe7ol7HvjDY491bDYOGM9q8XUh0/Y
+        LJoXr2ezuLxrDptF48eb7BZrj9xlt7g9cTKjA7vHplWdbB77565h9+j/a+DRt2UVo8fnTXIB
+        rFF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GU8b
+        NzEVPOauODZvLnMD41fOLkZODgkBE4kXazYwdzFycQgJLGWUuHR/IRNEQkbi5LQGVghbWOLP
+        tS42iKJPjBL7t59kBEmwCRhKdL0FSXByiAjYSsx//4IVpIhZoJVJYsO0UywgCWEBP4nn0/qB
+        bA4OFgFViZabxSBhXqD6/41H2SAWyEus3nCAeQIjzwJGhlWMIqmlxbnpucVGesWJucWleel6
+        yfm5mxiBIbjt2M8tOxhXvvqod4iRiYPxEKMEB7OSCG+r3M54Id6UxMqq1KL8+KLSnNTiQ4ym
+        QOsmMkuJJucDoyCvJN7QzMDU0MTM0sDU0sxYSZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQYm
+        l56unx86uWRSuUtlY0TeVPxk7mUR4Oq29jQ/LhD4xOGDuCOfH/80TkbHBatF5EwCRHaK9Pvu
+        rPscNzHif+cviaWlBzRnsvGdr3j3YbqboeBJNjPzYpNZ72Tt856e/n10m7OL6l2/ZW8FkqbN
+        2iC4mH+z+rwbF29dW7xNqO/JQ6GpS7x8ToUfiXF4JLfD0CP76aRr6zoWOiUv2nK3Oqao6pDB
+        HdbGRKGNncsZ/VX7Np1uejtfvO/zovcX7knVnPL6YbBSOTDsZtEz9UliVXW2qncCHvIsYdDh
+        ZZ943NpcS83Z9fuu64rJ23Yu08lZJxO5odSSdXvjEXuNHy3H9y42TH93Tj5rd0chs/xut29K
+        LMUZiYZazEXFiQCf6Cx2ygIAAA==
+X-CMS-MailID: 20201124131532eucas1p22f02c41a48e9768738b4529771ed7820
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201124131532eucas1p22f02c41a48e9768738b4529771ed7820
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201124131532eucas1p22f02c41a48e9768738b4529771ed7820
+References: <CGME20201124131532eucas1p22f02c41a48e9768738b4529771ed7820@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24-11-20 20:45:30, Muchun Song wrote:
-> On Tue, Nov 24, 2020 at 7:51 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 24-11-20 17:52:52, Muchun Song wrote:
-> > > In the subsequent patch, we will allocate the vmemmap pages when free
-> > > HugeTLB pages. But update_and_free_page() is called from a non-task
-> > > context(and hold hugetlb_lock), so we can defer the actual freeing in
-> > > a workqueue to prevent use GFP_ATOMIC to allocate the vmemmap pages.
-> >
-> > This has been brought up earlier without any satisfying answer. Do we
-> > really have bother with the freeing from the pool and reconstructing the
-> > vmemmap page tables? Do existing usecases really require such a dynamic
-> > behavior? In other words, wouldn't it be much simpler to allow to use
-> 
-> If someone wants to free a HugeTLB page, there is no way to do that if we
-> do not allow this behavior.
+Shutdown bus function might be called on the unbound device, so add a
+check if there is a driver before calling its shutdown function.
 
-Right. The question is how much that matters for the _initial_ feature
-submission. Is this restriction so important that it would render it
-unsuable?
+This fixes following kernel panic obserbed during system reboot:
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000018
+...
+Call trace:
+ spi_shutdown+0x10/0x38
+ kernel_restart_prepare+0x34/0x40
+ kernel_restart+0x14/0x88
+ __do_sys_reboot+0x148/0x248
+ __arm64_sys_reboot+0x1c/0x28
+ el0_svc_common.constprop.3+0x74/0x198
+ do_el0_svc+0x20/0x98
+ el0_sync_handler+0x140/0x1a8
+ el0_sync+0x140/0x180
+Code: f9403402 d1008041 f100005f 9a9f1021 (f9400c21)
+---[ end trace 266c07205a2d632e ]---
 
-> When do we need this? On our server, we will
-> allocate a lot of HugeTLB pages for SPDK or virtualization. Sometimes,
-> we want to debug some issues and want to apt install some debug tools,
-> but if the host has little memory and the install operation can be failed
-> because of no memory. In this time, we can try to free some HugeTLB
-> pages to buddy in order to continue debugging. So maybe we need this.
+Fixes: 9db34ee64ce4 ("spi: Use bus_type functions for probe, remove and shutdown)"
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/spi/spi.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Or maybe you can still allocate hugetlb pages for debugging in runtime
-and try to free those when you need to.
-
-> > hugetlb pages with sparse vmemmaps only for the boot time reservations
-> > and never allow them to be freed back to the allocator. This is pretty
-> > restrictive, no question about that, but it would drop quite some code
-> 
-> Yeah, if we do not allow freeing the HugeTLB page to buddy, it actually
-> can drop some code. But I think that it only drop this one and next one
-> patch. It seems not a lot. And if we drop this patch, we need to add some
-> another code to do the boot time reservations and other code to disallow
-> freeing HugeTLB pages.
-
-you need a per hugetlb page flag to note the sparse vmemmap anyway so
-the freeing path should be a trivial check for the flag. Early boot
-reservation. Special casing for the early boot reservation shouldn't be
-that hard either. But I haven't checked closely.
-
-> So why not support freeing now.
-
-Because it adds some non trivial challenges which would be better to
-deal with with a stable and tested and feature limited implementation.
-The most obvious one is the problem with vmemmap allocations when
-freeing hugetlb page. Others like vmemmap manipulation is quite some
-code but no surprises. Btw. that should be implemented in vmemmap proper
-and ready for other potential users. But this is a minor detail.
-
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 0c3f3a962448..cd3c395b4e90 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -426,10 +426,12 @@ static int spi_remove(struct device *dev)
+ 
+ static void spi_shutdown(struct device *dev)
+ {
+-	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
++	if (dev->driver) {
++		const struct spi_driver	*sdrv = to_spi_driver(dev->driver);
+ 
+-	if (sdrv->shutdown)
+-		sdrv->shutdown(to_spi_device(dev));
++		if (sdrv->shutdown)
++			sdrv->shutdown(to_spi_device(dev));
++	}
+ }
+ 
+ struct bus_type spi_bus_type = {
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
