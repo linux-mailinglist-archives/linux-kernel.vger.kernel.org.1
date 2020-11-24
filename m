@@ -2,140 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388972C1F65
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A472C1F6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730415AbgKXIFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:05:13 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7670 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730363AbgKXIFM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:05:12 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CgGlM088Fz15QpZ;
-        Tue, 24 Nov 2020 16:04:47 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 24 Nov 2020
- 16:05:04 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <ja@ssi.bg>
-CC:     <horms@verge.net.au>, <pablo@netfilter.org>,
-        <kadlec@netfilter.org>, <fw@strlen.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <christian@brauner.io>,
-        <hans.schillstrom@ericsson.com>, <lvs-devel@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v3] ipvs: fix possible memory leak in ip_vs_control_net_init
-Date:   Tue, 24 Nov 2020 16:07:49 +0800
-Message-ID: <20201124080749.69160-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730248AbgKXIIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:08:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726155AbgKXIIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:08:13 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5DD6206D9;
+        Tue, 24 Nov 2020 08:08:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606205293;
+        bh=G+ujxjFt/eVsHQI1QsvkPgPsk4UXcNfS/bgQijKG/hA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eDV1mZdh+r548ggFb4+qZPDsElMU200zkPh59LiqAg/HwFaKAhufK4hlprPzNgE1+
+         wVj6edkiR1Vd3YKTRmAquQc14/9ZNQ1EWEA4va9qtXPDMkl2WwXxXjrSvDer7DBpM8
+         7TtSk3JfZDuUiQ3rjx9vcUXwtBAOG8XZNxH81NY8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khTMw-00DBJ1-GG; Tue, 24 Nov 2020 08:08:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 24 Nov 2020 08:08:10 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shenming Lu <lushenming@huawei.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
+ callback
+In-Reply-To: <7bc7e428-cfd5-6171-dc1e-4be097c46690@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-2-lushenming@huawei.com>
+ <f64703b618a2ebc6c6f5c423e2b779c6@kernel.org>
+ <7bc7e428-cfd5-6171-dc1e-4be097c46690@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <e01d8bf87ef42bda3f3ec117e474d103@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report a memory leak as follows:
+On 2020-11-24 07:38, Shenming Lu wrote:
+> On 2020/11/23 17:01, Marc Zyngier wrote:
+>> On 2020-11-23 06:54, Shenming Lu wrote:
+>>> From: Zenghui Yu <yuzenghui@huawei.com>
+>>> 
+>>> Up to now, the irq_get_irqchip_state() callback of its_irq_chip
+>>> leaves unimplemented since there is no architectural way to get
+>>> the VLPI's pending state before GICv4.1. Yeah, there has one in
+>>> v4.1 for VLPIs.
+>>> 
+>>> With GICv4.1, after unmapping the vPE, which cleans and invalidates
+>>> any caching of the VPT, we can get the VLPI's pending state by
+>> 
+>> This is a crucial note: without this unmapping and invalidation,
+>> the pending bits are not generally accessible (they could be cached
+>> in a GIC private structure, cache or otherwise).
+>> 
+>>> peeking at the VPT. So we implement the irq_get_irqchip_state()
+>>> callback of its_irq_chip to do it.
+>>> 
+>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>> ---
+>>>  drivers/irqchip/irq-gic-v3-its.c | 38 
+>>> ++++++++++++++++++++++++++++++++
+>>>  1 file changed, 38 insertions(+)
+>>> 
+>>> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
+>>> b/drivers/irqchip/irq-gic-v3-its.c
+>>> index 0fec31931e11..287003cacac7 100644
+>>> --- a/drivers/irqchip/irq-gic-v3-its.c
+>>> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>>> @@ -1695,6 +1695,43 @@ static void its_irq_compose_msi_msg(struct
+>>> irq_data *d, struct msi_msg *msg)
+>>>      iommu_dma_compose_msi_msg(irq_data_get_msi_desc(d), msg);
+>>>  }
+>>> 
+>>> +static bool its_peek_vpt(struct its_vpe *vpe, irq_hw_number_t hwirq)
+>>> +{
+>>> +    int mask = hwirq % BITS_PER_BYTE;
+>> 
+>> nit: this isn't a mask, but a shift instead. BIT(hwirq % BPB) would 
+>> give
+>> you a mask.
+> 
+> Ok, I will correct it.
+> 
+>> 
+>>> +    void *va;
+>>> +    u8 *pt;
+>>> +
+>>> +    va = page_address(vpe->vpt_page);
+>>> +    pt = va + hwirq / BITS_PER_BYTE;
+>>> +
+>>> +    return !!(*pt & (1U << mask));
+>>> +}
+>>> +
+>>> +static int its_irq_get_irqchip_state(struct irq_data *d,
+>>> +                     enum irqchip_irq_state which, bool *val)
+>>> +{
+>>> +    struct its_device *its_dev = irq_data_get_irq_chip_data(d);
+>>> +    struct its_vlpi_map *map = get_vlpi_map(d);
+>>> +
+>>> +    if (which != IRQCHIP_STATE_PENDING)
+>>> +        return -EINVAL;
+>>> +
+>>> +    /* not intended for physical LPI's pending state */
+>>> +    if (!map)
+>>> +        return -EINVAL;
+>>> +
+>>> +    /*
+>>> +     * In GICv4.1, a VMAPP with {V,Alloc}=={0,1} cleans and 
+>>> invalidates
+>>> +     * any caching of the VPT associated with the vPEID held in the 
+>>> GIC.
+>>> +     */
+>>> +    if (!is_v4_1(its_dev->its) || 
+>>> atomic_read(&map->vpe->vmapp_count))
+>> 
+>> It isn't clear to me what prevents this from racing against a mapping 
+>> of
+>> the VPE. Actually, since we only hold the LPI irqdesc lock, I'm pretty 
+>> sure
+>> nothing prevents it.
+> 
+> Yes, should have the vmovp_lock held?
 
-BUG: memory leak
-unreferenced object 0xffff8880759ea000 (size 256):
-backtrace:
-[<00000000c0bf2deb>] kmem_cache_zalloc include/linux/slab.h:656 [inline]
-[<00000000c0bf2deb>] __proc_create+0x23d/0x7d0 fs/proc/generic.c:421
-[<000000009d718d02>] proc_create_reg+0x8e/0x140 fs/proc/generic.c:535
-[<0000000097bbfc4f>] proc_create_net_data+0x8c/0x1b0 fs/proc/proc_net.c:126
-[<00000000652480fc>] ip_vs_control_net_init+0x308/0x13a0 net/netfilter/ipvs/ip_vs_ctl.c:4169
-[<000000004c927ebe>] __ip_vs_init+0x211/0x400 net/netfilter/ipvs/ip_vs_core.c:2429
-[<00000000aa6b72d9>] ops_init+0xa8/0x3c0 net/core/net_namespace.c:151
-[<00000000153fd114>] setup_net+0x2de/0x7e0 net/core/net_namespace.c:341
-[<00000000be4e4f07>] copy_net_ns+0x27d/0x530 net/core/net_namespace.c:482
-[<00000000f1c23ec9>] create_new_namespaces+0x382/0xa30 kernel/nsproxy.c:110
-[<00000000098a5757>] copy_namespaces+0x2e6/0x3b0 kernel/nsproxy.c:179
-[<0000000026ce39e9>] copy_process+0x220a/0x5f00 kernel/fork.c:2072
-[<00000000b71f4efe>] _do_fork+0xc7/0xda0 kernel/fork.c:2428
-[<000000002974ee96>] __do_sys_clone3+0x18a/0x280 kernel/fork.c:2703
-[<0000000062ac0a4d>] do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
-[<0000000093f1ce2c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+That's not helping because of the VPE activation.
 
-In the error path of ip_vs_control_net_init(), remove_proc_entry() needs
-to be called to remove the added proc entry, otherwise a memory leak
-will occur.
+> And is it necessary to also hold this lock in
+> its_vpe_irq_domain_activate/deactivate?
 
-Also, add some '#ifdef CONFIG_PROC_FS' because proc_create_net* return NULL
-when PROC is not used.
+Well, you'd need that, but that's unnecessary complex AFAICT.
 
-Fixes: b17fc9963f83 ("IPVS: netns, ip_vs_stats and its procfs")
-Fixes: 61b1ab4583e2 ("IPVS: netns, add basic init per netns.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
-v2->v3: improve code format
-v1->v2: add some '#ifdef CONFIG_PROC_FS' and check the return value of proc_create_net*
- net/netfilter/ipvs/ip_vs_ctl.c | 31 +++++++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 6 deletions(-)
+> 
+>> 
+>>> +        return -EACCES;
+>> 
+>> I can sort of buy EACCESS for a VPE that is currently mapped, but a 
+>> non-4.1
+>> ITS should definitely return EINVAL.
+> 
+> Alright, EINVAL looks better.
+> 
+>> 
+>>> +
+>>> +    *val = its_peek_vpt(map->vpe, map->vintid);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>  static int its_irq_set_irqchip_state(struct irq_data *d,
+>>>                       enum irqchip_irq_state which,
+>>>                       bool state)
+>>> @@ -1975,6 +2012,7 @@ static struct irq_chip its_irq_chip = {
+>>>      .irq_eoi        = irq_chip_eoi_parent,
+>>>      .irq_set_affinity    = its_set_affinity,
+>>>      .irq_compose_msi_msg    = its_irq_compose_msi_msg,
+>>> +    .irq_get_irqchip_state    = its_irq_get_irqchip_state,
+>> 
+>> My biggest issue with this is that it isn't a reliable interface.
+>> It happens to work in the context of KVM, because you make sure it
+>> is called at the right time, but that doesn't make it safe in general
+>> (anyone with the interrupt number is allowed to call this at any 
+>> time).
+> 
+> We check the vmapp_count in it to ensure the unmapping of the vPE, and
+> let the caller do the unmapping (they should know whether it is the 
+> right
+> time). If the unmapping is not done, just return a failure.
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index e279ded4e306..d45dbcba8b49 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -4167,12 +4167,18 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
- 
- 	spin_lock_init(&ipvs->tot_stats.lock);
- 
--	proc_create_net("ip_vs", 0, ipvs->net->proc_net, &ip_vs_info_seq_ops,
--			sizeof(struct ip_vs_iter));
--	proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
--			ip_vs_stats_show, NULL);
--	proc_create_net_single("ip_vs_stats_percpu", 0, ipvs->net->proc_net,
--			ip_vs_stats_percpu_show, NULL);
-+#ifdef CONFIG_PROC_FS
-+	if (!proc_create_net("ip_vs", 0, ipvs->net->proc_net,
-+			     &ip_vs_info_seq_ops, sizeof(struct ip_vs_iter)))
-+		goto err_vs;
-+	if (!proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
-+				    ip_vs_stats_show, NULL))
-+		goto err_stats;
-+	if (!proc_create_net_single("ip_vs_stats_percpu", 0,
-+				    ipvs->net->proc_net,
-+				    ip_vs_stats_percpu_show, NULL))
-+		goto err_percpu;
-+#endif
- 
- 	if (ip_vs_control_net_init_sysctl(ipvs))
- 		goto err;
-@@ -4180,6 +4186,17 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
- 	return 0;
- 
- err:
-+#ifdef CONFIG_PROC_FS
-+	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
-+
-+err_percpu:
-+	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
-+
-+err_stats:
-+	remove_proc_entry("ip_vs", ipvs->net->proc_net);
-+
-+err_vs:
-+#endif
- 	free_percpu(ipvs->tot_stats.cpustats);
- 	return -ENOMEM;
- }
-@@ -4188,9 +4205,11 @@ void __net_exit ip_vs_control_net_cleanup(struct netns_ipvs *ipvs)
- {
- 	ip_vs_trash_cleanup(ipvs);
- 	ip_vs_control_net_cleanup_sysctl(ipvs);
-+#ifdef CONFIG_PROC_FS
- 	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
- 	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
- 	remove_proc_entry("ip_vs", ipvs->net->proc_net);
-+#endif
- 	free_percpu(ipvs->tot_stats.cpustats);
- }
- 
+And without guaranteeing mutual exclusion against a concurrent VMAPP,
+checking the vmapp_count means nothing (you need the lock described
+above, and start sprinkling it around in other places as well).
+
+>> 
+>> Is there a problem with poking at the VPT page from the KVM side?
+>> The code should be exactly the same (maybe simpler even), and at least
+>> you'd be guaranteed to be in the correct context.
+> 
+> Yeah, that also seems a good choice.
+> If you prefer it, we can try to realize it in v2.
+
+I'd certainly prefer that. Let me know if you spot any implementation
+issue with that.
+
+Thanks,
+
+         M.
 -- 
-2.17.1
-
+Jazz is not dead. It just smells funny...
