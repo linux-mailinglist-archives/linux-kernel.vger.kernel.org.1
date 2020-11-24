@@ -2,130 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13DC2C22B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CF32C22C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731928AbgKXKUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:20:17 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:50314 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731902AbgKXKUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:20:15 -0500
-Received: from zn.tnic (p200300ec2f0e360052021be21853ebf1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3600:5202:1be2:1853:ebf1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 016271EC0531;
-        Tue, 24 Nov 2020 11:20:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606213214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w2OoBuykDpspOvHuVYwSh7bmxHirbR42nv4tt/Mbf5c=;
-        b=O9bMWnTCgEPIcCR12FZbw43OnS8CbuwbDEHk2j4Rkm77REWhJOSW8j2PLENH3aL8OvE2Yx
-        BkCF6fffT3TpB/9b+ZQsKTP4A5rdXcH8aKvU1kQFAxCWf5vDJRdYT5akZkuWxVG8x95z+U
-        OWbXNjXL4oDmQTqoFazmqYx8n04SxAk=
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@amacapital.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v0 19/19] x86/insn: Make insn_complete() static
-Date:   Tue, 24 Nov 2020 11:19:52 +0100
-Message-Id: <20201124101952.7909-20-bp@alien8.de>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201124101952.7909-1-bp@alien8.de>
-References: <20201124101952.7909-1-bp@alien8.de>
+        id S1731956AbgKXKUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:20:32 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9293 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731895AbgKXKUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:20:13 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbcde5d0000>; Tue, 24 Nov 2020 02:20:13 -0800
+Received: from [10.19.34.61] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
+ 2020 10:20:05 +0000
+Subject: Re: [PATCH V2] PCI: dwc: Add support to configure for ECRC
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Jingoo Han <jingoohan1@gmail.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+References: <20201111222937.GA977451@bjorn-Precision-5520>
+ <a2246e67-4874-f01c-d1bf-1d8a05ffa4b4@nvidia.com>
+Message-ID: <40a89fcd-7f8f-fd68-2a01-4008be345c32@nvidia.com>
+Date:   Tue, 24 Nov 2020 15:50:01 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a2246e67-4874-f01c-d1bf-1d8a05ffa4b4@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606213213; bh=MJrpVXD+AsCg7mJmySF5iw8CammHJ6WJGkHPz9F+gXE=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=NZKHPOZNF+D5b6uTw+0bcq6++1iBrEbOr5jr80MSmKt/QuO6XuOQ7XIbAPNd099YZ
+         E6ZVXF3I+VkC/Qw9bkuCN878IqdKtyFzCABYgcffRGAZJWb+Giof5ZGoKactSrvF1d
+         /6mpe9BDkSHdY8R3Z0UTPxJmJD+MgvypXcFTY7jdrkJrT4CKGijEJWAwEijXfcCv6Q
+         hhgfnRxBfVup/+Oo6iHJf1mMoYkGwXbThRXC545quQY6JBIZu0/oEIWaSK7lBPPMwY
+         l06WE2V81Gmmc/WW1ZeL68nKOPpFxkESl2/g3YQ2QtQG+iPGppRaDsYypYSJYVx7oC
+         AJZu/RsBfiyYw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+Hi Bjorn,
+Please let me know if this patch needs any further modifications
 
-... and move it above the only place it is used.
+Thanks,
+Vidya Sagar
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/include/asm/insn.h       | 7 -------
- arch/x86/lib/insn.c               | 7 +++++++
- tools/arch/x86/include/asm/insn.h | 7 -------
- tools/arch/x86/lib/insn.c         | 7 +++++++
- 4 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index ccf472ae4378..331379889f9f 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -133,13 +133,6 @@ static inline int insn_has_emulate_prefix(struct insn *insn)
- 	return !!insn->emulate_prefix_size;
- }
- 
--/* Ensure this instruction is decoded completely */
--static inline int insn_complete(struct insn *insn)
--{
--	return insn->opcode.got && insn->modrm.got && insn->sib.got &&
--		insn->displacement.got && insn->immediate.got;
--}
--
- static inline insn_byte_t insn_vex_m_bits(struct insn *insn)
- {
- 	if (insn->vex_prefix.nbytes == 2)	/* 2 bytes VEX */
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 1f749e3b4a25..4dd05534fffb 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -702,6 +702,13 @@ int insn_get_length(struct insn *insn)
- 	return 0;
- }
- 
-+/* Ensure this instruction is decoded completely */
-+static inline int insn_complete(struct insn *insn)
-+{
-+	return insn->opcode.got && insn->modrm.got && insn->sib.got &&
-+		insn->displacement.got && insn->immediate.got;
-+}
-+
- /**
-  * insn_decode() - Decode an x86 instruction
-  * @insn:	&struct insn to be initialized
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index 6c8d6b167bea..5e57a4dcac42 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -133,13 +133,6 @@ static inline int insn_has_emulate_prefix(struct insn *insn)
- 	return !!insn->emulate_prefix_size;
- }
- 
--/* Ensure this instruction is decoded completely */
--static inline int insn_complete(struct insn *insn)
--{
--	return insn->opcode.got && insn->modrm.got && insn->sib.got &&
--		insn->displacement.got && insn->immediate.got;
--}
--
- static inline insn_byte_t insn_vex_m_bits(struct insn *insn)
- {
- 	if (insn->vex_prefix.nbytes == 2)	/* 2 bytes VEX */
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index 41d2418302d9..bb83822b9e7b 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -702,6 +702,13 @@ int insn_get_length(struct insn *insn)
- 	return 0;
- }
- 
-+/* Ensure this instruction is decoded completely */
-+static inline int insn_complete(struct insn *insn)
-+{
-+	return insn->opcode.got && insn->modrm.got && insn->sib.got &&
-+		insn->displacement.got && insn->immediate.got;
-+}
-+
- /**
-  * insn_decode() - Decode an x86 instruction
-  * @insn:	&struct insn to be initialized
--- 
-2.21.0
-
+On 11/12/2020 10:32 PM, Vidya Sagar wrote:
+> External email: Use caution opening links or attachments
+>=20
+>=20
+> On 11/12/2020 3:59 AM, Bjorn Helgaas wrote:
+>> External email: Use caution opening links or attachments
+>>
+>>
+>> On Wed, Nov 11, 2020 at 10:21:46PM +0530, Vidya Sagar wrote:
+>>>
+>>>
+>>> On 11/11/2020 9:57 PM, Jingoo Han wrote:
+>>>> External email: Use caution opening links or attachments
+>>>>
+>>>>
+>>>> On 11/11/20, 7:12 AM, Vidya Sagar wrote:
+>>>>>
+>>>>> DesignWare core has a TLP digest (TD) override bit in one of the=20
+>>>>> control
+>>>>> registers of ATU. This bit also needs to be programmed for proper ECR=
+C
+>>>>> functionality. This is currently identified as an issue with=20
+>>>>> DesignWare
+>>>>> IP version 4.90a.
+>>>>>
+>>>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>>>>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>>>>> ---
+>>>>> V2:
+>>>>> * Addressed Bjorn's comments
+>>>>>
+>>>>> =C2=A0=C2=A0 drivers/pci/controller/dwc/pcie-designware.c | 52=20
+>>>>> ++++++++++++++++++--
+>>>>> =C2=A0=C2=A0 drivers/pci/controller/dwc/pcie-designware.h |=C2=A0 1 +
+>>>>> =C2=A0=C2=A0 2 files changed, 49 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c=20
+>>>>> b/drivers/pci/controller/dwc/pcie-designware.c
+>>>>> index c2dea8fc97c8..ec0d13ab6bad 100644
+>>>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
+>>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+>>>>> @@ -225,6 +225,46 @@ static void dw_pcie_writel_ob_unroll(struct=20
+>>>>> dw_pcie *pci, u32 index, u32 reg,
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dw_pcie_writel_atu(pci, of=
+fset + reg, val);
+>>>>> =C2=A0=C2=A0 }
+>>>>>
+>>>>> +static inline u32 dw_pcie_enable_ecrc(u32 val)
+>>>>
+>>>> What is the reason to use inline here?
+>>>
+>>> Actually, I wanted to move the programming part inside the respective=20
+>>> APIs
+>>> but then I wanted to give some details as well in comments so to avoid
+>>> duplication, I came up with this function. But, I'm making it inline fo=
+r
+>>> better code optimization by compiler.
+>>
+>> I don't really care either way, but I'd be surprised if the compiler
+>> didn't inline this all by itself even without the explicit "inline".
+> I just checked it and you are right that compiler is indeed inlining it
+> without explicitly mentioning 'inline'.
+> I hope it is ok to leave it that way.
+>=20
+>>
+>>>>> +{
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * DesignWare core version 4.90A has t=
+his strange design issue
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * where the 'TD' bit in the Control r=
+egister-1 of the ATU=20
+>>>>> outbound
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * region acts like an override for th=
+e ECRC setting i.e. the=20
+>>>>> presence
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * of TLP Digest(ECRC) in the outgoing=
+ TLPs is solely=20
+>>>>> determined by
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * this bit. This is contrary to the P=
+CIe spec which says=20
+>>>>> that the
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * enablement of the ECRC is solely de=
+termined by the AER=20
+>>>>> registers.
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Because of this, even when the ECRC=
+ is enabled through AER
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * registers, the transactions going t=
+hrough ATU won't have=20
+>>>>> TLP Digest
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * as there is no way the AER sub-syst=
+em could program the TD=20
+>>>>> bit which
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * is specific to DesignWare core.
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The best way to handle this scenari=
+o is to program the TD bit
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * always. It affects only the traffic=
+ from root port to=20
+>>>>> downstream
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * devices.
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * At this point,
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * When ECRC is enabled in AER registe=
+rs, everything works=20
+>>>>> normally
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * When ECRC is NOT enabled in AER reg=
+isters, then,
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * on Root Port:- TLP Digest (DWord si=
+ze) gets appended to=20
+>>>>> each packet
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 even through it is n=
+ot required. Since=20
+>>>>> downstream
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 TLPs are mostly for =
+configuration accesses=20
+>>>>> and BAR
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 accesses, they are n=
+ot in critical path and=20
+>>>>> won't
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 have much negative e=
+ffect on the performance.
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * on End Point:- TLP Digest is receiv=
+ed for some/all the=20
+>>>>> packets coming
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 from the root port. =
+TLP Digest is ignored=20
+>>>>> because,
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 as per the PCIe Spec=
+ r5.0 v1.0 section 2.2.3
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "TLP Digest Rules", =
+when an endpoint=20
+>>>>> receives TLP
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Digest when its ECRC=
+ check functionality is=20
+>>>>> disabled
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 in AER registers, re=
+ceived TLP Digest is=20
+>>>>> just ignored.
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Since there is no issue or error re=
+ported either side,=20
+>>>>> best way to
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * handle the scenario is to program T=
+D bit by default.
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>>> +
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 return val | PCIE_ATU_TD;
+>>>>> +}
