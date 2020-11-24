@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBA82C24AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6D62C24B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732930AbgKXLiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:38:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35767 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732792AbgKXLiA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:38:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606217879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4EKV2Um7/yJIu8VsarQJwEZ8n5C8kG7HOAuj6t2iAfw=;
-        b=fw33vJke2XbbyR8Yw//YUTOKNp8t7YG2dCqE5BqcVHhl0/eyxVN2Hxsvw3/3Vxo2lv1+/B
-        PcyiS0i0yxWOLCDce7LY2ERpfWBlHQJGG8jL7e2sSWXfy06gkFebJG9yxdIwfC/MhSZD9B
-        QT28I/INiSDybLKEJDooYhU2j7zi5lk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-fkJl_pP-Mdu07RMLrlJGVw-1; Tue, 24 Nov 2020 06:37:56 -0500
-X-MC-Unique: fkJl_pP-Mdu07RMLrlJGVw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E9518C0211;
-        Tue, 24 Nov 2020 11:37:37 +0000 (UTC)
-Received: from T590 (ovpn-13-202.pek2.redhat.com [10.72.13.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 567556F450;
-        Tue, 24 Nov 2020 11:37:33 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 19:37:29 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.11] block: optimise for_each_bvec() advance
-Message-ID: <20201124113729.GA88892@T590>
-References: <60aaa6caab3d061cf7194716c27a10920b5bd7ad.1606212786.git.asml.silence@gmail.com>
+        id S1732935AbgKXLjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:39:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:56020 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727909AbgKXLjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:39:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 327B21396;
+        Tue, 24 Nov 2020 03:39:04 -0800 (PST)
+Received: from [10.57.56.151] (unknown [10.57.56.151])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 18A623F71F;
+        Tue, 24 Nov 2020 03:39:00 -0800 (PST)
+Subject: Re: [PATCH v4 20/25] coresight: etm4x: Detect system instructions
+ support
+To:     Tingwei Zhang <tingweiz@codeaurora.org>
+Cc:     anshuman.khandual@arm.com, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jonathan.zhouwen@huawei.com, mike.leach@linaro.org
+References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+ <20201119164547.2982871-21-suzuki.poulose@arm.com>
+ <20201123075827.GA18352@codeaurora.org>
+ <1c8d4b13-0c80-0bd3-29a6-dd586841377f@arm.com>
+ <20201124004155.GA10220@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <bd1cf9ec-eeeb-90a1-beb8-23a39dfa3b2a@arm.com>
+Date:   Tue, 24 Nov 2020 11:38:55 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60aaa6caab3d061cf7194716c27a10920b5bd7ad.1606212786.git.asml.silence@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20201124004155.GA10220@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 10:21:23AM +0000, Pavel Begunkov wrote:
-> Because of how for_each_bvec() works it never advances across multiple
-> entries at a time, so bvec_iter_advance() is an overkill. Add
-> specialised bvec_iter_advance_single() that is faster. It also handles
-> zero-len bvecs, so can kill bvec_iter_skip_zero_bvec().
-> 
->    text    data     bss     dec     hex filename
-> before:
->   23977     805       0   24782    60ce lib/iov_iter.o
-> before, bvec_iter_advance() w/o WARN_ONCE()
->   22886     600       0   23486    5bbe ./lib/iov_iter.o
-> after:
->   21862     600       0   22462    57be lib/iov_iter.o
-> 
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  include/linux/bvec.h | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/bvec.h b/include/linux/bvec.h
-> index 2efec10bf792..4a304dfafa18 100644
-> --- a/include/linux/bvec.h
-> +++ b/include/linux/bvec.h
-> @@ -121,18 +121,24 @@ static inline bool bvec_iter_advance(const struct bio_vec *bv,
->  	return true;
->  }
->  
-> -static inline void bvec_iter_skip_zero_bvec(struct bvec_iter *iter)
-> +static inline void bvec_iter_advance_single(const struct bio_vec *bv,
-> +				struct bvec_iter *iter, unsigned int bytes)
->  {
-> -	iter->bi_bvec_done = 0;
-> -	iter->bi_idx++;
-> +	unsigned int done = iter->bi_bvec_done + bytes;
-> +
-> +	if (done == bv[iter->bi_idx].bv_len) {
-> +		done = 0;
-> +		iter->bi_idx++;
-> +	}
-> +	iter->bi_bvec_done = done;
-> +	iter->bi_size -= bytes;
->  }
->  
->  #define for_each_bvec(bvl, bio_vec, iter, start)			\
->  	for (iter = (start);						\
->  	     (iter).bi_size &&						\
->  		((bvl = bvec_iter_bvec((bio_vec), (iter))), 1);	\
-> -	     (bvl).bv_len ? (void)bvec_iter_advance((bio_vec), &(iter),	\
-> -		     (bvl).bv_len) : bvec_iter_skip_zero_bvec(&(iter)))
-> +	     bvec_iter_advance_single((bio_vec), &(iter), (bvl).bv_len))
->  
->  /* for iterating one bio from start to end */
->  #define BVEC_ITER_ALL_INIT (struct bvec_iter)				\
-> -- 
-> 2.24.0
+On 11/24/20 12:41 AM, Tingwei Zhang wrote:
+> On Mon, Nov 23, 2020 at 05:39:43PM +0800, Suzuki K Poulose wrote:
+>> On 11/23/20 7:58 AM, Tingwei Zhang wrote:
+>>> Hi Suzuki,
+>>>
+>>> On Fri, Nov 20, 2020 at 12:45:42AM +0800, Suzuki K Poulose wrote:
+>>>> ETM v4.4 onwards adds support for system instruction access
+>>>> to the ETM. Detect the support on an ETM and switch to using the
+>>>> mode when available.
+>>>>
+>>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> ---
+>>>>   .../coresight/coresight-etm4x-core.c          | 39 +++++++++++++++++++
+>>>>   1 file changed, 39 insertions(+)
+>>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>> index 7ac0a185c146..5cbea9c27f58 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>> @@ -684,6 +684,37 @@ static const struct coresight_ops etm4_cs_ops = {
+>>>>   	.source_ops	= &etm4_source_ops,
+>>>>   };
+>>>>
+>>>> +static inline bool cpu_supports_sysreg_trace(void)
+>>>> +{
+>>>> +	u64 dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
+>>>> +
+>>>> +	return ((dfr0 >> ID_AA64DFR0_TRACEVER_SHIFT) & 0xfUL) > 0;
+>>>> +}
+>>>> +
+>>>> +static bool etm4_init_sysreg_access(struct etmv4_drvdata *drvdata,
+>>>> +				    struct csdev_access *csa)
+>>>> +{
+>>>> +	u32 devarch;
+>>>> +
+>>>> +	if (!cpu_supports_sysreg_trace())
+>>>> +		return false;
+>>>> +
+>>>> +	/*
+>>>> +	 * ETMs implementing sysreg access must implement TRCDEVARCH.
+>>>> +	 */
+>>>> +	devarch = read_etm4x_sysreg_const_offset(TRCDEVARCH);
+>>>> +	if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH)
+>>>
+>>> Is this driver suppose to work on ETM 5.0/ETE trace unit before ETE driver
+>>> is ready?
+>>
+>> No, it is not supposed to work on an ETE without the ETE support. That check
+>> ensures that we only detect ETMv4x for now. The ETE driver support adds the
+>> ETE_ARCH as one of the supported ETMs. If you hack around it might still
+>> probe,
+>> but things could go terribly wrong if we access registers that are not
+>> available
+>> on ETE.
+>>
+>> Btw, are you able to test this series on an ETMv4.4+ system ?
+>>
+> I'm trying to test this series on an ETE. Look like it's not correct.
+> I'll apply ETE patch on top of this and test.
 > 
 
-Looks fine,
+Yes please ! Much appreciated. Do you have a TRBE as well ? Or are you
+using a legacy CoreSight topology ?
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-
-Thanks,
-Ming
-
+Kind regards
+Suzuki
