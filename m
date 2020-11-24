@@ -2,85 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A722C2D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC312C2D1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390513AbgKXQhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:37:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390077AbgKXQhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:37:37 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AD40206F9;
-        Tue, 24 Nov 2020 16:37:36 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 11:37:34 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Daniel Wagner <wagi@monom.org>
-Subject: [FEATURE REQUEST] tracing: Have event filters handle dynamic arrays
-Message-ID: <20201124113734.34d86db1@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390057AbgKXQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:39:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgKXQj2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 11:39:28 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB879C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:39:28 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id o3so19927545ota.8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:39:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RltOMNQblglzvD5sQFGmoGqb874rAeV5SiXL374IQqs=;
+        b=D3OtyGBAX3joJzMbS2rJMdlKys+ohh3GLRsgxQR77YbyAh6P6jj6HbORhNbRFZe+2r
+         vrixVItHGkEgVb0znEfICfNfOKDRa1+pGmV5N1DOnBSfuGuEIY70UXd9WyQnKJ/131L2
+         H7pAfoCcafvAYDH+uJn9X35I2LeQf7/3z1GetOuqPpoFLYmcFyiiWf1VuVDrwunWEwgD
+         peUVI+3oJVZBPF6NENGbfONet+G3wrPsjiV3nf3bzdpDXlMpvZk7jzdfYvaijm4VlGj7
+         HDUDINmD4qxrExO8oKKdw8tOSYiWvxtM6SJ1YiJ2sDPfXQPWR+wSI0EaPrHXFWm/Zk8F
+         NzFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RltOMNQblglzvD5sQFGmoGqb874rAeV5SiXL374IQqs=;
+        b=qZ6eKOqGgmWE4rFsoeihJJEBJ4q9MlAcPovFOnEyWFLi8lpaq5df/UaGb36a3537uk
+         bIB1aV5ux5BWb1avPps+zwD2OqLKR7N0rNnKJg/PYNQQUh5zhdh3bcakPuT1QPrrvLad
+         zP1ZI1sx+O5dJu/BCmjQZfQKNTAtZSActeuUE5+2sFpdsc2WIovt5jgz2F1BP+vdsXKZ
+         Vie75v7xqIq+vLnaR5T4IlAjLe6KCyx88zpL5IShkS5NxXLreaoD+lWy/FBuW0ZOBX+4
+         BCx7UYxQSrKkgfABwjhiS+6muD49Ioz2k0dYMYqPdVNNtRfFZ8xMMdvKIWqXWkfswyZ1
+         VRvw==
+X-Gm-Message-State: AOAM530qbgA4iCuzTZqn15Fh9n4neN4PisJpw56v342OHtDlpOdbCwVh
+        sz7V8gAeMVXD4cSNk7k/nEpOyQ==
+X-Google-Smtp-Source: ABdhPJxGZu7A4Arjh/j+gunT3yTLotWwt6/FKyfYmDrmsoedfsKYylgTq71bnyPwMqU51N1NTKTrpw==
+X-Received: by 2002:a05:6830:1015:: with SMTP id a21mr4178032otp.143.1606235968144;
+        Tue, 24 Nov 2020 08:39:28 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w6sm8691228otj.12.2020.11.24.08.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 08:39:26 -0800 (PST)
+Date:   Tue, 24 Nov 2020 10:39:25 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, elder@linaro.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH] soc: qcom: Introduce debugfs interface to smem
+Message-ID: <20201124163925.GN95182@builder.lan>
+References: <20201123052119.157551-1-bjorn.andersson@linaro.org>
+ <20201124153422.GO8403@vkoul-mobl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124153422.GO8403@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On Tue 24 Nov 09:34 CST 2020, Vinod Koul wrote:
 
-Daniel asked about filtering bitmasks, something like:
+> On 22-11-20, 23:21, Bjorn Andersson wrote:
+> > Every now and then it's convenient to be able to inspect the content of
+> > SMEM items. Rather than carrying some hack locally let's upstream a
+> > driver that when inserted exposes a debugfs interface for dumping
+> > available items.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >  drivers/soc/qcom/Kconfig        |   7 +++
+> >  drivers/soc/qcom/Makefile       |   1 +
+> >  drivers/soc/qcom/smem_debugfs.c | 102 ++++++++++++++++++++++++++++++++
+> >  3 files changed, 110 insertions(+)
+> >  create mode 100644 drivers/soc/qcom/smem_debugfs.c
+> > 
+> > diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> > index 3dc3e3d61ea3..7e1dd6b3f33a 100644
+> > --- a/drivers/soc/qcom/Kconfig
+> > +++ b/drivers/soc/qcom/Kconfig
+> > @@ -128,6 +128,13 @@ config QCOM_SMEM
+> >  	  The driver provides an interface to items in a heap shared among all
+> >  	  processors in a Qualcomm platform.
+> >  
+> > +config QCOM_SMEM_DEBUGFS
+> > +	tristate "Qualcomm Shared Memory Manager (SMEM) DebugFS interface"
+> > +	depends on QCOM_SMEM
+> > +	depends on DEBUG_FS
+> > +	help
+> > +	  Provides a debugfs interface for inspecting SMEM.
+> 
+> Do we need additional debugfs entry, maybe better to depend on DEBUG_FS
+> being enabled and this file part of QCOM_SMEM?
+> 
 
-   cpumask != 0xff
+We don't need this in any form of production system, so rather than
+tainting qcom_smem.c I put it in a separate driver that isn't even
+automatically loaded.
 
-Looking into the code, I realized that bitmasks are dynamic arrays, and
-there's no logic in the filter code to handle dynamic arrays of anything
-other than 'char' type (which are dynamic strings).
+> > +
+> >  config QCOM_SMD_RPM
+> >  	tristate "Qualcomm Resource Power Manager (RPM) over SMD"
+> >  	depends on ARCH_QCOM || COMPILE_TEST
+> > diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> > index 93392d9dc7f7..632eefc5a897 100644
+> > --- a/drivers/soc/qcom/Makefile
+> > +++ b/drivers/soc/qcom/Makefile
+> > @@ -15,6 +15,7 @@ qcom_rpmh-y			+= rpmh-rsc.o
+> >  qcom_rpmh-y			+= rpmh.o
+> >  obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
+> >  obj-$(CONFIG_QCOM_SMEM) +=	smem.o
+> > +obj-$(CONFIG_QCOM_SMEM_DEBUGFS) += smem_debugfs.o
+> >  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+> >  obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+> >  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+> > diff --git a/drivers/soc/qcom/smem_debugfs.c b/drivers/soc/qcom/smem_debugfs.c
+> > new file mode 100644
+> > index 000000000000..11ef29a0cada
+> > --- /dev/null
+> > +++ b/drivers/soc/qcom/smem_debugfs.c
+> > @@ -0,0 +1,102 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2020, Linaro Ltd.
+> > + */
+> > +
+> > +#include <linux/debugfs.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/soc/qcom/smem.h>
+> > +
+> > +struct smem_debugfs {
+> > +	struct dentry *root;
+> > +};
+> > +
+> > +static int smem_debugfs_item_show(struct seq_file *seq, void *p)
+> > +{
+> > +	unsigned long data = (unsigned long)seq->private;
+> > +	unsigned long item = data & 0xffff;
+> > +	unsigned long host = data >> 16;
+> > +	size_t len;
+> > +	void *ptr;
+> > +
+> > +	ptr = qcom_smem_get(host, item, &len);
+> > +	if (IS_ERR(ptr))
+> > +		return PTR_ERR(ptr);
+> > +
+> > +	seq_hex_dump(seq, "", DUMP_PREFIX_OFFSET, 16, 1, ptr, len, true);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int smem_debugfs_item_open(struct inode *inode, struct file *file)
+> > +{
+> > +	return single_open(file, smem_debugfs_item_show, inode->i_private);
+> > +}
+> > +
+> > +static const struct file_operations smem_debugfs_item_ops = {
+> > +	.open = smem_debugfs_item_open,
+> > +	.read = seq_read,
+> > +	.llseek = seq_lseek,
+> > +	.release = single_release,
+> > +};
+> 
+> How about using DEFINE_SHOW_ATTRIBUTE() instead? That will help cut down
+> this boiler plate code..
+> 
 
-If you have any cycles to spare, do you think you can add code to process
-dynamic arrays other than char?
+Forgot about that, thank you.
 
-The compare logic may be complex though. I think the above example should
-work, but we would need to define how that happens.
+> > +
+> > +static int smem_debugfs_rescan(struct seq_file *seq, void *p)
+> > +{
+> > +	struct dentry *root = seq->private;
+> > +	unsigned long item;
+> > +	unsigned long host;
+> > +	unsigned long data;
+> > +	char name[10];
+> > +	char *ptr;
+> > +
+> > +	for (host = 0; host < 10; host++) {
+> > +		for (item = 0; item < 512; item++) {
+> > +			ptr = qcom_smem_get(host, item, NULL);
+> > +			if (IS_ERR(ptr))
+> > +				continue;
+> > +
+> > +			sprintf(name, "%ld-%ld", host, item);
+> > +
+> > +			data = host << 16 | item;
+> > +			debugfs_create_file(name, 0400, root,
+> > +					    (void *)data, &smem_debugfs_item_ops);
+> 
+> So IIUC user invokes scan file which creates additional files, right?
+> Additional invoke will do that as well..?
+> 
 
-I guess we should follow the cpumask logic, and break all non string
-dynamic arrays up into 32 bit words. Even if something is defined as u8, it
-will be converted to the local endian of the machine. Basically, we should
-follow the function bitmap_string() defined in lib/vsnprintf.c
+Yes, so if you run it a second time debugfs_create_file() will fail for
+any items that was present during the last invocation.
 
-If we have a u8 dynamic array of:
+I did consider adding some logic to keep track of what items we have
+already registered, but it is just debugging code and given that after a
+few second of operations the set of items has stabilized you typically
+don't run this repeatedly.
 
- 0x12 0x34 0x56 0x78 0x9a 0xbc 0xde 0xf0
+So I don't think it's worth the memory occupied by an idr or 5000+ bits
+in a map.
 
-On a little endian machine it would match:
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int smem_debugfs_rescan_open(struct inode *inode, struct file *file)
+> > +{
+> > +	return single_open(file, smem_debugfs_rescan, inode->i_private);
+> > +}
+> > +
+> > +static const struct file_operations smem_debugfs_rescan_ops = {
+> > +	.open = smem_debugfs_rescan_open,
+> > +	.read = seq_read,
+> > +	.llseek = seq_lseek,
+> > +	.release = single_release,
+> > +};
+> 
+> Here as well?
+> 
 
-  0xf0debca9,0x78563412
+Will fix.
 
-This way, if we have a machine with 64 CPUS, and we want to match cpus 0-7,
-then we only need to do:
+Thank you,
+Bjorn
 
-  cpumask & 0xff
-
-The above would be equivalent to:
-
- cpumask & 0,0xff
-
-in such a case.
-
-That's because, if I'm reading the code correctly, a cpumask for CPUs 0-7
-bits set for 64 CPU machine in raw format would be:
-
- 0x00 0x00 0x00 0xff 0x00 0x00 0x00 0x00
-
-The dynamic arrays will allow comma separated 4 byte words to match.
-
-Daniel brought this up, and he said he'd be willing to help out making a
-patch if he has spare cycles to spare. Perhaps, between the two of you, you
-could come up with the cycles to produce such a patch :-)
-
-Cheers,
-
--- Steve
+> > +
+> > +static struct dentry *smem_debugfs_root;
+> > +
+> > +static int __init qcom_smem_debugfs_init(void)
+> > +{
+> > +	smem_debugfs_root = debugfs_create_dir("qcom_smem", NULL);
+> > +	debugfs_create_file("rescan", 0400, smem_debugfs_root,
+> > +			    smem_debugfs_root, &smem_debugfs_rescan_ops);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void __exit qcom_smem_debugfs_exit(void)
+> > +{
+> > +	debugfs_remove_recursive(smem_debugfs_root);
+> > +}
+> > +
+> > +module_init(qcom_smem_debugfs_init);
+> > +module_exit(qcom_smem_debugfs_exit);
+> > +
+> > +MODULE_DESCRIPTION("Qualcomm SMEM debugfs driver");
+> > +MODULE_LICENSE("GPL v2");
+> > -- 
+> > 2.29.2
+> 
+> -- 
+> ~Vinod
