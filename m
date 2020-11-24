@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D392C204E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5531E2C204F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730792AbgKXInt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:43:49 -0500
-Received: from mga17.intel.com ([192.55.52.151]:15611 "EHLO mga17.intel.com"
+        id S1730802AbgKXInx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:43:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58420 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730492AbgKXIns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:43:48 -0500
-IronPort-SDR: V/EU4lDHnWahsvyPR0H0weK+DDJFq4ffq7VenD1VH8R/uCUEfriRn2Z19PVqSThfcuQhx+z67R
- IjkN7fQevLLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="151753019"
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="151753019"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:43:48 -0800
-IronPort-SDR: 1j9zIiz75GIryTsdL/biK5K/G1r8KgHWpcRiZ46wjCIThr8WVk1V8hdaQVcapbctpn4qkhuZxs
- Hry9mfRMBKcg==
-X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
-   d="scan'208";a="358746299"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 00:43:45 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id E9A9D20461; Tue, 24 Nov 2020 10:43:43 +0200 (EET)
-Date:   Tue, 24 Nov 2020 10:43:43 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Dongchun Zhu <dongchun.zhu@mediatek.com>
-Cc:     Robert Foss <robert.foss@linaro.org>, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Kao <ben.kao@intel.com>, tfiga@google.com,
-        shengnan.wang@mediatek.com
-Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
-Message-ID: <20201124084343.GD3940@paasikivi.fi.intel.com>
-References: <20201116155008.118124-1-robert.foss@linaro.org>
- <1606203651.4733.134.camel@mhfsdcap03>
+        id S1730492AbgKXInw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 03:43:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606207431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YLobq2Kgfx6O6DNcBUNrxUYsXG3j5iSZLKWRmFWVAHA=;
+        b=bkzNqMpXgfNtJzNRTF9vcCxUnWHHoEhoJXkgs6C081As/BL/OcQeAGTcUtO+v2a/UJJvp6
+        Fl/iezJQ8/f0JiJ+Di2fU8oVkkBdLMz0O8+GJbtXnFzvaQQmZJFfdm1qoMVAtotBqz6H9v
+        4WSbE0TdYjOa0fIQ0bQv22AogEEgJAk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C49BCAC2D;
+        Tue, 24 Nov 2020 08:43:51 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 09:43:50 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: Pinning ZONE_MOVABLE pages
+Message-ID: <20201124084350.GU27488@dhcp22.suse.cz>
+References: <CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com>
+ <d668b0f2-2644-0f5e-a8c1-a6b8f515e9ab@suse.cz>
+ <CA+CK2bBuEhH7cSEZUKTYE_g9mw_rwEG-v1Jk4BL6WuLWK824Aw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1606203651.4733.134.camel@mhfsdcap03>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+CK2bBuEhH7cSEZUKTYE_g9mw_rwEG-v1Jk4BL6WuLWK824Aw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dongchun,
+On Mon 23-11-20 11:31:59, Pavel Tatashin wrote:
+[...]
+> Also, we still need to take care of the fault scenario.
 
-On Tue, Nov 24, 2020 at 03:40:51PM +0800, Dongchun Zhu wrote:
-> >  static const struct ov8856_mode supported_modes[] = {
-> > -	{
-> > -		.width = 3280,
-> > -		.height = 2464,
-> > -		.hts = 1928,
-> > -		.vts_def = 2488,
-> > -		.vts_min = 2488,
-> > -		.reg_list = {
-> > -			.num_of_regs = ARRAY_SIZE(mode_3280x2464_regs),
-> > -			.regs = mode_3280x2464_regs,
-> > -		},
-> > -		.link_freq_index = OV8856_LINK_FREQ_720MBPS,
-> > -	},
-> 
-> If 3280x2464 resolution is removed, bayer order needs to be updated in
-> the meantime. From OV8856's datasheet, bayer order turns to be BGGR if
-> sensor adopts full mode (3264x2448) or binning mode (1632x1224).
-
-How is this related to the patch?
-
-The next largest size is 16 by 16 less, so the Bayer order is the same. If
-it's wrong currently (as it would appear to), it should be a separate
-patch.
-
+Forgot to reply to this part. I believe you mean this to be fault at gup
+time, right? Then the easiest way forward would be to either add yet
+another scoped flag or (maybe) better to generalize memalloc_nocma_* to
+imply that the allocated memory is going to be unmovable so drop
+__GFP_MOVABLE and also forbid CMA. I have to admit that I do not
+remember why long term pin on CMA pages is ok to go to movable but I
+strongly suspect this is just shifting problem around.
 -- 
-Sakari Ailus
+Michal Hocko
+SUSE Labs
