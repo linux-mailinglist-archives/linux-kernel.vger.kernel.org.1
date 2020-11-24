@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E3D2C21A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAFF2C21CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731470AbgKXJh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731160AbgKXJh4 (ORCPT
+        id S1731548AbgKXJiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:38:52 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47338 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731477AbgKXJic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:37:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F056C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:37:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=erVBEbSZXU0xKU0/OCceptXO8BMpPV2CdOs+DwG0M+s=; b=TbCvdo4FiP+XH83lk1czbsUuEA
-        OTyCX3rCda0+ppk1biGGK9vHwCEtdw2l5r2hzwbfQhNDIHJfR0sCwpLA+DoNaxYDvK6qe6xCnfHPb
-        lKBJM+WQ0UHQrhWZKyhLKrcjXbpI9XjAeY5gIN0QlLi+NG9OOZuJuwPCke5RBSUW/z6TFkSEg0FAD
-        1wizpRmJ3u2zDT81oClpAEsX5u7AOH1Aq2STW23L7gdlFx3bFtYO/gq3e5Hya0qvaFalo/KeRZTP7
-        UipqfF9bjU9WbEdfaDI0epSlOQx+reUs5Ob/Mnc0fP3t0jV+v5S1CDzWs1EZUqNYemD6JBN0tgf52
-        hmtJmLDg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khUlm-0008Q5-Dm; Tue, 24 Nov 2020 09:37:54 +0000
-Date:   Tue, 24 Nov 2020 09:37:54 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jani Nikula <jani.nikula@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 3/9] relay: make create_buf_file and remove_buf_file
- callbacks mandatory
-Message-ID: <20201124093754.GC31963@infradead.org>
-References: <cover.1606153547.git.jani.nikula@intel.com>
- <88003c1527386b93036e286e7917f1e33aec84ac.1606153547.git.jani.nikula@intel.com>
+        Tue, 24 Nov 2020 04:38:32 -0500
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1khUmK-0007Ty-Cq; Tue, 24 Nov 2020 09:38:28 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scsi: pm8001: remove space in a debug message
+Date:   Tue, 24 Nov 2020 09:38:28 +0000
+Message-Id: <20201124093828.307709-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88003c1527386b93036e286e7917f1e33aec84ac.1606153547.git.jani.nikula@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 07:59:23PM +0200, Jani Nikula wrote:
-> All clients provide create_buf_file and remove_buf_file callbacks, and
-> they're required for relay to make sense. There is no point in them
-> being optional.
-> 
-> Also document whether each callback is mandatory/optional.
+From: Colin Ian King <colin.king@canonical.com>
 
-Looks good,
+There are two words that need separating with a space in a 
+pm8001_dbg message. Fix it.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index 08d6cc9b50db..c8d4d87c5473 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -1031,7 +1031,7 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha)
+ 	regVal = pm8001_cr32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK);
+ 	pm8001_cw32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK, regVal3);
+ 	pm8001_dbg(pm8001_ha, INIT,
+-		   "GSM 0x700048 - Write Data Parity Check Enableis set to = 0x%x\n",
++		   "GSM 0x700048 - Write Data Parity Check Enable is set to = 0x%x\n",
+ 		   pm8001_cr32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK));
+ 
+ 	/* step 13: bring the IOP and AAP1 out of reset */
+-- 
+2.29.2
+
