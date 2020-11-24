@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408702C2FC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB422C2F7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404370AbgKXSLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:11:52 -0500
-Received: from 4.mo51.mail-out.ovh.net ([188.165.42.229]:60114 "EHLO
-        4.mo51.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404225AbgKXSLw (ORCPT
+        id S2404121AbgKXSDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:03:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36720 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728945AbgKXSDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:11:52 -0500
-X-Greylist: delayed 4199 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 13:11:51 EST
-Received: from mxplan5.mail.ovh.net (unknown [10.108.16.148])
-        by mo51.mail-out.ovh.net (Postfix) with ESMTPS id 45AE023CE84;
-        Tue, 24 Nov 2020 17:54:18 +0100 (CET)
-Received: from kaod.org (37.59.142.105) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Tue, 24 Nov
- 2020 17:54:16 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-105G006f441115f-3859-42e7-9d6d-ccd259b89853,
-                    970ACD818314199E15927CBC8014A4D4C9EA8B7B) smtp.auth=clg@kaod.org
-Subject: Re: [PATCH kernel v4 1/8] genirq/ipi: Simplify irq_reserve_ipi
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        <linux-kernel@vger.kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>, <x86@kernel.org>,
-        <linux-gpio@vger.kernel.org>, Oliver O'Halloran <oohall@gmail.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
-        <linuxppc-dev@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Matt Redfearn <matt.redfearn@mips.com>,
-        Qais Yousef <qsyousef@gmail.com>, <linux-mips@linux-mips.org>
-References: <20201124061720.86766-1-aik@ozlabs.ru>
- <20201124061720.86766-2-aik@ozlabs.ru>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <d12fcee6-f83a-5b09-6208-face2ea5ec39@kaod.org>
-Date:   Tue, 24 Nov 2020 17:54:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 24 Nov 2020 13:03:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606240988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JQRdCyEjd8lB1hJnU6FBbehjJrMGCDIdPwywH5xUhec=;
+        b=AoW4BsSbu2td1z/a5ktWMsBQ7A8+lMygYTuIldxX3RlS2YwvM1C0wcyC702yz7Tq6o74MS
+        38zrP4Py4LNyqjv8P1hP9qTQa3advLkheupWIagvgRIn2oA4s8Y6bnifUanZvzo+9B7nRh
+        EoBeLEB14qoVx9t6EgrhMEL1IKBSTew=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-IEMlTEUgMoO_v_UEUqZUmA-1; Tue, 24 Nov 2020 13:03:03 -0500
+X-MC-Unique: IEMlTEUgMoO_v_UEUqZUmA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5802A18C43C7;
+        Tue, 24 Nov 2020 18:03:01 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-112-141.ams2.redhat.com [10.36.112.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 770F75D6AB;
+        Tue, 24 Nov 2020 18:02:55 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Mark Wielaard <mark@klomp.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
+        "Carlos O'Donell" <carlos@redhat.com>
+Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
+ workaround
+References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+        <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
+        <878saq3ofx.fsf@oldenburg2.str.redhat.com>
+        <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
+        <20201124164546.GA14094@infradead.org>
+        <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
+Date:   Tue, 24 Nov 2020 19:02:53 +0100
+In-Reply-To: <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
+        (Jann Horn's message of "Tue, 24 Nov 2020 18:06:38 +0100")
+Message-ID: <87pn42zl82.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201124061720.86766-2-aik@ozlabs.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [37.59.142.105]
-X-ClientProxiedBy: DAG6EX2.mxp5.local (172.16.2.52) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: abd77706-b6fe-4c7a-b8f7-b22673109b15
-X-Ovh-Tracer-Id: 4231413326248905534
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgleehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeekudeuudevleegudeugeekleffveeludejteffiedvledvgfekueefudehheefnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopegrihhksehoiihlrggsshdrrhhu
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 7:17 AM, Alexey Kardashevskiy wrote:
-> __irq_domain_alloc_irqs() can already handle virq==-1 and free
-> descriptors if it failed allocating hardware interrupts so let's skip
-> this extra step.
-> 
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+* Jann Horn:
 
-LGTM,
+> +seccomp maintainers/reviewers
+> [thread context is at
+> https://lore.kernel.org/linux-api/87lfer2c0b.fsf@oldenburg2.str.redhat.com/
+> ]
+>
+> On Tue, Nov 24, 2020 at 5:49 PM Christoph Hellwig <hch@infradead.org> wrote:
+>> On Tue, Nov 24, 2020 at 03:08:05PM +0100, Mark Wielaard wrote:
+>> > For valgrind the issue is statx which we try to use before falling back
+>> > to stat64, fstatat or stat (depending on architecture, not all define
+>> > all of these). The problem with these fallbacks is that under some
+>> > containers (libseccomp versions) they might return EPERM instead of
+>> > ENOSYS. This causes really obscure errors that are really hard to
+>> > diagnose.
+>>
+>> So find a way to detect these completely broken container run times
+>> and refuse to run under them at all.  After all they've decided to
+>> deliberately break the syscall ABI.  (and yes, we gave the the rope
+>> to do that with seccomp :().
+>
+> FWIW, if the consensus is that seccomp filters that return -EPERM by
+> default are categorically wrong, I think it should be fairly easy to
+> add a check to the seccomp core that detects whether the installed
+> filter returns EPERM for some fixed unused syscall number and, if so,
+> prints a warning to dmesg or something along those lines...
 
-Reviewed-by: Cédric Le Goater <clg@kaod.org>
+But that's playing Core Wars, right?  Someone will write a seccomp
+filter trying to game that kernel check.  I don't really think it solves
+anything until there is consensus what a system call filter should do
+with system calls not on the permitted list.
 
-Copying the MIPS folks since the IPI interface is only used under arch/mips.
-
-C.
- 
-> ---
->  kernel/irq/ipi.c | 16 +++-------------
->  1 file changed, 3 insertions(+), 13 deletions(-)
-> 
-> diff --git a/kernel/irq/ipi.c b/kernel/irq/ipi.c
-> index 43e3d1be622c..1b2807318ea9 100644
-> --- a/kernel/irq/ipi.c
-> +++ b/kernel/irq/ipi.c
-> @@ -75,18 +75,12 @@ int irq_reserve_ipi(struct irq_domain *domain,
->  		}
->  	}
->  
-> -	virq = irq_domain_alloc_descs(-1, nr_irqs, 0, NUMA_NO_NODE, NULL);
-> -	if (virq <= 0) {
-> -		pr_warn("Can't reserve IPI, failed to alloc descs\n");
-> -		return -ENOMEM;
-> -	}
-> -
-> -	virq = __irq_domain_alloc_irqs(domain, virq, nr_irqs, NUMA_NO_NODE,
-> -				       (void *) dest, true, NULL);
-> +	virq = __irq_domain_alloc_irqs(domain, -1, nr_irqs, NUMA_NO_NODE,
-> +				       (void *) dest, false, NULL);
->  
->  	if (virq <= 0) {
->  		pr_warn("Can't reserve IPI, failed to alloc hw irqs\n");
-> -		goto free_descs;
-> +		return -EBUSY;
->  	}
->  
->  	for (i = 0; i < nr_irqs; i++) {
-> @@ -96,10 +90,6 @@ int irq_reserve_ipi(struct irq_domain *domain,
->  		irq_set_status_flags(virq + i, IRQ_NO_BALANCING);
->  	}
->  	return virq;
-> -
-> -free_descs:
-> -	irq_free_descs(virq, nr_irqs);
-> -	return -EBUSY;
->  }
->  
->  /**
-> 
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
