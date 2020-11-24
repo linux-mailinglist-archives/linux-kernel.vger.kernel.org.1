@@ -2,176 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C892C2303
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298472C2305
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732091AbgKXKc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:32:26 -0500
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:56424 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731415AbgKXKc0 (ORCPT
+        id S1732103AbgKXKdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731247AbgKXKdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:32:26 -0500
-Received: from [2.127.6.98] (helo=[192.168.0.17])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1khVcU-0003bB-2Y; Tue, 24 Nov 2020 10:32:22 +0000
-Subject: Re: [linux-safety] [PATCH 2/2] staging: vt6655: Correct wrappping in
- rxtx.c
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-safety@lists.elisa.tech
-References: <1606132778-34209-1-git-send-email-milan.lakhani@codethink.co.uk>
- <1606132778-34209-2-git-send-email-milan.lakhani@codethink.co.uk>
- <CAKXUXMym-YfjQdDx7DcW8VHZH2bV5DbO6t0EgzmqD5hDe1AOZA@mail.gmail.com>
-From:   Milan Lakhani <milan.lakhani@codethink.co.uk>
-Message-ID: <e215f254-dd97-105c-fe2d-0ec786ea50ef@codethink.co.uk>
-Date:   Tue, 24 Nov 2020 10:32:21 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 24 Nov 2020 05:33:06 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47966C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:33:06 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khVd6-0005CH-5Q; Tue, 24 Nov 2020 11:33:00 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1khVd5-0001AX-Hi; Tue, 24 Nov 2020 11:32:59 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh@kernel.org>, kernel@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] amba: reorder functions
+Date:   Tue, 24 Nov 2020 11:32:39 +0100
+Message-Id: <20201124103242.2971199-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAKXUXMym-YfjQdDx7DcW8VHZH2bV5DbO6t0EgzmqD5hDe1AOZA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
+Put helpers (here: amba_get_enable_pclk and amba_put_disable_pclk) at
+the top of the file and then define callbacks directly before the
+structs they are used in; in the same order.
 
-On 23/11/2020 13:17, Lukas Bulwahn wrote:
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/amba/bus.c | 77 +++++++++++++++++++++++-----------------------
+ 1 file changed, 39 insertions(+), 38 deletions(-)
 
-> On Mon, Nov 23, 2020 at 12:59 PM Milan Lakhani
-> <milan.lakhani@codethink.co.uk> wrote:
->> Correct line length and alignment in rxtx.c. Reported by checkpatch.
->>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Forest Bond <forest@alittletooquiet.net>
->> CC: linux-kernel@vger.kernel.org
->> CC: linux-safety@lists.elisa.tech
-> Milan, I am wondering where you picked up this convention to add these
-> Cc: and CC: tags in your patch?
->
-> Is there some documentation that points out to do that? (That might
-> need to be fixed...)
->
-> Did you observe that on some other commits? I think these tags are
-> added by some maintainers (probably tool-supported) when they pick the
-> patches, not by the authors, though.
+diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+index ecc304149067..8658e0533b67 100644
+--- a/drivers/amba/bus.c
++++ b/drivers/amba/bus.c
+@@ -56,31 +56,28 @@ amba_lookup(const struct amba_id *table, struct amba_device *dev)
+ 	return NULL;
+ }
+ 
+-static int amba_match(struct device *dev, struct device_driver *drv)
++static int amba_get_enable_pclk(struct amba_device *pcdev)
+ {
+-	struct amba_device *pcdev = to_amba_device(dev);
+-	struct amba_driver *pcdrv = to_amba_driver(drv);
++	int ret;
+ 
+-	/* When driver_override is set, only bind to the matching driver */
+-	if (pcdev->driver_override)
+-		return !strcmp(pcdev->driver_override, drv->name);
++	pcdev->pclk = clk_get(&pcdev->dev, "apb_pclk");
++	if (IS_ERR(pcdev->pclk))
++		return PTR_ERR(pcdev->pclk);
+ 
+-	return amba_lookup(pcdrv->id_table, pcdev) != NULL;
++	ret = clk_prepare_enable(pcdev->pclk);
++	if (ret)
++		clk_put(pcdev->pclk);
++
++	return ret;
+ }
+ 
+-static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
++static void amba_put_disable_pclk(struct amba_device *pcdev)
+ {
+-	struct amba_device *pcdev = to_amba_device(dev);
+-	int retval = 0;
+-
+-	retval = add_uevent_var(env, "AMBA_ID=%08x", pcdev->periphid);
+-	if (retval)
+-		return retval;
+-
+-	retval = add_uevent_var(env, "MODALIAS=amba:d%08X", pcdev->periphid);
+-	return retval;
++	clk_disable_unprepare(pcdev->pclk);
++	clk_put(pcdev->pclk);
+ }
+ 
++
+ static ssize_t driver_override_show(struct device *_dev,
+ 				    struct device_attribute *attr, char *buf)
+ {
+@@ -152,6 +149,31 @@ static struct attribute *amba_dev_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(amba_dev);
+ 
++static int amba_match(struct device *dev, struct device_driver *drv)
++{
++	struct amba_device *pcdev = to_amba_device(dev);
++	struct amba_driver *pcdrv = to_amba_driver(drv);
++
++	/* When driver_override is set, only bind to the matching driver */
++	if (pcdev->driver_override)
++		return !strcmp(pcdev->driver_override, drv->name);
++
++	return amba_lookup(pcdrv->id_table, pcdev) != NULL;
++}
++
++static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
++{
++	struct amba_device *pcdev = to_amba_device(dev);
++	int retval = 0;
++
++	retval = add_uevent_var(env, "AMBA_ID=%08x", pcdev->periphid);
++	if (retval)
++		return retval;
++
++	retval = add_uevent_var(env, "MODALIAS=amba:d%08X", pcdev->periphid);
++	return retval;
++}
++
+ #ifdef CONFIG_PM
+ /*
+  * Hooks to provide runtime PM of the pclk (bus clock).  It is safe to
+@@ -229,27 +251,6 @@ static int __init amba_init(void)
+ 
+ postcore_initcall(amba_init);
+ 
+-static int amba_get_enable_pclk(struct amba_device *pcdev)
+-{
+-	int ret;
+-
+-	pcdev->pclk = clk_get(&pcdev->dev, "apb_pclk");
+-	if (IS_ERR(pcdev->pclk))
+-		return PTR_ERR(pcdev->pclk);
+-
+-	ret = clk_prepare_enable(pcdev->pclk);
+-	if (ret)
+-		clk_put(pcdev->pclk);
+-
+-	return ret;
+-}
+-
+-static void amba_put_disable_pclk(struct amba_device *pcdev)
+-{
+-	clk_disable_unprepare(pcdev->pclk);
+-	clk_put(pcdev->pclk);
+-}
+-
+ /*
+  * These are the device model conversion veneers; they convert the
+  * device model structures to our more specific structures.
 
-I'm using git send-email to send patches and, as described in the 
-'Sending patches with git send-email' section on 
-https://kernelnewbies.org/FirstKernelPatch, git-send-email automatically 
-Ccs people with the the Cc and CC tags. I did see this in other commits 
-too, maybe they're used by the authors to pick out the maintainers to 
-send the patches to?
+base-commit: 95065cb54210eba86bed10cb2118041524d54573
+-- 
+2.29.2
 
->
->> Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
->> ---
->>   drivers/staging/vt6655/rxtx.c | 63 +++++++++++++++++++++++++++++++++----------
->>   1 file changed, 49 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
->> index 508e1bd..4073c33 100644
->> --- a/drivers/staging/vt6655/rxtx.c
->> +++ b/drivers/staging/vt6655/rxtx.c
->> @@ -492,14 +492,29 @@ s_uFillDataHead(
->>                                    pDevice->byTopCCKBasicRate,
->>                                    PK_TYPE_11B, &buf->b);
->>                  /* Get Duration and TimeStamp */
->> -               buf->duration_a = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
->> -                                                                     wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
->> -               buf->duration_b = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B, cbFrameLength, PK_TYPE_11B,
->> -                                                                      pDevice->byTopCCKBasicRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
->> -               buf->duration_a_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
->> -                                                                         wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
->> -               buf->duration_a_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
->> -                                                                        wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
->> +               buf->duration_a = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A,
->> +                                                                     cbFrameLength, byPktType,
->> +                                                                     wCurrentRate, bNeedAck,
->> +                                                                     uFragIdx, cbLastFragmentSize,
->> +                                                                     uMACfragNum, byFBOption));
->> +               buf->duration_b = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B,
->> +                                                                     cbFrameLength, PK_TYPE_11B,
->> +                                                                     pDevice->byTopCCKBasicRate,
->> +                                                                     bNeedAck, uFragIdx,
->> +                                                                     cbLastFragmentSize,
->> +                                                                     uMACfragNum, byFBOption));
->> +               buf->duration_a_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0,
->> +                                                                        cbFrameLength, byPktType,
->> +                                                                        wCurrentRate, bNeedAck,
->> +                                                                        uFragIdx,
->> +                                                                        cbLastFragmentSize,
->> +                                                                        uMACfragNum, byFBOption));
->> +               buf->duration_a_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1,
->> +                                                                        cbFrameLength, byPktType,
->> +                                                                        wCurrentRate, bNeedAck,
->> +                                                                        uFragIdx,
->> +                                                                        cbLastFragmentSize,
->> +                                                                        uMACfragNum, byFBOption));
->>
-> Now to this change... it seems reasonable to refactor this into a
-> dedicated function or macro because this is largely "copy-and-paste"
-> calls with slight variable on a single argument.
->
-> How about proposing such a change instead?
-Thanks, good idea, I have made a macro for it and am about to send the 
-patch, it would be good to hear if it is what you were envisaging.
->>                  buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, wCurrentRate);
->>                  buf->time_stamp_off_b = vnt_time_stamp_off(pDevice, pDevice->byTopCCKBasicRate);
->> @@ -517,12 +532,32 @@ s_uFillDataHead(
->>                                            byPktType, &buf->a);
->>
->>                          /* Get Duration and TimeStampOff */
->> -                       buf->duration = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
->> -                                                                           wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
->> -                       buf->duration_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
->> -                                                                              wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
->> -                       buf->duration_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
->> -                                                                               wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
->> +                       buf->duration = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A,
->> +                                                                           cbFrameLength,
->> +                                                                           byPktType,
->> +                                                                           wCurrentRate, bNeedAck,
->> +                                                                           uFragIdx,
->> +                                                                           cbLastFragmentSize,
->> +                                                                           uMACfragNum,
->> +                                                                           byFBOption));
->> +                       buf->duration_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice,
->> +                                                                              DATADUR_A_F0,
->> +                                                                              cbFrameLength,
->> +                                                                              byPktType,
->> +                                                                              wCurrentRate,
->> +                                                                              bNeedAck, uFragIdx,
->> +                                                                              cbLastFragmentSize,
->> +                                                                              uMACfragNum,
->> +                                                                              byFBOption));
->> +                       buf->duration_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice,
->> +                                                                              DATADUR_A_F1,
->> +                                                                              cbFrameLength,
->> +                                                                              byPktType,
->> +                                                                              wCurrentRate,
->> +                                                                              bNeedAck, uFragIdx,
->> +                                                                              cbLastFragmentSize,
->> +                                                                              uMACfragNum,
->> +                                                                              byFBOption));
->>                          buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
->>                          return buf->duration;
->>                  }
->> --
->> 2.7.4
->>
->>
->>
->> -=-=-=-=-=-=-=-=-=-=-=-
->> Links: You receive all messages sent to this group.
->> View/Reply Online (#187): https://lists.elisa.tech/g/linux-safety/message/187
->> Mute This Topic: https://lists.elisa.tech/mt/78451464/1714638
->> Group Owner: linux-safety+owner@lists.elisa.tech
->> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [lukas.bulwahn@gmail.com]
->> -=-=-=-=-=-=-=-=-=-=-=-
->>
->>
