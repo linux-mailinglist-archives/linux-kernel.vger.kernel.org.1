@@ -2,76 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB712C2B2F
+	by mail.lfdr.de (Postfix) with ESMTP id E96EB2C2B30
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388509AbgKXPY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:24:57 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:55241 "EHLO pegase1.c-s.fr"
+        id S2389424AbgKXPY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:24:59 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:4891 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730546AbgKXPY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:24:56 -0500
+        id S1730546AbgKXPY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:24:58 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CgSW93hp1z9v0d8;
-        Tue, 24 Nov 2020 16:24:53 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4CgSWB4BYwz9v0d9;
+        Tue, 24 Nov 2020 16:24:54 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id xRZ94Le8KDIF; Tue, 24 Nov 2020 16:24:53 +0100 (CET)
+        with ESMTP id 7cTqc_ntIoWS; Tue, 24 Nov 2020 16:24:54 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgSW92pXqz9v0d5;
-        Tue, 24 Nov 2020 16:24:53 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA2998B7B3;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgSWB3NT4z9v0d5;
         Tue, 24 Nov 2020 16:24:54 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 178EF8B7B5;
+        Tue, 24 Nov 2020 16:24:56 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3EGNtlK8EZU6; Tue, 24 Nov 2020 16:24:54 +0100 (CET)
+        with ESMTP id 6q8Yq4LHP8Ri; Tue, 24 Nov 2020 16:24:55 +0100 (CET)
 Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AC1B18B7AF;
-        Tue, 24 Nov 2020 16:24:54 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 70B638B7B3;
+        Tue, 24 Nov 2020 16:24:55 +0100 (CET)
 Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 446EF668E2; Tue, 24 Nov 2020 15:24:54 +0000 (UTC)
-Message-Id: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu>
+        id 4FE64668E2; Tue, 24 Nov 2020 15:24:55 +0000 (UTC)
+Message-Id: <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu>
+References: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 1/6] powerpc/8xx: DEBUG_PAGEALLOC doesn't require an ITLB
- miss exception handler
+Subject: [PATCH v1 2/6] powerpc/8xx: Always pin kernel text TLB
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 24 Nov 2020 15:24:54 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 15:24:55 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit e611939fc8ec ("powerpc/mm: Ensure change_page_attr()
-doesn't invalidate pinned TLBs"), pinned TLBs are not anymore
-invalidated by __kernel_map_pages() when CONFIG_DEBUG_PAGEALLOC is
-selected.
+There is no big poing in not pinning kernel text anymore, as now
+we can keep pinned TLB even with things like DEBUG_PAGEALLOC.
 
-Remove the dependency on CONFIG_DEBUG_PAGEALLOC.
+Remove CONFIG_PIN_TLB_TEXT, making it always right.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/head_8xx.S | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/powerpc/Kconfig               |  3 +--
+ arch/powerpc/kernel/head_8xx.S     | 20 +++-----------------
+ arch/powerpc/mm/nohash/8xx.c       |  3 +--
+ arch/powerpc/platforms/8xx/Kconfig |  7 -------
+ 4 files changed, 5 insertions(+), 28 deletions(-)
 
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index e9f13fe08492..bf088b5b0a89 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -795,8 +795,7 @@ config DATA_SHIFT_BOOL
+ 	bool "Set custom data alignment"
+ 	depends on ADVANCED_OPTIONS
+ 	depends on STRICT_KERNEL_RWX || DEBUG_PAGEALLOC
+-	depends on PPC_BOOK3S_32 || (PPC_8xx && !PIN_TLB_DATA && \
+-				     (!PIN_TLB_TEXT || !STRICT_KERNEL_RWX))
++	depends on PPC_BOOK3S_32 || (PPC_8xx && !PIN_TLB_DATA && !STRICT_KERNEL_RWX)
+ 	help
+ 	  This option allows you to set the kernel data alignment. When
+ 	  RAM is mapped by blocks, the alignment needs to fit the size and
 diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
-index ee0bfebc375f..66ee62f30d36 100644
+index 66ee62f30d36..775b4f4d011e 100644
 --- a/arch/powerpc/kernel/head_8xx.S
 +++ b/arch/powerpc/kernel/head_8xx.S
-@@ -47,8 +47,7 @@
-  * - Either we have modules
-  * - Or we have not pinned the first 8M
-  */
--#if defined(CONFIG_MODULES) || !defined(CONFIG_PIN_TLB_TEXT) || \
--    defined(CONFIG_DEBUG_PAGEALLOC)
-+#if defined(CONFIG_MODULES) || !defined(CONFIG_PIN_TLB_TEXT)
- #define ITLB_MISS_KERNEL	1
+@@ -42,15 +42,6 @@
  #endif
+ .endm
  
+-/*
+- * We need an ITLB miss handler for kernel addresses if:
+- * - Either we have modules
+- * - Or we have not pinned the first 8M
+- */
+-#if defined(CONFIG_MODULES) || !defined(CONFIG_PIN_TLB_TEXT)
+-#define ITLB_MISS_KERNEL	1
+-#endif
+-
+ /*
+  * Value for the bits that have fixed value in RPN entries.
+  * Also used for tagging DAR for DTLBerror.
+@@ -209,12 +200,12 @@ InstructionTLBMiss:
+ 	mfspr	r10, SPRN_SRR0	/* Get effective address of fault */
+ 	INVALIDATE_ADJACENT_PAGES_CPU15(r10)
+ 	mtspr	SPRN_MD_EPN, r10
+-#ifdef ITLB_MISS_KERNEL
++#ifdef CONFIG_MODULES
+ 	mfcr	r11
+ 	compare_to_kernel_boundary r10, r10
+ #endif
+ 	mfspr	r10, SPRN_M_TWB	/* Get level 1 table */
+-#ifdef ITLB_MISS_KERNEL
++#ifdef CONFIG_MODULES
+ 	blt+	3f
+ 	rlwinm	r10, r10, 0, 20, 31
+ 	oris	r10, r10, (swapper_pg_dir - PAGE_OFFSET)@ha
+@@ -618,10 +609,6 @@ start_here:
+ 	lis	r0, (MD_TWAM | MD_RSV4I)@h
+ 	mtspr	SPRN_MD_CTR, r0
+ #endif
+-#ifndef CONFIG_PIN_TLB_TEXT
+-	li	r0, 0
+-	mtspr	SPRN_MI_CTR, r0
+-#endif
+ #if !defined(CONFIG_PIN_TLB_DATA) && !defined(CONFIG_PIN_TLB_IMMR)
+ 	lis	r0, MD_TWAM@h
+ 	mtspr	SPRN_MD_CTR, r0
+@@ -739,7 +726,6 @@ _GLOBAL(mmu_pin_tlb)
+ 	mtspr	SPRN_MD_CTR, r6
+ 	tlbia
+ 
+-#ifdef CONFIG_PIN_TLB_TEXT
+ 	LOAD_REG_IMMEDIATE(r5, 28 << 8)
+ 	LOAD_REG_IMMEDIATE(r6, PAGE_OFFSET)
+ 	LOAD_REG_IMMEDIATE(r7, MI_SVALID | MI_PS8MEG | _PMD_ACCESSED)
+@@ -760,7 +746,7 @@ _GLOBAL(mmu_pin_tlb)
+ 	bdnzt	lt, 2b
+ 	lis	r0, MI_RSV4I@h
+ 	mtspr	SPRN_MI_CTR, r0
+-#endif
++
+ 	LOAD_REG_IMMEDIATE(r5, 28 << 8 | MD_TWAM)
+ #ifdef CONFIG_PIN_TLB_DATA
+ 	LOAD_REG_IMMEDIATE(r6, PAGE_OFFSET)
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index 231ca95f9ffb..19a3eec1d8c5 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -186,8 +186,7 @@ void mmu_mark_initmem_nx(void)
+ 	mmu_mapin_ram_chunk(0, boundary, PAGE_KERNEL_TEXT, false);
+ 	mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
+ 
+-	if (IS_ENABLED(CONFIG_PIN_TLB_TEXT))
+-		mmu_pin_tlb(block_mapped_ram, false);
++	mmu_pin_tlb(block_mapped_ram, false);
+ }
+ 
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+diff --git a/arch/powerpc/platforms/8xx/Kconfig b/arch/powerpc/platforms/8xx/Kconfig
+index cdda034733ff..1a8400bfbe82 100644
+--- a/arch/powerpc/platforms/8xx/Kconfig
++++ b/arch/powerpc/platforms/8xx/Kconfig
+@@ -202,13 +202,6 @@ config PIN_TLB_IMMR
+ 	  CONFIG_PIN_TLB_DATA is also selected, it will reduce
+ 	  CONFIG_PIN_TLB_DATA to 24 Mbytes.
+ 
+-config PIN_TLB_TEXT
+-	bool "Pinned TLB for TEXT"
+-	depends on PIN_TLB
+-	default y
+-	help
+-	  This pins kernel text with 8M pages.
+-
+ endmenu
+ 
+ endmenu
 -- 
 2.25.0
 
