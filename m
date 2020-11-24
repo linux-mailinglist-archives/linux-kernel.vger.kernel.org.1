@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0932C1A10
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9B62C19FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730432AbgKXAa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        id S1729742AbgKXA3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729596AbgKXA3q (ORCPT
+        with ESMTP id S1729659AbgKXA3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:29:46 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91427C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:45 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id x22so969699wmc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:45 -0800 (PST)
+        Mon, 23 Nov 2020 19:29:48 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD08C061A51
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:47 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 64so7175241wra.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K2uIqfg4e35Wb6OMrBJU6kFlYPL6dnuBsqP+mEjVqqI=;
-        b=PuaZrNd6wlt4nb3+cGPxi10gjjNu1aoNmwos+71dBAka7GRY1eWMXldHLX7yhju1TC
-         Kl+2TSPkzqtJ6e3rBK4cZ99vpVRWApC1GBnxD22ehQAsWSS++aweE6FfayrJQzA6OQeg
-         pTFTxEWs2pwfbyFrRyjc4GcYIE9hax8ZSyTmjeZps+F+Ee5rQHxDpccAgFKsnZWVkHVn
-         LnynoAPq3CzsD3XJ9TMW9T9xpyR7ar+emIvwjvadn955KavFa65fknUNF0FIxDt/+XT1
-         6BhYAU+DRfnoqEfMuii+CHJmmM0ob3Lc3vYhMFLAFQdAYFOoLtiwxPPPnqjf3q0C177v
-         Q36g==
+        bh=L+IuH4brZRyc12rPQVzpNo1NGhYmAkTJ0mnkHwTNtz4=;
+        b=StzP9QrXcsgkvhDY8jKa54oawbE2WOEBfHdAQBL8a67wGN+9aLSYsKu07K6zt0CQLY
+         q2TexYEcB9tV5osduiQUGufAB64pPSMrWMeQTWdBENBmNY3e7KHOE4h/92sBTovLCoNa
+         O4eJLyAM3G5wS4lUT7p/+RA5gQJwXB3k3o/meikMuodpH57vT5i6GW0cp8D1RJ+7Bxyi
+         e9syCa1IKZ8qywakrF3uqUu/lrVnCbcgJry1AtrH6ARzOac8W6kkL74EQXoSLJ75BUsW
+         vrRv34ExFNsoQ0zWGniUYww5EMOSNcSAtMKjy7chp0WO37CHkSYQWtyPhjJvE4j3NsNF
+         eNjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K2uIqfg4e35Wb6OMrBJU6kFlYPL6dnuBsqP+mEjVqqI=;
-        b=jKoXjnylL5pXwkQeZnQA2YTN1UUMt/p2myLFkaH92ovJdPMYYaHmaAASaBA9gtJWsd
-         sly0DRM+Oakcw5rHVKY1jL/it664GCk304LsfpJCwSWQnk7dQEhwFvVXd8RTT7i7hIeF
-         ZZ1j7v82n1Li/eTLyFuO9Fz88FXEE9AZBKdtleaYTjIXDokgxF7OIZQbmuDTu4Q+d2Et
-         btA5zqacItMVZJaTbPgLFNmBf85dyKKTlO38u7diSUqzbzWkmHrEDo1OBmJAB/aRiLRy
-         6m0oVjeqwUGXNPZjnX/Zs0yaF6ZMFNMUCBFO15rhPu8qCK2Zo2Xl4zcVlT16tf9j2bYa
-         i/Zg==
-X-Gm-Message-State: AOAM530aBvfPvkC6jWNEAIMATm3U6Xuhl8uxd9ZG5JiDzfOR2Aq9zeKG
-        6/eslNDv6YdbjPdQjlHX2cL06+8OmOnNtxIj
-X-Google-Smtp-Source: ABdhPJy9AgkaosVZgWREsp3j6Rk57emHTkZTBwHWfY7Yoooxcle8sKorWy3rHxE3OI8QfG5aqsdbaQ==
-X-Received: by 2002:a1c:4909:: with SMTP id w9mr1414666wma.15.1606177783902;
-        Mon, 23 Nov 2020 16:29:43 -0800 (PST)
+        bh=L+IuH4brZRyc12rPQVzpNo1NGhYmAkTJ0mnkHwTNtz4=;
+        b=YCPm7oJ1I/XN5fNE6fSsXG0N34vF8yYwQQrmVwqvbkwigU3nO0abTmJEo4sofp8N4I
+         sSGbU8R6eocmRXd+yNmw5aos6MiDApgFWMF5i6PVf9obBz/X6NS+EevRkMOtWfnyhKwQ
+         oL1VJTKJdjR5VogbOln066FTtiLQlTqkZX/wM79bqK25ydoAu+/l59CGVqEt24r4/2Lh
+         eRRV0KZIwBYUYsVeVnXWFOCeSb80f2JSm1z74qhNJXOLnSK+qx6cNKdRtKr2CeCwWAe1
+         EmrKMR4KKX6xy9PqXLbTJe513N/anAkTJKMQlyvhUjRh1ecy7wC+7EMVr+tVHGUds4dX
+         0SBg==
+X-Gm-Message-State: AOAM5319gzPd8HTO8J2ZNR7TUuebbN7bF/NVXHqqGE9D9ujL9Po9Phq4
+        fZxHHF8nzpUGVg4DOlQvSJRhUH0RfRwwR6sI
+X-Google-Smtp-Source: ABdhPJxn/mmi6ol6lUAQrSAWQQ2cLNIHQOUZeUXAd11gwzS/ht0v/9b3yRFi+r0cozCqGStp0vtILg==
+X-Received: by 2002:adf:f888:: with SMTP id u8mr2144929wrp.381.1606177785398;
+        Mon, 23 Nov 2020 16:29:45 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.42
+        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 16:29:43 -0800 (PST)
+        Mon, 23 Nov 2020 16:29:44 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -66,14 +66,13 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Will Deacon <will@kernel.org>, x86@kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 06/19] elf/vdso: Reuse arch_setup_additional_pages() parameters
-Date:   Tue, 24 Nov 2020 00:29:19 +0000
-Message-Id: <20201124002932.1220517-7-dima@arista.com>
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: [PATCH v2 07/19] elf: Use sysinfo_ehdr in ARCH_DLINFO()
+Date:   Tue, 24 Nov 2020 00:29:20 +0000
+Message-Id: <20201124002932.1220517-8-dima@arista.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124002932.1220517-1-dima@arista.com>
 References: <20201124002932.1220517-1-dima@arista.com>
@@ -83,628 +82,433 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both parameters of arch_setup_additional_pages() are currently unused.
-commit fc5243d98ac2 ("[S390] arch_setup_additional_pages arguments")
-tried to introduce useful arguments, but they still are not used.
+Instead mm->context.vdso use the pointer provided by elf loader.
+That allows to drop the pointer on arm/s390/sparc.
 
-Remove old parameters and introduce sysinfo_ehdr argument that will be
-used to return vdso address to put as AT_SYSINFO_EHDR tag in auxiliary
-vector. The reason to add this parameter is that many architecture
-have vDSO pointer saved in their mm->context with the only purpose
-to use it later in ARCH_DLINFO. That's the macro for elf loader
-to setup sysinfo_ehdr tag.
-
-Return sysinfo_ehdr address that will be later used by ARCH_DLINFO as
-an argument. That will allow to drop vDSO pointer from mm->context
-and any code responsible to track vDSO position on platforms that
-don't use vDSO as a landing in userspace (arm/s390/sparc).
-
-Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: linux-fsdevel@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/arm/include/asm/vdso.h        |  6 ++++--
- arch/arm/kernel/process.c          |  4 ++--
- arch/arm/kernel/vdso.c             | 10 +++++++---
- arch/arm64/kernel/vdso.c           | 17 ++++++++--------
- arch/csky/kernel/vdso.c            |  3 ++-
- arch/hexagon/kernel/vdso.c         |  3 ++-
- arch/mips/kernel/vdso.c            |  3 ++-
- arch/nds32/kernel/vdso.c           |  3 ++-
- arch/nios2/mm/init.c               |  2 +-
- arch/powerpc/kernel/vdso.c         |  3 ++-
- arch/riscv/kernel/vdso.c           | 11 +++++-----
- arch/s390/kernel/vdso.c            |  3 ++-
- arch/sh/kernel/vsyscall/vsyscall.c |  3 ++-
- arch/sparc/vdso/vma.c              | 15 +++++++-------
- arch/x86/entry/vdso/vma.c          | 32 +++++++++++++++++-------------
- arch/x86/um/vdso/vma.c             |  2 +-
- fs/binfmt_elf.c                    |  3 ++-
- fs/binfmt_elf_fdpic.c              |  3 ++-
- include/linux/elf.h                | 17 +++++++++++-----
- 19 files changed, 85 insertions(+), 58 deletions(-)
+ arch/alpha/include/asm/elf.h    |  2 +-
+ arch/arm/include/asm/elf.h      |  5 ++---
+ arch/arm64/include/asm/elf.h    | 18 +++++-------------
+ arch/ia64/include/asm/elf.h     |  2 +-
+ arch/mips/include/asm/elf.h     |  5 ++---
+ arch/nds32/include/asm/elf.h    |  5 ++---
+ arch/powerpc/include/asm/elf.h  |  4 ++--
+ arch/riscv/include/asm/elf.h    |  5 ++---
+ arch/s390/include/asm/elf.h     |  5 ++---
+ arch/sh/include/asm/elf.h       | 10 +++++-----
+ arch/sparc/include/asm/elf_64.h |  5 ++---
+ arch/x86/include/asm/elf.h      | 33 ++++++++++++++-------------------
+ arch/x86/um/asm/elf.h           |  4 ++--
+ fs/binfmt_elf.c                 |  6 +++---
+ fs/binfmt_elf_fdpic.c           | 11 ++++++-----
+ 15 files changed, 51 insertions(+), 69 deletions(-)
 
-diff --git a/arch/arm/include/asm/vdso.h b/arch/arm/include/asm/vdso.h
-index 5b85889f82ee..6b2b3b1fe833 100644
---- a/arch/arm/include/asm/vdso.h
-+++ b/arch/arm/include/asm/vdso.h
-@@ -10,13 +10,15 @@ struct mm_struct;
+diff --git a/arch/alpha/include/asm/elf.h b/arch/alpha/include/asm/elf.h
+index 8049997fa372..701e820f28f0 100644
+--- a/arch/alpha/include/asm/elf.h
++++ b/arch/alpha/include/asm/elf.h
+@@ -155,7 +155,7 @@ extern int alpha_l2_cacheshape;
+ extern int alpha_l3_cacheshape;
+ 
+ /* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
+-#define ARCH_DLINFO						\
++#define ARCH_DLINFO(sysinfo_ehdr)				\
+   do {								\
+     NEW_AUX_ENT(AT_L1I_CACHESHAPE, alpha_l1i_cacheshape);	\
+     NEW_AUX_ENT(AT_L1D_CACHESHAPE, alpha_l1d_cacheshape);	\
+diff --git a/arch/arm/include/asm/elf.h b/arch/arm/include/asm/elf.h
+index 47347d7412ec..76a0f04190f0 100644
+--- a/arch/arm/include/asm/elf.h
++++ b/arch/arm/include/asm/elf.h
+@@ -138,10 +138,9 @@ extern void elf_set_personality(const struct elf32_hdr *);
+ #define SET_PERSONALITY(ex)	elf_set_personality(&(ex))
  
  #ifdef CONFIG_VDSO
+-#define ARCH_DLINFO						\
++#define ARCH_DLINFO(sysinfo_ehdr)				\
+ do {								\
+-	NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+-		    (elf_addr_t)current->mm->context.vdso);	\
++	NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		\
+ } while (0)
+ #endif
  
--void arm_install_vdso(struct mm_struct *mm, unsigned long addr);
-+void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
-+		      unsigned long *sysinfo_ehdr);
+diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
+index a81953bcc1cf..e62818967a69 100644
+--- a/arch/arm64/include/asm/elf.h
++++ b/arch/arm64/include/asm/elf.h
+@@ -165,10 +165,9 @@ typedef struct user_fpsimd_state elf_fpregset_t;
+ })
  
- extern unsigned int vdso_total_pages;
+ /* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
+-#define ARCH_DLINFO							\
++#define ARCH_DLINFO(sysinfo_ehdr)					\
+ do {									\
+-	NEW_AUX_ENT(AT_SYSINFO_EHDR,					\
+-		    (elf_addr_t)current->mm->context.vdso);		\
++	NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);			\
+ 									\
+ 	/*								\
+ 	 * Should always be nonzero unless there's a kernel bug.	\
+@@ -223,19 +222,12 @@ typedef compat_elf_greg_t		compat_elf_gregset_t[COMPAT_ELF_NGREG];
+ 	set_thread_flag(TIF_32BIT);					\
+  })
+ #ifdef CONFIG_COMPAT_VDSO
+-#define COMPAT_ARCH_DLINFO						\
++#define COMPAT_ARCH_DLINFO(sysinfo_ehdr)				\
+ do {									\
+-	/*								\
+-	 * Note that we use Elf64_Off instead of elf_addr_t because	\
+-	 * elf_addr_t in compat is defined as Elf32_Addr and casting	\
+-	 * current->mm->context.vdso to it triggers a cast warning of	\
+-	 * cast from pointer to integer of different size.		\
+-	 */								\
+-	NEW_AUX_ENT(AT_SYSINFO_EHDR,					\
+-			(Elf64_Off)current->mm->context.vdso);		\
++	NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);			\
+ } while (0)
+ #else
+-#define COMPAT_ARCH_DLINFO
++#define COMPAT_ARCH_DLINFO(sysinfo_ehdr)
+ #endif
  
- #else /* CONFIG_VDSO */
+ #endif /* CONFIG_COMPAT */
+diff --git a/arch/ia64/include/asm/elf.h b/arch/ia64/include/asm/elf.h
+index 6629301a2620..a257e5abddce 100644
+--- a/arch/ia64/include/asm/elf.h
++++ b/arch/ia64/include/asm/elf.h
+@@ -208,7 +208,7 @@ struct task_struct;
+ #define GATE_EHDR	((const struct elfhdr *) GATE_ADDR)
  
--static inline void arm_install_vdso(struct mm_struct *mm, unsigned long addr)
-+static inline void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
-+				    unsigned long *sysinfo_ehdr)
- {
- }
+ /* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
+-#define ARCH_DLINFO								\
++#define ARCH_DLINFO(sysinfo_ehdr)						\
+ do {										\
+ 	extern char __kernel_syscall_via_epc[];					\
+ 	NEW_AUX_ENT(AT_SYSINFO, (unsigned long) __kernel_syscall_via_epc);	\
+diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
+index 6665cf7870b3..5bdc8d00ac37 100644
+--- a/arch/mips/include/asm/elf.h
++++ b/arch/mips/include/asm/elf.h
+@@ -474,10 +474,9 @@ extern const char *__elf_base_platform;
+ #endif
  
-diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
-index d0220da1d1b1..0e90cba8ac7a 100644
---- a/arch/arm/kernel/process.c
-+++ b/arch/arm/kernel/process.c
-@@ -389,7 +389,7 @@ static const struct vm_special_mapping sigpage_mapping = {
- 	.mremap = sigpage_mremap,
- };
+ /* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
+-#define ARCH_DLINFO							\
++#define ARCH_DLINFO(sysinfo_ehdr)					\
+ do {									\
+-	NEW_AUX_ENT(AT_SYSINFO_EHDR,					\
+-		    (unsigned long)current->mm->context.vdso);		\
++	NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);			\
+ } while (0)
  
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
-@@ -430,7 +430,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	 * to be fatal to the process, so no error check needed
- 	 * here.
- 	 */
--	arm_install_vdso(mm, addr + PAGE_SIZE);
-+	arm_install_vdso(mm, addr + PAGE_SIZE, sysinfo_ehdr);
+ #ifdef CONFIG_MIPS_FP_SUPPORT
+diff --git a/arch/nds32/include/asm/elf.h b/arch/nds32/include/asm/elf.h
+index 36cec4ae5a84..4f5894208efe 100644
+--- a/arch/nds32/include/asm/elf.h
++++ b/arch/nds32/include/asm/elf.h
+@@ -165,13 +165,12 @@ struct elf32_hdr;
+ #define FPU_AUX_ENT	NEW_AUX_ENT(AT_IGNORE, 0)
+ #endif
  
-  up_fail:
- 	mmap_write_unlock(mm);
-diff --git a/arch/arm/kernel/vdso.c b/arch/arm/kernel/vdso.c
-index 3408269d19c7..710e5ca99a53 100644
---- a/arch/arm/kernel/vdso.c
-+++ b/arch/arm/kernel/vdso.c
-@@ -233,7 +233,8 @@ static int install_vvar(struct mm_struct *mm, unsigned long addr)
- }
+-#define ARCH_DLINFO						\
++#define ARCH_DLINFO(sysinfo_ehdr)				\
+ do {								\
+ 	/* Optional FPU initialization */			\
+ 	FPU_AUX_ENT;						\
+ 								\
+-	NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+-		    (elf_addr_t)current->mm->context.vdso);	\
++	NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		\
+ } while (0)
  
- /* assumes mmap_lock is write-locked */
--void arm_install_vdso(struct mm_struct *mm, unsigned long addr)
-+void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
-+		      unsigned long *sysinfo_ehdr)
- {
- 	struct vm_area_struct *vma;
- 	unsigned long len;
-@@ -254,7 +255,10 @@ void arm_install_vdso(struct mm_struct *mm, unsigned long addr)
- 		VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC,
- 		&vdso_text_mapping);
+ #endif
+diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/elf.h
+index ba0e1e331088..b1ae4411f4bd 100644
+--- a/arch/powerpc/include/asm/elf.h
++++ b/arch/powerpc/include/asm/elf.h
+@@ -155,7 +155,7 @@ extern int ucache_bsize;
+  *   even if DLINFO_ARCH_ITEMS goes to zero or is undefined.
+  * update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes
+  */
+-#define ARCH_DLINFO							\
++#define ARCH_DLINFO(sysinfo_ehdr)					\
+ do {									\
+ 	/* Handle glibc compatibility. */				\
+ 	NEW_AUX_ENT(AT_IGNOREPPC, AT_IGNOREPPC);			\
+@@ -164,7 +164,7 @@ do {									\
+ 	NEW_AUX_ENT(AT_DCACHEBSIZE, dcache_bsize);			\
+ 	NEW_AUX_ENT(AT_ICACHEBSIZE, icache_bsize);			\
+ 	NEW_AUX_ENT(AT_UCACHEBSIZE, ucache_bsize);			\
+-	VDSO_AUX_ENT(AT_SYSINFO_EHDR, current->mm->context.vdso_base);	\
++	VDSO_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);			\
+ 	ARCH_DLINFO_CACHE_GEOMETRY;					\
+ } while (0)
  
--	if (!IS_ERR(vma))
--		mm->context.vdso = addr;
-+	if (IS_ERR(vma))
-+		return;
+diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
+index 5e2543673e42..cd659e1dc259 100644
+--- a/arch/riscv/include/asm/elf.h
++++ b/arch/riscv/include/asm/elf.h
+@@ -58,10 +58,9 @@ extern unsigned long elf_hwcap;
+ #define ELF_PLATFORM	(NULL)
+ 
+ #ifdef CONFIG_MMU
+-#define ARCH_DLINFO						\
++#define ARCH_DLINFO(sysinfo_ehdr)				\
+ do {								\
+-	NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+-		(elf_addr_t)current->mm->context.vdso);		\
++	NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		\
+ 	NEW_AUX_ENT(AT_L1I_CACHESIZE,				\
+ 		get_cache_size(1, CACHE_TYPE_INST));		\
+ 	NEW_AUX_ENT(AT_L1I_CACHEGEOMETRY,			\
+diff --git a/arch/s390/include/asm/elf.h b/arch/s390/include/asm/elf.h
+index f6ce9df8a996..1087a52f3257 100644
+--- a/arch/s390/include/asm/elf.h
++++ b/arch/s390/include/asm/elf.h
+@@ -269,11 +269,10 @@ do {								\
+ #define STACK_RND_MASK	MMAP_RND_MASK
+ 
+ /* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
+-#define ARCH_DLINFO							    \
++#define ARCH_DLINFO(sysinfo_ehdr)					    \
+ do {									    \
+ 	if (vdso_enabled)						    \
+-		NEW_AUX_ENT(AT_SYSINFO_EHDR,				    \
+-			    (unsigned long)current->mm->context.vdso_base); \
++		NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		    \
+ } while (0)
+ 
+ #endif
+diff --git a/arch/sh/include/asm/elf.h b/arch/sh/include/asm/elf.h
+index 9b3e22e771a1..03b813c0bc39 100644
+--- a/arch/sh/include/asm/elf.h
++++ b/arch/sh/include/asm/elf.h
+@@ -170,13 +170,13 @@ extern void __kernel_vsyscall;
+ #define VDSO_BASE		((unsigned long)current->mm->context.vdso)
+ #define VDSO_SYM(x)		(VDSO_BASE + (unsigned long)(x))
+ 
+-#define VSYSCALL_AUX_ENT					\
++#define VSYSCALL_AUX_ENT(sysinfo_ehdr)				\
+ 	if (vdso_enabled)					\
+-		NEW_AUX_ENT(AT_SYSINFO_EHDR, VDSO_BASE);	\
++		NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);	\
+ 	else							\
+ 		NEW_AUX_ENT(AT_IGNORE, 0)
+ #else
+-#define VSYSCALL_AUX_ENT	NEW_AUX_ENT(AT_IGNORE, 0)
++#define VSYSCALL_AUX_ENT(sysinfo_ehdr)	NEW_AUX_ENT(AT_IGNORE, 0)
+ #endif /* CONFIG_VSYSCALL */
+ 
+ #ifdef CONFIG_SH_FPU
+@@ -188,13 +188,13 @@ extern void __kernel_vsyscall;
+ extern int l1i_cache_shape, l1d_cache_shape, l2_cache_shape;
+ 
+ /* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
+-#define ARCH_DLINFO						\
++#define ARCH_DLINFO(sysinfo_ehdr)				\
+ do {								\
+ 	/* Optional FPU initialization */			\
+ 	FPU_AUX_ENT;						\
+ 								\
+ 	/* Optional vsyscall entry */				\
+-	VSYSCALL_AUX_ENT;					\
++	VSYSCALL_AUX_ENT(sysinfo_ehdr);				\
+ 								\
+ 	/* Cache desc */					\
+ 	NEW_AUX_ENT(AT_L1I_CACHESHAPE, l1i_cache_shape);	\
+diff --git a/arch/sparc/include/asm/elf_64.h b/arch/sparc/include/asm/elf_64.h
+index 63a622c36df3..1e7295b5ae2f 100644
+--- a/arch/sparc/include/asm/elf_64.h
++++ b/arch/sparc/include/asm/elf_64.h
+@@ -213,12 +213,11 @@ do {	if ((ex).e_ident[EI_CLASS] == ELFCLASS32)	\
+ 
+ extern unsigned int vdso_enabled;
+ 
+-#define	ARCH_DLINFO							\
++#define	ARCH_DLINFO(sysinfo_ehdr)					\
+ do {									\
+ 	extern struct adi_config adi_state;				\
+ 	if (vdso_enabled)						\
+-		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+-			    (unsigned long)current->mm->context.vdso);	\
++		NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		\
+ 	NEW_AUX_ENT(AT_ADI_BLKSZ, adi_state.caps.blksz);		\
+ 	NEW_AUX_ENT(AT_ADI_NBITS, adi_state.caps.nbits);		\
+ 	NEW_AUX_ENT(AT_ADI_UEONADI, adi_state.caps.ue_on_adi);		\
+diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
+index 51a08f6b18e5..ace9e9da3521 100644
+--- a/arch/x86/include/asm/elf.h
++++ b/arch/x86/include/asm/elf.h
+@@ -306,11 +306,14 @@ extern u32 elf_hwcap2;
+ 
+ struct task_struct;
+ 
+-#define	ARCH_DLINFO_IA32						\
++#define VDSO_ENTRY(sysinfo_ehdr)					\
++	(sysinfo_ehdr + vdso_image_32.sym___kernel_vsyscall)
 +
-+	mm->context.vdso = addr;
-+	*sysinfo_ehdr = addr;
- }
++#define	ARCH_DLINFO_IA32(sysinfo_ehdr)					\
+ do {									\
+-	if (VDSO_CURRENT_BASE) {					\
+-		NEW_AUX_ENT(AT_SYSINFO,	VDSO_ENTRY);			\
+-		NEW_AUX_ENT(AT_SYSINFO_EHDR, VDSO_CURRENT_BASE);	\
++	if (sysinfo_ehdr) {						\
++		NEW_AUX_ENT(AT_SYSINFO,	VDSO_ENTRY(sysinfo_ehdr));	\
++		NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		\
+ 	}								\
+ } while (0)
  
-diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-index 1b710deb84d6..666338724a07 100644
---- a/arch/arm64/kernel/vdso.c
-+++ b/arch/arm64/kernel/vdso.c
-@@ -213,8 +213,7 @@ static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
+@@ -344,39 +347,31 @@ extern bool mmap_address_hint_valid(unsigned long addr, unsigned long len);
+ #define __STACK_RND_MASK(is32bit) ((is32bit) ? 0x7ff : 0x3fffff)
+ #define STACK_RND_MASK __STACK_RND_MASK(mmap_is_ia32())
  
- static int __setup_additional_pages(enum vdso_abi abi,
- 				    struct mm_struct *mm,
--				    struct linux_binprm *bprm,
--				    int uses_interp)
-+				    unsigned long *sysinfo_ehdr)
- {
- 	unsigned long vdso_base, vdso_text_len, vdso_mapping_len;
- 	unsigned long gp_flags = 0;
-@@ -250,6 +249,8 @@ static int __setup_additional_pages(enum vdso_abi abi,
- 	if (IS_ERR(ret))
- 		goto up_fail;
+-#define ARCH_DLINFO							\
++#define ARCH_DLINFO(sysinfo_ehdr)					\
+ do {									\
+ 	if (vdso64_enabled)						\
+-		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+-			    (unsigned long __force)current->mm->context.vdso); \
++		NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		\
+ } while (0)
  
-+	*sysinfo_ehdr = vdso_base;
-+
- 	return 0;
+ /* As a historical oddity, the x32 and x86_64 vDSOs are controlled together. */
+-#define ARCH_DLINFO_X32							\
++#define ARCH_DLINFO_X32(sysinfo_ehdr)					\
+ do {									\
+ 	if (vdso64_enabled)						\
+-		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+-			    (unsigned long __force)current->mm->context.vdso); \
++		NEW_AUX_ENT(AT_SYSINFO_EHDR, sysinfo_ehdr);		\
+ } while (0)
  
- up_fail:
-@@ -401,8 +402,7 @@ static int aarch32_sigreturn_setup(struct mm_struct *mm)
- 	return PTR_ERR_OR_ZERO(ret);
- }
+ #define AT_SYSINFO		32
  
--static int aarch32_setup_additional_pages(struct linux_binprm *bprm,
--					  int uses_interp)
-+static int aarch32_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	int ret;
-@@ -412,8 +412,7 @@ static int aarch32_setup_additional_pages(struct linux_binprm *bprm,
- 		return ret;
+-#define COMPAT_ARCH_DLINFO						\
++#define COMPAT_ARCH_DLINFO(sysinfo_ehdr)				\
+ if (exec->e_machine == EM_X86_64)					\
+-	ARCH_DLINFO_X32;						\
++	ARCH_DLINFO_X32(sysinfo_ehdr);					\
+ else									\
+-	ARCH_DLINFO_IA32
++	ARCH_DLINFO_IA32(sysinfo_ehdr)
  
- 	if (IS_ENABLED(CONFIG_COMPAT_VDSO)) {
--		ret = __setup_additional_pages(VDSO_ABI_AA32, mm, bprm,
--					       uses_interp);
-+		ret = __setup_additional_pages(VDSO_ABI_AA32, mm, sysinfo_ehdr);
- 		if (ret)
- 			return ret;
- 	}
-@@ -447,7 +446,7 @@ static int __init vdso_init(void)
- }
- arch_initcall(vdso_init);
+ #define COMPAT_ELF_ET_DYN_BASE	(TASK_UNMAPPED_BASE + 0x1000000)
  
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	int ret;
-@@ -456,9 +455,9 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 		return -EINTR;
+ #endif /* !CONFIG_X86_32 */
  
- 	if (is_compat_task())
--		ret = aarch32_setup_additional_pages(bprm, uses_interp);
-+		ret = aarch32_setup_additional_pages(sysinfo_ehdr);
- 	else
--		ret = __setup_additional_pages(VDSO_ABI_AA64, mm, bprm, uses_interp);
-+		ret = __setup_additional_pages(VDSO_ABI_AA64, mm, sysinfo_ehdr);
- 
- 	mmap_write_unlock(mm);
- 
-diff --git a/arch/csky/kernel/vdso.c b/arch/csky/kernel/vdso.c
-index abc3dbc658d4..f72f76915c59 100644
---- a/arch/csky/kernel/vdso.c
-+++ b/arch/csky/kernel/vdso.c
-@@ -44,7 +44,7 @@ static int __init init_vdso(void)
- }
- subsys_initcall(init_vdso);
- 
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	int ret;
- 	unsigned long addr;
-@@ -68,6 +68,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 		goto up_fail;
- 
- 	mm->context.vdso = (void *)addr;
-+	*sysinfo_ehdr = addr;
- 
- up_fail:
- 	mmap_write_unlock(mm);
-diff --git a/arch/hexagon/kernel/vdso.c b/arch/hexagon/kernel/vdso.c
-index b70970ac809f..39e78fe82b99 100644
---- a/arch/hexagon/kernel/vdso.c
-+++ b/arch/hexagon/kernel/vdso.c
-@@ -46,7 +46,7 @@ arch_initcall(vdso_init);
- /*
-  * Called from binfmt_elf.  Create a VMA for the vDSO page.
-  */
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	int ret;
- 	unsigned long vdso_base;
-@@ -74,6 +74,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 		goto up_fail;
- 
- 	mm->context.vdso = (void *)vdso_base;
-+	*sysinfo_ehdr = vdso_base;
- 
- up_fail:
- 	mmap_write_unlock(mm);
-diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
-index 7d0b91ad2581..e124c68322bb 100644
---- a/arch/mips/kernel/vdso.c
-+++ b/arch/mips/kernel/vdso.c
-@@ -86,7 +86,7 @@ static unsigned long vdso_base(void)
- 	return base;
- }
- 
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mips_vdso_image *image = current->thread.abi->vdso;
- 	struct mm_struct *mm = current->mm;
-@@ -184,6 +184,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	}
- 
- 	mm->context.vdso = (void *)vdso_addr;
-+	*sysinfo_ehdr = vdso_addr;
- 	ret = 0;
- 
- out:
-diff --git a/arch/nds32/kernel/vdso.c b/arch/nds32/kernel/vdso.c
-index e16009a07971..530164221166 100644
---- a/arch/nds32/kernel/vdso.c
-+++ b/arch/nds32/kernel/vdso.c
-@@ -111,7 +111,7 @@ unsigned long inline vdso_random_addr(unsigned long vdso_mapping_len)
- 	return addr;
- }
- 
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	unsigned long vdso_base, vdso_text_len, vdso_mapping_len;
-@@ -176,6 +176,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	/*Map vdso to user space */
- 	vdso_base += PAGE_SIZE;
- 	mm->context.vdso = (void *)vdso_base;
-+	*sysinfo_ehdr = vdso_base;
- 	vma = _install_special_mapping(mm, vdso_base, vdso_text_len,
- 				       VM_READ | VM_EXEC |
- 				       VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC,
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index 61862dbb0e32..e09e54198ac6 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -104,7 +104,7 @@ static int alloc_kuser_page(void)
- }
- arch_initcall(alloc_kuser_page);
- 
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	int ret;
-diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-index 8dad44262e75..0ec3bbe7fb36 100644
---- a/arch/powerpc/kernel/vdso.c
-+++ b/arch/powerpc/kernel/vdso.c
-@@ -122,7 +122,7 @@ struct lib64_elfinfo
-  * This is called from binfmt_elf, we create the special vma for the
-  * vDSO and insert it into the mm struct tree
-  */
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct page **vdso_pagelist;
-@@ -211,6 +211,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	}
- 
- 	mmap_write_unlock(mm);
-+	*sysinfo_ehdr = vdso_base;
- 	return 0;
- 
-  fail_mmapsem:
-diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
-index 678204231700..55b6d36d42ec 100644
---- a/arch/riscv/kernel/vdso.c
-+++ b/arch/riscv/kernel/vdso.c
-@@ -56,11 +56,10 @@ static int __init vdso_init(void)
- }
- arch_initcall(vdso_init);
- 
--int arch_setup_additional_pages(struct linux_binprm *bprm,
--	int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
--	unsigned long vdso_base, vdso_len;
-+	unsigned long vdso_base, vvar_base, vdso_len;
- 	int ret;
- 
- 	vdso_len = (vdso_pages + 1) << PAGE_SHIFT;
-@@ -89,12 +88,14 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
- 		goto end;
- 	}
- 
--	vdso_base += (vdso_pages << PAGE_SHIFT);
--	ret = install_special_mapping(mm, vdso_base, PAGE_SIZE,
-+	vvar_base = vdso_base + (vdso_pages << PAGE_SHIFT);
-+	ret = install_special_mapping(mm, vvar_base, PAGE_SIZE,
- 		(VM_READ | VM_MAYREAD), &vdso_pagelist[vdso_pages]);
- 
- 	if (unlikely(ret))
- 		mm->context.vdso = NULL;
-+	else
-+		*sysinfo_ehdr = vdso_base;
- end:
- 	mmap_write_unlock(mm);
- 	return ret;
-diff --git a/arch/s390/kernel/vdso.c b/arch/s390/kernel/vdso.c
-index 6c9ec9521203..810b72f8985c 100644
---- a/arch/s390/kernel/vdso.c
-+++ b/arch/s390/kernel/vdso.c
-@@ -150,7 +150,7 @@ void vdso_free_per_cpu(struct lowcore *lowcore)
-  * This is called from binfmt_elf, we create the special vma for the
-  * vDSO and insert it into the mm struct tree
-  */
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
-@@ -205,6 +205,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	}
- 
- 	current->mm->context.vdso_base = vdso_base;
-+	*sysinfo_ehdr = vdso_base;
- 	rc = 0;
- 
- out_up:
-diff --git a/arch/sh/kernel/vsyscall/vsyscall.c b/arch/sh/kernel/vsyscall/vsyscall.c
-index 1bd85a6949c4..de8df3261b4f 100644
---- a/arch/sh/kernel/vsyscall/vsyscall.c
-+++ b/arch/sh/kernel/vsyscall/vsyscall.c
-@@ -55,7 +55,7 @@ int __init vsyscall_init(void)
- }
- 
- /* Setup a VMA at program startup for the vsyscall page */
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	unsigned long addr;
-@@ -78,6 +78,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 		goto up_fail;
- 
- 	current->mm->context.vdso = (void *)addr;
-+	*sysinfo_ehdr = addr;
- 
- up_fail:
- 	mmap_write_unlock(mm);
-diff --git a/arch/sparc/vdso/vma.c b/arch/sparc/vdso/vma.c
-index cc19e09b0fa1..bf9195fe9bcc 100644
---- a/arch/sparc/vdso/vma.c
-+++ b/arch/sparc/vdso/vma.c
-@@ -346,8 +346,6 @@ static int __init init_vdso(void)
- }
- subsys_initcall(init_vdso);
- 
--struct linux_binprm;
+-#define VDSO_CURRENT_BASE	((unsigned long)current->mm->context.vdso)
 -
- /* Shuffle the vdso up a bit, randomly. */
- static unsigned long vdso_addr(unsigned long start, unsigned int len)
- {
-@@ -359,7 +357,8 @@ static unsigned long vdso_addr(unsigned long start, unsigned int len)
- }
+-#define VDSO_ENTRY							\
+-	((unsigned long)current->mm->context.vdso +			\
+-	 vdso_image_32.sym___kernel_vsyscall)
+-
+ /* Do not change the values. See get_align_mask() */
+ enum align_flags {
+ 	ALIGN_VA_32	= BIT(0),
+diff --git a/arch/x86/um/asm/elf.h b/arch/x86/um/asm/elf.h
+index 7bc1d9d94d66..953c6b7f992e 100644
+--- a/arch/x86/um/asm/elf.h
++++ b/arch/x86/um/asm/elf.h
+@@ -88,7 +88,7 @@ extern unsigned long __kernel_vsyscall;
+ #define AT_SYSINFO		32
+ #define AT_SYSINFO_EHDR		33
  
- static int map_vdso(const struct vdso_image *image,
--		struct vm_special_mapping *vdso_mapping)
-+		    struct vm_special_mapping *vdso_mapping,
-+		    unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
-@@ -421,12 +420,14 @@ static int map_vdso(const struct vdso_image *image,
- up_fail:
- 	if (ret)
- 		current->mm->context.vdso = NULL;
-+	else
-+		*sysinfo_ehdr = text_start;
+-#define ARCH_DLINFO						\
++#define ARCH_DLINFO(sysinfo_ehdr)				\
+ do {								\
+ 	if ( vsyscall_ehdr ) {					\
+ 		NEW_AUX_ENT(AT_SYSINFO,	__kernel_vsyscall);	\
+@@ -183,7 +183,7 @@ do {								\
  
- 	mmap_write_unlock(mm);
- 	return ret;
- }
+ extern unsigned long um_vdso_addr;
+ #define AT_SYSINFO_EHDR 33
+-#define ARCH_DLINFO	NEW_AUX_ENT(AT_SYSINFO_EHDR, um_vdso_addr)
++#define ARCH_DLINFO(sysinfo_ehdr)	NEW_AUX_ENT(AT_SYSINFO_EHDR, um_vdso_addr)
  
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 
- 	if (!vdso_enabled)
-@@ -434,11 +435,11 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 
- #if defined CONFIG_COMPAT
- 	if (!(is_32bit_task()))
--		return map_vdso(&vdso_image_64_builtin, &vdso_mapping64);
-+		return map_vdso(&vdso_image_64_builtin, &vdso_mapping64, sysinfo_ehdr);
- 	else
--		return map_vdso(&vdso_image_32_builtin, &vdso_mapping32);
-+		return map_vdso(&vdso_image_32_builtin, &vdso_mapping32, sysinfo_ehdr);
- #else
--	return map_vdso(&vdso_image_64_builtin, &vdso_mapping64);
-+	return map_vdso(&vdso_image_64_builtin, &vdso_mapping64, sysinfo_ehdr);
  #endif
  
- }
-diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
-index aace862ed9a1..5b9020742e66 100644
---- a/arch/x86/entry/vdso/vma.c
-+++ b/arch/x86/entry/vdso/vma.c
-@@ -243,7 +243,8 @@ static const struct vm_special_mapping vvar_mapping = {
-  * @image          - blob to map
-  * @addr           - request a specific address (zero to map at free addr)
-  */
--static int map_vdso(const struct vdso_image *image, unsigned long addr)
-+static int map_vdso(const struct vdso_image *image, unsigned long addr,
-+		    unsigned long *sysinfo_ehdr)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
-@@ -290,6 +291,7 @@ static int map_vdso(const struct vdso_image *image, unsigned long addr)
- 	} else {
- 		current->mm->context.vdso = (void __user *)text_start;
- 		current->mm->context.vdso_image = image;
-+		*sysinfo_ehdr = text_start;
- 	}
- 
- up_fail:
-@@ -342,11 +344,12 @@ static unsigned long vdso_addr(unsigned long start, unsigned len)
- 	return addr;
- }
- 
--static int map_vdso_randomized(const struct vdso_image *image)
-+static int map_vdso_randomized(const struct vdso_image *image,
-+			       unsigned long *sysinfo_ehdr)
- {
- 	unsigned long addr = vdso_addr(current->mm->start_stack, image->size-image->sym_vvar_start);
- 
--	return map_vdso(image, addr);
-+	return map_vdso(image, addr, sysinfo_ehdr);
- }
- #endif
- 
-@@ -354,6 +357,7 @@ int map_vdso_once(const struct vdso_image *image, unsigned long addr)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
-+	unsigned long unused;
- 
- 	mmap_write_lock(mm);
- 	/*
-@@ -372,19 +376,19 @@ int map_vdso_once(const struct vdso_image *image, unsigned long addr)
- 	}
- 	mmap_write_unlock(mm);
- 
--	return map_vdso(image, addr);
-+	return map_vdso(image, addr, &unused);
- }
- 
- #if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
--static int load_vdso_ia32(void)
-+static int load_vdso_ia32(unsigned long *sysinfo_ehdr)
- {
- 	if (vdso32_enabled != 1)  /* Other values all mean "disabled" */
- 		return 0;
- 
--	return map_vdso(&vdso_image_32, 0);
-+	return map_vdso(&vdso_image_32, 0, sysinfo_ehdr);
- }
- #else
--static int load_vdso_ia32(void)
-+static int load_vdso_ia32(unsigned long *sysinfo_ehdr)
- {
- 	WARN_ON_ONCE(1);
- 	return -ENODATA;
-@@ -392,32 +396,32 @@ static int load_vdso_ia32(void)
- #endif
- 
- #ifdef CONFIG_X86_64
--static int load_vdso_64(void)
-+static int load_vdso_64(unsigned long *sysinfo_ehdr)
- {
- 	if (!vdso64_enabled)
- 		return 0;
- 
- #ifdef CONFIG_X86_X32_ABI
- 	if (in_x32_syscall())
--		return map_vdso_randomized(&vdso_image_x32);
-+		return map_vdso_randomized(&vdso_image_x32, sysinfo_ehdr);
- #endif
- 
--	return map_vdso_randomized(&vdso_image_64);
-+	return map_vdso_randomized(&vdso_image_64, sysinfo_ehdr);
- }
- #else
--static int load_vdso_64(void)
-+static int load_vdso_64(unsigned long *sysinfo_ehdr)
- {
- 	WARN_ON_ONCE(1);
- 	return -ENODATA;
- }
- #endif
- 
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	if (in_ia32_syscall())
--		return load_vdso_ia32();
-+		return load_vdso_ia32(sysinfo_ehdr);
- 
--	return load_vdso_64();
-+	return load_vdso_64(sysinfo_ehdr);
- }
- 
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/um/vdso/vma.c b/arch/x86/um/vdso/vma.c
-index 76d9f6ce7a3d..77488065f7cc 100644
---- a/arch/x86/um/vdso/vma.c
-+++ b/arch/x86/um/vdso/vma.c
-@@ -50,7 +50,7 @@ static int __init init_vdso(void)
- }
- subsys_initcall(init_vdso);
- 
--int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
- {
- 	int err;
- 	struct mm_struct *mm = current->mm;
 diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index b9adbeb59101..049ff514aa19 100644
+index 049ff514aa19..bc81f29b3cfb 100644
 --- a/fs/binfmt_elf.c
 +++ b/fs/binfmt_elf.c
-@@ -833,6 +833,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 	unsigned long interp_load_addr = 0;
- 	unsigned long start_code, end_code, start_data, end_data;
- 	unsigned long reloc_func_desc __maybe_unused = 0;
-+	unsigned long sysinfo_ehdr = 0;
- 	int executable_stack = EXSTACK_DEFAULT;
- 	struct elfhdr *elf_ex = (struct elfhdr *)bprm->buf;
- 	struct elfhdr *interp_elf_ex = NULL;
-@@ -1249,7 +1250,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+@@ -171,7 +171,7 @@ static int padzero(unsigned long elf_bss)
+ static int
+ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+ 		unsigned long load_addr, unsigned long interp_load_addr,
+-		unsigned long e_entry)
++		unsigned long e_entry, unsigned long sysinfo_ehdr)
+ {
+ 	struct mm_struct *mm = current->mm;
+ 	unsigned long p = bprm->p;
+@@ -251,7 +251,7 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+ 	 * update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT() in
+ 	 * ARCH_DLINFO changes
+ 	 */
+-	ARCH_DLINFO;
++	ARCH_DLINFO(sysinfo_ehdr);
+ #endif
+ 	NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP);
+ 	NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
+@@ -1255,7 +1255,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 		goto out;
  
- 	set_binfmt(&elf_format);
- 
--	retval = arch_setup_additional_pages(bprm, !!interpreter);
-+	retval = arch_setup_additional_pages(&sysinfo_ehdr);
+ 	retval = create_elf_tables(bprm, elf_ex,
+-			  load_addr, interp_load_addr, e_entry);
++			  load_addr, interp_load_addr, e_entry, sysinfo_ehdr);
  	if (retval < 0)
  		goto out;
  
 diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
-index b9a6d1b2b5bb..c9ee3c240855 100644
+index c9ee3c240855..f0e4803ab6ca 100644
 --- a/fs/binfmt_elf_fdpic.c
 +++ b/fs/binfmt_elf_fdpic.c
-@@ -183,6 +183,7 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm)
- {
- 	struct elf_fdpic_params exec_params, interp_params;
- 	struct pt_regs *regs = current_pt_regs();
-+	unsigned long sysinfo_ehdr = 0;
- 	struct elf_phdr *phdr;
- 	unsigned long stack_size, entryaddr;
- #ifdef ELF_FDPIC_PLAT_INIT
-@@ -375,7 +376,7 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm)
- 	if (retval < 0)
- 		goto error;
+@@ -63,7 +63,7 @@ static int elf_fdpic_map_file(struct elf_fdpic_params *, struct file *,
  
--	retval = arch_setup_additional_pages(bprm, !!interpreter_name);
-+	retval = arch_setup_additional_pages(&sysinfo_ehdr);
- 	if (retval < 0)
- 		goto error;
- #endif
-diff --git a/include/linux/elf.h b/include/linux/elf.h
-index 95bf7a1abaef..a8bea5611a4b 100644
---- a/include/linux/elf.h
-+++ b/include/linux/elf.h
-@@ -104,13 +104,20 @@ static inline int arch_elf_adjust_prot(int prot,
- }
+ static int create_elf_fdpic_tables(struct linux_binprm *, struct mm_struct *,
+ 				   struct elf_fdpic_params *,
+-				   struct elf_fdpic_params *);
++				   struct elf_fdpic_params *, unsigned long);
+ 
+ #ifndef CONFIG_MMU
+ static int elf_fdpic_map_file_constdisp_on_uclinux(struct elf_fdpic_params *,
+@@ -434,8 +434,8 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm)
+ 	current->mm->start_stack = current->mm->start_brk + stack_size;
  #endif
  
--struct linux_binprm;
- #ifdef CONFIG_ARCH_HAS_SETUP_ADDITIONAL_PAGES
--extern int arch_setup_additional_pages(struct linux_binprm *bprm,
--				       int uses_interp);
-+/**
-+ * arch_setup_additional_pages - Premap VMAs in a new-execed process
-+ * @sysinfo_ehdr:	Returns vDSO position to be set in the initial
-+ *			auxiliary vector (tag AT_SYSINFO_EHDR) by binfmt
-+ *			loader. On failure isn't initialized.
-+ *			As address == 0 is never used, it allows to check
-+ *			if the tag should be set.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+extern int arch_setup_additional_pages(unsigned long *sysinfo_ehdr);
- #else
--static inline int arch_setup_additional_pages(struct linux_binprm *bprm,
--				       int uses_interp)
-+static inline int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
+-	if (create_elf_fdpic_tables(bprm, current->mm,
+-				    &exec_params, &interp_params) < 0)
++	if (create_elf_fdpic_tables(bprm, current->mm, &exec_params,
++				    &interp_params, sysinfo_ehdr) < 0)
+ 		goto error;
+ 
+ 	kdebug("- start_code  %lx", current->mm->start_code);
+@@ -496,7 +496,8 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm)
+ static int create_elf_fdpic_tables(struct linux_binprm *bprm,
+ 				   struct mm_struct *mm,
+ 				   struct elf_fdpic_params *exec_params,
+-				   struct elf_fdpic_params *interp_params)
++				   struct elf_fdpic_params *interp_params,
++				   unsigned long sysinfo_ehdr)
  {
- 	return 0;
- }
+ 	const struct cred *cred = current_cred();
+ 	unsigned long sp, csp, nitems;
+@@ -664,7 +665,7 @@ static int create_elf_fdpic_tables(struct linux_binprm *bprm,
+ 	/* ARCH_DLINFO must come last so platform specific code can enforce
+ 	 * special alignment requirements on the AUXV if necessary (eg. PPC).
+ 	 */
+-	ARCH_DLINFO;
++	ARCH_DLINFO(sysinfo_ehdr);
+ #endif
+ #undef NEW_AUX_ENT
+ 
 -- 
 2.29.2
 
