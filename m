@@ -2,71 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342B12C2322
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424C02C2327
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732161AbgKXKlr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 05:41:47 -0500
-Received: from pic75-3-78-194-244-226.fbxo.proxad.net ([78.194.244.226]:40974
-        "EHLO mail.corsac.net" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1732149AbgKXKlq (ORCPT
+        id S1732181AbgKXKmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731324AbgKXKmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:41:46 -0500
-Received: from scapa.corsac.net (unknown [IPv6:2a01:e34:ec2f:4e20:6af7:28ff:fe8d:2119])
-        by mail.corsac.net (Postfix) with ESMTPS id E7A91A0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:41:40 +0100 (CET)
-Received: from corsac (uid 1000)
-        (envelope-from corsac@corsac.net)
-        id a00a5
-        by scapa.corsac.net (DragonFly Mail Agent v0.12);
-        Tue, 24 Nov 2020 11:41:40 +0100
-Message-ID: <02c032512dab22c1ab758d953affd94a4064fdbd.camel@corsac.net>
-Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
-From:   Yves-Alexis Perez <corsac@corsac.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Martin Habets <mhabets@solarflare.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        "Michael S. Tsirkin" <mst@redhat.com>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matti Vuorela <matti.vuorela@bitfactor.fi>,
-        stable@vger.kernel.org
-Date:   Tue, 24 Nov 2020 11:41:40 +0100
-In-Reply-To: <20201121140311.42585c68@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com>
-         <20201119172439.94988-1-corsac@corsac.net>
-         <20201121140311.42585c68@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.38.1-2 
+        Tue, 24 Nov 2020 05:42:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CDCC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:42:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hV4v8/sy7lWGaOxqP7PaojedXRhJakXf/w80FAM8S6U=; b=Xtjk9KxIgfhdSk9RUYLznWCEt8
+        U1K6ZiL+rY7y3sZG6kopgukllEJqMNeybq0J1pi/ddJ18QZT2yMnQESg2UhVilFglrxbZBiygkZmI
+        sQP+6MzKF+95mCDo/d11FXzspwrAyiBOOOIcLiUyeWKtDhcsXfg+W7moa5SKxiAbwwgvI4KZexd+L
+        MJCHk+/MKYGtjnOWnQNmRRgOSMQ+RXetqt4mBfx2U4JjI+nVN34YLacYLDTn0K4D7igFJJeOOMl2M
+        pTQavmVHU3o8JjJkvZbajHjFwvUZfRs6BXoLZ5noq1X8BhjjlXB2RAAQvknUCQ9jdRxUFbyjvc2uS
+        pwiSyOqw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khVlZ-0004Hf-P1; Tue, 24 Nov 2020 10:41:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A76573062EA;
+        Tue, 24 Nov 2020 11:41:42 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 92A2E20222D67; Tue, 24 Nov 2020 11:41:42 +0100 (CET)
+Date:   Tue, 24 Nov 2020 11:41:42 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 15/32] sched: Improve snapshotting of min_vruntime
+ for CGroups
+Message-ID: <20201124104142.GX3021@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-16-joel@joelfernandes.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117232003.3580179-16-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-21 at 14:03 -0800, Jakub Kicinski wrote:
-> Applied to net with the typo fixed, thanks!
+On Tue, Nov 17, 2020 at 06:19:45PM -0500, Joel Fernandes (Google) wrote:
+> +static void se_fi_update(struct sched_entity *se, unsigned int fi_seq, bool forceidle)
+>  {
+> -	bool samecpu = task_cpu(a) == task_cpu(b);
+> +	bool root = true;
+> +	long old, new;
 
-Thanks!
+My compiler was not impressed by all those variable definitions.
 
-Is there any chance it'll be in 5.10 or will it have to wait for the 5.11
-merge window?
-
-Also it should be applied to all supported/stable kernels. I guess that'll
-have to wait until it's in Linus tree according [1] to but I'm unsure if I
-need to trigger the action myself or if Greg (or Dave, according to [2]) will
-do it.
-
-I looked at [3] and it seems that adding the CC: stable in my commit message
-maybe was an error because it's marked as a Failure, so if there's anything
-needed from me here, don't hesitate to ask.
-
-[1] https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-[2]
-https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html#q-how-can-i-tell-what-patches-are-queued-up-for-backporting-to-the-various-stable-releases
-[3] https://patchwork.kernel.org/bundle/netdev/stable/?state=*
-
-Regards,
--- 
-Yves-Alexis
+> +
+> +	for_each_sched_entity(se) {
+> +		struct cfs_rq *cfs_rq = cfs_rq_of(se);
+> +
+> +		if (forceidle) {
+> +			if (cfs_rq->forceidle_seq == fi_seq)
+> +				break;
+> +			cfs_rq->forceidle_seq = fi_seq;
+> +		}
+> +
+> +		cfs_rq->min_vruntime_fi = cfs_rq->min_vruntime;
+> +	}
+> +}
