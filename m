@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891122C23E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1517C2C23EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732836AbgKXLJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:09:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732418AbgKXLJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:09:08 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5026CC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:09:08 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id y7so6619519lji.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:09:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rZAwLjr8KspoBjmgRNrm6A/fZBDnUklQGOp47xcRZqg=;
-        b=WcfZkfh0eVFoUsipHhn2lIdyQn1PvNhsvhIPb0FasBYXL9/QetbPypJYvKNpVizywP
-         bUPURugPlZVNnS7rAvrCG/98igP0I2KoeV2gw/43m4xhABdGXigoUR7kYcqeWFC1zMGP
-         H3GnzG7+TRk+q7OyzXU9bc5pGpTzMwNL3qlc8blBhyl8hukuNCGJSd5GbJV1j+V8xefX
-         SILZfna+YhM0C8gb85B0IHiHYOAG1OGlSBkaadULkJNfqCL00b/2iNSs1sMaOpj2qIrP
-         7+GiAxzoT9d0m8+XPyiYe5ho2F/5P073x+LFX+kpLfLLsHz3282jVkt3hiM+PJ0XcQx7
-         8gfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rZAwLjr8KspoBjmgRNrm6A/fZBDnUklQGOp47xcRZqg=;
-        b=HMNQmezpXoTScpA8/dHg8rUAmIh4D2uJNP2d8SRKXGT3/PqSpUE2FP4w4KYgrI0CB6
-         6m5pXbzhnRyBUOb3jMN4zi4u8XnFKJE5bcVHsKL2bKkoECDt524yD7TV9b40FYr10KDi
-         Z6XLMO35N19UbKwFhvlgFsOKB/xAwGmbLiKRTlC/uqReqpc7SMKFBczuvxLYtqU7iXOa
-         fZpj1CYDYcnRQE/VFlsKhF7oGJ+zlZdE4LsujmTASgj+4/MSSjPpWYgPQgLNKl5+ccum
-         pa9aE4hnvM9w5szTL8/HQ9DVQh4jz5sgw5j+Ei8HYCHIqfaLsfAjusXM4E+jZr+G6mXj
-         u1gQ==
-X-Gm-Message-State: AOAM53056U+uM1y5Q9ZwNB9EUAK49nCC8S0KSuKOO5gLMCjlvSwTsimC
-        DTTyLdT1KDh98o+3kmNkWNAsIRqjyh4qtNp9kJVejQ==
-X-Google-Smtp-Source: ABdhPJw4n9mKvhVyPpmKkDQXwOR/xXy+i3IveAgSpxh0mzd6CvAyL5PNmSCHvq3+ik41UJTjFWRoBD4oIqZN7bgUH30=
-X-Received: by 2002:a2e:9d8d:: with SMTP id c13mr1606129ljj.160.1606216146604;
- Tue, 24 Nov 2020 03:09:06 -0800 (PST)
+        id S1732600AbgKXLKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:10:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732536AbgKXLKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:10:34 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E99E52073C;
+        Tue, 24 Nov 2020 11:10:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606216234;
+        bh=2uK6gknCKN4AYaBsRSYNpCUpw9VdB72lt/njxbxA6GA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W2t4y8oN8c0g38vhBQq66MuAcmgMMFWcHRYuxyuRtuX8qaVsF+C1CKqA9RJfInMj1
+         qZff1xDjS64XFMDr0/sXiHg0S+ie8s1dELjmSWS9eDscf4ptO9IGUHDT3JkTNVJlbk
+         uKw/lXPS1M5h4yLJHyV+JPEHYysKkMbXjwvEYBvU=
+Date:   Tue, 24 Nov 2020 11:10:28 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCHv8 0/8] System Cache support for GPU and required SMMU
+ support
+Message-ID: <20201124111027.GA13151@willie-the-truck>
+References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
+ <20201123152146.GE11033@willie-the-truck>
+ <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
+ <CAF6AEGse=WBAC1WbTi6aD5_m1_NBg91f=veYm-7V=Uds7NA0Lw@mail.gmail.com>
+ <1c665e33d1d27263fb5056c16d30b827@codeaurora.org>
 MIME-Version: 1.0
-References: <20201124104030.903-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20201124104030.903-1-lukas.bulwahn@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 24 Nov 2020 12:08:40 +0100
-Message-ID: <CAG48ez1FqJYay1F=LUt84DVHd+k0=gXohwhTnwv=t1sv=hTSjw@mail.gmail.com>
-Subject: Re: [PATCH] zlib: define get_unaligned16() only when used
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kernel-janitors@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c665e33d1d27263fb5056c16d30b827@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:40 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> Since commit acaab7335bd6 ("lib/zlib: remove outdated and incorrect
-> pre-increment optimization"), get_unaligned16() is only used when
-> !CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS.
->
-> Hence, make CC=clang W=1 warns:
->
->   lib/zlib_inflate/inffast.c:20:1:
->     warning: unused function 'get_unaligned16' [-Wunused-function]
->
-> Define get_unaligned16() only when it is actually used.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+On Tue, Nov 24, 2020 at 09:32:54AM +0530, Sai Prakash Ranjan wrote:
+> On 2020-11-24 00:52, Rob Clark wrote:
+> > On Mon, Nov 23, 2020 at 9:01 AM Sai Prakash Ranjan
+> > <saiprakash.ranjan@codeaurora.org> wrote:
+> > > 
+> > > On 2020-11-23 20:51, Will Deacon wrote:
+> > > > On Tue, Nov 17, 2020 at 08:00:39PM +0530, Sai Prakash Ranjan wrote:
+> > > >> Some hardware variants contain a system cache or the last level
+> > > >> cache(llc). This cache is typically a large block which is shared
+> > > >> by multiple clients on the SOC. GPU uses the system cache to cache
+> > > >> both the GPU data buffers(like textures) as well the SMMU pagetables.
+> > > >> This helps with improved render performance as well as lower power
+> > > >> consumption by reducing the bus traffic to the system memory.
+> > > >>
+> > > >> The system cache architecture allows the cache to be split into slices
+> > > >> which then be used by multiple SOC clients. This patch series is an
+> > > >> effort to enable and use two of those slices preallocated for the GPU,
+> > > >> one for the GPU data buffers and another for the GPU SMMU hardware
+> > > >> pagetables.
+> > > >>
+> > > >> Patch 1 - Patch 6 adds system cache support in SMMU and GPU driver.
+> > > >> Patch 7 and 8 are minor cleanups for arm-smmu impl.
+> > > >>
+> > > >> Changes in v8:
+> > > >>  * Introduce a generic domain attribute for pagetable config (Will)
+> > > >>  * Rename quirk to more generic IO_PGTABLE_QUIRK_ARM_OUTER_WBWA (Will)
+> > > >>  * Move non-strict mode to use new struct domain_attr_io_pgtbl_config
+> > > >> (Will)
+> > > >
+> > > > Modulo some minor comments I've made, this looks good to me. What is
+> > > > the
+> > > > plan for merging it? I can take the IOMMU parts, but patches 4-6 touch
+> > > > the
+> > > > MSM GPU driver and I'd like to avoid conflicts with that.
+> > > >
+> > > 
+> > > SMMU bits are pretty much independent and GPU relies on the domain
+> > > attribute
+> > > and the quirk exposed, so as long as SMMU changes go in first it
+> > > should
+> > > be good.
+> > > Rob?
+> > 
+> > I suppose one option would be to split out the patch that adds the
+> > attribute into it's own patch, and merge that both thru drm and iommu?
+> > 
+> 
+> Ok I can split out domain attr and quirk into its own patch if Will is
+> fine with that approach.
 
-AFAICS a nicer option would be to "#include <asm/unaligned.h>" and
-then use "get_unaligned", which should automatically do the right
-thing everywhere and remove the need for defining get_unaligned16()
-and checking CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS entirely?
+Why don't I just queue the first two patches on their own branch and we
+both pull that?
+
+Will
