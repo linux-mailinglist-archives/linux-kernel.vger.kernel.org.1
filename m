@@ -2,403 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963A32C1FC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726062C1FC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730479AbgKXIUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
+        id S1730489AbgKXIVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgKXIUk (ORCPT
+        with ESMTP id S1728177AbgKXIVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 03:20:40 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAFBC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:20:39 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1khTYr-0004Ny-FW; Tue, 24 Nov 2020 09:20:29 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1khTYj-0004BH-0Y; Tue, 24 Nov 2020 09:20:21 +0100
-Date:   Tue, 24 Nov 2020 09:20:19 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        allen <allen.chen@ite.com.tw>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mark Brown <broonie@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v4 4/7] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-Message-ID: <20201124082019.vpkr3xnp55arjpnp@pengutronix.de>
-References: <20201122222739.1455132-1-j.neuschaefer@gmx.net>
- <20201122222739.1455132-5-j.neuschaefer@gmx.net>
+        Tue, 24 Nov 2020 03:21:01 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7BFC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:20:59 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id i9so21026003ioo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:20:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X/x0LTb4J+x0tLkU4UfWhgC2IEt8b2Ne7z/1P9Z0zjA=;
+        b=WgmWs9slVGpefYI3u0JHnro604o3Rsq37SkQhMRrVMYlX/I0yTj+7o3zmxiXFzt/tf
+         bhnMMfKan6dMtMuDpoPKwLz+aQ/FMx/7F1N/6iAKe7b/qxjzVUSItHnJlVrjmryJ7Jax
+         zBBhZWT4nMXkonUV58hrO/c24uCLaMdPZheAg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X/x0LTb4J+x0tLkU4UfWhgC2IEt8b2Ne7z/1P9Z0zjA=;
+        b=sT0xjbThFimj/XbswwCCisyGLYQaAmRdT22kVU0Arh6SpwdLVR1HAZD7zB7kiXfmmF
+         Q+YSsdf3PVLt0+L86s6og/jiP7s9lBF/Ig7LNaJKwORbKcBWMdHueTnYgISpsuM/S+OX
+         EQRJrGhOCDkjtUbX6tkpHfSeVoNtX83cTsOlpskD+hbWSNIouz1/BQKHnyqF8NtCoC6e
+         rZDh1ex+Vr7F47NFahlSLZXA/ToXrq+/DwPQlWj5xM1hPJ8qaWd5dhlw2qrDjF2k6sFA
+         dfnTGiCktfZkFY9WrpOo5nu6h2OPuzU+TzITMmI/ZQkXNpl9p8yVruTnAN2a1I97lj/7
+         k6TQ==
+X-Gm-Message-State: AOAM533IaqBdEfKdnXsT09bEgJEAnCCg7ZO7dEfSh7c+6/pGywCsmBUg
+        uS/T9+eZFExHDdF5Qd3RbYM8VKYFtGQspOQwdrYScA==
+X-Google-Smtp-Source: ABdhPJwDD+cQREmdCGOOrIMuL9X8U9Zd3cwX9xY7MHPd1cZdR0F/0sSKV86O9Bh13f2qdJctm1O4CME4HC/nfxZd+EI=
+X-Received: by 2002:a05:6638:3f1:: with SMTP id s17mr3341338jaq.102.1606206059023;
+ Tue, 24 Nov 2020 00:20:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n7psjkl5oqhse6nm"
-Content-Disposition: inline
-In-Reply-To: <20201122222739.1455132-5-j.neuschaefer@gmx.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201013102358.22588-1-michael.kao@mediatek.com> <20201013102358.22588-2-michael.kao@mediatek.com>
+In-Reply-To: <20201013102358.22588-2-michael.kao@mediatek.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Tue, 24 Nov 2020 16:20:33 +0800
+Message-ID: <CAJMQK-hCDH_-JZG6uBrTmbCf-HG0J4GxGj2kyeh5sgjJs5Et1g@mail.gmail.com>
+Subject: Re: [v5 1/3] arm64: dts: mt8183: add thermal zone node
+To:     Michael Kao <michael.kao@mediatek.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        srv_heupstream@mediatek.com,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---n7psjkl5oqhse6nm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Sun, Nov 22, 2020 at 11:27:36PM +0100, Jonathan Neusch=E4fer wrote:
-> The Netronix EC provides a PWM output which is used for the backlight
-> on some ebook readers. This patches adds a driver for the PWM output.
->=20
-> The .get_state callback is not implemented, because the PWM state can't
-> be read back from the hardware.
->=20
-> Signed-off-by: Jonathan Neusch=E4fer <j.neuschaefer@gmx.net>
+On Tue, Oct 13, 2020 at 6:24 PM Michael Kao <michael.kao@mediatek.com> wrote:
+>
+> From: "Michael.Kao" <michael.kao@mediatek.com>
+>
+> Add thermal zone node to Mediatek MT8183 dts file.
+>
+> Evaluate the thermal zone every 500ms while not cooling
+> and every 100ms when passive cooling is performed.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
 > ---
->=20
-> v4:
-> - Document hardware/driver limitations
-> - Only accept normal polarity
-> - Fix a typo ("zone" -> "zero")
-> - change MAX_PERIOD_NS to 0xffff * 125
-> - Clamp period to the maximum rather than returning an error
-> - Rename private struct pointer to priv
-> - Rearrage control flow in _probe to save a few lines and a temporary var=
-iable
-> - Add missing MODULE_ALIAS line
-> - Spell out ODM
->=20
-> v3:
-> - https://lore.kernel.org/lkml/20200924192455.2484005-5-j.neuschaefer@gmx=
-=2Enet/
-> - Relicense as GPLv2 or later
-> - Add email address to copyright line
-> - Remove OF compatible string and don't include linux/of_device.h
-> - Fix bogus ?: in return line
-> - Don't use a comma after sentinels
-> - Avoid ret |=3D ... pattern
-> - Move 8-bit register conversion to ntxec.h
->=20
-> v2:
-> - https://lore.kernel.org/lkml/20200905133230.1014581-6-j.neuschaefer@gmx=
-=2Enet/
-> - Various grammar and style improvements, as suggested by Uwe Kleine-K=F6=
-nig,
->   Lee Jones, and Alexandre Belloni
-> - Switch to regmap
-> - Prefix registers with NTXEC_REG_
-> - Add help text to the Kconfig option
-> - Use the .apply callback instead of the old API
-> - Add a #define for the time base (125ns)
-> - Don't change device state in .probe; this avoids multiple problems
-> - Rework division and overflow check logic to perform divisions in 32 bits
-> - Avoid setting duty cycle to zero, to work around a hardware quirk
-> ---
->  drivers/pwm/Kconfig     |   8 ++
->  drivers/pwm/Makefile    |   1 +
->  drivers/pwm/pwm-ntxec.c | 166 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 175 insertions(+)
->  create mode 100644 drivers/pwm/pwm-ntxec.c
->=20
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 63be5362fd3a5..815f329ed5b46 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -350,6 +350,14 @@ config PWM_MXS
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called pwm-mxs.
->=20
-> +config PWM_NTXEC
-> +	tristate "Netronix embedded controller PWM support"
-> +	depends on MFD_NTXEC
-> +	help
-> +	  Say yes here if you want to support the PWM output of the embedded
-> +	  controller found in certain e-book readers designed by the original
-> +	  design manufacturer Netronix.
-> +
->  config PWM_OMAP_DMTIMER
->  	tristate "OMAP Dual-Mode Timer PWM support"
->  	depends on OF
-> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> index cbdcd55d69eef..1deb29e6ae8e5 100644
-> --- a/drivers/pwm/Makefile
-> +++ b/drivers/pwm/Makefile
-> @@ -32,6 +32,7 @@ obj-$(CONFIG_PWM_MESON)		+=3D pwm-meson.o
->  obj-$(CONFIG_PWM_MEDIATEK)	+=3D pwm-mediatek.o
->  obj-$(CONFIG_PWM_MTK_DISP)	+=3D pwm-mtk-disp.o
->  obj-$(CONFIG_PWM_MXS)		+=3D pwm-mxs.o
-> +obj-$(CONFIG_PWM_NTXEC)		+=3D pwm-ntxec.o
->  obj-$(CONFIG_PWM_OMAP_DMTIMER)	+=3D pwm-omap-dmtimer.o
->  obj-$(CONFIG_PWM_PCA9685)	+=3D pwm-pca9685.o
->  obj-$(CONFIG_PWM_PXA)		+=3D pwm-pxa.o
-> diff --git a/drivers/pwm/pwm-ntxec.c b/drivers/pwm/pwm-ntxec.c
-> new file mode 100644
-> index 0000000000000..4f4f736d71aba
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-ntxec.c
-> @@ -0,0 +1,166 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * The Netronix embedded controller is a microcontroller found in some
-> + * e-book readers designed by the original design manufacturer Netronix,=
- Inc.
-> + * It contains RTC, battery monitoring, system power management, and PWM
-> + * functionality.
-> + *
-> + * This driver implements PWM output.
-> + *
-> + * Copyright 2020 Jonathan Neusch=E4fer <j.neuschaefer@gmx.net>
-> + *
-> + * Limitations:
-> + * - The get_state callback is not implemented, because the current stat=
-e of
-> + *   the PWM output can't be read back from the hardware.
-> + * - The hardware can only generate normal polarity output.
-> + */
-> +
-> +#include <linux/mfd/ntxec.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pwm.h>
-> +#include <linux/regmap.h>
-> +#include <linux/types.h>
-> +
-> +struct ntxec_pwm {
-> +	struct device *dev;
-> +	struct ntxec *ec;
-> +	struct pwm_chip chip;
-> +};
-> +
-> +static struct ntxec_pwm *pwmchip_to_priv(struct pwm_chip *chip)
-> +{
-> +	return container_of(chip, struct ntxec_pwm, chip);
-> +}
-> +
-> +#define NTXEC_REG_AUTO_OFF_HI	0xa1
-> +#define NTXEC_REG_AUTO_OFF_LO	0xa2
-> +#define NTXEC_REG_ENABLE	0xa3
-> +#define NTXEC_REG_PERIOD_LOW	0xa4
-> +#define NTXEC_REG_PERIOD_HIGH	0xa5
-> +#define NTXEC_REG_DUTY_LOW	0xa6
-> +#define NTXEC_REG_DUTY_HIGH	0xa7
-> +
-> +/*
-> + * The time base used in the EC is 8MHz, or 125ns. Period and duty cycle=
- are
-> + * measured in this unit.
-> + */
-> +#define TIME_BASE_NS 125
-> +
-> +/*
-> + * The maximum input value (in nanoseconds) is determined by the time ba=
-se and
-> + * the range of the hardware registers that hold the converted value.
-> + * It fits into 32 bits, so we can do our calculations in 32 bits as wel=
-l.
-> + */
-> +#define MAX_PERIOD_NS (TIME_BASE_NS * 0xffff)
-> +
-> +static int ntxec_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm=
-_dev,
-> +			   const struct pwm_state *state)
-> +{
-> +	struct ntxec_pwm *priv =3D pwmchip_to_priv(pwm_dev->chip);
-> +	unsigned int duty =3D state->duty_cycle;
-> +	unsigned int period =3D state->period;
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 84 ++++++++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 8fed72bb35d7..1cd093cf33f3 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -430,6 +430,86 @@
+>                         status = "disabled";
+>                 };
+>
+> +               thermal: thermal@1100b000 {
+> +                       #thermal-sensor-cells = <1>;
+> +                       compatible = "mediatek,mt8183-thermal";
+> +                       reg = <0 0x1100b000 0 0x1000>;
+> +                       clocks = <&infracfg CLK_INFRA_THERM>,
+> +                                <&infracfg CLK_INFRA_AUXADC>;
+> +                       clock-names = "therm", "auxadc";
+> +                       resets = <&infracfg  MT8183_INFRACFG_AO_THERM_SW_RST>;
 
-state->duty_cycle and state->period are u64, so you're losing
-information here. Consider state->duty_cycle =3D 0x100000001 and
-state->period =3D 0x200000001.
+According to binding document[1], interrupts is required.
+interrupts = <0 76 IRQ_TYPE_LEVEL_LOW>;
 
-> +	int res =3D 0;
-> +
-> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
-> +		return -EINVAL;
-> +
-> +	if (period > MAX_PERIOD_NS) {
-> +		period =3D MAX_PERIOD_NS;
-> +
-> +		if (duty > period)
-> +			duty =3D period;
-> +	}
-> +
-> +	period /=3D TIME_BASE_NS;
-> +	duty /=3D TIME_BASE_NS;
-> +
-> +	res =3D regmap_write(priv->ec->regmap, NTXEC_REG_PERIOD_HIGH, ntxec_reg=
-8(period >> 8));
-> +	if (res)
-> +		return res;
+[1] https://elixir.bootlin.com/linux/v5.10-rc3/source/Documentation/devicetree/bindings/thermal/mediatek-thermal.txt#L18
 
-I wonder if you can add some logic to the regmap in the mfd driver such
-that ntxec_reg8 isn't necessary for all users.
-
-> +	res =3D regmap_write(priv->ec->regmap, NTXEC_REG_PERIOD_LOW, ntxec_reg8=
-(period));
-> +	if (res)
-> +		return res;
+> +                       mediatek,auxadc = <&auxadc>;
+> +                       mediatek,apmixedsys = <&apmixedsys>;
+> +                       nvmem-cells = <&thermal_calibration>;
+> +                       nvmem-cell-names = "calibration-data";
+> +               };
 > +
-> +	res =3D regmap_write(priv->ec->regmap, NTXEC_REG_DUTY_HIGH, ntxec_reg8(=
-duty >> 8));
-> +	if (res)
-> +		return res;
+> +               thermal-zones {
+> +                       cpu_thermal: cpu_thermal {
+> +                               polling-delay-passive = <100>;
+> +                               polling-delay = <500>;
+> +                               thermal-sensors = <&thermal 0>;
+> +                               sustainable-power = <5000>;
+> +                       };
 > +
-> +	res =3D regmap_write(priv->ec->regmap, NTXEC_REG_DUTY_LOW, ntxec_reg8(d=
-uty));
-> +	if (res)
-> +		return res;
-
-I think I already asked, but I don't remember the reply: What happens to
-the output between these writes? A comment here about this would be
-suitable.
-
+> +                       /* The tzts1 ~ tzts6 don't need to polling */
+> +                       /* The tzts1 ~ tzts6 don't need to thermal throttle */
 > +
-> +	/*
-> +	 * Writing a duty cycle of zero puts the device into a state where
-> +	 * writing a higher duty cycle doesn't result in the brightness that it
-> +	 * usually results in. This can be fixed by cycling the ENABLE register.
-> +	 *
-> +	 * As a workaround, write ENABLE=3D0 when the duty cycle is zero.
-> +	 */
-> +	if (state->enabled && duty !=3D 0) {
-> +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(1)=
-);
-> +		if (res)
-> +			return res;
+> +                       tzts1: tzts1 {
+> +                               polling-delay-passive = <0>;
+> +                               polling-delay = <0>;
+> +                               thermal-sensors = <&thermal 1>;
+> +                               sustainable-power = <5000>;
+> +                               trips {};
+> +                               cooling-maps {};
+> +                       };
 > +
-> +		/* Disable the auto-off timer */
-> +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_HI, ntxec_re=
-g8(0xff));
-> +		if (res)
-> +			return res;
+> +                       tzts2: tzts2 {
+> +                               polling-delay-passive = <0>;
+> +                               polling-delay = <0>;
+> +                               thermal-sensors = <&thermal 2>;
+> +                               sustainable-power = <5000>;
+> +                               trips {};
+> +                               cooling-maps {};
+> +                       };
 > +
-> +		return regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_LO, ntxec_reg=
-8(0xff));
-> +	} else {
-> +		return regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(0));
-> +	}
-> +}
+> +                       tzts3: tzts3 {
+> +                               polling-delay-passive = <0>;
+> +                               polling-delay = <0>;
+> +                               thermal-sensors = <&thermal 3>;
+> +                               sustainable-power = <5000>;
+> +                               trips {};
+> +                               cooling-maps {};
+> +                       };
 > +
-> +static struct pwm_ops ntxec_pwm_ops =3D {
-
-This can be const.
-
-> +	.apply =3D ntxec_pwm_apply,
-
-/*
- * The current state cannot be read out, so there is no .get_state
- * callback.
- */
-
-Hmm, at least you could provice a .get_state() callback that reports the
-setting that was actually implemented for in the last call to .apply()?
-
-@Thierry: Do you have concerns here? Actually it would be more effective
-to have a callback (like .apply()) that modfies its pwm_state
-accordingly. (Some drivers did that in the past, but I changed that to
-get an uniform behaviour in 71523d1812aca61e32e742e87ec064e3d8c615e1.)
-The downside is that people have to understand that concept to properly
-use it. I'm torn about the right approach.
-
-> +	.owner =3D THIS_MODULE,
-> +};
+> +                       tzts4: tzts4 {
+> +                               polling-delay-passive = <0>;
+> +                               polling-delay = <0>;
+> +                               thermal-sensors = <&thermal 4>;
+> +                               sustainable-power = <5000>;
+> +                               trips {};
+> +                               cooling-maps {};
+> +                       };
 > +
-> +static int ntxec_pwm_probe(struct platform_device *pdev)
-> +{
-> +	struct ntxec *ec =3D dev_get_drvdata(pdev->dev.parent);
-> +	struct ntxec_pwm *priv;
-> +	struct pwm_chip *chip;
+> +                       tzts5: tzts5 {
+> +                               polling-delay-passive = <0>;
+> +                               polling-delay = <0>;
+> +                               thermal-sensors = <&thermal 5>;
+> +                               sustainable-power = <5000>;
+> +                               trips {};
+> +                               cooling-maps {};
+> +                       };
 > +
-> +	priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
+> +                       tztsABB: tztsABB {
+> +                               polling-delay-passive = <0>;
+> +                               polling-delay = <0>;
+> +                               thermal-sensors = <&thermal 6>;
+> +                               sustainable-power = <5000>;
+> +                               trips {};
+> +                               cooling-maps {};
+> +                       };
+> +               };
 > +
-> +	priv->ec =3D ec;
-> +	priv->dev =3D &pdev->dev;
+>                 i2c3: i2c@1100f000 {
+>                         compatible = "mediatek,mt8183-i2c";
+>                         reg = <0 0x1100f000 0 0x1000>,
+> @@ -675,6 +755,10 @@
+>                         compatible = "mediatek,mt8183-efuse",
+>                                      "mediatek,efuse";
+>                         reg = <0 0x11f10000 0 0x1000>;
 > +
-> +	platform_set_drvdata(pdev, priv);
-> +
-> +	chip =3D &priv->chip;
-> +	chip->dev =3D &pdev->dev;
-> +	chip->ops =3D &ntxec_pwm_ops;
-> +	chip->base =3D -1;
-> +	chip->npwm =3D 1;
-> +
-> +	return pwmchip_add(chip);
-> +}
-> +
-> +static int ntxec_pwm_remove(struct platform_device *pdev)
-> +{
-> +	struct ntxec_pwm *priv =3D platform_get_drvdata(pdev);
-> +	struct pwm_chip *chip =3D &priv->chip;
-> +
-> +	return pwmchip_remove(chip);
-> +}
-> +
-> +static struct platform_driver ntxec_pwm_driver =3D {
-> +	.driver =3D {
-> +		.name =3D "ntxec-pwm",
-> +	},
-> +	.probe =3D ntxec_pwm_probe,
-> +	.remove =3D ntxec_pwm_remove,
-> +};
-> +module_platform_driver(ntxec_pwm_driver);
-> +
-> +MODULE_AUTHOR("Jonathan Neusch=E4fer <j.neuschaefer@gmx.net>");
-> +MODULE_DESCRIPTION("PWM driver for Netronix EC");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:ntxec-pwm");
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---n7psjkl5oqhse6nm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+8wkAACgkQwfwUeK3K
-7Ak9bgf+NapmOS9Fdc80KOeLtGA8StDYY66jDjFZZOGLqfzX2tmGPKOeUbbJkwtu
-qMFOWSBJsJUz2WXM2EOO/vN5O/aXR3FDg8W4wHBLyC76yy0rzCVfkWy4KYvrps72
-p/xjdZQTGZrnUKFdWfz1WGM+dja/sB5tXfIZnYJ2iJGoJ8JkOFXw/8Ug7156STd+
-Nvvg4EF36jSwRi4XyIhiFxmFAdebQsMtxS4R3C9vE64ZtEibTNMCmgNgpm4lNYbm
-cLMf7JgCt6DAviaQl+seBPYtigRAr3z5n8tPPSRyMvPS0PNs2IQEhs18UX9g/O2E
-WQT2wSIwGHALFYjble0FTmZGIUdM0A==
-=8Z7I
------END PGP SIGNATURE-----
-
---n7psjkl5oqhse6nm--
+> +                       thermal_calibration: calib@180 {
+> +                               reg = <0x180 0xc>;
+> +                       };
+>                 };
+>
+>                 u3phy: usb-phy@11f40000 {
+> --
+> 2.18.0
