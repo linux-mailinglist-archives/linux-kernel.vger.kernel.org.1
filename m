@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C662C1E87
+	by mail.lfdr.de (Postfix) with ESMTP id C34482C1E88
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgKXGyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:54:03 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:44869 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728986AbgKXGyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:54:02 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CgF9f503cz9tyhw;
-        Tue, 24 Nov 2020 07:53:58 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id hmjPhs3s2u0p; Tue, 24 Nov 2020 07:53:58 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgF9f44vJz9tyhv;
-        Tue, 24 Nov 2020 07:53:58 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5E5C08B7A3;
-        Tue, 24 Nov 2020 07:53:59 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1BWyoMS_Jinp; Tue, 24 Nov 2020 07:53:59 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4C8818B79F;
-        Tue, 24 Nov 2020 07:53:58 +0100 (CET)
-Subject: Re: [PATCH v2 00/19] Add generic vdso_base tracking
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <20201124002932.1220517-1-dima@arista.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <5e315bf6-b03d-e66e-9557-22ece397080e@csgroup.eu>
-Date:   Tue, 24 Nov 2020 07:53:58 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729847AbgKXGyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728951AbgKXGyY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:54:24 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D348BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:54:24 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id v3so4114814ilo.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:54:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jyg5lcJdKgnuPCVzERa4Rt0xWB2AfCQtzpyLk67O5hU=;
+        b=lkq3LttM7CTkaBXuWnEHF9j9YCCIyQZMet9iO4QghTwL8ln4iFPDQRHEXJX9shLaBS
+         UaiSxBBfpa/vYmTOV80ruwaBlfTNDDAdHVXEShbhwIIeMR5By32wVx+mpAbk2eiNm5tu
+         ucm40VBmzvujaB55jq36tXz52pyOgKs6pHQP1WM23d92+f5yKTb6zHOg+yUmk/QDs4UB
+         snaLHinXdMPVny2mt7+EElL9sMz5JYpGbDT7dYB6oOED9dwhzD/QyxlnqHJa/ZXRgV3o
+         m+t+IuodS57GUUCoY/wgXSkZBb/DQtKSs8OYvAFJRRhHO3VhWI2nM5FUNEbN36/fNmEv
+         7OTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jyg5lcJdKgnuPCVzERa4Rt0xWB2AfCQtzpyLk67O5hU=;
+        b=RscOT5A6sDWGvOf6hKgZHDWv+TimhrIuWO2VXlabB7iB9ImiA7tI4yBux11rFd4Hbm
+         1eARMAqSCm7ZEg/TeaWtjnIsneUFNo2oq917SADFzIVITnnhrT0yidm6rPfEOpjd/Rnb
+         LiAbVdStlxJFq2xSg8ClVCEGKLyGp+Gv0dItQylhd2jaB2EhtU2MTr052cYLnkl87Ixr
+         UvZe4EvK3SHRBCMYWKl1W8+dvwWo1vJmNrLA+pMnyflByG9I13mj3YSeWuet4PMzRvDN
+         gDf7qDkK2JSz/1q7oGqedQn9r1qMuDKtv3jUCSv4qPlG+JLPIQpx9mFCfc+u1uNfz+E1
+         sLSA==
+X-Gm-Message-State: AOAM532nUoBhj5jcUQCKXRYaL5qQIxJWhaGaoSTNGjTbp9lW9pedARbk
+        LT2q12nfa3Qlp83u4whiUQ4FDtA3NzcOz+RZUTw=
+X-Google-Smtp-Source: ABdhPJyCdOM0L5zrUb51hSfU7JeNsMaQ+XL9nXC5bGZFGTctTczOxXx9rKpmdH7xqcMblstNAgHqrpBzGiZ2idhhVag=
+X-Received: by 2002:a92:aacc:: with SMTP id p73mr3053455ill.64.1606200864161;
+ Mon, 23 Nov 2020 22:54:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201124002932.1220517-1-dima@arista.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <CAKXUXMx8siSm67jkBP_r+OKyKALfT2EDcX_SfX7JGBy3YisXcQ@mail.gmail.com>
+ <20201123172430.12854-1-yashsri421@gmail.com> <148208ef84344069a6c95d3f686a86ca1199be90.camel@perches.com>
+In-Reply-To: <148208ef84344069a6c95d3f686a86ca1199be90.camel@perches.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 24 Nov 2020 07:54:13 +0100
+Message-ID: <CAKXUXMzcMWeM2M81b2PZ+D54LO6xd+m667vygWVF93Mnsq8QQg@mail.gmail.com>
+Subject: Re: [PATCH v4] checkpatch: add fix and improve warning msg for
+ Non-standard signature
+To:     Joe Perches <joe@perches.com>
+Cc:     Aditya Srivastava <yashsri421@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 6:33 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-11-23 at 22:54 +0530, Aditya Srivastava wrote:
+> > Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
+> > styles.
+>
+> I think this proposed change is unnecessary.
+>
+> > This warning occurs because of incorrect use of signature tags,
+> > e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
+> > signature tags, which may seem correct, but are not standard:
+>
+> Standards are useful, but standards are not constraints.
+>
 
+Agree, but we do try to create statistics and try to derive quality
+statements from those tags (yes, empirical software engineering black
+magic...).
+Hence, I am in favor of suggesting to rewrite those tags that really
+do not add anything at all. E.g., Suggestions-by: vs. Suggested-by, or
+Coauthored-by vs. Co-developed-by.
 
-Le 24/11/2020 à 01:29, Dmitry Safonov a écrit :
-> v2 Changes:
-> - Rename user_landing to vdso_base as it tracks vDSO VMA start address,
->    rather than the explicit address to land (Andy)
-> - Reword and don't use "new-execed" and "new-born" task (Andy)
-> - Fix failures reported by build robot
-> 
-> Started from discussion [1], where was noted that currently a couple of
-> architectures support mremap() for vdso/sigpage, but not munmap().
-> If an application maps something on the ex-place of vdso/sigpage,
-> later after processing signal it will land there (good luck!)
-> 
-> Patches set is based on linux-next (next-20201123) and it depends on
-> changes in x86/cleanups (those reclaim TIF_IA32/TIF_X32) and also
-> on my changes in akpm (fixing several mremap() issues).
+Anyone can ignore checkpatch; so it is not a constraint unless
+enforced by subsystem maintainers.
 
-I have a series that cleans up VDSO init on powerpc and migrates powerpc to 
-_install_special_mapping() (patch 10 of the series).
+> > 1) Requested-by (count: 48) => Suggested-by
+> > Rationale: In an open-source project, there are no 'requests', just
+> > 'suggestions' to convince a maintainer to accept your patch
+>
+> There's nothing really wrong with some non-standard signatures.
+> And I think leaving humor like brown-paper-bag-by: is useful.
+>
 
-https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=204396&state=%2A&archive=both
+I think we do not want to take the humor and fun away from patches.
 
-I'm wondering how we should coordinate with your series for merging.
+So let us not suggest deleting the humorous and celebrating ones.
 
-I guess your series will also imply removal of arch_unmap() ? see 
-https://elixir.bootlin.com/linux/v5.10-rc4/source/arch/powerpc/include/asm/mmu_context.h#L262
+> Just telling people that they are using a non-standard signature
+> I think is enough.
+>
 
-> 
-> Logically, the patches set divides on:
-> - patch       1: a cleanup for patches in x86/cleanups
-> - patches  2-11: cleanups for arch_setup_additional_pages()
-> - patches 12-13: x86 signal changes for unmapped vdso
-> - patches 14-19: provide generic vdso_base in mm_struct
-> 
-> In the end, besides cleanups, it's now more predictable what happens for
-> applications with unmapped vdso on architectures those support .mremap()
-> for vdso/sigpage.
-> 
-> I'm aware of only one user that unmaps vdso - Valgrind [2].
-> (there possibly are more, but this one is "special", it unmaps vdso, but
->   not vvar, which confuses CRIU [Checkpoint Restore In Userspace], that's
->   why I'm aware of it)
-> 
-> Patches as a .git branch:
-> https://github.com/0x7f454c46/linux/tree/setup_additional_pages-v2
-> 
-> v1 Link:
-> https://lore.kernel.org/lkml/20201108051730.2042693-1-dima@arista.com/
-> 
-> [1]: https://lore.kernel.org/linux-arch/CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com/
-> [2]: https://github.com/checkpoint-restore/criu/issues/488
-> 
+Maybe a patch reduced to the very obvious synonyms helps newcomers or
+people with lousy memory to be reminded that it is called
+"Co-developed-by:" not "Co-authored-by".
 
-Christophe
+Lukas
