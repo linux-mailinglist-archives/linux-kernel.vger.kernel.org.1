@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572862C26B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA762C26B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387814AbgKXNCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:02:12 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:43244 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387663AbgKXNCL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:02:11 -0500
-Date:   Tue, 24 Nov 2020 13:02:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606222929;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+GHEmvPXyGuw9q1MJT6GBRgcxy9rMO/qli32/gGVjR0=;
-        b=tDfHnKOjyThGsKHX+VBdbgrwEmHO0USSDG+AdBMRnpUVjbBReU8z/SwMf+skiz2fKu2tQs
-        W3I/Llq7MC9jyqHcwRih29j0Q0XrPcbBTRyeFXSCmrD77v8G4+bsltdzBKmlzX8RSGBQEJ
-        9gqHt1J2SRnkfs/WumZFkXXBzs9zqXYt4fCWEkZqQ77sojmVezfg8ts2ujHS2PJVeuUt7P
-        exJ8yuR+LGxeWtdYsAhzhzzJz/lPMYZOjf48iU/CRAmohL2iiRQvJNWUhrfUd4xI9QZzm8
-        nTK3US4yYVb+Ray7vvdcXBA1IsAGjHutbQRU0+L+QPvBI4s6ezGALTH8NVnrnQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606222929;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+GHEmvPXyGuw9q1MJT6GBRgcxy9rMO/qli32/gGVjR0=;
-        b=mj8j3oZSJ2afV5Qu372Q0003fMTgRyr4RXhz6XQOsgOOeA42hBpbD0uvaGXrDY/ZfibzQW
-        vJnCDZOwFPFdLSBA==
-From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] selftests/x86: Add missing .note.GNU-stack sections
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <6f043c03e9e0e4557e1e975a63b07a4d18965a68.1604346596.git.luto@kernel.org>
-References: <6f043c03e9e0e4557e1e975a63b07a4d18965a68.1604346596.git.luto@kernel.org>
+        id S2387821AbgKXNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:02:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387663AbgKXNC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:02:27 -0500
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FBE620857
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:02:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606222946;
+        bh=mRyFh67kJfy8ZITfHjrOgCZZLf01NwP2u0w2OlFgRgg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Sz5yMIkUhhtWCOgnTOr5d0bv8kSWhD3qN0uSJ43dioTwPSv0d9TuB5GEqDbC9qkdx
+         l/igfcndpP0AI6ItVUWKeXoLPryk7PO33BV3QUErLEuMwflWwd6gTzfUeJyHounyqB
+         HPdA5dFCj3LRBEFxtOEicfcHfJ+4YxMWJJOzJbTc=
+Received: by mail-oi1-f176.google.com with SMTP id s18so22527311oih.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 05:02:26 -0800 (PST)
+X-Gm-Message-State: AOAM533LyT+w/74RiNkuZDs4Y8f6RYW5pkLnLomQjH2pdRi8ML9oWJli
+        MEMoEKVtSpfLrjvYNf+2O+t3ylyLkDmGsucyGQE=
+X-Google-Smtp-Source: ABdhPJwd4HlK8aErAo0yZOEzAhlqNo8LDzc3+z00A1haMLZdh7R8bcKiStZxVrkCerFt2PktDuPW2+m1X4yfqNMJ5p0=
+X-Received: by 2002:aca:3c54:: with SMTP id j81mr2648803oia.11.1606222945358;
+ Tue, 24 Nov 2020 05:02:25 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160622292818.11115.9970136323410049787.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <1606197161-25976-1-git-send-email-rajan.vaja@xilinx.com> <d63804a2-1880-70c3-841d-e824ec7942f7@xilinx.com>
+In-Reply-To: <d63804a2-1880-70c3-841d-e824ec7942f7@xilinx.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 24 Nov 2020 14:02:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a37YhCPmzJMi2iw=XQwx2_7r1ueCF6AA_j7qkCJV05Uuw@mail.gmail.com>
+Message-ID: <CAK8P3a37YhCPmzJMi2iw=XQwx2_7r1ueCF6AA_j7qkCJV05Uuw@mail.gmail.com>
+Subject: Re: [PATCH] firmware: xilinx: Use hash-table for api feature check
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Rajan Vaja <rajan.vaja@xilinx.com>, Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        TEJASP@xilinx.com,
+        Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>,
+        Ravi Patel <ravi.patel@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+On Tue, Nov 24, 2020 at 1:54 PM Michal Simek <michal.simek@xilinx.com> wrote:
+> On 24. 11. 20 6:52, Rajan Vaja wrote:
+>
+> Some lines should be added.
+>
+> Cc: stable <stable@vger.kernel.org>
+> Fixes: f3217d6f2f7a ("firmware: xilinx: fix out-of-bounds access")
+>
+> Tested-by: Michal Simek <michal.simek@xilinx.com>
 
-Commit-ID:     aeaaf005da1de075929e56562dced4a58238efc4
-Gitweb:        https://git.kernel.org/tip/aeaaf005da1de075929e56562dced4a58238efc4
-Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Mon, 02 Nov 2020 11:51:11 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 24 Nov 2020 13:55:39 +01:00
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-selftests/x86: Add missing .note.GNU-stack sections
+> Arnd: do you see any issue with this?
+> I found that your origin patch was taken by Greg and pushed to any
+> 5.10-rc version which caused panic on Xilinx Versal. That's why I would
+> like to get this patch to v5.10 if possible.
 
-Several of the x86 selftests end up with executable stacks because
-the asm was missing the annotation that says that they are modern
-and don't need executable stacks.  Add the annotations.
+Looks ok to me. If you'd like me to pick it up through the soc fixes
+branch, please forward with the above tags to soc@kernel.org
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/6f043c03e9e0e4557e1e975a63b07a4d18965a68.1604346596.git.luto@kernel.org
----
- tools/testing/selftests/x86/raw_syscall_helper_32.S | 2 ++
- tools/testing/selftests/x86/thunks.S                | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/tools/testing/selftests/x86/raw_syscall_helper_32.S b/tools/testing/selftests/x86/raw_syscall_helper_32.S
-index 94410fa..a10d36a 100644
---- a/tools/testing/selftests/x86/raw_syscall_helper_32.S
-+++ b/tools/testing/selftests/x86/raw_syscall_helper_32.S
-@@ -45,3 +45,5 @@ int80_and_ret:
- 
- 	.type int80_and_ret, @function
- 	.size int80_and_ret, .-int80_and_ret
-+
-+.section .note.GNU-stack,"",%progbits
-diff --git a/tools/testing/selftests/x86/thunks.S b/tools/testing/selftests/x86/thunks.S
-index 1bb5d62..a2d47d8 100644
---- a/tools/testing/selftests/x86/thunks.S
-+++ b/tools/testing/selftests/x86/thunks.S
-@@ -57,3 +57,5 @@ call32_from_64:
- 	ret
- 
- .size call32_from_64, .-call32_from_64
-+
-+.section .note.GNU-stack,"",%progbits
+      Arnd
