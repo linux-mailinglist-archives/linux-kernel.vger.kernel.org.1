@@ -2,141 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA3D2C34AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053F32C34B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388633AbgKXXbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:31:14 -0500
-Received: from relay3.mymailcheap.com ([217.182.119.155]:33902 "EHLO
-        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728429AbgKXXbO (ORCPT
+        id S2388918AbgKXXcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:32:06 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46464 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388294AbgKXXcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:31:14 -0500
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 9FEBC3F15F;
-        Wed, 25 Nov 2020 00:31:10 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id C7DEC2A365;
-        Tue, 24 Nov 2020 18:31:09 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1606260669;
-        bh=DBqrNKR/Q9NCMag42Ouvl0axhCcPk0uK6vNXYyoOfbY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=y5J6VaXhTzq4FBHdcIqP3t4Iq0K7g2TQE67DE5OpuW4pozMntpcQpEiSj7z0HSZ7Q
-         4pN89nxcY4D8buJWvmOJmIeD+V9vQgivfCQW1IzoGmrh00vwzklfGMMy6YGkRa79uJ
-         q/MSQl4PLeQi/h+s+0XfWl2F4vYKmaIV1sYxrlxw=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9Bs2ZjAQznoD; Tue, 24 Nov 2020 18:31:09 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Tue, 24 Nov 2020 18:31:08 -0500 (EST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id E04EF40FF4;
-        Tue, 24 Nov 2020 23:31:07 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="tAUYc7AD";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.161.143])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8FC5F40FF4;
-        Tue, 24 Nov 2020 23:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1606260657; bh=DBqrNKR/Q9NCMag42Ouvl0axhCcPk0uK6vNXYyoOfbY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=tAUYc7AD+hUA9g9ygr8w6y5fdfmySfroYZHIhZfGMLyDfwGcyBoQHv6uY87E4Rc+y
-         tabaJC/25alqZTRLwhBm2l0LPjZOYAmLnu7iN0EREwissmZpq+LH2NkYNxitzUbL9Y
-         7cB5ReOlrAcuXW3Vg3qO8KXMZtSnu70LN0+RRgOc=
-Message-ID: <86cfbd41fe80b4936f20925aed0c9010806a0316.camel@aosc.io>
-Subject: Re: [PATCH] ARM: dts: sun8i: s3: pinecube: add ethernet alias for
- Wi-Fi
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Date:   Wed, 25 Nov 2020 07:30:50 +0800
-In-Reply-To: <20201124225940.3750388-1-icenowy@aosc.io>
-References: <20201124225940.3750388-1-icenowy@aosc.io>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 
+        Tue, 24 Nov 2020 18:32:05 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AONK98m014974;
+        Tue, 24 Nov 2020 15:31:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=hWHzGfhdd8OoKAcyTkCmcUQybPT1ww01VOPi/66B/0Q=;
+ b=JpTObaw8fparfqATWb7KuGaPwZrkhHroN9rylZuSlX45Rfe3g4MuBKv+JU5ZXAL3sJrW
+ XOeNVQ1Yio4lyiVa7+wbEgdWHHO1l0x/HilccTvcafpNewHwZ5A1SEl3h1KckrV1EtBT
+ OvtT8aL77KcWMSmZbC/E3qF1g6NiF/iMqfg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34yk9044vd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 24 Nov 2020 15:31:52 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 24 Nov 2020 15:31:50 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bna2q0Zg3/o9XwArheehO9z2mwQVvMNwv2IoYCVjVhiV5taP6xbUMGoXGP7ZNNX1EjF619H1ONrFiROaL8a+UbycfFpxUU7vddgfiiYFLN/eCdjpNiwkgjh4QsYkaSKERn+J3rvt8nbvVZdyr1l3cxM+2welV4I2dRzN/FPFGTv1MxyukkP4REnM45wKCsIueB8cm764gpd7EjK6kT4hVuQRnI/BK72lJVCeWNVuiVGFd+xMAY4ugHPWjp6Kygbz5jzSEuAEpS4BIpjFQ2JSfGX3ihhsJrdX675O5UhHnA1qfScGVvWgCCVKDSK6bQ1tLAmfVqmjVK/jEyw0/fb8MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hWHzGfhdd8OoKAcyTkCmcUQybPT1ww01VOPi/66B/0Q=;
+ b=dIjNCOYK0QjrGsNfr9BTcW3Gh0MjKDQJjDfTwhab2wEFrMqEI6RW7SRUfAiP0COJd5JfKVmrppreS9AMf2rfUMkGz33TUyqUbl3xlA79cL7s/DFFkrhgaHS9CKak+SONt8yfUdTuMwh4Yig1lZ3rwSPB1I3WSveOt/mS4D7Fe4XGadE9OjV9n2oadq9HTYP4FsoAQqw+9w5Q3yvOh5b2t4MAOY45SdxZfanqj2dc9uZrTYz6AXWkU+2gyjTuPOxjHG8d6s+yD9ll8hARF8oN7JQkp9obDMHT1lTK+hygTmlstUH+IwgwjShNKbMjG5RBRq/Cj7+5OVkVnI7QepkdWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hWHzGfhdd8OoKAcyTkCmcUQybPT1ww01VOPi/66B/0Q=;
+ b=D0RLg7KNk69C9rvJ7CD7x+uJ2JL3i1ua9elp4LZU8icRD91AbNuw6qisGCQWgn//fcCW3o6NQH0NM71vA3Zr3aZj2KPJQSIfExqzL+fzk25FJrseJB+fHlajUOqRrxzgStNyAbBDBQwKTlRQmjjnbDHGDPjtN5+P99h8nJ2sMX0=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2776.namprd15.prod.outlook.com (2603:10b6:a03:154::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
+ 2020 23:31:49 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 23:31:49 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [RFC 2/2] perf-stat: enable counting events for BPF programs
+Thread-Topic: [RFC 2/2] perf-stat: enable counting events for BPF programs
+Thread-Index: AQHWvi+l7AybrLX1mkWxO3oxzMTbKKnWaamAgAGN64A=
+Date:   Tue, 24 Nov 2020 23:31:49 +0000
+Message-ID: <86F842B0-BF89-4418-BA2E-F93E50726A81@fb.com>
+References: <20201119045046.1491106-1-songliubraving@fb.com>
+ <20201119045046.1491106-3-songliubraving@fb.com>
+ <20201123234735.GB2088148@krava>
+In-Reply-To: <20201123234735.GB2088148@krava>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:f2e3]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bbcde9c8-1c78-4aed-97fd-08d890d11dbe
+x-ms-traffictypediagnostic: BYAPR15MB2776:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB27769FE867DF0C1D685B092FB3FB0@BYAPR15MB2776.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1gqbASzsLw8kx7N/f00mdYsF8wBra3yXAF2PrxFRG2/RxJGf6ie5gLLd7fmugFZpj7u074lC8zcZErTxikVsiCgcEhcWfKBC7eahv8ci4y8TF1LVfyZto8rYxWrh4wESkzIn6T5KUFSbgFfQ7zMyhTGa6BSmDmp40KlfdvKTIhkcqscSA6RR4CD4AUzFbfSJ0Fe4nEAd2u9+Y8Mv2MWTU+wrt39eHSMn5naEurqd8MWgRaLjgJK7qt8sj6vzF2QRhkoeB3L01ksNQNEx7UcpJUmPH/rLRr/UjpB/t7ukJIfMzFgH7oHnhFCdMph0BtI8m2oMmd5UZ/CrxPMs6IaAPG6Afl7Ueir76rCPYqBtEGWv2EJOPCrapdZq0pBioXoc
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6512007)(498600001)(6916009)(8676002)(33656002)(5660300002)(8936002)(6486002)(66946007)(66556008)(66446008)(66476007)(64756008)(4326008)(36756003)(86362001)(6506007)(2616005)(186003)(53546011)(2906002)(71200400001)(54906003)(76116006)(21314003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uOaX/bizEAOieTWXZLkgJ9TaMgFsFouOn1aYPmb4y7g0eI+ZXkE5Q81C+rM1?=
+ =?us-ascii?Q?i9NSpJb7p6a0BoG1Z4ryhoyUPzNDG9JHjx/CI25l28A/cfJoL3LELa+Qe2Mk?=
+ =?us-ascii?Q?JqoT9od7zEyiPXIMN/5U+rc4V7bSjBaCPfzjZwLkJONhJ+Xk6HMknNdqyNdJ?=
+ =?us-ascii?Q?Bk79iZYZZ90kTdblZu2Pf497WraCUT0kU0VeP6LtXCHOp9cTvIC5+k2vHtv7?=
+ =?us-ascii?Q?/nnsiecFunh3oJXf2bC44ym87OW0rOTaLgkJ8v2IrLtjyysvf8OeUJKEOc/Y?=
+ =?us-ascii?Q?3ZJaE25s8vqvOG9UpdF/OEJUbk+E5mh8kjLNkYMTWm2kqSNM0RiawIEspwbz?=
+ =?us-ascii?Q?yxFpv1xRtZg/+H1uKnYW7Lwll4T+gNbdh/RY80TR9FsJb3U4hqswdbo3wZlP?=
+ =?us-ascii?Q?U+v7CfEzxyUO4zaj5YHpmQ1v3mChaaXMbODl9J0NTwIhI0gNoZDiI5lPJE/O?=
+ =?us-ascii?Q?OJh3pwfAq/xRZP590UuteNFYSVbWzMuw8ZUYckcJGy77+NJyqcIcSOpF3YWk?=
+ =?us-ascii?Q?tq3HH1iOxvvzX3W0wO9WVScmFSNxH2/HAcQMIuOCkSLiuCqrOmg1oJsfVBjr?=
+ =?us-ascii?Q?mIu+mEJG6WzEkkApJ7SjiZqHuvPCQDVXxMRdPNn2/1KwT+vROPecP90OqMv7?=
+ =?us-ascii?Q?3zhLrpVtxX7EtaHY2wX7K6+NJKG+9sf7Ggl3AawGWuqqaeKDeLnnTOJXaxI2?=
+ =?us-ascii?Q?9F3JM1QkM3H5kywoVUzusOzMxCMZ9kQO958re7q5OPdTfHeDLAeiq47RBc0U?=
+ =?us-ascii?Q?bOVKZ+q/QdQNP1IV8HxQaeN+Q0twgJOELY5bHuXaL6tZM+hhdgDqhks/AgLW?=
+ =?us-ascii?Q?xRzBSN71U58vctZEu3yoVFA0j4BIIJSeqIQ5T7MnwrMVHpOVnqHplzmwB/gX?=
+ =?us-ascii?Q?hQI75+Ptjr53IcQKvUOBAxFqMWg/VdhOc5WgQdtMFisJzjRiTX+Bo1V8JbRX?=
+ =?us-ascii?Q?GYHRxkhjRR9LVWARy8KIIhlFVwNUr1e/1E89W9ZvXNusaqiUJAr4xV5x0IB6?=
+ =?us-ascii?Q?7jVW69++NEl8wR0qnT1HQqLKGLEyOisEAFYXA49MvJrzxqY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6AA983C82462EF4C88FC627E4A1C2283@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: E04EF40FF4
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.143:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         DBL_PROHIBIT(0.00)[0.0.0.1:email];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbcde9c8-1c78-4aed-97fd-08d890d11dbe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 23:31:49.3220
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iZ74NHQ09ij3MPPYiqrd4Q4ScATZ9MbGZ63sLs9eGhVoCtCXQmAhXgrqT/cKUF/0CZOlivOfiYB85f35aD+V7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2776
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_11:2020-11-24,2020-11-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
+ clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240137
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020-11-25星期三的 06:59 +0800，Icenowy Zheng写道：
-> The PineCube board has a RTL8189ES Wi-Fi module on board, and the
-> module
-> doesn't have any MAC address programmed in.
 
-Sorry, but now I'm unsure about this.
 
-The module seems to have MAC address programmed.
+> On Nov 23, 2020, at 3:47 PM, Jiri Olsa <jolsa@redhat.com> wrote:
 
-> 
-> Add a ethernet alias in the DT, thus the bootloader will then be able
-> to
-> generate a MAC address into the device tree node of Wi-Fi.
-> 
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> ---
->  arch/arm/boot/dts/sun8i-s3-pinecube.dts | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-> b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-> index 4aa0ee897a0a..5086f713467a 100644
-> --- a/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-> +++ b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-> @@ -13,6 +13,7 @@ / {
->  	compatible = "pine64,pinecube", "sochip,s3", "allwinner,sun8i-
-> v3";
->  
->  	aliases {
-> +		ethernet0 = &rtl8189es;
->  		serial0 = &uart2;
->  	};
->  
-> @@ -156,6 +157,10 @@ &mmc1 {
->  	bus-width = <4>;
->  	non-removable;
->  	status = "okay";
-> +
-> +	rtl8189es: wifi@1 {
-> +		reg = <1>;
-> +	};
->  };
->  
->  &pio {
+[...]
+
+>=20
+> I still need to review this deeply, but so far I'm getting this error:
+>=20
+> 	# ./perf stat -b 40
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> 	libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
+frame
+> 	libbpf: XXX is not found in vmlinux BTF
+> 	libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> 	libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> 	libbpf: Can't get the 0th fd from program fentry_XXX: only -1 instances
+> 	libbpf: prog 'fentry_XXX': can't attach before loaded
+> 	libbpf: failed to auto-attach program 'fentry_XXX': -22
+
+I cannot reproduce this. Is 40 a valid BPF program ID? Could you please sha=
+re=20
+more information about it with "bpftool prog show id 40"?
+
+Thanks,
+Song=
