@@ -2,99 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B0C2C22AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA202C22AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731813AbgKXKTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731789AbgKXKTD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:19:03 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9A4C0613D6;
-        Tue, 24 Nov 2020 02:19:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r16HuK5E5hgNLfz84Ovb58FlHw1upwk42+G5GGobWXE=; b=i5esFKtT3bLBy1jdXIJ1bJMcfi
-        78gqL1bNGaBmrAM04MHYeevs1PBmFcWMyXwOL7IPA96XpmA+dI4ni/wPbJX+J4fghTqXdlkMM9KMw
-        YnI5KL7EJy+KaOCDn/fVZnvLFnlYRHz+aWokoN+Caar1xdEAy4qvUH8ke8iC9ELvHcnq6nQkenucm
-        g+JICnMd2ycBTnAfkO2YlsILR4I4xCS34qO+6rI5cGDXN6J5IOuJFx28k2qyQwy/gsEhHDSe+lF8r
-        AtCAsN7biCO/p53cfDuSBuOQqix5/gVYEqb1gypPIGB3GphVeI4MXrWP0ynQ19IOi+Zv/JOuRXv4n
-        +O/LVe2g==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khVPZ-0002ok-6J; Tue, 24 Nov 2020 10:19:01 +0000
-Date:   Tue, 24 Nov 2020 10:19:01 +0000
-From:   "hch@infradead.org" <hch@infradead.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "hch@infradead.org" <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "luto@kernel.org" <luto@kernel.org>
-Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
-Message-ID: <20201124101901.GB9682@infradead.org>
-References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
- <20201120202426.18009-2-rick.p.edgecombe@intel.com>
- <20201123090040.GA6334@infradead.org>
- <eccaa448f82e90c924d51d52525f766340026dfe.camel@intel.com>
+        id S1731832AbgKXKUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:20:02 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:50246 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731129AbgKXKUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:20:01 -0500
+Received: from zn.tnic (p200300ec2f0e360052021be21853ebf1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3600:5202:1be2:1853:ebf1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D75E41EC0531;
+        Tue, 24 Nov 2020 11:19:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606213200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=OvO1ckz+5Qb8CZPEpfo9zKfFqJKO2pQXxzTmhAvh87g=;
+        b=Jdt+wcewhT9wRH8f0hKt0Vt8lifydlrwLYXGgb1HO88bwiHPXdGM1f9ErGnAm4BkiEgCwJ
+        oR5WtcRM875MVcaNZbDuvcXLxy7Ea64bflInTqZ6YKedaHvLS5XeCw0kPdM/YnxVYEwtb+
+        nDGZwcU1RY/NHw49Z6v+71umQzKF378=
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@amacapital.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH v0 00/19] x86/insn: Add an insn_decode() API
+Date:   Tue, 24 Nov 2020 11:19:33 +0100
+Message-Id: <20201124101952.7909-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eccaa448f82e90c924d51d52525f766340026dfe.camel@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 08:44:12PM +0000, Edgecombe, Rick P wrote:
-> Well, there were two reasons:
-> 1. Non-standard naming for the PAGE_FOO flags. For example,
-> PAGE_KERNEL_ROX vs PAGE_KERNEL_READ_EXEC. This could be unified. I
-> think it's just riscv that breaks the conventions. Others are just
-> missing some.
+From: Borislav Petkov <bp@suse.de>
 
-We need to standardize those anyway.  I've done that for a few
-PAGE_* constants already but as you see there is more work to do.
+Hi,
 
-> But I thought that using those pgprot flags was still sort overloading
-> the meaning of pgprot. My understanding was that it is supposed to hold
-> the actual bits set in the PTE. For example large pages or TLB hints
-> (like PAGE_KERNEL_EXEC_CONT) could set or unset extra bits, so asking
-> for PAGE_KERNEL_EXEC wouldn't necessarily mean "set these bits in all
-> of the PTEs", it could mean something more like "infer what I want from
-> these bits and do that".
-> 
-> x86's cpa will also avoid changing NX if it is not supported, so if the
-> caller asked for PAGE_KERNEL->PAGE_KERNEL_EXEC in perm_change() it
-> should not necessarily bother setting all of the PAGE_KERNEL_EXEC bits
-> in the actual PTEs. Asking for PERM_RW->PERM_RWX on the other hand,
-> would let the implementation do whatever it needs to set the memory
-> executable, like set_memory_x() does. It should work either way but
-> seems like the expectations would be a little clearer with the PERM_
-> flags.
+here's what I had in mind, finally split into proper patches. The final
+goal is for all users of the decoder to simply call insn_decode() and
+look at its retval. Simple.
 
-Ok, maybe that is an argument, and we should use the new flags more
-broadly.
+As to amluto's question about detecting partial insns, see the diff
+below.
 
-> Could easily wrap this one, but just to clarify, do you mean lines over
-> 80 chars? There were already some over 80 in vmalloc before the move to
-> 100 chars, so figured it was ok to stretch out now.
+Running that gives:
 
-CodingStyle still says 80 characters unless you have an exception where
-a longer line improves the readability.  The quoted code absolutely
-does not fit the definition of an exception or improves readability.
+insn buffer:
+0x48 0xcf 0x48 0x83 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 
+supplied buf size: 15, ret 0
+supplied buf size: 2, ret 0
+supplied buf size: 3, ret 0
+supplied buf size: 4, ret 0
+
+and the return value is always success.
+
+Which means that that buf_len that gets supplied to the decoder
+functions doesn't really work and I need to look into it.
+
+That is, provided this is how we want to control what the instruction
+decoder decodes - by supplying the length of the buffer it should look
+at.
+
+We could also say that probably there should be a way to say "decode
+only the first insn in the buffer and ignore the rest". That is all up
+to the use cases so I'm looking for suggestions here.
+
+In any case, at least the case where I give it
+
+0x48 0xcf 0x48 0x83
+
+and say that buf size is 4, should return an error because the second
+insn is incomplete. So I need to go look at that now.
+
+Thx.
+
+---
+
+diff --git a/arch/x86/tools/insn_sanity.c b/arch/x86/tools/insn_sanity.c
+index 51309df285b4..41e1ae0cd833 100644
+--- a/arch/x86/tools/insn_sanity.c
++++ b/arch/x86/tools/insn_sanity.c
+@@ -220,6 +220,45 @@ static void parse_args(int argc, char **argv)
+ 	}
+ }
+ 
++static void run_insn_limits_test(void)
++{
++	unsigned char b[MAX_INSN_SIZE];
++	struct insn insn;
++	int ret, i, size;
++
++	memset(b, INSN_NOP, MAX_INSN_SIZE);
++
++	/* IRETQ */
++	b[0] = 0x48;
++	b[1] = 0xcf;
++
++	/* partial add $0x8, %rsp */
++	b[2] = 0x48;
++	b[3] = 0x83;
++
++	printf("insn buffer:\n");
++
++	for (i = 0; i < MAX_INSN_SIZE; i++)
++		printf("0x%hhx ", b[i]);
++	printf("\n");
++
++	size = MAX_INSN_SIZE;
++	ret = insn_decode(&insn, b, size, INSN_MODE_64);
++	printf("supplied buf size: %d, ret %d\n", size, ret);
++
++	size = 2;
++	ret = insn_decode(&insn, b, size, INSN_MODE_64);
++	printf("supplied buf size: %d, ret %d\n", size, ret);
++
++	size = 3;
++	ret = insn_decode(&insn, b, size, INSN_MODE_64);
++	printf("supplied buf size: %d, ret %d\n", size, ret);
++
++	size = 4;
++	ret = insn_decode(&insn, b, size, INSN_MODE_64);
++	printf("supplied buf size: %d, ret %d\n", size, ret);
++}
++
+ int main(int argc, char **argv)
+ {
+ 	int insns = 0, ret;
+@@ -265,5 +304,7 @@ int main(int argc, char **argv)
+ 		errors,
+ 		seed);
+ 
++	run_insn_limits_test();
++
+ 	return errors ? 1 : 0;
+ }
+
+Borislav Petkov (19):
+  x86/insn: Rename insn_decode() to insn_decode_regs()
+  x86/insn: Add @buf_len param to insn_init() kernel-doc comment
+  x86/insn: Add an insn_decode() API
+  x86/insn-eval: Handle return values from the decoder
+  x86/boot/compressed/sev-es: Convert to insn_decode()
+  perf/x86/intel/ds: Check insn_get_length() retval
+  perf/x86/intel/ds: Check return values of insn decoder functions
+  x86/alternative: Use insn_decode()
+  x86/mce: Convert to insn_decode()
+  x86/kprobes: Convert to insn_decode()
+  x86/sev-es: Convert to insn_decode()
+  x86/traps: Convert to insn_decode()
+  x86/uprobes: Convert to insn_decode()
+  x86/tools/insn_decoder_test: Convert to insn_decode()
+  tools/objtool: Convert to insn_decode()
+  x86/tools/insn_sanity: Convert to insn_decode()
+  tools/perf: Convert to insn_decode()
+  x86/insn: Remove kernel_insn_init()
+  x86/insn: Make insn_complete() static
+
+ arch/x86/boot/compressed/sev-es.c             |  11 +-
+ arch/x86/events/intel/ds.c                    |   4 +-
+ arch/x86/events/intel/lbr.c                   |  10 +-
+ arch/x86/include/asm/insn-eval.h              |   4 +-
+ arch/x86/include/asm/insn.h                   |  42 ++--
+ arch/x86/kernel/alternative.c                 |   6 +-
+ arch/x86/kernel/cpu/mce/severity.c            |  12 +-
+ arch/x86/kernel/kprobes/core.c                |  17 +-
+ arch/x86/kernel/kprobes/opt.c                 |   9 +-
+ arch/x86/kernel/sev-es.c                      |  15 +-
+ arch/x86/kernel/traps.c                       |   7 +-
+ arch/x86/kernel/umip.c                        |   2 +-
+ arch/x86/kernel/uprobes.c                     |   8 +-
+ arch/x86/lib/insn-eval.c                      |  20 +-
+ arch/x86/lib/insn.c                           | 190 ++++++++++++++----
+ arch/x86/tools/insn_decoder_test.c            |  10 +-
+ arch/x86/tools/insn_sanity.c                  |   8 +-
+ tools/arch/x86/include/asm/insn.h             |  42 ++--
+ tools/arch/x86/lib/insn.c                     | 190 ++++++++++++++----
+ tools/include/linux/kconfig.h                 |  73 +++++++
+ tools/objtool/arch/x86/decode.c               |   9 +-
+ tools/perf/arch/x86/tests/insn-x86.c          |   9 +-
+ tools/perf/arch/x86/util/archinsn.c           |   9 +-
+ .../intel-pt-decoder/intel-pt-insn-decoder.c  |  17 +-
+ 24 files changed, 507 insertions(+), 217 deletions(-)
+ create mode 100644 tools/include/linux/kconfig.h
+
+-- 
+2.21.0
+
