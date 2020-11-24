@@ -2,175 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164052C235B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2030D2C235D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732004AbgKXK4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:56:35 -0500
-Received: from wind.enjellic.com ([76.10.64.91]:33422 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbgKXK4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:56:34 -0500
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 0AOAtmjV020691;
-        Tue, 24 Nov 2020 04:55:48 -0600
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 0AOAtlwf020690;
-        Tue, 24 Nov 2020 04:55:47 -0600
-Date:   Tue, 24 Nov 2020 04:55:47 -0600
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 00/24] Intel SGX foundations
-Message-ID: <20201124105547.GA19930@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com> <20201121151259.GA3948@wind.enjellic.com> <5ac4eccb-fcf9-eed3-fcec-b8b6bf56bb39@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ac4eccb-fcf9-eed3-fcec-b8b6bf56bb39@intel.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Tue, 24 Nov 2020 04:55:48 -0600 (CST)
+        id S1732321AbgKXK4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:56:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725786AbgKXK4q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:56:46 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76B5C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:56:44 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id j19so17122072pgg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:56:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ho+OU1gWIbxlU6vkFFYhPItLBY/4CgC1Ux1l0SznRAg=;
+        b=SSOV3AHKcYwB6+VVY1RKwf3eonAoK6VB7pgCtKHR8LD3fRuhXLehOkIUQSnbQIDI4/
+         p3q0lllVhyARw/nFniVJuSZDSA1nyuupwNNDJFfBpDHPMhOE1FaqJl/r4F+EjejdwGh6
+         JcTYJjpYmkK5vvITW2a+tZh4AjKcXiOtBFjVSdkurRhJSjv91DLg2qu+cCdrKbmCH2ek
+         XlPQWnIeN1dG8UEFO7U6FU5ocZw0syYsyS7a7xM2lRPAMw13hOx8/vzLXyLbY8/o4EiN
+         9GUnx1vWcyBeLGNll61sm78qt98gQpFgpeGDJx/kqBx4w5ovOS0zJDPQfVVMkvsWOSLZ
+         1UcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ho+OU1gWIbxlU6vkFFYhPItLBY/4CgC1Ux1l0SznRAg=;
+        b=jm+2LVAr3qB0nlRiRGuhhaLWxCqJTWoTwRkPNqRxOTZ/Tl3EP181ZnHCyISFnCxQhC
+         CqNI0fsfLCbwVoqVqiWCtC3rEcVl/7Zf312kB/WZCtMJJS1+3zxdrMItM5JgAt9+M0Qz
+         92BfSIu+W4U1D1I0iOSNKCqJFWkYDbV0ylbxpD8wu0HBqCdvN+H+DoJzm7C+sooSv+7e
+         jmTM7mQCgwJHugxqzxbG/+JZWz7wQAkk6Y6imhhlKECaUSjQZ/9EZxRdF2EN7QudTWSO
+         e/pxv3+mE/3jSoLxINDDLcL41XjRpGJOCl+YMWsRdd5oIzB+Eo6STKiIi+2SRqCu1X5t
+         2ahg==
+X-Gm-Message-State: AOAM533DCk1TN56zJCcPZm2y1dbmeKYDB1Su+CATChSN9e8TEeaSXyJD
+        n/wye7O/3WE2YOhNExY0wtvzwQ==
+X-Google-Smtp-Source: ABdhPJx7aupXyGjbsXOlPp/GgIVXYWhXASJLws7GvUy6w0exJM/+0lrVY6h+M0ix3HjuU4jTiROcvg==
+X-Received: by 2002:a17:90b:4398:: with SMTP id in24mr4069757pjb.188.1606215404113;
+        Tue, 24 Nov 2020 02:56:44 -0800 (PST)
+Received: from [0.0.0.0] (124-171-134-245.dyn.iinet.net.au. [124.171.134.245])
+        by smtp.gmail.com with UTF8SMTPSA id j10sm1087588pji.29.2020.11.24.02.56.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 02:56:43 -0800 (PST)
+Subject: Re: [PATCH kernel v4 2/8] genirq/irqdomain: Clean legacy IRQ
+ allocation
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>
+References: <20201124061720.86766-1-aik@ozlabs.ru>
+ <20201124061720.86766-3-aik@ozlabs.ru>
+ <CAHp75VfV4mG23C9Ep1vNLk2oBjB=LTQGyU=fhWPhw4PX-Ci-7A@mail.gmail.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <38b803db-2d67-dfa0-7e7b-e4ce816576ad@ozlabs.ru>
+Date:   Tue, 24 Nov 2020 21:56:36 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
+ Thunderbird/84.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VfV4mG23C9Ep1vNLk2oBjB=LTQGyU=fhWPhw4PX-Ci-7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 08:25:23AM -0800, Dave Hansen wrote:
 
-Good morning, I hope the week has started well for everyone.
 
-> On 11/21/20 7:12 AM, Dr. Greg wrote:
-> >> Important Kernel Touch Points
-> >> =============================
-> >>
-> >> This implementation is picky and will decline to work on hardware which
-> >> is locked to Intel's root of trust.
+On 11/24/20 8:19 PM, Andy Shevchenko wrote:
+> On Tue, Nov 24, 2020 at 8:20 AM Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
+>>
+>> There are 10 users of __irq_domain_alloc_irqs() and only one - IOAPIC -
+>> passes realloc==true. There is no obvious reason for handling this
+>> specific case in the generic code.
+>>
+>> This splits out __irq_domain_alloc_irqs_data() to make it clear what
+>> IOAPIC does and makes __irq_domain_alloc_irqs() cleaner.
+>>
+>> This should cause no behavioral change.
+> 
+>> +       ret = __irq_domain_alloc_irqs_data(domain, virq, nr_irqs, node, arg, affinity);
+>> +       if (ret <= 0)
+>>                  goto out_free_desc;
+> 
+> Was or wasn't 0 considered as error code previously?
 
-> > Given that this driver is no longer locked to the Intel trust root, by
-> > virtue of being restricted to run only on platforms which support
-> > Flexible Launch Control, there is no longer any legitimate technical
-> > reason to not expose all of the functionality of the hardware.
+Oh. I need to clean this up, the idea is since this does not allocate 
+IRQs, this should return error code and not an irq, I'll make this explicit.
 
-> I honestly can't understand what the point of this is, and I mean
-> that on multiple levels.
+> 
+>>          return virq;
+> 
+>>   out_free_desc:
+>>          irq_free_descs(virq, nr_irqs);
+>>          return ret;
+> 
 
-I'm sorry the issue is elusive to you but that doesn't mean it isn't
-technically relevant or grounded.
-
-It also doesn't mean this issue isn't relevant to the kernel community
-at large.  I have been active in Linux since late 1991 and my
-perception was that technical honesty was always the imperative, hence
-my last e-mail on this subject.
-
-> First of all, there's not a coherent description of the problem
-> you're solving with ~700 lines of code and the treatise you wrote
-> here instead of a changelog.
-
-A number of points.
-
-While I'm flattered, I cannot ethically accept the fact that the
-e-mail I wrote amounted to a treatise.  To do so would do injustice to
-the likes of Euclid[0], Descartes[1] and Newton[2] among notable
-others.  From a literary metric perspective it wouldn't rise to the
-level of a monograph let alone an essay on the subject.
-
-With that behind us.
-
-There was a full changelog with the patch, the e-mail essentially
-wrapped the changelog and patch with a cover letter that was directed
-at being responsive to the issue of including the SGX driver in the
-kernel.
-
-If you would have clicked on the link that I provided, which I will
-replicate below:
-
-ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-v41.patch
-
-You will get a fully 'git am' compliant patch, including a changelog.
-
-The changelog was written in a parlance consistent with someone who
-would have a basic understanding of the technology under review.  If
-this entire review and vetting process is being done absent that kind
-of understanding, then the case can be made that the kernel
-development process has larger issues on its hands.
-
-Lets be honest though, that is not the case here, we have been talking
-about this issue for over a year, everyone involved with this
-technology knows what the problem is.
-
-Since LKML is copied, the basic issue is as follows:
-
-1.) SGX as a technology is designed to execute code and operate on
-data in a manner that is confidential to inspection and impervious to
-modification and control by the kernel.
-
-2.) The mindset of the driver developers is that the kernel should be
-the ultimate authority on what SGX is allowed to do.
-
-The two world views are inherently and technically incompatible and
-lead to a potential security dilemma for the kernel.  We simply
-advocate for an additional level of cryptographic security that
-supplements, not replaces, kernel controls to address this issue.
-
-Issue #1 isn't theoretical.  The Linux Foundation feels there is
-commercial value to this concept, as do the primary signatories
-(Intel, GOOGLE, Microsoft, IBM/RedHat, Alibaba, ARM, Huawei) to the
-Confidential Computing Consortium, all of which have a desire to
-economically exploit the notion of a generic Trusted Execution
-Environment such as SGX.
-
-So this is either a legitimate technical issue that needs to be
-addressed or these companies and their customers are on a fools
-errand.
-
-> Second, is the point here to distract folks from testing the branch
-> in the tip tree?  Or, is it to show appreciation to maintainers by
-> giving them more of the thing they love: code to review?
-
-Overall, given the extremely small number of people that understand
-this technology end to end, let alone who can effectively test it, our
-involvement was driven by:
-
-Quis custodiet ipsos custodes?
-
-With respect to the maintainers, I'm sure it is a thankless job.
-
-However, if you are getting paid to review and maintain kernel code
-then one needs to review kernel code or find a different job if it is
-too thankless.  I have plenty of thankless things to do in my job but
-I do them since it is my job.
-
-Our patch has two external functions of around 30 lines (~1 screen)
-each that impact the driver.  The bulk of the 700 lines, all in one
-file, is boilerplate code, largely replicated for each instance,
-needed to read/write sysfs files and maintain four, nearly identical,
-linked lists.  If this is an insurmountable review burden then the
-kernel development process has larger problems on its hands.
-
-Have a good day.
-
-Dr. Greg
-
-[0]: The Elements
-[1]: Discourse on the Method
-[2]: Opticks
-
-As always,
-Greg Wettstein, Ph.D, Worker          Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"I can only provide the information, I can't make you hear it."
-                                -- Shelley Bainter
+-- 
+Alexey
