@@ -2,50 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9ACD2C2B27
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDBF2C2B26
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389662AbgKXPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:22:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37220 "EHLO mail.kernel.org"
+        id S2389651AbgKXPWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:22:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389084AbgKXPWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:22:38 -0500
-Received: from localhost (unknown [122.167.149.197])
+        id S1728426AbgKXPWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:22:34 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A29F520738;
-        Tue, 24 Nov 2020 15:22:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6C97206D8;
+        Tue, 24 Nov 2020 15:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606231357;
-        bh=oI38rf5nzSzEV452YmmtssqBI4vWxBxpv6yHrmL9T9Q=;
+        s=default; t=1606231353;
+        bh=2hbCCL7O02WI45ZdHMPX8DD3dn6U9eXNVBGwpDSoMjg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xvf8EJ7uWi/zQQLIMd7vAjMweSgbnpjZdua2a+K+sxu5XF6O+EHM5pelSYOXHBiKQ
-         HECT9Rw9dkXZ8m667yYp4xRN9zqWvjVGbIb+1gI3xvUZotRu+PW/ZiEngq+h1qesXS
-         sVBWATfXPwGhPMfSiAcDPotjtW/w8cPYid+mgQIQ=
-Date:   Tue, 24 Nov 2020 20:52:31 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8150: Add wifi node
-Message-ID: <20201124152231.GM8403@vkoul-mobl>
-References: <20201121055808.582401-1-bjorn.andersson@linaro.org>
+        b=pMaSbZ09M4pk5nFkB8zya1HHv4yBAjOA4PKOvGnXE89HldAlIqazbiGeyib2LJYww
+         npa+yzLi2XxikSMYXQETBxz7bP24c3uXAzV8uv6ejMRoNda6E1Juy6w+lgTGGe/t3U
+         0YaIXXb/dy0IdToL5scjhcMpO6QZIryZ4ed4v8f8=
+Date:   Tue, 24 Nov 2020 09:22:48 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] mwifiex: Fix fall-through warnings for Clang
+Message-ID: <20201124152248.GA17735@embeddedor>
+References: <20201117160958.GA18807@embeddedor>
+ <20201124150614.68C3EC43461@smtp.codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121055808.582401-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20201124150614.68C3EC43461@smtp.codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-20, 21:58, Bjorn Andersson wrote:
-> From: Jonathan Marek <jonathan@marek.ca>
+On Tue, Nov 24, 2020 at 03:06:14PM +0000, Kalle Valo wrote:
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 > 
-> Add a node for the WCN3990 WiFi module.
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+> > warnings by explicitly adding multiple break statements instead of
+> > letting the code fall through to the next case.
+> > 
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> Patch applied to wireless-drivers-next.git, thanks.
+> 
+> 003317581372 mwifiex: Fix fall-through warnings for Clang
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-
--- 
-~Vinod
+Thank you, Kalle.
+--
+Gustavo
