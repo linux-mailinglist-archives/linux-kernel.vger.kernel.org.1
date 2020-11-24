@@ -2,138 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF542C1F03
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA6A2C1F04
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730149AbgKXHlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 02:41:08 -0500
-Received: from mail-eopbgr60050.outbound.protection.outlook.com ([40.107.6.50]:57920
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728206AbgKXHlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 02:41:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SDchsOBmvS60zZDOS9Z+dH+QNrvGQJi7tBHbA5t2/7746pd7qbaimoLyJVPYJSK4vVzJ+lpZmVmrfZg0g7uw06Ff85h10RUm5rlKpLhttkN9iUH2aAdgyw1IgvEuQdBAEQqzg1vnVc95+gj1xraGDbklsOpgvDF6as6Yvc/7/HDRZV/tWrA91KSPX3FlAsFFh7zi9bEyTXUJvv/6CJR4vjlrIN4iZdMJ9ovVSrTcRaINpAI3ZLYus8omLCw0PPJTftI4EE+GzDwgFPOjvySSnIxcTnPKtv+F75sZy7I7zI5SsPZidgbb+SiX90xhZlkEWEyuDAcsDsI6VBxSNm1VKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VCFRG4Sc2ft6HfXvLuHLH0KUF4ONB+D3FtsRTlQ+fgE=;
- b=eGZ4JnnrNnycoZcqCZlzhWfSAfI332uKNwIL+/n+VHlciq7UPha0jL5qrI2e5Ush2uoQcYwr6/c2xRT6dudofkYtRY0epNvfb/EzvfXFkw5jmf9MyKAao+v/lgzfmYU2GMKIMCbdBw5m3AdZhoAxAVi75zCSolE24FJ0hzc6k0lQ2FZbmbiQEXz8rDCxQYgv2wRcV9s/awUpAdSg5bE9jQgh1v61jPTRGN2jAgmca6dqAfnPFuNITECHWQMMmWNxYZle5qd3sz5NBfvXuEFNbumGAucBWswX8mV2uHv8G/YS2Cl7g5DtSqC5+zJBwUskZul36e3pk/UKca3zPtEh3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VCFRG4Sc2ft6HfXvLuHLH0KUF4ONB+D3FtsRTlQ+fgE=;
- b=lppuKq9NVBZ5E5oSnZ3yrBBkINv2peFaTnVRMjjdyd9G1AyX9SBmsswgP39+17Jo4Fmh7bA/gQCIaF41qyH6m0Y9uGokL0LFr0N3mLjIOolEiSmxwtkB2tcPzh5tFe22+vXMa4Xhb0rGRDACbnhVHhV6pLCrLqRd6lpNGzHbYYM=
-Received: from VI1PR04MB6896.eurprd04.prod.outlook.com (2603:10a6:803:12e::12)
- by VI1PR04MB5520.eurprd04.prod.outlook.com (2603:10a6:803:cc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 24 Nov
- 2020 07:41:02 +0000
-Received: from VI1PR04MB6896.eurprd04.prod.outlook.com
- ([fe80::503f:883f:c872:63ea]) by VI1PR04MB6896.eurprd04.prod.outlook.com
- ([fe80::503f:883f:c872:63ea%3]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
- 07:41:02 +0000
-From:   "Y.b. Lu" <yangbo.lu@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: RE: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-Thread-Topic: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-Thread-Index: AQHWvovBvcqJCTixR025fdiTeTkR06nQRXqQgAB88ACABimgIA==
-Date:   Tue, 24 Nov 2020 07:41:01 +0000
-Message-ID: <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
-References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
- <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <20201120093015.duel3yx63cbya77w@skbuf>
-In-Reply-To: <20201120093015.duel3yx63cbya77w@skbuf>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: dc4f2a44-32bf-4bff-0349-08d8904c4b13
-x-ms-traffictypediagnostic: VI1PR04MB5520:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB552041F33184375FF2E1CB62F8FB0@VI1PR04MB5520.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PJcNW1ZnEokvgTqjc49h2Iy1+BOeT63Ws7wVcbpd6VqaCqL3MArAh3QeuktuLs0zkpeGAF25wjd5lMo+ct9TF/8E5Nj2nggOj5wENGc55eXDBE5m4Hi2dTorLI1mvJUjeYWljs0jg2h2dSFqGdZufIR1SC3yDX3EGk8Z3NRUZynTJppG2DVqDsqHvUwfPMt2sg/Qq8scWdGe1E8a43r1QEHQLHm4ChJBYwXzWUgbtkW71KENVa7qXD1SyBJMIKhou68Vjzn/3w97Go+eiISP/QyreF8A0+przqHmLZxgr82ckNTuRPufvb0ASSQVt/GUAebq3TJrfZjsQzAEPN/Q3HVmaCwNJRQ58KWZy4TYwAZeThrIp32tQE0YykYuTtZ38gkwLMEUeWYzbq4mCqUOaQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB6896.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(396003)(136003)(9686003)(8936002)(6636002)(66946007)(76116006)(26005)(83380400001)(66476007)(66556008)(64756008)(66446008)(4326008)(54906003)(6862004)(966005)(186003)(478600001)(53546011)(6506007)(7696005)(55016002)(71200400001)(8676002)(2906002)(86362001)(5660300002)(316002)(33656002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: S8B85Ec9myCnhQHUHwMUTnBZ12wHaNlKI8TFSOiNIlYwDjrScPY2RzAx2XcWime+XXe5qmNxAUjjwGPRRD8y6yD88kZQn3NKcGsCYmA+dy/5xYaWAF4evNllECVW0iTT4yDDgu1eCyjvvvets6qm6P8n13uPTBdi6knu3JsL9s7wYe/bF23OC2vU3EV2p+3pZh0ejtNc7m9Stv5jgT8QOJIdtQz63kmRq73FxIn8XFZD4xuiC/zIqoiks+EpvSYDbr1GbuGYGE80bLIsoHgBJ2KhIyqrjMrq/kYpaxzHqYJlfXWfTg0PdHr7XYL44FJJjhJgi9KLYlG59zYYvgOTA8REO+o4iTuE0pXmWxy46EEewaANBvAQM09ZD+Pdw4pjmKp61Iv9kkY7JN1xpX845gycsHM3UOBGfDnUBePMzTZVkxJu+LBsnlbh3FJPffb6DCZfUR5mP+EQjTORzdl669xs5cjZGuydit81J920aU/PxTeiD1BKR8k0yy4leM+UGHdVAxwAGSuton54XlajizwOpbsfmFA4kwTtPSrSaTc/dIj1VXz6GQmB0u57Bdbkc0SGkIHNVC4XYeNcKJBdFYVGTKs2lgMnPB6+l4hHcFinADZkuWHujFqXp5SxewM5plpMFpcWKhiT5QpLRz3edJv32ZHqnBAEVbcH6igzcMj+LXKliIc2ePrUaH7hqUyvfH5N2IPq3lIm5afJrP9jUo1Sce6rU+mv62F4IsemxoMFty8B9i8CfOR6QQRmWNll1rpBSkF/1tyeIcV265XZZPyGO5jTVQbNjyfmsj3J6H/N7PC/C4WIvUKNdE2u5DC1zF4+RBC6k8jyPHW1ZFS4Ro0/EAOQznYSs3zgtCJM+Bgf2TzfvWQGxEJ5nC8eFPmc6xu23DhYcN3aECV3LNVIYA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730164AbgKXHlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 02:41:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50650 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730154AbgKXHlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 02:41:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606203702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C1gMJyqOlFP62gR3VbRyFrd6rFqNzUZtLTMLS2oC9hk=;
+        b=A17PhcB4oNVJLRwOHUgnZ+HyjBTSLqN38fECNVmAlcH7nJPTf5dxN+gYPGBFaDFCjMHR9A
+        pctzalZHy8rQv7sD1K9WStrRzTtuNC2SxZ90g+H1XuOz3qZ5Osz4RWANtwUMTMdHYrJRnW
+        CyhSwSLpI39wbXauMrd6kLJHOsC4BlQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9CC69AD35;
+        Tue, 24 Nov 2020 07:41:42 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 08:41:41 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Charan Teja Kalla <charante@codeaurora.org>
+Cc:     akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
+Subject: Re: [PATCH] mm: memory_hotplug: put migration failure information
+ under DEBUG_VM
+Message-ID: <20201124074141.GR27488@dhcp22.suse.cz>
+References: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
+ <20201123141354.GQ27488@dhcp22.suse.cz>
+ <bfa430f6-a6a6-8b08-2776-cb62197619c0@codeaurora.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6896.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc4f2a44-32bf-4bff-0349-08d8904c4b13
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 07:41:01.9049
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QMt+Ny2gVVve+5/pqKSq2WcJb+gRutCiILERbEEpqlwp8zW2iMNucVeQymqqFiHEvtICi/4Qir5QIey882CpLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5520
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bfa430f6-a6a6-8b08-2776-cb62197619c0@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+On Mon 23-11-20 20:40:40, Charan Teja Kalla wrote:
+> 
+> Thanks Michal!
+> On 11/23/2020 7:43 PM, Michal Hocko wrote:
+> > On Mon 23-11-20 19:33:16, Charan Teja Reddy wrote:
+> >> When the pages are failed to get isolate or migrate, the page owner
+> >> information along with page info is dumped. If there are continuous
+> >> failures in migration(say page is pinned) or isolation, the log buffer
+> >> is simply getting flooded with the page owner information. As most of
+> >> the times page info is sufficient to know the causes for failures of
+> >> migration or isolation, place the page owner information under DEBUG_VM.
+> > 
+> > I do not see why this path is any different from others that call
+> > dump_page. Page owner can add a very valuable information to debug
+> > the underlying reasons for failures here. It is an opt-in debugging
+> > feature which needs to be enabled explicitly. So I would argue users
+> > are ready to accept a lot of data in the kernel log.
+> 
+> Just thinking how frequently failures can happen in those paths. In the
+> memory hotplug path, we can flood the page owner logs just by making one
+> page pinned.
 
-> -----Original Message-----
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Sent: Friday, November 20, 2020 5:30 PM
-> To: Y.b. Lu <yangbo.lu@nxp.com>
-> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
-> Herring <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
-> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>; Ulf
-> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
-> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>;
-> Michael Walle <michael@walle.cc>
-> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
-> controllers use fixed indices
->=20
-> On Fri, Nov 20, 2020 at 02:04:02AM +0000, Y.b. Lu wrote:
-> > Hi Vladimir,
-> >
-> > I have already upstreamed a patch for all affected layerscape boards.
-> >
-> https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/commit=
-/?
-> h=3Dimx/dt64&id=3D342ab37ecaf8c1b10dd3ca9a1271db29a6af0705
-> >
-> > Please check whether it works for you.
->=20
-> Thanks, one can tell that I haven't done my due diligence of checking
-> Shawn's tree first. I'll cherry-pick that patch and carry on with my
-> work.
->=20
-> However, the fact still remains that Michael has expressed his opinion
-> regarding mmcblk0 vs mmcblk1. Do you think that we could make the
-> aliases a per-board option instead of per-SoC? Consider that there might
-> even be boards that only use SD card. It would be strange for the block
-> device in that case to be called /dev/mmcblk1.
+If you are operating on a movable zone then pages shouldn't be pinned
+for unbound amount of time. Yeah there are some ways to break this
+fundamental assumption but this is a bigger problem that needs a
+solution.
 
-I don't think it's a problem in board dts to define board specific thing, l=
-ike re-defining alias, and disabling any IP it not using.
-Thanks.
+> Say If it is anonymous page, the page owner information
+> shows is something like below, which is not really telling anything
+> other than how the pinned page is allocated.
 
+Well you can tell an anonymous page from __dump_page, all right, but
+this is not true universally.
 
+> page last allocated via order 0, migratetype Movable, gfp_mask
+> 0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO)
+>   prep_new_page+0x7c/0x1a4
+>   get_page_from_freelist+0x1ac/0x1c4
+>   __alloc_pages_nodemask+0x12c/0x378
+>   do_anonymous_page+0xac/0x3b4
+>   handle_pte_fault+0x2a4/0x3bc
+>   __handle_speculative_fault+0x208/0x3c0
+>   do_page_fault+0x280/0x508
+>   do_translation_fault+0x3c/0x54
+>   do_mem_abort+0x64/0xf4
+>   el0_da+0x1c/0x20
+>  page last free stack trace:
+>   free_pcp_prepare+0x320/0x454
+>   free_unref_page_list+0x9c/0x2a4
+>   release_pages+0x370/0x3c8
+>   free_pages_and_swap_cache+0xdc/0x10c
+>   tlb_flush_mmu+0x110/0x134
+>   tlb_finish_mmu+0x48/0xc0
+>   unmap_region+0x104/0x138
+>   __do_munmap+0x2ec/0x3b4
+>   __arm64_sys_munmap+0x80/0xd8
+> 
+> I see at some places in the kernel where they put the dump_page under
+> DEBUG_VM, but in the end I agree that it is up to the users need. Then
+> there are some users who don't care for these page owner logs.
+
+Well, as I've said page_owner requires an explicit enabling and I would
+expect that if somebody enables this tracking then it is expected to see
+the information when we dump a page state.
+
+> And an issue on Embedded systems with these continuous logs being
+> printed to the console is the watchdog timeouts, because console logging
+> happens by disabling the interrupts.
+
+Are you enabling page_owner on those systems unconditionally?
+-- 
+Michal Hocko
+SUSE Labs
