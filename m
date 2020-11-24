@@ -2,109 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639EC2C1C72
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68CF2C1C76
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbgKXECY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:02:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727438AbgKXECY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:02:24 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3A7C0613CF;
-        Mon, 23 Nov 2020 20:02:23 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id t21so16283336pgl.3;
-        Mon, 23 Nov 2020 20:02:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g7j9kpyzYVbFqBTp8yoRooFvKTkwE619SUxdNJVGQRQ=;
-        b=vTkVb7PFtRqYIZ5Zv1Jf5dMl/oOBJmbGzi0fYInd/MsVy7sJKhpuagB6ipZMP6PdEV
-         W77wWWisCl7TH/zAfAvEgjkQH/sLXhr9Pp/8lRLkanw9gAs+BYfg1S+iPYEa/Fjvdulo
-         7A4EL1yQBT6S/EoZ/qD5vGya7bmY1OfpDf0wB8oFTmlJv1yZqYXQ9GuaCTSiY/LAoKul
-         o5uo+0ROQOXSZlxaoudePfSlVJP3LVgkdqE8O4tCGhZOQkcL3dvkSQ7I4kGnbHTmUIRy
-         Pv4CBLYTwv+q6Smyb4kYYfrSkWzi6FfLZpPv9jH/7JalJESOeSrHSvGEC6goXB72RHDN
-         EZgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g7j9kpyzYVbFqBTp8yoRooFvKTkwE619SUxdNJVGQRQ=;
-        b=eZIWyIYvdZn6GrlJRXibpdBQhwO/bsr0OWHIuAp9fWdyi88Wt0kD19pTHnhZRoHY5Q
-         aHDvHKPOVlh5g47N/bott8dgpZgLKHAv2ifdlay+KYKBFZFftaefq2FDOrv6rqq5qruw
-         x3kaBgKgq5YvAUVoDBX/WL8eLEH2n5gS1T8tcED+0RInfK3J+TCWFMXv9Ml9AuZK/dTF
-         LOdM5yfGWLlpfC3DYy5dO7PeeR25wPekJVFZ/zHGQEf8DXPUY59ar+K1/M45Q8BvHucC
-         cMnzxjMsgHRLZPVDjpSvpCKr1lHW+DsZMMUhHDvESd+OSqw2r7NnlmvFm5i1pTmG8oXW
-         h1Kg==
-X-Gm-Message-State: AOAM532/l5PSRANFPXj7ym2XntL4Rd011lpo+ftj/QGgLfFb4uX57gdc
-        7O8GENyj+BtQczYhlE7tGebGIhzmuyQ=
-X-Google-Smtp-Source: ABdhPJwU//FvSXnxJzPFDRZODQvETrlbeP3Nqhga/Z6onTA2FrA5loO2hULeH9AJv5mYO1LDt0679A==
-X-Received: by 2002:a62:cd0d:0:b029:18b:a1cc:a5be with SMTP id o13-20020a62cd0d0000b029018ba1cca5bemr2348242pfg.67.1606190543378;
-        Mon, 23 Nov 2020 20:02:23 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:2397])
-        by smtp.gmail.com with ESMTPSA id 145sm11942774pga.11.2020.11.23.20.02.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 20:02:22 -0800 (PST)
-Date:   Mon, 23 Nov 2020 20:02:20 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add a BPF helper for getting the IMA
- hash of an inode
-Message-ID: <20201124040220.oyajc7wqn7gqgyib@ast-mbp>
-References: <20201120131708.3237864-1-kpsingh@chromium.org>
- <20201120131708.3237864-2-kpsingh@chromium.org>
+        id S1728456AbgKXEC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:02:57 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:34288 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727438AbgKXEC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Nov 2020 23:02:56 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606190576; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FoFdssz2mmWQah99fW3jkhC1o+yA5snIRe1I3agQdNA=;
+ b=iyfizJcYh9Qxw6k07RHXTW1oqe5vATSFvdAbpHUgrGa5lnyQtIkmw8UsGtXFqljsWsGgREnL
+ /gdhyRfb8EBzALhziS4LdVHTDkPlNW0DzkKBzciZWb4Ln1ow51oSP/1dk39UdTHdxbrAQan1
+ 8vCDI9BfHRBTMWtJva8X+nycKw0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fbc85ef7e9d874dfc25cc00 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 04:02:55
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37898C43468; Tue, 24 Nov 2020 04:02:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19B4BC433ED;
+        Tue, 24 Nov 2020 04:02:54 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120131708.3237864-2-kpsingh@chromium.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 09:32:54 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>, Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCHv8 0/8] System Cache support for GPU and required SMMU
+ support
+In-Reply-To: <CAF6AEGse=WBAC1WbTi6aD5_m1_NBg91f=veYm-7V=Uds7NA0Lw@mail.gmail.com>
+References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
+ <20201123152146.GE11033@willie-the-truck>
+ <50b68f2bdf9413b896fbe816ba4ddbc9@codeaurora.org>
+ <CAF6AEGse=WBAC1WbTi6aD5_m1_NBg91f=veYm-7V=Uds7NA0Lw@mail.gmail.com>
+Message-ID: <1c665e33d1d27263fb5056c16d30b827@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 01:17:07PM +0000, KP Singh wrote:
-> +
-> +static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
-> +{
-> +	return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
-> +}
-> +
-> +BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
-> +
-> +const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
-> +	.func		= bpf_ima_inode_hash,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_PTR_TO_BTF_ID,
-> +	.arg1_btf_id	= &bpf_ima_inode_hash_btf_ids[0],
-> +	.arg2_type	= ARG_PTR_TO_UNINIT_MEM,
-> +	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
-> +	.allowed	= bpf_ima_inode_hash_allowed,
-> +};
-> +
->  static const struct bpf_func_proto *
->  bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  {
-> @@ -97,6 +121,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  		return &bpf_task_storage_delete_proto;
->  	case BPF_FUNC_bprm_opts_set:
->  		return &bpf_bprm_opts_set_proto;
-> +	case BPF_FUNC_ima_inode_hash:
-> +		return &bpf_ima_inode_hash_proto;
+On 2020-11-24 00:52, Rob Clark wrote:
+> On Mon, Nov 23, 2020 at 9:01 AM Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+>> 
+>> On 2020-11-23 20:51, Will Deacon wrote:
+>> > On Tue, Nov 17, 2020 at 08:00:39PM +0530, Sai Prakash Ranjan wrote:
+>> >> Some hardware variants contain a system cache or the last level
+>> >> cache(llc). This cache is typically a large block which is shared
+>> >> by multiple clients on the SOC. GPU uses the system cache to cache
+>> >> both the GPU data buffers(like textures) as well the SMMU pagetables.
+>> >> This helps with improved render performance as well as lower power
+>> >> consumption by reducing the bus traffic to the system memory.
+>> >>
+>> >> The system cache architecture allows the cache to be split into slices
+>> >> which then be used by multiple SOC clients. This patch series is an
+>> >> effort to enable and use two of those slices preallocated for the GPU,
+>> >> one for the GPU data buffers and another for the GPU SMMU hardware
+>> >> pagetables.
+>> >>
+>> >> Patch 1 - Patch 6 adds system cache support in SMMU and GPU driver.
+>> >> Patch 7 and 8 are minor cleanups for arm-smmu impl.
+>> >>
+>> >> Changes in v8:
+>> >>  * Introduce a generic domain attribute for pagetable config (Will)
+>> >>  * Rename quirk to more generic IO_PGTABLE_QUIRK_ARM_OUTER_WBWA (Will)
+>> >>  * Move non-strict mode to use new struct domain_attr_io_pgtbl_config
+>> >> (Will)
+>> >
+>> > Modulo some minor comments I've made, this looks good to me. What is
+>> > the
+>> > plan for merging it? I can take the IOMMU parts, but patches 4-6 touch
+>> > the
+>> > MSM GPU driver and I'd like to avoid conflicts with that.
+>> >
+>> 
+>> SMMU bits are pretty much independent and GPU relies on the domain
+>> attribute
+>> and the quirk exposed, so as long as SMMU changes go in first it 
+>> should
+>> be good.
+>> Rob?
+> 
+> I suppose one option would be to split out the patch that adds the
+> attribute into it's own patch, and merge that both thru drm and iommu?
+> 
 
-That's not enough for correctness.
-Not only hook has to sleepable, but the program has to be sleepable too.
-The patch 3 should be causing all sort of kernel warnings
-for calling mutex from preempt disabled.
-There it calls bpf_ima_inode_hash() from SEC("lsm/file_mprotect") program.
-"lsm/" is non-sleepable. "lsm.s/" is.
-please enable CONFIG_DEBUG_ATOMIC_SLEEP=y in your config.
+Ok I can split out domain attr and quirk into its own patch if Will is
+fine with that approach.
+
+> If Will/Robin dislike that approach, I'll pick up the parts of the drm
+> patches which don't depend on the new attribute for v5.11 and the rest
+> for v5.12.. or possibly a second late v5.11 pull req if airlied
+> doesn't hate me too much for it.
+> 
+> Going forward, I think we will have one or two more co-dependent
+> series, like the smmu iova fault handler improvements that Jordan
+> posted.  So I would like to hear how Will and Robin prefer to handle
+> those.
+> 
+> BR,
+> -R
+> 
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
