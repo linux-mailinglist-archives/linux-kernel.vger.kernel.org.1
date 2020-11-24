@@ -2,250 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F832C309B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 245222C30A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390978AbgKXTQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:16:21 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:16726 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389340AbgKXTQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:16:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606245379; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=lNWesjgP/NLNgNxQ1vZhum6IH/N7QHEMoGmhkd/5d7c=; b=AAbWnhIPhjXYTquYWNhirRjRGujzXxIX/xYbLUfYXNxHQ6pEN+H8WDxqtv+qlgYoHkQljT4B
- OtMtC+HvJy9oBXJaS9cncuNHkE+j0Vomuv3Qy65SxHdPO6xGqAsxBxMsvlcHVxSe7W3MKvRN
- TYXUpfQUxFEYOhP8QSpL8h8Qkik=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fbd5c009e87e1635213eb35 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 19:16:15
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 43CE8C43464; Tue, 24 Nov 2020 19:16:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53952C43461;
-        Tue, 24 Nov 2020 19:16:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53952C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Eric Anholt <eric@anholt.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] drm/msm: Improve the a6xx page fault handler
-Date:   Tue, 24 Nov 2020 12:16:00 -0700
-Message-Id: <20201124191600.2051751-4-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201124191600.2051751-1-jcrouse@codeaurora.org>
-References: <20201124191600.2051751-1-jcrouse@codeaurora.org>
+        id S2391005AbgKXTQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390997AbgKXTQg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 14:16:36 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A125C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:16:34 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w4so18310886pgg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:16:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=pJAA+910//zkOrL+GZT4fayjhef5fPiRUZKFa+bHFto=;
+        b=jTQQN0yKgoHMjObT8c6z3ir7J5qbZ+HlYkbU0CHXWDtNyE2FtKAxO+njeutCJkOaTm
+         ab+BpneBPyX9fvpRdbOKUPvBB1WIvXa4Mzq6etB41U+hcdIlIqe82okpYouL15RRyvB3
+         Oda47hlDQJ6j06HyWdb4IPVUqbzadTBTrMdi0ZR31xMDtT18CUsel67bRXs/jVTB+sbl
+         3KHk4Tg6NXwYjzXl96x1LuvcNCL6ux2+BocDP2Fx0790aSq2+qHkeavl41niRzi1JTE8
+         y0qd0g3iwMnXbiXGreSVhMLDzATcHLq/rlS51+h2q9E5DogrpwiGedNJa3Ke3G/UcsU9
+         P4nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=pJAA+910//zkOrL+GZT4fayjhef5fPiRUZKFa+bHFto=;
+        b=DFsBVjCwRChFb/4Q1JDmGtDMjILjC5Rp8BvsuPH4I9dCWCBa0oQ756opAMSTOJcRbD
+         v6g+zuooHT5rGmRcTys+EdSO4Pl4dlYiOVbHoO2krAOALmPnLAWuwPpetgWFSLGyyqvM
+         E5i/8qdXVNjDxBkLrdtK5t/seUo/yOdzeN3VisvTlEhL6LJDirBd2GgfVH+RNnsHQruY
+         r7C6Wfuf8X9zgC8gqR0E1gNSWUa28FDdI6qFwMU+0fapuu2WRUj5hzltTvF8phmOpmpv
+         VD5UB5tREXHAr6B8FN+exB0Fg0lI4hGXJxBZp1qC94Kk8FNakFLi6VHYJd4fzIgTkZQR
+         CAaA==
+X-Gm-Message-State: AOAM5302hWD8u8DEb2bloyKUsnz2KJrpJK3xYiYutZrEa7AdY6DKQ7sm
+        wxVpwyz8blh5oSq2DUUgc5cYsw==
+X-Google-Smtp-Source: ABdhPJxln9/MnFj9z5/qDERpAmj+/1EFQ7n2dmHAbvctCUA4pSc5AcEYAUh0jCxlDcCE2GB+epy9zQ==
+X-Received: by 2002:a17:90b:b15:: with SMTP id bf21mr64410pjb.21.1606245393777;
+        Tue, 24 Nov 2020 11:16:33 -0800 (PST)
+Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
+        by smtp.gmail.com with ESMTPSA id 35sm16827pgp.26.2020.11.24.11.16.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 11:16:32 -0800 (PST)
+Date:   Tue, 24 Nov 2020 19:16:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vipin Sharma <vipinsh@google.com>, Lendacky@google.com,
+        Thomas <thomas.lendacky@amd.com>, pbonzini@redhat.com,
+        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        Singh@google.com, Brijesh <brijesh.singh@amd.com>,
+        Grimm@google.com, Jon <jon.grimm@amd.com>, VanTassell@google.com,
+        Eric <eric.vantassell@amd.com>, gingell@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+Message-ID: <20201124191629.GB235281@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new adreno-smmu-priv fault info function to get more SMMU
-debug registers and print the current TTBR0 to debug per-instance
-pagetables and figure out which GPU block generated the request.
+On Fri, Nov 13, 2020, David Rientjes wrote:                                     
+>                                                                               
+> On Mon, 2 Nov 2020, Sean Christopherson wrote:                                
+>                                                                               
+> > On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:               
+> > > On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:             
+> > > > I agree with you that the abstract name is better than the concrete     
+> > > > name, I also feel that we must provide HW extensions. Here is one       
+> > > > approach:                                                               
+> > > >                                                                         
+> > > > Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to     
+> > > > suggestions)                                                            
+> > > >                                                                         
+> > > > Control files: slots.{max, current, events}                             
+> >                                                                             
+> > I don't particularly like the "slots" name, mostly because it could be confused
+> > with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
+> > love those names either, but "encryption" and "IDs" are the two obvious     
+> > commonalities betwee TDX's encryption key IDs and SEV's encryption address  
+> > space IDs.                                                                  
+> >                                                                             
+>                                                                               
+> Looping Janosch and Christian back into the thread.                           
+>                                                                               
+> I interpret this suggestion as                                                
+> encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
----
+I think it makes sense to use encryption_ids instead of simply encryption, that
+way it's clear the cgroup is accounting ids as opposed to restricting what
+techs can be used on yes/no basis.
 
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c |  4 +-
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 76 +++++++++++++++++++++++++--
- drivers/gpu/drm/msm/msm_iommu.c       | 11 +++-
- drivers/gpu/drm/msm/msm_mmu.h         |  4 +-
- 4 files changed, 87 insertions(+), 8 deletions(-)
+> offerings, which was my thought on this as well.                              
+>                                                                               
+> Certainly the kernel could provide a single interface for all of these and    
+> key value pairs depending on the underlying encryption technology but it      
+> seems to only introduce additional complexity in the kernel in string         
+> parsing that can otherwise be avoided.  I think we all agree that a single    
+> interface for all encryption keys or one-value-per-file could be done in      
+> the kernel and handled by any userspace agent that is configuring these       
+> values.                                                                       
+>                                                                               
+> I think Vipin is adding a root level file that describes how many keys we     
+> have available on the platform for each technology.  So I think this comes    
+> down to, for example, a single encryption.max file vs                         
+> encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index d6804a802355..ed4cb81af874 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -933,7 +933,7 @@ bool a5xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
- 	return true;
- }
- 
--static int a5xx_fault_handler(void *arg, unsigned long iova, int flags)
-+static int a5xx_fault_handler(void *arg, unsigned long iova, int flags, void *data)
- {
- 	struct msm_gpu *gpu = arg;
- 	pr_warn_ratelimited("*** gpu fault: iova=%08lx, flags=%d (%u,%u,%u,%u)\n",
-@@ -943,7 +943,7 @@ static int a5xx_fault_handler(void *arg, unsigned long iova, int flags)
- 			gpu_read(gpu, REG_A5XX_CP_SCRATCH_REG(6)),
- 			gpu_read(gpu, REG_A5XX_CP_SCRATCH_REG(7)));
- 
--	return -EFAULT;
-+	return 0;
- }
- 
- static void a5xx_cp_err_irq(struct msm_gpu *gpu)
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 948f3656c20c..ac6e8cd5cf1a 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -905,18 +905,88 @@ static void a6xx_recover(struct msm_gpu *gpu)
- 	msm_gpu_hw_init(gpu);
- }
- 
--static int a6xx_fault_handler(void *arg, unsigned long iova, int flags)
-+static const char *a6xx_uche_fault_block(struct msm_gpu *gpu, u32 mid)
-+{
-+	static const char *uche_clients[7] = {
-+		"VFD", "SP", "VSC", "VPC", "HLSQ", "PC", "LRZ",
-+	};
-+	u32 val;
-+
-+	if (mid < 1 || mid > 3)
-+		return "UNKNOWN";
-+
-+	/*
-+	 * The source of the data depends on the mid ID read from FSYNR1.
-+	 * and the client ID read from the UCHE block
-+	 */
-+	val = gpu_read(gpu, REG_A6XX_UCHE_CLIENT_PF);
-+
-+	/* mid = 3 is most precise and refers to only one block per client */
-+	if (mid == 3)
-+		return uche_clients[val & 7];
-+
-+	/* For mid=2 the source is TP or VFD except when the client id is 0 */
-+	if (mid == 2)
-+		return ((val & 7) == 0) ? "TP" : "TP|VFD";
-+
-+	/* For mid=1 just return "UCHE" as a catchall for everything else */
-+	return "UCHE";
-+}
-+
-+static const char *a6xx_fault_block(struct msm_gpu *gpu, u32 id)
-+{
-+	if (id == 0)
-+		return "CP";
-+	else if (id == 4)
-+		return "CCU";
-+	else if (id == 6)
-+		return "CDP Prefetch";
-+
-+	return a6xx_uche_fault_block(gpu, id);
-+}
-+
-+#define ARM_SMMU_FSR_TF                 BIT(1)
-+#define ARM_SMMU_FSR_PF			BIT(3)
-+#define ARM_SMMU_FSR_EF			BIT(4)
-+
-+static int a6xx_fault_handler(void *arg, unsigned long iova, int flags, void *data)
- {
- 	struct msm_gpu *gpu = arg;
-+	struct adreno_smmu_fault_info *info = data;
-+	const char *type = "UNKNOWN";
- 
--	pr_warn_ratelimited("*** gpu fault: iova=%08lx, flags=%d (%u,%u,%u,%u)\n",
-+	/*
-+	 * Print a default message if we couldn't get the data from the
-+	 * adreno-smmu-priv
-+	 */
-+	if (!info) {
-+		pr_warn_ratelimited("*** gpu fault: iova=%.16lx flags=%d (%u,%u,%u,%u)\n",
- 			iova, flags,
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
- 
--	return -EFAULT;
-+		return 0;
-+	}
-+
-+	if (info->fsr & ARM_SMMU_FSR_TF)
-+		type = "TRANSLATION";
-+	else if (info->fsr & ARM_SMMU_FSR_PF)
-+		type = "PERMISSION";
-+	else if (info->fsr & ARM_SMMU_FSR_EF)
-+		type = "EXTERNAL";
-+
-+	pr_warn_ratelimited("*** gpu fault: ttbr0=%.16llx iova=%.16lx dir=%s type=%s source=%s (%u,%u,%u,%u)\n",
-+			info->ttbr0, iova,
-+			flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ", type,
-+			a6xx_fault_block(gpu, info->fsynr1 & 0xff),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
-+
-+	return 0;
- }
- 
- static void a6xx_cp_hw_err_irq(struct msm_gpu *gpu)
-diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
-index 22ac7c692a81..73db30dfda0a 100644
---- a/drivers/gpu/drm/msm/msm_iommu.c
-+++ b/drivers/gpu/drm/msm/msm_iommu.c
-@@ -212,8 +212,17 @@ static int msm_fault_handler(struct iommu_domain *domain, struct device *dev,
- 		unsigned long iova, int flags, void *arg)
- {
- 	struct msm_iommu *iommu = arg;
-+	struct adreno_smmu_priv *adreno_smmu = dev_get_drvdata(iommu->base.dev);
-+	struct adreno_smmu_fault_info info, *ptr = NULL;
-+
-+	if (adreno_smmu->get_fault_info) {
-+		adreno_smmu->get_fault_info(adreno_smmu->cookie, &info);
-+		ptr = &info;
-+	}
-+
- 	if (iommu->base.handler)
--		return iommu->base.handler(iommu->base.arg, iova, flags);
-+		return iommu->base.handler(iommu->base.arg, iova, flags, ptr);
-+
- 	pr_warn_ratelimited("*** fault: iova=%16lx, flags=%d\n", iova, flags);
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
-index 61ade89d9e48..a88f44c3268d 100644
---- a/drivers/gpu/drm/msm/msm_mmu.h
-+++ b/drivers/gpu/drm/msm/msm_mmu.h
-@@ -26,7 +26,7 @@ enum msm_mmu_type {
- struct msm_mmu {
- 	const struct msm_mmu_funcs *funcs;
- 	struct device *dev;
--	int (*handler)(void *arg, unsigned long iova, int flags);
-+	int (*handler)(void *arg, unsigned long iova, int flags, void *data);
- 	void *arg;
- 	enum msm_mmu_type type;
- };
-@@ -43,7 +43,7 @@ struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain);
- struct msm_mmu *msm_gpummu_new(struct device *dev, struct msm_gpu *gpu);
- 
- static inline void msm_mmu_set_fault_handler(struct msm_mmu *mmu, void *arg,
--		int (*handler)(void *arg, unsigned long iova, int flags))
-+		int (*handler)(void *arg, unsigned long iova, int flags, void *data))
- {
- 	mmu->arg = arg;
- 	mmu->handler = handler;
--- 
-2.25.1
+Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
+no need to enumerate platform total, but not knowing how many of the allowed IDs
+have been allocated seems problematic.
 
+> separately so we treat them as their own resource here.                       
+>                                                                               
+> So which is easier?                                                           
+>                                                                               
+> $ cat encryption.sev.max                                                      
+> 10                                                                            
+> $ echo -n 15 > encryption.sev.max                                             
+>                                                                               
+> or                                                                            
+>                                                                               
+> $ cat encryption.max                                                          
+> sev 10                                                                        
+> sev_es 10                                                                     
+> keyid 0                                                                       
+> $ echo -n "sev 10" > encryption.max                                           
+>                                                                               
+> I would argue the former is simplest (always preferring                       
+> one-value-per-file) and avoids any string parsing or resource controller      
+> lookups that need to match on that string in the kernel.                      
+
+Ya, I prefer individual files as well.
+
+I don't think "keyid" is the best name for TDX, it doesn't leave any wiggle room
+if there are other flavors of key IDs on Intel platform, e.g. private vs. shared
+in the future.  It's also inconsistent with the SEV names, e.g. "asid" isn't
+mentioned anywhere.  And "keyid" sort of reads as "max key id", rather than "max
+number of keyids".  Maybe "tdx_private", or simply "tdx"?  Doesn't have to be
+solved now though, there's plenty of time before TDX will be upstream. :-)
+
+> The set of encryption.{sev,sev_es,keyid} files that exist would depend on     
+> CONFIG_CGROUP_ENCRYPTION and whether CONFIG_AMD_MEM_ENCRYPT or                
+> CONFIG_INTEL_TDX is configured.  Both can be configured so we have all        
+> three files, but the root file will obviously indicate 0 keys available       
+> for one of them (can't run on AMD and Intel at the same time :).              
+>                                                                               
+> So I'm inclined to suggest that the one-value-per-file format is the ideal    
+> way to go unless there are objections to it.
