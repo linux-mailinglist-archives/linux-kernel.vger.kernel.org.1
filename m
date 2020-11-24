@@ -2,149 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D112C321D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D822C3221
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732137AbgKXUoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:44:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
+        id S1727857AbgKXUpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:45:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731289AbgKXUon (ORCPT
+        with ESMTP id S1725440AbgKXUpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:44:43 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB80C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:44:43 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id l5so182081edq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:44:43 -0800 (PST)
+        Tue, 24 Nov 2020 15:45:53 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6F3C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:45:53 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id d9so313945qke.8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:45:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B/HM/8rFP5cAjqFnUXV5a+cyTGV1vdatCTE/hESO0uw=;
-        b=U7BMAGu6Hb0hKnA/oSKvqajGoBWD0yncJV3rhU6KciqAw4fR6XDauq4KVuQDRvOaer
-         P2lwNuAHrhxxVpgG6cjkfq6v70V4fwxSGaqHeHmFdAA1ED1uXEi7XEkplDoAYHnh1i7t
-         rI8Gkx51MM8Ud4I/HO+LRhiIcFWnJBIWoXMJ/8jwSLXWyr/g7YkOrM4p0QiKS2bkquxt
-         hkiqq9TGdbvwnVZg1znTFFF8rVLohdN4M1tv35av1QDiQxkdFSj6vgcgupUE6cMhxxI+
-         9segr/KIrj5dzjboN76fh2uBXToaniri7zVHFaOs1shKitGqxPvNnu1UQKQJJkZbs8up
-         2upw==
+        bh=7bnJlg0pCMXaozI88JAYoUf2eoJblsJDXclZcxtC0/M=;
+        b=hwTVUZW81iCSr3MsWXpIZGpVmMSrVSKr+coOsDZm1vYv2MN8GOIncXCu8CPpMTkbrD
+         ytgAa7a0APxzZLUnRUpFzBqGZKtOSti3yEcgMBEyAY48nYbvZSXn53M0ZI/yN5HXP7YF
+         RbuXJSZCltQ09pZOVNVywwQms+Fksq9lXRc/2R22ZrkdBGOUnth0lvy3TFOCTQ7r9baJ
+         633CEiTTEWwm0GzWRh6CHUWJvnojBVB04vDiH5Eo9hPUUMiOX+RvbkQAkqQVIEMpmL0A
+         F5nHVdGNHVgiRq+8DnR9O+ZgsGB2AOyi+4HoIg0CrRLlIJ1cfvZS9cKTSb9ZBByv7inv
+         BIyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B/HM/8rFP5cAjqFnUXV5a+cyTGV1vdatCTE/hESO0uw=;
-        b=IWgvMZn5jLZib4jTSPyjXw9n7JTNotFjhR23QBpSud01ARPLBjshS+Vr7P+8nolzue
-         p77gCT+H9MPXGyl97isq41eRYR5xb0Xpn4ZkJ58moxavO2MawND1BP5BYXPBVqUHaX81
-         0gWwRBzPNzRsccle3cwdiRqFyl73zeYSM+K2gLOuidighIsbtQ1DKoUaXdDOHuljx8WJ
-         wcoftjqUDKrOgeWvQTQ36ZVokk+CDQcRm1LtC/q5/hqwLQ8RxGyNdLYPKJTbvm3D86h/
-         3fNVJGE6vPeRaDlUI2tFOZKCKm0XKBT74cqrLjWt2cY+ZVL90YQQpsMANB7Z2srvTbVD
-         JnwQ==
-X-Gm-Message-State: AOAM531oc2LycU49VZGWvTIaCU+X1++Th6goIRTEw5OdBzXei5bs3+ji
-        me8ROg6gPlzu/XeHOnX60uOqmWUnJjvxVpwbPGF9Pg==
-X-Google-Smtp-Source: ABdhPJwZTfPGl9sCT1BVU2GvADqbE6pDiG1Xc1mtvTA/GsapyKzaYnyIr5d4QUAp0ZBQ4ukQby3tNlpzSAg6JpSsySA=
-X-Received: by 2002:a05:6402:176e:: with SMTP id da14mr311916edb.245.1606250681588;
- Tue, 24 Nov 2020 12:44:41 -0800 (PST)
+        bh=7bnJlg0pCMXaozI88JAYoUf2eoJblsJDXclZcxtC0/M=;
+        b=DZ9PSZokJbhfYXa7IWle5BQd1b14Xzrin6tzkFShKexYAf5EfzximIG6T0+zErOGjv
+         u3MOxjWZoTRkipxywhySUiw+r/rmJGDNQ0/VzH81hffCqb0LW8B0DzWyJE6jWpoITE9W
+         aRlxO9G9J02n9O+jrpgFrRnrRtfnZJt5DtyYpqwTPVLIsGzlJuJg3DZq+evKHgkk/U0O
+         P62qq60DKoX6TrDNlNKq/G1cn2d82XkjVL+BPtFbvpQOvDjhFzRIQU7/5Dc/WImI3lTp
+         UTHIbO3ofjmejaegKyjDOGa22Vc9b9ptJ3br5UxnDjrdbPeLnnwvkK78azGrerV3y6or
+         FVXQ==
+X-Gm-Message-State: AOAM531TsVik78QTnaaFnSPYvGo8Bqw+szZZM6pCWnOTsTpJKljgH9wQ
+        SXvXy2QPyF+pd4ivWgSfoVr6vE4uwcCy8o7gssTzvcp+tJe6u7hz
+X-Google-Smtp-Source: ABdhPJxsql7h4UNX9o7XDEJOkLZeMV9cPdUqPr94L2UJCZDSvnu0rPRiOxfzKlw9JaGxm51qnGZoO/ip485E3xRvGFw=
+X-Received: by 2002:a25:e805:: with SMTP id k5mr13198935ybd.32.1606250752514;
+ Tue, 24 Nov 2020 12:45:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106155626.3395468-1-lokeshgidra@google.com>
- <20201106155626.3395468-4-lokeshgidra@google.com> <CAHC9VhRsaE5vhcSMr5nYzrHrM6Pc5-JUErNfntsRrPjKQNALxw@mail.gmail.com>
- <CA+EESO7LuRM_MH9z=BhLbWJrxMvnepq-NSTu_UJsPXxc0QkEag@mail.gmail.com>
- <CAHC9VhQJvTp4Xx2jCDK1zMbOmXLAAm_+ZnexydgAeWz1eGKfUg@mail.gmail.com>
- <CA+EESO79Yx6gMBYX+QkU9f7TKo-L+_COomCoAqwFQYwg8xy=gg@mail.gmail.com>
- <CAHC9VhSjVE6tC04h7k09LgTBrR-XW274ypvhcabkoyYLcDszHw@mail.gmail.com>
- <CA+EESO7vqNMXeyk7GZ7syXrTFG54oaf1PUsC7+2ndEBEQeBpdw@mail.gmail.com>
- <CAHC9VhQn-E+kTzzwwAiSLLQVtm5u=m5bOz2n-q+oA+8quT2noQ@mail.gmail.com>
- <CA+EESO6qfCCZ5K1sWWrcBm6VM0w3LWkiOfAh3dhM-eVigVYYWA@mail.gmail.com> <CAHC9VhTtLj9QPqEqO5hHPDmMnWzUaD-2PwGw=bQ=SBxvV78Sxg@mail.gmail.com>
-In-Reply-To: <CAHC9VhTtLj9QPqEqO5hHPDmMnWzUaD-2PwGw=bQ=SBxvV78Sxg@mail.gmail.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Tue, 24 Nov 2020 12:44:30 -0800
-Message-ID: <CA+EESO465UY7v5W4k6cqWHTDq6e6pb_NBnZZRMjawHPvfEOOLw@mail.gmail.com>
-Subject: Re: [PATCH v12 3/4] selinux: teach SELinux about anonymous inodes
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org,
-        Ondrej Mosnacek <omosnace@redhat.com>
+References: <20201121011652.2006613-1-willmcvicker@google.com>
+ <20201123090257.GB6334@infradead.org> <20201123221338.GA2726675@google.com>
+ <20201124093117.GA21089@linux-8ccs> <20201124180516.GA737971@google.com>
+ <X71NGClOP5Lqg6M5@kroah.com> <20201124183139.GB737971@google.com>
+ <X71r+kHD87CV9tcL@kroah.com> <20201124204057.GA1145276@google.com>
+In-Reply-To: <20201124204057.GA1145276@google.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 24 Nov 2020 12:45:16 -0800
+Message-ID: <CAGETcx8unBFUHxM67VdOoaWRENGXYoc4qWq2Oir=2rUyJ7F5nA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Add support to capture external module's SCM version
+To:     William Mcvicker <willmcvicker@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 2:43 PM Paul Moore <paul@paul-moore.com> wrote:
+On Tue, Nov 24, 2020 at 12:41 PM William Mcvicker
+<willmcvicker@google.com> wrote:
 >
-> On Mon, Nov 23, 2020 at 2:21 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > On Sun, Nov 22, 2020 at 3:14 PM Paul Moore <paul@paul-moore.com> wrote:
-> > > On Wed, Nov 18, 2020 at 5:39 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > > > I have created a cuttlefish build and have tested with the attached
-> > > > userfaultfd program:
+> On Tue, Nov 24, 2020 at 09:24:26PM +0100, Greg Kroah-Hartman wrote:
+> > On Tue, Nov 24, 2020 at 10:31:39AM -0800, William Mcvicker wrote:
+> > > On Tue, Nov 24, 2020 at 07:12:40PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Tue, Nov 24, 2020 at 10:05:16AM -0800, William Mcvicker wrote:
+> > > > > On Tue, Nov 24, 2020 at 10:31:18AM +0100, Jessica Yu wrote:
+> > > > > > +++ William Mcvicker [23/11/20 14:13 -0800]:
+> > > > > > > On Mon, Nov 23, 2020 at 09:02:57AM +0000, Christoph Hellwig wrote:
+> > > > > > > > On Sat, Nov 21, 2020 at 01:16:49AM +0000, Will McVicker wrote:
+> > > > > > > > > These two patches add module support to capture an external module's SCM
+> > > > > > > > > version as a MODULE_INFO() attribute. This allows users to identity the SCM
+> > > > > > > > > version of a given kernel module by using the modinfo tool or on the device
+> > > > > > > > > via sysfs:
+> > > > > > > >
+> > > > > > > > As this obviously is of no use for in-tree modules it falls under the we
+> > > > > > > > don't add code to support things that are not in tree rule and has no
+> > > > > > > > business in the kernel.
+> > > > > > >
+> > > > > > > Hi Christoph,
+> > > > > > >
+> > > > > > > Ah sorry, I didn't intend this to come across as only for external modules.
+> > > > > > > That just seemed like the easiest way to explain how the scmversion attribute
+> > > > > > > can be different from the vermagic. We mainly need this for in-tree kernel
+> > > > > > > modules since that's where most our drivers are. Let me re-phrase this with
+> > > > > > > that in mind. Basically, I like to look at this as an improved version of the
+> > > > > > > existing srcversion module attribute since it allows you to easily identify the
+> > > > > > > module version with a quick SCM version string check instead of doing a full
+> > > > > > > checksum on the module source.
+> > > > > > >
+> > > > > > > For example, we have a setup to test kernel changes on the hikey and db845c
+> > > > > > > devices without updating the kernel modules. Without this scmversion module
+> > > > > > > attribute, you can't identify the original module version using `uname
+> > > > > > > -r`. And for kernel modules in the initramfs, you can't even use modinfo to get
+> > > > > > > the module vermagic.  With this patch, you are able to get the SCM version for
+> > > > > > > *all* kernel modules (on disk and in the initramfs) via the sysfs node:
+> > > > > > > /sys/module/<mod>/scmversion. This also works the other way around when
+> > > > > > > developers update their kernel modules to fix some bug (like a security
+> > > > > > > vulnerability) but don't need to update the full kernel.
+> > > > > >
+> > > > > > Hi Will,
+> > > > > >
+> > > > > > If this were also intended for in-tree kernel modules, then why do
+> > > > > > intree modules only get the UTS_RELEASE string in their scmversion
+> > > > > > field, which basically already exists in the vermagic? Or do you plan
+> > > > > > to change that?
+> > > > > >
+> > > > > > Jessica
+> > > > >
+> > > > > Hi Jessica,
+> > > > >
+> > > > > Thanks for asking! The reason in-tree kernel modules get the UTS_RELEASE string
+> > > > > is for a few reasons:
+> > > > >
+> > > > > (1) It contains the SCM version (since UTS_RELEASE has that).
+> > > > > (2) It allows you to get the SCM version via the sysfs node (useful for modules
+> > > > > in the initramfs).
+> > > > > (3) It helps identify that that particular kernel module was in-tree when
+> > > > > originally compiled.
+> > > > > (4) Using UTS_RELEASE also allows us to respect the privacy of kernels with
+> > > > > "# CONFIG_LOCALVERSION_AUTO is not set" by not including the SCM version in the
+> > > > > module scmversion attribute.
+> > > > >
+> > > > > Now, if we don't care about knowing if a module was in-tree or not (since
+> > > > > we only care about in-tree modules here anyway), I can update the patch to have
+> > > > > a consistent format regardless of in-tree or external. Personally, I like the
+> > > > > UTS_RELEASE version better because it gives me more information from the sysfs
+> > > > > node which is useful when debugging issues related to modules loaded in
+> > > > > initramfs.
+> > > >
+> > > > We already know if a module was built in-or-out of tree, the "O" taint
+> > > > flag is set, so that information is already in the module today, right?
+> > > > Can't that be used somehow here?
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > > Hi Greg,
 > > >
-> > > Thanks, that's a good place to start, a few comments:
+> > > Let me prefix this with this, I do see the benefits of having a consistent
+> > > scmversion format for intree and out-of-tree modules. So I'm happy to fix that
+> > > in the next patchset.
 > > >
-> > > - While we support Android as a distribution, it isn't a platform that
-> > > we common use for development and testing.  At the moment, Fedora is
-> > > probably your best choice for that.
+> > > Now, I could be wrong, but I believe the taint flag is only printed when the
+> > > module is loaded:
 > > >
-> > I tried setting up a debian/ubuntu system for testing using the
-> > instructions on the selinux-testsuite page, but the system kept
-> > freezing after 'setenforce 1'. I'll try with fedora now.
->
-> I would expect you to have much better luck with Fedora.
-
-Yes. It worked!
->
-> > > - Your test program should be written in vanilla C for the
-> > > selinux-testsuite.  Looking at the userfaultfdSimple.cc code that
-> > > should be a trivial conversion.
+> > >   XXX: loading out-of-tree module taints kernel.
 > > >
-> > > - I think you have a good start on a test for the selinux-testsuite,
-> > > please take a look at the test suite and submit a patch against that
-> > > repo.  Ondrej (CC'd) currently maintains the test suite and he may
-> > > have some additional thoughts.
+> > > or when there's a kernel WARNING or kernel crash. But that assumes you have the
+> > > full logs when the kernel booted or you have a full crash stack in the kernel.
 > > >
-> > > * https://github.com/SELinuxProject/selinux-testsuite
+> > > Modinfo does have an attribute that indicates if the module is intree or
+> > > not:
+> > >
+> > > $ modinfo -F intree out_dir/./net/netfilter/nf_log_common.ko
+> > > Y
+> > >
+> > > But that is not queriable via sysfs.
 > >
-> > Thanks a lot for the inputs. I'll start working on this.
+> > Look at the file in /sys/modules/MODULENAME/taint
+> >
+> > That should show you this value.
+> >
+> > > Ideally, we'd like to be able to get all
+> > > this information via sysfs so that it can be captured in our bug reports.
+> >
+> > I think you already have it :)
+> >
+> > This is independent of your "source code id value" idea though...
+> >
+> > thanks,
+> >
+> > greg k-h
 >
-> Great, let us know if you hit any problems.  I think we would all like
-> to see this upstream :)
->
-I have the patch ready. I couldn't find any instructions on the
-testsuite site about patch submission. Can you please tell me how to
-proceed.
+> Thanks for pointing out the taint sysfs node. With that, the only reason I can see
+> using UTS_RELEASE over always using the SCM version is to immediately get the
+> extra version information like the 5.10.0-rc4 part without having to extract
+> that from the SCM version. For scripting reasons and consistency I think it
+> would be best to just stick to using the SCM version alone and not UTS_RELEASE.
+> Unless someone objects, I'll update v2 to use the SCM version (not UTS_RELEASE)
+> always.
 
-> --
-> paul moore
-> www.paul-moore.com
+sysfs files are supposed to be simple and follow one value per file in
+general. Also, the documentation needs to be simple too. Documenting
+two different formats for the same file would be very odd. So +1 to
+what Jessica said and +1 to your decision to keep it consistent.
+
+-Saravana
