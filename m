@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0D92C21E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:44:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4962C21F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731628AbgKXJk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:40:29 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:44765 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731615AbgKXJk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:40:26 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1khUo8-0007Ff-IZ; Tue, 24 Nov 2020 10:40:20 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1khUo7-000EPI-TM; Tue, 24 Nov 2020 10:40:19 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 0997F240041;
-        Tue, 24 Nov 2020 10:40:19 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 805B6240040;
-        Tue, 24 Nov 2020 10:40:18 +0100 (CET)
-Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id 57C4620115;
-        Tue, 24 Nov 2020 10:40:18 +0100 (CET)
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        xie.he.0141@gmail.com
-Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
-Subject: [PATCH net-next v6 5/5] net/x25: remove x25_kill_by_device()
-Date:   Tue, 24 Nov 2020 10:39:38 +0100
-Message-ID: <20201124093938.22012-6-ms@dev.tdt.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201124093938.22012-1-ms@dev.tdt.de>
-References: <20201124093938.22012-1-ms@dev.tdt.de>
+        id S1731683AbgKXJm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:42:59 -0500
+Received: from mga14.intel.com ([192.55.52.115]:6375 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726105AbgKXJm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:42:58 -0500
+IronPort-SDR: 13GKq5DjEpBS6O/D7vI4pNKw4E6ywYOnX7BNpcCXhVdzyVsi58DHeRDhPVW2cGEeq60Pof/GPs
+ 7y/SziuWcJNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="171137349"
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="171137349"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 01:42:58 -0800
+IronPort-SDR: qEprpNnqc9rGcCvcI4GmqyK+Pq7MKuSCYEEZ3anIkwfBZ5kvbLxEGLlZ9/vXoFQEGFAHx8zzeA
+ 7vqf0bCs82MQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; 
+   d="scan'208";a="546768087"
+Received: from ipu5-build.bj.intel.com (HELO [10.238.232.196]) ([10.238.232.196])
+  by orsmga005.jf.intel.com with ESMTP; 24 Nov 2020 01:42:56 -0800
+Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
+To:     Robert Foss <robert.foss@linaro.org>, dongchun.zhu@mediatek.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Ben Kao <ben.kao@intel.com>
+References: <20201116155008.118124-1-robert.foss@linaro.org>
+From:   Bingbu Cao <bingbu.cao@linux.intel.com>
+Message-ID: <cf0b935d-3ccd-8360-1b52-89fab0b181eb@linux.intel.com>
+Date:   Tue, 24 Nov 2020 17:40:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate: clean
-X-purgate-type: clean
-X-purgate-ID: 151534::1606210820-00019A69-40DEB5D7/0/0
+In-Reply-To: <20201116155008.118124-1-robert.foss@linaro.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove obsolete function x25_kill_by_device(). It's not used any more.
+Hi, Robert
 
-Signed-off-by: Martin Schiller <ms@dev.tdt.de>
----
- net/x25/af_x25.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+I remember that the full size of ov8856 image sensor is 3296x2480 and we can get the 3280x2464
+frames based on current settings.
 
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index 313a6222ded9..1432a05805ab 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -199,22 +199,6 @@ static void x25_remove_socket(struct sock *sk)
- 	write_unlock_bh(&x25_list_lock);
- }
-=20
--/*
-- *	Kill all bound sockets on a dropped device.
-- */
--static void x25_kill_by_device(struct net_device *dev)
--{
--	struct sock *s;
--
--	write_lock_bh(&x25_list_lock);
--
--	sk_for_each(s, &x25_list)
--		if (x25_sk(s)->neighbour && x25_sk(s)->neighbour->dev =3D=3D dev)
--			x25_disconnect(s, ENETUNREACH, 0, 0);
--
--	write_unlock_bh(&x25_list_lock);
--}
--
- /*
-  *	Handle device status changes.
-  */
---=20
-2.20.1
+Do you have any issues with this mode?
 
+On 11/16/20 11:50 PM, Robert Foss wrote:
+> 0x3812, 0x00},
+> 236 {0x3813, 0x01},
+
+-- 
+Best regards,
+Bingbu Cao
