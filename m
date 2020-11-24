@@ -2,145 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AF12C1E4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175302C1E4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgKXGeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:34:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        id S1729806AbgKXGe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbgKXGeF (ORCPT
+        with ESMTP id S1726757AbgKXGe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:34:05 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0223AC0613CF;
-        Mon, 23 Nov 2020 22:34:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=dw2WX6pmHeJN4qzN9ypDpXesWCc5HZ9sbIY2lS2fxUc=; b=XRTYE6aHSiL8uDrmV4c7P7/t4/
-        klKAIIOk3+gRONFsT5Y8Y/srypoOSpOb6wBWarVjoC6/nL7bSLKUVn5m9Boaf/1kWnPCDssWa83zz
-        KSqHNwc1Y66vh5E0jmXiViaqaARof6EW2py4BIlKMPmcT9hXoIfnQKU+hQNHLn3qqaetKIfR2R/lB
-        jbcUaUWgQYAnBuRENSgXnvdOvqdaDfV/2OKNfJjcsjDGje1y7U1NqBI5UTTQHGSu/RTFDnekmZ6ZS
-        R4k6zn7EwH3o/qw8pJYOKQdWE0A6KFYFyWLNzsW2NmQB5HF4XsYJTsMDAM0VwtTsNDJRtKu4pHgNZ
-        dCtCcl/g==;
-Received: from [2601:1c0:6280:3f0::cc1f]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khRtn-0001hS-Ds; Tue, 24 Nov 2020 06:33:59 +0000
-Subject: Re: [PATCH] cpuidle: arm: qcom: fix Kconfig problems
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-pm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        John Stultz <john.stultz@linaro.org>
-References: <20201124013053.11502-1-rdunlap@infradead.org>
- <20201124045110.GH95182@builder.lan>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <af448740-c7ba-f14e-2193-fea6acafa9fb@infradead.org>
-Date:   Mon, 23 Nov 2020 22:33:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 24 Nov 2020 01:34:28 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16238C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:34:28 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id v202so19486547oia.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:34:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=NRH6VONBYNIxV3zO4nNRr9V11VXjtGQdzP+hrNGAm3A=;
+        b=qhe1mkmWMwhGuf8fqGpCpj+e8tRFPMtqWbixqm50z4cHkRXVBUsZ7CU1/j/3vZBSEx
+         i02OxFKXk2LaAEF2fZz5tPHf9/q0ss9DbDxNVwhC7LKVfn+oQXptj0CFmw2v7eEfmSFJ
+         M86CkeLLA/t8Wn0Nn9rrOWw8p4ZUls/7JJw8vEpy+N6au2YzdMd/T4PwcEHuveafA3sq
+         zxAujieBdrx0MmJ2WiNkfYcYGM5h/HaN0/81OBBEE+PaVIft5zJvVBg0mxu7bj5mV/zF
+         0CCxa96dPF8hFwabQ+wMVg+QK5D/GRETSm2SsNTVmgVJ6yDhF5p3QGC7wnIvZr2Oad3A
+         aq6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=NRH6VONBYNIxV3zO4nNRr9V11VXjtGQdzP+hrNGAm3A=;
+        b=WbIp1HuMZuL1h0/MdyYDj3O6X0cHr0ZYutcJbhymD10ufn0O2eY1kbXzr9N5oiPGPf
+         TCBYIpZ0giP6nDarxJwbihtJo4PQTY9Tw5qdGWA8oGd84N2LsXGIoTvT/vQGJoK52KEJ
+         /nxWkFqQMUvo2LLE7GQQPMsXOQ+MPVjz2qvcO/SexQlZgPZFpfyRoSt8KRAfrx+CFBEs
+         H0zQCruUi47yJouAP4McapAlY2BADadDevxb0fp6LNZP2uXnmiWcNjfSlTZd7Lpo+dew
+         zpQ89QwpY/QEuXereJvxZBRb8HL2ZfyMI8nJjadklH8TDN89/GLICWQXi0F1iqOjrK8E
+         d7cg==
+X-Gm-Message-State: AOAM5315EvZy8wbinTq4nRMhxaKBe3utYOMRz2P6o2+UITyqudTJPnsw
+        KpTEFFiHf4KTLASQOkn6qDmlBw==
+X-Google-Smtp-Source: ABdhPJyQ+wMmSncaYJbGrsIp+MuAFAXtXoBkYvhGm11e160LsNcAa3QgtmSHaVmvUvzrXb/dS3G0lQ==
+X-Received: by 2002:aca:3087:: with SMTP id w129mr1737657oiw.78.1606199667073;
+        Mon, 23 Nov 2020 22:34:27 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id m65sm8116677otm.40.2020.11.23.22.34.24
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 23 Nov 2020 22:34:25 -0800 (PST)
+Date:   Mon, 23 Nov 2020 22:34:12 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+In-Reply-To: <CAHk-=whYO5v09E8oHoYQDn7qqV0hBu713AjF+zxJ9DCr1+WOtQ@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2011232209540.5235@eggly.anvils>
+References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz> <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com> <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+ <CAHk-=whYO5v09E8oHoYQDn7qqV0hBu713AjF+zxJ9DCr1+WOtQ@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <20201124045110.GH95182@builder.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/20 8:51 PM, Bjorn Andersson wrote:
-> On Mon 23 Nov 19:30 CST 2020, Randy Dunlap wrote:
+On Mon, 23 Nov 2020, Linus Torvalds wrote:
+> On Mon, Nov 23, 2020 at 8:07 PM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > The problem is that PageWriteback is not accompanied by a page reference
+> > (as the NOTE at the end of test_clear_page_writeback() acknowledges): as
+> > soon as TestClearPageWriteback has been done, that page could be removed
+> > from page cache, freed, and reused for something else by the time that
+> > wake_up_page() is reached.
 > 
->> The Kconfig symbol ARM_QCOM_SPM_CPUIDLE wildly selects other
->> Kconfig symbols when it should not.
->> This causes kconfig warnings and subsequent build errors,
->> as listed below, so modify this symbol's Kconfig entry to
->> constrain and tame it.
->>
->> WARNING: unmet direct dependencies detected for QCOM_SCM
->>   Depends on [n]: ARM [=y] && HAVE_ARM_SMCCC [=n] || ARM64
->>   Selected by [y]:
->>   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64
->>
->> WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
->>   Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
->>   Selected by [y]:
->>   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64
->>
->> and
->>
->> arm-linux-gnueabi-ld: arch/arm/kernel/sleep.o: in function `__cpu_suspend':
->> (.text+0x68): undefined reference to `cpu_sa110_suspend_size'
->> arm-linux-gnueabi-ld: arch/arm/kernel/suspend.o: in function `__cpu_suspend_save':
->> suspend.c:(.text+0x138): undefined reference to `cpu_sa110_do_suspend'
->> arm-linux-gnueabi-ld: suspend.c:(.text+0x170): undefined reference to `cpu_sa110_do_resume'
->> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-smc.o: in function `__scm_smc_do_quirk':
->> qcom_scm-smc.c:(.text+0x54): undefined reference to `__arm_smccc_smc'
->> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
->> qcom_scm-legacy.c:(.text+0x168): undefined reference to `__arm_smccc_smc'
->> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call_atomic':
->> qcom_scm-legacy.c:(.text+0x2e0): undefined reference to `__arm_smccc_smc'
->>
->> Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: linux-pm@vger.kernel.org
->> Cc: Andy Gross <agross@kernel.org>
->> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
->> Cc: linux-arm-msm@vger.kernel.org
->> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
->> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
->> Cc: Stephan Gerhold <stephan@gerhold.net>
->> Cc: Lina Iyer <ilina@codeaurora.org>
->> Cc: Ulf Hansson <ulf.hansson@linaro.org>
->> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
->> ---
->>  drivers/cpuidle/Kconfig.arm |    3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> --- linux-next-20201123.orig/drivers/cpuidle/Kconfig.arm
->> +++ linux-next-20201123/drivers/cpuidle/Kconfig.arm
->> @@ -108,10 +108,11 @@ config ARM_TEGRA_CPUIDLE
->>  config ARM_QCOM_SPM_CPUIDLE
->>  	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
->>  	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64
->> +	depends on PM
->>  	select ARM_CPU_SUSPEND
->>  	select CPU_IDLE_MULTIPLE_DRIVERS
->>  	select DT_IDLE_STATES
->> -	select QCOM_SCM
->> +	select QCOM_SCM if HAVE_ARM_SMCCC
+> Ugh.
 > 
-> I presume the trigger for this error is that 'd0511b5496c0 ("firmware:
-> QCOM_SCM: Allow qcom_scm driver to be loadable as a permenent module")'
-> made QCOM_SCM user selectable and described the dependency on
-> HAVE_ARM_SMCCC..
-
-I don't quite see that as contributing to the problem, but maybe
-it's just too late at night for me to see it.
-
-> So given that, and the fact that this driver doesn't do anything without
-> QCOM_SCM, can we instead make it "depends on QCOM_SCM"? I believe it
-> would inherit the dependency of HAVE_ARM_SMCCC in this case?
-
-Sure, I'll respin it like that.
-
-> Regards,
-> Bjorn
+> Would it be possible to instead just make PageWriteback take the ref?
 > 
->>  	help
->>  	  Select this to enable cpuidle for Qualcomm processors.
->>  	  The Subsystem Power Manager (SPM) controls low power modes for the
+> I don't hate your patch per se, but looking at that long explanation,
+> and looking at the gyrations end_page_writeback() does, I go "why
+> don't we do that?"
+> 
+> IOW, why couldn't we just make the __test_set_page_writeback()
+> increment the page count if the writeback flag wasn't already set, and
+> then make the end_page_writeback() do a put_page() after it all?
 
+Right, that should be a lot simpler, and will not require any of the
+cleanup (much as I liked that).  If you're reasonably confident that
+adding the extra get_page+put_page to every writeback (instead of
+just to the waited case, which I presume significantly less common)
+will get lost in the noise - I was not confident of that, nor
+confident of devising realistic tests to decide it.
 
-thanks.
--- 
-~Randy
+What I did look into before sending, was whether in the filesystems
+there was a pattern of doing a put_page() after *set_page_writeback(),
+when it would just be a matter of deleting that put_page() and doing
+it instead at the end of end_page_writeback().  But no: there were a
+few cases like that, but in general no such pattern.
 
+Though, what I think I'll try is not quite what you suggest there,
+but instead do both get_page() and put_page() in end_page_writeback().
+The reason being, there are a number of places (in mm at least) where
+we judge what to do by the expected refcount: places that know to add
+1 on when PagePrivate is set (for buffers), but do not expect to add
+1 on when PageWriteback is set.  Now, all of those places probably
+have to have their own wait_on_page_writeback() too, but I'd rather
+narrow the window when the refcount is raised, than work through
+what if any change would be needed in those places.
+
+> >
+> > Then on crashing a second time, realized there's a stronger reason against
+> > that approach.  If my testing just occasionally crashes on that check,
+> > when the page is reused for part of a compound page, wouldn't it be much
+> > more common for the page to get reused as an order-0 page before reaching
+> > wake_up_page()?  And on rare occasions, might that reused page already be
+> > marked PageWriteback by its new user, and already be waited upon?  What
+> > would that look like?
+> >
+> > It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
+> > in write_cache_pages() (though I have never seen that crash myself).
+> 
+> So looking more at the patch, I started looking at this part:
+> 
+> > +       writeback = TestClearPageWriteback(page);
+> > +       /* No need for smp_mb__after_atomic() after TestClear */
+> > +       waiters = PageWaiters(page);
+> > +       if (waiters) {
+> > +               /*
+> > +                * Writeback doesn't hold a page reference on its own, relying
+> > +                * on truncation to wait for the clearing of PG_writeback.
+> > +                * We could safely wake_up_page_bit(page, PG_writeback) here,
+> > +                * while holding i_pages lock: but that would be a poor choice
+> > +                * if the page is on a long hash chain; so instead choose to
+> > +                * get_page+put_page - though atomics will add some overhead.
+> > +                */
+> > +               get_page(page);
+> > +       }
+> 
+> and thinking more about this, my first reaction was "but that has the
+> same race, just a smaller window".
+> 
+> And then reading the comment more, I realize you relied on the i_pages
+> lock, and that this odd ordering was to avoid the possible latency.
+
+Yes.  I decided to send the get_page+put_page variant, rather than the
+wake_up_page_bit while holding i_pages variant (also tested), in part
+because it's easier to edit the get_page+put_page one to the other.
+
+> 
+> But what about the non-mapping case? I'm not sure how that happens,
+> but this does seem very fragile.
+
+I don't see how the non-mapping case would ever occur: I think it
+probably comes from a general pattern of caution about NULL mapping
+when akpm (I think) originally wrote these functions.
+
+> 
+> I'm wondering why you didn't want to just do the get_page()
+> unconditionally and early. Is avoiding the refcount really such a big
+> optimization?
+
+I don't know: I trust your judgement more than mine.
+
+Hugh
