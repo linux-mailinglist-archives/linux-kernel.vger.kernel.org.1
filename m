@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94862C2A75
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC6A2C2A7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389305AbgKXOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
+        id S2389341AbgKXOxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388166AbgKXOx2 (ORCPT
+        with ESMTP id S2389237AbgKXOxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:53:28 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9DAC0613D6;
-        Tue, 24 Nov 2020 06:53:27 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id gj5so28897518ejb.8;
-        Tue, 24 Nov 2020 06:53:27 -0800 (PST)
+        Tue, 24 Nov 2020 09:53:45 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F0CC0613D6;
+        Tue, 24 Nov 2020 06:53:45 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id x13so2200913wmj.1;
+        Tue, 24 Nov 2020 06:53:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rEUKuLpjCuuXItWkksOTBx3RDvxi7jvrhOsxyZoWmi4=;
-        b=sBr9ORJyasxV3qB6qzPsLZdyoergeUwBTSBHF6ZFV85hF/MBtXGC96NgDlCn7+hJXT
-         ln5htt0pYtst7Bb0ai+5CBm9wkLA6cgUIRGekdKVvSfSAWT2s1+VaikYJL5aBJZexbTc
-         tYfDFHhhf4QQvbUol73GtehxBxgHm/PKBBq9msiDXU2WzJ8fvhYJMf6Jyh4H2itlxAlZ
-         kuOebPSFbVpMcESr229BmSgedhbO8itTkjKDtxGEbrLHULQTJIVtY5iLedV8vOBRAI2I
-         emgZKEzPSRZpju5ZDsXFry5laO9LQDnxOZnAl8O0bFhvoQXL+7RbUfmpUuJEuzehCpS0
-         7/Qw==
+        h=from:to:cc:subject:date:message-id;
+        bh=U85Rj/DRPt7jatgyQvBV2N/elTeJi8YB+AB1/+8bH98=;
+        b=BsWfmB+fF8m5306hgWRxHXjKleQcreC92v8fefHpo9f6djstFLrwU6ffb7ajMN1JDI
+         NS+DowqTq3C1G4VABHtnEAPRhTFmdA7s8fty4kY7pauWFqgI7nFnbjD7dtjY3Rik2SIN
+         xs64HE+hVe/Khp4PzxeWMg8F2HRM38WXkdpX447gmp9HElsK68hB+ly7cS6fIilzHE7Q
+         TLAmLWSPuaH3SHAAJxREjliPH6Poeu3/NUGnk9z/dZCWJprpYQ2kasXgxfbxtv07LNdL
+         W4SwiSMPuomApTprge70sAjvjmKF8fGH6Ti7jEeXOQCTJC6TCDt19sHS5oWpku0dNIJ+
+         pshA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rEUKuLpjCuuXItWkksOTBx3RDvxi7jvrhOsxyZoWmi4=;
-        b=sMZwV2vP6y/XF3uiDBHYGdngq3+DlWPt0KVc1Jc9aiJwRx1NS7cKnOTPn1fU00BzeA
-         bi5PG+enKSHJt0Zei5rmX2q5Eguo4rjdSLW4Ql+w0MN4QYZoYVtlP2fB3cfSCVbxFpZh
-         gPKgWpIpkr+lkDxdvqtmvV3F6mN2KKYZXHQspO5m3pdBPPFjmYp1Xd9Kk3GS2IIZ0yQO
-         rI8gYEzXm3hLSLCrtxWfV4cRMS04RDHY9gcq87i1MJTtXIhSQRYvKm0/I9lY+MoZus/t
-         OpLmMnP4mKeOqUu50CkZ4kpgvp53lIdDRNkrfaB2pWt1Y2CL69nINyuaff5sY0gwA5a9
-         dWcQ==
-X-Gm-Message-State: AOAM5301pEOStSi21mPVJx4WCirSCD84kdEqLGP5H9d3gTctAHYsQ46x
-        dmzfXFpt6okqcs5zITZR+c4=
-X-Google-Smtp-Source: ABdhPJyaVJenZZeGBaqJ01kMB58aUbsK780xB4sToUBFLH500309P3SDPHkLrJpAPswyd24bZkxd4Q==
-X-Received: by 2002:a17:906:680d:: with SMTP id k13mr4364048ejr.482.1606229606600;
-        Tue, 24 Nov 2020 06:53:26 -0800 (PST)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id qx6sm6934310ejb.10.2020.11.24.06.53.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=U85Rj/DRPt7jatgyQvBV2N/elTeJi8YB+AB1/+8bH98=;
+        b=QUGPNJTHfjz3JdAGqcszXRoiEjzFwVOC+d0Hcm5LDSH9FFPmXRIZ0bA9OpHtgfbqCy
+         a9gOwcUflXV2IcOyCvjbNwE43hLSv1flPudAmG2qPY53/tuBBC2tMrBB217FNQcqocDA
+         hKg9RWtIrzes+x8tuDq8hvwv2ucMEzWJ1Gv92HMlajbNBLjQR5bIBqQ55ZazrYpCuMWf
+         CE9wU3IvtiDr5keBKxPdDyeeQnb+mOIxURwEWfA8w5eRpieS7HubHfVqY+hlkziiYH9S
+         rDSF/zlByGu763d7cK4OjGONB3kcg//USex9PIizr/ySSZvu6HIOlPfHHEcSOLoo6MpU
+         HT7A==
+X-Gm-Message-State: AOAM530oRqy6u2cE7lW4R/oLEuiqm219zKQ95yxiEjjC6ggEFUi0iyeg
+        9R6kstrAdIairkjGoJzurNw=
+X-Google-Smtp-Source: ABdhPJwEb0GTsAOC546Ms4Bn278hN/6nwa844FnwPV9Yu6zqQzYMCmJ4XtRlCyJlF/MlNDNwkbSqOw==
+X-Received: by 2002:a1c:3d05:: with SMTP id k5mr5042689wma.151.1606229623776;
+        Tue, 24 Nov 2020 06:53:43 -0800 (PST)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id u23sm5749930wmc.32.2020.11.24.06.53.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 06:53:25 -0800 (PST)
-Date:   Tue, 24 Nov 2020 16:53:23 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-actions@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH v2 09/18] arm: dts: owl-s500: Add MMC support
-Message-ID: <20201124145323.GA598837@BV030612LT>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <0556399f1ce8b1255d1f7961f04fcb95c96ab928.1605823502.git.cristian.ciocaltea@gmail.com>
- <CAPDyKFrBaiqmHbx0MKTv0uusDdLeeAwQuN8NMiVKgaAQBK0x1w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFrBaiqmHbx0MKTv0uusDdLeeAwQuN8NMiVKgaAQBK0x1w@mail.gmail.com>
+        Tue, 24 Nov 2020 06:53:42 -0800 (PST)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] arm64: dts: meson: add rtc aliases to meson-khadas-vim3.dtsi
+Date:   Tue, 24 Nov 2020 14:53:38 +0000
+Message-Id: <20201124145338.17137-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 03:25:15PM +0100, Ulf Hansson wrote:
-> On Fri, 20 Nov 2020 at 00:56, Cristian Ciocaltea
-> <cristian.ciocaltea@gmail.com> wrote:
-> >
-> > Add MMC controller nodes for Actions Semi S500 SoC, in order to
-> > facilitate access to SD/EMMC/SDIO cards.
-> >
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> 
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> 
-> Kind regards
-> Uffe
-> 
+Tweak the node name to make it aliasable, then add aliases for the
+on-board RTC chip and meson-vrtc timer so they probe as rtc0 and
+rtc1 respectively.
 
-Thanks for the review!
+before:
 
-Regards,
-Cristi
+VIM3:~ # dmesg | grep rtc
+[    3.622530] meson-vrtc ff8000a8.rtc: registered as rtc0
+[    3.622574] meson-vrtc ff8000a8.rtc: setting system clock to 1970-01-01T00:00:03 UTC (3)
+[    3.646936] rtc-hym8563 0-0051: no valid clock/calendar values available
+[    3.647125] rtc-hym8563 0-0051: registered as rtc1
+[    3.852382] rtc-hym8563 0-0051: no valid clock/calendar values available
 
-> 
-> > ---
-> >  arch/arm/boot/dts/owl-s500.dtsi | 33 +++++++++++++++++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-> > index b16172615db0..7af7c9e1119d 100644
-> > --- a/arch/arm/boot/dts/owl-s500.dtsi
-> > +++ b/arch/arm/boot/dts/owl-s500.dtsi
-> > @@ -241,5 +241,38 @@ dma: dma-controller@b0260000 {
-> >                         clocks = <&cmu CLK_DMAC>;
-> >                         power-domains = <&sps S500_PD_DMA>;
-> >                 };
-> > +
-> > +               mmc0: mmc@b0230000 {
-> > +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
-> > +                       reg = <0xb0230000 0x38>;
-> > +                       interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-> > +                       clocks = <&cmu CLK_SD0>;
-> > +                       resets = <&cmu RESET_SD0>;
-> > +                       dmas = <&dma 2>;
-> > +                       dma-names = "mmc";
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               mmc1: mmc@b0234000 {
-> > +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
-> > +                       reg = <0xb0234000 0x38>;
-> > +                       interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-> > +                       clocks = <&cmu CLK_SD1>;
-> > +                       resets = <&cmu RESET_SD1>;
-> > +                       dmas = <&dma 3>;
-> > +                       dma-names = "mmc";
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               mmc2: mmc@b0238000 {
-> > +                       compatible = "actions,s500-mmc", "actions,owl-mmc";
-> > +                       reg = <0xb0238000 0x38>;
-> > +                       interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-> > +                       clocks = <&cmu CLK_SD2>;
-> > +                       resets = <&cmu RESET_SD2>;
-> > +                       dmas = <&dma 4>;
-> > +                       dma-names = "mmc";
-> > +                       status = "disabled";
-> > +               };
-> >         };
-> >  };
-> > --
-> > 2.29.2
-> >
+after:
+
+VIM3:~ # dmesg | grep rtc
+[    3.583735] meson-vrtc ff8000a8.rtc: registered as rtc1
+[    3.633888] rtc-hym8563 0-0051: no valid clock/calendar values available
+[    3.634120] rtc-hym8563 0-0051: registered as rtc0
+[    3.635250] rtc-hym8563 0-0051: no valid clock/calendar values available
+[    3.635267] rtc-hym8563 0-0051: hctosys: unable to read the hardware clock
+[    3.852632] rtc-hym8563 0-0051: no valid clock/calendar values available
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index 69e6c03a787c..8f8656262ae7 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -14,6 +14,8 @@
+ 	aliases {
+ 		serial0 = &uart_AO;
+ 		ethernet0 = &ethmac;
++		rtc0 = &rtc;
++		rtc1 = &vrtc;
+ 	};
+ 
+ 	chosen {
+@@ -333,7 +335,7 @@
+ 		#gpio-cells = <2>;
+ 	};
+ 
+-	rtc@51 {
++	rtc: rtc@51 {
+ 		compatible = "haoyu,hym8563";
+ 		reg = <0x51>;
+ 		#clock-cells = <0>;
+-- 
+2.17.1
+
