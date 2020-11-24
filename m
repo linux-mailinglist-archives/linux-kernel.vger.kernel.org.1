@@ -2,70 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60352C241C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D6E2C2417
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732847AbgKXL0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:26:19 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:10210 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732791AbgKXL0T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:26:19 -0500
-X-IronPort-AV: E=Sophos;i="5.78,366,1599490800"; 
-   d="scan'208";a="63502464"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 24 Nov 2020 20:26:18 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3F9774362272;
-        Tue, 24 Nov 2020 20:26:16 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        stable@vger.kernel.org
-Subject: [PATCH 5/5] memory: renesas-rpc-if: Fix a reference leak in rpcif_probe()
-Date:   Tue, 24 Nov 2020 11:25:52 +0000
-Message-Id: <20201124112552.26377-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1732776AbgKXL0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:26:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33214 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732658AbgKXL0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:26:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606217173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jXr6QneDp2gyWm4z+0ntuKNCFM6noV3BZjgwhMClHvw=;
+        b=NdgHMtdY+WJQriDVpq2qkEw/p6UkfzkpoFswP4Q062cvu8TyFR660jrLhYqSA9GXE2xENf
+        eTiTyuE69WbuGPEe6/F60X1SIO4/DVdj0tmK1gZxZlfmi/DV8artIw2P82QJZl9TS6+VL4
+        9zobRzvA0rtgeB/1ZvaHyVttmRkgnf0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 14A43AD21;
+        Tue, 24 Nov 2020 11:26:13 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 12:26:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Aaron Tomlin <atomlin@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] memcg: add support to generate the total count of
+ children from root
+Message-ID: <20201124112612.GV27488@dhcp22.suse.cz>
+References: <20201124105836.713371-1-atomlin@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124105836.713371-1-atomlin@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Release the node reference by calling of_node_put(flash) in the probe.
+On Tue 24-11-20 10:58:36, Aaron Tomlin wrote:
+> Each memory-controlled cgroup is assigned a unique ID and the total
+> number of memory cgroups is limited to MEM_CGROUP_ID_MAX.
+> 
+> This patch provides the ability to determine the number of
+> memory cgroups from the root memory cgroup, only.
+> A value of 1 (i.e. self count) is returned if there are no children.
+> For example, the number of memory cgroups can be established by
+> reading the /sys/fs/cgroup/memory/memory.total_cnt file.
 
-Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: stable@vger.kernel.org
----
- drivers/memory/renesas-rpc-if.c | 2 ++
- 1 file changed, 2 insertions(+)
+Could you add some explanation why is this information useful for
+userspace? Who is going to use it and why a simple scripting on top of
+cgroupfs is insufficient.
 
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index f5cbc762fda7..99633986ffda 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -548,9 +548,11 @@ static int rpcif_probe(struct platform_device *pdev)
- 	} else if (of_device_is_compatible(flash, "cfi-flash")) {
- 		name = "rpc-if-hyperflash";
- 	} else	{
-+		of_node_put(flash);
- 		dev_warn(&pdev->dev, "unknown flash type\n");
- 		return -ENODEV;
- 	}
-+	of_node_put(flash);
- 
- 	vdev = platform_device_alloc(name, pdev->id);
- 	if (!vdev)
+> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+> ---
+>  mm/memcontrol.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 29459a6ce1c7..a4f7cb40e233 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -4535,6 +4535,19 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
+>  	return 0;
+>  }
+>  
+> +static int mem_cgroup_total_count_read(struct cgroup_subsys_state *css,
+> +				      struct cftype *cft)
+> +{
+> +	struct mem_cgroup *iter, *memcg = mem_cgroup_from_css(css);
+> +	int num = 0;
+> +
+> +	for_each_mem_cgroup_tree(iter, memcg)
+> +		num++;
+> +
+> +	/* Returns 1 (i.e. self count) if no children. */
+> +	return num;
+> +}
+> +
+>  #ifdef CONFIG_CGROUP_WRITEBACK
+>  
+>  #include <trace/events/writeback.h>
+> @@ -5050,6 +5063,11 @@ static struct cftype mem_cgroup_legacy_files[] = {
+>  		.write_u64 = mem_cgroup_oom_control_write,
+>  		.private = MEMFILE_PRIVATE(_OOM_TYPE, OOM_CONTROL),
+>  	},
+> +	{
+> +		.name = "total_cnt",
+> +		.flags = CFTYPE_ONLY_ON_ROOT,
+> +		.read_u64 = mem_cgroup_total_count_read,
+> +	},
+>  	{
+>  		.name = "pressure_level",
+>  	},
+> -- 
+> 2.26.2
+> 
+
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
