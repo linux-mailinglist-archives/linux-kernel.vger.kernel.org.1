@@ -2,310 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1678F2C2AF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B222C2B04
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389608AbgKXPMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
+        id S2389277AbgKXPRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389459AbgKXPMQ (ORCPT
+        with ESMTP id S2388438AbgKXPRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:12:16 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706DFC061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:12:16 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c198so2735979wmd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:12:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D7JMOLrkMMbgevNC61+0DIHgDGPPJS+bWf43N7huZE4=;
-        b=c/dkqqDERVTz4nu8SZ1gJ/LT6g48/emtgI7ARP3cPql+gzxhR/llp/kIJuITTF1sZR
-         fh+rmIb7R7TznZ8FVI9Z/LhFHPlPINvxoIPWfgt5ulrRAqAavc3Qv4HfO6kBv5NnsORC
-         to35R6Dmw0QVByyXkQqnwjrPTPq79GJissoQM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D7JMOLrkMMbgevNC61+0DIHgDGPPJS+bWf43N7huZE4=;
-        b=WRrV/oJAzvmVFHgpiA1h3Am2GsJlNFwf9h3qf0q6SU6Q6/imgFH+mJtwyMurOVMFsN
-         Dj7fEOCJ5bR8hdZSXmikxig9RoUSrh5H6zHxYUl4Bj9W0IsSztNWJRLjnHRi93gzS2m1
-         LbRwAtb24Yjrdlm5AjqD73q0UQMFPr9lkBkvKRxemOshCfopWR8hyN0XAeSpfStFsqiV
-         8HXfKOxZatwX2vaD8Wbc6zazHWHPhtJlFtvsFzIGK+tJjO8vX4b/5VxWUzKpjNdavfEZ
-         Va3E5UgNC2yizIvgORLKQLVGZVu16Dbqhz/JWPWM8bunCCNLDXuWhY+O1OL/BfsN9XeA
-         tvvA==
-X-Gm-Message-State: AOAM5313pm/QGB38bkVgmTQcOLhL3OHX3FxeyDIG55PxyAIN/Hmv5vX8
-        LC29GbGlwj03Pv6GM2aXELIpeA==
-X-Google-Smtp-Source: ABdhPJwgYZ/acFThNsyVH2bB62qgxFgAVcLZ6MTj6oIq8/O6eWQRRAbFALJ3L2mumZdTfu17A2MgWg==
-X-Received: by 2002:a05:600c:22d5:: with SMTP id 21mr4944281wmg.33.1606230735161;
-        Tue, 24 Nov 2020 07:12:15 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id g131sm6353127wma.35.2020.11.24.07.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 07:12:14 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH bpf-next v3 3/3] bpf: Add a selftest for bpf_ima_inode_hash
-Date:   Tue, 24 Nov 2020 15:12:10 +0000
-Message-Id: <20201124151210.1081188-4-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201124151210.1081188-1-kpsingh@chromium.org>
-References: <20201124151210.1081188-1-kpsingh@chromium.org>
+        Tue, 24 Nov 2020 10:17:33 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B402C0613D6;
+        Tue, 24 Nov 2020 07:17:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=KWfLAcAT1INi74TfOZLY1HvU7v23wTyWejlZ0NL7uwk=; b=w5g4mbPT0BpyAjVykZdZXHzn6
+        QmvJI18WaGUcyiQRltuKNgUlTPzHV0v7uzlrCHkF2NXkoQUuJV9JXj2olyS+AWqYoTSr2VMhNUZZJ
+        rPgVMStAqj95qDC/EPXE0mmLnWpKR88PK9fmvIbjkBI+3RlG07hqgh3S9q1fbjdvimu5JQRJnjkyZ
+        FczBx+28cEHD5eWPgR5lCI0765yLIbaTT8xfxgqEWjhIKfIgBebBrbvyeHI88sOlkvk0+L6xdoqXo
+        vQZLi7R/IFmCR3HNdqF1DofGYdPJ/oSd10Xf1nX+W2uOgcbSRu4PtaRASDbSX6Y2plc3ebBKIH9YD
+        /cZ2wRB2w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35534)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kha4D-0007s9-UQ; Tue, 24 Nov 2020 15:17:17 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kha4C-0007Rn-Bj; Tue, 24 Nov 2020 15:17:16 +0000
+Date:   Tue, 24 Nov 2020 15:17:16 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Antonio Borneo <antonio.borneo@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Yonglong Liu <liuyonglong@huawei.com>, stable@vger.kernel.org,
+        linuxarm@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: fix auto-negotiation in case of 'down-shift'
+Message-ID: <20201124151716.GG1551@shell.armlinux.org.uk>
+References: <20201124143848.874894-1-antonio.borneo@st.com>
+ <4684304a-37f5-e0cd-91cf-3f86318979c3@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4684304a-37f5-e0cd-91cf-3f86318979c3@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Tue, Nov 24, 2020 at 04:03:40PM +0100, Heiner Kallweit wrote:
+> Am 24.11.2020 um 15:38 schrieb Antonio Borneo:
+> > If the auto-negotiation fails to establish a gigabit link, the phy
+> > can try to 'down-shift': it resets the bits in MII_CTRL1000 to
+> > stop advertising 1Gbps and retries the negotiation at 100Mbps.
+> > 
+> I see that Russell answered already. My 2cts:
+> 
+> Are you sure all PHY's supporting downshift adjust the
+> advertisement bits? IIRC an Aquantia PHY I dealt with does not.
+> And if a PHY does so I'd consider this problematic:
+> Let's say you have a broken cable and the PHY downshifts to
+> 100Mbps. If you change the cable then the PHY would still negotiate
+> 100Mbps only.
 
-The test does the following:
+From what I've seen, that is not how downshift works, at least on
+the PHYs I've seen.
 
-- Mounts a loopback filesystem and appends the IMA policy to measure
-  executions only on this file-system. Restricting the IMA policy to a
-  particular filesystem prevents a system-wide IMA policy change.
-- Executes an executable copied to this loopback filesystem.
-- Calls the bpf_ima_inode_hash in the bprm_committed_creds hook and
-  checks if the call succeeded and checks if a hash was calculated.
+When the PHY downshifts, it modifies the advertisement registers,
+but it also remembers the original value. When the cable is
+unplugged, it restores the setting to what was previously set.
 
-The test shells out to the added ima_setup.sh script as the setup is
-better handled in a shell script and is more complicated to do in the
-test program or even shelling out individual commands from C.
+It is _far_ from nice, but the fact is that your patch that Antonio
+identified has broken previously working support, something that I
+brought up when I patched one of the PHY drivers that was broken by
+this very same problem by your patch.
 
-The list of required configs (i.e. IMA, SECURITYFS,
-IMA_{WRITE,READ}_POLICY) for running this test are also updated.
+That said, _if_ the PHY has a way to read the resolved state rather
+than reading the advertisement registers, that is what should be
+used (as I said previously) rather than trying to decode the
+advertisement registers ourselves. That is normally more reliable
+for speed and duplex.
 
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- tools/testing/selftests/bpf/config            |  4 +
- tools/testing/selftests/bpf/ima_setup.sh      | 80 +++++++++++++++++++
- .../selftests/bpf/prog_tests/test_ima.c       | 74 +++++++++++++++++
- tools/testing/selftests/bpf/progs/ima.c       | 28 +++++++
- 4 files changed, 186 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/ima_setup.sh
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_ima.c
- create mode 100644 tools/testing/selftests/bpf/progs/ima.c
-
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 2118e23ac07a..365bf9771b07 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -39,3 +39,7 @@ CONFIG_BPF_JIT=y
- CONFIG_BPF_LSM=y
- CONFIG_SECURITY=y
- CONFIG_LIRC=y
-+CONFIG_IMA=y
-+CONFIG_SECURITYFS=y
-+CONFIG_IMA_WRITE_POLICY=y
-+CONFIG_IMA_READ_POLICY=y
-diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
-new file mode 100644
-index 000000000000..15490ccc5e55
---- /dev/null
-+++ b/tools/testing/selftests/bpf/ima_setup.sh
-@@ -0,0 +1,80 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -e
-+set -u
-+
-+IMA_POLICY_FILE="/sys/kernel/security/ima/policy"
-+TEST_BINARY="/bin/true"
-+
-+usage()
-+{
-+        echo "Usage: $0 <setup|cleanup|run> <existing_tmp_dir>"
-+        exit 1
-+}
-+
-+setup()
-+{
-+        local tmp_dir="$1"
-+        local mount_img="${tmp_dir}/test.img"
-+        local mount_dir="${tmp_dir}/mnt"
-+        local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
-+        mkdir -p ${mount_dir}
-+
-+        dd if=/dev/zero of="${mount_img}" bs=1M count=10
-+
-+        local loop_device="$(losetup --find --show ${mount_img})"
-+
-+        mkfs.ext4 "${loop_device}"
-+        mount "${loop_device}" "${mount_dir}"
-+
-+        cp "${TEST_BINARY}" "${mount_dir}"
-+        local mount_uuid="$(blkid -s UUID -o value ${loop_device})"
-+        echo "measure func=BPRM_CHECK fsuuid=${mount_uuid}" > ${IMA_POLICY_FILE}
-+}
-+
-+cleanup() {
-+        local tmp_dir="$1"
-+        local mount_img="${tmp_dir}/test.img"
-+        local mount_dir="${tmp_dir}/mnt"
-+
-+        local loop_devices=$(losetup -j ${mount_img} -O NAME --noheadings)
-+        for loop_dev in "${loop_devices}"; do
-+                losetup -d $loop_dev
-+        done
-+
-+        umount ${mount_dir}
-+        rm -rf ${tmp_dir}
-+}
-+
-+run()
-+{
-+        local tmp_dir="$1"
-+        local mount_dir="${tmp_dir}/mnt"
-+        local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
-+
-+        exec "${copied_bin_path}"
-+}
-+
-+main()
-+{
-+        [[ $# -ne 2 ]] && usage
-+
-+        local action="$1"
-+        local tmp_dir="$2"
-+
-+        [[ ! -d "${tmp_dir}" ]] && echo "Directory ${tmp_dir} doesn't exist" && exit 1
-+
-+        if [[ "${action}" == "setup" ]]; then
-+                setup "${tmp_dir}"
-+        elif [[ "${action}" == "cleanup" ]]; then
-+                cleanup "${tmp_dir}"
-+        elif [[ "${action}" == "run" ]]; then
-+                run "${tmp_dir}"
-+        else
-+                echo "Unknown action: ${action}"
-+                exit 1
-+        fi
-+}
-+
-+main "$@"
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-new file mode 100644
-index 000000000000..61fca681d524
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+#include <test_progs.h>
-+
-+#include "ima.skel.h"
-+
-+static int run_measured_process(const char *measured_dir, u32 *monitored_pid)
-+{
-+	int child_pid, child_status;
-+
-+	child_pid = fork();
-+	if (child_pid == 0) {
-+		*monitored_pid = getpid();
-+		execlp("./ima_setup.sh", "./ima_setup.sh", "run", measured_dir,
-+		       NULL);
-+		exit(errno);
-+
-+	} else if (child_pid > 0) {
-+		waitpid(child_pid, &child_status, 0);
-+		return WEXITSTATUS(child_status);
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+void test_test_ima(void)
-+{
-+	char measured_dir_template[] = "/tmp/ima_measuredXXXXXX";
-+	const char *measured_dir;
-+	char cmd[256];
-+
-+	int err, duration = 0;
-+	struct ima *skel = NULL;
-+
-+	skel = ima__open_and_load();
-+	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = ima__attach(skel);
-+	if (CHECK(err, "attach", "attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	measured_dir = mkdtemp(measured_dir_template);
-+	if (CHECK(measured_dir == NULL, "mkdtemp", "err %d\n", errno))
-+		goto close_prog;
-+
-+	snprintf(cmd, sizeof(cmd), "./ima_setup.sh setup %s", measured_dir);
-+	if (CHECK_FAIL(system(cmd)))
-+		goto close_clean;
-+
-+	err = run_measured_process(measured_dir, &skel->bss->monitored_pid);
-+	if (CHECK(err, "run_measured_process", "err = %d\n", err))
-+		goto close_clean;
-+
-+	CHECK(skel->data->ima_hash_ret < 0, "ima_hash_ret",
-+	      "ima_hash_ret = %ld\n", skel->data->ima_hash_ret);
-+
-+	CHECK(skel->bss->ima_hash == 0, "ima_hash",
-+	      "ima_hash = %lu\n", skel->bss->ima_hash);
-+
-+close_clean:
-+	snprintf(cmd, sizeof(cmd), "./ima_setup.sh cleanup %s", measured_dir);
-+	CHECK_FAIL(system(cmd));
-+close_prog:
-+	ima__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-new file mode 100644
-index 000000000000..86b21aff4bc5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/ima.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+long ima_hash_ret = -1;
-+u64 ima_hash = 0;
-+u32 monitored_pid = 0;
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("lsm.s/bprm_committed_creds")
-+int BPF_PROG(ima, struct linux_binprm *bprm)
-+{
-+	u32 pid = bpf_get_current_pid_tgid() >> 32;
-+
-+	if (pid == monitored_pid)
-+		ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
-+						  &ima_hash, sizeof(ima_hash));
-+
-+	return 0;
-+}
 -- 
-2.29.2.454.gaff20da3a2-goog
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
