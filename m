@@ -2,231 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D022C2C3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3544A2C2C42
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390092AbgKXQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:04:35 -0500
-Received: from mga06.intel.com ([134.134.136.31]:37037 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728249AbgKXQEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:04:35 -0500
-IronPort-SDR: Y95yqw0C5qA8ZZ0r0do+Svjmj7eWx+32CHKOBbdzcXZdIEXpo58s/xgFYk58M43oYQ1hg/TB+X
- n8UeDlGo1HNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="233580861"
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="233580861"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 08:04:34 -0800
-IronPort-SDR: dR6Afh+0k969CnASivGz+bcxXD3+QPNz5isrulKW7S3uubWuy+7+34W1iwvcvYG3phuMDnuEvX
- Wy4bGlFLy5UA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="536520375"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Nov 2020 08:04:33 -0800
-Received: from [10.254.70.76] (kliang2-MOBL.ccr.corp.intel.com [10.254.70.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 788AD580565;
-        Tue, 24 Nov 2020 08:04:32 -0800 (PST)
-Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
- events
-To:     Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Gabriel Marin <gmx@google.com>
-References: <20201106212935.28943-1-kan.liang@linux.intel.com>
- <20201109095235.GC2594@hirez.programming.kicks-ass.net>
- <20201109110405.GN2651@hirez.programming.kicks-ass.net>
- <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
- <20201111162509.GW2611@hirez.programming.kicks-ass.net>
- <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com>
- <CAM9d7cjwFp9JBqs1Ga9n1ojbez9chZLvmOgFv1EE4KDhAa9ryA@mail.gmail.com>
- <CAM9d7chbQE=zkqYsNFMv+uWEYWdXcGD=fNYT_R2ondwR5zVvaQ@mail.gmail.com>
- <87a6v81gou.fsf@mpe.ellerman.id.au>
- <CAM9d7cg8kYMyPHQK_rhEiYQaSddqqt93=pLVNKJm8Y6F=if9ow@mail.gmail.com>
- <9657dc9f-e1a9-eb7e-8ac2-a108416d5a10@linux.ibm.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <ba4d80fa-82e5-d3fd-c772-deb12e286de3@linux.intel.com>
-Date:   Tue, 24 Nov 2020 11:04:31 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2390107AbgKXQFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728249AbgKXQFE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 11:05:04 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECCDC0613D6;
+        Tue, 24 Nov 2020 08:05:04 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id w24so3429447wmi.0;
+        Tue, 24 Nov 2020 08:05:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eAGr3DQcsKhWlLHEgJKNqKCG/NqAg2PxBv3X0YMYqME=;
+        b=cIr5RA23loi+Mj1hkEQvitpASDHKtNsWTeejme8wYgnd4gIKBufCKHhgZihsKX3q+g
+         iDb3jixa4XkOJrzErD4bZ+EtZTi/9mbiTYQdgVuCZ4R1sLp7/ADkRAWH8Hr/SoBjOJp8
+         QlXc9NkUqT2IetHB1Fd9xqn32fs6tMZX54eX2hiJ10kSiNAQXG6TPlwqlCV9uwDx56Lz
+         +vOGtTqssEQ+443S64V5yTo/yrd+LzpVPVsoOruyaWCMLEv686OwbYz4kdScw/Mpv/Le
+         Ed9eWKSA4NCXlY6wxDV46QrFafU247liwAaMqJYimTO2VY3jCFpu2tRDcgyGc+zI3y2v
+         dDQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eAGr3DQcsKhWlLHEgJKNqKCG/NqAg2PxBv3X0YMYqME=;
+        b=XIcFBOrqJCQe4M03PSjGILYM13g1+o2HRgtDe/7fFNzRHPWQ8rvTt72OZX9ryD4OJ6
+         QRk+XQFWxxtq0w0jZYsF7tkDhMqOKDrDFipaspTZW38gJOOSPWkV2fhRobKrxy6YaCd0
+         J5yOVf5dp0o6R8sMYKRULiGnt2MdiBfhRJa5WqC9QcwxiMU8RtpYuJBqUg8zOhtXXBHt
+         Rr7iAeyJd/owbzXaOLp6CeMn2NClJomvonIuvzCFXPcTn4zMtHwWVnZ7uiKI7A0FmNqr
+         kLzCueXHC4xKuUwGyvGvErhk+QXNFIXFi/EmmeB9hLDqaRCKM14pIIHMYwg5/8UYe0jB
+         H6Iw==
+X-Gm-Message-State: AOAM530Kz4mOPClqR28FjFCRl35dUiWI3r1OT6i2TTkjS+VnGwaeQaD8
+        WCrdMbCjln/dr8sFMARRmfTQilWtwsiqQ1b/n0w=
+X-Google-Smtp-Source: ABdhPJw1kkh7TErhGfvIQBDmmJXpFzI3W8FKtUHQ/hInHFM+OR6eR/JkQrIlESBR1s/17xkOhJYyirdg1+6Vv4bXWQY=
+X-Received: by 2002:a1c:2dc8:: with SMTP id t191mr5167167wmt.73.1606233902789;
+ Tue, 24 Nov 2020 08:05:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <9657dc9f-e1a9-eb7e-8ac2-a108416d5a10@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-10-lee.jones@linaro.org>
+In-Reply-To: <20201123111919.233376-10-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Nov 2020 11:04:51 -0500
+Message-ID: <CADnq5_P3VD4RBFwj+8RX6yc1zOnkj2f2ikOv1xTxdOwJ2B=zTg@mail.gmail.com>
+Subject: Re: [PATCH 09/40] drm/amd/amdgpu/gfx_v7_0: Clean-up a bunch of
+ kernel-doc related issues
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 6:20 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:1590: warning: Function parameter =
+or member 'instance' not described in 'gfx_v7_0_select_se_sh'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:1788: warning: Excess function par=
+ameter 'se_num' description in 'gfx_v7_0_setup_rb'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:1788: warning: Excess function par=
+ameter 'sh_per_se' description in 'gfx_v7_0_setup_rb'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:1852: warning: Excess function par=
+ameter 'adev' description in 'DEFAULT_SH_MEM_BASES'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2086: warning: Excess function par=
+ameter 'adev' description in 'gfx_v7_0_ring_test_ring'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2130: warning: Function parameter =
+or member 'ring' not described in 'gfx_v7_0_ring_emit_hdp_flush'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2130: warning: Excess function par=
+ameter 'adev' description in 'gfx_v7_0_ring_emit_hdp_flush'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2130: warning: Excess function par=
+ameter 'ridx' description in 'gfx_v7_0_ring_emit_hdp_flush'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2182: warning: Function parameter =
+or member 'ring' not described in 'gfx_v7_0_ring_emit_fence_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2182: warning: Function parameter =
+or member 'addr' not described in 'gfx_v7_0_ring_emit_fence_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2182: warning: Function parameter =
+or member 'seq' not described in 'gfx_v7_0_ring_emit_fence_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2182: warning: Function parameter =
+or member 'flags' not described in 'gfx_v7_0_ring_emit_fence_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2182: warning: Excess function par=
+ameter 'adev' description in 'gfx_v7_0_ring_emit_fence_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2182: warning: Excess function par=
+ameter 'fence' description in 'gfx_v7_0_ring_emit_fence_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2224: warning: Function parameter =
+or member 'ring' not described in 'gfx_v7_0_ring_emit_fence_compute'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2224: warning: Function parameter =
+or member 'addr' not described in 'gfx_v7_0_ring_emit_fence_compute'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2224: warning: Function parameter =
+or member 'seq' not described in 'gfx_v7_0_ring_emit_fence_compute'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2224: warning: Function parameter =
+or member 'flags' not described in 'gfx_v7_0_ring_emit_fence_compute'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2224: warning: Excess function par=
+ameter 'adev' description in 'gfx_v7_0_ring_emit_fence_compute'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2224: warning: Excess function par=
+ameter 'fence' description in 'gfx_v7_0_ring_emit_fence_compute'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2260: warning: Function parameter =
+or member 'job' not described in 'gfx_v7_0_ring_emit_ib_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2260: warning: Function parameter =
+or member 'flags' not described in 'gfx_v7_0_ring_emit_ib_gfx'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:2351: warning: Function parameter =
+or member 'timeout' not described in 'gfx_v7_0_ring_test_ib'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:3244: warning: Function parameter =
+or member 'ring' not described in 'gfx_v7_0_ring_emit_vm_flush'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:3244: warning: Function parameter =
+or member 'vmid' not described in 'gfx_v7_0_ring_emit_vm_flush'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:3244: warning: Function parameter =
+or member 'pd_addr' not described in 'gfx_v7_0_ring_emit_vm_flush'
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c:3244: warning: Excess function par=
+ameter 'adev' description in 'gfx_v7_0_ring_emit_vm_flush'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Applied.  Thanks!
+
+Alex
 
 
-On 11/24/2020 12:42 AM, Madhavan Srinivasan wrote:
-> 
-> On 11/24/20 10:21 AM, Namhyung Kim wrote:
->> Hello,
->>
->> On Mon, Nov 23, 2020 at 8:00 PM Michael Ellerman <mpe@ellerman.id.au> 
->> wrote:
->>> Namhyung Kim <namhyung@kernel.org> writes:
->>>> Hi Peter and Kan,
->>>>
->>>> (Adding PPC folks)
->>>>
->>>> On Tue, Nov 17, 2020 at 2:01 PM Namhyung Kim <namhyung@kernel.org> 
->>>> wrote:
->>>>> Hello,
->>>>>
->>>>> On Thu, Nov 12, 2020 at 4:54 AM Liang, Kan 
->>>>> <kan.liang@linux.intel.com> wrote:
->>>>>>
->>>>>>
->>>>>> On 11/11/2020 11:25 AM, Peter Zijlstra wrote:
->>>>>>> On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
->>>>>>>
->>>>>>>> - When the large PEBS was introduced (9c964efa4330), the 
->>>>>>>> sched_task() should
->>>>>>>> be invoked to flush the PEBS buffer in each context switch. 
->>>>>>>> However, The
->>>>>>>> perf_sched_events in account_event() is not updated accordingly. 
->>>>>>>> The
->>>>>>>> perf_event_task_sched_* never be invoked for a pure per-CPU 
->>>>>>>> context. Only
->>>>>>>> per-task event works.
->>>>>>>>      At that time, the perf_pmu_sched_task() is outside of
->>>>>>>> perf_event_context_sched_in/out. It means that perf has to double
->>>>>>>> perf_pmu_disable() for per-task event.
->>>>>>>> - The patch 1 tries to fix broken per-CPU events. The CPU 
->>>>>>>> context cannot be
->>>>>>>> retrieved from the task->perf_event_ctxp. So it has to be 
->>>>>>>> tracked in the
->>>>>>>> sched_cb_list. Yes, the code is very similar to the original 
->>>>>>>> codes, but it
->>>>>>>> is actually the new code for per-CPU events. The optimization 
->>>>>>>> for per-task
->>>>>>>> events is still kept.
->>>>>>>>     For the case, which has both a CPU context and a task 
->>>>>>>> context, yes, the
->>>>>>>> __perf_pmu_sched_task() in this patch is not invoked. Because the
->>>>>>>> sched_task() only need to be invoked once in a context switch. The
->>>>>>>> sched_task() will be eventually invoked in the task context.
->>>>>>> The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB 
->>>>>>> and
->>>>>>> only set that for large pebs. Are you sure the other users (Intel 
->>>>>>> LBR
->>>>>>> and PowerPC BHRB) don't need it?
->>>>>> I didn't set it for LBR, because the perf_sched_events is always 
->>>>>> enabled
->>>>>> for LBR. But, yes, we should explicitly set the PERF_ATTACH_SCHED_CB
->>>>>> for LBR.
->>>>>>
->>>>>>          if (has_branch_stack(event))
->>>>>>                  inc = true;
->>>>>>
->>>>>>> If they indeed do not require the pmu::sched_task() callback for CPU
->>>>>>> events, then I still think the whole perf_sched_cb_{inc,dec}() 
->>>>>>> interface
->>>>>> No, LBR requires the pmu::sched_task() callback for CPU events.
->>>>>>
->>>>>> Now, The LBR registers have to be reset in sched in even for CPU 
->>>>>> events.
->>>>>>
->>>>>> To fix the shorter LBR callstack issue for CPU events, we also 
->>>>>> need to
->>>>>> save/restore LBRs in pmu::sched_task().
->>>>>> https://lore.kernel.org/lkml/1578495789-95006-4-git-send-email-kan.liang@linux.intel.com/ 
->>>>>>
->>>>>>
->>>>>>> is confusing at best.
->>>>>>>
->>>>>>> Can't we do something like this instead?
->>>>>>>
->>>>>> I think the below patch may have two issues.
->>>>>> - PERF_ATTACH_SCHED_CB is required for LBR (maybe PowerPC BHRB as 
->>>>>> well) now.
->>>>>> - We may disable the large PEBS later if not all PEBS events support
->>>>>> large PEBS. The PMU need a way to notify the generic code to decrease
->>>>>> the nr_sched_task.
->>>>> Any updates on this?  I've reviewed and tested Kan's patches
->>>>> and they all look good.
->>>>>
->>>>> Maybe we can talk to PPC folks to confirm the BHRB case?
->>>> Can we move this forward?  I saw patch 3/3 also adds 
->>>> PERF_ATTACH_SCHED_CB
->>>> for PowerPC too.  But it'd be nice if ppc folks can confirm the change.
->>> Sorry I've read the whole thread, but I'm still not entirely sure I
->>> understand the question.
->> Thanks for your time and sorry about not being clear enough.
->>
->> We found per-cpu events are not calling pmu::sched_task()
->> on context switches.  So PERF_ATTACH_SCHED_CB was
->> added to indicate the core logic that it needs to invoke the
->> callback.
->>
->> The patch 3/3 added the flag to PPC (for BHRB) with other
->> changes (I think it should be split like in the patch 2/3) and
->> want to get ACKs from the PPC folks.
-> 
-> Sorry for delay.
-> 
-> I guess first it will be better to split the ppc change to a separate 
-> patch,
-
-Both PPC and X86 invokes the perf_sched_cb_inc() directly. The patch 
-changes the parameters of the perf_sched_cb_inc(). I think we have to 
-update the PPC and X86 codes together. Otherwise, there will be a 
-compile error, if someone may only applies the change for the 
-perf_sched_cb_inc() but forget to applies the changes in PPC or X86 
-specific codes.
-
-> 
-> secondly, we are missing the changes needed in the power_pmu_bhrb_disable()
-> 
-> where perf_sched_cb_dec() needs the "state" to be included.
-> 
-
-Ah, right. The below patch should fix the issue.
-
-diff --git a/arch/powerpc/perf/core-book3s.c 
-b/arch/powerpc/perf/core-book3s.c
-index bced502f64a1..6756d1602a67 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -391,13 +391,18 @@ static void power_pmu_bhrb_enable(struct 
-perf_event *event)
-  static void power_pmu_bhrb_disable(struct perf_event *event)
-  {
-  	struct cpu_hw_events *cpuhw = this_cpu_ptr(&cpu_hw_events);
-+	int state = PERF_SCHED_CB_SW_IN;
-
-  	if (!ppmu->bhrb_nr)
-  		return;
-
-  	WARN_ON_ONCE(!cpuhw->bhrb_users);
-  	cpuhw->bhrb_users--;
--	perf_sched_cb_dec(event->ctx->pmu);
-+
-+	if (!(event->attach_state & PERF_ATTACH_TASK))
-+		state |= PERF_SCHED_CB_CPU;
-+
-+	perf_sched_cb_dec(event->ctx->pmu, state);
-
-  	if (!cpuhw->disabled && !cpuhw->bhrb_users) {
-  		/* BHRB cannot be turned off when other
-
-
-
-Thanks,
-Kan
+> ---
+>  drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c | 33 +++++++++++++++------------
+>  1 file changed, 19 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c b/drivers/gpu/drm/amd/=
+amdgpu/gfx_v7_0.c
+> index 04e1e92f5f3cf..f2490f915a8be 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+> @@ -1580,10 +1580,10 @@ static void gfx_v7_0_tiling_mode_table_init(struc=
+t amdgpu_device *adev)
+>   * @adev: amdgpu_device pointer
+>   * @se_num: shader engine to address
+>   * @sh_num: sh block to address
+> + * @instance: Certain registers are instanced per SE or SH.
+> + *            0xffffffff means broadcast to all SEs or SHs (CIK).
+>   *
+> - * Select which SE, SH combinations to address. Certain
+> - * registers are instanced per SE or SH.  0xffffffff means
+> - * broadcast to all SEs or SHs (CIK).
+> + * Select which SE, SH combinations to address.
+>   */
+>  static void gfx_v7_0_select_se_sh(struct amdgpu_device *adev,
+>                                   u32 se_num, u32 sh_num, u32 instance)
+> @@ -1779,8 +1779,6 @@ gfx_v7_0_write_harvested_raster_configs(struct amdg=
+pu_device *adev,
+>   * gfx_v7_0_setup_rb - setup the RBs on the asic
+>   *
+>   * @adev: amdgpu_device pointer
+> - * @se_num: number of SEs (shader engines) for the asic
+> - * @sh_per_se: number of SH blocks per SE for the asic
+>   *
+>   * Configures per-SE/SH RB registers (CIK).
+>   */
+> @@ -1841,6 +1839,7 @@ static void gfx_v7_0_setup_rb(struct amdgpu_device =
+*adev)
+>         mutex_unlock(&adev->grbm_idx_mutex);
+>  }
+>
+> +#define DEFAULT_SH_MEM_BASES   (0x6000)
+>  /**
+>   * gfx_v7_0_init_compute_vmid - gart enable
+>   *
+> @@ -1849,7 +1848,6 @@ static void gfx_v7_0_setup_rb(struct amdgpu_device =
+*adev)
+>   * Initialize compute vmid sh_mem registers
+>   *
+>   */
+> -#define DEFAULT_SH_MEM_BASES   (0x6000)
+>  static void gfx_v7_0_init_compute_vmid(struct amdgpu_device *adev)
+>  {
+>         int i;
+> @@ -2074,7 +2072,6 @@ static void gfx_v7_0_scratch_init(struct amdgpu_dev=
+ice *adev)
+>  /**
+>   * gfx_v7_0_ring_test_ring - basic gfx ring test
+>   *
+> - * @adev: amdgpu_device pointer
+>   * @ring: amdgpu_ring structure holding ring information
+>   *
+>   * Allocate a scratch register and write to it using the gfx ring (CIK).
+> @@ -2121,8 +2118,7 @@ static int gfx_v7_0_ring_test_ring(struct amdgpu_ri=
+ng *ring)
+>  /**
+>   * gfx_v7_0_ring_emit_hdp - emit an hdp flush on the cp
+>   *
+> - * @adev: amdgpu_device pointer
+> - * @ridx: amdgpu ring index
+> + * @ring: amdgpu_ring structure holding ring information
+>   *
+>   * Emits an hdp flush on the cp.
+>   */
+> @@ -2171,8 +2167,10 @@ static void gfx_v7_0_ring_emit_vgt_flush(struct am=
+dgpu_ring *ring)
+>  /**
+>   * gfx_v7_0_ring_emit_fence_gfx - emit a fence on the gfx ring
+>   *
+> - * @adev: amdgpu_device pointer
+> - * @fence: amdgpu fence object
+> + * @ring: amdgpu_ring structure holding ring information
+> + * @addr: address
+> + * @seq: sequence number
+> + * @flags: fence related flags
+>   *
+>   * Emits a fence sequnce number on the gfx ring and flushes
+>   * GPU caches.
+> @@ -2212,8 +2210,10 @@ static void gfx_v7_0_ring_emit_fence_gfx(struct am=
+dgpu_ring *ring, u64 addr,
+>  /**
+>   * gfx_v7_0_ring_emit_fence_compute - emit a fence on the compute ring
+>   *
+> - * @adev: amdgpu_device pointer
+> - * @fence: amdgpu fence object
+> + * @ring: amdgpu_ring structure holding ring information
+> + * @addr: address
+> + * @seq: sequence number
+> + * @flags: fence related flags
+>   *
+>   * Emits a fence sequnce number on the compute ring and flushes
+>   * GPU caches.
+> @@ -2245,7 +2245,9 @@ static void gfx_v7_0_ring_emit_fence_compute(struct=
+ amdgpu_ring *ring,
+>   * gfx_v7_0_ring_emit_ib - emit an IB (Indirect Buffer) on the ring
+>   *
+>   * @ring: amdgpu_ring structure holding ring information
+> + * @job: job to retrive vmid from
+>   * @ib: amdgpu indirect buffer object
+> + * @flags: options (AMDGPU_HAVE_CTX_SWITCH)
+>   *
+>   * Emits an DE (drawing engine) or CE (constant engine) IB
+>   * on the gfx ring.  IBs are usually generated by userspace
+> @@ -2342,6 +2344,7 @@ static void gfx_v7_ring_emit_cntxcntl(struct amdgpu=
+_ring *ring, uint32_t flags)
+>   * gfx_v7_0_ring_test_ib - basic ring IB test
+>   *
+>   * @ring: amdgpu_ring structure holding ring information
+> + * @timeout: timeout value in jiffies, or MAX_SCHEDULE_TIMEOUT
+>   *
+>   * Allocate an IB and execute it on the gfx ring (CIK).
+>   * Provides a basic gfx ring test to verify that IBs are working.
+> @@ -3234,7 +3237,9 @@ static void gfx_v7_0_ring_emit_pipeline_sync(struct=
+ amdgpu_ring *ring)
+>  /**
+>   * gfx_v7_0_ring_emit_vm_flush - cik vm flush using the CP
+>   *
+> - * @adev: amdgpu_device pointer
+> + * @ring: amdgpu_ring pointer
+> + * @vmid: vmid number to use
+> + * @pd_addr: address
+>   *
+>   * Update the page table base and flush the VM TLB
+>   * using the CP (CIK).
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
