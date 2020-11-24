@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85C82C28A4
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB142C28A3
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388625AbgKXNrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 08:47:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387707AbgKXNrW (ORCPT
+        id S2388635AbgKXNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 08:48:21 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15452 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388627AbgKXNrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:47:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606225641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xffRRUEFdYVf/iIYdkTproP9RPvaJX79D3rZJfNU7HM=;
-        b=Rvf2CO+I0D7YKoyuSatgKKVSSS6SlejBUQ7yErOb+JLjrdgwqnwSgDXPHKX431r40KetHC
-        cNPFoJQz9grcdrdR2mFYVTSXNUGm0Fv/kExyu9ykEgvy43BciG2pTqkcgDJRVzYhR0mZYF
-        qwJLuCSJ5vnp4RzJZJuBQyPBsVQCstc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-y1L_LCbENfOjwrBfHeO7eA-1; Tue, 24 Nov 2020 08:47:19 -0500
-X-MC-Unique: y1L_LCbENfOjwrBfHeO7eA-1
-Received: by mail-ed1-f70.google.com with SMTP id bc27so7894311edb.18
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 05:47:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xffRRUEFdYVf/iIYdkTproP9RPvaJX79D3rZJfNU7HM=;
-        b=Xn2vT8pn4RdEbuDd3WwhwDvIvhkjYBT65e+o3B3mA0w7l+hBlY01NgbP9Wt9TIL7FB
-         fD20Av3STYTChG6fVTUVfjs/m1H/NQHhfq9kKNS3mVc2wyeQLSgTd97TaZk9hh4MD5oT
-         bxOFLFKrs77XY44vQ3nRAz1n5AniOhz0//+jiwzSV4BjU5qUW1/S6O7/dKz/mmLLT7J/
-         3vpXZ4+yKv53DBL6Mc31x6XSBYWZGYn4qWLfna9EwT0ngVlRtQe16a7ziDuBuWpQzqD5
-         Xh8oUuquga/QizkVcsEzprtFoF04o7U11s0wbmtTZKUBXRc0aVPQTt3iZh+muWSQ7vFg
-         16ww==
-X-Gm-Message-State: AOAM5301AZ+Abw6ATwb9p8P4fMhDQbTH7y0ber5nFKgEBr3xpmfn3j3/
-        TPmRRlIQrYZeVGBbQ+KskcWR8kXJeV9amIlBeslpKd/Ztn38Yp3r6mq8CRT1X4CpKMEVzTafU1a
-        8nOpNOTUoHoRKXOtIBA7k/sZDDoNyohDPLHvBQF8=
-X-Received: by 2002:aa7:cac2:: with SMTP id l2mr4062572edt.141.1606225638300;
-        Tue, 24 Nov 2020 05:47:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxqRJKaDCOU8o8lJUBpvIonCI4iSMmccpTsGPpfIOAUjWgIRZoULRAqw8LcNxkGji38m0SYjUfv9vLzN6m/Y+w=
-X-Received: by 2002:aa7:cac2:: with SMTP id l2mr4062564edt.141.1606225638122;
- Tue, 24 Nov 2020 05:47:18 -0800 (PST)
+        Tue, 24 Nov 2020 08:47:48 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AODWxbJ033452;
+        Tue, 24 Nov 2020 08:47:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=OjF6bqqG0pJRYJr2z1eRX4IAQ9frRRFFEKx1Ea61Tvg=;
+ b=pXye4oCXP/M16Oj70boLGij8UFF93V+5GXxmfjUEBUGwBXHdAN1BOqjYgBeyNln5baev
+ wn0wnXTWiTXBjeukkeKrVg3x8k+YINhLVfh7HSn9gN0iijiRqN/Wzc8wFAQEWq13Se6v
+ N4xYCFlgb+uqRrk35YNRBAn/3yaGvt4YbYGIxvEFutdV81Qe7Xm7NLQ/YBH5pXUALi2t
+ 7+HpAtx/DLcmi2dGQqAge02ZOgEJ1ErCeIv4YOTdxlN1FhEBKxlyJK7nLMfz/k/A1lMn
+ UNABi3sO6I0tX/wJrn/fIW5tdMP+LK2kEC83DtsfiDgKT8qc7FumYqGU0Nb/I892nWkT iQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 350nsds43k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 08:47:35 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AODc9l3003735;
+        Tue, 24 Nov 2020 13:47:33 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 34xth8khek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 13:47:33 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AODlVXp6423080
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Nov 2020 13:47:31 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 26EAC52052;
+        Tue, 24 Nov 2020 13:47:31 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CDED252054;
+        Tue, 24 Nov 2020 13:47:30 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@kernel.org,
+        x86@kernel.org, mark.rutland@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] More RCU vs idle fixes
+References: <20201120114145.197714127@infradead.org>
+Date:   Tue, 24 Nov 2020 14:47:27 +0100
+In-Reply-To: <20201120114145.197714127@infradead.org> (Peter Zijlstra's
+        message of "Fri, 20 Nov 2020 12:41:45 +0100")
+Message-ID: <yt9dv9du7tow.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-References: <20201124105836.713371-1-atomlin@redhat.com> <20201124112612.GV27488@dhcp22.suse.cz>
- <CANfR36hyrqXjk2tL03GzCk6rn6sCD7Sd811soBsZC3dHY0h9fQ@mail.gmail.com> <20201124133644.GA31550@dhcp22.suse.cz>
-In-Reply-To: <20201124133644.GA31550@dhcp22.suse.cz>
-From:   Aaron Tomlin <atomlin@redhat.com>
-Date:   Tue, 24 Nov 2020 13:47:07 +0000
-Message-ID: <CANfR36hw8iSSszSt4sNh+ika3vTdXQnXHPLj5t2iLL=5-nzZZw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: add support to generate the total count of
- children from root
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-24_04:2020-11-24,2020-11-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ mlxlogscore=702 malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 phishscore=0 mlxscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011240081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 at 13:36, Michal Hocko <mhocko@suse.com> wrote:
+Peter Zijlstra <peterz@infradead.org> writes:
 
-Michal,
+> Both arm64 and s390 are tripping over arch_cpu_idle() RCU,tracing,lockdep
+> interaction. While looking at that I also found fail in inte_idle.
+>
+> Please consider for this cycle.
 
-> This like any other user visible interface would be a much easier sell
-> if there was a clear usecase to justify it. I do not see anything
-> controversial about exporting such a value but my general take is that
-> we are only adding new interface when existing ones are insufficient. A
-> performance might be a very good reason but that would really require to
-> come with some real life numbers.
+Is anyone taking this patchset? For s390, we also need to change the
+local_irq_safe/restore to the raw variants in enabled_wait() in
+arch/s390/kernel/idle.c. I can make a patch and carry that via the
+s390 tree, but i want to make sure the s390 change in this patchset
+also reaches linus' tree.
 
-Fair enough and understood.
-
-At this stage, I unfortunately do not have such supporting data. This was only
-useful in an isolated situation. Having said this, I thought that the
-aforementioned interface would be helpful to others, in particular, given the
-known limitation.
-
-Kind regards,
--- 
-Aaron Tomlin
-
+Thanks
+Sven
