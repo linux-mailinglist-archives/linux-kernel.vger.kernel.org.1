@@ -2,323 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C218C2C2420
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69962C2422
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732694AbgKXL2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 06:28:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732405AbgKXL2N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:28:13 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96E2C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:28:11 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id 7so27970108ejm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:28:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hhvxHqkvhpCtQ6NNZ2UFIum9Umz9gTvQwQEBUmRS/nA=;
-        b=gUd2H9GbGEiqJmI/LicXygK+RomOWc7/9ZBs0LGaljvlsKtBJIGduXf9jJvoD/pmQY
-         JkDOqUaURy4Bidt4Wx85R7dwoP5Q4gw/qtoiS5thVBFwLdxMkNpdeNkNDkENI905K4Lp
-         Qja4rRRPhV6JyJsj0jy1NYcbmh85ZW6/9i168=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hhvxHqkvhpCtQ6NNZ2UFIum9Umz9gTvQwQEBUmRS/nA=;
-        b=iIcNqb10UnPnA5/4DqPiIq9+VJh42fccYdlBopRCDkNWlZFbXL1TQnpNkrpjasiP+x
-         PZuYPxPznnIdJrCyKzJKg/laKDcP2XC9QPelI63J/VM6tj5eGOMVJ9l2aQ6SpxLDWpZ7
-         1gbLBa5CaZrE2v5E5EqQhFdqsNQLWRgqTuozSzMCoueMxv09dMeWuvUhhyC8YmA/rnSa
-         yD6eKtn5Ci18Z3ytA14GQUhxHjsXkPkV4QHpJAHoSd5ngMB34XXIGf558+dSd29O4L9P
-         fT+Wwc20q9vEty1TWdMldTybATwVx0jDWS/biwJUbi12oX5xouNFdETbKUjZk/LrgSyx
-         YAiw==
-X-Gm-Message-State: AOAM530piO2zi/LSbLjOe6LHaHyM0d2JykINOmTNvtr9xstPFBJwnpM2
-        PwPWWseKInWx0uJeDeQ3MS/+lJ+ZYyPWIg==
-X-Google-Smtp-Source: ABdhPJxxFFwILDahTcmJeaPtN7Pu1n43M6DWnt8QYzxBwQbE6HfZ2YcCA/6JcsbOgknhKA7holYEyA==
-X-Received: by 2002:a17:906:5617:: with SMTP id f23mr3679656ejq.352.1606217289984;
-        Tue, 24 Nov 2020 03:28:09 -0800 (PST)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id s21sm6869882edc.42.2020.11.24.03.28.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 03:28:09 -0800 (PST)
-Received: by mail-wm1-f52.google.com with SMTP id a3so2481864wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 03:28:08 -0800 (PST)
-X-Received: by 2002:a1c:208f:: with SMTP id g137mr3844148wmg.116.1606217288307;
- Tue, 24 Nov 2020 03:28:08 -0800 (PST)
+        id S1732859AbgKXL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:28:28 -0500
+Received: from mail-vi1eur05on2041.outbound.protection.outlook.com ([40.107.21.41]:20426
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732849AbgKXL22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:28:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hwrfn5N7plgdlz11hyjnfdF4I06UTYUio4hDGvm1X5sFKf6EaR4CkGXo92r8aUMErGKu40rnGy6tgXa+iLJxiwTVuIhnaa8dWyb825y88az8IhawF5yfabMY5c/GhG2bF6PdlpznkD7/6eyNQEHjh1uaTRPgbB6/rkjYhINIpVnPZ59Zq55wKb9AmOjJE2jhMuIF4mz4K6QllphDW1Jrl5/pfoIQJ9Uzn0l0izDMjVPs4yjMuQs67aE5RHLbVIS4wZ8SpzQEnfFQeWtST/UOjyPXDQqDa8doaO1vmMiwNy27wsOAw763QBTj4pnznlP6LdQGT7H2OlOnzNpvGDa1mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D1MALWwujwbNysiYh9YDyT7LXmxOl5+zy3PgRyCjRdA=;
+ b=jfolN6WOF5bqJ834aCAhRJwx1ioJW6A69g6Uq5eu8TGYUF2EJMJD9AV+8JDJZD0Xhs9moAjD0woJ6WYD7GobgvVS5voHSqjFCqE3npoUkRTnMdQeihhMQM4+Hoq3O28axXkFHzekc3DDliaSiVfKXODRykjk0Tg5tcpcr5jsYQaivlU7mFYLKrwMxfh15PDgFksXWjrH+btzHzxews1JqectmkokNNXGnWndoCvrLmxVZCctksJuGXkN0n1BZzQVIBaN2Aoa0fqTLubgbK1SDt+b8Aln5xli9Z1VJBW5fe6X1gpoIiNlGJkVpbnitizctKy65rYjsJBQAWo8qYa23g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D1MALWwujwbNysiYh9YDyT7LXmxOl5+zy3PgRyCjRdA=;
+ b=n1gpM2NlcDKJdbPgabKVkkDpArwnfjoe6+LianflGZFg1B1EFq4cgT6XrutrCS1vxMdxvyEaLnw+IdalNHlGY8S22NSU8c16LkST0uG0jdPOTFG9uieqEYa2ZqmbBZCgq7b9e4aSx3oIFRZkvKtZKB0Xk1v/094XxJKyTDVCD8c=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR0402MB2798.eurprd04.prod.outlook.com (2603:10a6:800:ae::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 24 Nov
+ 2020 11:28:22 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::2dd6:8dc:2da7:ad84]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::2dd6:8dc:2da7:ad84%5]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 11:28:22 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     "Y.b. Lu" <yangbo.lu@nxp.com>
+CC:     Michael Walle <michael@walle.cc>, Shawn Guo <shawnguo@kernel.org>,
+        Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ashish Kumar <ashish.kumar@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+ controllers use fixed indices
+Thread-Topic: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+ controllers use fixed indices
+Thread-Index: AQHWvovBrojMBFt1EECB86LxwqdSo6nQRb0AgAB8rICABirOgIAABiUAgAAMfQCAAAInAIAAAhyAgAAYuwCAAAxAgIAAA6YA
+Date:   Tue, 24 Nov 2020 11:28:22 +0000
+Message-ID: <20201124112822.2ui57jmoc73top35@skbuf>
+References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
+ <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <20201120093015.duel3yx63cbya77w@skbuf>
+ <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
+ <71a86b0fbc95892f8fd240e0919e7e23@walle.cc>
+ <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <3293d698bf26ecf08f22e7e2ffe55e74@walle.cc>
+ <AM7PR04MB688518B8AE836C2CC37FED6AF8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <20201124103128.zucizod344dgme4o@skbuf>
+ <AM7PR04MB688567CA698191E2DB73DEF5F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+In-Reply-To: <AM7PR04MB688567CA698191E2DB73DEF5F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.2.120]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: cd422aab-e6a4-49cd-cbc1-08d8906c0d58
+x-ms-traffictypediagnostic: VI1PR0402MB2798:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0402MB279867BF4A7C90730568C684E0FB0@VI1PR0402MB2798.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qHfKnBVv/CFKupf0Z8hH87eD2m1wlBg/8y14PEdTa5Pz6j+MFgNivbVjCEE0KEUL/F8WV05uQAQ94IK8/PCjtgQsv3fIb8na5yZpmjeidVcC4iLLZmuV9VA1aihM+D/93lPhTK0rpF/ZtB+ioVn8HeJmNwuDQiDCnYU0W3hoYFMDoSCZHPsBUYR/ocB3/4KyQfIpoL0E2anYcsKghDAfeXkeVAzwcbJKfIpkniUVxXZ07qDejpvKxIHjzyf9bE2XwfQUAiZBOTFxOT3F9Uw/XE6GXdUqY6JzE8ofw4LjgYfcD6GjIotDwL6GGCiEYs1mENXVF46Nzdby3EsyFB5N3A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(376002)(136003)(366004)(396003)(39860400002)(6486002)(186003)(86362001)(9686003)(26005)(2906002)(54906003)(6512007)(316002)(5660300002)(8676002)(71200400001)(4326008)(6506007)(83380400001)(6862004)(8936002)(1076003)(44832011)(33716001)(478600001)(66946007)(6636002)(76116006)(66446008)(64756008)(66556008)(66476007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: sBQ9fthYuh/z+j1Dzl9JnhzL8M7+3ledOvsEbLXAbWTv5OqNflZZ0cJkMYars8bnZlOtbcR5gMGFJ5MxmyyIbitNJGhR4p9FbT/sZ8uGeZT+OEeK7tpbcZpki09+/PNFBumJPfxS3HIEzMgEGiqBezdCjCGEkKHnYGZbIACuoAAGK7TvdeNHHhNzldjBKgb1KZp8SHz+4CSM/wcnmTRVCthFQiu7O40lwlFgu9R1PyzxJ4439YqaMMA1TPGMPG5Bfgzwe/F+JRiRgLV19cmNuoBxy/ZXo3L7HvaMosWpKlruk5mX4BKEsfku2H9yFMZ7Beqjf7GLfk9Zc0zcRLhMOJKVMYTzohh1HoB6iuY5lhc+sZLoQdBvojAkfWUskTAaa6+eqIXThXnqdamW4x3Wjma5QWPAhGuEvcfKlnBgPe9mS30ldOjexR6zLaUGCY3ap+mOMVc4pqTflvE4EwRuOj4xNmSvuYAS8OXAa2I5SNAUHTaJCF66HTQidi0PWbLi1NNzF9cHYdMEan2PCp83Y4AXWNrqvatOfsm/ix+YdANleeVjQOGP3qtZ5XSra24GMMUbWGOxrSEKGUH4+j7oM5POtUmO90JpVBsBana2PFl4oq2+smlWeAl+3t/Oem8FbcxNgzmfWcbLX0RO+STn5ZtYN3ms07Uh/rM3WEIvERfEgXVckw5C2DGwvKQWdHpErSnqIVY6KjEEHrztfTNuJ+pEklfckMyDDpr38jpmt8PU2NG6XQbgdHR8VH+BoQmmDnb6QqUNAxeRu18JL1iJgUHia2RQ2Gtf5jqYx0iza6YZ/QPvQYBGzodVUiYaC9/gThHNKqWklg0ktwYnU4NeHLRHtHQQ8KpDTB6O1Eb9d+7diBabK88nWyJAYaVf9GumkseLvKrwAKZH0TuMiSdj0Q==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <39B62B368FDE7E45AE289D15C1B5D774@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201116155008.118124-1-robert.foss@linaro.org>
-In-Reply-To: <20201116155008.118124-1-robert.foss@linaro.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 24 Nov 2020 20:27:57 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BeZC9vpcyOZTWTnAwyf=vF5mFmAF6FqLzwej2V_pfWOA@mail.gmail.com>
-Message-ID: <CAAFQd5BeZC9vpcyOZTWTnAwyf=vF5mFmAF6FqLzwej2V_pfWOA@mail.gmail.com>
-Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ben Kao <ben.kao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd422aab-e6a4-49cd-cbc1-08d8906c0d58
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 11:28:22.7126
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gpkoe+9NepFdi81/1NYrLetf9vzOFnzg6EfaMfuGCjrsto3x2NmpmVcXkrbnxKS0Uwe5FyJH8r5ViLidz3GLzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2798
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
+On Tue, Nov 24, 2020 at 11:15:19AM +0000, Y.b. Lu wrote:
+> > > Not matter it's SD card or eMMC card, if it's on esdhc0, use /dev/mmc=
+blk0.
+> > > Not matter it's SD card or eMMC card, if it's on esdhc1, use /dev/mmc=
+blk1.
+> >
+> > With the note here that you can't actually connect an SD card to eSDHC1=
+,
+> > due to the lack of pins for CD/WP.
+>
+> CD/WP is not essential to support SD card. Both SD/eMMC are supported on =
+both eSDHC controllers.
 
-On Tue, Nov 17, 2020 at 12:52 AM Robert Foss <robert.foss@linaro.org> wrote:
->
-> Remove the 3280x2464 mode as it can't be reproduced and yields
-> an output resolution of 3264x2448 instead of the desired one.
->
-> Furthermore the 3264x2448 resolution is the highest resolution
-> that the product brief lists.
->
-> Since 3280x2464 neither works correctly nor seems to be supported
-> by the sensor, let's remove it.
->
+Let's keep that discussion separate. While in theory you might be right,
+I think the real-life complications associated with connecting an eMMC
+to eSDHC0 and an SD card to eSDHC1 will make everyone avoid that. So in
+practice they are still single-purpose.
 
-Let me check which modes are used by our projects. For one I'm sure
-it's the 3264, but not sure about the other.
+> > But it is also natural for a customer to define the indices according t=
+o
+> > their schematics and what they use. If, say, there is a board that only
+> > uses eMMC, I would expect that for the lay person, no one would even ba=
+t
+> > an eye if that was called /dev/mmcblk0. Whereas, if it was called
+> > /dev/mmcblk1 (and there was no /dev/mmcblk0 in the system), maybe you'd
+> > have to come up with some explanations which could be avoided.
+>
+> To make a product friendly to users, it makes sense to define different a=
+lias for controller in board dts.
+> But it's not the reason to remove the default/natural alias in soc dtsi f=
+or two controllers.
+> What needs to be done after removing them? Add the same to all other boar=
+d files?
 
-To be fair, 3280 sounds like a valid setup, with black pixels on the
-edges. It's sometimes needed to add the black pixels either due to ISP
-requirements or to obtain the black pixel values.
+Yes.
+In fact, this is also the reason why we prefer to have:
+/soc {
+	esdhc: mmc@2140000 {
+		status =3D "disabled";
+	};
+};
+in fsl-ls1028a.dtsi
+and
+&esdhc {
+	status =3D "okay";
+};
+in fsl-ls1028a-rdb.dts
+and not the other way around:
 
-Best regards,
-Tomasz
+/soc {
+	esdhc: mmc@2140000 {
+		status =3D "okay";
+	};
+};
+in fsl-ls1028a.dtsi
+and
+&esdhc {
+	status =3D "disabled";
+};
+in fsl-ls1028a-rdb.dts
 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->  drivers/media/i2c/ov8856.c | 202 -------------------------------------
->  1 file changed, 202 deletions(-)
->
-> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
-> index 2f4ceaa80593..3365d19a303d 100644
-> --- a/drivers/media/i2c/ov8856.c
-> +++ b/drivers/media/i2c/ov8856.c
-> @@ -148,196 +148,6 @@ static const struct ov8856_reg mipi_data_rate_360mbps[] = {
->         {0x031e, 0x0c},
->  };
->
-> -static const struct ov8856_reg mode_3280x2464_regs[] = {
-> -       {0x3000, 0x20},
-> -       {0x3003, 0x08},
-> -       {0x300e, 0x20},
-> -       {0x3010, 0x00},
-> -       {0x3015, 0x84},
-> -       {0x3018, 0x72},
-> -       {0x3021, 0x23},
-> -       {0x3033, 0x24},
-> -       {0x3500, 0x00},
-> -       {0x3501, 0x9a},
-> -       {0x3502, 0x20},
-> -       {0x3503, 0x08},
-> -       {0x3505, 0x83},
-> -       {0x3508, 0x01},
-> -       {0x3509, 0x80},
-> -       {0x350c, 0x00},
-> -       {0x350d, 0x80},
-> -       {0x350e, 0x04},
-> -       {0x350f, 0x00},
-> -       {0x3510, 0x00},
-> -       {0x3511, 0x02},
-> -       {0x3512, 0x00},
-> -       {0x3600, 0x72},
-> -       {0x3601, 0x40},
-> -       {0x3602, 0x30},
-> -       {0x3610, 0xc5},
-> -       {0x3611, 0x58},
-> -       {0x3612, 0x5c},
-> -       {0x3613, 0xca},
-> -       {0x3614, 0x20},
-> -       {0x3628, 0xff},
-> -       {0x3629, 0xff},
-> -       {0x362a, 0xff},
-> -       {0x3633, 0x10},
-> -       {0x3634, 0x10},
-> -       {0x3635, 0x10},
-> -       {0x3636, 0x10},
-> -       {0x3663, 0x08},
-> -       {0x3669, 0x34},
-> -       {0x366e, 0x10},
-> -       {0x3706, 0x86},
-> -       {0x370b, 0x7e},
-> -       {0x3714, 0x23},
-> -       {0x3730, 0x12},
-> -       {0x3733, 0x10},
-> -       {0x3764, 0x00},
-> -       {0x3765, 0x00},
-> -       {0x3769, 0x62},
-> -       {0x376a, 0x2a},
-> -       {0x376b, 0x30},
-> -       {0x3780, 0x00},
-> -       {0x3781, 0x24},
-> -       {0x3782, 0x00},
-> -       {0x3783, 0x23},
-> -       {0x3798, 0x2f},
-> -       {0x37a1, 0x60},
-> -       {0x37a8, 0x6a},
-> -       {0x37ab, 0x3f},
-> -       {0x37c2, 0x04},
-> -       {0x37c3, 0xf1},
-> -       {0x37c9, 0x80},
-> -       {0x37cb, 0x16},
-> -       {0x37cc, 0x16},
-> -       {0x37cd, 0x16},
-> -       {0x37ce, 0x16},
-> -       {0x3800, 0x00},
-> -       {0x3801, 0x00},
-> -       {0x3802, 0x00},
-> -       {0x3803, 0x06},
-> -       {0x3804, 0x0c},
-> -       {0x3805, 0xdf},
-> -       {0x3806, 0x09},
-> -       {0x3807, 0xa7},
-> -       {0x3808, 0x0c},
-> -       {0x3809, 0xd0},
-> -       {0x380a, 0x09},
-> -       {0x380b, 0xa0},
-> -       {0x380c, 0x07},
-> -       {0x380d, 0x88},
-> -       {0x380e, 0x09},
-> -       {0x380f, 0xb8},
-> -       {0x3810, 0x00},
-> -       {0x3811, 0x00},
-> -       {0x3812, 0x00},
-> -       {0x3813, 0x01},
-> -       {0x3814, 0x01},
-> -       {0x3815, 0x01},
-> -       {0x3816, 0x00},
-> -       {0x3817, 0x00},
-> -       {0x3818, 0x00},
-> -       {0x3819, 0x10},
-> -       {0x3820, 0x80},
-> -       {0x3821, 0x46},
-> -       {0x382a, 0x01},
-> -       {0x382b, 0x01},
-> -       {0x3830, 0x06},
-> -       {0x3836, 0x02},
-> -       {0x3862, 0x04},
-> -       {0x3863, 0x08},
-> -       {0x3cc0, 0x33},
-> -       {0x3d85, 0x17},
-> -       {0x3d8c, 0x73},
-> -       {0x3d8d, 0xde},
-> -       {0x4001, 0xe0},
-> -       {0x4003, 0x40},
-> -       {0x4008, 0x00},
-> -       {0x4009, 0x0b},
-> -       {0x400a, 0x00},
-> -       {0x400b, 0x84},
-> -       {0x400f, 0x80},
-> -       {0x4010, 0xf0},
-> -       {0x4011, 0xff},
-> -       {0x4012, 0x02},
-> -       {0x4013, 0x01},
-> -       {0x4014, 0x01},
-> -       {0x4015, 0x01},
-> -       {0x4042, 0x00},
-> -       {0x4043, 0x80},
-> -       {0x4044, 0x00},
-> -       {0x4045, 0x80},
-> -       {0x4046, 0x00},
-> -       {0x4047, 0x80},
-> -       {0x4048, 0x00},
-> -       {0x4049, 0x80},
-> -       {0x4041, 0x03},
-> -       {0x404c, 0x20},
-> -       {0x404d, 0x00},
-> -       {0x404e, 0x20},
-> -       {0x4203, 0x80},
-> -       {0x4307, 0x30},
-> -       {0x4317, 0x00},
-> -       {0x4503, 0x08},
-> -       {0x4601, 0x80},
-> -       {0x4800, 0x44},
-> -       {0x4816, 0x53},
-> -       {0x481b, 0x58},
-> -       {0x481f, 0x27},
-> -       {0x4837, 0x16},
-> -       {0x483c, 0x0f},
-> -       {0x484b, 0x05},
-> -       {0x5000, 0x57},
-> -       {0x5001, 0x0a},
-> -       {0x5004, 0x04},
-> -       {0x502e, 0x03},
-> -       {0x5030, 0x41},
-> -       {0x5780, 0x14},
-> -       {0x5781, 0x0f},
-> -       {0x5782, 0x44},
-> -       {0x5783, 0x02},
-> -       {0x5784, 0x01},
-> -       {0x5785, 0x01},
-> -       {0x5786, 0x00},
-> -       {0x5787, 0x04},
-> -       {0x5788, 0x02},
-> -       {0x5789, 0x0f},
-> -       {0x578a, 0xfd},
-> -       {0x578b, 0xf5},
-> -       {0x578c, 0xf5},
-> -       {0x578d, 0x03},
-> -       {0x578e, 0x08},
-> -       {0x578f, 0x0c},
-> -       {0x5790, 0x08},
-> -       {0x5791, 0x04},
-> -       {0x5792, 0x00},
-> -       {0x5793, 0x52},
-> -       {0x5794, 0xa3},
-> -       {0x5795, 0x02},
-> -       {0x5796, 0x20},
-> -       {0x5797, 0x20},
-> -       {0x5798, 0xd5},
-> -       {0x5799, 0xd5},
-> -       {0x579a, 0x00},
-> -       {0x579b, 0x50},
-> -       {0x579c, 0x00},
-> -       {0x579d, 0x2c},
-> -       {0x579e, 0x0c},
-> -       {0x579f, 0x40},
-> -       {0x57a0, 0x09},
-> -       {0x57a1, 0x40},
-> -       {0x59f8, 0x3d},
-> -       {0x5a08, 0x02},
-> -       {0x5b00, 0x02},
-> -       {0x5b01, 0x10},
-> -       {0x5b02, 0x03},
-> -       {0x5b03, 0xcf},
-> -       {0x5b05, 0x6c},
-> -       {0x5e00, 0x00}
-> -};
-> -
->  static const struct ov8856_reg mode_3264x2448_regs[] = {
->         {0x0103, 0x01},
->         {0x0302, 0x3c},
-> @@ -963,18 +773,6 @@ static const struct ov8856_link_freq_config link_freq_configs[] = {
->  };
->
->  static const struct ov8856_mode supported_modes[] = {
-> -       {
-> -               .width = 3280,
-> -               .height = 2464,
-> -               .hts = 1928,
-> -               .vts_def = 2488,
-> -               .vts_min = 2488,
-> -               .reg_list = {
-> -                       .num_of_regs = ARRAY_SIZE(mode_3280x2464_regs),
-> -                       .regs = mode_3280x2464_regs,
-> -               },
-> -               .link_freq_index = OV8856_LINK_FREQ_720MBPS,
-> -       },
->         {
->                 .width = 3264,
->                 .height = 2448,
-> --
-> 2.27.0
->
+So, in line with that, I think that the entity that enables the node
+should also define the alias.
+
+It's weird to use /delete-property/ if it can be avoided.=
