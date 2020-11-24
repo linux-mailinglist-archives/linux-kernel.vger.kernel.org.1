@@ -2,123 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD882C31D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441432C31DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730720AbgKXUSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:18:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41052 "EHLO
+        id S1730827AbgKXUVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727131AbgKXUSs (ORCPT
+        with ESMTP id S1730785AbgKXUVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:18:48 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1357FC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:18:48 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id s63so183303pgc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:18:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=+d3Q+FJMp5wysv4Lgx699qsAFKb+B/URuOmqRGlIss4=;
-        b=TA5DY7nVqkkzYdJjhDZ7R6UmWPWd8fAOJab+j7WazNhY9amUjOXgvlKUExj5nM0/C1
-         tuvCwJ51PeL/Uh0G6D/cXPDxSLt8rfmR1a3ZaY4592VbSNFaD23grfs14In9FAyLsEgK
-         bozL0Uvjw8VXTlKfXj1fMjLYK538qEX5PDaYDIWRv/JRMFVDtisCW1k3pKdVPB2VBz7u
-         H58vHaVo6y+yHnDoul/bD568yBKNAdiz2YAZWxSqWb50sXX/ME509J8HKbv3UV/7fgKk
-         wcXgqmyLiFBeBDfKBkwDGLN4MqRGRVR663Kr1T1N6znwkZES50/JIREOyoBOICeJ6KGK
-         MHqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=+d3Q+FJMp5wysv4Lgx699qsAFKb+B/URuOmqRGlIss4=;
-        b=jdRQ5dNLC90eRkAywb+uAQGMfdXxEFf9UaSMPTBEzi22G5FoqLGL0g4k3+3icHVo9w
-         fO3+OmUvpzjDYAC9+qL7YNOyqN39MqRjuH9kgdKI5XZ2EtspWutGOBtSU3yEA+P60aks
-         8lvrcSQjDBb2YrfEtRab3JWz/pq5JXMzAHbqu+JkYM6ZgqXBxPaGB5ZAOntwX+4hFusV
-         dJ83AcUgQwc1EN5x318ugZ+DQd84fzRQGLXUjBksjs4+pNIQZrrYUilQ6IRrCGcvk/D/
-         Si0X8b2eLQvYFoDVmH9Wy2dTwdCFN3dwBkhHWwkXb5Uh3pHiAuTFxFLrCpPmbhPnEGFR
-         J0tQ==
-X-Gm-Message-State: AOAM5315QswtNX4CAVF8W6+AhoxS32P7nibOWrKZ+bwBpqEkpCnQfIOZ
-        Ar7VHa/n6L0um/gFbaURRLDKwQ==
-X-Google-Smtp-Source: ABdhPJy43I36Ch2HoOAJBNeRJ9IXB+JaaxA0NK+B43dRGgE//jaRqGi7ACQhDCbCOOv/Bl9EOkU5bw==
-X-Received: by 2002:a62:f20e:0:b029:197:f6d8:8d4d with SMTP id m14-20020a62f20e0000b0290197f6d88d4dmr457862pfh.58.1606249127350;
-        Tue, 24 Nov 2020 12:18:47 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id h16sm72362pgd.62.2020.11.24.12.18.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 12:18:46 -0800 (PST)
-Date:   Tue, 24 Nov 2020 12:18:45 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Vipin Sharma <vipinsh@google.com>
-cc:     Sean Christopherson <seanjc@google.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Lendacky@google.com, Thomas <thomas.lendacky@amd.com>,
-        pbonzini@redhat.com, tj@kernel.org, lizefan@huawei.com,
-        joro@8bytes.org, corbet@lwn.net, Singh@google.com,
-        Brijesh <brijesh.singh@amd.com>, Grimm@google.com,
-        Jon <jon.grimm@amd.com>, VanTassell@google.com,
-        Eric <eric.vantassell@amd.com>, gingell@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-In-Reply-To: <20201124194904.GA45519@google.com>
-Message-ID: <alpine.DEB.2.23.453.2011241215400.3594395@chino.kir.corp.google.com>
-References: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com> <20201124191629.GB235281@google.com> <20201124194904.GA45519@google.com>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        Tue, 24 Nov 2020 15:21:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8827C0613D6;
+        Tue, 24 Nov 2020 12:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yao9E9sn9zz+iZFIp2Psjk/MTQ2gFiyODukKu/NAT3g=; b=H3+EmdJarS1cfvvZ0ztNJkxZRb
+        4w5dA2wwkBoMn1YInAvdLxa8WRVKY09lpftouA8e1FWJkbI5Dkcy+jrFllWD4PY9+KVLSO6lfZmt+
+        RWHcB+yTx3JAbTdm8HdWkmAL0vj2UAQlJC3veZPlbdLtojIWnWKLAi4KIhjttMkVU86OzU9BSc4Px
+        ROLC+bg2SVjEUWOyG8oPNiw0bONff2itEr9C0nHqL1fBsrlaw3vbftWq3tzbhEXGIP8bRodBCiJWt
+        6/nvoi9bBlTZUGPZ86KF3SVh5qFrVTJd5ZQKmh/wvuRtBv7Kck2bNK49SwHKPdojj+lwezm6gmwUX
+        sBWTziNQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kheno-0001ew-4B; Tue, 24 Nov 2020 20:20:40 +0000
+Date:   Tue, 24 Nov 2020 20:20:40 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Steve French <sfrench@samba.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Brian King <brking@us.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/17] mm/highmem: Lift memcpy_[to|from]_page and
+ memset_page to core
+Message-ID: <20201124202040.GF4327@casper.infradead.org>
+References: <20201124060755.1405602-1-ira.weiny@intel.com>
+ <20201124060755.1405602-2-ira.weiny@intel.com>
+ <20201124141941.GB4327@casper.infradead.org>
+ <20201124192113.GL1161629@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124192113.GL1161629@iweiny-DESK2.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020, Vipin Sharma wrote:
-
-> > > Looping Janosch and Christian back into the thread.                           
-> > >                                                                               
-> > > I interpret this suggestion as                                                
-> > > encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
+On Tue, Nov 24, 2020 at 11:21:13AM -0800, Ira Weiny wrote:
+> On Tue, Nov 24, 2020 at 02:19:41PM +0000, Matthew Wilcox wrote:
+> > On Mon, Nov 23, 2020 at 10:07:39PM -0800, ira.weiny@intel.com wrote:
+> > > +static inline void memzero_page(struct page *page, size_t offset, size_t len)
+> > > +{
+> > > +	memset_page(page, 0, offset, len);
+> > > +}
 > > 
-> > I think it makes sense to use encryption_ids instead of simply encryption, that
-> > way it's clear the cgroup is accounting ids as opposed to restricting what
-> > techs can be used on yes/no basis.
-> > 
-
-Agreed.
-
-> > > offerings, which was my thought on this as well.                              
-> > >                                                                               
-> > > Certainly the kernel could provide a single interface for all of these and    
-> > > key value pairs depending on the underlying encryption technology but it      
-> > > seems to only introduce additional complexity in the kernel in string         
-> > > parsing that can otherwise be avoided.  I think we all agree that a single    
-> > > interface for all encryption keys or one-value-per-file could be done in      
-> > > the kernel and handled by any userspace agent that is configuring these       
-> > > values.                                                                       
-> > >                                                                               
-> > > I think Vipin is adding a root level file that describes how many keys we     
-> > > have available on the platform for each technology.  So I think this comes    
-> > > down to, for example, a single encryption.max file vs                         
-> > > encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
-> > 
-> > Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
-> > no need to enumerate platform total, but not knowing how many of the allowed IDs
-> > have been allocated seems problematic.
-> > 
+> > This is a less-capable zero_user_segments().
 > 
-> We will be showing encryption_ids.{sev,sev_es}.{max,current}
-> I am inclined to not provide "events" as I am not using it, let me know
-> if this file is required, I can provide it then.
+> Actually it is a duplicate of zero_user()...  Sorry I did not notice those...
+> :-(
 > 
-> I will provide an encryption_ids.{sev,sev_es}.stat file, which shows
-> total available ids on the platform. This one will be useful for
-> scheduling jobs in the cloud infrastructure based on total supported
-> capacity.
-> 
+> Why are they called '_user_'?
 
-Makes sense.  I assume the stat file is only at the cgroup root level 
-since it would otherwise be duplicating its contents in every cgroup under 
-it.  Probably not very helpful for child cgroup to see stat = 509 ASIDs 
-but max = 100 :)
+git knows ...
+
+commit 01f2705daf5a36208e69d7cf95db9c330f843af6
+Author: Nate Diller <nate.diller@gmail.com>
+Date:   Wed May 9 02:35:07 2007 -0700
+
+    fs: convert core functions to zero_user_page
+    
+    It's very common for file systems to need to zero part or all of a page,
+    the simplist way is just to use kmap_atomic() and memset().  There's
+    actually a library function in include/linux/highmem.h that does exactly
+    that, but it's confusingly named memclear_highpage_flush(), which is
+    descriptive of *how* it does the work rather than what the *purpose* is.
+    So this patchset renames the function to zero_user_page(), and calls it
+    from the various places that currently open code it.
+    
+    This first patch introduces the new function call, and converts all the
+    core kernel callsites, both the open-coded ones and the old
+    memclear_highpage_flush() ones.  Following this patch is a series of
+    conversions for each file system individually, per AKPM, and finally a
+    patch deprecating the old call.  The diffstat below shows the entire
+    patchset.
+
