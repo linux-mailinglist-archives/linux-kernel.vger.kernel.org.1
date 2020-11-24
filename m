@@ -2,180 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B772C1ECB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A31B2C1ECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 08:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbgKXHVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 02:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730003AbgKXHVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 02:21:24 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A42C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 23:21:23 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id gj5so26981223ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 23:21:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EJ2fCqwl0eySHe3jwo+Hw3BwyNEcJk8739SIICPAssI=;
-        b=OFDWI7MvlouDqI/Q5bMFuEtpfKtNa7xUw+VI2RR2B+RDR7H5MRH+SCIXULOX02ppZ8
-         Iq17ZdG4e8yoLBErqe9ykQ61jhXSafdJpw9dRQexxNAu0iaFCdYOuZ5piOaiPVVWTGf0
-         e6TAg8Bh55HUtweA+grxOsawebdJcUY6Hbfp3t0KroESOAb8C2rV4FfF+x3pd5C5AFzn
-         GiYe0kNj4Z+MHiiwGXq2XtypSkyWCfPOumzKfc7pVv3sYAs5p5pTcOxl8yOJ41+DAahO
-         0vt/d1WYACZmFlkJVuMutaLFVQEJNUNSrf30s5wzWooyH3mBHTKQ68R4mscXLfyEhaPW
-         C+1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EJ2fCqwl0eySHe3jwo+Hw3BwyNEcJk8739SIICPAssI=;
-        b=RGqElCOgn8PJgc8QgYWEpRhzxb5R4LanUBqtVegrTbGbhVQuRAFfoBSCMNZlRUKTP9
-         cJXpk2qMbzPe2K49NntwAra1seNpkETAKucQIqzJANVGwXLeu1IJ2Mz0l27NySSG4C3G
-         /dfUrZ/wzW7GtWXtrWUc+F7WhZMfnnD/py2bZNg9HjKZQs5j9FscRG7wcIqjfBqE7zZP
-         9ajRKddjfman3r6Eq5Fo7VRN0Ro6oZt1vdZMY4TFqzPnXqQStHgnQegTIW3WS/0Cyx/6
-         q1QCZ/YpaKpS1KSAWfI/E5xDiWPvDvh8AeaBZc1g09PsBMRTgSXodB5LA0MX8E58saIZ
-         EODQ==
-X-Gm-Message-State: AOAM532vRdP8Nb6nx1xXt+mCHpX6tzVrbV9Zkydk8IwIcLFo75NIOuv3
-        ZhnouuIL/J5WZUvqN/7MOtEawI5SVpTyEvz6H7fvxg==
-X-Google-Smtp-Source: ABdhPJx7xDsX4OWoaMTMsbRiwhwu5oJ9YwqqdPwcixgx7Vi/H4WDPf81zb1RKvq3ECkUPIq1j8B/S0LE9zbvxifb1f8=
-X-Received: by 2002:a17:906:bd2:: with SMTP id y18mr2821967ejg.503.1606202481868;
- Mon, 23 Nov 2020 23:21:21 -0800 (PST)
+        id S1730064AbgKXHXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 02:23:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729614AbgKXHXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 02:23:50 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B80F720679;
+        Tue, 24 Nov 2020 07:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606202630;
+        bh=hGvjCXUrD2s4wdSYVX0JDuusUwGBrIWDOHYN8zVuzv8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N533lIgjC0TkGs7IOqLrfv/v08xX5xYIetmohAEM+zPMCshpdpEs1R1ccVfwkCNZS
+         qX38NB2JRe+AOg3tLwSX1LGU6WbMT4TVeVOSYCp1SJJEBm7PPSjnVEwZnFm9VK61Yx
+         yd/lsmvhQSSfjoA3Lo//S0jlPTqzm2M45G1M8GKk=
+Date:   Tue, 24 Nov 2020 08:24:58 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     min.guo@mediatek.com
+Cc:     Bin Liu <b-liu@ti.com>, Alan Stern <stern@rowland.harvard.edu>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        chunfeng.yun@mediatek.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2] usb: musb: remove unused variable 'devctl'
+Message-ID: <X7y1SpiRE+CcBQIa@kroah.com>
+References: <20201124063613.28796-1-min.guo@mediatek.com>
 MIME-Version: 1.0
-References: <20201123121805.028396732@linuxfoundation.org>
-In-Reply-To: <20201123121805.028396732@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 24 Nov 2020 12:51:10 +0530
-Message-ID: <CA+G9fYvnEr79wGM5w7YawUco4_nUyBgO_EiTvbuH+9et3F+VSg@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/60] 4.14.209-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124063613.28796-1-min.guo@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 at 17:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.209 release.
-> There are 60 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 25 Nov 2020 12:17:50 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.209-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Tue, Nov 24, 2020 at 02:36:13PM +0800, min.guo@mediatek.com wrote:
+> From: Min Guo <min.guo@mediatek.com>
+> 
+> Remove unused 'devctl' variable to fix compile warnings:
+> 
+>     drivers/usb/musb/musbhsdma.c: In function 'dma_controller_irq':
+>     drivers/usb/musb/musbhsdma.c:324:8: warning: variable 'devctl' set
+>     but not used [-Wunused-but-set-variable]
+> 
+> Signed-off-by: Min Guo <min.guo@mediatek.com>
+> ---
+> changes in v2
+> suggested by Alan Stern:
+> Add void before musb_read to indicate that the register MUSB_DEVCTL
+> was intended to be read and discarded.
+> ---
+>  drivers/usb/musb/musbhsdma.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/musb/musbhsdma.c b/drivers/usb/musb/musbhsdma.c
+> index 0aacfc8be5a1..f59a009c533e 100644
+> --- a/drivers/usb/musb/musbhsdma.c
+> +++ b/drivers/usb/musb/musbhsdma.c
+> @@ -321,8 +321,6 @@ irqreturn_t dma_controller_irq(int irq, void *private_data)
+>  				musb_channel->channel.status =
+>  					MUSB_DMA_STATUS_BUS_ABORT;
+>  			} else {
+> -				u8 devctl;
+> -
+>  				addr = musb_read_hsdma_addr(mbase,
+>  						bchannel);
+>  				channel->actual_len = addr
+> @@ -336,7 +334,7 @@ irqreturn_t dma_controller_irq(int irq, void *private_data)
+>  						< musb_channel->len) ?
+>  					"=> reconfig 0" : "=> complete");
+>  
+> -				devctl = musb_readb(mbase, MUSB_DEVCTL);
+> +				(void)musb_readb(mbase, MUSB_DEVCTL);
 
+Please put a comment here as to why the read is happening so that people
+do not throw it away sometime in the future.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+thanks,
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.14.209-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: c3391de31d51a6a479f081994040a5fb99b29c9b
-git describe: v4.14.208-61-gc3391de31d51
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.208-61-gc3391de31d51
-
-No regressions (compared to build v4.14.208)
-
-No fixes (compared to build v4.14.208)
-
-Ran 41581 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-kasan
-- mips
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* linux-log-parser
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-dio-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-mm-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+greg k-h
