@@ -2,453 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68ED92C1C7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AB72C1C82
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 05:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgKXEHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 23:07:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727365AbgKXEHl (ORCPT
+        id S1728657AbgKXEKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 23:10:03 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:59192 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728339AbgKXEKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 23:07:41 -0500
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9214C061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:07:41 -0800 (PST)
-Received: by mail-oo1-xc43.google.com with SMTP id y3so4494556ooq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 20:07:41 -0800 (PST)
+        Mon, 23 Nov 2020 23:10:01 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AO411QT011253;
+        Mon, 23 Nov 2020 20:09:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=beS94GU3fEKSa28g95I9sDkcpXm8KzC1Da2/SvBdNyo=;
+ b=NDYG752QuSavnSOmZnCaub8F66WHHZfj1KoYsfTwYAurNL4KyaQUBGJdN86f0o2glPLj
+ In9PfpvtK04q/M+i8pz5FurfCfUEnCXrZp8SHyRwWr0/2H8Xpy9/3uF7Gdpqh2TqrrpJ
+ x0AJkVa41TwoUkJL7Q7PXtSa/gfhWAof/dvpkyrpFw9Sx7WGdGMWO0oSjwhM1NrhYRn5
+ J/4YIUNSMgKkE7o82XLUrTCYIQAmX76UrxRJu0Btb2Cr163bBumeFE2M8AqibjVKtpUF
+ DRI980BMdudxivGKOQ+TQXzl5lpKW6lkB6PwA6DT/Z3mwMhXlmKLz7G4duZGWqZSSmUl fQ== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 34y39r8842-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 20:09:52 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Nov
+ 2020 20:09:51 -0800
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Nov
+ 2020 20:09:51 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 23 Nov 2020 20:09:50 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jQEw/Ljp7A3egi8qQMNcv9d1YKQkeDlXKVtA7dw0/AWBnPJacn/SaoJGtAU6mm+MY/RkqmcsUd4UQbLZdWWAKsVBaI7fVX9fSzxX5En1iyUmCcrw0uO2v49gQlp/Urkvweo9oSfQrOmCvFKDjZAdRjpFPE3NyOaVamVb0Egbxr//h11heXQemumrpuQnJrtaYD8Yo7EHoDS51QAHKpJ6wVM0Qr2aQEWNzuf4+32tt3xGjMLEWgUQK5IAzrqap9ywEPxntGFyxnWJw/BAhluZl8K8f7OZtc29lsOrwBBfohrPybja9l/RvHFIZJSnu3Xu9jfL2LhvrWc9In5TsBvDrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=beS94GU3fEKSa28g95I9sDkcpXm8KzC1Da2/SvBdNyo=;
+ b=C8y828zw/Jo1APqJpopr8CQDWcm4zMKoBFO2YbeNidhLcTXvlJHW+3vc5bnU3xRTe3lumjFkIZEg2OM/uYWuxdz6sf2pOodoaISsXzVhIK5huazWb38WP++SBcbJU3M4Wsb4U9uxr51c0kuxm4Q3sbss+lev7ct553yd1rF/ZlrUUd8qoYBJnN9FnYvBq/pp9kvXhAIDgU4ZTtQ+vyhYj1hblTX/LmrpZ4D/oQWluG8mMv1sJJcgTOk83V+sjsHWaSWBgyKB4B2+jac7oZw7GWYKDInvSRxnuNMFCZ88yDMqW9qnWzhsnpo51lmTCkgMnSCfju1eg3+C1sUW+FANOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=4s4srLlSIgeu4tQu6G6mnWxXPBj5BBQqj6M6YAiHAxM=;
-        b=aSxbE0mO0zHJeuA0XRlTdeCizmtPtSZk0QeLZ83j9zLU2mI9YpC85EJ1pPCeLJnrhx
-         llyE+/HHRk2oxLhvml1dUXheXk+JZJFWHd2GE3fAfgdNT7ChYX8USlgwc6qdIPhLjMGc
-         VtJzcno9DZ7eMfYc9ALMaxGJETqujEzWzgK4fPeqbL0WF5lXjdvhsfPSGYzgUt4GB4MD
-         llbIwiLTp3MnoxhI+EsLBVGzqVXoCGAM/XhxUCFbD3aSc9HQS81S3dC1vdqmJcx6iOAC
-         UuD/0ldJmSAcl7ZDf9ebRXAyFe5Dnlu9zHEO2YVDL12M3HnLz+8sMPQZcGxOhR1r+orM
-         Ct/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=4s4srLlSIgeu4tQu6G6mnWxXPBj5BBQqj6M6YAiHAxM=;
-        b=PXNZWAwPhel8iViw9nM6n376b7RgdW3JXXNviTZaAd3jsJGsQHRxtiFyztAMCDVvcf
-         o/NN2QkZYnktvGYrXkvCcgESMDRPBQmdYq+3eaQoS9LDGqlSjMAPtVNkqrGLFdFowDjE
-         DEzqXgIqi/hnA1qwQ0HfniqVELOT4qhJkoEdrzUJDaCVkFoNRJkP8l7zCSvoG1/N25tf
-         JA3R+b3PaBicmL1AtBVI+5WrYYK9q/0rPlIdYg8mps64XPZGQ5M+v1CdVpMAL6ebWMuw
-         HNK9dZQBAKdjrDJLWTe7YcgePjzjh/DPC4Nj4wIKMDCJSGx7hF4HARaDFKmxNoNBAcn0
-         N3Ag==
-X-Gm-Message-State: AOAM531wPS7rS1+c7IqAshLWX2HYqYJgw1kGMw72JGjREdJ5TXJKrn2Y
-        t3SrPLMV36UkROgZ8oAhZZhBAZqYw+PEIA==
-X-Google-Smtp-Source: ABdhPJwo7tt8Vg6oCOBPbR6cik3I/GPZahth1TIbz0UMD0k+HKHV2p3rilMyVpphvblvLDAY9TVwxA==
-X-Received: by 2002:a4a:9cc7:: with SMTP id d7mr1948769ook.8.1606190860479;
-        Mon, 23 Nov 2020 20:07:40 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id m65sm7930807otm.40.2020.11.23.20.07.37
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 23 Nov 2020 20:07:39 -0800 (PST)
-Date:   Mon, 23 Nov 2020 20:07:24 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Hugh Dickins <hughd@google.com>
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-In-Reply-To: <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
-References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz> <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=beS94GU3fEKSa28g95I9sDkcpXm8KzC1Da2/SvBdNyo=;
+ b=KAHhdAHMfi8s4ezE2aI2YOmtoqM1TJDKRgSepoIPSB/IhFC3Es15ioWVE/xZXgKEhp2f3FG3CpXTlNkzfFryryZvPgVDWJT6EZj8YtYh8jF1Luk9pfhqbih32lRn4KQ8//f7otOGg5Zb0t2Z5ghkihhiRx7pghcsztaa06X+PpY=
+Received: from CY4PR1801MB2070.namprd18.prod.outlook.com
+ (2603:10b6:910:7e::28) by CY4PR18MB1287.namprd18.prod.outlook.com
+ (2603:10b6:903:108::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Tue, 24 Nov
+ 2020 04:09:49 +0000
+Received: from CY4PR1801MB2070.namprd18.prod.outlook.com
+ ([fe80::c9c8:b925:516f:9090]) by CY4PR1801MB2070.namprd18.prod.outlook.com
+ ([fe80::c9c8:b925:516f:9090%7]) with mapi id 15.20.3564.028; Tue, 24 Nov 2020
+ 04:09:49 +0000
+From:   Bhaskara Budiredla <bbudiredla@marvell.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Kees Cook <keescook@chromium.org>,
+        Colin Cross <ccross@android.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH v1 1/2] mmc: Support kmsg dumper based on
+ pstore/blk
+Thread-Topic: [EXT] Re: [PATCH v1 1/2] mmc: Support kmsg dumper based on
+ pstore/blk
+Thread-Index: AQHWuLx9yi13PVc6VE27a/W5N/Q7T6nRDl8AgAQxowCAAHQQAIAAHabQ
+Date:   Tue, 24 Nov 2020 04:09:49 +0000
+Message-ID: <CY4PR1801MB2070549B13D3ADD324F4E8EBDEFB0@CY4PR1801MB2070.namprd18.prod.outlook.com>
+References: <20201112062422.32212-1-bbudiredla@marvell.com>
+ <20201112062422.32212-2-bbudiredla@marvell.com>
+ <CAPDyKFqZij1_aZZs3EeEuNob37WsGYN+6N52H2N0nTzM427j3g@mail.gmail.com>
+ <CY4PR1801MB20705DF5A12318AB80EDBD45DEFC0@CY4PR1801MB2070.namprd18.prod.outlook.com>
+ <CAPDyKFqBWEdAzz0hjk7LhqX1D8qmOomHSS=Be+_vU=upxMr0aA@mail.gmail.com>
+In-Reply-To: <CAPDyKFqBWEdAzz0hjk7LhqX1D8qmOomHSS=Be+_vU=upxMr0aA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [2401:4900:16b7:7a82:e41b:25f1:62c3:dda0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e16b4687-8aa6-40b9-2ddb-08d8902ec987
+x-ms-traffictypediagnostic: CY4PR18MB1287:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR18MB128718442CFB0FD61817B4ABDEFB0@CY4PR18MB1287.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0cXwi8MTM3Q26eXoPu037vm67hpFaXbw9KXhb9ADe5bk1kKD8pCxNeNR97N85RBopd4ZhWtuNfsIN1Jj9vXFAVwDEJyXGxO1t4so9lfgQQlWQbwhbrUCFyblzkY/dVQBWmjytM+l801KMatXwFjp/AU/VBSjP3YXXBpXfkAR9S2UF2Ruu/gHJLn/QAfw52u34DUADGgjXqSLOtNU5wEmc5YQ0MnmdbSAyhLHKp5ldn5P4nvTVDE6207c5k7nRn+u2Ca+jtGKKDlj361cLW3+0YgtWFUv+0tjQhWzJ/wW519lvj6dZE6lxG25Vy+IrWEAHC0yfNWU0qt5dJ7DOr1hQA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1801MB2070.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(346002)(376002)(396003)(54906003)(64756008)(4326008)(66476007)(66446008)(33656002)(316002)(66556008)(478600001)(55016002)(8676002)(7696005)(83380400001)(71200400001)(5660300002)(9686003)(8936002)(2906002)(66946007)(52536014)(6916009)(186003)(6506007)(86362001)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?eVQzRHhXSVFOVGFIU3lKY2loMHpibE9jTFBraVlKY1hJa3N5L3g1eU9LNEI4?=
+ =?utf-8?B?WmdQdWx1MUxldDJzKzJpcUl5c3pxZjBlZDZaVUdnQjFJcXJkWjVHVXFLVmZs?=
+ =?utf-8?B?ci9GUGo2SU1hTGxOdEdyeEN2Nm9ZVjFXMm1seVZCU3VITm9CRzFrVU9MZGZy?=
+ =?utf-8?B?ZTBQclF5YXpPVm9HQ3JHU2g0SWxEekNKVXkycXNDQ2JoK3RpQjBEaFhucXBD?=
+ =?utf-8?B?YVVZTGFKTkRua3hZcXdISWswUmpvQ3JiQUV1Q2JlUUlCcXZ1bkhaeFF5TVU0?=
+ =?utf-8?B?NU1HL1Z2cU1nbW5Tb3I5NFd3YlV4MGJNaXJPOGNCd0h0dytwcHFTNFJ0MWlS?=
+ =?utf-8?B?VlNBS0txNG1McnlHOUdGK0g4cFhoanlYMFlFeEdvaTVXN2pQVWp1SWY2L1l3?=
+ =?utf-8?B?a3lGV0NYaW1ZQmhDOVZPL0NmWWxqT1Jabm1zQlY4ZUN3VHJCL2g1K1hsenZG?=
+ =?utf-8?B?SngxdXhQVTRDM01uRjR1NjlKSXduWkhuazFJYmJhd09CbVoyS0cyRVJXMUox?=
+ =?utf-8?B?bm9QYkt6QjlXa2RnR1ZmMVJHd0llMmJpQWhpYmhDRnFveUdNM0JoaXpYVFo5?=
+ =?utf-8?B?VzB5K3VpejB3eFo2bXZ3bVpoWkN4NE50MnVxQjBhM0NrUDVxeG5PeGlPZGVU?=
+ =?utf-8?B?TFByZm1uNmx0ZDJOeERRZEg4dTg1WFU1Y2tFMlBhd2I0Y3VJK2pCRXpYc2Rj?=
+ =?utf-8?B?VHh5S01rdzlTQWtwd2ZqUm5KcHJVOGpVcC8rNnRERjR2aTdtaVkyM0RrRUI2?=
+ =?utf-8?B?UU85TklEZ2tjaytNWTJCc20xSVIvbDljeGlNNHM4bE9FQTdBVFh4dk1WS3F5?=
+ =?utf-8?B?cUNPaUxqaTNydGNqcUFKZUk4WXF1UnhFbmNtZHV6OTlBNlNiVkFWSm9TSTRH?=
+ =?utf-8?B?R0lzUnZvZGI4TmdZaE9yWnYwbUtEQjdua1NHK3hrRXAvSENYRHpiSXNnSVo4?=
+ =?utf-8?B?cEhleUhiRTdHZU0zKzdFb2RUcHVvREg0Z0ZhcXV4RUZsYXd5c3pPU3RHdGtB?=
+ =?utf-8?B?TERpZzlFa3NQWEtVNjArRXRmbHdtY01iVmhKZS9GYmpWWmFrN0k2UHdJcVk1?=
+ =?utf-8?B?aXA5QUhVUzd1Tko1UzVFVWNrTXg0Nnd0T20zckJNY3BCcjRDa1haSDZmZkVF?=
+ =?utf-8?B?b0QxZjlaZTBxOVFmYTNjTjZ5bk5UNFhzNTdCMHhZajNsS2YwWTRWYlg5QTdZ?=
+ =?utf-8?B?aUpxSzNlaDMyc1FVY0JtQlNENktXUVFIUnpndHpUaVZhVkZDcWlLcDlGQnlU?=
+ =?utf-8?B?L3doRFI0blVSN1NCZERYeEdESlB1U2w1ZHZJbWVlclM0bGU4cXBCcExIV1p2?=
+ =?utf-8?B?UXljSVNFRklzSmMreG5kRjRNV2sxZDZiamYwbWRWMm00QlNyQTVYSVM0ME5w?=
+ =?utf-8?Q?YCo10oBcBq4Z0Bvg/FvhvR6nHzn6B/Jc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1801MB2070.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e16b4687-8aa6-40b9-2ddb-08d8902ec987
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 04:09:49.4871
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uwQO0UbSPUDVXpR/1WdmD8mBykZpoCW9jZ1JAzlek0ke47BLTWDYfT/W8+lwfXkc9uTXnKMD2mD0eo8kUfLamA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR18MB1287
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-23_19:2020-11-23,2020-11-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2020, Linus Torvalds wrote:
-> On Mon, Aug 31, 2020 at 3:03 AM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Fri 28-08-20 12:07:55, Jan Kara wrote:
-> > >
-> > > Doh, so this is:
-> > >
-> > >                         wait_on_page_writeback(page);
-> > > >>>                     BUG_ON(PageWriteback(page));
-> > >
-> > > in mpage_prepare_extent_to_map(). So we have PageWriteback() page after we
-> > > have called wait_on_page_writeback() on a locked page. Not sure how this
-> > > could ever happen even less how ext4 could cause this...
-> >
-> > I was poking a bit into this and there were actually recent changes into
-> > page bit waiting logic by Linus. Linus, any idea?
-> 
-> So the main change is that now if somebody does a wake_up_page(), the
-> page waiter will be released - even if somebody else then set the bit
-> again (or possible if the waker never cleared it!).
-> 
-> It used to be that the waiter went back to sleep.
-> 
-> Which really shouldn't matter, but if we had any code that did something like
-> 
->         end_page_writeback();
->         .. something does set_page_writeback() on the page again ..
-> 
-> then the old BUG_ON() would likely never have triggered (because the
-> waiter would have seen the writeback bit being set again and gone back
-> to sleep), but now it will.
-> 
-> So I would suspect a pre-existing issue that was just hidden by the
-> old behavior and was basically impossible to trigger unless you hit
-> *just* the right timing.
-> 
-> And now it's easy to trigger, because the first time somebody clears
-> PG_writeback, the wait_on_page_writeback() will just return *without*
-> re-testing and *without* going back to sleep.
-> 
-> Could there be somebody who does set_page_writeback() without holding
-> the page lock?
-> 
-> Maybe adding a
-> 
->         WARN_ON_ONCE(!PageLocked(page));
-> 
-> at the top of __test_set_page_writeback() might find something?
-> 
-> Note that it looks like this problem has been reported on Android
-> before according to that syzbot thing. Ie, this thing:
-> 
->     https://groups.google.com/g/syzkaller-android-bugs/c/2CfEdQd4EE0/m/xk_GRJEHBQAJ
-> 
-> looks very similar, and predates the wake_up_page() changes.
-> 
-> So it was probably just much _harder_ to hit before, and got easier to hit.
-> 
-> Hmm. In fact, googling for
-> 
->         mpage_prepare_extent_to_map "kernel BUG"
-> 
-> seems to find stuff going back years. Here's a patchwork discussion
-> where you had a debug patch to try to figure it out back in 2016:
-> 
->     https://patchwork.ozlabs.org/project/linux-ext4/patch/20161122133452.GF3973@quack2.suse.cz/
-> 
-> although that one seems to be a different BUG_ON() in the same area.
-> 
-> Maybe entirely unrelated, but the fact that this function shows up a
-> fair amount is perhaps a sign of some long-running issue..
-
-No recent updates here, nor in
-https://lore.kernel.org/linux-mm/37abe67a5a7d83b361932464b4af499fdeaf5ef7.camel@redhat.com/
-but I believe I've found the answer (or an answer) to this issue.
-
-You may not care for this patch, but I haven't thought of a better,
-so let me explain in its commit message.  And its "Fixes:" tag is unfair
-to your patch, sorry: I agree the issue has probably lurked there longer.
-
-[PATCH] mm: fix VM_BUG_ON(PageTail) and BUG_ON(PageWriteback)
-
-Twice now, when exercising ext4 looped on shmem huge pages, I have crashed
-on the PF_ONLY_HEAD check inside PageWaiters(): ext4_finish_bio() calling
-end_page_writeback() calling wake_up_page() on tail of a shmem huge page,
-no longer an ext4 page at all.
-
-The problem is that PageWriteback is not accompanied by a page reference
-(as the NOTE at the end of test_clear_page_writeback() acknowledges): as
-soon as TestClearPageWriteback has been done, that page could be removed
-from page cache, freed, and reused for something else by the time that
-wake_up_page() is reached.
-
-https://lore.kernel.org/linux-mm/20200827122019.GC14765@casper.infradead.org/
-Matthew Wilcox suggested avoiding or weakening the PageWaiters() tail
-check; but I'm paranoid about even looking at an unreferenced struct page,
-lest its memory might itself have already been reused or hotremoved (and
-wake_up_page_bit() may modify that memory with its ClearPageWaiters()).
-
-Then on crashing a second time, realized there's a stronger reason against
-that approach.  If my testing just occasionally crashes on that check,
-when the page is reused for part of a compound page, wouldn't it be much
-more common for the page to get reused as an order-0 page before reaching
-wake_up_page()?  And on rare occasions, might that reused page already be
-marked PageWriteback by its new user, and already be waited upon?  What
-would that look like?
-
-It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
-in write_cache_pages() (though I have never seen that crash myself).
-
-And prior to 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic")
-this would have been much less likely: before that, wake_page_function()'s
-non-exclusive case would stop walking and not wake if it found Writeback
-already set again; whereas now the non-exclusive case proceeds to wake.
-
-I have not thought of a fix that does not add a little overhead.
-It would be safe to wake_up_page() after TestClearPageWriteback()
-while still holding i_pages lock (since that lock is needed to remove
-the page from cache), but the history of long page lock hash chains
-cautions against; so the patch below does get_page() when PageWaiters
-there, and put_page() after wake_up_page_bit() at the end.  And in
-any case, we do need the i_pages lock, even though it was skipped
-before when !mapping_use_writeback_tags() i.e. swap.  Can mapping be
-NULL? I don't see how, but allow for that with a WARN_ON_ONCE(): this
-patch is no worse than before, but does not fix the issue if !mapping.
-
-The bulk of the patch below is cleanup: it was not helpful to separate
-test_clear_page_writeback() from end_page_writeback(), especially with
-the latter declaring BUG() on a condition which the former was working
-around: combine them into end_page_writeback() in mm/page-writeback.c.
-
-Was there a chance of missed wakeups before, since a page freed before
-reaching wake_up_page() would have PageWaiters cleared?  I think not,
-because each waiter does hold a reference on the page: this bug comes
-not from real waiters, but from when PageWaiters is a false positive.
-
-Reported-by: syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com
-Reported-by: Qian Cai <cai@lca.pw>
-Fixes: 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: stable@vger.kernel.org # v5.8+
----
-
- include/linux/page-flags.h |    1 
- include/linux/pagemap.h    |    1 
- kernel/sched/wait_bit.c    |    5 -
- mm/filemap.c               |   35 ------------
- mm/page-writeback.c        |   96 ++++++++++++++++++++++-------------
- 5 files changed, 67 insertions(+), 71 deletions(-)
-
---- 5.10-rc5/include/linux/page-flags.h	2020-10-25 16:45:47.061817039 -0700
-+++ linux/include/linux/page-flags.h	2020-11-22 18:31:21.303046924 -0800
-@@ -550,7 +550,6 @@ static __always_inline void SetPageUptod
- 
- CLEARPAGEFLAG(Uptodate, uptodate, PF_NO_TAIL)
- 
--int test_clear_page_writeback(struct page *page);
- int __test_set_page_writeback(struct page *page, bool keep_write);
- 
- #define test_set_page_writeback(page)			\
---- 5.10-rc5/include/linux/pagemap.h	2020-11-22 17:43:01.585279333 -0800
-+++ linux/include/linux/pagemap.h	2020-11-22 18:31:21.303046924 -0800
-@@ -660,6 +660,7 @@ static inline int lock_page_or_retry(str
-  */
- extern void wait_on_page_bit(struct page *page, int bit_nr);
- extern int wait_on_page_bit_killable(struct page *page, int bit_nr);
-+extern void wake_up_page_bit(struct page *page, int bit_nr);
- 
- /* 
-  * Wait for a page to be unlocked.
---- 5.10-rc5/kernel/sched/wait_bit.c	2020-03-29 15:25:41.000000000 -0700
-+++ linux/kernel/sched/wait_bit.c	2020-11-22 18:31:21.303046924 -0800
-@@ -90,9 +90,8 @@ __wait_on_bit_lock(struct wait_queue_hea
- 			ret = action(&wbq_entry->key, mode);
- 			/*
- 			 * See the comment in prepare_to_wait_event().
--			 * finish_wait() does not necessarily takes wwq_head->lock,
--			 * but test_and_set_bit() implies mb() which pairs with
--			 * smp_mb__after_atomic() before wake_up_page().
-+			 * finish_wait() does not necessarily take
-+			 * wwq_head->lock, but test_and_set_bit() implies mb().
- 			 */
- 			if (ret)
- 				finish_wait(wq_head, &wbq_entry->wq_entry);
---- 5.10-rc5/mm/filemap.c	2020-11-22 17:43:01.637279974 -0800
-+++ linux/mm/filemap.c	2020-11-22 18:31:21.303046924 -0800
-@@ -1093,7 +1093,7 @@ static int wake_page_function(wait_queue
- 	return (flags & WQ_FLAG_EXCLUSIVE) != 0;
- }
- 
--static void wake_up_page_bit(struct page *page, int bit_nr)
-+void wake_up_page_bit(struct page *page, int bit_nr)
- {
- 	wait_queue_head_t *q = page_waitqueue(page);
- 	struct wait_page_key key;
-@@ -1147,13 +1147,6 @@ static void wake_up_page_bit(struct page
- 	spin_unlock_irqrestore(&q->lock, flags);
- }
- 
--static void wake_up_page(struct page *page, int bit)
--{
--	if (!PageWaiters(page))
--		return;
--	wake_up_page_bit(page, bit);
--}
--
- /*
-  * A choice of three behaviors for wait_on_page_bit_common():
-  */
-@@ -1466,32 +1459,6 @@ void unlock_page(struct page *page)
- }
- EXPORT_SYMBOL(unlock_page);
- 
--/**
-- * end_page_writeback - end writeback against a page
-- * @page: the page
-- */
--void end_page_writeback(struct page *page)
--{
--	/*
--	 * TestClearPageReclaim could be used here but it is an atomic
--	 * operation and overkill in this particular case. Failing to
--	 * shuffle a page marked for immediate reclaim is too mild to
--	 * justify taking an atomic operation penalty at the end of
--	 * ever page writeback.
--	 */
--	if (PageReclaim(page)) {
--		ClearPageReclaim(page);
--		rotate_reclaimable_page(page);
--	}
--
--	if (!test_clear_page_writeback(page))
--		BUG();
--
--	smp_mb__after_atomic();
--	wake_up_page(page, PG_writeback);
--}
--EXPORT_SYMBOL(end_page_writeback);
--
- /*
-  * After completing I/O on a page, call this routine to update the page
-  * flags appropriately
---- 5.10-rc5/mm/page-writeback.c	2020-10-25 16:45:47.977843485 -0700
-+++ linux/mm/page-writeback.c	2020-11-22 18:31:21.303046924 -0800
-@@ -589,7 +589,7 @@ static void wb_domain_writeout_inc(struc
- 
- /*
-  * Increment @wb's writeout completion count and the global writeout
-- * completion count. Called from test_clear_page_writeback().
-+ * completion count. Called from end_page_writeback().
-  */
- static inline void __wb_writeout_inc(struct bdi_writeback *wb)
- {
-@@ -2719,55 +2719,85 @@ int clear_page_dirty_for_io(struct page
- }
- EXPORT_SYMBOL(clear_page_dirty_for_io);
- 
--int test_clear_page_writeback(struct page *page)
-+/**
-+ * end_page_writeback - end writeback against a page
-+ * @page: the page
-+ */
-+void end_page_writeback(struct page *page)
- {
--	struct address_space *mapping = page_mapping(page);
-+	struct address_space *mapping;
- 	struct mem_cgroup *memcg;
- 	struct lruvec *lruvec;
--	int ret;
-+	unsigned long flags;
-+	int writeback;
-+	int waiters;
-+
-+	/*
-+	 * TestClearPageReclaim could be used here but it is an atomic
-+	 * operation and overkill in this particular case. Failing to
-+	 * shuffle a page marked for immediate reclaim is too mild to
-+	 * justify taking an atomic operation penalty at the end of
-+	 * every page writeback.
-+	 */
-+	if (PageReclaim(page)) {
-+		ClearPageReclaim(page);
-+		rotate_reclaimable_page(page);
-+	}
- 
-+	mapping = page_mapping(page);
-+	WARN_ON_ONCE(!mapping);
- 	memcg = lock_page_memcg(page);
- 	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-+
-+	dec_lruvec_state(lruvec, NR_WRITEBACK);
-+	dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
-+	inc_node_page_state(page, NR_WRITTEN);
-+
-+	if (mapping)
-+		xa_lock_irqsave(&mapping->i_pages, flags);
-+
-+	writeback = TestClearPageWriteback(page);
-+	/* No need for smp_mb__after_atomic() after TestClear */
-+	waiters = PageWaiters(page);
-+	if (waiters) {
-+		/*
-+		 * Writeback doesn't hold a page reference on its own, relying
-+		 * on truncation to wait for the clearing of PG_writeback.
-+		 * We could safely wake_up_page_bit(page, PG_writeback) here,
-+		 * while holding i_pages lock: but that would be a poor choice
-+		 * if the page is on a long hash chain; so instead choose to
-+		 * get_page+put_page - though atomics will add some overhead.
-+		 */
-+		get_page(page);
-+	}
-+
- 	if (mapping && mapping_use_writeback_tags(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct backing_dev_info *bdi = inode_to_bdi(inode);
--		unsigned long flags;
- 
--		xa_lock_irqsave(&mapping->i_pages, flags);
--		ret = TestClearPageWriteback(page);
--		if (ret) {
--			__xa_clear_mark(&mapping->i_pages, page_index(page),
-+		__xa_clear_mark(&mapping->i_pages, page_index(page),
- 						PAGECACHE_TAG_WRITEBACK);
--			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
--				struct bdi_writeback *wb = inode_to_wb(inode);
-+		if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
-+			struct bdi_writeback *wb = inode_to_wb(inode);
- 
--				dec_wb_stat(wb, WB_WRITEBACK);
--				__wb_writeout_inc(wb);
--			}
-+			dec_wb_stat(wb, WB_WRITEBACK);
-+			__wb_writeout_inc(wb);
- 		}
-+		if (inode && !mapping_tagged(mapping, PAGECACHE_TAG_WRITEBACK))
-+			sb_clear_inode_writeback(inode);
-+	}
- 
--		if (mapping->host && !mapping_tagged(mapping,
--						     PAGECACHE_TAG_WRITEBACK))
--			sb_clear_inode_writeback(mapping->host);
--
-+	if (mapping)
- 		xa_unlock_irqrestore(&mapping->i_pages, flags);
--	} else {
--		ret = TestClearPageWriteback(page);
--	}
--	/*
--	 * NOTE: Page might be free now! Writeback doesn't hold a page
--	 * reference on its own, it relies on truncation to wait for
--	 * the clearing of PG_writeback. The below can only access
--	 * page state that is static across allocation cycles.
--	 */
--	if (ret) {
--		dec_lruvec_state(lruvec, NR_WRITEBACK);
--		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
--		inc_node_page_state(page, NR_WRITTEN);
--	}
- 	__unlock_page_memcg(memcg);
--	return ret;
-+
-+	if (waiters) {
-+		wake_up_page_bit(page, PG_writeback);
-+		put_page(page);
-+	}
-+	BUG_ON(!writeback);
- }
-+EXPORT_SYMBOL(end_page_writeback);
- 
- int __test_set_page_writeback(struct page *page, bool keep_write)
- {
+DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IFVsZiBIYW5zc29uIDx1bGYu
+aGFuc3NvbkBsaW5hcm8ub3JnPg0KPlNlbnQ6IE1vbmRheSwgTm92ZW1iZXIgMjMsIDIwMjAgNTo0
+OSBQTQ0KPlRvOiBCaGFza2FyYSBCdWRpcmVkbGEgPGJidWRpcmVkbGFAbWFydmVsbC5jb20+DQo+
+Q2M6IEtlZXMgQ29vayA8a2Vlc2Nvb2tAY2hyb21pdW0ub3JnPjsgQ29saW4gQ3Jvc3MNCj48Y2Ny
+b3NzQGFuZHJvaWQuY29tPjsgVG9ueSBMdWNrIDx0b255Lmx1Y2tAaW50ZWwuY29tPjsgU3VuaWwg
+S292dnVyaQ0KPkdvdXRoYW0gPHNnb3V0aGFtQG1hcnZlbGwuY29tPjsgbGludXgtbW1jQHZnZXIu
+a2VybmVsLm9yZzsgTGludXgNCj5LZXJuZWwgTWFpbGluZyBMaXN0IDxsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnPg0KPlN1YmplY3Q6IFJlOiBbRVhUXSBSZTogW1BBVENIIHYxIDEvMl0gbW1j
+OiBTdXBwb3J0IGttc2cgZHVtcGVyIGJhc2VkIG9uDQo+cHN0b3JlL2Jsaw0KPg0KPlsuLi5dDQo+
+DQo+PiA+DQo+PiA+QXMgSSBzYWlkIGFib3ZlLCBJIHdvdWxkIGxpa2UgdG8gYXZvaWQgaG9zdCBz
+cGVjaWZpYyBkZXBsb3ltZW50cyBmcm9tDQo+PiA+YmVpbmcgbmVlZGVkLiBJcyB0aGVyZSBhIHdh
+eSB3ZSBjYW4gYXZvaWQgdGhpcz8NCj4+ID4NCj4+DQo+PiBJIGRvbid0IHNlZSBhbiBhbHRlcm5h
+dGl2ZS4NCj4NCj5XZWxsLCBpZiBub3QsIGNhbiB5b3UgcGxlYXNlIGV4cGxhaW4gd2h5Pw0KPg0K
+DQpUaGUgc29sdXRpb24gaGFzIHRvIGJlIHBvbGxpbmcgYmFzZWQgYXMgcGFuaWMgd3JpdGUgcnVu
+cyB3aXRoIGludGVycnVwdHMgZGlzYWJsZWQuDQpJIGFtIG5vdCBzdXJlIGlmIHRoZXJlIGlzIGEg
+d2F5IHRvIHdyaXRlIGEgcG9sbGluZyBmdW5jdGlvbiB0aGF0IHdvcmtzIG9mIGFsbCBraW5kcw0K
+b2YgaG9zdC9kbWEgZHJpdmVycy4gVGhhdOKAmXMgdGhlIHJlYXNvbiBJIGhhdmUgcHJvdmlkZWQg
+aG9va3MgdG8gZGVmaW5lIGhvc3QNCnNwZWNpZmljIGRlcGxveW1lbnRzLiBJZiB5b3UgaGF2ZSBi
+ZXR0ZXIgaWRlYXMsIHBsZWFzZSBoZWxwLiANCg0KPlsuLi5dDQo+DQo+PiA+PiArDQo+PiA+PiAr
+dm9pZCBtbWNwc3RvcmVfY2FyZF9zZXQoc3RydWN0IG1tY19jYXJkICpjYXJkLCBjb25zdCBjaGFy
+DQo+PiA+PiArKmRpc2tfbmFtZSkgew0KPj4gPj4gKyAgICAgICBzdHJ1Y3QgbW1jcHN0b3JlX2Nv
+bnRleHQgKmN4dCA9ICZvb3BzX2N4dDsNCj4+ID4+ICsgICAgICAgc3RydWN0IHBzdG9yZV9ibGtf
+Y29uZmlnICpjb25mID0gJmN4dC0+Y29uZjsNCj4+ID4+ICsgICAgICAgc3RydWN0IHBzdG9yZV9k
+ZXZpY2VfaW5mbyAqZGV2ID0gJmN4dC0+ZGV2Ow0KPj4gPj4gKyAgICAgICBzdHJ1Y3QgYmxvY2tf
+ZGV2aWNlICpiZGV2Ow0KPj4gPj4gKyAgICAgICBzdHJ1Y3QgbW1jX2NvbW1hbmQgKnN0b3A7DQo+
+PiA+PiArICAgICAgIHN0cnVjdCBtbWNfY29tbWFuZCAqY21kOw0KPj4gPj4gKyAgICAgICBzdHJ1
+Y3QgbW1jX3JlcXVlc3QgKm1ycTsNCj4+ID4+ICsgICAgICAgc3RydWN0IG1tY19kYXRhICpkYXRh
+Ow0KPj4gPj4gKyAgICAgICBpbnQgcmV0Ow0KPj4gPj4gKw0KPj4gPj4gKyAgICAgICBpZiAoIWNv
+bmYtPmRldmljZVswXSkNCj4+ID4+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+PiA+PiArDQo+
+PiA+PiArICAgICAgIC8qIE11bHRpcGxlIGJhY2tlbmQgZGV2aWNlcyBub3QgYWxsb3dlZCAqLw0K
+Pj4gPj4gKyAgICAgICBpZiAoY3h0LT5kZXZfbmFtZVswXSkNCj4+ID4+ICsgICAgICAgICAgICAg
+ICByZXR1cm47DQo+PiA+PiArDQo+PiA+PiArICAgICAgIGJkZXYgPSAgbW1jcHN0b3JlX29wZW5f
+YmFja2VuZChjb25mLT5kZXZpY2UpOw0KPj4gPj4gKyAgICAgICBpZiAoSVNfRVJSKGJkZXYpKSB7
+DQo+PiA+PiArICAgICAgICAgICAgICAgcHJfZXJyKCIlcyBmYWlsZWQgdG8gb3BlbiB3aXRoICVs
+ZFxuIiwNCj4+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZi0+ZGV2aWNl
+LCBQVFJfRVJSKGJkZXYpKTsNCj4+ID4+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+PiA+PiAr
+ICAgICAgIH0NCj4+ID4+ICsNCj4+ID4+ICsgICAgICAgYmRldm5hbWUoYmRldiwgY3h0LT5kZXZf
+bmFtZSk7DQo+PiA+PiArICAgICAgIGN4dC0+cGFydG5vID0gYmRldi0+YmRfcGFydC0+cGFydG5v
+Ow0KPj4gPj4gKyAgICAgICBtbWNwc3RvcmVfY2xvc2VfYmFja2VuZChiZGV2KTsNCj4+ID4+ICsN
+Cj4+ID4+ICsgICAgICAgaWYgKHN0cm5jbXAoY3h0LT5kZXZfbmFtZSwgZGlza19uYW1lLCBzdHJs
+ZW4oZGlza19uYW1lKSkpDQo+PiA+PiArICAgICAgICAgICAgICAgcmV0dXJuOw0KPj4gPj4gKw0K
+Pj4gPj4gKyAgICAgICBjeHQtPnN0YXJ0X3NlY3QgPSBtbWNfYmxrX2dldF9wYXJ0KGNhcmQsIGN4
+dC0+cGFydG5vLCAmY3h0LT5zaXplKTsNCj4+ID4+ICsgICAgICAgaWYgKCFjeHQtPnN0YXJ0X3Nl
+Y3QpIHsNCj4+ID4+ICsgICAgICAgICAgICAgICBwcl9lcnIoIk5vbi1leGlzdGVudCBwYXJ0aXRp
+b24gJWQgc2VsZWN0ZWRcbiIsIGN4dC0+cGFydG5vKTsNCj4+ID4+ICsgICAgICAgICAgICAgICBy
+ZXR1cm47DQo+PiA+PiArICAgICAgIH0NCj4+ID4+ICsNCj4+ID4+ICsgICAgICAgLyogQ2hlY2sg
+Zm9yIGhvc3QgbW1jIHBhbmljIHdyaXRlIHBvbGxpbmcgZnVuY3Rpb24gZGVmaW5pdGlvbnMgKi8N
+Cj4+ID4+ICsgICAgICAgaWYgKCFjYXJkLT5ob3N0LT5vcHMtPnJlcV9jbGVhbnVwX3BlbmRpbmcg
+fHwNCj4+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICFjYXJkLT5ob3N0LT5vcHMtPnJlcV9j
+b21wbGV0aW9uX3BvbGwpDQo+PiA+PiArICAgICAgICAgICAgICAgcmV0dXJuOw0KPj4gPj4gKw0K
+Pj4gPj4gKyAgICAgICBjeHQtPmNhcmQgPSBjYXJkOw0KPj4gPj4gKw0KPj4gPj4gKyAgICAgICBj
+eHQtPnN1YiA9IGttYWxsb2MoY29uZi0+a21zZ19zaXplLCBHRlBfS0VSTkVMKTsNCj4+ID4+ICsg
+ICAgICAgaWYgKCFjeHQtPnN1YikNCj4+ID4+ICsgICAgICAgICAgICAgICBnb3RvIG91dDsNCj4+
+ID4+ICsNCj4+ID4+ICsgICAgICAgbXJxID0ga3phbGxvYyhzaXplb2Yoc3RydWN0IG1tY19yZXF1
+ZXN0KSwgR0ZQX0tFUk5FTCk7DQo+PiA+PiArICAgICAgIGlmICghbXJxKQ0KPj4gPj4gKyAgICAg
+ICAgICAgICAgIGdvdG8gZnJlZV9zdWI7DQo+PiA+PiArDQo+PiA+PiArICAgICAgIGNtZCA9IGt6
+YWxsb2Moc2l6ZW9mKHN0cnVjdCBtbWNfY29tbWFuZCksIEdGUF9LRVJORUwpOw0KPj4gPj4gKyAg
+ICAgICBpZiAoIWNtZCkNCj4+ID4+ICsgICAgICAgICAgICAgICBnb3RvIGZyZWVfbXJxOw0KPj4g
+Pj4gKw0KPj4gPj4gKyAgICAgICBzdG9wID0ga3phbGxvYyhzaXplb2Yoc3RydWN0IG1tY19jb21t
+YW5kKSwgR0ZQX0tFUk5FTCk7DQo+PiA+PiArICAgICAgIGlmICghc3RvcCkNCj4+ID4+ICsgICAg
+ICAgICAgICAgICBnb3RvIGZyZWVfY21kOw0KPj4gPj4gKw0KPj4gPj4gKyAgICAgICBkYXRhID0g
+a3phbGxvYyhzaXplb2Yoc3RydWN0IG1tY19kYXRhKSwgR0ZQX0tFUk5FTCk7DQo+PiA+PiArICAg
+ICAgIGlmICghZGF0YSkNCj4+ID4+ICsgICAgICAgICAgICAgICBnb3RvIGZyZWVfc3RvcDsNCj4+
+ID4+ICsNCj4+ID4+ICsgICAgICAgbXJxLT5jbWQgPSBjbWQ7DQo+PiA+PiArICAgICAgIG1ycS0+
+ZGF0YSA9IGRhdGE7DQo+PiA+PiArICAgICAgIG1ycS0+c3RvcCA9IHN0b3A7DQo+PiA+PiArICAg
+ICAgIGN4dC0+bXJxID0gbXJxOw0KPj4gPj4gKw0KPj4gPj4gKyAgICAgICBkZXYtPnRvdGFsX3Np
+emUgPSBjeHQtPnNpemU7DQo+PiA+PiArICAgICAgIGRldi0+ZmxhZ3MgPSBQU1RPUkVfRkxBR1Nf
+RE1FU0c7DQo+PiA+PiArICAgICAgIGRldi0+cmVhZCA9IG1tY3BzdG9yZV9yZWFkOw0KPj4gPj4g
+KyAgICAgICBkZXYtPndyaXRlID0gbW1jcHN0b3JlX3dyaXRlOw0KPj4gPj4gKyAgICAgICBkZXYt
+PmVyYXNlID0gTlVMTDsNCj4+ID4+ICsgICAgICAgZGV2LT5wYW5pY193cml0ZSA9IG1tY3BzdG9y
+ZV9wYW5pY193cml0ZTsNCj4+ID4+ICsNCj4+ID4+ICsgICAgICAgcmV0ID0gcmVnaXN0ZXJfcHN0
+b3JlX2RldmljZSgmY3h0LT5kZXYpOw0KPj4gPg0KPj4gPkJ5IGxvb2tpbmcgYXQgYWxsIG9mIHRo
+ZSBjb2RlIGFib3ZlLCBsb3RzIGFyZSBkdXBsaWNhdGVkIGZyb20gdGhlIG1tYw0KPj4gPmJsb2Nr
+IGRldmljZSBpbXBsZW1lbnRhdGlvbi4gSXNuJ3QgdGhlcmUgYSB3YXkgdG8gbWFrZSB0aGUgcHN0
+b3JlDQo+PiA+YmxvY2sgZGV2aWNlIHRvIHB1c2ggYSByZXF1ZXN0IHRocm91Z2ggdGhlIHJlZ3Vs
+YXIgYmxrLW1xIHBhdGggaW5zdGVhZD8NCj4+ID4NCj4+IFRoZSByZWd1bGFyIHBhdGggaGFzIHBy
+ZSwgcG9zdCBwcm9jZXNzaW5n4oCZcyBhbmQgbG9ja2luZyBzZW1hbnRpY3MgdGhhdA0KPj4gYXJl
+IG5vdCBzdWl0YWJsZSBmb3IgcGFuaWMgd3JpdGUgc2NlbmFyaW8uIEZ1cnRoZXIsIHRoZSBsb2Nr
+aW5nDQo+PiBtZWNoYW5pc21zIGFyZSBpbXBsZW1lbnRlZCBpbiBob3N0IGRyaXZlcnMuIFRoaXMg
+aXMgcHJlZmVycmVkIHRvDQo+PiBxdWlja2x5IGNvbXBsZXRlIHRoZSB3cml0ZSBiZWZvcmUgdGhl
+IGtlcm5lbCBkaWVzLg0KPg0KPkkgYW0gc29ycnksIGJ1dCB0aGlzIGRvZXNuJ3QgbWFrZSBzZW5z
+ZSB0byBtZS4NCg0KSXQgc2VlbXMgdGhlcmUgd2FzIHNvbWUgY29uZnVzaW9uLiBNeSBjb21tZW50
+cyB3ZXJlIHNwZWNpZmljIHRvIA0KbW1jcHN0b3JlX3BhbmljX3dyaXRlKCkgYXMgaXQgcnVucyB3
+aXRoIGludGVycnVwdHMgZGlzYWJsZWQuDQptbWNwc3RvcmVfcmVhZCgpL21tY3BzdG9yZV93cml0
+ZSgpIGluZGVlZCBnbyB0aHJvdWdoIHJlZ3VsYXINCmJsay1tcSBwYXRoLiAgDQoNCj4NCj5XaGVu
+IGl0IGNvbWVzIHRvIGNvbXBsZXRlIHRoZSBkYXRhIHdyaXRlLCB0aGUgcmVndWxhciBibG9jayBJ
+L08gcGF0aCBpcw0KPnN1cHBvc2VkIHRvIGJlIG9wdGltaXplZC4gSWYgdGhlcmUgaXMgYSBwcm9i
+bGVtIHdpdGggdGhpcyBwYXRoLCB0aGVuIHdlIHNob3VsZA0KPmZpeCBpdCwgcmF0aGVyIHRoYW4g
+YWRkaW5nIGEgbmV3IHBhdGggYWxvbmcgdGhlIHNpZGUgKHVubGVzcyB0aGVyZSBhcmUgdmVyeSBn
+b29kDQo+cmVhc29ucyBub3QgdG8pLg0KPg0KPj4NCj4+ID5UaGF0IHNhaWQsIEkgd29uZGVyIHdo
+eSB5b3UgZG9uJ3QgY2FsbCByZWdpc3Rlcl9wc3RvcmVfYmxrKCksIGFzIEkNCj4+ID50aG91Z2h0
+IHRoYXQgd2FzIHRoZSBpbnRlcmZhY2UgdG8gYmUgdXNlZCBmb3IgcmVndWxhciBibG9jayBkZXZp
+Y2VzLCBubz8NCj4+ID4NCj4+IHJlZ2lzdGVyX3BzdG9yZV9ibGsoKSBpcyBmb3IgYXJiaXRyYXJ5
+IGJsb2NrIGRldmljZXMgZm9yIHdoaWNoIGJlc3QgZWZmb3J0IGlzIG5vdA0KPmRlZmluZWQuDQo+
+DQo+RXhhY3RseSB3aHkgaXNuJ3QgImJlc3QgZWZmb3J0IiBnb29kIGVub3VnaCBmb3IgbW1jPw0K
+Pg0KDQpyZWdpc3Rlcl9wc3RvcmVfYmxrKCkgZGVmaW5pdGVseSBkb2VzIHRoZSB3b3JrLiBJZiB5
+b3UgcHJlZmVyIHRvIHRha2UgdGhhdCByb3V0ZSwNCml0IHNob3VsZCBiZSBmaW5lLg0KDQoNCj5B
+cyB0aGVyZSBhcmUgbm8gb3RoZXIgdXNlcnMgb2YgcmVnaXN0ZXJfcHN0b3JlX2JsaygpLCBpdCBt
+YWtlcyBtZSB3b25kZXIsDQo+d2hlbiBpdCBzaG91bGQgYmUgdXNlZCB0aGVuPw0KPg0KDQpQc3Rv
+cmUvYmxrIGZvbGtzIG1pZ2h0IGhlbHAgdXMgb24gdGhpcy4NCg0KSGkgS2VlcyAtIGZvciB0aGUg
+YmVuZWZpdCBvZiBldmVyeW9uZSBjb3VsZCB5b3UgcGxlYXNlIHRlbGwgdXMgdGhlIHNjZW5hcmlv
+cw0KVG8gcHJlZmVyIHJlZ2lzdGVyX3BzdG9yZV9ibGsoKSBhbmQgcmVnaXN0ZXJfcHN0b3JlX2Rl
+dmljZSgpPw0KDQoNCj5bLi4uXQ0KPg0KPj4gPj4gKw0KPj4gPj4gK3N0YXRpYyB2b2lkIF9fZXhp
+dCBtbWNwc3RvcmVfZXhpdCh2b2lkKSB7DQo+PiA+PiArICAgICAgIHN0cnVjdCBtbWNwc3RvcmVf
+Y29udGV4dCAqY3h0ID0gJm9vcHNfY3h0Ow0KPj4gPj4gKw0KPj4gPj4gKyAgICAgICB1bnJlZ2lz
+dGVyX3BzdG9yZV9kZXZpY2UoJmN4dC0+ZGV2KTsNCj4+ID4+ICsgICAgICAga2ZyZWUoY3h0LT5t
+cnEtPmRhdGEpOw0KPj4gPj4gKyAgICAgICBrZnJlZShjeHQtPm1ycS0+c3RvcCk7DQo+PiA+PiAr
+ICAgICAgIGtmcmVlKGN4dC0+bXJxLT5jbWQpOw0KPj4gPj4gKyAgICAgICBrZnJlZShjeHQtPm1y
+cSk7DQo+PiA+PiArICAgICAgIGtmcmVlKGN4dC0+c3ViKTsNCj4+ID4+ICsgICAgICAgY3h0LT5j
+YXJkID0gTlVMTDsNCj4+ID4NCj4+ID5DYW4gd2UgZG8gdGhpcyB2aWEgbW1jX2Jsa19yZW1vdmUo
+KSBpbnN0ZWFkPw0KPj4gPg0KPj4gVGhlIHVucmVnaXN0ZXJzIGhlcmUgYXJlIHJlbGF0ZWQgdG8g
+bW1jcHN0b3JlLCBub3RoaW5nIHNwZWNpZmljIHRvIGNhcmQuDQo+DQo+SSBhbSBub3Qgc3VyZSBJ
+IHVuZGVyc3RhbmQuIElmIGEgY2FyZCBpcyByZW1vdmVkLCB3aGljaCBoYXMgYmVlbiByZWdpc3Rl
+cmVkDQo+Zm9yIHBzdG9yZSAtIHRoZW4gd2hhdCBzaG91bGQgd2UgZG8/DQo+DQo+QXQgbGVhc3Qs
+IGl0IGxvb2tzIGxpa2UgYSBjYXJkIHJlbW92YWwgd2lsbCB0cmlnZ2VyIGEgbGlmZSBjeWNsZSBp
+c3N1ZSBmb3IgdGhlDQo+YWxsb2NhdGVkIGRhdGEgc3RydWN0dXJlcy4gTm8/DQo+DQoNCkkgaGF2
+ZSBwb3N0ZWQgcGF0Y2ggdjIuIEkgdGhpbmsgaXQgaGFzIGFkZHJlc3NlZCB5b3VyIGNvbmNlcm4u
+DQoNCj5bLi4uXQ0KPg0KPktpbmQgcmVnYXJkcw0KPlVmZmUNCg==
