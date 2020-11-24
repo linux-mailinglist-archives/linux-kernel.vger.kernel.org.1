@@ -2,149 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18CC2C3250
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E602C3253
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729510AbgKXVGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:06:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727946AbgKXVGi (ORCPT
+        id S1729565AbgKXVIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:08:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41070 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729549AbgKXVIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:06:38 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B085C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:06:38 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t37so302652pga.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:06:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eby60DJAqSFbj9w7/gp/DIlQjeWe9iOSzRhm+P8blY8=;
-        b=YwZlzwgIRBAYTLlEHx+dtCUWgBfQKC7F1jnK0GN7GswgUFA09tMIP3DnKW3vgiN14O
-         tOrZnz9pEbcSzmLK/eWonTVX1ZvY4h35QTF62qfYsJSoacMuEB+N1VYR/CcQvrmguYb5
-         +C3c6Q8HMyB5FK20RmCrAwChK2AePHgrqldfUCfu2yEw9nmK4iTzPuKAB/veKc40QNFg
-         tI40ZZPZWCPQYu3LjM4iz7xx0TrlDAo2FQMoWs5qy4YPtlzwWCCtK0mnt/s5/FmTzX1h
-         tMdkFZJsrr9geolP88O0iB8MVSKddpSINAJEqnyar3G8OZrT006BGxmnkmDzn5MqorYp
-         VtdA==
+        Tue, 24 Nov 2020 16:08:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606252095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9WuJKBZA7v6dln/Ze4aIM10HFqbp/pynhdLtgpd/B4c=;
+        b=T/Mv9pYvFwFTUXvIz6ing9/1Q8PZ+ZWsf0U82Pe9njRJX8fBYlz0fzjnPSFlqrKripJaV5
+        i8ppV961IsDF3Rwb6Q3D5ROGPIeJJ7JJZx8bTzbujPuCEf5q2EGQR1TAZ+2AtaiJep+LSA
+        0+wT+zK9Gi5/rulbJeNb50abro9cOMg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-2nHVbU9jMNuNxKJw4UEcCA-1; Tue, 24 Nov 2020 16:08:12 -0500
+X-MC-Unique: 2nHVbU9jMNuNxKJw4UEcCA-1
+Received: by mail-wm1-f70.google.com with SMTP id g72so17512wme.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:08:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eby60DJAqSFbj9w7/gp/DIlQjeWe9iOSzRhm+P8blY8=;
-        b=mDS9eTOO8Eg8bxh9Jd7MtHv1LWazQrXVEwr/uTsUgfitHjVd7eJTvxaYqxspACHMm6
-         YPHEHOsVG0BrS1DC6sHUml0H+BfPeQ+2kvQNih9ddXPW1A0CGGNPu71fmb58BSCYtSoE
-         4vmt3DGhhB22YDN+kw+HUCqAayZpOb9ks9ye7vYxFQbW/xT1kH+MOeHpyM2g40J76RBA
-         faRBcwR/rA9MBFp2p7WXE3LRFaAEIVa6v/2vBJlGXz4GGQ61E5Bd63Gxkww0gmN4Kw+w
-         FA6NiHLEGt8+xEbA7Aqh4DT5iAmgIuevQ17PvmwJ0vsvhXbTrFceLUcAmOCWHZkvhY/R
-         sNyg==
-X-Gm-Message-State: AOAM531q/3PLWCX4a8WJQoH6QNbtqQC0lO8jxv5IituNVKfbaoglOIMb
-        eHphNHpjcpWkCrVFJjv95w8Vzn15FS+tFH1dxuvuxQ==
-X-Google-Smtp-Source: ABdhPJwpotkX67QsIXT73JsIPnJIWmRmoNO5ExaiapiPtEkmaaC7YbeCBlK9K3izQq5RmIKowNmZGEpQp5pT41R+T6M=
-X-Received: by 2002:a17:90a:dc16:: with SMTP id i22mr142244pjv.32.1606251997276;
- Tue, 24 Nov 2020 13:06:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9WuJKBZA7v6dln/Ze4aIM10HFqbp/pynhdLtgpd/B4c=;
+        b=HIaZUBG0StWJHip3yYz3guEbfq2xBj92V6jjkIeup+KjHOZnTmwMokTQG1MrJBXAcZ
+         X3fajgjigRzvHWTLmRch5VMLyzQT5NMwSkaJZO9HBHwLpdY/GKZAEiQsmLLaRv2eDrZe
+         GbgOd20tXDizceCkIOs4yK2/KzC9wmiaTKdQdapOmoykwL4K2jQk52hS6ylmxrgXhvsE
+         r4827BVFlnnrzOpnm81WPMMgq10Z5A3rWPoJtu1IQuSWfoXL54UsNX99Hd5/1Zkxx5Tw
+         hYsy6ZJycOM3vAy0iGUJ3T2Dyhoih7Ru0XiSBYHjwQ6GM0Tv5q/pF9PGa8alcXLIJNOO
+         3G8g==
+X-Gm-Message-State: AOAM533a315Ixk8+B09IBiSxIAbt6wB8Uy5Sci6dkQZNBr9ytpbk0AvB
+        U4QeoMQugYKCBa6GPfbRIm2K71E25iaxwO40cjlBspBtH/kw7n96m0ZQ1xf+YxYvL5saoUjKY11
+        ymRaDzggdwIE74XcYkRy1wnso
+X-Received: by 2002:a5d:570d:: with SMTP id a13mr381879wrv.193.1606252090788;
+        Tue, 24 Nov 2020 13:08:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzoKIBssI4HGDyzY0qu85iBHGqHaEokuLsbgGjIwpz+g5/1A4bY+pROXvrDQETbZQrYR4rQSg==
+X-Received: by 2002:a5d:570d:: with SMTP id a13mr381855wrv.193.1606252090578;
+        Tue, 24 Nov 2020 13:08:10 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id w3sm193480wma.3.2020.11.24.13.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 13:08:09 -0800 (PST)
+Date:   Tue, 24 Nov 2020 16:08:06 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Laurent Vivier <lvivier@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-block@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 0/2] powerpc/pseries: fix MSI/X IRQ affinity on pseries
+Message-ID: <20201124160747-mutt-send-email-mst@kernel.org>
+References: <20201124200308.1110744-1-lvivier@redhat.com>
 MIME-Version: 1.0
-References: <20201123073634.6854-1-swpenim@gmail.com> <20201123181602.GA2637357@ubuntu-m3-large-x86>
- <20201124074211.GA26157@penyung-VirtualBox> <CAC5oF3W+RkcO-dSiKXGxVvhBGb0n7fQ-KvdjbPNJJVadv6qNBw@mail.gmail.com>
-In-Reply-To: <CAC5oF3W+RkcO-dSiKXGxVvhBGb0n7fQ-KvdjbPNJJVadv6qNBw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 24 Nov 2020 13:06:26 -0800
-Message-ID: <CAKwvOdkE5-OBWjmGwc8qUkj5wuqZTmtYxaMD3sz+4+aNiC2vLg@mail.gmail.com>
-Subject: Re: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with clang
-To:     Antony Yu <swpenim@gmail.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124200308.1110744-1-lvivier@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the report, it probably was not fun to debug. I'll take a
-closer look at this after the Thanksgiving holiday.
+On Tue, Nov 24, 2020 at 09:03:06PM +0100, Laurent Vivier wrote:
+> With virtio, in multiqueue case, each queue IRQ is normally
+> bound to a different CPU using the affinity mask.
+> 
+> This works fine on x86_64 but totally ignored on pseries.
+> 
+> This is not obvious at first look because irqbalance is doing
+> some balancing to improve that.
+> 
+> It appears that the "managed" flag set in the MSI entry
+> is never copied to the system IRQ entry.
+> 
+> This series passes the affinity mask from rtas_setup_msi_irqs()
+> to irq_domain_alloc_descs() by adding an affinity parameter to
+> irq_create_mapping().
+> 
+> The first patch adds the parameter (no functional change), the
+> second patch passes the actual affinity mask to irq_create_mapping()
+> in rtas_setup_msi_irqs().
+> 
+> For instance, with 32 CPUs VM and 32 queues virtio-scsi interface:
+> 
+> ... -smp 32 -device virtio-scsi-pci,id=virtio_scsi_pci0,num_queues=32
+> 
+> for IRQ in $(grep virtio2-request /proc/interrupts |cut -d: -f1); do
+>     for file in /proc/irq/$IRQ/ ; do
+>         echo -n "IRQ: $(basename $file) CPU: " ; cat $file/smp_affinity_list
+>     done
+> done
+> 
+> Without the patch (and without irqbalanced)
+> 
+> IRQ: 268 CPU: 0-31
+> IRQ: 269 CPU: 0-31
+> IRQ: 270 CPU: 0-31
+> IRQ: 271 CPU: 0-31
+> IRQ: 272 CPU: 0-31
+> IRQ: 273 CPU: 0-31
+> IRQ: 274 CPU: 0-31
+> IRQ: 275 CPU: 0-31
+> IRQ: 276 CPU: 0-31
+> IRQ: 277 CPU: 0-31
+> IRQ: 278 CPU: 0-31
+> IRQ: 279 CPU: 0-31
+> IRQ: 280 CPU: 0-31
+> IRQ: 281 CPU: 0-31
+> IRQ: 282 CPU: 0-31
+> IRQ: 283 CPU: 0-31
+> IRQ: 284 CPU: 0-31
+> IRQ: 285 CPU: 0-31
+> IRQ: 286 CPU: 0-31
+> IRQ: 287 CPU: 0-31
+> IRQ: 288 CPU: 0-31
+> IRQ: 289 CPU: 0-31
+> IRQ: 290 CPU: 0-31
+> IRQ: 291 CPU: 0-31
+> IRQ: 292 CPU: 0-31
+> IRQ: 293 CPU: 0-31
+> IRQ: 294 CPU: 0-31
+> IRQ: 295 CPU: 0-31
+> IRQ: 296 CPU: 0-31
+> IRQ: 297 CPU: 0-31
+> IRQ: 298 CPU: 0-31
+> IRQ: 299 CPU: 0-31
+> 
+> With the patch:
+> 
+> IRQ: 265 CPU: 0
+> IRQ: 266 CPU: 1
+> IRQ: 267 CPU: 2
+> IRQ: 268 CPU: 3
+> IRQ: 269 CPU: 4
+> IRQ: 270 CPU: 5
+> IRQ: 271 CPU: 6
+> IRQ: 272 CPU: 7
+> IRQ: 273 CPU: 8
+> IRQ: 274 CPU: 9
+> IRQ: 275 CPU: 10
+> IRQ: 276 CPU: 11
+> IRQ: 277 CPU: 12
+> IRQ: 278 CPU: 13
+> IRQ: 279 CPU: 14
+> IRQ: 280 CPU: 15
+> IRQ: 281 CPU: 16
+> IRQ: 282 CPU: 17
+> IRQ: 283 CPU: 18
+> IRQ: 284 CPU: 19
+> IRQ: 285 CPU: 20
+> IRQ: 286 CPU: 21
+> IRQ: 287 CPU: 22
+> IRQ: 288 CPU: 23
+> IRQ: 289 CPU: 24
+> IRQ: 290 CPU: 25
+> IRQ: 291 CPU: 26
+> IRQ: 292 CPU: 27
+> IRQ: 293 CPU: 28
+> IRQ: 294 CPU: 29
+> IRQ: 295 CPU: 30
+> IRQ: 299 CPU: 31
+> 
+> This matches what we have on an x86_64 system.
 
-On Tue, Nov 24, 2020 at 2:14 AM Antony Yu <swpenim@gmail.com> wrote:
->
-> Antony Yu <swpenim@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=8824=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:43=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > On Mon, Nov 23, 2020 at 11:16:02AM -0700, Nathan Chancellor wrote:
-> > > On Mon, Nov 23, 2020 at 03:36:32PM +0800, Antony Yu wrote:
-> > > > __do_div64 clobbers the input register r0 in little endian system.
-> > > > According to the inline assembly document, if an input operand is
-> > > > modified, it should be tied to a output operand. This patch can
-> > > > prevent compilers from reusing r0 register after asm statements.
-> > > >
-> > > > Signed-off-by: Antony Yu <swpenim@gmail.com>
-> > > > ---
-> > > >  arch/arm/include/asm/div64.h | 5 +++--
-> > > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/di=
-v64.h
-> > > > index 898e9c78a7e7..809efc51e90f 100644
-> > > > --- a/arch/arm/include/asm/div64.h
-> > > > +++ b/arch/arm/include/asm/div64.h
-> > > > @@ -39,9 +39,10 @@ static inline uint32_t __div64_32(uint64_t *n, u=
-int32_t base)
-> > > >     asm(    __asmeq("%0", __xh)
-> > > >             __asmeq("%1", "r2")
-> > > >             __asmeq("%2", "r0")
-> > > > -           __asmeq("%3", "r4")
-> > > > +           __asmeq("%3", "r0")
-> > > > +           __asmeq("%4", "r4")
-> > > >             "bl     __do_div64"
-> > > > -           : "=3Dr" (__rem), "=3Dr" (__res)
-> > > > +           : "=3Dr" (__rem), "=3Dr" (__res), "=3Dr" (__n)
-> > > >             : "r" (__n), "r" (__base)
-> > > >             : "ip", "lr", "cc");
-> > > >     *n =3D __res;
-> > > > --
-> > > > 2.23.0
-> > > >
-> > >
-> > > I am not sure that I am qualified to review this (my assembly knowled=
-ge
-> > > is not the best) but your commit title mentions an error when compili=
-ng
-> > > with clang. What is the exact error, what configuration generates it,
-> > > and what version of clang? We have done fairly decent testing for
-> > > 32-bit ARM, I would like to know what we are missing.
-> > >
-> > > Cheers,
-> > > Nathan
-> >
-> > We have run fail on android R vts vts_libsnapshot_test with kernel 4.14=
-.
-> > This bug is triggered accidently by a workaround patch in our code base=
-.
-> > It is fine on a pure clean 4.14 branch since __do_div64 may not be
-> > executed in skip_metadata.
-> >
-> > The attachment are .i and generated .s file. .s file can be reproduced
-> > with clang -target arm-linux-eabi -march=3Darmv8.2-a -O2.
-> >
-> > In function skip_metadata, it loads some value to r0, calls __do_div64,
-> > adds 1 to r0 and stores it to [r5]. It gets wrong value since __do_div6=
-4
-> > clobbers r0 register.
-> >
-> > We have tried clang-10, clang-11 and android prebuilt clang-r383902b. A=
-ll
-> > of them have the same problem.
->
-> Sorry for the large attachment.
-> I put .i and .s files on
-> https://gist.github.com/penyung/274b0c697062a1c776994bb40243cfff
->
-> Antony Yu
 
+Makes sense to me. FWIW
 
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
---=20
-Thanks,
-~Nick Desaulniers
+> Laurent Vivier (2):
+>   genirq: add an affinity parameter to irq_create_mapping()
+>   powerpc/pseries: pass MSI affinity to irq_create_mapping()
+> 
+>  arch/arc/kernel/intc-arcv2.c                  | 4 ++--
+>  arch/arc/kernel/mcip.c                        | 2 +-
+>  arch/arm/common/sa1111.c                      | 2 +-
+>  arch/arm/mach-s3c/irq-s3c24xx.c               | 3 ++-
+>  arch/arm/plat-orion/gpio.c                    | 2 +-
+>  arch/mips/ath25/ar2315.c                      | 4 ++--
+>  arch/mips/ath25/ar5312.c                      | 4 ++--
+>  arch/mips/lantiq/irq.c                        | 2 +-
+>  arch/mips/pci/pci-ar2315.c                    | 3 ++-
+>  arch/mips/pic32/pic32mzda/time.c              | 2 +-
+>  arch/mips/ralink/irq.c                        | 2 +-
+>  arch/powerpc/kernel/pci-common.c              | 2 +-
+>  arch/powerpc/kvm/book3s_xive.c                | 2 +-
+>  arch/powerpc/platforms/44x/ppc476.c           | 4 ++--
+>  arch/powerpc/platforms/cell/interrupt.c       | 4 ++--
+>  arch/powerpc/platforms/cell/iommu.c           | 3 ++-
+>  arch/powerpc/platforms/cell/pmu.c             | 2 +-
+>  arch/powerpc/platforms/cell/spider-pic.c      | 2 +-
+>  arch/powerpc/platforms/cell/spu_manage.c      | 6 +++---
+>  arch/powerpc/platforms/maple/pci.c            | 2 +-
+>  arch/powerpc/platforms/pasemi/dma_lib.c       | 5 +++--
+>  arch/powerpc/platforms/pasemi/msi.c           | 2 +-
+>  arch/powerpc/platforms/pasemi/setup.c         | 4 ++--
+>  arch/powerpc/platforms/powermac/pci.c         | 2 +-
+>  arch/powerpc/platforms/powermac/pic.c         | 2 +-
+>  arch/powerpc/platforms/powermac/smp.c         | 2 +-
+>  arch/powerpc/platforms/powernv/opal-irqchip.c | 5 +++--
+>  arch/powerpc/platforms/powernv/pci.c          | 2 +-
+>  arch/powerpc/platforms/powernv/vas.c          | 2 +-
+>  arch/powerpc/platforms/ps3/interrupt.c        | 2 +-
+>  arch/powerpc/platforms/pseries/ibmebus.c      | 2 +-
+>  arch/powerpc/platforms/pseries/msi.c          | 2 +-
+>  arch/powerpc/sysdev/fsl_mpic_err.c            | 2 +-
+>  arch/powerpc/sysdev/fsl_msi.c                 | 2 +-
+>  arch/powerpc/sysdev/mpic.c                    | 3 ++-
+>  arch/powerpc/sysdev/mpic_u3msi.c              | 2 +-
+>  arch/powerpc/sysdev/xics/xics-common.c        | 2 +-
+>  arch/powerpc/sysdev/xive/common.c             | 2 +-
+>  arch/sh/boards/mach-se/7343/irq.c             | 2 +-
+>  arch/sh/boards/mach-se/7722/irq.c             | 2 +-
+>  arch/sh/boards/mach-x3proto/gpio.c            | 2 +-
+>  arch/xtensa/kernel/perf_event.c               | 2 +-
+>  arch/xtensa/kernel/smp.c                      | 2 +-
+>  arch/xtensa/kernel/time.c                     | 2 +-
+>  drivers/ata/pata_macio.c                      | 2 +-
+>  drivers/base/regmap/regmap-irq.c              | 2 +-
+>  drivers/bus/moxtet.c                          | 2 +-
+>  drivers/clocksource/ingenic-timer.c           | 2 +-
+>  drivers/clocksource/timer-riscv.c             | 2 +-
+>  drivers/extcon/extcon-max8997.c               | 3 ++-
+>  drivers/gpio/gpio-bcm-kona.c                  | 2 +-
+>  drivers/gpio/gpio-brcmstb.c                   | 2 +-
+>  drivers/gpio/gpio-davinci.c                   | 2 +-
+>  drivers/gpio/gpio-em.c                        | 3 ++-
+>  drivers/gpio/gpio-grgpio.c                    | 2 +-
+>  drivers/gpio/gpio-mockup.c                    | 2 +-
+>  drivers/gpio/gpio-mpc8xxx.c                   | 2 +-
+>  drivers/gpio/gpio-mvebu.c                     | 2 +-
+>  drivers/gpio/gpio-tb10x.c                     | 2 +-
+>  drivers/gpio/gpio-tegra.c                     | 2 +-
+>  drivers/gpio/gpio-wm831x.c                    | 2 +-
+>  drivers/gpio/gpiolib.c                        | 2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c       | 3 ++-
+>  drivers/gpu/ipu-v3/ipu-common.c               | 2 +-
+>  drivers/hid/hid-rmi.c                         | 2 +-
+>  drivers/i2c/busses/i2c-cht-wc.c               | 2 +-
+>  drivers/i2c/i2c-core-base.c                   | 2 +-
+>  drivers/i2c/muxes/i2c-mux-pca954x.c           | 2 +-
+>  drivers/ide/pmac.c                            | 2 +-
+>  drivers/iio/dummy/iio_dummy_evgen.c           | 3 ++-
+>  drivers/input/rmi4/rmi_bus.c                  | 2 +-
+>  drivers/irqchip/irq-ath79-misc.c              | 3 ++-
+>  drivers/irqchip/irq-bcm2835.c                 | 3 ++-
+>  drivers/irqchip/irq-csky-mpintc.c             | 2 +-
+>  drivers/irqchip/irq-eznps.c                   | 2 +-
+>  drivers/irqchip/irq-mips-gic.c                | 8 +++++---
+>  drivers/irqchip/irq-mmp.c                     | 4 ++--
+>  drivers/irqchip/irq-versatile-fpga.c          | 2 +-
+>  drivers/irqchip/irq-vic.c                     | 2 +-
+>  drivers/macintosh/macio_asic.c                | 2 +-
+>  drivers/memory/omap-gpmc.c                    | 2 +-
+>  drivers/mfd/ab8500-core.c                     | 2 +-
+>  drivers/mfd/arizona-irq.c                     | 5 +++--
+>  drivers/mfd/db8500-prcmu.c                    | 2 +-
+>  drivers/mfd/mfd-core.c                        | 2 +-
+>  drivers/mfd/stmpe.c                           | 5 +++--
+>  drivers/mfd/tc3589x.c                         | 2 +-
+>  drivers/mfd/tps6586x.c                        | 2 +-
+>  drivers/mfd/wm8994-irq.c                      | 5 +++--
+>  drivers/misc/cxl/irq.c                        | 2 +-
+>  drivers/misc/ocxl/afu_irq.c                   | 2 +-
+>  drivers/misc/ocxl/link.c                      | 2 +-
+>  drivers/net/dsa/mv88e6xxx/chip.c              | 2 +-
+>  drivers/net/dsa/mv88e6xxx/global2.c           | 2 +-
+>  drivers/net/dsa/qca/ar9331.c                  | 2 +-
+>  drivers/net/dsa/rtl8366rb.c                   | 3 ++-
+>  drivers/net/ethernet/ibm/ibmvnic.c            | 4 ++--
+>  drivers/net/usb/lan78xx.c                     | 2 +-
+>  drivers/pci/controller/pci-ftpci100.c         | 2 +-
+>  drivers/pci/controller/pci-tegra.c            | 2 +-
+>  drivers/pci/controller/pcie-rcar-host.c       | 2 +-
+>  drivers/pci/controller/pcie-xilinx-cpm.c      | 4 ++--
+>  drivers/pci/controller/pcie-xilinx.c          | 2 +-
+>  drivers/pinctrl/mediatek/mtk-eint.c           | 2 +-
+>  drivers/pinctrl/nomadik/pinctrl-abx500.c      | 3 ++-
+>  drivers/pinctrl/pinctrl-at91-pio4.c           | 3 ++-
+>  drivers/pinctrl/pinctrl-rockchip.c            | 2 +-
+>  drivers/pinctrl/samsung/pinctrl-samsung.c     | 2 +-
+>  drivers/pinctrl/sunxi/pinctrl-sunxi.c         | 2 +-
+>  drivers/power/supply/lp8788-charger.c         | 2 +-
+>  drivers/rtc/rtc-lp8788.c                      | 2 +-
+>  drivers/rtc/rtc-max8997.c                     | 3 ++-
+>  drivers/rtc/rtc-max8998.c                     | 3 ++-
+>  drivers/scsi/cxlflash/ocxl_hw.c               | 2 +-
+>  drivers/ssb/driver_gpio.c                     | 4 ++--
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 2 +-
+>  drivers/staging/octeon-usb/octeon-hcd.c       | 2 +-
+>  drivers/tty/hvc/hvsi.c                        | 2 +-
+>  drivers/tty/serial/pmac_zilog.c               | 6 +++---
+>  drivers/watchdog/octeon-wdt-main.c            | 2 +-
+>  include/linux/irqdomain.h                     | 3 ++-
+>  kernel/irq/irqdomain.c                        | 8 +++++---
+>  sound/soc/codecs/rt5677.c                     | 2 +-
+>  123 files changed, 171 insertions(+), 146 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
+
