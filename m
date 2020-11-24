@@ -2,182 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09D82C22BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FC82C22E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731984AbgKXKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:20:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40396 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731973AbgKXKUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:20:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B8CADAC66;
-        Tue, 24 Nov 2020 10:20:33 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4B5A51E130F; Tue, 24 Nov 2020 11:20:33 +0100 (CET)
-Date:   Tue, 24 Nov 2020 11:20:33 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>,
-        Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
-Message-ID: <20201124102033.GA19336@quack2.suse.cz>
-References: <20201101212738.GA16924@gmail.com>
- <20201102122638.GB23988@quack2.suse.cz>
- <20201103211747.GA3688@gmail.com>
- <20201123164622.GJ27294@quack2.suse.cz>
- <20201123224651.GA27809@gmail.com>
- <20201124084507.GA4009@zn.tnic>
+        id S1731832AbgKXKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 05:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731772AbgKXKZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:25:39 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DCEC0613D6;
+        Tue, 24 Nov 2020 02:25:39 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a65so2307538wme.1;
+        Tue, 24 Nov 2020 02:25:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=19GmmXOyRtGmWddN5cf4I3pc9POtzdyHfXPU1+kLG50=;
+        b=FbZLGeszgRtp7HVKEOP8IKYhp17GrR2e6Y7e+enEVuc+Rx22E2REB0kLbHMs1Q882v
+         itKeAGSmMfjD8T6JDQQg4Urovr4P6JPH6KVqCZ5TGX1bEpYJsHU/9VWb45KhKHyq52uE
+         F07+mQGiCmKjqZvWvy/JtlFKqLN8N6dX0kXDl2RKDvd025i/hasKdsXNXioe/2Ly2K1h
+         dqkKGrLFQN41exQSPYlAqwCWZZr1zguaMlL5n+FghwiWCU3+sTDu2sZMtNjdoyHi1lQO
+         GnxfVKWYTpkEBso92s0o5VLZ1kIaSJiFoNCAbK13qkYAAEPlPbcpNwfb3Rg00aHgIAPM
+         QeQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=19GmmXOyRtGmWddN5cf4I3pc9POtzdyHfXPU1+kLG50=;
+        b=pyvF80kkND1BkHaA/5mARKsjlu/89N1STiWYaOcn1o8L9OB4PaDH7oPUnT/ZrAnFNM
+         o+evpvweKpfyXiVdblKbSR0WPde9PVG2iZutN3ODeiz4DEncTAIU5/Qiim5PD6xygGlm
+         4w8efaX5QMejIPVxgfZIvGZbUaaxuNtIrz0cLpVo02PHlBfQKC4zdxSnFwgSC2ZcURpW
+         /PS7e3Xn56tY3WfncpI4bPyXJgj8qH3hKKhFLl63fIRGiZneJVmGMYaKxlVgQ3cxEJAK
+         2Lst8UukGz3BHuDgM8QsgSrq1HRAXPVDqIEuTuJSd5clpFbiQScX4CIyQLkoiIh6Zl8a
+         j25g==
+X-Gm-Message-State: AOAM530CG72x+bXPeCw1jMZlNlOWWCZ/4WPqgmDTuikyhmTWKhiLWyUa
+        22FmUU6D9q7EhuVVemO32zg=
+X-Google-Smtp-Source: ABdhPJw3QTgJ2sp325P4/RCYm22m3Ivkh06vs9WyCgKGziEH/EHw2d8Kladi0gF/dPk3eecMlSxNcA==
+X-Received: by 2002:a1c:6856:: with SMTP id d83mr3673403wmc.13.1606213538064;
+        Tue, 24 Nov 2020 02:25:38 -0800 (PST)
+Received: from localhost.localdomain (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
+        by smtp.gmail.com with ESMTPSA id f23sm4295812wmb.43.2020.11.24.02.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 02:25:37 -0800 (PST)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        ming.lei@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 5.11] block: optimise for_each_bvec() advance
+Date:   Tue, 24 Nov 2020 10:21:23 +0000
+Message-Id: <60aaa6caab3d061cf7194716c27a10920b5bd7ad.1606212786.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201124084507.GA4009@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Because of how for_each_bvec() works it never advances across multiple
+entries at a time, so bvec_iter_advance() is an overkill. Add
+specialised bvec_iter_advance_single() that is faster. It also handles
+zero-len bvecs, so can kill bvec_iter_skip_zero_bvec().
 
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+   text    data     bss     dec     hex filename
+before:
+  23977     805       0   24782    60ce lib/iov_iter.o
+before, bvec_iter_advance() w/o WARN_ONCE()
+  22886     600       0   23486    5bbe ./lib/iov_iter.o
+after:
+  21862     600       0   22462    57be lib/iov_iter.o
 
-On Tue 24-11-20 09:45:07, Borislav Petkov wrote:
-> On Mon, Nov 23, 2020 at 11:46:51PM +0100, Paweł Jasiak wrote:
-> > On 23/11/20, Jan Kara wrote:
-> > > OK, with a help of Boris Petkov I think I have a fix that looks correct
-> > > (attach). Can you please try whether it works for you? Thanks!
-> > 
-> > Unfortunately I am getting a linker error.
-> > 
-> > ld: arch/x86/entry/syscall_32.o:(.rodata+0x54c): undefined reference to `__ia32_sys_ia32_fanotify_mark'
-> 
-> Because CONFIG_COMPAT is not set in your .config.
-> 
-> Jan, look at 121b32a58a3a and especially this hunk
-> 
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index 9b294c13809a..b8f89f78b8cd 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -53,6 +53,8 @@ obj-y                 += setup.o x86_init.o i8259.o irqinit.o
->  obj-$(CONFIG_JUMP_LABEL)       += jump_label.o
->  obj-$(CONFIG_IRQ_WORK)  += irq_work.o
->  obj-y                  += probe_roms.o
-> +obj-$(CONFIG_X86_32)   += sys_ia32.o
-> +obj-$(CONFIG_IA32_EMULATION)   += sys_ia32.o
-> 
-> how it enables the ia32 syscalls depending on those config items. Now,
-> you have
-> 
->  #ifdef CONFIG_COMPAT
-> -COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-> +SYSCALL_DEFINE6(ia32_fanotify_mark,
-> 
-> which is under CONFIG_COMPAT which is not set in Paweł's config.
-> 
-> config COMPAT
->         def_bool y
->         depends on IA32_EMULATION || X86_X32
-> 
-> but it depends on those two config items.
-> 
-> However, it looks to me like ia32_fanotify_mark's definition should be
-> simply under CONFIG_X86_32 because:
-> 
-> IA32_EMULATION is 32-bit emulation on 64-bit kernels
-> X86_X32 is for the x32 ABI
-
-Thanks for checking! I didn't realize I needed to change the ifdefs as well
-(I missed that bit in 121b32a58a3a). So do I understand correctly that
-whenever the kernel is 64-bit, 64-bit syscall args (e.g. defined as u64) are
-passed just fine regardless of whether the userspace is 32-bit or not?
-
-Also how about other 32-bit archs? Because I now realized that
-CONFIG_COMPAT as well as the COMPAT_SYSCALL_DEFINE6() is also utilized by
-other 32-bit archs (I can see a reference to compat_sys_fanotify_mark e.g.
-in sparc, powerpc, and other args). So I probably need to actually keep
-that for other archs but do the modification only for x86, don't I?
-
-So something like attached patch?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
---OXfL5xGRrasGEqWY
-Content-Type: text/x-patch; charset=utf-8
-Content-Disposition: attachment; filename="0001-fanotify-Fix-fanotify_mark-on-32-bit-x86.patch"
-Content-Transfer-Encoding: 8bit
-
-From 20d2ddf37c01e91ca18d415a59b3488a394acd8f Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 23 Nov 2020 17:37:00 +0100
-Subject: [PATCH] fanotify: Fix fanotify_mark() on 32-bit x86
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Commit converting syscalls taking 64-bit arguments to new scheme of compat
-handlers omitted converting fanotify_mark(2) which then broke the
-syscall for 32-bit x86 builds. Add missed conversion. It is somewhat
-cumbersome since we need to keep the original compat handler for all the
-other 32-bit archs.
-
-CC: Brian Gerst <brgerst@gmail.com>
-Suggested-by: Borislav Petkov <bp@suse.de>
-Reported-by: Paweł Jasiak <pawel@jasiak.xyz>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- arch/x86/entry/syscalls/syscall_32.tbl | 2 +-
- fs/notify/fanotify/fanotify_user.c     | 6 +++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ include/linux/bvec.h | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 0d0667a9fbd7..b2ec6ff88307 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -350,7 +350,7 @@
- 336	i386	perf_event_open		sys_perf_event_open
- 337	i386	recvmmsg		sys_recvmmsg_time32		compat_sys_recvmmsg_time32
- 338	i386	fanotify_init		sys_fanotify_init
--339	i386	fanotify_mark		sys_fanotify_mark		compat_sys_fanotify_mark
-+339	i386	fanotify_mark		sys_ia32_fanotify_mark
- 340	i386	prlimit64		sys_prlimit64
- 341	i386	name_to_handle_at	sys_name_to_handle_at
- 342	i386	open_by_handle_at	sys_open_by_handle_at		compat_sys_open_by_handle_at
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 3e01d8f2ab90..54a36d4bd116 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -1292,8 +1292,12 @@ SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
- 	return do_fanotify_mark(fanotify_fd, flags, mask, dfd, pathname);
+diff --git a/include/linux/bvec.h b/include/linux/bvec.h
+index 2efec10bf792..4a304dfafa18 100644
+--- a/include/linux/bvec.h
++++ b/include/linux/bvec.h
+@@ -121,18 +121,24 @@ static inline bool bvec_iter_advance(const struct bio_vec *bv,
+ 	return true;
  }
  
--#ifdef CONFIG_COMPAT
-+#if defined(CONFIG_COMPAT) || defined(CONFIG_X86_32)
-+#ifdef CONFIG_X86_32
-+SYSCALL_DEFINE6(ia32_fanotify_mark,
-+#elif CONFIG_COMPAT
- COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-+#endif
- 				int, fanotify_fd, unsigned int, flags,
- 				__u32, mask0, __u32, mask1, int, dfd,
- 				const char  __user *, pathname)
+-static inline void bvec_iter_skip_zero_bvec(struct bvec_iter *iter)
++static inline void bvec_iter_advance_single(const struct bio_vec *bv,
++				struct bvec_iter *iter, unsigned int bytes)
+ {
+-	iter->bi_bvec_done = 0;
+-	iter->bi_idx++;
++	unsigned int done = iter->bi_bvec_done + bytes;
++
++	if (done == bv[iter->bi_idx].bv_len) {
++		done = 0;
++		iter->bi_idx++;
++	}
++	iter->bi_bvec_done = done;
++	iter->bi_size -= bytes;
+ }
+ 
+ #define for_each_bvec(bvl, bio_vec, iter, start)			\
+ 	for (iter = (start);						\
+ 	     (iter).bi_size &&						\
+ 		((bvl = bvec_iter_bvec((bio_vec), (iter))), 1);	\
+-	     (bvl).bv_len ? (void)bvec_iter_advance((bio_vec), &(iter),	\
+-		     (bvl).bv_len) : bvec_iter_skip_zero_bvec(&(iter)))
++	     bvec_iter_advance_single((bio_vec), &(iter), (bvl).bv_len))
+ 
+ /* for iterating one bio from start to end */
+ #define BVEC_ITER_ALL_INIT (struct bvec_iter)				\
 -- 
-2.16.4
+2.24.0
 
-
---OXfL5xGRrasGEqWY--
