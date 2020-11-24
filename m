@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F0A2C34B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40242C34BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 00:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389096AbgKXXiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 18:38:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40184 "EHLO mail.kernel.org"
+        id S2389183AbgKXXkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 18:40:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389049AbgKXXh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:37:59 -0500
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727049AbgKXXkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:40:19 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91BEF21973
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 23:37:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 109AD2100A;
+        Tue, 24 Nov 2020 23:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606261078;
-        bh=IwPutqnzffVWLVgZ0+96yDw632rmm4npFzWcdbhrh3w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YCm8ikB5vnDtEsfkrxoXSgcbeXCG34cd3wHfNeOGX3W40KXKSI4YaTyqD7Kdi69Vd
-         /3BZowc4cind4uJyta819/vZpC/hOOKzB0dUD8/EW6g33fgcAd8S/EFDWW3BZhU4mz
-         snoryOpucAeH8DAZ4Lyfti7x3mvAK2ikAJJ/ni3c=
-Received: by mail-wr1-f42.google.com with SMTP id s8so118141wrw.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 15:37:58 -0800 (PST)
-X-Gm-Message-State: AOAM530jRUFFjfDLHKs9NQk2A9GfJCYshDTq83BadUlrGFclnerZHegi
-        6dhDHpb18vTc/wzejjr0NaTKqSfRLoBvEaB3IB227A==
-X-Google-Smtp-Source: ABdhPJzJW6y7fwGJpes1ee3tiyG9TtqlzPFcjvNqd3lrS8IvLMQkSGHKwFYIoMVL3AaQ9toEgXmZn3M1xP8eTv9x/8E=
-X-Received: by 2002:a5d:5482:: with SMTP id h2mr953819wrv.18.1606261076917;
- Tue, 24 Nov 2020 15:37:56 -0800 (PST)
+        s=default; t=1606261219;
+        bh=giCpZGapcxWpM5p0nQyxtcjjwLKYdsIElIRJxgcHR+E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DhhL9D0L0jN7zbYoTf50IX2cDaQ7oQVFRWvKMwgHtiX02VQYa4OawQAvdK8UYN9IN
+         fWa73QsOHuMDFGcD3ROkq+U6TUq8WrXtMAjTDbvsMeuStzOYN9+bQ1s21nrqb9eOb9
+         iuelTHBrjusxomQUe/qyOrBnYXC4EH2TO1lQ8QZQ=
+Date:   Tue, 24 Nov 2020 15:40:17 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Subject: Re: [net-next v3 5/8] seg6: add support for the SRv6 End.DT4
+ behavior
+Message-ID: <20201124154017.4b1a905c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201123182857.4640-6-andrea.mayer@uniroma2.it>
+References: <20201123182857.4640-1-andrea.mayer@uniroma2.it>
+        <20201123182857.4640-6-andrea.mayer@uniroma2.it>
 MIME-Version: 1.0
-References: <20201124002932.1220517-1-dima@arista.com> <20201124002932.1220517-15-dima@arista.com>
-In-Reply-To: <20201124002932.1220517-15-dima@arista.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 24 Nov 2020 15:37:45 -0800
-X-Gmail-Original-Message-ID: <CALCETrVGY6i5pmT-NpG84My=MYo4oLFBcNvSTtRq6jhC_mNP8A@mail.gmail.com>
-Message-ID: <CALCETrVGY6i5pmT-NpG84My=MYo4oLFBcNvSTtRq6jhC_mNP8A@mail.gmail.com>
-Subject: Re: [PATCH v2 14/19] mm: Add vdso_base in mm_struct
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 4:29 PM Dmitry Safonov <dima@arista.com> wrote:
->
-> Instead of having every architecture to define vdso_base/vdso_addr etc,
-> provide a generic mechanism to track vdso_base for landing in userspace.
-> It'll minimize per-architecture difference, the number of callbacks to
-> provide.
->
-> Originally, it started from thread [1] where the need for .close()
-> callback on vm_special_mapping was pointed, this generic code besides
-> removing duplicated .mremap() callbacks provides a cheaper way to
-> support munmap() on vdso mappings without introducing .close() callbacks
-> for every architecture (with would bring even more code duplication).
+On Mon, 23 Nov 2020 19:28:53 +0100 Andrea Mayer wrote:
+> +static int cmp_nla_vrftable(struct seg6_local_lwt *a, struct seg6_local_lwt *b)
+> +{
+> +	struct seg6_end_dt_info *info_a = seg6_possible_end_dt_info(a);
+> +	struct seg6_end_dt_info *info_b = seg6_possible_end_dt_info(b);
+> +
+> +	if (IS_ERR(info_a) || IS_ERR(info_b))
+> +		return 1;
 
-I admit I'm slightly dubious about passing in the old vma and
-comparing its start address as opposed to using some more explicit "is
-this the vdso" check, but I guess I'm okay with that.
+Isn't this impossible? I thought cmp() can only be called on fully
+created lwtunnels and if !CONFIG_NET_L3_MASTER_DEV the tunnel won't 
+be created?
+
+> +	if (info_a->vrf_table != info_b->vrf_table)
+> +		return 1;
+> +
+> +	return 0;
