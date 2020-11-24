@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34632C2CDD
+	by mail.lfdr.de (Postfix) with ESMTP id 868DB2C2CDC
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390447AbgKXQ0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728539AbgKXQ0o (ORCPT
+        id S2390438AbgKXQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:26:38 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52369 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389861AbgKXQ0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:26:44 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C67DC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:26:44 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id s13so3463827wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 08:26:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=L5yh124+35fWpY6C/RYa1tV5+Q4siwUnEg7czGfCdgc=;
-        b=p3Nh4Wd0lncqnmu/1NyYehIOHHW/Aht1QF850QehyuLuUDo8QGXLlyQ6/fwOeexD8G
-         cuhC8L9soyjdFfQVPlc/1OjYSYQ7HYxr1zSUD05FzKREYNlFrQB4/JPzKdhQQr2m65nG
-         zSY3GZj4gqozYTe0NuItOa+kiG5QxG9eDdTdqQrGIwUOBWX5fUsYzZewxABxkAGsbFti
-         NingY2nL4VrqYFSoOOtxDmdEEvAcgImnLcpQDPan8MVkOBwVFPVUmf2rN2JjZUA95wqT
-         TWPAnET2gt2fi43V9qt32JM1FdC+iDJW+yWr8W54NQOxMzH7dSIoTcAPT/bX2v9z7giH
-         CjsQ==
+        Tue, 24 Nov 2020 11:26:37 -0500
+Received: by mail-wm1-f65.google.com with SMTP id 10so2928282wml.2;
+        Tue, 24 Nov 2020 08:26:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=L5yh124+35fWpY6C/RYa1tV5+Q4siwUnEg7czGfCdgc=;
-        b=hPJnMpcperi7YrdJPL9JsUhsmFG5traWH1rnhtAOR5RKFLJKx6zOVBdmcbySo+GNvm
-         9J/WrEDmFjwQ7UIeZHj2HvqTf9Ulfn2LnO6GSAABMz0R8GAOik2IyC3hd6DLrc3htu38
-         TP0mcM3iSR+nsWOQhyGtoLu4kAiHawg/NyyxJ2wD5HJW5LQOtYrNSQjH8EB3ccOasm2p
-         94GaYk5Po7Sd79pF+ySy+ZGBtYsNhvMhqnhJQuQC1t++BtVbzrCpIVRdFdnRUOHXftJ7
-         jGl9NyYVOdhDZFYxQTPhLGsAr8kRSE19t3CGqikR20ZfvAgkcPytQcCJcM9Wsae7EIVo
-         Poiw==
-X-Gm-Message-State: AOAM531QFtnNg7GeTw/dJODZtYXQ/zMBX1d6VhsCk9j1RuHK0tgseuUE
-        SJuLXPmf/pxc+SK35Qp18wx+RpiDkZzJEg//xWA=
-X-Google-Smtp-Source: ABdhPJx14x2qfyZKiQ4i/fQGiHmWJzAtD6CHBdmhGOpi8h8GQsXZjLaETc3PeWibouLypsxDwfPrbDeg3KFO42FI2tE=
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr5325311wmi.70.1606235203423;
- Tue, 24 Nov 2020 08:26:43 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eRGc6PGD/C/bb7eassDLJxbAFdnZyH0+sgdit1sSu7c=;
+        b=fntC3gNHkrSx9Y9gWslR8g8j/+P/RyW544+EHH+AFIgJbPkwIeMLcbanwDnPG/FIBv
+         8btW0EqDXP08rn0zHqteRmmPEqbflqPyhK2wTT5le4wuO4JQwZYAHBcpTJ3lELKo9Luc
+         vsFfyjS14YjCgRC0pqnx6x+v3rFPtAxabSz+Ft3XAf3on0cpT1WY91XbOQyHoaJMPm6k
+         fcRhFuzqRj0llVUp3cpcrE/sFXANaEnc1KgqTAXvDu+zGoTAl38wP+UOChoUt6k59V4X
+         6xZ1ADhM31AXeQwENh7aAD8eHv1vPY9kZKzN6SDtlB1jlaG8/JNFWPjldThxNPhn+6Tv
+         MD5A==
+X-Gm-Message-State: AOAM532WOXDOOe/iWofXa8zFib0Zsc1hcXJUwKI5URVrIG+X3z6HCnb9
+        9vmt++QU15iTuKS1yvI/l7Y=
+X-Google-Smtp-Source: ABdhPJyPq6zbi2JDf+rpdvKIMGqBbK/qcsC2qXC7Cai/rdkHpilssxxH+M25e1q04wDCQ8GLmelyyQ==
+X-Received: by 2002:a1c:328a:: with SMTP id y132mr5299762wmy.134.1606235195537;
+        Tue, 24 Nov 2020 08:26:35 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id c187sm7425248wmd.23.2020.11.24.08.26.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 08:26:35 -0800 (PST)
+Date:   Tue, 24 Nov 2020 16:26:33 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>
+Subject: Re: [PATCH 4/6] Drivers: hv: vmbus: Avoid use-after-free in
+ vmbus_onoffer_rescind()
+Message-ID: <20201124162633.n7zlpte6f7zfhn6z@liuwe-devbox-debian-v2>
+References: <20201118143649.108465-1-parri.andrea@gmail.com>
+ <20201118143649.108465-5-parri.andrea@gmail.com>
 MIME-Version: 1.0
-References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-38-lee.jones@linaro.org>
-In-Reply-To: <20201123111919.233376-38-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 24 Nov 2020 11:26:32 -0500
-Message-ID: <CADnq5_MEwCJJxdsTzLQu3cjx0w2_ww0mYKHbenD2Pn=9Mxq2tQ@mail.gmail.com>
-Subject: Re: [PATCH 37/40] drm/amd/amdgpu/gmc_v8_0: Fix more issues attributed
- to copy/paste
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118143649.108465-5-parri.andrea@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 6:21 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:618: warning: Function parameter o=
-r member 'flush_type' not described in 'gmc_v8_0_flush_gpu_tlb_pasid'
->  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:618: warning: Function parameter o=
-r member 'all_hub' not described in 'gmc_v8_0_flush_gpu_tlb_pasid'
->  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:657: warning: Function parameter o=
-r member 'vmhub' not described in 'gmc_v8_0_flush_gpu_tlb'
->  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:657: warning: Function parameter o=
-r member 'flush_type' not described in 'gmc_v8_0_flush_gpu_tlb'
->  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:998: warning: Function parameter o=
-r member 'pasid' not described in 'gmc_v8_0_vm_decode_fault'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Wed, Nov 18, 2020 at 03:36:47PM +0100, Andrea Parri (Microsoft) wrote:
+> When channel->device_obj is non-NULL, vmbus_onoffer_rescind() could
+> invoke put_device(), that will eventually release the device and free
+> the channel object (cf. vmbus_device_release()).  However, a pointer
+> to the object is dereferenced again later to load the primary_channel.
+> The use-after-free can be avoided by noticing that this load/check is
+> redundant if device_obk is non-NULL: primary_channel must be NULL if
 
-Applied with minor changes.  Thanks!
+device_obk -> device_obj
 
-Alex
+> device_obj is non-NULL, cf. vmbus_add_channel_work().
+> 
 
+Missing a Fixes tag?
+
+> Reported-by: Juan Vazquez <juvazq@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c b/drivers/gpu/drm/amd/=
-amdgpu/gmc_v8_0.c
-> index 0f32a8002c3d7..41c1d8e812b88 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-> @@ -609,6 +609,8 @@ static int gmc_v8_0_mc_init(struct amdgpu_device *ade=
-v)
->   *
->   * @adev: amdgpu_device pointer
->   * @pasid: pasid to be flush
-> + * @flush_type: unused
-> + * @all_hub: unused
->   *
->   * Flush the TLB for the requested pasid.
->   */
-> @@ -649,6 +651,8 @@ static int gmc_v8_0_flush_gpu_tlb_pasid(struct amdgpu=
-_device *adev,
->   *
->   * @adev: amdgpu_device pointer
->   * @vmid: vm instance to flush
-> + * @vmhub: unused
-> + * @flush_type: unused
->   *
->   * Flush the TLB for the requested page table (VI).
->   */
-> @@ -990,6 +994,7 @@ static void gmc_v8_0_gart_disable(struct amdgpu_devic=
-e *adev)
->   * @status: VM_CONTEXT1_PROTECTION_FAULT_STATUS register value
->   * @addr: VM_CONTEXT1_PROTECTION_FAULT_ADDR register value
->   * @mc_client: VM_CONTEXT1_PROTECTION_FAULT_MCCLIENT register value
-> + * @pasid: debug logging only - no functional use
->   *
->   * Print human readable fault information (VI).
->   */
-> --
+>  drivers/hv/channel_mgmt.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+> index 5bc5eef5da159..4072fd1f22146 100644
+> --- a/drivers/hv/channel_mgmt.c
+> +++ b/drivers/hv/channel_mgmt.c
+> @@ -1116,8 +1116,7 @@ static void vmbus_onoffer_rescind(struct vmbus_channel_message_header *hdr)
+>  			vmbus_device_unregister(channel->device_obj);
+>  			put_device(dev);
+>  		}
+> -	}
+> -	if (channel->primary_channel != NULL) {
+> +	} else if (channel->primary_channel != NULL) {
+>  		/*
+>  		 * Sub-channel is being rescinded. Following is the channel
+>  		 * close sequence when initiated from the driveri (refer to
+> -- 
 > 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
