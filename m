@@ -2,170 +2,898 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EBF2C318C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7C12C3190
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729895AbgKXUAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:00:08 -0500
-Received: from mga14.intel.com ([192.55.52.115]:2109 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729867AbgKXUAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:00:07 -0500
-IronPort-SDR: JqCsP3h9xJn95PVYBiBmi+Ih7UF/RcY06Yx8Cc2Jw560LJNB2JOjjXSvHw9HFoZyVPJItwEJX+
- roGbpSAYQq8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="171228572"
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="171228572"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 12:00:06 -0800
-IronPort-SDR: wKUitP142p1sERWd2KnEkMbD9ckchbPd0UqajJR4cajIitYnabQTYSH4+0tfwAtIeJl3BuBqXC
- kEclC3F5Utag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="534992569"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga006.fm.intel.com with ESMTP; 24 Nov 2020 12:00:06 -0800
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 24 Nov 2020 12:00:06 -0800
-Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 24 Nov 2020 12:00:05 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 24 Nov 2020 12:00:05 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.56) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 24 Nov 2020 12:00:05 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nNdT596xEwt1YQlacsLY7vimhfX163UUPQnK1hYbL2uS16kwVLwi+oQ22WA7JvWwo5nnBStz2tULq1br1AjFkoW9kXbGobv9jSMEGMVaChuVNxfqKTb12hiogo0d/FU5doPpjunBi6iecI7U1ZLl9CjlOR4DJOHwSC6XMmjY5kNSD1aZT8oZRRgeTCdGbJe26m9Sc5e1xqPoJHN41DA3lWkEStJunPgMrsl+aIoB6gryyJ6oUBCfRDyyPf2Hn6VQvcTiS81F06oNE/KLvCTmqycSv13MNrIBjOHrXdBmBlR4WIKSjsVjC5uL6NJbgcPjQUMQ63/UBt78Rjdk6p8eKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMuENziv0INemCv3e9MWWCLrJYQyOVxrkf+mRHWX9R8=;
- b=RfqC0nBII1E5aAF5D5s4+aNuWcWVYMfUY2savb1Ao1aKzIDWXyQNc2inhBM8lhEUyjIpb4CDl1bfbN4vl66tSZierWftekvXVWKpORLtnhyu3/pncFXAQIL3u3EzdQujvCyzOkPBbWf6FyWqMAZBU7jLhgwT8kHD+FoBwdbOJbuZAC7waEE6xYQVrnPemNPwOMydabx3oZaiPc18g27S0jMwQTcQuJgh+f3IQNPXuqRb6zZDamyIbNdxU9pfYeijT7VGmwglG210xe6HZj4Zo5XuCMxvoYN2NR6cFbz2zzQFRHJewZ7cHKGAVCyxbP8rqMn6AwzBuo+SoX0Znk+5KA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMuENziv0INemCv3e9MWWCLrJYQyOVxrkf+mRHWX9R8=;
- b=OlXo/JmEOnTobuXaCHsTCUxUVeKm2ru5zqPL2L2i1g5wRAAfjfBPXmIfov4odI0PWCFuD95e5HhnYm2OjrtwkA2TnpQ3NO1s+RY3tCteqyX+BBkoo4gnWgx7cL5dcbR3klSgcI445oy1sK9UVYiYYiUumzXcSVpD3IL+B4r97d4=
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
- by SA2PR11MB5035.namprd11.prod.outlook.com (2603:10b6:806:116::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
- 2020 20:00:04 +0000
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::bcad:a1da:3b9b:1412]) by SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::bcad:a1da:3b9b:1412%6]) with mapi id 15.20.3589.025; Tue, 24 Nov 2020
- 20:00:03 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "hch@infradead.org" <hch@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "luto@kernel.org" <luto@kernel.org>
-Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
-Thread-Topic: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
-Thread-Index: AQHWv3v0VGlTYBJQUE2XnxoQHVHqeqnTi8sAgAFM2ICAAj5EAIAAousA
-Date:   Tue, 24 Nov 2020 20:00:03 +0000
-Message-ID: <3138ecaa5214e4db873ac614b3a9b329e92ec50b.camel@intel.com>
-References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
-         <20201120202426.18009-2-rick.p.edgecombe@intel.com>
-         <CALCETrUjpdSGg0T8vehkXszDJKx5AS0BHP9qFRsakPABzPM2GA@mail.gmail.com>
-         <90d528be131a77a167df757b83118a275d9cb35f.camel@intel.com>
-         <20201124101656.GA9682@infradead.org>
-In-Reply-To: <20201124101656.GA9682@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.30.1 (3.30.1-1.fc29) 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.54.38]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 34195911-1de7-4490-5657-08d890b38896
-x-ms-traffictypediagnostic: SA2PR11MB5035:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB50352F205D10D90D72EA3353C9FB0@SA2PR11MB5035.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Pcb01xblKMXHqk9bMxzX+MGArajQjr/a1U82LDeMObEx9iR4KWUOLugTc4D+n2u32PQq263qyHmqtAuv15T8Uwwrl1+dvLZGGjOH0dtRxethWUBbBle5lWpDV0RtmgNsCIW8ML4u10Y2iP2JI2bMixDXLbkauDg5ZVhy3uv7adOF3HiHWn5kv7jbp+nhn7isZScFPIFX5TeSSHKo+yVPFNUEH/ImGeYUCn3zRvSS+4AsngrMkEJBRb17Ipa0RoMM5V0bfJniHT/Q1orupDOjgVf6UJj6zPLq8ddFQY1kvYHU8d5oMMsSpR45IUTimyysdfb3oFt8rpplYd+4sEDnjg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(396003)(346002)(376002)(316002)(54906003)(6506007)(2906002)(2616005)(26005)(186003)(5660300002)(36756003)(66946007)(66556008)(7416002)(71200400001)(64756008)(76116006)(478600001)(8936002)(91956017)(86362001)(8676002)(6486002)(4744005)(66476007)(4326008)(6916009)(66446008)(6512007)(4001150100001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?RktjeGdoR1NzaHRZWWRuWVMzSitQcy9wTi8wK1lQWnhBRUN3UlViSnBFZXpX?=
- =?utf-8?B?dWVrRmNQejVMWmVvOTlPZmZmdEQxMzVLWEowU21KY3JiVldYaUhzSENRYXdE?=
- =?utf-8?B?QlFESmI0bUJEQmFBZVZKYUpYV1B3K2RqeVNHSG5hUnpPZlVTalM3TEFzOW56?=
- =?utf-8?B?VVhRNS8rYkR2bTRTU2NhS3pSdWJ3TFJrYWJjUVdhMTVWNXpiMmdVaDREVEM3?=
- =?utf-8?B?ZHEwTjZmNmFhclBSa082c0pJTjllM1E5NTFzZnVTN3h5Q2NwTGpwcElKbnFM?=
- =?utf-8?B?RkIrTHIwdDhnSWVaSjZkOGJyT2U1WDUzTFZMc2dhMGl3TEliYjhQWHFWc1Qr?=
- =?utf-8?B?b2EvRUk4SldhWnJGYlBuYlJsQjd5RFUrUFdHeUtjbmJ4L0xQb1lHblVIdEpi?=
- =?utf-8?B?ZkFNNVJhZUxudU1Ld0ZtSnA0ditGUFh3azB0eWhiMWNCSTUwbHhOdmxzU016?=
- =?utf-8?B?MWM1WVE0aExOM0k4c2RwSGxub2NaSktVOHhreXFjQ2REME5zcHNjNEJUWktN?=
- =?utf-8?B?YzhhRUNhQU9hVEF3UVRyZ2JMYjVDMzZ6REFGczdsdG5DcTFXekNvUDhRcDdM?=
- =?utf-8?B?RlN1VnVnWDArR2JZZlFzK3htN3VPVVRiWEdKT0dkRlRGa1l5dmw3VVQ3SzM3?=
- =?utf-8?B?WEZCQWZDTUFEUytaYys5NWZLOEFkNURlS1cxM1pSVW9WVTR3SFZpdzUrMmUy?=
- =?utf-8?B?azFQcDArVlVabUdBU21yZndaYXc1eVY4R3BlZlNPMnFlNXRPckVtdXNLT2VJ?=
- =?utf-8?B?bkMraSs5bjNrVXVrRlYrZTM2Qm5XMW9EN1E3ZG8rR3R6bWUyeFpTK3IvZk8z?=
- =?utf-8?B?VUpvajBxbzRMbDdlYk83Nm1RUElIYXRsR2JlVS9VdlgrUGxDZkd1VFhFZUZZ?=
- =?utf-8?B?bFNvdXJQdGlyRGVSVG5ramhLdy9IRTIvblpWY3hOU1Mxc2xPMmdkWFVEWGpt?=
- =?utf-8?B?U1hQcHRtdXNJN1k0ekNnWXpzNVRxNFhPdkp1TW5aRjA3MGVHS3Z1L1JQcjZ3?=
- =?utf-8?B?YXYzT2pabDVHdkZWdWdXd1hJWnZDY0NMeUtnbG92d2JER3RHUk8zZlV5SXJI?=
- =?utf-8?B?VXdWc3RJQlRhbWRZZkF6YXRUQ1lzSjhJVnRGSjh0L0JrVEVxYklNdWplaG5H?=
- =?utf-8?B?SWFNc3lwTi9uYkRwbllPaDFUWExNb3I3bEdqbC93cm8xdVRoa21VOFlDcmVL?=
- =?utf-8?B?UWZEb080TjFQRS9RRVdwaktDaTNPSWZ2WUNZSW45K3pOS2VHTDJnWWZiNmZG?=
- =?utf-8?B?ZU5OSW5XbGxhSHYvUFo4b3EwdGt0U2lZbzNvMWlRVlloZis4aEJtVDRiNlFy?=
- =?utf-8?Q?rdK/dVR9cagNXA7ZvomXAmCHm3XfHGd3y1?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CD8BA5E3EA057D49A288C8AEB80E5D7B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729940AbgKXUBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729774AbgKXUBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 15:01:09 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C0AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:01:08 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1kheUo-0003N1-Gn; Tue, 24 Nov 2020 21:01:02 +0100
+Message-ID: <89724abeca0eb407c24807507ff6b1bc310d7275.camel@pengutronix.de>
+Subject: Re: dts: add MNT Reform 2.0
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     "Lukas F. Hartmann" <lukas@mntre.com>
+Cc:     devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Date:   Tue, 24 Nov 2020 21:01:01 +0100
+In-Reply-To: <20201124172735.981878-1-lukas@mntre.com>
+References: <20201124172735.981878-1-lukas@mntre.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34195911-1de7-4490-5657-08d890b38896
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 20:00:03.6615
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zuZ9IY6CuHsVYcWMxgStDSSWA90TrODB/I8JUiuDheuYTDmiswA0QYoDq3PmYOu/VszMT6xlSRnhbsQwjXNZuRebgMtwxETOAp4EjnCTGtQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5035
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTExLTI0IGF0IDEwOjE2ICswMDAwLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90
-ZToNCj4gT24gTW9uLCBOb3YgMjMsIDIwMjAgYXQgMTI6MDE6MzVBTSArMDAwMCwgRWRnZWNvbWJl
-LCBSaWNrIFAgd3JvdGU6DQo+ID4gQW5vdGhlciBvcHRpb24gY291bGQgYmUgcHV0dGluZyB0aGUg
-bmV3IG1ldGFkYXRhIGluIHZtX3N0cnVjdCBhbmQNCj4gPiBqdXN0DQo+ID4gcmV0dXJuIHRoYXQs
-IGxpa2UgZ2V0X3ZtX2FyZWEoKS4gVGhlbiB3ZSBkb24ndCBuZWVkIHRvIGludmVudCBhIG5ldw0K
-PiA+IHN0cnVjdC4gQnV0IHRoZW4gbm9ybWFsIHZtYWxsb2MoKSdzIHdvdWxkIGhhdmUgYSBiaXQg
-b2Ygd2FzdGVkDQo+ID4gbWVtb3J5DQo+ID4gc2luY2UgdGhleSBkb24ndCBuZWVkIHRoaXMgbWV0
-YWRhdGEuDQo+IA0KPiBUaGF0IHdvdWxkIHNlZW0gbW9zdCBuYXR1cmFsIHRvIG1lLiAgV2UnbGwg
-bmVlZCB0byBmaWd1cmUgb3V0IGhvdyB3ZQ0KPiBjYW4gZG8gdGhhdCB3aXRob3V0IGJsb2F0aW5n
-IHZtX3N0cnVjdCB0b28gbXVjaC4gIE9uZSBvcHRpb24gd291bGQNCj4gYmUgYSBiaWdnZXIgc3Ry
-dWN0dXJlIHRoYXQgZW1iZWRkcyB2bV9zdHJ1Y3QgYW5kIGNhbiBiZSByZXRyZWl2ZWQNCj4gdXNp
-bmcNCj4gY29udGFpbmVyX29mKCkuDQoNCkhtbSwgbmVhdC4gSSBjYW4gY2hhbmdlIHRoaXMgaW4g
-dGhlIG5leHQgdmVyc2lvbi4NCg==
+Hi Lukas,
+
+just some general comments, not a full review.
+
+Am Dienstag, den 24.11.2020, 18:27 +0100 schrieb Lukas F. Hartmann:
+> This is the device tree for the MNT Reform 2.0 open hardware laptop
+> which is based on NXP i.MX8MQ. It is designed around the Boundary Devices
+> Nitrogen8M SoM.
+
+Since this is based on a module the DT should be split in a module dtsi
+and a baseboard dts.
+
+> Technical details: https://mntre.com/reform
+> 
+> Signed-off-by: Lukas F. Hartmann <lukas@mntre.com>
+> ---
+>  .../boot/dts/freescale/imx8mq-mnt-reform2.dts | 783 ++++++++++++++++++
+>  1 file changed, 783 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts b/arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts
+> new file mode 100644
+> index 000000000..c95a22a1e
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dts
+> @@ -0,1 +1,782 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright 2018 Boundary Devices
+> + * Copyright 2019-2020 MNT Research GmbH
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "dt-bindings/input/input.h"
+> +#include "dt-bindings/pwm/pwm.h"
+> +#include "dt-bindings/usb/pd.h"
+> +#include "dt-bindings/gpio/gpio.h"
+> +#include "imx8mq.dtsi"
+> +
+> +/ {
+> +	model = "MNT Reform 2";
+> +	compatible = "fsl,imx8mq";
+
+This needs a more specific compatible.
+
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	// 4GB of RAM
+> +	memory@40000000 {
+> +		device_type = "memory";
+> +		reg = <0x00000000 0x40000000 0 0xc0000000>;
+> +	};
+
+Do you need this node? Most bootloaders should be able to patch in the
+correct amount of memory before passing control to the kernel.
+
+> +
+> +	reg_vref_0v9: regulator-vref-0v9 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vref-0v9";
+> +		regulator-min-microvolt = <900000>;
+> +		regulator-max-microvolt = <900000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_vref_1v2: regulator-vref-1v2 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vref-1v2";
+> +		regulator-min-microvolt = <1200000>;
+> +		regulator-max-microvolt = <1200000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_vref_1v8: regulator-vref-1v8 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vref-1v8";
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_vref_2v5: regulator-vref-2v5 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vref-2v5";
+> +		regulator-min-microvolt = <2500000>;
+> +		regulator-max-microvolt = <2500000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_vref_3v3: regulator-vref-3v3 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vref-3v3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_vref_5v: regulator-vref-5v {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vref-5v";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	backlight: backlight {
+> +		compatible = "pwm-backlight";
+> +		pwms = <&pwm2 0 10000>;
+> +		enable-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+> +		brightness-levels = <0 32 64 128 160 200 255>;
+> +		default-brightness-level = <6>;
+> +	};
+> +
+> +	panel {
+> +		compatible = "innolux,n125hce-gn1";
+> +		power = <&reg_vref_3v3>;
+> +		backlight = <&backlight>;
+> +		no-hpd;
+> +
+> +		port@0 {
+> +			panel_in: endpoint {
+> +				remote-endpoint = <&edp_bridge_out>;
+> +			};
+> +		};
+> +	};
+> +
+> +	sound {
+> +		compatible = "simple-audio-card";
+> +		simple-audio-card,name = "wm8960-audio";
+> +		simple-audio-card,format = "i2s";
+> +		simple-audio-card,frame-master = <&dai_cpu_master>;
+> +		simple-audio-card,bitclock-master = <&dai_cpu_master>;
+> +
+> +		simple-audio-card,widgets =
+> +		"Microphone", "Mic Jack",
+> +		"Line", "Line In",
+> +		"Line", "Line Out",
+> +		"Speaker", "Speaker",
+> +		"Headphone", "Headphone Jack";
+> +		simple-audio-card,routing =
+> +		"Headphone Jack", "HP_L",
+> +		"Headphone Jack", "HP_R",
+> +		"Speaker", "SPK_LP",
+> +		"Speaker", "SPK_LN",
+> +		"Speaker", "SPK_RP",
+> +		"Speaker", "SPK_RN",
+> +		"Mic Jack", "MICB",
+> +		"LINPUT1", "Mic Jack",
+> +		"LINPUT2", "Line In",
+> +		"RINPUT2", "Line In";
+> +
+> +		dai_cpu_master: simple-audio-card,cpu {
+> +			sound-dai = <&sai2>;
+> +		};
+> +
+> +		dailink0: simple-audio-card,codec {
+> +			sound-dai = <&codec>;
+> +		};
+> +	};
+> +
+> +	pcie0_refclk: pcie0-refclk {
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <100000000>;
+> +	};
+> +
+> +	pcie1_refclk: pcie1-refclk {
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <100000000>;
+> +	};
+
+One of those doesn't actually exist, as I know that one of the PCIe
+interfaces on the BD module uses the SoC internal refclock.
+
+> +};
+> +
+> +&A53_0 {
+> +	cpu-supply = <&reg_arm_dram>;
+> +};
+> +
+> +&A53_1 {
+> +	cpu-supply = <&reg_arm_dram>;
+> +};
+> +
+> +&A53_2 {
+> +	cpu-supply = <&reg_arm_dram>;
+> +};
+> +
+> +&A53_3 {
+> +	cpu-supply = <&reg_arm_dram>;
+> +};
+> +
+> +/ {
+> +	soc@0 {
+> +		bus@32c00000 {
+> +			dcss: display-controller@32e00000 {
+> +				status = "okay";
+> +
+> +				compatible = "nxp,imx8mq-dcss";
+> +				reg = <0x32e00000 0x2d000>, <0x32e2f000 0x1000>;
+> +				interrupts = <6>, <8>, <9>;
+> +				interrupt-names = "ctxld", "ctxld_kick", "vblank";
+> +				interrupt-parent = <&irqsteer>;
+> +				clocks = <&clk IMX8MQ_CLK_DISP_APB_ROOT>,
+> +					<&clk IMX8MQ_CLK_DISP_AXI_ROOT>,
+> +					<&clk IMX8MQ_CLK_DISP_RTRM_ROOT>,
+> +					<&clk IMX8MQ_CLK_DC_PIXEL>,
+> +					<&clk IMX8MQ_CLK_DISP_DTRC>;
+> +				clock-names = "apb", "axi", "rtrm", "pix", "dtrc";
+> +				assigned-clocks = <&clk IMX8MQ_CLK_DISP_AXI>,
+> +					<&clk IMX8MQ_CLK_DISP_RTRM>,
+> +					<&clk IMX8MQ_VIDEO2_PLL1_REF_SEL>,
+> +					<&clk IMX8MQ_VIDEO_PLL1_REF_SEL>,
+> +					<&clk IMX8MQ_CLK_DC_PIXEL>;
+> +				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_800M>,
+> +					<&clk IMX8MQ_SYS1_PLL_800M>,
+> +					<&clk IMX8MQ_CLK_27M>,
+> +					<&clk IMX8MQ_CLK_25M>,
+> +					<&clk IMX8MQ_VIDEO_PLL1_OUT>;
+> +				assigned-clock-rates = <800000000>,
+> +					<400000000>,
+> +					<27000000>,
+> +					<25000000>,
+> +					<594000000>;
+
+This whole node shouldn't be in this DT. I hadn't realized that the
+DCSS DT patch is not yet upstream. Please work with Shawn and Laurentiu
+to get this node into the imx8mq.dtsi instead.
+
+> +				port {
+> +					dcss_dsi_out: endpoint {
+> +						remote-endpoint = <&mipi_dsi_in>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +// LCDIF is not used, but has to be active or DCSS won't work
+
+This sounds fishy. There is no dependency between the two interfaces,
+so you shouldn't need to enable the lcdif to get the dcss working. Do
+you miss some clock assignment in the dcss node?
+
+> +&lcdif {
+> +	status = "okay";
+> +	/delete-node/ port@0;
+> +};
+> +
+> +&dphy {
+> +	status = "okay";
+> +};
+> +
+> +&fec1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_fec1>;
+> +	phy-mode = "rgmii-id";
+> +	phy-handle = <&ethphy0>;
+> +	fsl,magic-packet;
+> +	status = "okay";
+> +
+> +	mdio {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		ethphy0: ethernet-phy@4 {
+> +			compatible = "ethernet-phy-ieee802.3-c22";
+> +			reg = <4>;
+> +			interrupts = <&gpio1 11 IRQ_TYPE_LEVEL_LOW>;
+> +			reset-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c1 {
+> +	clock-frequency = <400000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2c1>;
+> +	status = "okay";
+> +
+> +	// I2C Mux on Nitrogen8M_SOM
+> +	i2cmux@70 {
+> +		compatible = "nxp,pca9546";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_i2c1_pca9546>;
+> +		reg = <0x70>;
+> +		reset-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		i2c1a: i2c1@0 {
+> +			reg = <0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			// Regulator on Nitrogen8M_SOM
+> +			reg_arm_dram: fan53555@60 {
+> +				compatible = "fcs,fan53555";
+> +				pinctrl-names = "default";
+> +				pinctrl-0 = <&pinctrl_reg_arm_dram>;
+> +				reg = <0x60>;
+> +				regulator-min-microvolt =	 <900000>;
+> +				regulator-max-microvolt = <1000000>;
+> +				regulator-ramp-delay = <8000>;
+> +				regulator-always-on;
+> +				vsel-gpios = <&gpio3 24 GPIO_ACTIVE_HIGH>;
+> +			};
+> +		};
+> +
+> +		i2c1b: i2c1@1 {
+> +			reg = <1>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			// Regulator on Nitrogen8M_SOM
+> +			reg_dram_1p1v: fan53555@60 {
+> +				compatible = "fcs,fan53555";
+> +				pinctrl-names = "default";
+> +				pinctrl-0 = <&pinctrl_reg_dram_1p1v>;
+> +				reg = <0x60>;
+> +				regulator-min-microvolt = <1100000>;
+> +				regulator-max-microvolt = <1100000>;
+> +				regulator-ramp-delay = <8000>;
+> +				regulator-always-on;
+> +				vsel-gpios = <&gpio2 11 GPIO_ACTIVE_HIGH>;
+> +			};
+> +		};
+> +
+> +		i2c1c: i2c1@2 {
+> +			reg = <2>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			// Regulator on Nitrogen8M_SOM
+> +			reg_soc_gpu_vpu: fan53555@60 {
+> +				compatible = "fcs,fan53555";
+> +				pinctrl-names = "default";
+> +				pinctrl-0 = <&pinctrl_reg_soc_gpu_vpu>;
+> +				reg = <0x60>;
+> +				regulator-min-microvolt = <900000>;
+> +				regulator-max-microvolt = <1000000>;
+> +				regulator-ramp-delay = <8000>;
+> +				regulator-always-on;
+> +				vsel-gpios = <&gpio2 20 GPIO_ACTIVE_HIGH>;
+> +			};
+> +		};
+> +
+> +		// No peripheral connected, available on DSI connector
+> +		i2c1d: i2c1@3 {
+> +			reg = <3>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +		};
+> +	};
+> +};
+> +
+> +// No peripheral connected, available on CSI connector
+> +&i2c2 {
+> +	status = "disabled";
+> +};
+> +
+> +&i2c3 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2c3>;
+> +	status = "okay";
+> +
+> +	// Audio chip on motherboard
+> +	codec: wm8960@1a {
+> +		compatible = "wlf,wm8960";
+> +		reg = <0x1a>;
+> +		clocks = <&clk IMX8MQ_CLK_SAI2>;
+> +		clock-names = "mclk";
+> +		#sound-dai-cells = <0>;
+> +	};
+> +
+> +	// Realtime clock chip on motherboard
+> +	pcf8523: pcf8523@68 {
+> +		compatible = "nxp,pcf8523";
+> +		reg = <0x68>;
+> +	};
+> +};
+> +
+> +&i2c4 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2c4>;
+> +	status = "okay";
+> +
+> +	// DSI to eDP converter on motherboard
+> +	edp_bridge: sn65dsi86@2c {
+> +		compatible = "ti,sn65dsi86";
+> +		reg = <0x2c>;
+> +		enable-gpios = <&gpio3 20 GPIO_ACTIVE_HIGH>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +
+> +				edp_bridge_in: endpoint {
+> +					remote-endpoint = <&mipi_dsi_out>;
+> +				};
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +
+> +				edp_bridge_out: endpoint {
+> +					remote-endpoint = <&panel_in>;
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&iomuxc {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_hog>;
+> +
+> +	pinctrl_hog: hoggrp {
+> +		fsl,pins = <
+> +		// WL_EN on Nitrogen8M_SOM, pin 38, goes to /EN input of SN65DSI86
+> +		MX8MQ_IOMUXC_SAI5_RXC_GPIO3_IO20		0x19
+> +		MX8MQ_IOMUXC_GPIO1_IO14_GPIO1_IO14		0x56
+> +		>;
+> +	};
+> +
+> +	pinctrl_fec1: fec1grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_ENET_MDC_ENET1_MDC			0x3
+> +		MX8MQ_IOMUXC_ENET_MDIO_ENET1_MDIO		0x23
+> +		MX8MQ_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
+> +		MX8MQ_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
+> +		MX8MQ_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
+> +		MX8MQ_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
+> +		MX8MQ_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
+> +		MX8MQ_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
+> +		MX8MQ_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
+> +		MX8MQ_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
+> +		MX8MQ_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
+> +		MX8MQ_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
+> +		MX8MQ_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
+> +		MX8MQ_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
+> +		MX8MQ_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x19
+> +		MX8MQ_IOMUXC_GPIO1_IO11_GPIO1_IO11		0x59
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c1: i2c1grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_I2C1_SCL_I2C1_SCL			0x4000007f
+> +		MX8MQ_IOMUXC_I2C1_SDA_I2C1_SDA			0x4000007f
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c1_pca9546: i2c1-pca9546grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_GPIO1_IO04_GPIO1_IO4		0x46
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c2: i2c2grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_I2C2_SCL_I2C2_SCL			0x4000007f
+> +		MX8MQ_IOMUXC_I2C2_SDA_I2C2_SDA			0x4000007f
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c3: i2c3grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_I2C3_SCL_I2C3_SCL			0x4000007f
+> +		MX8MQ_IOMUXC_I2C3_SDA_I2C3_SDA			0x4000007f
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c4: i2c4grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_I2C4_SCL_I2C4_SCL			0x4000007f
+> +		MX8MQ_IOMUXC_I2C4_SDA_I2C4_SDA			0x4000007f
+> +		>;
+> +	};
+> +
+> +	pinctrl_pcie0: pcie0grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_ECSPI1_MOSI_GPIO5_IO7		0x16
+> +		>;
+> +	};
+> +
+> +	pinctrl_pcie1: pcie1grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SAI5_RXD2_GPIO3_IO23		0x16
+> +		>;
+> +	};
+> +
+> +	pinctrl_pwm2: pwm2grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SPDIF_RX_PWM2_OUT			0x16
+> +		>;
+> +	};
+> +
+> +	pinctrl_pwm3: pwm3grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SPDIF_TX_PWM3_OUT			0x16
+> +		>;
+> +	};
+> +
+> +	// Backlight
+> +	pinctrl_pwm4: pwm4grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SAI3_MCLK_PWM4_OUT			0x16
+> +		>;
+> +	};
+> +
+> +	pinctrl_reg_arm_dram: reg-arm-dram {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SAI5_RXD3_GPIO3_IO24		0x16
+> +		>;
+> +	};
+> +
+> +	pinctrl_reg_dram_1p1v: reg-dram-1p1v {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD1_STROBE_GPIO2_IO11		0x16
+> +		>;
+> +	};
+> +
+> +	pinctrl_reg_soc_gpu_vpu: reg-soc-gpu-vpu {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD2_WP_GPIO2_IO20			0x16
+> +		>;
+> +	};
+> +
+> +	pinctrl_sai2: sai2grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SAI2_RXD0_SAI2_RX_DATA0		0xd6	/* Pin 166 */
+> +		MX8MQ_IOMUXC_SAI2_RXFS_SAI2_RX_SYNC		0xd6	/* Pin 168 */
+> +		MX8MQ_IOMUXC_SAI2_TXC_SAI2_TX_BCLK		0xd6	/* Pin 170 */
+> +		MX8MQ_IOMUXC_SAI2_TXFS_SAI2_TX_SYNC		0xd6	/* Pin 172 */
+> +		MX8MQ_IOMUXC_SAI2_RXC_SAI2_RX_BCLK		0xd6	/* Pin 174 */
+> +		MX8MQ_IOMUXC_SAI2_MCLK_SAI2_MCLK		0xd6	/* Pin 176 */
+> +		MX8MQ_IOMUXC_SAI2_TXD0_SAI2_TX_DATA0		0xd6	/* Pin 168 */
+> +		>;
+> +	};
+> +
+> +	pinctrl_uart1: uart1grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_UART1_RXD_UART1_DCE_RX		0x45
+> +		MX8MQ_IOMUXC_UART1_TXD_UART1_DCE_TX		0x45
+> +		>;
+> +	};
+> +
+> +	pinctrl_uart2: uart2grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_UART2_RXD_UART2_DCE_RX		0x45
+> +		MX8MQ_IOMUXC_UART2_TXD_UART2_DCE_TX		0x45
+> +		>;
+> +	};
+> +
+> +	pinctrl_uart3: uart3grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_UART3_RXD_UART3_DCE_RX		0x45
+> +		MX8MQ_IOMUXC_UART3_TXD_UART3_DCE_TX		0x45
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1: usdhc1grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x83
+> +		MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0		0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1		0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2		0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA3_USDHC1_DATA3		0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA4_USDHC1_DATA4		0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA5_USDHC1_DATA5		0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA6_USDHC1_DATA6		0xc3
+> +		MX8MQ_IOMUXC_SD1_DATA7_USDHC1_DATA7		0xc3
+> +		MX8MQ_IOMUXC_SD1_RESET_B_GPIO2_IO10		0x41
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x8d
+> +		MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0		0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1		0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2		0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA3_USDHC1_DATA3		0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA4_USDHC1_DATA4		0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA5_USDHC1_DATA5		0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA6_USDHC1_DATA6		0xcd
+> +		MX8MQ_IOMUXC_SD1_DATA7_USDHC1_DATA7		0xcd
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x9f
+> +		MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD			0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0		0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1		0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2		0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA3_USDHC1_DATA3		0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA4_USDHC1_DATA4		0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA5_USDHC1_DATA5		0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA6_USDHC1_DATA6		0xdf
+> +		MX8MQ_IOMUXC_SD1_DATA7_USDHC1_DATA7		0xdf
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2: usdhc2grp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x03
+> +		MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xc3
+> +		MX8MQ_IOMUXC_SD2_DATA0_USDHC2_DATA0		0xc3
+> +		MX8MQ_IOMUXC_SD2_DATA1_USDHC2_DATA1		0xc3
+> +		MX8MQ_IOMUXC_SD2_DATA2_USDHC2_DATA2		0xc3
+> +		MX8MQ_IOMUXC_SD2_DATA3_USDHC2_DATA3		0xc
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x0d
+> +		MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xcd
+> +		MX8MQ_IOMUXC_SD2_DATA0_USDHC2_DATA0		0xcd
+> +		MX8MQ_IOMUXC_SD2_DATA1_USDHC2_DATA1		0xcd
+> +		MX8MQ_IOMUXC_SD2_DATA2_USDHC2_DATA2		0xcd
+> +		MX8MQ_IOMUXC_SD2_DATA3_USDHC2_DATA3		0xcd
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x1e
+> +		MX8MQ_IOMUXC_SD2_CMD_USDHC2_CMD			0xce
+> +		MX8MQ_IOMUXC_SD2_DATA0_USDHC2_DATA0		0xce
+> +		MX8MQ_IOMUXC_SD2_DATA1_USDHC2_DATA1		0xce
+> +		MX8MQ_IOMUXC_SD2_DATA2_USDHC2_DATA2		0xce
+> +		MX8MQ_IOMUXC_SD2_DATA3_USDHC2_DATA3		0xce
+> +		>;
+> +	};
+> +
+> +	pinctrl_wdog: wdoggrp {
+> +		fsl,pins = <
+> +		MX8MQ_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
+> +		>;
+> +	};
+> +};
+
+iomuxc should be the last node in the DT file. Other nodes should be
+sorted alphabetically.
+
+> +
+> +&mipi_dsi {
+> +	status = "okay";
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@0 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0>;
+> +
+> +			// We don't want input from LCDIF
+> +			/delete-node/ endpoint@0;
+> +
+> +			mipi_dsi_in: endpoint@1 {
+> +				reg = <1>;
+> +				remote-endpoint = <&dcss_dsi_out>;
+> +			};
+> +		};
+> +		port@1 {
+> +			reg = <1>;
+> +			mipi_dsi_out: endpoint {
+> +				remote-endpoint = <&edp_bridge_in>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&pcie0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_pcie0>;
+> +	reset-gpio = <&gpio5 7 GPIO_ACTIVE_LOW>;
+> +	internal-refclk;
+
+This property isn't supported in upstream. The proepr solution would be
+to point the pcie_bus clock handle to the internal clock and add
+support to the PCIe driver to notice this fact and program the GPR
+accordingly.
+
+> +
+> +	clocks = <&clk IMX8MQ_CLK_PCIE1_ROOT>,
+> +		<&clk IMX8MQ_CLK_PCIE1_AUX>,
+> +		<&clk IMX8MQ_CLK_PCIE1_PHY>,
+> +		<&pcie0_refclk>;
+> +
+> +	clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
+> +
+> +	assigned-clocks = <&clk IMX8MQ_CLK_PCIE1_CTRL>,
+> +		<&clk IMX8MQ_CLK_PCIE1_PHY>;
+> +	assigned-clock-parents = <&clk IMX8MQ_SYS2_PLL_250M>,
+> +		<&clk IMX8MQ_SYS2_PLL_100M>;
+> +
+> +	status = "okay";
+> +};
+> +
+> +&pcie1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_pcie1>;
+> +	reset-gpio = <&gpio3 23 GPIO_ACTIVE_LOW>;
+> +
+> +	clocks = <&clk IMX8MQ_CLK_PCIE2_ROOT>,
+> +		<&clk IMX8MQ_CLK_PCIE2_AUX>,
+> +		<&clk IMX8MQ_CLK_PCIE2_PHY>,
+> +		<&pcie1_refclk>;
+> +	clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
+> +	status = "okay";
+> +};
+> +
+> +&pwm2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_pwm2>;
+> +	status = "okay";
+> +};
+> +
+> +&pwm3 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_pwm3>;
+> +	status = "okay";
+> +};
+> +
+> +// Backlight control
+> +&pwm4 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_pwm4>;
+> +	status = "okay";
+> +};
+> +
+> +&sai2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sai2>;
+> +	assigned-clocks = <&clk IMX8MQ_CLK_SAI2>;
+> +	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL2_OUT>;
+> +	assigned-clock-rates = <12288000>;
+> +	status = "okay";
+> +};
+> +
+> +// Don't use i.MX8M internal RTC because we have a dedicated one
+> +&snvs_rtc {
+> +	status = "disabled";
+> +};
+> +
+> +// Console
+> +&uart1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart1>;
+> +	status = "okay";
+> +};
+> +
+> +// Auxiliary serial port on motherboard
+> +&uart2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart2>;
+> +	status = "okay";
+> +};
+> +
+> +// connected to LPC11U24 chip on the motherboard
+> +&uart3 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart3>;
+> +	status = "okay";
+> +};
+> +
+> +&usb_dwc3_0 {
+> +	status = "okay";
+> +	dr_mode = "host";
+> +};
+> +
+> +&usb_dwc3_1 {
+> +	status = "okay";
+> +	dr_mode = "host";
+> +};
+> +
+> +&usb3_phy0 {
+> +	vbus-supply = <&reg_vref_5v>;
+> +	status = "okay";
+> +};
+> +
+> +&usb3_phy1 {
+> +	vbus-supply = <&reg_vref_5v>;
+> +	status = "okay";
+> +};
+> +
+> +// eMMC on Nitrogen8M_SOM
+> +&usdhc1 {
+> +	assigned-clocks = <&clk IMX8MQ_CLK_USDHC1>;
+> +	assigned-clock-rates = <400000000>;
+> +	bus-width = <8>;
+> +	no-mmc-hs400;
+> +	non-removable;
+
+no-sd maybe, to speed up enumeration?
+
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> +	pinctrl-0 = <&pinctrl_usdhc1>;
+> +	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+> +	status = "disabled";
+> +};
+> +
+> +// SD Card on motherboard
+> +&usdhc2 {
+> +	assigned-clocks = <&clk IMX8MQ_CLK_USDHC2>;
+> +	assigned-clock-rates = <200000000>;
+> +	bus-width = <4>;
+> +	no-1-8-v; // We don't support 1.8V signaling
+
+This should not be necessary if you instead add a vqmmc-supply and
+point it to the same fixed 3.3V regulator as the vmmc.
+
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> +	pinctrl-0 = <&pinctrl_usdhc2>;
+> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+> +	vmmc-supply = <&reg_vref_3v3>;
+> +	status = "okay";
+> +};
+> +
+> +&wdog1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_wdog>;
+> +	fsl,ext-reset-output;
+> +	status = "okay";
+> +};
+> --
+> 2.28.0
+
+Regards,
+Lucas
+
