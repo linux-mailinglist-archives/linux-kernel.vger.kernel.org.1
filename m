@@ -2,75 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10812C3201
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8590B2C3204
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 21:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731190AbgKXUcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 15:32:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731112AbgKXUcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 15:32:53 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C409620678;
-        Tue, 24 Nov 2020 20:32:47 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 15:32:45 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, boqun.feng@gmail.com,
-        tglx@linutronix.de
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201124153245.5bda420d@oasis.local.home>
-In-Reply-To: <20201124194308.GC8957@C02TD0UTHF1T.local>
-References: <20201119170259.GA2134472@elver.google.com>
-        <20201119184854.GY1437@paulmck-ThinkPad-P72>
-        <20201119193819.GA2601289@elver.google.com>
-        <20201119213512.GB1437@paulmck-ThinkPad-P72>
-        <20201119225352.GA5251@willie-the-truck>
-        <20201120103031.GB2328@C02TD0UTHF1T.local>
-        <20201120140332.GA3120165@elver.google.com>
-        <20201123193241.GA45639@C02TD0UTHF1T.local>
-        <20201124140310.GA811510@elver.google.com>
-        <20201124150146.GH1437@paulmck-ThinkPad-P72>
-        <20201124194308.GC8957@C02TD0UTHF1T.local>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731280AbgKXUe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 15:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731196AbgKXUey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 15:34:54 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79E8C061A4E
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:34:53 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id s27so10791869lfp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:34:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AEOjqbrPL7ThHmqZn4HHPdQNZCU9KRjN0OANoYqF+LI=;
+        b=YiUauuLl4oDGTRL45zuGDHR2J5VSlaFB7O6pBpiLin0jYi4oMDEyJ6WnB0ezsU1+lJ
+         /Xr+VMmFy6Yl0v0tfocLf0a2OpJoR4jkrZf+QWqP87nKzXSlOFC8xx9JTBLeqme23GEA
+         yBj2rHCTti3flo3PfXBjCwjdx6z70F417NynU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AEOjqbrPL7ThHmqZn4HHPdQNZCU9KRjN0OANoYqF+LI=;
+        b=gncgwJN4xjZgwCq2uWzraXv9xrBfQC7lOB4cNHUt3yR+HF/0g/Zp+8+XeN4qDw6tUI
+         Ws8NBKtaC8sChW6Bb/4IxXcWrqPoFLr8vLnVH4UFQvhjJao9C2rvDFG89Vu2NvddGHqG
+         G4YbfRH/NLS55Nj2EhkEgC+Dy+yU88hRErovOHy464yHjc95TZswd9GCpwZFctsTmnjZ
+         xxqoXrXXobhsjjPLWz7gWYb8n4IG23PYPA2XEtzcwbg346D1diKK2PHuQ59zoh7QQmLj
+         ZLqEQED/80oBQg2C+Jp+UirjgXmZk/o78Q7DbNLq1wmWXRtQqFFU/bDdDB0z2jgkCZFJ
+         RwpQ==
+X-Gm-Message-State: AOAM533diKzwnocLiE0Bd3zECzWM3MOl7Lj4AsxHd4pSAMkihIKdksqj
+        NfI2XDZ3rSZ9T5tEeXNmhVNLo8IscM9jAg==
+X-Google-Smtp-Source: ABdhPJyH8a5pAYM2kCyfP/4wejtm1V45CVHyxC036AiiDC0zcGlyeJf4gzCdton4NMlcmQZBwesQAA==
+X-Received: by 2002:a19:ca13:: with SMTP id a19mr2290798lfg.68.1606250091522;
+        Tue, 24 Nov 2020 12:34:51 -0800 (PST)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id i19sm4789lfj.212.2020.11.24.12.34.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 12:34:50 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id f18so5596505ljg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 12:34:49 -0800 (PST)
+X-Received: by 2002:a2e:8701:: with SMTP id m1mr27321lji.314.1606250089295;
+ Tue, 24 Nov 2020 12:34:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
+ <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
+ <alpine.LSU.2.11.2011231928140.4305@eggly.anvils> <20201124121912.GZ4327@casper.infradead.org>
+ <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org>
+ <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com> <20201124201552.GE4327@casper.infradead.org>
+In-Reply-To: <20201124201552.GE4327@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 24 Nov 2020 12:34:33 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+Message-ID: <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 19:43:08 +0000
-Mark Rutland <mark.rutland@arm.com> wrote:
+On Tue, Nov 24, 2020 at 12:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> So my s/if/while/ suggestion is wrong and we need to do something to
+> prevent spurious wakeups.  Unless we bury the spurious wakeup logic
+> inside wait_on_page_writeback() ...
 
-> AFAICT, the issue is that arch_cpu_idle() can be dynamically traced with
-> ftrace, and hence the tracing code can unexpectedly run without RCU
-> watching. Since that's dynamic tracing, we can avoid it by marking
-> arch_cpu_idle() and friends as noinstr.
+We can certainly make the "if()" in that loop be a "while()'.
 
-Technically, ftrace doesn't care if RCU is watching or not, but the
-callbacks might, and they need to do the rcu_is_watching() check if
-they do.
+That's basically what the old code did - simply by virtue of the
+wakeup not happening if the writeback bit was set in
+wake_page_function():
 
-Although, there's work to keep those areas from being traced, but to do
-so, they really need to be minimal, where you don't ever want to trace
-them.
+        if (test_bit(key->bit_nr, &key->page->flags))
+                return -1;
 
--- Steve
+of course, the race was still there - because the writeback bit might
+be clear at that point, but another CPU would reallocate and dirty it,
+and then autoremove_wake_function() would happen anyway.
+
+But back in the bad old days, the wait_on_page_bit_common() code would
+then double-check in a loop, so it would catch that case, re-insert
+itself on the wait queue, and try again. Except for the DROP case,
+which isn't used by writeback.
+
+Anyway, making that "if()" be a "while()" in wait_on_page_writeback()
+would basically re-introduce that old behavior. I don't really care,
+because it was the lock bit that really mattered, the writeback bit is
+not really all that interesting (except from a "let's fix this bug"
+angle)
+
+I'm not 100% sure I like the fragility of this writeback thing.
+
+Anyway, I'm certainly happy with either model, whether it be an added
+while() in wait_on_page_writeback(), or it be the page reference count
+in end_page_writeback().
+
+Strong opinions?
+
+            Linus
