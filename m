@@ -2,203 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3782C26A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 13:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6609B2C26AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387741AbgKXM6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 07:58:01 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:48396 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387582AbgKXM6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:58:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606222680; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Type: MIME-Version: Sender;
- bh=p3o5O2rDOoKz7JnE/QmTS9ZiRoVNLotQeymZMjfvd8Y=; b=J2KXND+qH0eT3o5DzX/XrHxOHHskjulu9rH0DgQIpr9EzaQh6huTRf+N7kMLUwzYbjsUfOpl
- swIbQSci57o5piomOQnkjTOyyTyimFYUwgKshxn0xTOCb44gYJBYJtqxD+UIHQ+BcnT28eAL
- B5DHZvb9PweeDOBgIVwAxpAE+Lo=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fbd03477f0cfa6a16006a1b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 12:57:43
- GMT
-Sender: kalyan_t=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 902ABC43460; Tue, 24 Nov 2020 12:57:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S2387779AbgKXM6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 07:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387752AbgKXM6W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:58:22 -0500
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BFFC0613D6;
+        Tue, 24 Nov 2020 04:58:21 -0800 (PST)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kalyan_t)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 366ACC433ED;
-        Tue, 24 Nov 2020 12:57:41 +0000 (UTC)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4CgPG25vMCzQlXR;
+        Tue, 24 Nov 2020 13:58:18 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
+        with ESMTP id BpMW7ohxcsl4; Tue, 24 Nov 2020 13:58:14 +0100 (CET)
+Date:   Tue, 24 Nov 2020 23:58:06 +1100
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dev@opencontainers.org,
+        corbet@lwn.net, Carlos O'Donell <carlos@redhat.com>
+Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions &
+ workaround
+Message-ID: <20201124125806.nud2x5kfvnxdagqk@yavin.dot.cyphar.com>
+References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="=_b2b938fb10d812d8faa8fd415ac40fd7"
-Date:   Tue, 24 Nov 2020 18:27:41 +0530
-From:   kalyan_t@codeaurora.org
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        nganji@codeaurora.org, Sean Paul <seanpaul@chromium.org>,
-        John Stultz <john.stultz@linaro.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        abhinavk@codeaurora.org
-Subject: Re: [Freedreno] [PATCH 3/3] drm/msm/dpu: add support for clk and bw
- scaling for display
-Message-ID: <5b07a7be8d136392dc7f93933a7ee68e@codeaurora.org>
-X-Sender: kalyan_t@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="menhpnrtnm2uuh3t"
+Content-Disposition: inline
+In-Reply-To: <87lfer2c0b.fsf@oldenburg2.str.redhat.com>
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -9.04 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 07991665
+X-Rspamd-UID: 47ba3d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_b2b938fb10d812d8faa8fd415ac40fd7
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 
-On 2020-11-08 23:25, Amit Pundir wrote:
-> On Tue, 4 Aug 2020 at 21:09, Rob Clark <robdclark@gmail.com> wrote:
->> 
->> On Thu, Jul 16, 2020 at 4:36 AM Kalyan Thota <kalyan_t@codeaurora.org> 
->> wrote:
->> >
->> > This change adds support to scale src clk and bandwidth as
->> > per composition requirements.
->> >
->> > Interconnect registration for bw has been moved to mdp
->> > device node from mdss to facilitate the scaling.
->> >
->> > Changes in v1:
->> >  - Address armv7 compilation issues with the patch (Rob)
->> >
->> > Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
->> 
->> Reviewed-by: Rob Clark <robdclark@chromium.org>
->> 
-> 
-> Hi Kalyan, Rob,
-> 
-> This patch broke the display on the PocoF1 phone
-> (sdm845-xiaomi-beryllium.dts) running AOSP.
-> I can boot to UI but the display is frozen soon after that and
-> dmesg is full of following errors:
-> 
-> [drm:dpu_core_perf_crtc_update:397] [dpu error]crtc-65: failed to
-> update bus bw vote
-> [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
-> 7649746kb > 6800000kb
-> [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance 
-> check -7
-> [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
-> 7649746kb > 6800000kb
-> [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance 
-> check -7
-> [drm:dpu_core_perf_crtc_check:203] [dpu error]exceeds bandwidth:
-> 7649746kb > 6800000kb
-> [drm:dpu_crtc_atomic_check:969] [dpu error]crtc65 failed performance 
-> check -7
-> 
-> Here is the full dmesg https://pastebin.ubuntu.com/p/PcSdNgMnYw/.
-> Georgi pointed out following patch but it didn't help,
-> https://lore.kernel.org/dri-devel/20201027102304.945424-1-dmitry.baryshkov@linaro.org/
-> Am I missing any other followup fix?
-> 
-> Regards,
-> Amit Pundir
-> __
+--menhpnrtnm2uuh3t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Amit,
+On 2020-11-24, Florian Weimer <fweimer@redhat.com> wrote:
+> This documents a way to safely use new security-related system calls
+> while preserving compatibility with container runtimes that require
+> insecure emulation (because they filter the system call by default).
+> Admittedly, it is somewhat hackish, but it can be implemented by
+> userspace today, for existing system calls such as faccessat2,
+> without kernel or container runtime changes.
+>=20
+> Signed-off-by: Florian Weimer <fweimer@redhat.com>
+>=20
+> ---
+>  Documentation/process/adding-syscalls.rst | 37 +++++++++++++++++++++++++=
+++++++
+>  1 file changed, 37 insertions(+)
+>=20
+> diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/pr=
+ocess/adding-syscalls.rst
+> index a3ecb236576c..7d1e578a1df1 100644
+> --- a/Documentation/process/adding-syscalls.rst
+> +++ b/Documentation/process/adding-syscalls.rst
+> @@ -436,6 +436,40 @@ simulates registers etc).  Fixing this is as simple =
+as adding a #define to
+> =20
+>      #define stub_xyzzy sys_xyzzy
+> =20
+> +Container Compatibility and seccomp
+> +-----------------------------------
+> +
+> +The Linux Foundation Open Container Initiative Runtime Specification
+> +requires that by default, implementations install seccomp system call
+> +filters which cause system calls to fail with ``EPERM``.  As a result,
+> +all new system calls in such containers fail with ``EPERM`` instead of
+> +``ENOSYS``.  This design is problematic because ``EPERM`` is a
+> +legitimate system call result which should not trigger fallback to a
+> +userspace emulation, particularly for security-related system calls.
+> +(With ``ENOSYS``, it is clear that a fallback implementation has to be
+> +used to maintain compatibility with older kernels or container
+> +runtimes.)
+> +
+> +New system calls should therefore provide a way to reliably trigger an
+> +error distinct from ``EPERM``, without any side effects.  Some ways to
+> +achieve that are:
+> +
+> + - ``EBADFD`` for the invalid file descriptor -1
+> + - ``EFAULT`` for a null pointer
+> + - ``EINVAL`` for a contradictory set of flags that will remain invalid
+> +   in the future
+> +
+> +If a system call has such error behavior, upon encountering an
+> +``EPERM`` error, userspace applications can perform further
+> +invocations of the same system call to check if the ``EPERM`` error
+> +persists for those known error conditions.  If those also fail with
+> +``EPERM``, that likely means that the original ``EPERM`` error was the
+> +result of a seccomp filter, and should be treated like ``ENOSYS``
+> +(e.g., trigger an alternative fallback implementation).  If those
+> +probing system calls do not fail with ``EPERM``, the error likely came
+> +from a real implementation, and should be reported to the caller
+> +directly, without resorting to ``ENOSYS``-style fallback.
+> +
 
-Apologies for the delay.
+As I mentioned in the runc thread[1], this is really down to Docker's
+default policy configuration. The EPERM-everything behaviour in OCI was
+inherited from Docker, and it boils down to not having an additional
+seccomp rule which does ENOSYS for unknown syscall numbers (Docker can
+just add the rule without modifying the OCI runtime-spec -- so it's
+something Docker can fix entirely on their own). I'll prepare a patch
+for Docker this week.
 
-I have gone through the logs and referred to the below panel file for 
-the timings.
-https://github.com/Matheus-Garbelini/Kernel-Sphinx-Pocophone-F1/blob/master/arch/arm64/boot/dts/qcom/dsi-panel-tianma-fhd-nt36672a-video.dtsi
+IMHO it's also slightly overkill to change the kernel API design
+guidelines in response to this issue.
 
-if the above is correct file, then below could be the possible root 
-cause.
+[1]: https://github.com/opencontainers/runc/issues/2151
 
-The panel back porch and pw is less and it is causing the prefill bw 
-requirement to shoot up per layer as currently we are not considering 
-front porch in the calculation. can you please try the attached patch in 
-the email as a solution and provide me the feedback, i'll post it as a 
-formal change.
+>  Other Details
+>  -------------
+> @@ -575,3 +609,6 @@ References and Sources
+>   - Recommendation from Linus Torvalds that x32 system calls should prefer
+>     compatibility with 64-bit versions rather than 32-bit versions:
+>     https://lkml.org/lkml/2011/8/31/244
+> + - Linux Configuration section of the Open Container Initiative
+> +   Runtime Specification:
+> +   https://github.com/opencontainers/runtime-spec/blob/master/config-lin=
+ux.md
 
-Thanks,
-Kalyan
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
 
-_____________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+--menhpnrtnm2uuh3t
+Content-Type: application/pgp-signature; name="signature.asc"
 
---=_b2b938fb10d812d8faa8fd415ac40fd7
-Content-Transfer-Encoding: base64
-Content-Type: text/x-diff;
- name=0001-drm-msm-dpu-consider-front-porch-in-the-prefill-calc.patch
-Content-Disposition: attachment;
- filename=0001-drm-msm-dpu-consider-front-porch-in-the-prefill-calc.patch;
- size=2297
+-----BEGIN PGP SIGNATURE-----
 
-RnJvbSAwMjhmYjQ3Y2NjNWEzZjhmOGU1MTUxM2JkMjcxOWFhMTRjNjhhYzA5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWx5YW4gVGhvdGEgPGthbHlhbl90QGNvZGVhdXJvcmEub3Jn
-PgpEYXRlOiBUdWUsIDI0IE5vdiAyMDIwIDAyOjM5OjUyIC0wODAwClN1YmplY3Q6IFtQQVRDSF0g
-ZHJtOiBtc206IGRwdTogY29uc2lkZXIgZnJvbnQgcG9yY2ggaW4gdGhlIHByZWZpbGwKIGNhbGN1
-bGF0aW9uCgpJbiBjYXNlIG9mIHBhbmVscyB3aXRoIGxvdyB2ZXJ0aWNhbCBiYWNrIHBvcmNoIGFu
-ZCBwdywKdGhlIHByZWZpbGwgYncgd2lsbCBpbmNyZWFzZSBhcyB3ZSB3aWxsIGhhdmUgbGVzcyB0
-aW1lIHRvIGZldGNoCmFuZCBmaWxsIGFsbCB0aGUgaHcgbGF0ZW5jeSBidWZmZXJzLgoKZm9yIGV4
-OiBod19sYXRuZWN5X2xpbmVzID0gMjQsIGFuZCBpZiB2YnArcHcgPSAxMCB0aGVuIHdlIG5lZWQg
-dG8KZmV0Y2ggMjQgbGluZXMgb2YgZGF0YSBpbiAxMCBsaW5lIHRpbWVzLiBUaGlzIHdpbGwgaW5j
-cmVhc2UgcHJlZmlsbApidyByZXF1aXJlbWVudC4KCkRQVSBodyBjYW4gZmV0Y2ggZGF0YSBkdXJp
-bmcgZnJvbnQgcG9yY2ggYWxzbyBwcm92aWRlZCBwcmVmZXRjaCBpcwplbmFibGVkLiBVc2UgZnJv
-bnQgcG9yY2ggYWxzbyBpbnRvIHRoZSBwcmVmaWxsIGNhbHVjdWxhdGlvbiBhcwpkcml2ZXIgZW5h
-YmxlcyBwcmVmZXRjaCBpZiB0aGUgYmxhbmtpbmcgaXMgbm90IHN1ZmZpY2llbnQgdG8gZmlsbAp0
-aGUgbGF0ZW5jeSBsaW5lcy4KClNpZ25lZC1vZmYtYnk6IEthbHlhbiBUaG90YSA8a2FseWFuX3RA
-Y29kZWF1cm9yYS5vcmc+Ci0tLQogZHJpdmVycy9ncHUvZHJtL21zbS9kaXNwL2RwdTEvZHB1X3Bs
-YW5lLmMgfCAxMSArKysrKysrKystLQogMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwg
-MiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbXNtL2Rpc3AvZHB1
-MS9kcHVfcGxhbmUuYyBiL2RyaXZlcnMvZ3B1L2RybS9tc20vZGlzcC9kcHUxL2RwdV9wbGFuZS5j
-CmluZGV4IDdlYTkwZDIuLjMxNWI5OTkgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tc20v
-ZGlzcC9kcHUxL2RwdV9wbGFuZS5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9tc20vZGlzcC9kcHUx
-L2RwdV9wbGFuZS5jCkBAIC0xNTEsNyArMTUxLDcgQEAgc3RhdGljIHZvaWQgX2RwdV9wbGFuZV9j
-YWxjX2J3KHN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lLAogCXU2NCBwbGFuZV9idzsKIAl1MzIgaHdf
-bGF0ZW5jeV9saW5lczsKIAl1NjQgc2NhbGVfZmFjdG9yOwotCWludCB2YnAsIHZwdzsKKwlpbnQg
-dmJwLCB2cHcsIHZmcDsKIAogCXBzdGF0ZSA9IHRvX2RwdV9wbGFuZV9zdGF0ZShwbGFuZS0+c3Rh
-dGUpOwogCW1vZGUgPSAmcGxhbmUtPnN0YXRlLT5jcnRjLT5tb2RlOwpAQCAtMTY0LDYgKzE2NCw3
-IEBAIHN0YXRpYyB2b2lkIF9kcHVfcGxhbmVfY2FsY19idyhzdHJ1Y3QgZHJtX3BsYW5lICpwbGFu
-ZSwKIAlmcHMgPSBkcm1fbW9kZV92cmVmcmVzaChtb2RlKTsKIAl2YnAgPSBtb2RlLT52dG90YWwg
-LSBtb2RlLT52c3luY19lbmQ7CiAJdnB3ID0gbW9kZS0+dnN5bmNfZW5kIC0gbW9kZS0+dnN5bmNf
-c3RhcnQ7CisJdmZwID0gbW9kZS0+dnN5bmNfc3RhcnQgLSBtb2RlLT52ZGlzcGxheTsKIAlod19s
-YXRlbmN5X2xpbmVzID0gIGRwdV9rbXMtPmNhdGFsb2ctPnBlcmYubWluX3ByZWZpbGxfbGluZXM7
-CiAJc2NhbGVfZmFjdG9yID0gc3JjX2hlaWdodCA+IGRzdF9oZWlnaHQgPwogCQltdWx0X2ZyYWMo
-c3JjX2hlaWdodCwgMSwgZHN0X2hlaWdodCkgOiAxOwpAQCAtMTc2LDcgKzE3NywxMyBAQCBzdGF0
-aWMgdm9pZCBfZHB1X3BsYW5lX2NhbGNfYncoc3RydWN0IGRybV9wbGFuZSAqcGxhbmUsCiAJCXNy
-Y193aWR0aCAqIGh3X2xhdGVuY3lfbGluZXMgKiBmcHMgKiBmbXQtPmJwcCAqCiAJCXNjYWxlX2Zh
-Y3RvciAqIG1vZGUtPnZ0b3RhbDsKIAotCWRvX2RpdihwbGFuZV9wcmVmaWxsX2J3LCAodmJwK3Zw
-dykpOworCWlmICgodmJwK3ZwdykgPiBod19sYXRlbmN5X2xpbmVzKQorCQlkb19kaXYocGxhbmVf
-cHJlZmlsbF9idywgKHZicCt2cHcpKTsKKwllbHNlIGlmICgodmJwK3Zwdyt2ZnApIDwgaHdfbGF0
-ZW5jeV9saW5lcykKKwkJZG9fZGl2KHBsYW5lX3ByZWZpbGxfYncsICh2YnArdnB3K3ZmcCkpOwor
-CWVsc2UKKwkJZG9fZGl2KHBsYW5lX3ByZWZpbGxfYncsIGh3X2xhdGVuY3lfbGluZXMpOworCiAK
-IAlwc3RhdGUtPnBsYW5lX2ZldGNoX2J3ID0gbWF4KHBsYW5lX2J3LCBwbGFuZV9wcmVmaWxsX2J3
-KTsKIH0KLS0gCjIuNy40Cgo=
---=_b2b938fb10d812d8faa8fd415ac40fd7--
+iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCX70DWwAKCRCdlLljIbnQ
+Eh02AQDqe/cbtRujqSD6iqI1h/NzdVqiyVSfQha2lM/csdR84AD/fY8Z+EramNW4
+2GU3nD2K8K/evERqIV3wX4ODDpQFUQ4=
+=8C+9
+-----END PGP SIGNATURE-----
+
+--menhpnrtnm2uuh3t--
