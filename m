@@ -2,127 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640E42C2FC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4852C2FC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404354AbgKXSLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:11:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        id S2404244AbgKXSLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:11:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404106AbgKXSLL (ORCPT
+        with ESMTP id S2404225AbgKXSLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:11:11 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A538C0613D6;
-        Tue, 24 Nov 2020 10:11:11 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id d20so14287422lfe.11;
-        Tue, 24 Nov 2020 10:11:11 -0800 (PST)
+        Tue, 24 Nov 2020 13:11:47 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5386DC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:11:46 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id m62so1445878vsd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:11:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GMTk9IPtCbGbtCQyv0EbWnn+I/Sjehwg2jsohofHzyU=;
-        b=OuxEl7gcKqpSycWYVeoIHCdSCnT9MUbGiUTCdoiA15DPvS4+IFUKsxCFotAbxnYA8b
-         OxpR3J4DqTHeklh7UxLJKLfZiGqmrI39FFam9AGvdDcjg3tSeYcvqx+eS0EWfSKOmcuj
-         vNDfNuGFN4QbrfSHpwWeFVAPp1VqxdPwSXeh6WnoQkMyqgyTmXUcxlrw7z0M4jNnK/kG
-         9Jm1Tt6pHFgvHlrpHQ962xnFzm55cCKe1HGb1cs0D4BnFLkUWQ/t6N2iynzesktkQQqx
-         pn/qtPmJMJGNyOXvngK7aUWCXeuz7Q5IqB2YFDjKjmCbDQ1ew1biJVhaaJqjlZGetYmB
-         x1CA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ouJWx2zn47zlu4B7Xfyb3QjpWbpG3sniI+fG+9qwz44=;
+        b=keElOytw+bW5u4OHHELAO6GvMZwm9P3rZG2D9PgVidraJ2wkVJ4XAxmgP7uk5Xhq7t
+         jugn8eA/idk5JUYzvj+SlC78RC97IpCahdJwy8AzwwMbiS5bcEXzFsDeqeV5abZ7Ru6T
+         emSPvBK30MPW19TJin6Lda9nq8+Oxl8zSGyAlemWhxOXlTcorC/ceiEP70sB7gmG6RN5
+         TEczYXEA/Tqqcr03KP82Q950UKgs5z/GoharONh7yZhdCzruV+M0r4k0MSkMwv1FPEnk
+         zbPk9etNMFykhbVZi3afEapbwtFn9csFyZ5YBUDuQEX388KfnRl1hauzgx2B2Igujb6d
+         rEMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GMTk9IPtCbGbtCQyv0EbWnn+I/Sjehwg2jsohofHzyU=;
-        b=JKsm6Zor0Eb6AW71Er6YDo98gGI62NucUK2BCY14VxYhzy1BWPFfiQ7OKR6xUi7clZ
-         JbfIMixCne1ymChYNkZFt9NRxIwkwMuyJVr+3opbml6ov3NE+RfFDA1vFetCE1zMI0TK
-         jvN7grbAo/hUUidlm7OgwSwKSErfe9XLxHalMlnKnF9G9GhUyeIsRzrBkBqy9C8C4d6S
-         2NAQRfv6ABCPkZKd+xCgw4SwJAWN0LaoOqg3NY3Zg2G0k7/HQA9PGDk+4dkc//CizIVw
-         8B44PM73F6CWujwQ44Ql3Yvw57wuMxP8CG+rO/lTUomcJMzPMIhZqjHJGRsAwCVKt3gT
-         tWPw==
-X-Gm-Message-State: AOAM531JbIeFx1cmWtLZw57bvCmGUIUXnTRimgaIN/2KLojaDigIWSFb
-        NAjq+fEVHPM3ngN6VW+Kjx7WWiZs9vlJuA==
-X-Google-Smtp-Source: ABdhPJwGVQNUfCQ7hEW5Zm+tTZ5mu9/gDWYE4o8op7oYuHr8vq8kO7d/abeOd2xvXy0GHBMmkLG+Ng==
-X-Received: by 2002:a05:6512:6d0:: with SMTP id u16mr1810672lff.497.1606241469651;
-        Tue, 24 Nov 2020 10:11:09 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50? ([2a00:1fa0:651:eeec:8461:5bd1:fea0:1c50])
-        by smtp.gmail.com with ESMTPSA id 6sm407998ljr.127.2020.11.24.10.11.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 10:11:09 -0800 (PST)
-Subject: Re: [PATCH 2/5] memory: renesas-rpc-if: Make
- rpcif_enable/disable_rpm() as static inline
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201124112552.26377-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <d7e512d5-e56f-db04-182c-e907b2cfbb71@gmail.com>
-Date:   Tue, 24 Nov 2020 21:11:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ouJWx2zn47zlu4B7Xfyb3QjpWbpG3sniI+fG+9qwz44=;
+        b=mq65Fo3SvsucAeVUXCkRikHG4sSte3NY3/Yq967PuwVXRKsyRw7R/QHs1cII8Rxq82
+         iAJHx0tBSI3KO7USG0cgiIHN6ZvgRPWOnFU4r9AbYSh2xBawQBX3FsfwGjSG8V7DBNoi
+         vG0/l3ZHKviF/QTfOUKKKvdQjUp4JecC/lTxV0xTSr1BsJNUjsDVubQDwXcaA0dNdW0w
+         e0FLgSCYJSHZOXG55qMgcBIkBmRg3tdNFJVAPfYyJvMTeZ9AJpQjPzSGq3WOFGhJBzVg
+         LaTig2rL1Yaj/Ilz/l8Zhqau3X6jKtBoU8aNQmcLmemWMUc8s+2+uT0RbV6+un00Q5Sy
+         5hUw==
+X-Gm-Message-State: AOAM532HnJGFyh/Y3HFWSx0vJtX2SLq1q9+cb0Qo39k4fnWejIB3zURg
+        e4qphgsVrvBi+n0F6fCqhelpPT/8KFBx6NlWyxrr6g==
+X-Google-Smtp-Source: ABdhPJy+hS/FIG91pYhATyBawd1c7DF5HOWh7ONR/zbRKCgSFSoucmfTn6eh5ncGH+6TuwmecDrA8VRByK38jlEKsuo=
+X-Received: by 2002:a67:fa1a:: with SMTP id i26mr5152293vsq.31.1606241505127;
+ Tue, 24 Nov 2020 10:11:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201124112552.26377-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201001230403.2445035-1-danielwinkler@google.com>
+ <CAP2xMbtC0invbRT2q6LuamfEbE9ppMkRUO+jOisgtBG17JkrwA@mail.gmail.com>
+ <CABBYNZJ65vXxeyJmZ_L_D+9pm7uDHo0+_ioHzMyh0q8sVmREsQ@mail.gmail.com>
+ <CAP2xMbs4sUyap_-YAFA6=52Qj+_uxGww7LwmbWACVC0j0LvbLQ@mail.gmail.com>
+ <CABBYNZ+0LW0sOPPe+QHWLn7XXdAjqKB3Prm21SyUQLeQqW=StA@mail.gmail.com>
+ <CAP2xMbsJ6EQYbJvS=59Dpj83sugFGaP98Mq-1SgxrJ+aSqd4pA@mail.gmail.com> <CABBYNZL835FLHq3y_1_k0vyQEW2_teoqvkt=pPDjqENegTU4FQ@mail.gmail.com>
+In-Reply-To: <CABBYNZL835FLHq3y_1_k0vyQEW2_teoqvkt=pPDjqENegTU4FQ@mail.gmail.com>
+From:   Daniel Winkler <danielwinkler@google.com>
+Date:   Tue, 24 Nov 2020 10:11:34 -0800
+Message-ID: <CAP2xMbsqvS__k5c0d+27miywwZ0oe968BhcPnxmY9YH7DvpsLA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Bluetooth: Add new MGMT interface for advertising add
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi Luiz,
 
-On 11/24/20 2:25 PM, Lad Prabhakar wrote:
+Thank you again for the support on this issue. I have just provided a
+patch series here:
 
-> Define rpcif_enable_rpm() and rpcif_disable_rpm() as static
+https://patchwork.kernel.org/project/bluetooth/list/?series=390411
 
-   Not sure why I didn't do it this way myself...
+to include test coverage for the new APIs via mgmt-tester. In
+addition, as this coverage helped me find a minor bug in returning
+remaining adv data size in the MGMT response, I've submitted a fix in
+the kernel patch series. Please let me know if there is anything
+further I can provide.
 
-> inline in the header instead of exporting it.
+Thanks!
+Daniel
 
-   s/it/them/.
 
-> Suggested-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/memory/renesas-rpc-if.c | 13 -------------
->  include/memory/renesas-rpc-if.h | 13 +++++++++++--
->  2 files changed, 11 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-> index 69f2e2b4cd50..c5b5691503d7 100644
-> --- a/drivers/memory/renesas-rpc-if.c
-> +++ b/drivers/memory/renesas-rpc-if.c
-[...]
-> @@ -204,18 +203,6 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
->  }
->  EXPORT_SYMBOL(rpcif_sw_init);
->  
-> -void rpcif_enable_rpm(struct rpcif *rpc)
-> -{
-> -	pm_runtime_enable(rpc->dev);
-> -}
-> -EXPORT_SYMBOL(rpcif_enable_rpm);
-> -
-> -void rpcif_disable_rpm(struct rpcif *rpc)
-> -{
-> -	pm_runtime_put_sync(rpc->dev);
-
-   Ugh... sorry for this blunder (that went unnoticed till now). Mind fixing
-it to pm_runtime_disable() (before this patch)?
-
-> -}
-> -EXPORT_SYMBOL(rpcif_disable_rpm);
-> -
->  void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
->  {
->  	u32 dummy;
-[...]
-
-MBR, Sergei
+On Tue, Nov 3, 2020 at 1:25 PM Luiz Augusto von Dentz
+<luiz.dentz@gmail.com> wrote:
+>
+> Hi Daniel,
+>
+> On Tue, Nov 3, 2020 at 9:42 AM Daniel Winkler <danielwinkler@google.com> wrote:
+> >
+> > Hello Luiz,
+> >
+> > Thank you for the information. It is good to know that this tool is
+> > actively used and that there is a way to skip existing flaky tests.
+> > Just for clarification, is this a requirement to land the kernel
+> > changes, i.e. should I prioritize adding these tests immediately to
+> > move the process forward? Or can we land the changes based on the
+> > testing I have already done and I'll work on these tests in parallel?
+>
+> We used to require updates to mgmt-tester but it seems some of recent
+> command did not have a test yet, but if we intend to have the CI to
+> tests the kernel changes properly I think we should start to requiring
+> it some basic testing, obviously it will be hard to cover everything
+> that is affected by a new command but the basic formatting, etc, we
+> should be able to test, also tester supports the concept of 'not run'
+> which we can probably use for experimental commands.
+>
+> > Thanks,
+> > Daniel
+> >
+> > On Thu, Oct 29, 2020 at 5:04 PM Luiz Augusto von Dentz
+> > <luiz.dentz@gmail.com> wrote:
+> > >
+> > > Hi Daniel,
+> > >
+> > > On Thu, Oct 29, 2020 at 3:25 PM Daniel Winkler <danielwinkler@google.com> wrote:
+> > > >
+> > > > Hi Luiz,
+> > > >
+> > > > Thank you for the feedback regarding mgmt-tester. I intended to use
+> > > > the tool, but found that it had a very high rate of test failure even
+> > > > before I started adding new tests. If you have a strong preference for
+> > > > its use, I can look into it again but it may take some time. These
+> > > > changes were tested with manual and automated functional testing on
+> > > > our end.
+> > > >
+> > > > Please let me know your thoughts.
+> > >
+> > > Total: 406, Passed: 358 (88.2%), Failed: 43, Not Run: 5
+> > >
+> > > Looks like there are some 43 tests failing, we will need to fix these
+> > > but it should prevent us to add new ones as well, you can use -p to
+> > > filter what tests to run if you want to avoid these for now.
+>
+>
+>
+> --
+> Luiz Augusto von Dentz
