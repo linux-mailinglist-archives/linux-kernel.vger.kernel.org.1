@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCF32C24DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD862C24E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 12:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733037AbgKXLnH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 06:43:07 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30462 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732925AbgKXLnH (ORCPT
+        id S1732987AbgKXLpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 06:45:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732792AbgKXLpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:43:07 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-91-jyJxJe5aNJiyxE4leEQJIA-1; Tue, 24 Nov 2020 11:43:03 +0000
-X-MC-Unique: jyJxJe5aNJiyxE4leEQJIA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 11:43:02 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 24 Nov 2020 11:43:02 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Martin Schiller' <ms@dev.tdt.de>,
-        "andrew.hendry@gmail.com" <andrew.hendry@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "xie.he.0141@gmail.com" <xie.he.0141@gmail.com>
-CC:     "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v5 3/5] net/lapb: fix t1 timer handling for
- LAPB_STATE_0
-Thread-Topic: [PATCH net-next v5 3/5] net/lapb: fix t1 timer handling for
- LAPB_STATE_0
-Thread-Index: AQHWwkWB5njMObAgO0WeknXMDXzKn6nXJulw
-Date:   Tue, 24 Nov 2020 11:43:02 +0000
-Message-ID: <2d40b42aee314611b9ba1627e5eab30b@AcuMS.aculab.com>
-References: <20201124093538.21177-1-ms@dev.tdt.de>
- <20201124093538.21177-4-ms@dev.tdt.de>
-In-Reply-To: <20201124093538.21177-4-ms@dev.tdt.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 24 Nov 2020 06:45:06 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48936C0613D6;
+        Tue, 24 Nov 2020 03:45:04 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id y10so6169148ljc.7;
+        Tue, 24 Nov 2020 03:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lEZOg2+Pg+PWUdy2vuWhDST9DUP8pdhSxb8BJWFY9tE=;
+        b=vOYyA/g9dkI4GqaR/Nzl5Toy2WtgFbuZt895POW6raPpyIeuezBIf0CpzqpKxvRtV6
+         lK0UKkjbhwFrq1k/4oUdllgdW0Jt531xFbcbWPFR551BhP/1O8BpumRwUbf6K1z5AoRm
+         PHAK1Gi28g7ms6y+8kLCuevenERfhEVx6HlXGWoH8t56EMgbSiPhx6B8QZAXciYn5LXT
+         OQ/RrX2/DI4xdLDSy7d9N1ZpFQrc82o6Ho0uUIFW+zEDFVq1jt1QlQy/emYO2DY+UurR
+         xbyXqbNUzUSRXKbUgzTCax+iQIURzo7j68eSZWnMpzZe+pD0Pami+RmIq41wCi+03ZYy
+         g8NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lEZOg2+Pg+PWUdy2vuWhDST9DUP8pdhSxb8BJWFY9tE=;
+        b=bCB80pmY3s8WGba3HFuGO3wo2T+kUFo8dDmcX1tGuVeQQBhjiQxnuEmYB734CTQNJI
+         DpMmnrAnfSP/L4D9a2qwy+Kmqe+lGc5txGXS35R1rhNYNfavaSfQTpNCjiGo7rMOukXF
+         X2obcSXGddlLdRtXCAihZbW68BxtWafieX5Q3kIBFZ5DKbgJXtGFb9ZZ8Impd59ZbGuA
+         ey12Pz9r+hH6lyk94/xLmvDAEiYoNWPev1OcAWd+PCoCUWGeeStmu9amZhy6xzTRAAOP
+         x3Xnw9ily8crVeh/2Wjk6tnzc2jmIwwl+VWgvLX3YqW8YEQD8k00RmOeQMKZVz4xcN7q
+         ZKLA==
+X-Gm-Message-State: AOAM533+EjZ0XVrAs8ShBruFKrFDCW2lvhFmU//t5A0vpi/OFY0MMRyQ
+        e2A6mLcUhbLwYHC9Cc7sjMw=
+X-Google-Smtp-Source: ABdhPJyt2qxVoOO+tTtlJp1TOkO9FcEk2yiuWPPlEX8dqIesxpSd7BbAyc596g4eq07ogrDnKa6onQ==
+X-Received: by 2002:a2e:3c1a:: with SMTP id j26mr1769040lja.294.1606218302727;
+        Tue, 24 Nov 2020 03:45:02 -0800 (PST)
+Received: from ?IPv6:2a00:1fa0:44aa:1e8:bf33:c8db:a3e2:c358? ([2a00:1fa0:44aa:1e8:bf33:c8db:a3e2:c358])
+        by smtp.gmail.com with ESMTPSA id k28sm983027lfj.48.2020.11.24.03.45.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 03:45:02 -0800 (PST)
+Subject: Re: [PATCH v3] usb: musb: remove unused variable 'devctl'
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+To:     min.guo@mediatek.com, Bin Liu <b-liu@ti.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        chunfeng.yun@mediatek.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20201124084955.30270-1-min.guo@mediatek.com>
+ <c2f3f643-8514-5c4a-dd52-7abc8a6dc501@gmail.com>
+Message-ID: <df11df93-f2ab-157c-22ea-cb8b8a0d9969@gmail.com>
+Date:   Tue, 24 Nov 2020 14:45:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <c2f3f643-8514-5c4a-dd52-7abc8a6dc501@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Schiller
-> Sent: 24 November 2020 09:36
+On 11/24/20 12:13 PM, Sergei Shtylyov wrote:
+
+[...]
+>> From: Min Guo <min.guo@mediatek.com>
+>>
+>> Remove unused 'devctl' variable to fix compile warnings:
+>>
+>>      drivers/usb/musb/musbhsdma.c: In function 'dma_controller_irq':
+>>      drivers/usb/musb/musbhsdma.c:324:8: warning: variable 'devctl' set
+>>      but not used [-Wunused-but-set-variable]
+>>
+>> Signed-off-by: Min Guo <min.guo@mediatek.com>
+>> ---
+>> changes in v3
+>> suggested by Greg Kroah-Hartman:
+>> Add a comment.
+>>
+>> changes in v2
+>> suggested by Alan Stern:
+>> Add void before musb_read to indicate that the register MUSB_DEVCTL
+>> was intended to be read and discarded.
+>> ---
+>>   drivers/usb/musb/musbhsdma.c | 8 +++++---
+>>   1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/usb/musb/musbhsdma.c b/drivers/usb/musb/musbhsdma.c
+>> index 0aacfc8be5a1..2a345b4ad015 100644
+>> --- a/drivers/usb/musb/musbhsdma.c
+>> +++ b/drivers/usb/musb/musbhsdma.c
+> [...]
+>> @@ -336,7 +334,11 @@ irqreturn_t dma_controller_irq(int irq, void *private_data)
+>>                           < musb_channel->len) ?
+>>                       "=> reconfig 0" : "=> complete");
+>>   -                devctl = musb_readb(mbase, MUSB_DEVCTL);
+>> +                /*
+>> +                 * Some hardware may need to read the
+>> +                 * MUSB_DEVCTL register once to take effect.
+>> +                 */
+>> +                (void)musb_readb(mbase, MUSB_DEVCTL);
 > 
-> 1. DTE interface changes immediately to LAPB_STATE_1 and start sending
->    SABM(E).
-> 
-> 2. DCE interface sends N2-times DM and changes to LAPB_STATE_1
->    afterwards if there is no response in the meantime.
+>    Hm, forcibly reading DevCtl in the DMA driver... sounds quite nonsensically. Lemme take a look...
 
-Seems reasonable.
-It is 35 years since I wrote LAPB and I can't exactly remember
-what we did.
-If I stole a copy of the code it's on a QIC-150 tape cartridge!
+   Indeed, prior to commit c418fd6c01fbc5516a2cd1eaf1df1ec86869028a ("usb: gadget: musb: fix short
+isoc packets with inventra dma") the DevCtl read was done in order to check the DevCtl.HostMode bit --
+this test was removed but the DevCtl read was left intact... so my vote goes for deleting both the
+read and the variable...
 
-I really don't remember having a DTE/DCE option.
-It is likely that LAPB came up sending DM (response without F)
-until level3 requested the link come up when it would send
-N2 SABM+P hoping to get a UA+F.
-It would then send DM-F until a retry request was made.
+> [...]
 
-We certainly had several different types of crossover connectors
-for DTE-DTE working.
-
-	David
-
-> 
-> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
-> ---
->  net/lapb/lapb_timer.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/lapb/lapb_timer.c b/net/lapb/lapb_timer.c
-> index 8f5b17001a07..baa247fe4ed0 100644
-> --- a/net/lapb/lapb_timer.c
-> +++ b/net/lapb/lapb_timer.c
-> @@ -85,11 +85,18 @@ static void lapb_t1timer_expiry(struct timer_list *t)
->  	switch (lapb->state) {
-> 
->  		/*
-> -		 *	If we are a DCE, keep going DM .. DM .. DM
-> +		 *	If we are a DCE, send DM up to N2 times, then switch to
-> +		 *	STATE_1 and send SABM(E).
->  		 */
->  		case LAPB_STATE_0:
-> -			if (lapb->mode & LAPB_DCE)
-> +			if (lapb->mode & LAPB_DCE &&
-> +			    lapb->n2count != lapb->n2) {
-> +				lapb->n2count++;
->  				lapb_send_control(lapb, LAPB_DM, LAPB_POLLOFF, LAPB_RESPONSE);
-> +			} else {
-> +				lapb->state = LAPB_STATE_1;
-> +				lapb_establish_data_link(lapb);
-> +			}
->  			break;
-> 
->  		/*
-> --
-> 2.20.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+MBR, Sergei
