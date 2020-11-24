@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DDA2C2B70
+	by mail.lfdr.de (Postfix) with ESMTP id 40DF72C2B6F
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389768AbgKXPfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:35:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389340AbgKXPe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:34:59 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1B8A206D9;
-        Tue, 24 Nov 2020 15:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606232099;
-        bh=45SlmfsmIMOXv8O0QZwjwZBCGy0E7RVMW2NesSV/47k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qtn8AkPm7NLigf+bab535CzSZDXbvQYiNvl1bCqgn6CyaE4vavdPmj0+Pd13qa6BB
-         mvMoDajDD5YYUur52dexhzH5Vdr48tEREGqHDd1udWnFygoLLj7zdf2eL2funm4V+M
-         fz6njgbbS82csEYRaK5TeB9sQOUSE2Yilm40QSbs=
-Date:   Tue, 24 Nov 2020 15:34:35 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Philippe Duplessis-Guindon <pduplessis@efficios.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] tracing: Remove duplicate `type` field from
- regmap `regcache_sync` trace event
-Message-ID: <20201124153118.GE4933@sirena.org.uk>
-References: <20201124135730.9185-1-pduplessis@efficios.com>
+        id S2389744AbgKXPey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389340AbgKXPey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:34:54 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF33FC0613D6;
+        Tue, 24 Nov 2020 07:34:53 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id v8so10813285vso.2;
+        Tue, 24 Nov 2020 07:34:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rSahwMlPVKC+k3kYG3otLuHHfUicNi1S/Np+gD97NI0=;
+        b=K/deaqEVY6aTzrqs6A1dV9MeM2e9ix2qrWfdFg7md/EVNIn59JTeoy0sgRmnDbcQiS
+         z1IOgXwEK81gyG7lsTer6hoxdznAte4Q/3fgsx732+L75wuZDAV0xdeTLZbyp6c+ET0r
+         rA3DEO4G21frdrUxddD8Qu1Tf0SIWtkb7LAuWPh/SYsZRqlXGmXkXA5hLZk/RNg2zzMj
+         djBP5aQSsrToOFaLkGkvNnvlBB9G5tOSvCGnAfU9OKVfSQkY4M3ec2SowDnK2Mmuu38t
+         2e20AnPViCUoQfYXdX3zexO9IoWgoRFXrsdMt55Rh1v6keg5s+lHGA2ra046mKQXFPOB
+         AADA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rSahwMlPVKC+k3kYG3otLuHHfUicNi1S/Np+gD97NI0=;
+        b=tBAE62A+yHofY+HpnXvqOk5bNjCj0cqByGglesL44Zm4rB4oV6agEQQ+beOlzU3j5a
+         6KTJ6tCAfEzsBcaWrueGLN2jytgrajLK64Sv4lARrSsNUwh19krzczTinJaIys5sPxL2
+         cUO0tCH+K2mVjvj98ySWmIVUSAjO9yCwo02JzpgAw5VvSMUoYFIFXAA2jyO0KI6tMh15
+         EcknQCZ0Dxr6Vb6HeXOUZ7/ara2DKMoBKxhDD90E2u5KjEmCMegly9vktZxs4kRbv9Im
+         XPbMtuQvVsBYbg4QF6bO2raFka+WR95aU4b1aSMEADDt2zTGf6gC6savtri6g3U+9MdM
+         A5Hg==
+X-Gm-Message-State: AOAM532kn3mE9gKQlAnHCLSkuKBuAwJM4UU67PvOrK8Fa/ee2LznRQe/
+        WBzsvka6y0MTB1WZw03zYNQn6ighTAoZwFLz3B0=
+X-Google-Smtp-Source: ABdhPJzH01ciWRir6svn8+Zir3hYQjEG0pjt/A2lxGqAy6ff5TJ5jBJl3RaA9o6zcNnUTX598G2jyt6/+5yJx3PCE7w=
+X-Received: by 2002:a67:2084:: with SMTP id g126mr4429457vsg.42.1606232093012;
+ Tue, 24 Nov 2020 07:34:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vtJ+CqYNzKB4ukR4"
-Content-Disposition: inline
-In-Reply-To: <20201124135730.9185-1-pduplessis@efficios.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201123163622.166048-1-clemens.gruber@pqgruber.com>
+ <CAGngYiU8M0urUogQJf5-GS_rWmPa85TAVxdRD1EfkRK-EGQ7_w@mail.gmail.com>
+ <X70kjlZpIaN1T1ml@workstation.tuxnet> <CAGngYiVkzm=D=hX=k7jL-ikApV4Xc0q+jzebMbqbQVoSAzSWYg@mail.gmail.com>
+In-Reply-To: <CAGngYiVkzm=D=hX=k7jL-ikApV4Xc0q+jzebMbqbQVoSAzSWYg@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Tue, 24 Nov 2020 10:34:41 -0500
+Message-ID: <CAGngYiUhWii29u06B5jq8gjYr8xW6L3VgLB0njaBxdKP2GdsTQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] pwm: pca9685: Switch to atomic API
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 24, 2020 at 10:29 AM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> My pleasure ! We are fortunate that you take the time & effort to improve
+> this code.
 
---vtJ+CqYNzKB4ukR4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 24, 2020 at 08:57:30AM -0500, Philippe Duplessis-Guindon wrote:
-
-> Fixes commit 593600890110c ("regmap: Add the regcache_sync trace event")
->=20
-> Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
-
-Please follow the format for Fixes: tags documented in
-submitting-patches.rst and existing usage in the kernel.
-
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---vtJ+CqYNzKB4ukR4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+9KAsACgkQJNaLcl1U
-h9AeFwf+JlXde7alJC/swGRwNTmn9y0Jb1g6/ogpQSusfwXQ1TP0JiKtmfNHUr3f
-aTQv5OTg24HLheO+kO5tc1jniV9c2Gq5Gb+Xi1770xopmhcsu6peAh5mi1PZ9J5U
-jkXHn3OoNCeps1WX1ImQN2AEAOC5iwpqXSeNS6CMqL1BVLr74Uxp5qBbYhnxi7PR
-tzoxDd7xSJzULh6r6a67LfaUjMvnKRGCZEb/UWNKcxWfpyOxQnK1HNO7a4NJDgfF
-ss+AxfhzjitHruncRZCTL1xfUK5pqw/f4GZyxiaE44vWZ0TWocNEmNddUE4RcD1Z
-fCge+hNbXxg0hGVdEWx+JImpG5MVhg==
-=EHsQ
------END PGP SIGNATURE-----
-
---vtJ+CqYNzKB4ukR4--
+By "this code" I meant the pca9685 driver in general. Just making sure
+there's no possible misinterpretation :)
