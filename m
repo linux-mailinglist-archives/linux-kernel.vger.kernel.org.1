@@ -2,116 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD752C2A8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:58:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F82C2A8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389367AbgKXO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728352AbgKXO52 (ORCPT
+        id S2389381AbgKXO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:58:03 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49919 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388513AbgKXO6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:57:28 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6B4C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:57:26 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id w15so852079oie.13
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:57:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sXzXgvLp4s+46JRUtzzV0/6Df/FZIX/XlFhg2++CJ7g=;
-        b=rvgO0ShYj3OMSlEin7VGkUn0IM+58ObeVh/TdWxzWTdOvl/seTdhKJCeGJb2aVxEOP
-         4mveIzPpcPBk+2ATDUftjhUVhK0DZlvF6jiSLo5Q9pbO10swOdOH8pxUsooaQpuIjfm6
-         w9PYIVZ70hsp6bcw23zxkMx2FRuv1cynkbn9co/6PvObOa4WVwO/ih8uP8svElI8NpWZ
-         IwVQ83vdU8w8SdOR/nbTfYQWOMPQf1BghyrUxELA1ObvUtzZalIkV+9d0D5tazrekRxY
-         u4eGRu3KesPfVPY+82kT9W/Jti1rsm4Xanmen3fBhkZdbvgSSFyD9E825RQroHApWEKy
-         vxEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sXzXgvLp4s+46JRUtzzV0/6Df/FZIX/XlFhg2++CJ7g=;
-        b=DZzVbM3fmKJTO1VOq97Y0gvOTJk5HcwnAC4VloMX/Gp5+3ACiVaGthR4WNtAklHJcD
-         TPR/tsWK94BliLY1X4uzbQ873ad/oVxukra56CxqhbTdNBJLe1b09bVqf0uA8pRpwDpT
-         Qk20NKXeZnP+ZFVNez+lwY21AVyiKq48IVdyEtTYqVARQXKolATtZWHHxEv9/B8uQ3YQ
-         /7KWiCCB4NZqAGf5GE8fmoSwiGJLAPi27FS4YY3HQk1ebWd74KgB6iP/mUkBIwt5nz5p
-         XtqH8184OYkT0aqUCzdS4SoAI8zhwtinfYLVVuNXCVf/9PgtXiatc8pd+SYClMyJEbL0
-         l1cg==
-X-Gm-Message-State: AOAM533UUqgBQL0yd8mYw2tflO9xvBHNEll4F8bYHWG5kXap456+mEwX
-        WmaE/J2EYHpKimz4w78udKGxJg==
-X-Google-Smtp-Source: ABdhPJxa3NAVx1Cn2t+G3dKNxlpEbRiazZDjFN23ymWT/MGwtBTKGNQYqdxTJmVghDox3My4/lknJQ==
-X-Received: by 2002:aca:c3c4:: with SMTP id t187mr2783806oif.148.1606229846311;
-        Tue, 24 Nov 2020 06:57:26 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id k13sm2227901otl.72.2020.11.24.06.57.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 06:57:25 -0800 (PST)
-Date:   Tue, 24 Nov 2020 08:57:23 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org, vkoul@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Document SDX55 Modem and
- boards
-Message-ID: <20201124145723.GJ95182@builder.lan>
-References: <20201124140011.134751-1-manivannan.sadhasivam@linaro.org>
- <20201124140011.134751-2-manivannan.sadhasivam@linaro.org>
+        Tue, 24 Nov 2020 09:58:02 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-255-VP8lqU1sOG-3W9NXUVrPDQ-1; Tue, 24 Nov 2020 14:57:59 +0000
+X-MC-Unique: VP8lqU1sOG-3W9NXUVrPDQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 24 Nov 2020 14:57:58 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 24 Nov 2020 14:57:58 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Ard Biesheuvel' <ardb@kernel.org>
+CC:     linux-efi <linux-efi@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "matthew.garrett@nebula.com" <matthew.garrett@nebula.com>,
+        "jk@ozlabs.org" <jk@ozlabs.org>
+Subject: RE: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+Thread-Topic: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+Thread-Index: AdbCbM2Q6wdSIj4dRX6VFD+iYFiXewAAJveAAAEq0JA=
+Date:   Tue, 24 Nov 2020 14:57:58 +0000
+Message-ID: <3e96bbfe476b4b3d876e480ce6b20b58@AcuMS.aculab.com>
+References: <5f31cde519b941308412b3849197ee7c@AcuMS.aculab.com>
+ <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+In-Reply-To: <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124140011.134751-2-manivannan.sadhasivam@linaro.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24 Nov 08:00 CST 2020, Manivannan Sadhasivam wrote:
+RnJvbTogQXJkIEJpZXNoZXV2ZWwNCj4gU2VudDogMjQgTm92ZW1iZXIgMjAyMCAxNDoyNA0KPiAN
+Cj4gT24gVHVlLCAyNCBOb3YgMjAyMCBhdCAxNToyMiwgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWln
+aHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBJJ3ZlIGp1c3QgdXBkYXRlZCB0byB0aGUg
+aGVhZCBvZiBMaW51cydzIHRyZWUgKDUuMTAtcmM1KSBhbmQgZ290IHRoZSBmb2xsb3dpbmcNCj4g
+PiAnc3BsYXQnIGR1cmluZyBzaHV0ZG93bi4NCj4gPg0KPiA+IFVzZXJzcGFjZSBpcyBVYnVudHUg
+MjAuMDQuDQo+ID4NCj4gPiByYzQgcmVib290ZWQgZmluZS4NCj4gPg0KPiA+IEknbGwgdHJ5IHRv
+IGJpc2VjdCAtIGJ1dCBpdCBpc24ndCBxdWljay4NCj4gPg0KPiANCj4gU3VyZWx5IGNhdXNlZCBi
+eQ0KPiANCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
+dG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC9mcy9lZml2YXJmcz9pZD1mZTUxODZjZjEyZTMwDQo+
+IGZhY2ZlMjYxZTliZTZjNzkwNGExNzBiZDgyMg0KDQpZZXAsIHJlYm9vdHMgZmluZSB3aXRoIHRo
+YXQga2ZyZWUoKSBjb21tZW50ZWQgb3V0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
+ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
+MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-> From: Vinod Koul <vkoul@kernel.org>
-> 
-> Document the SDX55 Modem binding and also the boards using it.
-
-It's not really the "SDX55 Modem", it's the "SDX55 platform". That way
-things become less confusing when we actually add the modem on SDX55
-later.
-
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-> index ad25deba4d86..4362e8f0d495 100644
-> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> @@ -39,6 +39,7 @@ description: |
->          sc7180
->          sdm630
->          sdm660
-> +        sdx55
-
-'x' > 'm', so this should go one line down.
-
-Regards,
-Bjorn
-
->          sdm845
->          sm8250
->  
-> @@ -178,4 +179,9 @@ properties:
->                - qcom,sm8250-mtp
->            - const: qcom,sm8250
->  
-> +      - items:
-> +          - enum:
-> +              - qcom,sdx55-mtp
-> +          - const: qcom,sdx55
-> +
->  ...
-> -- 
-> 2.25.1
-> 
