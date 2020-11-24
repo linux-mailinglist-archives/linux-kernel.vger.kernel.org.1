@@ -2,108 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C002C22F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80352C22FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 11:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731958AbgKXKbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 05:31:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731886AbgKXKbI (ORCPT
+        id S1732061AbgKXKbU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Nov 2020 05:31:20 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2442 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731488AbgKXKbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:31:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606213867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+X/QM3LIRfUSG0/Ck2rlt3TvdbGoFO5E2DZVLdsfOw=;
-        b=SsuKR54dhpLYIOQjkHN4FTxtlTiKSCWtbHuGgHaQBFI3JXFdautdiDuI/rQAj1aav5ZwAM
-        61rneSo0bN2mnF+Pdc8ZmAjN6eH7zpFyYFqFIF9G0v+XLm5R9F4KnEAdZvVLIexoEr4t4W
-        wTehctBxOVXVd9iyPGVNiV0adev4S0A=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-128-W1hgHaL0PgKojOkR7DcSMw-1; Tue, 24 Nov 2020 05:31:04 -0500
-X-MC-Unique: W1hgHaL0PgKojOkR7DcSMw-1
-Received: by mail-ej1-f72.google.com with SMTP id e7so6741204eja.15
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 02:31:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h+X/QM3LIRfUSG0/Ck2rlt3TvdbGoFO5E2DZVLdsfOw=;
-        b=tEylgZBLpR65GYwsFUE6Gc4IAydL+eAKy2UnUpbR1+MwbKMaE/FRxZtEzhUoOL/5ey
-         TLuhsAzIWYAZMLRVzFn2ayQKBuO78Zn5GJ9whbBtBeQgeEI06560XmZTjEidPDcEImgj
-         OHgGXueR/y/CkB6+52dRNo4XATVfVug7lbbcXZzEeqi7CpNCeoMu6YigYN6ev7vfMvXd
-         T02+gFVOGbVnyNvB4PQ31AbeogaleoxemExVAPtzhhqaSYc3XVYraKHXDxUL9J7IKLXg
-         b+z4qlT67qfQNPNrGYBfIEr39uwSIzw6efDjjXIKGnNotU+paKvFZ6+/hIPHhI0LE8yl
-         oI8g==
-X-Gm-Message-State: AOAM531h/Vg8WqAwJFzI1spz9BKU7sBl657/5Oz96xXyeXFm051TJt9q
-        o80fZw5QdqmnheONiEPQdDX/b4+tjF+OsJjdRMNKkfzb3GbRNyq1EDlOijZ1r0Q869c0HrZ9Pm7
-        9jKabCvlXSmbS/7nL31VBBz8Z
-X-Received: by 2002:a50:b584:: with SMTP id a4mr3303659ede.301.1606213863544;
-        Tue, 24 Nov 2020 02:31:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1j1BZSeJJvNp43wSQVFfTRwJU5DVEOcEbiKgJSh1BIM/Fcda7aNMf+62DHflzA3z3suVNBw==
-X-Received: by 2002:a50:b584:: with SMTP id a4mr3303648ede.301.1606213863382;
-        Tue, 24 Nov 2020 02:31:03 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id i13sm6517717ejv.84.2020.11.24.02.31.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 02:31:02 -0800 (PST)
-Subject: Re: 5.10 regression, many XHCI swiotlb buffer is full / DMAR: Device
- bounce map failed errors on thunderbolt connected XHCI controller
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-References: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
- <be031d15-201f-0e5c-8b0f-be030077141f@redhat.com>
- <20201124102715.GA16983@lst.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f1bd62b4-a746-6b1c-08ee-6dd1982722b6@redhat.com>
-Date:   Tue, 24 Nov 2020 11:31:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201124102715.GA16983@lst.de>
-Content-Type: text/plain; charset=utf-8
+        Tue, 24 Nov 2020 05:31:19 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CgKzx3Yjkz4xlG;
+        Tue, 24 Nov 2020 18:30:53 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 24 Nov 2020 18:31:13 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 24 Nov 2020 18:31:12 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Tue, 24 Nov 2020 18:31:12 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>
+CC:     "corbet@lwn.net" <corbet@lwn.net>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        "pawan.kumar.gupta@linux.intel.com" 
+        <pawan.kumar.gupta@linux.intel.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "almasrymina@google.com" <almasrymina@google.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH v6 07/16] x86/mm/64: Disable PMD page mapping of vmemmap
+Thread-Topic: [PATCH v6 07/16] x86/mm/64: Disable PMD page mapping of vmemmap
+Thread-Index: AQHWwkhOPqtKcyIq80+fWoEXOrKJHKnWjWGAgACFgQA=
+Date:   Tue, 24 Nov 2020 10:31:12 +0000
+Message-ID: <c938bb225ea84c06844b31023dad96c1@hisilicon.com>
+References: <20201124095259.58755-1-songmuchun@bytedance.com>
+ <20201124095259.58755-8-songmuchun@bytedance.com>
+ <20201124102441.GA24718@linux>
+In-Reply-To: <20201124102441.GA24718@linux>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.209]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 11/24/20 11:27 AM, Christoph Hellwig wrote:
-> On Mon, Nov 23, 2020 at 03:49:09PM +0100, Hans de Goede wrote:
->> Hi,
->>
->> +Cc Christoph Hellwig <hch@lst.de>
->>
->> Christoph, this is still an issue, so I've been looking around a bit and think this
->> might have something to do with the dma-mapping-5.10 changes.
->>
->> Do you have any suggestions to debug this, or is it time to do a git bisect
->> on this before 5.10 ships with regression?
+
+> -----Original Message-----
+> From: owner-linux-mm@kvack.org [mailto:owner-linux-mm@kvack.org] On
+> Behalf Of Oscar Salvador
+> Sent: Tuesday, November 24, 2020 11:25 PM
+> To: Muchun Song <songmuchun@bytedance.com>
+> Cc: corbet@lwn.net; mike.kravetz@oracle.com; tglx@linutronix.de;
+> mingo@redhat.com; bp@alien8.de; x86@kernel.org; hpa@zytor.com;
+> dave.hansen@linux.intel.com; luto@kernel.org; peterz@infradead.org;
+> viro@zeniv.linux.org.uk; akpm@linux-foundation.org; paulmck@kernel.org;
+> mchehab+huawei@kernel.org; pawan.kumar.gupta@linux.intel.com;
+> rdunlap@infradead.org; oneukum@suse.com; anshuman.khandual@arm.com;
+> jroedel@suse.de; almasrymina@google.com; rientjes@google.com;
+> willy@infradead.org; mhocko@suse.com; Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com>; duanxiongchun@bytedance.com;
+> linux-doc@vger.kernel.org; linux-kernel@vger.kernel.org; linux-mm@kvack.org;
+> linux-fsdevel@vger.kernel.org
+> Subject: Re: [PATCH v6 07/16] x86/mm/64: Disable PMD page mapping of
+> vmemmap
 > 
-> Given that DMAR prefix this seems to be about using intel-iommu + bounce
-> buffering for external devices.  I can't really think of anything specific
-> in 5.10 related to that, so maybe you'll need to bisect.
+> On Tue, Nov 24, 2020 at 05:52:50PM +0800, Muchun Song wrote:
+> > If we enable the CONFIG_HUGETLB_PAGE_FREE_VMEMMAP, we can just
+> > disbale PMD page mapping of vmemmap to simplify the code. In this
+> > case, we do not need complex code doing vmemmap page table
+> > manipulation. This is a way to simply the first version of this
+> > patch series. In the future, we can add some code doing page table
+> > manipulation.
 > 
-> I doub this means we are actually leaking swiotlb buffers, so while
-> I'm pretty sure we broke something in lower layers this also means
-> xhci doesn't handle swiotlb operation very gracefully in general.
+> IIRC, CONFIG_HUGETLB_PAGE_FREE_VMEMMAP was supposed to be enabled
+> by default,
+> right?
+> And we would control whether we __really__ want to this by a boot option,
+> which was disabled by default?
+> 
+> If you go for populating the memmap with basepages by checking
+> CONFIG_HUGETLB_PAGE_FREE_VMEMMAP, would not everybody, even the
+> ones that
+> did not enable this by the boot option be affected?
+> 
 
-Ok, I've re-arranged my schedule a bit so that I have time to bisect this
-tomorrow, so with some luck I will be able to provide info on which commit
-introduced this issue tomorrow around the end of the day.
+I would believe we could only bypass the pmd mapping of vmemmap while
+free_vmemmap is explicitly enabled.
+pmd mapping shouldn't be disabled in default. Would a cmdline of enabling
+vmemmap_free be used for the first patchset?
 
-Regards,
+> --
+> Oscar Salvador
+> SUSE L3
 
-Hans
-
+Thanks
+Barry
