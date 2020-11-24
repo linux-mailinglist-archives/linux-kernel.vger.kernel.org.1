@@ -2,87 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4E62C2EA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 198F02C2EA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390898AbgKXRdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:33:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390791AbgKXRdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:33:05 -0500
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91BDD206F7;
-        Tue, 24 Nov 2020 17:33:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606239184;
-        bh=3edk/P+TSki7lqmQHf7lfC61UtOdi+d/ymZ/f3SXmKs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IdXapJqSYv+TxTI1vd1Q5szmXdxi4D3e1G8QO7S4RC5PVbUMfFWFXicR966BI8xRY
-         AXSbYcy8n6tKXcbjpfAIFq4dKtIXSKeeFAcdPbhBQcvV8Y8HvvrSyVvd/xa1ciRrUO
-         EP4NHLfTwitwbUlliGVC7Gm8DyPlCzof2XV9bJXQ=
-Received: by mail-oi1-f169.google.com with SMTP id h3so1080387oie.8;
-        Tue, 24 Nov 2020 09:33:04 -0800 (PST)
-X-Gm-Message-State: AOAM532zfAYWP3vS6Agadc+3ImnLe0JBXDP1VBrcRj+ri2doXFXi87IF
-        46/UD7ND+9QVEkh/kP8f5j9N3UIhYpEkH2zBxQA=
-X-Google-Smtp-Source: ABdhPJzz/FWGkiYxtnxUMLOPkCf0nLFXF4z0bduoCXU5Rvh/5Bvw1Axe3VZKmpPmAt9Kf9tbxBelsjeqFuk/g3xqYjU=
-X-Received: by 2002:aca:c657:: with SMTP id w84mr3253782oif.47.1606239183818;
- Tue, 24 Nov 2020 09:33:03 -0800 (PST)
+        id S2390900AbgKXRdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:33:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728749AbgKXRdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:33:46 -0500
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE3EC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:33:45 -0800 (PST)
+Received: by mail-vk1-xa43.google.com with SMTP id u16so4959092vkb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:33:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S/7cBjE/AfveVXpAj/uvg/w2sEy/HbRfkcflcOYN7C8=;
+        b=L+ktrhFuLC7tlnEWV+GD853KPvJnX4kL8MEMVfOeG5O/s5DoBkR6n3p8b1mu6nAA/M
+         /GBz8mmMnoD0FBEAK+0Rn7HRWGbh3RkoQjwcImHhgsKm0RsKFNw5V6RG2dva+NQl46hj
+         EQ3VXHdX+6x8jK9b9evNB/J2pYTCGdUNakOHE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S/7cBjE/AfveVXpAj/uvg/w2sEy/HbRfkcflcOYN7C8=;
+        b=rid/WwcN31jTkPnUuUrGgnCESYO/faNtWUh4KOHdq09aerRr1900dc/8jiLsFtVljW
+         nMbTl5WwbZGH6+t3B01NIoBwiSIfPGSnbctzFM8R40FwcnwvJdMo5By2v8e+iSHo6uYr
+         ltsfml1MG8YlMOhXdCyxnLzDhboL7/lePiy8ftiNZb3BcoKOI5hB73GfmrwaMqeEu8NQ
+         /kVyQDWksYkQjpuLnBSHRHtrACcWlxS7g2mgdO2vChwbLe/U73qPROA4jJhbllyikbEK
+         al2/bZiP/4G3rt0kfhRJEfpZ3VuvN/El6TXOEWCGb8vGKamp3YIYuBuv0MmAvaJ+4oSj
+         0Vbw==
+X-Gm-Message-State: AOAM5313oJioNnBikn1JTqC7rvWSCiLc2wyLSKCHk2I9yib2lSWQDqL0
+        Fa1usbiYDdy875LOQFRtWmtDLeNleYjaMg==
+X-Google-Smtp-Source: ABdhPJw2rOH05HnOV6cal1qNLxgg+ltcgSlzMU58awDszRC6QDgXNmWogz5w5oMIFGJsctToD6ZqLw==
+X-Received: by 2002:a1f:4601:: with SMTP id t1mr4934680vka.6.1606239224387;
+        Tue, 24 Nov 2020 09:33:44 -0800 (PST)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id l14sm1677177vsq.17.2020.11.24.09.33.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 09:33:43 -0800 (PST)
+Received: by mail-ua1-f50.google.com with SMTP id x13so7065228uar.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:33:43 -0800 (PST)
+X-Received: by 2002:ab0:60b1:: with SMTP id f17mr3738253uam.104.1606239222440;
+ Tue, 24 Nov 2020 09:33:42 -0800 (PST)
 MIME-Version: 1.0
-References: <cab88111-e8a8-5460-bf67-055d3562da10@molgen.mpg.de>
-In-Reply-To: <cab88111-e8a8-5460-bf67-055d3562da10@molgen.mpg.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 24 Nov 2020 18:32:53 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXE08bux+ZJYjq4hCcs3LGRMUNZfJ65ip_f2HPd+fot=bg@mail.gmail.com>
-Message-ID: <CAMj1kXE08bux+ZJYjq4hCcs3LGRMUNZfJ65ip_f2HPd+fot=bg@mail.gmail.com>
-Subject: Re: What to do with `BERT: Error records from previous boot`?
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
+References: <20201123160139.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+ <20201123160139.3.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid> <502b39f5-a2b3-5893-da18-47b034f4895d@codeaurora.org>
+In-Reply-To: <502b39f5-a2b3-5893-da18-47b034f4895d@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 24 Nov 2020 09:33:29 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WP8hCuwC3RibfZw0diPE0Lgd2-FOt+t4FZUTqKCASBmg@mail.gmail.com>
+Message-ID: <CAD=FV=WP8hCuwC3RibfZw0diPE0Lgd2-FOt+t4FZUTqKCASBmg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] pinctrl: qcom: Clear possible pending irq when
+ remuxing GPIOs
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andy Gross <agross@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 at 17:24, Paul Menzel <pmenzel@molgen.mpg.de> wrote:
->
-> Dear Linux folks,
->
->
-> On the Intel Tiger Lake Dell XPS 13 9310 Linux 5.9.9 from Debian
-> sid/unstable logged the messages below. Please find the whole log in the
-> Linux bug tracker [1].
->
-> ```
-> kernel: BERT: Error records from previous boot:
-> kernel: [Hardware Error]: event severity: fatal
-> kernel: [Hardware Error]:  Error 0, type: fatal
-> kernel: [Hardware Error]:   section_type: Firmware Error Record Reference
-> kernel: [Hardware Error]:   Firmware Error Record Type: SOC Firmware
-> Error Record Type2
-> kernel: [Hardware Error]:   Revision: 2
-> kernel: [Hardware Error]:   Record Identifier:
-> 8f87f311-c998-4d9e-a0c4-6065518c4f6d
-> kernel: [Hardware Error]:   00000000: 0100a306 00000280 ca5824d3
-> 000003ab  .........$X.....
-> [=E2=80=A6]
-> ```
->
-> How can I decode that error to understand what happened?
->
+>Hi,
 
-Dell or Intel should be able to provide that information, although
-getting them to do so may be difficult.
+On Tue, Nov 24, 2020 at 2:37 AM Maulik Shah <mkshah@codeaurora.org> wrote:
+>
+> > +static void msm_pinctrl_clear_pending_irq(struct msm_pinctrl *pctrl,
+> > +                                       unsigned int group,
+> > +                                       unsigned int irq)
+> > +{
+> > +     struct irq_data *d = irq_get_irq_data(irq);
+> > +     const struct msm_pingroup *g;
+> > +     unsigned long flags;
+> > +     u32 val;
+> > +
+> > +     if (!d)
+> > +             return;
+> > +
+> > +     if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
+> > +             irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
+> > +
+>
+> can you add return here if IRQ has parent PDC?
+
+Sure, done.
 
 
+> also replace 0 with false as Marc suggested in patch 1 of this series.
+
+Thanks for the reminder.
+
+
+> > @@ -187,15 +215,26 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+> >       if (WARN_ON(i == g->nfuncs))
+> >               return -EINVAL;
+> >
+> > -     raw_spin_lock_irqsave(&pctrl->lock, flags);
+> > +     disable_irq(irq);
+> >
+> > -     val = msm_readl_ctl(pctrl, g);
+> > +     raw_spin_lock_irqsave(&pctrl->lock, flags);
+> > +     oldval = val = msm_readl_ctl(pctrl, g);
+> >       val &= ~mask;
+> >       val |= i << g->mux_bit;
+> >       msm_writel_ctl(val, pctrl, g);
+> > -
+> >       raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+> >
+> > +     /*
+> > +      * Clear IRQs if switching to/from GPIO mode since muxing to/from
+> > +      * the GPIO path can cause phantom edges.
+> > +      */
+> > +     old_i = (oldval & mask) >> g->mux_bit;
+> > +     if (old_i != i &&
+> > +         (i == pctrl->soc->gpio_func || old_i == pctrl->soc->gpio_func))
+> > +             msm_pinctrl_clear_pending_irq(pctrl, group, irq);
 >
-> Kind regards,
+> disable_irq() and enable_irq() should be moved inside this if loop. as
+> only use for this is to mask the IRQ when switching back to gpio IRQ mode?
+
+That totally breaks things.  Specifically the glitch actually
+introduced above when we write the mux.  If the interrupt wasn't
+disabled then we'd race our Ack-ing of it with it firing, right?  So
+the disable _has_ to be above the mux change.
+
+
+> i also don't think we should leave IRQ enabled at the end of this
+> function by default, probably need to check if IRQ was already unmasked
+> before disabling it, then only call enable_irq().
+
+Marc already replied, but that's not how it works.  disable_irq() and
+enable_irq() are reference counted, so as long as we match them then
+we're leaving the state exactly the same as when we started, right?
+
+To enumerate the possibilities:
+
+a) If the GPIO wasn't configured as an interrupt at all, the
+disable/enable are no-ops.
+
+b) If the interrupt was already disabled, we'll increase the reference
+count and then decrease it at the end.
+
+c) If the interrupt wasn't already disabled, we'll disable it and then
+re-enable it.
+
+
+> > @@ -456,32 +495,45 @@ static const struct pinconf_ops msm_pinconf_ops = {
+> >   static int msm_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
+> >   {
+> >       const struct msm_pingroup *g;
+> > +     unsigned int irq = irq_find_mapping(chip->irq.domain, offset);
+> >       struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
+> >       unsigned long flags;
+> > +     u32 oldval;
+> >       u32 val;
+> >
+> >       g = &pctrl->soc->groups[offset];
+> >
+> > +     disable_irq(irq);
+> > +
+> >       raw_spin_lock_irqsave(&pctrl->lock, flags);
+> >
+> > -     val = msm_readl_ctl(pctrl, g);
+> > +     oldval = val = msm_readl_ctl(pctrl, g);
+> >       val &= ~BIT(g->oe_bit);
+> >       msm_writel_ctl(val, pctrl, g);
+> >
+> >       raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+> >
+> > +     if (oldval != val)
+> > +             msm_pinctrl_clear_pending_irq(pctrl, offset, irq);
+> > +
+> > +     enable_irq(irq);
 >
-> Paul
+> i do not think we need disable_irq() and enable_irq() here, changing
+> direction to input does not mean its being used for interrupt only, it
+> may be set to use something like Rx mode in UART.
 >
->
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D210347
+> the client driver should enable IRQ when needed.
+
+Check the implementation of disable_irq() and enable_irq().  They are
+silent no-ops if the interrupt isn't setup, so this doesn't hurt.
+
+If we don't need the disable_irq() and enable_irq() here then we also
+don't need to clear the pending irq.  If we need to clear the pending
+irq then we need them to avoid the interrupt handler getting called.
+
+
+> > @@ -774,7 +831,7 @@ static void msm_gpio_irq_mask(struct irq_data *d)
+> >       raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+> >   }
+> >
+> > -static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
+> > +static void msm_gpio_irq_unmask(struct irq_data *d)
+> >   {
+> >       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+> >       struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+> > @@ -792,17 +849,6 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
+> >
+> >       raw_spin_lock_irqsave(&pctrl->lock, flags);
+> >
+> > -     if (status_clear) {
+> > -             /*
+> > -              * clear the interrupt status bit before unmask to avoid
+> > -              * any erroneous interrupts that would have got latched
+> > -              * when the interrupt is not in use.
+> > -              */
+> can you please carry this comment in msm_pinctrl_clear_pending_irq()?
+
+I could, but as per the big long description of this patch I think
+that comment is wrong / misleading.  It implies that the interrupt
+controller was somehow paying attention even when the input was muxed
+away (or similar).  After my recent tests I don't believe that's
+actually what was happening.  I believe the glitches you were trying
+to clear here were actually introduced by changing the muxing.
+
+
+> > @@ -815,14 +861,10 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
+> >
+> >   static void msm_gpio_irq_enable(struct irq_data *d)
+> >   {
+> > -     struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+> > -     struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+> > -
+> >       if (d->parent_data)
+> >               irq_chip_enable_parent(d);
+> >
+> > -     if (!test_bit(d->hwirq, pctrl->skip_wake_irqs))
+> > -             msm_gpio_irq_clear_unmask(d, true);
+> > +     msm_gpio_irq_unmask(d);
+> >   }
+> >
+> >   static void msm_gpio_irq_disable(struct irq_data *d)
+> > @@ -837,11 +879,6 @@ static void msm_gpio_irq_disable(struct irq_data *d)
+> >               msm_gpio_irq_mask(d);
+> >   }
+> >
+> > -static void msm_gpio_irq_unmask(struct irq_data *d)
+> > -{
+> > -     msm_gpio_irq_clear_unmask(d, false);
+> > -}
+> > -
+> >   /**
+> >    * msm_gpio_update_dual_edge_parent() - Prime next edge for IRQs handled by parent.
+> >    * @d: The irq dta.
+> > @@ -1097,19 +1134,6 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
+> >               ret = -EINVAL;
+> >               goto out;
+> >       }
+> > -
+> > -     /*
+> > -      * Clear the interrupt that may be pending before we enable
+> > -      * the line.
+> > -      * This is especially a problem with the GPIOs routed to the
+> > -      * PDC. These GPIOs are direct-connect interrupts to the GIC.
+> > -      * Disabling the interrupt line at the PDC does not prevent
+> > -      * the interrupt from being latched at the GIC. The state at
+> > -      * GIC needs to be cleared before enabling.
+> > -      */
+> can you please carry this comment in msm_pinctrl_clear_pending_irq()?
+
+I also think this comment is wrong / misleading.  Specifically:
+
+1. I added a test patch to remux a line away from GPIO mode.
+
+2. I toggled this line back and forth.
+
+3. I then muxed it back.
+
+4. I did not see any indication that the GIC was observing the line
+when it was muxed away.  No interrupts were pending until I muxed it
+back and caused the glitch.  Also: muxing it back could cause a glitch
+regardless of whether I toggled it.
+
+I will certainly admit that I could have messed up in my testing.  If
+you have tested this yourself and you're certain that there is a case
+where that comment is correct then please let me know and I'll
+re-test.  One of the test patches I used when poking at this can be
+found at <https://crrev.com/c/2556012>.
+
+-Doug
