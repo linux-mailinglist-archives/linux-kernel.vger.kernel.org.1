@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FC52C35D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 01:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE69B2C35DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbgKYA4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 19:56:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
+        id S1727017AbgKYBAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 20:00:23 -0500
+Received: from mga03.intel.com ([134.134.136.65]:21076 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726192AbgKYA4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 19:56:06 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C65CF2151B;
-        Wed, 25 Nov 2020 00:56:04 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 19:56:02 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "J. Avila" <elavila@google.com>
-Cc:     mingo@redhat.com, gregkh@linuxfoundation.org,
-        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: Potential Issue in Tracing Ring Buffer
-Message-ID: <20201124195602.0ac14dee@oasis.local.home>
-In-Reply-To: <20201124223917.795844-1-elavila@google.com>
-References: <20201124223917.795844-1-elavila@google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726287AbgKYBAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 20:00:23 -0500
+IronPort-SDR: cAwvY2yR98pya5Y00Jq0aCZG5vIs5WdLMvjJ9Phz2YumnlFYa57Jl320s6tIkJ9azj67XgmpVG
+ khUTetXzPHhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="172140205"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="172140205"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 17:00:22 -0800
+IronPort-SDR: wqtsynaXEuKC8omiAFywZvNW6esy3Q8b5g946HV+w66hUJYtyQCudyYuJAyJUiIiukUNBW5c17
+ LshZzceMJ2rg==
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="478717652"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 17:00:18 -0800
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: [PATCH] soundwire: master: use pm_runtime_set_active() on add
+Date:   Tue, 24 Nov 2020 21:07:42 +0800
+Message-Id: <20201124130742.10986-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 22:39:17 +0000
-"J. Avila" <elavila@google.com> wrote:
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-> Hello,
-> 
-> In the ftrace logs we've collected internally, we have found that there are
-> situations where time seems to go backwards; this breaks userspace tools which
-> expect time to always go forward in these logs. For example, in this snippet
-> from a db845c running a 5.10-rc4 kernel[1] (thanks for getting us the trace,
-> John!), we see:
-> 
->       android.bg-568     [002] dN.1        26247: rcu_utilization: Start context switch
->            <...>-589     [003] ....        26247: sys_enter: NR 73 (b400006f4898c520, 2, 0, 0, 0, 11)
->  PowerManagerSer-578     [001] d..2        26248: sched_switch: prev_comm=PowerManagerSer prev_pid=578 prev_prio=116 prev_state=S ==> next_comm=Binder:381_2 next_pid=395 next_prio=120
->       android.bg-568     [002] dN.1        26248: rcu_utilization: End context switch
->            <...>-589     [003] d..1        26249: rcu_utilization: Start context switch
->            <...>-589     [003] d..1        26250: rcu_utilization: End context switch
->     Binder:381_2-395     [001] ....        26251: sys_exit: NR 98 = 0
->       android.bg-568     [002] dN.2        26251: sched_stat_wait: comm=kworker/u16:3 pid=164 delay=0 [ns]
->            <...>-589     [003] d..2        26252: sched_stat_runtime: comm=statsd.writer pid=589 runtime=611094 [ns] vruntime=24367153868 [ns]
->       android.bg-568     [002] d..2        26254: sched_switch: prev_comm=android.bg prev_pid=568 prev_prio=130 prev_state=R+ ==> next_comm=kworker/u16:3 next_pid=164 next_prio=120
->    kworker/u16:3-164     [002] ....        26256: workqueue_execute_start: work struct 00000000ab3fe95e: function ufshcd_clk_scaling_resume_work
->     Binder:381_2-395     [001] ....        26257: sys_enter: NR 98 (b400006fb8984bf0, 89, 185c, 0, 0, ffffffff)
->     Binder:381_2-395     [001] d..1        26258: rcu_utilization: Start context switch
->    kworker/u16:3-164     [002] ....        26258: workqueue_execute_end: work struct 00000000ab3fe95e: function ufshcd_clk_scaling_resume_work
->     Binder:381_2-395     [001] d..1        26260: rcu_utilization: End context switch
->    kworker/u16:3-164     [002] d..1        26261: rcu_utilization: Start context switch
->     Binder:381_2-395     [001] d..2        26262: sched_stat_runtime: comm=Binder:381_2 pid=395 runtime=100989 [ns] vruntime=40144094287 [ns]
->    kworker/u16:3-164     [002] d..1        26263: rcu_utilization: End context switch
->    kworker/u16:3-164     [002] d..2        26237: sched_stat_runtime: comm=kworker/u16:3 pid=164 runtime=71614 [ns] vruntime=32851170186 [ns]
->    kworker/u16:3-164     [002] d..2        26240: sched_stat_wait: comm=android.bg pid=568 delay=99635 [ns]
->    kworker/u16:3-164     [002] d..2        26241: sched_switch: prev_comm=kworker/u16:3 prev_pid=164 prev_prio=120 prev_state=I ==> next_comm=android.bg next_pid=568 next_prio=130
-> 
-> In this trace, we switched the trace clock to counter to rule out hardware
-> issues, but this has been seen with default settings as well. This is
-> consistently reproducible - we see it regularly when collecting any trace for
-> ~60 seconds. This seems like it could be a problem in the upstream code, as this
-> kernel had no modifications made to the ftrace code. Is this a known problem in
-> upstream? Is there any additional information I could provide to verify this is
-> an upstream issue? Is anyone else observing this behavior, and if so, do they
-> happen to be working on a fix? If not, do you have any pointers on how we can
-> address this?
-> 
+The 'master' device acts as a glue layer used during bus
+initialization only, and it needs to be 'transparent' for pm_runtime
+management. Its behavior should be that it becomes active when one of
+its children becomes active, and suspends when all of its children are
+suspended.
 
-Thanks for the report. 
+In our tests on Intel platforms, we routinely see these sort of
+warnings on the initial boot:
 
-I recently updated the time stamp code to allow for nesting of events
-to work better, but the above trace doesn't look like it should be
-hitting that path.
+[ 21.447345] rt715 sdw:3:25d:715:0: runtime PM trying to activate
+child device sdw:3:25d:715:0 but parent (sdw-master-3) is not active
 
-If you could use trace-cmd to extract a raw data file that exhibits
-this behavior, and be able to supply that for me, I would be able to
-look at the data structures underneath, and that would be helpful in
-finding the cause.
+This is root-caused to a missing setup to make the device 'active' on
+probe. Since we don't want the device to remain active forever after
+the probe, the autosuspend configuration is also enabled at the end of
+the probe - the device will actually autosuspend only in the case
+where there are no devices physically attached. In practice, the
+master device will suspend when all its children are no longer active.
 
-In the mean time, could you check if you see this issue with commit
-097350d1c6e1f5808cae142006f18a0bbc57018d.
+Fixes: bd84256e86ecf ('soundwire: master: enable pm runtime')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/master.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Also what architecture was this running on? Arm? Arm64?
+diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
+index 3488bb824e84..9b05c9e25ebe 100644
+--- a/drivers/soundwire/master.c
++++ b/drivers/soundwire/master.c
+@@ -8,6 +8,15 @@
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
+ 
++/*
++ * The 3s value for autosuspend will only be used if there are no
++ * devices physically attached on a bus segment. In practice enabling
++ * the bus operation will result in children devices become active and
++ * the master device will only suspend when all its children are no
++ * longer active.
++ */
++#define SDW_MASTER_SUSPEND_DELAY_MS 3000
++
+ /*
+  * The sysfs for properties reflects the MIPI description as given
+  * in the MIPI DisCo spec
+@@ -154,7 +163,12 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
+ 	bus->dev = &md->dev;
+ 	bus->md = md;
+ 
++	pm_runtime_set_autosuspend_delay(&bus->md->dev, SDW_MASTER_SUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(&bus->md->dev);
++	pm_runtime_mark_last_busy(&bus->md->dev);
++	pm_runtime_set_active(&bus->md->dev);
+ 	pm_runtime_enable(&bus->md->dev);
++	pm_runtime_idle(&bus->md->dev);
+ device_register_err:
+ 	return ret;
+ }
+-- 
+2.17.1
 
-32 bit code does some funky things to handle atomic 64 bit updates.
-
-> 
-> [1] Taken from https://android.googlesource.com/kernel/common/+/refs/heads/android-mainline
-
-I'll take a look at this too.
-
-Thanks!
-
--- Steve
