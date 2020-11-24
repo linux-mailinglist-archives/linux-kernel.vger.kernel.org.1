@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEFE2C2DE2
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4CF2C2DE1
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390713AbgKXRH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:07:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390674AbgKXRH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:07:56 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6D1B20857;
-        Tue, 24 Nov 2020 17:07:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606237676;
-        bh=W7tyEH2c9Wz8tVJ+CN2oLzJ70V6jezJ5X5Wdt4/mKXo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EVdQ/e0HCKmfCDQgcY1naKkMjYNvREHAFrK4pPdCLL+d75grZpQhAJUdjLFvHKVQP
-         5iIQa9VqR62jIlhS5vb3p7mn68JWdD5I/GLkCeHvMhkXx3qLZho/JrJptCtyc/od2W
-         +un53fqhGt3bzUh+L6UA6MlPUhDONdTYiYfhKWag=
+        id S2390702AbgKXRH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:07:58 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:38969 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390631AbgKXRHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:07:55 -0500
+Received: by mail-wm1-f68.google.com with SMTP id s13so3619888wmh.4;
+        Tue, 24 Nov 2020 09:07:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5A3GMg0kaUdhNbdjiZ51gEYmRqMxSWUTkm0nm29z41k=;
+        b=Ke798OeulGthIouymUM9kjTbt7oiEgBB92bNnLlxeZbRWFgVSCWPFcMRRUeJ2G+STr
+         50iZx7EvTNp3dUe3b2SbmTbSfvjMPb8j1pDeSxIeqyZ3ivLZzpq1/tChTH9LhxIbKN67
+         PulnupHQPyrODUUUCXqZfaXmCq/09TivTq7HG+GuehzJTWW/c5nVgyWD/qY5enHUtdoA
+         9gsvOWp/XpHaAJlw9BDHRdRAUrwDfVrqvugmmrHiBObJokUS+xUQKmmiUr62WtWXEeFv
+         luIAYhk2j7Im8pq6f0WOrQkUFChP2BGH01S2Vc2KK2p9ESnpd8Yyw57OdRQxbjs3FY2o
+         TgeQ==
+X-Gm-Message-State: AOAM531fR62ThxXbaH549m66XAIHBhp0y8Vfh6XgiOfVeUOXEeZeqkra
+        bN/i6hbXHCe/ztus4xvQ+7HfMrco4XI=
+X-Google-Smtp-Source: ABdhPJzziczqbqRv+/m75Z5NFEIqUpd7YrBPjfHrMqO939SnayPzpy2yyiDyk17+PkmKjrSoJ+8VMg==
+X-Received: by 2002:a1c:9ad0:: with SMTP id c199mr5387178wme.46.1606237672950;
+        Tue, 24 Nov 2020 09:07:52 -0800 (PST)
+Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id v20sm6419874wmh.44.2020.11.24.09.07.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 09:07:52 -0800 (PST)
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v3 05/17] clocksource/hyperv: use MSR-based access if running as root
 Date:   Tue, 24 Nov 2020 17:07:32 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, Wen Su <wen.su@mediatek.com>
-Subject: Re: [PATCH v3 5/8] regulator: mt6359: Add support for MT6359
- regulator
-Message-ID: <20201124170732.GI4933@sirena.org.uk>
-References: <1606103290-15034-1-git-send-email-hsin-hsiung.wang@mediatek.com>
- <1606103290-15034-6-git-send-email-hsin-hsiung.wang@mediatek.com>
+Message-Id: <20201124170744.112180-6-wei.liu@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201124170744.112180-1-wei.liu@kernel.org>
+References: <20201124170744.112180-1-wei.liu@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="w2xx78T4DcG3O+DJ"
-Content-Disposition: inline
-In-Reply-To: <1606103290-15034-6-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When Linux runs as the root partition, the setup required for TSC page
+is different. Luckily Linux also has access to the MSR based
+clocksource. We can just disable the TSC page clocksource if Linux is
+the root partition.
 
---w2xx78T4DcG3O+DJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/clocksource/hyperv_timer.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On Mon, Nov 23, 2020 at 11:48:07AM +0800, Hsin-Hsiung Wang wrote:
+diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+index ba04cb381cd3..269a691bd2c4 100644
+--- a/drivers/clocksource/hyperv_timer.c
++++ b/drivers/clocksource/hyperv_timer.c
+@@ -426,6 +426,9 @@ static bool __init hv_init_tsc_clocksource(void)
+ 	if (!(ms_hyperv.features & HV_MSR_REFERENCE_TSC_AVAILABLE))
+ 		return false;
+ 
++	if (hv_root_partition)
++		return false;
++
+ 	hv_read_reference_counter = read_hv_clock_tsc;
+ 	phys_addr = virt_to_phys(hv_get_tsc_page());
+ 
+-- 
+2.20.1
 
-> +static int mt6359_get_linear_voltage_sel(struct regulator_dev *rdev)
-> +{
-> +	struct mt6359_regulator_info *info = rdev_get_drvdata(rdev);
-> +	int ret, regval;
-> +
-> +	ret = regmap_read(rdev->regmap, info->da_vsel_reg, &regval);
-> +	if (ret != 0) {
-> +		dev_err(&rdev->dev,
-> +			"Failed to get mt6359 Buck %s vsel reg: %d\n",
-> +			info->desc.name, ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = (regval >> info->da_vsel_shift) & info->da_vsel_mask;
-> +
-> +	return ret;
-> +}
-
-This looks like it could just be regmap_get_voltage_sel_regmap()?
-Otherwise the driver looks good.
-
---w2xx78T4DcG3O+DJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+9PdMACgkQJNaLcl1U
-h9DDfQf8C8s9n/n3qdfuHW2Kn6XRiTrl88H+miBsBgQRQPKZzHNzh51rQMJiVwAh
-jOY47elYyA07c5K+NtqWgpXJiVIwujB0I4jGvhOlDMv601QZ1SuJE0mWmxubHNuF
-ZD9QIpzmh/xJRWogoFhoYZkpDOyqkD9lCc1Z22XVVtk5aVCHvk5hRa+u9mZuVF2T
-S77qGSSN8yuIhu/1uSR7sYlwvIMwJFdeCyGuanGqkrAvQzh7IGPJ0SAJcTIK7c65
-Voz40qO52JKt7Fvdaegh7q4UGKoaKptkGHFCtO7qnr5Gp18zCFqinPzQOaV97uee
-8+aE/yewzw8ceYQH80HZTNDguih4UQ==
-=eVLl
------END PGP SIGNATURE-----
-
---w2xx78T4DcG3O+DJ--
