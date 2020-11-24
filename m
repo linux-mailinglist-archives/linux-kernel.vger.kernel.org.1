@@ -2,102 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531D92C3045
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CD52C3043
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390982AbgKXS5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:57:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390975AbgKXS5r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390973AbgKXS5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 24 Nov 2020 13:57:47 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B8EC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:57:47 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id wJxg2300q4C55Sk01Jxglf; Tue, 24 Nov 2020 19:57:44 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1khdVU-005WMp-Cs; Tue, 24 Nov 2020 19:57:40 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1khdVT-00ErGj-Rb; Tue, 24 Nov 2020 19:57:39 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Damien Le Moal <damien.lemoal@wdc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] riscv: defconfig: k210: Disable CONFIG_VT
-Date:   Tue, 24 Nov 2020 19:57:38 +0100
-Message-Id: <20201124185738.3541314-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390718AbgKXS5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:57:46 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0507DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:57:45 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id k26so24978994oiw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:57:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YQvA+gzyOlwcrQTYLcbh+JVhQ8vrnP0glY0CX55ovyw=;
+        b=hoV9a0tru1XrM0PN94vfdrkGnGpCNWNEwo/32YusI1pTbAei+ybZdAf/eGFMo6toKh
+         3Haebkuw9HUQ0bZb6CEo++QF+NCGOT9M3mw3ndGCPpFbUdNaGsmni6ltPI0e183aAilg
+         eUkCczMYH9u5/X6dLxzgo42js9o7y+c3SBnM4sOB6Y7fcnVWpQo78LVrzFqvXEAIF9Qp
+         cWrFXqlv+3DDq8NPAIcs8ghau3qujNzeJK4o4iKuZjJ33uQK33/x/r9JD0Spykdn2btX
+         r9+m/V85XrM15M8z1ZVsYb/DmekctbtqsFr6F6Ndr/6h8XCvPkyRw0iQe7kPXzXleicY
+         pRUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YQvA+gzyOlwcrQTYLcbh+JVhQ8vrnP0glY0CX55ovyw=;
+        b=CwAwf752J+vL/TkALJWSasKKfb/MBcXdpRWSmDscP6YWsSU1bgEYeJGINKLVme5ZQH
+         pJ0AEeAQ2SKonUN743oBUXwB2361rIHuOKIkl3UKFOrXRGisO1WSDdbr0XGU+Z1w/+GQ
+         dkiJjr1uMt9VDba0VTZeuvaisvQsqdtSFgcTzlFTjacdmhfbYnFlZRQvoCV3mmTpf0Rd
+         4SGuBwKgCp4nulvdIkVFFH3O7lJ1R1wmb6B/GRZCI4omAxx30fNwIDETgneVCJPruwR2
+         kay5xMWMbZ0mzvlKaLEuymP+TFtCBpoJn1KKxIwXAtENi/+RzmJOzbLUjMACa5ZJKW4d
+         q46g==
+X-Gm-Message-State: AOAM532b6ZaBVOQyJ8vGEvKHnniyJdvHtc6KhMAsmY4So0gdELWm+0/c
+        1q3IB7n5RopPPnWQ+jhlEwAORg==
+X-Google-Smtp-Source: ABdhPJyVCPwvTVWKEZBheVICFsAHDUw6QNEFpvQcHI9TbAmeovDh3KxOSb484UpKebcMuFh4bxvkAw==
+X-Received: by 2002:aca:4a51:: with SMTP id x78mr2449oia.86.1606244265287;
+        Tue, 24 Nov 2020 10:57:45 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k20sm9079930ots.53.2020.11.24.10.57.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 10:57:44 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Mukesh Savaliya <msavaliy@codeaurora.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH] Revert "i2c: qcom-geni: Disable DMA processing on the Lenovo Yoga C630"
+Date:   Tue, 24 Nov 2020 12:57:43 -0600
+Message-Id: <20201124185743.401946-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to enable Virtual Terminal support in the Canaan
-Kendryte K210 defconfigs, as no terminal devices are supported and
-enabled.  Hence disable CONFIG_VT, and remove the no longer needed
-override for CONFIG_VGA_CONSOLE.
+A combination of recent bug fixes by Doug Anderson and the proper
+definition of iommu streams means that this hack is no longer needed.
+Let's clean up the code by reverting '127068abe85b ("i2c: qcom-geni:
+Disable DMA processing on the Lenovo Yoga C630")'.
 
-This reduces kernel size by ca. 65 KiB.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
-Against k210-sysctl-v15
----
- arch/riscv/configs/nommu_k210_defconfig        | 2 +-
- arch/riscv/configs/nommu_k210_sdcard_defconfig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-qcom-geni.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
-index df89d53bd125679b..9262223037e43479 100644
---- a/arch/riscv/configs/nommu_k210_defconfig
-+++ b/arch/riscv/configs/nommu_k210_defconfig
-@@ -48,6 +48,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- # CONFIG_INPUT_KEYBOARD is not set
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
-+# CONFIG_VT is not set
- # CONFIG_LEGACY_PTYS is not set
- # CONFIG_LDISC_AUTOLOAD is not set
- # CONFIG_HW_RANDOM is not set
-@@ -67,7 +68,6 @@ CONFIG_GPIO_SIFIVE=y
- CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_SYSCON=y
- # CONFIG_HWMON is not set
--# CONFIG_VGA_CONSOLE is not set
- # CONFIG_HID is not set
- # CONFIG_USB_SUPPORT is not set
- CONFIG_NEW_LEDS=y
-diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-index 3d2cb4747e7f85b7..4cd1715dd0cf3747 100644
---- a/arch/riscv/configs/nommu_k210_sdcard_defconfig
-+++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-@@ -41,6 +41,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- # CONFIG_INPUT_KEYBOARD is not set
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
-+# CONFIG_VT is not set
- # CONFIG_LEGACY_PTYS is not set
- # CONFIG_LDISC_AUTOLOAD is not set
- # CONFIG_HW_RANDOM is not set
-@@ -60,7 +61,6 @@ CONFIG_GPIO_SIFIVE=y
- CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_SYSCON=y
- # CONFIG_HWMON is not set
--# CONFIG_VGA_CONSOLE is not set
- # CONFIG_HID is not set
- # CONFIG_USB_SUPPORT is not set
- CONFIG_MMC=y
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index dce75b85253c..046d241183c5 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -353,13 +353,11 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ {
+ 	dma_addr_t rx_dma;
+ 	unsigned long time_left;
+-	void *dma_buf = NULL;
++	void *dma_buf;
+ 	struct geni_se *se = &gi2c->se;
+ 	size_t len = msg->len;
+ 
+-	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+-		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+-
++	dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+ 	if (dma_buf)
+ 		geni_se_select_mode(se, GENI_SE_DMA);
+ 	else
+@@ -394,13 +392,11 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ {
+ 	dma_addr_t tx_dma;
+ 	unsigned long time_left;
+-	void *dma_buf = NULL;
++	void *dma_buf;
+ 	struct geni_se *se = &gi2c->se;
+ 	size_t len = msg->len;
+ 
+-	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+-		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+-
++	dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+ 	if (dma_buf)
+ 		geni_se_select_mode(se, GENI_SE_DMA);
+ 	else
 -- 
-2.25.1
+2.29.2
 
