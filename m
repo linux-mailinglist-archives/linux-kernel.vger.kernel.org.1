@@ -2,213 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF682C2C37
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D022C2C3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 17:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390071AbgKXQDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 11:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728249AbgKXQDo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:03:44 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED3FC0613D6;
-        Tue, 24 Nov 2020 08:03:44 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id l1so22827894wrb.9;
-        Tue, 24 Nov 2020 08:03:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+WgNCMw+FNVg6++cSxRSVLflzp+gBvU9V7//cGxl2dg=;
-        b=GDWYCIYHTk1YxHXKuu4EPgqgJrZ8YSJVGIxNzER9SkK2Ds19NOuyoXGBhVvMO6W7QA
-         Nslm8jyZNfeQAayvbrW+TNeOHQhKqbiqmM5RBN0uD0ZpABwRxxmkCpBMm1yRm78fZlQ5
-         3achHXMOo03z+KOwLHIYRZuUwXp/h2F/s2KCw/dVDW2tsRaIpjuel3M4wuRV0YT5f76c
-         2YBCOEr9fSu+a+XPJiOUnbf1YhyeGzjBMT87o5F1BaNElLXRwh3a1k9UBPHmgAbm/ouC
-         3aoZY+OkSW8c64lt7i4zHHQ3EEDovrobdLq1ouHXkRB4opN/kkypSgH+BE3Le2In2rrS
-         64sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+WgNCMw+FNVg6++cSxRSVLflzp+gBvU9V7//cGxl2dg=;
-        b=rDEGSKkDWxwYnO6AzzYXFm5d2brE8YhMukDTGjdiyA5WgXky6ljai2/m7At6ArvsRr
-         4ZF1R0VsiwYkxO2Md0VHCIhHOZhtaR14dwP4i0d9MLSladGyAMuM1nWWGbyQ7Gt1CcaP
-         qOrdYLsQ58xl4+nDXBWq+asOGgkJ7nTnZamkPH3HkW4UvVliAQJiEWPYjuVdwEp0f4d3
-         MGYRr24AbN070NmxFG0xByOwACI7jSVxiGEI4kyeFVC8nM7l4qDLmGsz3EO4LzLNBA3O
-         TpVukffRzv3s8DjJt/Jie3D64/N+0VnMiKI1GfkWJKb/Wy+ZoDS26M7k2GQ/ikFO/h3W
-         ZwIA==
-X-Gm-Message-State: AOAM532DcZwdxL0rTicmbjkjxmJzpmGD001zgnKg6nnMVFzDaLqTZy1m
-        6S5PqyhBFVrOLlRq2HdddasB/FcM7yE+hOtcbkw=
-X-Google-Smtp-Source: ABdhPJxGFyGMDXN21iMutA9B1LzeIss3+7anfsorpX/9okzh9f7v7sqbmHHdslmiL1sdby3VOWqRByaO61PfMH9Nr6g=
-X-Received: by 2002:adf:8028:: with SMTP id 37mr6093399wrk.111.1606233822883;
- Tue, 24 Nov 2020 08:03:42 -0800 (PST)
+        id S2390092AbgKXQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 11:04:35 -0500
+Received: from mga06.intel.com ([134.134.136.31]:37037 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728249AbgKXQEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 11:04:35 -0500
+IronPort-SDR: Y95yqw0C5qA8ZZ0r0do+Svjmj7eWx+32CHKOBbdzcXZdIEXpo58s/xgFYk58M43oYQ1hg/TB+X
+ n8UeDlGo1HNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="233580861"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="233580861"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 08:04:34 -0800
+IronPort-SDR: dR6Afh+0k969CnASivGz+bcxXD3+QPNz5isrulKW7S3uubWuy+7+34W1iwvcvYG3phuMDnuEvX
+ Wy4bGlFLy5UA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="536520375"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Nov 2020 08:04:33 -0800
+Received: from [10.254.70.76] (kliang2-MOBL.ccr.corp.intel.com [10.254.70.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 788AD580565;
+        Tue, 24 Nov 2020 08:04:32 -0800 (PST)
+Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
+ events
+To:     Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Gabriel Marin <gmx@google.com>
+References: <20201106212935.28943-1-kan.liang@linux.intel.com>
+ <20201109095235.GC2594@hirez.programming.kicks-ass.net>
+ <20201109110405.GN2651@hirez.programming.kicks-ass.net>
+ <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
+ <20201111162509.GW2611@hirez.programming.kicks-ass.net>
+ <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com>
+ <CAM9d7cjwFp9JBqs1Ga9n1ojbez9chZLvmOgFv1EE4KDhAa9ryA@mail.gmail.com>
+ <CAM9d7chbQE=zkqYsNFMv+uWEYWdXcGD=fNYT_R2ondwR5zVvaQ@mail.gmail.com>
+ <87a6v81gou.fsf@mpe.ellerman.id.au>
+ <CAM9d7cg8kYMyPHQK_rhEiYQaSddqqt93=pLVNKJm8Y6F=if9ow@mail.gmail.com>
+ <9657dc9f-e1a9-eb7e-8ac2-a108416d5a10@linux.ibm.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <ba4d80fa-82e5-d3fd-c772-deb12e286de3@linux.intel.com>
+Date:   Tue, 24 Nov 2020 11:04:31 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201123111919.233376-1-lee.jones@linaro.org> <20201123111919.233376-9-lee.jones@linaro.org>
-In-Reply-To: <20201123111919.233376-9-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 24 Nov 2020 11:03:31 -0500
-Message-ID: <CADnq5_MdzDQVu+BZ=HJxN_Ba-Zct7dQ=hC_=yfu5Ru-SOG_dFQ@mail.gmail.com>
-Subject: Re: [PATCH 08/40] drm/amd/amdgpu/cik_sdma: Supply some missing
- function param descriptions
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9657dc9f-e1a9-eb7e-8ac2-a108416d5a10@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 6:19 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:226: warning: Function parameter o=
-r member 'job' not described in 'cik_sdma_ring_emit_ib'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:226: warning: Function parameter o=
-r member 'flags' not described in 'cik_sdma_ring_emit_ib'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Function parameter o=
-r member 'addr' not described in 'cik_sdma_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Function parameter o=
-r member 'seq' not described in 'cik_sdma_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Function parameter o=
-r member 'flags' not described in 'cik_sdma_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:278: warning: Excess function para=
-meter 'fence' description in 'cik_sdma_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:663: warning: Function parameter o=
-r member 'timeout' not described in 'cik_sdma_ring_test_ib'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:808: warning: Function parameter o=
-r member 'ring' not described in 'cik_sdma_ring_pad_ib'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:859: warning: Function parameter o=
-r member 'vmid' not described in 'cik_sdma_ring_emit_vm_flush'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:859: warning: Function parameter o=
-r member 'pd_addr' not described in 'cik_sdma_ring_emit_vm_flush'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:859: warning: Excess function para=
-meter 'vm' description in 'cik_sdma_ring_emit_vm_flush'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1315: warning: Function parameter =
-or member 'ib' not described in 'cik_sdma_emit_copy_buffer'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1315: warning: Function parameter =
-or member 'tmz' not described in 'cik_sdma_emit_copy_buffer'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1315: warning: Excess function par=
-ameter 'ring' description in 'cik_sdma_emit_copy_buffer'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1339: warning: Function parameter =
-or member 'ib' not described in 'cik_sdma_emit_fill_buffer'
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c:1339: warning: Excess function par=
-ameter 'ring' description in 'cik_sdma_emit_fill_buffer'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Applied with minor changes.  Thanks!
-
-Alex
 
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/cik_sdma.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c b/drivers/gpu/drm/amd/=
-amdgpu/cik_sdma.c
-> index 1a6494ea50912..f1e9966e7244e 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
-> @@ -215,7 +215,9 @@ static void cik_sdma_ring_insert_nop(struct amdgpu_ri=
-ng *ring, uint32_t count)
->   * cik_sdma_ring_emit_ib - Schedule an IB on the DMA engine
->   *
->   * @ring: amdgpu ring pointer
-> + * @job: job to retrive vmid from
->   * @ib: IB object to schedule
-> + * @flags: unused
->   *
->   * Schedule an IB in the DMA ring (CIK).
->   */
-> @@ -267,6 +269,8 @@ static void cik_sdma_ring_emit_hdp_flush(struct amdgp=
-u_ring *ring)
->   * cik_sdma_ring_emit_fence - emit a fence on the DMA ring
->   *
->   * @ring: amdgpu ring pointer
-> + * @addr: address
-> + * @seq: sequence number
->   * @fence: amdgpu fence object
->   *
->   * Add a DMA fence packet to the ring to write
-> @@ -655,6 +659,7 @@ static int cik_sdma_ring_test_ring(struct amdgpu_ring=
- *ring)
->   * cik_sdma_ring_test_ib - test an IB on the DMA engine
->   *
->   * @ring: amdgpu_ring structure holding ring information
-> + * @timeout: timeout value in jiffies, or MAX_SCHEDULE_TIMEOUT
->   *
->   * Test a simple IB in the DMA ring (CIK).
->   * Returns 0 on success, error on failure.
-> @@ -801,6 +806,7 @@ static void cik_sdma_vm_set_pte_pde(struct amdgpu_ib =
-*ib, uint64_t pe,
->  /**
->   * cik_sdma_vm_pad_ib - pad the IB to the required number of dw
->   *
-> + * @ring: amdgpu_ring structure holding ring information
->   * @ib: indirect buffer to fill with padding
->   *
->   */
-> @@ -849,7 +855,8 @@ static void cik_sdma_ring_emit_pipeline_sync(struct a=
-mdgpu_ring *ring)
->   * cik_sdma_ring_emit_vm_flush - cik vm flush using sDMA
->   *
->   * @ring: amdgpu_ring pointer
-> - * @vm: amdgpu_vm pointer
-> + * @vmid: vmid number to use
-> + * @pd_addr: address
->   *
->   * Update the page table base and flush the VM TLB
->   * using sDMA (CIK).
-> @@ -1298,10 +1305,11 @@ static void cik_sdma_set_irq_funcs(struct amdgpu_=
-device *adev)
->  /**
->   * cik_sdma_emit_copy_buffer - copy buffer using the sDMA engine
->   *
-> - * @ring: amdgpu_ring structure holding ring information
-> + * @ib: indirect buffer to copy to
->   * @src_offset: src GPU address
->   * @dst_offset: dst GPU address
->   * @byte_count: number of bytes to xfer
-> + * @tmz: unused
->   *
->   * Copy GPU buffers using the DMA engine (CIK).
->   * Used by the amdgpu ttm implementation to move pages if
-> @@ -1325,7 +1333,7 @@ static void cik_sdma_emit_copy_buffer(struct amdgpu=
-_ib *ib,
->  /**
->   * cik_sdma_emit_fill_buffer - fill buffer using the sDMA engine
->   *
-> - * @ring: amdgpu_ring structure holding ring information
-> + * @ib: indirect buffer to fill
->   * @src_data: value to write to buffer
->   * @dst_offset: dst GPU address
->   * @byte_count: number of bytes to xfer
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+On 11/24/2020 12:42 AM, Madhavan Srinivasan wrote:
+> 
+> On 11/24/20 10:21 AM, Namhyung Kim wrote:
+>> Hello,
+>>
+>> On Mon, Nov 23, 2020 at 8:00 PM Michael Ellerman <mpe@ellerman.id.au> 
+>> wrote:
+>>> Namhyung Kim <namhyung@kernel.org> writes:
+>>>> Hi Peter and Kan,
+>>>>
+>>>> (Adding PPC folks)
+>>>>
+>>>> On Tue, Nov 17, 2020 at 2:01 PM Namhyung Kim <namhyung@kernel.org> 
+>>>> wrote:
+>>>>> Hello,
+>>>>>
+>>>>> On Thu, Nov 12, 2020 at 4:54 AM Liang, Kan 
+>>>>> <kan.liang@linux.intel.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 11/11/2020 11:25 AM, Peter Zijlstra wrote:
+>>>>>>> On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
+>>>>>>>
+>>>>>>>> - When the large PEBS was introduced (9c964efa4330), the 
+>>>>>>>> sched_task() should
+>>>>>>>> be invoked to flush the PEBS buffer in each context switch. 
+>>>>>>>> However, The
+>>>>>>>> perf_sched_events in account_event() is not updated accordingly. 
+>>>>>>>> The
+>>>>>>>> perf_event_task_sched_* never be invoked for a pure per-CPU 
+>>>>>>>> context. Only
+>>>>>>>> per-task event works.
+>>>>>>>>      At that time, the perf_pmu_sched_task() is outside of
+>>>>>>>> perf_event_context_sched_in/out. It means that perf has to double
+>>>>>>>> perf_pmu_disable() for per-task event.
+>>>>>>>> - The patch 1 tries to fix broken per-CPU events. The CPU 
+>>>>>>>> context cannot be
+>>>>>>>> retrieved from the task->perf_event_ctxp. So it has to be 
+>>>>>>>> tracked in the
+>>>>>>>> sched_cb_list. Yes, the code is very similar to the original 
+>>>>>>>> codes, but it
+>>>>>>>> is actually the new code for per-CPU events. The optimization 
+>>>>>>>> for per-task
+>>>>>>>> events is still kept.
+>>>>>>>>     For the case, which has both a CPU context and a task 
+>>>>>>>> context, yes, the
+>>>>>>>> __perf_pmu_sched_task() in this patch is not invoked. Because the
+>>>>>>>> sched_task() only need to be invoked once in a context switch. The
+>>>>>>>> sched_task() will be eventually invoked in the task context.
+>>>>>>> The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB 
+>>>>>>> and
+>>>>>>> only set that for large pebs. Are you sure the other users (Intel 
+>>>>>>> LBR
+>>>>>>> and PowerPC BHRB) don't need it?
+>>>>>> I didn't set it for LBR, because the perf_sched_events is always 
+>>>>>> enabled
+>>>>>> for LBR. But, yes, we should explicitly set the PERF_ATTACH_SCHED_CB
+>>>>>> for LBR.
+>>>>>>
+>>>>>>          if (has_branch_stack(event))
+>>>>>>                  inc = true;
+>>>>>>
+>>>>>>> If they indeed do not require the pmu::sched_task() callback for CPU
+>>>>>>> events, then I still think the whole perf_sched_cb_{inc,dec}() 
+>>>>>>> interface
+>>>>>> No, LBR requires the pmu::sched_task() callback for CPU events.
+>>>>>>
+>>>>>> Now, The LBR registers have to be reset in sched in even for CPU 
+>>>>>> events.
+>>>>>>
+>>>>>> To fix the shorter LBR callstack issue for CPU events, we also 
+>>>>>> need to
+>>>>>> save/restore LBRs in pmu::sched_task().
+>>>>>> https://lore.kernel.org/lkml/1578495789-95006-4-git-send-email-kan.liang@linux.intel.com/ 
+>>>>>>
+>>>>>>
+>>>>>>> is confusing at best.
+>>>>>>>
+>>>>>>> Can't we do something like this instead?
+>>>>>>>
+>>>>>> I think the below patch may have two issues.
+>>>>>> - PERF_ATTACH_SCHED_CB is required for LBR (maybe PowerPC BHRB as 
+>>>>>> well) now.
+>>>>>> - We may disable the large PEBS later if not all PEBS events support
+>>>>>> large PEBS. The PMU need a way to notify the generic code to decrease
+>>>>>> the nr_sched_task.
+>>>>> Any updates on this?  I've reviewed and tested Kan's patches
+>>>>> and they all look good.
+>>>>>
+>>>>> Maybe we can talk to PPC folks to confirm the BHRB case?
+>>>> Can we move this forward?  I saw patch 3/3 also adds 
+>>>> PERF_ATTACH_SCHED_CB
+>>>> for PowerPC too.  But it'd be nice if ppc folks can confirm the change.
+>>> Sorry I've read the whole thread, but I'm still not entirely sure I
+>>> understand the question.
+>> Thanks for your time and sorry about not being clear enough.
+>>
+>> We found per-cpu events are not calling pmu::sched_task()
+>> on context switches.  So PERF_ATTACH_SCHED_CB was
+>> added to indicate the core logic that it needs to invoke the
+>> callback.
+>>
+>> The patch 3/3 added the flag to PPC (for BHRB) with other
+>> changes (I think it should be split like in the patch 2/3) and
+>> want to get ACKs from the PPC folks.
+> 
+> Sorry for delay.
+> 
+> I guess first it will be better to split the ppc change to a separate 
+> patch,
+
+Both PPC and X86 invokes the perf_sched_cb_inc() directly. The patch 
+changes the parameters of the perf_sched_cb_inc(). I think we have to 
+update the PPC and X86 codes together. Otherwise, there will be a 
+compile error, if someone may only applies the change for the 
+perf_sched_cb_inc() but forget to applies the changes in PPC or X86 
+specific codes.
+
+> 
+> secondly, we are missing the changes needed in the power_pmu_bhrb_disable()
+> 
+> where perf_sched_cb_dec() needs the "state" to be included.
+> 
+
+Ah, right. The below patch should fix the issue.
+
+diff --git a/arch/powerpc/perf/core-book3s.c 
+b/arch/powerpc/perf/core-book3s.c
+index bced502f64a1..6756d1602a67 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -391,13 +391,18 @@ static void power_pmu_bhrb_enable(struct 
+perf_event *event)
+  static void power_pmu_bhrb_disable(struct perf_event *event)
+  {
+  	struct cpu_hw_events *cpuhw = this_cpu_ptr(&cpu_hw_events);
++	int state = PERF_SCHED_CB_SW_IN;
+
+  	if (!ppmu->bhrb_nr)
+  		return;
+
+  	WARN_ON_ONCE(!cpuhw->bhrb_users);
+  	cpuhw->bhrb_users--;
+-	perf_sched_cb_dec(event->ctx->pmu);
++
++	if (!(event->attach_state & PERF_ATTACH_TASK))
++		state |= PERF_SCHED_CB_CPU;
++
++	perf_sched_cb_dec(event->ctx->pmu, state);
+
+  	if (!cpuhw->disabled && !cpuhw->bhrb_users) {
+  		/* BHRB cannot be turned off when other
+
+
+
+Thanks,
+Kan
