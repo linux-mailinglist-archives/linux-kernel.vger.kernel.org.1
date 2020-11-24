@@ -2,116 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C90E2C337E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A992C3383
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 22:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387414AbgKXVpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 16:45:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
+        id S2387573AbgKXVrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 16:47:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729194AbgKXVpo (ORCPT
+        with ESMTP id S1731557AbgKXVrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:45:44 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B63C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:45:44 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id n137so340891pfd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:45:44 -0800 (PST)
+        Tue, 24 Nov 2020 16:47:00 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16498C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:47:00 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id s18so391512oih.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 13:47:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qUk28dgg2DUj1+6HYL179P0h9eGbzR54HIME/VXKOvg=;
-        b=eRM5pcDjTejd77WL4qH2l3Waz69TXUmimfeFmBp2KHeoI2kfUj04HHD+5AX5l7h/w1
-         itFs9VMoa+OfcKZEFM2+nNziTHhP1TuagNH1mSUGrd7szPzTIDoItWAQpcFZaq7E0jDr
-         YVscjYb/iBIjuSqEbH0Z5p2PzgyBUZdEvhQRI=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=04YZn/oOi9cwlQjeUz6wAhKNr23VM3kG20feokh0qeg=;
+        b=VzQAooJ4hoEvvjBCc+1Qt2u70siZAJm6h9WtKGpP0ywmkQ1vspYXHydmfQoTf4ym3I
+         oqKJzcR5krrs+o2BlUzYp3kcBIpfa6E6ew96qdIC2DTZU5N5pj5QjitRF0O5vAP3DLm/
+         Rw71YTkXEZBmOi1/VFYN3Po6znE+JQDeN5AQ5GT8PpDyb4DUQYVH9RDLVPxXCtlzpqGL
+         NLPgS8k2q9XJZCcEqp0jixScddihjCkoUiurydf3GmXYEZPzwqkjXKYbEuCjos3F0Dgj
+         X3M8gEHfAlkVbtkko2WkcUF0RRIGEvajB3ukYdimzdhZa9OdqeypZLEs6CnYwqCUGZF7
+         gNSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qUk28dgg2DUj1+6HYL179P0h9eGbzR54HIME/VXKOvg=;
-        b=OSh3sTHKrFl/c/IGHYyDewKwveGKyJ1BIOvh0L1z5NoD5SSyGHTCcYLJjy0gLpJ4cR
-         qmvNC+AAL87hXKBB0e5vMpnrwC8XCTbULVWVub6k8iuHtqaZCfO8ejP2u562/KHs92JB
-         kFe1TxLvE/ryGuaTSx9LqzuSnJj/AqjkADAgR1vEA0VQoNlLzedEavE+OoLc2HWZa7WP
-         urglQT4wTeWpxdtGn95xyAMnNToZkNk+G9pRxQJhxPL7Y5Dt8etWNAwm5s57jD1LC2z5
-         R6a/EoAX7CoiDy4UvWHzuPVyAktW1RKIH1O57qXSzUqEolYVRNy4bAeZPuEIibEHhOBg
-         IjwQ==
-X-Gm-Message-State: AOAM531Q6a1rzwXtdEDkZ7BForg/lzpzPD1MvJBpAaGWBPZ6fxxe/I+R
-        TO3DsWn7xcSrVpYGlXoY0duh8A==
-X-Google-Smtp-Source: ABdhPJwv8R+bkXuk+Z/BW6O2He05dVF33WUNfAsVqf9ApwHY3+AZ3TRvyrcxfXYudQSX8IyrNUawFA==
-X-Received: by 2002:a63:cf52:: with SMTP id b18mr344446pgj.338.1606254343911;
-        Tue, 24 Nov 2020 13:45:43 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z10sm17931pfa.149.2020.11.24.13.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 13:45:43 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:45:42 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Jann Horn <jannh@google.com>, Arnd Bergmann <arnd@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        YiFei Zhu <yifeifz2@illinois.edu>
-Subject: Re: [PATCH] entry: Fix boot for !CONFIG_GENERIC_ENTRY
-Message-ID: <202011241345.FAF4D7E@keescook>
-References: <CA+G9fYs9sg69JgmQNZhutQnbijb4GzcO03XF66EjkQ6CTpXXxA@mail.gmail.com>
- <CAK8P3a1Lx1MMQ3s1uWjevsi2wqFo2r=k1hhrxf1spUxEQX_Rag@mail.gmail.com>
- <CAG48ez17CKBMO4193wxuWLRQWQ+q6EV=Qr5oTWiKivMxEi0zQw@mail.gmail.com>
- <87h7pgqhdf.fsf@collabora.com>
- <87a6v8qd9p.fsf_-_@collabora.com>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=04YZn/oOi9cwlQjeUz6wAhKNr23VM3kG20feokh0qeg=;
+        b=d84hUq0JcenZYbDP7USN2aWY21j3/zNh+P88/D785iOqa4/eJDSrrbXPKtbJjljJJ7
+         rrhRavD0CSMILIgtShgux97/4BaWu1dsJ6RkbvtfBFbJ5SrwxM9l47OC1Jqx7yrQiqnU
+         o51/8OGaGWM5kt/dzYEHSL2y3+CioR7ZdVJp37j9jRzVomvQYehrR3iihfWwc+B3IZaZ
+         6jQMfd5pDJLGmUcSkLTy4BXk7Xf9/2nNbfcwahvteBEOUCqmwoJKYw3qciaHwYbZJQOq
+         GkourcXDQPGuc1Rhcds9zZeduGVA73AKBqOoiq+BdKpiyp/ey0Hw+TgOj79vx/j/X2r+
+         AcXw==
+X-Gm-Message-State: AOAM532kxoES3WdY7CYZC9zOWkPTM4Z6K/mfV7zXNN3jXr2mkQ+RiK6q
+        y55Kjv6jDwSCtNl6vq+ABe9Wqw==
+X-Google-Smtp-Source: ABdhPJxOVg+Bowm05sagrPqp3xv+YibTG16pRL9z0qkeXz1sv96JtkxPJaBWAFfkjlhlZQfRI/zZYw==
+X-Received: by 2002:aca:f5c8:: with SMTP id t191mr213734oih.40.1606254419120;
+        Tue, 24 Nov 2020 13:46:59 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id a4sm139138otj.29.2020.11.24.13.46.56
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 24 Nov 2020 13:46:58 -0800 (PST)
+Date:   Tue, 24 Nov 2020 13:46:44 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+In-Reply-To: <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2011241322540.1777@eggly.anvils>
+References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz> <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com> <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+ <20201124121912.GZ4327@casper.infradead.org> <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org> <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com> <20201124201552.GE4327@casper.infradead.org>
+ <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6v8qd9p.fsf_-_@collabora.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:54:58AM -0500, Gabriel Krisman Bertazi wrote:
-> Gabriel Krisman Bertazi <krisman@collabora.com> writes:
-> 
-> > Jann Horn <jannh@google.com> writes:
-> >> As part of fixing this, it might be a good idea to put "enum
-> >> syscall_work_bit" behind a "#ifdef CONFIG_GENERIC_ENTRY" to avoid
-> >> future accidents like this?
+On Tue, 24 Nov 2020, Linus Torvalds wrote:
+> On Tue, Nov 24, 2020 at 12:16 PM Matthew Wilcox <willy@infradead.org> wrote:
 > >
-> > Hi Jan, Arnd,
-> >
-> > That is correct.  This is a copy pasta mistake.  My apologies.  I didn't
-> > have a !GENERIC_ENTRY device to test, but just the ifdef would have
-> > caught it.
+> > So my s/if/while/ suggestion is wrong and we need to do something to
+> > prevent spurious wakeups.  Unless we bury the spurious wakeup logic
+> > inside wait_on_page_writeback() ...
 > 
-> I have patched it as suggested.  Tested on qemu for arm32 and on bare
-> metal for x86-64.
+> We can certainly make the "if()" in that loop be a "while()'.
 > 
-> Once again, my apologies for the mistake.
+> That's basically what the old code did - simply by virtue of the
+> wakeup not happening if the writeback bit was set in
+> wake_page_function():
 > 
-> -- >8 --
-> Subject: [PATCH] entry: Fix boot for !CONFIG_GENERIC_ENTRY
+>         if (test_bit(key->bit_nr, &key->page->flags))
+>                 return -1;
 > 
-> A copy-pasta mistake tries to set SYSCALL_WORK flags instead of TIF
-> flags for !CONFIG_GENERIC_ENTRY.  Also, add safeguards to catch this at
-> compilation time.
+> of course, the race was still there - because the writeback bit might
+> be clear at that point, but another CPU would reallocate and dirty it,
+> and then autoremove_wake_function() would happen anyway.
 > 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Suggested-by: Jann Horn <jannh@google.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> But back in the bad old days, the wait_on_page_bit_common() code would
+> then double-check in a loop, so it would catch that case, re-insert
+> itself on the wait queue, and try again. Except for the DROP case,
+> which isn't used by writeback.
+> 
+> Anyway, making that "if()" be a "while()" in wait_on_page_writeback()
+> would basically re-introduce that old behavior. I don't really care,
+> because it was the lock bit that really mattered, the writeback bit is
+> not really all that interesting (except from a "let's fix this bug"
+> angle)
+> 
+> I'm not 100% sure I like the fragility of this writeback thing.
+> 
+> Anyway, I'm certainly happy with either model, whether it be an added
+> while() in wait_on_page_writeback(), or it be the page reference count
+> in end_page_writeback().
+> 
+> Strong opinions?
 
-Thanks for getting this fixed!
+Responding to "Strong opinions?" before having digested Matthew's
+DMA sequence (no, not his DNA sequence).
 
-3136b93c3fb2 ("entry: Expose helpers to migrate TIF to SYSCALL_WORK flags")
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I think it comes down to whether my paranoia (about accessing an
+unreferenced struct page) is realistic or not: since I do hold
+that paranoia, I do prefer (whatever variant of) my patch.
 
--- 
-Kees Cook
+I'm not a memory hotremove guy. I did search mm/memory_hotplug.c
+for references to rcu or stop_machine(), but found none.  I can
+imagine that the memory containing the struct pages would be
+located elsewhere than the memory itself, with some strong
+barrier in between removals; but think there were patches posted
+just a few days ago, with intent to allocate struct pages from
+the same memory block.  It would be easy to forget this writeback
+issue when hotremove advances, if we don't fix it properly now.
+
+Another problem with the s/if/while/ solution: I think Matthew
+pointed to another patch needed, to prevent wake_up_page_bit()
+from doing an inappropriate ClearPageWaiters (I've not studied
+that patch); and would also need a further patch to deal with
+my PF_ONLY_HEAD VM_BUG_ON(PageTail).  More?
+
+I think the unreferenced struct page asks for trouble.
+
+Hugh
