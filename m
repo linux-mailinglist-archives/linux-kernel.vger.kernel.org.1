@@ -2,90 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C6E2C2030
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA3E2C202D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 09:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgKXIjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 03:39:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730509AbgKXIjI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730673AbgKXIjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 03:39:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbgKXIjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Nov 2020 03:39:08 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE65C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:39:07 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id d17so27679857lfq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 00:39:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i8+bYCeKuOJvnepjKUXd1bAXp/xtxeuCkyy0njL/NAA=;
-        b=pM2yYux2OW5DIOxHgUVmKI58b7pM94gtzpow1fv7nhugyA1ylNk6yTjvTfL6Isdxa0
-         RL/fpFvBHQmjRmSqhc9JPxpgv4Hh8ZdWdWI/E3jRb8mDsuIlEa8niLuk/MPJrYGDbpC1
-         ADKmWNH3/BnBsyr72JUrUNzFnzVK/KfPZEgi72Q5YZ4KCmMlzZ47dgHY6QO2za5gPKB5
-         VTGRXum+qhzFRudFxIXNExPBbDtNE8JkFI04gjlMrBOsyvWtsD4l6S422YBS7glv9aTv
-         GVrFYKXL+T7T05X0vlLfSlmzxYxqNnh7dO0mGfiJzBO5zM6/1XhzLSL3OAJaHlc2kx3c
-         9TCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i8+bYCeKuOJvnepjKUXd1bAXp/xtxeuCkyy0njL/NAA=;
-        b=QKizo+hc5wbq6jo5F1CD6wRhU9Tz+dFz0EQJmjWRufpguNXGPm4ccjWTkAmDTnjwYr
-         /nJtU/QtqtXXk+Aiq4r1eh+sGmTkBAjb+BlLj8Y/SClkiWVLnYOAZiwr8sgzOwB9PiV3
-         WG4cp/FTwXKgPtoZT1gn/ytRbBg0OsRH3mDKky8wT0iyHAkfBvnl4taE7WEiAmMB/p3r
-         +EbGoEbdcojqv8RKhiwaOxWjX8wHr2rL3N4K+S6r+kvZryzvqjYdYQfXLGp3tyF1XAP8
-         taNiNFPQ9BN54C9pd7RnCXT8UnPd/ofnpJ5g40e3cyPtkuJuqgNR59B1NAGAyfEFm7qh
-         4FtA==
-X-Gm-Message-State: AOAM532R0GBaQoOmucRnLF1mKpcf8yxCR8HtU5XdGUdy4ByPNfI6d9rG
-        zkl1LhPTFD8JLu3yLfIm5j9Rk9n1Hql/j+v6V8OXD0qhYd/kAA==
-X-Google-Smtp-Source: ABdhPJzQT4fDtfKY20ncG9HETAsp8RdTF79Jyc6mRKyoBEhhdyG1qtyOY5kKpTCHvD7v0L+Hn6wSYsEYEGC2qtveh2Q=
-X-Received: by 2002:a19:5f11:: with SMTP id t17mr1212354lfb.572.1606207146303;
- Tue, 24 Nov 2020 00:39:06 -0800 (PST)
+Received: from localhost (unknown [122.167.149.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCF0B206FA;
+        Tue, 24 Nov 2020 08:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606207147;
+        bh=iANSHoT6ai2CnJZ+iiwv27Wcx82PQo3VLZlsbLa9oOw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xfsiGijaatWRH+EIx9AoiQ49LDB8/0+AyQlZ+NmLEgTvHoWqX8IV9CLfS6YkZjDZ/
+         yucQ9OmCv5IcJCZPCFh6xXykE+fJyLwwUE4cOEQt6zJs0xyA5A/GxUGn0qFlZhKCVk
+         IciK/jYIwcpdAx3lcqV3HXOK6GCTahjpVZduO13E=
+Date:   Tue, 24 Nov 2020 14:09:02 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soundwire: Fix DEBUG_LOCKS_WARN_ON for uninitialized
+ attribute
+Message-ID: <20201124083902.GJ8403@vkoul-mobl>
+References: <20201104112941.1134-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-References: <1604570192-15057-1-git-send-email-rnayak@codeaurora.org> <1604570192-15057-2-git-send-email-rnayak@codeaurora.org>
-In-Reply-To: <1604570192-15057-2-git-send-email-rnayak@codeaurora.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 24 Nov 2020 09:38:55 +0100
-Message-ID: <CACRpkdbrOKct5v2YY6L8G5fweP=eOFpcS9=Z6nUyA2E4Of+h7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add sc7280 pinctrl driver
-To:     Rajendra Nayak <rnayak@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104112941.1134-1-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 10:56 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+On 04-11-20, 11:29, Srinivas Kandagatla wrote:
+> running kernel with CONFIG_DEBUG_LOCKS_ALLOC enabled will below warning:
+> 
+> BUG: key ffff502e09807098 has not been registered!
+> DEBUG_LOCKS_WARN_ON(1)
+> WARNING: CPU: 5 PID: 129 at kernel/locking/lockdep.c:4623
+> 	lockdep_init_map_waits+0xe8/0x250
+> Modules linked in:
+> CPU: 5 PID: 129 Comm: kworker/5:1 Tainted: G
+>        W         5.10.0-rc1-00277-ged49f224ca3f-dirty #1210
+> Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+> Workqueue: events deferred_probe_work_func
+> pstate: 80c00005 (Nzcv daif +PAN +UAO -TCO BTYPE=--)
+> pc : lockdep_init_map_waits+0xe8/0x250
+> lr : lockdep_init_map_waits+0xe8/0x250
 
-> Add initial pinctrl driver to support pin configuration with
-> pinctrl framework for SC7280 SoC
->
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
-> v2: Consolidated functions under phase_flag and qdss
->     Moved ufs reset pin to pin175 so its exposed as a gpio
->     npios updated from 175 to 176
+Applied, thanks
 
-Patch applied.
-
-> +config PINCTRL_SC7280
-> +       tristate "Qualcomm Technologies Inc SC7280 pin controller driver"
-> +       depends on GPIOLIB && OF
-> +       select PINCTRL_MSM
-
-I changed this to depends on PINCTRL_MSM in the process to stay
-consistent with John's changes to modularize the pin controllers.
-
-Yours,
-Linus Walleij
+-- 
+~Vinod
