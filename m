@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5942C19F7
+	by mail.lfdr.de (Postfix) with ESMTP id C65372C19F8
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgKXA3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
+        id S1729457AbgKXA3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbgKXA3g (ORCPT
+        with ESMTP id S1726844AbgKXA3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 19:29:36 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA65C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:36 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id l1so20563574wrb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:35 -0800 (PST)
+        Mon, 23 Nov 2020 19:29:38 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9E9C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:37 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id x13so926846wmj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jNz3xKoutWR4nz0OrEakBf/3W1qDSFus3UiO0EblEv8=;
-        b=n+M+hYWqW8rhatkQC/ruNhIpOBRonphJK6iRj5ckMUONI+jeC46hXsS+F448eR9roH
-         f+W2cWOABZPjdT8h/Kv4/kzhP4IEyvPcrur5KZ29bqGfwalTUAsuYeMRfuey5HaeamKO
-         U4bY7H6FdnrKgwNqczwlPYQv9HiSzLuZsA3k9I7iJNZptCLtapIiJqAiyhj/zD6kJQKB
-         WQ7CAkNd57Q4MlPiFJ9tfpaO4f6lfylKfMkLEGpq4zBcaJKU4rDTCA+TmYYakr6bx3GU
-         nMHHYTylZMrgavyDiwbyJwsgRdlaW/0jx5UMXejU3EhX6I1W3HEvPkCBmtlP7bbBvOBk
-         W6lw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/g0i6l5f7deTxKjj2ce6ZAbAca3ZTjd4anBrFGXxM7g=;
+        b=pJ/EBdlrgrQR2z7PSQFy+kQp2YtWBjrmmLjA7JoJ3fJU/24hvEl+fRzoduiHCou7NC
+         GrWvA329qC2wAGUdbsCnR9Bk+Iex/b+DlXyjPsHaPOIiSxjjxa6oHzpUBO8s6S7GiNCy
+         t3rhsnEbhLkfJ3liFVOGH/G4N67BhV0iE5CC+yKXr++KvwMIb0UJQf5gSIyHgvHfD7IA
+         0C03Rjz2PONepWUMm92fMpB0cWbTMQrf+QR6lIy7cvhR1W0JKOodrwLcZr57YRRXIW2H
+         iPdX8b9GouWUyOBmkKeIrLq+tdV6lQOn+q7jOORWxomK6d/x6940q3v+eitmxaSlYzeq
+         YZoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jNz3xKoutWR4nz0OrEakBf/3W1qDSFus3UiO0EblEv8=;
-        b=hyyIIxKPWt1NBpmMSiKkll8NjSXqRd0K5PUZy8819NN6IFaDT1h2SInzJQvr6bCvDj
-         ONEMZFCOj/T8/HMbYBbNYxIRHvUQjCLAZzbaFQyatabpJT30o1sNifPvRShkWsUlDt4Z
-         wLjjAHsHvrLMluP9WHZWJB1OuVmoxgd4sS2dIEKwj/zh1Zxtxn5DLj8eIo+6CtTf6dkQ
-         +ql9kBhkrAYaEAY+Gyc4FRmyOdYB0uKGkzoKb0lCqGiO5h69HNimXkKwiHDFwZbvIawo
-         eVswc2qD8ciEnx9uKxC/CAC04eaJc8ES2zEZnVgCdC5NAek+Id3ugoZeUYHDCym0Srn4
-         G75g==
-X-Gm-Message-State: AOAM530IdMmRWIfrSSMCsb0kq2NOU9i/xUB0Mcw8tbtIDGJx7NLsv0YF
-        x0nrX2vqZKT45O65XOc1g9W+a9f5taX0xmln
-X-Google-Smtp-Source: ABdhPJxLooGBO7uA4nI31mkCOzrZY2FwztGHRbhA3oNfSpnzFi6YpHRuR4w8Ptvp0DbFh/7JUN81rQ==
-X-Received: by 2002:adf:8028:: with SMTP id 37mr2245344wrk.111.1606177774498;
-        Mon, 23 Nov 2020 16:29:34 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/g0i6l5f7deTxKjj2ce6ZAbAca3ZTjd4anBrFGXxM7g=;
+        b=Gpj2jSQG7gPm+PXck/zzbWo3QEkqHCduVPqQKAK10A64pzpUNfwhIk43UVNQ4vPvin
+         nFZKFJSV/1VGcuLSJV+upUH3vb9SbHihI9si9BVjvXBGm4nQ+U2bnYCs0vg+5LoIRsFj
+         WoThNP+OsfQwCPJ40otAlqKl4DzmuHlNFU+vxE0KQ324hIyfzQbVKgWfrbTeuvuLBlUl
+         0IsxDj2gTs6L48IVXMqytOI47x57EYdP2xgQFXYfXsLne+H4/dTnECoR8qrHiQvPbeSk
+         2mHnBUkCIMFY6xZH3mFGgvjs0D5Wkv+U2KRHh+jaVLzfdMcGlhL4zbH2US5w5ALUeMKM
+         dqJA==
+X-Gm-Message-State: AOAM531KO3G7SmzC66h6h8heJnBpw6QbmgAsEpbJUGR0+6K4FtPP5fEw
+        ovzr2I7hRM1/bVyoAS+7J2fHznc9dsF2NbTz
+X-Google-Smtp-Source: ABdhPJw9n5SyKKHCM2BUBPF3tz20NOaQ7hnd2+FmFdkHbN6pmjgk6G5LH3ygxrP8AEkfOMwVMgH2vg==
+X-Received: by 2002:a05:600c:219a:: with SMTP id e26mr1475334wme.168.1606177775779;
+        Mon, 23 Nov 2020 16:29:35 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.33
+        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 16:29:33 -0800 (PST)
+        Mon, 23 Nov 2020 16:29:35 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -66,170 +66,160 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: [PATCH v2 00/19] Add generic vdso_base tracking
-Date:   Tue, 24 Nov 2020 00:29:13 +0000
-Message-Id: <20201124002932.1220517-1-dima@arista.com>
+Subject: [PATCH v2 01/19] x86/elf: Check in_x32_syscall() in compat_arch_setup_additional_pages()
+Date:   Tue, 24 Nov 2020 00:29:14 +0000
+Message-Id: <20201124002932.1220517-2-dima@arista.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201124002932.1220517-1-dima@arista.com>
+References: <20201124002932.1220517-1-dima@arista.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v2 Changes:
-- Rename user_landing to vdso_base as it tracks vDSO VMA start address,
-  rather than the explicit address to land (Andy)
-- Reword and don't use "new-execed" and "new-born" task (Andy)
-- Fix failures reported by build robot
+Partly revert commit 3316ec8ccd34 ("x86/elf: Use e_machine to check for
+x32/ia32 in setup_additional_pages()") and commit 9a29a671902c ("elf:
+Expose ELF header on arch_setup_additional_pages()".
+Both patches did a good thing: removed usage of TIF_X32, but with
+a price of additional macros ARCH_SETUP_ADDITIONAL_PAGES() and ifdeffs.
 
-Started from discussion [1], where was noted that currently a couple of
-architectures support mremap() for vdso/sigpage, but not munmap().
-If an application maps something on the ex-place of vdso/sigpage,
-later after processing signal it will land there (good luck!)
+Instead, use in_x32_syscall() - the first thing load_elf_binary() does
+after parsing and checking new ELF binary. It's done that early after
+exec() that way also allows to use it in mmap() code straight away,
+which needs it to know which mmap_base to use (see arch_pick_mmap_layout()).
+Add comments that describe how it works.
 
-Patches set is based on linux-next (next-20201123) and it depends on
-changes in x86/cleanups (those reclaim TIF_IA32/TIF_X32) and also
-on my changes in akpm (fixing several mremap() issues).
-
-Logically, the patches set divides on:
-- patch       1: a cleanup for patches in x86/cleanups
-- patches  2-11: cleanups for arch_setup_additional_pages()
-- patches 12-13: x86 signal changes for unmapped vdso
-- patches 14-19: provide generic vdso_base in mm_struct
-
-In the end, besides cleanups, it's now more predictable what happens for
-applications with unmapped vdso on architectures those support .mremap()
-for vdso/sigpage.
-
-I'm aware of only one user that unmaps vdso - Valgrind [2].
-(there possibly are more, but this one is "special", it unmaps vdso, but
- not vvar, which confuses CRIU [Checkpoint Restore In Userspace], that's
- why I'm aware of it)
-
-Patches as a .git branch:
-https://github.com/0x7f454c46/linux/tree/setup_additional_pages-v2
-
-v1 Link:
-https://lore.kernel.org/lkml/20201108051730.2042693-1-dima@arista.com/
-
-[1]: https://lore.kernel.org/linux-arch/CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com/
-[2]: https://github.com/checkpoint-restore/criu/issues/488
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Will Deacon <will@kernel.org>
 Cc: x86@kernel.org
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ arch/x86/entry/vdso/vma.c     |  4 ++--
+ arch/x86/include/asm/compat.h |  6 ++++++
+ arch/x86/include/asm/elf.h    |  6 ++----
+ fs/binfmt_elf.c               | 10 +++++++---
+ fs/compat_binfmt_elf.c        | 11 +++--------
+ include/linux/elf.h           |  5 -----
+ 6 files changed, 20 insertions(+), 22 deletions(-)
 
-Dmitry Safonov (19):
-  x86/elf: Check in_x32_syscall() in compat_arch_setup_additional_pages()
-  elf: Move arch_setup_additional_pages() to generic elf.h
-  arm64: Use in_compat_task() in arch_setup_additional_pages()
-  x86: Remove compat_arch_setup_additional_pages()
-  elf: Remove compat_arch_setup_additional_pages()
-  elf/vdso: Reuse arch_setup_additional_pages() parameters
-  elf: Use sysinfo_ehdr in ARCH_DLINFO()
-  arm/vdso: Remove vdso pointer from mm->context
-  s390/vdso: Remove vdso_base pointer from mm->context
-  sparc/vdso: Remove vdso pointer from mm->context
-  mm/mmap: Make vm_special_mapping::mremap return void
-  x86/signal: Land on &frame->retcode when vdso isn't mapped
-  x86/signal: Check if vdso_image_32 is mapped before trying to land on it
-  mm: Add vdso_base in mm_struct
-  x86/vdso: Migrate to generic vdso_base
-  arm/vdso: Migrate to generic vdso_base
-  arm64/vdso: Migrate compat signals to generic vdso_base
-  arm64/vdso: Migrate native signals to generic vdso_base
-  mips/vdso: Migrate to generic vdso_base
-
- arch/alpha/include/asm/elf.h              |  2 +-
- arch/arm/Kconfig                          |  2 +
- arch/arm/include/asm/elf.h                | 10 +---
- arch/arm/include/asm/mmu.h                |  3 -
- arch/arm/include/asm/vdso.h               |  6 +-
- arch/arm/kernel/process.c                 | 14 +----
- arch/arm/kernel/signal.c                  |  6 +-
- arch/arm/kernel/vdso.c                    | 20 ++-----
- arch/arm64/Kconfig                        |  2 +
- arch/arm64/include/asm/elf.h              | 27 ++-------
- arch/arm64/kernel/signal.c                | 10 +++-
- arch/arm64/kernel/signal32.c              | 17 ++++--
- arch/arm64/kernel/vdso.c                  | 50 +++++++---------
- arch/csky/Kconfig                         |  1 +
- arch/csky/include/asm/elf.h               |  4 --
- arch/csky/kernel/vdso.c                   |  3 +-
- arch/hexagon/Kconfig                      |  1 +
- arch/hexagon/include/asm/elf.h            |  6 --
- arch/hexagon/kernel/vdso.c                |  3 +-
- arch/ia64/include/asm/elf.h               |  2 +-
- arch/mips/Kconfig                         |  2 +
- arch/mips/include/asm/elf.h               | 10 +---
- arch/mips/kernel/signal.c                 | 11 ++--
- arch/mips/kernel/vdso.c                   |  5 +-
- arch/mips/vdso/genvdso.c                  |  9 ---
- arch/nds32/Kconfig                        |  1 +
- arch/nds32/include/asm/elf.h              |  8 +--
- arch/nds32/kernel/vdso.c                  |  3 +-
- arch/nios2/Kconfig                        |  1 +
- arch/nios2/include/asm/elf.h              |  4 --
- arch/nios2/mm/init.c                      |  2 +-
- arch/powerpc/Kconfig                      |  1 +
- arch/powerpc/include/asm/elf.h            |  9 +--
- arch/powerpc/kernel/vdso.c                |  3 +-
- arch/riscv/Kconfig                        |  1 +
- arch/riscv/include/asm/elf.h              |  9 +--
- arch/riscv/kernel/vdso.c                  | 11 ++--
- arch/s390/Kconfig                         |  1 +
- arch/s390/include/asm/elf.h               | 10 +---
- arch/s390/include/asm/mmu.h               |  1 -
- arch/s390/kernel/vdso.c                   | 13 +---
- arch/sh/Kconfig                           |  1 +
- arch/sh/include/asm/elf.h                 | 16 ++---
- arch/sh/kernel/vsyscall/vsyscall.c        |  3 +-
- arch/sparc/Kconfig                        |  1 +
- arch/sparc/include/asm/elf_64.h           | 11 +---
- arch/sparc/include/asm/mmu_64.h           |  1 -
- arch/sparc/vdso/vma.c                     | 18 +++---
- arch/x86/Kconfig                          |  2 +
- arch/x86/entry/common.c                   |  7 ++-
- arch/x86/entry/vdso/extable.c             |  4 +-
- arch/x86/entry/vdso/vma.c                 | 72 ++++++++++++-----------
- arch/x86/ia32/ia32_signal.c               | 18 +++---
- arch/x86/include/asm/compat.h             |  6 ++
- arch/x86/include/asm/elf.h                | 44 +++++---------
- arch/x86/include/asm/mmu.h                |  1 -
- arch/x86/include/asm/vdso.h               |  4 ++
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  3 +-
- arch/x86/kernel/signal.c                  | 25 ++++----
- arch/x86/um/asm/elf.h                     |  9 +--
- arch/x86/um/vdso/vma.c                    |  2 +-
- fs/Kconfig.binfmt                         |  3 +
- fs/aio.c                                  |  3 +-
- fs/binfmt_elf.c                           | 19 +++---
- fs/binfmt_elf_fdpic.c                     | 17 +++---
- fs/compat_binfmt_elf.c                    | 12 ----
- include/linux/elf.h                       | 24 ++++++--
- include/linux/mm.h                        |  3 +-
- include/linux/mm_types.h                  | 12 +++-
- mm/Kconfig                                |  3 +
- mm/mmap.c                                 | 21 ++++++-
- mm/mremap.c                               |  2 +-
- 72 files changed, 313 insertions(+), 358 deletions(-)
-
-
-base-commit: 62918e6fd7b5751c1285c7f8c6cbd27eb6600c02
+diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
+index 44de75b21fab..4eea508e9b10 100644
+--- a/arch/x86/entry/vdso/vma.c
++++ b/arch/x86/entry/vdso/vma.c
+@@ -396,10 +396,10 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 
+ #ifdef CONFIG_COMPAT
+ int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
+-				       int uses_interp, bool x32)
++				       int uses_interp)
+ {
+ #ifdef CONFIG_X86_X32_ABI
+-	if (x32) {
++	if (in_x32_syscall()) {
+ 		if (!vdso64_enabled)
+ 			return 0;
+ 		return map_vdso_randomized(&vdso_image_x32);
+diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
+index f145e3326c6d..4489bd60640b 100644
+--- a/arch/x86/include/asm/compat.h
++++ b/arch/x86/include/asm/compat.h
+@@ -197,6 +197,12 @@ static inline bool in_x32_syscall(void)
+ 	return false;
+ }
+ 
++/*
++ * Valid all time on the context of process that performs a syscall.
++ * Just born process has __X32_SYSCALL_BIT or TS_COMPAT set very
++ * early in load_binary() on setting personality and flags.
++ * See also set_personality_ia32().
++ */
+ static inline bool in_32bit_syscall(void)
+ {
+ 	return in_ia32_syscall() || in_x32_syscall();
+diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
+index 44a9b9940535..109697a19eb1 100644
+--- a/arch/x86/include/asm/elf.h
++++ b/arch/x86/include/asm/elf.h
+@@ -383,10 +383,8 @@ struct linux_binprm;
+ extern int arch_setup_additional_pages(struct linux_binprm *bprm,
+ 				       int uses_interp);
+ extern int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
+-					      int uses_interp, bool x32);
+-#define COMPAT_ARCH_SETUP_ADDITIONAL_PAGES(bprm, ex, interpreter)	\
+-	compat_arch_setup_additional_pages(bprm, interpreter,		\
+-					   (ex->e_machine == EM_X86_64))
++					      int uses_interp);
++#define compat_arch_setup_additional_pages compat_arch_setup_additional_pages
+ 
+ /* Do not change the values. See get_align_mask() */
+ enum align_flags {
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index ac0b5fc30ea6..3de72c0e0406 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -999,8 +999,12 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 	if (retval)
+ 		goto out_free_dentry;
+ 
+-	/* Do this immediately, since STACK_TOP as used in setup_arg_pages
+-	   may depend on the personality.  */
++	/*
++	 * Do this immediately, since STACK_TOP as used in setup_arg_pages
++	 * may depend on the personality. At this moment we start
++	 * pretending that we are in a context of compat syscall for
++	 * compatible applications on x86, in_compat_syscall() starts working.
++	 */
+ 	SET_PERSONALITY2(*elf_ex, &arch_state);
+ 	if (elf_read_implies_exec(*elf_ex, executable_stack))
+ 		current->personality |= READ_IMPLIES_EXEC;
+@@ -1246,7 +1250,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 	set_binfmt(&elf_format);
+ 
+ #ifdef ARCH_HAS_SETUP_ADDITIONAL_PAGES
+-	retval = ARCH_SETUP_ADDITIONAL_PAGES(bprm, elf_ex, !!interpreter);
++	retval = arch_setup_additional_pages(bprm, !!interpreter);
+ 	if (retval < 0)
+ 		goto out;
+ #endif /* ARCH_HAS_SETUP_ADDITIONAL_PAGES */
+diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
+index 2c557229696a..12b991368f0a 100644
+--- a/fs/compat_binfmt_elf.c
++++ b/fs/compat_binfmt_elf.c
+@@ -115,16 +115,11 @@
+ #define START_THREAD		COMPAT_START_THREAD
+ #endif
+ 
+-#ifdef compat_arch_setup_additional_pages
+-#define COMPAT_ARCH_SETUP_ADDITIONAL_PAGES(bprm, ex, interpreter) \
+-	compat_arch_setup_additional_pages(bprm, interpreter)
+-#endif
+-
+-#ifdef	COMPAT_ARCH_SETUP_ADDITIONAL_PAGES
++#ifdef	compat_arch_setup_additional_pages
+ #undef	ARCH_HAS_SETUP_ADDITIONAL_PAGES
+ #define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
+-#undef	ARCH_SETUP_ADDITIONAL_PAGES
+-#define	ARCH_SETUP_ADDITIONAL_PAGES COMPAT_ARCH_SETUP_ADDITIONAL_PAGES
++#undef	arch_setup_additional_pages
++#define	arch_setup_additional_pages compat_arch_setup_additional_pages
+ #endif
+ 
+ #ifdef	compat_elf_read_implies_exec
+diff --git a/include/linux/elf.h b/include/linux/elf.h
+index c9a46c4e183b..6dbcfe7a3fd7 100644
+--- a/include/linux/elf.h
++++ b/include/linux/elf.h
+@@ -27,11 +27,6 @@
+ 	start_thread(regs, elf_entry, start_stack)
+ #endif
+ 
+-#if defined(ARCH_HAS_SETUP_ADDITIONAL_PAGES) && !defined(ARCH_SETUP_ADDITIONAL_PAGES)
+-#define ARCH_SETUP_ADDITIONAL_PAGES(bprm, ex, interpreter) \
+-	arch_setup_additional_pages(bprm, interpreter)
+-#endif
+-
+ #define ELF32_GNU_PROPERTY_ALIGN	4
+ #define ELF64_GNU_PROPERTY_ALIGN	8
+ 
 -- 
 2.29.2
 
