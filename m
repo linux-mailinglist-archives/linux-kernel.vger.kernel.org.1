@@ -2,146 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C622C2C3017
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9F82C301C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 19:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390946AbgKXSmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 13:42:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
+        id S2390961AbgKXSmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 13:42:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387989AbgKXSmR (ORCPT
+        with ESMTP id S2390952AbgKXSmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 13:42:17 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7E9C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:42:14 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id i17so23246324ljd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:42:14 -0800 (PST)
+        Tue, 24 Nov 2020 13:42:47 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DC2C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:42:47 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id t13so20284687ilp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 10:42:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7bYxDHbnmMeqeAaCeZZRsCP/3hYPYLY12AMSLIFZUIg=;
-        b=VKlK3+QLeMWZ1q3zj34Obxbm2JFZ/yNE7EaUqGdyv8+Yu+bCV6Z/PFlAyqKMwkXK8U
-         J79+sAAVRwvpqkxh6lly891xvx0PSQoJ3eyq6/0uoZzOzDmuUZJ+PH/ysn/byJDernYi
-         /19Lq2qs6y22Py0nYJKyE9aw1W+qCTJBHiEJg5u11ljE6vVgJguOFDp6PRiZh8KuInWw
-         4OuUW90DHsKAEaiErfNGx9NGVhLLVB0yyPWFWbHSLwxpqSFuDe41XpqzvdozjnQaL4Cc
-         RckVQWC58sV9mGG1MuHm4eHGG+YEhHqWH/5Uq1ZYweG2RSE+icNSDdwDCqgl1fwINGDn
-         sKSg==
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=I66kGxStV/6CyvzIe7WIMGeh+u6UpZuKcXQ4/c5IVHM=;
+        b=QFVPduXV4LLsuiww/mzBj3avxGOXVnqoJHsAm1Is7inPRb4VVg6vQLRpYDU+6KIZqu
+         Mvafc0MXJ13dHa0Dm9qjB5bp4gbpQXHKV8bXbEkWR5nKWQsCM0TImLyz1gYveGac2aff
+         3mgCUGA/Qgb5Xopdfv77l7Y9GLtHxviSC7teg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7bYxDHbnmMeqeAaCeZZRsCP/3hYPYLY12AMSLIFZUIg=;
-        b=ZprcBJ6biyRu6Fy2obwD0CJwZZqOl1inVH+El1D8JYJFJ2syHLB9zq/J0ym3oXn28n
-         JP0xG9NgJ5WNf2xPKpoJp5tTQgLvzf9cvVLw3O7KfG4rhyeWwSq2clyxTITFVcOI0H6P
-         ej3WQyhQKeGqNGzdXDPZjeXjUHEFZvPOPrfiA8yGD0WKMpka/wfVA4xyI34yRQpk1cwD
-         YFyFR6MpiMxTGYTevq4bkdk5yfhqFOuQ6iB6HxxCWi5DQNUXf4JZklLSgObt6E1h8Sl3
-         C9kWXODi0J8JDaD+gIYjHdrPSVR5oAy7uZulK5qsy/1mfJC0rQoKxemtvsWPTcLafsVy
-         U4qA==
-X-Gm-Message-State: AOAM531S/x/gmbEd/QHWhC2ypmTfF8VJBd2F6ZIa6AFAwp8BggNsGy9N
-        TsA7al+LP3pqrU1s/SXFNSn3GsZlfq+ZMZ3cZ/cb+g==
-X-Google-Smtp-Source: ABdhPJxeG/RWLjpouaYjw9/E6VOlHTDg7MXYwTLOec/QiAK98nvPxkCA8eImKbQOu8sM28sUqbLkIsh+P+4Qc2KLZUw=
-X-Received: by 2002:a05:651c:1035:: with SMTP id w21mr209576ljm.326.1606243332802;
- Tue, 24 Nov 2020 10:42:12 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=I66kGxStV/6CyvzIe7WIMGeh+u6UpZuKcXQ4/c5IVHM=;
+        b=bc4MK9E4t2naDQ7mAlVO2xKiFjAG/Uxckjovn2d469pWkl5+hCOz2iFiVuVdPrAqH0
+         W4qpU8ASQs0AMFkh1lNskWfQeZd+DJhVTqOp75Ds5hb59hjuUIYhjlkN9yAM3P5JN/vK
+         z9zNAL0UFRC60eynBXVtxLnh1/zk56Ekaq4r8zF5GKZ7zbLos+tO6ovaNo8BUmByMTic
+         SiGob6GsflPZdjSH/2ohw1QwVst2HPXDige2GouhyTUdmPKxgzt7dmEtoN14zkOEOuAp
+         IJ1tip1c3b9wGoiTKb/396zmcgpanqNK1Q34PyjI8bPJImUpJsNR8gydb5gZduQxse1n
+         OCZw==
+X-Gm-Message-State: AOAM532zRxqAGQBt/vHJ8XhrEWokvWd0Ybq6uLgEdTZ/ZF0x7eI8AWFn
+        Nei7ZKw/8RZ3leGcyW8AB3U32Q==
+X-Google-Smtp-Source: ABdhPJyhOIr2YADL+wmq+g6pyY81mNUBUd1fsWI6u4ZHmtWiePd6acpDOLttwfvDnBAwozJHVPLUaQ==
+X-Received: by 2002:a92:de47:: with SMTP id e7mr5051906ilr.15.1606243366381;
+        Tue, 24 Nov 2020 10:42:46 -0800 (PST)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id u11sm8147517iol.51.2020.11.24.10.42.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 24 Nov 2020 10:42:45 -0800 (PST)
+Date:   Tue, 24 Nov 2020 18:42:44 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     "J . Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>
+Cc:     mauricio@kinvolk.io, Alban Crequy <alban.crequy@gmail.com>,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyle Anderson <kylea@netflix.com>
+Subject: Re: [PATCH v5 0/2] NFS: Fix interaction between fs_context and user
+ namespaces
+Message-ID: <20201124184243.GA32491@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20201112100952.3514-1-sargun@sargun.me>
 MIME-Version: 1.0
-References: <20201119190237.626-1-chang.seok.bae@intel.com>
- <20201119190237.626-4-chang.seok.bae@intel.com> <CAG48ez1aKtwYMEHfGX6_FuX9fOruwvCqEGYVL8eLdV8bg-wHCQ@mail.gmail.com>
- <B2D7D498-D118-447E-93C6-DB03D42CBA4E@intel.com>
-In-Reply-To: <B2D7D498-D118-447E-93C6-DB03D42CBA4E@intel.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 24 Nov 2020 19:41:46 +0100
-Message-ID: <CAG48ez1JK6pMT2UD1v0FwiCQq48FbE5Eb0d3tK=kK4Sg0TG7OQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] x86/signal: Prevent an alternate stack overflow
- before a signal delivery
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Dave Martin <Dave.Martin@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Hiroshi Shimamoto <h-shimamoto@ct.jp.nec.com>,
-        Roland McGrath <roland@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112100952.3514-1-sargun@sargun.me>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 7:22 PM Bae, Chang Seok
-<chang.seok.bae@intel.com> wrote:
-> > On Nov 20, 2020, at 15:04, Jann Horn <jannh@google.com> wrote:
-> > On Thu, Nov 19, 2020 at 8:40 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
-> >>
-> >> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> >> index ee6f1ceaa7a2..cee41d684dc2 100644
-> >> --- a/arch/x86/kernel/signal.c
-> >> +++ b/arch/x86/kernel/signal.c
-> >> @@ -251,8 +251,13 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
-> >>
-> >>        /* This is the X/Open sanctioned signal stack switching.  */
-> >>        if (ka->sa.sa_flags & SA_ONSTACK) {
-> >> -               if (sas_ss_flags(sp) == 0)
-> >> +               if (sas_ss_flags(sp) == 0) {
-> >> +                       /* If the altstack might overflow, die with SIGSEGV: */
-> >> +                       if (!altstack_size_ok(current))
-> >> +                               return (void __user *)-1L;
-> >> +
-> >>                        sp = current->sas_ss_sp + current->sas_ss_size;
-> >> +               }
-> >
-> > A couple lines further down, we have this (since commit 14fc9fbc700d):
-> >
-> >        /*
-> >         * If we are on the alternate signal stack and would overflow it, don't.
-> >         * Return an always-bogus address instead so we will die with SIGSEGV.
-> >         */
-> >        if (onsigstack && !likely(on_sig_stack(sp)))
-> >                return (void __user *)-1L;
-> >
-> > Is that not working?
+On Thu, Nov 12, 2020 at 02:09:50AM -0800, Sargun Dhillon wrote:
+> Right now, it is possible to mount NFS with an non-matching super block
+> user ns, and NFS sunrpc user ns. This (for the user) results in an awkward
+> set of interactions if using anything other than auth_null, where the UIDs
+> being sent to the server are different than the local UIDs being checked.
+> This can cause "breakage", where if you try to communicate with the NFS
+> server with any other set of mappings, it breaks.
+> 
+> The reason for this is that you can call fsopen("nfs4") in the unprivileged
+> namespace, and that configures fs_context with all the right information
+> for that user namespace. In addition, it also keeps a gets a cred object
+> associated with the caller -- which should match the user namespace.
+> Unfortunately, the mount has to be finished in the init_user_ns because we
+> currently require CAP_SYS_ADMIN in the init user namespace to call fsmount.
+> This means that the superblock's user namespace is set "correctly" to the
+> container, but there's absolutely no way nfs4idmap to consume an
+> unprivileged user namespace because the cred / user_ns that's passed down
+> to nfs4idmap is the one at fsmount.
+> 
+> How this actually exhibits is let's say that the UID 0 in the user
+> namespace is mapped to UID 1000 in the init user ns (and kuid space). What
+> will happen is that nfs4idmap will translate the UID 1000 into UID 0 on the
+> wire, even if the mount is in entirely in the mount / user namespace of the
+> container.
+> 
+> So, it looks something like this
+> Client in unprivileged User NS (UID: 0, KUID: 0)
+> 	->Perform open()
+> 		...VFS / NFS bits...
+> 		nfs_map_uid_to_name ->
+> 			from_kuid_munged(init_user_ns, uid) (returns 0)
+> 				RPC with UID 0
+> 
+> This behaviour happens "the other way" as well, where the UID in the
+> container may be 0, but the corresponding kuid is 1000. When a response
+> from an NFS server comes in we decode it according to the idmap userns.
+> The way this exhibits is even more odd.
+> 
+> Server responds with file attribute (UID: 0, GID: 0)
+> 	->nfs_map_name_to_uid(..., 0)
+> 		->make_kuid(init_user_ns, id) (returns 0)
+> 			....VFS / NFS Bits...
+> 			->from_kuid(container_ns, 0) -> invalid uid
+> 				-> EOVERFLOW
+> 
+> This changes the nfs server to use the cred / userns from fs_context, which
+> is how idmap is constructed. This subsequently is used in the above
+> described flow of converting uids back-and-forth.
+> 
+> Trond gave the feedback that this behaviour [implemented by this patch] is
+> how the legacy sys_mount() behaviour worked[1], and that the intended
+> behaviour is for UIDs to be plumbed through entirely, where the user
+> namespaces UIDs are what is sent over the wire, and not the init user ns.
+> 
+> [1]: https://lore.kernel.org/linux-nfs/8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com/
+> 
+> Sargun Dhillon (2):
+>   NFS: NFSv2/NFSv3: Use cred from fs_context during mount
+>   NFSv4: Refactor to use user namespaces for nfs4idmap
+> 
+>  fs/nfs/client.c     | 4 ++--
+>  fs/nfs/nfs4client.c | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> 
+> base-commit: 8c39076c276be0b31982e44654e2c2357473258a
+> -- 
+> 2.25.1
 >
-> onsigstack is set at the beginning here. If a signal hits under normal stack,
-> this flag is not set. Then it will miss the overflow.
->
-> The added check allows to detect the sigaltstack overflow (always).
 
-Ah, I think I understand what you're trying to do. But wouldn't the
-better approach be to ensure that the existing on_sig_stack() check is
-also used if we just switched to the signal stack? Something like:
 
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index be0d7d4152ec..2f57842fb4d6 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -237,7 +237,7 @@ get_sigframe(struct k_sigaction *ka, struct
-pt_regs *regs, size_t frame_size,
-        unsigned long math_size = 0;
-        unsigned long sp = regs->sp;
-        unsigned long buf_fx = 0;
--       int onsigstack = on_sig_stack(sp);
-+       bool onsigstack = on_sig_stack(sp);
-        int ret;
-
-        /* redzone */
-@@ -246,8 +246,10 @@ get_sigframe(struct k_sigaction *ka, struct
-pt_regs *regs, size_t frame_size,
-
-        /* This is the X/Open sanctioned signal stack switching.  */
-        if (ka->sa.sa_flags & SA_ONSTACK) {
--               if (sas_ss_flags(sp) == 0)
-+               if (sas_ss_flags(sp) == 0) {
-                        sp = current->sas_ss_sp + current->sas_ss_size;
-+                       onsigstack = true;
-+               }
-        } else if (IS_ENABLED(CONFIG_X86_32) &&
-                   !onsigstack &&
-                   regs->ss != __USER_DS &&
+Trond,
+Are there any other concerns you have before landing this, or do you want
+to wait until the v5.11 merge window?
