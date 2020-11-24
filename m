@@ -2,110 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53712C3100
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7905A2C3126
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgKXTnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:43:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:51230 "EHLO foss.arm.com"
+        id S1727842AbgKXTqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:46:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726357AbgKXTnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:43:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D2441396;
-        Tue, 24 Nov 2020 11:43:15 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.26.92])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2D9D3F718;
-        Tue, 24 Nov 2020 11:43:11 -0800 (PST)
-Date:   Tue, 24 Nov 2020 19:43:08 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
+        id S1727373AbgKXTpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 14:45:51 -0500
+Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 006FF206C0;
+        Tue, 24 Nov 2020 19:45:49 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.14.209-rt101
+Date:   Tue, 24 Nov 2020 19:43:21 -0000
+Message-ID: <160624700127.389408.15668927568676231516@theseus.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, boqun.feng@gmail.com,
-        tglx@linutronix.de
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201124194308.GC8957@C02TD0UTHF1T.local>
-References: <20201119170259.GA2134472@elver.google.com>
- <20201119184854.GY1437@paulmck-ThinkPad-P72>
- <20201119193819.GA2601289@elver.google.com>
- <20201119213512.GB1437@paulmck-ThinkPad-P72>
- <20201119225352.GA5251@willie-the-truck>
- <20201120103031.GB2328@C02TD0UTHF1T.local>
- <20201120140332.GA3120165@elver.google.com>
- <20201123193241.GA45639@C02TD0UTHF1T.local>
- <20201124140310.GA811510@elver.google.com>
- <20201124150146.GH1437@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124150146.GH1437@paulmck-ThinkPad-P72>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 07:01:46AM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 24, 2020 at 03:03:10PM +0100, Marco Elver wrote:
-> > [   91.184432] =============================
-> > [   91.188301] WARNING: suspicious RCU usage
-> > [   91.192316] 5.10.0-rc4-next-20201119-00002-g51c2bf0ac853 #25 Tainted: G        W        
-> > [   91.197536] -----------------------------
-> > [   91.201431] kernel/trace/trace_preemptirq.c:78 RCU not watching trace_hardirqs_off()!
-> > [   91.206546] 
-> > [   91.206546] other info that might help us debug this:
-> > [   91.206546] 
-> > [   91.211790] 
-> > [   91.211790] rcu_scheduler_active = 2, debug_locks = 0
-> > [   91.216454] RCU used illegally from extended quiescent state!
-> > [   91.220890] no locks held by swapper/0/0.
-> > [   91.224712] 
-> > [   91.224712] stack backtrace:
-> > [   91.228794] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.10.0-rc4-next-20201119-00002-g51c2bf0ac853 #25
-> > [   91.234877] Hardware name: linux,dummy-virt (DT)
-> > [   91.239032] Call trace:
-> > [   91.242587]  dump_backtrace+0x0/0x240
-> > [   91.246500]  show_stack+0x34/0x88
-> > [   91.250295]  dump_stack+0x140/0x1bc
-> > [   91.254159]  lockdep_rcu_suspicious+0xe4/0xf8
-> > [   91.258332]  trace_hardirqs_off+0x214/0x330
-> > [   91.262462]  trace_graph_return+0x1ac/0x1d8
-> > [   91.266564]  ftrace_return_to_handler+0xa4/0x170
-> > [   91.270809]  return_to_handler+0x1c/0x38
-> > [   91.274826]  default_idle_call+0x94/0x38c
-> > [   91.278869]  do_idle+0x240/0x290
-> > [   91.282633]  rest_init+0x1e8/0x2dc
-> > [   91.286529]  arch_call_rest_init+0x1c/0x28
-> > [   91.290585]  start_kernel+0x638/0x670
+Hello RT-list!
 
-> This looks like tracing in the idle loop in a place where RCU is not
-> watching.  Historically, this has been addressed by using _rcuidle()
-> trace events, but the portion of the idle loop that RCU is watching has
-> recently increased.  Last I checked, there were still a few holdouts (that
-> would splat like this) in x86, though perhaps those have since been fixed.
+I'm pleased to announce the 4.14.209-rt101 stable release.
 
-Yup! I think this is a latent issue my debug hacks revealed (in addition
-to a couple of other issues in the idle path), and still affects x86 and
-others. It's only noticeable if you hack trace_hardirqs_{on,off}() to
-check rcu_is_watching(), which I had at the tip of my tree.
+You can get this release via the git tree at:
 
-AFAICT, the issue is that arch_cpu_idle() can be dynamically traced with
-ftrace, and hence the tracing code can unexpectedly run without RCU
-watching. Since that's dynamic tracing, we can avoid it by marking
-arch_cpu_idle() and friends as noinstr.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-I'll see about getting this fixed before we upstream the debug hack.
+  branch: v4.14-rt
+  Head SHA1: a19d538aef10c100fd2d85b5a96708792154d44f
 
-Thanks,
-Mark.
+Or to build 4.14.209-rt101 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.209.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.209-rt101.patch.xz
+
+
+You can also build from 4.14.207-rt100 by applying the incremental patch:
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.207-rt100-rt101.patch.xz
+
+Enjoy!
+Clark
