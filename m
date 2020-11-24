@@ -2,57 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3A52C2849
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1863F2C284B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 14:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388485AbgKXNjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388472AbgKXNjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 24 Nov 2020 08:39:54 -0500
-Received: from verein.lst.de ([213.95.11.211]:54503 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387693AbgKXNjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:39:52 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BE3BB68B05; Tue, 24 Nov 2020 14:39:46 +0100 (CET)
-Date:   Tue, 24 Nov 2020 14:39:45 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] uuid: Make guid_t completely internal type to
- the kernel
-Message-ID: <20201124133945.GA30840@lst.de>
-References: <20201030184950.26732-1-andriy.shevchenko@linux.intel.com> <20201030184950.26732-2-andriy.shevchenko@linux.intel.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388459AbgKXNjx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:39:53 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73754C0613D6;
+        Tue, 24 Nov 2020 05:39:53 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id e8so6611830pfh.2;
+        Tue, 24 Nov 2020 05:39:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Z2mGDpaSXN2gDvSIKnNUDnQuTQrrtOklYo6c+3lCrEE=;
+        b=gjSMwLwu5klWgdX8jLjfka1l0hbnhQkhgz12Ny095RrCHHhk0Gc8jNxRvJuIul5Hpy
+         v0K9R1hTsW2ZptqffmXtK8cjpVoX9r8B52bhIl//YFzPFRvNxBsyEIbQtmPXS3qkMPkS
+         J1HBIcx7dqcY8klHy93LVUDNEmRono6HBxLKyHptIpjUSKJiIQv+mQfckZy2WZyhZFmF
+         zy7nL6sJiIRI5Fh0VZVM+oLG2B6jnz8Q8XwThquZtgGWnl5JQf13gURL0V0t+/F6MfYm
+         f+4Tjd0IBm9NJG++RegoYDJDfnNJ5V7WLtamHVls/LNM81W7TQ5FThQeYnKdo85Q45/N
+         FJrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Z2mGDpaSXN2gDvSIKnNUDnQuTQrrtOklYo6c+3lCrEE=;
+        b=BCTG39v8qmPsRt1D73JwAIzOYpGHsn97Mp4bQBkwl7UNy6EJWtPuUqMHavtXfo+UFM
+         TPCAIlmiJkd02CSFgZtrOisnqfgfRRjd+b0QXlAgayICm9zUfK21cVJTajoM8bkeJI3w
+         RWE25OmTU5YiENFDQKhq3EF+0lt2dIg6WUYO76+ZcXQKvfXffkoyGAtASpzXSbfD1wdx
+         rM/76n8JYCYPZLg43GTOceRjhHoopThleUDQfW0bJDpbdjxry/4ktEAhYBDtK1GsVpbh
+         gGgz7j2JaL3ikWb4nzhLETteuMc+b65nSkLLNDNTpDVv46w1ez2S6XOQGiPe30PhKByk
+         NCww==
+X-Gm-Message-State: AOAM532XEX5TV0MTaYlnPfr4qP/BDh3H7XJ+dnP1u+eYFTGWA2X14/Nr
+        NbYRriL/iZq+lSPLsEjubv8=
+X-Google-Smtp-Source: ABdhPJyfiWkk87V09E5vWc6HfinMlfgqhPz2A86smBKPeboGn4hvg2dVSLly2lR0mLT2TFU5by5mkw==
+X-Received: by 2002:aa7:8297:0:b029:198:15b2:ed0a with SMTP id s23-20020aa782970000b029019815b2ed0amr4132235pfm.47.1606225193026;
+        Tue, 24 Nov 2020 05:39:53 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id a2sm1500351pfo.117.2020.11.24.05.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 05:39:52 -0800 (PST)
+Date:   Tue, 24 Nov 2020 05:39:49 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 0/3] net: ptp: use common defines for PTP
+ message types in further drivers
+Message-ID: <20201124133949.GA16578@hoboy.vegasvil.org>
+References: <20201124074418.2609-1-ceggers@arri.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030184950.26732-2-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20201124074418.2609-1-ceggers@arri.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 08:49:50PM +0200, Andy Shevchenko wrote:
-> diff --git a/include/uapi/linux/uuid.h b/include/uapi/linux/uuid.h
-> index e5a7eecef7c3..c3e175f686f4 100644
-> --- a/include/uapi/linux/uuid.h
-> +++ b/include/uapi/linux/uuid.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->  /*
-> - * UUID/GUID definition
-> + * MEI UUID definition
->   *
->   * Copyright (C) 2010, Intel Corp.
->   *	Huang Ying <ying.huang@intel.com>
-> @@ -22,21 +22,17 @@
->  
->  typedef struct {
->  	__u8 b[16];
-> -} guid_t;
-> +} uuid_le;
+On Tue, Nov 24, 2020 at 08:44:15AM +0100, Christian Eggers wrote:
+> Changes in v2:
+> ----------------
+> - resend, as v1 was sent before the prerequisites were merged
+> - removed mismatch between From: and Signed-off-by:
+> - [2/3] Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+> - [3/3] Reviewed-by: Antoine Tenart <atenart@kernel.org>
+> - [3/3] removed dead email addresses from Cc:
+> 
+> 
+> This series replaces further driver internal enumeration / uses of magic
+> numbers with the newly introduced PTP_MSGTYPE_* defines.
 
-IMHO we should kill this header entirely and move the definition to
-<uapi/linux/mei.h> under a new name so that no one picks up the
-definition by accident.
+For the series:
+
+Acked-by: Richard Cochran <richardcochran@gmail.com>
