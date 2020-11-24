@@ -2,244 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B31E2C2F2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083B82C2F32
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403999AbgKXRtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:49:03 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42414 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgKXRtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:49:02 -0500
-Received: from 89-64-86-188.dynamic.chello.pl (89.64.86.188) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
- id 93fb59caca3e8d53; Tue, 24 Nov 2020 18:48:59 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ACPI: PM: Re-enable ACPI GPE if it's already enabled
-Date:   Tue, 24 Nov 2020 18:48:58 +0100
-Message-ID: <2176101.IjXNKL1iO1@kreacher>
-In-Reply-To: <90E54BA3-FC3A-4538-ACD0-4C4DDF570C7C@canonical.com>
-References: <20201124073619.771940-1-kai.heng.feng@canonical.com> <CAJZ5v0iJ_x5oXL9gG_TvCriNnPwzZYvGkkEK6_HWrH4fmCqBxQ@mail.gmail.com> <90E54BA3-FC3A-4538-ACD0-4C4DDF570C7C@canonical.com>
+        id S2404051AbgKXRuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:50:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403994AbgKXRuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:50:15 -0500
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6362D208CA
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606240214;
+        bh=Zs6EQHNJCYjsDUBvn/aU7NkdPNq8mmBy6u3ZYrgbcdw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uJq0NQNdWOoPdjsdOd+82dA0M5WwPUd916W+d2js6jxu3ycgv4SJZFMww2yPF9tyQ
+         t8yDhNVyxuIlvR3y5BhlL00Wxo91Uw//1ZM8Av5+ZXeux5egUV7Z9MrnmTUj+1XXZM
+         OZmujRMlLxxjw+b5FNTq/XDg3m7C2ask7Rrud83s=
+Received: by mail-wm1-f47.google.com with SMTP id 1so3768298wme.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:50:14 -0800 (PST)
+X-Gm-Message-State: AOAM532Spc4EdVwnyksStovDyXUPWLsCrnBHmZAqHQIbQZeAIAg5owBl
+        hfTrLIx9BZqHDSxekjjh57z7AXs1xAv0q9GDpdKpxw==
+X-Google-Smtp-Source: ABdhPJztSaESfwAH1/aRejEPYWeasu3H+2flPGn0gw/HTGKjb5d0CHq2izvTy8vEL8huMDEFbD9KM2+mbalOfiJ1UOk=
+X-Received: by 2002:a7b:c92a:: with SMTP id h10mr5811407wml.138.1606240212832;
+ Tue, 24 Nov 2020 09:50:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201121151259.GA3948@wind.enjellic.com> <5ac4eccb-fcf9-eed3-fcec-b8b6bf56bb39@intel.com>
+ <20201124105547.GA19930@wind.enjellic.com>
+In-Reply-To: <20201124105547.GA19930@wind.enjellic.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 24 Nov 2020 09:49:59 -0800
+X-Gmail-Original-Message-ID: <CALCETrVjBtdE7Px2Ra6ZsabWZCLPq5e5tMPOWoYT=k3dSA8o4g@mail.gmail.com>
+Message-ID: <CALCETrVjBtdE7Px2Ra6ZsabWZCLPq5e5tMPOWoYT=k3dSA8o4g@mail.gmail.com>
+Subject: Re: [PATCH v40 00/24] Intel SGX foundations
+To:     "Dr. Greg" <greg@enjellic.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Mikko Ylinen <mikko.ylinen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, November 24, 2020 6:31:56 PM CET Kai-Heng Feng wrote:
-> 
-> > On Nov 24, 2020, at 22:00, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > 
-> > On Tue, Nov 24, 2020 at 8:36 AM Kai-Heng Feng
-> > <kai.heng.feng@canonical.com> wrote:
-> >> 
-> >> Dell Precision 5550 fails to detect Thunderbolt device hotplug events,
-> >> once the Thunderbolt device and its root port are runtime-suspended to
-> >> D3cold.
-> >> 
-> >> While putting the entire hierarchy to D3cold, the root port ACPI GPE is
-> >> enabled via acpi_pci_propagate_wakeup() when suspending Thunderbolt
-> >> bridges/switches. So when putting the root port to D3cold as last step,
-> >> ACPI GPE is untouched as it's already enabled.
-> >> 
-> >> However, platform may need PCI devices to be in D3hot or PME enabled
-> >> prior enabling GPE to make it work.
-> > 
-> > What platforms and why.
-> 
-> Dell Precision 5550. Its thunderbolt port can't detect newly plugged thunderbolt devices.
+On Tue, Nov 24, 2020 at 2:56 AM Dr. Greg <greg@enjellic.com> wrote:
+>
+> On Sat, Nov 21, 2020 at 08:25:23AM -0800, Dave Hansen wrote:
+>
 
-OK
+> You will get a fully 'git am' compliant patch, including a changelog.
+>
+> The changelog was written in a parlance consistent with someone who
+> would have a basic understanding of the technology under review.  If
+> this entire review and vetting process is being done absent that kind
+> of understanding, then the case can be made that the kernel
+> development process has larger issues on its hands.
 
-> > 
-> >> So re-enable ACPI GPE to address this.
-> >> 
-> >> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> >> ---
-> >> drivers/acpi/device_pm.c | 13 ++++++-------
-> >> 1 file changed, 6 insertions(+), 7 deletions(-)
-> >> 
-> >> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> >> index 94d91c67aeae..dc25d9d204ae 100644
-> >> --- a/drivers/acpi/device_pm.c
-> >> +++ b/drivers/acpi/device_pm.c
-> >> @@ -757,11 +757,10 @@ static int __acpi_device_wakeup_enable(struct acpi_device *adev,
-> >> 
-> >>        mutex_lock(&acpi_wakeup_lock);
-> >> 
-> >> -       if (wakeup->enable_count >= max_count)
-> >> -               goto out;
-> >> -
-> >> -       if (wakeup->enable_count > 0)
-> >> -               goto inc;
-> >> +       if (wakeup->enable_count > 0) {
-> >> +               acpi_disable_gpe(wakeup->gpe_device, wakeup->gpe_number);
-> >> +               acpi_disable_wakeup_device_power(adev);
-> >> +       }
-> > 
-> > An event occurring at this point may be lost after this patch.
-> 
-> Yes, so this approach is not optimal.
-> 
-> > 
-> > It looks like you are trying to work around a hardware issue.  
-> 
-> Windows doesn't have this issue. So I don't think it's hardware issue.
+No, it wasn't.
 
-Windows may exercise the hardware in a different way.
-
-> > Can you
-> > please describe that issue in detail?
-> 
-> The GPE used by Thunderbolt root port, was previously enabled by Thunderbolt switches/bridges.
-
-This shouldn't matter, because enabling a GPE means flipping its bit in the
-"enable" register.  There's no dependency between that and the devices below
-the port.
-
-There may be dependency there for enabling the device wakeup power, however.
-
-> So when the GPE is already enabled when Thunderbolt root port is suspended.
-> However, the GPE needs to be enabled after root port is suspended, and that's the approach this patch takes.
-
-No, it is not.
-
-It still enables the GPE and the device wakeup power before putting the port
-into D3.  Please see pci_finish_runtime_suspend() for details.
-
-However, it enables wakeup for after putting the subordinate device(s) into D3hot
-which may matter in theory.
-
-> Is there any actual hardware benefits from acpi_pci_propagate_wakeup()?
-
-Yes, there is AFAICS.
-
-> If there's no actual device benefits from it, we can remove it and only enable GPE for the root port.
-> Otherwise we need to quirk off Thunderbolt bridges/switches, since their native PME just work without the need to enable root port GPE.
-
-Can you please check if the alternative (untested) patch below still helps?
-
----
- drivers/acpi/device_pm.c |   40 ++++++++++++++++++++++++++--------------
- 1 file changed, 26 insertions(+), 14 deletions(-)
-
-Index: linux-pm/drivers/acpi/device_pm.c
-===================================================================
---- linux-pm.orig/drivers/acpi/device_pm.c
-+++ linux-pm/drivers/acpi/device_pm.c
-@@ -749,7 +749,7 @@ static void acpi_pm_notify_work_func(str
- static DEFINE_MUTEX(acpi_wakeup_lock);
- 
- static int __acpi_device_wakeup_enable(struct acpi_device *adev,
--				       u32 target_state, int max_count)
-+				       u32 target_state)
- {
- 	struct acpi_device_wakeup *wakeup = &adev->wakeup;
- 	acpi_status status;
-@@ -757,15 +757,26 @@ static int __acpi_device_wakeup_enable(s
- 
- 	mutex_lock(&acpi_wakeup_lock);
- 
--	if (wakeup->enable_count >= max_count)
--		goto out;
--
-+	/*
-+	 * If the device wakeup power is already enabled, disable it and enable
-+	 * it again in case it depends on the configuration of subordinate
-+	 * devices and the conditions have changed since it was enabled last
-+	 * time.
-+	 */
- 	if (wakeup->enable_count > 0)
--		goto inc;
-+		acpi_disable_wakeup_device_power(adev);
- 
- 	error = acpi_enable_wakeup_device_power(adev, target_state);
--	if (error)
-+	if (error) {
-+		if (wakeup->enable_count > 0) {
-+			acpi_disable_gpe(wakeup->gpe_device, wakeup->gpe_number);
-+			wakeup->enable_count = 0;
-+		}
- 		goto out;
-+	}
-+
-+	if (wakeup->enable_count > 0)
-+		goto inc;
- 
- 	status = acpi_enable_gpe(wakeup->gpe_device, wakeup->gpe_number);
- 	if (ACPI_FAILURE(status)) {
-@@ -778,7 +789,10 @@ static int __acpi_device_wakeup_enable(s
- 			  (unsigned int)wakeup->gpe_number);
- 
- inc:
--	wakeup->enable_count++;
-+	if (wakeup->enable_count < INT_MAX)
-+		wakeup->enable_count++;
-+	else
-+		acpi_handle_info(adev->handle, "Wakeup enable count out of bounds!\n");
- 
- out:
- 	mutex_unlock(&acpi_wakeup_lock);
-@@ -799,7 +813,7 @@ out:
-  */
- static int acpi_device_wakeup_enable(struct acpi_device *adev, u32 target_state)
- {
--	return __acpi_device_wakeup_enable(adev, target_state, 1);
-+	return __acpi_device_wakeup_enable(adev, target_state);
- }
- 
- /**
-@@ -829,8 +843,7 @@ out:
- 	mutex_unlock(&acpi_wakeup_lock);
- }
- 
--static int __acpi_pm_set_device_wakeup(struct device *dev, bool enable,
--				       int max_count)
-+static int __acpi_pm_set_device_wakeup(struct device *dev, bool enable)
- {
- 	struct acpi_device *adev;
- 	int error;
-@@ -850,8 +863,7 @@ static int __acpi_pm_set_device_wakeup(s
- 		return 0;
- 	}
- 
--	error = __acpi_device_wakeup_enable(adev, acpi_target_system_state(),
--					    max_count);
-+	error = __acpi_device_wakeup_enable(adev, acpi_target_system_state());
- 	if (!error)
- 		dev_dbg(dev, "Wakeup enabled by ACPI\n");
- 
-@@ -865,7 +877,7 @@ static int __acpi_pm_set_device_wakeup(s
-  */
- int acpi_pm_set_device_wakeup(struct device *dev, bool enable)
- {
--	return __acpi_pm_set_device_wakeup(dev, enable, 1);
-+	return __acpi_pm_set_device_wakeup(dev, enable);
- }
- EXPORT_SYMBOL_GPL(acpi_pm_set_device_wakeup);
- 
-@@ -876,7 +888,7 @@ EXPORT_SYMBOL_GPL(acpi_pm_set_device_wak
-  */
- int acpi_pm_set_bridge_wakeup(struct device *dev, bool enable)
- {
--	return __acpi_pm_set_device_wakeup(dev, enable, INT_MAX);
-+	return __acpi_pm_set_device_wakeup(dev, enable);
- }
- EXPORT_SYMBOL_GPL(acpi_pm_set_bridge_wakeup);
- 
+I have a fairly good understanding of SGX, and I told you quite
+explicitly what was wrong with your changelog.  Understanding the
+sentences you wrote and having the background is not at all the same
+thing as extracting meaning from your writing.  Your patch conveyed no
+information.  This email you just sent also conveys no information.
 
 
 
+>
+> Lets be honest though, that is not the case here, we have been talking
+> about this issue for over a year, everyone involved with this
+> technology knows what the problem is.
+>
+> Since LKML is copied, the basic issue is as follows:
+>
+> 1.) SGX as a technology is designed to execute code and operate on
+> data in a manner that is confidential to inspection and impervious to
+> modification and control by the kernel.
+>
+> 2.) The mindset of the driver developers is that the kernel should be
+> the ultimate authority on what SGX is allowed to do.
+>
+> The two world views are inherently and technically incompatible and
+> lead to a potential security dilemma for the kernel.  We simply
+> advocate for an additional level of cryptographic security that
+> supplements, not replaces, kernel controls to address this issue.
+
+No, they are not.
+
+The kernel can and will enforce policy on what SGX may do.  Your own
+NAKked patch, in fact, does exactly this.  At the same time, SGX
+provides security to the contents of enclaves.  These are not mutually
+exclusive.
+
+
+> Our patch has two external functions of around 30 lines (~1 screen)
+> each that impact the driver.  The bulk of the 700 lines, all in one
+> file, is boilerplate code, largely replicated for each instance,
+> needed to read/write sysfs files and maintain four, nearly identical,
+> linked lists.  If this is an insurmountable review burden then the
+> kernel development process has larger problems on its hands.
+
+Frankly, the largest problem in the kernel development process with
+regards to SGX is the distraction created by your emails.  Please just
+stop.
+
+If you have something useful to say, distill it down to the smallest
+amount of text that actually says what you're trying to say.  And
+don't forget the part about "something useful to say".  If you do not
+have something useful to say, please don't say it.
