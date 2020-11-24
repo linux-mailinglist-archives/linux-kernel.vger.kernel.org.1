@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735162C1A06
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3752C1A0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 01:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgKXAaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 19:30:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
+        id S1730259AbgKXAaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 19:30:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729963AbgKXA37 (ORCPT
+        with ESMTP id S1729971AbgKXA37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Nov 2020 19:29:59 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1AEC061A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:57 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id w24so1215289wmi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:57 -0800 (PST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A239C061A4E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:59 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id p8so20596288wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 16:29:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jxAZls+WEUtHXpD0UKtrhiDIolPVWAm7Euh3LwwdpWY=;
-        b=O+QC0fgqTt42fxJ35YTMSq5Sw3kp5tRJc5zZT5xsZSL8I/w9NDgFj6nDM1ZB1sYBM+
-         uHJCrCBygfCSlglAAoV0AlHJX5kxyi1OqKPeQ1mXR52i5nAXDUxl2rEfZKrlGECA+m3J
-         CfC2fe3UNx7/skFJrbGPCuhUBwgj+TAl5Mfqem1JR9rz4ad+Ve1JCwGzCwZmoOBbrkpH
-         OVzBuzwNtLP0W5GQ2D4NJJDpfmLBoBnp0cTPLI/vCKm9LH9zB4L2YuTfnoiV0j4XdsUT
-         WlF4cZ3WMHlQljzw9Q7WIbrp1pUljHCBw+OJB8DDCNC8yvvSmIZZgrHtLg/QwbShLqq/
-         M11Q==
+        bh=pDJ7pd5MTY5se/U9q9yZ6vbvjmdW3H9LRPXfLDRC2Lo=;
+        b=BuTIUs8lqVSsrSwI7KMP6DJ9TMh4clmU6QAHM98jks3yI1/HP+/ODJTlTjjl61R2zi
+         gzmWYi4i3+gFhidO2UycgeQTkVRj2bTVpmEFqeygDyw6f6QEzRiou4zXS9nrBuZx/BGJ
+         eMR+0G4j6sJBIJdW3k+DkM664hOPfWmLWmDkFrDRr8XOCUw2xEOBx7PZQOlrL6xqnQf9
+         4FGyaiNeXbtqGXvfwLZzFaHO/LgFIsdPB9KdQtUKwVM5PH+5WMiK37+xdi3GEF9QVOMN
+         XIiApfF9vWhouoCSif6MrCbFUgaBCN7HtZchOeeEmi8UIWGXOZw+ERX/belznuOZqX2j
+         xA0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jxAZls+WEUtHXpD0UKtrhiDIolPVWAm7Euh3LwwdpWY=;
-        b=Eap8wZzuYJTBAlzDXizYNjmIuHwkyMvM9tqKPCxZWbugAemprfPj7JqOzJZqnHzBrm
-         k9Tyd6GV8+tiO6G0oFpEY20Hs/LSru2nkpdtqbLi8VcqP6TxOpwafW8BncHjMeoBitSR
-         s5jCbrw6kHiHbeMiOzc4mVxknS9eQT1QxuTvqjwgIJ3Z1TBha8TR9xiGCJG4w2LS2cEs
-         Q7n1chZLUOrI/sjj3FWxSMxUxGSH83DA0F0Nv9qKEZVkJhKufDvowDOejEF4wx1vLpF2
-         8bxCAil1B9cunQ4xaDS0nGSAcF8wXWpZBf7Q6Az//sMomnjNhl3udyFvGJgi4ch6VTn3
-         cejA==
-X-Gm-Message-State: AOAM533ClpdIcDkUi4ys25JBWUYyp+zVZmbp55IQjaIlqyrohAZaarup
-        Jc8Tspj49GPt734iIJYY9Uoqypc6vSUEaQH2
-X-Google-Smtp-Source: ABdhPJx3Rnn4ZCBnIokXGMO/DvdttKDu8Be01BvN6y9Yw2n16NFBHvHTm+1LG3nhL+cpq8cemkPuSw==
-X-Received: by 2002:a1c:a986:: with SMTP id s128mr1413531wme.94.1606177796064;
-        Mon, 23 Nov 2020 16:29:56 -0800 (PST)
+        bh=pDJ7pd5MTY5se/U9q9yZ6vbvjmdW3H9LRPXfLDRC2Lo=;
+        b=BNPa8eVpzxUPXWyPX2ZAeLwN/X6MAtLQWmqJcCRer19hxDtCW7YF6BOSh9Dr1Eun8h
+         4jLqgt+uZIC0HImUL7o4/ERm6DXFhO5z9O04aILbNP6UlvwQlhawoNnyQS7En3HEe+x6
+         1p512zaqZiQWJsTs7tK9C7ddDupkx37J0I/JDoJIRw19zr2HPKER6nnBCaIX8US0KJLs
+         EjoDRnc+q8he7kvSiQVypJEyzLTSPHCl3atvZu0o2bijrh+RREKgiiYYVUsW+IzFl4zf
+         i37zOsxyVF+rgRu5zjnvlk98pfDBC+n5LPQLaKqFGeTmNTXicshxsQ6n9G/UJzPz9ekb
+         mIeA==
+X-Gm-Message-State: AOAM530JkH0NIyLAZtpcQqIsf+ul6EDcCGePh1xHEf9OYQ3DvNdWEkSK
+        lkIMj8zaasf/iSdfqjs+mNpZuqIc/4Cs6lWE
+X-Google-Smtp-Source: ABdhPJyNIFFXcZ5cNLNhwaFjLBrkc8DTb8+Mh7RytUiLZI8l8dmQlMT3GW33Q5h19NW3WR1EfksLVg==
+X-Received: by 2002:adf:fe48:: with SMTP id m8mr2157547wrs.89.1606177797581;
+        Mon, 23 Nov 2020 16:29:57 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.54
+        by smtp.gmail.com with ESMTPSA id c6sm25047360wrh.74.2020.11.23.16.29.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 16:29:55 -0800 (PST)
+        Mon, 23 Nov 2020 16:29:57 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -65,11 +65,10 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v2 14/19] mm: Add vdso_base in mm_struct
-Date:   Tue, 24 Nov 2020 00:29:27 +0000
-Message-Id: <20201124002932.1220517-15-dima@arista.com>
+        Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: [PATCH v2 15/19] x86/vdso: Migrate to generic vdso_base
+Date:   Tue, 24 Nov 2020 00:29:28 +0000
+Message-Id: <20201124002932.1220517-16-dima@arista.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124002932.1220517-1-dima@arista.com>
 References: <20201124002932.1220517-1-dima@arista.com>
@@ -79,168 +78,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of having every architecture to define vdso_base/vdso_addr etc,
-provide a generic mechanism to track vdso_base for landing in userspace.
-It'll minimize per-architecture difference, the number of callbacks to
-provide.
+Generic way to track the landing vma area.
+As a bonus, after unmapping vdso, kernel won't try to land on its
+previous position (due to UNMAPPED_VDSO_BASE check instead of
+context.vdso ?= 0 check).
 
-Originally, it started from thread [1] where the need for .close()
-callback on vm_special_mapping was pointed, this generic code besides
-removing duplicated .mremap() callbacks provides a cheaper way to
-support munmap() on vdso mappings without introducing .close() callbacks
-for every architecture (with would bring even more code duplication).
-
-[1]: https://lore.kernel.org/linux-arch/CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com/
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  3 ++-
- fs/aio.c                                  |  3 ++-
- include/linux/mm.h                        |  3 ++-
- include/linux/mm_types.h                  | 10 ++++++++++
- mm/Kconfig                                |  3 +++
- mm/mmap.c                                 | 19 ++++++++++++++++++-
- mm/mremap.c                               |  2 +-
- 7 files changed, 38 insertions(+), 5 deletions(-)
+ arch/x86/Kconfig              | 1 +
+ arch/x86/entry/common.c       | 2 +-
+ arch/x86/entry/vdso/extable.c | 4 ++--
+ arch/x86/entry/vdso/vma.c     | 9 ++++-----
+ arch/x86/ia32/ia32_signal.c   | 4 ++--
+ arch/x86/include/asm/mmu.h    | 1 -
+ arch/x86/include/asm/vdso.h   | 2 +-
+ arch/x86/kernel/signal.c      | 4 ++--
+ 8 files changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index e916646adc69..786c97203bf6 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -1458,7 +1458,8 @@ static int pseudo_lock_dev_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index d676e0bad1f1..4f06760f849e 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -85,6 +85,7 @@ config X86
+ 	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
++	select ARCH_HAS_VDSO_BASE
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select ARCH_MIGHT_HAVE_ACPI_PDC		if ACPI
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index d9ab58cc765b..655b7d8fe734 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -151,7 +151,7 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+ 	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
+ 	 * convention.  Adjust regs so it looks like we entered using int80.
+ 	 */
+-	landing_pad = (unsigned long)current->mm->context.vdso +
++	landing_pad = (unsigned long)current->mm->vdso_base +
+ 					vdso_image_32.sym_int80_landing_pad;
  
--static int pseudo_lock_dev_mremap(struct vm_area_struct *area, unsigned long flags)
-+static int pseudo_lock_dev_mremap(struct vm_area_struct *old_vma,
-+		struct vm_area_struct *new_vma, unsigned long flags)
- {
- 	/* Not supported */
- 	return -EINVAL;
-diff --git a/fs/aio.c b/fs/aio.c
-index d213be7b8a7e..9b205ebf17e8 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -323,7 +323,8 @@ static void aio_free_ring(struct kioctx *ctx)
- 	}
- }
- 
--static int aio_ring_mremap(struct vm_area_struct *vma, unsigned long flags)
-+static int aio_ring_mremap(struct vm_area_struct *old_vma,
-+			   struct vm_area_struct *vma, unsigned long flags)
- {
- 	struct file *file = vma->vm_file;
- 	struct mm_struct *mm = vma->vm_mm;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index a1c25da94663..dbda1b91f971 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -559,7 +559,8 @@ struct vm_operations_struct {
- 	void (*close)(struct vm_area_struct * area);
- 	/* Called any time before splitting to check if it's allowed */
- 	int (*may_split)(struct vm_area_struct *area, unsigned long addr);
--	int (*mremap)(struct vm_area_struct *area, unsigned long flags);
-+	int (*mremap)(struct vm_area_struct *old_vma,
-+			struct vm_area_struct *new_vma, unsigned long flags);
  	/*
- 	 * Called by mprotect() to make driver-specific permission
- 	 * checks before mprotect() is finalised.   The VMA must not
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 95a257927dae..e1ca750874af 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -496,6 +496,16 @@ struct mm_struct {
+diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
+index afcf5b65beef..16688c2d032c 100644
+--- a/arch/x86/entry/vdso/extable.c
++++ b/arch/x86/entry/vdso/extable.c
+@@ -25,10 +25,10 @@ bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
+ 	if (trapnr == X86_TRAP_DB || trapnr == X86_TRAP_BP)
+ 		return false;
  
- 		/* Architecture-specific MM context */
- 		mm_context_t context;
-+#ifdef CONFIG_ARCH_HAS_VDSO_BASE
-+		/*
-+		 * Address of special mapping VMA to land after processing
-+		 * a signal. Reads are unprotected: if a thread unmaps or
-+		 * mremaps the mapping while another thread is processing
-+		 * a signal, it can segfault while landing.
-+		 */
-+		void __user *vdso_base;
-+#endif
-+#define UNMAPPED_VDSO_BASE TASK_SIZE_MAX
+-	if (!current->mm->context.vdso)
++	if (current->mm->vdso_base == (void *)UNMAPPED_VDSO_BASE)
+ 		return false;
  
- 		unsigned long flags; /* Must use atomic bitops to access */
+-	base =  (unsigned long)current->mm->context.vdso + image->extable_base;
++	base = (unsigned long)current->mm->vdso_base + image->extable_base;
+ 	nr_entries = image->extable_len / (sizeof(*extable));
+ 	extable = image->extable;
  
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 29904dc16bfc..941ae0597734 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -893,4 +893,7 @@ config SECRETMEM
- 	select GENERIC_ALLOCATOR
- 	select CMA
+diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
+index 65780a0164e3..29a795face9d 100644
+--- a/arch/x86/entry/vdso/vma.c
++++ b/arch/x86/entry/vdso/vma.c
+@@ -77,7 +77,7 @@ static void vdso_fix_landing(const struct vdso_image *image,
+ 		struct pt_regs *regs = current_pt_regs();
+ 		unsigned long vdso_land = image->sym_int80_landing_pad;
+ 		unsigned long old_land_addr = vdso_land +
+-			(unsigned long)current->mm->context.vdso;
++			(unsigned long)current->mm->vdso_base;
  
-+config ARCH_HAS_VDSO_BASE
-+	bool
-+
- endmenu
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 17fe59a9780b..561afc3f1744 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3409,11 +3409,25 @@ void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
+ 		/* Fixing userspace landing - look at do_fast_syscall_32 */
+ 		if (regs->ip == old_land_addr)
+@@ -92,7 +92,6 @@ static void vdso_mremap(const struct vm_special_mapping *sm,
+ 	const struct vdso_image *image = current->mm->context.vdso_image;
  
- static vm_fault_t special_mapping_fault(struct vm_fault *vmf);
- 
-+static void update_vdso_base(struct vm_area_struct *old_vma,
-+				unsigned long new_addr)
-+{
-+#ifdef CONFIG_ARCH_HAS_VDSO_BASE
-+	struct mm_struct *mm = old_vma->vm_mm;
-+
-+	if (WARN_ON_ONCE(!mm))
-+		return;
-+	if (old_vma->vm_start == (unsigned long)mm->vdso_base)
-+		mm->vdso_base = (void __user *)new_addr;
-+#endif
-+}
-+
- /*
-  * Having a close hook prevents vma merging regardless of flags.
-  */
- static void special_mapping_close(struct vm_area_struct *vma)
- {
-+	update_vdso_base(vma, UNMAPPED_VDSO_BASE);
+ 	vdso_fix_landing(image, new_vma);
+-	current->mm->context.vdso = (void __user *)new_vma->vm_start;
  }
  
- static const char *special_mapping_name(struct vm_area_struct *vma)
-@@ -3421,7 +3435,8 @@ static const char *special_mapping_name(struct vm_area_struct *vma)
- 	return ((struct vm_special_mapping *)vma->vm_private_data)->name;
- }
- 
--static int special_mapping_mremap(struct vm_area_struct *new_vma,
-+static int special_mapping_mremap(struct vm_area_struct *old_vma,
-+				  struct vm_area_struct *new_vma,
- 				  unsigned long flags)
- {
- 	struct vm_special_mapping *sm = new_vma->vm_private_data;
-@@ -3435,6 +3450,8 @@ static int special_mapping_mremap(struct vm_area_struct *new_vma,
- 	if (sm->mremap)
- 		sm->mremap(sm, new_vma);
- 
-+	update_vdso_base(old_vma, new_vma->vm_start);
-+
- 	return 0;
- }
- 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index c5590afe7165..9595f6b72101 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -543,7 +543,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
- 	if (moved_len < old_len) {
- 		err = -ENOMEM;
- 	} else if (vma->vm_ops && vma->vm_ops->mremap) {
--		err = vma->vm_ops->mremap(new_vma, flags);
-+		err = vma->vm_ops->mremap(vma, new_vma, flags);
+ #ifdef CONFIG_TIME_NS
+@@ -287,7 +286,7 @@ static int map_vdso(const struct vdso_image *image, unsigned long addr,
+ 		ret = PTR_ERR(vma);
+ 		do_munmap(mm, text_start, image->size, NULL);
+ 	} else {
+-		current->mm->context.vdso = (void __user *)text_start;
++		current->mm->vdso_base = (void __user *)text_start;
+ 		current->mm->context.vdso_image = image;
+ 		*sysinfo_ehdr = text_start;
  	}
+@@ -362,8 +361,8 @@ int map_vdso_once(const struct vdso_image *image, unsigned long addr)
+ 	 * Check if we have already mapped vdso blob - fail to prevent
+ 	 * abusing from userspace install_speciall_mapping, which may
+ 	 * not do accounting and rlimit right.
+-	 * We could search vma near context.vdso, but it's a slowpath,
+-	 * so let's explicitly check all VMAs to be completely sure.
++	 * It's a slowpath, let's explicitly check all VMAs to be
++	 * completely sure.
+ 	 */
+ 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+ 		if (vma_is_special_mapping(vma, &vdso_mapping) ||
+diff --git a/arch/x86/ia32/ia32_signal.c b/arch/x86/ia32/ia32_signal.c
+index f87ed1d53938..67204b1eeea0 100644
+--- a/arch/x86/ia32/ia32_signal.c
++++ b/arch/x86/ia32/ia32_signal.c
+@@ -256,7 +256,7 @@ int ia32_setup_frame(int sig, struct ksignal *ksig,
+ 	} else {
+ 		/* Return stub is in 32bit vsyscall page */
+ 		if (current_has_vdso_image_32())
+-			restorer = current->mm->context.vdso +
++			restorer = current->mm->vdso_base +
+ 				vdso_image_32.sym___kernel_sigreturn;
+ 		else
+ 			restorer = &frame->retcode;
+@@ -337,7 +337,7 @@ int ia32_setup_rt_frame(int sig, struct ksignal *ksig,
+ 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
+ 		restorer = ksig->ka.sa.sa_restorer;
+ 	else if (current_has_vdso_image_32())
+-		restorer = current->mm->context.vdso +
++		restorer = current->mm->vdso_base +
+ 			vdso_image_32.sym___kernel_rt_sigreturn;
+ 	else
+ 		restorer = &frame->retcode;
+diff --git a/arch/x86/include/asm/mmu.h b/arch/x86/include/asm/mmu.h
+index 5d7494631ea9..7bd10e6b8386 100644
+--- a/arch/x86/include/asm/mmu.h
++++ b/arch/x86/include/asm/mmu.h
+@@ -43,7 +43,6 @@ typedef struct {
+ #endif
  
- 	if (unlikely(err)) {
+ 	struct mutex lock;
+-	void __user *vdso;			/* vdso base address */
+ 	const struct vdso_image *vdso_image;	/* vdso image in use */
+ 
+ 	atomic_t perf_rdpmc_allowed;	/* nonzero if rdpmc is allowed */
+diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
+index e3829c3a6149..31b5695eded4 100644
+--- a/arch/x86/include/asm/vdso.h
++++ b/arch/x86/include/asm/vdso.h
+@@ -44,7 +44,7 @@ extern const struct vdso_image vdso_image_32;
+ 
+ #define current_has_vdso_image_32()					\
+ 	likely(current->mm->context.vdso_image == &vdso_image_32 &&	\
+-		!!current->mm->context.vdso)
++	(unsigned long)current->mm->vdso_base != UNMAPPED_VDSO_BASE)
+ #endif
+ 
+ extern void __init init_vdso_image(const struct vdso_image *image);
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index 6fed2e523e0a..85161df044f2 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -320,7 +320,7 @@ __setup_frame(int sig, struct ksignal *ksig, sigset_t *set,
+ 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
+ 		restorer = ksig->ka.sa.sa_restorer;
+ 	else if (current_has_vdso_image_32())
+-		restorer = current->mm->context.vdso +
++		restorer = current->mm->vdso_base +
+ 			vdso_image_32.sym___kernel_sigreturn;
+ 	else
+ 		restorer = &frame->retcode;
+@@ -382,7 +382,7 @@ static int __setup_rt_frame(int sig, struct ksignal *ksig,
+ 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
+ 		restorer = ksig->ka.sa.sa_restorer;
+ 	else if (current_has_vdso_image_32())
+-		restorer = current->mm->context.vdso +
++		restorer = current->mm->vdso_base +
+ 			vdso_image_32.sym___kernel_rt_sigreturn;
+ 	else
+ 		restorer = &frame->retcode;
 -- 
 2.29.2
 
