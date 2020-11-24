@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B4D2C2AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A5A2C2A9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389450AbgKXPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:03:25 -0500
-Received: from twin.jikos.cz ([91.219.245.39]:47825 "EHLO twin.jikos.cz"
+        id S2389040AbgKXO77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:59:59 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:20571 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388695AbgKXPDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:03:24 -0500
-X-Greylist: delayed 2944 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 10:03:23 EST
-Received: from twin.jikos.cz (dave@localhost [127.0.0.1])
-        by twin.jikos.cz (8.13.6/8.13.6) with ESMTP id 0AOEClCG030282
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Tue, 24 Nov 2020 15:12:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=jikos.cz; s=twin;
-        t=1606227168; bh=PInk95iJB4BVECBfcQcylUKN6Fo1ABglOvw3J2e7t1s=;
-        h=Received:Date:From:To:Cc:Subject:Message-ID:Reply-To:
-         Mail-Followup-To:References:MIME-Version:Content-Type:
-         Content-Disposition:In-Reply-To:User-Agent; b=5BxRzWxleBM+OsFJejP8
-        A/NY8kppzw3Gi3MOUSZTntibymbiGUB2Re2fCN7ENaXSQ6vtPRj7Xool7rJzo+ggSAP
-        oSD3bbBYOcjMLSdfg4G7YrtuDSx48ZMJnkcoWsw1/Om/muXZ2onQ1/Jq+k1erJ/pFcZ
-        QOmr8rMoHETBEH3Fc=
-Received: (from dave@localhost)
-        by twin.jikos.cz (8.13.6/8.13.6/Submit) id 0AOECiP7030275;
-        Tue, 24 Nov 2020 15:12:44 +0100
-Date:   Tue, 24 Nov 2020 15:12:44 +0100
-From:   David Sterba <dave@jikos.cz>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Howells <dhowells@redhat.com>,
-        Steve French <sfrench@samba.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Brian King <brking@us.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 05/17] fs/btrfs: Convert to memzero_page()
-Message-ID: <20201124141244.GE17322@twin.jikos.cz>
-Reply-To: dave@jikos.cz
-Mail-Followup-To: ira.weiny@intel.com,
-        Andrew Morton <akpm@linux-foundation.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Howells <dhowells@redhat.com>,
-        Steve French <sfrench@samba.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>, Nicolas Pitre <nico@fluxnic.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Brian King <brking@us.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201124060755.1405602-1-ira.weiny@intel.com>
- <20201124060755.1405602-6-ira.weiny@intel.com>
+        id S2387670AbgKXO77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 09:59:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606229999; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=hM7l1qlnjr0Wvs6mp6kUpF6Xf99sTwOWW58cRMuXy2Q=;
+ b=ZLlaoORKvFRVEwGHFoBBQkWDzXQXg7KgUWsPltuSWrYOp8CxQHKQHN01k1zq5r/RE3C2SXLH
+ O6QPSs0Vav7M2uk4/3VKICsW66HFbxdjyErtjZZXOucPVKQa9qGlERl1WezhHPvrah8PqlFj
+ pfAPOTNZ6OouJiTJCFumw26FRCA=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fbd1fe9b9b39088edfd4364 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 14:59:53
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1C097C433C6; Tue, 24 Nov 2020 14:59:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C1FBBC433C6;
+        Tue, 24 Nov 2020 14:59:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C1FBBC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124060755.1405602-6-ira.weiny@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7bit
+Subject: Re: cw1200: replace a set of atomic_add()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1604991491-27908-1-git-send-email-yejune.deng@gmail.com>
+References: <1604991491-27908-1-git-send-email-yejune.deng@gmail.com>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     pizza@shaftnet.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yejune.deng@gmail.com
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201124145953.1C097C433C6@smtp.codeaurora.org>
+Date:   Tue, 24 Nov 2020 14:59:53 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:07:43PM -0800, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Remove the kmap/memset()/kunmap pattern and use the new memzero_page()
-> call where possible.
-> 
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  fs/btrfs/inode.c | 21 +++++----------------
+Yejune Deng <yejune.deng@gmail.com> wrote:
 
-The patch converts the pattern only in inode.c, but there's more in
-compression.c, extent_io.c, zlib.c,d zstd.c (kmap_atomic) and reflink.c,
-send.c (kmap).
+> a set of atomic_inc() looks more readable
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+07f995ca1951 cw1200: replace a set of atomic_add()
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1604991491-27908-1-git-send-email-yejune.deng@gmail.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
