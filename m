@@ -2,115 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC6A2C2A7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0846B2C2A7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 15:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389341AbgKXOxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 09:53:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        id S2389159AbgKXOy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 09:54:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389237AbgKXOxp (ORCPT
+        with ESMTP id S2388166AbgKXOy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:53:45 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F0CC0613D6;
-        Tue, 24 Nov 2020 06:53:45 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id x13so2200913wmj.1;
-        Tue, 24 Nov 2020 06:53:45 -0800 (PST)
+        Tue, 24 Nov 2020 09:54:28 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82A3C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:54:28 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id a130so15950579oif.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 06:54:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=U85Rj/DRPt7jatgyQvBV2N/elTeJi8YB+AB1/+8bH98=;
-        b=BsWfmB+fF8m5306hgWRxHXjKleQcreC92v8fefHpo9f6djstFLrwU6ffb7ajMN1JDI
-         NS+DowqTq3C1G4VABHtnEAPRhTFmdA7s8fty4kY7pauWFqgI7nFnbjD7dtjY3Rik2SIN
-         xs64HE+hVe/Khp4PzxeWMg8F2HRM38WXkdpX447gmp9HElsK68hB+ly7cS6fIilzHE7Q
-         TLAmLWSPuaH3SHAAJxREjliPH6Poeu3/NUGnk9z/dZCWJprpYQ2kasXgxfbxtv07LNdL
-         W4SwiSMPuomApTprge70sAjvjmKF8fGH6Ti7jEeXOQCTJC6TCDt19sHS5oWpku0dNIJ+
-         pshA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oTLYfHQ3adQcV4KjcA9rD6YOe5HNylv70ACdoFyWIC0=;
+        b=AC67j6pWCnRWVE6CNlp9qvz+y5K/eMMP7hyKsUuanepA4UBoakN2W2NlOSM308ubVM
+         r0CXUhI4Ua8SWWdTakZF1E7VQAyRARrzwBEi3x6lCVDoE3CVYpg3iacRwEFhWPKMGXov
+         Pcygn5W5Q+5zfKqFzJdhql91a05RbGtWK+0YFzkPyoQ0CI/8pWjurNX/fSeOJHgQ7rwq
+         iS/UPJedDxwahCWq2nAoG5eNnqSemQkL22BMftQ5ImqvQ+afqJMjrVsaVFh0oQ6+N4+s
+         LEUdypQ8fC4AdHT4+ueoXAo3FF9a/bvX3EjJjLdhfr+X5X3weyUXIkmoG1UGTQzjMaok
+         OVeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=U85Rj/DRPt7jatgyQvBV2N/elTeJi8YB+AB1/+8bH98=;
-        b=QUGPNJTHfjz3JdAGqcszXRoiEjzFwVOC+d0Hcm5LDSH9FFPmXRIZ0bA9OpHtgfbqCy
-         a9gOwcUflXV2IcOyCvjbNwE43hLSv1flPudAmG2qPY53/tuBBC2tMrBB217FNQcqocDA
-         hKg9RWtIrzes+x8tuDq8hvwv2ucMEzWJ1Gv92HMlajbNBLjQR5bIBqQ55ZazrYpCuMWf
-         CE9wU3IvtiDr5keBKxPdDyeeQnb+mOIxURwEWfA8w5eRpieS7HubHfVqY+hlkziiYH9S
-         rDSF/zlByGu763d7cK4OjGONB3kcg//USex9PIizr/ySSZvu6HIOlPfHHEcSOLoo6MpU
-         HT7A==
-X-Gm-Message-State: AOAM530oRqy6u2cE7lW4R/oLEuiqm219zKQ95yxiEjjC6ggEFUi0iyeg
-        9R6kstrAdIairkjGoJzurNw=
-X-Google-Smtp-Source: ABdhPJwEb0GTsAOC546Ms4Bn278hN/6nwa844FnwPV9Yu6zqQzYMCmJ4XtRlCyJlF/MlNDNwkbSqOw==
-X-Received: by 2002:a1c:3d05:: with SMTP id k5mr5042689wma.151.1606229623776;
-        Tue, 24 Nov 2020 06:53:43 -0800 (PST)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id u23sm5749930wmc.32.2020.11.24.06.53.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oTLYfHQ3adQcV4KjcA9rD6YOe5HNylv70ACdoFyWIC0=;
+        b=LUpGF2+kk8qvj6X7x3tk0EaTkfZiBVJ52sI2SQuNf5Zwy+ICtrtVSV0bvpI6GwyuFY
+         wTcavZWFdBqII0vO/hErdzlIz6BFSwvcjtCC+JKIUFIJyDuWtDLDdVHKnN/+2h9EqhBm
+         h3k+HF3B/NPwBo6AhyJg/L/clsSbWhKpJWn9fSRIu9l1qdZ/A81SYsukExBwpc7xhwV2
+         Xl0zI/SZx0zgnMSyVWk8Ixct7uP5nITP4loc/rMOt4jet8fp9RCV7fs3lq0rsD9s8AlJ
+         AjywlUYkaRxnUrHFqZmhCwRdE0IBeST93kaJ+bwuYIF6WgzkhMCKciKi8A0NS6XVoMFr
+         1HWg==
+X-Gm-Message-State: AOAM533/M4GjnMulPK9RJdToeYdEOrE5nkcMYsnDIz4sw/DgLIaA21bP
+        WsrfX3nMDhJ1RKKgyrxMvWm26w==
+X-Google-Smtp-Source: ABdhPJwHjNBkrou/i3d+PogOla6WN88GeTKRh2ASE52pzmj97XKIXoX+HQLCc52LF9BYP6zwjAe+eA==
+X-Received: by 2002:aca:90c:: with SMTP id 12mr2956002oij.15.1606229668154;
+        Tue, 24 Nov 2020 06:54:28 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q10sm9261116oih.56.2020.11.24.06.54.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 06:53:42 -0800 (PST)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH] arm64: dts: meson: add rtc aliases to meson-khadas-vim3.dtsi
-Date:   Tue, 24 Nov 2020 14:53:38 +0000
-Message-Id: <20201124145338.17137-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 24 Nov 2020 06:54:27 -0800 (PST)
+Date:   Tue, 24 Nov 2020 08:54:25 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
+Message-ID: <20201124145425.GB185852@builder.lan>
+References: <cover.1605693132.git.wilken.gottwalt@posteo.net>
+ <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
+ <20201122051900.GH807@yoga>
+ <20201123191712.72484b19@monster.powergraphx.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123191712.72484b19@monster.powergraphx.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tweak the node name to make it aliasable, then add aliases for the
-on-board RTC chip and meson-vrtc timer so they probe as rtc0 and
-rtc1 respectively.
+On Mon 23 Nov 12:17 CST 2020, Wilken Gottwalt wrote:
 
-before:
+> On Sat, 21 Nov 2020 23:19:00 -0600
+> Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+> > > +static int hwlocks_inuse_show(struct seq_file *seqf, void *unused)
+> > > +{
+> > > +	struct sunxi_hwspinlock_data *priv = seqf->private;
+> > > +	int inuse;
+> > > +
+> > > +	/* getting the status of only the main 32 spinlocks is supported */
+> > > +	inuse = hweight32(readl(priv->io_base + SPINLOCK_STATUS_REG));
+> > 
+> > So this returns how many of the locks are taken? How is that useful?
+> 
+> It is a way to see if locks were taken from linux or the arisc core without
+> touching the actual hwspinlock abi or the locks. So it is a nice way to debug
+> hwspinlocks, hence it is part of debugfs.
+> 
 
-VIM3:~ # dmesg | grep rtc
-[    3.622530] meson-vrtc ff8000a8.rtc: registered as rtc0
-[    3.622574] meson-vrtc ff8000a8.rtc: setting system clock to 1970-01-01T00:00:03 UTC (3)
-[    3.646936] rtc-hym8563 0-0051: no valid clock/calendar values available
-[    3.647125] rtc-hym8563 0-0051: registered as rtc1
-[    3.852382] rtc-hym8563 0-0051: no valid clock/calendar values available
+So in a scenario where two remote processors ping-pong the lock between
+them, this will always read 1 and you won't know why?
 
-after:
+> > > +	seq_printf(seqf, "%d\n", inuse);
+[..]
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static const struct of_device_id sunxi_hwspinlock_ids[] = {
+> > > +	{ .compatible = "allwinner,sun8i-hwspinlock", },
+> > > +	{ .compatible = "allwinner,sun50i-hwspinlock", },
+> > > +	{},
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, sunxi_hwspinlock_ids);
+> > > +
+> > > +static struct platform_driver sunxi_hwspinlock_driver = {
+> > > +	.probe	= sunxi_hwspinlock_probe,
+> > > +	.remove	= sunxi_hwspinlock_remove,
+> > > +	.driver	= {
+> > > +		.name		= DRIVER_NAME,
+> > > +		.of_match_table	= of_match_ptr(sunxi_hwspinlock_ids),
+> > 
+> > Please avoid of_match_ptr, as this will cause warnings about unused
+> > variables when COMPILE_TEST without OF.
+> 
+> So did you mean to leave it out completely?
+> 
 
-VIM3:~ # dmesg | grep rtc
-[    3.583735] meson-vrtc ff8000a8.rtc: registered as rtc1
-[    3.633888] rtc-hym8563 0-0051: no valid clock/calendar values available
-[    3.634120] rtc-hym8563 0-0051: registered as rtc0
-[    3.635250] rtc-hym8563 0-0051: no valid clock/calendar values available
-[    3.635267] rtc-hym8563 0-0051: hctosys: unable to read the hardware clock
-[    3.852632] rtc-hym8563 0-0051: no valid clock/calendar values available
+Yes, "worst case" is that you include the reference to
+sunxi_hwspinlock_ids on a build without CONFIG_OF and wasting a little
+bit of memory.
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Using of_match_ptr() with CONFIG_OF=n will result in NULL and as such
+we'll get a compile warning that nothing references sunxi_hwspinlock_ids
+- so then that will have to be marked __maybe_unused, or wrapped in an
+#if...
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-index 69e6c03a787c..8f8656262ae7 100644
---- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-@@ -14,6 +14,8 @@
- 	aliases {
- 		serial0 = &uart_AO;
- 		ethernet0 = &ethmac;
-+		rtc0 = &rtc;
-+		rtc1 = &vrtc;
- 	};
- 
- 	chosen {
-@@ -333,7 +335,7 @@
- 		#gpio-cells = <2>;
- 	};
- 
--	rtc@51 {
-+	rtc: rtc@51 {
- 		compatible = "haoyu,hym8563";
- 		reg = <0x51>;
- 		#clock-cells = <0>;
--- 
-2.17.1
+So better just leave it as:
+	.of_match_table = sunxi_hwspinlock_ids,
 
+Regards,
+Bjorn
