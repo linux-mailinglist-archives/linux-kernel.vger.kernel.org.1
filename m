@@ -2,627 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA6B2C1BFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6111B2C1BD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 04:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgKXDYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Nov 2020 22:24:49 -0500
-Received: from m15111.mail.126.com ([220.181.15.111]:37386 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgKXDYs (ORCPT
+        id S1728470AbgKXDA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Nov 2020 22:00:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728209AbgKXDA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Nov 2020 22:24:48 -0500
-X-Greylist: delayed 1886 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Nov 2020 22:24:43 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Z05wg
-        D9RX6CIvsqpUjNItZZwZbO5X9/CPdvK/gx2kIg=; b=GqGntqNYkuD5LzP0E0Tm0
-        RzqjjX56SBtQzAMAtfgLzh8mnmLLGeJv/MA3oCqYy0tTSDmMeWrEwIfI9C/WNitG
-        SACNdNeMXfc5f8fqJirmRnKoVsYV+WGYciOr1EbRmFPy0Xh4K7p+3Ln4u9lYqXTs
-        WQpa3nLn63qoHt8fxxf76w=
-Received: from localhost (unknown [223.104.212.20])
-        by smtp1 (Coremail) with SMTP id C8mowAAXDFp3dbxfZTt3Lg--.49622S2;
-        Tue, 24 Nov 2020 10:52:40 +0800 (CST)
-From:   "xiao.ma" <max701@126.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiao.mx.ma@deltaww.com,
-        jiajia.feng@deltaww.com
-Subject: [PATCH v9] hwmon:Driver for Delta power supplies Q54SJ108A2
-Date:   Mon, 23 Nov 2020 16:52:36 -1000
-Message-Id: <20201124025236.1627-1-max701@126.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 23 Nov 2020 22:00:27 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB0BC0613CF;
+        Mon, 23 Nov 2020 19:00:27 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id n9so3677365qvp.5;
+        Mon, 23 Nov 2020 19:00:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9dXI24aC8NvP/kqZdopSzP2LewH/N8Z0aB66LTLcHvE=;
+        b=WEqloDj3pQkHX/rykrKshZfsbcCFrb7Nnf00c3YqN5OaW4DiwvjYgmOEv/T/Jeir9Y
+         52cpDiHcVrElzwhPz4rHypEcCfMDSIQ3obrclpYdIx57IeRgdY3gWjbY+NgxnT6WxdvT
+         ypjzMSO1oFqLdVQ6YBjlT87lUiNGuM2pCijcLekmYKBSlzFR9ivbGjMfJ8NdvoZZzzTW
+         L2vhfbZVf7ouhvYHOUTHRx6Pvt7XrrjHU/8Y9bKrK5EHQ+UHrlU5of2XVVRpExMeCaON
+         NI16vHytRRMrKcTlEimaI6cyyYJvmL1wm2qU1YH68vUAI082poVvdaqOANqoINvZcZbw
+         aDCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9dXI24aC8NvP/kqZdopSzP2LewH/N8Z0aB66LTLcHvE=;
+        b=hLAekkD6CxBnuj2Ido+H/fOIP5o/GBiGEd/BYVWxMskWSbaiiTX6vpd0ibcBVpwXPO
+         Up+HJ+BXWE3kyWrfahLDJzoeJ4d+r6LFmK9A/0eal+ULgWXDQUqJpKktEuJk7C9m8LTm
+         y838m4k+Y5BFyoj7x6vzrmJYvE2bW9zr6jK/gI++NG6hzF7CnplexKjqXpWom85vZuwU
+         bjdk//XRItjOd0ZOWm/JUSjZGJu9WE6DBThdYDd3bOGsO3RVkwj7tqWlHnNJ/mIjMCwN
+         x8XykMJCOFprFi4oSf31rry6SP69y1V37Z1dQJqSqmQdE7zM8oqCTpcBbIh5W+OG3/GH
+         rxSg==
+X-Gm-Message-State: AOAM532iY8MLNb1WTHo8iv1uvYE/1eR978Qgfewrwz9ojIIs4DXQx8iU
+        IaPWbnZWUd/+Nauw+UJokiA=
+X-Google-Smtp-Source: ABdhPJxH7jj3FF+5RuwZ9GNlWj2c8UxLx+AfCz81AZzM1Ew0KXCJd7hKJ4QfbZ8o59GXirU6bTTphg==
+X-Received: by 2002:a05:6214:1150:: with SMTP id b16mr2543732qvt.46.1606186826260;
+        Mon, 23 Nov 2020 19:00:26 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id h8sm7294688qka.117.2020.11.23.19.00.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 23 Nov 2020 19:00:25 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 657D527C0054;
+        Mon, 23 Nov 2020 22:00:22 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 23 Nov 2020 22:00:22 -0500
+X-ME-Sender: <xms:RHe8X8nhjwC9ixhL5bNug7kbvlycNZqxon1X4wu5mNxJu7Pz5XHf0g>
+    <xme:RHe8X73UXz0fmmgs8tu8zgbAr1Nw9mYh8NkzcJoj8rXKvEDuTFXL9vwkZTK-ASN3d
+    QZDjJiw2DCbpfpDkw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegjedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:RHe8X6q6izYmjBpKOcIsrU1pCgaFljAMLFUewdqAuRkH2_JLAJyAOg>
+    <xmx:RHe8X4mizohZZSst8rd3803nXlAmHpd2ubbbKKyTvK355jE_sqivHg>
+    <xmx:RHe8X60OksZQ7bAe_ACtVM2KqOSGytjaaVAx5Qkma08-c0seT1M-gQ>
+    <xmx:Rne8X12Cw0YTpE8tjQMdP_-IxdAg7c8bUkFwq2Nq7z4bvZi5_SpwtS8GpAc>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 816D83064AB3;
+        Mon, 23 Nov 2020 22:00:20 -0500 (EST)
+Date:   Tue, 24 Nov 2020 10:59:45 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201124025945.GG286534@boqun-archlinux>
+References: <20201113175754.GA6273@paulmck-ThinkPad-P72>
+ <20201117105236.GA1964407@elver.google.com>
+ <20201117182915.GM1437@paulmck-ThinkPad-P72>
+ <20201118225621.GA1770130@elver.google.com>
+ <20201118233841.GS1437@paulmck-ThinkPad-P72>
+ <20201119125357.GA2084963@elver.google.com>
+ <20201120142734.75af5cd6@gandalf.local.home>
+ <20201123152720.GA2177956@elver.google.com>
+ <20201123112812.19e918b3@gandalf.local.home>
+ <20201123134227.6df443db@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8mowAAXDFp3dbxfZTt3Lg--.49622S2
-X-Coremail-Antispam: 1Uf129KBjvAXoW3try5WrW3tF18KFW5Wr1xKrg_yoW8Aw1xto
-        WUKFWru3WDJr13CrW8GF1xtFyDWr4DGrZ7Ar15KrZIkasIkF1rWF13twn0gwnxX398WFW3
-        Z345Awn8taySy3WUn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUoucEUUUUU
-X-Originating-IP: [223.104.212.20]
-X-CM-SenderInfo: ppd0liar6rjloofrz/1tbi5RnmOFpD6Hyz2gAAsG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123134227.6df443db@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "xiao.ma" <xiao.mx.ma@deltaww.com>
+Hi Steven,
 
-The driver supports Q54SJ108A2 series modules of Delta.
-Standard attributes are in the sysfs, and other attributes are in the debugfs.
+On Mon, Nov 23, 2020 at 01:42:27PM -0500, Steven Rostedt wrote:
+> On Mon, 23 Nov 2020 11:28:12 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > I noticed:
+> > 
+> > 
+> > [  237.650900] enabling event benchmark_event
+> > 
+> > In both traces. Could you disable CONFIG_TRACEPOINT_BENCHMARK and see if
+> > the issue goes away. That event kicks off a thread that spins in a tight
+> > loop for some time and could possibly cause some issues.
+> > 
+> > It still shouldn't break things, we can narrow it down if it is the culprit.
+> 
+> [ Added Thomas  ]
+> 
+> And that's just one issue. I don't think that has anything to do with the
+> other one:
+> 
+> [ 1614.162007] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> [ 1614.168625]  (detected by 0, t=3752 jiffies, g=3529, q=1)
+> [ 1614.170825] rcu: All QSes seen, last rcu_preempt kthread activity 242 (4295293115-4295292873), jiffies_till_next_fqs=1, root ->qsmask 0x0
+> [ 1614.194272] 
+> [ 1614.196673] ================================
+> [ 1614.199738] WARNING: inconsistent lock state
+> [ 1614.203056] 5.10.0-rc4-next-20201119-00004-g77838ee21ff6-dirty #21 Not tainted
+> [ 1614.207012] --------------------------------
+> [ 1614.210125] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+> [ 1614.213832] swapper/0/1 [HC0[0]:SC0[0]:HE0:SE1] takes:
+> [ 1614.217288] ffffd942547f47d8 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x7c0/0x17a0
+> [ 1614.225496] {IN-HARDIRQ-W} state was registered at:
+> [ 1614.229031]   __lock_acquire+0xae8/0x1ac8
+> [ 1614.232203]   lock_acquire+0x268/0x508
+> [ 1614.235254]   _raw_spin_lock_irqsave+0x78/0x14c
+> [ 1614.238547]   rcu_sched_clock_irq+0x7c0/0x17a0
+> [ 1614.241757]   update_process_times+0x6c/0xb8
+> [ 1614.244950]   tick_sched_handle.isra.0+0x58/0x88
+> [ 1614.248225]   tick_sched_timer+0x68/0xe0
+> [ 1614.251304]   __hrtimer_run_queues+0x288/0x730
+> [ 1614.254516]   hrtimer_interrupt+0x114/0x288
+> [ 1614.257650]   arch_timer_handler_virt+0x50/0x70
+> [ 1614.260922]   handle_percpu_devid_irq+0x104/0x4c0
+> [ 1614.264236]   generic_handle_irq+0x54/0x78
+> [ 1614.267385]   __handle_domain_irq+0xac/0x130
+> [ 1614.270585]   gic_handle_irq+0x70/0x108
+> [ 1614.273633]   el1_irq+0xc0/0x180
+> [ 1614.276526]   rcu_irq_exit_irqson+0x40/0x78
+> [ 1614.279704]   trace_preempt_on+0x144/0x1a0
+> [ 1614.282834]   preempt_schedule_common+0xf8/0x1a8
+> [ 1614.286126]   preempt_schedule+0x38/0x40
+> [ 1614.289240]   __mutex_lock+0x608/0x8e8
+> [ 1614.292302]   mutex_lock_nested+0x3c/0x58
+> [ 1614.295450]   static_key_enable_cpuslocked+0x7c/0xf8
+> [ 1614.298828]   static_key_enable+0x2c/0x40
+> [ 1614.301961]   tracepoint_probe_register_prio+0x284/0x3a0
+> [ 1614.305464]   tracepoint_probe_register+0x40/0x58
+> [ 1614.308776]   trace_event_reg+0xe8/0x150
+> [ 1614.311852]   __ftrace_event_enable_disable+0x2e8/0x608
+> [ 1614.315351]   __ftrace_set_clr_event_nolock+0x160/0x1d8
+> [ 1614.318809]   __ftrace_set_clr_event+0x60/0x90
+> [ 1614.322061]   event_trace_self_tests+0x64/0x12c
+> [ 1614.325335]   event_trace_self_tests_init+0x88/0xa8
+> [ 1614.328758]   do_one_initcall+0xa4/0x500
+> [ 1614.331860]   kernel_init_freeable+0x344/0x3c4
+> [ 1614.335110]   kernel_init+0x20/0x16c
+> [ 1614.338102]   ret_from_fork+0x10/0x34
+> [ 1614.341057] irq event stamp: 3206302
+> [ 1614.344123] hardirqs last  enabled at (3206301): [<ffffd9425238da04>] rcu_irq_exit_irqson+0x64/0x78
+> [ 1614.348697] hardirqs last disabled at (3206302): [<ffffd942522123c0>] el1_irq+0x80/0x180
+> [ 1614.353013] softirqs last  enabled at (3204216): [<ffffd94252210b80>] __do_softirq+0x630/0x6b4
+> [ 1614.357509] softirqs last disabled at (3204191): [<ffffd942522c623c>] irq_exit+0x1cc/0x1e0
+> [ 1614.361737] 
+> [ 1614.361737] other info that might help us debug this:
+> [ 1614.365566]  Possible unsafe locking scenario:
+> [ 1614.365566] 
+> [ 1614.369128]        CPU0
+> [ 1614.371747]        ----
+> [ 1614.374282]   lock(rcu_node_0);
+> [ 1614.378818]   <Interrupt>
+> [ 1614.381394]     lock(rcu_node_0);
+> [ 1614.385997] 
+> [ 1614.385997]  *** DEADLOCK ***
+> [ 1614.385997] 
+> [ 1614.389613] 5 locks held by swapper/0/1:
+> [ 1614.392655]  #0: ffffd9425480e940 (event_mutex){+.+.}-{3:3}, at: __ftrace_set_clr_event+0x48/0x90
+> [ 1614.401701]  #1: ffffd9425480a530 (tracepoints_mutex){+.+.}-{3:3}, at: tracepoint_probe_register_prio+0x48/0x3a0
+> [ 1614.410973]  #2: ffffd9425476abf0 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_enable+0x24/0x40
+> [ 1614.419858]  #3: ffffd94254816348 (jump_label_mutex){+.+.}-{3:3}, at: static_key_enable_cpuslocked+0x7c/0xf8
+> [ 1614.429049]  #4: ffffd942547f47d8 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x7c0/0x17a0
+> [ 1614.438029] 
+> [ 1614.438029] stack backtrace:
+> [ 1614.441436] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc4-next-20201119-00004-g77838ee21ff6-dirty #21
+> [ 1614.446149] Hardware name: linux,dummy-virt (DT)
+> [ 1614.449621] Call trace:
+> [ 1614.452337]  dump_backtrace+0x0/0x240
+> [ 1614.455372]  show_stack+0x34/0x88
+> [ 1614.458306]  dump_stack+0x140/0x1bc
+> [ 1614.461258]  print_usage_bug+0x2a0/0x2f0
+> [ 1614.464399]  mark_lock.part.0+0x438/0x4e8
+> [ 1614.467528]  mark_held_locks+0x54/0x90
+> [ 1614.470576]  lockdep_hardirqs_on_prepare+0xe0/0x290
+> [ 1614.473935]  trace_hardirqs_on+0x90/0x370
+> [ 1614.477045]  el1_irq+0xdc/0x180
+> [ 1614.479934]  rcu_irq_exit_irqson+0x40/0x78
+> [ 1614.483093]  trace_preempt_on+0x144/0x1a0
+> [ 1614.486211]  preempt_schedule_common+0xf8/0x1a8
+> [ 1614.489479]  preempt_schedule+0x38/0x40
+> [ 1614.492544]  __mutex_lock+0x608/0x8e8
+> 
+> 
+> The above has:
+> 
+>  preempt_schedule_common() {
+>    trace_preempt_on() {
+>      <interrupt>
+> 	el1_irq:
+> 	   handle_arch_irq {
+> 	      irq_enter();
+> 	      [..]
+> 	      irq_exit();
+> 	   }
+> 	   bl trace_hardirqs_on
+> 
+> 
+> I wonder if the lockdep logic got confused on ARM64 by the rework done to
+> lockdep and tracing with respect to irq entry / exit.
+> 
 
-Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
----
+I'm also staring at this problem and another thing caused my attention
+is that there is a line like the following after the lockdep splat:
 
-Notes:
-    Patch v2 changelog:
-    	Add delta.rst in Documentation/hwmon.
-    	Tristate "DELTA" in Kconfig is changed to "DELTA_POWER_SUPPLIED".
-    	Modify code: drop the excessive empty lines, correct the comment content, adjust indent, remove extra brackets.
-    Patch v3 changelog:
-    	Add delta.rst to Documentation/hwmon/index.rst.
-    	Tristate "DELTA_POWER_SUPPLES" in Kconfig is changed to "Delta Power Supplies".
-    Patch v4 changelog:
-    	Correct the spelling "Temperature" in the delta.rst.
-    	Add Write_protect when write command VOUT_OV_RESPONSE and IOUT_OC_FAULT_RESPONSE.
-    Patch v5 changelog:
-    	Add some non-standard attributes in sysfs system.
-    Patch v6 changelog:
-    	delta.c and delta.rst are renamed to q54sj108a2.c and q54sj108a2.rst.
-    	Add q54sj108a2 to index.rst.
-    	Tristate in Kconfig is changed to "Delta Power Supplies Q54SJ108A2".
-    	The non-standard attributes are added to debugfs.
-    Patch v7 changelog:
-    	Use standard fuctions bin2hex and hex2bin.
-    	The return of debugfs write is changed to count.
-    	Drop the error checking of debugfs functions.
-    	Use probe_new fuction.
-    	Remove the .remove fuction.
-    Patch v8 changelog:
-    	Use kstrtou8_from_user instead of hex2bin.
-    	Remove included head files which are not used.
-    	Done label in debugfs_read fuction is deleted.
-    	Change email to send the patch.
-    Patch v9 changelog:
-    	Fix the compile errors and warnings.
+[...] BUG: scheduling while atomic ...
 
- Documentation/hwmon/index.rst      |   1 +
- Documentation/hwmon/q54sj108a2.rst |  52 ++++
- drivers/hwmon/pmbus/Kconfig        |   9 +
- drivers/hwmon/pmbus/Makefile       |   1 +
- drivers/hwmon/pmbus/q54sj108a2.c   | 422 +++++++++++++++++++++++++++++
- 5 files changed, 485 insertions(+)
- create mode 100644 Documentation/hwmon/q54sj108a2.rst
- create mode 100755 drivers/hwmon/pmbus/q54sj108a2.c
+, which means preemption count has some inconsistency too.
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index b797db738225..4bb680b3c7ea 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -148,6 +148,7 @@ Hardware Monitoring Kernel Drivers
-    powr1220
-    pxe1610
-    pwm-fan
-+   q54sj108a2
-    raspberrypi-hwmon
-    sch5627
-    sch5636
-diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
-new file mode 100644
-index 000000000000..a575bdfa7c18
---- /dev/null
-+++ b/Documentation/hwmon/q54sj108a2.rst
-@@ -0,0 +1,52 @@
-+Kernel driver q54sj108a2
-+=====================
-+
-+Supported chips:
-+
-+  * DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, Q54SJ108A2NCPG, Q54SJ108A2NCPH
-+
-+    Prefix: 'Q54SJ108A2'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://filecenter.delta-china.com.cn/products/download/01/0102/datasheet/DS_Q54SJ108A2.pdf
-+
-+Authors:
-+    Xiao.ma <xiao.mx.ma@deltaww.com>
-+
-+
-+Description
-+-----------
-+
-+This driver implements support for DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, 
-+Q54SJ108A2NCPG, and Q54SJ108A2NCPH 1/4 Brick DC/DC Regulated Power Module 
-+with PMBus support.
-+
-+The driver is a client driver to the core PMBus driver.
-+Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-+
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate the
-+devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-+details.
-+
-+
-+Sysfs entries
-+-------------
-+
-+===================== ===== ==================================================
-+curr1_alarm           RO    Output current alarm
-+curr1_input           RO    Output current
-+curr1_label           RO    'iout1'
-+in1_alarm             RO    Input voltage alarm
-+in1_input             RO    Input voltage
-+in1_label             RO    'vin'
-+in2_alarm             RO    Output voltage alarm
-+in2_input             RO    Output voltage
-+in2_label             RO    'vout1'
-+temp1_alarm           RO    Temperature alarm
-+temp1_input           RO    Chip temperature
-+===================== ===== ==================================================
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index a25faf69fce3..01de280820ee 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -229,6 +229,15 @@ config SENSORS_PXE1610
- 	  This driver can also be built as a module. If so, the module will
- 	  be called pxe1610.
- 
-+config SENSORS_Q54SJ108A2
-+	tristate "Delta Power Supplies Q54SJ108A2"
-+	help
-+	  If you say yes here you get hardware monitoring support for Delta
-+	  Q54SJ108A2 series Power Supplies.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called q54sj108a2.
-+
- config SENSORS_TPS40422
- 	tristate "TI TPS40422"
- 	help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index 4c97ad0bd791..a50122cd455b 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
- obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
- obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
- obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
-+obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
- obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
- obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
- obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
-diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
-new file mode 100755
-index 000000000000..1b434e3f7995
---- /dev/null
-+++ b/drivers/hwmon/pmbus/q54sj108a2.c
-@@ -0,0 +1,422 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Driver for Delta modules, Q54SJ108A2 series 1/4 Brick DC/DC
-+ * Regulated Power Module
-+ *
-+ * Copyright 2020 Delta LLC.
-+ */
-+
-+#include <linux/debugfs.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include "pmbus.h"
-+
-+#define STORE_DEFAULT_ALL         0x11
-+#define ERASE_BLACKBOX_DATA       0xD1
-+#define READ_HISTORY_EVENT_NUMBER 0xD2
-+#define READ_HISTORY_EVENTS       0xE0
-+#define SET_HISTORY_EVENT_OFFSET  0xE1
-+#define PMBUS_CMD_FLASH_KEY_WRITE 0xEC
-+
-+enum chips {
-+	Q54SJ108A2
-+};
-+
-+enum {
-+	Q54SJ108A2_DEBUGFS_OPERATION = 0,
-+	Q54SJ108A2_DEBUGFS_CLEARFAULT,
-+	Q54SJ108A2_DEBUGFS_WRITEPROTECT,
-+	Q54SJ108A2_DEBUGFS_STOREDEFAULT,
-+	Q54SJ108A2_DEBUGFS_VOOV_RESPONSE,
-+	Q54SJ108A2_DEBUGFS_IOOC_RESPONSE,
-+	Q54SJ108A2_DEBUGFS_PMBUS_VERSION,
-+	Q54SJ108A2_DEBUGFS_MFR_ID,
-+	Q54SJ108A2_DEBUGFS_MFR_MODEL,
-+	Q54SJ108A2_DEBUGFS_MFR_REVISION,
-+	Q54SJ108A2_DEBUGFS_MFR_LOCATION,
-+	Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE,
-+	Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET,
-+	Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET,
-+	Q54SJ108A2_DEBUGFS_BLACKBOX_READ,
-+	Q54SJ108A2_DEBUGFS_FLASH_KEY,
-+	Q54SJ108A2_DEBUGFS_NUM_ENTRIES
-+};
-+
-+struct q54sj108a2_data {
-+	enum chips chip;
-+	struct i2c_client *client;
-+
-+	int debugfs_entries[Q54SJ108A2_DEBUGFS_NUM_ENTRIES];
-+};
-+
-+#define to_psu(x, y) container_of((x), struct q54sj108a2_data, debugfs_entries[(y)])
-+
-+static struct pmbus_driver_info q54sj108a2_info[] = {
-+	[Q54SJ108A2] = {
-+		.pages = 1,
-+
-+		/* Source : Delta Q54SJ108A2 */
-+		.format[PSC_TEMPERATURE] = linear,
-+		.format[PSC_VOLTAGE_IN] = linear,
-+		.format[PSC_CURRENT_OUT] = linear,
-+
-+		.func[0] = PMBUS_HAVE_VIN |
-+		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
-+		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-+		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-+		PMBUS_HAVE_STATUS_INPUT,
-+	},
-+};
-+
-+static ssize_t q54sj108a2_debugfs_read(struct file *file, char __user *buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	int rc;
-+	int *idxp = file->private_data;
-+	int idx = *idxp;
-+	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-+	char data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-+	char data_char[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-+	char *res;
-+
-+	switch (idx) {
-+	case Q54SJ108A2_DEBUGFS_OPERATION:
-+		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_OPERATION);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = snprintf(data, 3, "%02x", rc);
-+		break;
-+	case Q54SJ108A2_DEBUGFS_WRITEPROTECT:
-+		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_WRITE_PROTECT);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = snprintf(data, 3, "%02x", rc);
-+		break;
-+	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-+		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = snprintf(data, 3, "%02x", rc);
-+		break;
-+	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-+		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = snprintf(data, 3, "%02x", rc);
-+		break;
-+	case Q54SJ108A2_DEBUGFS_PMBUS_VERSION:
-+		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_REVISION);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = snprintf(data, 3, "%02x", rc);
-+		break;
-+	case Q54SJ108A2_DEBUGFS_MFR_ID:
-+		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_ID, data);
-+		if (rc < 0)
-+			return rc;
-+		break;
-+	case Q54SJ108A2_DEBUGFS_MFR_MODEL:
-+		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_MODEL, data);
-+		if (rc < 0)
-+			return rc;
-+		break;
-+	case Q54SJ108A2_DEBUGFS_MFR_REVISION:
-+		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_REVISION, data);
-+		if (rc < 0)
-+			return rc;
-+		break;
-+	case Q54SJ108A2_DEBUGFS_MFR_LOCATION:
-+		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_LOCATION, data);
-+		if (rc < 0)
-+			return rc;
-+		break;
-+	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET:
-+		rc = i2c_smbus_read_byte_data(psu->client, READ_HISTORY_EVENT_NUMBER);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = snprintf(data, 3, "%02x", rc);
-+		break;
-+	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ:
-+		rc = i2c_smbus_read_block_data(psu->client, READ_HISTORY_EVENTS, data);
-+		if (rc < 0)
-+			return rc;
-+
-+		res = bin2hex(data, data_char, 32);
-+		rc = res - data;
-+
-+		break;
-+	case Q54SJ108A2_DEBUGFS_FLASH_KEY:
-+		rc = i2c_smbus_read_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, data);
-+		if (rc < 0)
-+			return rc;
-+
-+		res = bin2hex(data, data_char, 4);
-+		rc = res - data;
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	data[rc] = '\n';
-+	rc += 2;
-+
-+	return simple_read_from_buffer(buf, count, ppos, data, rc);
-+}
-+
-+static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *buf,
-+					size_t count, loff_t *ppos)
-+{
-+	u8 flash_key[4];
-+	u8 dst_data;
-+	ssize_t rc;
-+	int *idxp = file->private_data;
-+	int idx = *idxp;
-+	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-+
-+	rc = i2c_smbus_write_byte_data(psu->client, PMBUS_WRITE_PROTECT, 0);
-+	if (rc)
-+		return rc;
-+
-+	switch (idx) {
-+	case Q54SJ108A2_DEBUGFS_OPERATION:
-+		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_OPERATION, dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		break;
-+	case Q54SJ108A2_DEBUGFS_CLEARFAULT:
-+		rc = i2c_smbus_write_byte(psu->client, PMBUS_CLEAR_FAULTS);
-+		if (rc < 0)
-+			return rc;
-+
-+		break;
-+	case Q54SJ108A2_DEBUGFS_STOREDEFAULT:
-+		flash_key[0] = 0x7E;
-+		flash_key[1] = 0x15;
-+		flash_key[2] = 0xDC;
-+		flash_key[3] = 0x42;
-+		rc = i2c_smbus_write_block_data(psu->client, PMBUS_CMD_FLASH_KEY_WRITE, 4, flash_key);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = i2c_smbus_write_byte(psu->client, STORE_DEFAULT_ALL);
-+		if (rc < 0)
-+			return rc;
-+
-+		break;
-+	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-+		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE, dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		break;
-+	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-+		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE, dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		break;
-+	case Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE:
-+		rc = i2c_smbus_write_byte(psu->client, ERASE_BLACKBOX_DATA);
-+		if (rc < 0)
-+			return rc;
-+
-+		break;
-+	case Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET:
-+		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = i2c_smbus_write_byte_data(psu->client, SET_HISTORY_EVENT_OFFSET, dst_data);
-+		if (rc < 0)
-+			return rc;
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return count;
-+}
-+
-+static const struct file_operations q54sj108a2_fops = {
-+	.llseek = noop_llseek,
-+	.read = q54sj108a2_debugfs_read,
-+	.write = q54sj108a2_debugfs_write,
-+	.open = simple_open,
-+};
-+
-+static const struct i2c_device_id q54sj108a2_id[] = {
-+	{ "Q54SJ108A2", Q54SJ108A2 },
-+	{ },
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, q54sj108a2_id);
-+
-+static int q54sj108a2_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
-+	enum chips chip_id;
-+	int ret, i;
-+	struct dentry *debugfs;
-+	struct dentry *q54sj108a2_dir;
-+	struct q54sj108a2_data *psu;
-+
-+	if (!i2c_check_functionality(client->adapter,
-+				     I2C_FUNC_SMBUS_BYTE_DATA |
-+				     I2C_FUNC_SMBUS_WORD_DATA |
-+				     I2C_FUNC_SMBUS_BLOCK_DATA))
-+		return -ENODEV;
-+
-+	if (client->dev.of_node)
-+		chip_id = (enum chips)(unsigned long)of_device_get_match_data(dev);
-+	else
-+		chip_id = i2c_match_id(q54sj108a2_id, client)->driver_data;
-+
-+	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
-+	if (ret < 0) {
-+		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
-+		return ret;
-+	}
-+	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
-+		buf[ret] = '\0';
-+		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
-+		return -ENODEV;
-+	}
-+
-+	/*
-+	 * The chips support reading PMBUS_MFR_MODEL.
-+	 */
-+	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to read Manufacturer Model\n");
-+		return ret;
-+	}
-+	if (ret != 14 || strncmp(buf, "Q54SJ108A2", 10)) {
-+		buf[ret] = '\0';
-+		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
-+		return -ENODEV;
-+	}
-+
-+	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_REVISION, buf);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to read Manufacturer Revision\n");
-+		return ret;
-+	}
-+	if (ret != 4 || buf[0] != 'S') {
-+		buf[ret] = '\0';
-+		dev_err(dev, "Unsupported Manufacturer Revision '%s'\n", buf);
-+		return -ENODEV;
-+	}
-+
-+	ret = pmbus_do_probe(client, &q54sj108a2_info[chip_id]);
-+	if (ret)
-+		return ret;
-+
-+	psu = devm_kzalloc(&client->dev, sizeof(*psu), GFP_KERNEL);
-+	if (!psu)
-+		return 0;
-+
-+	psu->client = client;
-+
-+	debugfs = pmbus_get_debugfs_dir(client);
-+
-+	q54sj108a2_dir = debugfs_create_dir(client->name, debugfs);
-+
-+	for (i = 0; i < Q54SJ108A2_DEBUGFS_NUM_ENTRIES; ++i)
-+		psu->debugfs_entries[i] = i;
-+
-+	debugfs_create_file("operation", 0644, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_OPERATION],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("clear_fault", 0200, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_CLEARFAULT],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("write_protect", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_WRITEPROTECT],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("store_default", 0200, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_STOREDEFAULT],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("vo_ov_response", 0644, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_VOOV_RESPONSE],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("io_oc_response", 0644, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_IOOC_RESPONSE],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("pmbus_revision", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_PMBUS_VERSION],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("mfr_id", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_ID],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("mfr_model", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_MODEL],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("mfr_revision", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_REVISION],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("mfr_location", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_LOCATION],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("blackbox_erase", 0200, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("blackbox_read_offset", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("blackbox_set_offset", 0200, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("blackbox_read", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ],
-+			    &q54sj108a2_fops);
-+	debugfs_create_file("flash_key", 0444, q54sj108a2_dir,
-+			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_FLASH_KEY],
-+			    &q54sj108a2_fops);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id q54sj108a2_of_match[] = {
-+	{ .compatible = "delta,Q54SJ108A2", .data = (void *)Q54SJ108A2 },
-+	{ },
-+};
-+
-+MODULE_DEVICE_TABLE(of, q54sj108a2_of_match);
-+
-+static struct i2c_driver q54sj108a2_driver = {
-+	.driver = {
-+		.name = "Q54SJ108A2",
-+		.of_match_table = q54sj108a2_of_match,
-+	},
-+	.probe_new = q54sj108a2_probe,
-+	.id_table = q54sj108a2_id,
-+};
-+
-+module_i2c_driver(q54sj108a2_driver);
-+
-+MODULE_AUTHOR("Xiao.Ma <xiao.mx.ma@deltaww.com>");
-+MODULE_DESCRIPTION("PMBus driver for Delta Q54SJ108A2 series modules");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+Given this, a possible case cause this is that we got preempted inside a
+rcu_node lock critical section (I know, this is quite impossible, but
+preemption count and lockdep data are maintained quite separately, so
+it's unlikely they are broken at the same time...)
 
+Will continue to look into this.
+
+Regards,
+Boqun
+
+> Or maybe there's an rcu_node leak lock that happened somewhere?
+> 
+> -- Steve
