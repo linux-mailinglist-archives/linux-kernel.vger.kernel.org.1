@@ -2,261 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881D12C21F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D89B2C21FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731701AbgKXJnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:43:21 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:49073 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgKXJnT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:43:19 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 21B9923E45;
-        Tue, 24 Nov 2020 10:43:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1606210995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lt6x/itJc1dXt2VhsUKeDxS7oj0ZsZ4Zcf2aw15O+B8=;
-        b=N+Keib/coSaK8Jki8gD3bHy0+YJOWmpiUOa7ytTdKv4HU2ACYe2ZkarVmtxjfLF6ksnxVD
-        +ulHDKM65Ez4iwgDgGA6SM6umDx3XCn5e3Z1ymtZsY3xJA0oVJYoEFbtAblU1kkXgz1vxn
-        AeykY6b/URr2j2QvY5MuqPx/xCyanoQ=
+        id S1731685AbgKXJnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:43:46 -0500
+Received: from mail-bn7nam10on2089.outbound.protection.outlook.com ([40.107.92.89]:46625
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729704AbgKXJnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:43:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kV4nPYXX5ZeHm2my3ArYJOb0/3DEzg5aCFSVbXvPZlX9LO4mHUzaUDOsWMmivllkgWuSHomYjZCQcSrCR0KikMSR7if+gNr/GVc2YxJsTIF2zBdgRVoYxSddVkUEm48h406V3uUmx7DPEiIcc4U9y20c7jBfdV2OkZfERbcEDyUnzCrXdmWIyM0QYdTPOD3LGeUOEiNxZayjwR5mivVT2bYVzM23fOD7pYLLjh8p3k03dgA4fBGScgPYxbN9ZSXvnkUIUR5s2lCuOaSKMmX6GCQht8z6AhMubPIMDmLHO3ImesjhD8i5z1n4IaX1b7eqFbGGiLa2RA6B6FlDi9ecoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SNBt6T0e0de//ILJI+Sd/+GOW7iM14uUIFUntPiu4G4=;
+ b=VH76PcZuw0ZgDRa2NOzRjb6b8x8X293JAaYWI+fgZhHitySq/TkiWjDBQXSGSEq/uOWbXKe9JRN8raTfn8IKkS/DEbBy1GzCfuWWTX3my3gsJ6N1qUtS+7ZqnjigHIZRc2JHmftXE0HSTyjDyR/vTXy4cxi6xBMMnL6MYPIfbMdamDBkueg5rj1Scl7GZriXOCGRmTWQpS99FwyUZQYFL6jKarp3XWFZs9YTa5E1x6Mek4G2X4ApfOUyNxcMlQBVUCb9QsfxnM/55tiyOTqr7OzLxjiYNbvtERYH8HC8QOTHb3Zh1l53siFKpwDESvjeokXnNGL5cBwMIdDxqNwg4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SNBt6T0e0de//ILJI+Sd/+GOW7iM14uUIFUntPiu4G4=;
+ b=SRoWA0Kp31pd4NZitk+lqxUAOHVPqcJMBWqdFcJTCsiWdjzgbUwZSAa+jMVIXDHhtpUOOncC6a4yO6PT4n0xgekstMecjyLLfGUef+Nf3kR+yq2VjY88KE55w0S0Ro8tAx8CqGuj1zk+LfK3x03pLw5USObniYT5R1vocCGGZ/E=
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN1PR12MB2413.namprd12.prod.outlook.com (2603:10b6:802:2b::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
+ 2020 09:43:37 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 24 Nov 2020
+ 09:43:37 +0000
+From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dave.hansen@linux-intel.com" <dave.hansen@linux-intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "Grimm, Jon" <Jon.Grimm@amd.com>,
+        "rientjes@google.com" <rientjes@google.com>
+Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Thread-Topic: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Thread-Index: AQHWvrzaxkxw3OuD2kOZmqVqDk7+x6nV+JOAgAAN5wCAAFPQgIAAqeCAgAAFwPOAAAPHgIAAAWVL
+Date:   Tue, 24 Nov 2020 09:43:37 +0000
+Message-ID: <69A79870-3822-44AA-8A5D-DC329828CF64@amd.com>
+References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
+ <20201123170647.GE15044@zn.tnic> <20201123175632.GA21539@char.us.oracle.com>
+ <20201123225631.GA16055@ashkalra_ubuntu_server>
+ <20201124090431.GC4009@zn.tnic>
+ <EF13C80C-42DC-4B51-8AF8-2C1D3859B490@amd.com>,<20201124093837.GD4009@zn.tnic>
+In-Reply-To: <20201124093837.GD4009@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [136.49.12.8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f3cffeeb-bc3d-4372-fe1e-08d8905d6b24
+x-ms-traffictypediagnostic: SN1PR12MB2413:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN1PR12MB2413B713E505242FC72E60F38EFB0@SN1PR12MB2413.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bw9pYDN9zl9CGOTRuFOGWh8SN0Ne5We14ScPUi0viN1rakEWkoFRfRfUAI6xLVWWOuDYNfQdqQQFrt+UV4kYT/tJZUntj3MoQHqrPwi6CZn+Ur37ZQ1i7z+l08kbUnym9Ag+fCc1oi4Y9ENqnityiqFDtb/jbsdUMmjZO3QXf/hRYLs+IY5Iw7uI/h9/cnUUzuxA59ODjNehplVAaU0XkEr1r6ZTpbRaZA7lubaDLJ/HCM8lNJdW8Bnnbv4C92u+7Oi4rLdUV6M6otX4FWoyhTY5Gavs80vaknQKGS+F1fOQT94cvQASIHQIVGqW1WgsjYRWNqfUTcHoHBDKC21vUBcvKAYLIBhlyfgiDA0BmbxOhfgXKhtADb9tR9BtlGWNY0mk9/4OFG7MqbCtTNhRIg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(366004)(7416002)(71200400001)(4326008)(64756008)(6512007)(33656002)(76116006)(186003)(966005)(36756003)(66446008)(66556008)(6916009)(66476007)(66946007)(26005)(478600001)(5660300002)(316002)(8936002)(2616005)(54906003)(8676002)(86362001)(6486002)(53546011)(2906002)(6506007)(45080400002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: LB/DgCRFFxY5lwIOluaRKRCUUyQBqp+VBD3A7b0DTKLPQ9Lukzr4AIEBdlsAJpEkkvZuB0CVUfc4IK8wgnkUDh/aUiEMbDRQnHiCKYFnyWwI5qfe0MG7ISsiL2ZblMfp/trTwOOcn88gvAwkWelRnJD6wq6wa+b6uyfoPu7M+fdm70dM7c7wGH4KWcpKAZ2zHowqklcImMavjzrJXk2cJlHfea86X63XT33ohxaX8bnN8kyXFOMY6awSZndGqaAEFSxkF8dsFacJArXi2ndn4q3FT+AOn6dvgai2hCod5MpvxMaSTknb2r05QUw7tlbeNYD9X45WwR/RD4JHPtOl/IE77JoWCKpm8q9t0I3/BxAZmQ02pyMlZM210S3XnNQxqs+AqryuGBK5OiBYCZ92UZpHi0YE6QzmJATltLl1qyBpsLLQfG+mUHqCoJQDSA6qfJLKQ6jlPWOUhnfSnvcW0+54jGs/7NDKBw5X37Bd4gy3hwKyJ+0s6Xkltq/3kOUM7XJHPDUiaPPGGhDXjRdgSrOsZPyGCyRaerpfuaA/gkb7r+hUArkUVS9cAMymi9B5Y6npyF/GMk8BLUyv5qCFjf3ecKtxqtU5bPEThQCXHaepTZwORpTTec3ykCbHFpsQGig5Zz5i17OjzA+tXcH6I+0UD591m5ekR9yqv6kGnzqXqocYkwAhf2KqByJqQw8AHWcdxjmZ/NXv/3MLxQ1NJB3IF7LYMbsUcFwagQOxXqSVqInzXYeRD0HySw5fRivg1XIrPbxfXDUovx+NEKxItEyYgiKjmL6uC9mnY4D4tUqGnH7sXqf/ckRbk7AZWMAjQqqlJsYybhtDOxtZ+OhDnxQv6i3qMK8Wlpq7TxOTpKNtL2BXuGS2JHJzklWvE0XMWM6z0fhMYAUQTD1ms3TfeA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 24 Nov 2020 10:43:15 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     "Y.b. Lu" <yangbo.lu@nxp.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <ashish.kumar@nxp.com>
-Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-In-Reply-To: <AM7PR04MB6885044C8AE85FE369285186F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
-References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
- <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <20201120093015.duel3yx63cbya77w@skbuf>
- <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
- <71a86b0fbc95892f8fd240e0919e7e23@walle.cc>
- <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <3293d698bf26ecf08f22e7e2ffe55e74@walle.cc>
- <AM7PR04MB688518B8AE836C2CC37FED6AF8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <de68e6861f0ab947642c847b3b645503@walle.cc>
- <AM7PR04MB6885044C8AE85FE369285186F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d6ecf5fea0d8bde80f7563b4cb586b59@walle.cc>
-X-Sender: michael@walle.cc
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3cffeeb-bc3d-4372-fe1e-08d8905d6b24
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 09:43:37.6150
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Gmj+ELgmy7itJJnh2Hst5e/tm9KVZkbWPm2i2KZGctxokNmmogyo7bVcmxGhn20uIyy+kqlQ5+X/mI+St6xb3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2413
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-11-24 10:22, schrieb Y.b. Lu:
-> Hi Michael,
-> 
->> -----Original Message-----
->> From: Michael Walle <michael@walle.cc>
->> Sent: Tuesday, November 24, 2020 5:08 PM
->> To: Y.b. Lu <yangbo.lu@nxp.com>
->> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
->> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
->> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
->> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>; 
->> Ulf
->> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
->> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
->> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
->> controllers use fixed indices
->> 
->> Am 2020-11-24 10:02, schrieb Y.b. Lu:
->> > Hi Michael,
->> >
->> >> -----Original Message-----
->> >> From: Michael Walle <michael@walle.cc>
->> >> Sent: Tuesday, November 24, 2020 4:55 PM
->> >> To: Y.b. Lu <yangbo.lu@nxp.com>
->> >> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
->> >> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
->> >> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
->> >> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>;
->> >> Ulf
->> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
->> >> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
->> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
->> >> controllers use fixed indices
->> >>
->> >> Am 2020-11-24 09:47, schrieb Y.b. Lu:
->> >> > Hi Michael,
->> >> >
->> >> >> -----Original Message-----
->> >> >> From: Michael Walle <michael@walle.cc>
->> >> >> Sent: Tuesday, November 24, 2020 4:03 PM
->> >> >> To: Y.b. Lu <yangbo.lu@nxp.com>
->> >> >> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>; Shawn Guo
->> >> >> <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob Herring
->> >> >> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
->> >> >> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>;
->> >> >> Ulf
->> >> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
->> >> >> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
->> >> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
->> >> >> controllers use fixed indices
->> >> >>
->> >> >> Am 2020-11-24 08:41, schrieb Y.b. Lu:
->> >> >> > Hi Vladimir,
->> >> >> >
->> >> >> >> -----Original Message-----
->> >> >> >> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->> >> >> >> Sent: Friday, November 20, 2020 5:30 PM
->> >> >> >> To: Y.b. Lu <yangbo.lu@nxp.com>
->> >> >> >> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li
->> <leoyang.li@nxp.com>;
->> >> Rob
->> >> >> >> Herring <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
->> >> >> >> devicetree@vger.kernel.org; Adrian Hunter
->> <adrian.hunter@intel.com>;
->> >> >> >> Ulf
->> >> >> >> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
->> >> >> >> linux-kernel@vger.kernel.org; Ashish Kumar
->> <ashish.kumar@nxp.com>;
->> >> >> >> Michael Walle <michael@walle.cc>
->> >> >> >> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD
->> card
->> >> >> >> controllers use fixed indices
->> >> >> >>
->> >> >> >> On Fri, Nov 20, 2020 at 02:04:02AM +0000, Y.b. Lu wrote:
->> >> >> >> > Hi Vladimir,
->> >> >> >> >
->> >> >> >> > I have already upstreamed a patch for all affected layerscape
->> boards.
->> >> >> >> >
->> >> >> >>
->> >> >>
->> >>
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kern
->> >> >>
->> >>
->> el.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fshawnguo%2Flinux.git%2
->> >> >>
->> >>
->> Fcommit%2F&amp;data=04%7C01%7Cyangbo.lu%40nxp.com%7C498622ade
->> >> >>
->> >>
->> e704fc0042008d8904f6184%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0
->> >> >> %7C0%7C637418017917635725%7CUnknown%7CTWFpbGZsb3d8eyJW
->> Ijoi
->> >> M
->> >> >>
->> >>
->> C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000
->> >> >>
->> >>
->> &amp;sdata=OciS3q%2BmP%2Bz4x1ewPHDigmUkgIZmBgUlRRTm4yaxB7s%3D
->> >> >> &amp;reserved=0?
->> >> >> >> h=imx/dt64&id=342ab37ecaf8c1b10dd3ca9a1271db29a6af0705
->> >> >> >> >
->> >> >> >> > Please check whether it works for you.
->> >> >> >>
->> >> >> >> Thanks, one can tell that I haven't done my due diligence of checking
->> >> >> >> Shawn's tree first. I'll cherry-pick that patch and carry on with my
->> >> >> >> work.
->> >> >> >>
->> >> >> >> However, the fact still remains that Michael has expressed his opinion
->> >> >> >> regarding mmcblk0 vs mmcblk1. Do you think that we could make
->> the
->> >> >> >> aliases a per-board option instead of per-SoC? Consider that there
->> >> >> >> might
->> >> >> >> even be boards that only use SD card. It would be strange for the
->> >> >> >> block
->> >> >> >> device in that case to be called /dev/mmcblk1.
->> >> >> >
->> >> >> > I don't think it's a problem in board dts to define board specific
->> >> >> > thing, like re-defining alias, and disabling any IP it not using.
->> >> >>
->> >> >> First, why would you put it in the architecture include anyway? That
->> >> >> is really board-specific. That is like you would say, we enable all
->> >> >> devices and a board could potentially disable it. TBH it seems that
->> >> >> this will fit your reference boards and you don't care about the
->> >> >> other ones which uses that include.
->> >> >
->> >> > In soc dtsi, this is giving default alias for two esdhc controllers.
->> >> > This is not board specific.
->> >> > That's natural esdhc0 is mmc0 and esdhc1 is mmc1.
->> >>
->> >> How could this be not board specific if there are at least three
->> >> different use cases the board can choose from - and needs three
->> >> different configurations:
->> >>
->> >> (1) eMMC at /dev/mmcblk0, SD card at /dev/mmcblk1
->> >> (2) SD card at /dev/mmcblk0, eMMC at /dev/mmcblk1
->> >> (3) no eMMC at all, SD card at /dev/mmcblk0
->> >
->> > Not matter it's SD card or eMMC card, if it's on esdhc0, use
->> > /dev/mmcblk0.
->> > Not matter it's SD card or eMMC card, if it's on esdhc1, use
->> > /dev/mmcblk1.
->> > It's not related to board and card type, it's only related to esdhc
->> > interface in use.
->> 
->> And what interace is used is board specific, isn't it?
-> 
-> Again, for all boards, use /dev/mmcblk0 for card on esdhc0 interface,
-> and /dev/mmcblk1 for card on esdhc1 interface.
-> That's not board specific.
-
-So why don't you enable the devices by default then? That would be the
-same reasoning, wouldn't it? Or even enable all devices by default. 
-Nobody
-does that. But the boards themselves enable the devices which _they_
-are actually using.
-
-
->> >> your include only support (1). If a board needs (2) or (3) it has to
->> >> override the configuration in the _common_ include.
->> >>
->> >> >> And as Vladimir pointed out, what do you do if you just have the eMMC
->> >> >> on the LS1028A. It will be mmcblk1 unless you do something like the
->> >> >> following in the board dts:
->> >> >>
->> >> >> mmc0 = &esdhc;
->> >> >> /delete-property/ mmc1;
->> >> >>
->> >> >> That is really cumbersome, isnt it?
->> >> >
->> >> > The soc dtsi gives default alias to make esdhc0 as mmc0, and esdhc1 as
->> >> > mmc1, the use case just needs to consider which esdhc controller is
->> >> > used. That's fixed index for it.
->> >> > No matter how the board is designed, there are two esdhc controllers
->> >> > in soc. It's probed as mmc0 and mmc1.
->> >> > It's use case that should choose the right mmc device. It is not the
->> >> > dts that should be changed to suit use case.
->> >> > If the board owner insists to change alias to make esdhc1 as mmc0, I
->> >> > think no problem. Just do it in board dts to override the default one.
->> >>
->> >> Still, why would this be enforced in the common include? What is the
->> >> advnatage here? I only see disadvantages.
->> 
->> You didn't answer this unfortunately.
-> 
-> As I explained,
-> "Again, for all boards, use /dev/mmcblk0 for card on esdhc0 interface,
-> and /dev/mmcblk1 for card on esdhc1 interface.
-> That's not board specific."
-> 
-> Without such definition, the index is random for each booting.
-
-No the question was why to include this into the common header. Not into
-the board specific ones.
-
--michael
+DQoNCj4gT24gTm92IDI0LCAyMDIwLCBhdCAzOjM4IEFNLCBCb3Jpc2xhdiBQZXRrb3YgPGJwQGFs
+aWVuOC5kZT4gd3JvdGU6DQo+IA0KPiDvu79PbiBUdWUsIE5vdiAyNCwgMjAyMCBhdCAwOToyNTow
+NkFNICswMDAwLCBLYWxyYSwgQXNoaXNoIHdyb3RlOg0KPj4gQnV0IHdoYXQgd2lsbCBiZSB0aGUg
+Y3JpdGVyaWEgdG8gZmlndXJlIG91dCB0aGlzIHBlcmNlbnRhZ2U/DQo+PiANCj4+IEFzIEkgbWVu
+dGlvbmVkIGVhcmxpZXIsIHRoaXMgY2FuIGJlIG1hZGUgYXMgY29tcGxpY2F0ZWQgYXMgcG9zc2li
+bGUgYnkNCj4+IGFkZGluZyBhbGwga2luZCBvZiBoZXVyaXN0aWNzIGJ1dCB3aXRob3V0IGFueSBw
+cmVkaWN0YWJsZSBwZXJmb3JtYW5jZQ0KPj4gZ2Fpbi4NCj4+IA0KPj4gT3IgaXQgY2FuIGJlIGtl
+cHQgc2ltcGxlIGJ5IHVzaW5nIGEgc3RhdGljIHBlcmNlbnRhZ2UgdmFsdWUuDQo+IA0KPiBZZXMs
+IHN0YXRpYyBwZXJjZW50YWdlIG51bWJlciBiYXNlZCBvbiB0aGUgZ3Vlc3QgbWVtb3J5LiBYJSBv
+ZiB0aGUgZ3Vlc3QNCj4gbWVtb3J5IGlzIHVzZWQgZm9yIFNXSU9UTEIuDQo+IA0KPiBTaW5jZSB5
+b3UgdXNlIHNldl9hY3RpdmUoKSwgaXQgbWVhbnMgdGhlIHNpemUgY29tcHV0YXRpb24gaXMgZG9u
+ZSBpbiB0aGUNCj4gZ3Vlc3Qgc28gdGhhdCBTV0lPVExCIHNpemUgaXMgcGVyLWd1ZXN0LiBZZXM/
+DQoNClllcw0KDQo+IA0KPiBJZiBzbywgeW91IGNhbiBzaW1wbHkgdGFrZSwgc2F5LCA1JSBvZiB0
+aGUgZ3Vlc3QgbWVtb3J5J3Mgc2l6ZSBhbmQgdXNlDQo+IHRoYXQgZm9yIFNXSU9UTEIgYnVmZmVy
+cy4gT3IgNiBvciBYIG9yIHdoYXRldmVyLg0KPiANCj4gTWFrZXMgc2Vuc2U/DQoNClN1cmUgaXQg
+ZG9lcy4NCg0KVGhhbmtzLA0KQXNoaXNoDQoNCj4gDQo+IC0tIA0KPiBSZWdhcmRzL0dydXNzLA0K
+PiAgICBCb3Jpcy4NCj4gDQo+IGh0dHBzOi8vbmFtMTEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0
+bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRnBlb3BsZS5rZXJuZWwub3JnJTJGdGdseCUyRm5v
+dGVzLWFib3V0LW5ldGlxdWV0dGUmYW1wO2RhdGE9MDQlN0MwMSU3Q0FzaGlzaC5LYWxyYSU0MGFt
+ZC5jb20lN0M5MWI2MTFiMjFkMzA0OWQ3MGNhOTA4ZDg5MDVjYmMzNyU3QzNkZDg5NjFmZTQ4ODRl
+NjA4ZTExYTgyZDk5NGUxODNkJTdDMCU3QzAlN0M2Mzc0MTgwNzUyODQwMDA1NjQlN0NVbmtub3du
+JTdDVFdGcGJHWnNiM2Q4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRp
+STZJazFoYVd3aUxDSlhWQ0k2TW4wJTNEJTdDMTAwMCZhbXA7c2RhdGE9SnZuVWZza3lkOXhkc2Fs
+NG9Za1NZVzVvdUwyYjRjcyUyRm8yb1lpOUtya0ZvJTNEJmFtcDtyZXNlcnZlZD0wDQo=
