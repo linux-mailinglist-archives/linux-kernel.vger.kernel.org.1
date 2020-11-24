@@ -2,128 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245872C1E79
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E3A2C1E7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 07:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgKXGrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 01:47:21 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:40153 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbgKXGrU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:47:20 -0500
-Received: by mail-lf1-f67.google.com with SMTP id u19so27339673lfr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Nov 2020 22:47:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u6LcphN4XkDLcsn8hay0h32xdd4qM6MYpk7sHtxRIBg=;
-        b=jndjuSe0F96dc6LSsm7BKFAb5Dx/y0safPt5jyoztXMDi5UMs35BPAJU4utC+3AxY+
-         sUPPFaUU3fw+RQXcS4k1gWwq8MC0LSfvk8sXewL06BCa1+jzp/S2JU9HmG5OCzV59t/z
-         2yw8RKi3rVoCvJYf4HBJxN5q5flr4XCJUyi2oUStPc9g7pIHf9KsInB+TNS/HE2qyf2n
-         8YPOPindgOKIisBRGNkre4a+7vyl1mG/oW8je3Wpzb8rARuoqr9kWseNeomEGFma7/wF
-         lG9mEQS+8H2iVypXdJlQVKt2EzfsSjASweXPhkficyTj2n/DnHVRui6YjDPKuMlkrT+Q
-         deOA==
-X-Gm-Message-State: AOAM530NPnQtCiVnIqHKKj2+mfYBoulSiLT5fHCLRGUBqW/K6jCF0d+R
-        wVQZC2eB6fGf64GWlyWoDHT6pS8Bgyl67ilZb3E=
-X-Google-Smtp-Source: ABdhPJzzrchgcHePau04lT7xs8o+gsydCGPlcri8tG0Jz/3UKa2S+8qsI/aPMddvrXxmxDtaVEce7TO4cnZ25lBI40A=
-X-Received: by 2002:a19:197:: with SMTP id 145mr1043816lfb.483.1606200438381;
- Mon, 23 Nov 2020 22:47:18 -0800 (PST)
+        id S1729836AbgKXGtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 01:49:32 -0500
+Received: from mail-eopbgr30070.outbound.protection.outlook.com ([40.107.3.70]:24099
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725786AbgKXGtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:49:31 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i+3om4+Ia4B++BpcNkGX/r9O4pIQi+Ctr/GGOkZ0fh2q02TxJL1HarUedJ9vQoncMvUvqlwYV2SBjF+zavqLUZ+RWGCP2lhhBRDMmiscT8kUHVCLRxSxeAu4s2eyNozzfWZmj0Mcz5Pz2F5G7Zpqn+l/PWrtbR5k0f+id9H9wNJOsYcsk31FkFZvWzajdI4WOjDc8Vai1/FKfuvwtiBdh+/ZypUWwmlOhvhiBLy/brVaeJbGPyQJNTpZMzclpH6wAiK0gPQmIh5BselXt8wAuGEam2Vkv3VsebivODUn7WLKfiflU4DvdY+p6kkYdoaJ1s/QTkaMVVzkYLBLGIA4SQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J5ZLoOxvx4T+WIUQDNJdUUtFmEwVgMIcNCMb7S4Sdm8=;
+ b=lh7e3nlniojbk+IDcpsG+eZHA30NNbjYm+X1xaF80dN1T6ZxTMHP964rbFH3CXAQjTWpA5yoz1AFScl4+IS0iunypc1TkGe8kSR4BGMBhD5o9t6CoxHmHgBu3fQkSeSSeOhAJNS99m8ihC2u6mlRFVEIVxt+0IzwjsnwV0MINz/ZMkPLKsss+ofklotNFI/hzhzVCfLOKDW3U0PwkrTgg83mUEB1y0UxqnlOIn9sEP1ZcnwZTZ94925auMSy0r5/Zgiwg7Rw+5CYltnP46H/p1KMM5y5ekzT1aBgtGXI/ML2bKW3mISAh7GWpWVidIc14kWUpoN8CRLqZaOh+l5Vuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J5ZLoOxvx4T+WIUQDNJdUUtFmEwVgMIcNCMb7S4Sdm8=;
+ b=jGZuQcRAXx9yhQjW4ZB1C9p4AyedagYnOQRTIo4SbamCb61xoNRPPADQ0O146i8NHURNaJWM1yU9+xPmSU0aJJIQtN6awOfMBuHWC5gCjEtU+9MkNFWcX8wnOm5i3zhxfRxOUxtTiHGy2Txw08w5VZcqGrG9yASt4JE474nL5aI=
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
+ by DBBPR04MB7817.eurprd04.prod.outlook.com (2603:10a6:10:1ef::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 24 Nov
+ 2020 06:49:27 +0000
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 06:49:27 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Roger Quadros <rogerq@ti.com>
+CC:     "pawell@cadence.com" <pawell@cadence.com>,
+        "balbi@kernel.org" <balbi@kernel.org>, "nm@ti.com" <nm@ti.com>,
+        "nsekhar@ti.com" <nsekhar@ti.com>,
+        "a-govindraju@ti.com" <a-govindraju@ti.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: cdns3: fix NULL pointer dereference on no platform
+ data
+Thread-Topic: [PATCH] usb: cdns3: fix NULL pointer dereference on no platform
+ data
+Thread-Index: AQHWwYZZgRghacfihUSnukQUanlqQqnW2K+A
+Date:   Tue, 24 Nov 2020 06:49:27 +0000
+Message-ID: <20201124064851.GB32310@b29397-desktop>
+References: <20201123104931.2653-1-rogerq@ti.com>
+In-Reply-To: <20201123104931.2653-1-rogerq@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 209b05af-c73d-4057-ba3c-08d89045163d
+x-ms-traffictypediagnostic: DBBPR04MB7817:
+x-microsoft-antispam-prvs: <DBBPR04MB78177FE3C62EC8472E87D6C98BFB0@DBBPR04MB7817.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DiZl9Ug5PKiEPYP2gt21bKW5AetlTtFITJ8YPpwm8AlON4fFPig/HL2yC/08CMvw2RP0bbeSiJhlqG8H29yRfuy4CV47x4oBrNxYeyOL6LPtYI5V81e0XT4J8oHuA0oXXbJJ5VVhfr4mfpTHq0pizUJgc46kvefYZ8U8b0DKb4wnSX4Bu7HWhkANflmL32zPQlJMH7PiztcKrz5rnHQenFEc7D2FmD26amzhzLmx/vaZDo6ZSG87jiorKhvcS5o/pxrGvAsdoYyqVPN/nDjY2CdBOB+h3oeJghuXDxaKYLbNBXB4fj+sLQqQA50TV4AqrKd7H8XkqmxFHxoDEHxfAQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(376002)(396003)(136003)(366004)(39860400002)(346002)(83380400001)(33656002)(2906002)(8936002)(8676002)(6486002)(5660300002)(44832011)(9686003)(6512007)(316002)(86362001)(4326008)(6506007)(71200400001)(66446008)(186003)(54906003)(33716001)(76116006)(91956017)(26005)(66946007)(66556008)(478600001)(6916009)(66476007)(53546011)(1076003)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 0aGOQ1gNSAHuAu7QytKWKbrPzMa0r9fosKA188c8SZeBmn+dDNisJ9z3xd+cjRopJamxBfVUcqSldu1xieRIIv2BgnFhff0E1V58FEsGRnjIV2V/8ubCIgTKQNWELT649vJBuioifod91Al1OJha/53HjPqZSM/z7ofBoIw/Hmb1wsxyM/TERk019wzyN13oBFKhAqBNMZu7uQuAmklw8uRpn1zAnIj2m+hrnj2xxpadSoNuKZecJ3N123mRGmr7xrw1LiRctNPtWeMEtA/gBZyiQ9KuQwxgDXO2KHGS9GXpcgDK7ApXapjE3RP0BmN5le6+a9e3f+umvKpixmVOjk7QH2CQA5L2vHuh5a+LstONbTn8UQJjjE0NifiMXb/g7dM0f7MxNV+0y8/NCfAeqcclhknpqz7fJtTvzSuiLHFwebwlCh1dTJRLTLnw3fNOMPF5cuy562LzNUHlJY50gqp/BatgptJHDqMIRzVmEdxEXkBYdIZhtkG/abbIBVYcs7MKnpPl9vs+bsOg3YnTgoVLwJMq5vIeHANRFa7HKxLqCQMFKiIdRKscBEWGBs6kS4XN04iVu9ybDpLWNIOciRB8FvnIBCGFOSNLJ/BMdtUi0hiY3Fc974ZfiQ4ePpW3ey1hUh+vtXqEz/z9BTK9ZVlt6m/0WYEbx8U0Ea/AJlRHGbocPcAB2zGtdHnD376HvA8Awxq4nmuGBirismT1fv8g+5Ct7eau1OGWYEZHNAAvzyWCQMjoPxTBgj+UW6Hn2f80fNbTmO2ieDL4fA0sjhGJHylovKU/z2GXObewoj4Ar2v8naMGMQ3ZEW5HXBmD44+o7zOtNO0oND1e59eTrKaP/bCeTf7d2Pzb8I+ExyH7ufZnO4OONA2yEV76RWfEXat5lW5MUddLckk2sUkpkg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DD146DB8D5E3F24290E0B96BBE4E26F7@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201117195637.6499-1-kan.liang@linux.intel.com>
-In-Reply-To: <20201117195637.6499-1-kan.liang@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 24 Nov 2020 15:47:06 +0900
-Message-ID: <CAM9d7cjDQ8a2dACaShZikOTXnUFww_4dtJN8hB32RHOOvrsfyQ@mail.gmail.com>
-Subject: Re: [PATCH 00/12] Add the page size in the perf record (user tools)
-To:     Kan Liang <kan.liang@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>, will@kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 209b05af-c73d-4057-ba3c-08d89045163d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 06:49:27.2615
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1SZ4tJIFQtWyASmzAJBtkw+E+wN8AlcP25xU1cwSt2W/BA5rEfdZIeFH5ahHqLkqPpDOURyDPeRauaUU0FbwCg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7817
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 20-11-23 12:49:31, Roger Quadros wrote:
+> Some platforms (e.g. TI) will not have any platform data which will
+> lead to NULL pointer dereference if we don't check for NULL pdata.
+>=20
+> Fixes: a284b7fd1b8f ("usb: cdns3: add quirk for enable runtime pm by defa=
+ult")
+> Reported-by: Nishanth Menon <nm@ti.com>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  drivers/usb/cdns3/core.c | 2 +-
+>  drivers/usb/cdns3/host.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+> index 54d841aa626f..0f08aebce86d 100644
+> --- a/drivers/usb/cdns3/core.c
+> +++ b/drivers/usb/cdns3/core.c
+> @@ -559,7 +559,7 @@ static int cdns3_probe(struct platform_device *pdev)
+>  	device_set_wakeup_capable(dev, true);
+>  	pm_runtime_set_active(dev);
+>  	pm_runtime_enable(dev);
+> -	if (!(cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW))
+> +	if (!(cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_AL=
+LOW)))
+>  		pm_runtime_forbid(dev);
+> =20
+>  	/*
+> diff --git a/drivers/usb/cdns3/host.c b/drivers/usb/cdns3/host.c
+> index 08103785a17a..ec89f2e5430f 100644
+> --- a/drivers/usb/cdns3/host.c
+> +++ b/drivers/usb/cdns3/host.c
+> @@ -59,7 +59,7 @@ static int __cdns3_host_init(struct cdns3 *cdns)
+>  		goto err1;
+>  	}
+> =20
+> -	if (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW)
+> +	if (cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLO=
+W))
+>  		cdns->xhci_plat_data->quirks |=3D XHCI_DEFAULT_PM_RUNTIME_ALLOW;
+> =20
+>  	ret =3D platform_device_add_data(xhci, cdns->xhci_plat_data,
 
-On Wed, Nov 18, 2020 at 4:57 AM <kan.liang@linux.intel.com> wrote:
->
-> From: Kan Liang <kan.liang@linux.intel.com>
->
-> Current perf can report both virtual addresses and physical addresses,
-> but not the page size. Without the page size information of the utilized
-> page, users cannot decide whether to promote/demote large pages to
-> optimize memory usage.
->
-> The kernel patches have been merged into tip perf/core branch,
-> commit 8d97e71811aa ("perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE")
-> commit 76a5433f95f3 ("perf/x86/intel: Support PERF_SAMPLE_DATA_PAGE_SIZE")
-> commit 4cb6a42e4c4b ("powerpc/perf: Support PERF_SAMPLE_DATA_PAGE_SIZE")
-> commit 995f088efebe ("perf/core: Add support for PERF_SAMPLE_CODE_PAGE_SIZE")
-> commit 51b646b2d9f8 ("perf,mm: Handle non-page-table-aligned hugetlbfs")
->
-> and Peter's perf/core branch
-> commit 524680ce47a1 ("mm/gup: Provide gup_get_pte() more generic")
-> commit 44a35d6937d2 ("mm: Introduce pXX_leaf_size()")
-> commit 2f1e2f091ad0 ("perf/core: Fix arch_perf_get_page_size()")
-> commit 7649e44aacdd ("arm64/mm: Implement pXX_leaf_size() support")
-> commit 1df1ae7e262c ("sparc64/mm: Implement pXX_leaf_size() support")
->
-> This patch set is to enable the page size support in user tools.
->
-> Kan Liang (8):
->   tools headers UAPI: Update tools's copy of linux/perf_event.h
->   perf record: Support new sample type for data page size
->   perf script: Support data page size
->   perf sort: Add sort option for data page size
->   perf mem: Factor out a function to generate sort order
->   perf mem: Clean up output format
->   perf mem: Support data page size
->   perf test: Add test case for PERF_SAMPLE_DATA_PAGE_SIZE
->
-> Stephane Eranian (4):
->   perf tools: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
->   perf script: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
->   perf report: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
->   perf test: Add test case for PERF_SAMPLE_CODE_PAGE_SIZE
+Thanks for fixing it, already applied to -next tree.
 
-For the patchset:
-
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+--=20
 
 Thanks,
-Namhyung
-
->
->  tools/include/uapi/linux/perf_event.h     |   6 +-
->  tools/perf/Documentation/perf-mem.txt     |   3 +
->  tools/perf/Documentation/perf-record.txt  |   6 +
->  tools/perf/Documentation/perf-report.txt  |   2 +
->  tools/perf/Documentation/perf-script.txt  |   5 +-
->  tools/perf/builtin-mem.c                  | 150 ++++++++++++----------
->  tools/perf/builtin-record.c               |   4 +
->  tools/perf/builtin-script.c               |  26 +++-
->  tools/perf/tests/sample-parsing.c         |  10 +-
->  tools/perf/util/event.h                   |   5 +
->  tools/perf/util/evsel.c                   |  18 +++
->  tools/perf/util/hist.c                    |   5 +
->  tools/perf/util/hist.h                    |   2 +
->  tools/perf/util/machine.c                 |   7 +-
->  tools/perf/util/map_symbol.h              |   1 +
->  tools/perf/util/perf_event_attr_fprintf.c |   2 +-
->  tools/perf/util/record.h                  |   2 +
->  tools/perf/util/session.c                 |  26 ++++
->  tools/perf/util/sort.c                    |  56 ++++++++
->  tools/perf/util/sort.h                    |   3 +
->  tools/perf/util/synthetic-events.c        |  16 +++
->  21 files changed, 278 insertions(+), 77 deletions(-)
->
-> --
-> 2.17.1
->
+Peter Chen=
