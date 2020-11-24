@@ -2,82 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A7F2C2AE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106E42C2AE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 16:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389084AbgKXPHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 10:07:42 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:11010 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389592AbgKXPHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 10:07:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606230460; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=CQE5ufHjtN/HwwZQ6dfn1CRRN+SBia1nMPaNnSfSMcY=;
- b=LJ5aJSr1LX3sHI2lKUo0l4WuoLlmTczHeGpEvEilbWzvd5w0HSdnMTVMbDifGVebTh8x0nBe
- F2jwVUOcTMCFlkXNr454dZhMMnViUDTL3MlPTAJAyTquAKGj3WBQ/3Xz5RLkZYw1pQHtQZ1q
- JlWWBqXzqZqX38A102EAUP7cPXY=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5fbd21b777b63cdb34180f1b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Nov 2020 15:07:35
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 80599C43465; Tue, 24 Nov 2020 15:07:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AB763C433C6;
-        Tue, 24 Nov 2020 15:07:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AB763C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S2389438AbgKXPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 10:08:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730652AbgKXPIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:08:12 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA742C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:08:12 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id t13so19594992ilp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 07:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r5qcW9ZXrahOoGbKYeEJFPOEUEWd/O3nxqANQBNIE0M=;
+        b=COcZddyGRFbxsnrE6pdqv+FyavZOSwf2z30PwU8oZh/gfgiTrwFT2WVkAM0WTBufqw
+         2mkxZmlqLM+w1i0xYGsCnFs8bu3pgM/eDJap++UmF08viu0HqZOBaXcxPjf/u7fOepQQ
+         jgHdGShVECfC2gXYiUqLJwxuNgmXvfskodySE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r5qcW9ZXrahOoGbKYeEJFPOEUEWd/O3nxqANQBNIE0M=;
+        b=m8Z4RDCTglk2EGfI2MteOFR8/2Nt9umQHRBKUPgnlWOKqB/WHxgWxQizfrCd7pwzLb
+         pdPy+BjQWOIrN3PMHan2Lf+1Ld5K2JMvjIBoaLPMGmL28lE8xOoD/1XEyYZ6e/mAIzjl
+         XknUORbFL7MZkq24RrKRbuckjFMrJzoBAwQtwmrGNBPYh+QrIguOAV7VczWKBzJKyFxy
+         Ql+BP3sNQ7TsPAJRxStpWt+3C5FVONnPzl0D9rZQDcSH1zchk1FiwAzHdKsYTaE9zM5o
+         DVdFmh/QXsuslmFQu/Hp9P7hucuE7t6t5gczp0vhOFOaGfqhTX7tIHl3rGQPmczvme7f
+         WnmQ==
+X-Gm-Message-State: AOAM531hEzu4fCY1zyKtirskKxOznxt2kUCD4uk9neOzZ90Xca6TkcJn
+        68XGkvoeW2ppdk1xzXEagi9jMistbFRamY0QjunCeg==
+X-Google-Smtp-Source: ABdhPJzQIxPhPY9UU+ROP7Owv6HkgD7xX3z20SHVTgSQ7hVbrLDk5OMU7T6V1onRU/jGjNtV9FNeHOlQD5CvTfRrr/M=
+X-Received: by 2002:a92:c648:: with SMTP id 8mr4893653ill.176.1606230491997;
+ Tue, 24 Nov 2020 07:08:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] mwifiex: Remove duplicated REG_PORT definition
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201119101204.72fd5f0a@xhacker.debian>
-References: <20201119101204.72fd5f0a@xhacker.debian>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201124150735.80599C43465@smtp.codeaurora.org>
-Date:   Tue, 24 Nov 2020 15:07:35 +0000 (UTC)
+References: <20201117232003.3580179-1-joel@joelfernandes.org> <CAKfTPtCWPL9=5crDT8LxQh6RrEi3cbwwTAy7GK2qG83JkiLVgg@mail.gmail.com>
+In-Reply-To: <CAKfTPtCWPL9=5crDT8LxQh6RrEi3cbwwTAy7GK2qG83JkiLVgg@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 24 Nov 2020 10:08:01 -0500
+Message-ID: <CAEXW_YR2Tr=vVcbuChzxDGN3JwtTD1Oy9KcbuCsPRDmd_bx6iw@mail.gmail.com>
+Subject: Re: [PATCH -tip 00/32] Core scheduling (v9)
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        Alexander Graf <graf@amazon.com>, konrad.wilk@oracle.com,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        OWeisse@umich.edu, Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+On Tue, Nov 24, 2020 at 6:48 AM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> Hi Joel,
+>
+> On Wed, 18 Nov 2020 at 00:20, Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > Core-Scheduling
+> > ===============
+> > Enclosed is series v9 of core scheduling.
+> > v9 is rebased on tip/master (fe4adf6f92c4 ("Merge branch 'irq/core'"))..
+> > I hope that this version is acceptable to be merged (pending any new review
+>
+> ./scripts/get_maintainer.pl is quite useful to make sure that all
+> maintainers are cced and helps a lot to get some reviews
 
-> The REG_PORT is defined twice, so remove one of them.
-> 
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Apologies. I was just going by folks who were CC'd on previous series.
+I am new to doing this series's postings.  Sorry if I missed you and
+will run get_maintainers henceforth!
 
-Patch applied to wireless-drivers-next.git, thanks.
+ - Joel
 
-3c72d3843e22 mwifiex: Remove duplicated REG_PORT definition
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201119101204.72fd5f0a@xhacker.debian/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+> > comments that arise) as the main issues in the past are all resolved:
+> >  1. Vruntime comparison.
+> >  2. Documentation updates.
+> >  3. CGroup and per-task interface developed by Google and Oracle.
+> >  4. Hotplug fixes.
+> > Almost all patches also have Reviewed-by or Acked-by tag. See below for full
+> > list of changes in v9.
+> >
+> > Introduction of feature
+> > =======================
+> > Core scheduling is a feature that allows only trusted tasks to run
+> > concurrently on cpus sharing compute resources (eg: hyperthreads on a
+> > core). The goal is to mitigate the core-level side-channel attacks
+> > without requiring to disable SMT (which has a significant impact on
+> > performance in some situations). Core scheduling (as of v7) mitigates
+> > user-space to user-space attacks and user to kernel attack when one of
+> > the siblings enters the kernel via interrupts or system call.
+> >
+> > By default, the feature doesn't change any of the current scheduler
+> > behavior. The user decides which tasks can run simultaneously on the
+> > same core (for now by having them in the same tagged cgroup). When a tag
+> > is enabled in a cgroup and a task from that cgroup is running on a
+> > hardware thread, the scheduler ensures that only idle or trusted tasks
+> > run on the other sibling(s). Besides security concerns, this feature can
+> > also be beneficial for RT and performance applications where we want to
+> > control how tasks make use of SMT dynamically.
+> >
+> > Both a CGroup and Per-task interface via prctl(2) are provided for configuring
+> > core sharing. More details are provided in documentation patch.  Kselftests are
+> > provided to verify the correctness/rules of the interface.
+> >
+> > Testing
+> > =======
+> > ChromeOS testing shows 300% improvement in keypress latency on a Google
+> > docs key press with Google hangout test (the maximum latency drops from 150ms
+> > to 50ms for keypresses).
+> >
+> > Julien: TPCC tests showed improvements with core-scheduling as below. With kernel
+> > protection enabled, it does not show any regression. Possibly ASI will improve
+> > the performance for those who choose kernel protection (can be toggled through
+> > sched_core_protect_kernel sysctl).
+> >                                 average         stdev           diff
+> > baseline (SMT on)               1197.272        44.78312824
+> > core sched (   kernel protect)  412.9895        45.42734343     -65.51%
+> > core sched (no kernel protect)  686.6515        71.77756931     -42.65%
+> > nosmt                           408.667         39.39042872     -65.87%
+> > (Note these results are from v8).
+> >
+> > Vineeth tested sysbench and does not see any regressions.
+> > Hong and Aubrey tested v9 and see results similar to v8. There is a known issue
+> > with uperf that does regress. This appears to be because of ksoftirq heavily
+> > contending with other tasks on the core. The consensus is this can be improved
+> > in the future.
+> >
+> > Changes in v9
+> > =============
+> > - Note that the vruntime snapshot change is written in 2 patches to show the
+> >   progression of the idea and prevent merge conflicts:
+> >     sched/fair: Snapshot the min_vruntime of CPUs on force idle
+> >     sched: Improve snapshotting of min_vruntime for CGroups
+> >   Same with the RT priority inversion change:
+> >     sched: Fix priority inversion of cookied task with sibling
+> >     sched: Improve snapshotting of min_vruntime for CGroups
+> > - Disable coresched on certain AMD HW.
+> >
+> > Changes in v8
+> > =============
+> > - New interface/API implementation
+> >   - Joel
+> > - Revised kernel protection patch
+> >   - Joel
+> > - Revised Hotplug fixes
+> >   - Joel
+> > - Minor bug fixes and address review comments
+> >   - Vineeth
+> >
+> > Changes in v7
+> > =============
+> > - Kernel protection from untrusted usermode tasks
+> >   - Joel, Vineeth
+> > - Fix for hotplug crashes and hangs
+> >   - Joel, Vineeth
+> >
+> > Changes in v6
+> > =============
+> > - Documentation
+> >   - Joel
+> > - Pause siblings on entering nmi/irq/softirq
+> >   - Joel, Vineeth
+> > - Fix for RCU crash
+> >   - Joel
+> > - Fix for a crash in pick_next_task
+> >   - Yu Chen, Vineeth
+> > - Minor re-write of core-wide vruntime comparison
+> >   - Aaron Lu
+> > - Cleanup: Address Review comments
+> > - Cleanup: Remove hotplug support (for now)
+> > - Build fixes: 32 bit, SMT=n, AUTOGROUP=n etc
+> >   - Joel, Vineeth
+> >
+> > Changes in v5
+> > =============
+> > - Fixes for cgroup/process tagging during corner cases like cgroup
+> >   destroy, task moving across cgroups etc
+> >   - Tim Chen
+> > - Coresched aware task migrations
+> >   - Aubrey Li
+> > - Other minor stability fixes.
+> >
+> > Changes in v4
+> > =============
+> > - Implement a core wide min_vruntime for vruntime comparison of tasks
+> >   across cpus in a core.
+> >   - Aaron Lu
+> > - Fixes a typo bug in setting the forced_idle cpu.
+> >   - Aaron Lu
+> >
+> > Changes in v3
+> > =============
+> > - Fixes the issue of sibling picking up an incompatible task
+> >   - Aaron Lu
+> >   - Vineeth Pillai
+> >   - Julien Desfossez
+> > - Fixes the issue of starving threads due to forced idle
+> >   - Peter Zijlstra
+> > - Fixes the refcounting issue when deleting a cgroup with tag
+> >   - Julien Desfossez
+> > - Fixes a crash during cpu offline/online with coresched enabled
+> >   - Vineeth Pillai
+> > - Fixes a comparison logic issue in sched_core_find
+> >   - Aaron Lu
+> >
+> > Changes in v2
+> > =============
+> > - Fixes for couple of NULL pointer dereference crashes
+> >   - Subhra Mazumdar
+> >   - Tim Chen
+> > - Improves priority comparison logic for process in different cpus
+> >   - Peter Zijlstra
+> >   - Aaron Lu
+> > - Fixes a hard lockup in rq locking
+> >   - Vineeth Pillai
+> >   - Julien Desfossez
+> > - Fixes a performance issue seen on IO heavy workloads
+> >   - Vineeth Pillai
+> >   - Julien Desfossez
+> > - Fix for 32bit build
+> >   - Aubrey Li
+> >
+> > Future work
+> > ===========
+> > - Load balancing/Migration fixes for core scheduling.
+> >   With v6, Load balancing is partially coresched aware, but has some
+> >   issues w.r.t process/taskgroup weights:
+> >   https://lwn.net/ml/linux-kernel/20200225034438.GA617271@z...
+> >
+> > Aubrey Li (1):
+> > sched: migration changes for core scheduling
+> >
+> > Joel Fernandes (Google) (16):
+> > sched/fair: Snapshot the min_vruntime of CPUs on force idle
+> > sched: Enqueue task into core queue only after vruntime is updated
+> > sched: Simplify the core pick loop for optimized case
+> > sched: Improve snapshotting of min_vruntime for CGroups
+> > arch/x86: Add a new TIF flag for untrusted tasks
+> > kernel/entry: Add support for core-wide protection of kernel-mode
+> > entry/idle: Enter and exit kernel protection during idle entry and
+> > exit
+> > sched: Split the cookie and setup per-task cookie on fork
+> > sched: Add a per-thread core scheduling interface
+> > sched: Release references to the per-task cookie on exit
+> > sched/debug: Add CGroup node for printing group cookie if SCHED_DEBUG
+> > kselftest: Add tests for core-sched interface
+> > sched: Move core-scheduler interfacing code to a new file
+> > Documentation: Add core scheduling documentation
+> > sched: Add a coresched command line option
+> > sched: Debug bits...
+> >
+> > Josh Don (2):
+> > sched: Refactor core cookie into struct
+> > sched: Add a second-level tag for nested CGroup usecase
+> >
+> > Peter Zijlstra (11):
+> > sched: Wrap rq::lock access
+> > sched: Introduce sched_class::pick_task()
+> > sched/fair: Fix pick_task_fair crashes due to empty rbtree
+> > sched: Core-wide rq->lock
+> > sched/fair: Add a few assertions
+> > sched: Basic tracking of matching tasks
+> > sched: Add core wide task selection and scheduling.
+> > sched: Fix priority inversion of cookied task with sibling
+> > sched: Trivial forced-newidle balancer
+> > irq_work: Cleanup
+> > sched: CGroup tagging interface for core scheduling
+> >
+> > Vineeth Pillai (2):
+> > sched/fair: Fix forced idle sibling starvation corner case
+> > entry/kvm: Protect the kernel when entering from guest
+> >
+> > .../admin-guide/hw-vuln/core-scheduling.rst   |  330 +++++
+> > Documentation/admin-guide/hw-vuln/index.rst   |    1 +
+> > .../admin-guide/kernel-parameters.txt         |   25 +
+> > arch/x86/include/asm/thread_info.h            |    2 +
+> > arch/x86/kernel/cpu/bugs.c                    |   19 +
+> > arch/x86/kvm/x86.c                            |    2 +
+> > drivers/gpu/drm/i915/i915_request.c           |    4 +-
+> > include/linux/cpu.h                           |    1 +
+> > include/linux/entry-common.h                  |   30 +-
+> > include/linux/entry-kvm.h                     |   12 +
+> > include/linux/irq_work.h                      |   33 +-
+> > include/linux/irqflags.h                      |    4 +-
+> > include/linux/sched.h                         |   28 +-
+> > include/linux/sched/smt.h                     |    4 +
+> > include/uapi/linux/prctl.h                    |    3 +
+> > kernel/Kconfig.preempt                        |    5 +
+> > kernel/bpf/stackmap.c                         |    2 +-
+> > kernel/cpu.c                                  |   43 +
+> > kernel/entry/common.c                         |   28 +-
+> > kernel/entry/kvm.c                            |   33 +
+> > kernel/fork.c                                 |    1 +
+> > kernel/irq_work.c                             |   18 +-
+> > kernel/printk/printk.c                        |    6 +-
+> > kernel/rcu/tree.c                             |    3 +-
+> > kernel/sched/Makefile                         |    1 +
+> > kernel/sched/core.c                           | 1278 +++++++++++++++--
+> > kernel/sched/coretag.c                        |  819 +++++++++++
+> > kernel/sched/cpuacct.c                        |   12 +-
+> > kernel/sched/deadline.c                       |   38 +-
+> > kernel/sched/debug.c                          |   12 +-
+> > kernel/sched/fair.c                           |  313 +++-
+> > kernel/sched/idle.c                           |   24 +-
+> > kernel/sched/pelt.h                           |    2 +-
+> > kernel/sched/rt.c                             |   31 +-
+> > kernel/sched/sched.h                          |  315 +++-
+> > kernel/sched/stop_task.c                      |   14 +-
+> > kernel/sched/topology.c                       |    4 +-
+> > kernel/sys.c                                  |    3 +
+> > kernel/time/tick-sched.c                      |    6 +-
+> > kernel/trace/bpf_trace.c                      |    2 +-
+> > tools/include/uapi/linux/prctl.h              |    3 +
+> > tools/testing/selftests/sched/.gitignore      |    1 +
+> > tools/testing/selftests/sched/Makefile        |   14 +
+> > tools/testing/selftests/sched/config          |    1 +
+> > .../testing/selftests/sched/test_coresched.c  |  818 +++++++++++
+> > 45 files changed, 4033 insertions(+), 315 deletions(-)
+> > create mode 100644 Documentation/admin-guide/hw-vuln/core-scheduling.rst
+> > create mode 100644 kernel/sched/coretag.c
+> > create mode 100644 tools/testing/selftests/sched/.gitignore
+> > create mode 100644 tools/testing/selftests/sched/Makefile
+> > create mode 100644 tools/testing/selftests/sched/config
+> > create mode 100644 tools/testing/selftests/sched/test_coresched.c
+> >
+> > --
+> > 2.29.2.299.gdc1121823c-goog
+> >
