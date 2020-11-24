@@ -2,66 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDE32C20DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99D12C20DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 10:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731073AbgKXJEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 04:04:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731063AbgKXJEd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:04:33 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46658C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 01:04:33 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e3600a9cb1df0e98d070c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3600:a9cb:1df0:e98d:70c])
+        id S1731084AbgKXJFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 04:05:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731020AbgKXJFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:05:00 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C6C931EC0411;
-        Tue, 24 Nov 2020 10:04:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606208671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6kMx6CvQEut1O2ATzEvOMdVThQx+i717xnGHX3Jg8qU=;
-        b=XI3UpvuFRjCdrLWhgf7EC4LKLXAmctWaSMFnpzgoAUsi1xoMswvJ8RtUPwbcOUrprHIIgD
-        35WAvbpYz/L50dZlnAX612/D34ep//wdmN4XdIi6pSsoHmEXlFt6ySwUKRWGY7ns88EGCn
-        /UPxQZDHcjSGVgr0bgrr/v86OSDlFbM=
-Date:   Tue, 24 Nov 2020 10:04:31 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, hch@lst.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
-        dave.hansen@linux-intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
-        Thomas.Lendacky@amd.com, jon.grimm@amd.com, rientjes@google.com
-Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Message-ID: <20201124090431.GC4009@zn.tnic>
-References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
- <20201123170647.GE15044@zn.tnic>
- <20201123175632.GA21539@char.us.oracle.com>
- <20201123225631.GA16055@ashkalra_ubuntu_server>
+        by mail.kernel.org (Postfix) with ESMTPSA id B27A82075A;
+        Tue, 24 Nov 2020 09:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606208699;
+        bh=4dd2MKJS6YNqUDm2WfT0Eu4BA+fK0d9nlPFSmVAq7GY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VXXFrd6sYgV0FGjunKo/ajZ40yGekO24Gi7WxGW9SzG9TnexvSCBR/WMuglY2+msF
+         MMltO5oe/o8yrwATRTrpb6cskzP2RWV9wFzKZAjVD1peSe7W/gW3iTjgb4bTVqmUNR
+         YmMs8gsuNfPW+1Ktf/0rTBtKM2RXdF8dhvsQn3zM=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khUFt-00DC9a-CY; Tue, 24 Nov 2020 09:04:57 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201123225631.GA16055@ashkalra_ubuntu_server>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 09:04:57 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianyong Wu <Jianyong.Wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, richardcochran@gmail.com,
+        Mark Rutland <Mark.Rutland@arm.com>, will@kernel.org,
+        Suzuki Poulose <Suzuki.Poulose@arm.com>,
+        Andre Przywara <Andre.Przywara@arm.com>,
+        Steven Price <Steven.Price@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve Capper <Steve.Capper@arm.com>,
+        Justin He <Justin.He@arm.com>, nd <nd@arm.com>
+Subject: Re: [PATCH v15 7/9] ptp: arm/arm64: Enable ptp_kvm for arm/arm64
+In-Reply-To: <HE1PR0802MB2555C5D09EA2BF0BA369BE37F4FB0@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+References: <20201111062211.33144-1-jianyong.wu@arm.com>
+ <20201111062211.33144-8-jianyong.wu@arm.com>
+ <7bd3a66253ca4b7adbe2294eb598a23f@kernel.org>
+ <HE1PR0802MB2555C5D09EA2BF0BA369BE37F4FB0@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <5dc5480d125ace6566ae616206c3ce3f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: Jianyong.Wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, Suzuki.Poulose@arm.com, Andre.Przywara@arm.com, Steven.Price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, Justin.He@arm.com, nd@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:56:31PM +0000, Ashish Kalra wrote:
-> As i mentioned earlier, the patch was initially based on using a % of
-> guest memory,
+Jianyong,
 
-Can you figure out how much the guest memory is and then allocate a
-percentage?
+On 2020-11-24 05:37, Jianyong Wu wrote:
+> Hi Marc,
 
+[...]
+
+>> > +
+>> 	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_PTP_FU
+>> NC_ID,
+>> > +			     ARM_PTP_NONE_COUNTER, &hvc_res);
+>> 
+>> I really don't see the need to use a non-architectural counter ID.
+>> Using the virtual counter ID should just be fine, and shouldn't lead 
+>> to any
+>> issue.
+>> 
+> 
+>> Am I missing something?
+> 
+> In this function, no counter data is needed. If virtual counter ID is
+> used here, user may be confused with why we get virtual counter
+> data and do nothing with it. So I explicitly add a new "NONE" counter
+> ID to make it clear.
+> 
+> WDYT?
+
+ITIABI (I Think It's A Bad Idea). There are two counters, and the API
+allows to retrieve the data for any of these two. If the "user" doesn't
+want to do anything with the data, that's their problem.
+
+Here, you can just sue the virtual counter, and that will give you the
+exact same semantic, without inventing non-architectural state.
+
+Thanks,
+
+         M.
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jazz is not dead. It just smells funny...
