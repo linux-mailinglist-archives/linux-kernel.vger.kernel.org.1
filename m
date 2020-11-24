@@ -2,105 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0F02C3120
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6242C314A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 20:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgKXTpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 14:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727221AbgKXTow (ORCPT
+        id S1728143AbgKXTrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 14:47:10 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:51190 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728080AbgKXTrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 14:44:52 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D8BC08E860
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:44:50 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id z7so7732783wrn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 11:44:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LAMUF0M+5e5QxYGdyHTIO/CIT9L6gglBGUvPq+MzHBg=;
-        b=jzIcHL0eMMZm6DtlZ9fd+0W/Qjf5OD3r//36xPdi8sot0v4hYcjWBJGo5JsdiMAylp
-         59cVzB0oYdEJPt6mdkziyQpaCf9SGy3mSSb/GS6zD2UgphuNsEksk+mdbzN58DTfIKHq
-         EAOM2xRHO5Peg/72jxA8+vV69v1RYabIKSnergZZ0ZMBcl+60CIl9Iq3i0vVOQ24h4iG
-         GvSC+Xkk8n07CN7qKU+XEd44EJWCpmiRlNYWrlWHzqAYUhnJHcFSBkYV+/Ut8MP8+xxf
-         pr0QrRWs6YAUEhSh5t8ghtWxnO/bqpAlEyi4IUA21Oj2pQc67sOd7YpbMJx2fSqqXAju
-         XxXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LAMUF0M+5e5QxYGdyHTIO/CIT9L6gglBGUvPq+MzHBg=;
-        b=e2UIP3U2FXrOHNczDrxT8QpCxwOeHzETUNkZymoI1Pz4I+a0kID+Rr5fgDHhBIlsfK
-         vxeqHtkJdAG5mtl+nA7TNh+wJ/StVMxEf4tkTr0GC3/ETKqjxWPbUn8yJ0GYDGZ+4wdW
-         BJN7t4BwixaY/sLjnvJ4DthpMTUFGWLpW2z4r2+9XnWyu0R8auWL5299TIrvnCH1r05x
-         N4o8dWqEXpsrgZw9dZMpq4xq6pf4LAKuyVJcOPa1AeQbqGIiBr2uf2th7hQT0B1w+4Pe
-         soSjShvWH0YkHYP0IO11na3Y3bJf4C6AUHsLHPh1/15T2AWRtsvaDle11HM+X6/qqK7Y
-         1avA==
-X-Gm-Message-State: AOAM5300OkR2Vns0K9rhA6sFhhDyWaPDHayCYvjNhG2QPYsNuO8549iv
-        sFh7cWoXzJtOdVdXS6qwdMqYZQ==
-X-Google-Smtp-Source: ABdhPJwGpjx8U/47ZgWVIMjepZQiRgQQJIP/hnzr40LeSboZi3EXQzjARjAY1rA2rTYNNnVeMWqbpA==
-X-Received: by 2002:a5d:690c:: with SMTP id t12mr44599wru.405.1606247088972;
-        Tue, 24 Nov 2020 11:44:48 -0800 (PST)
-Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id d134sm200511wmd.8.2020.11.24.11.44.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 11:44:48 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 40/40] drm/amd/amdgpu/amdgpu_uvd: Add description for amdgpu_uvd_cs_msg_decode()'s 'buf_sizes' param
-Date:   Tue, 24 Nov 2020 19:38:24 +0000
-Message-Id: <20201124193824.1118741-41-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201124193824.1118741-1-lee.jones@linaro.org>
-References: <20201124193824.1118741-1-lee.jones@linaro.org>
+        Tue, 24 Nov 2020 14:47:00 -0500
+Received: from 89-64-86-188.dynamic.chello.pl (89.64.86.188) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
+ id cfed116c7623ef9d; Tue, 24 Nov 2020 20:46:51 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH v1 0/2] PM: ACPI: PCI: Address issues related to signaling wakeup from bridges
+Date:   Tue, 24 Nov 2020 20:41:44 +0100
+Message-ID: <27714988.CF3CpBaniU@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hi,
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:555: warning: Function parameter or member 'buf_sizes' not described in 'amdgpu_uvd_cs_msg_decode'
+These patches fix two problems related to wakeup signaling configuration for
+bridges.
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 1 +
- 1 file changed, 1 insertion(+)
+The first one is that wakeup signaling may be disabled prematurely for a
+bridge (patch [1/2]) and the second one is that device wakeup power
+configuration may need to be changed when enabling wakeup signaling for
+a bridge for the second (and every next) time in a row (patch [2/2]).
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-index f8f0384a8d9ad..7c5b60e534822 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-@@ -547,6 +547,7 @@ static int amdgpu_uvd_cs_pass1(struct amdgpu_uvd_cs_ctx *ctx)
-  *
-  * @adev: amdgpu_device pointer
-  * @msg: pointer to message structure
-+ * @buf_sizes: placeholder to put the different buffer lengths
-  *
-  * Peek into the decode message and calculate the necessary buffer sizes.
-  */
--- 
-2.25.1
+Please see patch changelogs for details.
+
+Thanks!
+
+
 
