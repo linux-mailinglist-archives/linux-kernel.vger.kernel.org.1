@@ -2,95 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F452C2DC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD592C2DD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Nov 2020 18:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390323AbgKXRHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 12:07:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390255AbgKXRHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 12:07:09 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7AAC061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:07:07 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id y10so7396750ljc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 09:07:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZBvHvzP+9o8/Uf4hbLg51E6jDSRQAkhWemb0Me9MezE=;
-        b=p8NsNIxBBnZy2eUEOISROXe3cZDJXTooL+7OKlBIBBEwerKvASfRv3Z+BalyhTTE0L
-         Nj6QKn3NM+qm7O7APifQO6dVMDhP1/9OH8Tq96BFAmoasRftP0/EkeahBcss/fA3kPVR
-         QtTsWBXLSNLzhcZRk1SypgtNdqpdhqOzwGAWwUrhBn+YL2ibEamP/Y0ezy3RPXPIpvjg
-         grGT3IqlE93NJCnv0vtc5O/8qyrXbPx4552Js/h956h21KJpdvb8nI0+5pPMQXFy6LU7
-         vCooPNZoJB2cEqLC3oZd60t+MzLUDoWirK6Uz1Rl6hBxNmre+p5ngKJqJ2PsqS2NdeLF
-         nrdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZBvHvzP+9o8/Uf4hbLg51E6jDSRQAkhWemb0Me9MezE=;
-        b=IqmSoGA/t4lBlp5CtIcMxYW7Kwta9ZK5H9ZY/VIQ/Vvff5HwyHcPe7WT2/c+4WONp+
-         OacbUVJsGpWWugnwnzH4be4umkL9rzbrBfIxxBKskzTN3bw5saDffqnr43DFhIKrBiPZ
-         UaNj++tloWw/9ATPpVoC0dOXXhP0ufHzLE/St1PmIRakLVTbwLd/x0POPQ981Dzw1z3s
-         C0IL6sF2gY2HnRxy8zGFbKfdkFFDu4Nmz9m2sZJW6W5lxl+ip31vsgZCx+ZO7FOMrvdr
-         FU+8A5pPz2Vzl+AaCpOKnh1rPzFeohS7IMI+GB2PG6g/MYqyUNmV7Y3gC7axeake09Y2
-         k5Ag==
-X-Gm-Message-State: AOAM533ARAlCHMbU4jpSGggVeogAZthP/d3BhRDvq0E2CPSOabngtWkr
-        HZHlKbd/pqdSQ/k0ZsoiCYIrPpGFKHcVYcxesG6QIw==
-X-Google-Smtp-Source: ABdhPJxIPTrFaAh9lpUZyV93kcGfCqDWjDKDo36A9pWmpafCk5awnNtM+yIUmG0jgOWTMiMoCiFR65TMaMdR8PG2L5o=
-X-Received: by 2002:a2e:9216:: with SMTP id k22mr2160034ljg.138.1606237625645;
- Tue, 24 Nov 2020 09:07:05 -0800 (PST)
+        id S2390454AbgKXRHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 12:07:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390345AbgKXRHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 12:07:24 -0500
+Received: from localhost (unknown [122.167.149.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5E7620715;
+        Tue, 24 Nov 2020 17:07:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606237643;
+        bh=3A0orJ4E1dOTRPI9W6zjPzDHp40NITzySDDGtNNr7cs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zlw8qdgPbwZ9c/V7USQ2d89jJoRbcqu4EwyQiifk/+TcMRCuJFhhm4Z9v62TVCocB
+         qJsy9XsnVpEOyGV4R223nXuyWcxMg1v9kPd2ZEi6HDiSTCl8FyEsAo8V5tOuz087/x
+         E29SlN4Ldm2yjdXv6jreo/kvEY1uZBLnsPtAvncE=
+Date:   Tue, 24 Nov 2020 22:37:19 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Jonathan McDowell <noodles@earth.li>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: dmaengine: Convert Qualcomm ADM bindings to
+ yaml
+Message-ID: <20201124170719.GQ8403@vkoul-mobl>
+References: <20201115181242.GA30004@earth.li>
 MIME-Version: 1.0
-References: <87lfer2c0b.fsf@oldenburg2.str.redhat.com> <20201124122639.x4zqtxwlpnvw7ycx@wittgenstein>
- <878saq3ofx.fsf@oldenburg2.str.redhat.com> <dcffcbacbc75086582ea3f073c9e6a981a6dd27f.camel@klomp.org>
- <20201124164546.GA14094@infradead.org>
-In-Reply-To: <20201124164546.GA14094@infradead.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 24 Nov 2020 18:06:38 +0100
-Message-ID: <CAG48ez2ZHPavVU3_2VnRADFQstOM1s+3GwfWsRaEjAA1jYcHDg@mail.gmail.com>
-Subject: Re: [PATCH] syscalls: Document OCI seccomp filter interactions & workaround
-To:     Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Cc:     Mark Wielaard <mark@klomp.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        dev@opencontainers.org, Jonathan Corbet <corbet@lwn.net>,
-        "Carlos O'Donell" <carlos@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115181242.GA30004@earth.li>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+seccomp maintainers/reviewers
-[thread context is at
-https://lore.kernel.org/linux-api/87lfer2c0b.fsf@oldenburg2.str.redhat.com/
-]
+On 15-11-20, 18:12, Jonathan McDowell wrote:
+> Converts the device tree bindings for the Qualcomm Application Data
+> Mover (ADM) DMA controller over to YAML schemas.
 
-On Tue, Nov 24, 2020 at 5:49 PM Christoph Hellwig <hch@infradead.org> wrote:
-> On Tue, Nov 24, 2020 at 03:08:05PM +0100, Mark Wielaard wrote:
-> > For valgrind the issue is statx which we try to use before falling back
-> > to stat64, fstatat or stat (depending on architecture, not all define
-> > all of these). The problem with these fallbacks is that under some
-> > containers (libseccomp versions) they might return EPERM instead of
-> > ENOSYS. This causes really obscure errors that are really hard to
-> > diagnose.
->
-> So find a way to detect these completely broken container run times
-> and refuse to run under them at all.  After all they've decided to
-> deliberately break the syscall ABI.  (and yes, we gave the the rope
-> to do that with seccomp :().
+Rob ?
 
-FWIW, if the consensus is that seccomp filters that return -EPERM by
-default are categorically wrong, I think it should be fairly easy to
-add a check to the seccomp core that detects whether the installed
-filter returns EPERM for some fixed unused syscall number and, if so,
-prints a warning to dmesg or something along those lines...
+> 
+> Signed-off-by: Jonathan McDowell <noodles@earth.li>
+> ---
+>  .../devicetree/bindings/dma/qcom,adm.yaml     | 102 ++++++++++++++++++
+>  .../devicetree/bindings/dma/qcom_adm.txt      |  61 -----------
+>  2 files changed, 102 insertions(+), 61 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/dma/qcom,adm.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/dma/qcom_adm.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/qcom,adm.yaml b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+> new file mode 100644
+> index 000000000000..353d85d3326d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+> @@ -0,0 +1,102 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/qcom,adm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: QCOM ADM DMA Controller
+> +
+> +maintainers:
+> +  - Jonathan McDowell <noodles@earth.li>
+> +
+> +description: |
+> +  QCOM Application Data Mover (ADM) DMA controller found in the MSM8x60
+> +  and IPQ/APQ8064 platforms.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: qcom,adm
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      Address range for DMA registers
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description:
+> +      Should contain one interrupt shared by all channels
+> +
+> +  "#dma-cells":
+> +    const: 2
+> +    description:
+> +      First cell denotes the channel number.  Second cell denotes CRCI
+> +      (client rate control interface) flow control assignment. If no
+> +      flow control is required, use 0.
+> +
+> +  clocks:
+> +    maxItems: 2
+> +    description:
+> +      Should contain the core clock and interface clock.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core
+> +      - const: iface
+> +
+> +  resets:
+> +    maxItems: 4
+> +    description:
+> +      Must contain an entry for each entry in reset names.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: clk
+> +      - const: c0
+> +      - const: c1
+> +      - const: c2
+> +
+> +  qcom,ee:
+> +    maxItems: 1
+> +    description:
+> +      Indicates the security domain identifier used in the secure world.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +required:
+> +  - "#dma-cells"
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - qcom,ee
+> +  - resets
+> +  - reset-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/reset/qcom,gcc-ipq806x.h>
+> +
+> +    adm_dma: dma@18300000 {
+> +             compatible = "qcom,adm";
+> +             reg = <0x18300000 0x100000>;
+> +             interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
+> +             #dma-cells = <2>;
+> +
+> +             clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
+> +             clock-names = "core", "iface";
+> +
+> +             resets = <&gcc ADM0_RESET>,
+> +                      <&gcc ADM0_C0_RESET>,
+> +                      <&gcc ADM0_C1_RESET>,
+> +                      <&gcc ADM0_C2_RESET>;
+> +             reset-names = "clk", "c0", "c1", "c2";
+> +             qcom,ee = <0>;
+> +    };
+> +
+> +...
+> diff --git a/Documentation/devicetree/bindings/dma/qcom_adm.txt b/Documentation/devicetree/bindings/dma/qcom_adm.txt
+> deleted file mode 100644
+> index 9d3b2f917b7b..000000000000
+> --- a/Documentation/devicetree/bindings/dma/qcom_adm.txt
+> +++ /dev/null
+> @@ -1,61 +0,0 @@
+> -QCOM ADM DMA Controller
+> -
+> -Required properties:
+> -- compatible: must contain "qcom,adm" for IPQ/APQ8064 and MSM8960
+> -- reg: Address range for DMA registers
+> -- interrupts: Should contain one interrupt shared by all channels
+> -- #dma-cells: must be <2>.  First cell denotes the channel number.  Second cell
+> -  denotes CRCI (client rate control interface) flow control assignment.
+> -- clocks: Should contain the core clock and interface clock.
+> -- clock-names: Must contain "core" for the core clock and "iface" for the
+> -  interface clock.
+> -- resets: Must contain an entry for each entry in reset names.
+> -- reset-names: Must include the following entries:
+> -  - clk
+> -  - c0
+> -  - c1
+> -  - c2
+> -- qcom,ee: indicates the security domain identifier used in the secure world.
+> -
+> -Example:
+> -		adm_dma: dma@18300000 {
+> -			compatible = "qcom,adm";
+> -			reg = <0x18300000 0x100000>;
+> -			interrupts = <0 170 0>;
+> -			#dma-cells = <2>;
+> -
+> -			clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
+> -			clock-names = "core", "iface";
+> -
+> -			resets = <&gcc ADM0_RESET>,
+> -				<&gcc ADM0_C0_RESET>,
+> -				<&gcc ADM0_C1_RESET>,
+> -				<&gcc ADM0_C2_RESET>;
+> -			reset-names = "clk", "c0", "c1", "c2";
+> -			qcom,ee = <0>;
+> -		};
+> -
+> -DMA clients must use the format descripted in the dma.txt file, using a three
+> -cell specifier for each channel.
+> -
+> -Each dmas request consists of 3 cells:
+> - 1. phandle pointing to the DMA controller
+> - 2. channel number
+> - 3. CRCI assignment, if applicable.  If no CRCI flow control is required, use 0.
+> -    The CRCI is used for flow control.  It identifies the peripheral device that
+> -    is the source/destination for the transferred data.
+> -
+> -Example:
+> -
+> -	spi4: spi@1a280000 {
+> -		spi-max-frequency = <50000000>;
+> -
+> -		pinctrl-0 = <&spi_pins>;
+> -		pinctrl-names = "default";
+> -
+> -		cs-gpios = <&qcom_pinmux 20 0>;
+> -
+> -		dmas = <&adm_dma 6 9>,
+> -			<&adm_dma 5 10>;
+> -		dma-names = "rx", "tx";
+> -	};
+> -- 
+> 2.29.2
+
+-- 
+~Vinod
