@@ -2,345 +2,923 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0920F2C379A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B86C2C379D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgKYDVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 22:21:50 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:48148 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726532AbgKYDVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 22:21:49 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AP3KBl7013934;
-        Tue, 24 Nov 2020 19:20:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=pfpt0220;
- bh=JmlDDgFD5V/E4vxIzz4pM6tRCjfleqwaAKG2KAcKtYM=;
- b=Y1EFoFrw0NDdL2aapeEA9O2VCCSSwM9zU6Nkg9SXQpuu9APKX2p/S9zSlDkzl4LDT6yZ
- HqQ08BvrUll2TGS5BmE8+JjpQOGegj+byzt7nhsKcR/HhQPK4xWDZeDytcsBdpmNeGT1
- KYEIf4NCuwIC3C65kCMOdy7N9MYI6iLJo8JifC7uLuElAp0eDPO847DXXkvCE2/pH++k
- IJOSr3cMILC2UwUXdSOyb9OLDnwcw22x2llMJ/iPkHI4lzwONp9ge/tE+EzXs6SDSLU/
- yUzkRDRH8X/5v+eSbn28dBXFjxv0LK1yAGr+CGPgD2k7fKqxi0PuQeSCtExr7kF/dB8N Gw== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 34y14ucsam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 24 Nov 2020 19:20:38 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Nov
- 2020 19:20:36 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Nov
- 2020 19:20:37 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.55) by
- SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 24 Nov 2020 19:20:36 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rghtfb/0DCZEhW4B2dHOQW4dlqugAa9ZMPZbsRdK4cKrIgE1rHxsRQ/1sRzZQUj2fiZ1YGIgGw7OMiE+zM1MsHuq3wIgRK+tvj1VcCdikYGZudkezEoxdFM5epAoHL0vijzh9a+xZBqJomQD3YPxGnrQrEhyJT+59jDbr3jmFucfqqFkh+Km0teG0THuUGkuB0sw3tql4YxojH8oCKzPH7YWfj9ZBYZqyTf0cezKPkmPXV/SA1U0AVuCTfkpf838iLBeKV9M4Fbl/4QMm7FKjOdyXb2uxm/L8p+KZKaIvnl7m7+W9AQ143Lyh4LWcaT+Ctk6CBRJfYXv4bTGsElHZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JmlDDgFD5V/E4vxIzz4pM6tRCjfleqwaAKG2KAcKtYM=;
- b=MpG9DF3Ng7u3dOpYVlJ8ngKA9Cm2s9oHNabG4Wru+ikdCW8RXM/CwwidjFTIx4AKA4C2X9LIJsGqGgT+WYAf1J6GirE+7jeXBYzJMFcTxjtVUzOzsiHTWAE/iu9Q/XASgHCv5M1K/CyK3RJLWZWJ4/czigwW8ZqK+9LHxmYsHPJqJIDMaq0T6giaLzyNO/AfsoSDsLSHTjBRZ8P306ekWVHRN61dsLlu4ADZBUb0/wtGL9jq/PXKiXwOhecRcmNu6vhIm61GGvB9XOEzByGo9a+X6FqGY3sF/HGe0Wp0n+zmCbJJ/bl3A94y1Zqxjt4TGlxCNtsjExF3baPAvZfqTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JmlDDgFD5V/E4vxIzz4pM6tRCjfleqwaAKG2KAcKtYM=;
- b=M2ndBrzAl3GOCUMh7yBqkALHQYDHmh9kqDC7Qiw5kB4vRj37VxHLop8MNiI92p065bBA7eaSSAsc0nrKhtzkw/bkJGJpm3um6C5DQ3BGk0D28Emb9G7qKIKq5JzwQxRAeuQX5u78Pkb2dXJ/Z73soyEJPRIiANX3ahTAQw+Vpko=
-Received: from MW2PR18MB2267.namprd18.prod.outlook.com (2603:10b6:907:3::11)
- by MWHPR18MB1440.namprd18.prod.outlook.com (2603:10b6:320:2c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Wed, 25 Nov
- 2020 03:20:35 +0000
-Received: from MW2PR18MB2267.namprd18.prod.outlook.com
- ([fe80::e17f:37fb:4eb3:c703]) by MW2PR18MB2267.namprd18.prod.outlook.com
- ([fe80::e17f:37fb:4eb3:c703%4]) with mapi id 15.20.3564.039; Wed, 25 Nov 2020
- 03:20:34 +0000
-From:   Alex Belits <abelits@marvell.com>
-To:     "frederic@kernel.org" <frederic@kernel.org>
-CC:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "nitesh@redhat.com" <nitesh@redhat.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH v5 9/9] task_isolation: kick_all_cpus_sync:
- don't kick isolated cpus
-Thread-Topic: [EXT] Re: [PATCH v5 9/9] task_isolation: kick_all_cpus_sync:
- don't kick isolated cpus
-Thread-Index: AQHWwcJHihlNClCxdEOODDjRi5wCaKnWTJeAgAAC64CAAAucAIAB1ToA
-Date:   Wed, 25 Nov 2020 03:20:34 +0000
-Message-ID: <45bb2800f2c966ed04ced8dfa85615c377fac4b2.camel@marvell.com>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
-         <3236b13f42679031960c5605be20664e90e75223.camel@marvell.com>
-         <20201123222907.GC1751@lothringen>
-         <c65ac23c1c408614110635c33eaf4ace98da4343.camel@marvell.com>
-         <20201123232106.GD1751@lothringen>
-In-Reply-To: <20201123232106.GD1751@lothringen>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [173.228.7.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 55ef8eb2-533d-4ede-c770-08d890f112b5
-x-ms-traffictypediagnostic: MWHPR18MB1440:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR18MB14409BDD234F8A4982FB9ECCBCFA0@MWHPR18MB1440.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B0byi0kQVG8Z+R5XExLn1lGCmWyT7IdrMdAAtstKnoT2oPnQKPv3tqPdXy2BzQP4YAZwrNuuOv8Rw39rZs+9pHRPUtibtZgJ3FYPt76/ay0HX4xYOqSFp/1/4ddbMw8eZNBpOlaaUDvIS8DDfTP8oUlpjbYlZDqrsKtb3pn3zE/uAVeQmflZepH5A21RFK2Wu/TuCIicag4MmJz9TiWzoKMx/vyPCtT3OPlcVs4FOGxpMZUuT2Zz6WYFvWeE9VBRnb5v4zARM991P124JaREMdy0NnFRoFO+BT5xMMrCY2rYpT/hW9LPA9T2pceV+VI8k8DmsRnByvz/ClOERXdfOg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR18MB2267.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39850400004)(396003)(6506007)(83380400001)(7416002)(4326008)(6486002)(6512007)(91956017)(36756003)(5660300002)(76116006)(66476007)(64756008)(66946007)(66556008)(66446008)(86362001)(186003)(26005)(478600001)(71200400001)(2616005)(316002)(54906003)(4001150100001)(2906002)(6916009)(8676002)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 4gvzcjKq4r5qQCylHcBxvSfgfiTFVF8LxUMCYWskBL1IYxGImcJRp1E+CkpEzn4utYa9c6rTFLmtF0YtDEp1LxsGBOIeZX7W3t+1csM6lOR+GuzJVw0uoNocReydcPX0OpcJ5z/GlTMihUHOM3T8RyHHu3p6xYTwoaZeoXMamBm8oHR3LfWAJEbDmVc9yqBVPX50uWZfixifHHz1N/ukdF5UmgPUVdP8Hid5C61SPV/UNh+NEFNxlrvmvs8wXudkEzgmNBtKAIjZL00tD+VISpYRAKFmbPRUPH18ufl20CYAvV1gO8ZpL52iUTKFkgWXSqfZlcmxYT9A3IXNKmVP3yY6o6BSWvAidc1UHYrYOXWPq6P6D6Bzyislk+tb6s8kSm6SPp/JqEI+hteTNP0TMbzNQZnkaUEPdludIXyKSgunLyCV3voyYZ2v9PALQOQjaWxW8m2aA57hdEvMZsrOtETRHYxPKYxQQwCUmKqbeJprpsror68lCD1QN9t0Eyh/X44RYtWIG4+1OIuvmj2fmvpx1soQ2E33viJr5OLRE2pT/pWBkmsbFK3/D5WNQod9lqQSVmXS0QUeaoTd7Us9Uo5xkbVTI2ubh28A1vg2CCzLDDGtNA+EdBQ27xRrW2GfDtLmYB41mSCdIGG9wGwW48wL2y/tj46VPJ0PF5CRptoS2vLyA0SjVFMO/ZTTw0VLYwIB6P0KeFv/ILVbpcgR0e0pc8kGfgcWTof7q0mW6rTK/dCqPEYVlYhVwItAKvuWjX6ZuPPYEW+DSNQXE/ABKjwA+NVTacI0g1EgeD5Bv/8Lkv0D1sv57tQgg6KzAavXUIu8NwKhz698B+aItbNizrZ1J8qFvpyRDfqnCBWlm/PxFlMzd1hVW2sWLRgDTSzP2BU4YS/0utqN0OOk1grC6g==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6B9838A204A0934595C222765B6BC2D1@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727285AbgKYDX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 22:23:56 -0500
+Received: from mga17.intel.com ([192.55.52.151]:53835 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726192AbgKYDXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 22:23:55 -0500
+IronPort-SDR: /SSBpchYlPrE5mwPooo1G8Ieq5k+Pemg/NIk43aj9Pq6dzjUYTXRQXuu+l8rWTPepVVOfkEv15
+ yuNzGciBZPUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151897260"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="151897260"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 19:23:55 -0800
+IronPort-SDR: 84H5cF1Mntxjwiet3HWrdE+yp6Th9khf03A0U4CUF1aNY/BJ/ZSFdEeT9ZZoYlhJXP9V/x0dZL
+ zhE0AkGwOGLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="332812495"
+Received: from host.sh.intel.com (HELO host) ([10.239.154.115])
+  by orsmga006.jf.intel.com with ESMTP; 24 Nov 2020 19:23:52 -0800
+Date:   Wed, 25 Nov 2020 11:24:51 +0800
+From:   "Ye, Xiang" <xiang.ye@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     jikos@kernel.org, jic23@kernel.org,
+        srinivas.pandruvada@linux.intel.com, linux-input@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] iio: hid-sensors: Add hinge sensor driver
+Message-ID: <20201125032451.GA18797@host>
+References: <20201119100331.2594-1-xiang.ye@intel.com>
+ <20201119100331.2594-5-xiang.ye@intel.com>
+ <20201121175629.057031af@archlinux>
+ <218c8869f799d701ddd5c22ce9524a765f43a0de.camel@intel.com>
+ <1de3727a37fe1d793b6146d9c19b101e32bb1c71.camel@intel.com>
+ <20201122141416.7f446793@archlinux>
+ <48fc6cd8b0ac0cc4c10aa1e677bdc293ad75476b.camel@intel.com>
+ <20201122165047.3ceae561@archlinux>
+ <20201124033050.GA14328@host>
+ <20201124113656.00006d40@Huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR18MB2267.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55ef8eb2-533d-4ede-c770-08d890f112b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 03:20:34.5307
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Vrk7gYZPmHhU5DNFtoSH5HrS+oyzfcJa7Ri2xtMDzdfTGOXATwsPWauLNOAzJqJXNiKq+O3LnJszUHcxSz8ujQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR18MB1440
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-24_11:2020-11-24,2020-11-24 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124113656.00006d40@Huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUdWUsIDIwMjAtMTEtMjQgYXQgMDA6MjEgKzAxMDAsIEZyZWRlcmljIFdlaXNiZWNrZXIg
-d3JvdGU6DQo+IE9uIE1vbiwgTm92IDIzLCAyMDIwIGF0IDEwOjM5OjM0UE0gKzAwMDAsIEFsZXgg
-QmVsaXRzIHdyb3RlOg0KPiA+IA0KPiA+IFRoaXMgaXMgZGlmZmVyZW50IGZyb20gdGltZXJzLiBU
-aGUgb3JpZ2luYWwgZGVzaWduIHdhcyBiYXNlZCBvbiB0aGUNCj4gPiBpZGVhIHRoYXQgZXZlcnkg
-Q1BVIHNob3VsZCBiZSBhYmxlIHRvIGVudGVyIGtlcm5lbCBhdCBhbnkgdGltZSBhbmQNCj4gPiBy
-dW4NCj4gPiBrZXJuZWwgY29kZSB3aXRoIG5vIGFkZGl0aW9uYWwgcHJlcGFyYXRpb24uIFRoZW4g
-dGhlIG9ubHkgc29sdXRpb24NCj4gPiBpcw0KPiA+IHRvIGFsd2F5cyBkbyBmdWxsIGJyb2FkY2Fz
-dCBhbmQgcmVxdWlyZSBhbGwgQ1BVcyB0byBwcm9jZXNzIGl0Lg0KPiA+IA0KPiA+IFdoYXQgSSBh
-bSB0cnlpbmcgdG8gaW50cm9kdWNlIGlzIHRoZSBpZGVhIG9mIENQVSB0aGF0IGlzIG5vdCBsaWtl
-bHkNCj4gPiB0bw0KPiA+IHJ1biBrZXJuZWwgY29kZSBhbnkgc29vbiwgYW5kIGNhbiBhZmZvcmQg
-dG8gZ28gdGhyb3VnaCBhbg0KPiA+IGFkZGl0aW9uYWwNCj4gPiBzeW5jaHJvbml6YXRpb24gcHJv
-Y2VkdXJlIG9uIHRoZSBuZXh0IGVudHJ5IGludG8ga2VybmVsLiBUaGUNCj4gPiBzeW5jaHJvbml6
-YXRpb24gaXMgbm90IHNraXBwZWQsIGl0IHNpbXBseSBoYXBwZW5zIGxhdGVyLCBlYXJseSBpbg0K
-PiA+IGtlcm5lbCBlbnRyeSBjb2RlLg0KPiANCj4gQWggSSBzZWUsIHRoaXMgaXMgb3JkZXJlZCB0
-aGF0IHdheToNCj4gDQo+IGxsX2lzb2xfZmxhZ3MgPSBJU09MQVRFRA0KPiANCj4gICAgICAgICAg
-Q1BVIDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENQVSAxDQo+ICAgICAtLS0tLS0t
-LS0tLS0tLS0tLS0gICAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLS0tLS0tDQo+ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8ga2VybmVsIGVudHJ5
-DQo+ICAgICBkYXRhX3RvX3N5bmMgPSAxICAgICAgICAgICAgICAgICAgICAgICAgbGxfaXNvbF9m
-bGFncyA9IElTT0xBVEVEX0JST0tFTg0KPiAgICAgc21wX21iKCkgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHNtcF9tYigpDQo+ICAgICBpZiBsbF9pc29sX2ZsYWdzKENQVSAxKSA9PSBJ
-U09MQVRFRCAgICAgUkVBRCBkYXRhX3RvX3N5bmMNCj4gICAgICAgICAgc21wX2NhbGwoQ1BVIDEp
-DQo+IA0KDQpUaGUgY2hlY2sgZm9yIGxsX2lzb2xfZmxhZ3MoQ1BVIDEpIGlzIHJldmVyc2VkLCBh
-bmQgaXQncyBhIGJpdCBtb3JlDQpjb21wbGV4LiBJbiB0ZXJtcyBvZiBzY2VuYXJpb3MsIG9uIGVu
-dHJ5IGZyb20gaXNvbGF0aW9uIHRoZSBmb2xsb3dpbmcNCmNhbiBoYXBwZW46DQoNCjEuIEtlcm5l
-bCBlbnRyeSBoYXBwZW5zIHNpbXVsdGFuZW91c2x5IHdpdGggb3BlcmF0aW9uIHRoYXQgcmVxdWly
-ZXMNCnN5bmNocm9uaXphdGlvbiwga2VybmVsIGVudHJ5IHByb2Nlc3NpbmcgaGFwcGVucyBiZWZv
-cmUgdGhlIGNoZWNrIGZvcg0KaXNvbGF0aW9uIG9uIHRoZSBzZW5kZXIgc2lkZToNCg0KbGxfaXNv
-bF9mbGFncyhDUFUgMSkgPSBJU09MQVRFRA0KDQogICAgICAgICBDUFUgMCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgQ1BVIDENCiAgICAtLS0tLS0tLS0tLS0tLS0tLS0gICAgICAgICAg
-ICAgICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0NCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgLy8ga2VybmVsIGVudHJ5DQogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGlmIChsbF9pc29sX2ZsYWdzID09IElTT0xBVEVEKSB7DQog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxsX2lzb2xf
-ZmxhZ3MgPSBJU09MQVRFRF9CUk9LRU4NCiAgICBkYXRhX3RvX3N5bmMgPSAxICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgc21wX21iKCkNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgLy8gZGF0YV90b19zeW5jIHVuZGV0ZXJtaW5lZA0KICAgIHNt
-cF9tYigpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9DQogICAgLy8gbGxfaXNvbF9m
-bGFncyhDUFUgMSkgdXBkYXRlZA0KICAgIGlmIGxsX2lzb2xfZmxhZ3MoQ1BVIDEpICE9IElTT0xB
-VEVEDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGludGVy
-cnVwdHMgZW5hYmxlZA0KICAgICAgICAgc21wX2NhbGwoQ1BVIDEpICAgICAgICAgICAgICAgICAg
-ICAgICAgICAvLyBrZXJuZWwgZW50cnkgYWdhaW4NCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGxsX2lzb2xfZmxhZ3MgPT0gSVNPTEFURUQpDQog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8v
-IG5vdGhpbmcgaGFwcGVucw0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAvLyBleHBsaWNpdCBvciBpbXBsaWVkIGJhcnJpZXJzDQogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGRhdGFfdG9fc3luYyB1cGRh
-dGVkDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8v
-IGtlcm5lbCBleGl0DQogICAgLy8gQ1BVIDAgYXNzdW1lcywgQ1BVIDEgd2lsbCBzZWUgICAgICAg
-IFJFQUQgZGF0YV90b19zeW5jDQogICAgLy8gZGF0YV90b19zeW5jID0gMSB3aGVuIGluIGtlcm5l
-bA0KDQoyLiBLZXJuZWwgZW50cnkgaGFwcGVucyBzaW11bHRhbmVvdXNseSB3aXRoIG9wZXJhdGlv
-biB0aGF0IHJlcXVpcmVzDQpzeW5jaHJvbml6YXRpb24sIGtlcm5lbCBlbnRyeSBwcm9jZXNzaW5n
-IGhhcHBlbnMgYWZ0ZXIgdGhlIGNoZWNrIGZvcg0KaXNvbGF0aW9uIG9uIHRoZSBzZW5kZXIgc2lk
-ZToNCg0KbGxfaXNvbF9mbGFncyhDUFUgMSkgPSBJU09MQVRFRA0KDQogICAgICAgICBDUFUgMCAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ1BVIDENCiAgICAtLS0tLS0tLS0tLS0tLS0t
-LS0gICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0NCiAgICBkYXRhX3RvX3N5
-bmMgPSAxICAgICAgICAgICAgICAgICAgICAgICAgLy8ga2VybmVsIGVudHJ5DQogICAgc21wX21i
-KCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGRhdGFfdG9fc3luYyB1bmRldGVy
-bWluZWQNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gc2hv
-dWxkIG5vdCBhY2Nlc3MgZGF0YV90b19zeW5jIGhlcmUNCiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgaWYgKGxsX2lzb2xfZmxhZ3MgPT0gSVNPTEFURUQpIHsgICAg
-ICANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxs
-X2lzb2xfZmxhZ3MgPSBJU09MQVRFRF9CUk9LRU4NCiAgICAvLyBsbF9pc29sX2ZsYWdzKENQVSAx
-KSB1bmRldGVybWluZWQgICAgICAgICAgIHNtcF9tYigpDQogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBkYXRhX3RvX3N5bmMgdXBkYXRlZA0KICAg
-IGlmIGxsX2lzb2xfZmxhZ3MoQ1BVIDEpICE9IElTT0xBVEVEICAgICB9DQogICAgICAgICAvLyBw
-b3NzaWJseSBub3RoaW5nIGhhcHBlbnMNCiAgICAvLyBDUFUgMCBhc3N1bWVzLCBDUFUgMSB3aWxs
-IHNlZSAgICAgICAgUkVBRCBkYXRhX3RvX3N5bmMNCiAgICAvLyBkYXRhX3RvX3N5bmMgPSAxIHdo
-ZW4gaW4ga2VybmVsDQoNCjMuIEtlcm5lbCBlbnRyeSBwcm9jZXNzaW5nIGNvbXBsZXRlZCBiZWZv
-cmUgdGhlIGNoZWNrIGZvciBpc29sYXRpb24gb24gdGhlIHNlbmRlcg0Kc2lkZToNCg0KbGxfaXNv
-bF9mbGFncyhDUFUgMSkgPSBJU09MQVRFRA0KDQogICAgICAgICBDUFUgMCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgQ1BVIDENCiAgICAtLS0tLS0tLS0tLS0tLS0tLS0gICAgICAgICAg
-ICAgICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0NCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgLy8ga2VybmVsIGVudHJ5DQogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGlmIChsbF9pc29sX2ZsYWdzID09IElTT0xBVEVEKSB7DQog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxsX2lzb2xf
-ZmxhZ3MgPSBJU09MQVRFRF9CUk9LRU4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgc21wX21iKCkNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAvLyBpbnRlcnJ1cHRzIGFyZSBlbmFibGVkIGF0IHNvbWUNCiAgICBkYXRhX3RvX3N5bmMg
-PSAxICAgICAgICAgICAgICAgICAgICAgICAgLy8gcG9pbnQgaGVyZSwgZGF0YV90b19zeW5jIHZh
-bHVlDQogICAgc21wX21iKCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGlzIHVu
-ZGV0ZXJtaW5lZCwgQ1BVIDAgbWFrZXMgbm8NCiAgICAvLyBsbF9pc29sX2ZsYWdzKENQVSAxKSB1
-cGRhdGVkICAgICAgICAgLy8gYXNzdW1wdGlvbnMgYWJvdXQgaXQNCiAgICBpZiBsbF9pc29sX2Zs
-YWdzKENQVSAxKSAhPSBJU09MQVRFRCAgICAgLy8NCiAgICAgICAgICBzbXBfY2FsbChDUFUgMSkg
-ICAgICAgICAgICAgICAgICAgICAgICAgLy8ga2VybmVsIGVudHJ5IGFnYWluDQogICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChsbF9pc29sX2ZsYWdz
-ID09IElTT0xBVEVEKQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAvLyBub3RoaW5nIGhhcHBlbnMNCiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gZXhwbGljaXQgb3IgaW1wbGllZCBiYXJyaWVy
-cw0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBk
-YXRhX3RvX3N5bmMgdXBkYXRlZA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAvLyBrZXJuZWwgZXhpdA0KICAgIC8vIENQVSAwIGFzc3VtZXMsIENQVSAx
-IHdpbGwgc2VlDQogICAgLy8gZGF0YV90b19zeW5jID0gMSB3aGVuIGluIGtlcm5lbA0KICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBSRUFEIGRhdGFfdG9fc3luYw0K
-DQo0LiBLZXJuZWwgZW50cnkgcHJvY2Vzc2luZyBoYXBwZW5zIGFmdGVyIHRoZSBjaGVjayBmb3Ig
-aXNvbGF0aW9uIG9uIHRoZSBzZW5kZXINCnNpZGU6DQoNCmxsX2lzb2xfZmxhZ3MoQ1BVIDEpID0g
-SVNPTEFURUQNCg0KICAgICAgICAgQ1BVIDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IENQVSAxDQogICAgLS0tLS0tLS0tLS0tLS0tLS0tICAgICAgICAgICAgICAgICAgICAgIC0tLS0t
-LS0tLS0tLS0tLS0tDQogICAgZGF0YV90b19zeW5jID0gMSAgICAgICAgICAgICAgICAgICAgICAg
-IC8vIHVzZXJzcGFjZSBvciBlYXJseSBrZXJuZWwgZW50cnkNCiAgICBzbXBfbWIoKQ0KICAgIGlm
-IGxsX2lzb2xfZmxhZ3MoQ1BVIDEpICE9IElTT0xBVEVEDQogICAgICAgICAgc21wX2NhbGwoQ1BV
-IDEpIC8vIHNraXBwZWQgICAgICAgIC8vIHVzZXJzcGFjZSBvciBlYXJseSBrZXJuZWwgZW50cnkN
-CiAgICAvLyBDUFUgMCBhc3N1bWVzLCBDUFUgMSB3aWxsIHNlZSAgICAgICAgLy8gY29udGludWVz
-IHVuZGlzdHVyYmVkDQogICAgLy8gZGF0YV90b19zeW5jID0gMSB3aGVuIGluIGtlcm5lbA0KICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBrZXJuZWwgZW50cnkN
-CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gZGF0YV90b19z
-eW5jIHVuZGV0ZXJtaW5lZA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAvLyBzaG91bGQgbm90IGFjY2VzcyBkYXRhX3RvX3N5bmMgaGVyZQ0KICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAobGxfaXNvbF9mbGFncyA9PSBJU09M
-QVRFRCkgew0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBsbF9pc29sX2ZsYWdzID0gSVNPTEFURURfQlJPS0VODQogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNtcF9tYigpDQogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGRhdGFfdG9fc3luYyB1cGRhdGVkDQog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUkVBRCBkYXRhX3RvX3N5bmMNCg0KVGhp
-cyBhbHNvIGFwcGxpZXMgdG8gZXhpdCB0byB1c2Vyc3BhY2UgYWZ0ZXIgZW5hYmxpbmcgaXNvbGF0
-aW9uIC0tIG9uY2UNCmxsX2lzb2xfZmxhZ3MgaXMgc2V0IHRvIElTT0xBVEVELCBzeW5jaHJvbml6
-YXRpb24gd2lsbCBiZSBtaXNzZWQsIHNvDQpvbmUgZmluYWwgYmFycmllciBzaG91bGQgaGFwcGVu
-IGJlZm9yZSByZXR1cm5pbmcgdG8gdXNlcnNwYWNlIGFuZA0KZW5hYmxpbmcgaW50ZXJydXB0cyBp
-biB0aGUgcHJvY2Vzcy4gSW4gdGhpcyBjYXNlICJ1bmx1Y2t5IiB0aW1pbmcgd291bGQNCnJlc3Vs
-dCBpbiBzbXAgY2FsbCBpbnRlcnJ1cHRpbmcgdXNlcnNwYWNlIHRoYXQgaXMgYWxyZWFkeSBzdXBw
-b3NlZCB0bw0KYmUgaXNvbGF0ZWQsIGl0IHdpbGwgdHJpZ2dlciBub3JtYWwgaXNvbGF0aW9uIGJy
-ZWFraW5nIHByb2NlZHVyZSBidXQNCm90aGVyd2lzZSB3aWxsIGJlIGFuIHVucmVtYXJrYWJsZSBz
-eW5jaHJvbml6YXRpb24gY2FsbC4gT24gdGhlIG90aGVyDQpoYW5kLCBzeW5jaHJvbml6YXRpb24g
-dGhhdCB3YXMgc3VwcG9zZWQgdG8gaGFwcGVuIGFmdGVyIHNldHRpbmcNCmxsX2lzb2xfZmxhZ3Ms
-IHdpbGwgYmUgZGVsYXllZCB0byB0aGUgbmV4dCBrZXJuZWwgZW50cnksIHNvIHRoZXJlDQpzaG91
-bGQgYmUgbm90aGluZyB0aGF0IG5lZWRzIHN5bmNocm9uaXphdGlvbiBiZXR3ZWVuIHRoZSBlbmQg
-b2YNCnRhc2tfaXNvbGF0aW9uX2V4aXRfdG9fdXNlcl9tb2RlKCkgYW5kIGVudGVyaW5nIHVzZXJz
-cGFjZSAoaW50ZXJydXB0cw0KYXJlIG9rLCB0aG91Z2gsIHRoZXkgd2lsbCB0cmlnZ2VyIGlzb2xh
-dGlvbiBicmVha2luZykuDQoNClRoaXMgaXMgd2h5IEkgaGF2ZSBwbGFjZWQgdGFza19pc29sYXRp
-b25fa2VybmVsX2VudGVyKCkNCmFuZCB0YXNrX2lzb2xhdGlvbl9leGl0X3RvX3VzZXJfbW9kZSgp
-IGluIGVudHJ5L2V4aXQgY29kZSwgYW5kIHdoZW4gSQ0KaGF2ZSBzZWVuIGFueSBhbWJpZ3VpdHkg
-b3IgaGFkIGFueSBkb3VidCBhbGxvd2VkIGR1cGxpY2F0ZSBjYWxscyB0bw0KdGFza19pc29sYXRp
-b25fa2VybmVsX2VudGVyKCkgb24gZW50cnkuIElmIEkgb3ZlcmRpZCBhbnkgb2YgdGhhdCwgSQ0K
-d291bGQgYXBwcmVjaWF0ZSBmaXhlcyBhbmQgY2xhcmlmaWNhdGlvbnMsIGhvd2V2ZXIgaXQgc2hv
-dWxkIGJlIHRha2VuDQppbnRvIGFjY291bnQgdGhhdCBmb3Igbm93IGRpZmZlcmVudCBhcmNoaXRl
-Y3R1cmVzIGFuZCBldmVuIGRyaXZlcnMgbWF5DQpjYWxsIGNvbW1vbiBhbmQgc3BlY2lmaWMgZnVu
-Y3Rpb25zIGluIGEgc2xpZ2h0bHkgZGlmZmVyZW50IG9yZGVyLg0KDQpTeW5jaHJvbml6YXRpb24g
-YWxzbyBhcHBsaWVzIHRvIHBvc3NpYmxlIGVmZmVjdHMgb24gcGlwZWxpbmUgKHdoZW4NCm9yaWdp
-bmF0aW5nIENQVSB3cml0ZXMgaW5zdHJ1Y3Rpb25zKS4NCg0KVGhlcmUgaXMgYSB2ZXJzaW9uIHVu
-ZGVyIGRldmVsb3BtZW50IHRoYXQgZGVsYXlzIFRMQiBmbHVzaGVzIGluIHRoaXMNCm1hbm5lci4g
-T24gYXJtNjQgdGhhdCByZXF1aXJlcyBhIHN3aXRjaCB0byBzb2Z0IFRMQiBmbHVzaGVzLCBhbmQg
-dGhhdCdzDQphbm90aGVyIHBvdGVudGlhbCBiYWxsIG9mIHdheC4gT24gYXJjaGl0ZWN0dXJlcyB0
-aGF0IGFscmVhZHkgdXNlIHNvZnQNClRMQiBmbHVzaGVzLCB0aGlzIHdpbGwgYmUgdW5hdm9pZGFi
-bGUgYmVjYXVzZSBUTEIgZmx1c2ggYmVjb21lcyBhbm90aGVyDQpJUEksIGFuZCBJUElzIGJyZWFr
-IGlzb2xhdGlvbi4gTWF5YmUgaXQgd2lsbCBiZSBiZXR0ZXIgdG8gbWFrZSBhDQpzb21ld2hhdCBz
-bWFydGVyIFRMQiBoYW5kbGluZyBpbiBnZW5lcmFsLCBzbyBpdCB3aWxsIGJlIHBvc3NpYmxlIHRv
-DQphdm9pZCBib3RoZXJpbmcgdW5yZWxhdGVkIENQVXMuIEJ1dCB0aGVuLCBJIGd1ZXNzLCBoYXJk
-d2FyZSBtYXkgc3RpbGwNCm92ZXJkbyBpdC5UaGVuIGl0IHdpbGwgYmUgY2xvc2VyIHRvIHRoZSBz
-aXR1YXRpb24gd2l0aCB0aW1lcnMuIEZvciBub3csDQpJIHdhbnQgdG8gZmlyc3QgZG8gdGhlIG9i
-dmlvdXMgYW5kIGV4Y2x1ZGUgaXNvbGF0ZWQgdGFza3MgZnJvbSBUTEINCnVwZGF0ZXMgdW50aWwg
-dGhleSBhcmUgYmFjayBpbiBrZXJuZWwsIGFuZCBkbyBhIHNsb3cgZnVsbCBmbHVzaCBvbg0KaXNv
-bGF0aW9uIGJyZWFraW5nLg0KDQo+IFlvdSBzaG91bGQgZG9jdW1lbnQgdGhhdCwgaWU6IGV4cGxh
-aW4gd2h5IHdoYXQgeW91J3JlIGRvaW5nIGlzIHNhZmUuDQoNCkkgdHJpZWQgdG8gZG8gdGhhdCBp
-biBjb21tZW50cywgaG93ZXZlciB0aGlzIGlzIGNsZWFybHkgaW5zdWZmaWNpZW50DQpkZXNwaXRl
-IHRoZWlyIHZlcmJvc2l0eS4gV291bGQgaXQgbWFrZSBzZW5zZSB0byBjcmVhdGUgYSBzZXBhcmF0
-ZQ0KZG9jdW1lbnRhdGlvbiB0ZXh0IGZpbGU/IEN1cnJlbnQgZG9jdW1lbnRhdGlvbiBzZWVtcyB0
-byBiZSBsaWdodCBvbg0KZGV0YWlsZWQgc3BlY2lmaWNhdGlvbnMgZm9yIHRoaW5ncyB1bmRlciBo
-ZWF2eSBkZXZlbG9wbWVudCBleGNlcHQgZm9yDQpzb21ldGhpbmcgdmVyeSBzaWduaWZpY2FudCB0
-aGF0IGFmZmVjdHMgbmVhcmx5IGV2ZXJ5b25lLg0KDQpXb3VsZCBpdCBtYWtlIHNlbnNlIHRvIGlu
-Y2x1ZGUgYWxsIHNjZW5hcmlvcyBsaWtlIHRoZSBhYm92ZSBwbHVzIGV4aXQNCnRvIHVzZXJzcGFj
-ZSwgYW5kIGV4aXN0aW5nIHNlcXVlbmNlcyBvZiBjYWxscyB0aGF0IHNob3VsZCBsZWFkIHRvDQpz
-eW5jaHJvbml6YXRpb24gY2FsbHMsIHRhc2tfaXNvbGF0aW9uX2tlcm5lbF9lbnRlcigpIG9yDQp0
-YXNrX2lzb2xhdGlvbl9leGl0X3RvX3VzZXJfbW9kZSgpPw0KDQoNCj4gQWxzbyBCZXdhcmUgdGhv
-dWdoIHRoYXQgdGhlIGRhdGEgdG8gc3luYyBpbiBxdWVzdGlvbiBkb2Vzbid0IG5lZWQgdG8NCj4g
-YmUgdmlzaWJsZQ0KPiBpbiB0aGUgZW50cnkgY29kZSBiZWZvcmUgdGFza19pc29sYXRpb25fa2Vy
-bmVsX2VudGVyKCkuDQoNClJpZ2h0LiBBbmQgYWZ0ZXIgdGFza19pc29sYXRpb25fZXhpdF90b191
-c2VyX21vZGUoKSBhcyB3ZWxsLiBUaGlzIGlzDQp3aHkgSSBoYWQgdG8gZGlnIHRocm91Z2ggZW50
-cnkvZXhpdCBjb2RlLiBJIGNhbiBwcm9kdWNlIGEgc29tZXdoYXQNCnVzYWJsZSBjYWxsIHNlcXVl
-bmNlIGRpYWdyYW0uDQoNCklmIGJ5IGFueSBjaGFuY2UgSSBhbSB3cm9uZyB0aGVyZSBzb21ld2hl
-cmUsIEkgd2VsY29tZSBhbGwgcmVsZXZhbnQNCmNvbW1lbnRzIGFuZCBjb3JyZWN0aW9ucy4NCg0K
-QXQgdGhpcyBwb2ludCBJIGFtIG5vdCBzdXJlIG9ubHkgYWJvdXQgdGhpbmdzIHRoYXQgYXJlIGNh
-bGxlZCB3aGVuDQpDT05GSUdfVFJBQ0VfSVJRRkxBR1MgaXMgZW5hYmxlZCwgc2ltcGx5IGJlY2F1
-c2UgSSBoYXZlIG5vdCB5ZXQgY2hlY2tlZA0Kd2hhdCB0aGV5IGRlcGVuZCBvbiwgYW5kIHZpcnR1
-YWxpemF0aW9uLXNwZWNpZmljIGVudHJ5L2V4aXQgaXMgbm90DQplbnRpcmVseSBjbGVhciB0byBt
-ZS4gTWF5YmUgZm9yIGNvcnJlY3RuZXNzIHNha2UgSSBzaG91bGQgaGF2ZSBkZWNsYXJlZA0KdGFz
-ayBpc29sYXRpb24gaW5jb21wYXRpYmxlIHdpdGggdGhvc2UgdW50aWwgSSBlaXRoZXIga25vdyBm
-b3Igc3VyZSBvcg0KYWRkZWQgd29ya2luZyBzdXBwb3J0IGZvciB0aGVtLg0KDQo+ICBZb3UgbmVl
-ZCB0byBhdWRpdCBhbGwNCj4gdGhlIGNhbGxlcnMgb2Yga2lja19hbGxfY3B1c19zeW5jKCkuDQoN
-ClJpZ2h0IG5vdyBpdCdzIGp1c3QgdGhyZWUgcGxhY2VzLg0KDQpkb190dW5lX2NwdWNhY2hlKCkg
-ZG9lcyB0aGUgcmlnaHQgdGhpbmcsIGtlZXBzIENQVXMgZnJvbSBzZWVpbmcgb2xkDQp2YWx1ZXMg
-b2YgY2FjaGVwLT5jcHVfY2FjaGUgYXMgdGhleSBhcmUgYmVpbmcgZGVhbGxvY2F0ZWQuDQoNCnBv
-d2VycGMga3ZtX2FyY2hfZGVzdHJveV92bSgpIGNhcmVzIG9ubHkgYWJvdXQgQ1BVcyB3aXRoIFZD
-UFVzIG9uIHRoZW0sDQp3aGF0IGZvciBub3cgc2hvdWxkIG5vdCBiZSB1c2VkIHdpdGggaXNvbGF0
-aW9uLg0KDQphcm02NCBmbHVzaF9pY2FjaGVfcmFuZ2UoKSBpcyB0aGUgbWFpbiByZWFzb24gd2h5
-IHRoaXMgY291bGQgYmUNCnBvdGVudGlhbGx5IHByb2JsZW1hdGljLCBpdCBtYWtlcyBzdXJlIHRo
-YXQgb3RoZXIgQ1BVcyB3aWxsIG5vdCBydW4NCnN0YWxlIGluc3RydWN0aW9ucywgYW5kIGl0J3Mg
-Y2FsbGVkIGZyb20gYWxsIHBsYWNlcyB3aGVyZSBjb2RlIGlzDQptb2RpZmllZC4gSWYgaW4gb3Ro
-ZXIgc2l0dWF0aW9uIHNvbWUga2luZCBvZiBkZWxheWVkIHByb2Nlc3NpbmcgY291bGQNCmJlIHBv
-c3NpYmxlLCB0aGlzIG9uZSBoYXMgdG8gYmUgZG9uZSBpbiB0aGUgcmlnaHQgc2VxdWVuY2UuIEFu
-ZCB0aGF0J3MNCnRoZSByZWFzb24gZm9yIGluc3RyX3N5bmMoKSBhZnRlciBzbXBfbWIoKSBpbg0K
-dGFza19pc29sYXRpb25fa2VybmVsX2VudGVyKCkuIFNpbmNlIGZsdXNoX2ljYWNoZV9yYW5nZSgp
-IGNvdWxkIHNraXANCnRoaXMgQ1BVLCB3ZSBoYXZlIHRvIHN5bmNocm9uaXplIGl0IGJ5IG91cnNl
-bHZlcy4NCg0KVGhlcmUgaXMgYW4gaW1wb3J0YW50IGlzc3VlIG9mIG5vdCBoYXZpbmcgZWFybHkg
-a2VybmVsIGVudHJ5IC8gbGF0ZQ0Ka2VybmVsIGV4aXQgcmVseSBvbiBzb21ldGhpbmcgdGhhdCBt
-YXkgYmUgc3RhbGUgKHdpdGggYm90aCBkYXRhIGFuZA0KY29kZSkuIFdpdGggdGhlIGFib3ZlIG1l
-bnRpb25lZCBleGNlcHRpb25zIGZvciBub3csIGl0IGNhbiBiZQ0KZGVtb25zdHJhdGVkIHRoYXQg
-dGhpcyBpcyBjb3JyZWN0LiBJdCBzaG91bGQgYmUgdGFrZW4gaW50byBhY2NvdW50IHRoYXQNCmV2
-ZW4gdGhvdWdoIHN0YXRpYyBrZXlzIGFyZSB1c2VkIGluIGVhcmx5IGtlcm5lbCBlbnRyeSBjb2Rl
-LCBzdGF0aWMNCmtleXMgc2V0dGluZyBkb2VzIG5vdCBzeW5jaHJvbml6ZSBmbHVzaGVzLCBhbmQg
-dGhlcmVmb3JlIGFscmVhZHkgc2hvdWxkDQpiZSBkb25lIGJlZm9yZSB1c2UuDQoNClRhc2sgaXNv
-bGF0aW9uIGluIHZpcnR1YWxpemF0aW9uIGd1ZXN0cyBjYW4gYmUgYSBwZXJmZWN0bHkgdmFsaWQg
-dGhpbmcNCnRvIHN1cHBvcnQgKGl0IGp1c3QgaGFzIHRvIGJlIHByb3BhZ2F0ZWQgdG8gdGhlIGhv
-c3QgaWYgcGVybWl0dGVkKSwNCmhvd2V2ZXIgdGhpcyBpcyBzb21ldGhpbmcgSSB3aWxsIHdhbnQg
-dG8gcmV2aXNpdCBpbiB0aGUgZnV0dXJlLiBGb3INCm5vdywgSSBhc3N1bWUgdGhhdCB2aXJ0dWFs
-aXphdGlvbi1yZWxhdGVkIGV2ZW50cyBhcmUgbm90IHN1cHBvc2VkIHRvDQpicmVhayBpc29sYXRp
-b24sIGhvd2V2ZXIgaXQgd291bGQgYmUgbmljZSB0byBiZSByZWFkeSBmb3IgaGFuZGxpbmcgdGhh
-dA0KcG9zc2liaWxpdHkuDQoNCi0tIA0KQWxleA0K
+On Tue, Nov 24, 2020 at 11:36:56AM +0000, Jonathan Cameron wrote:
+> On Tue, 24 Nov 2020 11:30:50 +0800
+> "Ye, Xiang" <xiang.ye@intel.com> wrote:
+> 
+> > On Sun, Nov 22, 2020 at 04:50:47PM +0000, Jonathan Cameron wrote:
+> > > On Sun, 22 Nov 2020 15:51:18 +0000
+> > > "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com> wrote:
+> > >   
+> > > > On Sun, 2020-11-22 at 14:14 +0000, Jonathan Cameron wrote:  
+> > > > > On Sun, 22 Nov 2020 02:14:16 +0000
+> > > > > "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com> wrote:
+> > > > >     
+> > > > > > On Sat, 2020-11-21 at 17:46 -0800, Srinivas Pandruvada wrote:    
+> > > > > > > On Sat, 2020-11-21 at 17:56 +0000, Jonathan Cameron wrote:      
+> > > > > > > > On Thu, 19 Nov 2020 18:03:31 +0800
+> > > > > > > > Ye Xiang <xiang.ye@intel.com> wrote:
+> > > > > > > >       
+> > > > > > > > > The Hinge sensor is a common custom sensor on laptops. It
+> > > > > > > > > calculates
+> > > > > > > > > the angle between the lid (screen) and the base (keyboard).
+> > > > > > > > > In
+> > > > > > > > > addition,
+> > > > > > > > > it also exposes screen and the keyboard angels with respect
+> > > > > > > > > to
+> > > > > > > > > the
+> > > > > > > > > ground. Applications can easily get laptop's status in space
+> > > > > > > > > through
+> > > > > > > > > this sensor, in order to display appropriate user
+> > > > > > > > > interface.      
+> > > > > > > > 
+> > > > > > > > I'm a little unclear on why the 3 axes aren't treated as a
+> > > > > > > > single
+> > > > > > > > sensor.
+> > > > > > > > You seem to always grab the 3 together or am I missing
+> > > > > > > > something?
+> > > > > > > > 
+> > > > > > > > That will greatly simplify things and get rid of the need to
+> > > > > > > > have
+> > > > > > > > a shared trigger with the problems that causes in the previous
+> > > > > > > > patch.      
+> > > > > > > 
+> > > > > > > They are not three axes, they are independent. Xiang did try
+> > > > > > > adding
+> > > > > > > x,
+> > > > > > > y and z component to represent x as hinge, y as keyboard and z as
+> > > > > > > lid.
+> > > > > > > But I was not convinced.
+> > > > > > > The problem is that then what will be sysfs interface? They are
+> > > > > > > really
+> > > > > > > a three sensors. Or we create new interface to call
+> > > > > > > in_angl_raw_keyboard
+> > > > > > > in_angl_raw_screen
+> > > > > > > in_angl_raw_lid.
+> > > > > > >       
+> > > > > > You seem to indicate this is possible now some new "label" patch.
+> > > > > > Is this the patch?
+> > > > > > commit 2c3d0c9ffd24d9b4c62c5dfb2104695a614be28c
+> > > > > > Author: Phil Reid <preid@electromag.com.au>
+> > > > > > Date:   Thu Sep 19 22:36:08 2019 +0800    
+> > > > > 
+> > > > > Nope, this one 
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/commit/?id=1d4ef9b39ebecca827642b8897d2d79ea2026682
+> > > > > 
+> > > > > The one above adds a per device label which wouldn't be much use for
+> > > > > your
+> > > > > case, but this one adds a per channel label.
+> > > > > 
+> > > > > Done via a read_label callback.
+> > > > > 
+> > > > > Here you'd want to use indexed channels so something like.
+> > > > > 
+> > > > > in_angl0_raw
+> > > > > in_angl1_raw
+> > > > > in_angl2_raw
+> > > > > 
+> > > > > and
+> > > > > 
+> > > > > in_angl0_label = keyboard
+> > > > > in_angl1_label = screen
+> > > > > in_angl2_label = lid    
+> > > > 
+> > > > Thanks Jonathan. This will make the job easier.
+> > > > Xiang,
+> > > > You can use this method. Then you will not need other changes except
+> > > > patch 1/4.
+> > > > Also add a documentation patch to explain the mapping.  
+> > > 
+> > > Ah.  So we have a slightly problem with sysfs ABI docs at the moment.
+> > > The scripts that auto generate the html and similar docs from them
+> > > don't cope with the same name of attribute in multiple documentation
+> > > files.
+> > > 
+> > > https://lore.kernel.org/linux-iio/20201110082658.2edc1ab5@coco.lan/
+> > > 
+> > > The upshot being we can't have more specific docs for a particular
+> > > part that match up with the generic docs.  That will apply in this
+> > > case.
+> > > 
+> > > So for now, our solution is to put it in the main docs, but provide
+> > > a subsection in there talking about more specific constraints for
+> > > a particular device.
+> > > 
+> > > Note I haven't actually proposed any fixes for this problem yet so
+> > > you get to do the first one ;)
+> > > 
+> > > Thanks,
+> > > 
+> > > Jonathan  
+> > @Srinivas
+> > Yes, I will try this indexed channel and label based method.
+> > 
+> > @Jonathan
+> > So, I need to add in_angl0_raw, in_angl1_raw, in_angl2_raw and in_angl0_label,
+> > in_angl1_label,in_angl2_label description in sysfs-bus-iio. such as
+> > 
+> > What:		/sys/bus/iio/devices/iio:deviceX/in_angl0_raw
+> > What:		/sys/bus/iio/devices/iio:deviceX/in_angl1_raw
+> > What:		/sys/bus/iio/devices/iio:deviceX/in_angl2_raw
+> You can use a wild card which in this case would give you one line that says
+> 
+>   What:         /sys/bus/iio/devices/iio:deviceX/in_anglY_raw
+Good idea, Wild card can reduce repetition, will adopt it.
+> 
+> > KernelVersion:	5.12
+> > Contact:	linux-iio@vger.kernel.org
+> > Description:
+> > 		Angle of rotation. Units after application of scale and offset
+> > 		are radians.
+> > 
+> > What:		/sys/bus/iio/devices/iio:deviceX/in_angl0_label
+> > What:		/sys/bus/iio/devices/iio:deviceX/in_angl1_label
+> > What:		/sys/bus/iio/devices/iio:deviceX/in_angl2_label
+> 
+> As above, wild card is fine.
+Ok.
+> 
+> > KernelVersion:	5.12
+> > Contact:	linux-iio@vger.kernel.org
+> > Description:
+> > 		Optional symbolic label to a device channel.
+> I'd add something device specific here even though it's in the main docs.
+> 
+>                 For intel,hid-hinge values are: hinge, keyboard, screen
+yes, add some detail fo intel hinge sensor
+
+Optional symbolic label for channel Y.
+For Intel hid hinge sensor, the label values are:
+hinge, keyboard, screen. It means the three channels 
+each correspond respectively to hinge angle, keyboard angle,
+and screen angle.
+
+> 
+> 
+> > 
+> > 
+> > Am i right?
+> Almost with those tweaks above to give a bit more info and keep it a little
+> more compact.
+> 
+> Thanks,
+> 
+> Jonathan
+
+yes, will revise the description according your advice. Thanks for review and comments
+
+Thanks
+Ye, Xiang
+> 
+> > 
+> > > 
+> > > 
+> > >   
+> > > > 
+> > > > Thanks,
+> > > > Srinivas
+> > > >   
+> > > > > 
+> > > > > 
+> > > > >     
+> > > > > > Ideally, one iio device here is much easy to manage as other HID
+> > > > > > sensors. If we can add something other that "x", "y" and "z"
+> > > > > > component.    
+> > > > > 
+> > > > > Agreed, using axes makes no real sense here and extended_name is
+> > > > > just a mess from ABI point of view.  Trying to solve this was the
+> > > > > reason we added the _label interface.
+> > > > > 
+> > > > > Jonathan
+> > > > > 
+> > > > >     
+> > > > > > Thanks,
+> > > > > > Srinivas
+> > > > > >     
+> > > > > > > Thanks,
+> > > > > > > Srinivas
+> > > > > > > 
+> > > > > > >       
+> > > > > > > > Thanks,
+> > > > > > > > 
+> > > > > > > > Jonathan
+> > > > > > > >       
+> > > > > > > > > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+> > > > > > > > > ---
+> > > > > > > > >  .../hid-sensors/hid-sensor-attributes.c       |   2 +
+> > > > > > > > >  drivers/iio/position/Kconfig                  |  16 +
+> > > > > > > > >  drivers/iio/position/Makefile                 |   3 +
+> > > > > > > > >  .../iio/position/hid-sensor-custom-hinge.c    | 412
+> > > > > > > > > ++++++++++++++++++      
+> > > > > > > > 
+> > > > > > > > Given it's custom probably needs a more specific name.  I guess
+> > > > > > > > hid-sensor-custom-intel-hinge.c might be safe?
+> > > > > > > > 
+> > > > > > > > Same for other places we need names in here.
+> > > > > > > >       
+> > > > > > > > >  4 files changed, 433 insertions(+)
+> > > > > > > > >  create mode 100644 drivers/iio/position/hid-sensor-custom-
+> > > > > > > > > hinge.c
+> > > > > > > > > 
+> > > > > > > > > diff --git a/drivers/iio/common/hid-sensors/hid-sensor-
+> > > > > > > > > attributes.c 
+> > > > > > > > > b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> > > > > > > > > index 442ff787f7af..5b822a4298a0 100644
+> > > > > > > > > --- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> > > > > > > > > +++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> > > > > > > > > @@ -71,6 +71,8 @@ static struct {
+> > > > > > > > >  	{HID_USAGE_SENSOR_TEMPERATURE,
+> > > > > > > > > HID_USAGE_SENSOR_UNITS_DEGREES,
+> > > > > > > > > 1000, 0},
+> > > > > > > > >  
+> > > > > > > > >  	{HID_USAGE_SENSOR_HUMIDITY, 0, 1000, 0},
+> > > > > > > > > +	{HID_USAGE_SENSOR_HINGE, 0, 0, 17453293},
+> > > > > > > > > +	{HID_USAGE_SENSOR_HINGE,
+> > > > > > > > > HID_USAGE_SENSOR_UNITS_DEGREES, 0,
+> > > > > > > > > 17453293},
+> > > > > > > > >  };
+> > > > > > > > >  
+> > > > > > > > >  static void simple_div(int dividend, int divisor, int
+> > > > > > > > > *whole,
+> > > > > > > > > diff --git a/drivers/iio/position/Kconfig
+> > > > > > > > > b/drivers/iio/position/Kconfig
+> > > > > > > > > index eda67f008c5b..0346f6f2b422 100644
+> > > > > > > > > --- a/drivers/iio/position/Kconfig
+> > > > > > > > > +++ b/drivers/iio/position/Kconfig
+> > > > > > > > > @@ -16,4 +16,20 @@ config IQS624_POS
+> > > > > > > > >  	  To compile this driver as a module, choose M here:
+> > > > > > > > > the module
+> > > > > > > > >  	  will be called iqs624-pos.
+> > > > > > > > >  
+> > > > > > > > > +config HID_SENSOR_CUSTOM_HINGE
+> > > > > > > > > +	depends on HID_SENSOR_HUB
+> > > > > > > > > +	select IIO_BUFFER
+> > > > > > > > > +	select IIO_TRIGGERED_BUFFER
+> > > > > > > > > +	select HID_SENSOR_IIO_COMMON
+> > > > > > > > > +	select HID_SENSOR_IIO_TRIGGER
+> > > > > > > > > +	tristate "HID Hinge"
+> > > > > > > > > +	help
+> > > > > > > > > +	  This sensor present three angles, hinge angel, screen
+> > > > > > > > > angles
+> > > > > > > > > +	  and keyboard angle respect to horizon (ground).
+> > > > > > > > > +	  Say yes here to build support for the HID SENSOR
+> > > > > > > > > CUSTOM
+> > > > > > > > > +	  HINGE.      
+> > > > > > > > 
+> > > > > > > > Capitalization is a bit odd looking. I'd drop it.
+> > > > > > > >       
+> > > > > > > > > +
+> > > > > > > > > +	  To compile this driver as a module, choose M here:
+> > > > > > > > > the
+> > > > > > > > > +	  module will be called hid-sensor-custom-hinge.
+> > > > > > > > > +
+> > > > > > > > >  endmenu
+> > > > > > > > > diff --git a/drivers/iio/position/Makefile
+> > > > > > > > > b/drivers/iio/position/Makefile
+> > > > > > > > > index 3cbe7a734352..7a6225977a01 100644
+> > > > > > > > > --- a/drivers/iio/position/Makefile
+> > > > > > > > > +++ b/drivers/iio/position/Makefile
+> > > > > > > > > @@ -5,3 +5,6 @@
+> > > > > > > > >  # When adding new entries keep the list in alphabetical
+> > > > > > > > > order
+> > > > > > > > >  
+> > > > > > > > >  obj-$(CONFIG_IQS624_POS)	+= iqs624-pos.o
+> > > > > > > > > +
+> > > > > > > > > +obj-$(CONFIG_HID_SENSOR_CUSTOM_HINGE) += hid-sensor-custom-
+> > > > > > > > > hinge.o      
+> > > > > > > > 
+> > > > > > > > Alphabetical order preferred.
+> > > > > > > >       
+> > > > > > > > > +ccflags-y	+= -I$(srctree)/drivers/iio/common/hid-
+> > > > > > > > > sensors      
+> > > > > > > > 
+> > > > > > > > Why?
+> > > > > > > >       
+> > > > > > > > > diff --git a/drivers/iio/position/hid-sensor-custom-hinge.c
+> > > > > > > > > b/drivers/iio/position/hid-sensor-custom-hinge.c
+> > > > > > > > > new file mode 100644
+> > > > > > > > > index 000000000000..a91b333f36fa
+> > > > > > > > > --- /dev/null
+> > > > > > > > > +++ b/drivers/iio/position/hid-sensor-custom-hinge.c
+> > > > > > > > > @@ -0,0 +1,412 @@
+> > > > > > > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > > > > > > +/*
+> > > > > > > > > + * HID Sensors Driver
+> > > > > > > > > + * Copyright (c) 2020, Intel Corporation.
+> > > > > > > > > + */
+> > > > > > > > > +#include <linux/hid-sensor-hub.h>
+> > > > > > > > > +#include <linux/iio/buffer.h>
+> > > > > > > > > +#include <linux/iio/iio.h>
+> > > > > > > > > +#include <linux/platform_device.h>
+> > > > > > > > > +
+> > > > > > > > > +#include "hid-sensor-trigger.h"
+> > > > > > > > > +
+> > > > > > > > > +/* Channel definitions */
+> > > > > > > > > +static const struct iio_chan_spec hinge_channels[] = {
+> > > > > > > > > +	{ .type = IIO_ANGL,
+> > > > > > > > > +	  .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+> > > > > > > > > +	  .info_mask_shared_by_type =
+> > > > > > > > > +		  BIT(IIO_CHAN_INFO_OFFSET) |
+> > > > > > > > > BIT(IIO_CHAN_INFO_SCALE)
+> > > > > > > > > +		  BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+> > > > > > > > > BIT(IIO_CHAN_INFO_HYSTERESIS),
+> > > > > > > > > +	  .scan_type.realbits = 16,
+> > > > > > > > > +	  .scan_type.storagebits = 32,      
+> > > > > > > > 
+> > > > > > > > It a bit odd to see a single channel that is 16 bits inside a
+> > > > > > > > 32
+> > > > > > > > bit
+> > > > > > > > with
+> > > > > > > > no shift or similar.  Why not just pack it into 16 bits?
+> > > > > > > >       
+> > > > > > > > > +	  .scan_type.sign = 's',
+> > > > > > > > > +	  .scan_index = 0 },
+> > > > > > > > > +
+> > > > > > > > > +	IIO_CHAN_SOFT_TIMESTAMP(1)
+> > > > > > > > > +};
+> > > > > > > > > +
+> > > > > > > > > +struct hinge_state {
+> > > > > > > > > +	struct iio_dev *indio_dev;
+> > > > > > > > > +	struct hid_sensor_hub_attribute_info hinge;
+> > > > > > > > > +	/* Reserve for 1 channel + pading + timestamp */
+> > > > > > > > > +	u32 hinge_val[1 + 3];      
+> > > > > > > > 
+> > > > > > > > __aligned(8)
+> > > > > > > > 
+> > > > > > > > see below for requirements on this.
+> > > > > > > > Perhaps better to use
+> > > > > > > > 
+> > > > > > > > 	struct hinge_scan {
+> > > > > > > > 		u32 val;
+> > > > > > > > 		s64 timestamp __aligned(8); // Note this is
+> > > > > > > > needed for
+> > > > > > > > x86_32
+> > > > > > > > 	} scan;
+> > > > > > > >       
+> > > > > > > > > +	int scale_pre_decml;
+> > > > > > > > > +	int scale_post_decml;
+> > > > > > > > > +	int scale_precision;
+> > > > > > > > > +	int value_offset;
+> > > > > > > > > +	int64_t timestamp;
+> > > > > > > > > +	u32 hinge_address;
+> > > > > > > > > +};
+> > > > > > > > > +
+> > > > > > > > > +#define IIO_DEV_NUM 3      
+> > > > > > > > 
+> > > > > > > > That needs a prefix to make it clear it's not a generic
+> > > > > > > > constant
+> > > > > > > > but is specific to this driver.
+> > > > > > > >       
+> > > > > > > > > +
+> > > > > > > > > +struct hinge_group {
+> > > > > > > > > +	struct hinge_state *hg_states[IIO_DEV_NUM];
+> > > > > > > > > +	struct hid_sensor_hub_callbacks callbacks;
+> > > > > > > > > +	struct hid_sensor_common common_attributes;
+> > > > > > > > > +};
+> > > > > > > > > +
+> > > > > > > > > +static struct hinge_group *hg_group;      
+> > > > > > > > 
+> > > > > > > > We shouldn't see globals like this. Please figure out how to
+> > > > > > > > avoid
+> > > > > > > > it.
+> > > > > > > >       
+> > > > > > > > > +
+> > > > > > > > > +/* Channel read_raw handler */
+> > > > > > > > > +static int hinge_read_raw(struct iio_dev *indio_dev,
+> > > > > > > > > +			  struct iio_chan_spec const *chan, int
+> > > > > > > > > *val,
+> > > > > > > > > int *val2,
+> > > > > > > > > +			  long mask)
+> > > > > > > > > +{
+> > > > > > > > > +	struct hinge_state *hg_state = iio_priv(indio_dev);
+> > > > > > > > > +	struct hid_sensor_hub_device *hsdev;
+> > > > > > > > > +	int report_id = -1;
+> > > > > > > > > +	int ret_type;
+> > > > > > > > > +	s32 min;
+> > > > > > > > > +
+> > > > > > > > > +	hsdev = hg_group->common_attributes.hsdev;
+> > > > > > > > > +
+> > > > > > > > > +	*val = 0;
+> > > > > > > > > +	*val2 = 0;
+> > > > > > > > > +	switch (mask) {
+> > > > > > > > > +	case IIO_CHAN_INFO_RAW:
+> > > > > > > > > +		hid_sensor_power_state(&hg_group-    
+> > > > > > > > > >common_attributes,    
+> > > > > > > > > true);
+> > > > > > > > > +		report_id = hg_state->hinge.report_id;
+> > > > > > > > > +		min = hg_state->hinge.logical_minimum;
+> > > > > > > > > +		if (report_id < 0) {
+> > > > > > > > > +			*val = 0;
+> > > > > > > > > +			hid_sensor_power_state(&hg_group-      
+> > > > > > > > > > common_attributes,      
+> > > > > > > > > +					       false);
+> > > > > > > > > +			return -EINVAL;
+> > > > > > > > > +		}
+> > > > > > > > > +
+> > > > > > > > > +		*val = sensor_hub_input_attr_get_raw_value(
+> > > > > > > > > +			hg_group->common_attributes.hsdev,
+> > > > > > > > > hsdev-      
+> > > > > > > > > > usage,      
+> > > > > > > > > +			hg_state->hinge_address, report_id,
+> > > > > > > > > SENSOR_HUB_SYNC,
+> > > > > > > > > +			min < 0);
+> > > > > > > > > +
+> > > > > > > > > +		hid_sensor_power_state(&hg_group-    
+> > > > > > > > > >common_attributes,    
+> > > > > > > > > false);
+> > > > > > > > > +		ret_type = IIO_VAL_INT;
+> > > > > > > > > +		break;
+> > > > > > > > > +	case IIO_CHAN_INFO_SCALE:
+> > > > > > > > > +		*val = hg_state->scale_pre_decml;
+> > > > > > > > > +		*val2 = hg_state->scale_post_decml;
+> > > > > > > > > +		ret_type = hg_state->scale_precision;
+> > > > > > > > > +		break;
+> > > > > > > > > +	case IIO_CHAN_INFO_OFFSET:
+> > > > > > > > > +		*val = hg_state->value_offset;
+> > > > > > > > > +		ret_type = IIO_VAL_INT;
+> > > > > > > > > +		break;
+> > > > > > > > > +	case IIO_CHAN_INFO_SAMP_FREQ:
+> > > > > > > > > +		ret_type = hid_sensor_read_samp_freq_value(
+> > > > > > > > > +			&hg_group->common_attributes, val,
+> > > > > > > > > val2);
+> > > > > > > > > +		break;
+> > > > > > > > > +	case IIO_CHAN_INFO_HYSTERESIS:
+> > > > > > > > > +		ret_type = hid_sensor_read_raw_hyst_value(
+> > > > > > > > > +			&hg_group->common_attributes, val,
+> > > > > > > > > val2);
+> > > > > > > > > +		break;
+> > > > > > > > > +	default:
+> > > > > > > > > +		ret_type = -EINVAL;
+> > > > > > > > > +		break;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	return ret_type;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +/* Channel write_raw handler */
+> > > > > > > > > +static int hinge_write_raw(struct iio_dev *indio_dev,
+> > > > > > > > > +			   struct iio_chan_spec const *chan,
+> > > > > > > > > int val,
+> > > > > > > > > int val2,
+> > > > > > > > > +			   long mask)
+> > > > > > > > > +{
+> > > > > > > > > +	int ret;
+> > > > > > > > > +
+> > > > > > > > > +	switch (mask) {
+> > > > > > > > > +	case IIO_CHAN_INFO_SAMP_FREQ:
+> > > > > > > > > +		ret = hid_sensor_write_samp_freq_value(
+> > > > > > > > > +			&hg_group->common_attributes, val,
+> > > > > > > > > val2);
+> > > > > > > > > +		break;
+> > > > > > > > > +	case IIO_CHAN_INFO_HYSTERESIS:
+> > > > > > > > > +		ret = hid_sensor_write_raw_hyst_value(
+> > > > > > > > > +			&hg_group->common_attributes, val,
+> > > > > > > > > val2);
+> > > > > > > > > +
+> > > > > > > > > +		break;
+> > > > > > > > > +	default:
+> > > > > > > > > +		ret = -EINVAL;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +static const struct iio_info hinge_info = {
+> > > > > > > > > +	.read_raw = &hinge_read_raw,
+> > > > > > > > > +	.write_raw = &hinge_write_raw,
+> > > > > > > > > +};
+> > > > > > > > > +
+> > > > > > > > > +/*
+> > > > > > > > > + * Function to push data to buffer;
+> > > > > > > > > + * wrapper added for symmetry with other hid-sensor drivers
+> > > > > > > > > + */
+> > > > > > > > > +static void hid_sensor_push_data(struct iio_dev *indio_dev,
+> > > > > > > > > void
+> > > > > > > > > *data, int len,      
+> > > > > > > > 
+> > > > > > > > This doesn't seem to be generic, so don't name it as such.
+> > > > > > > >       
+> > > > > > > > > +				 int64_t timestamp)
+> > > > > > > > > +{
+> > > > > > > > > +	iio_push_to_buffers_with_timestamp(indio_dev, data,
+> > > > > > > > > timestamp);      
+> > > > > > > > I hope that data buffer obeys the various rules needed by (and
+> > > > > > > > admittedly
+> > > > > > > > not that well documented) iio_push_to_buffers_with_timestamp()
+> > > > > > > > 
+> > > > > > > > 1. Needs to be 8 byte aligned.
+> > > > > > > > 2. Needs to have space for an aligned 8 byte timestamp at the
+> > > > > > > > end.
+> > > > > > > >       
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +/*
+> > > > > > > > > + * Callback handler to send event after all samples are
+> > > > > > > > > received
+> > > > > > > > > + * and captured.
+> > > > > > > > > + */
+> > > > > > > > > +static int hinge_proc_event(struct hid_sensor_hub_device
+> > > > > > > > > *hsdev,
+> > > > > > > > > +			    unsigned int usage_id, void *priv)
+> > > > > > > > > +{
+> > > > > > > > > +	int i;
+> > > > > > > > > +
+> > > > > > > > > +	for (i = 0; i < IIO_DEV_NUM; ++i) {      
+> > > > > > > > If we push for all sensors together, better to have
+> > > > > > > > this as a single iio_device with 3 channels.
+> > > > > > > > 
+> > > > > > > > Use the channel labels (just added to IIO) to identify which is
+> > > > > > > > which.
+> > > > > > > >       
+> > > > > > > > > +		struct hinge_state *hg_state;
+> > > > > > > > > +		struct iio_dev *indio_dev;
+> > > > > > > > > +
+> > > > > > > > > +		hg_state = hg_group->hg_states[i];
+> > > > > > > > > +		indio_dev = hg_state->indio_dev;
+> > > > > > > > > +
+> > > > > > > > > +		dev_dbg(&indio_dev->dev, "%s timestamp:%llu
+> > > > > > > > > scan_bytes:%d\n",
+> > > > > > > > > +			__func__, hg_state->timestamp,
+> > > > > > > > > indio_dev-      
+> > > > > > > > > > scan_bytes);      
+> > > > > > > > > +
+> > > > > > > > > +		if (!hg_state->timestamp)
+> > > > > > > > > +			hg_state->timestamp =
+> > > > > > > > > iio_get_time_ns(indio_dev);
+> > > > > > > > > +
+> > > > > > > > > +		hid_sensor_push_data(indio_dev, hg_state-    
+> > > > > > > > > >hinge_val,    
+> > > > > > > > > +				     sizeof(hg_state-    
+> > > > > > > > > >hinge_val),    
+> > > > > > > > > +				     hg_state->timestamp);
+> > > > > > > > > +
+> > > > > > > > > +		hg_state->timestamp = 0;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	return 0;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +/* Capture samples in local storage */
+> > > > > > > > > +static int hinge_capture_sample(struct hid_sensor_hub_device
+> > > > > > > > > *hsdev,
+> > > > > > > > > +				unsigned int usage_id, size_t
+> > > > > > > > > raw_len,
+> > > > > > > > > +				char *raw_data, void *priv)
+> > > > > > > > > +{
+> > > > > > > > > +	struct hinge_state *hg_state;
+> > > > > > > > > +	int offset;
+> > > > > > > > > +	int ret = -EINVAL;
+> > > > > > > > > +	int i;
+> > > > > > > > > +
+> > > > > > > > > +	if (usage_id == HID_USAGE_SENSOR_TIME_TIMESTAMP) {
+> > > > > > > > > +		for (i = 0; i < IIO_DEV_NUM; i++)
+> > > > > > > > > +			hg_group->hg_states[i]->timestamp =      
+> > > > > > > > 
+> > > > > > > > This rather implies all the data is captured together... If so
+> > > > > > > > single
+> > > > > > > > iio_device may make more sense.
+> > > > > > > >       
+> > > > > > > > > +				hid_sensor_convert_timestamp(
+> > > > > > > > > +					&hg_group-    
+> > > > > > > > > >common_attributes,    
+> > > > > > > > > +					*(int64_t *)raw_data);
+> > > > > > > > > +		return 0;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	switch (usage_id) {
+> > > > > > > > > +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1:
+> > > > > > > > > +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_2:
+> > > > > > > > > +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_3:
+> > > > > > > > > +		offset = usage_id -
+> > > > > > > > > HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1;
+> > > > > > > > > +		hg_state = hg_group->hg_states[offset];
+> > > > > > > > > +		hg_state->hinge_val[0] = *(u32 *)raw_data;
+> > > > > > > > > +		ret = 0;      
+> > > > > > > > 
+> > > > > > > > 		return 0;
+> > > > > > > >       
+> > > > > > > > > +		break;
+> > > > > > > > > +	default:      
+> > > > > > > > 		return -EINVAL;      
+> > > > > > > > > +		break;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +/* Parse report which is specific to an usage id */
+> > > > > > > > > +static int hinge_parse_report(struct platform_device *pdev,
+> > > > > > > > > +			      struct hid_sensor_hub_device
+> > > > > > > > > *hsdev,
+> > > > > > > > > +			      unsigned int usage_id, unsigned
+> > > > > > > > > int
+> > > > > > > > > attr_usage_id,
+> > > > > > > > > +			      struct hinge_state *st)
+> > > > > > > > > +{
+> > > > > > > > > +	int ret;
+> > > > > > > > > +
+> > > > > > > > > +	ret = sensor_hub_input_get_attribute_info(
+> > > > > > > > > +		hsdev, HID_INPUT_REPORT, usage_id,
+> > > > > > > > > attr_usage_id, &st-      
+> > > > > > > > > > hinge);      
+> > > > > > > > > +	if (ret < 0)
+> > > > > > > > > +		return ret;
+> > > > > > > > > +
+> > > > > > > > > +	st->hinge_address = attr_usage_id;
+> > > > > > > > > +	st->scale_precision =
+> > > > > > > > > +		hid_sensor_format_scale(HID_USAGE_SENSOR_HINGE,
+> > > > > > > > > &st-      
+> > > > > > > > > > hinge,      
+> > > > > > > > > +					&st->scale_pre_decml,
+> > > > > > > > > +					&st->scale_post_decml);
+> > > > > > > > > +
+> > > > > > > > > +	/* Set Sensitivity field ids, when there is no
+> > > > > > > > > individual
+> > > > > > > > > modifier */
+> > > > > > > > > +	if (hg_group->common_attributes.sensitivity.index < 0)
+> > > > > > > > > {
+> > > > > > > > > +		sensor_hub_input_get_attribute_info(
+> > > > > > > > > +			hsdev, HID_FEATURE_REPORT, usage_id,
+> > > > > > > > > +			HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSIT
+> > > > > > > > > IVITY_AB
+> > > > > > > > > S |
+> > > > > > > > > +				HID_USAGE_SENSOR_DATA_FIELD_CUS
+> > > > > > > > > TOM_VALU
+> > > > > > > > > E_1,
+> > > > > > > > > +			&hg_group-    
+> > > > > > > > > >common_attributes.sensitivity);    
+> > > > > > > > > +		dev_dbg(&pdev->dev, "Sensitivity index:report
+> > > > > > > > > %d:%d\n",
+> > > > > > > > > +			hg_group-    
+> > > > > > > > > >common_attributes.sensitivity.index,    
+> > > > > > > > > +			hg_group-      
+> > > > > > > > > > common_attributes.sensitivity.report_id);      
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +/* Function to initialize the processing for usage id */
+> > > > > > > > > +static int hinge_add_iio_device(struct platform_device
+> > > > > > > > > *pdev,
+> > > > > > > > > int
+> > > > > > > > > index,
+> > > > > > > > > +				const char *name, struct
+> > > > > > > > > hinge_state
+> > > > > > > > > **st)
+> > > > > > > > > +{
+> > > > > > > > > +	struct hid_sensor_hub_device *hsdev = pdev-    
+> > > > > > > > > >dev.platform_data;    
+> > > > > > > > > +	struct hinge_state *hg_state;
+> > > > > > > > > +	struct iio_dev *indio_dev;
+> > > > > > > > > +	int ret;
+> > > > > > > > > +
+> > > > > > > > > +	indio_dev =
+> > > > > > > > > +		devm_iio_device_alloc(&pdev->dev, sizeof(struct
+> > > > > > > > > hinge_state));      
+> > > > > > > > 
+> > > > > > > > sizeof (*hg_state) preferred.
+> > > > > > > >       
+> > > > > > > > > +	if (indio_dev == NULL)
+> > > > > > > > > +		return -ENOMEM;
+> > > > > > > > > +
+> > > > > > > > > +	hg_state = iio_priv(indio_dev);
+> > > > > > > > > +	hg_state->indio_dev = indio_dev;
+> > > > > > > > > +
+> > > > > > > > > +	indio_dev->num_channels = ARRAY_SIZE(hinge_channels);
+> > > > > > > > > +	indio_dev->channels =
+> > > > > > > > > +		kmemdup(hinge_channels, sizeof(hinge_channels),
+> > > > > > > > > GFP_KERNEL);      
+> > > > > > > > 
+> > > > > > > > I don't immediately see anything that is modifying channels. As
+> > > > > > > > such
+> > > > > > > > you
+> > > > > > > > should be able have it shared by all the instances.
+> > > > > > > >       
+> > > > > > > > > +	if (!indio_dev->channels)
+> > > > > > > > > +		return -ENOMEM;
+> > > > > > > > > +
+> > > > > > > > > +	ret = hinge_parse_report(
+> > > > > > > > > +		pdev, hsdev, hsdev->usage,
+> > > > > > > > > +		HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1 +
+> > > > > > > > > index,
+> > > > > > > > > hg_state);
+> > > > > > > > > +	if (ret) {
+> > > > > > > > > +		dev_err(&pdev->dev, "failed to setup
+> > > > > > > > > attributes\n");
+> > > > > > > > > +		goto error_free_dev_mem;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	indio_dev->dev.parent = &pdev->dev;
+> > > > > > > > > +	indio_dev->info = &hinge_info;
+> > > > > > > > > +	indio_dev->name = name;
+> > > > > > > > > +	indio_dev->modes = INDIO_DIRECT_MODE;
+> > > > > > > > > +
+> > > > > > > > > +	ret = hid_sensor_setup_trigger(indio_dev, name,
+> > > > > > > > > +				       &hg_group-    
+> > > > > > > > > >common_attributes);    
+> > > > > > > > > +	if (ret < 0) {
+> > > > > > > > > +		dev_err(&pdev->dev, "trigger setup failed\n");
+> > > > > > > > > +		goto error_free_dev_mem;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	ret = iio_device_register(indio_dev);
+> > > > > > > > > +	if (ret) {
+> > > > > > > > > +		dev_err(&pdev->dev, "device register
+> > > > > > > > > failed\n");
+> > > > > > > > > +		goto error_remove_trigger;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	*st = hg_state;
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > > +
+> > > > > > > > > +error_remove_trigger:
+> > > > > > > > > +	hid_sensor_remove_trigger(indio_dev, &hg_group-      
+> > > > > > > > > > common_attributes);      
+> > > > > > > > > +error_free_dev_mem:
+> > > > > > > > > +	kfree(indio_dev->channels);
+> > > > > > > > > +	return ret;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +/* Function to deinitialize the processing for usage id */
+> > > > > > > > > +static int hinge_remove_iio_device(struct platform_device
+> > > > > > > > > *pdev,
+> > > > > > > > > int index)
+> > > > > > > > > +{
+> > > > > > > > > +	struct hinge_state *hg_state = hg_group-    
+> > > > > > > > > >hg_states[index];    
+> > > > > > > > > +	struct iio_dev *indio_dev = hg_state->indio_dev;
+> > > > > > > > > +
+> > > > > > > > > +	iio_device_unregister(indio_dev);
+> > > > > > > > > +	hid_sensor_remove_trigger(indio_dev, &hg_group-      
+> > > > > > > > > > common_attributes);      
+> > > > > > > > > +	kfree(indio_dev->channels);
+> > > > > > > > > +
+> > > > > > > > > +	return 0;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +static int hid_hinge_probe(struct platform_device *pdev)
+> > > > > > > > > +{
+> > > > > > > > > +	struct hinge_state *hg_state;
+> > > > > > > > > +	struct hid_sensor_hub_device *hsdev = pdev-    
+> > > > > > > > > >dev.platform_data;    
+> > > > > > > > > +	static const char *const names[] = { "hinge", "screen",
+> > > > > > > > > "keyboard" };
+> > > > > > > > > +	int ret;
+> > > > > > > > > +	int i;
+> > > > > > > > > +
+> > > > > > > > > +	hg_group = devm_kzalloc(&pdev->dev, sizeof(struct
+> > > > > > > > > hinge_group),
+> > > > > > > > > +				GFP_KERNEL);      
+> > > > > > > > 
+> > > > > > > > As mentioned above, I'd really not expect to see a global like
+> > > > > > > > this.
+> > > > > > > > Technically nothing stops there being more than one instance of
+> > > > > > > > this
+> > > > > > > > device on a platform (even if that would be a bit odd) + it's
+> > > > > > > > almost
+> > > > > > > > always cleaner to not use a global in the first place.
+> > > > > > > >       
+> > > > > > > > > +	if (!hg_group)
+> > > > > > > > > +		return -ENOMEM;
+> > > > > > > > > +
+> > > > > > > > > +	hg_group->common_attributes.hsdev = hsdev;
+> > > > > > > > > +	hg_group->common_attributes.pdev = pdev;
+> > > > > > > > > +
+> > > > > > > > > +	ret = hid_sensor_parse_common_attributes(hsdev, hsdev-    
+> > > > > > > > > >usage,    
+> > > > > > > > > +						 &hg_group-      
+> > > > > > > > > > common_attributes);      
+> > > > > > > > > +	if (ret) {
+> > > > > > > > > +		dev_err(&pdev->dev, "failed to setup common
+> > > > > > > > > attributes\n");
+> > > > > > > > > +		return ret;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	atomic_set(&hg_group->common_attributes.data_ready, 0);
+> > > > > > > > > +	for (i = 0; i < IIO_DEV_NUM; i++) {
+> > > > > > > > > +		ret = hinge_add_iio_device(pdev, i, names[i],
+> > > > > > > > > &hg_state);
+> > > > > > > > > +		if (ret)
+> > > > > > > > > +			goto err_probe;
+> > > > > > > > > +
+> > > > > > > > > +		hg_group->hg_states[i] = hg_state;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	/* use the first iio device to do the PM */
+> > > > > > > > > +	platform_set_drvdata(pdev, hg_group->hg_states[0]-    
+> > > > > > > > > >indio_dev);    
+> > > > > > > > > +
+> > > > > > > > > +	hg_group->callbacks.send_event = hinge_proc_event;
+> > > > > > > > > +	hg_group->callbacks.capture_sample =
+> > > > > > > > > hinge_capture_sample;
+> > > > > > > > > +	hg_group->callbacks.pdev = pdev;
+> > > > > > > > > +	ret = sensor_hub_register_callback(hsdev, hsdev->usage,
+> > > > > > > > > +					   &hg_group-    
+> > > > > > > > > >callbacks);    
+> > > > > > > > > +	if (ret < 0)
+> > > > > > > > > +		dev_err(&pdev->dev, "callback reg failed\n");
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > > +
+> > > > > > > > > +err_probe:
+> > > > > > > > > +	for (i--; i >= 0; i--)
+> > > > > > > > > +		hinge_remove_iio_device(pdev, i);
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +/* Function to deinitialize the processing for usage id */
+> > > > > > > > > +static int hid_hinge_remove(struct platform_device *pdev)
+> > > > > > > > > +{
+> > > > > > > > > +	struct hid_sensor_hub_device *hsdev = pdev-    
+> > > > > > > > > >dev.platform_data;    
+> > > > > > > > > +	int i;
+> > > > > > > > > +
+> > > > > > > > > +	sensor_hub_remove_callback(hsdev, hsdev->usage);
+> > > > > > > > > +
+> > > > > > > > > +	for (i = 0; i < IIO_DEV_NUM; i++)
+> > > > > > > > > +		hinge_remove_iio_device(pdev, i);
+> > > > > > > > > +
+> > > > > > > > > +	return 0;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +static const struct platform_device_id hid_hinge_ids[] = {
+> > > > > > > > > +	{
+> > > > > > > > > +		/* Format: HID-SENSOR-INT-
+> > > > > > > > > usage_id_in_hex_lowercase */
+> > > > > > > > > +		.name = "HID-SENSOR-INT-020b",
+> > > > > > > > > +	},
+> > > > > > > > > +	{ /* sentinel */ }
+> > > > > > > > > +};
+> > > > > > > > > +MODULE_DEVICE_TABLE(platform, hid_hinge_ids);
+> > > > > > > > > +
+> > > > > > > > > +static struct platform_driver hid_hinge_platform_driver = {
+> > > > > > > > > +	.id_table = hid_hinge_ids,
+> > > > > > > > > +	.driver = {
+> > > > > > > > > +		.name	= KBUILD_MODNAME,
+> > > > > > > > > +		.pm	= &hid_sensor_pm_ops,
+> > > > > > > > > +	},
+> > > > > > > > > +	.probe		= hid_hinge_probe,
+> > > > > > > > > +	.remove		= hid_hinge_remove,
+> > > > > > > > > +};
+> > > > > > > > > +module_platform_driver(hid_hinge_platform_driver);
+> > > > > > > > > +
+> > > > > > > > > +MODULE_DESCRIPTION("HID Sensor Custom Hinge");
+> > > > > > > > > +MODULE_AUTHOR("Ye Xiang <xiang.ye@intel.com>");
+> > > > > > > > > +MODULE_LICENSE("GPL");      
+> > >   
+> 
