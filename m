@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835A52C4085
+	by mail.lfdr.de (Postfix) with ESMTP id F10022C4086
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgKYMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:49:34 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7988 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKYMtd (ORCPT
+        id S1729334AbgKYMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:49:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728404AbgKYMtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:49:33 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Ch1161SpnzhhMs;
-        Wed, 25 Nov 2020 20:49:14 +0800 (CST)
-Received: from [10.174.179.62] (10.174.179.62) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 25 Nov 2020 20:49:20 +0800
-Subject: Re: [RFC PATCH] blk-cgroup: prevent rcu_sched detected stalls
- warnings in blkg_destroy_all()
-To:     Tejun Heo <tj@kernel.org>
-CC:     <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <zhangxiaoxu5@huawei.com>,
-        <houtao1@huawei.com>
-References: <20201121083420.3857433-1-yukuai3@huawei.com>
- <X75O8BNVSX3ZE86w@mtj.duckdns.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <a24c48a3-6f17-98ac-47ad-770dd7e775ec@huawei.com>
-Date:   Wed, 25 Nov 2020 20:49:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 25 Nov 2020 07:49:47 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC08C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:49:47 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id f93so1437007qtb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:49:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZwS1O1QRPESovvA5etFTf/pcxDHt/UhBIA5zL8tN+Pg=;
+        b=vbK93vvrZhpXDwAcJRtdLaMnCfc/uZ+KT800wAHHYdFjGi6Bt7DFYqn/3nUo5hLCHI
+         EIBBEurVt9bYxKbJrOceBP3Tg2X2cLyR77OVChBZl7BnaEE5ityesyXui5gfeT7Ut5GC
+         pYAyVrGVEUC5uRswEQnkLcLmw8wv7NGGsY6JxO5r6bl1P4vCCc71P4qICm6EO0u6ch8l
+         7YGPb4iY0XyZaMd6q0jMXlgoUh005SpSVttoxhJqiA1Ec/wEKQDxwDdNkadcJSRYGRaI
+         z+rZKt/oFuAKUaihQ5Xl4kvAYZ9ehNj1To8D7c4kigdrVfZ05u0HFBC2CO8GXO6/BUSg
+         sNjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ZwS1O1QRPESovvA5etFTf/pcxDHt/UhBIA5zL8tN+Pg=;
+        b=p3FJ5fIeSWXfZUPuvBBOg3nlrjxTMOByD+Q2OQo6j/GDYlK1w3MJ60/CxHcyd4UGX3
+         FZbGIf9jOK2Ma3uq0Ey+25OLDp1bsvOYg+CGFLf9tHaVBoITsadAW5ScCPBTUeSrCNnh
+         2wUFRMe1zgQr3S/NeA9fxin4uAGUGJP8IMvzs4uDFex/tAg+vIcOJkZ7xV1dhPjAcevQ
+         mjv6s7Ex9y+mAZqwya/JGzjAgZ4+PS7U80FV/CVihbtw60kEDmoP/EyVhzb4pNdHQQK2
+         MTxzH3sVVxZPrgnKv0ZZTXICizP9HKeS/usVvtqk4P6qpbLW17Js08iAY4arLqgAFppM
+         Cs6Q==
+X-Gm-Message-State: AOAM531ut1PKKu87oj5GV0rdJ1n9J0EH94rC+ArUXARKuyyYKv34kRaf
+        ZxP7fBjOP+rx2EW9BL1ggIg=
+X-Google-Smtp-Source: ABdhPJxoE+YoHwb2IuVeBB2WxiPq0EqTXK1jaU3bircQxX9xvToZ8JK+7El9iIK01iOR96LGEOQi/w==
+X-Received: by 2002:ac8:6a16:: with SMTP id t22mr2863001qtr.304.1606308586313;
+        Wed, 25 Nov 2020 04:49:46 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id r127sm2448216qke.64.2020.11.25.04.49.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 04:49:45 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 25 Nov 2020 07:49:23 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Hui Su <sh_def@163.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/kernfs: remove the double check of dentry->inode
+Message-ID: <X75S00hif93gcd/q@mtj.duckdns.org>
+References: <20201113132143.GA119541@rlk>
 MIME-Version: 1.0
-In-Reply-To: <X75O8BNVSX3ZE86w@mtj.duckdns.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.62]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113132143.GA119541@rlk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/25 20:32, Tejun Heo wrote:
-> Hello,
+On Fri, Nov 13, 2020 at 09:21:43PM +0800, Hui Su wrote:
+> In both kernfs_node_from_dentry() and in
+> kernfs_dentry_node(), we will check the dentry->inode
+> is NULL or not, which is superfluous.
 > 
-> Thanks for the fix. A couple comments below.
+> So remove the check in kernfs_node_from_dentry().
 > 
-> On Sat, Nov 21, 2020 at 04:34:20PM +0800, Yu Kuai wrote:
->> +#define BLKG_DESTROY_BATH 4096
-> 
-> I think you meant BLKG_DESTROY_BATCH.
-> 
->>   static void blkg_destroy_all(struct request_queue *q)
->>   {
->>   	struct blkcg_gq *blkg, *n;
->> +	int count = BLKG_DESTROY_BATH;
-> 
-> But might as well just write 4096 here.
-> 
->>   	spin_lock_irq(&q->queue_lock);
->>   	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
->>   		struct blkcg *blkcg = blkg->blkcg;
->>   
->> +		/*
->> +		 * If the list is too long, the loop can took a long time,
->> +		 * thus relese the lock for a while when a batch of blkcg
->> +		 * were destroyed.
->> +		 */
->> +		if (!(--count)) {
->> +			count = BLKG_DESTROY_BATH;
->> +			spin_unlock_irq(&q->queue_lock);
->> +			cond_resched();
->> +			spin_lock_irq(&q->queue_lock);
-> 
-> You can't continue iteration after dropping both locks. You'd have to jump
-> out of loop and start list_for_each_entry_safe() again.
+> Signed-off-by: Hui Su <sh_def@163.com>
 
-Thanks for your review, it's right. On the other hand
-blkcg_activate_policy() and blkcg_deactivate_policy() might have the
-same issue. My idea is that inserting a bookmark to the list, and
-restard from here.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-By the way, I found that blk_throtl_update_limit_valid() is called from
-throtl_pd_offline(). If CONFIG_BLK_DEV_THROTTLING_LOW is off, lower
-limit will always be zero, therefor a lot of time will be wasted to
-iterate descendants to find a nonzero lower limit.
+Thanks.
 
-Do you think it's ok to do such modification:
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index b771c4299982..d52cac9f3a7c 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -587,6 +587,7 @@ static void throtl_pd_online(struct blkg_policy_data 
-*pd)
-         tg_update_has_rules(tg);
-  }
-
-+#ifdef CONFIG_BLK_DEV_THROTTLING_LOW
-  static void blk_throtl_update_limit_valid(struct throtl_data *td)
-  {
-         struct cgroup_subsys_state *pos_css;
-@@ -607,6 +608,11 @@ static void blk_throtl_update_limit_valid(struct 
-throtl_data *td)
-
-         td->limit_valid[LIMIT_LOW] = low_valid;
-  }
-+#else
-+static inline void blk_throtl_update_limit_valid(struct throtl_data *td)
-+{
-+}
-+#endif
-
-  static void throtl_upgrade_state(struct throtl_data *td);
-  static void throtl_pd_offline(struct blkg_policy_data *pd)
-
-Thanks!
-Yu Kuai
+-- 
+tejun
