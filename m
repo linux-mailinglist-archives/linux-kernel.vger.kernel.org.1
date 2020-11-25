@@ -2,143 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6138E2C38F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7EE2C3901
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbgKYGIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 01:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727529AbgKYGIl (ORCPT
+        id S1727737AbgKYGOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 01:14:41 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:13160 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgKYGOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 01:08:41 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A106C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 22:08:41 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id y24so1260561otk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 22:08:41 -0800 (PST)
+        Wed, 25 Nov 2020 01:14:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1606285373; x=1637821373;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=lEBuSKDz7A9I1573NJOWsVt5AfQ7DjKT9kZYIvRRgMY=;
+  b=YqG/8grl6Q57T1VWoLxqnvtkJwv0SrtJnU2hC2XJEP8OV1be8sHeDSqp
+   Y6n6yjYKlHF0Lzp1sm5Jfc5EcqyANhDbgD3J+gfJivIOHOsy31XKflv50
+   gNbpxIMZf9yMqxVgBVMw6d3MdER2FrsFI+vHrEcKpz9GcVEbndIyqs+6D
+   VXzO23KW1wU8e8uHlljeHUvpNYmmsuiKzHUiwjqnmJV97QMH85BfZpGGV
+   meG5OlM8uzfKeOSb/ygHLnGvdA8vxNVVT6Pwl1/nhp8jiZ5vSMOyrwiVw
+   b+qM79S485U/cMYoqXELSDOoTbgArUSmeZ4u/dl+e84TEER3r2iMfhgUY
+   Q==;
+IronPort-SDR: Gcx+TvSy0NXU+geL0ybbGY9dqa6N8jky5Ezc+0CyfeHuwxWW9auFQdTgjHbExi8+5hPtZvP7qN
+ 57YDpISE6hQT+lIPCsoZcXYzNpZKdUDj9JyE9wU6bjCgK+cvgpMhuGctLCPSDH6t1fO9wS9eqO
+ QRFduv+afHa+lYUdq4Ai7DHirL7EpiPHm/UCdPCbyjywSj64QDHpoa/ns1ThFuJZnLbWxYkrSL
+ lixtT26fQ3ikJ8+110/82770ayE15Z16/MAQsxeBivQd3Z87jK6Jg/8tZ+MoFTFyB4kM7SVSVG
+ 9/k=
+X-IronPort-AV: E=Sophos;i="5.78,368,1599494400"; 
+   d="scan'208";a="257062168"
+Received: from mail-dm6nam11lp2171.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.171])
+  by ob1.hgst.iphmx.com with ESMTP; 25 Nov 2020 14:22:51 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FOvLQbboz4p3Vr9jHOD7ao1l9LBrIrRtTW8Mo264nh4b2E3qG5QDbY4ubqiuNLAHPFwSi/59bN2YTONL8LEFqyIMXI6XdMAfWumaRK4oeq9xiq9ilymEE4nELDc+BruOz5le3jugw4IbFc7Pilfrdk98tGTQsgI6loAnpkLgpV821Sarhpz0r3E0SR2uyHoSeIXX+mTt/uROweNFCVKgg/YXfxlRHz0WVAv3k+UPaqSBWEalPrt2HtrJYXZroC1UqEdEpBfdzExZJfocNcTOb2aU2k7OVxMKWQYb9vtXWSD2iv7WamRjPm/pTY7xUZLqK0N7tYEF6kDNfE6bK9froQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cUy+IuRwKwEINnPViVgyD8SJ7lOCv5zw013XMzPCDPU=;
+ b=lbg6OJr4h2zQp8K4vdagAJ+ndc0koYZpAnvCJoZDHtin/vV8B99V+GjH54NSVQ3He32VbYVZKRSNrb9ujurPvlaWQatYlu1inBSeunDjofClKXz3cpJVKDiHoOPaiR6WTbM8M228X2Mzi4dNWfBIpbuSj21KBUSTujqHfOaYk0f85KMsSzxV9ygS02uJtQp8Kw2uh9hIkHVSoGZ3rsWX8WOU2D5VfY6BkfMTQSEV03swOAZsUJFAnFPkbRz+pH35DHISxZGDrAofX3q85jN3psAsV7tRYSuy+K7MNFO3nvWCpWSeufQ8inok0ErhwTTyVgWKQx9vVVfZ3cuZfzRwPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VaBKKtVpxSZ3Ss3dI1KLi4Zn07ADzR3ErIEYv2rzINA=;
-        b=ZPWNeabsa3es0f5hvmx5rpmvmadljn1fx39W2nxEFiM6S1awRNFuoojfNdTjaXefcx
-         qdlVfthusC/ycUW1ZAt4iwkKKweZOwN9uNKXrMlpNR/68vbZCsifsgwdjjvChJ39QxBt
-         7nmpFeV+pRmJrNPi0GsuseRXiiepBWPrlyTPRkUz+eKzn90HVvd/6Qx2UQZW241R+ZWU
-         SMnuvCO4V4FwJbAMlfr2GVEuMpNIqJ/91m8erkPv2wXks6m+BOk1SnBWBJfdXKTkj+2Z
-         ByERmMqbyE7hFS+PU4aIHFss8Dw+MvLG5Lxl2hoaKNhFvphZQxJ8YAj2JerX8Z7tNTU+
-         p5oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VaBKKtVpxSZ3Ss3dI1KLi4Zn07ADzR3ErIEYv2rzINA=;
-        b=P5YMuwmDCy9fjGttBUEHhHNHhbs7UoygA/WK5wP4SEhoWg4E9tFhaxy51fvVf9Sqvx
-         97GBzjn4HqDue5oVp9TEz//l/ZOVbl0urx9d90Zhs+SrYbfWczLnyN4cM6vm6lUC79Uz
-         Xb70MAC5DfyGJLLdDIFD3HWnByOxVF1N+B8z5DqbN21Riv5VR3A9hbGZOJEDbG8BjddZ
-         7cBVqVPYtUSlhxQ5788GNw/YWWrfJ2u4blSR9DAevqbw1n49JKtayabTMEnsUKhADtEs
-         PC9gXxRNbLyhpkDv7M/c4Bzj/WiRH4B23scSihxOYino+BhpcCtS+PxECqcvSNSU/6wK
-         QRPg==
-X-Gm-Message-State: AOAM531v3eAAPBadW4JuJVZdAOhKv/ra7RhiXGGpfGTZZOp9RTKfYRGg
-        oWsW9v5+FBcthyMYrnIHy0jnUQ==
-X-Google-Smtp-Source: ABdhPJyXMGNAdk0LYHAP1IoQUMUGQadeLXFzjB2mODbIHaVopvUFo1lp+iWoI4MvfkZqkOuLblhkCQ==
-X-Received: by 2002:a9d:6212:: with SMTP id g18mr1704768otj.89.1606284520272;
-        Tue, 24 Nov 2020 22:08:40 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x9sm765968otk.9.2020.11.24.22.08.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 22:08:39 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: c630: Expose LID events
-Date:   Wed, 25 Nov 2020 00:08:38 -0600
-Message-Id: <20201125060838.165576-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cUy+IuRwKwEINnPViVgyD8SJ7lOCv5zw013XMzPCDPU=;
+ b=icAPg7WQDFdQnqQOMzqSInGhKOH9GnmoU+7mg/hx2uGpvbMUYKS7JCNLQjgMBRzkc3n0skCqDhz9MHDXbo8UI/W2CHh8GUIxWTRodXU3x0MSbxZSu399eyRewYpoJ7YZ+pMsx8b5J37ru/sTCCQYKRUu4FCwStr3hcPFIheftl0=
+Received: from CH2PR04MB6522.namprd04.prod.outlook.com (2603:10b6:610:34::19)
+ by CH2PR04MB6538.namprd04.prod.outlook.com (2603:10b6:610:35::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Wed, 25 Nov
+ 2020 06:14:38 +0000
+Received: from CH2PR04MB6522.namprd04.prod.outlook.com
+ ([fe80::897c:a04b:4eb0:640a]) by CH2PR04MB6522.namprd04.prod.outlook.com
+ ([fe80::897c:a04b:4eb0:640a%7]) with mapi id 15.20.3589.022; Wed, 25 Nov 2020
+ 06:14:38 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] riscv: defconfig: k210: Disable CONFIG_VT
+Thread-Topic: [PATCH] riscv: defconfig: k210: Disable CONFIG_VT
+Thread-Index: AQHWwpO1HQiFqsmnr0WJzbSNTitMeQ==
+Date:   Wed, 25 Nov 2020 06:14:37 +0000
+Message-ID: <CH2PR04MB652231C5B82E9F8184F496D8E7FA0@CH2PR04MB6522.namprd04.prod.outlook.com>
+References: <20201124185738.3541314-1-geert@linux-m68k.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-m68k.org; dkim=none (message not signed)
+ header.d=none;linux-m68k.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2400:2411:43c0:6000:7477:1782:371:aeb9]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f0c68056-809c-438e-eca2-08d891096362
+x-ms-traffictypediagnostic: CH2PR04MB6538:
+x-microsoft-antispam-prvs: <CH2PR04MB653843957CF7A4BFA4280BD8E7FA0@CH2PR04MB6538.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Z4x4bgqKvGW6v530qpF2GQ07J3smFFhF/LjLwNBS5zCFgxOrFGGRUZrDrB5dYNNsff0kFlknFpwGZ0XWsdWpE8ci2zDsQEbQh0uPcMnt10s08DS+Pn3mp6AjRSkpLrWXxdZn26tadbz77uod6p5wXeAkThHdtves0kpXXZTdRf11vb58oOxbY6YSdCkXsicG7/ZPf0qVJhnCjxgOAkl+a+dYYLhG15U4DKDflI1Lidp9IBgACOC4WG0izb+j55AcR+xG/3yuyBy2+hgQEGYXZKDWnpEdXXAMFATbpgfaMLNedPo9fyd3WLFloJUlc+7y8bcbqNDmWmOJb0SNss7LYA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6522.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(478600001)(83380400001)(71200400001)(7696005)(91956017)(66476007)(53546011)(6506007)(76116006)(66946007)(52536014)(54906003)(4326008)(64756008)(5660300002)(66446008)(186003)(9686003)(6916009)(66556008)(86362001)(8936002)(8676002)(33656002)(316002)(2906002)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?8YqnsJviO1yxQ8LJePpJ7pYxHegvwm8qO/IlHsAujIGW0bzzUHGF/RIJWTo2?=
+ =?us-ascii?Q?Lvu0LVBmunWttEv7VmsumPjVGgM9pPSz2sTWl0MKziZPZNgcX0cwPsVNt5B2?=
+ =?us-ascii?Q?MP/J0ikLN44jNlrTqNxgmjfrg3KNgc4WJQYupEG153csXE1ZMZeA5q5odfuO?=
+ =?us-ascii?Q?M6XtEMPuuNuNLfK1lgXLnJr05h5cGrAeJ0OaFS3Q+BzYTibqlgxmzfpncDoy?=
+ =?us-ascii?Q?CBxWtKs2O4s0bm3UINpy7+/I+kyYfQzyBMNBvyBV0RRULVO10/85VZHhK96G?=
+ =?us-ascii?Q?uogeZxowD6eXLKO74fs1792Lj5sVeDGa6eoCwV+BhGms6/U6j4t/teXENWhc?=
+ =?us-ascii?Q?EtZFePB2nB3LstFTzZXBbjbSDzX+5FD5VEQD1qZcc4h+a/B1lOJjmmedkztX?=
+ =?us-ascii?Q?w+NizvTeckAvWEdyAuzInznWQqWrRVMJU46x+Ynst0nWH9aHH7EX3f/8d810?=
+ =?us-ascii?Q?/KBLLjuNcpBiUFTCpgaBV1MsgUQbpwU+CtQV9sZ/AhqzMFVZpPenkTbxHPiV?=
+ =?us-ascii?Q?C4EEU8s8+SFkWtvX7YEMiA4sqAYV2ZJe/XOB7NgCg/boWC3F1xCA9Y5plROp?=
+ =?us-ascii?Q?97BOh/ftgd9tQPXgI6vFI6CZFqRExGLxDDWlgNexG57FEhP5hE39C1t59ljZ?=
+ =?us-ascii?Q?Gxc0FmBBz9Loj2iB9rRQJd/OHHCLvm/FKY3TBQH8R1mzGTaqXQkw71MKyGRK?=
+ =?us-ascii?Q?eRAWK2kGDSV8CPjmPVYYCRzJkHLmAtViJo41Sg4hVnHyyBK5ubGaeddG/MXk?=
+ =?us-ascii?Q?oepdvt5AifqQ62bsPWJSB85SK324+4fclVq+fmY+l22zQ/T9cnD5QxETOfkQ?=
+ =?us-ascii?Q?x8oO74PJ5SiBUSjG/ZqADG0biZSKfmkcVO6YWKtXdJcxQYzwX717nyEKcQxO?=
+ =?us-ascii?Q?dCBAYoML8g61JcqfhQ+9zw/AuBFbd2dNV0BxzhnbXTOUf6GvTzmVwDbMm/vY?=
+ =?us-ascii?Q?zbFmBj+qtTa33U0pgX48A2HjAYbs8UCPElKUGBLOxZiZzkYRvjhf3DpYEvb2?=
+ =?us-ascii?Q?QhAfUqjGUMnKA//b1VheJxfLwGaXCMH2IJfiPvdlnnVp0mVeL4++fPDAXagK?=
+ =?us-ascii?Q?Rz7i49Bu?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6522.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0c68056-809c-438e-eca2-08d891096362
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 06:14:37.9721
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: o0VzY5KycZc0FOzttIzRr777ywO+D7HNsX/rTKdI5eWpyfpu9Tax2JxIuHjEpaaRtkhzflO/ajT+t2tr6E+y0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6538
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LID state can be read from GPIO 124 and the "tablet mode" from GPIO
-95, expose these to the system using gpio-keys and mark the falling edge
-of the LID state as a wakeup-source - to wake the system from suspend.
-
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index bb314973eb0c..f956dbf664c1 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -8,6 +8,8 @@
- /dts-v1/;
- 
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/gpio-keys.h>
-+#include <dt-bindings/input/input.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include <dt-bindings/sound/qcom,q6afe.h>
- #include <dt-bindings/sound/qcom,q6asm.h>
-@@ -21,6 +23,27 @@ / {
- 	aliases {
- 		hsuart0 = &uart6;
- 	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&lid_pin_active>, <&mode_pin_active>;
-+
-+		lid {
-+			gpios = <&tlmm 124 GPIO_ACTIVE_HIGH>;
-+			linux,input-type = <EV_SW>;
-+			linux,code = <SW_LID>;
-+			wakeup-source;
-+			wakeup-event-action = <EV_ACT_DEASSERTED>;
-+		};
-+
-+		mode {
-+			gpios = <&tlmm 95 GPIO_ACTIVE_HIGH>;
-+			linux,input-type = <EV_SW>;
-+			linux,code = <SW_TABLET_MODE>;
-+		};
-+	};
- };
- 
- &adsp_pas {
-@@ -466,6 +489,22 @@ wcd_intr_default: wcd_intr_default {
- 		bias-pull-down;
- 		drive-strength = <2>;
- 	};
-+
-+	lid_pin_active: lid-pin {
-+		pins = "gpio124";
-+		function = "gpio";
-+
-+		input-enable;
-+		bias-disable;
-+	};
-+
-+	mode_pin_active: mode-pin {
-+		pins = "gpio95";
-+		function = "gpio";
-+
-+		input-enable;
-+		bias-disable;
-+	};
- };
- 
- &uart6 {
--- 
-2.29.2
-
+On 2020/11/25 3:57, Geert Uytterhoeven wrote:=0A=
+> There is no need to enable Virtual Terminal support in the Canaan=0A=
+> Kendryte K210 defconfigs, as no terminal devices are supported and=0A=
+> enabled.  Hence disable CONFIG_VT, and remove the no longer needed=0A=
+> override for CONFIG_VGA_CONSOLE.=0A=
+> =0A=
+> This reduces kernel size by ca. 65 KiB.=0A=
+=0A=
+Indeed, nice saving. Just tested, and all is good.=0A=
+=0A=
+Can I squash this patch into the 2 defconfig update patches of the series,=
+=0A=
+adding your signed-off-by ? Or would you prefer that I keep it as a separat=
+e patch ?=0A=
+=0A=
+> =0A=
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>=0A=
+> ---=0A=
+> Against k210-sysctl-v15=0A=
+> ---=0A=
+>  arch/riscv/configs/nommu_k210_defconfig        | 2 +-=0A=
+>  arch/riscv/configs/nommu_k210_sdcard_defconfig | 2 +-=0A=
+>  2 files changed, 2 insertions(+), 2 deletions(-)=0A=
+> =0A=
+> diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs=
+/nommu_k210_defconfig=0A=
+> index df89d53bd125679b..9262223037e43479 100644=0A=
+> --- a/arch/riscv/configs/nommu_k210_defconfig=0A=
+> +++ b/arch/riscv/configs/nommu_k210_defconfig=0A=
+> @@ -48,6 +48,7 @@ CONFIG_DEVTMPFS_MOUNT=3Dy=0A=
+>  # CONFIG_INPUT_KEYBOARD is not set=0A=
+>  # CONFIG_INPUT_MOUSE is not set=0A=
+>  # CONFIG_SERIO is not set=0A=
+> +# CONFIG_VT is not set=0A=
+>  # CONFIG_LEGACY_PTYS is not set=0A=
+>  # CONFIG_LDISC_AUTOLOAD is not set=0A=
+>  # CONFIG_HW_RANDOM is not set=0A=
+> @@ -67,7 +68,6 @@ CONFIG_GPIO_SIFIVE=3Dy=0A=
+>  CONFIG_POWER_RESET=3Dy=0A=
+>  CONFIG_POWER_RESET_SYSCON=3Dy=0A=
+>  # CONFIG_HWMON is not set=0A=
+> -# CONFIG_VGA_CONSOLE is not set=0A=
+>  # CONFIG_HID is not set=0A=
+>  # CONFIG_USB_SUPPORT is not set=0A=
+>  CONFIG_NEW_LEDS=3Dy=0A=
+> diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/=
+configs/nommu_k210_sdcard_defconfig=0A=
+> index 3d2cb4747e7f85b7..4cd1715dd0cf3747 100644=0A=
+> --- a/arch/riscv/configs/nommu_k210_sdcard_defconfig=0A=
+> +++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig=0A=
+> @@ -41,6 +41,7 @@ CONFIG_DEVTMPFS_MOUNT=3Dy=0A=
+>  # CONFIG_INPUT_KEYBOARD is not set=0A=
+>  # CONFIG_INPUT_MOUSE is not set=0A=
+>  # CONFIG_SERIO is not set=0A=
+> +# CONFIG_VT is not set=0A=
+>  # CONFIG_LEGACY_PTYS is not set=0A=
+>  # CONFIG_LDISC_AUTOLOAD is not set=0A=
+>  # CONFIG_HW_RANDOM is not set=0A=
+> @@ -60,7 +61,6 @@ CONFIG_GPIO_SIFIVE=3Dy=0A=
+>  CONFIG_POWER_RESET=3Dy=0A=
+>  CONFIG_POWER_RESET_SYSCON=3Dy=0A=
+>  # CONFIG_HWMON is not set=0A=
+> -# CONFIG_VGA_CONSOLE is not set=0A=
+>  # CONFIG_HID is not set=0A=
+>  # CONFIG_USB_SUPPORT is not set=0A=
+>  CONFIG_MMC=3Dy=0A=
+> =0A=
+=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
