@@ -2,88 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073D52C49DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FF32C49DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbgKYV2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:28:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732060AbgKYV2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:28:01 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 020EB206E0;
-        Wed, 25 Nov 2020 21:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606339680;
-        bh=yEcWykMhdTmveduVtuMvF2XnF4rc1S8SYqqjK1rp9k4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dJkrg8GItUQKlYAcWSAVHfZsBt88Yp3U2B8V8VwhEKfHkDEXjGhHpx8C3BjoYKwP/
-         Tzz5CFy5twTGW5i8YM5NYtOA+Utuky+TPGTsWxMF1y0R9u5C47mRJ+dle9A4dOg2b1
-         ojrb27UXPWnVMNCt57S+nC66GRdufnxjX9+xfRAw=
-Date:   Wed, 25 Nov 2020 13:27:58 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     =?UTF-8?B?xYF1a2Fzeg==?= Stelmach <l.stelmach@samsung.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?UTF-8?B?QmFydMWCb21pZWogxbtvbG5pZXJr?= =?UTF-8?B?aWV3aWN6?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v7 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet
- Adapter Driver
-Message-ID: <20201125132758.4554afe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201124120330.32445-4-l.stelmach@samsung.com>
-References: <20201124120330.32445-1-l.stelmach@samsung.com>
-        <CGME20201124120337eucas1p268c7e3147ea36e62d40d252278c5dcb7@eucas1p2.samsung.com>
-        <20201124120330.32445-4-l.stelmach@samsung.com>
+        id S1732157AbgKYV2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:28:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732060AbgKYV2e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:28:34 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21933C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:28:34 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id k11so879130pgq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:28:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TEKekla+RKDZzxcpwcoco3ZCfku7RtHZxgTQ+E5cu/c=;
+        b=ExcUbg65EY3y8gWSVHVqTaSz+Lpco8rTUp4reA9wkWRgUfxeEoqfhUp+yFfSlI27pj
+         wV6DdK9Fk1cwLcPh6G/FtigrtG/fYlWEvkXxCxsWvuoHIhRculNe4WrEtfsQZzSvIKfB
+         Ee27Qlf73/iJd7Qpl8o8wR3ME4YPsTHwZEY4w2zTpSDz4U0pSM8rUiNm2XHp3vH40bv2
+         s1sI948fDe1bELAFTeTrgQ8mhR65eWc8J7Mux4b9IvGgRBl2olx5NLJRz4jL+VvAaPx+
+         E+eal8O9Hh7L6earr9Mdf3u3oX5QTaVdCBTaJmRDjn8SF1pEFF6sNKzYUkSJ/V3W1YpQ
+         gaoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TEKekla+RKDZzxcpwcoco3ZCfku7RtHZxgTQ+E5cu/c=;
+        b=H+oKQ/mkoY8fS0jOpsLKJGCXGFchld1tcfjsslHcXAYOwdnWQ+4m3ufN5r5g++8HSI
+         JhfPRX0IwTr6V79mEwcqVMhuyTjItSWogZ/opKbSUuWSp6geXXI7EQQEu/XViMv3FJcq
+         U2vueExpq7rarNRbD5SQnFJlBEw5qkijigJDk9Ipk0RNWLTQzYeGwPLGQ93X8ieq9g9O
+         LSguPjy5oadKH6x0v3Tc4LAqyTbmkdkw+3pyHxJHt4HnvnTisIOj4TPXZHFHun2E+0I5
+         NwjfqKTyUrd5p8kaqZ87WWb72ZZiGYfrWWg72SWi+9YVDpiFCy86zAMrYh0hi+4peQuJ
+         2nwA==
+X-Gm-Message-State: AOAM533BFsMYf4YqifUzbmmGMDcpLaTpQj9nlDKM4y1mkvgjfF8kwhvS
+        g5Zj+hO8lubqLPNShhgwRDY=
+X-Google-Smtp-Source: ABdhPJxwZKFU0snSRdC6E+i9U80yIL7Tp/g26zas6rd/Pi1EDR2u8Vod6qRubnR9DTVQOQAo9tg/1w==
+X-Received: by 2002:a63:5322:: with SMTP id h34mr4431634pgb.95.1606339713513;
+        Wed, 25 Nov 2020 13:28:33 -0800 (PST)
+Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id s5sm2860628pgc.15.2020.11.25.13.28.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 13:28:31 -0800 (PST)
+Date:   Thu, 26 Nov 2020 08:28:28 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 13/32] sched: Trivial forced-newidle balancer
+Message-ID: <20201125212828.GA163610@balbir-desktop>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-14-joel@joelfernandes.org>
+ <20201123043836.GG110669@balbir-desktop>
+ <1de89fd3-fb5f-5aaa-8ea6-7a12d3307fa4@linux.intel.com>
+ <20201123233508.GC8893@balbir-desktop>
+ <2277bfa9-7f67-6b66-b2db-a2130993de53@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2277bfa9-7f67-6b66-b2db-a2130993de53@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 13:03:30 +0100 =C5=81ukasz Stelmach wrote:
-> ASIX AX88796[1] is a versatile ethernet adapter chip, that can be
-> connected to a CPU with a 8/16-bit bus or with an SPI. This driver
-> supports SPI connection.
->=20
-> The driver has been ported from the vendor kernel for ARTIK5[2]
-> boards. Several changes were made to adapt it to the current kernel
-> which include:
->=20
-> + updated DT configuration,
-> + clock configuration moved to DT,
-> + new timer, ethtool and gpio APIs,
-> + dev_* instead of pr_* and custom printk() wrappers,
-> + removed awkward vendor power managemtn.
-> + introduced ethtool tunable to control SPI compression
->=20
-> [1] https://www.asix.com.tw/products.php?op=3DpItemdetail&PItemID=3D104;6=
-5;86&PLine=3D65
-> [2] https://git.tizen.org/cgit/profile/common/platform/kernel/linux-3.10-=
-artik/
->=20
-> The other ax88796 driver is for NE2000 compatible AX88796L chip. These
-> chips are not compatible. Hence, two separate drivers are required.
->=20
-> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+On Tue, Nov 24, 2020 at 08:32:01AM +0800, Li, Aubrey wrote:
+> On 2020/11/24 7:35, Balbir Singh wrote:
+> > On Mon, Nov 23, 2020 at 11:07:27PM +0800, Li, Aubrey wrote:
+> >> On 2020/11/23 12:38, Balbir Singh wrote:
+> >>> On Tue, Nov 17, 2020 at 06:19:43PM -0500, Joel Fernandes (Google) wrote:
+> >>>> From: Peter Zijlstra <peterz@infradead.org>
+> >>>>
+> >>>> When a sibling is forced-idle to match the core-cookie; search for
+> >>>> matching tasks to fill the core.
+> >>>>
+> >>>> rcu_read_unlock() can incur an infrequent deadlock in
+> >>>> sched_core_balance(). Fix this by using the RCU-sched flavor instead.
+> >>>>
+> >>> ...
+> >>>> +
+> >>>> +		if (p->core_occupation > dst->idle->core_occupation)
+> >>>> +			goto next;
+> >>>> +
+> >>>
+> >>> I am unable to understand this check, a comment or clarification in the
+> >>> changelog will help. I presume we are looking at either one or two cpus
+> >>> to define the core_occupation and we expect to match it against the
+> >>> destination CPU.
+> >>
+> >> IIUC, this check prevents a task from keeping jumping among the cores forever.
+> >>
+> >> For example, on a SMT2 platform:
+> >> - core0 runs taskA and taskB, core_occupation is 2
+> >> - core1 runs taskC, core_occupation is 1
+> >>
+> >> Without this check, taskB could ping-pong between core0 and core1 by core load
+> >> balance.
+> > 
+> > But the comparison is p->core_occuption (as in tasks core occuptation,
+> > not sure what that means, can a task have a core_occupation of > 1?)
+> >
+> 
+> p->core_occupation is assigned to the core occupation in the last pick_next_task.
+> (so yes, it can have a > 1 core_occupation).
+>
 
-drivers/net/ethernet/asix/ax88796c_main.c: In function =E2=80=98ax88796c_pr=
-obe=E2=80=99:
-drivers/net/ethernet/asix/ax88796c_main.c:966:32: warning: conversion from =
-=E2=80=98long unsigned int=E2=80=99 to =E2=80=98u32=E2=80=99 {aka =E2=80=98=
-unsigned int=E2=80=99} changes value from =E2=80=9818446744073709486079=E2=
-=80=99 to =E2=80=984294901759=E2=80=99 [-Woverflow]
-  966 |  ax_local->mdiobus->phy_mask =3D ~BIT(AX88796C_PHY_ID);
-      |                                ^
+Hmm.. I find that hard to interpret that. But I am happy to re-read the
+code again.
+
+Balbir Singh.
