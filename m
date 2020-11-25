@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE942C49F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7862C4A11
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731783AbgKYVd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:33:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730364AbgKYVdZ (ORCPT
+        id S1732405AbgKYVdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:33:35 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:38476 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730364AbgKYVdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:33:25 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BE9C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:33:25 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id n137so3578987pfd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:33:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9wOr1Z3d7SWlchBOy6uxh4z9+jZco6+UMrcMQHjYMTg=;
-        b=t2inMCCIEc63pZVJi8AhgGStflyTI1sfa5pD0zhJLM1aOfwmUOMZnaQIFAtyakXOfZ
-         iBa1tcN0wI2SzCbV7DKXgXOKUVpWAqmUiT9f3fftNj4OkBXpu8YIvfaNnUw2BjejIOqO
-         EXLnqOuu4vadYoFhS+1qppZw8iyWJPnZprYHDzWkB+PiFdBu6MKgdR+s8fb+3W0nLqqP
-         RzaXUtOGqZXImR75rRlETuWLuQrCj/+mOdkQ8NMaUDGaIufxA0cJlzdXRiXWFbkm87da
-         qP7W9GLxi3+ZjYxTpg2dq/7YrEIhnQcXe4s796soMoUUIT3s4F4+MQ0939Dm49r8I5oY
-         hfHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9wOr1Z3d7SWlchBOy6uxh4z9+jZco6+UMrcMQHjYMTg=;
-        b=kHZHNgW8ivVPLrfQe0gs9nxd/8/a2pA17rvjwSllRmcQsfMGmMrMkEUeD3vkgyuN2x
-         xlqk1q9K0ZtrgwsZZCytHi6F3AQCSBPwuECH4gFx0/Oudh1T0M77aVZxqO+hl2HQVDK/
-         TId/MKFKtXp8NXq2UzS1ETvtvvr1/OLTp1Y1M1/UPp3bbmM6XIYqiVHhoZmHiFnIguMp
-         M+pmy8/3Aw+YRv9+slBpUfAUalG4xpEm2KZiVcjJ7zm8IrkLK5YuZbmgRKughYXTSPTp
-         HxX+bAkWZ+efl8xNR80z6CUFoM1Hu1uCtZDfAAerIdKOLVSKwDwbGgL4/gv+gdCK4kGl
-         xZRQ==
-X-Gm-Message-State: AOAM530nXqUyT7tj3b16OELn2pqwRBAA3AO8osunQmdCgOucdVeIkCbh
-        FZbClingmwUTlxfYcRSJHtqjsg==
-X-Google-Smtp-Source: ABdhPJwelwPJ2/9ktxZ/fmdE6ZLyVDWLIV9fPYCcaVDkn78bhaY41J5Ywd394iAHQq5OTnX9qKTzYg==
-X-Received: by 2002:a17:90a:65c9:: with SMTP id i9mr6528623pjs.125.1606340005132;
-        Wed, 25 Nov 2020 13:33:25 -0800 (PST)
-Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
-        by smtp.gmail.com with ESMTPSA id s21sm2690987pgm.65.2020.11.25.13.33.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 13:33:24 -0800 (PST)
-Date:   Wed, 25 Nov 2020 21:33:20 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     =?utf-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Suravee.Suthikulpanit@amd.com" <Suravee.Suthikulpanit@amd.com>,
-        =?utf-8?B?a3ZtQHZnZXIua2VybmVsLm9yZ++8mw==?= <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kvm/svm: fixed a potential register value inconsistent
- with variable ldr_reg
-Message-ID: <20201125213320.GB450871@google.com>
-References: <HKAPR02MB429179237547D0B00A2F2C6FE0FA0@HKAPR02MB4291.apcprd02.prod.outlook.com>
+        Wed, 25 Nov 2020 16:33:32 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 9789F29FB0;
+        Wed, 25 Nov 2020 16:33:24 -0500 (EST)
+Date:   Thu, 26 Nov 2020 08:33:24 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
+        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
+        bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
+        linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
+ Clang
+In-Reply-To: <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2011260750300.6@nippy.intranet>
+References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com> <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+ <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com> <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com> <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com> <20201123130348.GA3119@embeddedor>
+ <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com> <202011241327.BB28F12F6@keescook> <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com> <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <HKAPR02MB429179237547D0B00A2F2C6FE0FA0@HKAPR02MB4291.apcprd02.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020, 彭浩(Richard) wrote:
-> If the ldr value is read out to zero, it does not call avic_ldr_write to update
-> the virtual register, but the variable ldr_reg is updated.
+On Wed, 25 Nov 2020, Nick Desaulniers wrote:
 
-Is there a failure associated with this?  And/or can you elaborate on why
-skipping the svm->ldr_reg is correct?
+> So developers and distributions using Clang can't have 
+> -Wimplicit-fallthrough enabled because GCC is less strict (which has 
+> been shown in this thread to lead to bugs)?  We'd like to have nice 
+> things too, you know.
+> 
 
-I'm not familiar with the AVIC spec, and it's not at all clear to me what the
-correct behavior should be for the LDR updates.  E.g. skipping the svm->ldr_reg
-update appears to break avic_handle_apic_id_update(), which will see a stale
-svm->ldr_reg and call avic_invalidate_logical_id_entry() when it presumably
-should not.
+Apparently the GCC developers don't want you to have "nice things" either. 
+Do you think that the kernel should drop gcc in favour of clang?
+Or do you think that a codebase can somehow satisfy multiple checkers and 
+their divergent interpretations of the language spec?
 
-> Fixes: 98d90582be2e ("SVM: Fix AVIC DFR and LDR handling")
-> Signed-off-by: Peng Hao <richard.peng@oppo.com>
-> ---
->  arch/x86/kvm/svm/avic.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
+> This is not a shiny new warning; it's already on for GCC and has existed 
+> in both compilers for multiple releases.
 > 
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index 8c550999ace0..318735e0f2d0 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -417,7 +417,6 @@ static void avic_invalidate_logical_id_entry(struct kvm_vcpu *vcpu)
-> 
->  static int avic_handle_ldr_update(struct kvm_vcpu *vcpu)
->  {
-> -       int ret = 0;
->         struct vcpu_svm *svm = to_svm(vcpu);
->         u32 ldr = kvm_lapic_get_reg(vcpu->arch.apic, APIC_LDR);
->         u32 id = kvm_xapic_id(vcpu->arch.apic);
-> @@ -427,13 +426,16 @@ static int avic_handle_ldr_update(struct kvm_vcpu *vcpu)
-> 
->         avic_invalidate_logical_id_entry(vcpu);
-> 
-> -       if (ldr)
-> +       if (ldr) {
-> +               int ret;
->                 ret = avic_ldr_write(vcpu, id, ldr);
-> 
-> -       if (!ret)
-> -               svm->ldr_reg = ldr;
-> -
-> -       return ret;
-> +               if (!ret)
-> +                       svm->ldr_reg = ldr;
-> +               else
-> +                       return ret;
-> +       }
-> +       return 0;
-> }
-> 
->  static int avic_handle_apic_id_update(struct kvm_vcpu *vcpu)
-> --
-> 2.18.4
+
+Perhaps you're referring to the compiler feature that lead to the 
+ill-fated, tree-wide /* fallthrough */ patch series.
+
+When the ink dries on the C23 language spec and the implementations figure 
+out how to interpret it then sure, enforce the warning for new code -- the 
+cost/benefit analysis is straight forward. However, the case for patching 
+existing mature code is another story.
