@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8CB2C4044
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C884A2C404B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729397AbgKYMeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:34:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37282 "EHLO mx2.suse.de"
+        id S1729429AbgKYMep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:34:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40226 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727520AbgKYMeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:34:06 -0500
+        id S1726162AbgKYMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:34:44 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6266BACB5;
-        Wed, 25 Nov 2020 12:34:04 +0000 (UTC)
-Subject: Re: [PATCH 2/2] mm: Move free_unref_page to mm/internal.h
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     davem@davemloft.net, rppt@kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20201125034655.27687-1-willy@infradead.org>
- <20201125034655.27687-2-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <6418f355-ae69-a0bc-3006-b89a4e1cc09c@suse.cz>
-Date:   Wed, 25 Nov 2020 13:34:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        by mx2.suse.de (Postfix) with ESMTP id 576F3AC2F;
+        Wed, 25 Nov 2020 12:34:43 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 13:35:34 +0100
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Li Wang <liwang@redhat.com>, ltp@lists.linux.it,
+        Chunyu Hu <chuhu@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Carlos O'Donell <carlos@redhat.com>
+Subject: Re: [PATCH 1/2] syscalls: avoid time() using __cvdso_gettimeofday in
+ use-level's VDSO
+Message-ID: <20201125123534.GA28684@yuki.lan>
+References: <20201123083137.11575-1-liwang@redhat.com>
+ <20201124153837.GA24470@yuki.lan>
+ <875z5tllih.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201125034655.27687-2-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875z5tllih.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/20 4:46 AM, Matthew Wilcox (Oracle) wrote:
-> Code outside mm/ should not be calling free_unref_page().  Also
-> move free_unref_page_list().
-
-Good idea.
-
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-There seems to be some effort to remove "extern" from function 
-declarations from headers. Do we want to do that, at once, or piecemeal? 
-If the latter, this is a chance for these functions at least :)
-
-> ---
->   include/linux/gfp.h | 2 --
->   mm/internal.h       | 3 +++
->   2 files changed, 3 insertions(+), 2 deletions(-)
+Hi!
+> This is a general problem and not really just for this particular test
+> case.
 > 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index c603237e006c..6e479e9c48ce 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -580,8 +580,6 @@ void * __meminit alloc_pages_exact_nid(int nid, size_t size, gfp_t gfp_mask);
->   
->   extern void __free_pages(struct page *page, unsigned int order);
->   extern void free_pages(unsigned long addr, unsigned int order);
-> -extern void free_unref_page(struct page *page);
-> -extern void free_unref_page_list(struct list_head *list);
->   
->   struct page_frag_cache;
->   extern void __page_frag_cache_drain(struct page *page, unsigned int count);
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 75ae680d0a2c..5864815947fe 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -201,6 +201,9 @@ extern void post_alloc_hook(struct page *page, unsigned int order,
->   					gfp_t gfp_flags);
->   extern int user_min_free_kbytes;
->   
-> +extern void free_unref_page(struct page *page);
-> +extern void free_unref_page_list(struct list_head *list);
-> +
->   extern void zone_pcp_update(struct zone *zone);
->   extern void zone_pcp_reset(struct zone *zone);
->   extern void zone_pcp_disable(struct zone *zone);
+> Due to the internal implementation of ktime_get_real_seconds(), which is
+> a 2038 safe replacement for the former get_seconds() function, this
+> accumulation issue can be observed. (time(2) via syscall and newer
+> versions of VDSO use the same mechanism).
 > 
+>      clock_gettime(CLOCK_REALTIME, &ts);
+>      sec = time();
+>      assert(sec >= ts.tv_sec);
+> 
+> That assert can trigger for two reasons:
+> 
+>  1) Clock was set between the clock_gettime() and time().
+> 
+>  2) The clock has advanced far enough that:
+> 
+>     timekeeper.tv_nsec + (clock_now_ns() - last_update_ns) > NSEC_PER_SEC
+> 
+> #1 is just a property of clock REALTIME. There is nothing we can do
+>    about that.
+> 
+> #2 is due to the optimized get_seconds()/time() access which avoids to
+>    read the clock. This can happen on bare metal as well, but is far
+>    more likely to be exposed on virt.
+> 
+> The same problem exists for CLOCK_XXX vs. CLOCK_XXX_COARSE
+> 
+>      clock_gettime(CLOCK_XXX, &ts);
+>      clock_gettime(CLOCK_XXX_COARSE, &tc);
+>      assert(tc.tv_sec >= ts.tv_sec);
+> 
+> The _COARSE variants return their associated timekeeper.tv_sec,tv_nsec
+> pair without reading the clock. Same as #2 above just extended to clock
+> MONOTONIC.
 
+Good hint, I guess that easiest fix would be to switch to coarse timers
+for these tests.
+
+> There is no way to fix this except giving up on the fast accessors and
+> make everything take the slow path and read the clock, which might make
+> a lot of people unhappy.
+
+That's understandable and reasonable. Thanks a lot for the confirmation.
+
+> For clock REALTIME #1 is anyway an issue, so I think documenting this
+> proper is the right thing to do.
+> 
+> Thoughts?
+
+I guess that ideally BUGS section for time(2) and clock_gettime(2)
+should be updated with this explanation.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
