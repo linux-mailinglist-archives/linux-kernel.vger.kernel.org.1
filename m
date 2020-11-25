@@ -2,184 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BCE2C4549
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0182C455C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731805AbgKYQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730719AbgKYQcx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:32:53 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A86C0613D4;
-        Wed, 25 Nov 2020 08:32:53 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id y7so2802716pfq.11;
-        Wed, 25 Nov 2020 08:32:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=6fLXoA7PiZQVIkhM/9E4bl7cs888uadju3YY2CeMd0A=;
-        b=CZNpdfGRkiqMC8e51Csl4YelMAnjpLkWVSSLMCBTlPwzKE2z+5payHxO3MeT9WJkYR
-         n6LSaJ/aBQ0gVPaJaI+yxRku+VBPP3eCKmLjs+spPMCAoU+SoiJTKd6+x/uCYvGWRmhm
-         ECF1UxLQ7SsTPmd6DFPN+s3mU7T1BoUxfbtURXTzr3a19Ig/6tLxs6Mx0xxkYk9weLXU
-         LLmvUEklvxhAkmfeorhE5c8lQrE74MhsicJKxroRdAODjaGlASjzhLxG4u1J+IwFrSZa
-         vn+06JJDkYkarRJIdWmZZACw7pqfB6T6B2AUlZwDDBsPtQehhamMk8LmKS6lKEuod3ic
-         V2Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=6fLXoA7PiZQVIkhM/9E4bl7cs888uadju3YY2CeMd0A=;
-        b=fm89dUb7kCvlo0jFFStmKpz4GW+R3KBDdQj4z4aqaPT7VFkf0BW0K/INjmIMvnN2NW
-         nrq103lN41By9lRze30jNk42sZlSDFEodqovqnASS4iuRa53V7htijlSiWijxUc9tdDm
-         jH8DxzH4Cog5ItOXcch00kYXGKqk3GPUa0Pp+uUnMXQ9sDEbaomGekyPNMvW+Gh7v5lm
-         gk/CG+Sw1xMxmG/sgh3G77ukKwrKlav5ODV9++llHHmYB+1tAsrHAi+AcfTD5twFKb0C
-         0EOonO/T2h/AseKDP9WoOvnEIEtO2LhwkpcJ0GKD+sIn3jk1wZDCEK4LSxANaHHdKTTS
-         0Z2g==
-X-Gm-Message-State: AOAM533pjQxk5YLB3EL7QX8f5MQfMGhkBgmKmGe2OFHtQuKwAN9emCPK
-        y9SV5GO9T2LN2ClZJhv+nXs=
-X-Google-Smtp-Source: ABdhPJyWrphxD+wQM8UWkGfwLi4rstYwkvd0Vgk1p55hHG3yEST4I/TkHq4Z6u6ysSe/2upnfABZxQ==
-X-Received: by 2002:a17:90a:5d93:: with SMTP id t19mr5057545pji.220.1606321972544;
-        Wed, 25 Nov 2020 08:32:52 -0800 (PST)
-Received: from paju ([116.124.119.85])
-        by smtp.gmail.com with ESMTPSA id y1sm2369925pfe.80.2020.11.25.08.32.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 08:32:51 -0800 (PST)
-Date:   Thu, 26 Nov 2020 01:32:42 +0900
-From:   Dongjin Kim <tobetter@gmail.com>
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (pwm-fan) add fan pwm1_enable attribute
-Message-ID: <20201125163242.GA1264232@paju>
+        id S1731541AbgKYQfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:35:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37336 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730846AbgKYQfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:35:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6AAF9AE39;
+        Wed, 25 Nov 2020 16:35:38 +0000 (UTC)
+Subject: Re: [PATCH v5 2/4] mm,hwpoison: take free pages off the buddy
+ freelists
+To:     Oscar Salvador <osalvador@suse.de>, n-horiguchi@ah.jp.nec.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>
+References: <20201013144447.6706-1-osalvador@suse.de>
+ <20201013144447.6706-3-osalvador@suse.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <2d869dfb-3050-48c6-c40c-63e0cc4a228c@suse.cz>
+Date:   Wed, 25 Nov 2020 17:35:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20201013144447.6706-3-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds to new attribute 'pwm1_enable' to change the fan speed
-control method as documented in 'Documentation/hwmon/sysfs-interface'.
+On 10/13/20 4:44 PM, Oscar Salvador wrote:
+> The crux of the matter is that historically we left poisoned pages in the
+> buddy system because we have some checks in place when allocating a page
+> that are gatekeeper for poisoned pages.  Unfortunately, we do have other
+> users (e.g: compaction [1]) that scan buddy freelists and try to get a
+> page from there without checking whether the page is HWPoison.
+> 
+> As I stated already, I think it is fundamentally wrong to keep HWPoison
+> pages within the buddy systems, checks in place or not.
+> 
+> Let us fix this the same way we did for soft_offline [2], taking the page
+> off the buddy freelist so it is completely unreachable.
+> 
+> Note that this is fairly simple to trigger, as we only need to poison free
+> buddy pages (madvise MADV_HWPOISON) and then run some sort of memory stress
+> system.
+> 
+> Just for a matter of reference, I put a dump_page() in compaction_alloc()
+> to trigger for HWPoison patches:
+> 
+> kernel: page:0000000012b2982b refcount:1 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x1d5db
+> kernel: flags: 0xfffffc0800000(hwpoison)
+> kernel: raw: 000fffffc0800000 ffffea00007573c8 ffffc90000857de0 0000000000000000
+> kernel: raw: 0000000000000001 0000000000000000 00000001ffffffff 0000000000000000
+> kernel: page dumped because: compaction_alloc
+> 
+> kernel: CPU: 4 PID: 123 Comm: kcompactd0 Tainted: G            E     5.9.0-rc2-mm1-1-default+ #5
+> kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.10.2-0-g5f4c7b1-prebuilt.qemu-project.org 04/01/2014
+> kernel: Call Trace:
+> kernel:  dump_stack+0x6d/0x8b
+> kernel:  compaction_alloc+0xb2/0xc0
+> kernel:  migrate_pages+0x2a6/0x12a0
+> kernel:  ? isolate_freepages+0xc80/0xc80
+> kernel:  ? __ClearPageMovable+0xb0/0xb0
+> kernel:  compact_zone+0x5eb/0x11c0
+> kernel:  ? finish_task_switch+0x74/0x300
+> kernel:  ? lock_timer_base+0xa8/0x170
+> kernel:  proactive_compact_node+0x89/0xf0
+> kernel:  ? kcompactd+0x2d0/0x3a0
+> kernel:  kcompactd+0x2d0/0x3a0
+> kernel:  ? finish_wait+0x80/0x80
+> kernel:  ? kcompactd_do_work+0x350/0x350
+> kernel:  kthread+0x118/0x130
+> kernel:  ? kthread_associate_blkcg+0xa0/0xa0
+> kernel:  ret_from_fork+0x22/0x30
+> 
+> After that, if e.g: a process faults in the page,  it will get killed
+> unexpectedly.
+> Fix it by containing the page immediatelly.
+> 
+> Besides that, two more changes can be noticed:
+> 
+> * MF_DELAYED no longer suits as we are fixing the issue by containing
+>    the page immediately, so it does no longer rely on the allocation-time
+>    checks to stop HWPoison to be handed over.
+>    gain unless it is unpoisoned, so we fixed the situation.
+>    Because of that, let us use MF_RECOVERED from now on.
+> 
+> * The second block that handles PageBuddy pages is no longer needed:
+>    We call shake_page and then check whether the page is Buddy
+>    because shake_page calls drain_all_pages, which sends pcp-pages back to
+>    the buddy freelists, so we could have a chance to handle free pages.
+>    Currently, get_hwpoison_page already calls drain_all_pages, and we call
+>    get_hwpoison_page right before coming here, so we should be on the safe
+>    side.
+> 
+> [1] https://lore.kernel.org/linux-mm/20190826104144.GA7849@linux/T/#u
+> [2] https://patchwork.kernel.org/cover/11792607/
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-Signed-off-by: Dongjin Kim <tobetter@gmail.com>
----
- drivers/hwmon/pwm-fan.c | 52 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 6 deletions(-)
+Makes a lot of sense.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
-index 1f63807c0399..834275309421 100644
---- a/drivers/hwmon/pwm-fan.c
-+++ b/drivers/hwmon/pwm-fan.c
-@@ -39,6 +39,7 @@ struct pwm_fan_ctx {
- 	unsigned int pwm_fan_max_state;
- 	unsigned int *pwm_fan_cooling_levels;
- 	struct thermal_cooling_device *cdev;
-+	int enable;
- };
- 
- /* This handler assumes self resetting edge triggered interrupt. */
-@@ -76,6 +77,10 @@ static int  __set_pwm(struct pwm_fan_ctx *ctx, unsigned long pwm)
- 	struct pwm_state state = { };
- 
- 	mutex_lock(&ctx->lock);
-+
-+	if (ctx->enable == 0)
-+		pwm = MAX_PWM;
-+
- 	if (ctx->pwm_value == pwm)
- 		goto exit_set_pwm_err;
- 
-@@ -137,11 +142,42 @@ static ssize_t rpm_show(struct device *dev,
- 	return sprintf(buf, "%u\n", ctx->rpm);
- }
- 
-+static ssize_t enable_store(struct device *dev,
-+		struct device_attribute *attr,
-+		const char *buf, size_t count)
-+{
-+	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
-+	int err;
-+	unsigned long val;
-+
-+	err = kstrtoul(buf, 10, &val);
-+	if (err)
-+		return err;
-+
-+	mutex_lock(&ctx->lock);
-+	ctx->enable = val;
-+	mutex_unlock(&ctx->lock);
-+
-+	err = __set_pwm(ctx, ctx->pwm_fan_cooling_levels[ctx->pwm_fan_state]);
-+
-+	return err ? err : count;
-+}
-+
-+static ssize_t enable_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
-+{
-+	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
-+
-+	return sprintf(buf, "%u\n", ctx->enable);
-+}
-+
- static SENSOR_DEVICE_ATTR_RW(pwm1, pwm, 0);
-+static SENSOR_DEVICE_ATTR_RW(pwm1_enable, enable, 0);
- static SENSOR_DEVICE_ATTR_RO(fan1_input, rpm, 0);
- 
- static struct attribute *pwm_fan_attrs[] = {
- 	&sensor_dev_attr_pwm1.dev_attr.attr,
-+	&sensor_dev_attr_pwm1_enable.dev_attr.attr,
- 	&sensor_dev_attr_fan1_input.dev_attr.attr,
- 	NULL,
- };
-@@ -153,7 +189,7 @@ static umode_t pwm_fan_attrs_visible(struct kobject *kobj, struct attribute *a,
- 	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
- 
- 	/* Hide fan_input in case no interrupt is available  */
--	if (n == 1 && ctx->irq <= 0)
-+	if (n == 2 && ctx->irq <= 0)
- 		return 0;
- 
- 	return a->mode;
-@@ -200,7 +236,7 @@ static int
- pwm_fan_set_cur_state(struct thermal_cooling_device *cdev, unsigned long state)
- {
- 	struct pwm_fan_ctx *ctx = cdev->devdata;
--	int ret;
-+	int ret = 0;
- 
- 	if (!ctx || (state > ctx->pwm_fan_max_state))
- 		return -EINVAL;
-@@ -208,10 +244,12 @@ pwm_fan_set_cur_state(struct thermal_cooling_device *cdev, unsigned long state)
- 	if (state == ctx->pwm_fan_state)
- 		return 0;
- 
--	ret = __set_pwm(ctx, ctx->pwm_fan_cooling_levels[state]);
--	if (ret) {
--		dev_err(&cdev->device, "Cannot set pwm!\n");
--		return ret;
-+	if (ctx->enable >= 2) {
-+		ret = __set_pwm(ctx, ctx->pwm_fan_cooling_levels[state]);
-+		if (ret) {
-+			dev_err(&cdev->device, "Cannot set pwm!\n");
-+			return ret;
-+		}
- 	}
- 
- 	ctx->pwm_fan_state = state;
-@@ -298,6 +336,8 @@ static int pwm_fan_probe(struct platform_device *pdev)
- 	if (IS_ERR(ctx->pwm))
- 		return dev_err_probe(dev, PTR_ERR(ctx->pwm), "Could not get PWM\n");
- 
-+	ctx->enable = 2;
-+
- 	platform_set_drvdata(pdev, ctx);
- 
- 	ctx->irq = platform_get_irq_optional(pdev, 0);
--- 
-2.25.1
+> ---
+>   mm/memory-failure.c | 27 +++++++++++++++++----------
+>   1 file changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index e2f12410c594..181bed890c16 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1341,6 +1341,7 @@ int memory_failure(unsigned long pfn, int flags)
+>   	struct dev_pagemap *pgmap;
+>   	int res;
+>   	unsigned long page_flags;
+> +	bool retry = true;
+>   
+>   	if (!sysctl_memory_failure_recovery)
+>   		panic("Memory failure on page %lx", pfn);
+> @@ -1358,6 +1359,7 @@ int memory_failure(unsigned long pfn, int flags)
+>   		return -ENXIO;
+>   	}
+>   
+> +try_again:
+>   	if (PageHuge(p))
+>   		return memory_failure_hugetlb(pfn, flags);
+>   	if (TestSetPageHWPoison(p)) {
+> @@ -1382,8 +1384,21 @@ int memory_failure(unsigned long pfn, int flags)
+>   	 */
+>   	if (!(flags & MF_COUNT_INCREASED) && !get_hwpoison_page(p)) {
+>   		if (is_free_buddy_page(p)) {
+> -			action_result(pfn, MF_MSG_BUDDY, MF_DELAYED);
+> -			return 0;
+> +			if (take_page_off_buddy(p)) {
+> +				page_ref_inc(p);
+> +				res = MF_RECOVERED;
+> +			} else {
+> +				/* We lost the race, try again */
+> +				if (retry) {
+> +					ClearPageHWPoison(p);
+> +					num_poisoned_pages_dec();
+> +					retry = false;
+> +					goto try_again;
+> +				}
+> +				res = MF_FAILED;
+> +			}
+> +			action_result(pfn, MF_MSG_BUDDY, res);
+> +			return res == MF_RECOVERED ? 0 : -EBUSY;
+>   		} else {
+>   			action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
+>   			return -EBUSY;
+> @@ -1407,14 +1422,6 @@ int memory_failure(unsigned long pfn, int flags)
+>   	 * walked by the page reclaim code, however that's not a big loss.
+>   	 */
+>   	shake_page(p, 0);
+> -	/* shake_page could have turned it free. */
+> -	if (!PageLRU(p) && is_free_buddy_page(p)) {
+> -		if (flags & MF_COUNT_INCREASED)
+> -			action_result(pfn, MF_MSG_BUDDY, MF_DELAYED);
+> -		else
+> -			action_result(pfn, MF_MSG_BUDDY_2ND, MF_DELAYED);
+> -		return 0;
+> -	}
+>   
+>   	lock_page(p);
+>   
+> 
 
