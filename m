@@ -2,306 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B062C3829
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65ACE2C382B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgKYEjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 23:39:41 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:41255 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727126AbgKYEjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 23:39:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606279179; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=HOcgM9pYAVW2hJx1yWdeq9A9ozniA35QJLvQznBMLqw=; b=FCPlk8a9t87Eas3P7cbpsDnxsacsgQqJA9OiYR96h23eAWjVToXB8ztUid6oHZ/rxcD3JOlQ
- sjtKcVZ2WX21SgwL7INQNgc4JAqq7qlN2v0VadkmgJ3MshncZARUikZQ9/AsqOxV5sG6sXI8
- DYJOgqx0/mhL0e50qlP558ehzwE=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fbde00422377520eea8856a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 04:39:32
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4EAD8C43469; Wed, 25 Nov 2020 04:39:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.101] (unknown [49.206.49.183])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727611AbgKYEk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 23:40:27 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:58340 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725817AbgKYEk0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 23:40:26 -0500
+Received: from mailhost.synopsys.com (badc-mailhost2.synopsys.com [10.192.0.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B4E18C433C6;
-        Wed, 25 Nov 2020 04:39:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B4E18C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH v2 tip/core/rcu 4/6] srcu: Provide polling interfaces for
- Tiny SRCU grace periods
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        kent.overstreet@gmail.com
-References: <@@@> <20201121005919.17152-4-paulmck@kernel.org>
- <2d210fa7-3484-9cee-862b-a8f15fee8c8e@codeaurora.org>
- <20201123211250.GF1437@paulmck-ThinkPad-P72>
- <9ebe7c82-6fc2-a759-dde8-eec90b483735@codeaurora.org>
- <20201124193043.GK1437@paulmck-ThinkPad-P72>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <229a3481-8d3e-6c81-0c67-b7f6c17a2291@codeaurora.org>
-Date:   Wed, 25 Nov 2020 10:09:22 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id CC4ACC00AF;
+        Wed, 25 Nov 2020 04:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1606279225; bh=R/q6NwsNF21KOIgAEjdMfQsnTxKZKuDJxC5Rv2H8MYU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=jAQW4PTYUb/breStGULS89zPR8JZpwzSOSBH8tKhyzMgz/xcoyraXG9lRTRmXWJ3d
+         mHBNb5af0XvzBl04nIlTAzdgvnkduiSc0044n4oVUXwh+O1eO3uqnHAaUrdoaHxGUo
+         6XmIir06rN4Lx8Fm1/uls3vNkgt1cOfYNAozquk6yruZ3Piz/5Yk4p79f5AIrj7Mrj
+         hKHd9e+gJY56+Ydbl9Fdnx2MLC6FMDXxpUANJpVAB+IKxgXzk0y/hkTdA9OZlCgpjw
+         WlnQy0pkZ0Cu7jrJfpBHo6IbB5lSkxwBlDUMbhLuVdaoggYJdNZnwhtzTz0rVksZJC
+         BjyQK4x3u6/WA==
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 16321A0067;
+        Wed, 25 Nov 2020 04:40:22 +0000 (UTC)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id B673A400BA;
+        Wed, 25 Nov 2020 04:40:20 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="DiTvku4f";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JFbLwfGPs6TQ9ZQvbcXyL9tGDq4vyEWu3fhPR0nFUZqlY0TbP4InGYzETB8GAQ8vXJV7p4mfefBADH7BIrQdfFi8Wv9BkcyoJr8WkbZA6VGjYdbKrs7u30uYDzYO+6c46o36Rqh6oT++dqBxRLh9o4OdV3mI1+OtUgt6s695qIbuiOauO6f7sPA9j9cGxeDkRKOySztLLaSQFL60C11S4W5cs3c3KdymgwFCdqVCavqmJ6qRpRtwrrkQATo2SdDkbAFrH6uj7OcZ+eGpCymq+KDBnMTJnCdJQOjnd62cyETsHQTNhHnGux54oz/rzjz67GkNQZq1EHnoPsKwMwDdFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R/q6NwsNF21KOIgAEjdMfQsnTxKZKuDJxC5Rv2H8MYU=;
+ b=PjtD49LMM6vBdXLKAYG6ij6iYPYIar6R9CWZ/dLrl6AEWUyYEl+UnUOwNe6Evarpgf4h2C4C3XXgtngG/DgVLb1qP36YntalheMB/ggk/R6Z+8cdmaC3bs0fZrO+/fjnpedf2uLJu+TggEJmIc2llcSKvd9IceJBAGkj2UkkouIJic6HpncJfmXV4MvTnpauBPxNcLgjCTUw/xUV8tHKZqs/C4VyeQbK04Z7Fba8XbEzwW2dBR1Rtjk2sHNTI1a5CYwYBCotdpnaCZeRqITa5d5/q5no9sQO9PzY274YiOVCq/KXBK+GeQsqWfR1CpJnZq0S4lzb8AHHjH7q3lqEqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R/q6NwsNF21KOIgAEjdMfQsnTxKZKuDJxC5Rv2H8MYU=;
+ b=DiTvku4fWANEvhZbjdZJVj6QjKhfx+aree8bX0AmAJTvg1ah5upVQmW1f7dlaDwUvsRUvZAPHUun+YjH1vGkdTo7Pmo5OUODl2wW65zpZ+81OubuYj5/WMeWIDiqJgt+8VG4YR1Vq6G06fot8D9DQFhe0SzZFyZ/NJn47qfw8Hc=
+Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
+ by BYAPR12MB2806.namprd12.prod.outlook.com (2603:10b6:a03:70::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Wed, 25 Nov
+ 2020 04:40:17 +0000
+Received: from BYAPR12MB3479.namprd12.prod.outlook.com
+ ([fe80::c562:e026:68d6:cd31]) by BYAPR12MB3479.namprd12.prod.outlook.com
+ ([fe80::c562:e026:68d6:cd31%6]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
+ 04:40:17 +0000
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/6] ARC: build: fix various issues in arc boot Makefile
+Thread-Topic: [PATCH 0/6] ARC: build: fix various issues in arc boot Makefile
+Thread-Index: AQHWwD3VoBtjEs2mMEGciuOe7EANTqnYSagA
+Date:   Wed, 25 Nov 2020 04:40:17 +0000
+Message-ID: <01998029-6222-a2d1-9147-1a0dbc7b7e4b@synopsys.com>
+References: <20201121193657.51441-1-masahiroy@kernel.org>
+In-Reply-To: <20201121193657.51441-1-masahiroy@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [24.4.73.83]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a1f104c9-8792-4eb0-4948-08d890fc3576
+x-ms-traffictypediagnostic: BYAPR12MB2806:
+x-microsoft-antispam-prvs: <BYAPR12MB2806C14AB6FF71A8193B0D16B6FA0@BYAPR12MB2806.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:883;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7Fw3vV0DCiCD8CDlCHsGPYyz9tLyEco0XZN3nIRKu2kwVoS9vJRz30IGU1d1lLegjYct22TmD6BGzIOhb0mJjtnpirdQ0CHFu4Jc7nVV6pZxJixWnnnSg3+jg7SjqCLxzwM9kbuTqKsP0Sduiff+TZ+VgGUgcxzJpVWG3peVSTRY7xqRrtBdd9znlJDxRvafgD4BnhSqsIEWo53B+rY1UBIirQfVrrpjhvo+IZojaW5uky9gyPEXuXryIA3Y3VQcXD1SJblDmrzXxko707Gv+9A3vHia+Kg7m/eIxcmC1yUhlb5Rboa+gdzzpb05aQf7GCuZXBWxOAubF7kVnkaIJSLuDkOoyG10c6lgWZo0tAgXcyqBeq5Lpu4ckZBMbSew
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(39850400004)(376002)(366004)(4744005)(186003)(36756003)(8676002)(110136005)(4326008)(6512007)(6506007)(478600001)(83380400001)(31696002)(5660300002)(53546011)(26005)(2616005)(66476007)(8936002)(71200400001)(2906002)(86362001)(316002)(66556008)(6486002)(64756008)(31686004)(76116006)(66946007)(66446008)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 0Q/hFN3JbMfQK//8zPvgNMeAWt8+jWatokQIKQ16O8EVRykxVP2/UEX1R5oMGm+bf8BSrcEYWJztPVnu4gojF71izl2pklsCL7c5cS9gHheVSZQO5jKDnYjphT50Chzix7bmkND2IFINJnDAVVOetqvjaNN/aIuWjS5npMA/Z29EIycdz0VN2SbUJag5FdLYH5viQehg32toL79LSXYTwNAJ00pyZQn7VUJxowkgE/OfOXunqCl/F2S3Lyvo0wjpSOG/V5h4A7/vJj6UX7WAbrHjszzZKlyqulhoePkMZO1Hh6ZljBrqzQYUuNh94M50wdw5jhQPranQ+HeFZNYQX1qtxFCFeQOQN32i0Xmvat0CtTzf8cJT2jVPEPEodwJIjardXGxC5gkMezlWDQSRIBsnpGqTPU42HN/RCwp2WR95be0oy3AUiGpKgfdfQ4v914QccgPEnB5dIrXWhxSky9quTyhSTjjsfTxF+hVbr7g/ZbDYFUzz1r+CIUMC2njWRE3As3jE60+SMElmh7UENC536btDKoKzi3aSrbBZFOh/XT8mAS4FTguCLGbEmJQY/yygambqjbCzZrYfqmbXBZQ52zbr/Yp3b7GPochv5UK8PFy73maLnFbxd4PcyVmjbVN1/LNmaR/gf1Go94FTyJ0x9vBxqH39Bj3FZPldTztg1sEoRKuDHOlrugjmYfpoS0EpGbePYacpN/jdbH2qHDOU7JWZKH1wfjI01LjHRbnKac7y60FuiHpHdXzuLgr6Zh4a0TJAqjJqsaRM0Oqk10vFvbGynFc8JE8MI1lLle4fgTyxKLElDhEEA8V/Q7XD98FTeMsm+V9UqEinrcwATUTwHmYAA/tXXiRKb7CDxuXmwmZPiO+dsZ4RI9oUbhaXcP9VG+T0KdF8QgozLOW0CQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FA0A3BACB6DC4D4C87D706C6E7C57A6F@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20201124193043.GK1437@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1f104c9-8792-4eb0-4948-08d890fc3576
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 04:40:17.4838
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: M3sd6lqPCJ4Lw5eWPGHER/xEqoecQHuOzSncMOaKsI2y2YnJvr+9fYoidD9FRpl6xWJV+F6uHQ98jxVYQwzqEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2806
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/25/2020 1:00 AM, Paul E. McKenney wrote:
-> On Tue, Nov 24, 2020 at 10:44:24AM +0530, Neeraj Upadhyay wrote:
->>
->>
->> On 11/24/2020 2:42 AM, Paul E. McKenney wrote:
->>> On Mon, Nov 23, 2020 at 10:13:13AM +0530, Neeraj Upadhyay wrote:
->>>>
->>>>
->>>> On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
->>>>> From: "Paul E. McKenney" <paulmck@kernel.org>
->>>>>
->>>>> There is a need for a polling interface for SRCU grace
->>>>> periods, so this commit supplies get_state_synchronize_srcu(),
->>>>> start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
->>>>> purpose.  The first can be used if future grace periods are inevitable
->>>>> (perhaps due to a later call_srcu() invocation), the second if future
->>>>> grace periods might not otherwise happen, and the third to check if a
->>>>> grace period has elapsed since the corresponding call to either of the
->>>>> first two.
->>>>>
->>>>> As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
->>>>> the return value from either get_state_synchronize_srcu() or
->>>>> start_poll_synchronize_srcu() must be passed in to a later call to
->>>>> poll_state_synchronize_srcu().
->>>>>
->>>>> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
->>>>> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
->>>>> [ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
->>>>> [ paulmck: Apply feedback from Neeraj Upadhyay. ]
->>>>> Link: https://lore.kernel.org/lkml/20201117004017.GA7444@paulmck-ThinkPad-P72/
->>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>>> ---
->>>>>     include/linux/rcupdate.h |  2 ++
->>>>>     include/linux/srcu.h     |  3 +++
->>>>>     include/linux/srcutiny.h |  1 +
->>>>>     kernel/rcu/srcutiny.c    | 52 ++++++++++++++++++++++++++++++++++++++++++++++--
->>>>>     4 files changed, 56 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->>>>> index de08264..e09c0d8 100644
->>>>> --- a/include/linux/rcupdate.h
->>>>> +++ b/include/linux/rcupdate.h
->>>>> @@ -33,6 +33,8 @@
->>>>>     #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
->>>>>     #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
->>>>>     #define ulong2long(a)		(*(long *)(&(a)))
->>>>> +#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
->>>>> +#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
->>>>>     /* Exported common interfaces */
->>>>>     void call_rcu(struct rcu_head *head, rcu_callback_t func);
->>>>> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
->>>>> index e432cc9..a0895bb 100644
->>>>> --- a/include/linux/srcu.h
->>>>> +++ b/include/linux/srcu.h
->>>>> @@ -60,6 +60,9 @@ void cleanup_srcu_struct(struct srcu_struct *ssp);
->>>>>     int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
->>>>>     void __srcu_read_unlock(struct srcu_struct *ssp, int idx) __releases(ssp);
->>>>>     void synchronize_srcu(struct srcu_struct *ssp);
->>>>> +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp);
->>>>> +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp);
->>>>> +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
->>>>>     #ifdef CONFIG_DEBUG_LOCK_ALLOC
->>>>> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
->>>>> index d9edb67..c7f0c1f 100644
->>>>> --- a/include/linux/srcutiny.h
->>>>> +++ b/include/linux/srcutiny.h
->>>>> @@ -16,6 +16,7 @@
->>>>>     struct srcu_struct {
->>>>>     	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
->>>>>     	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
->>>>> +	unsigned short srcu_idx_max;	/* Furthest future srcu_idx request. */
->>>>>     	u8 srcu_gp_running;		/* GP workqueue running? */
->>>>>     	u8 srcu_gp_waiting;		/* GP waiting for readers? */
->>>>>     	struct swait_queue_head srcu_wq;
->>>>> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
->>>>> index 3bac1db..b073175 100644
->>>>> --- a/kernel/rcu/srcutiny.c
->>>>> +++ b/kernel/rcu/srcutiny.c
->>>>> @@ -34,6 +34,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
->>>>>     	ssp->srcu_gp_running = false;
->>>>>     	ssp->srcu_gp_waiting = false;
->>>>>     	ssp->srcu_idx = 0;
->>>>> +	ssp->srcu_idx_max = 0;
->>>>>     	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
->>>>>     	INIT_LIST_HEAD(&ssp->srcu_work.entry);
->>>>>     	return 0;
->>>>
->>>> Minor: cleanup_srcu_struct() can probably have 2 new sanity checks?
->>>>
->>>> WARN_ON(ssp->srcu_idx != ssp->srcu_idx_max);
->>>> WARN_ON(ssp->srcu_idx & 1);
->>>
->>> Good point, added and under test.
->>>
->>>> Thanks
->>>> Neeraj
->>>>
->>>>> @@ -114,7 +115,7 @@ void srcu_drive_gp(struct work_struct *wp)
->>>>>     	struct srcu_struct *ssp;
->>>>>     	ssp = container_of(wp, struct srcu_struct, srcu_work);
->>>>> -	if (ssp->srcu_gp_running || !READ_ONCE(ssp->srcu_cb_head))
->>>>> +	if (ssp->srcu_gp_running || USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
->>>>>     		return; /* Already running or nothing to do. */
->>>>>     	/* Remove recently arrived callbacks and wait for readers. */
->>>>> @@ -147,13 +148,18 @@ void srcu_drive_gp(struct work_struct *wp)
->>>>>     	 * straighten that out.
->>>>>     	 */
->>>>>     	WRITE_ONCE(ssp->srcu_gp_running, false);
->>>>> -	if (READ_ONCE(ssp->srcu_cb_head))
->>>>> +	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
->>>>>     		schedule_work(&ssp->srcu_work);
->>>>>     }
->>>>>     EXPORT_SYMBOL_GPL(srcu_drive_gp);
->>>>>     static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
->>>>>     {
->>>>> +	unsigned short cookie;
->>>>> +
->>>>> +	cookie = get_state_synchronize_srcu(ssp);
->>>>> +	if (USHORT_CMP_LT(READ_ONCE(ssp->srcu_idx_max), cookie))
->>>>> +		WRITE_ONCE(ssp->srcu_idx_max, cookie);
->>>>
->>>> Minor: Maybe we can return in the else part of USHORT_CMP_LT check, to avoid
->>>> scheduling work?
->>>
->>> How about like this?
->>
->> Looks good!
-> 
-> Are you willing to give an ack or reviewed-by for either patch?
-> 
-> 							Thanx, Paul
-> 
-
-For the version in rcu -dev
-
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-
-Thanks
-Neeraj
-
->> Thanks
->> Neeraj
->>
->>>
->>> 	static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
->>> 	{
->>> 		unsigned short cookie;
->>>
->>> 		cookie = get_state_synchronize_srcu(ssp);
->>> 		if (USHORT_CMP_GE(READ_ONCE(ssp->srcu_idx_max), cookie))
->>> 			return;
->>> 		WRITE_ONCE(ssp->srcu_idx_max, cookie);
->>> 		if (!READ_ONCE(ssp->srcu_gp_running)) {
->>> 			if (likely(srcu_init_done))
->>> 				schedule_work(&ssp->srcu_work);
->>> 			else if (list_empty(&ssp->srcu_work.entry))
->>> 				list_add(&ssp->srcu_work.entry, &srcu_boot_list);
->>> 		}
->>> 	}
->>>
->>> Testing this next.  ;-)
->>>
->>> 							Thanx, Paul
->>>
->>>> Thanks
->>>> Neeraj
->>>>
->>>>>     	if (!READ_ONCE(ssp->srcu_gp_running)) {
->>>>>     		if (likely(srcu_init_done))
->>>>>     			schedule_work(&ssp->srcu_work);
->>>>> @@ -196,6 +202,48 @@ void synchronize_srcu(struct srcu_struct *ssp)
->>>>>     }
->>>>>     EXPORT_SYMBOL_GPL(synchronize_srcu);
->>>>> +/*
->>>>> + * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
->>>>> + */
->>>>> +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
->>>>> +{
->>>>> +	unsigned long ret;
->>>>> +
->>>>> +	barrier();
->>>>> +	ret = (READ_ONCE(ssp->srcu_idx) + 3) & ~0x1;
->>>>> +	barrier();
->>>>> +	return ret & USHRT_MAX;
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(get_state_synchronize_srcu);
->>>>> +
->>>>> +/*
->>>>> + * start_poll_synchronize_srcu - Provide cookie and start grace period
->>>>> + *
->>>>> + * The difference between this and get_state_synchronize_srcu() is that
->>>>> + * this function ensures that the poll_state_synchronize_srcu() will
->>>>> + * eventually return the value true.
->>>>> + */
->>>>> +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
->>>>> +{
->>>>> +	unsigned long ret = get_state_synchronize_srcu(ssp);
->>>>> +
->>>>> +	srcu_gp_start_if_needed(ssp);
->>>>> +	return ret;
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
->>>>> +
->>>>> +/*
->>>>> + * poll_state_synchronize_srcu - Has cookie's grace period ended?
->>>>> + */
->>>>> +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
->>>>> +{
->>>>> +	bool ret = USHORT_CMP_GE(READ_ONCE(ssp->srcu_idx), cookie);
->>>>> +
->>>>> +	barrier();
->>>>> +	return ret;
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
->>>>> +
->>>>>     /* Lockdep diagnostics.  */
->>>>>     void __init rcu_scheduler_starting(void)
->>>>>     {
->>>>>
->>>>
->>>> -- 
->>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
->>>> the Code Aurora Forum, hosted by The Linux Foundation
->>
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
->> the Code Aurora Forum, hosted by The Linux Foundation
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+SGkgTWFzYWhpcm8gU2FuLA0KDQpPbiAxMS8yMS8yMCAxMTozNiBBTSwgTWFzYWhpcm8gWWFtYWRh
+IHdyb3RlOg0KPg0KPg0KPiBNYXNhaGlybyBZYW1hZGEgKDYpOg0KPiAgICBBUkM6IGJ1aWxkOiBy
+ZW1vdmUgbm9uLWV4aXN0aW5nIGJvb3RwSW1hZ2UgZnJvbSBLQlVJTERfSU1BR0UNCj4gICAgQVJD
+OiBidWlsZDogYWRkIHVJbWFnZS5sem1hIHRvIHRoZSB0b3AtbGV2ZWwgdGFyZ2V0DQo+ICAgIEFS
+QzogYnVpbGQ6IGFkZCBib290X3RhcmdldHMgdG8gUEhPTlkNCj4gICAgQVJDOiBidWlsZDogbW92
+ZSBzeW1saW5rIGNyZWF0aW9uIHRvIGFyY2gvYXJjL01ha2VmaWxlIHRvIGF2b2lkIHJhY2UNCj4g
+ICAgQVJDOiBidWlsZDogcmVtb3ZlIHVubmVlZGVkIGV4dHJhLXkNCj4gICAgQVJDOiBidWlsZDog
+dXNlICQoUkVBREVMRikgaW5zdGVhZCBvZiBoYXJkLWNvZGVkIHJlYWRlbGYNCj4NCj4gICBhcmNo
+L2FyYy9NYWtlZmlsZSAgICAgIHwgMjAgKysrKysrKysrKysrKy0tLS0tLS0NCj4gICBhcmNoL2Fy
+Yy9ib290L01ha2VmaWxlIHwgMTggKysrKy0tLS0tLS0tLS0tLS0tDQo+ICAgMiBmaWxlcyBjaGFu
+Z2VkLCAxNyBpbnNlcnRpb25zKCspLCAyMSBkZWxldGlvbnMoLSkNCg0KVGhpcyBMR1RNLiBEbyB5
+b3Ugd2FudCBtZSB0byBwaWNrIHVwIHRoZXNlIHZpYSBBUkMgdHJlZSA/DQoNClRoeCwNCi1WaW5l
+ZXQNCg==
