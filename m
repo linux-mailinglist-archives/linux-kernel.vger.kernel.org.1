@@ -2,202 +2,636 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5D62C41EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4572C41EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729621AbgKYONp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:13:45 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19096 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727939AbgKYONo (ORCPT
+        id S1729783AbgKYONu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:13:50 -0500
+Received: from gproxy6-pub.mail.unifiedlayer.com ([67.222.39.168]:43416 "EHLO
+        gproxy6-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729690AbgKYONu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:13:44 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0APE3v3g149653;
-        Wed, 25 Nov 2020 09:13:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=PF0dD3+Bv3J7qmyUvvNB0Kp5F+jdvDQqY1bTIgXfIG8=;
- b=cq483OgpXtx5liYsKTnCR5nLnJR7Ljb9E5tniDVowF9dEQYDoTCq400xrkGeguawZl7m
- Fb3Z5Qp72YrNg3wkKY8YUvsXAthlLkqRYYV5v43g8AvdS/awoUjHEMhU8Kp7QQT/aLvS
- UL1HEjAuVtkduIjJfP41YPija+bNlb7DgJPLDUknhc/aBeho3iaJTxz91eIyo43bcTOQ
- S4yohOotjetCqA+VtVKAxbZy6iSRQ2jvKSfPPl07fnCINL7GGfsop6U5jgGx4TX+GBfD
- S0BQXfDPG4iM18viRVKMkz7LwH7Q3WSvPqR/3RWQ33/YFPcoyGkO4VRQVa6dss2DmCMz Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 351rh48rjj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 09:13:33 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0APE4Lhh152566;
-        Wed, 25 Nov 2020 09:13:33 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 351rh48rgb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 09:13:32 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0APEDVUM013830;
-        Wed, 25 Nov 2020 14:13:31 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 34xt5hcrt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 14:13:30 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0APEDSIO8258250
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Nov 2020 14:13:28 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBB19AE063;
-        Wed, 25 Nov 2020 14:13:28 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D2F2AAE083;
-        Wed, 25 Nov 2020 14:13:27 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.183.229])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 25 Nov 2020 14:13:27 +0000 (GMT)
-Date:   Wed, 25 Nov 2020 16:13:25 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <20201125141325.GK123287@linux.ibm.com>
-References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
- <20201121194506.13464-1-aarcange@redhat.com>
- <20201121194506.13464-2-aarcange@redhat.com>
- <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
- <X73s8fxDKPRD6wET@redhat.com>
- <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
- <cd9f0b9f-c4f6-b80c-03cd-12697324bfca@redhat.com>
+        Wed, 25 Nov 2020 09:13:50 -0500
+Received: from CMGW (unknown [10.9.0.13])
+        by gproxy6.mail.unifiedlayer.com (Postfix) with ESMTP id 23D9B1E0665
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:13:42 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id hvYDklwavi1lMhvYDkktpq; Wed, 25 Nov 2020 07:13:42 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.2 cv=cpzrqxwi c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10 a=nNwsprhYR40A:10
+ a=evQFzbml-YQA:10 a=CS3NValkAAAA:8 a=GdcuaSrckRuQCKMtUHEA:9 a=CjuIK1q_8ugA:10
+ a=EAZcYiVwDkS75jsqyrV5:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Ey0CpcZgRuvk62lYkkoBJjGQ8WlBnOY71BmGvPR+jAg=; b=ocG6A4HY0qC7Z2BfT7jW58cRdV
+        99HNF9VPN/SXkZyVLpXxPfjXQYUp/YX8LA0gdwlN3lXkyCpcwHhyVfoV+YtVNyxGWaIhP7bY5Y/SM
+        IQ1bk8ToUnKk/2prt4vYeyz/Kj3c7RypaBCbWM0nE/8GdASCN+VXZi6czBUaKMc5LBTX4jytHIgw4
+        Rmk2T6C9PyARE+Rdxp/FqKBMKGTl25/H4SkD/M2A30gSfziCUvqHPCVjYNo1NHY8mJB+CV8bgC+MB
+        k6Rkkkj0gMicorcr/ljA2sLOAH9eXcIoXqhk/apG/eh5fsx9pxu1Q34uiSR6URSryw+SJUqsguK3w
+        HRl0ykyg==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34392 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1khvYC-002Hdq-Tz; Wed, 25 Nov 2020 14:13:41 +0000
+Date:   Wed, 25 Nov 2020 06:13:40 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Shihlun Lin <shihlun.lin@advantech.com.tw>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Campion Kang <campion.kang@advantech.com.tw>,
+        AceLan Kao <chia-lin.kao@canonical.com>
+Subject: Re: [RESEND PATCH v4 6/6] watchdog: ahc1ec0-wdt: Add sub-device
+ watchdog for Advantech embedded controller
+Message-ID: <20201125141340.GB96791@roeck-us.net>
+References: <20201125070744.4651-1-shihlun.lin@advantech.com.tw>
+ <20201125070744.4651-6-shihlun.lin@advantech.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cd9f0b9f-c4f6-b80c-03cd-12697324bfca@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-25_08:2020-11-25,2020-11-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=84 spamscore=0
- clxscore=1015 phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011250088
+In-Reply-To: <20201125070744.4651-6-shihlun.lin@advantech.com.tw>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1khvYC-002Hdq-Tz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34392
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 18
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 02:32:02PM +0100, David Hildenbrand wrote:
-> On 25.11.20 13:08, Vlastimil Babka wrote:
-> > On 11/25/20 6:34 AM, Andrea Arcangeli wrote:
-> >> Hello,
-> >>
-> >> On Mon, Nov 23, 2020 at 02:01:16PM +0100, Vlastimil Babka wrote:
-> >>> On 11/21/20 8:45 PM, Andrea Arcangeli wrote:
-> >>>> A corollary issue was fixed in
-> >>>> 39639000-39814fff : Unknown E820 type
-> >>>>
-> >>>> pfn 0x7a200 -> 0x7a200000 min_pfn hit non-RAM:
-> >>>>
-> >>>> 7a17b000-7a216fff : Unknown E820 type
-> >>>
-> >>> It would be nice to also provide a /proc/zoneinfo and how exactly the 
-> >>> "zone_spans_pfn" was violated. I assume we end up below zone's 
-> >>> start_pfn, but is it true?
-> >>
-> >> Agreed, I was about to grab that info along with all page struct
-> >> around the pfn 0x7a200 and phys address 0x7a216fff.
-> >>
-> >> # grep -A1 E820 /proc/iomem
-> >> 7a17b000-7a216fff : Unknown E820 type
-> >> 7a217000-7bffffff : System RAM
-> >>
-> >> DMA      zone_start_pfn 1            zone_end_pfn() 4096         contiguous 1
-> >> DMA32    zone_start_pfn 4096         zone_end_pfn() 1048576      contiguous 0
-> >> Normal   zone_start_pfn 1048576      zone_end_pfn() 4715392      contiguous 1
-> >> Movable  zone_start_pfn 0            zone_end_pfn() 0            contiguous 0
-> > 
-> > So the above means that around the "Unknown E820 type" we have:
-> > 
-> > pfn 499712 - start of pageblock in ZONE_DMA32
-> > pfn 500091 - start of the "Unknown E820 type" range
-> > pfn 500224 - start of another pageblock
-> > pfn 500246 - end of "Unknown E820 type"
-> > 
-> > So this is indeed not a zone boundary issue, but basically a hole not 
-> > aligned to pageblock boundary and really unexpected.
-> > We have CONFIG_HOLES_IN_ZONE (that x86 doesn't set) for architectures 
-> > that do this, and even that config only affects pfn_valid_within(). But 
-> > here pfn_valid() is true, but the zone/node linkage is unexpected.
-> > 
-> >> However the real bug seems that reserved pages have a zero zone_id in
-> >> the page->flags when it should have the real zone id/nid. The patch I
-> >> sent earlier to validate highest would only be needed to deal with
-> >> pfn_valid.
-> >>
-> >> Something must have changed more recently than v5.1 that caused the
-> >> zoneid of reserved pages to be wrong, a possible candidate for the
-> >> real would be this change below:
-> >>
-> >> +               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-> >>
-> >> Even if it may not be it, at the light of how the reserved page
-> >> zoneid/nid initialized went wrong, the above line like it's too flakey
-> >> to stay.
-> >>
-> >> It'd be preferable if the pfn_valid fails and the
-> >> pfn_to_section_nr(pfn) returns an invalid section for the intermediate
-> >> step. Even better memset 0xff over the whole page struct until the
-> >> second stage comes around.
-> >>
-> >> Whenever pfn_valid is true, it's better that the zoneid/nid is correct
-> >> all times, otherwise if the second stage fails we end up in a bug with
-> >> weird side effects.
-> > 
-> > Yeah I guess it would be simpler if zoneid/nid was correct for 
-> > pfn_valid() pfns within a zone's range, even if they are reserved due 
-> > not not being really usable memory.
-> > 
-> > I don't think we want to introduce CONFIG_HOLES_IN_ZONE to x86. If the 
-> > chosen solution is to make this to a real hole, the hole should be 
-> > extended to MAX_ORDER_NR_PAGES aligned boundaries.
+On Wed, Nov 25, 2020 at 03:07:44PM +0800, Shihlun Lin wrote:
+> This is one of sub-device driver for Advantech embedded controller
+> AHC1EC0. This driver provide watchdog functionality for Advantech
+> related applications to restart the system.
 > 
-> As we don't punch out pages of the memmap on x86-64, pfn_valid() keeps
-> working as expected. There is a memmap that can be accessed and that was
-> initialized.
+> Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
 
-I suspect that memmap for the reserved pages is not properly initialized
-after recent changes in free_area_init(). They are cleared at
-init_unavailable_mem() to have zone=0 and node=0, but they seem to be
-never re-initialized with proper zone and node links which was not the
-case before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock
-regions rather that check each PFN").
+New watchdog drivers must use the watchdog API to register
+the watchdog device.
 
-Back then, memmap_init_zone() looped from zone_start_pfn till
-zone_end_pfn and struct page for reserved pages with pfns inside the
-zone would be initialized.
-
-Now the loop is for interesection of [zone_start_pfn, zone_end_pfn] with
-memblock.memory and for x86 reserved ranges are not in memblock.memory,
-so the memmap for them remains semi-initialized.
-
-> It's really just a matter of how to handle memory holes in
-> this scenario.
+> ---
+>  drivers/watchdog/Kconfig       |   8 +
+>  drivers/watchdog/Makefile      |   1 +
+>  drivers/watchdog/ahc1ec0-wdt.c | 489 +++++++++++++++++++++++++++++++++
+>  3 files changed, 498 insertions(+)
+>  create mode 100644 drivers/watchdog/ahc1ec0-wdt.c
 > 
-> a) Try initializing them to the covering node/zone (I gave one example
->    that might be tricky with hotplug)
-> b) Mark such pages (either special node/zone or pagetype) and make pfn
->    walkers ignore these holes. For now, this can only be done via the
->    reserved flag.
-> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index fd7968635e6d..82084e5af35e 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1634,6 +1634,14 @@ config NIC7018_WDT
+>  	  To compile this driver as a module, choose M here: the module will be
+>  	  called nic7018_wdt.
+>  
+> +config AHC1EC0_WDT
+> +	tristate "Advantech EC Watchdog Function"
+> +	depends on MFD_AHC1EC0
+> +	help
+> +	  This is sub-device for Advantech embedded controller AHC1EC0. This
+> +	  driver provide watchdog functionality for Advantech related
+> +	  applications to restart the system.
+> +
+>  # M68K Architecture
+>  
+>  config M54xx_WATCHDOG
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index 071a2e50be98..93d15eed1f7c 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -145,6 +145,7 @@ obj-$(CONFIG_INTEL_MID_WATCHDOG) += intel-mid_wdt.o
+>  obj-$(CONFIG_INTEL_MEI_WDT) += mei_wdt.o
+>  obj-$(CONFIG_NI903X_WDT) += ni903x_wdt.o
+>  obj-$(CONFIG_NIC7018_WDT) += nic7018_wdt.o
+> +obj-$(CONFIG_AHC1EC0_WDT) += ahc1ec0-wdt.o
+>  obj-$(CONFIG_MLX_WDT) += mlx_wdt.o
+>  
+>  # M68K Architecture
+> diff --git a/drivers/watchdog/ahc1ec0-wdt.c b/drivers/watchdog/ahc1ec0-wdt.c
+> new file mode 100644
+> index 000000000000..3799b99f6423
+> --- /dev/null
+> +++ b/drivers/watchdog/ahc1ec0-wdt.c
+> @@ -0,0 +1,489 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Watchdog Driver for Advantech controlling EC chip AHC1EC0
+> + *
+> + * Copyright (C) 2020, Advantech Automation Corp.
+> + *
+> + * Change Log:
+> + *	Version 1.00 <10/10/2014> Sun.Lang
+> + *        - Initial version
+> + *      Version 1.01 <12/30/2015> Jiangwei.Zhu
+> + *        - Modify adv_watchdog_init function to install the driver to
+> + *        - the support devices.
+> + *      Version 1.02 <03/04/2016> Jiangwei.Zhu
+> + *        - Support UNO-1372G-E3AE, TPC-1782H-433AE, APAX-5580-433AE
+> + *      Version 1.03 <05/09/2016> Ji.Xu
+> + *        - Support EC watchdog mini-board on UNO-3083G/3085G-D44E/D64E
+> + *        - APAX-5580-473AE/4C3AE.
+> + *        - Modify the timeout unit to 1 second.
+> + *        - Modify the device name check method to fuzzy matching.
+> + *      Version 1.04 <06/28/2017> Ji.Xu
+> + *        - Support EC UNO-2271G-E2xAE.
+> + *        - Support EC UNO-2271G-E02xAE.
+> + *        - Support EC UNO-2473G-JxAE.
+> + *        - Support proc filesystem.
+> + *      Version 1.05 <09/20/2017> Ji.Xu
+> + *        - Support EC UNO-2484G-633xAE.
+> + *        - Support EC UNO-2484G-653xAE.
+> + *        - Support EC UNO-2484G-673xAE.
+> + *        - Support EC UNO-2484G-733xAE.
+> + *        - Support EC UNO-2484G-753xAE.
+> + *        - Support EC UNO-2484G-773xAE.
+> + *      Version 1.06 <10/26/2017> Ji.Xu
+> + *        - Support EC UNO-3283G-674AE
+> + *        - Support EC UNO-3285G-674AE
+> + *      Version 1.07 <11/16/2017> Zhang.Yang
+> + *        - Support EC UNO-1372G-J021AE/J031AE
+> + *        - Support EC UNO-2372G
+> + *      Version 1.08 <02/02/2018> Ji.Xu
+> + *        - Support EC TPC-B500-6??AE
+> + *        - Support EC TPC-5???T-6??AE
+> + *        - Support EC TPC-5???W-6??AE
+> + *      Version 1.09 <03/20/2018> Ji.Xu
+> + *        - Support for compiling in kernel-4.10 and below.
+> + *      Version 1.10 <02/20/2019> Ji.Xu
+> + *        - Support EC UNO-420
+> + *        - Support EC TPC-B200-???AE
+> + *        - Support EC TPC-2???T-???AE
+> + *        - Support EC TPC-2???W-???AE
+> + *      Version 1.11 <08/30/2019> Yao.Kang
+> + *	  - Support 32-bit programs on 64-bit kernel
+> + *      Version 1.12 <12/03/2019> Jianfeng.dai
+> + *	  - Support support UNO-2372G watchdog
+> + *      Version 1.13 <04/24/2020> Yao.Kang
+> + *	  - Support support UNO-2473G
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/types.h>
+> +#include <linux/errno.h>
+> +#include <linux/kernel.h>
+> +#include <linux/miscdevice.h>
+> +#include <linux/watchdog.h>
+> +#include <linux/ioport.h>
+> +#include <linux/fcntl.h>
+> +#include <linux/version.h>
+> +#include <linux/ioctl.h>
+> +#include <linux/io.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/uaccess.h>
+> +#include <asm/switch_to.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/notifier.h>
+> +#include <linux/reboot.h>
+> +#include <linux/init.h>
+> +#include <linux/delay.h>
+> +#include <linux/fs.h>
+> +#include <linux/mfd/ahc1ec0.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/proc_fs.h>
+
+I don't think this large list of include files is needed.
+
+> +
+> +#define ADVANTECH_EC_WDT_VER        "1.12"
+> +#define ADVANTECH_EC_WDT_DATE       "04/24/2020"
+> +
+> +#define PROCFS_MAX_SIZE     128
+> +
+> +static char adv_expect_close;
+> +static unsigned long advwdt_is_open;
+> +static unsigned short timeout = 450;
+> +static unsigned int major;
+> +struct mutex lock_ioctl;
+> +
+> +struct adv_wdt_info {
+> +	unsigned char chip_name[32];
+> +	unsigned char is_enable[8];
+> +	unsigned long current_timeout;
+> +};
+> +
+> +static struct adv_wdt_info wdt_data = {
+> +	.chip_name = "Advantech Embedded Controller",
+> +	.is_enable = "No",
+> +	.current_timeout = 45,
+> +};
+> +
+> +static int wdt_proc_read(struct seq_file *m, void *p);
+> +
+> +static void *c_start(struct seq_file *m, loff_t *pos)
+> +{
+> +	return *pos < 1 ? (void *)1 : NULL;
+> +}
+> +
+> +static void *c_next(struct seq_file *m, void *v, loff_t *pos)
+> +{
+> +	++*pos;
+> +	return NULL;
+> +}
+> +
+> +static void c_stop(struct seq_file *m, void *v)
+> +{
+> +	/*nothing to do*/
+> +}
+> +
+> +static int c_show(struct seq_file *m, void *p)
+> +{
+> +	wdt_proc_read(m, p);
+> +	return 0;
+> +}
+> +
+> +static const struct seq_operations proc_seq_ops = {
+> +	.show  = c_show,
+> +	.start = c_start,
+> +	.next  = c_next,
+> +	.stop  = c_stop
+> +};
+> +
+> +static int wdt_proc_open(struct inode *inode, struct file *file)
+> +{
+> +	int ret;
+> +	struct seq_file *m;
+> +
+> +	ret = seq_open(file, &proc_seq_ops);
+> +	m = file->private_data;
+> +	m->private = file->f_path.dentry->d_iname;
+> +
+> +	return ret;
+> +}
+> +
+> +static int wdt_proc_read(struct seq_file *m, void *p)
+> +{
+> +	unsigned char *chip_name, *is_enable;
+> +	unsigned long current_timeout = 0;
+> +
+> +	chip_name = wdt_data.chip_name;
+> +	current_timeout = wdt_data.current_timeout;
+> +	is_enable = wdt_data.is_enable;
+> +
+> +	seq_printf(m, "name       : %s\n", chip_name);
+> +	seq_printf(m, "timeout    : %ld\n", current_timeout);
+> +	seq_printf(m, "is_enable  : %s\n", is_enable);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct proc_ops fops = {
+> +	.proc_open  = wdt_proc_open,
+> +	.proc_read  = seq_read,
+> +};
+> +
+> +static int wdt_create_proc(char *name)
+> +{
+> +	struct proc_dir_entry *wdt_proc_entries;
+> +	unsigned char proc_name[64] = {0};
+> +
+> +	sprintf(proc_name, "%s", name);
+> +
+> +	wdt_proc_entries = proc_create(proc_name, 0644, NULL, &fops);
+> +	if (wdt_proc_entries == NULL) {
+> +		remove_proc_entry(proc_name, NULL);
+> +		pr_err("Error: Could not initialize /proc/%s", proc_name);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+
+I don't see the point of adding proc file system nodes for a watchdog driver.
+
+> +static void wdt_remove_proc(char *name)
+> +{
+> +	unsigned char proc_name[64] = {0};
+> +
+> +	sprintf(proc_name, "%s", name);
+> +	remove_proc_entry(proc_name, NULL);
+> +}
+> +
+> +static int set_delay(unsigned short delay_timeout)
+> +{
+> +	if (write_hw_ram(EC_RESET_DELAY_TIME_L, delay_timeout & 0x00FF)) {
+> +		pr_err("Failed to set Watchdog Retset Time Low byte.");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (write_hw_ram(EC_RESET_DELAY_TIME_H, (delay_timeout & 0xFF00) >> 8)) {
+> +		pr_err("Failed to set Watchdog Retset Time Hight byte.");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int advwdt_set_heartbeat(unsigned long t)
+> +{
+> +	if (t < 1 || t > 6553)
+> +		return -EINVAL;
+> +
+> +	timeout = (t * 10);
+> +
+> +	return 0;
+> +}
+> +
+> +static long advwdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> +{
+> +	unsigned long new_timeout;
+> +	void __user *argp = (void __user *)arg;
+> +	int __user *p = argp;
+> +	int options;
+> +	static struct watchdog_info ident = {
+> +		.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT | WDIOF_MAGICCLOSE,
+> +		.firmware_version = 0,
+> +		.identity = "Advantech WDT"
+> +	};
+> +
+> +	mutex_lock(&lock_ioctl);
+> +	if (advwdt_is_open < 1) {
+> +		pr_err("watchdog does not open.");
+> +		mutex_unlock(&lock_ioctl);
+> +		return -1;
+> +	}
+> +
+> +	switch (cmd) {
+> +	case WDIOC_GETSUPPORT:
+> +		if (copy_to_user(argp, &ident, sizeof(ident))) {
+> +			mutex_unlock(&lock_ioctl);
+> +			return -EFAULT;
+> +		}
+> +		break;
+> +
+> +	case WDIOC_GETSTATUS:
+> +	case WDIOC_GETBOOTSTATUS:
+> +		mutex_unlock(&lock_ioctl);
+> +		return put_user(0, p);
+> +
+> +	case WDIOC_KEEPALIVE:
+> +		if (write_hwram_command(EC_WDT_RESET)) {
+> +			pr_err("Failed to set Watchdog reset.");
+> +			return -EINVAL;
+> +		}
+> +		break;
+> +
+> +	case WDIOC_SETTIMEOUT:
+> +		if (get_user(new_timeout, (unsigned long *)arg)) {
+> +			mutex_unlock(&lock_ioctl);
+> +			return -EFAULT;
+> +		}
+> +
+> +		if (advwdt_set_heartbeat(new_timeout)) {
+> +			pr_err("Advantch WDT: the input timeout is out of range.");
+> +			pr_err("Please choose valid data between 1 ~ 6553.");
+> +			mutex_unlock(&lock_ioctl);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (set_delay((unsigned short)(timeout - 1))) {
+> +			pr_err("Failed to set Watchdog delay.");
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (write_hwram_command(EC_WDT_START)) {
+> +			pr_err("Failed to set Watchdog start.");
+> +			return -EINVAL;
+> +		}
+> +
+> +		wdt_data.is_enable[0] = 'Y';
+> +		wdt_data.is_enable[1] = 'e';
+> +		wdt_data.is_enable[2] = 's';
+> +		wdt_data.current_timeout = timeout / 10;
+> +		break;
+> +
+> +	case WDIOC_GETTIMEOUT:
+> +		if (timeout == 0) {
+> +			mutex_unlock(&lock_ioctl);
+> +			return -EFAULT;
+> +		}
+> +		mutex_unlock(&lock_ioctl);
+> +
+> +		return put_user(timeout / 10, (unsigned long *)arg);
+> +
+> +	case WDIOC_SETOPTIONS:
+> +		if (get_user(options, p)) {
+> +			mutex_unlock(&lock_ioctl);
+> +			return -EFAULT;
+> +		}
+> +
+> +		if (options & WDIOS_DISABLECARD) {
+> +			if (write_hwram_command(EC_WDT_STOP)) {
+> +				pr_err("Failed to set Watchdog stop.");
+> +				return -EINVAL;
+> +			}
+> +
+> +			wdt_data.is_enable[0] = 'N';
+> +			wdt_data.is_enable[1] = 'o';
+> +			wdt_data.is_enable[2] = '\0';
+> +		}
+> +
+> +		if (options & WDIOS_ENABLECARD) {
+> +			if (write_hwram_command(EC_WDT_STOP)) {
+> +				pr_err("Failed to set Watchdog stop");
+> +				return -EINVAL;
+> +			}
+> +
+> +			if (set_delay((unsigned short)(timeout-1))) {
+> +				pr_err("Failed to set Watchdog delay.");
+> +				return -EINVAL;
+> +			}
+> +
+> +			if (write_hwram_command(EC_WDT_START)) {
+> +				pr_err("Failed to set Watchdog start.");
+> +				return -EINVAL;
+> +			}
+> +
+> +			wdt_data.is_enable[0] = 'Y';
+> +			wdt_data.is_enable[1] = 'e';
+> +			wdt_data.is_enable[2] = 's';
+> +		}
+> +		mutex_unlock(&lock_ioctl);
+> +
+> +		return 0;
+> +
+> +	default:
+> +		mutex_unlock(&lock_ioctl);
+> +		return -ENOTTY;
+> +	}
+> +
+> +	mutex_unlock(&lock_ioctl);
+> +	return 0;
+> +}
+> +
+> +static int advwdt_open(struct inode *inode, struct file *file)
+> +{
+> +	if (test_and_set_bit(0, &advwdt_is_open))
+> +		return -EBUSY;
+> +
+> +	if (write_hwram_command(EC_WDT_STOP)) {
+> +		pr_err("Failed to set Watchdog stop.");
+> +		return -EINVAL;
+> +	}
+> +	wdt_data.is_enable[0] = 'N';
+> +	wdt_data.is_enable[1] = 'o';
+> +	wdt_data.is_enable[2] = '\0';
+> +	return 0;
+> +}
+> +
+> +static int advwdt_close(struct inode *inode, struct file *file)
+> +{
+> +	clear_bit(0, &advwdt_is_open);
+> +	adv_expect_close = 0;
+> +
+> +	return 0;
+> +}
+> +
+> +/* Notifier for system down */
+> +static int advwdt_notify_sys(struct notifier_block *this, unsigned long code, void *unused)
+> +{
+> +	if (code == SYS_DOWN || code == SYS_HALT) {
+> +		/* Turn the WDT off */
+> +		if (write_hwram_command(EC_WDT_STOP)) {
+> +			pr_err("Failed to set Watchdog stop.");
+> +			return -EINVAL;
+> +		}
+> +		wdt_data.is_enable[0] = 'N';
+> +		wdt_data.is_enable[1] = 'o';
+> +		wdt_data.is_enable[2] = '\0';
+> +		pr_info("%s: notify sys shutdown", __func__);
+> +	}
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +/* Kernel Interfaces */
+> +static const struct file_operations advwdt_fops = {
+> +	.owner = THIS_MODULE,
+> +	.unlocked_ioctl = advwdt_ioctl,
+> +	.compat_ioctl = advwdt_ioctl,
+> +	.open = advwdt_open,
+> +	.release = advwdt_close,
+> +};
+> +
+> +/*
+> + *	The WDT needs to learn about soft shutdowns in order to
+> + *	turn the timebomb registers off.
+> + */
+> +static struct notifier_block advwdt_notifier = {
+> +	advwdt_notify_sys,
+> +	NULL,
+> +	0
+> +};
+> +
+> +static struct class *adv_ec_class;
+> +static dev_t devno;
+> +
+> +static int adv_ec_wdt_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev;
+> +
+> +	mutex_init(&lock_ioctl);
+> +
+> +	major = register_chrdev(0, "adv_watchdog", &advwdt_fops);
+> +	if (major < 0) {
+> +		pr_err("Advwdt register chrdev failed!");
+> +		return major;
+> +	}
+> +	devno = MKDEV(major, 0);
+> +	register_reboot_notifier(&advwdt_notifier);
+> +
+> +	/* Create /dev/watchdog for userspace access */
+> +	adv_ec_class = class_create(THIS_MODULE, "adv_watchdog");
+> +	if (IS_ERR(adv_ec_class)) {
+> +		pr_err("%s: can't create class", __func__);
+> +		unregister_chrdev_region(devno, 1);
+> +		return -1;
+> +	}
+> +
+> +	dev = device_create(adv_ec_class, NULL, devno, NULL, "watchdog");
+> +	if (IS_ERR(dev)) {
+> +		pr_err("%s: can't create device watchdog", __func__);
+> +		unregister_chrdev_region(devno, 1);
+> +		class_destroy(adv_ec_class);
+> +		return -1;
+> +	}
+> +
+> +	wdt_create_proc("advwdtinfo");
+> +	wdt_data.current_timeout = timeout / 10;
+> +	wdt_data.is_enable[0] = 'N';
+> +	wdt_data.is_enable[1] = 'o';
+> +	wdt_data.is_enable[2] = '\0';
+> +
+> +	dev_info(&pdev->dev, "Ver:%s, Data:%s, probe done",
+> +			ADVANTECH_EC_WDT_VER, ADVANTECH_EC_WDT_DATE);
+> +
+> +	return 0;
+> +}
+> +
+> +static int adv_ec_wdt_remove(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +
+> +	ret = write_hwram_command(EC_WDT_STOP);
+> +	if (ret) {
+> +		pr_err("Failed to set Watchdog stop.");
+> +		return ret;
+> +	}
+> +
+> +	wdt_data.is_enable[0] = 'N';
+> +	wdt_data.is_enable[1] = 'o';
+> +	wdt_data.is_enable[2] = '\0';
+> +	clear_bit(0, &advwdt_is_open);
+> +	adv_expect_close = 0;
+> +	pr_info("Driver uninstall, set Watchdog stop.");
+> +
+> +	device_destroy(adv_ec_class, devno);
+> +	unregister_chrdev_region(devno, 1);
+> +	class_destroy(adv_ec_class);
+> +
+> +	unregister_reboot_notifier(&advwdt_notifier);
+> +	unregister_chrdev(major, "adv_watchdog");
+> +
+> +	wdt_remove_proc("advwdtinfo");
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver adv_wdt_drv = {
+> +	.driver = {
+> +		.name = "adv-ec-wdt",
+> +	},
+> +	.probe = adv_ec_wdt_probe,
+> +	.remove = adv_ec_wdt_remove,
+> +};
+> +module_platform_driver(adv_wdt_drv);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("Advantech EC Watchdog Driver.");
 > -- 
-> Thanks,
+> 2.17.1
 > 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
