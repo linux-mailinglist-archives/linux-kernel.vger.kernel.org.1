@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FEB2C483B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5772C483D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgKYT0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:26:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727848AbgKYT0C (ORCPT
+        id S1727988AbgKYT0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:26:05 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4389 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727886AbgKYT0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:26:02 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB15C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:26:02 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0c9b00f5da200e3f5a4570.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9b00:f5da:200e:3f5a:4570])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9FFF91EC04DB;
-        Wed, 25 Nov 2020 20:26:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606332360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5FJUMx0oWkal2PmgCr3m76x9Ssn6xnvO8OZ8Gc6iM2c=;
-        b=TnzlggvRfPq6N6ugY/0YZOjoMXSPVG7/oWHn6KWLMQtpeNfhczxIcZpw7LLFhp0GWBnW7i
-        NYNegyh3OA1HfpjL+TNqXW9zYItPxKIYOXO7fLuUJhsbi0CtNWTTZNDBK3h9SLZYLAnoQR
-        R794sXl6LOtGcS4rPEtsoPAPPX4SptQ=
-Date:   Wed, 25 Nov 2020 20:25:53 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v0 03/19] x86/insn: Add an insn_decode() API
-Message-ID: <20201125192553.GD9996@zn.tnic>
-References: <20201124101952.7909-1-bp@alien8.de>
- <20201124101952.7909-4-bp@alien8.de>
- <20201126015333.fb0fb2b548013073ce72f19f@kernel.org>
+        Wed, 25 Nov 2020 14:26:04 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbeafcc0003>; Wed, 25 Nov 2020 11:26:04 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov
+ 2020 19:26:02 +0000
+Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 25 Nov 2020 19:25:58 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <jingoohan1@gmail.com>, <kw@linux.com>,
+        <amanharitsh123@gmail.com>, <gregkh@linuxfoundation.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
+        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [PATCH] PCI: tegra: Read "dbi" base address to program in application logic
+Date:   Thu, 26 Nov 2020 00:55:54 +0530
+Message-ID: <20201125192554.5401-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201126015333.fb0fb2b548013073ce72f19f@kernel.org>
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606332364; bh=JWEIVMl/77bu7Q+BVjyybEbxe5MdS6MrC/6uj772QPg=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=hdVkoaKOWf2K3iNdsk4GNjg9JAXIX8mjLhwUl9zs/cy3Ikza4uqq6GGvDckE8MqL4
+         YT466FnFMNDfAZL0b4vD/hEX7hTlcgcuU5Cv6na9guprzE7sLjE8tJtlFuLtVopIs2
+         azKxk7e0K3nHjYqtcG/4DaEjjNCtKEBKbVpRV8ltNrDIMmKtwU56l4fjRB6Eo1W287
+         Qhg3gOdyFEOyl3aq8WR/PK+HAvT6moyikB1xoCCNJK2Bpl7zaNbKRGRAGn54tYZQKb
+         qIGyIbZt2LTZQ71wypNaX2s42xyGzSiVBjvvOEWOzfezWakLnQAOGvR67KfgxySl7Y
+         kXEi27jy74+WA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 01:53:33AM +0900, Masami Hiramatsu wrote:
-> (only from the viewpoint of VEX coding, a bit stricter, but not perfect.)
+PCIe controller in Tegra194 requires the "dbi" region base address to be
+programmed in one of the application logic registers to enable CPU access
+to the "dbi" region. But, commit a0fd361db8e5 ("PCI: dwc: Move "dbi",
+"dbi2", and "addr_space" resource setup into common code") moved the code
+that reads the whereabouts of "dbi" region to the common code causing the
+existing code in pcie-tegra194.c file to program NULL in the application
+logic registers. This is causing null pointer dereference when the "dbi"
+registers are accessed. This issue is fixed by explicitly reading the
+"dbi" base address from DT node.
 
-Yeah, I wanted to document the fact that it has changed behavior in the
-commit message - we'll make it perfect later. :-)
+Fixes: a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space" resource setup into common code")
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+ drivers/pci/controller/dwc/pcie-tegra194.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> > @@ -98,8 +101,12 @@ static void insn_get_emulate_prefix(struct insn *insn)
-> >   * Populates the @insn->prefixes bitmap, and updates @insn->next_byte
-> >   * to point to the (first) opcode.  No effect if @insn->prefixes.got
-> >   * is already set.
-> > + *
-> > + * * Returns:
-> > + * 0:  on success
-> > + * !0: on error
-> >   */
-> 
-> So this is different from...
-> 
-> [..]
-> > +
-> > +/**
-> > + * insn_decode() - Decode an x86 instruction
-> > + * @insn:	&struct insn to be initialized
-> > + * @kaddr:	address (in kernel memory) of instruction (or copy thereof)
-> > + * @buf_len:	length of the insn buffer at @kaddr
-> > + * @m:		insn mode, see enum insn_mode
-> > + *
-> > + * Returns:
-> > + * 0: if decoding succeeded
-> > + * < 0: otherwise.
-> 
-> this return value.
-> 
-> Even for the insn_get_*(), I would like to see them returning -EINVAL
-> as same as insn_decode(). Same API group has different return value is
-> confusing.
-
-Right, my goal in the end here is to make *all* users of the decoder
-call insn_decode() and nothing else. And there you can have different
-return values so checking negative/positive is the proper way to go.
-
-Those other helpers, though, should then become internal and for those I
-think it is easier to use them when they return a boolean yes/no value,
-meaning, they do one thing and one thing only:
-
-For example, it is more readable to do:
-
-	if (insn_...)
-
-vs
-
-	int ret;
-
-	...
-
-	ret = insn_,...()
-	if (ret)
-		...
-
-which is 4 more lines of error handling and return variable, leading to
-more code.
-
-But if you want to be able to use those other helpers outside of the
-decoder - for whatever reason - then sure, the function signatures
-should be the same.
-
-Thoughts?
-
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index fa54d9aaa430..ac2225175087 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -1053,9 +1053,16 @@ static int tegra_pcie_enable_phy(struct tegra_pcie_dw *pcie)
+ 
+ static int tegra_pcie_dw_parse_dt(struct tegra_pcie_dw *pcie)
+ {
++	struct platform_device *pdev = to_platform_device(pcie->dev);
+ 	struct device_node *np = pcie->dev->of_node;
+ 	int ret;
+ 
++	pcie->dbi_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
++	if (!pcie->dbi_res) {
++		dev_err(pcie->dev, "Failed to find \"dbi\" region\n");
++		return -ENODEV;
++	}
++
+ 	ret = of_property_read_u32(np, "nvidia,aspm-cmrt-us", &pcie->aspm_cmrt);
+ 	if (ret < 0) {
+ 		dev_info(pcie->dev, "Failed to read ASPM T_cmrt: %d\n", ret);
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
