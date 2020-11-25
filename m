@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246322C3FBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877112C3FBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbgKYMRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:17:02 -0500
-Received: from mga18.intel.com ([134.134.136.126]:6412 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727626AbgKYMRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:17:01 -0500
-IronPort-SDR: ocSDS+G1wxfbf+yl52PTXPXubbuEmkA4dhT3rHhwz6w8whSZSdGhtCviyo/FZZ5jITM90oAY6t
- bo8407441Wgg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="159888983"
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="159888983"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 04:17:00 -0800
-IronPort-SDR: Xm8ijyUR1Zfd8mPqv7w3FUG+/mbI67hYd6Tl4m/i+IgfTv+RkyotzZO8ykcx92Ba8AJiZ6WZ74
- WOSnUcmQRYPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="432939088"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 25 Nov 2020 04:16:57 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 25 Nov 2020 14:16:57 +0200
-Date:   Wed, 25 Nov 2020 14:16:57 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        dmurphy@ti.com, jacek.anaszewski@gmail.com,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] leds: lp50xx: Fix an error handling path in
- 'lp50xx_probe_dt()'
-Message-ID: <20201125121657.GH1008337@kuha.fi.intel.com>
-References: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
- <20200923133510.GJ4282@kadam>
- <faa49efc-5ba5-b6bd-b486-2f7c4611219b@wanadoo.fr>
- <20200924064932.GP18329@kadam>
- <20200928115301.GB3987353@kuha.fi.intel.com>
- <20201125104629.GE25562@amd>
+        id S1729068AbgKYMRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:17:30 -0500
+Received: from www62.your-server.de ([213.133.104.62]:55572 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgKYMR3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:17:29 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khtjg-0000rR-7u; Wed, 25 Nov 2020 13:17:24 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khtjf-000F3v-WF; Wed, 25 Nov 2020 13:17:24 +0100
+Subject: Re: [PATCH bpf-next v3 1/3] ima: Implement ima_inode_hash
+To:     KP Singh <kpsingh@chromium.org>, Yonghong Song <yhs@fb.com>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+References: <20201124151210.1081188-1-kpsingh@chromium.org>
+ <20201124151210.1081188-2-kpsingh@chromium.org>
+ <3b6f7023-e1fe-b79b-fa06-b8edcce530de@fb.com>
+ <CACYkzJ51imU+_iNR3zG2pzqvVoewSE+NCTJo_V5ZGYJOej-B-g@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <0a627bb2-b356-0141-5e5a-b82d56d0de70@iogearbox.net>
+Date:   Wed, 25 Nov 2020 13:17:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125104629.GE25562@amd>
+In-Reply-To: <CACYkzJ51imU+_iNR3zG2pzqvVoewSE+NCTJo_V5ZGYJOej-B-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25998/Tue Nov 24 14:16:50 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 11:46:29AM +0100, Pavel Machek wrote:
-> Hi!
+On 11/25/20 1:04 PM, KP Singh wrote:
+> On Tue, Nov 24, 2020 at 6:35 PM Yonghong Song <yhs@fb.com> wrote:
+>> On 11/24/20 7:12 AM, KP Singh wrote:
+>>> From: KP Singh <kpsingh@google.com>
+>>>
+>>> This is in preparation to add a helper for BPF LSM programs to use
+>>> IMA hashes when attached to LSM hooks. There are LSM hooks like
+>>> inode_unlink which do not have a struct file * argument and cannot
+>>> use the existing ima_file_hash API.
+>>>
+>>> An inode based API is, therefore, useful in LSM based detections like an
+>>> executable trying to delete itself which rely on the inode_unlink LSM
+>>> hook.
+>>>
+>>> Moreover, the ima_file_hash function does nothing with the struct file
+>>> pointer apart from calling file_inode on it and converting it to an
+>>> inode.
+>>>
+>>> Signed-off-by: KP Singh <kpsingh@google.com>
+>>
+>> There is no change for this patch compared to previous version,
+>> so you can carry my Ack.
+>>
+>> Acked-by: Yonghong Song <yhs@fb.com>
 > 
-> > > > > I have been trying to teach Smatch to understand reference counting so
-> > > > > it can discover these kinds of bugs automatically.
-> > > > > 
-> > > > > I don't know how software_node_get_next_child() can work when it doesn't
-> > > > > call kobject_get().  This sort of bug would have been caught in testing
-> > > > > because it affects the success path so I must be reading the code wrong.
-> > > > > 
-> > > > 
-> > > > I had the same reading of the code and thought that I was missing something
-> > > > somewhere.
-> > > > 
-> > > > There is the same question about 'acpi_get_next_subnode' which is also a
-> > > > '.get_next_child_node' function, without any ref counting, if I'm correct.
-> > > > 
-> > > 
-> > > Yeah, but there aren't any ->get/put() ops for the acpi_get_next_subnode()
-> > > stuff so it's not a problem.  (Presumably there is some other sort of
-> > > refcounting policy there).
-> > 
-> > OK, so I guess we need to make software_node_get_next_child()
-> > mimic the behaviour of of_get_next_available_child(), and not
-> > acpi_get_next_subnode(). Does the attached patch work?
+> I am guessing:
 > 
-> Does not sound unreasonable. Did it get solved, somehow?
+> *  We need an Ack from Mimi/James.
 
-Has anybody tested my patch?
+Yes.
 
-thanks,
+> * As regards to which tree, I guess bpf-next would be better since the
+> BPF helper and the selftest depends on it
 
--- 
-heikki
+Yep, bpf-next is my preference as otherwise we're running into unnecessary
+merge conflicts.
+
+Thanks,
+Daniel
