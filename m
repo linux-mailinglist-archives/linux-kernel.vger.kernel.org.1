@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6922C3FB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246322C3FBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728046AbgKYMPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:15:19 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50561 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727219AbgKYMPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:15:17 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UGVZDcx_1606306511;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGVZDcx_1606306511)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 25 Nov 2020 20:15:11 +0800
-Subject: Re: [PATCH] mm/memcg: warn on missing memcg on
- mem_cgroup_page_lruvec()
-To:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Hui Su <sh_def@163.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>
-Cc:     syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <00000000000054aea005b4d59e71@google.com>
- <20201125112202.387009-1-lstoakes@gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <0918d6f5-8459-7b5e-82a3-6c9792d17433@linux.alibaba.com>
-Date:   Wed, 25 Nov 2020 20:15:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1728923AbgKYMRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:17:02 -0500
+Received: from mga18.intel.com ([134.134.136.126]:6412 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727626AbgKYMRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:17:01 -0500
+IronPort-SDR: ocSDS+G1wxfbf+yl52PTXPXubbuEmkA4dhT3rHhwz6w8whSZSdGhtCviyo/FZZ5jITM90oAY6t
+ bo8407441Wgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="159888983"
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="159888983"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 04:17:00 -0800
+IronPort-SDR: Xm8ijyUR1Zfd8mPqv7w3FUG+/mbI67hYd6Tl4m/i+IgfTv+RkyotzZO8ykcx92Ba8AJiZ6WZ74
+ WOSnUcmQRYPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="432939088"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 25 Nov 2020 04:16:57 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 25 Nov 2020 14:16:57 +0200
+Date:   Wed, 25 Nov 2020 14:16:57 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        dmurphy@ti.com, jacek.anaszewski@gmail.com,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] leds: lp50xx: Fix an error handling path in
+ 'lp50xx_probe_dt()'
+Message-ID: <20201125121657.GH1008337@kuha.fi.intel.com>
+References: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
+ <20200923133510.GJ4282@kadam>
+ <faa49efc-5ba5-b6bd-b486-2f7c4611219b@wanadoo.fr>
+ <20200924064932.GP18329@kadam>
+ <20200928115301.GB3987353@kuha.fi.intel.com>
+ <20201125104629.GE25562@amd>
 MIME-Version: 1.0
-In-Reply-To: <20201125112202.387009-1-lstoakes@gmail.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125104629.GE25562@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Alex Shi <alex.shi@linux.alibaba.com>
+On Wed, Nov 25, 2020 at 11:46:29AM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > > > > I have been trying to teach Smatch to understand reference counting so
+> > > > > it can discover these kinds of bugs automatically.
+> > > > > 
+> > > > > I don't know how software_node_get_next_child() can work when it doesn't
+> > > > > call kobject_get().  This sort of bug would have been caught in testing
+> > > > > because it affects the success path so I must be reading the code wrong.
+> > > > > 
+> > > > 
+> > > > I had the same reading of the code and thought that I was missing something
+> > > > somewhere.
+> > > > 
+> > > > There is the same question about 'acpi_get_next_subnode' which is also a
+> > > > '.get_next_child_node' function, without any ref counting, if I'm correct.
+> > > > 
+> > > 
+> > > Yeah, but there aren't any ->get/put() ops for the acpi_get_next_subnode()
+> > > stuff so it's not a problem.  (Presumably there is some other sort of
+> > > refcounting policy there).
+> > 
+> > OK, so I guess we need to make software_node_get_next_child()
+> > mimic the behaviour of of_get_next_available_child(), and not
+> > acpi_get_next_subnode(). Does the attached patch work?
+> 
+> Does not sound unreasonable. Did it get solved, somehow?
 
+Has anybody tested my patch?
 
-ÔÚ 2020/11/25 ÏÂÎç7:22, Lorenzo Stoakes Ð´µÀ:
-> Move memcg check to mem_cgroup_page_lruvec() as there are callers which
-> may invoke this with !memcg in mem_cgroup_lruvec(), whereas they should
-> not in mem_cgroup_page_lruvec().
-> 
-> We expect that we have always charged a page to the memcg before
-> mem_cgroup_page_lruvec() is invoked, so add a warning to assert that this
-> is the case.
-> 
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> Reported-by: syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com
-> ---
->  include/linux/memcontrol.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 87ed56dc75f9..3e6a1df3bdb9 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -618,7 +618,6 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  		goto out;
->  	}
->  
-> -	VM_WARN_ON_ONCE(!memcg);
->  	if (!memcg)
->  		memcg = root_mem_cgroup;
->  
-> @@ -645,7 +644,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
->  						struct pglist_data *pgdat)
->  {
-> -	return mem_cgroup_lruvec(page_memcg(page), pgdat);
-> +	struct mem_cgroup *memcg = page_memcg(page);
-> +
-> +	VM_WARN_ON_ONCE_PAGE(!memcg, page);
-> +	return mem_cgroup_lruvec(memcg, pgdat);
->  }
->  
->  static inline bool lruvec_holds_page_lru_lock(struct page *page,
-> 
+thanks,
+
+-- 
+heikki
