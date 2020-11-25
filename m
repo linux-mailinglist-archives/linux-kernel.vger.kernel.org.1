@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEF92C428D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F692C4296
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729601AbgKYPBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:01:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:53060 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbgKYPBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:01:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46113106F;
-        Wed, 25 Nov 2020 07:01:22 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FA453F70D;
-        Wed, 25 Nov 2020 07:01:20 -0800 (PST)
-References: <20201123022433.17905-1-valentin.schneider@arm.com> <87be8915-21b0-5214-9742-ccc7515c298b@intel.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, James Morse <James.Morse@arm.com>
-Subject: Re: [PATCH v2 0/3] x86/intel_rdt: task_work vs task_struct rmid/closid write race
-In-reply-to: <87be8915-21b0-5214-9742-ccc7515c298b@intel.com>
-Date:   Wed, 25 Nov 2020 15:01:16 +0000
-Message-ID: <jhjpn41v5tv.mognet@arm.com>
+        id S1729971AbgKYPDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:03:55 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2504 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729901AbgKYPDy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:03:54 -0500
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Ch4014WkYzQksm;
+        Wed, 25 Nov 2020 23:03:29 +0800 (CST)
+Received: from [127.0.0.1] (10.57.36.170) by dggeme760-chm.china.huawei.com
+ (10.3.19.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Wed, 25
+ Nov 2020 23:03:47 +0800
+Subject: Re: [PATCH v3 net-next] net: phy: realtek: read actual speed on
+ rtl8211f to detect downshift
+To:     Antonio Borneo <antonio.borneo@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        Willy Liu <willy.liu@realtek.com>
+CC:     <linuxarm@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20201124143848.874894-1-antonio.borneo@st.com>
+ <20201124230756.887925-1-antonio.borneo@st.com>
+From:   Yonglong Liu <liuyonglong@huawei.com>
+Message-ID: <d62710c3-7813-7506-f209-fcfa65931778@huawei.com>
+Date:   Wed, 25 Nov 2020 23:03:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201124230756.887925-1-antonio.borneo@st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.57.36.170]
+X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tested-by: Yonglong Liu <liuyonglong@huawei.com>
 
-Hi Reinette,
+On 2020/11/25 7:07, Antonio Borneo wrote:
+> The rtl8211f supports downshift and before commit 5502b218e001
+> ("net: phy: use phy_resolve_aneg_linkmode in genphy_read_status")
+> the read-back of register MII_CTRL1000 was used to detect the
+> negotiated link speed.
+> The code added in commit d445dff2df60 ("net: phy: realtek: read
+> actual speed to detect downshift") is working fine also for this
+> phy and it's trivial re-using it to restore the downshift
+> detection on rtl8211f.
+>
+> Add the phy specific read_status() pointing to the existing
+> function rtlgen_read_status().
+>
+> Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+> Link: https://lore.kernel.org/r/478f871a-583d-01f1-9cc5-2eea56d8c2a7@huawei.com
+> ---
+> To: Andrew Lunn <andrew@lunn.ch>
+> To: Heiner Kallweit <hkallweit1@gmail.com>
+> To: Russell King <linux@armlinux.org.uk>
+> To: "David S. Miller" <davem@davemloft.net>
+> To: Jakub Kicinski <kuba@kernel.org>
+> To: netdev@vger.kernel.org
+> To: Yonglong Liu <liuyonglong@huawei.com>
+> To: Willy Liu <willy.liu@realtek.com>
+> Cc: linuxarm@huawei.com
+> Cc: Salil Mehta <salil.mehta@huawei.com>
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-kernel@vger.kernel.org
+> In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
+>
+> V1 => V2
+> 	move from a generic implementation affecting every phy
+> 	to a rtl8211f specific implementation
+> V2 => V3
+> 	rebase on netdev-next, resolving minor conflict after
+> 	merge of 8b43357fff61
+> ---
+>   drivers/net/phy/realtek.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+> index f71eda945c6a..99ecd6c4c15a 100644
+> --- a/drivers/net/phy/realtek.c
+> +++ b/drivers/net/phy/realtek.c
+> @@ -729,6 +729,7 @@ static struct phy_driver realtek_drvs[] = {
+>   		PHY_ID_MATCH_EXACT(0x001cc916),
+>   		.name		= "RTL8211F Gigabit Ethernet",
+>   		.config_init	= &rtl8211f_config_init,
+> +		.read_status	= rtlgen_read_status,
+>   		.config_intr	= &rtl8211f_config_intr,
+>   		.handle_interrupt = rtl8211f_handle_interrupt,
+>   		.suspend	= genphy_suspend,
+>
+> base-commit: 1d155dfdf50efc2b0793bce93c06d1a5b23d0877
 
-On 24/11/20 21:37, Reinette Chatre wrote:
-> Hi Valentin,
->
-> On 11/22/2020 6:24 PM, Valentin Schneider wrote:
->> This is a small cleanup + a fix for a race I stumbled upon while staring at
->> resctrl stuff.
->>
->> Briefly tested on a Xeon Gold 5120 (m2.xlarge.x86 on Equinix) by bouncing
->> a few tasks around control groups.
->>
->
-> ...
->
-> Thank you very much for taking this on. Unfortunately this race is one
-> of a few issues with the way in which tasks moving to a new resource
-> group is handled.
->
-> Other issues are:
->
-> 1.
-> Until the queued work is run, the moved task runs with old (and even
-> invalid in the case when its original resource group has been removed)
-> closid and rmid.
->
-
-For a userspace task, that queued work should be run as soon as possible
-(& relevant). If said task is currently running, then task_work_add() will
-lead to an IPI; the other cases (task moving itself or not currently
-running) are covered by the return to userspace path.
-
-Kernel threads however are a prickly matter because they quite explicitly
-don't have this return to userspace - they only run their task_work
-callbacks on exit. So we currently have to wait for those kthreads to go
-through a context switch to update the relevant register, but I don't
-see any other alternative that wouldn't involve interrupting every other
-CPU (the kthread could move between us triggering some remote work and its
-previous CPU receiving the IPI).
-
-> 2.
-> Work to update the PQR_ASSOC register is queued every time the user
-> writes a task id to the "tasks" file, even if the task already belongs
-> to the resource group and in addition to any other pending work for that
-> task. This could result in multiple pending work items associated with a
-> single task even if they are all identical and even though only a single
-> update with most recent values is needed. This could result in
-> significant system resource waste, especially on tasks sleeping for a
-> long time.
->
-> Fenghua solved these issues by replacing the callback with a synchronous
-> update, similar to how tasks are currently moved when a resource group
-> is deleted. We plan to submit this work next week.
->
-> This new solution will make patch 1 and 2 of this series unnecessary. As
-> I understand it patch 3 would still be a welcome addition but would
-> require changes. As you prefer you could either submit patch 3 on its
-> own for the code as it is now and we will rework the task related
-> changes on top of that, or you could wait for the task related changes
-> to land first?
->
-
-Please do Cc me on those - I'll re-evaluate the need for patch 3 then.
-
-Thanks!
-
->>
->> Valentin Schneider (3):
->>    x86/intel_rdt: Check monitor group vs control group membership earlier
->>    x86/intel_rdt: Plug task_work vs task_struct {rmid,closid} update race
->>    x86/intel_rdt: Apply READ_ONCE/WRITE_ONCE to task_struct .rmid &
->>      .closid
->>
->
-> Thank you very much
->
-> Reinette
