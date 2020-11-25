@@ -2,182 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C882C4730
+	by mail.lfdr.de (Postfix) with ESMTP id 16C772C472E
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732928AbgKYSBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 13:01:53 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:51332 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730774AbgKYSBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:01:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606327312; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=7LPkOcaw/p1knQ5KtExLHuxB75BuhzPxHs8gh80hyuw=; b=Hfr9rcRpw2v4Tybcbmj3PAxRw57Dwx7wBAmJFAAELTgaJ0kCEC3bWMLo16FSCoEnvo6TB5Sn
- acYU0gdEkfQoG3bIbQ7OZ2nL9SGSvvGAnZ8kz/LfFCz4F1vFDn5INpc4oG9pSg5QyZ/ENYhx
- V0vqtw0bsLjdiwaaZPz82tMOYtc=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fbe9be6e9b7088622a3b233 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 18:01:10
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 38A88C43463; Wed, 25 Nov 2020 18:01:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EF425C433ED;
-        Wed, 25 Nov 2020 18:01:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EF425C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] net: qrtr: Unprepare MHI channels during remove
-To:     bbhatt@codeaurora.org
-Cc:     Loic Poulain <loic.poulain@linaro.org>, ath11k@lists.infradead.org,
-        cjhuang@codeaurora.org, clew@codeaurora.org,
-        hemantk@codeaurora.org, kvalo@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, jhugo=codeaurora.org@codeaurora.org
-References: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
- <5e94c0be-9402-7309-5d65-857a27d1f491@codeaurora.org>
- <CAMZdPi_b0=qFNGi1yUke3Dip2bi-zW4ULTg8W4nbyPyEsE3D4w@mail.gmail.com>
- <2019fe3c-55c5-61fe-758c-1e9952e1cb33@codeaurora.org>
- <647d1520d0bcefa7ff02d2ef5ee81bd1@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <e8eb7b2b-bb25-cba9-f487-1a0889d8cd93@codeaurora.org>
-Date:   Wed, 25 Nov 2020 11:01:06 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1732744AbgKYSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 13:01:34 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:40348 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732313AbgKYSBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 13:01:33 -0500
+Received: by mail-oi1-f195.google.com with SMTP id a130so3765613oif.7;
+        Wed, 25 Nov 2020 10:01:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HMaHq0oIUbpdceNa2KvX326FnLqaz6u4HCFyXq3ixaE=;
+        b=uBrNcPMO63SNsx1SWwfo8UBpqWcNKrtWOO7SYJqF5zzzF6YAaG7vo6vvgJes3GikeM
+         Nqpc88OF/w3/BTzW2AlEjc3MWxvJO1rmAMQ8PXXOnB+NnwU80i18xelUBK/dpksRLKy6
+         73pMVyIuRrpeUOz551pX7ujAJPOwm7bpW1Q71yqitc+++yDDlWBbfpvBuIxGvcz9fASk
+         9heCeYI0b2aMBLJk6BbdIfJx+8l1MKB1CPIaVg+ELJCJwhR8MHWnSUvNB4cpztImd03+
+         TyzWGXo9B9wZcoQ1z+tGBva0r5gXmH3QK64g+OATCL6msxaR0sYJrPERh/Rq8lb2++Xf
+         FeHQ==
+X-Gm-Message-State: AOAM532Oq5NTgYeN/kTptvoBS5AnFLE/SnKWbLz1Uz9XvsxecT4AfDR9
+        GbtjeMLo7eHFfXUiZZO2Y1zmtlm9mK+FhkYKp8n2VrIf
+X-Google-Smtp-Source: ABdhPJzJsTsSY2qHnQvnfowgzWeqDlWG1plHmDqqpqVSqwR8MW/cmknHFJoWUzrtE7xmqYts3EQmmebxdIMaeMylhLs=
+X-Received: by 2002:aca:5a42:: with SMTP id o63mr3019149oib.69.1606327286219;
+ Wed, 25 Nov 2020 10:01:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <647d1520d0bcefa7ff02d2ef5ee81bd1@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201125161626.66180-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20201125161626.66180-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 25 Nov 2020 19:01:15 +0100
+Message-ID: <CAJZ5v0hzC25Qi61aDw0PNz6JpOwjFjGbqPyp8ozvypw4sewMRg@mail.gmail.com>
+Subject: Re: [PATCH v2] resource: provide meaningful MODULE_LICENSE() in test suite
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/2020 12:02 PM, Bhaumik Bhatt wrote:
-> On 2020-11-18 11:34 AM, Jeffrey Hugo wrote:
->> On 11/18/2020 12:14 PM, Loic Poulain wrote:
->>>
->>>
->>> Le mer. 18 nov. 2020 à 19:34, Jeffrey Hugo <jhugo@codeaurora.org 
->>> <mailto:jhugo@codeaurora.org>> a écrit :
->>>
->>>     On 11/18/2020 11:20 AM, Bhaumik Bhatt wrote:
->>>      > Reset MHI device channels when driver remove is called due to
->>>      > module unload or any crash scenario. This will make sure that
->>>      > MHI channels no longer remain enabled for transfers since the
->>>      > MHI stack does not take care of this anymore after the auto-start
->>>      > channels feature was removed.
->>>      >
->>>      > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org
->>>     <mailto:bbhatt@codeaurora.org>>
->>>      > ---
->>>      >   net/qrtr/mhi.c | 1 +
->>>      >   1 file changed, 1 insertion(+)
->>>      >
->>>      > diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
->>>      > index 7100f0b..2bf2b19 100644
->>>      > --- a/net/qrtr/mhi.c
->>>      > +++ b/net/qrtr/mhi.c
->>>      > @@ -104,6 +104,7 @@ static void qcom_mhi_qrtr_remove(struct
->>>     mhi_device *mhi_dev)
->>>      >       struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
->>>      >
->>>      >       qrtr_endpoint_unregister(&qdev->ep);
->>>      > +     mhi_unprepare_from_transfer(mhi_dev);
->>>      >       dev_set_drvdata(&mhi_dev->dev, NULL);
->>>      >   }
->>>      >
->>>      >
->>>
->>>     I admit, I didn't pay much attention to the auto-start being 
->>> removed,
->>>     but this seems odd to me.
->>>
->>>     As a client, the MHI device is being removed, likely because of some
->>>     factor outside of my control, but I still need to clean it up? This
->>>     really feels like something MHI should be handling.
->>>
->>>
->>> I think this is just about balancing operations, what is done in 
->>> probe should be undone in remove, so here channels are started in 
->>> probe and stopped/reset in remove.
->>
->> I understand that perspective, but that doesn't quite match what is
->> going on here.  Regardless of if the channel was started (prepared) in
->> probe, it now needs to be stopped in remove.  That not balanced in all
->> cases
->>
->> Lets assume, in response to probe(), my client driver goes and creates
->> some other object, maybe a socket.  In response to that socket being
->> opened/activated by the client of my driver, I go and start the mhi
->> channel.  Now, normally, when the socket is closed/deactivated, I stop
->> the MHI channel.  In this case, stopping the MHI channel in remove()
->> is unbalanced with respect to probe(), but is now a requirement.
->>
->> Now you may argue, I should close the object in response to remove,
->> which will then trigger the stop on the channel.  That doesn't apply
->> to everything.  For example, you cannot close an open file in the
->> kernel. You need to wait for userspace to close it.  By the time that
->> happens, the mhi_dev is long gone I expect.
->>
->> So if, somehow, the client driver is the one causing the remove to
->> occur, then yes it should probably be the one doing the stop, but
->> that's a narrow set of conditions, and I think having that requirement
->> for all scenarios is limiting.
-> It should be the client's responsibility to perform a clean-up though.
-> 
-> We cannot assume that the remove() call was due to factors outside of the
-> client's control at all times. You may not know if the remove() was due to
-> device actually crashing or just an unbind/module unload. So, it would be
-> better if you call it as the device should ideally not be left with a stale
-> channel context. >
-> We had an issue where a client was issuing a driver unbind without 
-> unpreparing
-> the MHI channels and without Loic's patch [1], we would not issue a channel
-> RESET to the device resulting in incoming data to the host on those 
-> channels
-> after host clean-up and an unmapped memory access and kernel panic.
-
-So the client drivers have to do the right thing, otherwise the kernel 
-could crash?  Sounds like you are choosing to not do defensive coding in 
-MHI and making your problems the client's problems.
-
-Before releasing the resources, why haven't you issued a MHI_RESET of 
-the state machine, and ensured the device has ack'd the reset?
-
-> If MHI dev will be gone that NULL/status check must be present in 
-> something that
-> userspace could potentially use.
-> 
-> [1] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/bus/mhi?h=next-20201119&id=a7f422f2f89e7d48aa66e6488444a4c7f01269d5 
-> 
-> 
-> Thanks,
-> Bhaumik
+On Wed, Nov 25, 2020 at 5:17 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> modpost complains that module has no licence provided.
+> Provide it via meaningful MODULE_LICENSE().
+>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> v2: resent with linux-acpi@ included
+>  kernel/resource_kunit.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/resource_kunit.c b/kernel/resource_kunit.c
+> index 9fdbca8426f1..58ab9f914602 100644
+> --- a/kernel/resource_kunit.c
+> +++ b/kernel/resource_kunit.c
+> @@ -148,3 +148,5 @@ static struct kunit_suite resource_test_suite = {
+>         .test_cases = resource_test_cases,
+>  };
+>  kunit_test_suite(resource_test_suite);
+> +
+> +MODULE_LICENSE("GPL");
+> --
 
-
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+Applied, thanks!
