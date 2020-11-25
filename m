@@ -2,354 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F10E2C419B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851942C41A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729575AbgKYOCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729016AbgKYOCM (ORCPT
+        id S1729812AbgKYOC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:02:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50324 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729621AbgKYOC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:02:12 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363C1C0613D4;
-        Wed, 25 Nov 2020 06:02:12 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id 62so932406qva.11;
-        Wed, 25 Nov 2020 06:02:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tuQTPEPzh1AZcVg5jmG+k/nKzbHIALiXXxPpLH80tKc=;
-        b=EXa5of5XK163ARA/6PUqQGoWHsk2cSH3e0eV1CF44ruqTfXQzPJWVdpZDuCTYGzvGI
-         +F3+9atgx579QkVmLVd1S5ahIyB1JX0egA0j8+S+Eb4OC6UK//qDgZ25TZQ0KDvucemJ
-         4jBo3wJ8AUqVyBLBQzbOQEjW6ExFQgyZd7m5LrEy2iP0Dv8xpPKIl1GxHhYqm8XetZ8t
-         kPcnCvombuoRTZkF9A9p+LqYRJYSrwt30RLfYMCqAfDGoUwwVQxFBbw8Fl0A/J79UcLL
-         vlpGL9AKiz/L7YEEyVUTgox4un9/V2TQOBLUKA/ereesexw1DfSelSt+QRauj9e19udi
-         Yi4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tuQTPEPzh1AZcVg5jmG+k/nKzbHIALiXXxPpLH80tKc=;
-        b=bPuMNvMgR38Weg8ZDB0d0/ORYC+c2C8qHWhHmibDOmr9wtEiVnsMefrO1dskLVwIud
-         O97AzxsIfavXcJ/qPx0XygsZ/TFawaqdpYyFfbVGJjE0tElMTFyugFkxJw+uN773aJeD
-         KEft8VXITFts03ikMS39khEm3D6yZuJkOnhX169zga0aTueD3ZqafwU+LQC1Yy8Hzi5g
-         dHhvK8Vi5vurLFpWOVtgeCWXRD8eoE1gBwCWFoaBGXDzXCSeffaHGZgecpW64GKffEUK
-         HEkKEETt5zS4rgVC8mzcjItoomMzXYIH0CBPKV5EVzXtaO15IdIm+2hPooXf7BgLzm3E
-         l8/w==
-X-Gm-Message-State: AOAM532Xi/UTLPPzP5Yns1sgndRIpKPq4ViAo7ZlxnOQkl5iikHAhBgt
-        IdFLEzv+GK3SvIvt7ssd32Y=
-X-Google-Smtp-Source: ABdhPJxpIFvQ5qHjr9pRzPh6JraYQK+xHKwF32GksPbzSGzudmS6tc6+LcctHjLdOhPd34tT3aFGBQ==
-X-Received: by 2002:ad4:4d84:: with SMTP id cv4mr3774528qvb.14.1606312931297;
-        Wed, 25 Nov 2020 06:02:11 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id z19sm2455819qtu.51.2020.11.25.06.02.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Nov 2020 06:02:10 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 761B927C006B;
-        Wed, 25 Nov 2020 09:02:06 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 25 Nov 2020 09:02:06 -0500
-X-ME-Sender: <xms:3WO-X5sUNbxHUV0oYJ4M4gnaj7tpQQ0dQFsGIkMq7JmmZFwhgc5BYA>
-    <xme:3WO-Xyck94NKCkwf-NtlO_1opg7t9lj80cXG9YlWP4-Fr2HY3gGyNwMy-ikZjQtYr
-    zjfLktBvxpAHxkXRw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehtddgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
-    sehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvg
-    hnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepteegteeludegveeujeeg
-    fefhueffudehkefhueegieevffdvfeefheeihfeluddvnecuffhomhgrihhnpehkvghrnh
-    gvlhdrohhrghdplhhivhgvjhhouhhrnhgrlhdrtghomhenucfkphepudeijedrvddvtddr
-    vddruddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
-    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
-    hfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:3WO-X8zGCViHRkwIEFrcppTlo4KFvTxAw-SfQm05sNLJsVhKT3BXxA>
-    <xmx:3WO-XwNZuLV9Kigx-cyat0vBtAFMm-gTw8MVppPCQeMOnaupCvZJxw>
-    <xmx:3WO-X59cfuTVIZmH_y9RY1AsplstOpA0ZAphaq5qb3KH6wIR_pVxyA>
-    <xmx:3mO-X0YnmnaePBIdDp9YA-Su3TeTUMkWJv9GNjivIAYpM24fIwm-sA>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 675FB328005A;
-        Wed, 25 Nov 2020 09:02:05 -0500 (EST)
-Date:   Wed, 25 Nov 2020 22:01:26 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        Wed, 25 Nov 2020 09:02:57 -0500
+Date:   Wed, 25 Nov 2020 14:02:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606312973;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=K5xrIxV6nGXKMfiEkI0Rc6uM5gzRNJKJaCqBwLjFAX4=;
+        b=hqALZG5+IhI2dP0ajHzgKXoH5APRk8Pp8/h533C3l/Scb8YjnKUqfjh9KSK/0I9E7vZZHG
+        84UNWekv69SUycMVpiZnhxoWiDGtrlFdyTg5N8A4hz1B5AKkvwpGcECMWb7qTm7I1IKeuq
+        hgojSRA9q4MAdWfLg1Twk5JAnxHuTnJ5dgQM9gKscBwWmn6m08yStC6v7zC/O7J2v0kDgz
+        OuDDh7Wh/gXSxXemisvShMmGO+tlLInqgfU/KtK4fpdWhJpWu+w2TFp6t7FuP47JWHphuJ
+        0GO3XtrokVivWjRYbmoTX98D4dpORGGR56ahl2jj+821muik10oTylAHRVLQlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606312973;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=K5xrIxV6nGXKMfiEkI0Rc6uM5gzRNJKJaCqBwLjFAX4=;
+        b=bgyEGqiBPg7ylW0PhPz7VdjPZt+QR9pHGN9exTDvXbitxLhKw1aCJBR3q6SNx297HbBhzq
+        KI1ReYlKHfQUPQDA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] irq_work: Cleanup
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
-Message-ID: <20201125140126.GH3025@boqun-archlinux>
-References: <20201102104152.GG9930@xps-13-7390>
- <20201125124648.GJ29328@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125124648.GJ29328@amd>
+Message-ID: <160631297286.3364.8806660214858380101.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 01:46:48PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > We have the following potential deadlock condition:
-> > 
-> >  ========================================================
-> >  WARNING: possible irq lock inversion dependency detected
-> >  5.10.0-rc2+ #25 Not tainted
-> >  --------------------------------------------------------
-> >  swapper/3/0 just changed the state of lock:
-> >  ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x27/0x200
-> >  but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-> >   (&trig->leddev_list_lock){.+.?}-{2:2}
-> > 
-> >  and interrupts could create inverse lock ordering between them.
-> > 
-> >  other info that might help us debug this:
-> >   Possible interrupt unsafe locking scenario:
-> > 
-> >         CPU0                    CPU1
-> >         ----                    ----
-> >    lock(&trig->leddev_list_lock);
-> >                                 local_irq_disable();
-> >                                 lock(&host->lock);
-> >                                 lock(&trig->leddev_list_lock);
-> >    <Interrupt>
-> >      lock(&host->lock);
-> > 
-> >   *** DEADLOCK ***
-> > 
-> >  no locks held by swapper/3/0.
-> > 
-> >  the shortest dependencies between 2nd lock and 1st lock:
-> >   -> (&trig->leddev_list_lock){.+.?}-{2:2} ops: 46 {
-> >      HARDIRQ-ON-R at:
-> >                        lock_acquire+0x15f/0x420
-> >                        _raw_read_lock+0x42/0x90
-> >                        led_trigger_event+0x2b/0x70
-> >                        rfkill_global_led_trigger_worker+0x94/0xb0
-> >                        process_one_work+0x240/0x560
-> >                        worker_thread+0x58/0x3d0
-> >                        kthread+0x151/0x170
-> >                        ret_from_fork+0x1f/0x30
-> >      IN-SOFTIRQ-R at:
-> >                        lock_acquire+0x15f/0x420
-> >                        _raw_read_lock+0x42/0x90
-> >                        led_trigger_event+0x2b/0x70
-> >                        kbd_bh+0x9e/0xc0
-> >                        tasklet_action_common.constprop.0+0xe9/0x100
-> >                        tasklet_action+0x22/0x30
-> >                        __do_softirq+0xcc/0x46d
-> >                        run_ksoftirqd+0x3f/0x70
-> >                        smpboot_thread_fn+0x116/0x1f0
-> >                        kthread+0x151/0x170
-> >                        ret_from_fork+0x1f/0x30
-> >      SOFTIRQ-ON-R at:
-> >                        lock_acquire+0x15f/0x420
-> >                        _raw_read_lock+0x42/0x90
-> >                        led_trigger_event+0x2b/0x70
-> >                        rfkill_global_led_trigger_worker+0x94/0xb0
-> >                        process_one_work+0x240/0x560
-> >                        worker_thread+0x58/0x3d0
-> >                        kthread+0x151/0x170
-> >                        ret_from_fork+0x1f/0x30
-> >      INITIAL READ USE at:
-> >                            lock_acquire+0x15f/0x420
-> >                            _raw_read_lock+0x42/0x90
-> >                            led_trigger_event+0x2b/0x70
-> >                            rfkill_global_led_trigger_worker+0x94/0xb0
-> >                            process_one_work+0x240/0x560
-> >                            worker_thread+0x58/0x3d0
-> >                            kthread+0x151/0x170
-> >                            ret_from_fork+0x1f/0x30
-> >    }
-> >    ... key      at: [<ffffffff83da4c00>] __key.0+0x0/0x10
-> >    ... acquired at:
-> >     _raw_read_lock+0x42/0x90
-> >     led_trigger_blink_oneshot+0x3b/0x90
-> >     ledtrig_disk_activity+0x3c/0xa0
-> >     ata_qc_complete+0x26/0x450
-> >     ata_do_link_abort+0xa3/0xe0
-> >     ata_port_freeze+0x2e/0x40
-> >     ata_hsm_qc_complete+0x94/0xa0
-> >     ata_sff_hsm_move+0x177/0x7a0
-> >     ata_sff_pio_task+0xc7/0x1b0
-> >     process_one_work+0x240/0x560
-> >     worker_thread+0x58/0x3d0
-> >     kthread+0x151/0x170
-> >     ret_from_fork+0x1f/0x30
-> > 
-> >  -> (&host->lock){-...}-{2:2} ops: 69 {
-> >     IN-HARDIRQ-W at:
-> >                      lock_acquire+0x15f/0x420
-> >                      _raw_spin_lock_irqsave+0x52/0xa0
-> >                      ata_bmdma_interrupt+0x27/0x200
-> >                      __handle_irq_event_percpu+0xd5/0x2b0
-> >                      handle_irq_event+0x57/0xb0
-> >                      handle_edge_irq+0x8c/0x230
-> >                      asm_call_irq_on_stack+0xf/0x20
-> >                      common_interrupt+0x100/0x1c0
-> >                      asm_common_interrupt+0x1e/0x40
-> >                      native_safe_halt+0xe/0x10
-> >                      arch_cpu_idle+0x15/0x20
-> >                      default_idle_call+0x59/0x1c0
-> >                      do_idle+0x22c/0x2c0
-> >                      cpu_startup_entry+0x20/0x30
-> >                      start_secondary+0x11d/0x150
-> >                      secondary_startup_64_no_verify+0xa6/0xab
-> >     INITIAL USE at:
-> >                     lock_acquire+0x15f/0x420
-> >                     _raw_spin_lock_irqsave+0x52/0xa0
-> >                     ata_dev_init+0x54/0xe0
-> >                     ata_link_init+0x8b/0xd0
-> >                     ata_port_alloc+0x1f1/0x210
-> >                     ata_host_alloc+0xf1/0x130
-> >                     ata_host_alloc_pinfo+0x14/0xb0
-> >                     ata_pci_sff_prepare_host+0x41/0xa0
-> >                     ata_pci_bmdma_prepare_host+0x14/0x30
-> >                     piix_init_one+0x21f/0x600
-> >                     local_pci_probe+0x48/0x80
-> >                     pci_device_probe+0x105/0x1c0
-> >                     really_probe+0x221/0x490
-> >                     driver_probe_device+0xe9/0x160
-> >                     device_driver_attach+0xb2/0xc0
-> >                     __driver_attach+0x91/0x150
-> >                     bus_for_each_dev+0x81/0xc0
-> >                     driver_attach+0x1e/0x20
-> >                     bus_add_driver+0x138/0x1f0
-> >                     driver_register+0x91/0xf0
-> >                     __pci_register_driver+0x73/0x80
-> >                     piix_init+0x1e/0x2e
-> >                     do_one_initcall+0x5f/0x2d0
-> >                     kernel_init_freeable+0x26f/0x2cf
-> >                     kernel_init+0xe/0x113
-> >                     ret_from_fork+0x1f/0x30
-> >   }
-> >   ... key      at: [<ffffffff83d9fdc0>] __key.6+0x0/0x10
-> >   ... acquired at:
-> >     __lock_acquire+0x9da/0x2370
-> >     lock_acquire+0x15f/0x420
-> >     _raw_spin_lock_irqsave+0x52/0xa0
-> >     ata_bmdma_interrupt+0x27/0x200
-> >     __handle_irq_event_percpu+0xd5/0x2b0
-> >     handle_irq_event+0x57/0xb0
-> >     handle_edge_irq+0x8c/0x230
-> >     asm_call_irq_on_stack+0xf/0x20
-> >     common_interrupt+0x100/0x1c0
-> >     asm_common_interrupt+0x1e/0x40
-> >     native_safe_halt+0xe/0x10
-> >     arch_cpu_idle+0x15/0x20
-> >     default_idle_call+0x59/0x1c0
-> >     do_idle+0x22c/0x2c0
-> >     cpu_startup_entry+0x20/0x30
-> >     start_secondary+0x11d/0x150
-> >     secondary_startup_64_no_verify+0xa6/0xab
-> > 
-> > This lockdep splat is reported after:
-> > commit e918188611f0 ("locking: More accurate annotations for read_lock()")
-> > 
-> > To clarify:
-> >  - read-locks are recursive only in interrupt context (when
-> >    in_interrupt() returns true)
-> >  - after acquiring host->lock in CPU1, another cpu (i.e. CPU2) may call
-> >    write_lock(&trig->leddev_list_lock) that would be blocked by CPU0
-> >    that holds trig->leddev_list_lock in read-mode
-> >  - when CPU1 (ata_ac_complete()) tries to read-lock
-> >    trig->leddev_list_lock, it would be blocked by the write-lock waiter
-> >    on CPU2 (because we are not in interrupt context, so the read-lock is
-> >    not recursive)
-> >  - at this point if an interrupt happens on CPU0 and
-> >    ata_bmdma_interrupt() is executed it will try to acquire host->lock,
-> >    that is held by CPU1, that is currently blocked by CPU2, so:
-> > 
-> >    * CPU0 blocked by CPU1
-> >    * CPU1 blocked by CPU2
-> >    * CPU2 blocked by CPU0
-> > 
-> >      *** DEADLOCK ***
-> > 
-> > The deadlock scenario is better represented by the following schema
-> > (thanks to Boqun Feng <boqun.feng@gmail.com> for the schema and the
-> > detailed explanation of the deadlock condition):
-> > 
-> >  CPU 0:                          CPU 1:                        CPU 2:
-> >  -----                           -----                         -----
-> >  led_trigger_event():
-> >    read_lock(&trig->leddev_list_lock);
-> >  				<workqueue>
-> >  				ata_hsm_qc_complete():
-> >  				  spin_lock_irqsave(&host->lock);
-> >  								write_lock(&trig->leddev_list_lock);
-> >  				  ata_port_freeze():
-> >  				    ata_do_link_abort():
-> >  				      ata_qc_complete():
-> >  					ledtrig_disk_activity():
-> >  					  led_trigger_blink_oneshot():
-> >  					    read_lock(&trig->leddev_list_lock);
-> >  					    // ^ not in in_interrupt() context, so could get blocked by CPU 2
-> >  <interrupt>
-> >    ata_bmdma_interrupt():
-> >      spin_lock_irqsave(&host->lock);
-> > 
-> > Fix by using read_lock_irqsave/irqrestore() in led_trigger_event(), so
-> > that no interrupt can happen in between, preventing the deadlock
-> > condition.
-> > 
-> > Link: https://lore.kernel.org/lkml/20201101092614.GB3989@xps-13-7390/
-> > Fixes: eb25cb9956cc ("leds: convert IDE trigger to common disk trigger")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> 
-> I'd hate to see this in stable 3 days after Linus merges it...
-> 
-> Do these need _irqsave, too?
-> 
-> drivers/leds/led-triggers.c:   read_lock(&trig->leddev_list_lock);
-> drivers/leds/led-triggers.c:   read_unlock(&trig->leddev_list_lock);
-> drivers/leds/led-triggers.c:   read_lock(&trig->leddev_list_lock);
-> drivers/leds/led-triggers.c:   read_unlock(&trig->leddev_list_lock);
-> 
+The following commit has been merged into the sched/core branch of tip:
 
-I think so, if you mean the read_{un,}lock in led_trigger_blink_setup()
-also need to convert to irq-safe version ;-)
+Commit-ID:     7a9f50a05843fee8366bd3a65addbebaa7cf7f07
+Gitweb:        https://git.kernel.org/tip/7a9f50a05843fee8366bd3a65addbebaa7cf7f07
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 15 Jun 2020 11:51:29 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 24 Nov 2020 16:47:48 +01:00
 
-Regards,
-Boqun
+irq_work: Cleanup
 
-> Best regards,
-> 								Pavel
-> 
-> > ---
-> >  drivers/leds/led-triggers.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
-> > index 91da90cfb11d..16d1a93a10a8 100644
-> > --- a/drivers/leds/led-triggers.c
-> > +++ b/drivers/leds/led-triggers.c
-> > @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
-> >  			enum led_brightness brightness)
-> >  {
-> >  	struct led_classdev *led_cdev;
-> > +	unsigned long flags;
-> >  
-> >  	if (!trig)
-> >  		return;
-> >  
-> > -	read_lock(&trig->leddev_list_lock);
-> > +	read_lock_irqsave(&trig->leddev_list_lock, flags);
-> >  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
-> >  		led_set_brightness(led_cdev, brightness);
-> > -	read_unlock(&trig->leddev_list_lock);
-> > +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
-> >  }
-> >  EXPORT_SYMBOL_GPL(led_trigger_event);
-> >  
-> 
-> -- 
-> http://www.livejournal.com/~pavelmachek
+Get rid of the __call_single_node union and clean up the API a little
+to avoid external code relying on the structure layout as much.
 
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ drivers/gpu/drm/i915/i915_request.c |  4 +--
+ include/linux/irq_work.h            | 33 +++++++++++++++++-----------
+ include/linux/irqflags.h            |  4 +--
+ kernel/bpf/stackmap.c               |  2 +-
+ kernel/irq_work.c                   | 18 +++++++--------
+ kernel/printk/printk.c              |  6 +----
+ kernel/rcu/tree.c                   |  3 +--
+ kernel/time/tick-sched.c            |  6 +----
+ kernel/trace/bpf_trace.c            |  2 +-
+ 9 files changed, 41 insertions(+), 37 deletions(-)
 
+diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
+index 0e81381..5385b08 100644
+--- a/drivers/gpu/drm/i915/i915_request.c
++++ b/drivers/gpu/drm/i915/i915_request.c
+@@ -197,7 +197,7 @@ __notify_execute_cb(struct i915_request *rq, bool (*fn)(struct irq_work *wrk))
+ 
+ 	llist_for_each_entry_safe(cb, cn,
+ 				  llist_del_all(&rq->execute_cb),
+-				  work.llnode)
++				  work.node.llist)
+ 		fn(&cb->work);
+ }
+ 
+@@ -460,7 +460,7 @@ __await_execution(struct i915_request *rq,
+ 	 * callback first, then checking the ACTIVE bit, we serialise with
+ 	 * the completed/retired request.
+ 	 */
+-	if (llist_add(&cb->work.llnode, &signal->execute_cb)) {
++	if (llist_add(&cb->work.node.llist, &signal->execute_cb)) {
+ 		if (i915_request_is_active(signal) ||
+ 		    __request_in_flight(signal))
+ 			__notify_execute_cb_imm(signal);
+diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
+index 3082378..ec2a47a 100644
+--- a/include/linux/irq_work.h
++++ b/include/linux/irq_work.h
+@@ -14,28 +14,37 @@
+  */
+ 
+ struct irq_work {
+-	union {
+-		struct __call_single_node node;
+-		struct {
+-			struct llist_node llnode;
+-			atomic_t flags;
+-		};
+-	};
++	struct __call_single_node node;
+ 	void (*func)(struct irq_work *);
+ };
+ 
++#define __IRQ_WORK_INIT(_func, _flags) (struct irq_work){	\
++	.node = { .u_flags = (_flags), },			\
++	.func = (_func),					\
++}
++
++#define IRQ_WORK_INIT(_func) __IRQ_WORK_INIT(_func, 0)
++#define IRQ_WORK_INIT_LAZY(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_LAZY)
++#define IRQ_WORK_INIT_HARD(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_HARD_IRQ)
++
++#define DEFINE_IRQ_WORK(name, _f)				\
++	struct irq_work name = IRQ_WORK_INIT(_f)
++
+ static inline
+ void init_irq_work(struct irq_work *work, void (*func)(struct irq_work *))
+ {
+-	atomic_set(&work->flags, 0);
+-	work->func = func;
++	*work = IRQ_WORK_INIT(func);
+ }
+ 
+-#define DEFINE_IRQ_WORK(name, _f) struct irq_work name = {	\
+-		.flags = ATOMIC_INIT(0),			\
+-		.func  = (_f)					\
++static inline bool irq_work_is_pending(struct irq_work *work)
++{
++	return atomic_read(&work->node.a_flags) & IRQ_WORK_PENDING;
+ }
+ 
++static inline bool irq_work_is_busy(struct irq_work *work)
++{
++	return atomic_read(&work->node.a_flags) & IRQ_WORK_BUSY;
++}
+ 
+ bool irq_work_queue(struct irq_work *work);
+ bool irq_work_queue_on(struct irq_work *work, int cpu);
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 3ed4e87..fef2d43 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -109,12 +109,12 @@ do {						\
+ 
+ # define lockdep_irq_work_enter(__work)					\
+ 	  do {								\
+-		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
++		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
+ 			current->irq_config = 1;			\
+ 	  } while (0)
+ # define lockdep_irq_work_exit(__work)					\
+ 	  do {								\
+-		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
++		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
+ 			current->irq_config = 0;			\
+ 	  } while (0)
+ 
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 06065fa..599041c 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -298,7 +298,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+ 	if (irqs_disabled()) {
+ 		if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
+ 			work = this_cpu_ptr(&up_read_work);
+-			if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY) {
++			if (irq_work_is_busy(&work->irq_work)) {
+ 				/* cannot queue more up_read, fallback */
+ 				irq_work_busy = true;
+ 			}
+diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+index eca8396..fbff25a 100644
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -31,7 +31,7 @@ static bool irq_work_claim(struct irq_work *work)
+ {
+ 	int oflags;
+ 
+-	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->flags);
++	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->node.a_flags);
+ 	/*
+ 	 * If the work is already pending, no need to raise the IPI.
+ 	 * The pairing atomic_fetch_andnot() in irq_work_run() makes sure
+@@ -53,12 +53,12 @@ void __weak arch_irq_work_raise(void)
+ static void __irq_work_queue_local(struct irq_work *work)
+ {
+ 	/* If the work is "lazy", handle it from next tick if any */
+-	if (atomic_read(&work->flags) & IRQ_WORK_LAZY) {
+-		if (llist_add(&work->llnode, this_cpu_ptr(&lazy_list)) &&
++	if (atomic_read(&work->node.a_flags) & IRQ_WORK_LAZY) {
++		if (llist_add(&work->node.llist, this_cpu_ptr(&lazy_list)) &&
+ 		    tick_nohz_tick_stopped())
+ 			arch_irq_work_raise();
+ 	} else {
+-		if (llist_add(&work->llnode, this_cpu_ptr(&raised_list)))
++		if (llist_add(&work->node.llist, this_cpu_ptr(&raised_list)))
+ 			arch_irq_work_raise();
+ 	}
+ }
+@@ -102,7 +102,7 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
+ 	if (cpu != smp_processor_id()) {
+ 		/* Arch remote IPI send/receive backend aren't NMI safe */
+ 		WARN_ON_ONCE(in_nmi());
+-		__smp_call_single_queue(cpu, &work->llnode);
++		__smp_call_single_queue(cpu, &work->node.llist);
+ 	} else {
+ 		__irq_work_queue_local(work);
+ 	}
+@@ -142,7 +142,7 @@ void irq_work_single(void *arg)
+ 	 * to claim that work don't rely on us to handle their data
+ 	 * while we are in the middle of the func.
+ 	 */
+-	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->flags);
++	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->node.a_flags);
+ 
+ 	lockdep_irq_work_enter(work);
+ 	work->func(work);
+@@ -152,7 +152,7 @@ void irq_work_single(void *arg)
+ 	 * no-one else claimed it meanwhile.
+ 	 */
+ 	flags &= ~IRQ_WORK_PENDING;
+-	(void)atomic_cmpxchg(&work->flags, flags, flags & ~IRQ_WORK_BUSY);
++	(void)atomic_cmpxchg(&work->node.a_flags, flags, flags & ~IRQ_WORK_BUSY);
+ }
+ 
+ static void irq_work_run_list(struct llist_head *list)
+@@ -166,7 +166,7 @@ static void irq_work_run_list(struct llist_head *list)
+ 		return;
+ 
+ 	llnode = llist_del_all(list);
+-	llist_for_each_entry_safe(work, tmp, llnode, llnode)
++	llist_for_each_entry_safe(work, tmp, llnode, node.llist)
+ 		irq_work_single(work);
+ }
+ 
+@@ -198,7 +198,7 @@ void irq_work_sync(struct irq_work *work)
+ {
+ 	lockdep_assert_irqs_enabled();
+ 
+-	while (atomic_read(&work->flags) & IRQ_WORK_BUSY)
++	while (irq_work_is_busy(work))
+ 		cpu_relax();
+ }
+ EXPORT_SYMBOL_GPL(irq_work_sync);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index fe64a49..9ef23d4 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3025,10 +3025,8 @@ static void wake_up_klogd_work_func(struct irq_work *irq_work)
+ 		wake_up_interruptible(&log_wait);
+ }
+ 
+-static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) = {
+-	.func = wake_up_klogd_work_func,
+-	.flags = ATOMIC_INIT(IRQ_WORK_LAZY),
+-};
++static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) =
++	IRQ_WORK_INIT_LAZY(wake_up_klogd_work_func);
+ 
+ void wake_up_klogd(void)
+ {
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 06895ef..a41e84f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1311,8 +1311,6 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+ 		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
+ 		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
+ 		    (rnp->ffmask & rdp->grpmask)) {
+-			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
+-			atomic_set(&rdp->rcu_iw.flags, IRQ_WORK_HARD_IRQ);
+ 			rdp->rcu_iw_pending = true;
+ 			rdp->rcu_iw_gp_seq = rnp->gp_seq;
+ 			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
+@@ -3964,6 +3962,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	rdp->cpu_no_qs.b.norm = true;
+ 	rdp->core_needs_qs = false;
+ 	rdp->rcu_iw_pending = false;
++	rdp->rcu_iw = IRQ_WORK_INIT_HARD(rcu_iw_handler);
+ 	rdp->rcu_iw_gp_seq = rdp->gp_seq - 1;
+ 	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 81632cd..1b73407 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -243,10 +243,8 @@ static void nohz_full_kick_func(struct irq_work *work)
+ 	/* Empty, the tick restart happens on tick_nohz_irq_exit() */
+ }
+ 
+-static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) = {
+-	.func = nohz_full_kick_func,
+-	.flags = ATOMIC_INIT(IRQ_WORK_HARD_IRQ),
+-};
++static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) =
++	IRQ_WORK_INIT_HARD(nohz_full_kick_func);
+ 
+ /*
+  * Kick this CPU if it's full dynticks in order to force it to
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 4517c8b..a690391 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1086,7 +1086,7 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
+ 			return -EINVAL;
+ 
+ 		work = this_cpu_ptr(&send_signal_work);
+-		if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY)
++		if (irq_work_is_busy(&work->irq_work))
+ 			return -EBUSY;
+ 
+ 		/* Add the current task, which is the target of sending signal,
