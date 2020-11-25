@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F722C41A9
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC502C41A8
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729835AbgKYODJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729720AbgKYOCz (ORCPT
+        id S1729822AbgKYODG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:03:06 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50350 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729687AbgKYOC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:02:55 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2764C061A4E;
-        Wed, 25 Nov 2020 06:02:55 -0800 (PST)
+        Wed, 25 Nov 2020 09:02:56 -0500
 Date:   Wed, 25 Nov 2020 14:02:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606312973;
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XoutWbMEVCsIpMvHmpbZSanIi12GH9Iow5PKeM6F9Wo=;
-        b=HFkStP2v6oezqdwJI8ME3np68exp9FU8sN3VDV0CCh0D+QohX7oV/6R0/SwKQTtwSuRisQ
-        TV9ocwUSeXsx5NninJQhEqlR/WlUW653QsJIJ3Tk7exZkJlVDh17ppmW/8rZHZb0cZEyO1
-        0QWJpKwrT9ksFPrJRiI1o+4k7VPP9oF8GPl0n1w5hxnzH4zYe+q/a+cPMSkhc8eYHoVLyy
-        e7/znSpkVL7N5tLwqBKITA6oyrOdoEmlqkrH5pzpRcW+fJ7zD4abhPmaGzXXOQLrur+bWG
-        uZpfqUV31q3SXQOSZhg2OWDhWQje697GVgMIb+kFfXEPmkx+YXHWkBjrzUrLuQ==
+        bh=KtKWX3Z5/vxhPuj8J5p5Ox+qApGw+pl1XOXZcRSMr1Y=;
+        b=C5yT0mzR2QJCT9L6PXTr/D0zsbmOjqRyfEBubrKriRPQsLgO0esBWpc+hVutTo6s9Ep9af
+        5ZjJQvqQgN3+bmsFhdIucMb6cmoWwE/I+KqYVQ48Kn1p6B3N3WKZSK8VOj+F25jMVC+w3L
+        QWHcwqRMK1+pWfrEWxG2OtZA2fLtRwJ9b+Zga2KB2HgafRLeMKiYiFb3mBJPQCPEUTI0/0
+        IaUaOg3ZQglfppepC1hKNFkMeOaiVl7bzPjZZ3edr1IMBOJWxWJWH2+VKtZd9dJ7aWeTek
+        zaDBhR+FP+nHOYigeAad4Fu0xm7lgZuXERbDPbZogA8X4dKEni51bWn2N6FFfw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606312973;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +33,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XoutWbMEVCsIpMvHmpbZSanIi12GH9Iow5PKeM6F9Wo=;
-        b=gyK3uJtWypbHp8F6gQaZkDvZN+JT+sjzUgWrIBozexQPSFna0s4JUpYy5RR8bkStouRr27
-        pn3MsWYprC3VtaAA==
+        bh=KtKWX3Z5/vxhPuj8J5p5Ox+qApGw+pl1XOXZcRSMr1Y=;
+        b=DUBTkpxKQwApM2yqnZMxzhQYTYT1HHwm093Ah4/VmX9IKOQJqAJRWg+u4r9E+c49MHRgCz
+        ycQ3MM5T+SpumeCw==
 From:   "tip-bot2 for Mel Gorman" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/numa: Allow a floating imbalance between NUMA nodes
+Subject: [tip: sched/core] sched: Limit the amount of NUMA imbalance that can
+ exist at fork time
 Cc:     Mel Gorman <mgorman@techsingularity.net>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201120090630.3286-4-mgorman@techsingularity.net>
-References: <20201120090630.3286-4-mgorman@techsingularity.net>
+In-Reply-To: <20201120090630.3286-5-mgorman@techsingularity.net>
+References: <20201120090630.3286-5-mgorman@techsingularity.net>
 MIME-Version: 1.0
-Message-ID: <160631297333.3364.10427637559724972015.tip-bot2@tip-bot2>
+Message-ID: <160631297307.3364.9271634433734932379.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,95 +60,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     7d2b5dd0bcc48095651f1b85f751eef610b3e034
-Gitweb:        https://git.kernel.org/tip/7d2b5dd0bcc48095651f1b85f751eef610b3e034
+Commit-ID:     23e6082a522e32232f7377540b4d42d8304253b8
+Gitweb:        https://git.kernel.org/tip/23e6082a522e32232f7377540b4d42d8304253b8
 Author:        Mel Gorman <mgorman@techsingularity.net>
-AuthorDate:    Fri, 20 Nov 2020 09:06:29 
+AuthorDate:    Fri, 20 Nov 2020 09:06:30 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 24 Nov 2020 16:47:47 +01:00
+CommitterDate: Tue, 24 Nov 2020 16:47:48 +01:00
 
-sched/numa: Allow a floating imbalance between NUMA nodes
+sched: Limit the amount of NUMA imbalance that can exist at fork time
 
-Currently, an imbalance is only allowed when a destination node
-is almost completely idle. This solved one basic class of problems
-and was the cautious approach.
+At fork time currently, a local node can be allowed to fill completely
+and allow the periodic load balancer to fix the problem. This can be
+problematic in cases where a task creates lots of threads that idle until
+woken as part of a worker poll causing a memory bandwidth problem.
 
-This patch revisits the possibility that NUMA nodes can be imbalanced
-until 25% of the CPUs are occupied. The reasoning behind 25% is somewhat
-superficial -- it's half the cores when HT is enabled.  At higher
-utilisations, balancing should continue as normal and keep things even
-until scheduler domains are fully busy or over utilised.
+However, a "real" workload suffers badly from this behaviour. The workload
+in question is mostly NUMA aware but spawns large numbers of threads
+that act as a worker pool that can be called from anywhere. These need
+to spread early to get reasonable behaviour.
 
-Note that this is not expected to be a universal win. Any benchmark
-that prefers spreading as wide as possible with limited communication
-will favour the old behaviour as there is more memory bandwidth.
-Workloads that communicate heavily in pairs such as netperf or tbench
-benefit. For the tests I ran, the vast majority of workloads saw
-a benefit so it seems to be a worthwhile trade-off.
+This patch limits how much a local node can fill before spilling over
+to another node and it will not be a universal win. Specifically,
+very short-lived workloads that fit within a NUMA node would prefer
+the memory bandwidth.
+
+As I cannot describe the "real" workload, the best proxy measure I found
+for illustration was a page fault microbenchmark. It's not representative
+of the workload but demonstrates the hazard of the current behaviour.
+
+pft timings
+                                 5.10.0-rc2             5.10.0-rc2
+                          imbalancefloat-v2          forkspread-v2
+Amean     elapsed-1        46.37 (   0.00%)       46.05 *   0.69%*
+Amean     elapsed-4        12.43 (   0.00%)       12.49 *  -0.47%*
+Amean     elapsed-7         7.61 (   0.00%)        7.55 *   0.81%*
+Amean     elapsed-12        4.79 (   0.00%)        4.80 (  -0.17%)
+Amean     elapsed-21        3.13 (   0.00%)        2.89 *   7.74%*
+Amean     elapsed-30        3.65 (   0.00%)        2.27 *  37.62%*
+Amean     elapsed-48        3.08 (   0.00%)        2.13 *  30.69%*
+Amean     elapsed-79        2.00 (   0.00%)        1.90 *   4.95%*
+Amean     elapsed-80        2.00 (   0.00%)        1.90 *   4.70%*
+
+This is showing the time to fault regions belonging to threads. The target
+machine has 80 logical CPUs and two nodes. Note the ~30% gain when the
+machine is approximately the point where one node becomes fully utilised.
+The slower results are borderline noise.
+
+Kernel building shows similar benefits around the same balance point.
+Generally performance was either neutral or better in the tests conducted.
+The main consideration with this patch is the point where fork stops
+spreading a task so some workloads may benefit from different balance
+points but it would be a risky tuning parameter.
 
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20201120090630.3286-4-mgorman@techsingularity.net
+Link: https://lkml.kernel.org/r/20201120090630.3286-5-mgorman@techsingularity.net
 ---
- kernel/sched/fair.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ kernel/sched/fair.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 2626c6b..377c77b 100644
+index 377c77b..2e8aade 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -1559,7 +1559,8 @@ struct task_numa_env {
- static unsigned long cpu_load(struct rq *rq);
- static unsigned long cpu_runnable(struct rq *rq);
- static unsigned long cpu_util(int cpu);
--static inline long adjust_numa_imbalance(int imbalance, int dst_running);
-+static inline long adjust_numa_imbalance(int imbalance,
-+					int dst_running, int dst_weight);
+@@ -8762,6 +8762,16 @@ static bool update_pick_idlest(struct sched_group *idlest,
+ }
  
- static inline enum
- numa_type numa_classify(unsigned int imbalance_pct,
-@@ -1939,7 +1940,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
- 		src_running = env->src_stats.nr_running - 1;
- 		dst_running = env->dst_stats.nr_running + 1;
- 		imbalance = max(0, dst_running - src_running);
--		imbalance = adjust_numa_imbalance(imbalance, dst_running);
-+		imbalance = adjust_numa_imbalance(imbalance, dst_running,
-+							env->dst_stats.weight);
+ /*
++ * Allow a NUMA imbalance if busy CPUs is less than 25% of the domain.
++ * This is an approximation as the number of running tasks may not be
++ * related to the number of busy CPUs due to sched_setaffinity.
++ */
++static inline bool allow_numa_imbalance(int dst_running, int dst_weight)
++{
++	return (dst_running < (dst_weight >> 2));
++}
++
++/*
+  * find_idlest_group() finds and returns the least busy CPU group within the
+  * domain.
+  *
+@@ -8893,7 +8903,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+ 			 * a real need of migration, periodic load balance will
+ 			 * take care of it.
+ 			 */
+-			if (local_sgs.idle_cpus)
++			if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->span_weight))
+ 				return NULL;
+ 		}
  
- 		/* Use idle CPU if there is no imbalance */
- 		if (!imbalance) {
-@@ -8995,16 +8997,14 @@ next_group:
- 
- #define NUMA_IMBALANCE_MIN 2
- 
--static inline long adjust_numa_imbalance(int imbalance, int dst_running)
-+static inline long adjust_numa_imbalance(int imbalance,
-+				int dst_running, int dst_weight)
+@@ -9000,11 +9010,14 @@ next_group:
+ static inline long adjust_numa_imbalance(int imbalance,
+ 				int dst_running, int dst_weight)
  {
--	unsigned int imbalance_min;
--
++	if (!allow_numa_imbalance(dst_running, dst_weight))
++		return imbalance;
++
  	/*
  	 * Allow a small imbalance based on a simple pair of communicating
--	 * tasks that remain local when the source domain is almost idle.
-+	 * tasks that remain local when the destination is lightly loaded.
+ 	 * tasks that remain local when the destination is lightly loaded.
  	 */
--	imbalance_min = NUMA_IMBALANCE_MIN;
--	if (dst_running <= imbalance_min)
-+	if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
+-	if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
++	if (imbalance <= NUMA_IMBALANCE_MIN)
  		return 0;
  
  	return imbalance;
-@@ -9106,9 +9106,10 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
- 		}
- 
- 		/* Consider allowing a small imbalance between NUMA groups */
--		if (env->sd->flags & SD_NUMA)
-+		if (env->sd->flags & SD_NUMA) {
- 			env->imbalance = adjust_numa_imbalance(env->imbalance,
--						busiest->sum_nr_running);
-+				busiest->sum_nr_running, busiest->group_weight);
-+		}
- 
- 		return;
- 	}
