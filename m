@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8F52C3F83
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6F92C3F86
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgKYMFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:05:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgKYMFC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:05:02 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D14EC061A4E
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:05:01 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id s9so1984318ljo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:05:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+5FUjWxpOQ9zrCued6q8VeN9WGm6VgBFm9lfLrKQbsk=;
-        b=R0rjGOpoCeLCagqI1sJ83TnqIgosI5MW9SQKWqklodjOkP6evlnIvgzzl4Or4JHdIC
-         ibygpDOJBwvnUP0hCqyfLx/pBm0AKminSD0QrcXq7U0wHG9ghmO21aNF/pizF0LkDBbc
-         biBzU/fnTR4ezxv16GJRfgs/RjTrW+M8lahOQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+5FUjWxpOQ9zrCued6q8VeN9WGm6VgBFm9lfLrKQbsk=;
-        b=Eo+yt5mbp9JAEi7hqN0XubYCHy8VJVD8+7WtpknXz7x+ZPpe6RwBS/n+EGrqAO87Xv
-         g9yQt3qQ6EOeLA8G+N0OEWkZ7ysqe6lq/y/7bQb55CWS+GEDIAwKW+ZUdbLMy9sf7pzG
-         JsCHwLfBp+aNdSHfAsnZAOArrYuUcuh380oroySd1QATna5XJiH+2ba3AHBxPHWu2m4a
-         dc0Ok9J8CKdickJ1rIoTLTAp8OEhK2STMG2Kpd2wRzgfHpS3UWN6y0JbidQPH9HULamd
-         +6rv7yhhmSIm7R8/UvovPXAW6serj94Lzwqa/MCKT7wn+iudhlvwcWG1NyhHqGRZ5XqA
-         kZ+A==
-X-Gm-Message-State: AOAM531sbNrdsq8s6zbTJqL9ni+0gtiS7BMEvbEvOBTm02UcDJY7mYWx
-        XnRunG4glL2BoYjPKp/x6MkCRnkcT2HImtrhjhCN3Q==
-X-Google-Smtp-Source: ABdhPJzxIAysOZN/U4xhG7czC43qYmFbb4hpHmlQUzaVX4IBNdWDCl1YNNVf4IVxAMSNt3qPOQvxZ6gTKifImFD4b/U=
-X-Received: by 2002:a05:651c:285:: with SMTP id b5mr1280770ljo.82.1606305899970;
- Wed, 25 Nov 2020 04:04:59 -0800 (PST)
+        id S1728306AbgKYMFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:05:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44156 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727982AbgKYMFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:05:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 33274AF58;
+        Wed, 25 Nov 2020 12:05:11 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E8AC71E130F; Wed, 25 Nov 2020 13:05:07 +0100 (CET)
+Date:   Wed, 25 Nov 2020 13:05:07 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, Hui Su <sh_def@163.com>,
+        mingo@redhat.com, jack@suse.cz, akpm@linux-foundation.org,
+        neilb@suse.de, trond.myklebust@hammerspace.com,
+        liuzhiqiang26@huawei.com, tytso@mit.edu, cai@lca.pw,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] trace: fix potenial dangerous pointer
+Message-ID: <20201125120507.GE16944@quack2.suse.cz>
+References: <20201124165205.GA23937@rlk>
+ <20201124120523.34a59eed@gandalf.local.home>
+ <X70+Ll+L2ksoeCMv@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <20201124151210.1081188-1-kpsingh@chromium.org>
- <20201124151210.1081188-2-kpsingh@chromium.org> <3b6f7023-e1fe-b79b-fa06-b8edcce530de@fb.com>
-In-Reply-To: <3b6f7023-e1fe-b79b-fa06-b8edcce530de@fb.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 25 Nov 2020 13:04:48 +0100
-Message-ID: <CACYkzJ51imU+_iNR3zG2pzqvVoewSE+NCTJo_V5ZGYJOej-B-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] ima: Implement ima_inode_hash
-To:     Yonghong Song <yhs@fb.com>
-Cc:     James Morris <jmorris@namei.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X70+Ll+L2ksoeCMv@mtj.duckdns.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 6:35 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 11/24/20 7:12 AM, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > This is in preparation to add a helper for BPF LSM programs to use
-> > IMA hashes when attached to LSM hooks. There are LSM hooks like
-> > inode_unlink which do not have a struct file * argument and cannot
-> > use the existing ima_file_hash API.
-> >
-> > An inode based API is, therefore, useful in LSM based detections like an
-> > executable trying to delete itself which rely on the inode_unlink LSM
-> > hook.
-> >
-> > Moreover, the ima_file_hash function does nothing with the struct file
-> > pointer apart from calling file_inode on it and converting it to an
-> > inode.
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
->
-> There is no change for this patch compared to previous version,
-> so you can carry my Ack.
->
-> Acked-by: Yonghong Song <yhs@fb.com>
+On Tue 24-11-20 12:09:02, Tejun Heo wrote:
+> On Tue, Nov 24, 2020 at 12:05:23PM -0500, Steven Rostedt wrote:
+> > On Wed, 25 Nov 2020 00:52:05 +0800
+> > Hui Su <sh_def@163.com> wrote:
+> > 
+> > > The bdi_dev_name() returns a char [64], and
+> > > the __entry->name is a char [32].
+> > > 
+> > > It maybe dangerous to TP_printk("%s", __entry->name)
+> > > after the strncpy().
+> > 
+> > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > This should go through the tree that has the code that uses these
+> > tracepoints.
+> 
+> Acked-by: Tejun Heo <tj@kernel.org>
+> 
+> Andrew, can you please route this one?
 
-I am guessing:
+I'll queue it to my tree and push it to Linus on Friday since I sometimes
+handle writeback stuff myself anyway...
 
-*  We need an Ack from Mimi/James.
-* As regards to which tree, I guess bpf-next would be better since the
-BPF helper and the selftest depends on it
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
