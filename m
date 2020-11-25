@@ -2,96 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC6C2C453F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BCE2C4549
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730868AbgKYQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:32:05 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43999 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729690AbgKYQcF (ORCPT
+        id S1731805AbgKYQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:32:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730719AbgKYQcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:32:05 -0500
-Received: by mail-ot1-f65.google.com with SMTP id f12so2731556oto.10;
-        Wed, 25 Nov 2020 08:32:03 -0800 (PST)
+        Wed, 25 Nov 2020 11:32:53 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A86C0613D4;
+        Wed, 25 Nov 2020 08:32:53 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id y7so2802716pfq.11;
+        Wed, 25 Nov 2020 08:32:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=6fLXoA7PiZQVIkhM/9E4bl7cs888uadju3YY2CeMd0A=;
+        b=CZNpdfGRkiqMC8e51Csl4YelMAnjpLkWVSSLMCBTlPwzKE2z+5payHxO3MeT9WJkYR
+         n6LSaJ/aBQ0gVPaJaI+yxRku+VBPP3eCKmLjs+spPMCAoU+SoiJTKd6+x/uCYvGWRmhm
+         ECF1UxLQ7SsTPmd6DFPN+s3mU7T1BoUxfbtURXTzr3a19Ig/6tLxs6Mx0xxkYk9weLXU
+         LLmvUEklvxhAkmfeorhE5c8lQrE74MhsicJKxroRdAODjaGlASjzhLxG4u1J+IwFrSZa
+         vn+06JJDkYkarRJIdWmZZACw7pqfB6T6B2AUlZwDDBsPtQehhamMk8LmKS6lKEuod3ic
+         V2Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hbzHvNY24kj4VBuB6mtysQNq+O8m9xisRukqjFDGtlY=;
-        b=sAydXgmjyqBl5YJPw/8KnNSBGEdIUNrzYvNOt0YgLLPWvUn9Uv5TMrkerIht/brcG0
-         ir3BrQtuZs/hKv439mfwtz/bQ160heLT2lwB/U+GtuzwQtQgHM4gR7wCtfSbbNkO6xE4
-         0aZu0zFYabbs5aJyDHHKMGItSuz+UssVnOWqQY+o5hFhLYUOp26Oa8gj03PW2NZU18by
-         hz7YG0N6fnT7YzryeoxR/E1vixj0eEb0E/74SwbU95F9qm+daCL8EiDSEs6/rHKiaeK+
-         9+x7ZNdohHe5NGcAL5uj9dtjeOpV4QpbZxfNl4BQvo/EfcY7Cau29hqSE93AbaeUuwmz
-         1ozw==
-X-Gm-Message-State: AOAM530ku1x7qJ8PvHWtDpK28sGuzXULPZrD60zDuCFK7p4nACeYKY+I
-        rJ10JDkubtZP91sSLLSLcyCgXtxYc0sCDD3HBXOBSAl2
-X-Google-Smtp-Source: ABdhPJyDhAfP2mQWGkkpZNyuU9FwlzneLai4wkO6gRMPTaPnnwpKfirWxdkuQv4/gkY0hogzOJnEZtHL7Hc8qiRCa4A=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr3288973otc.145.1606321923047;
- Wed, 25 Nov 2020 08:32:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=6fLXoA7PiZQVIkhM/9E4bl7cs888uadju3YY2CeMd0A=;
+        b=fm89dUb7kCvlo0jFFStmKpz4GW+R3KBDdQj4z4aqaPT7VFkf0BW0K/INjmIMvnN2NW
+         nrq103lN41By9lRze30jNk42sZlSDFEodqovqnASS4iuRa53V7htijlSiWijxUc9tdDm
+         jH8DxzH4Cog5ItOXcch00kYXGKqk3GPUa0Pp+uUnMXQ9sDEbaomGekyPNMvW+Gh7v5lm
+         gk/CG+Sw1xMxmG/sgh3G77ukKwrKlav5ODV9++llHHmYB+1tAsrHAi+AcfTD5twFKb0C
+         0EOonO/T2h/AseKDP9WoOvnEIEtO2LhwkpcJ0GKD+sIn3jk1wZDCEK4LSxANaHHdKTTS
+         0Z2g==
+X-Gm-Message-State: AOAM533pjQxk5YLB3EL7QX8f5MQfMGhkBgmKmGe2OFHtQuKwAN9emCPK
+        y9SV5GO9T2LN2ClZJhv+nXs=
+X-Google-Smtp-Source: ABdhPJyWrphxD+wQM8UWkGfwLi4rstYwkvd0Vgk1p55hHG3yEST4I/TkHq4Z6u6ysSe/2upnfABZxQ==
+X-Received: by 2002:a17:90a:5d93:: with SMTP id t19mr5057545pji.220.1606321972544;
+        Wed, 25 Nov 2020 08:32:52 -0800 (PST)
+Received: from paju ([116.124.119.85])
+        by smtp.gmail.com with ESMTPSA id y1sm2369925pfe.80.2020.11.25.08.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 08:32:51 -0800 (PST)
+Date:   Thu, 26 Nov 2020 01:32:42 +0900
+From:   Dongjin Kim <tobetter@gmail.com>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwmon: (pwm-fan) add fan pwm1_enable attribute
+Message-ID: <20201125163242.GA1264232@paju>
 MIME-Version: 1.0
-References: <20201125130148.28724-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdX+FZjAfbWWw53EToHP6c4JFmQX9wogAyW3OcOxHgMd0w@mail.gmail.com> <OSBPR01MB504858A417137ED7AC31F925AAFA0@OSBPR01MB5048.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSBPR01MB504858A417137ED7AC31F925AAFA0@OSBPR01MB5048.jpnprd01.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 25 Nov 2020 17:31:52 +0100
-Message-ID: <CAMuHMdXGqv9aKra7Ncg4mRoc2caO5iOw+ydrNmo9UcHeDTgVGw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] r8a7742-iwg21d-q7-dbcm: Add support for ov7725 sensors
-To:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+This patch adds to new attribute 'pwm1_enable' to change the fan speed
+control method as documented in 'Documentation/hwmon/sysfs-interface'.
 
-On Wed, Nov 25, 2020 at 5:26 PM Prabhakar Mahadev Lad
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > -----Original Message-----
-> > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Sent: 25 November 2020 16:21
-> > To: Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Cc: Magnus Damm <magnus.damm@gmail.com>; Rob Herring <robh+dt@kernel.org>; Linux-Renesas <linux-
-> > renesas-soc@vger.kernel.org>; open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
-> > <devicetree@vger.kernel.org>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Biju Das
-> > <biju.das.jz@bp.renesas.com>; Prabhakar <prabhakar.csengg@gmail.com>
-> > Subject: Re: [PATCH v2 0/2] r8a7742-iwg21d-q7-dbcm: Add support for ov7725 sensors
-> >
-> > Hi Prabhakar,
-> >
-> > On Wed, Nov 25, 2020 at 2:02 PM Lad Prabhakar
-> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > This patch set enables to connect ov7725 sensors on iWave-RZ/G1H Qseven
-> > > board.
-> >
-> > Thanks for your series!
-> >
-> > Do you think it's a valid use case to mix and match ov5640 and ov7725
-> > cameras? E.g. connect two of each?
-> >
-> Yes that is valid case to mix and match. Do you want me to make it configurable too ?
+Signed-off-by: Dongjin Kim <tobetter@gmail.com>
+---
+ drivers/hwmon/pwm-fan.c | 52 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 46 insertions(+), 6 deletions(-)
 
-If this is a valid use case, then please do so.
-Thanks!
-
-> > Or should all four cameras be of the same type?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
+index 1f63807c0399..834275309421 100644
+--- a/drivers/hwmon/pwm-fan.c
++++ b/drivers/hwmon/pwm-fan.c
+@@ -39,6 +39,7 @@ struct pwm_fan_ctx {
+ 	unsigned int pwm_fan_max_state;
+ 	unsigned int *pwm_fan_cooling_levels;
+ 	struct thermal_cooling_device *cdev;
++	int enable;
+ };
+ 
+ /* This handler assumes self resetting edge triggered interrupt. */
+@@ -76,6 +77,10 @@ static int  __set_pwm(struct pwm_fan_ctx *ctx, unsigned long pwm)
+ 	struct pwm_state state = { };
+ 
+ 	mutex_lock(&ctx->lock);
++
++	if (ctx->enable == 0)
++		pwm = MAX_PWM;
++
+ 	if (ctx->pwm_value == pwm)
+ 		goto exit_set_pwm_err;
+ 
+@@ -137,11 +142,42 @@ static ssize_t rpm_show(struct device *dev,
+ 	return sprintf(buf, "%u\n", ctx->rpm);
+ }
+ 
++static ssize_t enable_store(struct device *dev,
++		struct device_attribute *attr,
++		const char *buf, size_t count)
++{
++	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
++	int err;
++	unsigned long val;
++
++	err = kstrtoul(buf, 10, &val);
++	if (err)
++		return err;
++
++	mutex_lock(&ctx->lock);
++	ctx->enable = val;
++	mutex_unlock(&ctx->lock);
++
++	err = __set_pwm(ctx, ctx->pwm_fan_cooling_levels[ctx->pwm_fan_state]);
++
++	return err ? err : count;
++}
++
++static ssize_t enable_show(struct device *dev, struct device_attribute *attr,
++			   char *buf)
++{
++	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%u\n", ctx->enable);
++}
++
+ static SENSOR_DEVICE_ATTR_RW(pwm1, pwm, 0);
++static SENSOR_DEVICE_ATTR_RW(pwm1_enable, enable, 0);
+ static SENSOR_DEVICE_ATTR_RO(fan1_input, rpm, 0);
+ 
+ static struct attribute *pwm_fan_attrs[] = {
+ 	&sensor_dev_attr_pwm1.dev_attr.attr,
++	&sensor_dev_attr_pwm1_enable.dev_attr.attr,
+ 	&sensor_dev_attr_fan1_input.dev_attr.attr,
+ 	NULL,
+ };
+@@ -153,7 +189,7 @@ static umode_t pwm_fan_attrs_visible(struct kobject *kobj, struct attribute *a,
+ 	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
+ 
+ 	/* Hide fan_input in case no interrupt is available  */
+-	if (n == 1 && ctx->irq <= 0)
++	if (n == 2 && ctx->irq <= 0)
+ 		return 0;
+ 
+ 	return a->mode;
+@@ -200,7 +236,7 @@ static int
+ pwm_fan_set_cur_state(struct thermal_cooling_device *cdev, unsigned long state)
+ {
+ 	struct pwm_fan_ctx *ctx = cdev->devdata;
+-	int ret;
++	int ret = 0;
+ 
+ 	if (!ctx || (state > ctx->pwm_fan_max_state))
+ 		return -EINVAL;
+@@ -208,10 +244,12 @@ pwm_fan_set_cur_state(struct thermal_cooling_device *cdev, unsigned long state)
+ 	if (state == ctx->pwm_fan_state)
+ 		return 0;
+ 
+-	ret = __set_pwm(ctx, ctx->pwm_fan_cooling_levels[state]);
+-	if (ret) {
+-		dev_err(&cdev->device, "Cannot set pwm!\n");
+-		return ret;
++	if (ctx->enable >= 2) {
++		ret = __set_pwm(ctx, ctx->pwm_fan_cooling_levels[state]);
++		if (ret) {
++			dev_err(&cdev->device, "Cannot set pwm!\n");
++			return ret;
++		}
+ 	}
+ 
+ 	ctx->pwm_fan_state = state;
+@@ -298,6 +336,8 @@ static int pwm_fan_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ctx->pwm))
+ 		return dev_err_probe(dev, PTR_ERR(ctx->pwm), "Could not get PWM\n");
+ 
++	ctx->enable = 2;
++
+ 	platform_set_drvdata(pdev, ctx);
+ 
+ 	ctx->irq = platform_get_irq_optional(pdev, 0);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
