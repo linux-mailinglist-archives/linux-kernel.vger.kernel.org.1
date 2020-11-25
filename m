@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB3F2C3B5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D582C3B60
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgKYIuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 03:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgKYIuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 03:50:52 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEEAC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 00:50:52 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id q5so3005357qkc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 00:50:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BiIo5gtxUukkJ1OS6WAMZc9+hs44w8+wO18W0mZxmq4=;
-        b=DbiBwku7zRL2oDFQ/UeaOxiRRNmn82Kq+JPUuDCoJBTndUb8etD/USDBiZKM6IcS6q
-         WxqDSpyBlCred2gMxiXXfHNy+kXxDrZPoeWnHqZ7gv1dPRDEanCflI2WDbKiwG3Yji0B
-         BHHUwGvOQ6jnbhWdNSs2EBhgfVJpvdcXktL+o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BiIo5gtxUukkJ1OS6WAMZc9+hs44w8+wO18W0mZxmq4=;
-        b=T4tu5BM0J+7NgJD0iyUzsozMDJds0Zpe8icKUWhwCGmqVhx7nl85DSEp9LFtpFkwzY
-         KU0gnBgzlK4Z/7Pi7ZYFHPRqTI+tVxMbBy4OCoouyX8Zrz57Nt7ISH1iZNT283tKCNdA
-         fNgfuSKmlXAGIz6o87kreofTwSPfiUYp2PuGLYcoaqK7tKIlnKeT8e2G5HswSJeYGill
-         Bg+Yrhn33KzwlNBFmW6uo6F2dkXdplBDSQdrtbFxqGJme6sLyBOlnucM0zNibDLFROL4
-         Rb/gnjRjg31tZrworxbE9S9Yk4IGasGWfLafj0WqJ6s2LK+o+SX+J0LXlUgRTvYWu6sQ
-         tTlA==
-X-Gm-Message-State: AOAM531gC+rOJmjvVJg4dDkWXODH4eSfEQ4b282O4zv46nyXMdnROSi6
-        xS+BAj2g+E8ZuL4JTYTHcmMz9mFUMZjtReQ3wt8D/A==
-X-Google-Smtp-Source: ABdhPJyYhrHDkMEIM8sb30HvdNm9NvwXGvBpsmEB4pj4wWZjVWYx75pOHTRRFt0zGG4skCe/Sv7mn3ak8R0vmw91IN8=
-X-Received: by 2002:a37:a907:: with SMTP id s7mr2228607qke.157.1606294251245;
- Wed, 25 Nov 2020 00:50:51 -0800 (PST)
+        id S1727368AbgKYIu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 03:50:57 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:60750 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgKYIu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 03:50:57 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 52AD9FB03;
+        Wed, 25 Nov 2020 09:50:54 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id l84pxCrkMIBA; Wed, 25 Nov 2020 09:50:53 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id F17D54068E; Wed, 25 Nov 2020 09:50:51 +0100 (CET)
+Date:   Wed, 25 Nov 2020 09:50:51 +0100
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     "Lukas F. Hartmann" <lukas@mntre.com>
+Cc:     laurentiu.palcu@nxp.com, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: nwl-dsi: fixup mode only for LCDIF input, not DCSS
+Message-ID: <20201125085051.GA9364@bogon.m.sigxcpu.org>
+References: <20201124171216.980628-1-lukas@mntre.com>
 MIME-Version: 1.0
-References: <20201124201033.592576-1-pmalani@chromium.org> <20201124203235.GA517388@google.com>
- <20201125074603.GE1008337@kuha.fi.intel.com> <20201125075312.GF1008337@kuha.fi.intel.com>
-In-Reply-To: <20201125075312.GF1008337@kuha.fi.intel.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Wed, 25 Nov 2020 00:50:40 -0800
-Message-ID: <CACeCKadOnMYjHXcVARAESbrmT5RPaoK4moJBfs0QfN2o38hPFQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] usb: typec: Consolidate sysfs ABI documentation
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124171216.980628-1-lukas@mntre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+Hi Lukas,
+On Tue, Nov 24, 2020 at 06:12:17PM +0100, Lukas F. Hartmann wrote:
+> The fixup of HSYNC and VSYNC should not be done when the input source is
+> DCSS, or internal display does not work on MNT Reform 2 (open hardware 
+> laptop based on NXP i.MX8M using DCSS->DSI->eDP for internal display).
+> 
+> Signed-off-by: Lukas F. Hartmann <lukas@mntre.com>
+> ---
+>  drivers/gpu/drm/bridge/nwl-dsi.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
+> index 66b67402f..6735ab2a2 100644
+> --- a/drivers/gpu/drm/bridge/nwl-dsi.c
+> +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+> @@ -807,10 +807,16 @@ static bool nwl_dsi_bridge_mode_fixup(struct drm_bridge *bridge,
+>  				      const struct drm_display_mode *mode,
+>  				      struct drm_display_mode *adjusted_mode)
+>  {
+> -	/* At least LCDIF + NWL needs active high sync */
+> -	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
+> -	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
+> +	struct device_node *remote;
+> +	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
+> +
+> +	remote = of_graph_get_remote_node(dsi->dev->of_node, 0,
+> +						NWL_DSI_ENDPOINT_LCDIF);
+> +	if (remote) {
+> +		/* At least LCDIF + NWL needs active high sync */
+> +		adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
+> +		adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
+> +	}
 
-On Tue, Nov 24, 2020 at 11:53 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Wed, Nov 25, 2020 at 09:46:06AM +0200, Heikki Krogerus wrote:
-> > On Tue, Nov 24, 2020 at 12:32:35PM -0800, Prashant Malani wrote:
-> > > Hi,
-> > >
-> > > On Tue, Nov 24, 2020 at 12:10:31PM -0800, Prashant Malani wrote:
-> > > > Both partner and cable have identity VDOs. These are listed separately
-> > > > in the Documentation/ABI/testing/sysfs-class-typec. Factor these out
-> > > > into a common location to avoid the duplication.
-> > > >
-> > > > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > > > Acked-by: Heikki Krogerus <heikki.krogeurus@linux.intel.com>
-> > > I copied the Acked-by line from v3 [1] as is, but looks like there was a
-> > > typo there and the email address should be
-> > > "heikki.krogerus@linux.intel.com".
-> > >
-> > > Please let me know if it's fine as is or whether I should send another
-> > > patchset.
-> >
-> > It is fine. Thanks for taking care of that :-)
->
-> Arch, no. It's not fine (I don't know what I'm talking about there). I
-> think it would be better that you do resend.
+When submitting the NWL driver i was told to not change properties based
+on the endpoint. The argument is that this breaks when putting the
+bridge into another chain and that there might be other bridges in
+between. Maybe Laurent and Andrzej have a suggetion?
 
-Got it. v5 sent [1]
+I intend to respin the input mux bridge
+(https://lore.kernel.org/dri-devel/cover.1589548223.git.agx@sigxcpu.org/)
+at some point but even then we need to carry over the flags, so any
+input on how that should best be done would be welcome.
 
-[1] https://lore.kernel.org/linux-usb/20201125084911.1077462-1-pmalani@chromium.org/
+Cheers,
+ -- Guido
 
-Thanks,
-
--Prashant
+> 
+>  	return true;
+>  }
+> --
+> 2.28.0
+> 
