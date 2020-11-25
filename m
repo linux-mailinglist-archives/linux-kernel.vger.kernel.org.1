@@ -2,89 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6156F2C3F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83D12C3F96
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:10:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgKYMHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:07:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43276 "EHLO mail.kernel.org"
+        id S1729059AbgKYMI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:08:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46482 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726295AbgKYMHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:07:53 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69AB0206E5;
-        Wed, 25 Nov 2020 12:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606306072;
-        bh=ZcK6/RsEkSCR51kLtOb6+8itu8m5F60tlAutGVGBCQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aSbG2KMovUGV6KNHXI4xahZ+r1+eh6YEdQdZXhUZ4e7NO/V/eOAAWdENEmwCMfbGj
-         gaPPSLZzPiiWBo6Ivsavb8LKP+2iHvnOaxotGmqCYMJB+bk+WhajSSjUSNbnrB8a09
-         chRyh4yb849cSaXSKasrGAUklFvrHYMWmpsYvLTQ=
-Date:   Wed, 25 Nov 2020 14:07:39 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Baoquan He <bhe@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rob Herring <robh@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] microblaze: Remove noMMU code
-Message-ID: <20201125120739.GO8537@kernel.org>
-References: <caa5c3cbe6253d67fed83c4351d85224f8cf226c.1606303816.git.michal.simek@xilinx.com>
+        id S1725836AbgKYMI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:08:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6BD3BAF0B;
+        Wed, 25 Nov 2020 12:08:55 +0000 (UTC)
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz> <X73s8fxDKPRD6wET@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
+Date:   Wed, 25 Nov 2020 13:08:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <caa5c3cbe6253d67fed83c4351d85224f8cf226c.1606303816.git.michal.simek@xilinx.com>
+In-Reply-To: <X73s8fxDKPRD6wET@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:30:32PM +0100, Michal Simek wrote:
-> This configuration is obsolete and likely none is really using it. That's
-> why remove it to simplify code.
+On 11/25/20 6:34 AM, Andrea Arcangeli wrote:
+> Hello,
 > 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
+> On Mon, Nov 23, 2020 at 02:01:16PM +0100, Vlastimil Babka wrote:
+>> On 11/21/20 8:45 PM, Andrea Arcangeli wrote:
+>> > A corollary issue was fixed in
+>> > 39639000-39814fff : Unknown E820 type
+>> > 
+>> > pfn 0x7a200 -> 0x7a200000 min_pfn hit non-RAM:
+>> > 
+>> > 7a17b000-7a216fff : Unknown E820 type
+>> 
+>> It would be nice to also provide a /proc/zoneinfo and how exactly the 
+>> "zone_spans_pfn" was violated. I assume we end up below zone's 
+>> start_pfn, but is it true?
+> 
+> Agreed, I was about to grab that info along with all page struct
+> around the pfn 0x7a200 and phys address 0x7a216fff.
+> 
+> # grep -A1 E820 /proc/iomem
+> 7a17b000-7a216fff : Unknown E820 type
+> 7a217000-7bffffff : System RAM
+> 
+> DMA      zone_start_pfn 1            zone_end_pfn() 4096         contiguous 1
+> DMA32    zone_start_pfn 4096         zone_end_pfn() 1048576      contiguous 0
+> Normal   zone_start_pfn 1048576      zone_end_pfn() 4715392      contiguous 1
+> Movable  zone_start_pfn 0            zone_end_pfn() 0            contiguous 0
 
-Looks ok to me except several leftovers:
+So the above means that around the "Unknown E820 type" we have:
 
-$ git grep CONFIG_MMU arch/microblaze/
-arch/microblaze/kernel/hw_exception_handler.S: * STACK FRAME STRUCTURE (for CONFIG_MMU=n)
+pfn 499712 - start of pageblock in ZONE_DMA32
+pfn 500091 - start of the "Unknown E820 type" range
+pfn 500224 - start of another pageblock
+pfn 500246 - end of "Unknown E820 type"
 
-$ git grep -E 'MICROBLAZE_(64|16)K_PAGES'
-arch/microblaze/include/asm/page.h:#if defined(CONFIG_MICROBLAZE_64K_PAGES)
-arch/microblaze/include/asm/page.h:#elif defined(CONFIG_MICROBLAZE_16K_PAGES)
-arch/microblaze/kernel/hw_exception_handler.S:#ifdef CONFIG_MICROBLAZE_64K_PAGES
-arch/microblaze/kernel/hw_exception_handler.S:#elif CONFIG_MICROBLAZE_16K_PAGES
-drivers/net/Kconfig:                 IA64_PAGE_SIZE_64KB || MICROBLAZE_64K_PAGES || \
+So this is indeed not a zone boundary issue, but basically a hole not 
+aligned to pageblock boundary and really unexpected.
+We have CONFIG_HOLES_IN_ZONE (that x86 doesn't set) for architectures 
+that do this, and even that config only affects pfn_valid_within(). But 
+here pfn_valid() is true, but the zone/node linkage is unexpected.
 
+> However the real bug seems that reserved pages have a zero zone_id in
+> the page->flags when it should have the real zone id/nid. The patch I
+> sent earlier to validate highest would only be needed to deal with
+> pfn_valid.
+> 
+> Something must have changed more recently than v5.1 that caused the
+> zoneid of reserved pages to be wrong, a possible candidate for the
+> real would be this change below:
+> 
+> +               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
+> 
+> Even if it may not be it, at the light of how the reserved page
+> zoneid/nid initialized went wrong, the above line like it's too flakey
+> to stay.
+> 
+> It'd be preferable if the pfn_valid fails and the
+> pfn_to_section_nr(pfn) returns an invalid section for the intermediate
+> step. Even better memset 0xff over the whole page struct until the
+> second stage comes around.
+> 
+> Whenever pfn_valid is true, it's better that the zoneid/nid is correct
+> all times, otherwise if the second stage fails we end up in a bug with
+> weird side effects.
 
--- 
-Sincerely yours,
-Mike.
+Yeah I guess it would be simpler if zoneid/nid was correct for 
+pfn_valid() pfns within a zone's range, even if they are reserved due 
+not not being really usable memory.
+
+I don't think we want to introduce CONFIG_HOLES_IN_ZONE to x86. If the 
+chosen solution is to make this to a real hole, the hole should be 
+extended to MAX_ORDER_NR_PAGES aligned boundaries.
+
+In any case, compaction code can't fix this with better range checks.
+
+> Maybe it's not the above that left a zero zoneid though, I haven't
+> tried to bisect it yet to look how the page->flags looked like on a
+> older kernel that didn't seem to reproduce this crash, I'm just
+> guessing.
+> 
+> Thanks,
+> Andrea
+> 
+
