@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2362C3B7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68E62C3B81
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 10:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgKYI7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 03:59:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        id S1726935AbgKYJAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 04:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgKYI7D (ORCPT
+        with ESMTP id S1726158AbgKYJAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 03:59:03 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A04CC0613D4;
-        Wed, 25 Nov 2020 00:59:03 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id u18so2027696lfd.9;
-        Wed, 25 Nov 2020 00:59:03 -0800 (PST)
+        Wed, 25 Nov 2020 04:00:54 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F80C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 01:00:54 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id n11so1603473ota.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 01:00:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=92bB5mZRd1+2Duzu7V5Dv1oVhr9VfQKYvZ5E5sx2G1E=;
-        b=FZASEHZ7GTPKx0ThVfRWD3jPX57dOYLu97eZJoQu9BcpYoconWMUVfp5nuuYG7QEMb
-         bdW6IIoXmtUYb4O7O/vq/3CQ+bfMHH04rEYZKzht/ZJ4uL3VKTObwzsYLlZNkJOyN/j+
-         YiDahlCFzwWy4liOQeaHIMXCpcBCJIEGBeUayqNRG2Wj6Q1OmbUkkZyeSDXN1ptCfTFm
-         ZV6dNBl6G8Ld/bez0E34Yz7NR6ULSfkbzxxc/6PnvSmuk7WojhOEu+P2dytSL6QJQQNd
-         YwW/sX8FcogiCNoWCYEXSTgJitfvDWEM5Bl5WNRsjmLl8iTHmzychwKsTl79JjpwweZg
-         0oEA==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cb0IyYfwRRpwkSMXLoK5meWkqSB6m3aHpp32lgtuG5E=;
+        b=JkicOjiQYuUe4qC0NCYmxG5Jf2Qdd6VpUQG0aEBdA3L/hZkGUrza6gxYa2hMmPMY/s
+         ewVWRJYqWnQURjTZ+yFTAdl1Ez4sxo1/0FaXREz0psNNjo/Ewp3/C0rJLjM2dFGW9gyu
+         BSTEd4SBqAlo0o+/0PsIWfkx3MMZ6g5rTd+P4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=92bB5mZRd1+2Duzu7V5Dv1oVhr9VfQKYvZ5E5sx2G1E=;
-        b=R9F94Mx9YSVYje+GZm7qNJr35b+aTCljK5jVMmErRhhUhbR2WOcEgxQk3WsqTXKly5
-         mpTFQ4r4E0jIJfMsJG6vZ90UzRYH6f6TdCdCVcqo6uOt7JBwQy/nI8NbKonh1GgGcbZ0
-         L6TWfR1zjjZZ6Io30nPkL8/ilbYx1+bu/p7d82iVCJy0Ab3ObWQARAp2U7vSWp+ePVzU
-         PxBnFshR++szHqZDy/HXIsxCdyy/vxJ5r3paQ9qp8BoacMaX+SOH2Q7tDTFqTS+8KydX
-         EZguvEwmEFR5HJQX/RP6RhJbF76MLaFLTY6BF2OIasrwgvZFUh6mwKMgosb2Pkrh6UV2
-         LYag==
-X-Gm-Message-State: AOAM53041cWv7fPCcHBMBBHYiSb9dtGm97SL9b2SQc0y5OL2WpNf94yh
-        CPoM4iFFTlCD+LfUo64zhThkAmLseMvKcg==
-X-Google-Smtp-Source: ABdhPJw/pTfa+meQnCCImW5eeJQ0gsr+RkuFcULa9xTLAFuSK/tQeBHv8GLEwAhc0pO2T7pg/Bzrxw==
-X-Received: by 2002:ac2:5190:: with SMTP id u16mr952665lfi.56.1606294741749;
-        Wed, 25 Nov 2020 00:59:01 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:4212:944b:4041:d4db:b733:f39e? ([2a00:1fa0:4212:944b:4041:d4db:b733:f39e])
-        by smtp.gmail.com with ESMTPSA id j23sm179103lfh.88.2020.11.25.00.59.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 00:59:01 -0800 (PST)
-Subject: Re: [PATCH 3/5] memory: renesas-rpc-if: Export symbols as GPL
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201124112552.26377-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <99770be4-a55d-097b-7f4f-135610cd5eaa@gmail.com>
-Date:   Wed, 25 Nov 2020 11:58:51 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cb0IyYfwRRpwkSMXLoK5meWkqSB6m3aHpp32lgtuG5E=;
+        b=Nv1GjyeBr750Quuh6WMbvCwMQfuptyo8Trp+nletW60fHt1ABShwipQ2r9HpTReBcr
+         G8yMU4/YArXSWp980S1BgTZX369uMIXN2egoDefukuugx8e060k5x0+RsGZRl2Yhfhut
+         VKR/s/7P/3kAF/S16U5oA5zDhkS9A0tPC35dvYsz+TZDn7xbcMnQd0FhP1+9Xa2JfhY7
+         smhOTEIjnMJCTIBREzbX5rz04aAEIN4FRtlF/QHwRPTDlHcI7ZW583CEPMHxYn4BRuZ8
+         PSyDYWmYKc8Lj012p9tj2yjY6rNXIW/MUnrJGK27AHp4d4EeUz/0/Mc9L0PSXvAGrdpJ
+         GqZQ==
+X-Gm-Message-State: AOAM533NbfaomrdR/ktVasaJmMa1q4DJLCOwt0AQRQUYYJbUP5emnLTR
+        ktBxkWMxC60KvtFwe348z3hgHqS0EW+A9DhWHeZHFQ==
+X-Google-Smtp-Source: ABdhPJzdLrBChJNmwAufHSFyRkbYFLtVRK1HD1rbwhJfrbBBuHxsolU3fINxVDwgeq07RNzsEDacWevGKQb60NxLVLQ=
+X-Received: by 2002:a05:6830:3155:: with SMTP id c21mr2109430ots.281.1606294853508;
+ Wed, 25 Nov 2020 01:00:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201124112552.26377-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
+ <20201119144146.1045202-18-daniel.vetter@ffwll.ch> <20201120183029.GQ244516@ziepe.ca>
+ <20201124142814.GM401619@phenom.ffwll.local> <20201124155526.GH5487@ziepe.ca>
+In-Reply-To: <20201124155526.GH5487@ziepe.ca>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 25 Nov 2020 10:00:42 +0100
+Message-ID: <CAKMK7uESguiML9eBonfU59T9fcfP4x18t=+nLdV8kMSc4mrs8A@mail.gmail.com>
+Subject: Re: [PATCH v6 17/17] RFC: mm: add mmu_notifier argument to follow_pfn
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.2020 14:25, Lad Prabhakar wrote:
+On Wed, Nov 25, 2020 at 9:13 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Nov 24, 2020 at 03:28:14PM +0100, Daniel Vetter wrote:
+> > On Fri, Nov 20, 2020 at 02:30:29PM -0400, Jason Gunthorpe wrote:
+> > > On Thu, Nov 19, 2020 at 03:41:46PM +0100, Daniel Vetter wrote:
+> > > > @@ -4805,21 +4824,15 @@ EXPORT_SYMBOL(follow_pte_pmd);
+> > > >   * Return: zero and the pfn at @pfn on success, -ve otherwise.
+> > > >   */
+> > > >  int follow_pfn(struct vm_area_struct *vma, unsigned long address,
+> > > > - unsigned long *pfn)
+> > > > + unsigned long *pfn, struct mmu_notifier *subscription)
+> > > >  {
+> > > > - int ret = -EINVAL;
+> > > > - spinlock_t *ptl;
+> > > > - pte_t *ptep;
+> > > > + if (WARN_ON(!subscription->mm))
+> > > > +         return -EINVAL;
+> > > >
+> > > > + if (WARN_ON(subscription->mm != vma->vm_mm))
+> > > > +         return -EINVAL;
+> > >
+> > > These two things are redundant right? vma->vm_mm != NULL?
+> >
+> > Yup, will remove.
+> >
+> > > BTW, why do we even have this for nommu? If the only caller is kvm,
+> > > can you even compile kvm on nommu??
+> >
+> > Kinda makes sense, but I have no idea how to make sure with compile
+> > testing this is really the case. And I didn't see any hard evidence in
+> > Kconfig or Makefile that mmu notifiers requires CONFIG_MMU. So not sure
+> > what to do here.
+>
+> It looks like only some arches have selectable CONFIG_MMU: arm,
+> m68k, microblaze, riscv, sh
+>
+> If we look at arches that work with HAVE_KVM, I only see: arm64, mips,
+> powerpc, s390, x86
+>
+> So my conclusion is there is no intersection between !MMU and HAVE_KVM?
+>
+> > Should I just remove the nommu version of follow_pfn and see what happens?
+> > We can't remove it earlier since it's still used by other
+> > subsystems.
+>
+> This is what I was thinking might work
 
-> Renesas RPC-IF driver is licensed under GPL2.0, to be in sync export the
-> symbols as GPL.
-
-    Didn't know there's a connection...
-
-> Suggested-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-
-[...]
-
-MBR, Sergei
+Makes sense, I'll do that for the next round.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
