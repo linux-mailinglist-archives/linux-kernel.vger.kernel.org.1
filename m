@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053CA2C3D49
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8998A2C3D73
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgKYKJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        id S1729042AbgKYKMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:12:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbgKYKJj (ORCPT
+        with ESMTP id S1727126AbgKYKMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:09:39 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DABC0613D6;
-        Wed, 25 Nov 2020 02:09:39 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f17so2027235pge.6;
-        Wed, 25 Nov 2020 02:09:39 -0800 (PST)
+        Wed, 25 Nov 2020 05:12:08 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1EEC0613D4;
+        Wed, 25 Nov 2020 02:11:49 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 81so2059632pgf.0;
+        Wed, 25 Nov 2020 02:11:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=7UB1VwfUNRdnhielmEFkYpUl+QJqWs5102vTTuwXUyw=;
-        b=Lw8YkB83gM/PwTerYxcBiRNaOxNBetoyEavPznuzdB8scSAJDAfEiTtViswcQL9Naa
-         pwi3RS2Xsda90l5qmGgsqCyUcIFnsht7yfQHKQS4JiDGskpvhcsUDv37SaZjbGv2iwaL
-         IJ0nq7Cseu3m/OG3XtUF0K5ZFoOAj8jPSOG4DHQ0wnw2Gy+zRNtp0i39gDKJCkUr/zbF
-         AupG+q2g00nKEgJIVKb0jo42S4bft4DlEM+c5aTeNLbvKT1ZBc23deWEIoqPYaQclqPo
-         iANb8UnHqZmRVFLSH26POuHUPE6siKhWtNXdp3QrKzMD5cspDLDIAvnvTiqGPAvtgYvk
-         kK1w==
+        h=from:to:cc:subject:date:message-id;
+        bh=vv5V+2hLr729rED7Crr86lpX2HrSw0iB0zF2Ja4Hlcc=;
+        b=BZFjviglzi+xn8MJO9vBkgjTXTqH74pv4S2JyLBfeD5UBXB5izYqrI3gq2bWEG50nr
+         xVVOwMzzPQXfdC8s8vRJ7QOFqwpRXbHum/rIUzB5L+R+r87dFM5mEawigVWchUtzo3Q4
+         qpcHu3QrGNNooL5tDQOxR0v7BVjhUhnZW+hzB6+pcvbsRKN1faNd4QXZkWInduJEt2rw
+         KAGVVT8hgZqK/TJ6rBFyOE33gOrbwjL97r0kRtCDwqCaq+H1pkkvJumHHAsXvHELNDB6
+         Vd8jIKM3ndooyhgF4G+kRGZMjSpviuxas4amU+SLyrm1+YLve3DZbyo8hb4HJ60iMYLR
+         RTtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=7UB1VwfUNRdnhielmEFkYpUl+QJqWs5102vTTuwXUyw=;
-        b=DAaIsKrGG0DzMndC8+VGg/ZofBf8+CGueJNmPVBUtQxsTF5/gGQuPaT30FBjlfOtPM
-         CX0zNK+shKarI5s8zCedhyIZk82RB68AuRIMzEyy6Gy25Scf/782Rq7LxY2sHsA9h3FU
-         NQ9TtZIiZkjg4i44ncZyDStETXK5d0tvUYqH5q8PtUCN1FEoMT1zLDL4j17A/V/21XRu
-         +aH7/INt0YkarjSKapqHF68iQzFAAL65TkbrrIv0swqQaNTUu59fSuRyMm0m++7Aq9gS
-         ANq6K/DBls8mLug7XDgU/PdsmCFMZxaQIkx0lRgxVyPxHiDT1y/0yfl6TgKDEHiPcnhF
-         ZVKQ==
-X-Gm-Message-State: AOAM531pYjiT21oe0SKcx7UHN7nohNdRHe5d3m/JJRgQzAyH9sy8lsJI
-        dlOLmvv2+HzJJ9k31Qr5BFrMEiSdNhbgSQ==
-X-Google-Smtp-Source: ABdhPJz7JWwX2J93K0LMh6QODhHit3hmgdw0k19rbXJ1Iuh3+c4jpfPXav0q+CckJ/heF1zGoD0now==
-X-Received: by 2002:a17:90b:1490:: with SMTP id js16mr3266093pjb.215.1606298978581;
-        Wed, 25 Nov 2020 02:09:38 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id f134sm1615230pfa.208.2020.11.25.02.09.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 25 Nov 2020 02:09:38 -0800 (PST)
-Date:   Wed, 25 Nov 2020 02:08:06 -0800
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vv5V+2hLr729rED7Crr86lpX2HrSw0iB0zF2Ja4Hlcc=;
+        b=Obs3XW/sIwhQvmQsN6fOOzeSldAjum7AG7GUIiPdMD7mXjIA3Ac+p9VxZR5yH/1Jzu
+         um11nyO/DKMVVutPNJDrWaSGa7lEsyCClFDCaZGdrxvS4WVESc6oytH1WegKMCXXNT7w
+         01YDQhALcmPqfozf3hF2xLGZWzI0f8pIBlPzEmSovNKX0sVGoveoZ23W4OT3t7Yq96Gw
+         uvFAPKwfebjB9A8oh6JlsEPljhkhmhBwH4L8hkV0teM7F7bT4Cz9gdu3UV0LULuYQGtZ
+         QrUIy3XEDMDiWMPWsj8HBSduDhk3bJh36sGZVBvfqniZhECeSOvMSW0/O5oM6J+xAu5T
+         d7uQ==
+X-Gm-Message-State: AOAM533moY26CA7uJah2B9Z+H9zWEEC5Udxvdj4/wVxru37OsKfvj7sX
+        WV1ODeyJCMSulcWwY+OMgKtahbAzZ1QnMw==
+X-Google-Smtp-Source: ABdhPJxq/2D0BIqUKB3jpZKYr+0pPg7cu62GgJEVH3AbieyOZ7p/7UkiIkhfttl25qwYqtzPafEuLg==
+X-Received: by 2002:a65:688a:: with SMTP id e10mr2468380pgt.347.1606299109247;
+        Wed, 25 Nov 2020 02:11:49 -0800 (PST)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id r130sm1599496pfc.41.2020.11.25.02.11.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 02:11:48 -0800 (PST)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com
-Subject: Re: [PATCH RESEND 0/5] iommu/tegra-smmu: Some pending reviewed
- changes
-Message-ID: <20201125100805.GA14856@Asurada-Nvidia>
-References: <20201111222129.15736-1-nicoleotsuka@gmail.com>
- <20201124212100.GA32108@Asurada-Nvidia>
- <68237d7c-12f7-3053-2e79-75b7e95f0af3@gmail.com>
- <20201124231215.GA32405@Asurada-Nvidia>
- <20201125095509.GB15052@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201125095509.GB15052@willie-the-truck>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+To:     will@kernel.org
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
+        vdumpa@nvidia.com, thierry.reding@gmail.com, joro@8bytes.org
+Subject: [PATCH RESEND v2 0/5] iommu/tegra-smmu: Some pending reviewed changes
+Date:   Wed, 25 Nov 2020 02:10:08 -0800
+Message-Id: <20201125101013.14953-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 09:55:10AM +0000, Will Deacon wrote:
-> On Tue, Nov 24, 2020 at 03:12:16PM -0800, Nicolin Chen wrote:
-> > On Wed, Nov 25, 2020 at 02:05:14AM +0300, Dmitry Osipenko wrote:
-> > > 25.11.2020 00:21, Nicolin Chen пишет:
-> > > > These five patches were acked by Thierry and acked-n-tested by
-> > > > Dmitry a while ago. Would it be possible for you to apply them?
-> > > > 
-> > > > Thanks!
-> > > 
-> > > You probably should try to ping Will Deacon.
-> > > 
-> > > https://lkml.org/lkml/2020/11/17/243
-> > 
-> > Thank you, Dmitry.
-> > --
-> > 
-> > Will, would it be possible for you to take these changes?
-> > 
-> > I sent them on Nov 11 to the following lists:
-> > linux-kernel@vger.kernel.org
-> > iommu@lists.linux-foundation.org
-> > 
-> > If you need me to resend it again by adding you in To line,
-> > please kindly let me know.
-> 
-> Weird, this ended up in my spam. If you wouldn't mind resending with me
-> on To: then please do that. Then I know I'm looking at the correct version.
+Changelog
+v1->v2:
+ * Added Thierry's acks to PATCH-3~5
 
-Resending.
+This is a merged set of resend for previously two series of patches
+that were reviewed/acked a month ago yet have not got applied.
 
-Thanks!
+Series-1: https://lkml.org/lkml/2020/9/29/73
+"[PATCH v4 0/2] iommu/tegra-smmu: Two followup changes"
+
+Series-2: https://lkml.org/lkml/2020/10/9/808
+"[PATCH v7 0/3] iommu/tegra-smmu: Add PCI support"
+
+Nicolin Chen (5):
+  iommu/tegra-smmu: Unwrap tegra_smmu_group_get
+  iommu/tegra-smmu: Expand mutex protection range
+  iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
+  iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+  iommu/tegra-smmu: Add PCI support
+
+ drivers/iommu/tegra-smmu.c | 240 ++++++++++++++-----------------------
+ 1 file changed, 88 insertions(+), 152 deletions(-)
+
+-- 
+2.17.1
+
