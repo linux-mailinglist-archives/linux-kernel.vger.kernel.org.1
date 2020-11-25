@@ -2,428 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928B82C455F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE172C4560
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731956AbgKYQgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:36:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25721 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730437AbgKYQgn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:36:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606322199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+EiouQPxPZv2LASqUrEg+hATQfEGPxw8vkqRAmXLTes=;
-        b=VgubQ2OQROH34iqrGsn5zL42Rk2HBQDjtIx0ynEN3JT50Lpj+cRHNIGT4eC1CERs072Xcu
-        4cTTqQVOzFgD3gFnfpJxEOXKFK2spGC+KL2HmYx2caH0NAs59/N3NoRsfiFs4lp/QbqTwl
-        feNm9uo8wgpN5TCGNwjsYvK6TRfSgX8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-mXVrkfX6NXKAhAk2ppu2uA-1; Wed, 25 Nov 2020 11:36:34 -0500
-X-MC-Unique: mXVrkfX6NXKAhAk2ppu2uA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E003185E49C;
-        Wed, 25 Nov 2020 16:36:31 +0000 (UTC)
-Received: from krava (unknown [10.40.192.200])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 71CF31346F;
-        Wed, 25 Nov 2020 16:36:27 +0000 (UTC)
-Date:   Wed, 25 Nov 2020 17:36:26 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 22/25] perf buildid-cache: Add support to add build ids
- from perf data
-Message-ID: <20201125163626.GJ2164284@krava>
-References: <20201123230512.2097312-1-jolsa@kernel.org>
- <20201123230512.2097312-23-jolsa@kernel.org>
- <CAM9d7cgiCJeUx3tTBq+EHpCY-ycifXXn8ZW32F+F9br3CoOiSA@mail.gmail.com>
+        id S1731225AbgKYQhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:37:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:58420 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730247AbgKYQhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:37:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 514B331B;
+        Wed, 25 Nov 2020 08:37:53 -0800 (PST)
+Received: from [10.57.59.159] (unknown [10.57.59.159])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FFA53F7BB;
+        Wed, 25 Nov 2020 08:37:50 -0800 (PST)
+Subject: Re: [PATCH v2 1/6] iommu: Move iotlb_sync_map out from __iommu_map
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, jun.wen@mediatek.com
+References: <20201119061836.15238-1-yong.wu@mediatek.com>
+ <20201119061836.15238-2-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <cf0f81dd-e240-965b-5c75-914d3d48eb27@arm.com>
+Date:   Wed, 25 Nov 2020 16:37:48 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cgiCJeUx3tTBq+EHpCY-ycifXXn8ZW32F+F9br3CoOiSA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20201119061836.15238-2-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 10:00:10PM +0900, Namhyung Kim wrote:
-> On Tue, Nov 24, 2020 at 8:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding support to specify perf data file as -a option file
-> > argument,
-> >
-> > If the file is detected to be perf data file, it is processed
-> > and all dso objects with sample hit are stored to the build
-> > id cache.
-> >
-> >   $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-cache -a perf.data
-> >   OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /home/jolsa/.debug/.build-id/5d/cec522abf136fcfd3128f47e131f2365834dd7/elf
-> >   OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
-> >
-> > By default we store only dso with hits, but it's possible to
-> > specify 'all' to store all dso objects, like:
-> >     -a perf.data,all
-> 
-> I think we can add -A/--add-all like we have -p and -P.
+On 2020-11-19 06:18, Yong Wu wrote:
+> In the end of __iommu_map, It alway call iotlb_sync_map.
+> This patch moves iotlb_sync_map out from __iommu_map since it is
+> unnecessary to call this for each sg segment especially iotlb_sync_map
+> is flush tlb all currently.
 
-hm, the thing is that 'all' is specific for perf data file: '-a perf.data'
-hence -A 'file' would make no sense, only for '-A perf.data', so the current
-'all' parameter seems less confusing to me
+I don't see a way to avoid the boilerplate that wouldn't end up making 
+things even more ugly and complicated, so:
 
-thanks,
-jirka
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   drivers/iommu/iommu.c | 24 +++++++++++++++++++-----
+>   1 file changed, 19 insertions(+), 5 deletions(-)
 > 
-> >
-> >   $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-cache -a perf.data,all
-> >   OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /home/jolsa/.debug/.build-id/5d/cec522abf136fcfd3128f47e131f2365834dd7/elf
-> >   OK   6ce92dc7c31f12fe5b7775a2bb8b14a3546ce2cd /lib/modules/5.10.0-rc2speed+/kernel/drivers/firmware/qemu_fw_cfg.ko
-> >   OK   bf3f6d32dccc159f841fc3658c241d0e74c61fbb /lib/modules/5.10.0-rc2speed+/kernel/drivers/block/virtio_blk.ko
-> >   OK   e896b4329cf9f190f1a0fae933f425ff8f71b052 /lib/modules/5.10.0-rc2speed+/kernel/drivers/char/virtio_console.ko
-> >   OK   5bedc933cb59e053ecb472f327bd73c548364479 /lib/modules/5.10.0-rc2speed+/kernel/drivers/input/serio/serio_raw.ko
-> >   OK   cecc506368a8b7a473a5f900d26f0d3d914a9c23 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crc32c-intel.ko
-> >   OK   91076fb3646d061a0a42cf7bddb339a665ee4f80 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/ghash-clmulni-intel.ko
-> >   OK   4e2a304d788bb8e2e950bc82a5944e042afa0bf2 /lib/modules/5.10.0-rc2speed+/kernel/drivers/media/cec/core/cec.ko
-> >   OK   31ab0da5ad81e6803280177f507a95f3053d585e /lib/modules/5.10.0-rc2speed+/kernel/lib/libcrc32c.ko
-> >   OK   f6154bca47c149f48c942fcc3d653041dd285c65 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/ttm/ttm.ko
-> >   OK   723f5852de81590d54b23b38c160d3618b41951b /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crct10dif-pclmul.ko
-> >   OK   06b1eab7f141cbc3e5a5db47909c8ab5cb242e40 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm_ttm_helper.ko
-> >   OK   38292b862cf3ff87489508fdb4895efa45780813 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/qxl/qxl.ko
-> >   OK   cdf51e58609bf2ce4837a7b195e0ccae0a930907 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crc32-pclmul.ko
-> >   OK   5ca8958388f6688452ecc2cb83d6031394c659ad /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm.ko
-> >   OK   236bc4e4f38bf3559007566cb32b3dcc1bc28d2d /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm_kms_helper.ko
-> >   OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
-> >   OK   66db2be3efaa43bb5a5c481986e9554e1885cc69 /usr/lib/systemd/systemd
-> >   OK   7db607d9f2de89860d9639712da64c8bacd31e4b /usr/lib64/libm-2.30.so
-> >   OK   55b5f9652e1d17c1dd58f62628d5063428e5db91 /usr/lib64/libudev.so.1.6.15
-> >   OK   63b97070bf097130713bb6c89cf7100b5f3c9b17 /usr/lib64/libunistring.so.2.1.0
-> >   ...
-> >
-> > Once perf data is specified, no other file can be specified in
-> > the option, otherwise it causes syntax error.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../perf/Documentation/perf-buildid-cache.txt |  12 +-
-> >  tools/perf/builtin-buildid-cache.c            | 215 +++++++++++++++++-
-> >  tools/perf/util/probe-event.c                 |   6 +-
-> >  3 files changed, 227 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/perf/Documentation/perf-buildid-cache.txt b/tools/perf/Documentation/perf-buildid-cache.txt
-> > index f6de0952ff3c..b77da5138bca 100644
-> > --- a/tools/perf/Documentation/perf-buildid-cache.txt
-> > +++ b/tools/perf/Documentation/perf-buildid-cache.txt
-> > @@ -23,7 +23,17 @@ OPTIONS
-> >  -------
-> >  -a::
-> >  --add=::
-> > -        Add specified file to the cache.
-> > +        Add specified file or perf.data binaries to the cache.
-> > +
-> > +        If the file is detected to be perf data file, it is processed
-> > +        and all dso objects with sample hit are stored to the cache.
-> > +
-> > +        It's possible to specify 'all' to store all dso objects, like:
-> > +            -a perf.data,all
-> > +
-> > +        Once perf data is specified, no other file can be specified in
-> > +        the option, otherwise it causes syntax error.
-> > +
-> >  -f::
-> >  --force::
-> >         Don't complain, do it.
-> > diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
-> > index a25411926e48..0bfb54ee1e5e 100644
-> > --- a/tools/perf/builtin-buildid-cache.c
-> > +++ b/tools/perf/builtin-buildid-cache.c
-> > @@ -29,6 +29,11 @@
-> >  #include "util/probe-file.h"
-> >  #include <linux/string.h>
-> >  #include <linux/err.h>
-> > +#include <linux/zalloc.h>
-> > +#include <sys/stat.h>
-> > +#ifdef HAVE_DEBUGINFOD_SUPPORT
-> > +#include <elfutils/debuginfod.h>
-> > +#endif
-> >
-> >  static int build_id_cache__kcore_buildid(const char *proc_dir, char *sbuildid)
-> >  {
-> > @@ -348,6 +353,205 @@ static int build_id_cache__show_all(void)
-> >         return 0;
-> >  }
-> >
-> > +#ifdef HAVE_DEBUGINFOD_SUPPORT
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 8c470f451a32..decef851fa3a 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2407,9 +2407,6 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+>   		size -= pgsize;
+>   	}
+>   
+> -	if (ops->iotlb_sync_map)
+> -		ops->iotlb_sync_map(domain);
+> -
+>   	/* unroll mapping in case something went wrong */
+>   	if (ret)
+>   		iommu_unmap(domain, orig_iova, orig_size - size);
+> @@ -2422,15 +2419,29 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+>   int iommu_map(struct iommu_domain *domain, unsigned long iova,
+>   	      phys_addr_t paddr, size_t size, int prot)
+>   {
+> +	const struct iommu_ops *ops = domain->ops;
+> +	int ret;
+> +
+>   	might_sleep();
+> -	return __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
+> +	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
+> +	if (ret == 0 && ops->iotlb_sync_map)
+> +		ops->iotlb_sync_map(domain);
+> +
+> +	return ret;
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_map);
+>   
+>   int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
+>   	      phys_addr_t paddr, size_t size, int prot)
+>   {
+> -	return __iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
+> +	const struct iommu_ops *ops = domain->ops;
+> +	int ret;
+> +
+> +	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
+> +	if (ret == 0 && ops->iotlb_sync_map)
+> +		ops->iotlb_sync_map(domain);
+> +
+> +	return ret;
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_map_atomic);
+>   
+> @@ -2514,6 +2525,7 @@ static size_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
+>   			     struct scatterlist *sg, unsigned int nents, int prot,
+>   			     gfp_t gfp)
+>   {
+> +	const struct iommu_ops *ops = domain->ops;
+>   	size_t len = 0, mapped = 0;
+>   	phys_addr_t start;
+>   	unsigned int i = 0;
+> @@ -2544,6 +2556,8 @@ static size_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
+>   			sg = sg_next(sg);
+>   	}
+>   
+> +	if (ops->iotlb_sync_map)
+> +		ops->iotlb_sync_map(domain);
+>   	return mapped;
+>   
+>   out_err:
 > 
-> I think this part belongs to the next patch...?
-> 
-> Thanks,
-> Namhyung
-> 
-> 
-> > +static int call_debuginfod(const char *sbuild_id, char **path, bool debuginfo)
-> > +{
-> > +       debuginfod_client *c;
-> > +       int fd;
-> > +
-> > +       c = debuginfod_begin();
-> > +       if (c == NULL)
-> > +               return -1;
-> > +
-> > +       pr_debug("trying debuginfod for executable <%s> ... ", sbuild_id);
-> > +
-> > +       if (debuginfo) {
-> > +               fd = debuginfod_find_debuginfo(c, (const unsigned char *) sbuild_id,
-> > +                                              0, path);
-> > +       } else {
-> > +               fd = debuginfod_find_executable(c, (const unsigned char *) sbuild_id,
-> > +                                               0, path);
-> > +       }
-> > +       if (fd >= 0)
-> > +               close(fd); /* retaining reference by realname */
-> > +
-> > +       debuginfod_end(c);
-> > +       pr_debug("%s%s\n", *path ? "OK " : "FAILED", *path ? *path : "");
-> > +       return *path ? 0 : -1;
-> > +}
-> > +#else
-> > +static int call_debuginfod(const char *sbuild_id __maybe_unused,
-> > +                          char **path __maybe_unused,
-> > +                          bool debuginfo __maybe_unused)
-> > +{
-> > +       return -1;
-> > +}
-> > +#endif
-> > +
-> > +struct dso_store_data {
-> > +       bool     hits;
-> > +       bool     force_download;
-> > +};
-> > +
-> > +static int dso_store(struct dso *dso, struct machine *machine, void *priv)
-> > +{
-> > +       struct dso_store_data *data = priv;
-> > +       char sbuild_id[SBUILD_ID_SIZE];
-> > +       struct build_id bid;
-> > +       char *path = NULL, *link = NULL;
-> > +       bool is_kallsyms;
-> > +       int err = -1;
-> > +
-> > +       /*
-> > +        * There's no build id in dso, nothing to do..
-> > +        */
-> > +       if (!dso->has_build_id || !build_id__is_defined(&dso->bid))
-> > +               return 0;
-> > +
-> > +       if (data->hits && !dso->hit)
-> > +               return 0;
-> > +
-> > +       /*
-> > +        * The storing process is:
-> > +        *   - get build id of the dso
-> > +        *   - check if it is already in cache
-> > +        *   - check if it matches provided build id from mmap2 event
-> > +        *   - if not, try debuginfod to download the binary
-> > +        *   - store binary to build id database
-> > +        */
-> > +       is_kallsyms = !strcmp(machine->mmap_name, dso->short_name);
-> > +       build_id__sprintf(&dso->bid, sbuild_id);
-> > +
-> > +       link = build_id_cache__linkname(sbuild_id, NULL, 0);
-> > +       if (!link)
-> > +               return -ENOMEM;
-> > +
-> > +       if (!data->force_download && !access(link, X_OK)) {
-> > +               pr_debug("already in cache - %s <%s>\n", dso->long_name, sbuild_id);
-> > +               err = 0;
-> > +               goto out;
-> > +       }
-> > +
-> > +       path = strdup(dso->long_name);
-> > +       if (!path)
-> > +               goto out;
-> > +
-> > +       if (is_kallsyms) {
-> > +               /*
-> > +                * Find out if we are on the same kernel as perf.data
-> > +                * and store kallsyms in that case.
-> > +                */
-> > +               err = sysfs__read_build_id("/sys/kernel/notes", &bid);
-> > +               if (err < 0)
-> > +                       goto out;
-> > +       } else {
-> > +               struct nscookie nsc;
-> > +               struct stat st;
-> > +
-> > +               nsinfo__mountns_enter(dso->nsinfo, &nsc);
-> > +
-> > +               /*
-> > +                * Does the file exists in the first place, if it does,
-> > +                * resolve path and read the build id.
-> > +                */
-> > +               if (stat(dso->long_name, &st)) {
-> > +                       nsinfo__mountns_exit(&nsc);
-> > +                       zfree(&path);
-> > +                       goto try_download;
-> > +               }
-> > +
-> > +               err = filename__read_build_id(dso->long_name, &bid);
-> > +               nsinfo__mountns_exit(&nsc);
-> > +
-> > +               if (err <= 0)
-> > +                       goto out;
-> > +       }
-> > +
-> > +       /*
-> > +        * If we match, then what we want in mmap2 event
-> > +        * is what we got in the binary,
-> > +        */
-> > +       if (bid.size != dso->bid.size || memcmp(&bid, &dso->bid, bid.size)) {
-> > +               char sbid[SBUILD_ID_SIZE];
-> > +
-> > +               build_id__sprintf(&bid, sbid);
-> > +               pr_debug("mmap build id <%s> does not match for %s <%s>\n",
-> > +                        sbuild_id, path, sbid);
-> > +               zfree(&path);
-> > +       }
-> > +
-> > +try_download:
-> > +       /*
-> > +        * We did not match build id or did not find the
-> > +        * binary - try debuginfod as last resort.
-> > +        */
-> > +       if (!path) {
-> > +               bool debuginfo;
-> > +               char *tmp = NULL;
-> > +
-> > +               /*
-> > +                * The debuginfo retrieval for standard binaries
-> > +                * is handled within build_id_cache__add function.
-> > +                *
-> > +                * For kernel and kernel modules we have to ask
-> > +                * for debuginfo directly, because debuginfod
-> > +                * does not treat them as binaries.
-> > +                */
-> > +               debuginfo = is_kallsyms ||
-> > +                           is_kernel_module(dso->long_name, PERF_RECORD_MISC_CPUMODE_UNKNOWN);
-> > +
-> > +               if (call_debuginfod(sbuild_id, &tmp, debuginfo)) {
-> > +                       err = -1;
-> > +                       goto out;
-> > +               }
-> > +
-> > +               path = tmp;
-> > +
-> > +               /*
-> > +                * The kernel dso is now elf binary, so disable is_kallsyms
-> > +                * so build_id_cache__add can prepare proper file names.
-> > +                */
-> > +               is_kallsyms = false;
-> > +       }
-> > +
-> > +       pr_debug("linking %s %s <%s>\n", dso->short_name, path, sbuild_id);
-> > +
-> > +       err = build_id_cache__add(sbuild_id, path, path,
-> > +                                 dso->nsinfo, is_kallsyms, false);
-> > +out:
-> > +       free(path);
-> > +       fprintf(stderr, "%s %s %s\n", err ? "FAIL" : "OK  ", sbuild_id, dso->long_name);
-> > +       return 0;
-> > +}
-> > +
-> > +static int
-> > +build_id_cache__add_perf_data(const char *path, bool all)
-> > +{
-> > +       struct perf_session *session;
-> > +       struct dso_store_data priv = {
-> > +               .hits = !all,
-> > +               .force_download = false,
-> > +       };
-> > +       struct perf_data data = {
-> > +               .path  = path,
-> > +               .mode  = PERF_DATA_MODE_READ,
-> > +       };
-> > +       int err;
-> > +
-> > +       session = perf_session__new(&data, false, &build_id__mark_dso_hit_ops);
-> > +       if (IS_ERR(session))
-> > +               return PTR_ERR(session);
-> > +
-> > +       err = perf_session__process_events(session);
-> > +       if (err)
-> > +               goto out;
-> > +
-> > +       err = __perf_session__cache_build_ids(session, dso_store, &priv);
-> > +out:
-> > +       perf_session__delete(session);
-> > +       return err;
-> > +}
-> > +
-> >  int cmd_buildid_cache(int argc, const char **argv)
-> >  {
-> >         struct strlist *list;
-> > @@ -440,7 +644,15 @@ int cmd_buildid_cache(int argc, const char **argv)
-> >                 list = strlist__new(add_name_list_str, NULL);
-> >                 if (list) {
-> >                         strlist__for_each_entry(pos, list)
-> > -                               if (build_id_cache__add_file(pos->s, nsi)) {
-> > +                               if (is_perf_data(pos->s)) {
-> > +                                       struct str_node *all_pos = strlist__next(pos);
-> > +                                       bool all = !strcmp("all", all_pos ? all_pos->s : "");
-> > +
-> > +                                       if (build_id_cache__add_perf_data(pos->s, all))
-> > +                                               pr_warning("Couldn't add build ids from %s\n", pos->s);
-> > +                                       if (all)
-> > +                                               pos = all_pos;
-> > +                               } else if (build_id_cache__add_file(pos->s, nsi)) {
-> >                                         if (errno == EEXIST) {
-> >                                                 pr_debug("%s already in the cache\n",
-> >                                                          pos->s);
-> > @@ -449,7 +661,6 @@ int cmd_buildid_cache(int argc, const char **argv)
-> >                                         pr_warning("Couldn't add %s: %s\n",
-> >                                                    pos->s, str_error_r(errno, sbuf, sizeof(sbuf)));
-> >                                 }
-> > -
-> >                         strlist__delete(list);
-> >                 }
-> >         }
-> > diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> > index 8eae2afff71a..e821bb977c9b 100644
-> > --- a/tools/perf/util/probe-event.c
-> > +++ b/tools/perf/util/probe-event.c
-> > @@ -1616,9 +1616,9 @@ static int parse_perf_probe_point(char *arg, struct perf_probe_event *pev)
-> >                 return -EINVAL;
-> >         }
-> >
-> > -       pr_debug("symbol:%s file:%s line:%d offset:%lu return:%d lazy:%s\n",
-> > -                pp->function, pp->file, pp->line, pp->offset, pp->retprobe,
-> > -                pp->lazy_line);
-> > +       pr_debug2("symbol:%s file:%s line:%d offset:%lu return:%d lazy:%s\n",
-> > +                 pp->function, pp->file, pp->line, pp->offset, pp->retprobe,
-> > +                 pp->lazy_line);
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.26.2
-> >
-> 
-
