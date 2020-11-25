@@ -2,300 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8292C41F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38392C41F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgKYOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:15:24 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:40009 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgKYOPX (ORCPT
+        id S1729767AbgKYOPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:15:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51317 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729109AbgKYOPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:15:23 -0500
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1khvZn-0001KV-Jq
-        for linux-kernel@vger.kernel.org; Wed, 25 Nov 2020 14:15:19 +0000
-Received: by mail-wr1-f71.google.com with SMTP id w17so824360wrl.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 06:15:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ANI9CN/JLVXllK8ak45GoB7ekO0ZE4FMb4P6jGjhdrQ=;
-        b=ppOleVqZhmbOuZugkzKEQDEU2MtXvbGyrnbYT0kV022BLWCWwlsPz+nQ+ZL8/iLwfU
-         JZUBgbfyWI+BSVPtA5j7rSui+Tc+BZT+FTns826SCAOuPnpiHBPBMrBLFR2pfkBrPKDU
-         +V2LJCubmoul7NTqgIAFQx7JxCNSVwp+SsPw2uJa8Fr8PtQtqr15tfaUWCfj46X3Vy71
-         TZrYJtHK1ZMhKvmfnBs+J4FGuiRuLHrPcTXgg19xU4KbdUPEJS2qystbSDee3fndnMOW
-         T4LBKZrw7zzauXy3rYnKAgNmX5VlqiDv/1pQzE3E3W5ZMXleN0NlNGvS91mUHYVY1vZ7
-         EISQ==
-X-Gm-Message-State: AOAM532auXDiPhvwU5+b572/1eVTOcc1CqquI/rOk22ygeJiFJh9NW/J
-        sObU3m8RsFBPLowoPxFA82kAf6f/Coxr8/+718g6qKgW4dNF3w346rXNeWY2RauAKi11c3EHNQz
-        wzOIavX450DC5lVJIjSi4ug7vUdcL4mqCAu7HvuV+XA==
-X-Received: by 2002:a5d:4046:: with SMTP id w6mr4508716wrp.51.1606313719121;
-        Wed, 25 Nov 2020 06:15:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy346UBsHS/yDvNhjFwj/LwN6KBFCgRSB4R+3u8bbhw3STFzbaFfw4dQyS/aRKddtae2OHrZA==
-X-Received: by 2002:a5d:4046:: with SMTP id w6mr4508681wrp.51.1606313718763;
-        Wed, 25 Nov 2020 06:15:18 -0800 (PST)
-Received: from localhost (host-79-35-122-236.retail.telecomitalia.it. [79.35.122.236])
-        by smtp.gmail.com with ESMTPSA id n126sm4675525wmn.21.2020.11.25.06.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 06:15:18 -0800 (PST)
-Date:   Wed, 25 Nov 2020 15:15:17 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
-Message-ID: <20201125141517.GA73489@xps-13-7390>
-References: <20201102104152.GG9930@xps-13-7390>
- <20201125124648.GJ29328@amd>
+        Wed, 25 Nov 2020 09:15:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606313741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Td/8Ow1h2VVzvZfHFudQxWhJpRZ2ytrBuToX3K1/lQk=;
+        b=BIdKt48HpKac8LgixvG59JN6A33mSw/Snh6jMwpCv6ZO0j659CjLsZDUFX/9LhqWOLuKo8
+        /enOqD5iZreiZQjI9b4ccF5whhyR9j04YKzaKJKiKxmMWPrLkIU6VNLECduHmm4J2bUJN1
+        YnpAGYMN3Vz9ebzSMkFEEigd6piDQEU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-ibup7d3cMViW2mgFm_Tuvg-1; Wed, 25 Nov 2020 09:15:37 -0500
+X-MC-Unique: ibup7d3cMViW2mgFm_Tuvg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F71B190A7B0;
+        Wed, 25 Nov 2020 14:15:35 +0000 (UTC)
+Received: from krava (unknown [10.40.192.200])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 42DBB1899A;
+        Wed, 25 Nov 2020 14:15:32 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 15:15:31 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 13/25] perf tools: Store build id from mmap2 events
+Message-ID: <20201125141531.GE2164284@krava>
+References: <20201123230512.2097312-1-jolsa@kernel.org>
+ <20201123230512.2097312-14-jolsa@kernel.org>
+ <CAM9d7ciq_D2F_bPoq7S5aw+0jPZ0EokCNDadEcO2KF_rYsL8VQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201125124648.GJ29328@amd>
+In-Reply-To: <CAM9d7ciq_D2F_bPoq7S5aw+0jPZ0EokCNDadEcO2KF_rYsL8VQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-On Wed, Nov 25, 2020 at 01:46:48PM +0100, Pavel Machek wrote:
-> Hi!
+On Wed, Nov 25, 2020 at 09:56:31PM +0900, Namhyung Kim wrote:
+> On Tue, Nov 24, 2020 at 8:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > When processing mmap2 event, check on the build id
+> > misc bit: PERF_RECORD_MISC_MMAP_BUILD_ID and if it
+> > is set, store the build id in mmap's dso object.
+> >
+> > Also adding the build id data arts to struct
 > 
-> > We have the following potential deadlock condition:
-> > 
-> >  ========================================================
-> >  WARNING: possible irq lock inversion dependency detected
-> >  5.10.0-rc2+ #25 Not tainted
-> >  --------------------------------------------------------
-> >  swapper/3/0 just changed the state of lock:
-> >  ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x27/0x200
-> >  but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-> >   (&trig->leddev_list_lock){.+.?}-{2:2}
-> > 
-> >  and interrupts could create inverse lock ordering between them.
-> > 
-> >  other info that might help us debug this:
-> >   Possible interrupt unsafe locking scenario:
-> > 
-> >         CPU0                    CPU1
-> >         ----                    ----
-> >    lock(&trig->leddev_list_lock);
-> >                                 local_irq_disable();
-> >                                 lock(&host->lock);
-> >                                 lock(&trig->leddev_list_lock);
-> >    <Interrupt>
-> >      lock(&host->lock);
-> > 
-> >   *** DEADLOCK ***
-> > 
-> >  no locks held by swapper/3/0.
-> > 
-> >  the shortest dependencies between 2nd lock and 1st lock:
-> >   -> (&trig->leddev_list_lock){.+.?}-{2:2} ops: 46 {
-> >      HARDIRQ-ON-R at:
-> >                        lock_acquire+0x15f/0x420
-> >                        _raw_read_lock+0x42/0x90
-> >                        led_trigger_event+0x2b/0x70
-> >                        rfkill_global_led_trigger_worker+0x94/0xb0
-> >                        process_one_work+0x240/0x560
-> >                        worker_thread+0x58/0x3d0
-> >                        kthread+0x151/0x170
-> >                        ret_from_fork+0x1f/0x30
-> >      IN-SOFTIRQ-R at:
-> >                        lock_acquire+0x15f/0x420
-> >                        _raw_read_lock+0x42/0x90
-> >                        led_trigger_event+0x2b/0x70
-> >                        kbd_bh+0x9e/0xc0
-> >                        tasklet_action_common.constprop.0+0xe9/0x100
-> >                        tasklet_action+0x22/0x30
-> >                        __do_softirq+0xcc/0x46d
-> >                        run_ksoftirqd+0x3f/0x70
-> >                        smpboot_thread_fn+0x116/0x1f0
-> >                        kthread+0x151/0x170
-> >                        ret_from_fork+0x1f/0x30
-> >      SOFTIRQ-ON-R at:
-> >                        lock_acquire+0x15f/0x420
-> >                        _raw_read_lock+0x42/0x90
-> >                        led_trigger_event+0x2b/0x70
-> >                        rfkill_global_led_trigger_worker+0x94/0xb0
-> >                        process_one_work+0x240/0x560
-> >                        worker_thread+0x58/0x3d0
-> >                        kthread+0x151/0x170
-> >                        ret_from_fork+0x1f/0x30
-> >      INITIAL READ USE at:
-> >                            lock_acquire+0x15f/0x420
-> >                            _raw_read_lock+0x42/0x90
-> >                            led_trigger_event+0x2b/0x70
-> >                            rfkill_global_led_trigger_worker+0x94/0xb0
-> >                            process_one_work+0x240/0x560
-> >                            worker_thread+0x58/0x3d0
-> >                            kthread+0x151/0x170
-> >                            ret_from_fork+0x1f/0x30
-> >    }
-> >    ... key      at: [<ffffffff83da4c00>] __key.0+0x0/0x10
-> >    ... acquired at:
-> >     _raw_read_lock+0x42/0x90
-> >     led_trigger_blink_oneshot+0x3b/0x90
-> >     ledtrig_disk_activity+0x3c/0xa0
-> >     ata_qc_complete+0x26/0x450
-> >     ata_do_link_abort+0xa3/0xe0
-> >     ata_port_freeze+0x2e/0x40
-> >     ata_hsm_qc_complete+0x94/0xa0
-> >     ata_sff_hsm_move+0x177/0x7a0
-> >     ata_sff_pio_task+0xc7/0x1b0
-> >     process_one_work+0x240/0x560
-> >     worker_thread+0x58/0x3d0
-> >     kthread+0x151/0x170
-> >     ret_from_fork+0x1f/0x30
-> > 
-> >  -> (&host->lock){-...}-{2:2} ops: 69 {
-> >     IN-HARDIRQ-W at:
-> >                      lock_acquire+0x15f/0x420
-> >                      _raw_spin_lock_irqsave+0x52/0xa0
-> >                      ata_bmdma_interrupt+0x27/0x200
-> >                      __handle_irq_event_percpu+0xd5/0x2b0
-> >                      handle_irq_event+0x57/0xb0
-> >                      handle_edge_irq+0x8c/0x230
-> >                      asm_call_irq_on_stack+0xf/0x20
-> >                      common_interrupt+0x100/0x1c0
-> >                      asm_common_interrupt+0x1e/0x40
-> >                      native_safe_halt+0xe/0x10
-> >                      arch_cpu_idle+0x15/0x20
-> >                      default_idle_call+0x59/0x1c0
-> >                      do_idle+0x22c/0x2c0
-> >                      cpu_startup_entry+0x20/0x30
-> >                      start_secondary+0x11d/0x150
-> >                      secondary_startup_64_no_verify+0xa6/0xab
-> >     INITIAL USE at:
-> >                     lock_acquire+0x15f/0x420
-> >                     _raw_spin_lock_irqsave+0x52/0xa0
-> >                     ata_dev_init+0x54/0xe0
-> >                     ata_link_init+0x8b/0xd0
-> >                     ata_port_alloc+0x1f1/0x210
-> >                     ata_host_alloc+0xf1/0x130
-> >                     ata_host_alloc_pinfo+0x14/0xb0
-> >                     ata_pci_sff_prepare_host+0x41/0xa0
-> >                     ata_pci_bmdma_prepare_host+0x14/0x30
-> >                     piix_init_one+0x21f/0x600
-> >                     local_pci_probe+0x48/0x80
-> >                     pci_device_probe+0x105/0x1c0
-> >                     really_probe+0x221/0x490
-> >                     driver_probe_device+0xe9/0x160
-> >                     device_driver_attach+0xb2/0xc0
-> >                     __driver_attach+0x91/0x150
-> >                     bus_for_each_dev+0x81/0xc0
-> >                     driver_attach+0x1e/0x20
-> >                     bus_add_driver+0x138/0x1f0
-> >                     driver_register+0x91/0xf0
-> >                     __pci_register_driver+0x73/0x80
-> >                     piix_init+0x1e/0x2e
-> >                     do_one_initcall+0x5f/0x2d0
-> >                     kernel_init_freeable+0x26f/0x2cf
-> >                     kernel_init+0xe/0x113
-> >                     ret_from_fork+0x1f/0x30
-> >   }
-> >   ... key      at: [<ffffffff83d9fdc0>] __key.6+0x0/0x10
-> >   ... acquired at:
-> >     __lock_acquire+0x9da/0x2370
-> >     lock_acquire+0x15f/0x420
-> >     _raw_spin_lock_irqsave+0x52/0xa0
-> >     ata_bmdma_interrupt+0x27/0x200
-> >     __handle_irq_event_percpu+0xd5/0x2b0
-> >     handle_irq_event+0x57/0xb0
-> >     handle_edge_irq+0x8c/0x230
-> >     asm_call_irq_on_stack+0xf/0x20
-> >     common_interrupt+0x100/0x1c0
-> >     asm_common_interrupt+0x1e/0x40
-> >     native_safe_halt+0xe/0x10
-> >     arch_cpu_idle+0x15/0x20
-> >     default_idle_call+0x59/0x1c0
-> >     do_idle+0x22c/0x2c0
-> >     cpu_startup_entry+0x20/0x30
-> >     start_secondary+0x11d/0x150
-> >     secondary_startup_64_no_verify+0xa6/0xab
-> > 
-> > This lockdep splat is reported after:
-> > commit e918188611f0 ("locking: More accurate annotations for read_lock()")
-> > 
-> > To clarify:
-> >  - read-locks are recursive only in interrupt context (when
-> >    in_interrupt() returns true)
-> >  - after acquiring host->lock in CPU1, another cpu (i.e. CPU2) may call
-> >    write_lock(&trig->leddev_list_lock) that would be blocked by CPU0
-> >    that holds trig->leddev_list_lock in read-mode
-> >  - when CPU1 (ata_ac_complete()) tries to read-lock
-> >    trig->leddev_list_lock, it would be blocked by the write-lock waiter
-> >    on CPU2 (because we are not in interrupt context, so the read-lock is
-> >    not recursive)
-> >  - at this point if an interrupt happens on CPU0 and
-> >    ata_bmdma_interrupt() is executed it will try to acquire host->lock,
-> >    that is held by CPU1, that is currently blocked by CPU2, so:
-> > 
-> >    * CPU0 blocked by CPU1
-> >    * CPU1 blocked by CPU2
-> >    * CPU2 blocked by CPU0
-> > 
-> >      *** DEADLOCK ***
-> > 
-> > The deadlock scenario is better represented by the following schema
-> > (thanks to Boqun Feng <boqun.feng@gmail.com> for the schema and the
-> > detailed explanation of the deadlock condition):
-> > 
-> >  CPU 0:                          CPU 1:                        CPU 2:
-> >  -----                           -----                         -----
-> >  led_trigger_event():
-> >    read_lock(&trig->leddev_list_lock);
-> >  				<workqueue>
-> >  				ata_hsm_qc_complete():
-> >  				  spin_lock_irqsave(&host->lock);
-> >  								write_lock(&trig->leddev_list_lock);
-> >  				  ata_port_freeze():
-> >  				    ata_do_link_abort():
-> >  				      ata_qc_complete():
-> >  					ledtrig_disk_activity():
-> >  					  led_trigger_blink_oneshot():
-> >  					    read_lock(&trig->leddev_list_lock);
-> >  					    // ^ not in in_interrupt() context, so could get blocked by CPU 2
-> >  <interrupt>
-> >    ata_bmdma_interrupt():
-> >      spin_lock_irqsave(&host->lock);
-> > 
-> > Fix by using read_lock_irqsave/irqrestore() in led_trigger_event(), so
-> > that no interrupt can happen in between, preventing the deadlock
-> > condition.
-> > 
-> > Link: https://lore.kernel.org/lkml/20201101092614.GB3989@xps-13-7390/
-> > Fixes: eb25cb9956cc ("leds: convert IDE trigger to common disk trigger")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> s/arts/args/ ?
+
+right, perhaps also s/arts// 
+
+thanks,
+jirka
+
 > 
-> I'd hate to see this in stable 3 days after Linus merges it...
+> Thanks,
+> Namhyung
 > 
-> Do these need _irqsave, too?
 > 
-> drivers/leds/led-triggers.c:   read_lock(&trig->leddev_list_lock);
-> drivers/leds/led-triggers.c:   read_unlock(&trig->leddev_list_lock);
-> drivers/leds/led-triggers.c:   read_lock(&trig->leddev_list_lock);
-> drivers/leds/led-triggers.c:   read_unlock(&trig->leddev_list_lock);
+> > perf_record_mmap2 event definition.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > 
-> Best regards,
 
-I think also led_trigger_blink_setup() needs to use irqsave/irqrestore,
-in fact:
-
-$ git grep "led_trigger_blink("
-drivers/leds/led-triggers.c:void led_trigger_blink(struct led_trigger *trig,
-drivers/power/supply/power_supply_leds.c:               led_trigger_blink(psy->charging_blink_full_solid_trig,
-include/linux/leds.h:void led_trigger_blink(struct led_trigger *trigger, unsigned long *delay_on,
-include/linux/leds.h:static inline void led_trigger_blink(struct led_trigger *trigger,
-
-power_supply_leds.c is using led_trigger_blink() from a workqueue
-context, so potentially the same deadlock condition can also happen.
-
-Let me know if you want me to send a new patch to include also this
-case.
-
--Andrea
