@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4496F2C401E
+	by mail.lfdr.de (Postfix) with ESMTP id B10A12C401F
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgKYM2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:28:17 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59658 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727114AbgKYM2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:28:16 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0APC39WV078944;
-        Wed, 25 Nov 2020 07:28:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=AOYv5PLVg1KbAnnzqoZpxmfDX+3MkZZ45cURBdgIsTs=;
- b=X1q7v7DZFFJVYEjTqRpG+ZujOZNB28YlxGS4+EGJuPO6f6F1glMaMALWzK4zB6n4Zqho
- dX/3hsc/MHX/xU96Bj69IHzFRPtj+XCeYbpCRX2qWuwjms6G5dhp7V4f4BxKhrNtcDRr
- xl8SnmzKERqax3cX91qlGzGVgZVlFdGeZxZ9DHJ5q6n11qf+gbKG26sN+9xclzDFsMXH
- IJlkV6iSG3H7z0lWQQzstu/TwdgWvwSBo03Edm3b+vwcFW7owMUIyWmCTa1VmgKUPk51
- KTpnFdhr5K1YoqJP1fGKppGa3rK2qMEhyD1EY0+Kg2Y/EHajAHxmwaj3RB3BS9QeqLgb iw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 351nuuk7je-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 07:28:00 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0APCPUBG011622;
-        Wed, 25 Nov 2020 12:27:58 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3518j8gny2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 12:27:58 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0APCRu5G9175606
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Nov 2020 12:27:56 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 676C8A405B;
-        Wed, 25 Nov 2020 12:27:56 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5664EA4040;
-        Wed, 25 Nov 2020 12:27:54 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.81.213])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 25 Nov 2020 12:27:54 +0000 (GMT)
-Message-ID: <260d493faed10725371d4e2ae4f39a780796aa57.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v3 1/3] ima: Implement ima_inode_hash
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Date:   Wed, 25 Nov 2020 07:27:53 -0500
-In-Reply-To: <20201124151210.1081188-2-kpsingh@chromium.org>
-References: <20201124151210.1081188-1-kpsingh@chromium.org>
-         <20201124151210.1081188-2-kpsingh@chromium.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        id S1729376AbgKYM2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:28:19 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:55159 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729358AbgKYM2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:28:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606307298; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=iNAPFkL8b7EnXxHK07zTOw6eeK1eE3u8WLYvqlWH7hw=;
+ b=vWKyjvFAf1DoZZ5K2GBo9ugYq07ldD4YaMS0iDSCqXGOzPetF9lgateP7yWi6/jRVp1M7+gS
+ UIFH7KTXlh4QlVuBHGXH23Kq10o81lo00UDy4XKzfCxJWa4MBbDtadizNycjLVpxDRVd8+qc
+ e8qcSh/RKIpFmD3ClEjahqOZHfI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fbe4de17f0cfa6a1632a139 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 12:28:17
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A8845C43468; Wed, 25 Nov 2020 12:28:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE92CC433ED;
+        Wed, 25 Nov 2020 12:28:15 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-25_07:2020-11-25,2020-11-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=759 clxscore=1015
- suspectscore=0 lowpriorityscore=0 adultscore=0 spamscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011250075
+Date:   Wed, 25 Nov 2020 20:28:15 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
+ remove skip_ref_clk
+In-Reply-To: <0b0c545d80f9a0e8106a634063c23a8f0ba895fc.camel@gmail.com>
+References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
+ <1606202906-14485-2-git-send-email-cang@codeaurora.org>
+ <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
+ <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
+ <0b0c545d80f9a0e8106a634063c23a8f0ba895fc.camel@gmail.com>
+Message-ID: <9484cba7b95c6c6fcbafd96bc35c1dee@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 15:12 +0000, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> This is in preparation to add a helper for BPF LSM programs to use
-> IMA hashes when attached to LSM hooks. There are LSM hooks like
-> inode_unlink which do not have a struct file * argument and cannot
-> use the existing ima_file_hash API.
-> 
-> An inode based API is, therefore, useful in LSM based detections like an
-> executable trying to delete itself which rely on the inode_unlink LSM
-> hook.
-> 
-> Moreover, the ima_file_hash function does nothing with the struct file
-> pointer apart from calling file_inode on it and converting it to an
-> inode.
-> 
-> Signed-off-by: KP Singh <kpsingh@google.com>
+On 2020-11-25 19:54, Bean Huo wrote:
+> On Wed, 2020-11-25 at 08:53 +0800, Can Guo wrote:
+>> > > +       bool always_on_while_link_active;
+>> >
+>> > Can,
+>> > using a sentence as a parameter name looks a little bit clumsy to
+>> > me.
+>> > The meaning has been explained in the comments section. How about
+>> > simplify it and in line with other parameters in the structure?
+>> >
+>> 
+>> Do you have a better name in mind?
+>> 
+> no specail input in mind, maybe just "bool eternal_on"
 
+It is like plain "always_on", but it cannot tell the whole story.
+If it is not something crutial, let's just let it go first so long
+as it does not break the original functionality. What do you say?
 
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+Thanks,
 
+Can Guo.
+
+> 
+>> Thanks,
+>> 
+>> Can Guo.
