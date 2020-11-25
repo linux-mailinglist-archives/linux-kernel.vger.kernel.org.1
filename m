@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5B52C44CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39BA2C44E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730966AbgKYQUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:20:53 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:43919 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730519AbgKYQUx (ORCPT
+        id S1730903AbgKYQYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:24:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730747AbgKYQYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:20:53 -0500
-Received: by mail-oi1-f195.google.com with SMTP id t143so3384105oif.10;
-        Wed, 25 Nov 2020 08:20:52 -0800 (PST)
+        Wed, 25 Nov 2020 11:24:11 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE55C0613D4;
+        Wed, 25 Nov 2020 08:24:11 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id x24so2805177pfn.6;
+        Wed, 25 Nov 2020 08:24:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=3+3gfHD91/328qfooN+OsmJ9PHiYPgpjIR8tzOiYBHo=;
+        b=YavSxQY4iVhrdX0h9CXAQtfQY3M/lSfjiujDt3l6QkRWufd91bgIX9sSzVy/CJPQrq
+         O5CBFNRz30U5BB2MtV0PC7AlA7DIr1/WCYNY6O5N3bDGVQzIb2auyr/opkOZ/7bHa9CW
+         LQ4zKVgVpfc30Ou7esFAYnagn3CYfwnMQKlvKuJ+QFnmEaluVp/REQeVECsmrJnWeaYC
+         iKC4so2wF9PdUkTGZrRwc7unrzLxFU3jCjfaiaHM0J99PfhqD/vuk5pUuRTxtySIVsMI
+         cPUwyixg1xr3OpqZ8pW6FqcXtNq3aKrjc6ySOfwHdPX7pwyikvv8a7p1OwmraJD0fF0a
+         8frQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Huw32chi5P5VjAcJsOcLSlevzOZKJhD9SsYXRw3yGbU=;
-        b=Q+mNbGC05tvVzIPr21z0vx0z3D/UbhEZPJF4uhgFgSm5qs4q45B7uSwA8CZve3t6Nj
-         CXvzngohUZtur5qmz8hkyF2sPfIIyfXvjxN9FXN5ftC8MFb99RnjZwW/+5oUsQ8BSh7y
-         V0JCNZJ/EBP75znlg8RC0k3iodGugA+nbGS2ZGKZ7L4y1EnPkeTuoVAfIvH+i+caatnx
-         gsGexRCHpJ/Zf5v4I0bIY5lO2mVxhmkW5ImN6+f8nieSscWHA0E6aOd5VESmqAasRwU/
-         HIwwaYTVYhUYm6EnKYKrk9NYRA/FsGZ6UVzvFZBiXC/+adOsg4TZQF+ZpFjeN/Eku7XD
-         3MMg==
-X-Gm-Message-State: AOAM5321hW0RrBJKY32cYo36QEYsQsSz4QKqjvglhlL+1H7OU70ZwcDL
-        ORVaXm8z1nt5nGYMS7q+rZNbFqWDdw+J9Y6JN94=
-X-Google-Smtp-Source: ABdhPJzty1xjUNinH+bl46DH/PVyMzhTfXFspSx0NTJi2beW9TOPs7ZsC+z1s04V+lPDq6I5BSFzDDf1HZAdO/xKen8=
-X-Received: by 2002:aca:1c0f:: with SMTP id c15mr2834529oic.54.1606321252286;
- Wed, 25 Nov 2020 08:20:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=3+3gfHD91/328qfooN+OsmJ9PHiYPgpjIR8tzOiYBHo=;
+        b=X294hHSYw+JW2o2oKavxnMqe6lfRAjGrwJIfFpPuUoH7FdR+bnGCOq/QMuVsc3FEXZ
+         wJbl0eZvo8FylYm37g7K17T4SRNy+F86EZAfXpu5ACSvlk21mixgsupu4AFHOB6sk76o
+         hp9cW4XdSar6GB+BHed8Z7jmtXjn4E99/GQydwe2MwTrb4O311KT0iedTfp/52wvO49J
+         NgkubN9s/zJoNUiSCCZ+5UDJhGhz5VF3+6I7aP4/wIV2powN3jR4LpGMuOAj0nH4j+mX
+         VhZPtD4ctfVbAjL04ofTlb4II0620ECFAUWOFMbb02bn/zW0GRwFYklqBDg4fW54foNh
+         HPwQ==
+X-Gm-Message-State: AOAM531QkS1+D6I9g8rnTQrZvGXFQsBKLaEfDgmTD7yRZOz4Ps0ixIIO
+        AMBv6cypowGdCYZ37YK0Z3U=
+X-Google-Smtp-Source: ABdhPJxClJOLijc/qN4Y2TsUHFrwBBO/dNGfLQT1DiaRCkxu34lVJljgWO/JNiNtq4Nwes8TWw/gNw==
+X-Received: by 2002:a62:61c2:0:b029:197:f5ee:6ffa with SMTP id v185-20020a6261c20000b0290197f5ee6ffamr3134826pfb.18.1606321451401;
+        Wed, 25 Nov 2020 08:24:11 -0800 (PST)
+Received: from paju ([116.124.119.85])
+        by smtp.gmail.com with ESMTPSA id e4sm2613862pfh.90.2020.11.25.08.24.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 08:24:10 -0800 (PST)
+Date:   Thu, 26 Nov 2020 01:24:05 +0900
+From:   Dongjin Kim <tobetter@gmail.com>
+To:     Guillaume La Roque <glaroque@baylibre.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] thermal: amlogic_thermal: Add hwmon support
+Message-ID: <20201125162405.GA1263100@paju>
 MIME-Version: 1.0
-References: <20201125130148.28724-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201125130148.28724-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 25 Nov 2020 17:20:41 +0100
-Message-ID: <CAMuHMdX+FZjAfbWWw53EToHP6c4JFmQX9wogAyW3OcOxHgMd0w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] r8a7742-iwg21d-q7-dbcm: Add support for ov7725 sensors
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Expose Amlogic thermal as HWMON devices.
 
-On Wed, Nov 25, 2020 at 2:02 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> This patch set enables to connect ov7725 sensors on iWave-RZ/G1H Qseven
-> board.
+	$ sensors
+	cpu_thermal-virtual-0
+	Adapter: Virtual device
+	temp1:        +32.2 C  (crit = +110.0 C)
 
-Thanks for your series!
+	ddr_thermal-virtual-0
+	Adapter: Virtual device
+	temp1:        +33.4 C  (crit = +110.0 C)
 
-Do you think it's a valid use case to mix and match ov5640 and ov7725
-cameras? E.g. connect two of each?
-Or should all four cameras be of the same type?
+Signed-off-by: Dongjin Kim <tobetter@gmail.com>
+---
+ drivers/thermal/amlogic_thermal.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/thermal/amlogic_thermal.c b/drivers/thermal/amlogic_thermal.c
+index ccb1fe18e993..2fce96c32586 100644
+--- a/drivers/thermal/amlogic_thermal.c
++++ b/drivers/thermal/amlogic_thermal.c
+@@ -29,6 +29,7 @@
+ #include <linux/thermal.h>
+ 
+ #include "thermal_core.h"
++#include "thermal_hwmon.h"
+ 
+ #define TSENSOR_CFG_REG1			0x4
+ 	#define TSENSOR_CFG_REG1_RSET_VBG	BIT(12)
+@@ -291,6 +292,9 @@ static int amlogic_thermal_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	if (devm_thermal_add_hwmon_sysfs(pdata->tzd))
++		dev_warn(&pdev->dev, "failed to add hwmon sysfs attributes\n");
++
+ 	ret = amlogic_thermal_enable(pdata);
+ 
+ 	return ret;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
