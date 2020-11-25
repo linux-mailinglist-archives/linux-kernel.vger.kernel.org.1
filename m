@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FFF2C39FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 08:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B712C3A06
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 08:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgKYHTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 02:19:41 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:12287 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728036AbgKYHTl (ORCPT
+        id S1727726AbgKYHWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 02:22:33 -0500
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:35306 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727414AbgKYHWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 02:19:41 -0500
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 80E1C24000A;
-        Wed, 25 Nov 2020 07:19:38 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        <Steen.Hegelund@microchip.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v2 3/3] MIPS: dts: mscc: add reset support for Luton and Jaguar2
-Date:   Wed, 25 Nov 2020 08:19:20 +0100
-Message-Id: <20201125071920.126978-4-gregory.clement@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201125071920.126978-1-gregory.clement@bootlin.com>
-References: <20201125071920.126978-1-gregory.clement@bootlin.com>
+        Wed, 25 Nov 2020 02:22:32 -0500
+Received: by mail-lf1-f44.google.com with SMTP id a9so1725302lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 23:22:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pZIqZIlGJn/OymPnQSp5KRFU9tOp32VwHQtRyplJ3/4=;
+        b=HRbPo/f7EzqtEssWsZatqok783hGC/PcC/OT1PauRrffUElRl4WMdzAxy8634DBEHr
+         1dDIcShymWmolFzubmM3KB7qHdT1jFEAr8BN3MPcF4DzYxzIPmyWFvcn2U8fsZGLJtzt
+         hv+GLohOc0eE4vTAwmdDmCSbZ273ctIBFIBqGRhyzHPg7A62p++ClzGMeoOO3DZUyktv
+         Jhf50V982hMghQj1olwtXPBS1QR20gZOZh0vKJFhnaCtdvPCz/F0fHWe1dQhZrjPap5m
+         GcQvONtQkazkxbvTIcyDhjRvGfVkEfDZcfH/IQI9z5Cax/ugPqcQmL0MeL8tD6qxCn9j
+         XOzw==
+X-Gm-Message-State: AOAM531oq7mv93+PEB5TAQM/1vstmfRl0ezewUISgBAjUMfxStHMLDFV
+        LOyD/z7e4othMekeNaP5hil2MN6BU8Lui69dQcg=
+X-Google-Smtp-Source: ABdhPJwHVkHklRcG95MU+YmjjZNGehivJHVaB+N4O6g+qm39P2EDNKRnt9WiX5Ft6N9elJHZB62RMKkniKUCuCDqQfU=
+X-Received: by 2002:a19:a48:: with SMTP id 69mr755467lfk.5.1606288940978; Tue,
+ 24 Nov 2020 23:22:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201121025011.227781-1-namhyung@kernel.org> <20201123142321.GP3021@hirez.programming.kicks-ass.net>
+ <CAM9d7cji+M+qVm4g48Jcgnfjm-=3HVVtv49ntDpksQx8aBdSyQ@mail.gmail.com> <20201124080951.GE2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201124080951.GE2414@hirez.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 25 Nov 2020 16:22:09 +0900
+Message-ID: <CAM9d7chpprnGZEOrTGYE1j1+HyCnr6tYC+Upjh06X5JiLp8-UQ@mail.gmail.com>
+Subject: Re: [RFC] perf/x86: Fix a warning on x86_pmu_stop()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow Luton and Jaguar2 SoCs to use reset feature by adding the reset
-node.
+On Tue, Nov 24, 2020 at 5:10 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Nov 24, 2020 at 02:01:39PM +0900, Namhyung Kim wrote:
+>
+> > Yes, it's not about __intel_pmu_pebs_event().  I'm looking at
+> > intel_pmu_drain_pebs_nhm() specifically.  There's code like
+> >
+> >         /* log dropped samples number */
+> >         if (error[bit]) {
+> >             perf_log_lost_samples(event, error[bit]);
+> >
+> >             if (perf_event_account_interrupt(event))
+> >                 x86_pmu_stop(event, 0);
+> >         }
+> >
+> >         if (counts[bit]) {
+> >             __intel_pmu_pebs_event(event, iregs, base,
+> >                            top, bit, counts[bit],
+> >                            setup_pebs_fixed_sample_data);
+> >         }
+> >
+> > There's a path to x86_pmu_stop() when an error bit is on.
+>
+> That would seem to suggest you try something like this:
+>
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index 31b9e58b03fe..8c6ee8be8b6e 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1945,7 +1945,7 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
+>                 if (error[bit]) {
+>                         perf_log_lost_samples(event, error[bit]);
+>
+> -                       if (perf_event_account_interrupt(event))
+> +                       if (iregs && perf_event_account_interrupt(event))
+>                                 x86_pmu_stop(event, 0);
+>                 }
+>
 
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- arch/mips/boot/dts/mscc/jaguar2.dtsi | 5 +++++
- arch/mips/boot/dts/mscc/luton.dtsi   | 5 +++++
- 2 files changed, 10 insertions(+)
+That would work too and much simpler!
 
-diff --git a/arch/mips/boot/dts/mscc/jaguar2.dtsi b/arch/mips/boot/dts/mscc/jaguar2.dtsi
-index 42b2b0a51ddc..7032fe550277 100644
---- a/arch/mips/boot/dts/mscc/jaguar2.dtsi
-+++ b/arch/mips/boot/dts/mscc/jaguar2.dtsi
-@@ -60,6 +60,11 @@ cpu_ctrl: syscon@70000000 {
- 			reg = <0x70000000 0x2c>;
- 		};
- 
-+		reset@71010008 {
-+			compatible = "mscc,jaguar2-chip-reset";
-+			reg = <0x71010008 0x4>;
-+		};
-+
- 		intc: interrupt-controller@70000070 {
- 			compatible = "mscc,jaguar2-icpu-intr";
- 			reg = <0x70000070 0x94>;
-diff --git a/arch/mips/boot/dts/mscc/luton.dtsi b/arch/mips/boot/dts/mscc/luton.dtsi
-index 2a170b84c5a9..4a26c2874386 100644
---- a/arch/mips/boot/dts/mscc/luton.dtsi
-+++ b/arch/mips/boot/dts/mscc/luton.dtsi
-@@ -56,6 +56,11 @@ cpu_ctrl: syscon@10000000 {
- 			reg = <0x10000000 0x2c>;
- 		};
- 
-+		reset@00070090 {
-+			compatible = "mscc,luton-chip-reset";
-+			reg = <0x70090 0x4>;
-+		};
-+
- 		intc: interrupt-controller@10000084 {
- 			compatible = "mscc,luton-icpu-intr";
- 			reg = <0x10000084 0x70>;
--- 
-2.29.2
-
+Thanks,
+Namhyung
