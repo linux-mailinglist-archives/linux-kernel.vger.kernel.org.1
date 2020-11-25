@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA67E2C4263
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49052C4265
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730018AbgKYOsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:48:30 -0500
-Received: from mx-relay76-hz1.antispameurope.com ([94.100.133.238]:36292 "EHLO
-        mx-relay76-hz1.antispameurope.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729922AbgKYOs3 (ORCPT
+        id S1730038AbgKYOs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbgKYOs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:48:29 -0500
-Received: from smtp.eckelmann.de ([217.19.183.80]) by mx-relay76-hz1.antispameurope.com;
- Wed, 25 Nov 2020 15:47:31 +0100
-Received: from ws067.eckelmann.group (2a00:1f08:4007:e035:172:18:35:1b) by
- EX-SRV2.eckelmann.group (2a00:1f08:4007:e030:172:18:30:61) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 25 Nov 2020 15:47:22 +0100
-Date:   Wed, 25 Nov 2020 15:47:20 +0100
-From:   Thorsten Scherer <thorsten.scherer@eckelmann.de>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v3 0/2] siox: two cleanups
-Message-ID: <20201125144720.5imcc3atcqpegk4i@ws067.eckelmann.group>
-References: <20201125093106.240643-1-u.kleine-koenig@pengutronix.de>
+        Wed, 25 Nov 2020 09:48:58 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917E2C0613D4;
+        Wed, 25 Nov 2020 06:48:58 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t3so2612192pgi.11;
+        Wed, 25 Nov 2020 06:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Peq0jO3BCmWDdna3/CVkwJcf6SyZq4/YYykGC72XjLE=;
+        b=Dtb61BkesKg7tTzhrP3m+tDr6y8W3wRnJBdvtxweItL9j/7gPcFKUcmZQ2OBUGovzs
+         KX/IBkmIr4tLzI/2HvW6EJsvPUaDcDjIXRNPBwp2y5OlZyWrXs7wXR/xEpjNCv+f73GJ
+         Wzm+8gOISOTg+VAUGGjumcFsblh0LPwRxPiHBmwtfV+QjaSMzJv/qVw14bFVkBzOe6VV
+         QEJBlbTIT9Vmy2/6qT2Zjjk8pTZ7ktLLLD7KYXJMhz+VsVg7N8JuFEOiJoGUYDk4vXoB
+         WK2DQPE0NGIMMjicutW+jG6ixianPVOf1K66s0C/oH4pA+8xpe3Wz6FaX2ks0nmpfEDi
+         uBOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Peq0jO3BCmWDdna3/CVkwJcf6SyZq4/YYykGC72XjLE=;
+        b=N5jNdyzCJNgYHoxEPvxHLe+m/SL7TsglGtj4rNdS9dQYRgNSLPH6Dr7tuidsZoolER
+         dtZ+tjp+qTTY4jpj/8bH5l1j8fdb/2I7yCiN9CnWmjVQ8KUme907Tj7vDRusJIepWX/O
+         m2jtUmymh3a0z1kLlcV4zgqge4TljlF4Fy/lWbK1+c8lzcpJGBEbROeqT5rSK8SUB8tB
+         +C7EsOPiTL5NcmrJzGPHb9/VF/6TVBHPXHDB2FfhDxKuE3EeD3pP29wRRN8ISKmYuXp6
+         sNZJkPOzOaxHbkLslsZ7liijYXuLRfhOfiK+SGYc/rbZTjKjDnNBb90u526IoD/KpZEt
+         91kw==
+X-Gm-Message-State: AOAM530tebWhlZGqF0xY6CtRlcmqwb1di9fQTL3JwDpdH/TGjTV+N/1t
+        kU3MTe5zZ52MOIaIAOxRzAU=
+X-Google-Smtp-Source: ABdhPJwdFGXPgmP55et0ykEyYLizZsAY98yHBI+wk9OTNsWHja3dYJ03Kt/N2XeX0vlv8zrKbrQWYA==
+X-Received: by 2002:a17:90a:8412:: with SMTP id j18mr4833520pjn.124.1606315738059;
+        Wed, 25 Nov 2020 06:48:58 -0800 (PST)
+Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
+        by smtp.gmail.com with ESMTPSA id f5sm2259570pgg.74.2020.11.25.06.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 06:48:57 -0800 (PST)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     rjw@rjwysocki.net
+Cc:     Punit Agrawal <punitagrawal@gmail.com>, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        bp@alien8.de, x86@kernel.org
+Subject: [RFC PATCH 0/4] Add processor to the ignore PSD override list
+Date:   Wed, 25 Nov 2020 23:48:43 +0900
+Message-Id: <20201125144847.3920-1-punitagrawal@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201125093106.240643-1-u.kleine-koenig@pengutronix.de>
-X-Originating-IP: [2a00:1f08:4007:e035:172:18:35:1b]
-X-ClientProxiedBy: EX-SRV1.eckelmann.group (2a00:1f08:4007:e030:172:18:30:60)
- To EX-SRV2.eckelmann.group (2a00:1f08:4007:e030:172:18:30:61)
-X-cloud-security-sender: t.scherer@eckelmann.de
-X-cloud-security-recipient: linux-kernel@vger.kernel.org
-X-cloud-security-Virusscan: CLEAN
-X-cloud-security-disclaimer: This E-Mail was scanned by E-Mailservice on mx-relay76-hz1.antispameurope.com with 3AC9B1BF2F4B
-X-cloud-security-connect: smtp.eckelmann.de[217.19.183.80], TLS=1, IP=217.19.183.80
-X-cloud-security: scantime:2.592
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=eckelmann.de; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=hse1; bh=
-        R3ZnwqsuvKngyokZzQKiDFAwcxStjCBV+HQgRMdAeeM=; b=aiYFi9EbppKEnIUe
-        ClQ469MNT2TT3GFAgq3+W+RM4eu0T9AmeZsgynfKbNpiCsxjilHp6BblgUPo7kC5
-        1dDkMglK3V3fV7j0huElW09uPLjaTFgJ423fJUXOIM67mIpM0XRfdvZtbThaB9Uv
-        sIXBdDDaLzqdwNNk49PIZUaxwRtTftfRbrUG7gcQBoFCH167zkWHUef27gQ3OdNc
-        ldC5WzY8vlLUIXiMS2VOiemE8Qu3Ti1hq5Ro5irQCtM/x73FIuzImrg4n5sk7pcz
-        xEHb7pWqT+uL9Wu0YjNlds/eAIHXoxsHWdcCOWAkfwiOHTq1K2hOTogv8G74tJ0o
-        QXIKvA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-On Wed, Nov 25, 2020 at 10:31:04AM +0100, Uwe Kleine-König wrote:
-> Hello,
-> 
-> compared to v2 sent starting with Message-Id:
-> 20201124141834.3096325-1-u.kleine-koenig@pengutronix.de:
-> 
->  - fix typo in commit log of patch 1
->  - add Ack by Thorsten for patch 1
-> 
-> Uwe Kleine-König (2):
->   siox: Use bus_type functions for probe, remove and shutdown
->   siox: Make remove callback return void
+While looking into Giovanni's patches to enable frequency invariance
+on AMD systems[0], I noticed an issue with initialising frequency
+domain information on a recent AMD APU.
 
-Successfully ran our siox testcases on v3.
+Patch 1 refactors the test to ignore firmware provided frequency
+domain into a separate function.
 
-Tested-by: Thorsten Scherer <t.scherer@eckelmann.de>
+Patch 2 adds said APU (Family: 0x17, Model: 0x60, Stepping: 0x01) to
+the list of CPUs for which the PSD override is ignored. I am not quite
+happy with having to special case a particular CPU but also couldn't
+find any documentation to help identify the CPUs that don't need the
+override.
 
-> 
->  drivers/siox/siox-core.c | 50 ++++++++++++++++++++--------------------
->  include/linux/siox.h     |  2 +-
->  2 files changed, 26 insertions(+), 26 deletions(-)
-> 
-> 
-> base-commit: 418baf2c28f3473039f2f7377760bd8f6897ae18
-> -- 
-> 2.29.2
-> 
+Patch 3 and 4 are somewhat independent and a first step towards
+improving the situation with regards to the use of raw identifiers for
+AMD processors throughout the kernel.
 
-Thanks.
+All feedback welcome.
 
-Kind regards
-Thorsten
+Thanks,
+Punit
 
---
-Thorsten Scherer | Eckelmann AG | www.eckelmann.de |
+[0] https://lore.kernel.org/linux-acpi/20201112182614.10700-1-ggherdovich@suse.cz/
+
+Punit Agrawal (4):
+  cpufreq: acpi-cpufreq: Re-factor overriding ACPI PSD
+  cpufreq: acpi-cpufreq: Add processor to the ignore PSD override list
+  x86/cpu: amd: Define processor families
+  cpufreq: acpi-cpufreq: Use identifiers for AMD processor family
+
+ arch/x86/include/asm/amd-family.h    | 18 ++++++++++++++++++
+ arch/x86/include/asm/cpu_device_id.h |  2 ++
+ drivers/cpufreq/acpi-cpufreq.c       | 24 +++++++++++++++++++++---
+ 3 files changed, 41 insertions(+), 3 deletions(-)
+ create mode 100644 arch/x86/include/asm/amd-family.h
+
+-- 
+2.29.2
+
