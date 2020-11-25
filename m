@@ -2,158 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240362C3602
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613092C361A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgKYBGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 20:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgKYBGB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 20:06:01 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402E8C0613D6;
-        Tue, 24 Nov 2020 17:06:01 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id q5so1433321qkc.12;
-        Tue, 24 Nov 2020 17:06:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=44pFzPZOXy9WMyxuVZ4PJwmHwfPvC91GWhNSdpkVBXk=;
-        b=PLHqMkuVQ6uE1aGa3jPkk7oL0rd2+0aQGjbXwXCM1BqpOEf5R6gUmrb1tTrj75nDjD
-         aG6VHTDP2JdODJ/e29C1vfEMjWhTPlycM3mNfL2JW5BhFtstP0di/Kwb3XYGnsRoKRp5
-         7FVJzAE2cPEDrpLIYX3jwoIfPno8H9ArdOwpkc9HelZA+M7Eq52S4RmPBHauFrK9tfW3
-         8wrBLWN/Mq7Fl9GTodmgwwudDuqrVUSiSILvkeQCl7qFs3/IjbI7/AG3m5iLRdEEw+2H
-         RzsA5+EdKfz0DIt5iJKomdRqiV67cH8ZcnWPF2PnARf/ANxCrT7QZJCkY0VU2DrQ9d/L
-         oW2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=44pFzPZOXy9WMyxuVZ4PJwmHwfPvC91GWhNSdpkVBXk=;
-        b=SP1p0mv6tcasA0zjctwklRPuqCucLzpbUEoeQuQCE403Vw1wJTOPenb/wB6UzHrH8V
-         CEbDrvJHOMLkjUXMv7x5f9d9EHCKeZkhnj/wqmh3M1e50j4BhlGw6c7I8JJPA0109e/d
-         vfnCZxaNcIXUjMdU/MMen6CpRA8fenGalTBDz4LguBNbZkiHJCemof4ebdpdoAek8wac
-         lj1DqcsebfpC1b5u7uV2IfcXIhm9qvUbNNRSTDX6SkbjRAZMWj9TDrYZWq+GNROX+xdb
-         vNBFoaqkps142vfQF8ENhHQJbj3IMSLO+BWQamS8FMFTWRfk1aG5nJzC5oXJ/NYESCd0
-         LWOg==
-X-Gm-Message-State: AOAM53315a5CQglNJi6muaFhDfWMEm+HjvKkK02zci4+0RKe4Cgw0n+l
-        lUmVUCbrWBL7dwzg9uJUS+Yz0m6xY+JSD8teb/Q=
-X-Google-Smtp-Source: ABdhPJxG2tW9FM1fAqThCcvqKAPI/OeE1R4V2//A8ePZuSketjr0yKUxoxj6t2hcKlYt9sKRSewQcSyhG/w+5cGdzqU=
-X-Received: by 2002:a25:aac5:: with SMTP id t63mr1046305ybi.22.1606266360499;
- Tue, 24 Nov 2020 17:06:00 -0800 (PST)
+        id S1727758AbgKYBK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 20:10:26 -0500
+Received: from mail-eopbgr70082.outbound.protection.outlook.com ([40.107.7.82]:32641
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726299AbgKYBKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 20:10:25 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KHbSsa7Gt3lM4r2Jm/9G9023ZQ0bh5xclD5C2kG9RDpruczwtuHHgkY62KoNuXSUP877eBU4L3r7r39yNR5o+Ixb0stOwmKzme9ptfpMh7/2V+Tfo+9Eq6Dr/3nrh+G+tIp5BzGzp1YoZNRQbRFKiOx9+fvMgGrcXivlDnBcDEEzrEzpDhvAAkzthtn0yEjbAoqW0vPtuKyqrOyezFAT2BwUpv2gc841hyec7g/jWuyPdU+NIVo8ZdsRD270TCpzZ2jecH0acvC+YHPPM3e+0cHJh8zYeFHl07K8+LKrBL+u5M18IIHz9XLruqC8BpLbjVGmjTQpEblEATknaDVgIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f/A0yiZQu/solJsi1HfnAfgKpB7itYnl+sh1WAFMrh8=;
+ b=nCzoCaAHkyJI/IHJd8pBInI3a0BR//rZ4Wsyn5n2MErDYz1BKxgBn7CRaCUVfCqRkgNj773IoTxdXiqtxpUaJMHqk4W0pXit8CBxGxdex9EOpWDpi/AhA3WXWqggCLaw+sXFzyb1jo0HH4I3CwgUkK4qKZObtKZziXdxe6WoJXbgpOhypSF4M+f4D8XlGmOIPiu+2uDsNN9/tdLk3zWekzwwr8IwI3ogkKvxRa7VCSBz3/KvsS2w8Ovbjf82Lx1gFrIGr8JmG1aDtC4nE04y6kvFp4xnPytPs8JSVV01GHZyogDwd+K3onPrtGqrOY/SmiyWo6wzwNXYEZg+8bNeLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f/A0yiZQu/solJsi1HfnAfgKpB7itYnl+sh1WAFMrh8=;
+ b=isOr1ysR8EYric7wjqJQtY+1Rt5XD8yeimqFaOSsp/VKxTWCAesPSxLz4oJrDtPnXDW44UCHXajg0zWva4luaLmmF+JixWFW5p7ehBzWVM9zPDRKfsq8b68Pa8MmFw8G2GMX4OObfMya+FfxRfoohljN/4OG8qrbNBl3qIh2ogM=
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
+ by DB8PR04MB7179.eurprd04.prod.outlook.com (2603:10a6:10:124::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Wed, 25 Nov
+ 2020 01:10:21 +0000
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
+ 01:10:20 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Pawel Laszczak <pawell@cadence.com>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "rogerq@ti.com" <rogerq@ti.com>,
+        "kurahul@cadence.com" <kurahul@cadence.com>,
+        "nsekhar@ti.com" <nsekhar@ti.com>
+Subject: Re: [PATCH v3 10/10] MAINTAINERS: add Cadence USBSSP DRD IP driver
+ entry
+Thread-Topic: [PATCH v3 10/10] MAINTAINERS: add Cadence USBSSP DRD IP driver
+ entry
+Thread-Index: AQHWvn5Vt5pGPfmZZEuhELc9+xqF56nYEl2A
+Date:   Wed, 25 Nov 2020 01:10:20 +0000
+Message-ID: <20201125010951.GC9929@b29397-desktop>
+References: <20201119141307.8342-1-pawell@cadence.com>
+ <20201119141307.8342-11-pawell@cadence.com>
+In-Reply-To: <20201119141307.8342-11-pawell@cadence.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: cadence.com; dkim=none (message not signed)
+ header.d=none;cadence.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: acdf2aa3-d743-4d65-1786-08d890dee14c
+x-ms-traffictypediagnostic: DB8PR04MB7179:
+x-microsoft-antispam-prvs: <DB8PR04MB71795910488A45D06625751F8BFA0@DB8PR04MB7179.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:514;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0qG906w6Y+BJnCBLo2HirgnOUeSN3wh80T2MDObhgICYWQq9CmSTv3P5gdwWELkNhS2hd+8Azl/9qCOAXQ2X3FCCwHz/Dg/fNSM0ph5hM+GPO36not+aZ4kyW9P2phgcPfokehDDLvakHBuPebG2Ub4sQQ4I6glGtMu0KyZ++/UG0vWXF4/MXsnoJ1INZ14X4cU3ICQEo2dJwBIJl2zCyV6JdtFRXIWHleF26PCDB0aKz1vsGZNsaX0diAlkV011k0G73rvoPDO0XM7fhrmmWf6iCe1TjJUIBDpoXTmJWZYmBvI6KXEGxNciHig4FTehhcTtx82g8itfsZOL/eQ93g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(396003)(346002)(136003)(39850400004)(376002)(71200400001)(1076003)(316002)(6512007)(5660300002)(4326008)(9686003)(54906003)(4744005)(86362001)(8936002)(2906002)(8676002)(186003)(26005)(53546011)(33716001)(91956017)(6486002)(6506007)(66476007)(66556008)(66446008)(66946007)(76116006)(64756008)(33656002)(478600001)(6916009)(44832011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Z0W2o3HadPOG6am35nLtpqw8R2ppB12lSAVKVRPjGOkkIXmLzrUhRSD4aGzHKb26IXLMC3oAHLXZ+G17X/Q3l8Mm8S/umzOKBw2awBbE9Ec6vdrAWFovM/yy3U9a4sBeM6Y+Y4z5Evw0vuwIsE8jEiYrGBiGAO0+6AhH8apOqqTBWu7aJEcKjoJBy6eb85fhee9V71RZtcmu8QfOhOKABKw+6fD7MopPKZ8uT45psx5eo/tH6WC8A9Mf0lfIeqQuW5iFyyfTh4bx6MO8DX8KxaU4hZ3WoWscZsxy7AqcvZfsVYUyMGtrCVU9uEO1Nnx7uJpnoaNueMSRxsULRuHea4OY6kum2rhLZhNEMo0WzeKOvgVR1Fxvc/1a7aVSK6cRmlpyTPC0QKUoB6Ghw9oMPRwy+pRjZibQ5odsXaRv+n5tTEH2nEWRsIc3akuCXskFQq+IBJ1Y/O48JFQGUhuk2QF0X0CQCVd0TNbrh59cziruS4UYzERxnsr1c6k6bAG5a3tc3IqMGLZL0ONSE8OwrR/wStaI/zDHFVlzlVAH64TpFmTh8GFIetEy9WmLWMXe/ZCOwq/UQsGSRB7Dcxu6I4v6Pb99B0vzFuTE8bvwEbyIQKegDsSsChjjUxGPakv/VSZTRMBhUHlhYBxganOBWn/XwH9fKHQczkHnEo/vkRE/N0daOHF6/XJN7p1eL/Roghorn4I6ush6+YExQn7iEtmp0XGPKHdZU3Whr4SdXKc2l4YJYY6lBBw7Y0UePgJ3yKTG/pwy6iHqByVR0X3ZO1LLifZPijpvHWGrng14riGLetFRk7BsLTDFGODy7AEXVwTT3pvaP834+syGsyBHUycUqF18PdoHRrXaEq37hxnC75/nt4ItDx5XBsV+EGD5rdr+yxOChuIw9A1z04ZUyg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B017BB350754224DB03D7907AF7B1EB3@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor> <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook> <alpine.LNX.2.23.453.2011250859290.15@nippy.intranet>
- <CANiq72nUt57u5DG9rH=DB0DzQH7U6-QbG-2Ou+PyCY=p=_Ggag@mail.gmail.com> <alpine.LNX.2.23.453.2011251022550.14@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2011251022550.14@nippy.intranet>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 25 Nov 2020 02:05:49 +0100
-Message-ID: <CANiq72m2kGxSy2E9jgYE4_xRV6h9rFqiJP25KXs_5ObYnH_nmA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Kees Cook <keescook@chromium.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org,
-        linux-input <linux-input@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org, selinux@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: acdf2aa3-d743-4d65-1786-08d890dee14c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 01:10:20.8770
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qJK9ta5uU+8nTgmWNa6sTkwVT/rqJXYPk8B39GsmQs5i/TYIcasX4bI1xqUSOLkg8dEdkATx51n89pv0yo3a2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:53 AM Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> I'm saying that supporting the official language spec makes more sense
-> than attempting to support a multitude of divergent interpretations of the
-> spec (i.e. gcc, clang, coverity etc.)
+On 20-11-19 15:13:07, Pawel Laszczak wrote:
+> Patch adds entry for USBSSP (CDNSP) driver into MAINTARNERS file.
+>=20
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> ---
+>  MAINTAINERS | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 842fef329119..70c31fd2cd61 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3867,6 +3867,14 @@ S:	Maintained
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb.git
+>  F:	Documentation/devicetree/bindings/usb/cdns,usb3.yaml
+>  F:	drivers/usb/cdns3/
+> +X:	drivers/usb/cdns3/cdnsp*
+> +
+> +CADENCE USBSSP DRD IP DRIVER
+> +M:	Pawel Laszczak <pawell@cadence.com>
+> +L:	linux-usb@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/usb/cdns3/
+> +X:	drivers/usb/cdns3/cdns3*
+> =20
 
-Making the kernel strictly conforming is a ship that sailed long ago,
-for several reasons. Anyway, supporting several compilers and other
-tools, regardless of extensions, is valuable.
+Hi Pawel,
 
-> I'm also saying that the reason why we use -std=gnu89 is that existing
-> code was written in that language, not in ad hoc languages comprised of
-> collections of extensions that change with every release.
+You may add "T" for which tree for cdns3 ssp driver.
 
-No, we aren't particularly tied to `gnu89` or anything like that. We
-could actually go for `gnu11` already, since the minimum GCC and Clang
-support it. Even if a bit of code needs fixing, that shouldn't be a
-problem if someone puts the work.
+--=20
 
-In other words, the kernel code is not frozen, nor are the features it
-uses from compilers. They do, in fact, change from time to time.
-
-> Thank you for checking. I found a free version that's only 6 weeks old:
-
-You're welcome! There are quite a few new attributes coming, mostly
-following C++ ones.
-
-> It will be interesting to see whether 6.7.11.5 changes once the various
-> implementations reach agreement.
-
-Not sure what you mean. The standard does not evolve through
-implementations' agreement (although standardizing existing practice
-is one of the best arguments to back a change).
-
-Cheers,
-Miguel
+Thanks,
+Peter Chen=
