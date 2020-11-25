@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7A32C405D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E682C405F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbgKYMjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:39:19 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:59584 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgKYMjS (ORCPT
+        id S1729047AbgKYMjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:39:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgKYMjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:39:18 -0500
-Date:   Wed, 25 Nov 2020 12:39:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1606307952;
-        bh=lybJm4KNbspx+koo3raaZ40pyMf68YvNuqxbO9ZAm2w=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=gdUByJfulR0dPeAeA90XiXeYnYkBV2vfGUhhdAZtiUBwCyZxPEsCdhzGriIEWdQPu
-         lROlNIBLUT0zQS94HvzzJIGCYGBcSqq6JLRBpqFLtZQy0v7aY9JBNU7g7DUS8Jn7xa
-         O3hWfBTcTughYsfr5vOVTNhFQu7hZIyzsRWUGntg=
-To:     Coiby Xu <coiby.xu@gmail.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v3] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
-Message-ID: <_1j4GSFZpZ-rAOrhM2TQwyID7K4XCCkKwLeIcFMxQ1vlFg6wr544L5Lcrp7BvpsMmkhMYsTUT3yTTM61J7aVTYmGMSddkrz244_uV0gg9mU=@protonmail.com>
-In-Reply-To: <20201125105720.xatyiva7psrfyzbi@Rk>
-References: <20201021134931.462560-1-coiby.xu@gmail.com> <qo0Y8DqV6mbQsSFabOaqRoxYhKdYCZPjqYuF811CTdPXRFFXpx7sNXYcW9OGI5PMyclgsTjI7Xj3Du3v4hYQVBWGJl3t0t8XSbTKE9uOJ2E=@protonmail.com> <20201122101525.j265hvj6lqgbtfi2@Rk> <xsbDy_74QEfC8byvpA0nIjI0onndA3wuiLm2Iattq-8TLPy28kMq7GKhkfrfzqdBAQfp_w5CTCCJ8XjFmegtZqP58xioheh7OHV7Bam33aQ=@protonmail.com> <20201123143613.zzrm3wgm4m6ngvrz@Rk> <1FeR4cJ-m2i5GGyb68drDocoWP-yJ47BeKKEi2IkYbkppLFRCQPTQT4D6xqVCQcmUIjIsoe9HXhwycxxt5XxtsESO6w4uVMzISa987s_T-U=@protonmail.com> <20201125105720.xatyiva7psrfyzbi@Rk>
+        Wed, 25 Nov 2020 07:39:39 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEE2C0613D4;
+        Wed, 25 Nov 2020 04:39:39 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id i17so2133437ljd.3;
+        Wed, 25 Nov 2020 04:39:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Vogu41GvnyEXsb76/iG5vdcVpgljETgqAkmSSwNYHVg=;
+        b=H1sMEGYhdc3dNhoq1TM+TBIy1qV1Xhrjp1EOy1EibLKIsRwbgduuihCXNXpmu+r74L
+         Jv6UsWKc4Q/APKsCtvHpKPqu1hKaHP28CHJ12YFT7zubb0hfddKKEMBvncGesjpfBRXn
+         OyMQqi7MCafVnHJTxBMrm2qcEp98tN6p4vwmQt7IiJUti/Ws9oVFmzM4u6sR9rnytASL
+         NFsxSWZK4TrCRl8fNqg7EVXg0HKkPx8IWvKn5WTpk7D/kBod4g1psejvVissu/i+6pQR
+         p1aK4Mv5Jvtg1CRXiOLouq8jvmlqv0AG2LI0UijXZ7AATWKFVMmSD1fPP1cPWao2c/rN
+         Opng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vogu41GvnyEXsb76/iG5vdcVpgljETgqAkmSSwNYHVg=;
+        b=a2qY2epl/OmePb3IkOjX+7o9HcHO0kOXsWFh62Heo2BjEno33aMsd9ybcZFc8H6gvw
+         62MSCV1b9tRgHFTERrOwuP47GE0DgPpj7Jjz/KquaqowS2ig3ohlcIs6duV8rtsWk6uG
+         3mNSyMtHBMO9vDlJRAorv3JyyYiBx0ltun7nxMj3xnwRx/a69GlZwhKQ/YQkXVKPp+tJ
+         3TvfPPnPwwBTM2hpwRkIrNwL49gTW18YGSt2JiLtnEeDYcrXcx1heBf5jKkpu1H2Ds2T
+         ZsiINwJiWO5Bt25HLkEaZw1et0/2Z1apcPfjCLrmcCKVEbhG3Pt8mnjgpJ6+ts+CKQk1
+         BGcQ==
+X-Gm-Message-State: AOAM532jSW/3Gvsciau6n+r8y04/i13ClDcMUgUZdJEvOt8rBXB4rVyl
+        AMEdEver+S6eX6+kqMrL/4Q=
+X-Google-Smtp-Source: ABdhPJySI50PIzXuSSEl4LVMjQ2iwkqW0T4br94Ukj0eXPmCxHgy1SQmWZYtzTsFt5anQw+QMNNeHQ==
+X-Received: by 2002:a2e:a408:: with SMTP id p8mr1204776ljn.411.1606307977894;
+        Wed, 25 Nov 2020 04:39:37 -0800 (PST)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id p8sm244854lfk.109.2020.11.25.04.39.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 04:39:37 -0800 (PST)
+Date:   Wed, 25 Nov 2020 15:39:35 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: dw: Fix spi registration for controllers overriding
+ CS
+Message-ID: <20201125123935.akerf6mlgiwdemmm@mobilestation>
+References: <20201120213414.339701-1-lars.povlsen@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120213414.339701-1-lars.povlsen@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020. november 25., szerda 11:57 keltez=C3=A9ssel, Coiby Xu =C3=ADrta:
+Hello Lars
 
-> On Mon, Nov 23, 2020 at 04:32:40PM +0000, Barnab=C3=A1s P=C5=91cze wrote:
-> >> [...]
-> >> >> >> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
-> >> >> >> +{
-> >> >> >> +=09struct gpio_chip *gc =3D irq_data_get_irq_chip_data(&irq_des=
-c->irq_data);
-> >> >> >> +
-> >> >> >> +=09return gc->get(gc, irq_desc->irq_data.hwirq);
-> >> >> >> +}
-> >> >> [...]
-> >> >> >> +=09ssize_t=09status =3D get_gpio_pin_state(irq_desc);
-> >> >> >
-> >> >> >`get_gpio_pin_state()` returns an `int`, so I am not sure why `ssi=
-ze_t` is used here.
-> >> >> >
-> >> >>
-> >> >> I used `ssize_t` because I found gpiolib-sysfs.c uses `ssize_t`
-> >> >>
-> >> >>      // drivers/gpio/gpiolib-sysfs.c
-> >> >>      static ssize_t value_show(struct device *dev,
-> >> >>      =09=09struct device_attribute *attr, char *buf)
-> >> >>      {
-> >> >>      =09struct gpiod_data *data =3D dev_get_drvdata(dev);
-> >> >>      =09struct gpio_desc *desc =3D data->desc;
-> >> >>      =09ssize_t=09=09=09status;
-> >> >>
-> >> >>      =09mutex_lock(&data->mutex);
-> >> >>
-> >> >>      =09status =3D gpiod_get_value_cansleep(desc);
-> >> >>          ...
-> >> >>      =09return status;
-> >> >>      }
-> >> >>
-> >> >> According to the book Advanced Programming in the UNIX Environment =
-by
-> >> >> W. Richard Stevens,
-> >> >>      With the 1990 POSIX.1 standard, the primitive system data type
-> >> >>      ssize_t was introduced to provide the signed return value...
-> >> >>
-> >> >> So ssize_t is fairly common, for example, the read and write syscal=
-l
-> >> >> return a value of type ssize_t. But I haven't found out why ssize_t=
- is
-> >> >> better int.
-> >> >> >
-> >> >
-> >> >Sorry if I wasn't clear, what prompted me to ask that question is the=
- following:
-> >> >`gc->get()` returns `int`, `get_gpio_pin_state()` returns `int`, yet =
-you still
-> >> >save the return value of `get_gpio_pin_state()` into a variable with =
-type
-> >> >`ssize_t` for no apparent reason. In the example you cited, `ssize_t`=
- is used
-> >> >because the show() callback of a sysfs attribute must return `ssize_t=
-`, but here,
-> >> >`interrupt_line_active()` returns `bool`, so I don't see any advantag=
-e over a
-> >> >plain `int`. Anyways, I believe either one is fine, I just found it o=
-dd.
-> >> >
-> >> I don't understand why "the show() callback of a sysfs attribute
-> >> must return `ssize_t`" instead of int. Do you think the rationale
-> >> behind it is the same for this case? If yes, using "ssize_t" for
-> >> status could be justified.
-> >> [...]
-> >
-> >Because it was decided that way, `ssize_t` is a better choice for that p=
-urpose
-> >than plain `int`. You can see it in include/linux/device.h, that both th=
-e
-> >show() and store() methods must return `ssize_t`.
-> >
->
-> Could you explain why `ssize_t` is a better choice? AFAIU, ssize_t
-> is used because we can return negative value to indicate an error.
+On Fri, Nov 20, 2020 at 10:34:14PM +0100, Lars Povlsen wrote:
+> When SPI DW memory ops support was introduced, there was a check for
+> excluding controllers which supplied their own CS function. Even so,
+> the mem_ops pointer is *always* presented to the SPI core.
+> 
+> This causes the SPI core sanity check in spi_controller_check_ops() to
+> refuse registration, since a mem_ops pointer is being supplied without
+> an exec_op member function.
+> 
+> The end result is failure of the SPI DW driver on sparx5 and similar
+> platforms.
+> 
+> The fix in the core SPI DW driver is to avoid presenting the mem_ops
+> pointer if the exec_op function is not set.
 
-ssize_t: "Signed integer type used for a count of bytes or an error indicat=
-ion."[1]
+Thanks for sending the patch fixing the regression.
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-And POSIX mandates that the return type of read() and write() be `ssize_t`,
-so it makes sense to keep a similar interface in the kernel since show() an=
-d store()
-are called as a direct result of the user using the read() and write() syst=
-em
-calls, respectively.
-
-
-> If
-> we use ssize_t here, it's a reminder that reading a GPIO pin's status
-> could fail. And ssize_t reminds us it's a operation similar to read
-> or write. So ssize_t is better than int here. And maybe it's the same
-> reason why "it was decided that way".
-> [...]
-
-I believe it's more appropriate to use ssize_t when it's about a "count of =
-elements",
-but the GPIO pin state is a single boolean value (or an error indication), =
-which
-is returned as an `int`. Since it's returned as an `int` - I'm arguing that=
- -
-there is no reason to use `ssize_t` here. Anyways, both `ssize_t` and `int`=
- work fine
-in this case.
-
-
-[1]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.h=
-tml#tag_15_12
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
+> 
+> Fixes: 6423207e57ea (spi: dw: Add memory operations support)
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  drivers/spi/spi-dw-core.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> index 2e50cc0a9291..a0794eac2094 100644
+> --- a/drivers/spi/spi-dw-core.c
+> +++ b/drivers/spi/spi-dw-core.c
+> @@ -875,7 +875,8 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+>  		master->set_cs = dw_spi_set_cs;
+>  	master->transfer_one = dw_spi_transfer_one;
+>  	master->handle_err = dw_spi_handle_err;
+> -	master->mem_ops = &dws->mem_ops;
+> +	if (dws->mem_ops.exec_op)
+> +		master->mem_ops = &dws->mem_ops;
+>  	master->max_speed_hz = dws->max_freq;
+>  	master->dev.of_node = dev->of_node;
+>  	master->dev.fwnode = dev->fwnode;
+> --
+> 2.25.1
