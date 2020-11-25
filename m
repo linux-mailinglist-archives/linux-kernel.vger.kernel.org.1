@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9DE2C4803
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77F02C4804
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731057AbgKYTCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:02:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39817 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730650AbgKYTCJ (ORCPT
+        id S1731579AbgKYTC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:02:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730650AbgKYTC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:02:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606330927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8uFZEde0fjOKdsoDsRuCfq7lnGFjepdQaAwnfRHGJI0=;
-        b=NSt6QhKhrqp1rw37UUY6NrT0A2tiHeoQI8bPfoqwrROwmOzgBQIoQanLtM9uUN/TxI4wM8
-        F+vsGISJaOsc0dRgXg0HoQVEt6Fl9f9FCQfRpLCfw37h4SHzZHAGakiKfl2MunL1kioUaE
-        sXfb10q7pGsUgpJr4a854KYYlvyEl2Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-osmPAM7sNPiVfU8_dn8syg-1; Wed, 25 Nov 2020 14:02:03 -0500
-X-MC-Unique: osmPAM7sNPiVfU8_dn8syg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16BA61E7C7;
-        Wed, 25 Nov 2020 19:02:01 +0000 (UTC)
-Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 924B65D9CA;
-        Wed, 25 Nov 2020 19:01:57 +0000 (UTC)
-Date:   Wed, 25 Nov 2020 14:01:56 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Hildenbrand <david@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <X76qJCg0Pa8diO59@redhat.com>
-References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
- <20201121194506.13464-1-aarcange@redhat.com>
- <20201121194506.13464-2-aarcange@redhat.com>
- <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
- <X73s8fxDKPRD6wET@redhat.com>
- <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Wed, 25 Nov 2020 14:02:56 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A0AC0613D4;
+        Wed, 25 Nov 2020 11:02:55 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id o9so4550447ejg.1;
+        Wed, 25 Nov 2020 11:02:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z/DMutLBZGxo9NPXVt+YC6BHVS50FEMIayBNNBBTrxg=;
+        b=I/hFdSZ61wW4zv+ApmY7lxUsaIp8/Ht/WLIjx4mGzVGJkA07n2VIuxhY3jEvUXPQvv
+         ZNjIjH6KgoPIfMWoSjoaxhaQNNkUwhwCeuxTKLhQZfX3QuMcY/ttJ50cXsMHM+ii0nir
+         aE9+flY3yltw4sgY2OEoHQaAAyG3WiqH64Hwxl/PRH/K9QIg7kFD93Ackwr7eAhKS/nv
+         NUhd+259EsOF7v1Kvy2uj1afCr02O28+Hy+GjeO4MBqZtON/cHP4noWjjn92vDSTKtkO
+         /kmNA/brbx92McZ2es0qIxUEbsBZlcwfNnS/PgUWni1yEw4/6DMtBFjI8mnEk16di+P9
+         B12w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z/DMutLBZGxo9NPXVt+YC6BHVS50FEMIayBNNBBTrxg=;
+        b=a5NG2kI3INyvdrxCc+Z9aB4T/9NPzM+C9bB2wxhzwrP8YDtE/xj7bVFe44+HX4QZlA
+         cVwxTrFHSG9XqILyhEWDeT8HqCvOfvbAMUve4qCgsAuYWGnQRDB/+h/S3Qg9oTGRW/Bh
+         Vx4KyiFvqd4E+zv8OL8wWV3HgPnZRK9Xy9O4DkB/8LG/hHlrT7EQNaHcO2BSaZzVpxQ6
+         pFFo5bFfh1jn8DpI7LOQ16gWYHJHmJMfM2yvEVapwPIBI7mr0QtikjiKkXezyCeEz84b
+         nuWTeUYNhTO+z5dL3qlkjNB5QewNUazJ/PNHi+32EvCm+2sKAqlb78+Wfdt8O1OIec/a
+         80ug==
+X-Gm-Message-State: AOAM5330yOfoKDRH87M8AdmjA8I1ilTqe52X1IUvg+4S2NezXbA7rEsu
+        BaQl7E2tm+nAuBNDnsk4K+E=
+X-Google-Smtp-Source: ABdhPJxkgZy0zQvvllzF/7233lrCrSWXzA0K5vAOZZHx4EYh2eVjg1/FdLcZ0he5sbY8SpK7RzLMig==
+X-Received: by 2002:a17:906:35da:: with SMTP id p26mr4512672ejb.256.1606330974561;
+        Wed, 25 Nov 2020 11:02:54 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bee2a.dynamic.kabel-deutschland.de. [95.91.238.42])
+        by smtp.googlemail.com with ESMTPSA id s19sm1271788ejz.69.2020.11.25.11.02.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 25 Nov 2020 11:02:53 -0800 (PST)
+Message-ID: <4e84df2ecb17dfb1fc8070953d8690b29615f409.camel@gmail.com>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
+ remove skip_ref_clk
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 25 Nov 2020 20:02:52 +0100
+In-Reply-To: <9484cba7b95c6c6fcbafd96bc35c1dee@codeaurora.org>
+References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
+         <1606202906-14485-2-git-send-email-cang@codeaurora.org>
+         <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
+         <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
+         <0b0c545d80f9a0e8106a634063c23a8f0ba895fc.camel@gmail.com>
+         <9484cba7b95c6c6fcbafd96bc35c1dee@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 01:08:54PM +0100, Vlastimil Babka wrote:
-> Yeah I guess it would be simpler if zoneid/nid was correct for 
-> pfn_valid() pfns within a zone's range, even if they are reserved due 
-> not not being really usable memory.
+On Wed, 2020-11-25 at 20:28 +0800, Can Guo wrote:
+> > On Wed, 2020-11-25 at 08:53 +0800, Can Guo wrote:
+> > > > > +       bool always_on_while_link_active;
+> > > > 
+> > > > Can,
+> > > > using a sentence as a parameter name looks a little bit clumsy
+> > > > to
+> > > > me.
+> > > > The meaning has been explained in the comments section. How
+> > > > about
+> > > > simplify it and in line with other parameters in the structure?
+> > > > 
+> > > 
+> > > Do you have a better name in mind?
+> > > 
+> > 
+> > no specail input in mind, maybe just "bool eternal_on"
 > 
-> I don't think we want to introduce CONFIG_HOLES_IN_ZONE to x86. If the 
-> chosen solution is to make this to a real hole, the hole should be 
-> extended to MAX_ORDER_NR_PAGES aligned boundaries.
+> It is like plain "always_on", but it cannot tell the whole story.
+> If it is not something crutial, let's just let it go first so long
+> as it does not break the original functionality. What do you say?
+> 
+> Thanks,
+> 
+> Can Guo.
 
-The way pfn_valid works it's not possible to render all non-RAM pfn as
-!pfn_valid, CONFIG_HOLES_IN_ZONE would not achieve it 100% either. So
-I don't think we can rely on that to eliminate all non-RAM reserved
-pages from the mem_map and avoid having to initialize them in the
-first place. Some could remain as in this case since in the same
-pageblock there's non-RAM followed by RAM and all pfn are valid.
+Can, 
 
-> In any case, compaction code can't fix this with better range checks.
+yes, it is not functional change, but always_on_while_link_active is
+too fat, and not non-productive way.
+anyway, 
 
-David's correct that it can, by adding enough PageReserved (I'm
-running all systems reproducing this with plenty of PageReserved
-checks in all places to work around it until we do a proper fix).
+Reviewed-by: Bean Huo <beanhuo@micron.com>
 
-My problem with that is that 1) it's simply non enforceable at runtime
-that there is not missing PageReserved check and 2) what benefit it
-would provide to leave a wrong zoneid in reserved pages and having to
-add extra PageReserved checks?
-
-A struct page has a deterministic zoneid/nid, if it's pointed by a
-valid pfn (as in pfn_valid()) the simplest is that the zoneid/nid in
-the page remain correct no matter if it's reserved at boot, it was
-marked reserved by a driver that swap the page somewhere else with the
-GART or EFI or something else. All reserved pages should work the
-same, RAM and non-RAM, since the non-RAM status can basically change
-at runtime if a driver assigns the page to hw somehow.
-
-NOTE: on the compaction side, we still need to add
-thepageblock_pfn_to_page to validate the "highest" pfn because the
-pfn_valid() check is missing on the first pfn on the pageblock as it's
-also missing the check of a pageblock that spans over two different
-zones.
-
-Thanks,
-Andrea
 
