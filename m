@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182562C4AC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D144B2C4AC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387429AbgKYWVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 17:21:53 -0500
-Received: from mga07.intel.com ([134.134.136.100]:3189 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733124AbgKYWVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:21:53 -0500
-IronPort-SDR: XUSjHKNhUvg/oP/s/GotJs2fl/Xgma0jJk3xQoijDNX9o6E9QBwIt0uPzaHF0Umgg7RHosf/h1
- 3IzeY1TFx6Sg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="236340289"
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="236340289"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 14:21:52 -0800
-IronPort-SDR: BIp/AhTmJ4Q0OMqgk6O3zg6279ezfWE6wxCFJE6HenFdB7nbSg1df7iZT4jJI1bSl357IYRJSS
- Grsm9CWjNrpA==
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="333158955"
-Received: from jjbeatty-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.150.216])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 14:21:52 -0800
-Subject: Re: [PATCH v11 2/5] ACPI/PCI: Ignore _OSC negotiation result if
- pcie_ports_native is set.
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        knsathya@kernel.org
-References: <20201125201215.GA673882@bjorn-Precision-5520>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <ad9cd8ca-4c22-f691-b344-699d82a75872@linux.intel.com>
-Date:   Wed, 25 Nov 2020 14:21:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387435AbgKYWXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 17:23:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729679AbgKYWXp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 17:23:45 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12680C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:23:30 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id x15so103342ilq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:23:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P4fSseuUDkF72EVISoG/Otds+xMHGbUooGtI19qB6eM=;
+        b=CuHq7PCbfrHF0SPoiaoJXMYDNgo8HlTyg5TQ4xZaSdJUq/QWlEHE1GpA9W+CUAYnr1
+         y+M0ONnzSsWa754QAYsQCD77c10HvzvC2gU72xPOPVivW3h2r4u2A+DhbcgmHwV9Tmpq
+         gQiXMP0UqGi3PhZrry2As1JEk4xtHJ3vXVK0A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P4fSseuUDkF72EVISoG/Otds+xMHGbUooGtI19qB6eM=;
+        b=k2yXGhAscOfOB53Jm7dCtZrijhwv+zqfe534ANf0xXyD5YlyljbkXwXYG7XXZuhwL8
+         xgNpMDFyF7c9T3tsEQVwV8JdvNDwS0EUtJtII6CotazxE9mnXwzpLykbAw5meqy4E/5o
+         thvCu2XJSNojVk2FR2pFDVJHvT/jCFJHTJT5mRFNwrAzOj0LWZX0A5Ni7hLSAbGZGdZE
+         Wce/6PXs9c1xG0/lzjdsNkQ8cAIj1LaOpgCzK19sIJNmfBLt/YMx79RjXEZq3GLCCqZU
+         V3740QyeY52X/3CYisTM4Ox4LuPVUkHymMYiCeNGnGL+0sbfSFiyMDnZs55631rhjuzM
+         PEuw==
+X-Gm-Message-State: AOAM533BNUjb2ol6OCkScgAAHVUOmXDbKb0Vn3DJYr3cJdXzv1otF5Vh
+        s6elF0YncwnGTsvCTooMRevbNG20NYpK+Rbgt2Ib
+X-Google-Smtp-Source: ABdhPJwwuYvxJ6HvFMi1Q0K59YCEOU141q4wr394wJ/Gfa4gkkBlYcl1CtkE+71tMasA+4XVM3u6ED3Ck9PWWcVBEZ4=
+X-Received: by 2002:a92:d588:: with SMTP id a8mr5209085iln.79.1606343009520;
+ Wed, 25 Nov 2020 14:23:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201125201215.GA673882@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201125195703.3780383-1-palmer@dabbelt.com>
+In-Reply-To: <20201125195703.3780383-1-palmer@dabbelt.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Wed, 25 Nov 2020 14:23:19 -0800
+Message-ID: <CAOnJCUJy1Jai2YBTfOOnKUmx3vydFwchD7dRLacL8iTDihbpKw@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Define get_cycles64() regardless of M-mode
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        kernel-team@android.com, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Wed, Nov 25, 2020 at 11:58 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> The timer driver uses get_cycles64() unconditionally to obtain the current
+> time.  A recent refactoring lost the common definition for some configs, which
+> is now the only one we need.
+>
+> Fixes: d5be89a8d118 ("RISC-V: Resurrect the MMIO timer implementation for M-mode systems")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>  arch/riscv/include/asm/timex.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
+> index ab104905d4db..81de51e6aa32 100644
+> --- a/arch/riscv/include/asm/timex.h
+> +++ b/arch/riscv/include/asm/timex.h
+> @@ -60,6 +60,8 @@ static inline u32 get_cycles_hi(void)
+>  }
+>  #define get_cycles_hi get_cycles_hi
+>
+> +#endif /* !CONFIG_RISCV_M_MODE */
+> +
+>  #ifdef CONFIG_64BIT
+>  static inline u64 get_cycles64(void)
+>  {
+> @@ -79,8 +81,6 @@ static inline u64 get_cycles64(void)
+>  }
+>  #endif /* CONFIG_64BIT */
+>
+> -#endif /* !CONFIG_RISCV_M_MODE */
+> -
+>  #define ARCH_HAS_READ_CURRENT_TIMER
+>  static inline int read_current_timer(unsigned long *timer_val)
+>  {
+> --
+> 2.29.2.454.gaff20da3a2-goog
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Thanks for the review.
 
-On 11/25/20 12:12 PM, Bjorn Helgaas wrote:
-> On Mon, Oct 26, 2020 at 07:57:05PM -0700, Kuppuswamy Sathyanarayanan wrote:
->> pcie_ports_native is set only if user requests native handling
->> of PCIe capabilities via pcie_port_setup command line option.
->> User input takes precedence over _OSC based control negotiation
->> result. So consider the _OSC negotiated result only if
->> pcie_ports_native is unset.
->>
->> Also, since struct pci_host_bridge ->native_* members caches the
->> ownership status of various PCIe capabilities, use them instead
->> of distributed checks for pcie_ports_native.
->>
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> ---
->>   drivers/acpi/pci_root.c           | 35 ++++++++++++++++++++++---------
->>   drivers/pci/hotplug/pciehp_core.c |  2 +-
->>   drivers/pci/pci-acpi.c            |  3 ---
->>   drivers/pci/pcie/aer.c            |  2 +-
->>   drivers/pci/pcie/portdrv_core.c   |  9 +++-----
->>   include/linux/acpi.h              |  2 ++
->>   6 files changed, 32 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
->> index c12b5fb3e8fb..a9e6b782622d 100644
->> --- a/drivers/acpi/pci_root.c
->> +++ b/drivers/acpi/pci_root.c
->> @@ -41,6 +41,12 @@ static int acpi_pci_root_scan_dependent(struct acpi_device *adev)
->>   				| OSC_PCI_CLOCK_PM_SUPPORT \
->>   				| OSC_PCI_MSI_SUPPORT)
-
->> +
->> +	if (pcie_ports_native) {
->> +		decode_osc_control(root, "OS forcibly taking over",
->> +				   OSC_PCI_EXPRESS_CONTROL_MASKS);
-> 
-> The only place OSC_PCI_EXPRESS_CONTROL_MASKS is used is right here, so
-> it's kind of pointless.
-> 
-> I think I'd rather have this:
-> 
->    dev_info(&root->device->dev, "Ignoring PCIe-related _OSC results because \"pcie_ports=native\" specified\n");
-I was trying to keep the same print format. In pci_root.c,
-decode_os_control() is repeatedly used to print info related to
-PCIe capability ownership.
-
-But either way is fine with me. I can use the format you mentioned.
-> 
-> 
-> followed by something like this after we're done fiddling with all the
-> host_bridge->native* bits:
-> 
-
->    #define FLAG(x) ((x) ? '+' : '-')
-> 
->    dev_info(&root->device->dev, "OS native features: SHPCHotplug%c PCIeCapability%c PCIeHotplug%c PME%c AER%c DPC%c LTR%c\n",
->             FLAG(host_bridge->native_shpc_hotplug),
-> 	   ?,
->             FLAG(host_bridge->native_pcie_hotplug),
-> 	   ...);
-> 
-> But I don't know how to handle OSC_PCI_EXPRESS_CAPABILITY_CONTROL
-> since we don't track it the same way.  Maybe we'd have to omit it from
-> this message for now?
-I will add it in next version. But for now, its not worry about
-OSC_PCI_EXPRESS_CAPABILITY_CONTROL.
-> 
-
->>   	/*
->>   	 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
-
->> -- 
->> 2.17.1
->>
-
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Regards,
+Atish
