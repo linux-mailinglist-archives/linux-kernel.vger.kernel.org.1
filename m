@@ -2,128 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159EA2C3952
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128062C393F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbgKYGtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 01:49:06 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:43290 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727031AbgKYGtF (ORCPT
+        id S1726738AbgKYGqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 01:46:20 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8401 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgKYGqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 01:49:05 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UGTnDg-_1606286939;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UGTnDg-_1606286939)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 25 Nov 2020 14:49:00 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     magnus.karlsson@gmail.com
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf v2 2/2] xsk: change the tx writeable condition
-Date:   Wed, 25 Nov 2020 14:48:57 +0800
-Message-Id: <4fd58d473f4548dc6e9e24ea9876c802d5d584b4.1606285978.git.xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1606285978.git.xuanzhuo@linux.alibaba.com>
-References: <cover.1605686678.git.xuanzhuo@linux.alibaba.com>
- <cover.1606285978.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <cover.1606285978.git.xuanzhuo@linux.alibaba.com>
-References: <cover.1606285978.git.xuanzhuo@linux.alibaba.com>
+        Wed, 25 Nov 2020 01:46:19 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cgrxx2fxVz73CW;
+        Wed, 25 Nov 2020 14:45:57 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 25 Nov 2020 14:46:07 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>
+CC:     <linux-fpga@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH] fpga: dfl: add missing platform_device_put in build_info_create_dev
+Date:   Wed, 25 Nov 2020 14:50:30 +0800
+Message-ID: <20201125065030.154074-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the tx writeable condition from the queue is not full to the
-number of present tx queues is less than the half of the total number
-of queues. Because the tx queue not full is a very short time, this will
-cause a large number of EPOLLOUT events, and cause a large number of
-process wake up.
+platform_device_put is missing when it fails to set fdev->id. Set
+a temp value to do sanity check.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Fixes: 543be3d8c999 ("fpga: add device feature list support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- net/xdp/xsk.c       | 16 +++++++++++++---
- net/xdp/xsk_queue.h |  6 ++++++
- 2 files changed, 19 insertions(+), 3 deletions(-)
+ drivers/fpga/dfl.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 0df8651..22e35e9 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -211,6 +211,14 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len,
- 	return 0;
- }
+diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+index b450870b7..8958f0860 100644
+--- a/drivers/fpga/dfl.c
++++ b/drivers/fpga/dfl.c
+@@ -877,10 +877,13 @@ build_info_create_dev(struct build_feature_devs_info *binfo,
  
-+static bool xsk_tx_writeable(struct xdp_sock *xs)
-+{
-+	if (xskq_cons_present_entries(xs->tx) > xs->tx->nentries / 2)
-+		return false;
-+
-+	return true;
-+}
-+
- static bool xsk_is_bound(struct xdp_sock *xs)
- {
- 	if (READ_ONCE(xs->state) == XSK_BOUND) {
-@@ -296,7 +304,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
- 		__xskq_cons_release(xs->tx);
--		xs->sk.sk_write_space(&xs->sk);
-+		if (xsk_tx_writeable(xs))
-+			xs->sk.sk_write_space(&xs->sk);
- 	}
- 	rcu_read_unlock();
- }
-@@ -499,7 +508,8 @@ static int xsk_generic_xmit(struct sock *sk)
+ 	INIT_LIST_HEAD(&binfo->sub_features);
  
- out:
- 	if (sent_frame)
--		sk->sk_write_space(sk);
-+		if (xsk_tx_writeable(xs))
-+			sk->sk_write_space(sk);
+-	fdev->id = dfl_id_alloc(type, &fdev->dev);
+-	if (fdev->id < 0)
+-		return fdev->id;
++	int tmp_id = dfl_id_alloc(type, &fdev->dev);
++	if (tmp_id < 0) {
++		platform_device_put(fdev);
++		return tmp_id;
++	}
  
- 	mutex_unlock(&xs->mutex);
- 	return err;
-@@ -556,7 +566,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
++	fdev->id = tmp_id;
+ 	fdev->dev.parent = &binfo->cdev->region->dev;
+ 	fdev->dev.devt = dfl_get_devt(dfl_devs[type].devt_type, fdev->id);
  
- 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
- 		mask |= EPOLLIN | EPOLLRDNORM;
--	if (xs->tx && !xskq_cons_is_full(xs->tx))
-+	if (xs->tx && xsk_tx_writeable(xs))
- 		mask |= EPOLLOUT | EPOLLWRNORM;
- 
- 	return mask;
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index b936c46..b655004 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -307,6 +307,12 @@ static inline bool xskq_cons_is_full(struct xsk_queue *q)
- 		q->nentries;
- }
- 
-+static inline __u64 xskq_cons_present_entries(struct xsk_queue *q)
-+{
-+	/* No barriers needed since data is not accessed */
-+	return READ_ONCE(q->ring->producer) - READ_ONCE(q->ring->consumer);
-+}
-+
- /* Functions for producers */
- 
- static inline u32 xskq_prod_nb_free(struct xsk_queue *q, u32 max)
 -- 
-1.8.3.1
+2.23.0
 
