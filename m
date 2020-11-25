@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22D92C46C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F42C46B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732776AbgKYR1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:27:15 -0500
-Received: from out28-219.mail.aliyun.com ([115.124.28.219]:51401 "EHLO
-        out28-219.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732763AbgKYR1P (ORCPT
+        id S1732785AbgKYR1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:27:21 -0500
+Received: from out28-122.mail.aliyun.com ([115.124.28.122]:38094 "EHLO
+        out28-122.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732764AbgKYR1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:27:15 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1100795|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00509026-0.00170274-0.993207;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.J.BPrxs_1606325224;
+        Wed, 25 Nov 2020 12:27:18 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09484112|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0808659-0.00140225-0.917732;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.J.BPrxs_1606325224;
 Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J.BPrxs_1606325224)
           by smtp.aliyun-inc.com(10.147.41.137);
-          Thu, 26 Nov 2020 01:27:11 +0800
+          Thu, 26 Nov 2020 01:27:12 +0800
 From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
         <zhouyanjie@wanyeetech.com>
 To:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
@@ -25,10 +25,12 @@ Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
         yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
         zhenwenjin@gmail.com
-Subject: [PATCH 0/4] Add new clocks for Ingenic SoCs.
-Date:   Thu, 26 Nov 2020 01:26:14 +0800
-Message-Id: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
+Subject: [PATCH 1/4] clk: JZ4780: Add function for disable the second core.
+Date:   Thu, 26 Nov 2020 01:26:15 +0800
+Message-Id: <20201125172618.112707-2-zhouyanjie@wanyeetech.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
+References: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -36,28 +38,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Add "jz4780_core1_disable()" for disable the second core of JZ4780,
-  prepare for later commits.
-2.Add CIM, AIC, DMIC clocks for the X1000 SoC, and CIM, AIC, DMIC, I2S
-  clocks for the X1830 SoC from Ingenic.
-3.Fill unused bits in parents in jz4780-cgu.c, x1000-cgu.c, and
-  x1830-cgu.c, these bits should be filled with -1.
-4.Reformat code, add missing blank lines, remove unnecessary tabs,
-  and align code.
+Add "jz4780_core1_disable()" for disable the second core of JZ4780,
+prepare for later commits.
 
-周琰杰 (Zhou Yanjie) (4):
-  clk: JZ4780: Add function for disable the second core.
-  dt-bindings: clock: Add missing clocks for Ingenic SoCs.
-  clk: Ingenic: Add missing clocks for Ingenic SoCs.
-  clk: Ingenic: Fill unused bits in parents and reformat code.
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
+ drivers/clk/ingenic/jz4780-cgu.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
- drivers/clk/ingenic/jz4780-cgu.c      |  33 ++++-
- drivers/clk/ingenic/x1000-cgu.c       |  39 +++--
- drivers/clk/ingenic/x1830-cgu.c       | 266 +++++++++++++++++++++++++++++-----
- include/dt-bindings/clock/x1000-cgu.h |   3 +
- include/dt-bindings/clock/x1830-cgu.h |   4 +
- 5 files changed, 292 insertions(+), 53 deletions(-)
-
+diff --git a/drivers/clk/ingenic/jz4780-cgu.c b/drivers/clk/ingenic/jz4780-cgu.c
+index 0268d23..dcca74e 100644
+--- a/drivers/clk/ingenic/jz4780-cgu.c
++++ b/drivers/clk/ingenic/jz4780-cgu.c
+@@ -252,8 +252,29 @@ static int jz4780_core1_enable(struct clk_hw *hw)
+ 	return 0;
+ }
+ 
++static void jz4780_core1_disable(struct clk_hw *hw)
++{
++	struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
++	struct ingenic_cgu *cgu = ingenic_clk->cgu;
++	unsigned long flags;
++	u32 lcr, clkgr1;
++
++	spin_lock_irqsave(&cgu->lock, flags);
++
++	lcr = readl(cgu->base + CGU_REG_LCR);
++	lcr |= LCR_PD_SCPU;
++	writel(lcr, cgu->base + CGU_REG_LCR);
++
++	clkgr1 = readl(cgu->base + CGU_REG_CLKGR1);
++	clkgr1 |= CLKGR1_CORE1;
++	writel(clkgr1, cgu->base + CGU_REG_CLKGR1);
++
++	spin_unlock_irqrestore(&cgu->lock, flags);
++}
++
+ static const struct clk_ops jz4780_core1_ops = {
+ 	.enable = jz4780_core1_enable,
++	.disable = jz4780_core1_disable,
+ };
+ 
+ static const s8 pll_od_encoding[16] = {
 -- 
 2.7.4
 
