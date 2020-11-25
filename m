@@ -2,155 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F172C4129
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A631C2C412F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgKYNcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:32:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34428 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725616AbgKYNcW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:32:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606311140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rwvgyxDfwQi/NtrjMhcIih8dqcTP9qRQY/AfpUrZ+Y4=;
-        b=J3ql5fhfUc6nwZ8MVvFG4z2fskqHZbEcCsbLUfnIleUx7oTinzyOnTks6LUftgk9SDd01k
-        ZI9V4uK96rufXEakleRtz3gYwJZseH5DBTbY7FFb3CfA1XKQq8hn0ferURik5TGrbeEL4j
-        NtAfLFkZQNc0cpO6F9jWkIyHozBl/oU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-a1S4rpDjO2WLmZqTpdYG5w-1; Wed, 25 Nov 2020 08:32:17 -0500
-X-MC-Unique: a1S4rpDjO2WLmZqTpdYG5w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729093AbgKYNdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:33:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbgKYNdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:33:25 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 994D01012E77;
-        Wed, 25 Nov 2020 13:32:05 +0000 (UTC)
-Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4BD755D9CA;
-        Wed, 25 Nov 2020 13:32:03 +0000 (UTC)
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
- <20201121194506.13464-1-aarcange@redhat.com>
- <20201121194506.13464-2-aarcange@redhat.com>
- <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz> <X73s8fxDKPRD6wET@redhat.com>
- <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <cd9f0b9f-c4f6-b80c-03cd-12697324bfca@redhat.com>
-Date:   Wed, 25 Nov 2020 14:32:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 5497C206E5;
+        Wed, 25 Nov 2020 13:33:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606311204;
+        bh=qMR4WaI/ekNVGzswOam38uhrE/iZ8ZA6U592n3HBsvA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QT9LtFymLx8QxE54gU6H9wvWBf3Zmp2NL62G/yRo5IKH1uA1RS5ZMlF9xlm4NUh8n
+         KKoc2BajuiVZdWaWJgwSsSGyR3SvLPOooBFuUMJFByB62z3+8WM4xF2p2zkARFkQnT
+         DALFOGDQb1xluXHCpLujP+PjetHuUrGfCRAtlt2g=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khuvC-00DXJl-9S; Wed, 25 Nov 2020 13:33:22 +0000
 MIME-Version: 1.0
-In-Reply-To: <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Date:   Wed, 25 Nov 2020 13:33:22 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 04/24] arm64: Move MAIR_EL1_SET to asm/memory.h
+In-Reply-To: <20201125132617.qf6vd752dtfasyi7@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+ <20201116204318.63987-5-dbrazdil@google.com> <87mtz85geh.wl-maz@kernel.org>
+ <20201125103137.iml7mqpzhylldvqy@google.com>
+ <e6c9184c6ee986d134625932b4fa8e89@kernel.org>
+ <20201125132617.qf6vd752dtfasyi7@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <a37ac792b61d4931d0b4d1356e96415e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.20 13:08, Vlastimil Babka wrote:
-> On 11/25/20 6:34 AM, Andrea Arcangeli wrote:
->> Hello,
->>
->> On Mon, Nov 23, 2020 at 02:01:16PM +0100, Vlastimil Babka wrote:
->>> On 11/21/20 8:45 PM, Andrea Arcangeli wrote:
->>>> A corollary issue was fixed in
->>>> 39639000-39814fff : Unknown E820 type
->>>>
->>>> pfn 0x7a200 -> 0x7a200000 min_pfn hit non-RAM:
->>>>
->>>> 7a17b000-7a216fff : Unknown E820 type
->>>
->>> It would be nice to also provide a /proc/zoneinfo and how exactly the 
->>> "zone_spans_pfn" was violated. I assume we end up below zone's 
->>> start_pfn, but is it true?
->>
->> Agreed, I was about to grab that info along with all page struct
->> around the pfn 0x7a200 and phys address 0x7a216fff.
->>
->> # grep -A1 E820 /proc/iomem
->> 7a17b000-7a216fff : Unknown E820 type
->> 7a217000-7bffffff : System RAM
->>
->> DMA      zone_start_pfn 1            zone_end_pfn() 4096         contiguous 1
->> DMA32    zone_start_pfn 4096         zone_end_pfn() 1048576      contiguous 0
->> Normal   zone_start_pfn 1048576      zone_end_pfn() 4715392      contiguous 1
->> Movable  zone_start_pfn 0            zone_end_pfn() 0            contiguous 0
-> 
-> So the above means that around the "Unknown E820 type" we have:
-> 
-> pfn 499712 - start of pageblock in ZONE_DMA32
-> pfn 500091 - start of the "Unknown E820 type" range
-> pfn 500224 - start of another pageblock
-> pfn 500246 - end of "Unknown E820 type"
-> 
-> So this is indeed not a zone boundary issue, but basically a hole not 
-> aligned to pageblock boundary and really unexpected.
-> We have CONFIG_HOLES_IN_ZONE (that x86 doesn't set) for architectures 
-> that do this, and even that config only affects pfn_valid_within(). But 
-> here pfn_valid() is true, but the zone/node linkage is unexpected.
-> 
->> However the real bug seems that reserved pages have a zero zone_id in
->> the page->flags when it should have the real zone id/nid. The patch I
->> sent earlier to validate highest would only be needed to deal with
->> pfn_valid.
->>
->> Something must have changed more recently than v5.1 that caused the
->> zoneid of reserved pages to be wrong, a possible candidate for the
->> real would be this change below:
->>
->> +               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
->>
->> Even if it may not be it, at the light of how the reserved page
->> zoneid/nid initialized went wrong, the above line like it's too flakey
->> to stay.
->>
->> It'd be preferable if the pfn_valid fails and the
->> pfn_to_section_nr(pfn) returns an invalid section for the intermediate
->> step. Even better memset 0xff over the whole page struct until the
->> second stage comes around.
->>
->> Whenever pfn_valid is true, it's better that the zoneid/nid is correct
->> all times, otherwise if the second stage fails we end up in a bug with
->> weird side effects.
-> 
-> Yeah I guess it would be simpler if zoneid/nid was correct for 
-> pfn_valid() pfns within a zone's range, even if they are reserved due 
-> not not being really usable memory.
-> 
-> I don't think we want to introduce CONFIG_HOLES_IN_ZONE to x86. If the 
-> chosen solution is to make this to a real hole, the hole should be 
-> extended to MAX_ORDER_NR_PAGES aligned boundaries.
+On 2020-11-25 13:26, David Brazdil wrote:
 
-As we don't punch out pages of the memmap on x86-64, pfn_valid() keeps
-working as expected. There is a memmap that can be accessed and that was
-initialized. It's really just a matter of how to handle memory holes in
-this scenario.
+>> I came up with the following patch on top of this series that seems to
+>> compile without issue.
+> 
+> That seems to have an implicit dependency of sysreg.h on memory.h, 
+> doesn't it?
+> I had it the other way round initially. I also tried including memory.h 
+> in
+> sysreg.h. That creates a circular dependency mmdebug.h -> bug.h -> ... 
+> ->
+> sysreg.h -> memory.h -> mmdebug.h. Pretty annoying. I could try to fix 
+> that,
+> or create a new header file... :(
 
-a) Try initializing them to the covering node/zone (I gave one example
-   that might be tricky with hotplug)
-b) Mark such pages (either special node/zone or pagetype) and make pfn
-   walkers ignore these holes. For now, this can only be done via the
-   reserved flag.
+I don't think we need this. Any low-level source using MAIR_ELx_SET is 
+bound
+to require memory.h as well, one way or another. As this is all 
+#defines,
+it won't break anything unless actively used.
 
--- 
+And given that this is used in exactly *two* places, I don't believe 
+there
+is a need for over-engineering this.
+
 Thanks,
 
-David / dhildenb
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
