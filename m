@@ -2,106 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098032C4756
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36A82C475A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733014AbgKYSNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 13:13:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:36040 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730643AbgKYSNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:13:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3860C31B;
-        Wed, 25 Nov 2020 10:13:11 -0800 (PST)
-Received: from [172.16.1.114] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD4F33F23F;
-        Wed, 25 Nov 2020 10:13:08 -0800 (PST)
-Subject: Re: [PATCH v4 2/2] arm64: kvm: Introduce MTE VCPU feature
-To:     Steven Price <steven.price@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20201026155727.36685-1-steven.price@arm.com>
- <20201026155727.36685-3-steven.price@arm.com> <X7P1VLZhBh045tsr@trantor>
- <f34b3d16-8bc7-af9d-c0e0-fb114d2465aa@arm.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <4212c864-805a-cef4-7138-0f8995cadf5e@arm.com>
-Date:   Wed, 25 Nov 2020 18:13:02 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1732948AbgKYSOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 13:14:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730643AbgKYSOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 13:14:54 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE93AC0613D4;
+        Wed, 25 Nov 2020 10:14:53 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id m13so3040895ioq.9;
+        Wed, 25 Nov 2020 10:14:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NIpG45UWwddpGV+62KwVJM4R9vkmQaVM+kUHYytsuOk=;
+        b=kWV6G2yZXMm4VSHbnojYmPa+C5P3JnpUTHqE23CMhNkQBQWRzmmhqOLBUtQv2atXCT
+         gfx8m7eCmFJ7pVlsuccPiH6QWEPUd8AOsN93MuFELIyPMSRf5jsCMU0WOq//RI0OE3v8
+         Xcdy8XkXYHOwwkywVeuV38sTpPsttpVy3JvqUPqjjnzwH11K8V/hcwvS5Z9IHaMrKIUK
+         5aPycy8OBpj2x7nvopzyosAyOu5TyhaWlUYzEp+8JqfTnIOXSNZZFCbA0rFGLuslWfdY
+         0h9j9VHpYmDhGDt0sVob662k93U0Re/54lGaFjmxi8C+L9fpuTq3YUdx9b9EMjfmYlAP
+         xBkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NIpG45UWwddpGV+62KwVJM4R9vkmQaVM+kUHYytsuOk=;
+        b=eGNs1ZBLBayuVA4HFTYdwRRp2B6JX5sBFZu9gdbQXp7ZkUya3FzV3rNyLsIaXdh2fl
+         1hQVdNaU/cI4mn4GB6XdOTFgRjLyBuUNfVBU2Z3gWB7RYJm69S8+NnaWho44nF792gC0
+         m9/tuZkaVbKSINvAVLeZLKT1105l/4jdMX2EaRAHu2NQUWMkZiJUZ2p7NZJW7RN0SWjd
+         5g/5eUxANUESc3xvKVXaQDvpAGH66XBCSRsdWnA2DeB/mEBI//RsTVYavGsCHo9s6O58
+         TtbjsxqiahEdB+eL3UWU6sF1XuHw5r6SL2FNZgNfVIHPIzvePpZQ1RHKLz8pDGjqmEfC
+         N8uA==
+X-Gm-Message-State: AOAM531jHlFCHk4UC5pcbvGttDLYkCbgoo6zlgxUMds69xaYUmoWI5hh
+        vvs65c/j52dhKSxTH0IKtPfC/znq5UeUzz7EIkQ=
+X-Google-Smtp-Source: ABdhPJy4bdnOlLLsyDMAPulYW5mY6232Uy6n2lvrULm8bBlPIp8KqHJcFEF94nx0UycVv+ODFkxSMwE58yByCsD5otA=
+X-Received: by 2002:a5e:a815:: with SMTP id c21mr2793016ioa.141.1606328093153;
+ Wed, 25 Nov 2020 10:14:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <f34b3d16-8bc7-af9d-c0e0-fb114d2465aa@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <30b491ad-a7e1-f7b5-26b8-2cfffc81a080@huawei.com> <CAAH8bW_p3LJPgOoJgUHt6O0run+LB2RbjnAVpeLn_KCAZKNR+A@mail.gmail.com>
+In-Reply-To: <CAAH8bW_p3LJPgOoJgUHt6O0run+LB2RbjnAVpeLn_KCAZKNR+A@mail.gmail.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Wed, 25 Nov 2020 10:14:42 -0800
+Message-ID: <CAAH8bW8Zo1U3oMu5Gggp-MyNNZ8_WieQn+GKYiML93O9sJB=Dg@mail.gmail.com>
+Subject: Re: [Question] About SECCOMP issue for ILP32
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     bobo.shaobowang@huawei.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Alexander Graf <agraf@suse.de>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Andreas Schwab <schwab@suse.de>,
+        Andrew Pinski <pinskia@gmail.com>,
+        Bamvor Zhangjian <bamv2005@gmail.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>,
+        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Florian Weimer <fweimer@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        James Hogan <james.hogan@imgtec.com>,
+        James Morse <james.morse@arm.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Lin Yongting <linyongting@huawei.com>,
+        Manuel Montezelo <manuel.montezelo@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Nathan_Lynch <Nathan_Lynch@mentor.com>,
+        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
+        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
+        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
+        Steve Ellcey <sellcey@caviumnetworks.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven, Catalin,
+On Mon, Aug 31, 2020 at 11:15 AM Yury Norov <yury.norov@gmail.com> wrote:
+>
+> On Mon, Aug 31, 2020 at 5:48 AM Xiongfeng Wang
+> <wangxiongfeng2@huawei.com> wrote:
+> >
+> > Hi Yury,
+> >
+>
+> Hi Xiongfeng,
+>
+> [restore CC list]
+>
+> Haven't seen this before. What kernel / glibc / ltp do you use?
+>
+> > We were testing the ILP32 feature and came accross a problem. Very apperaciate
+> > it if you could give us some help !
+> >
+> > We compile the LTP testsuite with '-mabi=ilp32' and run it on a machine with
+> > kernel and glibc applied with ILP32 patches. But we failed on one testcase,
+> > prctl04. It print the following error info.
+> > 'prctl04.c:199: FAIL: SECCOMP_MODE_STRICT doesn't permit read(2) write(2) and
+> > _exit(2)'
+> >
+> > The testcase is like below, syscall 'prctl' followed by a syscall 'write'.
+> > prctl(PR_SET_SECCOMP, SECCOMP_MODE_STRICT);
+> > SAFE_WRITE(1, fd, "a", 1);
+> >
+> > When we execute syscall 'write', we receive a SIGKILL. It's not as expected.
+> > We track the kernel and found out it is because we failed the syscall_whitelist
+> > check in '__secure_computing_strict'. Because flag 'TIF_32BIT_AARCH64' is set,
+> > we falls into the 'in_compat_syscall()' branch. We compare the parameter
+> > 'this_syscall' with return value of 'get_compat_model_syscalls()'
+> > The syscall number of '__NR_write' for ilp32 application is 64, but it is 4 for
+> > 'model_syscalls_32' returned from 'get_compat_model_syscalls()'
+> > So '__secure_computing_strict' retuned with 'do_exit(SIGKILL)'. We have a
+> > modification like below, but I am not sure if it correct or not.
+> >
+> > --- a/kernel/seccomp.c
+> > +++ b/kernel/seccomp.c
+> > @@ -618,7 +618,7 @@ static void __secure_computing_strict(int this_syscall)
+> >  {
+> >         const int *syscall_whitelist = mode1_syscalls;
+> >  #ifdef CONFIG_COMPAT
+> > -       if (in_compat_syscall())
+> > +       if (is_a32_compat_task())
+> >                 syscall_whitelist = get_compat_mode1_syscalls();
+>
+> It calls the arch function from generic code. It may break build for
+> other arches.
+> This also looks dangerous because it treats ILP32 execution as non-compat.
+>
+> The right approach would be implementing arch-specific
+> get_compat_mode1_syscalls()
+> in arch/arm64/include/asm/seccomp.h that returns an appropriate table.
+> Refer MIPS
+> code for this: arch/mips/include/asm/seccomp.h
+>
+> Thanks,
+> Yury
+>
+> >  #endif
+> >         do {
+> >
+> >
+> > Thanks,
+> > Xiongfeng
+> >
 
-On 18/11/2020 16:01, Steven Price wrote:
-> On 17/11/2020 16:07, Catalin Marinas wrote:
->> On Mon, Oct 26, 2020 at 03:57:27PM +0000, Steven Price wrote:
->>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->>> index 19aacc7d64de..38fe25310ca1 100644
->>> --- a/arch/arm64/kvm/mmu.c
->>> +++ b/arch/arm64/kvm/mmu.c
->>> @@ -862,6 +862,26 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t
->>> fault_ipa,
->>>       if (vma_pagesize == PAGE_SIZE && !force_pte)
->>>           vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->>>                                  &pfn, &fault_ipa);
->>> +
->>> +    /*
->>> +     * The otherwise redundant test for system_supports_mte() allows the
->>> +     * code to be compiled out when CONFIG_ARM64_MTE is not present.
->>> +     */
->>> +    if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
->>> +        /*
->>> +         * VM will be able to see the page's tags, so we must ensure
->>> +         * they have been initialised.
->>> +         */
->>> +        struct page *page = pfn_to_page(pfn);
->>> +        long i, nr_pages = compound_nr(page);
->>> +
->>> +        /* if PG_mte_tagged is set, tags have already been initialised */
->>> +        for (i = 0; i < nr_pages; i++, page++) {
->>> +            if (!test_and_set_bit(PG_mte_tagged, &page->flags))
->>> +                mte_clear_page_tags(page_address(page));
->>> +        }
->>> +    }
->>
->> If this page was swapped out and mapped back in, where does the
->> restoring from swap happen?
-> 
-> Restoring from swap happens above this in the call to gfn_to_pfn_prot()
-> 
->> I may have asked in the past, is user_mem_abort() the only path for
->> mapping Normal pages into stage 2?
->>
-> 
-> That is my understanding (and yes you asked before) and no one has corrected me! ;)
+The fix is on my repo; versions 5.2 and 4.19 are updated:
 
-A recent discovery: Copy on write will cause kvm_set_spte_handler() to fixup the mapping
-(instead of just invalidating it) on the assumption the guest is going to read whatever
-was written.
-
-Its possible user_mem_abort() will go and stomp on that mapping a second time, but if the
-VMM triggers this at stage1, you won't have a vcpu for the update.
-
-
-Thanks,
-
-James
+https://github.com/norov/linux/commits/ilp32-4.19
+https://github.com/norov/linux/commits/ilp32-5.2
