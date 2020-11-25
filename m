@@ -2,174 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7683A2C4B1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B432C4B22
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgKYWxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 17:53:22 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:40109 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728862AbgKYWxV (ORCPT
+        id S1728078AbgKYW5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 17:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgKYW47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:53:21 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6B88F5C00BD;
-        Wed, 25 Nov 2020 17:53:20 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 25 Nov 2020 17:53:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=rDCqF/6BWwTlGiTI6jgr+wyA4epS+Rk
-        y7smBnS5oX7k=; b=Cwi0ax+gMfy1aXoVZafGL82507AbgSb3+cxI6jILb9FYs6d
-        0LnPlWpQnCbnGIHJUEeNtjipXrvLb4QSjHvTw7iWupsn+eNIO6f6TMdpLsxNi8NV
-        VPDo/ZLmkYIwcAEzuwWv4nmbGdG3adIv6McuBQVeCsCmUPB9WcqFwBCHfYvitbD1
-        Kjs+lWR+iViXoGvQjJt+oBoa17gllsnqZg4P1xnMIrDWwZqYRAqUgYUHAiOAkFsb
-        xBG1YDAvXnqhUNgKiGikHuZg+JJbkFFyOojvSnyu8kKirbZBqgOrSjzr/QKCcvHr
-        WpaAX+fLvw6iKGINZW9xU/hGJhAu2V94maTcmbQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=rDCqF/
-        6BWwTlGiTI6jgr+wyA4epS+Rky7smBnS5oX7k=; b=LH4ic9yCPOiT+CLtiR5FGG
-        oFBEI7YCcxcdzEZTuuc2g6S9AGv7tPO7ddhjHie7VJb3q+9yMvHJbBVHeeB4aK2g
-        MzctSTYlgsGpvvQJGYttfrnIEveZ5jQn/yHhG5OCMfJvuNTDhYj29q4Hy0yy0PEe
-        JM52ecBrbeYpYM2UTerf74SklKf6BNYqi97YbbQeBwgo4DKuGFlJJk5rzIKkvgB5
-        1CvTmNymmXxW6/n5hYyD8+99yUrHkGXHSIPe0dC/CqvBtVMSfKQeZZXqu0KcuBuf
-        SbLgqhl1h3GYmVl7XSYE5ihd0IU+yefVRuhF5w10NWeW+amMBG56R4m0Bqpngdrg
-        ==
-X-ME-Sender: <xms:X-C-X3dCYLAQkzRklE-5AtPYnWjzxqm8PIlQ34JK56W6scvpqYjfdw>
-    <xme:X-C-X9NSXVQ-3PnVzOHmX0dnHE4xcJwHUeRAnBAXevS39g8W0zkMSz2tI1BNj6XIn
-    _F6Gtb2RgJ4uaKM-g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehuddgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:X-C-XwguChDjSAPpxwpyAO9qgzWWwlq44qX_tHv9QMiRkQISINzMKQ>
-    <xmx:X-C-X4819J0g8oIthXbDMuMponYkU9acyNIhbtBZD2uIWZCfHODAjw>
-    <xmx:X-C-XzsMMUeYU816bdmd6MjIfgUl39U9ZPKDY3ledBh2NXgLJxgmJQ>
-    <xmx:YOC-X883XcAHt3lJUpzFJwdMuNjbuTUoocr8GOl9dP2YQSK8vrgaPA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 676D1E00B3; Wed, 25 Nov 2020 17:53:17 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
-Mime-Version: 1.0
-Message-Id: <e3c4f1a8-4fa0-4e2a-be7c-763f733f0cdb@www.fastmail.com>
-In-Reply-To: <CAPDyKFrC9vp5gtpFC5L1K17uN059GsJ2zF4f7-_=sFEQ5BBRpw@mail.gmail.com>
-References: <20201123063004.337345-1-andrew@aj.id.au>
- <20201123063004.337345-2-andrew@aj.id.au>
- <CAPDyKFrC9vp5gtpFC5L1K17uN059GsJ2zF4f7-_=sFEQ5BBRpw@mail.gmail.com>
-Date:   Thu, 26 Nov 2020 09:22:58 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Ulf Hansson" <ulf.hansson@linaro.org>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>
-Subject: Re: [PATCH v3 1/3] mmc: sdhci-of-aspeed: Expose phase delay tuning
-Content-Type: text/plain
+        Wed, 25 Nov 2020 17:56:59 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2285C0613D4;
+        Wed, 25 Nov 2020 14:56:59 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id e8so3762513pfh.2;
+        Wed, 25 Nov 2020 14:56:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kIh4FHvq8ePRNBrDx3FCPjMe1x8Qk7QKOwE9kc0FlUw=;
+        b=HZZ11jgDnitr8XBs4ugwuHXp7jJlzb/alhFV2C9J8DKHEW6uvZfaUfkoqzNhzxg76k
+         dKAFT5iUQzdryTIHq6KEGnsYL3m5MJy9H8DXwRraybgs8oYX66TabKvLgw54GkNhuHzP
+         /RzS5zpmEwbkr9nlvvr4W93OdTXLnw+ZqBZPDZsHRJqKQHzzVy2Sg1zTI/D4frtV0h46
+         UL8yBz8MgyMcOYyiOYKkBroaDDDHmK8ZPHCBIwhiO2Cl59vy1Q55qUy6t7u9L3f9DCZb
+         V4SWxOdo/EjuWaBxRbT40GGFvu1C3mgyvCg53KyNUrBhebEObmkTF/pbEAaC40f8Ia0Q
+         CvNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=kIh4FHvq8ePRNBrDx3FCPjMe1x8Qk7QKOwE9kc0FlUw=;
+        b=uD34pNgf5wYIeO1y3WIyEfN5xDjBrfHywgZ68z23JdayhoXkDFLzoa8BIi2kiX3lB8
+         4i7AlxccRE421qQoSnTpdxTDx4cmkIpx2VVfKJ5MyI9XvSS8t6GCvzAPH8iJyGfjnMJ2
+         hLL2xnvuU8EDbEhM9r3Li/d+S+OPIu5pRqoVGlrvI13xy/2yPx/m/hcMlcZWe/DfdBeq
+         vc8CjQVIjAcJJqFKFjIt3h4lJinKNj3ZOEeTktAoS3L9WAGMAfNzv5A3yqdMGEzTcLgM
+         BOiUdMfARZoAXZraSiLDnsm0kmMsVs1y854clx4TUznxOiiX7soy8b8M+pugQ6PYY/tA
+         f89w==
+X-Gm-Message-State: AOAM532pxC1TJ0zRI+cNxfbvmkHZFXSWdv7fzbin0vppwErFvlJhxzoR
+        codUOh0ZViYvvDWOjSPvYzNkJljTRw0=
+X-Google-Smtp-Source: ABdhPJwsE8TvXJJN4srOk2ezQ6oaEqAMzl6ScUZepa+BTlfPXHgqu0LVI+15g7kGDIdecrIL8YX6Bg==
+X-Received: by 2002:a17:90a:db89:: with SMTP id h9mr50288pjv.34.1606345019544;
+        Wed, 25 Nov 2020 14:56:59 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id b5sm4129325pjg.28.2020.11.25.14.56.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 14:56:58 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, stable@vger.kernel.org,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH] tracing: Fix align of static buffer
+Date:   Wed, 25 Nov 2020 14:56:54 -0800
+Message-Id: <20201125225654.1618966-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+With 5.9 kernel on ARM64, I found ftrace_dump output was broken but
+it had no problem with normal output "cat /sys/kernel/debug/tracing/trace".
 
+With investigation, it seems coping the data into temporal buffer seems to
+break the align binary printf expects if the static buffer is not aligned
+with 4-byte. IIUC, get_arg in bstr_printf expects that args has already
+right align to be decoded and seq_buf_bprintf says ``the arguments are saved
+in a 32bit word array that is defined by the format string constraints``.
+So if we don't keep the align under copy to temporal buffer, the output
+will be broken by shifting some bytes.
 
-On Wed, 25 Nov 2020, at 00:42, Ulf Hansson wrote:
-> On Mon, 23 Nov 2020 at 07:30, Andrew Jeffery <andrew@aj.id.au> wrote:
-> >
-> > The Aspeed SD/eMMC controllers feature up to two SDHCIs alongside a
-> > a set of "global" configuration registers. The global configuration
-> > registers house controller-specific settings that aren't exposed by the
-> > SDHCI, one example being a register for phase tuning.
-> >
-> > The phase tuning feature is new in the AST2600 design. It's exposed as a
-> > single register in the global register set and controls both the input
-> > and output phase adjustment for each slot. As the settings are
-> > slot-specific, the values to program are extracted from properties in
-> > the SDHCI devicetree nodes.
-> >
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> 
-> [...]
-> 
-> >
-> > +static void
-> > +aspeed_sdhci_of_parse_phase(struct device_node *np, const char *prop,
-> > +                           struct aspeed_sdhci_phase_param *phase)
-> > +{
-> > +       int degrees[2] = {0};
-> > +       int rc;
-> > +
-> > +       rc = of_property_read_variable_u32_array(np, prop, degrees, 2, 0);
-> > +       phase->set = rc == 2;
-> > +       if (phase->set) {
-> > +               phase->in_deg = degrees[0];
-> > +               phase->out_deg = degrees[1];
-> > +       }
-> > +}
-> > +
-> > +static int aspeed_sdhci_of_parse(struct platform_device *pdev,
-> > +                                struct aspeed_sdhci *sdhci)
-> > +{
-> > +       struct device_node *np;
-> > +       struct device *dev;
-> > +
-> > +       if (!sdhci->phase_desc)
-> > +               return 0;
-> > +
-> > +       dev = &pdev->dev;
-> > +       np = dev->of_node;
-> > +
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-legacy",
-> > +                                   &sdhci->phase_param[MMC_TIMING_LEGACY]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-mmc-hs",
-> > +                                   &sdhci->phase_param[MMC_TIMING_MMC_HS]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-sd-hs",
-> > +                                   &sdhci->phase_param[MMC_TIMING_SD_HS]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr12",
-> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR12]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr25",
-> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR25]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr50",
-> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR50]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr104",
-> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR104]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-ddr50",
-> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_DDR50]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-mmc-ddr52",
-> > +                                   &sdhci->phase_param[MMC_TIMING_MMC_DDR52]);
-> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-mmc-hs200",
-> > +                                   &sdhci->phase_param[MMC_TIMING_MMC_HS200]);
-> > +
-> > +       return 0;
-> > +}
-> 
-> If it's not too much to ask, would you mind adding a helper function
-> to the mmc core, as to let us avoid open coding? Then we should be
-> able to move the sdhci-of-arasan driver to use this as well.
+This patch fixes it.
 
-Yes, I can look at it and send a v4.
+Cc: <stable@vger.kernel.org>
+Fixes: 8e99cf91b99bb ("tracing: Do not allocate buffer in trace_find_next_entry() in atomic")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ kernel/trace/trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Perhaps the definition of the helper could look something like this:
-> int mmc_of_parse_clk_phase(struct mmc_host *host, struct mmc_clk_phase
-> *phases) (or something along those lines)
-> 
-> I think the struct mmc_clk_phase could be something that is stored in
-> the host specific struct, rather than in the common struct mmc_host
-> (to avoid sprinkle it with unnecessary data).
-> 
-> Moreover, we should probably use the device_property_* APIs instead of
-> the DT specific of_property_*.
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 6a282bbc7e7f..01bfcc345d55 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3534,7 +3534,7 @@ __find_next_entry(struct trace_iterator *iter, int *ent_cpu,
+ }
+ 
+ #define STATIC_TEMP_BUF_SIZE	128
+-static char static_temp_buf[STATIC_TEMP_BUF_SIZE];
++static char static_temp_buf[STATIC_TEMP_BUF_SIZE] __aligned(4);
+ 
+ /* Find the next real entry, without updating the iterator itself */
+ struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
+-- 
+2.29.2.454.gaff20da3a2-goog
 
-Yep, thanks for the pointers.
-
-Andrew
