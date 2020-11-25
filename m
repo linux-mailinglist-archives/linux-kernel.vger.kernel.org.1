@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F81E2C4089
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EF22C408C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgKYMtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:49:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728237AbgKYMty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:49:54 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B894206E5;
-        Wed, 25 Nov 2020 12:49:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606308593;
-        bh=TG3UpeiHbWC57NXnHtKT6Q7HjbmbKGepoMAsuPbYhgg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qA6Yjnk0W6zCUTsY9ibqshuDQiyuMajOgBuOizLAck5E9ZE5L+x+V2bYY6fA0yzhP
-         xrJyA9k5kSg27ql/IPPknP/v+4uxJ4vosi4p2FhH49/Imm/qZUyNXz/o2apsCdUSEv
-         3nynnNaoFfMST3otOGu54i2pO5tWIalKvxy47vR8=
-Date:   Wed, 25 Nov 2020 12:49:28 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
-Cc:     linux-kernel@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>, dianders@chromium.org,
-        dgreid@chromium.org, tzungbi@chromium.org, cychiang@chromium.org,
-        judyhsiao@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        zhouguohui@huaqin.corp-partner.google.com
-Subject: Re: [PATCH v1 0/1] Fix 32 bit format for adau7002
-Message-ID: <20201125124928.GA4489@sirena.org.uk>
-References: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
+        id S1729408AbgKYMuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:50:06 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38960 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728509AbgKYMuG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:50:06 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0APCnfkL051870;
+        Wed, 25 Nov 2020 06:49:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606308581;
+        bh=zWWGgUMSGxnizl3YzE/a0cEYMXJUAtkjAwP6xo5TOzo=;
+        h=From:To:CC:Subject:Date;
+        b=bQj5TkBx965qu2zyh61pQ89CY8JmM4fl6lw/UlAZrUulFW5qQiXQy5AyWqYfDESdQ
+         W9fesQH+KmNobMc2F4L7U2Ys0Gzwz1gS5dlhLy1SJ9L4GFg3apK2GRItwjntt0/+ai
+         HGO0c54gRibwOtgn6sjTj6RlfBLYssTG7x1VQVeQ=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0APCnfKK083844
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 25 Nov 2020 06:49:41 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 25
+ Nov 2020 06:49:40 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 25 Nov 2020 06:49:40 -0600
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0APCncb4029736;
+        Wed, 25 Nov 2020 06:49:38 -0600
+From:   Roger Quadros <rogerq@ti.com>
+To:     <peter.chen@nxp.com>, <pawell@cadence.com>
+CC:     <heikki.krogerus@linux.intel.com>, <gregkh@linuxfoundation.org>,
+        <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH] usb: cdns3: Fix hardware based role switch
+Date:   Wed, 25 Nov 2020 14:49:36 +0200
+Message-ID: <20201125124936.5929-1-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
-Content-Disposition: inline
-In-Reply-To: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
-X-Cookie: No foreign coins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hardware based role switch is broken as the driver always skips it.
+Fix this by registering for  SW role switch only if 'usb-role-switch'
+property is present in the device tree.
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 50642709f659 ("usb: cdns3: core: quit if it uses role switch class")
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ drivers/usb/cdns3/core.c | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
 
-On Wed, Nov 18, 2020 at 08:58:57AM +0800, xuyuqing wrote:
-> the microphone is attached to external codec(adau7002)
-> instead of rt5682.We need to always use 32 bit format on sc7180
-> to meet the clock requirement of adau7002:
-> The ADAU7002 requires a BCLK rate=20
-> that is a minimum of 64=D7 the LRCLK sample rate
+diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+index a0f73d4711ae..170deb3eacf0 100644
+--- a/drivers/usb/cdns3/core.c
++++ b/drivers/usb/cdns3/core.c
+@@ -427,7 +427,6 @@ static irqreturn_t cdns3_wakeup_irq(int irq, void *data)
+  */
+ static int cdns3_probe(struct platform_device *pdev)
+ {
+-	struct usb_role_switch_desc sw_desc = { };
+ 	struct device *dev = &pdev->dev;
+ 	struct resource	*res;
+ 	struct cdns3 *cdns;
+@@ -529,18 +528,21 @@ static int cdns3_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err2;
+ 
+-	sw_desc.set = cdns3_role_set;
+-	sw_desc.get = cdns3_role_get;
+-	sw_desc.allow_userspace_control = true;
+-	sw_desc.driver_data = cdns;
+-	if (device_property_read_bool(dev, "usb-role-switch"))
++	if (device_property_read_bool(dev, "usb-role-switch")) {
++		struct usb_role_switch_desc sw_desc = { };
++
++		sw_desc.set = cdns3_role_set;
++		sw_desc.get = cdns3_role_get;
++		sw_desc.allow_userspace_control = true;
++		sw_desc.driver_data = cdns;
+ 		sw_desc.fwnode = dev->fwnode;
+ 
+-	cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
+-	if (IS_ERR(cdns->role_sw)) {
+-		ret = PTR_ERR(cdns->role_sw);
+-		dev_warn(dev, "Unable to register Role Switch\n");
+-		goto err3;
++		cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
++		if (IS_ERR(cdns->role_sw)) {
++			ret = PTR_ERR(cdns->role_sw);
++			dev_warn(dev, "Unable to register Role Switch\n");
++			goto err3;
++		}
+ 	}
+ 
+ 	if (cdns->wakeup_irq) {
+@@ -582,7 +584,8 @@ static int cdns3_probe(struct platform_device *pdev)
+ 	return 0;
+ err4:
+ 	cdns3_drd_exit(cdns);
+-	usb_role_switch_unregister(cdns->role_sw);
++	if (cdns->role_sw)
++		usb_role_switch_unregister(cdns->role_sw);
+ err3:
+ 	set_phy_power_off(cdns);
+ err2:
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
-
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl++UtcACgkQJNaLcl1U
-h9BXsAf+JbAuQvpTNdjb5/LUqRdyuTd2UQmI4XFbgJUpmVe1dh0IbCc5pqQg/DXU
-/Wl7kSPW1BB1dgiEpbf54AcEQedhpzJggccsH9tWbLyLvC6yVksQc+PU3dxf8FbC
-d+O/GzA4WlIomYE7szH8rvTLcBG8FE37F5qT7zADGhDFA4yjXNhmEOBFQQQsIzRR
-gemWP64PSv4ekoI7Kc9k8VXFutE67I7cPaL0uHEnaDzUcbgkompnweXA8AApxTTq
-PkxAlknTOCQQlkUQH+TgFi00oJlyriAJ9y1ua9le7GoFNRva07aIo9cehika7qTT
-CxonbnDUtgpR5DZnZ5cUXTBJkby3EA==
-=3C6x
------END PGP SIGNATURE-----
-
---gKMricLos+KVdGMg--
