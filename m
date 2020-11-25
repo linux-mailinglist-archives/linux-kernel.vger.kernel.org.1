@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877112C3FBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F1F2C3FC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbgKYMRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:17:30 -0500
-Received: from www62.your-server.de ([213.133.104.62]:55572 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgKYMR3 (ORCPT
+        id S1727671AbgKYMSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:18:25 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42790 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgKYMSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:17:29 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1khtjg-0000rR-7u; Wed, 25 Nov 2020 13:17:24 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1khtjf-000F3v-WF; Wed, 25 Nov 2020 13:17:24 +0100
-Subject: Re: [PATCH bpf-next v3 1/3] ima: Implement ima_inode_hash
-To:     KP Singh <kpsingh@chromium.org>, Yonghong Song <yhs@fb.com>
-Cc:     James Morris <jmorris@namei.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-References: <20201124151210.1081188-1-kpsingh@chromium.org>
- <20201124151210.1081188-2-kpsingh@chromium.org>
- <3b6f7023-e1fe-b79b-fa06-b8edcce530de@fb.com>
- <CACYkzJ51imU+_iNR3zG2pzqvVoewSE+NCTJo_V5ZGYJOej-B-g@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0a627bb2-b356-0141-5e5a-b82d56d0de70@iogearbox.net>
-Date:   Wed, 25 Nov 2020 13:17:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 25 Nov 2020 07:18:24 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0918E1C0B7D; Wed, 25 Nov 2020 13:18:22 +0100 (CET)
+Date:   Wed, 25 Nov 2020 13:18:21 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Yu Kuai <yukuai3@huawei.com>, linus.walleij@linaro.org,
+        j.anaszewski@samsung.com, simon.guinot@sequanux.org,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH] leds: various: add missing put_device() call in
+ netxbig_leds_get_of_pdata()
+Message-ID: <20201125121821.GE29328@amd>
+References: <20201029092305.900767-1-yukuai3@huawei.com>
+ <20201029174952.GB26053@duo.ucw.cz>
+ <20201029192555.36834608@nic.cz>
 MIME-Version: 1.0
-In-Reply-To: <CACYkzJ51imU+_iNR3zG2pzqvVoewSE+NCTJo_V5ZGYJOej-B-g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25998/Tue Nov 24 14:16:50 2020)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="84ND8YJRMFlzkrP4"
+Content-Disposition: inline
+In-Reply-To: <20201029192555.36834608@nic.cz>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/20 1:04 PM, KP Singh wrote:
-> On Tue, Nov 24, 2020 at 6:35 PM Yonghong Song <yhs@fb.com> wrote:
->> On 11/24/20 7:12 AM, KP Singh wrote:
->>> From: KP Singh <kpsingh@google.com>
->>>
->>> This is in preparation to add a helper for BPF LSM programs to use
->>> IMA hashes when attached to LSM hooks. There are LSM hooks like
->>> inode_unlink which do not have a struct file * argument and cannot
->>> use the existing ima_file_hash API.
->>>
->>> An inode based API is, therefore, useful in LSM based detections like an
->>> executable trying to delete itself which rely on the inode_unlink LSM
->>> hook.
->>>
->>> Moreover, the ima_file_hash function does nothing with the struct file
->>> pointer apart from calling file_inode on it and converting it to an
->>> inode.
->>>
->>> Signed-off-by: KP Singh <kpsingh@google.com>
->>
->> There is no change for this patch compared to previous version,
->> so you can carry my Ack.
->>
->> Acked-by: Yonghong Song <yhs@fb.com>
-> 
-> I am guessing:
-> 
-> *  We need an Ack from Mimi/James.
 
-Yes.
+--84ND8YJRMFlzkrP4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> * As regards to which tree, I guess bpf-next would be better since the
-> BPF helper and the selftest depends on it
+On Thu 2020-10-29 19:25:55, Marek Behun wrote:
+> On Thu, 29 Oct 2020 18:49:52 +0100
+> Pavel Machek <pavel@ucw.cz> wrote:
+>=20
+> >=20
+> > Thanks, applied.
+> >=20
+> > But it seems to me similar handling is needed in "success" paths, no?
+>=20
+> Pavel, the subject of this commit is wrong.
+> It should begin with
+>   leds: netxbig:
+> instead of
+>   leds: various:
+> since the patch does not touch various drivers, only one: netxbig.
 
-Yep, bpf-next is my preference as otherwise we're running into unnecessary
-merge conflicts.
+Ok, thanks, fixed.
 
-Thanks,
-Daniel
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--84ND8YJRMFlzkrP4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl++S40ACgkQMOfwapXb+vKUkQCgjw/yynoYzEGuTziszPDTjh80
+vYQAoIjdPNOR2if9nSPpHtcLApqnPAQ5
+=vBUq
+-----END PGP SIGNATURE-----
+
+--84ND8YJRMFlzkrP4--
