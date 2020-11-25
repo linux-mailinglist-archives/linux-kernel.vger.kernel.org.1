@@ -2,130 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D3F2C38DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 06:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D012C38E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 06:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgKYFwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 00:52:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
+        id S1727178AbgKYF7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 00:59:18 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:63020 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727008AbgKYFwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 00:52:00 -0500
-Received: from localhost (unknown [122.179.120.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726049AbgKYF7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 00:59:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606283957; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=fH6XRHzas3OBVohyMiwnIkDxrr1F8paJHfjb0IVmSv8=; b=mFZwwVbaAy+9yqmuUBLv7sM9XTJ2Ud90ihtIzTz/BFfGslQXyXKtMJ90zzadzMjdi8abd6Te
+ k6vq4ud4w6hwcaIEB+kBLG5h1EFtQBmdrWsdsoBnA8VCgjlXsLVAOR28C4O7EbJfITubJ0ZY
+ vfiiK7wnVUfOG5dBefk3wXbLtLE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fbdf2b5fa67d9becf8d9976 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 05:59:17
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5EE1AC43461; Wed, 25 Nov 2020 05:59:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D646208C3;
-        Wed, 25 Nov 2020 05:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606283519;
-        bh=3TsnI28YOrBSLpojTzDR4uEaUM9Fo2k4e+hHZUS++hE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ozmQ4UeKydkeEsVKXsDHXAXgDLyMhdyo9hbJSW57EA4T2JFAxGgfIfHSc0AO9+0nv
-         HN7EfuvDo1Swl83LcA+xeGveMXmbBpo5SfotKOoB3RsgXdmG8pRYaBHsfo9ncof989
-         X5WxCc2e3ci6W+SjH0Ilc1bHmTjIk7ACFPTIDdfM=
-Date:   Wed, 25 Nov 2020 11:21:55 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Jonathan Marek <jonathan@marek.ca>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        moderated for non-subscribers <alsa-devel@alsa-project.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: drivers/soundwire/qcom.c:767: undefined reference to
- `slimbus_bus'
-Message-ID: <20201125055155.GD8403@vkoul-mobl>
-References: <202011030351.iq9CBMO3-lkp@intel.com>
- <e0d74391-18ae-0493-b8a1-cbeb6f00bde8@infradead.org>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8E09C433C6;
+        Wed, 25 Nov 2020 05:59:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B8E09C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Alex Elder <elder@kernel.org>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ath10k@lists.infradead.org, "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next 1/2] soc: qcom: ipa: Constify static qmi structs
+References: <20201122234031.33432-1-rikard.falkeborn@gmail.com>
+        <20201122234031.33432-2-rikard.falkeborn@gmail.com>
+        <20201124144721.3e80698c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Date:   Wed, 25 Nov 2020 07:59:11 +0200
+In-Reply-To: <20201124144721.3e80698c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        (Jakub Kicinski's message of "Tue, 24 Nov 2020 14:47:21 -0800")
+Message-ID: <87h7pe9du8.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0d74391-18ae-0493-b8a1-cbeb6f00bde8@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+Jakub Kicinski <kuba@kernel.org> writes:
 
-On 04-11-20, 19:32, Randy Dunlap wrote:
-> On 11/2/20 11:47 AM, kernel test robot wrote:
-> > All errors (new ones prefixed by >>):
-> > 
-> >    or1k-linux-ld: drivers/soundwire/qcom.o: in function `qcom_swrm_probe':
-> >>> drivers/soundwire/qcom.c:767: undefined reference to `slimbus_bus'
-> >>> or1k-linux-ld: drivers/soundwire/qcom.c:771: undefined reference to `slimbus_bus'
-> > 
-> > 09309093d5e8f87 Jonathan Marek       2020-09-08  770  #if IS_ENABLED(CONFIG_SLIMBUS)
-> > 02efb49aa805cee Srinivas Kandagatla  2020-01-13 @771  	if (dev->parent->bus == &slimbus_bus) {
-> > 5bd773242f75da3 Jonathan Marek       2020-09-05  772  #else
-> > 5bd773242f75da3 Jonathan Marek       2020-09-05  773  	if (false) {
-> > 5bd773242f75da3 Jonathan Marek       2020-09-05  774  #endif
-> 
-> config SOUNDWIRE_QCOM
-> 	tristate "Qualcomm SoundWire Master driver"
-> 	imply SLIMBUS
-> 	depends on SND_SOC
-> 
-> The kernel config that was attached has:
-> CONFIG_SOUNDWIRE_QCOM=y
-> CONFIG_SLIMBUS=m
-> 
-> I expected that "imply" would make SLIMBUS=y since SOUNDWIRE_QCOM=y,
-> but I guess that's not the case. :(
-> 
-> Any ideas about what to do here?
+> On Mon, 23 Nov 2020 00:40:30 +0100 Rikard Falkeborn wrote:
+>> These are only used as input arguments to qmi_handle_init() which
+>> accepts const pointers to both qmi_ops and qmi_msg_handler. Make them
+>> const to allow the compiler to put them in read-only memory.
+>> 
+>> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+>
+> I can take this one if Alex acks it.
+>
+> The other patch is probably best handled by Kalle.
 
-Sorry to have missed this earlier. I did some digging and found the
-Kconfig code to be correct, but not the driver code. Per the
-Documentation if we are using imply we should use IS_REACHABLE() rather
-than IS_ENABLED.
-
-This seems to take care of build failure for me on arm64 and x64 builds.
-
-Can you confirm with below patch:
-
----><8---
-
-From: Vinod Koul <vkoul@kernel.org>
-Date: Wed, 25 Nov 2020 11:15:22 +0530
-Subject: [PATCH] soundwire: qcom: Fix build failure when slimbus is module
-
-Commit 5bd773242f75 ("soundwire: qcom: avoid dependency on
-CONFIG_SLIMBUS") removed hard dependency on Slimbus for qcom driver but
-it results in build failure when:
-CONFIG_SOUNDWIRE_QCOM=y
-CONFIG_SLIMBUS=m
-
-drivers/soundwire/qcom.o: In function `qcom_swrm_probe':
-qcom.c:(.text+0xf44): undefined reference to `slimbus_bus'
-
-Fix this by using IS_REACHABLE() in driver which is recommended to be
-sued with imply.
-
-Fixes: 5bd773242f75 ("soundwire: qcom: avoid dependency on CONFIG_SLIMBUS")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- drivers/soundwire/qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index fbca4ebf63e9..6d22df01f354 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -799,7 +799,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	data = of_device_get_match_data(dev);
- 	ctrl->rows_index = sdw_find_row_index(data->default_rows);
- 	ctrl->cols_index = sdw_find_col_index(data->default_cols);
--#if IS_ENABLED(CONFIG_SLIMBUS)
-+#if IS_REACHABLE(CONFIG_SLIMBUS)
- 	if (dev->parent->bus == &slimbus_bus) {
- #else
- 	if (false) {
--- 
-2.26.2
+Yes, patch 2 is in my queue.
 
 -- 
-~Vinod
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
