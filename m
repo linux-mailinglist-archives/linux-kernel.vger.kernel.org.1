@@ -2,194 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987BE2C4114
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8703C2C410E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgKYNYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:24:03 -0500
-Received: from mga04.intel.com ([192.55.52.120]:47145 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbgKYNYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:24:03 -0500
-IronPort-SDR: rVtaG10lPphPrs09WHoltFmohRVjlH8EHXconGY13aoWC+34Kq0JirUSFVZIDK7k3T7tK21guW
- +Y1Y0hP7l6SA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="169569588"
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="169569588"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 05:24:02 -0800
-IronPort-SDR: KXm7p5+B+VPW98+6ANFSUEG0mkAaVSFlnkmIbYjRWjyYmwXMmG/+8eYfd/P8iL32gzROl6ep5m
- GeH2FIpE1PHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="370768743"
-Received: from lkp-server01.sh.intel.com (HELO f59a693d3a73) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 25 Nov 2020 05:24:00 -0800
-Received: from kbuild by f59a693d3a73 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1khum8-00008L-5U; Wed, 25 Nov 2020 13:24:00 +0000
-Date:   Wed, 25 Nov 2020 21:23:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/entry] BUILD SUCCESS
- 5903f61e035320104394f721f74cd22171636f63
-Message-ID: <5fbe5ad9.aMmyuRVc4jca9C4B%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729104AbgKYNXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgKYNXc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:23:32 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCF4C0613D4;
+        Wed, 25 Nov 2020 05:23:32 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id k5so1105474plt.6;
+        Wed, 25 Nov 2020 05:23:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YwQYvfQDUoa13fsKbpmwHso8WgufFTOG+Z6qNLGXK04=;
+        b=l4J2S1JXLDkshzyJl7lW3Zqnvx/CGNGDqiRw4F3kuW8QmjyRIeIOeeKJEdmYcBxPn8
+         j+P0q8JTjJYXZOOzWRXcWqYHaKW2j/jrtV6jCWceCH7CdMd9+ySrqStXBA/Z3Z7afucA
+         HgxeEWwSZPxOT7LjQALXSvRtnbHXST8WpxYQkHxSwuyyi7Hky2IWbD7UpTItmgFFcMt+
+         InuT7lspu9Q2rPD2w6mBXR5mrB3BVl5fR/kJ2Vu8aH7ZA/H7Ilrtxl2vojUYZmU0szep
+         lLbrSELWDRvhUd5GMEvUNPb4Nnqx6M1kTGPKXxa7HWMDTK7PsloT6l9VmhoLRnzvf3ez
+         jivQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YwQYvfQDUoa13fsKbpmwHso8WgufFTOG+Z6qNLGXK04=;
+        b=m6dQ5Rkw2SZfG3b+ii5DumJNlwCf4XkkHATzFtnbgHwef3N49zuPYk8F41CDa6wl05
+         bT8PfuKEv+tufmaxO2E0Xv2xwRkPoL6bsQWIdFEpWLy0EJIrW87GWQl8cLWNtg3sQRW5
+         aNpvT9gwfQIxQz8UeuupWv30g0YZLDQJ24h//zQlM1Xgq0igLZbWIpLQ9A6+Pct0Am9i
+         2SaslNKVpZ96jC8sqEe/pBFTIwEZmS9fDDcmPRZ2XyZgendOgLKaLO9G5HyYsGVFXObt
+         im4qqki6u72BuBxgVdpx+r4fHkapfhNJPCqu32A2MqlovqKU7EhCvuYWc1oakjQTsl3+
+         7oUQ==
+X-Gm-Message-State: AOAM5335/hocjufEkE0AYT/KylCxJbRUdTmal7i/2RUqkGAcQ2AN04LL
+        EW//L1cjmzaP7K/iR0SiXK/739yzBxh+4mYhXWU=
+X-Google-Smtp-Source: ABdhPJwZEeAeqN3pyyyDA41u7zVejFuXVqY7LtXH3SIm/z+F1pLntuMm3BdR0lbLzih2Fwz5QB+E9wzydP6OTQ6Ri64=
+X-Received: by 2002:a17:902:ac93:b029:d8:d2c5:e5b1 with SMTP id
+ h19-20020a170902ac93b02900d8d2c5e5b1mr2999337plr.17.1606310611989; Wed, 25
+ Nov 2020 05:23:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201125130320.311059-1-coiby.xu@gmail.com>
+In-Reply-To: <20201125130320.311059-1-coiby.xu@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 25 Nov 2020 15:24:20 +0200
+Message-ID: <CAHp75VfdGH2LmiNUGzy+BcYpCmSGBE6DxVhDDYSnhfu68HGTUA@mail.gmail.com>
+Subject: Re: [PATCH v4] pinctrl: amd: remove debounce filter setting in IRQ
+ type setting
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Baq Domalaq <domalak@gmail.com>,
+        Pedro Ribeiro <pedrib@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/entry
-branch HEAD: 5903f61e035320104394f721f74cd22171636f63  entry: Fix boot for !CONFIG_GENERIC_ENTRY
+On Wed, Nov 25, 2020 at 3:03 PM Coiby Xu <coiby.xu@gmail.com> wrote:
+>
+> Debounce filter setting should be independent from IRQ type setting
+> because according to the ACPI specs, there are separate arguments for
+> specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
+>
+> Together with commit 06abe8291bc31839950f7d0362d9979edc88a666
+> ("pinctrl: amd: fix incorrect way to disable debounce filter") and
+> Andy's patch "gpiolib: acpi: Take into account debounce settings" [1],
+> this will fix broken touchpads for laptops whose BIOS set the
+> debounce timeout to a relatively large value. For example, the BIOS
+> of Lenovo AMD gaming laptops including Legion-5 15ARH05 (R7000),
+> Legion-5P (R7000P) and IdeaPad Gaming 3 15ARH05, set the debounce
+> timeout to 124.8ms. This led to the kernel receiving only ~7 HID
+> reports per second from the Synaptics touchpad
+> (MSFT0001:00 06CB:7F28).
+>
+> Existing touchpads like [2][3] are not troubled by this bug because
+> the debounce timeout has been set to 0 by the BIOS before enabling
+> the debounce filter in setting IRQ type.
+>
+> [1] https://lore.kernel.org/linux-gpio/20201111222008.39993-11-andriy.shevchenko@linux.intel.com/
 
-elapsed time: 722m
+JFYI: this is nowadays
+8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
 
-configs tested: 130
-configs skipped: 4
+(No need to recend, just an information that can be applied maybe by Linus)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> [2] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
+> [3] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      tqm8xx_defconfig
-m68k                       m5475evb_defconfig
-mips                           jazz_defconfig
-c6x                        evmc6474_defconfig
-powerpc                      makalu_defconfig
-sh                         ap325rxa_defconfig
-arm                         at91_dt_defconfig
-m68k                        mvme147_defconfig
-sh                        dreamcast_defconfig
-powerpc                     kmeter1_defconfig
-arm                           corgi_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                               allmodconfig
-powerpc                     ep8248e_defconfig
-powerpc                   lite5200b_defconfig
-ia64                          tiger_defconfig
-nios2                         3c120_defconfig
-powerpc                      pasemi_defconfig
-arm                           sama5_defconfig
-mips                          rm200_defconfig
-powerpc                  iss476-smp_defconfig
-arm                       aspeed_g4_defconfig
-sh                           se7724_defconfig
-powerpc                 mpc8313_rdb_defconfig
-s390                             alldefconfig
-sh                     sh7710voipgw_defconfig
-sh                         microdev_defconfig
-ia64                         bigsur_defconfig
-nios2                               defconfig
-m68k                         apollo_defconfig
-mips                           rs90_defconfig
-riscv                               defconfig
-arm                            pleb_defconfig
-x86_64                           alldefconfig
-arm                        neponset_defconfig
-sh                            migor_defconfig
-mips                      maltaaprp_defconfig
-s390                                defconfig
-sh                          rsk7203_defconfig
-arm                        mvebu_v7_defconfig
-mips                 decstation_r4k_defconfig
-parisc                           alldefconfig
-sh                   sh7770_generic_defconfig
-powerpc                    gamecube_defconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                            qcom_defconfig
-arc                            hsdk_defconfig
-m68k                       m5275evb_defconfig
-arm                        multi_v5_defconfig
-sh                           se7780_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                        fsp2_defconfig
-mips                        jmr3927_defconfig
-arc                        nsim_700_defconfig
-h8300                            alldefconfig
-powerpc                      walnut_defconfig
-mips                            ar7_defconfig
-powerpc                     sbc8548_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201125
-i386                 randconfig-a003-20201125
-i386                 randconfig-a002-20201125
-i386                 randconfig-a005-20201125
-i386                 randconfig-a001-20201125
-i386                 randconfig-a006-20201125
-x86_64               randconfig-a015-20201125
-x86_64               randconfig-a011-20201125
-x86_64               randconfig-a014-20201125
-x86_64               randconfig-a016-20201125
-x86_64               randconfig-a012-20201125
-x86_64               randconfig-a013-20201125
-i386                 randconfig-a012-20201125
-i386                 randconfig-a013-20201125
-i386                 randconfig-a011-20201125
-i386                 randconfig-a016-20201125
-i386                 randconfig-a014-20201125
-i386                 randconfig-a015-20201125
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20201125
-x86_64               randconfig-a003-20201125
-x86_64               randconfig-a004-20201125
-x86_64               randconfig-a005-20201125
-x86_64               randconfig-a002-20201125
-x86_64               randconfig-a001-20201125
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+With Best Regards,
+Andy Shevchenko
