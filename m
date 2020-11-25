@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593F32C3BDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 10:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FA02C3BE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 10:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgKYJUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 04:20:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43090 "EHLO mx2.suse.de"
+        id S1727863AbgKYJVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 04:21:41 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:59156 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725938AbgKYJUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 04:20:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7E1A2AE42;
-        Wed, 25 Nov 2020 09:20:08 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 96F841E130F; Wed, 25 Nov 2020 10:20:07 +0100 (CET)
-Date:   Wed, 25 Nov 2020 10:20:07 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-Message-ID: <20201125092007.GA16944@quack2.suse.cz>
-References: <000000000000d3a33205add2f7b2@google.com>
- <20200828100755.GG7072@quack2.suse.cz>
- <20200831100340.GA26519@quack2.suse.cz>
- <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
- <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
- <20201124121912.GZ4327@casper.infradead.org>
+        id S1727109AbgKYJVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 04:21:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=axis.com; l=1892; q=dns/txt; s=axis-central1;
+  t=1606296099; x=1637832099;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UN8d/Bn7UE75hgj+WxoXrW2QClIbhvnJu5cEVB3OKUY=;
+  b=XisgcOEwCo6Mg46ZbrB8cLhZtE3Uo787Zf1WQ/Wh1fOYGG4ueuG2o8DT
+   zPXb/r5blsINwVoZgla2oVSkQjDvcOjjzOQZEoWs+P5kx6G82Y2m3Gvk9
+   7M7UCNoN482+EsWNj4YJKBB8FMEeOSTckT3WnM/YsaCWlFcbt6FZ1ikhi
+   RwDLwfaZscAsxmsnpUKL0bf5OBLQQYZ0JbDp+8W3oJB+gGPcgCcxMsGaW
+   wo9MZYFFhDXmGqRGtzSjRyKSot0XC2/odqUEPjkTfthWNSwtkQ92tFvMa
+   VYS9Ki2l7b+vq0zD8RLfOAfuF7iaZb0+GRXKlmK/wF77y+k9Pfgbg/dbm
+   g==;
+IronPort-SDR: dzZ2pIx/Y4ya22PBk098LfDD27sHrDT0bV66IMpO+kyWTB6kyuURO9K1zs4BcWX/kAyZdfkmIW
+ Koj8m/nfuWeNvx8bHXB0JWbv/0s0XJTQqACXxhfWZ0TqTW9a7AEFs6UUEshwIPPNziUf12NArx
+ kpgCE5b8oSKFhvhmkXSZVBmfXi8EayiXu3O/S/UvyppzU5O3KrTCOZEYZhm53nrVM0XdJFeSBf
+ deLELar44inV06r1ZhrqeajQWl9RzbyvObkElPdcGy2m+NmI0tip/N+aHAB2LWamwmEQ7w/nxu
+ On8=
+X-IronPort-AV: E=Sophos;i="5.78,368,1599516000"; 
+   d="scan'208";a="14872264"
+Date:   Wed, 25 Nov 2020 10:21:37 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Adam Ward <adam.ward@diasemi.com>
+CC:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/9] regulator: Update DA9121 dt-bindings
+Message-ID: <20201125092137.ehwfytsrr3x5vkiy@axis.com>
+References: <cover.1605868780.git.Adam.Ward.opensource@diasemi.com>
+ <a5a57b416a47c044797d9b669c7e021acd69abae.1605868780.git.Adam.Ward.opensource@diasemi.com>
+ <20201120134742.y7bocaok3gcahbxt@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201124121912.GZ4327@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201120134742.y7bocaok3gcahbxt@axis.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24-11-20 12:19:12, Matthew Wilcox wrote:
-> On Mon, Nov 23, 2020 at 08:07:24PM -0800, Hugh Dickins wrote:
-> > Twice now, when exercising ext4 looped on shmem huge pages, I have crashed
-> > on the PF_ONLY_HEAD check inside PageWaiters(): ext4_finish_bio() calling
-> > end_page_writeback() calling wake_up_page() on tail of a shmem huge page,
-> > no longer an ext4 page at all.
-> > 
-> > The problem is that PageWriteback is not accompanied by a page reference
-> > (as the NOTE at the end of test_clear_page_writeback() acknowledges): as
-> > soon as TestClearPageWriteback has been done, that page could be removed
-> > from page cache, freed, and reused for something else by the time that
-> > wake_up_page() is reached.
-> > 
-> > https://lore.kernel.org/linux-mm/20200827122019.GC14765@casper.infradead.org/
-> > Matthew Wilcox suggested avoiding or weakening the PageWaiters() tail
-> > check; but I'm paranoid about even looking at an unreferenced struct page,
-> > lest its memory might itself have already been reused or hotremoved (and
-> > wake_up_page_bit() may modify that memory with its ClearPageWaiters()).
-> > 
-> > Then on crashing a second time, realized there's a stronger reason against
-> > that approach.  If my testing just occasionally crashes on that check,
-> > when the page is reused for part of a compound page, wouldn't it be much
-> > more common for the page to get reused as an order-0 page before reaching
-> > wake_up_page()?  And on rare occasions, might that reused page already be
-> > marked PageWriteback by its new user, and already be waited upon?  What
-> > would that look like?
-> > 
-> > It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
-> > in write_cache_pages() (though I have never seen that crash myself).
+On Fri, Nov 20, 2020 at 02:47:42PM +0100, Vincent Whitchurch wrote:
+> On Fri, Nov 20, 2020 at 01:14:50PM +0100, Adam Ward wrote:
+> > -  buck1:
+> > -    description:
+> > -      Initial data for the Buck1 regulator.
+> > -    $ref: "regulator.yaml#"
+> > +  interrupt-parent:
+> > +    maxItems: 1
+> > +    description: Specifies the reference to the interrupt controller.
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +    description: IRQ line information.
+> > +
+> > +  dlg,irq-polling-delay-passive:
+> > +    maxItems: 1
+> > +    description: |
+> > +      Specify the polling period, measured in milliseconds, between interrupt status
+> > +      update checks. Range 1000-10000 ms.
+> > +
+> > +  regulators:
+> >      type: object
+> > +    $ref: regulator.yaml#
+> > +    description: |
+> > +      This node defines the settings for the BUCK. The content of the
+> > +      sub-node is defined by the standard binding for regulators; see regulator.yaml.
+> > +      The DA9121 regulator is bound using their names listed below
+> > +      buck1 - BUCK1
+> > +      buck2 - BUCK2       //DA9122, DA9220, DA9131, DA9132 only
 > 
-> I don't think this is it.  write_cache_pages() holds a reference to the
-> page -- indeed, it holds the page lock!  So this particular race cannot
-> cause the page to get recycled.  I still have no good ideas what this
-> is :-(
+> This move to a sub-node means that older devicetrees won't work. I
+> assume that's fine since the driver is only in linux-next at the moment,
+> but perhaps it's worth mentioning this in the commit message?
 
-But does it really matter what write_cache_pages() does? I mean we start
-page writeback. I mean struct bio holds no reference to the page it writes.
-The only thing that prevents the page from being freed under bio's hands is
-PageWriteback bit. So when the bio is completing we do (e.g. in
-ext4_end_bio()), we usually walk all pages in a bio
-bio_for_each_segment_all() and for each page call end_page_writeback(), now
-once end_page_writeback() calls test_clear_page_writeback() which clears
-PageWriteback(), the page can get freed. And that can happen before the
-wake_up_page() call in end_page_writeback(). So a race will be like:
+Actually, perhaps I'm missing something, but I don't quite see why this
+move to a sub-node is needed.  There is some flexibility in the
+regulator framework for this as I noted earlier
+(https://lore.kernel.org/lkml/20201102154848.tm5nsydaukyd7rrw@axis.com/).
+For the case of an MFD it certainly makes sense to have a "regulators"
+sub-node but for these chips it seems rather redundant.
 
-CPU1					CPU2
-ext4_end_bio()
-  ...
-  end_page_writeback(page)
-    test_clear_page_writeback(page)
-					free page
-					reallocate page for something else
-					we can even dirty & start to
-					  writeback 'page'
-    wake_up_page(page)
-
-and we have a "spurious" wake up on 'page'.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Also, perhaps you could split this patch into logical pieces too as Mark
+has suggested for some of the other patches in this series?
