@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF862C46C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662B82C46C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732809AbgKYR1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:27:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44958 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732699AbgKYR1w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:27:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606325271;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=128QzWN5ZV6H8TGg9AgMhcOfUvIwMfuRP45rtKXIJzc=;
-        b=C/rfx35TPpcDoJluYx/Vum16I9SvlixEQo/v5RUfH4t/35amHcjJ33irxhhMG++GyTIrT6
-        FbQJWg32lbZHGEuLSUo6lySRkj6Kl9w3RTOE4t6KIFcSl0GKGKN4QAfyYBdFzlkZ7V+QAF
-        U62SWtyp+Doc1doejQubrj4fJoM38R0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-VZlW4DNdMHaUwzfL9ixwkA-1; Wed, 25 Nov 2020 12:27:24 -0500
-X-MC-Unique: VZlW4DNdMHaUwzfL9ixwkA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732821AbgKYR17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:27:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732784AbgKYR17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:27:59 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95D7D1087D6C;
-        Wed, 25 Nov 2020 17:27:20 +0000 (UTC)
-Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18B3260BE5;
-        Wed, 25 Nov 2020 17:27:18 +0000 (UTC)
-Subject: Re: [RFC 3/3] s390/mm: Define arch_get_addressable_range()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
- <1606098529-7907-4-git-send-email-anshuman.khandual@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <fc5ebaf9-ce6a-95fd-a2fe-84bfdf73512a@redhat.com>
-Date:   Wed, 25 Nov 2020 18:27:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by mail.kernel.org (Postfix) with ESMTPSA id ED6DA206B5;
+        Wed, 25 Nov 2020 17:27:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606325278;
+        bh=XOC0jPLSISCUMYFn8Jyd1Jb8ebro+R0p/1c3lAiWF2w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=b0k3UB1b0JhTC+Qzq4fgNuYtQTyVMRlD25BqxhOYRILtpdaIqNDFvWODjGn6DAXxq
+         EjGi6sRgruoIE5o0GItGTnKGA3CIfbWjN/m+rjU9p/OYQJqSi+iSrJNvs55hlfnCYU
+         g1G+m6ghVKeT/SxTXv2EmK6fmE/zZkwHtOiMSsH4=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3FBA140E29; Wed, 25 Nov 2020 14:27:55 -0300 (-03)
+Date:   Wed, 25 Nov 2020 14:27:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-perf-users@vger.kernel.org
+Subject: [BUG] perf probe can't remove probes
+Message-ID: <20201125172755.GA53351@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1606098529-7907-4-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.20 03:28, Anshuman Khandual wrote:
-> This overrides arch_get_addressable_range() on s390 platform and drops
-> now redudant similar check in vmem_add_mapping().
-> 
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/s390/include/asm/mmu.h |  2 ++
->  arch/s390/mm/vmem.c         | 16 ++++++++++++----
->  2 files changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
-> index e12ff0f29d1a..f92d3926b188 100644
-> --- a/arch/s390/include/asm/mmu.h
-> +++ b/arch/s390/include/asm/mmu.h
-> @@ -55,4 +55,6 @@ static inline int tprot(unsigned long addr)
->  	return rc;
->  }
->  
-> +#define arch_get_addressable_range arch_get_addressable_range
-> +struct range arch_get_addressable_range(bool need_mapping);
->  #endif
-> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-> index b239f2ba93b0..e03ad0ed13a7 100644
-> --- a/arch/s390/mm/vmem.c
-> +++ b/arch/s390/mm/vmem.c
-> @@ -532,14 +532,22 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
->  	mutex_unlock(&vmem_mutex);
->  }
->  
-> +struct range arch_get_addressable_range(bool need_mapping)
-> +{
-> +	struct range memhp_range;
-> +
-> +	memhp_range.start = 0;
-> +	if (need_mapping)
-> +		memhp_range.end =  VMEM_MAX_PHYS;
-> +	else
-> +		memhp_range.end = (1ULL << (MAX_PHYSMEM_BITS + 1)) - 1;
-> +	return memhp_range;
-> +}
-> +
->  int vmem_add_mapping(unsigned long start, unsigned long size)
->  {
->  	int ret;
->  
-> -	if (start + size > VMEM_MAX_PHYS ||
-> -	    start + size < start)
-> -		return -ERANGE;
-> -
->  	mutex_lock(&vmem_mutex);
->  	ret = vmem_add_range(start, size);
->  	if (ret)
-> 
 
-Note that vmem_add_mapping() is also called from extmem
-(arch/s390/mm/extmem.c).
+Masami, have you stumbled on this already?
 
--- 
-Thanks,
+[root@seventh ~]# perf probe security_locked_down%return 'ret=$retval'
+Added new event:
+  probe:security_locked_down__return (on security_locked_down%return with ret=$retval)
 
-David / dhildenb
+You can now use it in all perf tools, such as:
 
+	perf record -e probe:security_locked_down__return -aR sleep 1
+
+[root@seventh ~]# perf probe security_locked_down what
+Added new event:
+  probe:security_locked_down (on security_locked_down with what)
+
+You can now use it in all perf tools, such as:
+
+	perf record -e probe:security_locked_down -aR sleep 1
+
+[root@seventh ~]#
+
+
+[root@seventh ~]# uname -r
+5.10.0-rc3.bpfsign+
+[root@seventh ~]# perf probe -l
+  probe:security_locked_down (on security_locked_down@git/bpf/security/security.c with what)
+  probe:security_locked_down__return (on security_locked_down%return@git/bpf/security/security.c with ret)
+[root@seventh ~]# perf probe -D '*:*'
+Semantic error :There is non-digit char in line number.
+
+ Usage: perf probe [<options>] 'PROBEDEF' ['PROBEDEF' ...]
+    or: perf probe [<options>] --add 'PROBEDEF' [--add 'PROBEDEF' ...]
+    or: perf probe [<options>] --del '[GROUP:]EVENT' ...
+    or: perf probe --list [GROUP:]EVENT ...
+    or: perf probe [<options>] --line 'LINEDESC'
+    or: perf probe [<options>] --vars 'PROBEPOINT'
+    or: perf probe [<options>] --funcs
+
+    -D, --definition <[EVENT=]FUNC[@SRC][+OFF|%return|:RL|;PT]|SRC:AL|SRC;PT [[NAME=]ARG ...]>
+                          Show trace event definition of given traceevent for k/uprobe_events.
+[root@seventh ~]# perf probe probe:security_locked_down
+Semantic error :There is non-digit char in line number.
+  Error: Command Parse Error.
+[root@seventh ~]# perf probe probe:security_locked_down__return
+Semantic error :There is non-digit char in line number.
+  Error: Command Parse Error.
+[root@seventh ~]# cat /sys/kernel/debug/kprobes/
+blacklist  enabled    list
+[root@seventh ~]# cat /sys/kernel/debug/kprobes/list
+ffffffff8248b350  k  security_locked_down+0x0    [FTRACE]
+ffffffff8248b350  r  security_locked_down+0x0    [FTRACE]
+[root@seventh ~]#
+
+[root@seventh ~]# cat /etc/fedora-release
+Fedora release 33 (Thirty Three)
+[root@seventh ~]# gcc -v
+Using built-in specs.
+COLLECT_GCC=/usr/bin/gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/10/lto-wrapper
+OFFLOAD_TARGET_NAMES=nvptx-none
+OFFLOAD_TARGET_DEFAULT=1
+Target: x86_64-redhat-linux
+Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,objc,obj-c++,ada,go,d,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 10.2.1 20201016 (Red Hat 10.2.1-6) (GCC)
+[root@seventh ~]# rpm -q elfutils
+elfutils-0.182-1.fc33.x86_64
+[root@seventh ~]#
+
+- Arnaldo
