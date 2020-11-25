@@ -2,114 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662B82C46C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCF12C46C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732821AbgKYR17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:27:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
+        id S1732825AbgKYR2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:28:18 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:37450 "EHLO mail.pqgruber.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732784AbgKYR17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:27:59 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED6DA206B5;
-        Wed, 25 Nov 2020 17:27:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606325278;
-        bh=XOC0jPLSISCUMYFn8Jyd1Jb8ebro+R0p/1c3lAiWF2w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=b0k3UB1b0JhTC+Qzq4fgNuYtQTyVMRlD25BqxhOYRILtpdaIqNDFvWODjGn6DAXxq
-         EjGi6sRgruoIE5o0GItGTnKGA3CIfbWjN/m+rjU9p/OYQJqSi+iSrJNvs55hlfnCYU
-         g1G+m6ghVKeT/SxTXv2EmK6fmE/zZkwHtOiMSsH4=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3FBA140E29; Wed, 25 Nov 2020 14:27:55 -0300 (-03)
-Date:   Wed, 25 Nov 2020 14:27:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        id S1732469AbgKYR2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:28:17 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 84804C81EED;
+        Wed, 25 Nov 2020 18:28:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1606325294;
+        bh=5Jb6iatCRPIVZK7/khB6ZO3GMcwJebtuMG5SMJqkQoQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VPzd6edkUMCHs23d1821Sw4aiJJfQKOF0J4390OrXFl7/r34ZAfRnKujUkGdgcT7J
+         I2j/P8RhaFy6j8i9sde0fu2CAiBqePoVqnSxaVZZ9aAoLEoD0ZoW8BE6nfwii8N8eS
+         tLjs17iGN/8GYDyD9IiDedwc9spBE3gmVG6mgja0=
+Date:   Wed, 25 Nov 2020 18:28:13 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-perf-users@vger.kernel.org
-Subject: [BUG] perf probe can't remove probes
-Message-ID: <20201125172755.GA53351@kernel.org>
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v3 1/4] pwm: pca9685: Switch to atomic API
+Message-ID: <X76ULTpaWHLkkz/u@workstation.tuxnet>
+References: <20201124181013.162176-1-clemens.gruber@pqgruber.com>
+ <CAGngYiX8KOTQCScWo_o1BRa8CGHBQzWZGz1FmzkwGEmyNgPaxQ@mail.gmail.com>
+ <X74XPAy+SJRmQUSH@workstation.tuxnet>
+ <X75kXv7l9RbTOS7S@workstation.tuxnet>
+ <CAGngYiViOMO6uM7UeYO5fNMdc+QEjLt+L1TdTii+smTvsmV=aQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAGngYiViOMO6uM7UeYO5fNMdc+QEjLt+L1TdTii+smTvsmV=aQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sven,
 
-Masami, have you stumbled on this already?
+On Wed, Nov 25, 2020 at 10:04:32AM -0500, Sven Van Asbroeck wrote:
+> On Wed, Nov 25, 2020 at 3:35 AM Clemens Gruber
+> <clemens.gruber@pqgruber.com> wrote:
+> >
+> > >
+> > > The datasheet I found for this chip indicates that every ALL_LED_XXX register
+> > > is write-only. Those registers cannot be read back from the chip.
+> > >
+> > > Datasheet "Rev. 4 - 16 April 2015"
+> >
+> > Thanks, good catch! Would you agree that we should just return 0 duty
+> > cycle and disabled state if the "all LEDs" channel is used?
+> 
+> I think get_state() for the all led channel should just return -ENOTSUPP,
+> if the pwm core will allow that.
+> 
+> Because it's the truth, the chip does not support reading from the all led
+> channel.
 
-[root@seventh ~]# perf probe security_locked_down%return 'ret=$retval'
-Added new event:
-  probe:security_locked_down__return (on security_locked_down%return with ret=$retval)
+I thought about that too, but get_state is a void function and there is
+no error/errno variable in pwm_state that could signal a problem.
 
-You can now use it in all perf tools, such as:
+> 
+> When we start buffering the all led state, we make the code much
+> more complex, and again we'll run into all sorts of subtle corner cases.
 
-	perf record -e probe:security_locked_down__return -aR sleep 1
+What's the lesser evil in your opinion, always returning 0 duty and
+disabled for the ALL channel or caching it?
 
-[root@seventh ~]# perf probe security_locked_down what
-Added new event:
-  probe:security_locked_down (on security_locked_down with what)
+> 
+> > > > +
+> > > > +       if (duty < PCA9685_COUNTER_RANGE) {
+> > >
+> > > How can duty >= 4096 ?
+> > >
+> > > > +               duty *= state->period;
+> > > > +               state->duty_cycle = duty / (PCA9685_COUNTER_RANGE - 1);
+> > >
+> > > is this calculation correct?
+> > > imagine led_on = 0 (default), and led_off = 4095
+> > > then the led is off for one single tick per cycle
+> > > but the above formula would calculate it as full on (period == duty_cycle)?
+> 
+> I just wanted to make sure you hadn't overlooked the two comments above.
 
-You can now use it in all perf tools, such as:
+Yes I saw them, thanks. You are suggesting that we change the scaling of
+the relative duty cycle from 0..4095 to 0..4096 and in .apply_state we
+do full OFF if 0 and full ON if 4096, so we still have a 4095 duty state
+with a single tick off?
+Then in .get_state: duty_cycle = (duty * period) / COUNTER_RANGE
 
-	perf record -e probe:security_locked_down -aR sleep 1
+Please let me know if I misunderstood you.
 
-[root@seventh ~]#
+> 
+> --
+> 
+> Each time I read the code, my thoughts get interrupted by all this
+> if hwpwm >= MAXCHAN then { one macro } else { another macro } business
+> which is spread around in the code !
+> 
+> Same thing with the splitting of the value between H and L registers.
+> Same thing with the LED_FULL bit.
 
+Yes, this is indeed confusing.
 
-[root@seventh ~]# uname -r
-5.10.0-rc3.bpfsign+
-[root@seventh ~]# perf probe -l
-  probe:security_locked_down (on security_locked_down@git/bpf/security/security.c with what)
-  probe:security_locked_down__return (on security_locked_down%return@git/bpf/security/security.c with ret)
-[root@seventh ~]# perf probe -D '*:*'
-Semantic error :There is non-digit char in line number.
+> 
+> Maybe the code will be much more readable if we do the following?
+> 
+> - keep pca9685_pwm_full_off/full_on but rename to pca9685_pwm_set_full_off/on
+> - create pca9685_pwm_is_full_off/on
+> - create pca9685_pwm_set_on_time/set_off_time
+> 
+> Then LED_FULL, >= MAXCHAN, and register splits are fully confined to
+> these functions, and we can call them freely in the rest of the code,
+> without getting confused by these details.
 
- Usage: perf probe [<options>] 'PROBEDEF' ['PROBEDEF' ...]
-    or: perf probe [<options>] --add 'PROBEDEF' [--add 'PROBEDEF' ...]
-    or: perf probe [<options>] --del '[GROUP:]EVENT' ...
-    or: perf probe --list [GROUP:]EVENT ...
-    or: perf probe [<options>] --line 'LINEDESC'
-    or: perf probe [<options>] --vars 'PROBEPOINT'
-    or: perf probe [<options>] --funcs
+Great idea!
 
-    -D, --definition <[EVENT=]FUNC[@SRC][+OFF|%return|:RL|;PT]|SRC:AL|SRC;PT [[NAME=]ARG ...]>
-                          Show trace event definition of given traceevent for k/uprobe_events.
-[root@seventh ~]# perf probe probe:security_locked_down
-Semantic error :There is non-digit char in line number.
-  Error: Command Parse Error.
-[root@seventh ~]# perf probe probe:security_locked_down__return
-Semantic error :There is non-digit char in line number.
-  Error: Command Parse Error.
-[root@seventh ~]# cat /sys/kernel/debug/kprobes/
-blacklist  enabled    list
-[root@seventh ~]# cat /sys/kernel/debug/kprobes/list
-ffffffff8248b350  k  security_locked_down+0x0    [FTRACE]
-ffffffff8248b350  r  security_locked_down+0x0    [FTRACE]
-[root@seventh ~]#
+> 
+> --
+> 
+> > I noticed something else that does not look great:
+> > Let's say you set up pwm channel 0 with a period of 5000000 and after
+> > that you set up pwm channel 1 with a period of 40000000.
+> > So far so good. But if you now set pwm channel 0's period to 5000000
+> > again, the period stays at 40000000. (Tested with /sys/class/pwm)
+> >
+> 
+> If the driver isn't buggy, this should work ok. Changing the period on one
+> channel changes the global prescale, which in turn changes the period on
+> every other channel. But that's ok, because the ON/OFF times are relative
+> to a 4096-tick counter, so all duty cycles are preserved.
+> 
+> Example:
+> 1. SET channel 0 : duty  50_000 period 100_000 (real duty cycle = 0.5)
+> 2. SET channel 1 : duty  50_000 period 200_000 (real duty cycle = 0.25)
+> 3. GET channel 0 : duty 100_000 period 200_000 (real duty cycle STILL 0.5)
+> 
+> I think this is acceptable behaviour.
 
-[root@seventh ~]# cat /etc/fedora-release
-Fedora release 33 (Thirty Three)
-[root@seventh ~]# gcc -v
-Using built-in specs.
-COLLECT_GCC=/usr/bin/gcc
-COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/10/lto-wrapper
-OFFLOAD_TARGET_NAMES=nvptx-none
-OFFLOAD_TARGET_DEFAULT=1
-Target: x86_64-redhat-linux
-Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,objc,obj-c++,ada,go,d,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
-Thread model: posix
-Supported LTO compression algorithms: zlib zstd
-gcc version 10.2.1 20201016 (Red Hat 10.2.1-6) (GCC)
-[root@seventh ~]# rpm -q elfutils
-elfutils-0.182-1.fc33.x86_64
-[root@seventh ~]#
+Yes the effect of a global period change to the duty cycles of other
+channels is acceptable but that was not what I meant.
 
-- Arnaldo
+I meant that with sysfs, the period does not change if the new value is
+the same as the last time that channel's period was set.
+See my example above.
+
+But we probably can't do anything about that.
+
+> 
+> --
+> 
+> I have been thinking about how this patch caches the global prescaler.
+> There is a possible synchronization issue. Sysfs will always work ok, because
+> it uses a mutex to protect accesses to pwm_set_state(), which means set_state()
+> will never be called concurrently.
+> 
+> But I do not think there's any protection when the driver is used as a client
+> in the devicetree, like so:
+> 
+> &i2c1 {
+>         my_pca: pwm@0 {
+>                 compatible = "nxp,pca9685-pwm";
+>                 reg = <0>;
+>         };
+> };
+> 
+> acme_device@0 {
+>         pwms = <&my_pca 2 10000000>;
+> };
+> 
+> acme_device@1 {
+>         pwms = <&my_pca 1 20000000>;
+> };
+> 
+> For most pwm drivers, this is fine, because their registers are strictly
+> separated: writes to channel 0 and 1 do not touch the same registers.
+> 
+> But in our case, because of the cached prescale, things can go very wrong.
+> 
+> I think this can be solved by simply not caching prescale. Everything then
+> stays on the stack, and the last thread to set the prescaler wins.
+
+OK, regmap accesses are protected with locks but what about the SLEEP
+bit that needs to be set/cleared + sleep. Shouldn't we only allow one
+thread at one time to change the prescaler of a chip? Otherwise, there
+could be synchronization issues there too. (Possible writing to the
+prescale register with the SLEEP bit unset by another thread)
+
+If we drop the cache we would have to read the prescale register
+whenever we need it (for every channel) but with the upcoming regmap
+cache feature, this would probably be OK.
+
+Do you think this should be solved in the same patch as the atomic API
+conversion or can we do this in a follow-up patch?
+
+Thanks,
+Clemens
