@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A0C2C3DB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B89B2C3DC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbgKYKdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:33:03 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:35010 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgKYKdC (ORCPT
+        id S1728459AbgKYKfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:35:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgKYKfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:33:02 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9DFDF1C0B7D; Wed, 25 Nov 2020 11:32:59 +0100 (CET)
-Date:   Wed, 25 Nov 2020 11:32:58 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-Cc:     linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH leds + devicetree v2 1/2] leds: trigger: add trigger
- sources validating method and helper functions
-Message-ID: <20201125103258.GB25562@amd>
-References: <20200915152616.20591-1-marek.behun@nic.cz>
- <20200915152616.20591-2-marek.behun@nic.cz>
+        Wed, 25 Nov 2020 05:35:37 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1BBC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:35:36 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 1so1663409wme.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:35:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5AdhqJPNqJ4ajsPBDb7aBTdCZqenqeNmdluQ3fHyVw8=;
+        b=B7+XMHnKQxb4VWWBAPKFNlaE35cZxK4xHOpGVCq6sHJocVauhvpSfEqDixJGQ4hvZ/
+         863iw/Vpe4F2YgyRe8Lt+7qMPMu/PFQE+oW2jzIR+xVvLqIIf/Kg7WIH7Ro4DacYL3jX
+         K4SHXxSmpBNfCt++ykfeZcfs0KXslMkq0ePWc8DMjah/BGgL5U/23cH5FQ+W9QZ7ABX8
+         tglf1tO3dm2zoZU7UvGSxwhmD5lyxISAZWRf1AeVVSJQbs0SDaKGjRXcZ9epRNvdyiVr
+         gSSxL0Q/ZiJJ1dF9FBdIG26+12TMLfyDd9IOzokNNRSaYuRjW0LnaKh+0tbZatYaulMx
+         B7hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5AdhqJPNqJ4ajsPBDb7aBTdCZqenqeNmdluQ3fHyVw8=;
+        b=fOBlw/DMwZ5K+g3jlTxgvyIQC/ZEhR2yw9Y5teyComAl8MFuKwUYQuPbzGld+gqQbj
+         lzRKtok/qP8SaWemyTpT4ya0ml+IX7aCCi0dLa+AA76d28URO60i52+d6F906q5anTJs
+         U6nnnJtBNXmYiwrFBRKOj13SCtKloZA5epCobTOKy21Ng6GnIkOH1zv6L3dl0j1mATlV
+         gtrw7NnstQIA0rcX0beivkAl3JtHRypD4OXu6xRRTpIRF0JIYtb/t+XWB8rjF63S6wkt
+         AtyVEyH8qQyjIKM/MUrbQlJQcDzpNc53Ex6wSFONm8OeW1yKPOIfVZnJ+xzO217i3sZk
+         aOeQ==
+X-Gm-Message-State: AOAM532VoRFB1d2t/IzRb7KAaR4t2RDKFpSxKIgPsNcupia9kwh9QCTx
+        VJDKO5Aih65sxOvA8zbevTElQw==
+X-Google-Smtp-Source: ABdhPJwsRjx6KKEXcNdzIPS4xp2DBxwoiR2l9nmoiZkQY7Lwp1FKiVXAb5vbXTQVMkhCl2vy7hW+xA==
+X-Received: by 2002:a1c:4b10:: with SMTP id y16mr3232942wma.10.1606300535324;
+        Wed, 25 Nov 2020 02:35:35 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:a3aa])
+        by smtp.gmail.com with ESMTPSA id j8sm4031336wrx.11.2020.11.25.02.35.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 02:35:34 -0800 (PST)
+Date:   Wed, 25 Nov 2020 10:35:34 +0000
+From:   Matthias Maennich <maennich@google.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, kernel-team@android.com
+Subject: Re: [PATCH] modpost: Make static exports fatal
+Message-ID: <20201125103534.GA2112262@google.com>
+References: <20201124182420.2202514-1-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200915152616.20591-2-marek.behun@nic.cz>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201124182420.2202514-1-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 24, 2020 at 06:24:09PM +0000, Quentin Perret wrote:
+>Using EXPORT_SYMBOL*() on static functions is fundamentally wrong.
+>Modpost currently reports that as a warning, but clearly this is not a
+>pattern we should allow, and all in-tree occurences should have been
+>fixed by now. So, promote the warn() message to fatal() to make sure
+>this never happens again.
+>
+>Signed-off-by: Quentin Perret <qperret@google.com>
 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Matthias Maennich <maennich@google.com>
 
-Hi!
+Cheers,
+Matthias
 
-> Currently we use the `linux,default-trigger` device tree property of a
-> LED to define the default trigger which should be activated for a LED.
->=20
-> But the LED device tree binding also documents the `trigger-sources`
-> property, which specifies the source device which should be triggering
-> the LED.
->=20
-> The `trigger-sources` property is currently implemented only in
-> drivers/usb/core/ledtrig-usbport.c.
->=20
-> Lets add a method to struct led_trigger which, if implemented, can check
-> whether this trigger should be enabled as default. This check shall be
-> done by checking whether the specified `trigger-sources` refers to a
-> device compatible with the trigger. For this two new helper functions,
-> of_led_count_trigger_sources and of_led_get_trigger_source, are
-> implemented.
-
-> +int of_led_count_trigger_sources(struct led_classdev *led_cdev)
-> +{
-> +	struct device_node *np;
-> +	int count;
-> +
-> +	np =3D dev_of_node(led_cdev->dev);
-> +	if (!np)
-> +		return 0;
-> +
-> +	count =3D of_count_phandle_with_args(np, "trigger-sources",
-> +					   "#trigger-source-cells");
-> +	if (count =3D=3D -ENOENT)
-> +		return 0;
-> +	else if (count < 0)
-> +		dev_warn(led_cdev->dev,
-> +			 "Failed parsing trigger sources for %pOF!\n", np);
-> +
-> +	return count;
-> +}
-
-Will this need of_node_put() somewhere?
-
-Best regards,
-									Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---8P1HSweYDcXXzwPJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl++MtoACgkQMOfwapXb+vIf0gCaAz1JcbXMTpGsZfPcDBiZj+Ng
-QsAAnjWVVG0ktkq/hSXVmdfBw8aHOHfJ
-=YaAm
------END PGP SIGNATURE-----
-
---8P1HSweYDcXXzwPJ--
+>---
+> scripts/mod/modpost.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>
+>diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+>index f882ce0d9327..70b0e825a139 100644
+>--- a/scripts/mod/modpost.c
+>+++ b/scripts/mod/modpost.c
+>@@ -2663,9 +2663,9 @@ int main(int argc, char **argv)
+>
+> 		for (s = symbolhash[n]; s; s = s->next) {
+> 			if (s->is_static)
+>-				warn("\"%s\" [%s] is a static %s\n",
+>-				     s->name, s->module->name,
+>-				     export_str(s->export));
+>+				fatal("\"%s\" [%s] is a static %s\n",
+>+				      s->name, s->module->name,
+>+				      export_str(s->export));
+> 		}
+> 	}
+>
+>-- 
+>2.29.2.454.gaff20da3a2-goog
+>
