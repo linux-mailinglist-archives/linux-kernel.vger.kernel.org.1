@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5262C3B54
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F512C3B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgKYIsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 03:48:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        id S1727149AbgKYIuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 03:50:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgKYIsy (ORCPT
+        with ESMTP id S1726114AbgKYIuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 03:48:54 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EED7C0613D4;
-        Wed, 25 Nov 2020 00:48:54 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id b17so1402940ljf.12;
-        Wed, 25 Nov 2020 00:48:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1CiFGI+zAQ3sbdgy5ohjyQFrwpN9S9lbEbuqLPPcRrc=;
-        b=sIrmXlu/HrT1IFeUrE7K8dvjEY9Vg8JWaKtNuINQr9xIkrznrBM18y1b/G16+7tfMC
-         l5ohUg1QLDXZ6662jBthgmh0G2P80PPAybSD+5pSyXIAsAOoAQgzGrbWipN9NFtG6DXe
-         3iNnfkXxhGRP73zAV2pze1QWRnvEj+DdFCNVu6THWm2adx5nXO11IvU/FlerplW17Hme
-         8jioAfOhiJUl5kTW8QaYw0mDzcyIX2TrSAg7VIxMi2QZ4fWd9KDj0Ifmw4XV+fuOCB3p
-         drwAhQ69R39cwa1pgwLITw9wJt3iSwg+KW6+alm3UNQF88ZNyo9ql5Nz9JmgXbnJfJNn
-         LA2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=1CiFGI+zAQ3sbdgy5ohjyQFrwpN9S9lbEbuqLPPcRrc=;
-        b=eDnCcYdr2/ZmuzAs6HMpoTO4lIwdZvPjoupNvMJHNVZ/Qvsci+Rjdi5WLBMDDPYDVk
-         1uwBy28d6cOswhuuEXl1eD/eBMHzcPWyq3GnpbaQwIXNmmkkCWQeGmJfOxQ+GOJFX2FC
-         TWPGX4pzjZBL68F+gBDGOZEzTuuniD0GCruIxLWvb8wufd6ESU1vwGna5ivvkfOM6Jc0
-         6//mXArBWbtKGU6VN/xLqlyTWHNAk6VIfboVQzxWU4V2syzJMEnBTCfSKY2KrkTdXQcM
-         vre3avw6dkWr7tR9lYfPJ8y2IHJxkR9kuRCecysvO051R8GElJ4djmxrILaYCQqpc6sZ
-         yOTw==
-X-Gm-Message-State: AOAM531ZS2Ah+eStaShtIZuv5YSjy9HgT2aQE3jJMiznrCd0esD5qqVX
-        K/opVviYtgCoJDCoaBBY9SrA6k6niRYwJQ==
-X-Google-Smtp-Source: ABdhPJyDbFwMZisczcuSAtsoZd69soFXx8+zX1JJzEiv9GMl2dMM3pPPJgz2gyrDGK5V/tjzTDtukw==
-X-Received: by 2002:a2e:7203:: with SMTP id n3mr959896ljc.86.1606294132804;
-        Wed, 25 Nov 2020 00:48:52 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:4212:944b:4041:d4db:b733:f39e? ([2a00:1fa0:4212:944b:4041:d4db:b733:f39e])
-        by smtp.gmail.com with ESMTPSA id r80sm176066lff.77.2020.11.25.00.48.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 00:48:52 -0800 (PST)
-Subject: Re: [PATCH 1/5] memory: renesas-rpc-if: Return correct value to the
- caller of rpcif_manual_xfer()
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>, stable@vger.kernel.org
-References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201124112552.26377-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <26fc2f22-eae4-86bc-1c39-e8498b77e1cd@gmail.com>
-Date:   Wed, 25 Nov 2020 11:48:42 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 25 Nov 2020 03:50:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3839CC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 00:50:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=03txFcJNBslvd+BNPT41sjaiOCJak/ukhem/Aa3k44s=; b=NVSFu2c4nKDCwGDr4/NGC2ACGz
+        L84kIAdaNGXUW5AEvKiDHUZ8cBNV3oMk6zQvlJyJQiKXlq+f42+4yqSyVEZ2evwXwxrVImkU0tK4H
+        NF7F6Q/ahTZ45tS61OXfjp9/ppLJk/RpHi2HNvWRr+cJ1qOAzPcJWZ3ob0MKXUn5gQQZU44YNZ8mI
+        T8R+0pidXXkcCXdEsYszNzUbtGxhGkesgjDny5dWdEYI5SxDGQTYnIYWNCxG1UWdmXs3DqW7q11nA
+        HTeRgstxZ7J5njStFp5MBt4XNMaf/veRc4Q0r+cIbE6Ui8DxQU8v7hbjRkCnhwhq1lxDwALUSA/dB
+        vPbPPbqA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khqUA-0006h9-LH; Wed, 25 Nov 2020 08:49:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DA5A0301124;
+        Wed, 25 Nov 2020 09:49:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C4DE2209BAB21; Wed, 25 Nov 2020 09:49:08 +0100 (CET)
+Date:   Wed, 25 Nov 2020 09:49:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 19/32] entry/idle: Enter and exit kernel protection
+ during idle entry and exit
+Message-ID: <20201125084908.GO2414@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-20-joel@joelfernandes.org>
+ <20201124161335.GB3021@hirez.programming.kicks-ass.net>
+ <20201124180343.GF1021337@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201124112552.26377-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124180343.GF1021337@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Tue, Nov 24, 2020 at 01:03:43PM -0500, Joel Fernandes wrote:
+> On Tue, Nov 24, 2020 at 05:13:35PM +0100, Peter Zijlstra wrote:
+> > On Tue, Nov 17, 2020 at 06:19:49PM -0500, Joel Fernandes (Google) wrote:
 
-On 24.11.2020 14:25, Lad Prabhakar wrote:
+> > > +static inline void generic_idle_enter(void)
+> > > +static inline void generic_idle_exit(void)
 
-> In the error path of rpcif_manual_xfer() the value of ret is overwritten
-> by value returned by reset_control_reset() function and thus returning
-> incorrect value to the caller.
+> > That naming is terrible..
 > 
-> This patch makes sure the correct value is returned to the caller of
-> rpcif_manual_xfer() by dropping the overwrite of ret in error path.
-> Also now we ignore the value returned by reset_control_reset() in the
-> error path and instead print a error message when it fails.
+> Yeah sorry :-\. The naming I chose was to be aligned with the
+> CONFIG_GENERIC_ENTRY naming. I am open to ideas on that.
+
+entry_idle_{enter,exit}() ?
+
+> > I'm confused.. arch_cpu_idle_{enter,exit}() weren't conveniently placed
+> > for you?
 > 
-> Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Cc: stable@vger.kernel.org
+> The way this patch series works, it does not depend on arch code as much as
+> possible. Since there are other arch that may need this patchset such as ARM,
+> it may be better to keep it in the generic entry code.  Thoughts?
 
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-
-MBR, Sergei
+I didn't necessarily mean using those hooks, even placing your new hooks
+right next to them would've covered the exact same code with less lines
+modified.
