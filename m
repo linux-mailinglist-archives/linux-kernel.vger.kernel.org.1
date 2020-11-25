@@ -2,141 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BE82C3D3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053CA2C3D49
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbgKYKHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:07:53 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:38688 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726190AbgKYKHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:07:52 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKtHyLL5fm38WAA--.43449S2;
-        Wed, 25 Nov 2020 18:07:47 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] MIPS: Loongson64: Add KASLR support
-Date:   Wed, 25 Nov 2020 18:07:46 +0800
-Message-Id: <1606298866-7086-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxKtHyLL5fm38WAA--.43449S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFWUury5Cw18AFWUKFWDCFg_yoW5XrWkpr
-        4ayw1kGw4UXF4rGrW5Za48Wry3CasYq3y3uFWDtw1ruasIv3WYyrnFqr1fXry0qF4ktw4f
-        Wr98KFWUt3WFvaDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8twCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
-        AIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07brVysUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1728143AbgKYKJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:09:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726620AbgKYKJj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:09:39 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DABC0613D6;
+        Wed, 25 Nov 2020 02:09:39 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f17so2027235pge.6;
+        Wed, 25 Nov 2020 02:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=7UB1VwfUNRdnhielmEFkYpUl+QJqWs5102vTTuwXUyw=;
+        b=Lw8YkB83gM/PwTerYxcBiRNaOxNBetoyEavPznuzdB8scSAJDAfEiTtViswcQL9Naa
+         pwi3RS2Xsda90l5qmGgsqCyUcIFnsht7yfQHKQS4JiDGskpvhcsUDv37SaZjbGv2iwaL
+         IJ0nq7Cseu3m/OG3XtUF0K5ZFoOAj8jPSOG4DHQ0wnw2Gy+zRNtp0i39gDKJCkUr/zbF
+         AupG+q2g00nKEgJIVKb0jo42S4bft4DlEM+c5aTeNLbvKT1ZBc23deWEIoqPYaQclqPo
+         iANb8UnHqZmRVFLSH26POuHUPE6siKhWtNXdp3QrKzMD5cspDLDIAvnvTiqGPAvtgYvk
+         kK1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=7UB1VwfUNRdnhielmEFkYpUl+QJqWs5102vTTuwXUyw=;
+        b=DAaIsKrGG0DzMndC8+VGg/ZofBf8+CGueJNmPVBUtQxsTF5/gGQuPaT30FBjlfOtPM
+         CX0zNK+shKarI5s8zCedhyIZk82RB68AuRIMzEyy6Gy25Scf/782Rq7LxY2sHsA9h3FU
+         NQ9TtZIiZkjg4i44ncZyDStETXK5d0tvUYqH5q8PtUCN1FEoMT1zLDL4j17A/V/21XRu
+         +aH7/INt0YkarjSKapqHF68iQzFAAL65TkbrrIv0swqQaNTUu59fSuRyMm0m++7Aq9gS
+         ANq6K/DBls8mLug7XDgU/PdsmCFMZxaQIkx0lRgxVyPxHiDT1y/0yfl6TgKDEHiPcnhF
+         ZVKQ==
+X-Gm-Message-State: AOAM531pYjiT21oe0SKcx7UHN7nohNdRHe5d3m/JJRgQzAyH9sy8lsJI
+        dlOLmvv2+HzJJ9k31Qr5BFrMEiSdNhbgSQ==
+X-Google-Smtp-Source: ABdhPJz7JWwX2J93K0LMh6QODhHit3hmgdw0k19rbXJ1Iuh3+c4jpfPXav0q+CckJ/heF1zGoD0now==
+X-Received: by 2002:a17:90b:1490:: with SMTP id js16mr3266093pjb.215.1606298978581;
+        Wed, 25 Nov 2020 02:09:38 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id f134sm1615230pfa.208.2020.11.25.02.09.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 25 Nov 2020 02:09:38 -0800 (PST)
+Date:   Wed, 25 Nov 2020 02:08:06 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
+        jonathanh@nvidia.com
+Subject: Re: [PATCH RESEND 0/5] iommu/tegra-smmu: Some pending reviewed
+ changes
+Message-ID: <20201125100805.GA14856@Asurada-Nvidia>
+References: <20201111222129.15736-1-nicoleotsuka@gmail.com>
+ <20201124212100.GA32108@Asurada-Nvidia>
+ <68237d7c-12f7-3053-2e79-75b7e95f0af3@gmail.com>
+ <20201124231215.GA32405@Asurada-Nvidia>
+ <20201125095509.GB15052@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201125095509.GB15052@willie-the-truck>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a weak plat_get_fdt() in relocate.c in case some platform enable
-USE_OF while plat_get_fdt() is useless.
+On Wed, Nov 25, 2020 at 09:55:10AM +0000, Will Deacon wrote:
+> On Tue, Nov 24, 2020 at 03:12:16PM -0800, Nicolin Chen wrote:
+> > On Wed, Nov 25, 2020 at 02:05:14AM +0300, Dmitry Osipenko wrote:
+> > > 25.11.2020 00:21, Nicolin Chen пишет:
+> > > > These five patches were acked by Thierry and acked-n-tested by
+> > > > Dmitry a while ago. Would it be possible for you to apply them?
+> > > > 
+> > > > Thanks!
+> > > 
+> > > You probably should try to ping Will Deacon.
+> > > 
+> > > https://lkml.org/lkml/2020/11/17/243
+> > 
+> > Thank you, Dmitry.
+> > --
+> > 
+> > Will, would it be possible for you to take these changes?
+> > 
+> > I sent them on Nov 11 to the following lists:
+> > linux-kernel@vger.kernel.org
+> > iommu@lists.linux-foundation.org
+> > 
+> > If you need me to resend it again by adding you in To line,
+> > please kindly let me know.
+> 
+> Weird, this ended up in my spam. If you wouldn't mind resending with me
+> on To: then please do that. Then I know I'm looking at the correct version.
 
-1MB RELOCATION_TABLE_SIZE is small for Loongson64 because too many
-instructions should be relocated. 2MB is enough in present.
+Resending.
 
-Add KASLR support for Loongson64.
-
-KASLR(kernel address space layout randomization)
-
-To enable KASLR on Loongson64:
-First, make loongson3_defconfig.
-Then, enable CONFIG_RELOCATABLE and CONFIG_RANDOMIZE_BASE.
-Finally, compile the kernel.
-
-To test KASLR on Loongson64:
-Start machine with KASLR kernel.
-
-The first time:
-# cat /proc/iomem
-00200000-0effffff : System RAM
-  02f30000-03895e9f : Kernel code
-  03895ea0-03bc7fff : Kernel data
-  03e30000-04f43f7f : Kernel bss
-
-The second time:
-# cat /proc/iomem
-00200000-0effffff : System RAM
-  022f0000-02c55e9f : Kernel code
-  02c55ea0-02f87fff : Kernel data
-  031f0000-04303f7f : Kernel bss
-
-We see that code, data and bss sections become randomize.
-
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
-
-v2:
-- Define weak plat_get_fdt() in relocate.c
-- Add default RELOCATION_TABLE_SIZE for Loongson64
-
- arch/mips/Kconfig           | 5 ++++-
- arch/mips/kernel/relocate.c | 7 +++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 0f638bf..44a47ad 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -488,6 +488,7 @@ config MACH_LOONGSON64
- 	select SYS_SUPPORTS_HIGHMEM
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 	select SYS_SUPPORTS_ZBOOT
-+	select SYS_SUPPORTS_RELOCATABLE
- 	select ZONE_DMA32
- 	select NUMA
- 	select SMP
-@@ -2778,7 +2779,8 @@ config RELOCATABLE
- 	depends on CPU_MIPS32_R2 || CPU_MIPS64_R2 || \
- 		   CPU_MIPS32_R5 || CPU_MIPS64_R5 || \
- 		   CPU_MIPS32_R6 || CPU_MIPS64_R6 || \
--		   CPU_P5600 || CAVIUM_OCTEON_SOC
-+		   CPU_P5600 || CAVIUM_OCTEON_SOC || \
-+		   CPU_LOONGSON64
- 	help
- 	  This builds a kernel image that retains relocation information
- 	  so it can be loaded someplace besides the default 1MB.
-@@ -2789,6 +2791,7 @@ config RELOCATION_TABLE_SIZE
- 	hex "Relocation table size"
- 	depends on RELOCATABLE
- 	range 0x0 0x01000000
-+	default "0x00200000" if CPU_LOONGSON64
- 	default "0x00100000"
- 	help
- 	  A table of relocation data will be appended to the kernel binary
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 8561c7a..57bdd276 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -294,6 +294,13 @@ static inline int __init relocation_addr_valid(void *loc_new)
- 	return 1;
- }
- 
-+#if defined(CONFIG_USE_OF)
-+void __weak *plat_get_fdt(void)
-+{
-+	return NULL;
-+}
-+#endif
-+
- void *__init relocate_kernel(void)
- {
- 	void *loc_new;
--- 
-2.1.0
-
+Thanks!
