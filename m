@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513702C4673
+	by mail.lfdr.de (Postfix) with ESMTP id C8E052C4674
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732613AbgKYRGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
+        id S1732628AbgKYRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:06:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730608AbgKYRGp (ORCPT
+        with ESMTP id S1730608AbgKYRGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:06:45 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B07EC0613D4;
-        Wed, 25 Nov 2020 09:06:45 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id g14so2603404wrm.13;
-        Wed, 25 Nov 2020 09:06:45 -0800 (PST)
+        Wed, 25 Nov 2020 12:06:47 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312D2C0613D4;
+        Wed, 25 Nov 2020 09:06:47 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w202so2903861pff.10;
+        Wed, 25 Nov 2020 09:06:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=MT4M9SX2NqdNuOObXhIV8Gtkw+yoDX+gRyJnh+feBwM=;
-        b=dGJMb77GDzWChJEAI+yrqcqxPKMRYlsd94NoVMVof0f7TOQt2ljYJBd9nOY48D5qFg
-         w8+Qq5haLAKauxgwcYba8jKXk9vFFq+CBMWcAmztrn0BPA6pcIbBZiSckcxme9lY6C9f
-         FX6DCQkAtGBb/6vOFqKqLS0b9iy7PljIb0s2blcxA8ZgKFZzVgSzMo98RF9Yd6KmAOE4
-         ECtRdyujmvD6LYm1J7BNb0lVMMLOWznjvJVUb88eMf86G7By8m28dIWpzNlSGKfEmbyb
-         QDIXNkxgMCMRB9+L2zzuhA4x4pb1hr43ZNgQOhhIq0k5d2qr95jHBbwhaHHxoemL86/2
-         xXeg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rMzUdsLk/Baa1uIcljWMbCJT5T6vm33MNxpq93tgE5w=;
+        b=hCc1qr0lSPWOLc3Y+4oWrRH2TXCVQTYUkX1h+KVwsoGsg9ENaw8awNSU94fnQ4Fbpi
+         73IJdLXv94KLahXpYGZSdTNhwkfu+Umru7nWiUkXkpH4yUzWxLlR+rFdtkw9+rkrnc0c
+         NIsHLsVvpsHTxc1ye4lYM+0e8cwM26CLOef9YIluiLpsrUuQwVFbRW8taLHWwHNfElOs
+         uT4H7+JsIlGSVr5Mb0R0O4uRc+h4xjFf4css7WnzqA3/Suf+kl5gof0liDt3YQ+zaa5d
+         kkSHA96EanrhQRBZehtC4dDAcAFir5yICnNeTiHXSQSeuccO129OUijqRc8iuxNHS0WQ
+         iD6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=MT4M9SX2NqdNuOObXhIV8Gtkw+yoDX+gRyJnh+feBwM=;
-        b=qdkpB3O0mQagmXzrciyFqvBXFL0w00r4Scjq9tapAx8M1/zXnfVhy6F7TxRr2hUxvM
-         t1aw9ovo/aWjHvX198Ey2VGlbODpdfLSfcC7Whzb0ey1/SMFhN43ji85FPT8frRschNM
-         lvvwDO1HN1ogHqlPU679ZPhbf5/YFpnrlJhkyv8go6FEZ/mNBryk9InkH3JUQslM3ikz
-         JIB8zNjWURxZ2nwJZ2bWkWYBtf5CioTPnXeXYTXAiDLC4sw5t28Za5jsiNnJNEDEkfFo
-         7z+fgsAYUtRqXAoDpfdh2U5E8F/+0DgGREhZbl/eI7jhcqlQlOl6IudCz5loolZGZXBI
-         6WhQ==
-X-Gm-Message-State: AOAM531blEnACQ3HhGLl2su7LmV+rLT1FkDgClj/7XpBiSThRDKx/76o
-        ii5slLC3P2odEB2DaK7ewfs=
-X-Google-Smtp-Source: ABdhPJxvwc7n4Xqt4ibmbS8KwNf8fXPFJWQgJq7uzK07W2WKvfD65d/3/9N1QMMxNZyKNYO6zlte6w==
-X-Received: by 2002:adf:cf0b:: with SMTP id o11mr5252247wrj.162.1606324003890;
-        Wed, 25 Nov 2020 09:06:43 -0800 (PST)
-Received: from [192.168.1.152] ([102.64.149.89])
-        by smtp.gmail.com with ESMTPSA id k11sm347089wmj.42.2020.11.25.09.06.32
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Wed, 25 Nov 2020 09:06:43 -0800 (PST)
-Message-ID: <5fbe8f23.1c69fb81.304da.190f@mx.google.com>
-From:   "Dailborh R." <micjac8000@gmail.com>
-X-Google-Original-From: Dailborh R.
-Content-Type: text/plain; charset="iso-8859-1"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rMzUdsLk/Baa1uIcljWMbCJT5T6vm33MNxpq93tgE5w=;
+        b=erUl1vR/1Oz8QXoEvCNCZhiZycGNalLwML/HE6XrngyEUvzcyvCInDZzdtFZniSGFZ
+         pgJWxxTI1D85+VI8SqUmy0v26Qka8E/ezLWbgydWYr45eEn8UtHP8oHj6KJWhKdUzvbD
+         VCHHwbs5HXIccWcZnnuWuBy9lmgNmdAjnkn/4pD9xOJiS0yHt4W2x44WuIKn4QpuDXjJ
+         jZAUBPDDO35EZzMquSN4tQ+V2H4i6Hm/PPk73tW5z2RhFNoEU7XBXJiOWtv7dfMs2jYf
+         RBU6/1nhVWFh7nFJBZVI0inLP7tnY+crPDSFO7IpGxF1M8kMOc7PizdlmFnxHOeTbZXj
+         9EoQ==
+X-Gm-Message-State: AOAM531FCM9dhGPaoH1c9pjgYM5V+jZmext2lST/FPgnP/ZJILtonqMu
+        aH39LGFxF5OH1b9PT3Dcg5XrtM6MsN8=
+X-Google-Smtp-Source: ABdhPJyuixgOHHOmbVpj9oxoPoOJiLrDW4uE0K4ChZhpsglAfQuaDkbXVLClAt7jNqomJ+bqkHVduw==
+X-Received: by 2002:aa7:8812:0:b029:199:25e7:4ab7 with SMTP id c18-20020aa788120000b029019925e74ab7mr3479526pfo.30.1606324006683;
+        Wed, 25 Nov 2020 09:06:46 -0800 (PST)
+Received: from [10.230.28.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q23sm2460183pfg.192.2020.11.25.09.06.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 09:06:45 -0800 (PST)
+Subject: Re: [PATCH] MIPS: No need to check CPU 0 in
+ {loongson3,bmips,octeon}_cpu_disable()
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+References: <1606299090-14013-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <31318f42-5b38-215e-bddc-cc77a8a1bc03@gmail.com>
+Date:   Wed, 25 Nov 2020 09:06:43 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Please reply to me
-To:     Recipients <Dailborh@vger.kernel.org>
-Date:   Wed, 25 Nov 2020 17:06:18 +0000
-Reply-To: dailrrob.83@gmail.com
+In-Reply-To: <1606299090-14013-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm Dailborh R. from US. I picked interest in you and I would like to know
-more about you and establish relationship with you. i will wait for
-your response. thank you.
 
+
+On 11/25/2020 2:11 AM, Tiezhu Yang wrote:
+> After commit 9cce844abf07 ("MIPS: CPU#0 is not hotpluggable"),
+> c->hotpluggable is 0 for CPU 0 and it will not generate a control
+> file in sysfs for this CPU:
+> 
+> [root@linux loongson]# cat /sys/devices/system/cpu/cpu0/online
+> cat: /sys/devices/system/cpu/cpu0/online: No such file or directory
+> [root@linux loongson]# echo 0 > /sys/devices/system/cpu/cpu0/online
+> bash: /sys/devices/system/cpu/cpu0/online: Permission denied
+> 
+> So no need to check CPU 0 in {loongson3,bmips,octeon}_cpu_disable(),
+> just remove them.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/cavium-octeon/smp.c | 3 ---
+>  arch/mips/kernel/smp-bmips.c  | 3 ---
+
+For smp-bmips.c:
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
