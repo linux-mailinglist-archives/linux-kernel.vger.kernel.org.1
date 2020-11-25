@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9D12C47FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9DE2C4803
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732098AbgKYS50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 13:57:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729690AbgKYS50 (ORCPT
+        id S1731057AbgKYTCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:02:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39817 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730650AbgKYTCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:57:26 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95DFC0613D4;
-        Wed, 25 Nov 2020 10:57:25 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id s9so3367641ljo.11;
-        Wed, 25 Nov 2020 10:57:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zlxfAmKlZ2meTkcwOhJ+lZFhis5YkbRhTriiiivUvik=;
-        b=I1ltOa+hO6lHNKlRNaaWAsY5b1iehbD+I6ukvwUHAM5BdvHcTKEcsNbjHJI9h6icRT
-         y6ial1p5Iawr2ZGRsp/hh6xV6TnyhU1aY4efV0ruAW271VLy4BGMSqRGvlxuyTSqa1WX
-         DTBcVTw8e7UKxewFn5rthrJhZBDIqMjHL8YWBOf++vEjqHNvvqoYPZsYiL3FWsKgWEfT
-         56CrNlEdHjUaVjxlYNgzH6t+6sxLiNlkOLBiZJEQYD93lNVv/cFOx+WpCQrYC3H//aAi
-         ZEVInB5NRQT7HBxfja8tHA9JDj88Eee92xykp1sCGG2lF1zfNEWX3b4f2LfyioQZOf0U
-         ++pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zlxfAmKlZ2meTkcwOhJ+lZFhis5YkbRhTriiiivUvik=;
-        b=UsKcZxIDSxoNqEXFTv4y8CHBw3FAS2vhOOVNRf0p/oca/IACqi85RAJMGajNRaGMoi
-         vVViLDHTMx8wG//1BdCyOSv1HTehfH+HaTzOjQBy/mwGwOtkaczzSc25Z0bQamh0H0oC
-         L8cyMfP405X1yDfRqF05GY8f9Eog03xZSJPX5OzgT9AvFysIIA5/xmqi1Z/fVqAy/tY0
-         aHfGSUCCw7lLDYvzVkkaTiWeNT/uP98lc5KD+Ef7vyKe1ZeN3pcohgBi3UlEKIxmsGxk
-         6gRS+CClSyZfocYgvJeN5rlZkD0IzKeM6rBWCz6NTBHya3lSkvwy4ClcqtZ58zT0IvSw
-         gHrw==
-X-Gm-Message-State: AOAM532NvmRSFYhJZAHs2gHj3ndfireqMBfIZ80vCTpJeDbLT0lC/Lhm
-        aezYWWwclNOIlIV6R7Mmm4E=
-X-Google-Smtp-Source: ABdhPJxWwU/8e5YM2cNB+Vq6D0eeuTInlNw1FhWsdbANp6dP9ewnF4bwKM9eyqRrW0BYr8ibUPpHew==
-X-Received: by 2002:a05:651c:2c8:: with SMTP id f8mr1875888ljo.262.1606330644171;
-        Wed, 25 Nov 2020 10:57:24 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id d1sm17542lfs.216.2020.11.25.10.57.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 10:57:23 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 25 Nov 2020 19:57:21 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu: eliminate the __kvfree_rcu() macro
-Message-ID: <20201125185721.GA6638@pc636>
-References: <20201120114917.5263-1-urezki@gmail.com>
- <20201120114917.5263-2-urezki@gmail.com>
- <20201124195551.GL1437@paulmck-ThinkPad-P72>
+        Wed, 25 Nov 2020 14:02:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606330927;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8uFZEde0fjOKdsoDsRuCfq7lnGFjepdQaAwnfRHGJI0=;
+        b=NSt6QhKhrqp1rw37UUY6NrT0A2tiHeoQI8bPfoqwrROwmOzgBQIoQanLtM9uUN/TxI4wM8
+        F+vsGISJaOsc0dRgXg0HoQVEt6Fl9f9FCQfRpLCfw37h4SHzZHAGakiKfl2MunL1kioUaE
+        sXfb10q7pGsUgpJr4a854KYYlvyEl2Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-osmPAM7sNPiVfU8_dn8syg-1; Wed, 25 Nov 2020 14:02:03 -0500
+X-MC-Unique: osmPAM7sNPiVfU8_dn8syg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16BA61E7C7;
+        Wed, 25 Nov 2020 19:02:01 +0000 (UTC)
+Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 924B65D9CA;
+        Wed, 25 Nov 2020 19:01:57 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 14:01:56 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Hildenbrand <david@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <X76qJCg0Pa8diO59@redhat.com>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
+ <X73s8fxDKPRD6wET@redhat.com>
+ <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124195551.GL1437@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:55:51AM -0800, Paul E. McKenney wrote:
-> On Fri, Nov 20, 2020 at 12:49:17PM +0100, Uladzislau Rezki (Sony) wrote:
-> > Make the kvfree_rcu_arg_2() to be open-coded, so readability
-> > and review look better from the first glance. Moreover, that
-> > makes it clear that both kvfree_rcu_arg_1/2() use one single
-> > interface.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, Nov 25, 2020 at 01:08:54PM +0100, Vlastimil Babka wrote:
+> Yeah I guess it would be simpler if zoneid/nid was correct for 
+> pfn_valid() pfns within a zone's range, even if they are reserved due 
+> not not being really usable memory.
 > 
-> I queued both with the usual editing, thank you!
-> 
-Thank you, Paul!
+> I don't think we want to introduce CONFIG_HOLES_IN_ZONE to x86. If the 
+> chosen solution is to make this to a real hole, the hole should be 
+> extended to MAX_ORDER_NR_PAGES aligned boundaries.
 
---
-Vlad Rezki
+The way pfn_valid works it's not possible to render all non-RAM pfn as
+!pfn_valid, CONFIG_HOLES_IN_ZONE would not achieve it 100% either. So
+I don't think we can rely on that to eliminate all non-RAM reserved
+pages from the mem_map and avoid having to initialize them in the
+first place. Some could remain as in this case since in the same
+pageblock there's non-RAM followed by RAM and all pfn are valid.
+
+> In any case, compaction code can't fix this with better range checks.
+
+David's correct that it can, by adding enough PageReserved (I'm
+running all systems reproducing this with plenty of PageReserved
+checks in all places to work around it until we do a proper fix).
+
+My problem with that is that 1) it's simply non enforceable at runtime
+that there is not missing PageReserved check and 2) what benefit it
+would provide to leave a wrong zoneid in reserved pages and having to
+add extra PageReserved checks?
+
+A struct page has a deterministic zoneid/nid, if it's pointed by a
+valid pfn (as in pfn_valid()) the simplest is that the zoneid/nid in
+the page remain correct no matter if it's reserved at boot, it was
+marked reserved by a driver that swap the page somewhere else with the
+GART or EFI or something else. All reserved pages should work the
+same, RAM and non-RAM, since the non-RAM status can basically change
+at runtime if a driver assigns the page to hw somehow.
+
+NOTE: on the compaction side, we still need to add
+thepageblock_pfn_to_page to validate the "highest" pfn because the
+pfn_valid() check is missing on the first pfn on the pageblock as it's
+also missing the check of a pageblock that spans over two different
+zones.
+
+Thanks,
+Andrea
+
