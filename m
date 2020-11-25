@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422FA2C3B4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5262C3B54
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726295AbgKYIrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 03:47:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgKYIrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 03:47:20 -0500
-Received: from linux-8ccs (p57a232c3.dip0.t-ipconnect.de [87.162.50.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12E9220637;
-        Wed, 25 Nov 2020 08:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606294040;
-        bh=b70jtQ7plV/gEpUTh+1kIWUoa7Xktv5QXVN9r9gbJG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gU4mXEo2thN40zHe/6xYm9HLn9Hv2bUvK1pLCnCtR9p0lnhMJWdb9uwdX+1JoHIWs
-         3Fdqhoq72cOdXF0AipFThNeto9N8pRDK0XOo5bm190G3Zes1OfuyCGtYFiRO5HHerT
-         ylbmVTlnB1h4RCIH/3y972O4Daquo4Wc49nFsQ18=
-Date:   Wed, 25 Nov 2020 09:47:14 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     Steve French <smfrench@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: Ubuntu mainline kernel builds now failing not able to find
- module.lds file
-Message-ID: <20201125084714.GA11793@linux-8ccs>
-References: <CAH2r5msNpjEaBV2er7anqRsDE-9vYRZnsDif0+odOJAYL_aV6w@mail.gmail.com>
- <20201125060124.GA25831@lorien.valinor.li>
+        id S1726721AbgKYIsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 03:48:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgKYIsy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 03:48:54 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EED7C0613D4;
+        Wed, 25 Nov 2020 00:48:54 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id b17so1402940ljf.12;
+        Wed, 25 Nov 2020 00:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1CiFGI+zAQ3sbdgy5ohjyQFrwpN9S9lbEbuqLPPcRrc=;
+        b=sIrmXlu/HrT1IFeUrE7K8dvjEY9Vg8JWaKtNuINQr9xIkrznrBM18y1b/G16+7tfMC
+         l5ohUg1QLDXZ6662jBthgmh0G2P80PPAybSD+5pSyXIAsAOoAQgzGrbWipN9NFtG6DXe
+         3iNnfkXxhGRP73zAV2pze1QWRnvEj+DdFCNVu6THWm2adx5nXO11IvU/FlerplW17Hme
+         8jioAfOhiJUl5kTW8QaYw0mDzcyIX2TrSAg7VIxMi2QZ4fWd9KDj0Ifmw4XV+fuOCB3p
+         drwAhQ69R39cwa1pgwLITw9wJt3iSwg+KW6+alm3UNQF88ZNyo9ql5Nz9JmgXbnJfJNn
+         LA2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=1CiFGI+zAQ3sbdgy5ohjyQFrwpN9S9lbEbuqLPPcRrc=;
+        b=eDnCcYdr2/ZmuzAs6HMpoTO4lIwdZvPjoupNvMJHNVZ/Qvsci+Rjdi5WLBMDDPYDVk
+         1uwBy28d6cOswhuuEXl1eD/eBMHzcPWyq3GnpbaQwIXNmmkkCWQeGmJfOxQ+GOJFX2FC
+         TWPGX4pzjZBL68F+gBDGOZEzTuuniD0GCruIxLWvb8wufd6ESU1vwGna5ivvkfOM6Jc0
+         6//mXArBWbtKGU6VN/xLqlyTWHNAk6VIfboVQzxWU4V2syzJMEnBTCfSKY2KrkTdXQcM
+         vre3avw6dkWr7tR9lYfPJ8y2IHJxkR9kuRCecysvO051R8GElJ4djmxrILaYCQqpc6sZ
+         yOTw==
+X-Gm-Message-State: AOAM531ZS2Ah+eStaShtIZuv5YSjy9HgT2aQE3jJMiznrCd0esD5qqVX
+        K/opVviYtgCoJDCoaBBY9SrA6k6niRYwJQ==
+X-Google-Smtp-Source: ABdhPJyDbFwMZisczcuSAtsoZd69soFXx8+zX1JJzEiv9GMl2dMM3pPPJgz2gyrDGK5V/tjzTDtukw==
+X-Received: by 2002:a2e:7203:: with SMTP id n3mr959896ljc.86.1606294132804;
+        Wed, 25 Nov 2020 00:48:52 -0800 (PST)
+Received: from ?IPv6:2a00:1fa0:4212:944b:4041:d4db:b733:f39e? ([2a00:1fa0:4212:944b:4041:d4db:b733:f39e])
+        by smtp.gmail.com with ESMTPSA id r80sm176066lff.77.2020.11.25.00.48.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 00:48:52 -0800 (PST)
+Subject: Re: [PATCH 1/5] memory: renesas-rpc-if: Return correct value to the
+ caller of rpcif_manual_xfer()
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>, stable@vger.kernel.org
+References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201124112552.26377-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <26fc2f22-eae4-86bc-1c39-e8498b77e1cd@gmail.com>
+Date:   Wed, 25 Nov 2020 11:48:42 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201125060124.GA25831@lorien.valinor.li>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201124112552.26377-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Salvatore Bonaccorso [25/11/20 07:01 +0100]:
->Hi Steve,
->
->On Fri, Oct 30, 2020 at 12:43:24AM -0500, Steve French wrote:
->> I typically build cifs.ko for testing using the latest Ubuntu mainline
->> build - but building a module in the 5.10-rc1 kernel - while booted to
->> the 5.10-rc1 ubuntu mainlinekerel - e.g. "make C=1 -C
->> /usr/src/linux-headers-`uname -r` M=`pwd` modules
->> CF=-D__CHECK_ENDIAN__"
->> which has worked for years - no longer works.
->>
->> make: Entering directory '/usr/src/linux-headers-5.10.0-051000rc1-generic'
->> make[2]: *** No rule to make target 'scripts/module.lds', needed by
->> '/home/smfrench/cifs-2.6/fs/cifs/cifs.ko'.  Stop.
->> make[1]: *** [scripts/Makefile.modpost:117: __modpost] Error 2
->> make: *** [Makefile:1703: modules] Error 2
->> make: Leaving directory '/usr/src/linux-headers-5.10.0-051000rc1-generic'
->>
->> I don't see a file in scripts/module.lds in
->> /usr/src/linux-headers-5.10.0-051000rc1-generic/scripts directory
->>
->> copying from scripts/module.lds in the 5.10-rc1 git tree to
->> /usr/src/linux-headers-5.10.0-051000rc1-generic/scripts fixed the
->> problem but was wondering if this is just a packaging problem with
->> Ubuntu (missing a file in the kernel headers package for their
->> mainline daily builds?)
->
->There is 596b0474d3d9 ("kbuild: preprocess module linker script") in
->v5.10-rc1 causing this. So likely the packaging will need some
->adjustment to cope with that change?
+Hello!
 
-Yeah, likely it's a distro packaging issue. We had to account for
-scripts/module.lds recently on openSUSE for example:
+On 24.11.2020 14:25, Lad Prabhakar wrote:
 
-    https://github.com/openSUSE/kernel-source/commit/fe37c160c33dc09edff1781810aa098a2c316e20
+> In the error path of rpcif_manual_xfer() the value of ret is overwritten
+> by value returned by reset_control_reset() function and thus returning
+> incorrect value to the caller.
+> 
+> This patch makes sure the correct value is returned to the caller of
+> rpcif_manual_xfer() by dropping the overwrite of ret in error path.
+> Also now we ignore the value returned by reset_control_reset() in the
+> error path and instead print a error message when it fails.
+> 
+> Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
+> Reported-by: Pavel Machek <pavel@denx.de>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Cc: stable@vger.kernel.org
 
-Jessica
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+
+MBR, Sergei
