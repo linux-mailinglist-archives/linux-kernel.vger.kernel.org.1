@@ -2,229 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F312C4919
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6352C4922
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730047AbgKYUbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 15:31:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S1730119AbgKYUen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 15:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729957AbgKYUbV (ORCPT
+        with ESMTP id S1730093AbgKYUen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:31:21 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE75C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:31:21 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id m6so3181019wrg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:31:21 -0800 (PST)
+        Wed, 25 Nov 2020 15:34:43 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22000C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:34:43 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id y10so3652558ljc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:34:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q710+yuAXMJxe0nd7TtiMj+ZjNL+TkbdcSV2kJANPFc=;
-        b=BIbP6CPisTVorSg5qoPf0+dLgPrcTLlTwlVp8ftZSvaFgDocUfy9W0QG0G5Ods6KYD
-         yNuT+KUHJ3LuzVLi2aruhMW4cOqXa3HmxH07ArrA7Ka9z6jrGkuyP/FM26RjBdMrBi+s
-         P4RXP9NBi6sM7Lf6VlkFS3ouGBO+VOYD2B60o=
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PTSj273m5dfHVb/AgHhQ3VD6GzY1CwNYoQKrgTLxVPM=;
+        b=eZs/hq/mrBtZxX+zN7fatgTYgzWy27jm2uvhung6pwbgO2U+q/OAqrKWMze5pe7dhp
+         kEgY8rbwL1n8UkILZUdZmxQJGvNU1ZCtRemnm6FVvllW0W33bODVbrvviH7j3//2XSVn
+         yCX/W96vtdRvkrGtS+ch0RmwSDSebovjhL7h07l0tMBZnIFgw/OnL5DTHHht44XPWfPQ
+         8LvGEcCXn7hkvFSooqP7qdqxQLghWt+J6dwy7x3rwAfMvYsTP62zMMPDI7K8tB7VxYV2
+         WRQCmzqHJupqRDH90eBZaI9rGNOJwSQYuigFA0IRTcVHZDUngO+ST9d5YljwrjPC58b0
+         ksbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q710+yuAXMJxe0nd7TtiMj+ZjNL+TkbdcSV2kJANPFc=;
-        b=J6+s4PWpwjW9y2TjD1wqUlxRF7ZDc6n82v7K8Kpd9/l5uNIlgVE1mJjy6wSe10VlVG
-         QFT+o6QBaKFZU8rw0TFcTLg5m5plMPwf6+tuKJnFic+94VUUQXtG5MUypoJ/wQTNzX8o
-         lU8Ac+BLTANOcffNIXxWDeamS+BEtLrqucDHFvpKMARwa83Ch/vFOc48eLX46LMy2Jlr
-         mq9Z6KKf+7Y6sG8u4yzBGGYpHCyer/dym0Ce86ccLIVMPykX6/GElsWb15Q9OBAMrbEe
-         pHFJeYik7nDan2Mvomm+IZJOTm2j+S8JgTE5LJV6B+feX9uOAgDNalHX3SSM9YqKI1SE
-         3r7Q==
-X-Gm-Message-State: AOAM532ocY1B5rq9muQ0ccPuOuvCMNDg1sF98UTNr47UsZu23rQn919s
-        uQHedN0pSpyc+Zbm5Gxz7tLr3Q==
-X-Google-Smtp-Source: ABdhPJyaT4T+JFlra8+I0dMKQzQ88jRUsULWXg1Du+OwyPFSmH7nHfduCIkjo/9lH+6AkK7sbuYwqA==
-X-Received: by 2002:adf:fd52:: with SMTP id h18mr6084459wrs.90.1606336279903;
-        Wed, 25 Nov 2020 12:31:19 -0800 (PST)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id h83sm4827088wmf.9.2020.11.25.12.31.18
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PTSj273m5dfHVb/AgHhQ3VD6GzY1CwNYoQKrgTLxVPM=;
+        b=Sc9gaV1MS5W1/APpE151sNFBT/50ibxCsoCC7qVVRKqBoVQkiEiVCkOfOSIL8b+1Qz
+         MPDoE1g7EfsiVs43UAs1hLMFRO/1M5iRDlGSW4Ep7SS9YK1A0u88CXcAiUvlXjeTbRGv
+         lKSHYW1rjpvzmIMhau/hZXnxjPKKJlwfgNTe/kFO3nzqGXv2sgF2YJDmNlQjdouf0Vel
+         DvgQdTOE6RtAccmZ/cyrqKWsv1WqwqqaRutzw8ZJKEC2Szbkf5KBHVnMqWjRkJSnVTnp
+         MSXdLG/qdDtKwcomBQ1noXFFMBgXxMhGgYIUXuV9PtKUGyLZ8c/eealLJh1TaHSvBRad
+         gVBg==
+X-Gm-Message-State: AOAM530QgiEL4kPaEzuLNodAtrJ91DILd9Sbz6Rof/nERj1+kdrN7u+V
+        lUCsLnjWOe86MvFwQz+nKYR9WscNwMZPCg==
+X-Google-Smtp-Source: ABdhPJz+3qUQvl5yV1OtuKWUwzV/OcUmkCcF6YaD/kHyZpHnx394KXxN3tuPa2iSMgB+LCaMxVC3eQ==
+X-Received: by 2002:a2e:9617:: with SMTP id v23mr2109450ljh.135.1606336481467;
+        Wed, 25 Nov 2020 12:34:41 -0800 (PST)
+Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id 133sm45527lfe.300.2020.11.25.12.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 12:31:19 -0800 (PST)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        auro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v2 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-Date:   Wed, 25 Nov 2020 21:31:14 +0100
-Message-Id: <20201125203114.130967-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        Wed, 25 Nov 2020 12:34:40 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 25 Nov 2020 21:34:38 +0100
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/2] mm/vmalloc: rework the drain logic
+Message-ID: <20201125203438.GA7278@pc636>
+References: <20201117130434.GA10769@pc636>
+ <CAC=cRTN-JyZKyFkRgC0BrBjnu4mMTJ_hXBYszJ9HLXaLqeMfgQ@mail.gmail.com>
+ <20201118161623.GA21171@pc636>
+ <87mtzeunsi.fsf@yhuang-dev.intel.com>
+ <20201119173604.GA991@pc636>
+ <87zh3cu578.fsf@yhuang-dev.intel.com>
+ <20201123135919.GA12236@pc636>
+ <875z5vtrsc.fsf@yhuang-dev.intel.com>
+ <20201124164053.GA23686@pc636>
+ <87o8jms1ed.fsf@yhuang-dev.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8jms1ed.fsf@yhuang-dev.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On architectures where the is no coherent caching such as ARM use the
-dma_alloc_noncontiguos API and handle manually the cache flushing using
-dma_sync_sg().
+On Wed, Nov 25, 2020 at 08:52:58AM +0800, Huang, Ying wrote:
+> Uladzislau Rezki <urezki@gmail.com> writes:
+> >> >> > - lazy_max_pages() can slightly be decreased. If there are existing
+> >> >> > workloads which suffer from such long value. It would be good to get
+> >> >> > real complains and evidence.
+> >> >> >
+> >> >> >> > Apart of it and in regard to CONFIG_KASAN_VMALLOC, it seems that we are not
+> >> >> >> > allowed to drop the free_vmap_area_lock at all. Because any simultaneous
+> >> >> >> > allocations are not allowed within a drain region, so it should occur in
+> >> >> >> > disjoint regions. But i need to double check it.
+> >> >> >> >
+> >> >> >> >>
+> >> >> >> >> And, can we reduce lazy_max_pages() to control the length of the
+> >> >> >> >> purging list?  It could be > 8K if the vmalloc/vfree size is small.
+> >> >> >> >>
+> >> >> >> > We can adjust it for sure. But it will influence on number of global
+> >> >> >> > TLB flushes that must be performed.
+> >> >> >> 
+> >> >> >> Em...  For example, if we set it to 100, then the number of the TLB
+> >> >> >> flushes can be reduced to 1% of the un-optimized implementation
+> >> >> >> already.  Do you think so?
+> >> >> >> 
+> >> >> > If we set lazy_max_pages() to vague value such as 100, the performance
+> >> >> > will be just destroyed.
+> >> >> 
+> >> >> Sorry, my original words weren't clear enough.  What I really want to
+> >> >> suggest is to control the length of the purging list instead of reduce
+> >> >> lazy_max_pages() directly.  That is, we can have a "atomic_t
+> >> >> nr_purge_item" to record the length of the purging list and start
+> >> >> purging if (vmap_lazy_nr > lazy_max_pages && nr_purge_item >
+> >> >> max_purge_item).  vmap_lazy_nr is to control the virtual address space,
+> >> >> nr_purge_item is to control the batching purging latency.  "100" is just
+> >> >> an example, the real value should be determined according to the test
+> >> >> results.
+> >> >> 
+> >> > OK. Now i see what you meant. Please note, the merging is in place, so
+> >> > the list size gets reduced.
+> >> 
+> >> Yes.  In theory, even with merging, the length of the purging list may
+> >> become too long in some cases.  And the code/algorithm changes that are
+> >> needed by controlling the length of the purging list is much less than
+> >> that are needed by merging.  So I suggest to do length controlling
+> >> firstly, then merging.  Again, just my 2 cents.
+> >> 
+> > All such kind of tuning parameters work for one case and does not for
+> > others. Therefore i prefer to have something more generic that tends
+> > to improve the things, instead of thinking how to tune parameters to
+> > cover all test cases and workloads.
+> 
+> It's a new mechanism to control the length of the purging list directly.
+> So, I don't think that's just parameter tuning.  It's just a simple and
+> direct method.  It can work together with merging method to control the
+> purging latency even if the vmap areas cannot be merged in some cases.
+> But these cases may not exist in practice, so I will not insist to use
+> this method.
+> 
+No problem. I see your point about an extra thing to control the list length.
+Let's see if there are still complains from users. If we have such feedback, 
+we will rework it further.
 
-With this patch on the affected architectures we can measure up to 20x
-performance improvement in uvc_video_copy_data_work().
+Thanks!
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-
-v2: Thanks to Robin!
-
-Use dma_sync_sg instead of dma_sync_single
-
-
- drivers/media/usb/uvc/uvc_video.c | 83 ++++++++++++++++++++++++++-----
- drivers/media/usb/uvc/uvcvideo.h  |  2 +
- 2 files changed, 73 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index a6a441d92b94..b2e6a9522999 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -1490,6 +1490,11 @@ static void uvc_video_encode_bulk(struct uvc_urb *uvc_urb,
- 	urb->transfer_buffer_length = stream->urb_size - len;
- }
- 
-+static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
-+{
-+	return stream->dev->udev->bus->controller->parent;
-+}
-+
- static void uvc_video_complete(struct urb *urb)
- {
- 	struct uvc_urb *uvc_urb = urb->context;
-@@ -1539,6 +1544,10 @@ static void uvc_video_complete(struct urb *urb)
- 	 * Process the URB headers, and optionally queue expensive memcpy tasks
- 	 * to be deferred to a work queue.
- 	 */
-+	if (uvc_urb->pages) {
-+		dma_sync_sg_for_cpu(stream_to_dmadev(stream), uvc_urb->sgt.sgl,
-+				    uvc_urb->sgt.nents,	DMA_FROM_DEVICE);
-+	}
- 	stream->decode(uvc_urb, buf, buf_meta);
- 
- 	/* If no async work is needed, resubmit the URB immediately. */
-@@ -1566,8 +1575,16 @@ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
- 			continue;
- 
- #ifndef CONFIG_DMA_NONCOHERENT
--		usb_free_coherent(stream->dev->udev, stream->urb_size,
--				  uvc_urb->buffer, uvc_urb->dma);
-+		if (uvc_urb->pages) {
-+			sg_free_table(&uvc_urb->sgt);
-+			vunmap(uvc_urb->buffer);
-+			dma_free_noncontiguous(stream_to_dmadev(stream),
-+					       stream->urb_size,
-+					       uvc_urb->pages, uvc_urb->dma);
-+		} else {
-+			usb_free_coherent(stream->dev->udev, stream->urb_size,
-+					  uvc_urb->buffer, uvc_urb->dma);
-+		}
- #else
- 		kfree(uvc_urb->buffer);
- #endif
-@@ -1577,6 +1594,56 @@ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
- 	stream->urb_size = 0;
- }
- 
-+#ifndef CONFIG_DMA_NONCOHERENT
-+static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-+				 struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-+{
-+	struct device *dma_dev = dma_dev = stream_to_dmadev(stream);
-+
-+	if (!dma_can_alloc_noncontiguous(dma_dev)) {
-+		uvc_urb->buffer = usb_alloc_coherent(stream->dev->udev,
-+						     stream->urb_size,
-+						     gfp_flags | __GFP_NOWARN,
-+						     &uvc_urb->dma);
-+		return uvc_urb->buffer != NULL;
-+	}
-+
-+	uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-+						 &uvc_urb->dma,
-+						 gfp_flags | __GFP_NOWARN, 0);
-+	if (!uvc_urb->pages)
-+		return false;
-+
-+	uvc_urb->buffer = vmap(uvc_urb->pages,
-+			       PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
-+			       VM_DMA_COHERENT, PAGE_KERNEL);
-+	if (!uvc_urb->buffer) {
-+		dma_free_noncontiguous(dma_dev, stream->urb_size,
-+				       uvc_urb->pages, uvc_urb->dma);
-+		return false;
-+	}
-+
-+	if (sg_alloc_table_from_pages(&uvc_urb->sgt, uvc_urb->pages,
-+				PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT, 0,
-+				stream->urb_size, GFP_KERNEL)) {
-+		vunmap(uvc_urb->buffer);
-+		dma_free_noncontiguous(dma_dev, stream->urb_size,
-+				       uvc_urb->pages, uvc_urb->dma);
-+		return false;
-+	}
-+
-+	return true;
-+}
-+#else
-+static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-+				 struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-+{
-+	uvc_urb->buffer = kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
-+
-+	return uvc_urb->buffer != NULL;
-+}
-+#endif
-+
- /*
-  * Allocate transfer buffers. This function can be called with buffers
-  * already allocated when resuming from suspend, in which case it will
-@@ -1607,19 +1674,11 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
- 
- 	/* Retry allocations until one succeed. */
- 	for (; npackets > 1; npackets /= 2) {
-+		stream->urb_size = psize * npackets;
- 		for (i = 0; i < UVC_URBS; ++i) {
- 			struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
- 
--			stream->urb_size = psize * npackets;
--#ifndef CONFIG_DMA_NONCOHERENT
--			uvc_urb->buffer = usb_alloc_coherent(
--				stream->dev->udev, stream->urb_size,
--				gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
--#else
--			uvc_urb->buffer =
--			    kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
--#endif
--			if (!uvc_urb->buffer) {
-+			if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
- 				uvc_free_urb_buffers(stream);
- 				break;
- 			}
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index a3dfacf069c4..3e6618a2ac82 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -532,6 +532,8 @@ struct uvc_urb {
- 
- 	char *buffer;
- 	dma_addr_t dma;
-+	struct page **pages;
-+	struct sg_table sgt;
- 
- 	unsigned int async_operations;
- 	struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
--- 
-2.29.2.454.gaff20da3a2-goog
-
+--
+Vlad Rezki
